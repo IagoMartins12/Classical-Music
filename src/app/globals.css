@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #ffffff;
@@ -19,3 +19,9 @@
   }
 }
 
+.section-wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin: auto;
+  padding: 2rem 2.5rem;
+}

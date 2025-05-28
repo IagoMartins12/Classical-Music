@@ -7,12 +7,18 @@ const BASE_URL = 'https://api.openopus.org';
 // ----------------------------
 // COMPOSERS
 // ----------------------------
-
 export async function getComposer(termo: string) {
   const response = await axios.get(
     `${BASE_URL}/composer/list/search/${termo}.json`
   );
   return response.data.composers;
+}
+
+export async function getComposerImslp(start: string = '0') {
+  const response = await axios.get(
+    `https://imslp.org/imslpscripts/API.ISCR.php?account=worklist/disclaimer=accepted/sort=id/type=1/start=${start}/retformat=json`
+  );
+  return response.data;
 }
 
 export async function getPopularComposers() {

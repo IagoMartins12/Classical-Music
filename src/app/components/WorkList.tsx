@@ -17,7 +17,7 @@ export default function WorkList({ works }: Props) {
     setFavorites((prev) => [...prev, work.title]);
   };
 
-  console.log('works', works[0])
+  console.log('works', works);
 
   return (
     <div className="p-4">
