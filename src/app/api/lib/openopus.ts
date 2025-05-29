@@ -16,7 +16,7 @@ export async function getComposer(termo: string) {
 
 export async function getComposerImslp(start: string = '0') {
   const response = await axios.get(
-    `https://imslp.org/imslpscripts/API.ISCR.php?account=worklist/disclaimer=accepted/sort=id/type=1/start=${start}/retformat=json`
+    `https://imslp.org/imslpscripts/API.ISCR.php?account=worklist/disclaimer=accepted/sort=id/type=1/start=0/retformat=json`
   );
   return response.data;
 }

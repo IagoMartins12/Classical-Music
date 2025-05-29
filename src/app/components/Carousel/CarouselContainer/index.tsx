@@ -146,7 +146,7 @@ const CarouselContainer: React.FC<CarouselContainerProps> = ({
   };
 
   return (
-    <div className="mx-16">
+    <div className="">
       <div
         ref={containerRef}
         className={`flex transition-transform ease-out select-none ${

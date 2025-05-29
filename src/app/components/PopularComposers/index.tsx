@@ -8,7 +8,7 @@ const PopularComposers = () => {
   return (
     <section className="section-wrap ">
       <SectionTitle title="Compositores populares" />
-      <CarouselControl />
+      <CarouselControl showComposers="popular" />
     </section>
   );
 };

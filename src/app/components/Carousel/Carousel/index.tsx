@@ -3,6 +3,7 @@ import CarouselControls from '../CarouselControls';
 import CarouselContainer from '../CarouselContainer';
 import CarouselCard from '../CarouselCard';
 import CarouselIndicators from '../CarouselIndicators';
+import useIsMobile from '@/app/hooks/useIsMobile';
 
 const Carousel: React.FC<ModernCarouselProps> = ({
   items,
@@ -12,7 +13,11 @@ const Carousel: React.FC<ModernCarouselProps> = ({
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const maxIndex = Math.max(0, items.length - itemsPerView);
+  const isMobile = useIsMobile();
+
+  // Ajustar itemsPerView baseado no dispositivo
+  const responsiveItemsPerView = isMobile ? 1 : itemsPerView;
+  const maxIndex = Math.max(0, items.length - responsiveItemsPerView);
 
   // Auto play
   useEffect(() => {
@@ -51,50 +56,73 @@ const Carousel: React.FC<ModernCarouselProps> = ({
     [isAnimating, maxIndex]
   );
 
+  // Drag handler otimizado para mobile/desktop
   const handleDrag = useCallback(
     (deltaX: number) => {
-      if (deltaX > 0 && currentIndex < maxIndex) {
-        handleNext();
-      } else if (deltaX < 0 && currentIndex > 0) {
-        handlePrevious();
+      if (isMobile) {
+        // Mobile: sempre move apenas 1 item
+        if (deltaX > 0 && currentIndex < maxIndex) {
+          handleNext();
+        } else if (deltaX < 0 && currentIndex > 0) {
+          handlePrevious();
+        }
+      } else {
+        // Desktop: comportamento original (pode mover vários)
+        if (deltaX > 0 && currentIndex < maxIndex) {
+          handleNext();
+        } else if (deltaX < 0 && currentIndex > 0) {
+          handlePrevious();
+        }
       }
     },
-    [currentIndex, maxIndex, handleNext, handlePrevious]
+    [currentIndex, maxIndex, handleNext, handlePrevious, isMobile]
   );
 
   return (
-    <div className="w-full mx-auto py-12">
+    <div className="w-full mx-auto py-4">
       <div className="relative">
         {/* Container principal com gradiente */}
         <div className="relative overflow-hidden rounded-3xl py-8">
           <div className="relative">
-            {/* Controles de navegação */}
-            <CarouselControls
-              onPrevious={handlePrevious}
-              onNext={handleNext}
-              canGoPrevious={currentIndex > 0}
-              canGoNext={currentIndex < maxIndex}
-              isAnimating={isAnimating}
-            />
+            {/* Controles de navegação - escondidos no mobile */}
+            {!isMobile && (
+              <CarouselControls
+                onPrevious={handlePrevious}
+                onNext={handleNext}
+                canGoPrevious={currentIndex > 0}
+                canGoNext={currentIndex < maxIndex}
+                isAnimating={isAnimating}
+              />
+            )}
 
             {/* Container com drag */}
             <CarouselContainer
               currentIndex={currentIndex}
-              itemsPerView={itemsPerView}
+              itemsPerView={responsiveItemsPerView}
               onDrag={handleDrag}
               isAnimating={isAnimating}
             >
               {items.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex-shrink-0 px-4 transition-all duration-500"
-                  style={{ width: `${100 / itemsPerView}%` }}
+                  className={`flex-shrink-0 transition-all duration-500 ${
+                    isMobile
+                      ? 'px-4' // Mobile: padding uniforme
+                      : index !== 0
+                      ? 'px-4'
+                      : 'pr-4' // Desktop: comportamento original
+                  }`}
+                  style={{
+                    width: isMobile
+                      ? '100%' // Mobile: 100% da largura
+                      : `${100 / responsiveItemsPerView}%`, // Desktop: dividido pelos itens
+                  }}
                 >
                   <CarouselCard
                     item={item}
                     isActive={
                       index >= currentIndex &&
-                      index < currentIndex + itemsPerView
+                      index < currentIndex + responsiveItemsPerView
                     }
                   />
                 </div>
@@ -103,13 +131,36 @@ const Carousel: React.FC<ModernCarouselProps> = ({
           </div>
         </div>
 
-        {/* Indicadores */}
-        <CarouselIndicators
+        {/* Indicadores - diferentes para mobile e desktop */}
+        {/* <CarouselIndicators
           totalSlides={maxIndex + 1}
           currentIndex={currentIndex}
           onGoToSlide={goToSlide}
           isAnimating={isAnimating}
-        />
+        /> */}
+
+        {/* Contador - apenas no desktop */}
+        {/* {!isMobile && (
+          <div className="text-center mt-6">
+            <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium text-gray-700">
+                {currentIndex + 1} -{' '}
+                {Math.min(currentIndex + responsiveItemsPerView, items.length)}{' '}
+                de {items.length}
+              </span>
+            </div>
+          </div>
+        )} */}
+
+        {/* Contador mobile - mais simples */}
+        {/* {isMobile && (
+          <div className="text-center mt-4">
+            <span className="text-sm text-gray-600 font-medium">
+              {currentIndex + 1} de {items.length}
+            </span>
+          </div>
+        )} */}
       </div>
     </div>
   );
