@@ -1,0 +1,223 @@
+// This is your Prisma schema file for the classical music encyclopedia project
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum DifficultyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum PracticeFocus {
+  TECHNICAL
+  EXPRESSIVITY
+  PRECISION
+}
+
+// Models
+model User {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  firstName      String?
+  lastName       String?
+  username       String?   @unique
+  email          String?   @unique
+  emailVerified  DateTime?
+  hashedPassword String?
+  image          String?
+  bio            String?
+  gender         String?
+  birthday       DateTime?
+  createdAt      DateTime  @default(now())
+
+  // Relations
+  Account           Account[]
+  instruments       UserInstrument[]
+  annotations       Annotation[]
+  favoriteWorks     FavoriteWork[]
+  favoriteComposers FavoriteComposer[]
+  wantToLearn       WantToLearn[]
+  learned           Learned[]
+  studySessions     StudySession[]
+}
+
+model Account {
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.String
+  access_token      String? @db.String
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.String
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Composer {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  fullName      String
+  birthDate     DateTime?
+  deathDate     DateTime?
+  portraitUrl   String?
+  epochId       String    @db.ObjectId
+  bio           String?
+  createdAt     DateTime  @default(now())
+  permLinkImslp String?
+  ImslpId       String?
+
+  // Relations
+  epoch      Epoch              @relation(fields: [epochId], references: [id])
+  works      Work[]
+  favoriteBy FavoriteComposer[]
+}
+
+model Epoch {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  name      String     @unique
+  composers Composer[]
+}
+
+model Genre {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String @unique
+  works Work[]
+}
+
+model Instrument {
+  id           String           @id @default(auto()) @map("_id") @db.ObjectId
+  name         String           @unique
+  users        UserInstrument[]
+  workMappings WorkInstrument[]
+}
+
+model Work {
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  composerId String          @db.ObjectId
+  genreId    String          @db.ObjectId
+  videoUrl   String?
+  scoreUrl   String?
+  difficulty DifficultyLevel @default(INTERMEDIATE)
+  createdAt  DateTime        @default(now())
+
+  // Relations
+  composer       Composer         @relation(fields: [composerId], references: [id])
+  genre          Genre            @relation(fields: [genreId], references: [id])
+  instruments    WorkInstrument[]
+  annotations    Annotation[]
+  favoriteBy     FavoriteWork[]
+  wantToLearners WantToLearn[]
+  learners       Learned[]
+  studySessions  StudySession[]
+}
+
+// Join tables
+model UserInstrument {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String @db.ObjectId
+  instrumentId String @db.ObjectId
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  instrument Instrument @relation(fields: [instrumentId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, instrumentId])
+}
+
+model WorkInstrument {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  workId       String @db.ObjectId
+  instrumentId String @db.ObjectId
+
+  work       Work       @relation(fields: [workId], references: [id], onDelete: Cascade)
+  instrument Instrument @relation(fields: [instrumentId], references: [id], onDelete: Cascade)
+
+  @@unique([workId, instrumentId])
+}
+
+// User-generated content
+model Annotation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  workId    String   @db.ObjectId
+  content   String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+}
+
+model StudySession {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String        @db.ObjectId
+  workId        String        @db.ObjectId
+  date          DateTime      @default(now())
+  durationMin   Int // duração em minutos
+  metronomeUsed Boolean       @default(false)
+  focus         PracticeFocus
+  notes         String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+}
+
+// Wishlists and favorites
+model WantToLearn {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  workId String @db.ObjectId
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workId])
+}
+
+model Learned {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  workId    String   @db.ObjectId
+  learnedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workId])
+}
+
+model FavoriteWork {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  workId String @db.ObjectId
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workId])
+}
+
+model FavoriteComposer {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String @db.ObjectId
+  composerId String @db.ObjectId
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  composer Composer @relation(fields: [composerId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, composerId])
+}
