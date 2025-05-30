@@ -20,7 +20,6 @@ const SearchComponent: React.FC<SearchComponentProps> = () => {
 
   const handleSelectComposer = async (id: number) => {
     const res = await fetch(`/api/pieces?id=${id}`);
-    console.log('atete', res);
     const data = await res.json();
 
     setWorks(data.works);

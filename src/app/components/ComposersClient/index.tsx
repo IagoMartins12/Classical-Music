@@ -4,6 +4,7 @@
 import { useState, useTransition, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import { useNavigate } from '@/app/hooks/useNavigate';
 
 interface ComposerImslp {
   epochName: string;
@@ -20,6 +21,7 @@ interface ComposerImslp {
   epochId: string;
   permLinkImslp: string | null;
   wikipediaLink: string | null;
+  imslpId: string | null;
 }
 
 interface Epoch {
@@ -48,6 +50,8 @@ export default function ComposersClient({
 }: ComposersClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { navigateToUrl } = useNavigate();
+
   const [isPending, startTransition] = useTransition();
 
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
@@ -192,13 +196,14 @@ export default function ComposersClient({
           {composers.map((composer) => (
             <div
               key={composer.id}
-              className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow"
+              className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => navigateToUrl('composer', composer.id)}
             >
               <div className="p-6">
                 {/* Foto do compositor */}
                 {composer.portraitUrl && (
                   <div className="mb-4 flex justify-center">
-                    <div className="w-20 h-20 relative rounded-full overflow-hidden">
+                    <div className="w-28 h-28 relative rounded-full overflow-hidden">
                       <Image
                         src={composer.portraitUrl}
                         alt={composer.name}
@@ -239,11 +244,11 @@ export default function ComposersClient({
                 )}
 
                 {/* Bio (resumida) */}
-                {composer.bio && (
+                {/* {composer.bio && (
                   <p className="text-sm text-gray-700 line-clamp-3 mb-4">
                     {composer.bio}
                   </p>
-                )}
+                )} */}
 
                 {/* Links */}
                 <div className="flex gap-2">

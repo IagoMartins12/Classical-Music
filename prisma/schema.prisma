@@ -99,6 +99,7 @@ model Composer {
   @@index([epochId])
   @@index([name, epochId])
   @@index([fullName])
+   @@index([primaryRoleId]) 
 }
 
 

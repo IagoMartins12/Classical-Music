@@ -93,60 +93,42 @@ const EPOCHS: EpochInfo[] = [
     id: '6838837f7e5dd7f7e0ba702c',
     name: 'Medieval',
     startYear: 476,
-    endYear: 1400,
+    endYear: 1399,
   },
   {
     id: '683883bf7e5dd7f7e0ba702d',
     name: 'Renascentista',
     startYear: 1400,
-    endYear: 1600,
+    endYear: 1599,
   },
   {
     id: '683883f37e5dd7f7e0ba7030',
     name: 'Barroco',
     startYear: 1600,
-    endYear: 1750,
+    endYear: 1749,
   },
   {
     id: '683883fc7e5dd7f7e0ba7031',
     name: 'Clássico',
     startYear: 1750,
-    endYear: 1820,
-  },
-  {
-    id: '6838844d7e5dd7f7e0ba7032',
-    name: 'Pré-Romantismo',
-    startYear: 1760,
-    endYear: 1820,
+    endYear: 1819,
   },
   {
     id: '6838846f7e5dd7f7e0ba7033',
     name: 'Romântico',
     startYear: 1820,
-    endYear: 1850,
+    endYear: 1910,
   },
   {
     id: '6838847e7e5dd7f7e0ba7034',
-    name: 'Pós-Romantismo',
-    startYear: 1850,
-    endYear: 1870,
-  },
-  {
-    id: '683884db7e5dd7f7e0ba7035',
-    name: 'Impressionismo',
-    startYear: 1870,
-    endYear: 1900,
-  },
-  {
-    id: '683885297e5dd7f7e0ba7036',
-    name: 'Século 20',
-    startYear: 1900,
-    endYear: 1970,
+    name: 'Modernismo',
+    startYear: 1911, // Corrigido: era 1870, criava gap
+    endYear: 1949, // Corrigido: era 1900, muito curto
   },
   {
     id: '683885437e5dd7f7e0ba7037',
-    name: 'Moderno',
-    startYear: 1970,
+    name: 'Contemporâneo', // Renomeado de "Moderno"
+    startYear: 1950,
     endYear: 2024,
   },
 ];

@@ -82,6 +82,7 @@ export const getComposersWithPagination = unstable_cache(
         bio: true,
         permLinkImslp: true,
         wikipediaLink: true,
+        imslpId: true,
         epoch: {
           select: {
             name: true,
