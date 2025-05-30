@@ -13,8 +13,14 @@ interface Composer {
   intvals: any[];
 }
 
-interface ComposerWithImage extends Composer {
+interface ComposerWithDetails {
+  imslpId: string;
+  name: string;
+  permLinkImslp: string;
   imageUrl: string;
+  fullName: string;
+  birthDate: string | null;
+  deathDate: string | null;
 }
 
 export async function GET(request: Request) {
@@ -63,8 +69,8 @@ export async function GET(request: Request) {
       return NextResponse.json([]);
     }
 
-    // Passo 2: Verificar imagem para cada compositor (limitando para poucos por vez)
-    const composersWithImages: ComposerWithImage[] = [];
+    // Passo 2: Verificar imagem e extrair dados para cada compositor
+    const composersWithDetails: ComposerWithDetails[] = [];
 
     // Filtrar compositores que parecem ser nomes reais (contém vírgula)
     const validComposers = composers.filter(
@@ -106,20 +112,97 @@ export async function GET(request: Request) {
 
           // Filtrar imagem padrão "sem foto disponível"
           if (imageUrl && !imageUrl.includes('Nocomposerphotoavailable')) {
-            // Extrair o nome do compositor do ID
-            const composerName = composer.id
-              ? composer.id.replace('Category:', '').replace(',', ', ')
-              : 'Nome não disponível';
+            // Extrair dados da div cp_firsth
+            const firsthDiv = $('.cp_firsth');
 
-            composersWithImages.push({
-              ...composer,
-              name: composerName,
+            let fullName = '';
+            let birthDate: string | null = null;
+            let deathDate: string | null = null;
+
+            if (firsthDiv.length > 0) {
+              // Extrair o nome completo do h2
+              const h2Element = firsthDiv.find('h2 .mw-headline');
+              if (h2Element.length > 0) {
+                fullName = h2Element.text().trim();
+              }
+
+              // Extrair as datas do texto após o h2
+              const dateText = firsthDiv.text();
+              console.log(
+                `Texto completo da div para ${composer.id}:`,
+                dateText
+              );
+
+              // Regex para capturar datas em diferentes formatos
+              // Exemplos: (10 de Setembro de 1866 — Abril 1930)
+              // (1866-1930), (nascido em 1866), etc.
+              const dateRegex = /\(([^)]+)\)/;
+              const dateMatch = dateText.match(dateRegex);
+
+              if (dateMatch) {
+                const dateString = dateMatch[1];
+                console.log(`String de datas encontrada: ${dateString}`);
+
+                // Tentar extrair data de nascimento e morte
+                if (dateString.includes('—') || dateString.includes('-')) {
+                  // Formato: data nascimento — data morte
+                  const parts = dateString.split(/[—-]/);
+                  if (parts.length >= 2) {
+                    birthDate = parts[0].trim();
+                    deathDate = parts[1].trim();
+                  }
+                } else if (dateString.includes('nascido')) {
+                  // Formato: nascido em XXXX
+                  const birthMatch = dateString.match(/nascido.*?(\d{4})/i);
+                  if (birthMatch) {
+                    birthDate = birthMatch[1];
+                  }
+                } else {
+                  // Tentar extrair pelo menos o ano de nascimento
+                  const yearMatch = dateString.match(/(\d{4})/);
+                  if (yearMatch) {
+                    birthDate = yearMatch[1];
+                  }
+                }
+              }
+            }
+
+            // Se não conseguiu extrair o nome completo, usar o nome do ID como fallback
+            if (!fullName) {
+              fullName = composer.id
+                ? composer.id.replace('Category:', '').replace(',', ', ')
+                : 'Nome não disponível';
+            }
+
+            // Extrair apenas o primeiro nome (último nome no ID)
+            let firstName = '';
+            if (composer.id) {
+              // "Category:Aakjær, Jeppe" -> extrair "Jeppe"
+              const idWithoutCategory = composer.id.replace('Category:', '');
+              const parts = idWithoutCategory.split(',');
+              if (parts.length >= 2) {
+                firstName = parts[1].trim(); // Pega a parte após a vírgula
+              } else {
+                firstName = parts[0].trim(); // Fallback se não houver vírgula
+              }
+            }
+
+            composersWithDetails.push({
+              imslpId: composer.id,
+              name: firstName,
+              permLinkImslp: composer.permlink,
+              fullName: fullName,
+              birthDate: birthDate,
+              deathDate: deathDate,
               imageUrl: imageUrl.startsWith('/')
                 ? `https://imslp.org${imageUrl}`
                 : imageUrl,
-            } as ComposerWithImage);
+            } as ComposerWithDetails);
 
-            console.log(`✓ Compositor adicionado: ${composerName}`);
+            console.log(`✓ Compositor adicionado: ${fullName}`);
+            console.log(`  Nome: ${firstName}`);
+            console.log(`  Nascimento: ${birthDate || 'N/A'}`);
+            console.log(`  Morte: ${deathDate || 'N/A'}`);
           } else {
             console.log(`✗ Imagem padrão ignorada para ${composer.id}`);
           }
@@ -138,11 +221,11 @@ export async function GET(request: Request) {
       }
     }
 
-    // Passo 3: Retornar apenas os compositores que têm imagem
+    // Passo 3: Retornar apenas os compositores que têm imagem e dados
     console.log(
-      `Retornando ${composersWithImages.length} compositores com imagem`
+      `Retornando ${composersWithDetails.length} compositores com dados completos`
     );
-    return NextResponse.json(composersWithImages);
+    return NextResponse.json(composersWithDetails);
   } catch (error) {
     console.error('Erro na API de compositores:', error);
 

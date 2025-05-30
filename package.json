@@ -6,7 +6,13 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "scraper": "tsx scripts/imslp-scraper.ts",
+    "scraper:start": "tsx scripts/imslp-scraper.ts start",
+    "scraper:stop": "tsx scripts/imslp-scraper.ts stop",
+    "scraper:reset": "tsx scripts/imslp-scraper.ts reset",
+    "scraper:status": "tsx scripts/imslp-scraper.ts status",
+    "clear-composers": "tsx scripts/clear-composers.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",
@@ -22,12 +28,14 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^20.17.52",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   }
 }

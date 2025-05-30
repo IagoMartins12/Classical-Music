@@ -72,14 +72,16 @@ model Composer {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   fullName      String
-  birthDate     DateTime?
-  deathDate     DateTime?
+  birthDate     String?
+  deathDate     String?
   portraitUrl   String?
   epochId       String    @db.ObjectId
+  epochName     String?
   bio           String?
   createdAt     DateTime  @default(now())
   permLinkImslp String?
-  ImslpId       String?
+  imslpId       String?
+  wikipediaLink String?
 
   // Relations
   epoch      Epoch              @relation(fields: [epochId], references: [id])
