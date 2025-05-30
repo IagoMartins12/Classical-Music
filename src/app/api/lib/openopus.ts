@@ -14,21 +14,14 @@ export async function getComposer(termo: string) {
   return response.data.composers;
 }
 
-export async function getComposerImslp(start: string = '0') {
-  const response = await axios.get(
-    `https://imslp.org/imslpscripts/API.ISCR.php?account=worklist/disclaimer=accepted/sort=id/type=1/start=0/retformat=json`
-  );
-  return response.data;
-}
-
 export async function getPopularComposers() {
-  const response = await axios.get(`${BASE_URL}/composer/list/pop.json`);
+  const response = await axios.get(`${BASE_URL}/composer/list/pop.json`, {});
   return response.data.composers;
 }
 
 export async function getEssentialComposers() {
   const response = await axios.get(`${BASE_URL}/composer/list/rec.json`);
-  return response.data.composers;
+  return response;
 }
 
 export async function getComposersByPeriod(period: PeriodType) {

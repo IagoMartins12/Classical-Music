@@ -39,6 +39,7 @@ const CarouselControl: React.FC<CarouselControlsProp> = ({ showComposers }) => {
         const data = await res.json();
         setActualComposers(data);
       } catch (err) {
+        console.log('err', err);
         setError((err as Error).message);
       } finally {
         setLoading(false);

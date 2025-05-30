@@ -26,6 +26,8 @@ interface ComposerData {
   birthDate: string | null;
   deathDate: string | null;
   wikipediaLink: string | null;
+  primaryRole: string | null;
+  roles: string | null;
 }
 
 interface EpochInfo {
@@ -33,6 +35,11 @@ interface EpochInfo {
   name: string;
   startYear: number;
   endYear: number;
+}
+
+interface RoleInfo {
+  id: string;
+  name: string;
 }
 
 interface ScraperState {
@@ -44,10 +51,41 @@ interface ScraperState {
   lastSuccessfulBatch: number;
 }
 
-const STATE_FILE = path.join(process.cwd(), 'scraper-state.json');
-const BATCH_SIZE = 50; // Processar 50 compositores por vez
-const DELAY_BETWEEN_REQUESTS = 2000; // 2 segundos entre requisições
-const DELAY_BETWEEN_BATCHES = 5000; // 5 segundos entre lotes
+// Definição das épocas musicais
+const ROLES: RoleInfo[] = [
+  {
+    id: '6839e5a5eba93979e36ad88b',
+    name: 'Compositor',
+  },
+  {
+    id: '6839e5bbeba93979e36ad88c',
+    name: 'Cantor',
+  },
+  {
+    id: '6839e5c4eba93979e36ad88d',
+    name: 'Libretista',
+  },
+  {
+    id: '6839e5dbeba93979e36ad88e',
+    name: 'Arranjador',
+  },
+  {
+    id: '6839f37b4141cbebd5abf14b',
+    name: 'Editor',
+  },
+  {
+    id: '6839e5f5eba93979e36ad88f',
+    name: 'Escritor',
+  },
+  {
+    id: '6839e610eba93979e36ad891',
+    name: 'Tradutor',
+  },
+  {
+    id: '6839e617eba93979e36ad892',
+    name: 'Desconhecido',
+  },
+];
 
 // Definição das épocas musicais
 const EPOCHS: EpochInfo[] = [
@@ -113,12 +151,25 @@ const EPOCHS: EpochInfo[] = [
   },
 ];
 
+// Interface para controle de tempo
+interface TimerState {
+  startTime: number | null;
+  totalElapsedTime: number; // tempo total acumulado em ms
+  lastPauseTime: number | null;
+}
+
+const STATE_FILE = path.join(process.cwd(), 'scraper-state.json');
+const BATCH_SIZE = 1000;
+const DELAY_BETWEEN_REQUESTS = 2000; // 2 segundos entre requisições
+const DELAY_BETWEEN_BATCHES = 5000; // 5 segundos entre lotes
+
 // Instância global do scraper para handlers de sinal
 let globalScraperInstance: IMSLPScraper | null = null;
 
 class IMSLPScraper {
   private state: ScraperState;
   private shouldStop: boolean = false;
+  private timer: TimerState;
 
   constructor() {
     this.state = {
@@ -130,26 +181,51 @@ class IMSLPScraper {
       lastSuccessfulBatch: 0,
     };
 
+    this.timer = {
+      startTime: null,
+      totalElapsedTime: 0,
+      lastPauseTime: null,
+    };
+
     // Definir instância global
     globalScraperInstance = this;
   }
 
-  // Carregar estado salvo
+  // Carregar estado salvo (incluindo timer)
   async loadState(): Promise<void> {
     try {
       const stateData = await fs.readFile(STATE_FILE, 'utf-8');
-      this.state = { ...this.state, ...JSON.parse(stateData) };
+      const savedState = JSON.parse(stateData);
+
+      this.state = { ...this.state, ...savedState };
+
+      // Carregar estado do timer se existir
+      if (savedState.timer) {
+        this.timer = { ...this.timer, ...savedState.timer };
+      }
+
       console.log('✓ Estado carregado:', this.state);
+      console.log(
+        `⏱ Tempo total acumulado: ${this.formatElapsedTime(
+          this.timer.totalElapsedTime
+        )}`
+      );
     } catch (error) {
       console.log('⚠ Nenhum estado anterior encontrado, iniciando do zero');
     }
   }
 
-  // Salvar estado atual
+  // Salvar estado atual (incluindo timer)
   async saveState(): Promise<void> {
     try {
       this.state.lastUpdate = new Date().toISOString();
-      await fs.writeFile(STATE_FILE, JSON.stringify(this.state, null, 2));
+
+      const stateToSave = {
+        ...this.state,
+        timer: this.timer,
+      };
+
+      await fs.writeFile(STATE_FILE, JSON.stringify(stateToSave, null, 2));
       console.log(
         `💾 Estado salvo - Start: ${this.state.currentStart}, Processados: ${this.state.totalProcessed}, Adicionados: ${this.state.totalAdded}`
       );
@@ -158,12 +234,75 @@ class IMSLPScraper {
     }
   }
 
+  // Iniciar timer
+  startTimer(): void {
+    if (!this.timer.startTime) {
+      this.timer.startTime = Date.now();
+      console.log(`⏱ Timer iniciado: ${new Date().toLocaleTimeString()}`);
+    }
+  }
+
+  // Pausar timer (acumular tempo decorrido)
+  pauseTimer(): void {
+    if (this.timer.startTime) {
+      const currentTime = Date.now();
+      this.timer.totalElapsedTime += currentTime - this.timer.startTime;
+      this.timer.lastPauseTime = currentTime;
+      this.timer.startTime = null;
+    }
+  }
+
+  // Retomar timer
+  resumeTimer(): void {
+    if (!this.timer.startTime && this.timer.lastPauseTime) {
+      this.timer.startTime = Date.now();
+      console.log(`⏱ Timer retomado: ${new Date().toLocaleTimeString()}`);
+    }
+  }
+
+  // Obter tempo total decorrido (incluindo sessão atual se estiver rodando)
+  getTotalElapsedTime(): number {
+    let totalTime = this.timer.totalElapsedTime;
+
+    if (this.timer.startTime) {
+      // Adicionar tempo da sessão atual
+      totalTime += Date.now() - this.timer.startTime;
+    }
+
+    return totalTime;
+  }
+
+  // Formatar tempo em formato legível
+  formatElapsedTime(timeInMs: number): string {
+    const totalSeconds = Math.floor(timeInMs / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+      return `${hours}h ${minutes}m ${seconds}s`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${seconds}s`;
+    } else {
+      return `${seconds}s`;
+    }
+  }
+
   // Método para parar graciosamente
   async gracefulStop(): Promise<void> {
     console.log('\n🛑 Parando scraper graciosamente...');
+
+    // Pausar timer
+    this.pauseTimer();
+
     this.shouldStop = true;
     this.state.isRunning = false;
     await this.saveState();
+
+    const totalTime = this.getTotalElapsedTime();
+    console.log(
+      `⏱ Tempo total de execução: ${this.formatElapsedTime(totalTime)}`
+    );
     console.log(
       '✅ Estado salvo com sucesso. Você pode continuar depois com "npm run scraper start"'
     );
@@ -303,6 +442,82 @@ class IMSLPScraper {
     }
   }
 
+  // Determinar o papel baseado no texto encontrado na div mw-pages
+  determineRole($: cheerio.CheerioAPI): {
+    primaryRole: string | null;
+    roles: string | null;
+  } {
+    try {
+      const mwPagesDiv = $('#mw-pages');
+      if (mwPagesDiv.length === 0) {
+        console.log('⚠️ Div #mw-pages not found');
+        return { primaryRole: null, roles: null };
+      }
+
+      const validRolesMap: Record<string, string> = {
+        'performances by': 'Cantor',
+        'compositions by': 'Compositor',
+        'works with text by': 'Libretista',
+        'arrangements by': 'Arranjador',
+        'works edited by': 'Editor',
+        'books by': 'Escritor',
+        'works translated by': 'Tradutor',
+      };
+
+      const foundRoles: string[] = [];
+
+      // Loop through all h2 elements inside #mw-pages
+      mwPagesDiv.find('h2').each((_, element) => {
+        const text = $(element).text().trim().toLowerCase(); // converte o texto para minúsculas
+        const matchingKey = Object.keys(validRolesMap).find((key) =>
+          text.includes(key)
+        );
+
+        if (matchingKey) {
+          const role = validRolesMap[matchingKey];
+          console.log(`✅ Cargo detectado: ${role} (${text})`);
+          foundRoles.push(role);
+        } else {
+          console.log(`❌ Cargo invalido: "${text}"`);
+        }
+      });
+
+      const primaryRole = foundRoles.length > 0 ? foundRoles[0] : null;
+      const additionalRolesArray = foundRoles.slice(1);
+      const additionalRoles =
+        additionalRolesArray.length > 0
+          ? additionalRolesArray.join(', ')
+          : null;
+
+      if (additionalRoles) {
+        console.log(`✅ Cargos adicionais: ${additionalRoles}`);
+      }
+      return {
+        primaryRole,
+        roles: additionalRoles,
+      };
+    } catch (error) {
+      console.error('❌ Error ao extrair cargo:', error);
+      return { primaryRole: null, roles: null };
+    }
+  }
+
+  mapRolesToIds(rolesString: string | null): string | null {
+    if (!rolesString) return null;
+
+    // separa a string por vírgula, remove espaços extras e mapeia para ids
+    const roleNames = rolesString.split(',').map((r) => r.trim());
+
+    const roleIds = roleNames
+      .map(
+        (name) =>
+          ROLES.find((r) => r.name.toLowerCase() === name.toLowerCase())?.id
+      )
+      .filter((id): id is string => !!id); // filtra undefined
+
+    return roleIds.length > 0 ? roleIds.join(', ') : null;
+  }
+
   // Extrair dados detalhados do compositor
   async extractComposerDetails(
     composer: Composer
@@ -335,6 +550,14 @@ class IMSLPScraper {
 
       // Extrair link da Wikipedia (SEMPRE null se não encontrar)
       const wikipediaLink = this.extractWikipediaLink($) || null;
+
+      // Determinar o papel (role) baseado na div mw-pages
+      const role = this.determineRole($);
+      const roleInfo =
+        ROLES.find((r) => r.name === role.primaryRole) ??
+        ROLES.find((r) => r.name === 'Desconhecido');
+      const roleId = roleInfo?.id ?? '6839e617eba93979e36ad892';
+      const additionalRolesIds = this.mapRolesToIds(role.roles);
 
       // Extrair dados da div cp_firsth
       const firsthDiv = $('.cp_firsth');
@@ -407,6 +630,8 @@ class IMSLPScraper {
         birthDate: birthDate, // Pode ser null
         deathDate: deathDate, // Pode ser null
         wikipediaLink: wikipediaLink, // Pode ser null
+        primaryRole: roleId,
+        roles: additionalRolesIds,
         imageUrl: imageUrl.startsWith('/')
           ? `https://imslp.org${imageUrl}`
           : imageUrl,
@@ -519,6 +744,8 @@ class IMSLPScraper {
           // CAMPOS ADICIONAIS
           epochName: epoch.name, // Campo adicional para backup
           bio: null,
+          primaryRoleId: composerData.primaryRole ?? '6839e617eba93979e36ad892',
+          roles: composerData.roles,
         },
       });
 
@@ -624,6 +851,9 @@ class IMSLPScraper {
       console.log(
         `🔄 Continuando scraper da posição ${this.state.currentStart} (já processados: ${this.state.totalProcessed}, já adicionados: ${this.state.totalAdded})`
       );
+      this.resumeTimer();
+    } else {
+      this.startTimer();
     }
 
     this.state.isRunning = true;
@@ -634,7 +864,12 @@ class IMSLPScraper {
       let hasMoreComposers = true;
 
       while (hasMoreComposers && !this.shouldStop) {
-        console.log(`\n🔄 Iniciando lote - Start: ${this.state.currentStart}`);
+        const currentElapsed = this.getTotalElapsedTime();
+        console.log(
+          `\n🔄 Iniciando lote - Start: ${
+            this.state.currentStart
+          } | Tempo: ${this.formatElapsedTime(currentElapsed)}`
+        );
 
         // Buscar compositores
         const composers = await this.fetchComposers(this.state.currentStart);
@@ -655,12 +890,14 @@ class IMSLPScraper {
         // Salvar estado após cada lote
         await this.saveState();
 
+        const totalElapsed = this.getTotalElapsedTime();
         console.log(
           `📊 Lote concluído - Processados: ${result.processed}, Adicionados: ${result.added}`
         );
         console.log(
           `📈 Total - Processados: ${this.state.totalProcessed}, Adicionados: ${this.state.totalAdded}`
         );
+        console.log(`⏱ Tempo total: ${this.formatElapsedTime(totalElapsed)}`);
 
         // Verificar se foi interrompido
         if (this.shouldStop) {
@@ -682,13 +919,19 @@ class IMSLPScraper {
       }
 
       if (!this.shouldStop) {
+        this.pauseTimer();
+        const finalTime = this.getTotalElapsedTime();
         console.log(`\n🎉 Scraper concluído!`);
         console.log(`📊 Estatísticas finais:`);
         console.log(`   - Total processados: ${this.state.totalProcessed}`);
         console.log(`   - Total adicionados: ${this.state.totalAdded}`);
+        console.log(`   - Tempo total: ${this.formatElapsedTime(finalTime)}`);
       }
     } catch (error) {
       console.error('❌ Erro fatal no scraper:', error);
+      this.pauseTimer();
+      const errorTime = this.getTotalElapsedTime();
+      console.log(`⏱ Tempo até o erro: ${this.formatElapsedTime(errorTime)}`);
       console.log(
         '💾 Estado foi salvo. Você pode continuar com "npm run scraper start"'
       );
@@ -702,8 +945,16 @@ class IMSLPScraper {
   // Método para parar o scraper graciosamente
   async stop(): Promise<void> {
     console.log('🛑 Parando scraper...');
+
+    this.pauseTimer();
+    const totalTime = this.getTotalElapsedTime();
+
     this.state.isRunning = false;
     await this.saveState();
+
+    console.log(
+      `⏱ Tempo total de execução: ${this.formatElapsedTime(totalTime)}`
+    );
     console.log(
       '✅ Scraper parado. Estado salvo. Use "start" para continuar de onde parou.'
     );
@@ -720,6 +971,14 @@ class IMSLPScraper {
       isRunning: false,
       lastSuccessfulBatch: 0,
     };
+
+    // Resetar timer também
+    this.timer = {
+      startTime: null,
+      totalElapsedTime: 0,
+      lastPauseTime: null,
+    };
+
     await this.saveState();
     console.log('✅ Estado resetado. Próxima execução começará do início.');
   }
@@ -727,6 +986,8 @@ class IMSLPScraper {
   // Método para mostrar status atual
   async status(): Promise<void> {
     await this.loadState();
+    const currentTime = this.getTotalElapsedTime();
+
     console.log('📊 Status do Scraper:');
     console.log(`   - Posição atual: ${this.state.currentStart}`);
     console.log(
@@ -736,6 +997,7 @@ class IMSLPScraper {
     console.log(`   - Total adicionados: ${this.state.totalAdded}`);
     console.log(`   - Rodando: ${this.state.isRunning ? 'Sim' : 'Não'}`);
     console.log(`   - Última atualização: ${this.state.lastUpdate}`);
+    console.log(`   - Tempo total: ${this.formatElapsedTime(currentTime)}`);
 
     if (this.state.totalProcessed > 0) {
       const successRate = (
@@ -743,6 +1005,15 @@ class IMSLPScraper {
         100
       ).toFixed(2);
       console.log(`   - Taxa de sucesso: ${successRate}%`);
+
+      // Calcular velocidade média
+      if (currentTime > 0) {
+        const itemsPerSecond = (
+          this.state.totalProcessed /
+          (currentTime / 1000)
+        ).toFixed(2);
+        console.log(`   - Velocidade média: ${itemsPerSecond} items/s`);
+      }
     }
   }
 
@@ -808,16 +1079,6 @@ process.on('SIGTERM', () => handleGracefulShutdown('SIGTERM'));
 // Handler para erros não capturados
 process.on('unhandledRejection', async (reason, promise) => {
   console.error('❌ Unhandled Rejection at:', promise, 'reason:', reason);
-
-  if (globalScraperInstance) {
-    await globalScraperInstance.gracefulStop();
-  }
-
-  process.exit(1);
-});
-
-process.on('uncaughtException', async (error) => {
-  console.error('❌ Uncaught Exception:', error);
 
   if (globalScraperInstance) {
     await globalScraperInstance.gracefulStop();

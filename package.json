@@ -12,7 +12,8 @@
     "scraper:stop": "tsx scripts/imslp-scraper.ts stop",
     "scraper:reset": "tsx scripts/imslp-scraper.ts reset",
     "scraper:status": "tsx scripts/imslp-scraper.ts status",
-    "clear-composers": "tsx scripts/clear-composers.ts"
+    "clear-composers": "tsx scripts/clear-composers.ts",
+    "update-composers": "tsx scripts/update-composers.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",

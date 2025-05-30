@@ -69,30 +69,46 @@ model Account {
 }
 
 model Composer {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  fullName      String
-  birthDate     String?
-  deathDate     String?
-  portraitUrl   String?
-  epochId       String    @db.ObjectId
-  epochName     String?
-  bio           String?
-  createdAt     DateTime  @default(now())
-  permLinkImslp String?
-  imslpId       String?
-  wikipediaLink String?
+  id              String         @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  fullName        String
+  birthDate       String?
+  deathDate       String?
+  portraitUrl     String?
+  epochId         String         @db.ObjectId
+  epochName       String?
+  bio             String?
+  createdAt       DateTime       @default(now())
+  permLinkImslp   String?
+  imslpId         String?
+  wikipediaLink   String?
 
-  // Relations
-  epoch      Epoch              @relation(fields: [epochId], references: [id])
-  works      Work[]
-  favoriteBy FavoriteComposer[]
+  // Primary role
+  primaryRoleId   String         @db.ObjectId
+  primaryRole     Role           @relation("PrimaryRole", fields: [primaryRoleId], references: [id])
+
+  // Relationships
+  epoch           Epoch          @relation(fields: [epochId], references: [id])
+  works           Work[]
+  favoritedBy     FavoriteComposer[]
+
+  // Additional roles (many-to-many)
+  roles           String?
+
+  @@index([name])
+  @@index([epochId])
+  @@index([name, epochId])
+  @@index([fullName])
 }
 
+
 model Epoch {
-  id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  name      String     @unique
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+
   composers Composer[]
+
+  @@index([name]) // Para ordenação das épocas
 }
 
 model Genre {
@@ -100,6 +116,18 @@ model Genre {
   name  String @unique
   works Work[]
 }
+
+model Role {
+  id               String         @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+
+  // Composers with this as their primary role
+  primaryComposers Composer[]     @relation("PrimaryRole")
+
+  @@index([name])
+}
+
+// Tabela intermediária para relação muitos para muitos
 
 model Instrument {
   id           String           @id @default(auto()) @map("_id") @db.ObjectId

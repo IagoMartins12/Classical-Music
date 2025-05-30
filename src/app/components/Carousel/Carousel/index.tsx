@@ -19,6 +19,7 @@ const Carousel: React.FC<ModernCarouselProps> = ({
   const responsiveItemsPerView = isMobile ? 1 : itemsPerView;
   const maxIndex = Math.max(0, items.length - responsiveItemsPerView);
 
+  console.log('ITEMS', items);
   // Auto play
   useEffect(() => {
     if (!autoPlay) return;

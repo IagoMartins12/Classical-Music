@@ -12,14 +12,14 @@ const AllComposerList = () => {
 
   useEffect(() => {
     const fetchComposers = async () => {
-      try {
-        const response = await fetch('/api/allcomposers?start=3');
-        const data = await response.json();
-        console.log('data', data);
-        setComposers(data);
-      } catch (error) {
-        console.error('Erro ao buscar compositores:', error);
-      }
+      // try {
+      //   const response = await fetch('/api/allcomposers?start=3');
+      //   const data = await response.json();
+      //   console.log('data', data);
+      //   setComposers(data);
+      // } catch (error) {
+      //   console.error('Erro ao buscar compositores:', error);
+      // }
     };
 
     fetchComposers();
