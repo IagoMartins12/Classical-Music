@@ -5,6 +5,16 @@ import * as cheerio from 'cheerio';
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs/promises';
 import path from 'path';
+import {
+  VALID_PORTUGUESE_WORKGENRES,
+  VALID_WORKGENRES,
+  WORK_GENRE_TRANSLATIONS,
+  INSTRUMENT_MAPPING,
+  NORMALIZED_SUBGENRES,
+  WORK_TYPE_KEYWORDS,
+  NOTE_TRANSLATIONS,
+  MODE_TRANSLATIONS,
+} from './imslp-works-scraper-util';
 
 const prisma = new PrismaClient();
 
@@ -25,9 +35,9 @@ interface WorkData {
   title: string;
   composerId: string;
   genreId: string;
+  workGenreId: string;
   instrumentId: string;
   epochId: string;
-  categoriesId: string;
   imslpPermlink: string;
   imslpId: string;
   videoUrl: string | null;
@@ -39,9 +49,16 @@ interface WorkData {
   workStyle: string | null;
   moviment: string | null;
   dedicateTo: string | null;
+  dedicationComposerLink: string | null;
   difficulty: string | null;
   instrumentation: string | null;
   genres: string | null;
+  workType: 'INDIVIDUAL' | 'COMPLETE_WORK' | 'ARRANGEMENT' | 'COLLECTION';
+  isPartOfCollection: boolean;
+  parentWorkId: string | null;
+  movementNumber: number | null;
+  categories: string[]; // Array de categorias para relacionamento many-to-many
+  workGenres: string[]; // Array de categorias para relacionamento many-to-many
 }
 
 interface ScraperState {
@@ -61,113 +78,32 @@ interface TimerState {
   lastPauseTime: number | null;
 }
 
+interface WorkGenreData {
+  id: string;
+  name: string;
+}
+
 interface InstrumentGenreCache {
   instruments: Map<string, any>;
   genres: Map<string, any>;
+  categories: Map<string, any>;
+  workGenres: Map<string, any>;
 }
 
-// Mapeamentos de tradução aprimorados
-const INSTRUMENT_MAPPING: Record<string, string> = {
-  // Instrumentos de cordas
-  piano: 'Piano',
-  violin: 'Violino',
-  cello: 'Violoncelo',
-  viola: 'Viola',
-  harp: 'Harpa',
-  guitar: 'Violão',
+const DEFAULT_INSTRUMENT_ID = '683da02226d5c33e70b2dfa9';
+const DEFAULT_GENRE_ID = '683da58e7620cf5c202dfeb7';
+const DEFAULT_WORK_GENRE_ID = '683da58e7620cf5c202dfeb7';
 
-  // Voz
-  voice: 'Voz',
-  soprano: 'Soprano',
-  alto: 'Alto',
-  tenor: 'Tenor',
-  bass: 'Baixo',
-
-  // Órgão
-  organ: 'Órgão',
-
-  // Conjuntos
-  orchestra: 'Orquestra',
-  'string quartet': 'Quarteto de Cordas',
-  'piano trio': 'Trio de Piano',
-  'wind quintet': 'Quinteto de Sopros',
-  'brass quintet': 'Quinteto de Metais',
-  'string orchestra': 'Orquestra de Cordas',
-  'chamber orchestra': 'Orquestra de Câmara',
-  'symphony orchestra': 'Orquestra Sinfônica',
-};
-
-const GENRE_MAPPING: Record<string, string> = {
-  // Formas musicais
-  sonata: 'Sonata',
-  sonatas: 'Sonatas',
-  concerto: 'Concerto',
-  concertos: 'Concertos',
-  symphony: 'Sinfonia',
-  symphonies: 'Sinfonias',
-
-  // Danças
-  waltz: 'Valsa',
-  waltzes: 'Valsas',
-  mazurka: 'Mazurca',
-  mazurkas: 'Mazurcas',
-  polonaise: 'Polonesa',
-  polonaises: 'Polonesas',
-
-  // Peças características
-  nocturne: 'Noturno',
-  nocturnes: 'Noturnos',
-  etude: 'Estudo',
-  etudes: 'Estudos',
-  prelude: 'Prelúdio',
-  preludes: 'Prelúdios',
-  ballade: 'Balada',
-  ballades: 'Baladas',
-  scherzo: 'Scherzo',
-  scherzos: 'Scherzos',
-  fantasy: 'Fantasia',
-  fantasies: 'Fantasias',
-
-  // Variações e formas
-  variations: 'Variações',
-  rondo: 'Rondó',
-  rondos: 'Rondós',
-  fugue: 'Fuga',
-  fugues: 'Fugas',
-
-  // Danças e marchas
-  dance: 'Dança',
-  dances: 'Danças',
-  march: 'Marcha',
-  marches: 'Marchas',
-
-  // Vocal
-  song: 'Canção',
-  songs: 'Canções',
-
-  // Música de câmara
-  solo: 'Solo',
-  duet: 'Dueto',
-  trio: 'Trio',
-  quartet: 'Quarteto',
-  quintet: 'Quinteto',
-
-  // Ópera e teatro
-  opera: 'Ópera',
-
-  // Orquestral
-  'orchestral works': 'Obras Orquestrais',
-};
+// Palavras-chave para identificar tipos de trabalho
 
 const STATE_FILE = path.join(process.cwd(), 'work-scraper-state.json');
 const STATE_WORKS_FILE = path.join(process.cwd(), 'scraper-works-state.log');
 
-const BATCH_SIZE = 100; // Reduzido para evitar sobrecarga
-const DELAY_BETWEEN_REQUESTS = 3000; // Aumentado para ser mais respeitoso
-const DELAY_BETWEEN_BATCHES = 10000; // Aumentado
+const BATCH_SIZE = 100;
+const DELAY_BETWEEN_REQUESTS = 3000;
+const DELAY_BETWEEN_BATCHES = 10000;
 const MAX_RETRIES = 3;
 
-// Instância global do scraper para handlers de sinal
 let globalWorkScraperInstance: WorkScraper | null = null;
 
 class WorkScraper {
@@ -197,12 +133,14 @@ class WorkScraper {
     this.cache = {
       instruments: new Map(),
       genres: new Map(),
+      categories: new Map(),
+      workGenres: new Map(),
     };
 
     globalWorkScraperInstance = this;
   }
 
-  // Inicializar cache de instrumentos e gêneros
+  // Inicializar cache de instrumentos, gêneros e categorias
   async initializeCache(): Promise<void> {
     try {
       // Carregar instrumentos
@@ -217,11 +155,74 @@ class WorkScraper {
         this.cache.genres.set(genre.name.toLowerCase(), genre);
       });
 
+      // Carregar categorias
+      const categories = await prisma.categorie.findMany();
+      categories.forEach((category) => {
+        this.cache.categories.set(category.name.toLowerCase(), category);
+      });
+
+      // Carregar workGenres
+      const workGenres = await prisma.workGenre.findMany();
+      workGenres.forEach((workGenre) => {
+        this.cache.workGenres.set(workGenre.name.toLowerCase(), workGenre);
+      });
+
       console.log(
-        `📚 Cache inicializado: ${instruments.length} instrumentos, ${genres.length} gêneros`
+        `📚 Cache inicializado: ${instruments.length} instrumentos, ${genres.length} gêneros, ${categories.length} categorias`
       );
     } catch (error) {
       console.error('❌ Erro ao inicializar cache:', error);
+    }
+  }
+
+  translateWorkGenre(englishGenre: string): string {
+    const normalizedGenre = englishGenre.toLowerCase().trim();
+    return WORK_GENRE_TRANSLATIONS[normalizedGenre] || normalizedGenre;
+  }
+
+  isValidPortugueseGenre(portugueseGenre: string): boolean {
+    return VALID_PORTUGUESE_WORKGENRES.has(
+      portugueseGenre.toLowerCase().trim()
+    );
+  }
+
+  translateMusicKey(englishKey: string): string {
+    if (!englishKey || englishKey.trim() === '' || englishKey === '-') {
+      return englishKey;
+    }
+
+    const trimmedKey = englishKey.trim();
+
+    // Regex para capturar a nota e o modo
+    // Captura: nota (C, C#, Db, etc.) + espaço opcional + modo (major, minor, etc.)
+    const keyRegex =
+      /^([A-G][#b]?)\s*(major|minor|maj|min|M|m|Major|Minor|MAJOR|MINOR)?$/i;
+    const match = trimmedKey.match(keyRegex);
+
+    if (!match) {
+      // Se não conseguir fazer o parse, retorna o original
+      console.log(`⚠️ Não foi possível traduzir a tonalidade: ${englishKey}`);
+      return englishKey;
+    }
+
+    const [, note, mode] = match;
+
+    // Traduzir a nota
+    const translatedNote = NOTE_TRANSLATIONS[note] || note;
+
+    // Traduzir o modo (se existir)
+    let translatedMode = '';
+    if (mode) {
+      translatedMode =
+        MODE_TRANSLATIONS[mode.toLowerCase()] || mode.toLowerCase();
+    }
+
+    // Construir a tonalidade em português
+    if (translatedMode) {
+      return `${translatedNote} ${translatedMode}`;
+    } else {
+      // Se não tem modo especificado, assume maior por padrão ou retorna só a nota
+      return translatedNote;
     }
   }
 
@@ -260,7 +261,7 @@ class WorkScraper {
 
       await fs.writeFile(STATE_FILE, JSON.stringify(stateToSave, null, 2));
       console.log(
-        `💾 Estado salvo - Start: ${this.state.currentStart} | Processados: ${this.state.totalProcessed} | Adicionados: ${this.state.totalAdded} | Pulados: ${this.state.totalSkipped} | Erros: ${this.state.totalErrors}`
+        `💾 Estado salvo - Start: ${this.state.currentStart} | Processados: ${this.state.totalProcessed} | Adicionados: ${this.state.totalAdded} | Pulados: ${this.state.totalSkipped} | Erros: ${this.state.totalErrors} \n`
       );
     } catch (error) {
       console.error('❌ Erro ao salvar estado:', error);
@@ -377,7 +378,7 @@ class WorkScraper {
       );
 
       if (retries < MAX_RETRIES) {
-        const waitTime = (retries + 1) * 5000; // Backoff exponencial
+        const waitTime = (retries + 1) * 5000;
         console.log(
           `⏳ Aguardando ${waitTime / 1000}s antes de tentar novamente...`
         );
@@ -398,7 +399,7 @@ class WorkScraper {
             { imslpId: imslpId },
             {
               title: title,
-              imslpId: { not: imslpId }, // Evitar falso positivo
+              imslpId: { not: imslpId },
             },
           ],
         },
@@ -415,21 +416,17 @@ class WorkScraper {
     try {
       const normalizedName = instrumentName.toLowerCase().trim();
 
-      // Verificar cache primeiro
       if (this.cache.instruments.has(normalizedName)) {
         return this.cache.instruments.get(normalizedName);
       }
 
-      // Traduzir nome
       let translatedName = INSTRUMENT_MAPPING[normalizedName] || instrumentName;
 
-      // Buscar por nome traduzido
       const translatedNormalized = translatedName.toLowerCase();
       if (this.cache.instruments.has(translatedNormalized)) {
         return this.cache.instruments.get(translatedNormalized);
       }
 
-      // Buscar no banco por similaridade
       let instrument = await prisma.instrument.findFirst({
         where: {
           OR: [
@@ -439,9 +436,7 @@ class WorkScraper {
         },
       });
 
-      // Se não encontrou, criar novo
       if (!instrument) {
-        // Capitalizar primeira letra
         translatedName =
           translatedName.charAt(0).toUpperCase() + translatedName.slice(1);
 
@@ -455,7 +450,6 @@ class WorkScraper {
         console.log(`🎼 Novo instrumento criado: ${translatedName}`);
       }
 
-      // Adicionar ao cache
       this.cache.instruments.set(normalizedName, instrument);
       this.cache.instruments.set(translatedNormalized, instrument);
 
@@ -465,65 +459,115 @@ class WorkScraper {
         `❌ Erro ao buscar/criar instrumento ${instrumentName}:`,
         error
       );
-      // Retornar primeiro instrumento como fallback
       return (await prisma.instrument.findFirst()) || null;
     }
   }
 
   // Traduzir e buscar/criar gênero
-  async findOrCreateGenre(genreName: string): Promise<any> {
+  async findOrCreateCategorie(
+    workTypeName: string
+  ): Promise<WorkGenreData | null> {
     try {
-      const normalizedName = genreName.toLowerCase().trim();
+      const normalizedName = workTypeName.toLowerCase().trim();
+
+      const translatedName = NORMALIZED_SUBGENRES[normalizedName];
+
+      if (!translatedName) {
+        // console.error(`❌ Categoria inválida ${workTypeName}:`);
+        return null;
+      }
 
       // Verificar cache primeiro
-      if (this.cache.genres.has(normalizedName)) {
-        return this.cache.genres.get(normalizedName);
+      if (this.cache.categories.has(translatedName)) {
+        return this.cache.categories.get(translatedName);
       }
 
-      // Traduzir nome
-      let translatedName = GENRE_MAPPING[normalizedName] || genreName;
-
-      // Buscar por nome traduzido
-      const translatedNormalized = translatedName.toLowerCase();
-      if (this.cache.genres.has(translatedNormalized)) {
-        return this.cache.genres.get(translatedNormalized);
-      }
-
-      // Buscar no banco por similaridade
-      let genre = await prisma.genre.findFirst({
+      // Buscar no banco
+      let category = await prisma.categorie.findFirst({
         where: {
-          OR: [
-            { name: { contains: translatedName, mode: 'insensitive' } },
-            { name: { contains: genreName, mode: 'insensitive' } },
-          ],
+          name: { contains: translatedName, mode: 'insensitive' },
         },
       });
 
-      // Se não encontrou, criar novo
-      if (!genre) {
-        // Capitalizar primeira letra
-        translatedName =
+      // Se não encontrou, criar nova
+      if (!category) {
+        const capitalizedName =
           translatedName.charAt(0).toUpperCase() + translatedName.slice(1);
 
-        genre = await prisma.genre.create({
+        category = await prisma.categorie.create({
           data: {
-            name: translatedName,
+            name: capitalizedName,
             createdAt: new Date(),
           },
         });
 
-        console.log(`🎵 Novo gênero criado: ${translatedName}`);
+        console.log(`🏷️ Nova categoria criada: ${capitalizedName}`);
       }
 
       // Adicionar ao cache
-      this.cache.genres.set(normalizedName, genre);
-      this.cache.genres.set(translatedNormalized, genre);
+      this.cache.categories.set(normalizedName, category);
 
-      return genre;
+      return category;
     } catch (error) {
-      console.error(`❌ Erro ao buscar/criar gênero ${genreName}:`, error);
-      // Retornar primeiro gênero como fallback
-      return (await prisma.genre.findFirst()) || null;
+      console.error(
+        `❌ Erro ao buscar/criar categoria ${workTypeName}:`,
+        error
+      );
+      // Retornar categoria padrão como fallback
+      return (
+        (await prisma.categorie.findFirst()) || { id: '', name: 'Classical' }
+      );
+    }
+  }
+
+  async findOrCreateWorkGenre(
+    workTypeName: string
+  ): Promise<WorkGenreData | null> {
+    try {
+      const normalizedName = workTypeName.toLowerCase().trim();
+
+      // Verificar se o gênero em português é válido
+      if (!this.isValidPortugueseGenre(normalizedName)) {
+        // console.log(`⚠️ WorkGenre inválido ignorado: ${workTypeName}`);
+        return null;
+      }
+
+      // Verificar cache primeiro (com nome em português)
+      if (this.cache.workGenres?.has(normalizedName)) {
+        return this.cache.workGenres.get(normalizedName);
+      }
+
+      // Buscar no banco (por nome em português)
+      let workGenre = await prisma.workGenre.findFirst({
+        where: {
+          name: { equals: normalizedName, mode: 'insensitive' },
+        },
+      });
+
+      if (workGenre) {
+        console.log(`🏷️ workGenre já existe: ${workGenre.name}`);
+      } else {
+        // Se não encontrou, criar novo com nome em português
+        workGenre = await prisma.workGenre.create({
+          data: {
+            name: normalizedName,
+            createdAt: new Date(),
+          },
+        });
+
+        console.log(`🏷️ Novo workGenre criado: ${normalizedName}`);
+      }
+
+      // Adicionar ao cache (usando nome em português)
+      if (!this.cache.workGenres) {
+        this.cache.workGenres = new Map();
+      }
+      this.cache.workGenres.set(normalizedName, workGenre);
+
+      return workGenre;
+    } catch (error) {
+      console.error(`❌ Erro ao buscar/criar WorkType ${workTypeName}:`, error);
+      return null;
     }
   }
 
@@ -541,7 +585,6 @@ class WorkScraper {
       });
 
       if (!composer) {
-        // Tentar buscar apenas pelo sobrenome
         const nameParts = composerName.split(',');
         if (nameParts.length > 1) {
           const lastName = nameParts[0].trim();
@@ -556,20 +599,22 @@ class WorkScraper {
         }
       }
 
-      //Se mesmo assim nao achar, salvar como 'Anônimo'
+      if (composer) {
+        console.error(`✅ Compositor encontrado: ${composer.fullName}`);
+      }
+
       if (!composer) {
         composer = await prisma.composer.findFirst({
           where: {
             OR: [
               { name: { contains: 'Anonymous', mode: 'insensitive' } },
-              { fullName: { contains: composerName, mode: 'insensitive' } },
-              { imslpId: `Category:${composerName}` },
+              { fullName: { contains: 'Anonymous', mode: 'insensitive' } },
             ],
           },
         });
 
         console.error(
-          `❌ Erro ao buscar compositor ${composerName}, salvando como 'Anônimo' \n`
+          `❌ Compositor não encontrado: ${composerName}, usando 'Anonymous'`
         );
       }
       return composer;
@@ -577,6 +622,181 @@ class WorkScraper {
       console.error(`❌ Erro ao buscar compositor ${composerName}:`, error);
       return null;
     }
+  }
+
+  // Determinar tipo de trabalho baseado no título
+  determineWorkType(
+    title: string
+  ): 'INDIVIDUAL' | 'COMPLETE_WORK' | 'ARRANGEMENT' | 'COLLECTION' {
+    const titleLower = title.toLowerCase();
+
+    // Verificar se é arranjo
+    for (const keyword of WORK_TYPE_KEYWORDS.ARRANGEMENT) {
+      if (titleLower.includes(keyword)) {
+        return 'ARRANGEMENT';
+      }
+    }
+
+    // Verificar se é coleção completa
+    for (const keyword of WORK_TYPE_KEYWORDS.COLLECTION) {
+      if (titleLower.includes(keyword)) {
+        return 'COMPLETE_WORK';
+      }
+    }
+
+    // Verificar se é peça individual (tem numeração)
+    for (const keyword of WORK_TYPE_KEYWORDS.INDIVIDUAL) {
+      if (titleLower.includes(keyword)) {
+        return 'INDIVIDUAL';
+      }
+    }
+
+    // Default para individual se não conseguir determinar
+    return 'INDIVIDUAL';
+  }
+
+  // Extrair informações de dedicação
+  extractDedicationInfo(
+    dedicationText: string,
+    $: cheerio.CheerioAPI
+  ): { dedicateTo: string | null; dedicationComposerLink: string | null } {
+    if (!dedicationText) {
+      return { dedicateTo: null, dedicationComposerLink: null };
+    }
+
+    // Procurar por links na seção de dedicação
+    const dedicationLinks = $(
+      'td:contains("Dedication"), td:contains("Dedicado")'
+    )
+      .next()
+      .find('a[href*="Category:"]');
+
+    if (dedicationLinks.length > 0) {
+      const firstLink = dedicationLinks.first();
+      const composerLink = firstLink.attr('href');
+      const composerName = firstLink.text().trim();
+
+      if (composerLink && composerLink.includes('Category:')) {
+        // É um compositor, salvar o link completo
+        const fullLink = composerLink.startsWith('http')
+          ? composerLink
+          : `https://imslp.org${composerLink}`;
+        return {
+          dedicateTo: composerName,
+          dedicationComposerLink: fullLink,
+        };
+      }
+    }
+
+    // Se não é compositor, apenas salvar o texto
+    return {
+      dedicateTo: dedicationText.trim(),
+      dedicationComposerLink: null,
+    };
+  }
+
+  // Extrair múltiplas categorias da obra
+  async extractWorkCategories($: cheerio.CheerioAPI): Promise<string[]> {
+    const categories: Set<string> = new Set();
+
+    // 1. Categorias de gênero
+    $('.wp_header table tr').each((index, element) => {
+      const $row = $(element);
+      const header = $row.find('th').first().text().trim().toLowerCase();
+
+      if (
+        header.includes('genre categories') ||
+        header.includes('categorias')
+      ) {
+        $row.find('td a').each((i, link) => {
+          const categoryName = $(link).text().trim();
+
+          const checkIfCategoryIsValid =
+            this.isValidMusicCategory(categoryName);
+
+          if (checkIfCategoryIsValid) {
+            if (categoryName && categoryName.length > 0) {
+              categories.add(categoryName);
+            }
+          }
+        });
+      }
+    });
+
+    return Array.from(categories);
+  }
+
+  async extractWorkGenres($: cheerio.CheerioAPI): Promise<string[]> {
+    const workGenres: Set<string> = new Set();
+
+    // Buscar em diferentes locais da página
+    // 1. Categorias de gênero
+    $('.wp_header table tr').each((index, element) => {
+      const $row = $(element);
+      const header = $row.find('th').first().text().trim().toLowerCase();
+
+      if (
+        header.includes('genre categories') ||
+        header.includes('categorias')
+      ) {
+        $row.find('td a').each((i, link) => {
+          const workGenreName = $(link).text().trim();
+
+          if (workGenreName && workGenreName.length > 0) {
+            // Converte para lowercase para comparação case-insensitive
+            const workGenreNameLower = workGenreName.toLowerCase();
+
+            // Verifica se existe no SET (que já deve estar em lowercase)
+            const checkIfGenreIsValid =
+              VALID_WORKGENRES.has(workGenreNameLower);
+
+            if (checkIfGenreIsValid) {
+              // Traduz para português antes de adicionar
+              const portugueseGenre =
+                this.translateWorkGenre(workGenreNameLower);
+              workGenres.add(portugueseGenre);
+            }
+          }
+        });
+      }
+    });
+
+    if (workGenres.size === 0) {
+      workGenres.add('não definido'); // Traduzido para português
+    }
+
+    return Array.from(workGenres);
+  }
+
+  // Verificar se é uma categoria musical válida
+  private isValidMusicCategory(categoryName: string): boolean {
+    const validPatterns = [
+      /\d{4}s?/, // Anos (1800s, 1850, etc.)
+      /century/i, // Séculos
+      /baroque|classical|romantic|modern|contemporary/i, // Períodos
+      /piano|violin|orchestra|chamber|vocal|opera/i, // Instrumentos/tipos
+      /sonata|concerto|symphony|prelude|etude|waltz/i, // Formas musicais
+      /major|minor|flat|sharp/i, // Tonalidades
+      /pieces|works|compositions/i, // Tipos de obra
+    ];
+
+    // Verificar se a categoria não é muito genérica
+    const invalidPatterns = [
+      /^[A-Z]$/, // Letras únicas
+      /^page$/i, // Palavras genéricas
+      /^article$/i,
+      /^music$/i,
+      /^composer$/i,
+    ];
+
+    if (invalidPatterns.some((pattern) => pattern.test(categoryName))) {
+      return false;
+    }
+
+    return (
+      validPatterns.some((pattern) => pattern.test(categoryName)) ||
+      categoryName.length > 3
+    ); // Aceitar categorias com mais de 3 caracteres
   }
 
   // Extrair dados detalhados da obra com retry
@@ -587,8 +807,6 @@ class WorkScraper {
     try {
       const { intvals, permlink, id } = work;
       const { composer, worktitle, pageid } = intvals;
-
-      console.log(`🔍 Processando obra: ${worktitle} por ${composer}`);
 
       // Buscar compositor no banco de dados
       const composerData = await this.findComposerInDatabase(composer);
@@ -615,171 +833,346 @@ class WorkScraper {
       // Extrair informações detalhadas
       const workDetails: Partial<WorkData> = {};
 
-      // Extrair informações da tabela principal
+      // Título limpo
+      workDetails.title = worktitle.trim();
+
+      // IDs básicos
+      workDetails.composerId = composerData.id;
+      workDetails.imslpPermlink = permlink;
+      workDetails.imslpId = pageid || id;
+
+      // Determinar tipo de trabalho
+      workDetails.workType = this.determineWorkType(worktitle);
+
+      // Extrair informações da tabela de detalhes
       $('.wi_body table tr, .wp_header table tr').each((index, element) => {
         const $row = $(element);
-        const header = $row.find('th').first().text().trim().toLowerCase();
-        const content = $row.find('td').first().text().trim();
+        const headerCell = $row.find('th, td').first();
+        const valueCell = $row.find('td').last();
 
-        if (header.includes('opus') || header.includes('catalog')) {
-          workDetails.opOrCatalog = content || null;
-        } else if (header.includes('year') || header.includes('composition')) {
-          workDetails.compositionYear = content || null;
-        } else if (
-          header.includes('first publication') ||
-          header.includes('publication')
-        ) {
-          workDetails.firstPublishDate = content || null;
-        } else if (header.includes('key') || header.includes('tom')) {
-          workDetails.tone = content || null;
-        } else if (header.includes('instrumentation')) {
-          workDetails.instrumentation = content || null;
-        } else if (
-          header.includes('piece style') ||
-          header.includes('estilo')
-        ) {
-          workDetails.workStyle = content || null;
-        } else if (
-          header.includes('movements') ||
-          header.includes('sections')
-        ) {
-          workDetails.moviment = content || null;
-        } else if (header.includes('dedication')) {
-          workDetails.dedicateTo = content || null;
+        if (!headerCell.length || !valueCell.length) return;
+
+        const header = headerCell.text().trim().toLowerCase();
+        const value = valueCell.text().trim();
+
+        // Extrair informações baseadas no cabeçalho
+        switch (true) {
+          // Opus/Catálogo
+          case header.includes('opus') || header.includes('catalogue'):
+            if (value && value !== '-' && value.length > 0) {
+              workDetails.opOrCatalog = value;
+            }
+            break;
+
+          // Ano de composição
+          case header.includes('composition year') ||
+            header.includes('year of composition'):
+            if (value && value !== '-' && value.match(/\d{4}/)) {
+              workDetails.compositionYear = value;
+            }
+            break;
+
+          // Primeira publicação
+          case header.includes('first publication') ||
+            header.includes('first published'):
+            if (value && value !== '-' && value.match(/\d{4}/)) {
+              workDetails.firstPublishDate = value;
+            }
+            break;
+
+          // Tonalidade
+          case header.includes('key') || header.includes('tonalidade'):
+            if (value && value !== '-' && value.length > 0) {
+              workDetails.tone = this.translateMusicKey(value);
+            }
+            break;
+
+          // Duração
+          case header.includes('duration') ||
+            header.includes('approximate duration'):
+            if (value && value !== '-' && value.length > 0) {
+              workDetails.mediaDuration = value;
+            }
+            break;
+
+          // Estilo
+          case header.includes('style') || header.includes('period'):
+            if (value && value !== '-' && value.length > 0) {
+              workDetails.workStyle = value;
+            }
+            break;
+
+          // Movimentos
+          case header.includes('movements') || header.includes('sections'):
+            if (value && value !== '-' && value.length > 0) {
+              workDetails.moviment = value;
+
+              // Tentar extrair número de movimentos
+              const movementMatch = value.match(/(\d+)/);
+              if (movementMatch && workDetails.workType === 'INDIVIDUAL') {
+                workDetails.movementNumber = parseInt(movementMatch[1]);
+              }
+            }
+            break;
+
+          // Instrumentação
+          case header.includes('instrumentation') || header.includes('scoring'):
+            if (value && value !== '-' && value.length > 0) {
+              workDetails.instrumentation = value;
+            }
+            break;
+
+          // Dedicação
+          case header.includes('dedication') || header.includes('dedicated'):
+            if (value && value !== '-' && value.length > 0) {
+              const dedicationInfo = this.extractDedicationInfo(value, $);
+              workDetails.dedicateTo = dedicationInfo.dedicateTo;
+              workDetails.dedicationComposerLink =
+                dedicationInfo.dedicationComposerLink;
+            }
+            break;
         }
       });
 
-      // Extrair gêneros e instrumentos
-      const genres: string[] = [];
-      const instruments: string[] = [];
+      // Extrair informações adicionais do conteúdo da página
+      const pageText = $('body').text().toLowerCase();
 
-      // Buscar em categorias de gênero
-      $('.wp_header table tr').each((index, element) => {
-        const $row = $(element);
-        const header = $row.find('th').first().text().trim().toLowerCase();
-        const content = $row.find('td').first();
+      // Extrair múltiplas categorias
+      const categories = await this.extractWorkCategories($);
+      workDetails.categories = categories;
+      console.log('WORK CATEGORIES', categories);
 
-        if (
-          header.includes('genre categories') ||
-          header.includes('categorias')
-        ) {
-          content.find('a').each((i, link) => {
-            const genreText = $(link).text().trim();
-            if (
-              genreText &&
-              !genreText.includes('player') &&
-              !genreText.includes('featuring')
-            ) {
-              genres.push(genreText);
+      // Extrair múltiplas workGenres
+      const workGenres = await this.extractWorkGenres($);
+      workDetails.workGenres = workGenres;
+
+      console.log('WORK GENRES', workGenres);
+
+      // Determinar se é parte de uma coleção
+      workDetails.isPartOfCollection =
+        workDetails.workType === 'INDIVIDUAL' &&
+        (workDetails.opOrCatalog?.includes('No.') ||
+          workDetails.title.includes('No.'));
+
+      // Buscar trabalho pai se for parte de uma coleção
+      if (workDetails.isPartOfCollection) {
+        // Tentar encontrar o trabalho pai baseado no título
+        const baseTitle = workDetails.title
+          .replace(/No\.\s*\d+.*$/i, '')
+          .trim();
+        if (baseTitle !== workDetails.title) {
+          try {
+            const parentWork = await prisma.work.findFirst({
+              where: {
+                title: { contains: baseTitle, mode: 'insensitive' },
+                composerId: composerData.id,
+                workType: 'COMPLETE_WORK',
+              },
+            });
+
+            if (parentWork) {
+              workDetails.parentWorkId = parentWork.id;
             }
-          });
-        }
-
-        if (
-          header.includes('instrumentation') ||
-          header.includes('instrumentação')
-        ) {
-          // Extrair instrumentos do texto de instrumentação
-          const instText = content.text().toLowerCase();
-          Object.keys(INSTRUMENT_MAPPING).forEach((eng) => {
-            if (instText.includes(eng)) {
-              instruments.push(eng);
-            }
-          });
-        }
-      });
-
-      // Determinar instrumento principal
-      let primaryInstrument: any;
-      if (instruments.length > 0) {
-        primaryInstrument = await this.findOrCreateInstrument(instruments[0]);
-      } else if (workDetails.instrumentation) {
-        const instrumentName = workDetails.instrumentation.split(',')[0].trim();
-        primaryInstrument = await this.findOrCreateInstrument(instrumentName);
-      } else {
-        // Tentar inferir do título
-        const titleLower = worktitle.toLowerCase();
-        let detectedInstrument = 'Piano'; // Default
-
-        Object.keys(INSTRUMENT_MAPPING).forEach((eng) => {
-          if (titleLower.includes(eng)) {
-            detectedInstrument = eng;
+          } catch (error) {
+            console.log(
+              `⚠️ Erro ao buscar trabalho pai para ${workDetails.title}`
+            );
           }
-        });
+        }
+      } else {
+        workDetails.parentWorkId = null;
+      }
 
-        primaryInstrument = await this.findOrCreateInstrument(
-          detectedInstrument
+      // Tentar identificar instrumento principal
+      let primaryInstrument = null;
+      if (workDetails.instrumentation) {
+        const instrumentText = workDetails.instrumentation.toLowerCase();
+
+        // Buscar instrumentos conhecidos no texto
+        for (const [key, value] of Object.entries(INSTRUMENT_MAPPING)) {
+          if (instrumentText.includes(key)) {
+            primaryInstrument = await this.findOrCreateInstrument(key);
+            break;
+          }
+        }
+
+        // Se não encontrou, tentar extrair do título
+        if (!primaryInstrument) {
+          const titleLower = workDetails.title.toLowerCase();
+          for (const [key, value] of Object.entries(INSTRUMENT_MAPPING)) {
+            if (titleLower.includes(key)) {
+              primaryInstrument = await this.findOrCreateInstrument(key);
+              break;
+            }
+          }
+        }
+      }
+
+      // Se ainda não encontrou instrumento, usar piano como padrão para peças solo
+      if (
+        !primaryInstrument &&
+        !workDetails.instrumentation?.toLowerCase().includes('orchestra')
+      ) {
+        primaryInstrument = await this.findOrCreateInstrument('piano');
+      }
+
+      workDetails.instrumentId = primaryInstrument?.id ?? DEFAULT_INSTRUMENT_ID;
+
+      // Tentar identificar gênero principal
+      let primaryGenre = null;
+      const titleLower = workDetails.title.toLowerCase();
+
+      for (const [key, value] of Object.entries(NORMALIZED_SUBGENRES)) {
+        if (titleLower.includes(key)) {
+          primaryGenre = await this.findOrCreateCategorie(key);
+          break;
+        }
+      }
+
+      // Se não encontrou gênero específico, usar gênero baseado no estilo ou período
+      if (!primaryGenre && workDetails.workStyle) {
+        primaryGenre = await this.findOrCreateCategorie(
+          workDetails.workStyle.toLowerCase()
         );
       }
 
-      // Determinar gênero principal
-      let primaryGenre: any;
-      if (genres.length > 0) {
-        primaryGenre = await this.findOrCreateGenre(genres[0]);
-      } else {
-        // Tentar inferir do título
-        const titleLower = worktitle.toLowerCase();
-        let detectedGenre = 'Solo'; // Default
+      // Gênero padrão
+      if (!primaryGenre) {
+        primaryGenre = await this.findOrCreateCategorie('Pieces');
+      }
 
-        Object.keys(GENRE_MAPPING).forEach((eng) => {
-          if (titleLower.includes(eng)) {
-            detectedGenre = eng;
+      let primaryWorkGenre = null;
+      for (const [key, value] of Object.entries(NORMALIZED_SUBGENRES)) {
+        if (titleLower.includes(key)) {
+          primaryWorkGenre = await this.findOrCreateWorkGenre(key);
+          break;
+        }
+      }
+
+      // Se não encontrou gênero específico, usar gênero baseado no estilo ou período
+      if (!primaryWorkGenre && workDetails.workStyle) {
+        primaryWorkGenre = await this.findOrCreateWorkGenre(
+          workDetails.workStyle.toLowerCase()
+        );
+      }
+
+      // Gênero padrão
+      if (!primaryWorkGenre) {
+        primaryWorkGenre = await this.findOrCreateWorkGenre('Pieces');
+      }
+      workDetails.genreId = primaryGenre?.id || DEFAULT_GENRE_ID;
+      workDetails.workGenreId = primaryWorkGenre?.id || DEFAULT_WORK_GENRE_ID;
+
+      // Determinar época baseada no compositor ou ano
+      let epoch = null;
+      if (workDetails.compositionYear) {
+        const year = parseInt(
+          workDetails.compositionYear.match(/\d{4}/)?.[0] || '0'
+        );
+
+        if (year > 0) {
+          if (year < 1750) {
+            epoch = 'Barroco';
+          } else if (year < 1820) {
+            epoch = 'Clássico';
+          } else if (year < 1900) {
+            epoch = 'Romântico';
+          } else if (year < 1950) {
+            epoch = 'Moderno';
+          } else {
+            epoch = 'Contemporâneo';
           }
+        }
+      }
+
+      // Se não conseguiu determinar pela data, usar época do compositor
+      if (!epoch && composerData.epoch) {
+        epoch = composerData.epoch;
+      }
+
+      // Época padrão
+      if (!epoch) {
+        epoch = 'Clássico';
+      }
+
+      // Buscar ou criar época
+      let epochData = await prisma.epoch.findFirst({
+        where: { name: { contains: epoch, mode: 'insensitive' } },
+      });
+
+      if (!epochData) {
+        epochData = await prisma.epoch.create({
+          data: { name: epoch },
         });
-
-        primaryGenre = await this.findOrCreateGenre(detectedGenre);
+        console.log(`🏛️ Nova época criada: ${epoch}`);
       }
 
-      // Buscar categoria padrão
-      const category =
-        (await prisma.categorie.findFirst({
-          where: { name: { contains: 'Classical', mode: 'insensitive' } },
-        })) || (await prisma.categorie.findFirst());
+      workDetails.epochId = epochData.id;
 
-      if (!category) {
-        console.log('❌ Nenhuma categoria encontrada no banco');
-        return null;
-      }
-
-      return {
-        title: worktitle,
-        composerId: composerData.id,
-        genreId: primaryGenre?.id || '',
-        instrumentId: primaryInstrument?.id || '',
-        epochId: composerData.epochId,
-        categoriesId: category.id,
-        imslpPermlink: permlink,
-        imslpId: pageid || id.replace(/"/g, ''),
-        opOrCatalog: workDetails.opOrCatalog ?? null,
-        compositionYear: workDetails.compositionYear ?? null,
-        firstPublishDate: workDetails.firstPublishDate ?? null,
-        tone: workDetails.tone ?? null,
-        mediaDuration: workDetails.mediaDuration ?? null,
-        workStyle: workDetails.workStyle ?? null,
-        moviment: workDetails.moviment ?? null,
-        dedicateTo: workDetails.dedicateTo ?? null,
-        difficulty: workDetails.difficulty ?? null,
-        instrumentation: workDetails.instrumentation ?? null,
-        genres: genres.join(', ') || null,
-        videoUrl: null,
+      // Compilar dados finais
+      const finalWorkData: WorkData = {
+        title: workDetails.title || worktitle,
+        composerId: workDetails.composerId ?? '',
+        genreId: workDetails.genreId ?? DEFAULT_GENRE_ID,
+        workGenreId: workDetails.workGenreId ?? DEFAULT_WORK_GENRE_ID,
+        instrumentId: workDetails.instrumentId ?? DEFAULT_INSTRUMENT_ID,
+        epochId: workDetails.epochId,
+        imslpPermlink: workDetails.imslpPermlink,
+        imslpId: workDetails.imslpId,
+        videoUrl: workDetails.videoUrl || null,
+        opOrCatalog: workDetails.opOrCatalog || null,
+        compositionYear: workDetails.compositionYear || null,
+        firstPublishDate: workDetails.firstPublishDate || null,
+        tone: workDetails.tone || null,
+        mediaDuration: workDetails.mediaDuration || null,
+        workStyle: workDetails.workStyle || null,
+        moviment: workDetails.moviment || null,
+        dedicateTo: workDetails.dedicateTo || null,
+        dedicationComposerLink: workDetails.dedicationComposerLink || null,
+        difficulty: workDetails.difficulty || null,
+        instrumentation: workDetails.instrumentation || null,
+        genres: null, // Será preenchido posteriormente se necessário
+        workType: workDetails.workType,
+        isPartOfCollection: workDetails.isPartOfCollection || false,
+        parentWorkId: workDetails.parentWorkId || null,
+        movementNumber: workDetails.movementNumber || null,
+        categories: workDetails.categories || [],
+        workGenres: workDetails.workGenres || [],
       };
+
+      console.log(`✅ Dados extraídos para: ${finalWorkData.title}`);
+      console.log(`   🎼 Instrumento: ${primaryInstrument?.name || 'N/A'}`);
+      console.log(`   🎵 Gênero: ${primaryGenre?.name || 'N/A'}`);
+      console.log(`   📋 Tonalidade: ${finalWorkData.tone}`);
+
+      console.log(`   🏛️ Época: ${epoch}`);
+      console.log(`   📋 Categorias: ${finalWorkData.categories.length}`);
+      console.log(`   📋 Work genres: ${finalWorkData.workGenres.length}`);
+
+      console.log(`   🎯 Tipo: ${finalWorkData.workType}`);
+
+      return finalWorkData;
     } catch (error) {
       console.error(
-        `❌ Erro ao extrair dados da obra ${work.intvals?.worktitle}:`,
+        `❌ Erro ao extrair detalhes da obra (tentativa ${retries + 1}):`,
         error
       );
 
       if (retries < MAX_RETRIES) {
-        const waitTime = (retries + 1) * 2000;
-        console.log(`⏳ Tentando novamente em ${waitTime / 1000}s...`);
+        const waitTime = (retries + 1) * 3000;
+        console.log(
+          `⏳ Aguardando ${waitTime / 1000}s antes de tentar novamente...`
+        );
         await new Promise((resolve) => setTimeout(resolve, waitTime));
         return this.extractWorkDetails(work, retries + 1);
       }
 
+      // Log do erro para análise posterior
       await fs.appendFile(
         STATE_WORKS_FILE,
-        `❌ ${work.intvals?.pageid || work.id} / Erro ao extrair dados\n`
+        `❌ ${work.intvals?.pageid || work.id} / Erro na extração: \n`
       );
+
       return null;
     }
   }
@@ -787,24 +1180,138 @@ class WorkScraper {
   // Salvar obra no banco de dados
   async saveWork(workData: WorkData): Promise<boolean> {
     try {
-      // Verificar se já existe
-      if (await this.workExists(workData.imslpId, workData.title)) {
-        console.log(`⚠ Obra já existe: ${workData.title}`);
+      // Verificar se a obra já existe
+      const exists = await this.workExists(workData.imslpId, workData.title);
+      if (exists) {
+        console.log(`⚠️ Obra já existe: ${workData.title}`);
         return false;
       }
 
-      await prisma.work.create({
-        data: workData,
+      // Processar e criar todas as categorias
+      const categoryIds: string[] = [];
+
+      for (const categoryName of workData.categories) {
+        try {
+          const category = await this.findOrCreateCategorie(categoryName);
+
+          if (category && category.id) {
+            categoryIds.push(category.id);
+          }
+        } catch (error) {
+          console.error(
+            `❌ Erro ao processar categoria ${categoryName}:`,
+            error
+          );
+        }
+      }
+
+      const workGenresId: string[] = [];
+
+      for (const workGenreName of workData.workGenres) {
+        try {
+          const workGenre = await this.findOrCreateWorkGenre(workGenreName);
+
+          if (workGenre && workGenre.id) {
+            workGenresId.push(workGenre.id);
+          }
+        } catch (error) {
+          console.error(
+            `❌ Erro ao processar workGenre ${workGenreName}:`,
+            error
+          );
+        }
+      }
+
+      // Criar a obra no banco
+      const savedWork = await prisma.work.create({
+        data: {
+          title: workData.title,
+          composerId: workData.composerId,
+          genreId: workData.genreId,
+          instrumentId: workData.instrumentId,
+          epochId: workData.epochId,
+          imslpPermlink: workData.imslpPermlink,
+          imslpId: workData.imslpId,
+          videoUrl: workData.videoUrl,
+          opOrCatalog: workData.opOrCatalog,
+          compositionYear: workData.compositionYear,
+          firstPublishDate: workData.firstPublishDate,
+          tone: workData.tone,
+          mediaDuration: workData.mediaDuration,
+          workStyle: workData.workStyle,
+          moviment: workData.moviment,
+          dedicateTo: workData.dedicateTo,
+          dedicationComposerLink: workData.dedicationComposerLink,
+          difficulty: workData.difficulty,
+          instrumentation: workData.instrumentation,
+          genres: workData.genres,
+          workType: workData.workType,
+          isPartOfCollection: workData.isPartOfCollection,
+          parentWorkId: workData.parentWorkId,
+          movementNumber: workData.movementNumber,
+          createdAt: new Date(),
+        },
       });
 
-      console.log(`✅ Obra salva: ${workData.title}`);
+      // Criar relacionamentos com categorias (many-to-many)
+      if (categoryIds.length > 0) {
+        const categoryConnections = categoryIds.map((categoryId) => ({
+          workId: savedWork.id,
+          categorieId: categoryId,
+        }));
+
+        try {
+          await prisma.workCategorie.createMany({
+            data: categoryConnections,
+          });
+
+          console.log(
+            `🏷️ Conectadas ${categoryIds.length} categorias à obra: ${workData.title}`
+          );
+        } catch (error) {
+          console.error(
+            `❌ Erro ao conectar categorias à obra ${workData.title}:`,
+            error
+          );
+        }
+      }
+
+      // Criar relacionamentos com work genres (many-to-many)
+      if (workGenresId.length > 0) {
+        const categoryConnections = workGenresId.map((workGenreID) => ({
+          workId: savedWork.id,
+          workGenreId: workGenreID,
+        }));
+
+        try {
+          await prisma.workGenresTypes.createMany({
+            data: categoryConnections,
+          });
+
+          console.log(
+            `🏷️ Conectadas ${workGenresId.length} work genres à obra: ${workData.title}`
+          );
+        } catch (error) {
+          console.error(
+            `❌ Erro ao conectar categorias à obra ${workData.title}:`,
+            error
+          );
+        }
+      }
+
+      console.log(`💾 Obra salva com sucesso: ${workData.title}\n`);
       await fs.appendFile(
         STATE_WORKS_FILE,
-        `✅ ${workData.imslpId} / Obra salva: ${workData.title}\n`
+        `✅ ${workData.imslpId} / ${workData.title} / ${workData.workType} / Categorias: ${workData.categories.length} / \n`
       );
+
       return true;
     } catch (error) {
       console.error(`❌ Erro ao salvar obra ${workData.title}:`, error);
+      await fs.appendFile(
+        STATE_WORKS_FILE,
+        `❌ ${workData.imslpId} / Erro ao salvar:\n`
+      );
       return false;
     }
   }

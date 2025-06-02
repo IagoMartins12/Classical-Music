@@ -326,7 +326,8 @@ export class AIBiographyGenerator {
     Faça com que a análise seja concluida antes dos 1200 caracteres.
     Aja num contexto historico, não deixe parecer que é uma IA. 
     Evite especulações e foque em fatos históricos verificáveis.
-    Evite falar 'Em resumo' no final, para dar mais veracidade a bio.
+    NÃO fale 'Em resumo' no final, para dar mais veracidade a bio.
+    Se possivel, aplique um leia mais em: (e coloque um link da wikipedia da pessoa. Se nao tiver link da wikipedia, nao coloque nada)
     Caso tenha um erro no cargo da pessoa (por exemplo, falar que é um compositor mas acabar sendo escritor, me retorne um 'Sem biografia disponivel')
     A biografia deve ter entre 250-500 palavras.`;
 

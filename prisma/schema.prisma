@@ -25,6 +25,13 @@ enum PracticeFocus {
   PRECISION
 }
 
+enum WorkType {
+  INDIVIDUAL
+  COMPLETE_WORK
+  ARRANGEMENT
+  COLLECTION
+}
+
 // Models
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -102,7 +109,7 @@ model Composer {
   @@index([name, epochId])
   @@index([fullName])
   @@index([primaryRoleId])
-  @@index([imslpId]) // ADICIONADO: Para busca eficiente pelo scraper
+  @@index([imslpId]) // Para busca eficiente pelo scraper
 }
 
 model Epoch {
@@ -118,7 +125,7 @@ model Epoch {
 model Genre {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String   @unique
-  createdAt DateTime @default(now()) // ADICIONADO: Para rastreamento de criação pelo scraper
+  createdAt DateTime @default(now())
   works     Work[]
 }
 
@@ -135,74 +142,114 @@ model Role {
 model Instrument {
   id        String           @id @default(auto()) @map("_id") @db.ObjectId
   name      String           @unique
-  createdAt DateTime         @default(now()) // ADICIONADO: Para rastreamento de criação pelo scraper
+  createdAt DateTime         @default(now())
   users     UserInstrument[]
   works     Work[]
 }
 
 model Categorie {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
-  works Work[]
-  createdAt DateTime         @default(now()) // ADICIONADO: Para rastreamento de criação pelo scraper
+  id            String          @id @default(auto()) @map("_id") @db.ObjectId
+  name          String          @unique
+  createdAt     DateTime        @default(now())
+  workCategories WorkCategorie[] // Relação many-to-many com works
+}
+
+// NOVA TABELA: Relação many-to-many entre Work e Categorie
+model WorkCategorie {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  workId      String @db.ObjectId
+  categorieId String @db.ObjectId
+  
+  work      Work      @relation(fields: [workId], references: [id], onDelete: Cascade)
+  categorie Categorie @relation(fields: [categorieId], references: [id], onDelete: Cascade)
+  
+  @@unique([workId, categorieId])
+  @@index([workId])
+  @@index([categorieId])
+}
+
+model WorkGenresTypes {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  workId      String @db.ObjectId
+  workGenreId String @db.ObjectId
+
+  work      Work      @relation(fields: [workId], references: [id], onDelete: Cascade)
+  workGenre WorkGenre @relation(fields: [workGenreId], references: [id], onDelete: Cascade)
+
+  @@unique([workId, workGenreId])
+  @@index([workId])
+  @@index([workGenreId])
+}
+
+model WorkGenre {
+  id        String             @id @default(auto()) @map("_id") @db.ObjectId
+  name      String             @unique
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  works     WorkGenresTypes[]  // relação com tabela intermediária
 }
 
 model Work {
-  id                String          @id @default(auto()) @map("_id") @db.ObjectId
+  id                String             @id @default(auto()) @map("_id") @db.ObjectId
   title             String
-  composerId        String          @db.ObjectId
-  genreId           String          @db.ObjectId
-  instrumentId      String          @db.ObjectId
-  epochId           String          @db.ObjectId
-  categoriesId      String          @db.ObjectId
-  
-  // URLs e links
+  composerId        String             @db.ObjectId
+  genreId           String             @db.ObjectId
+  instrumentId      String             @db.ObjectId
+  epochId           String             @db.ObjectId
+
   videoUrl          String?
-  imslpPermlink     String          // CORRIGIDO: era permlinkImslp, scraper usa imslpPermlink
-  
-  // IMPORTANTE: Campo crítico para evitar duplicatas
-  imslpId           String          @unique // ADICIONADO: essencial para o scraper
-  
-  // Metadados da obra
+  imslpPermlink     String
+  imslpId           String
   opOrCatalog       String?
   compositionYear   String?
   firstPublishDate  String?
   tone              String?
   mediaDuration     String?
   workStyle         String?
-  moviment          String?         // Mantido como está no scraper
-  dedicateTo        String?         // ADICIONADO: usado pelo scraper
-  dedicationComposerLink String?
-  instrumentation   String?         // ADICIONADO: usado pelo scraper
-  genres            String?         // ADICIONADO: lista de gêneros como string
-  difficultyLevel   Int?
-  workType          String?
-  isPartOfCollection Boolean @default(false)
-  parentWorkId    String?
+  moviment          String?
 
-  movementNumber Int?
-  // Sistema
-  difficulty        String?        
-  createdAt         DateTime        @default(now())
-  
+  dedicateTo             String?
+  dedicationComposerLink String?
+  instrumentation        String?
+  genres                 String?
+  workType               WorkType       @default(INDIVIDUAL)
+
+  isPartOfCollection     Boolean        @default(false)
+  parentWorkId           String?        @db.ObjectId
+  movementNumber         Int?
+
+  createdAt              DateTime       @default(now())
+
   // Relations
   composer          Composer        @relation(fields: [composerId], references: [id])
   genre             Genre           @relation(fields: [genreId], references: [id])
   epoch             Epoch           @relation(fields: [epochId], references: [id])
   instrument        Instrument      @relation(fields: [instrumentId], references: [id])
-  categories        Categorie       @relation(fields: [categoriesId], references: [id])
-  
+
+  workCategories    WorkCategorie[]
+  workGenresTypes   WorkGenresTypes[] // relação many-to-many correta
+
+  parentWork        Work?           @relation("WorkHierarchy", fields: [parentWorkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childWorks        Work[]          @relation("WorkHierarchy")
+
   annotations       Annotation[]
   favoriteBy        FavoriteWork[]
   wantToLearners    WantToLearn[]
   learners          Learned[]
   studySessions     StudySession[]
-  
-  // ADICIONADO: Índices para performance do scraper
+
   @@index([title])
   @@index([composerId])
-  @@index([title, composerId]) // Para verificação de duplicatas
+  @@index([imslpId])
+  @@index([title, composerId])
+  @@index([workType])
+  @@index([parentWorkId])
+  @@index([isPartOfCollection])
 }
+
+
+
 
 // Join tables
 model UserInstrument {
