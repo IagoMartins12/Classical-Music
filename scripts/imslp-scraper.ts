@@ -122,8 +122,8 @@ const EPOCHS: EpochInfo[] = [
   {
     id: '6838847e7e5dd7f7e0ba7034',
     name: 'Modernismo',
-    startYear: 1911, // Corrigido: era 1870, criava gap
-    endYear: 1949, // Corrigido: era 1900, muito curto
+    startYear: 1911,
+    endYear: 1949,
   },
   {
     id: '683885437e5dd7f7e0ba7037',
@@ -141,7 +141,14 @@ interface TimerState {
 }
 
 const STATE_FILE = path.join(process.cwd(), 'scraper-state.json');
+const STATE_COMPOSERS_FILE = path.join(
+  process.cwd(),
+  'scraper-composers-state.log'
+);
+
 const BATCH_SIZE = 1000;
+const MAX_BATCH_SIZE = 28000;
+
 const DELAY_BETWEEN_REQUESTS = 2000; // 2 segundos entre requisições
 const DELAY_BETWEEN_BATCHES = 5000; // 5 segundos entre lotes
 
@@ -209,7 +216,7 @@ class IMSLPScraper {
 
       await fs.writeFile(STATE_FILE, JSON.stringify(stateToSave, null, 2));
       console.log(
-        `💾 Estado salvo - Start: ${this.state.currentStart}, Processados: ${this.state.totalProcessed}, Adicionados: ${this.state.totalAdded}`
+        `💾 Estado salvo - Requisição atual: ${this.state.currentStart}, Processados: ${this.state.totalProcessed}, Adicionados: ${this.state.totalAdded} \n`
       );
     } catch (error) {
       console.error('❌ Erro ao salvar estado:', error);
@@ -527,6 +534,10 @@ class IMSLPScraper {
       const imageUrl = imageElement.attr('src');
       if (!imageUrl || imageUrl.includes('Nocomposerphotoavailable')) {
         console.log(`⚠ Compositor sem imagem: ${composer.id} \n`);
+        await fs.appendFile(
+          STATE_COMPOSERS_FILE,
+          ` ❌ ${composer.id} / Compositor sem image` + '\n'
+        );
         return null;
       }
 
@@ -620,6 +631,11 @@ class IMSLPScraper {
       };
     } catch (error) {
       console.error(`❌ Erro ao extrair dados de ${composer.id}: \n`);
+      await fs.appendFile(
+        STATE_COMPOSERS_FILE,
+        ` ❌ ${composer.id} / Erro ao extrair dados` + '\n'
+      );
+
       return null;
     }
   }
@@ -641,8 +657,6 @@ class IMSLPScraper {
       // Se não conseguir extrair o ano, usar época padrão
       return EPOCHS[EPOCHS.length - 1];
     }
-
-    console.log(`🗓 Determinando época para ano ${birthYear}`);
 
     // Encontrar a época correspondente
     for (const epoch of EPOCHS) {
@@ -736,6 +750,11 @@ class IMSLPScraper {
           composerData.wikipediaLink ? '🔗 Wiki' : ''
         } \n`
       );
+
+      await fs.appendFile(
+        STATE_COMPOSERS_FILE,
+        ` ✅ ${composerData.imslpId} / Compositor salvo` + '\n'
+      );
       return true;
     } catch (error) {
       console.error(
@@ -764,7 +783,7 @@ class IMSLPScraper {
     );
 
     console.log(
-      `📋 Processando ${validComposers.length} compositores válidos de ${composers.length} total`
+      `📋 Processando ${validComposers.length} compositores válidos de ${composers.length} total \n`
     );
 
     for (const composer of validComposers) {

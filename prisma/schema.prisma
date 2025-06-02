@@ -12,6 +12,8 @@ datasource db {
 
 // Enums
 enum DifficultyLevel {
+  null
+  UNKNOWN
   BEGINNER
   INTERMEDIATE
   ADVANCED
@@ -80,7 +82,7 @@ model Composer {
   bio             String?
   createdAt       DateTime       @default(now())
   permLinkImslp   String?
-  imslpId         String?
+  imslpId         String?        // IMPORTANTE: usado pelo scraper para matching
   wikipediaLink   String?
 
   // Primary role
@@ -99,23 +101,25 @@ model Composer {
   @@index([epochId])
   @@index([name, epochId])
   @@index([fullName])
-   @@index([primaryRoleId]) 
+  @@index([primaryRoleId])
+  @@index([imslpId]) // ADICIONADO: Para busca eficiente pelo scraper
 }
-
 
 model Epoch {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
 
   composers Composer[]
+  works Work[]
 
-  @@index([name]) // Para ordenação das épocas
+  @@index([name])
 }
 
 model Genre {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  name  String @unique
-  works Work[]
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  createdAt DateTime @default(now()) // ADICIONADO: Para rastreamento de criação pelo scraper
+  works     Work[]
 }
 
 model Role {
@@ -128,34 +132,76 @@ model Role {
   @@index([name])
 }
 
-// Tabela intermediária para relação muitos para muitos
-
 model Instrument {
-  id           String           @id @default(auto()) @map("_id") @db.ObjectId
-  name         String           @unique
-  users        UserInstrument[]
-  workMappings WorkInstrument[]
+  id        String           @id @default(auto()) @map("_id") @db.ObjectId
+  name      String           @unique
+  createdAt DateTime         @default(now()) // ADICIONADO: Para rastreamento de criação pelo scraper
+  users     UserInstrument[]
+  works     Work[]
+}
+
+model Categorie {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  works Work[]
+  createdAt DateTime         @default(now()) // ADICIONADO: Para rastreamento de criação pelo scraper
 }
 
 model Work {
-  id         String          @id @default(auto()) @map("_id") @db.ObjectId
-  title      String
-  composerId String          @db.ObjectId
-  genreId    String          @db.ObjectId
-  videoUrl   String?
-  scoreUrl   String?
-  difficulty DifficultyLevel @default(INTERMEDIATE)
-  createdAt  DateTime        @default(now())
+  id                String          @id @default(auto()) @map("_id") @db.ObjectId
+  title             String
+  composerId        String          @db.ObjectId
+  genreId           String          @db.ObjectId
+  instrumentId      String          @db.ObjectId
+  epochId           String          @db.ObjectId
+  categoriesId      String          @db.ObjectId
+  
+  // URLs e links
+  videoUrl          String?
+  imslpPermlink     String          // CORRIGIDO: era permlinkImslp, scraper usa imslpPermlink
+  
+  // IMPORTANTE: Campo crítico para evitar duplicatas
+  imslpId           String          @unique // ADICIONADO: essencial para o scraper
+  
+  // Metadados da obra
+  opOrCatalog       String?
+  compositionYear   String?
+  firstPublishDate  String?
+  tone              String?
+  mediaDuration     String?
+  workStyle         String?
+  moviment          String?         // Mantido como está no scraper
+  dedicateTo        String?         // ADICIONADO: usado pelo scraper
+  dedicationComposerLink String?
+  instrumentation   String?         // ADICIONADO: usado pelo scraper
+  genres            String?         // ADICIONADO: lista de gêneros como string
+  difficultyLevel   Int?
+  workType          String?
+  isPartOfCollection Boolean @default(false)
+  parentWorkId    String?
 
+  movementNumber Int?
+  // Sistema
+  difficulty        String?        
+  createdAt         DateTime        @default(now())
+  
   // Relations
-  composer       Composer         @relation(fields: [composerId], references: [id])
-  genre          Genre            @relation(fields: [genreId], references: [id])
-  instruments    WorkInstrument[]
-  annotations    Annotation[]
-  favoriteBy     FavoriteWork[]
-  wantToLearners WantToLearn[]
-  learners       Learned[]
-  studySessions  StudySession[]
+  composer          Composer        @relation(fields: [composerId], references: [id])
+  genre             Genre           @relation(fields: [genreId], references: [id])
+  epoch             Epoch           @relation(fields: [epochId], references: [id])
+  instrument        Instrument      @relation(fields: [instrumentId], references: [id])
+  categories        Categorie       @relation(fields: [categoriesId], references: [id])
+  
+  annotations       Annotation[]
+  favoriteBy        FavoriteWork[]
+  wantToLearners    WantToLearn[]
+  learners          Learned[]
+  studySessions     StudySession[]
+  
+  // ADICIONADO: Índices para performance do scraper
+  @@index([title])
+  @@index([composerId])
+  @@index([title, composerId]) // Para verificação de duplicatas
 }
 
 // Join tables
@@ -168,17 +214,6 @@ model UserInstrument {
   instrument Instrument @relation(fields: [instrumentId], references: [id], onDelete: Cascade)
 
   @@unique([userId, instrumentId])
-}
-
-model WorkInstrument {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  workId       String @db.ObjectId
-  instrumentId String @db.ObjectId
-
-  work       Work       @relation(fields: [workId], references: [id], onDelete: Cascade)
-  instrument Instrument @relation(fields: [instrumentId], references: [id], onDelete: Cascade)
-
-  @@unique([workId, instrumentId])
 }
 
 // User-generated content

@@ -12,6 +12,11 @@
     "scraper:stop": "tsx scripts/imslp-scraper.ts stop",
     "scraper:reset": "tsx scripts/imslp-scraper.ts reset",
     "scraper:status": "tsx scripts/imslp-scraper.ts status",
+    "work-scraper": "tsx scripts/imslp-works-scraper.ts",
+    "work-scraper:start": "tsx scripts/imslp-works-scraper.ts start",
+    "work-scraper:stop": "tsx scripts/imslp-works-scraper.ts stop",
+    "work-scraper:reset": "tsx scripts/imslp-works-scraper.ts reset",
+    "work-scraper:status": "tsx scripts/imslp-works-scraper.ts status",
     "clear-composers": "tsx scripts/clear-composers.ts",
     "update-composers": "tsx scripts/update-composers.ts"
   },
