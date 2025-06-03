@@ -5,8 +5,11 @@ import { useState, useTransition, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useNavigate } from '@/app/hooks/useNavigate';
+import { BsGrid3X3Gap, BsList } from 'react-icons/bs';
+import ComposerCard from './ComposerCard';
+import ComposerCardList from './ComposerCardList';
 
-interface ComposerImslp {
+export interface ComposerImslp {
   epochName: string;
   name: string;
   id: string;
@@ -56,6 +59,7 @@ export default function ComposersClient({
 
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [selectedEpoch, setSelectedEpoch] = useState(initialSelectedEpoch);
+  const [showPhotos, setShowPhotos] = useState(false); // Padrão sem fotos (modo lista)
 
   // Função para atualizar URL com debounce
   const updateUrl = useCallback(
@@ -178,105 +182,75 @@ export default function ComposersClient({
           </div>
         </div>
 
-        {/* Informações dos resultados */}
-        <div className="mt-4 text-sm text-gray-600">
-          Mostrando {composers.length} de {totalCount} compositores
-          {searchTerm && ` para "${searchTerm}"`}
-          {selectedEpoch &&
-            ` da época "${epochs.find((e) => e.id === selectedEpoch)?.name}"`}
-          {isPending && (
-            <span className="ml-2 text-blue-600">• Carregando...</span>
-          )}
+        {/* Toggle para alternar entre visualizações */}
+        <div className="mt-4 flex items-center justify-between">
+          <div className="text-sm text-gray-600">
+            Mostrando {composers.length} de {totalCount} compositores
+            {searchTerm && ` para "${searchTerm}"`}
+            {selectedEpoch &&
+              ` da época "${epochs.find((e) => e.id === selectedEpoch)?.name}"`}
+            {isPending && (
+              <span className="ml-2 text-blue-600">• Carregando...</span>
+            )}
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-700 mr-2">Visualização:</span>
+            <button
+              onClick={() => setShowPhotos(false)}
+              className={`p-2 rounded-md transition-colors ${
+                !showPhotos
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+              title="Visualização em lista"
+            >
+              <BsList size={18} />
+            </button>
+            <button
+              onClick={() => setShowPhotos(true)}
+              className={`p-2 rounded-md transition-colors ${
+                showPhotos
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+              title="Visualização em grade com fotos"
+            >
+              <BsGrid3X3Gap size={18} />
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Lista de compositores */}
       {composers.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {composers.map((composer) => (
-            <div
-              key={composer.id}
-              className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => navigateToUrl('composer', composer.id)}
-            >
-              <div className="p-6">
-                {/* Foto do compositor */}
-                {composer.portraitUrl && (
-                  <div className="mb-4 flex justify-center">
-                    <div className="w-28 h-28 relative rounded-full overflow-hidden">
-                      <Image
-                        src={composer.portraitUrl}
-                        alt={composer.name}
-                        fill
-                        sizes="80px"
-                        className="object-cover"
-                        priority={false}
-                        loading="lazy"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Nome */}
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                  {composer.name}
-                </h3>
-
-                {/* Nome completo */}
-                {composer.fullName !== composer.name && (
-                  <p className="text-sm text-gray-600 mb-2">
-                    {composer.fullName}
-                  </p>
-                )}
-
-                {/* Datas */}
-                {(composer.birthDate || composer.deathDate) && (
-                  <p className="text-sm text-gray-500 mb-2">
-                    {composer.birthDate} - {composer.deathDate || 'presente'}
-                  </p>
-                )}
-
-                {/* Época */}
-                {composer.epochName && (
-                  <p className="text-sm text-blue-600 mb-3">
-                    {composer.epochName}
-                  </p>
-                )}
-
-                {/* Bio (resumida) */}
-                {/* {composer.bio && (
-                  <p className="text-sm text-gray-700 line-clamp-3 mb-4">
-                    {composer.bio}
-                  </p>
-                )} */}
-
-                {/* Links */}
-                <div className="flex gap-2">
-                  {composer.wikipediaLink && (
-                    <a
-                      href={composer.wikipediaLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded hover:bg-blue-200 transition-colors"
-                    >
-                      Wikipedia
-                    </a>
-                  )}
-                  {composer.permLinkImslp && (
-                    <a
-                      href={composer.permLinkImslp}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded hover:bg-green-200 transition-colors"
-                    >
-                      IMSLP
-                    </a>
-                  )}
-                </div>
+        showPhotos ? (
+          // Visualização em grade com fotos
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {composers.map((composer) => (
+              <div
+                key={composer.id}
+                className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => navigateToUrl('composer', composer.id)}
+              >
+                <ComposerCard composer={composer} key={composer.id} />
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          // Visualização em lista simples
+          <div className="bg-white rounded-lg shadow-sm border divide-y divide-gray-200">
+            {composers.map((composer) => (
+              <div
+                key={composer.id}
+                className="p-4 hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-between"
+                onClick={() => navigateToUrl('composer', composer.id)}
+              >
+                <ComposerCardList composer={composer} key={composer.id} />
+              </div>
+            ))}
+          </div>
+        )
       ) : (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">Nenhum compositor encontrado.</p>

@@ -20,6 +20,101 @@ export interface ComposerDetails {
   createdAt: Date;
 }
 
+// Interface atualizada sem childWorks
+export interface ComposerWork {
+  id: string;
+  title: string;
+  opOrCatalog?: string;
+  compositionYear?: string;
+  tone?: string;
+  mediaDuration?: string;
+  imslpPermlink: string;
+  videoUrl?: string;
+  instrument?: {
+    id: string;
+    name: string;
+  };
+  genre?: {
+    id: string;
+    name: string;
+  };
+  epoch?: {
+    id: string;
+    name: string;
+  };
+  workType: string;
+  isPartOfCollection: boolean;
+  parentWorkId?: string;
+}
+
+// Função corrigida sem childWorks
+export const getComposerWorks = unstable_cache(
+  async (composerId: string): Promise<ComposerWork[]> => {
+    try {
+      const works = await prisma.work.findMany({
+        where: {
+          composerId: composerId,
+        },
+        select: {
+          id: true,
+          title: true,
+          opOrCatalog: true,
+          compositionYear: true,
+          tone: true,
+          mediaDuration: true,
+          imslpPermlink: true,
+          videoUrl: true,
+          workType: true,
+          isPartOfCollection: true,
+          parentWorkId: true,
+
+          // genre: {
+          //   select: {
+          //     id: true,
+          //     name: true,
+          //   },
+          // },
+          // epoch: {
+          //   select: {
+          //     id: true,
+          //     name: true,
+          //   },
+          // },
+        },
+        orderBy: [
+          {
+            title: 'asc',
+          },
+        ],
+      });
+
+      return works.map((work) => ({
+        id: work.id,
+        title: work.title,
+        opOrCatalog: work.opOrCatalog || undefined,
+        compositionYear: work.compositionYear || undefined,
+        tone: work.tone || undefined,
+        mediaDuration: work.mediaDuration || undefined,
+        imslpPermlink: work.imslpPermlink,
+        videoUrl: work.videoUrl || undefined,
+        // instrument: work.instrument,
+        // genre: work.genre,
+        // epoch: work.epoch,
+        workType: work.workType,
+        isPartOfCollection: work.isPartOfCollection,
+        parentWorkId: work.parentWorkId || undefined,
+      }));
+    } catch (error) {
+      console.error('Erro ao buscar obras do compositor:', error);
+      return [];
+    }
+  },
+  ['composer-works'],
+  {
+    revalidate: 3600, // 1 hora
+    tags: ['composer-works'],
+  }
+);
 // Cache dos dados do compositor (exceto bio) por 2 horas
 const getCachedComposerData = unstable_cache(
   async (composerId: string) => {

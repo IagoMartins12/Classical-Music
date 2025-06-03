@@ -4,18 +4,21 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ComposerDetails } from '@/app/requests/composer-details';
+import { ComposerDetails, ComposerWork } from '@/app/requests/composer-details';
 import { CiCalendar } from 'react-icons/ci';
 import { LuBookOpen, LuMapPin } from 'react-icons/lu';
 import { FaExternalLinkAlt, FaRegUser } from 'react-icons/fa';
 import ComposerBiography from '../ComposerBiography';
+import ComposerWorks from '../ComposersClient/ComposerWorks';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
+  works: ComposerWork[];
 }
 
 export default function ComposerDetailsClient({
   composer,
+  works,
 }: ComposerDetailsClientProps) {
   const [imageError, setImageError] = useState(false);
 
@@ -230,7 +233,7 @@ export default function ComposerDetailsClient({
         }
 
         {/* Estatísticas */}
-        <div className="bg-white rounded-lg shadow-sm border p-8">
+        <div className="bg-white rounded-lg shadow-sm border p-8  mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
             Estatísticas
           </h2>
@@ -259,6 +262,8 @@ export default function ComposerDetailsClient({
             )}
           </div>
         </div>
+
+        <ComposerWorks works={works} composerName={composer.name} />
       </div>
     </div>
   );

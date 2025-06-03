@@ -99,7 +99,7 @@ const DEFAULT_WORK_GENRE_ID = '683da58e7620cf5c202dfeb7';
 const STATE_FILE = path.join(process.cwd(), 'work-scraper-state.json');
 const STATE_WORKS_FILE = path.join(process.cwd(), 'scraper-works-state.log');
 
-const BATCH_SIZE = 100;
+const BATCH_SIZE = 1000;
 const DELAY_BETWEEN_REQUESTS = 3000;
 const DELAY_BETWEEN_BATCHES = 10000;
 const MAX_RETRIES = 3;
@@ -1111,7 +1111,7 @@ class WorkScraper {
 
       // Compilar dados finais
       const finalWorkData: WorkData = {
-        title: workDetails.title || worktitle,
+        title: workDetails.title.replace(/"/g, '') || worktitle,
         composerId: workDetails.composerId ?? '',
         genreId: workDetails.genreId ?? DEFAULT_GENRE_ID,
         workGenreId: workDetails.workGenreId ?? DEFAULT_WORK_GENRE_ID,
@@ -1140,7 +1140,9 @@ class WorkScraper {
         workGenres: workDetails.workGenres || [],
       };
 
-      console.log(`✅ Dados extraídos para: ${finalWorkData.title}`);
+      console.log(
+        `✅ Dados extraídos para: ${finalWorkData.title.replace(/"/g, '')}`
+      );
       console.log(`   🎼 Instrumento: ${primaryInstrument?.name || 'N/A'}`);
       console.log(`   🎵 Gênero: ${primaryGenre?.name || 'N/A'}`);
       console.log(`   📋 Tonalidade: ${finalWorkData.tone}`);
@@ -1181,9 +1183,12 @@ class WorkScraper {
   async saveWork(workData: WorkData): Promise<boolean> {
     try {
       // Verificar se a obra já existe
-      const exists = await this.workExists(workData.imslpId, workData.title);
+      const exists = await this.workExists(
+        workData.imslpId,
+        workData.title.replace(/"/g, '')
+      );
       if (exists) {
-        console.log(`⚠️ Obra já existe: ${workData.title}`);
+        console.log(`⚠️ Obra já existe: ${workData.title.replace(/"/g, '')}`);
         return false;
       }
 
@@ -1225,7 +1230,7 @@ class WorkScraper {
       // Criar a obra no banco
       const savedWork = await prisma.work.create({
         data: {
-          title: workData.title,
+          title: workData.title.replace(/"/g, ''),
           composerId: workData.composerId,
           genreId: workData.genreId,
           instrumentId: workData.instrumentId,
@@ -1266,11 +1271,16 @@ class WorkScraper {
           });
 
           console.log(
-            `🏷️ Conectadas ${categoryIds.length} categorias à obra: ${workData.title}`
+            `🏷️ Conectadas ${
+              categoryIds.length
+            } categorias à obra: ${workData.title.replace(/"/g, '')}`
           );
         } catch (error) {
           console.error(
-            `❌ Erro ao conectar categorias à obra ${workData.title}:`,
+            `❌ Erro ao conectar categorias à obra ${workData.title.replace(
+              /"/g,
+              ''
+            )}:`,
             error
           );
         }
@@ -1289,25 +1299,37 @@ class WorkScraper {
           });
 
           console.log(
-            `🏷️ Conectadas ${workGenresId.length} work genres à obra: ${workData.title}`
+            `🏷️ Conectadas ${
+              workGenresId.length
+            } work genres à obra: ${workData.title.replace(/"/g, '')}`
           );
         } catch (error) {
           console.error(
-            `❌ Erro ao conectar categorias à obra ${workData.title}:`,
+            `❌ Erro ao conectar categorias à obra ${workData.title.replace(
+              /"/g,
+              ''
+            )}:`,
             error
           );
         }
       }
 
-      console.log(`💾 Obra salva com sucesso: ${workData.title}\n`);
+      console.log(
+        `💾 Obra salva com sucesso: ${workData.title.replace(/"/g, '')}\n`
+      );
       await fs.appendFile(
         STATE_WORKS_FILE,
-        `✅ ${workData.imslpId} / ${workData.title} / ${workData.workType} / Categorias: ${workData.categories.length} / \n`
+        `✅ ${workData.imslpId} / ${workData.title.replace(/"/g, '')} / ${
+          workData.workType
+        } / Categorias: ${workData.categories.length} / \n`
       );
 
       return true;
     } catch (error) {
-      console.error(`❌ Erro ao salvar obra ${workData.title}:`, error);
+      console.error(
+        `❌ Erro ao salvar obra ${workData.title.replace(/"/g, '')}:`,
+        error
+      );
       await fs.appendFile(
         STATE_WORKS_FILE,
         `❌ ${workData.imslpId} / Erro ao salvar:\n`

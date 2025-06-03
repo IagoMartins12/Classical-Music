@@ -242,7 +242,6 @@ export const WORK_GENRE_TRANSLATIONS: Record<string, string> = {
   pastorales: 'pastorais',
   pavans: 'pavanas',
   'performance practice': 'prática interpretativa',
-  pieces: 'peças',
   plainchant: 'cantochão',
   polkas: 'polcas',
   polonaises: 'polonesas',
