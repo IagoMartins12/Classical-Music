@@ -1,3 +1,5 @@
+import { composerHomeProps } from '../components/PopularComposers';
+
 interface RandomWorkOptions {
   popularwork?: number;
   recommendedwork?: number;
@@ -32,8 +34,8 @@ interface LazyImageProps {
   className?: string;
 }
 
-interface CarouselCardProps {
-  item: Composers;
+export interface CarouselCardProps {
+  item: composerHomeProps;
   isActive: boolean;
 }
 
@@ -60,8 +62,8 @@ interface CarouselContainerProps {
   isAnimating: boolean;
 }
 
-interface ModernCarouselProps {
-  items: Composers[];
+export interface ModernCarouselProps {
+  items: composerHomeProps[];
   itemsPerView?: number;
   autoPlay?: boolean;
   autoPlayInterval?: number;

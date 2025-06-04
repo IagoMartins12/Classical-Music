@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import ListComposersCards from '../Cards/ListComposersCard';
+import { composerHomeProps } from '../../PopularComposers';
+import { useRouter } from 'next/router';
+import { useNavigate } from '@/app/hooks/useNavigate';
 
 interface listComposersProps {
-  composers: Composers[];
+  composers: composerHomeProps[];
 }
 
 const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
   const [activeComposerId, setActiveComposerId] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(10);
 
+  const { navigateToUrl } = useNavigate();
   const handleLoadMore = () => {
     setVisibleCount((prev) => prev + 10);
   };
@@ -31,13 +35,22 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
         </div>
       ))}
 
-      {visibleCount < composers.length && (
+      {visibleCount < composers.length ? (
         <div className="w-full flex justify-center mt-6">
           <button
             onClick={handleLoadMore}
             className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
           >
             Mais compositores
+          </button>
+        </div>
+      ) : (
+        <div className="w-full flex justify-center mt-6">
+          <button
+            onClick={() => navigateToUrl('composers')}
+            className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            Ver todos compositores
           </button>
         </div>
       )}

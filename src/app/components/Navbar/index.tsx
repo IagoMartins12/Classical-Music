@@ -1,4 +1,6 @@
 'use client';
+import { useNavigate } from '@/app/hooks/useNavigate';
+import Link from 'next/link';
 import React, { useState } from 'react';
 
 interface NavItem {
@@ -24,7 +26,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className="bg-white border-gray-200 py-2.5 dark:bg-gray-900">
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
-        <a href="#" className="flex items-center">
+        <Link href="/" className="flex items-center">
           <img
             src="https://www.svgrepo.com/show/276515/piano.svg"
             className="h-6 mr-3 sm:h-9"
@@ -33,7 +35,7 @@ const Navbar: React.FC = () => {
           <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
             Classical music
           </span>
-        </a>
+        </Link>
         <div className="flex items-center lg:order-2">
           <a
             href="https://themesberg.com/product/tailwind-css/landing-page"

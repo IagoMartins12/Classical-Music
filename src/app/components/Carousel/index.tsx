@@ -2,64 +2,18 @@
 
 import React, { useEffect, useState } from 'react';
 import Carousel from './Carousel';
+import { composerHomeProps } from '../PopularComposers';
 
 interface CarouselControlsProp {
-  showComposers: 'popular' | 'random' | 'essential';
+  popularComposers: composerHomeProps[];
 }
 
-const CarouselControl: React.FC<CarouselControlsProp> = ({ showComposers }) => {
-  const [actualComposers, setActualComposers] = useState<Composers[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchComposers = async () => {
-      setLoading(true);
-      setError(null);
-
-      const redirectUrl: Record<string, string> = {
-        popular: '/api/popularComposers',
-        essential: '/api/essentialComposers',
-        random: '/api/randomComposers', // Certifique-se de que esta rota existe
-      };
-
-      const endpoint = redirectUrl[showComposers];
-
-      if (!endpoint) {
-        setError('Tipo de compositor inválido.');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const res = await fetch(endpoint);
-        if (!res.ok) {
-          throw new Error(`Erro na requisição: ${res.statusText}`);
-        }
-        const data = await res.json();
-        setActualComposers(data);
-      } catch (err) {
-        console.log('err', err);
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchComposers();
-  }, [showComposers]);
-
-  if (loading) {
-    return <div>Carregando compositores...</div>;
-  }
-
-  if (error) {
-    return <div>Erro ao carregar compositores: {error}</div>;
-  }
-
+const CarouselControl: React.FC<CarouselControlsProp> = ({
+  popularComposers,
+}) => {
   return (
     <Carousel
-      items={actualComposers}
+      items={popularComposers}
       itemsPerView={4}
       autoPlay={false}
       autoPlayInterval={4000}

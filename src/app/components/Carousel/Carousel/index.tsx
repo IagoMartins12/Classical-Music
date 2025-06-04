@@ -4,6 +4,7 @@ import CarouselContainer from '../CarouselContainer';
 import CarouselCard from '../CarouselCard';
 import CarouselIndicators from '../CarouselIndicators';
 import useIsMobile from '@/app/hooks/useIsMobile';
+import { ModernCarouselProps } from '@/app/types/types';
 
 const Carousel: React.FC<ModernCarouselProps> = ({
   items,

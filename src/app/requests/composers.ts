@@ -109,6 +109,179 @@ export const getComposersWithPagination = unstable_cache(
   }
 );
 
+export const getTop20FamousComposers = unstable_cache(
+  async () => {
+    const famousComposerNames = [
+      'Ludwig van Beethoven',
+      'Wolfgang Amadeus Mozart',
+      'Johann Sebastian Bach',
+      'Richard Wagner',
+      'Joseph Haydn',
+      'Johannes Brahms',
+      'Franz Schubert',
+      'Peter Ilyich Tchaikovsky',
+      'George Frideric Handel',
+      'Igor Stravinsky',
+      'Robert Schumann',
+      'Felix Mendelssohn',
+      'Claude Debussy',
+      'Gustav Mahler',
+      'Franz Liszt ',
+      'Maurice Ravel',
+      'Antonín Dvořák',
+      'Antonio Vivaldi',
+      'Dmitri Shostakovich',
+      'Steve Reich',
+      'Frédéric Chopin',
+    ];
+
+    const composers = await prisma.composer.findMany({
+      where: {
+        fullName: {
+          in: famousComposerNames,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        fullName: true,
+        portraitUrl: true,
+        epoch: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return composers.map((composer) => ({
+      ...composer,
+      epochName: composer.epoch.name,
+    }));
+  },
+  ['top-20-famous-composers'],
+  {
+    revalidate: 86400, // 24 horas
+    tags: ['composers', 'famous'],
+  }
+);
+
+export const getRecomendadedComposers = unstable_cache(
+  async () => {
+    const remainingComposerNames = [
+      'Serge Prokofiev',
+      'Dmitri Shostakovich',
+      'Béla Bartók',
+      'Hector Berlioz',
+      'Anton Bruckner',
+      'Giovanni Pierluigi da Palestrina',
+      'Claudio Monteverdi',
+      'Jean Sibelius',
+      'Maurice Ravel',
+      'Ralph Vaughan Williams',
+      'Modest Mussorgsky',
+      'Giacomo Puccini',
+      'Henry Purcell',
+      'Gioacchino Rossini',
+      'Edward Elgar',
+      'Sergei Rachmaninoff',
+      'Camille Saint-Saëns',
+      'Josquin Des Prez',
+      'Nikolai Rimsky-Korsakov',
+      'Carl Maria von Weber',
+      'Jean-Philippe Rameau',
+      'Jean-Baptiste Lully',
+      'Gabriel Fauré',
+      'Edvard Grieg',
+      'Christoph Willibald Gluck',
+      'Arnold Schoenberg',
+      'Charles Ives',
+      'Paul Hindemith',
+      'Olivier Messiaen',
+      'Aaron Copland',
+      'Francois Couperin',
+      'William Byrd',
+      'Erik Satie',
+      'Benjamin Britten',
+      'Bedrick Smetana',
+      'César Franck',
+      'Alexander Nikolayevich Scriabin',
+      'Georges Bizet',
+      'Domenico Scarlatti',
+      'Georg Philipp Telemann',
+      'Anton Webern',
+      'Roland de Lassus',
+      'George Gershwin',
+      'Gaetano Donizetti',
+      'Carl Philipp Emanuel Bach',
+      'Archangelo Corelli',
+      'Thomas Tallis',
+      'Johann Strauss II',
+      'Leos Janácek',
+      'Guillaume de Machaut',
+      'Alban Berg',
+      'Alexander Borodin',
+      'Vincenzo Bellini',
+      'Charles Gounod',
+      'Jules Massenet',
+      'Francis Poulenc',
+      'Giovanni Gabrieli',
+      'Pérotin',
+      'Heinrich Schütz',
+      'John Cage',
+      'Giovanni Battista Pergolesi',
+      'John Dowland',
+      'Gustav Holst',
+      'Dietrich Buxtehude',
+      'Ottorino Respighi',
+      'Guillaume Dufay',
+      'Hugo Wolf',
+      'Carl Nielsen',
+      'William Walton',
+      'Darius Milhaud',
+      'Orlando Gibbons',
+      'Giacomo Meyerbeer',
+      'Samuel Barber',
+      'Tomás Luis de Victoria',
+      'Léonin',
+      'Manuel de Falla',
+      'Hildegard von Bingen',
+      'Mikhail Glinka',
+      'Alexander Glazunov',
+      'Don Carlo Gesualdo',
+    ];
+
+    const composers = await prisma.composer.findMany({
+      where: {
+        fullName: {
+          in: remainingComposerNames,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        fullName: true,
+        portraitUrl: true,
+        epoch: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return composers.map((composer) => ({
+      ...composer,
+      epochName: composer.epoch.name,
+    }));
+  },
+  ['get-recomendaded-composers'],
+  {
+    revalidate: 86400, // 24 horas
+    tags: ['composers', 'famous'],
+  }
+);
+
 // Count otimizado com cache
 export const getComposersCount = unstable_cache(
   async ({ search, epochId }: CountParams) => {
