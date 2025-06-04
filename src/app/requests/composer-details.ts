@@ -18,6 +18,7 @@ export interface ComposerDetails {
   primaryRoleName?: string;
   worksCount: number;
   createdAt: Date;
+  roleNames?: string[];
 }
 
 // Interface atualizada sem childWorks
@@ -40,6 +41,9 @@ export interface ComposerWork {
   };
   epoch?: {
     id: string;
+    name: string;
+  };
+  roles?: {
     name: string;
   };
   workType: string;
@@ -130,6 +134,7 @@ const getCachedComposerData = unstable_cache(
           birthDate: true,
           deathDate: true,
           portraitUrl: true,
+          roles: true,
           // bio: true, // Removido do cache
           permLinkImslp: true,
           wikipediaLink: true,
@@ -158,6 +163,25 @@ const getCachedComposerData = unstable_cache(
         return null;
       }
 
+      // Converter string de IDs em array e buscar os nomes dos gêneros
+      let roleNames: string[] = [];
+      if (composer.roles) {
+        const roleIds = composer.roles.split(', ').map((id) => id.trim());
+
+        const genres = await prisma.role.findMany({
+          where: {
+            id: {
+              in: roleIds,
+            },
+          },
+          select: {
+            name: true,
+          },
+        });
+
+        roleNames = genres.map((genre) => genre.name);
+      }
+
       return {
         id: composer.id,
         name: composer.name,
@@ -173,6 +197,8 @@ const getCachedComposerData = unstable_cache(
         primaryRoleName: composer.primaryRole?.name || undefined,
         worksCount: composer._count.works,
         createdAt: composer.createdAt,
+        roles: composer.roles, // IDs originais
+        roleNames: roleNames, // Nomes dos gêneros
       };
     } catch (error) {
       console.error('Erro ao buscar dados básicos do compositor:', error);

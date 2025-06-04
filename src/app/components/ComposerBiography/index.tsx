@@ -140,7 +140,7 @@ export default function ComposerBiography({
   }
 
   return (
-    <div className="prose prose-gray max-w-none">
+    <div className="max-w-none">
       <div className="whitespace-pre-line text-gray-700 leading-relaxed">
         {displayBio}
       </div>

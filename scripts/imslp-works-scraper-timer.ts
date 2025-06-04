@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { Composer, Epoch, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import fs from 'fs/promises';
 import path from 'path';
 import {
@@ -70,6 +70,13 @@ interface ScraperState {
   isRunning: boolean;
   lastSuccessfulBatch: number;
 }
+
+interface TimerState {
+  startTime: number | null;
+  totalElapsedTime: number;
+  lastPauseTime: number | null;
+}
+
 interface WorkGenreData {
   id: string;
   name: string;
@@ -99,6 +106,7 @@ let globalWorkScraperInstance: WorkScraper | null = null;
 class WorkScraper {
   private state: ScraperState;
   private shouldStop: boolean = false;
+  private timer: TimerState;
   private cache: InstrumentGenreCache;
 
   constructor() {
@@ -111,6 +119,12 @@ class WorkScraper {
       lastUpdate: new Date().toISOString(),
       isRunning: false,
       lastSuccessfulBatch: 0,
+    };
+
+    this.timer = {
+      startTime: null,
+      totalElapsedTime: 0,
+      lastPauseTime: null,
     };
 
     this.cache = {
@@ -208,60 +222,6 @@ class WorkScraper {
       return translatedNote;
     }
   }
-  translateInstrumentation(instrumentation: string): string {
-    if (!instrumentation || typeof instrumentation !== 'string') {
-      return '';
-    }
-
-    // Limpar e normalizar a string
-    let translated = instrumentation.toLowerCase().trim();
-
-    // Substituir vírgulas seguidas por espaços para padronizar separadores
-    translated = translated.replace(/,\s*/g, ', ');
-
-    // Substituir "and" por vírgula para facilitar o processamento
-    translated = translated.replace(/\s+and\s+/g, ', ');
-
-    // Substituir parênteses e outros caracteres especiais
-    translated = translated.replace(/[()]/g, '');
-
-    // Aplicar traduções - primeiro termos compostos (mais específicos)
-    const sortedKeys = Object.keys(INSTRUMENT_MAPPING).sort(
-      (a, b) => b.length - a.length
-    );
-
-    for (const englishTerm of sortedKeys) {
-      const portugueseTerm = INSTRUMENT_MAPPING[englishTerm];
-
-      // Criar regex para match de palavra completa, considerando espaços e vírgulas
-      const regex = new RegExp(
-        `\\b${englishTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`,
-        'gi'
-      );
-      translated = translated.replace(regex, portugueseTerm);
-    }
-
-    // Capitalizar primeira letra de cada instrumento
-    translated = translated
-      .split(', ')
-      .map((instrument) => {
-        return (
-          instrument.trim().charAt(0).toUpperCase() + instrument.trim().slice(1)
-        );
-      })
-      .join(', ');
-
-    // Limpar espaços extras
-    translated = translated.replace(/\s+/g, ' ').trim();
-
-    // Remover vírgulas duplicadas
-    translated = translated.replace(/,\s*,/g, ',');
-
-    // Garantir que não termine com vírgula
-    translated = translated.replace(/,\s*$/, '');
-
-    return translated;
-  }
 
   // Carregar estado salvo
   async loadState(): Promise<void> {
@@ -271,7 +231,16 @@ class WorkScraper {
 
       this.state = { ...this.state, ...savedState };
 
+      if (savedState.timer) {
+        this.timer = { ...this.timer, ...savedState.timer };
+      }
+
       console.log('✓ Estado carregado:', this.state);
+      console.log(
+        `⏱ Tempo total acumulado: ${this.formatElapsedTime(
+          this.timer.totalElapsedTime
+        )}`
+      );
     } catch (error) {
       console.log('⚠ Nenhum estado anterior encontrado, iniciando do zero');
     }
@@ -284,6 +253,7 @@ class WorkScraper {
 
       const stateToSave = {
         ...this.state,
+        timer: this.timer,
       };
 
       await fs.writeFile(STATE_FILE, JSON.stringify(stateToSave, null, 2));
@@ -295,14 +265,68 @@ class WorkScraper {
     }
   }
 
+  // Métodos de timer
+  startTimer(): void {
+    if (!this.timer.startTime) {
+      this.timer.startTime = Date.now();
+      console.log(`⏱ Timer iniciado: ${new Date().toLocaleTimeString()}`);
+    }
+  }
+
+  pauseTimer(): void {
+    if (this.timer.startTime) {
+      const currentTime = Date.now();
+      this.timer.totalElapsedTime += currentTime - this.timer.startTime;
+      this.timer.lastPauseTime = currentTime;
+      this.timer.startTime = null;
+    }
+  }
+
+  resumeTimer(): void {
+    if (!this.timer.startTime && this.timer.lastPauseTime) {
+      this.timer.startTime = Date.now();
+      console.log(`⏱ Timer retomado: ${new Date().toLocaleTimeString()}`);
+    }
+  }
+
+  getTotalElapsedTime(): number {
+    let totalTime = this.timer.totalElapsedTime;
+
+    if (this.timer.startTime) {
+      totalTime += Date.now() - this.timer.startTime;
+    }
+
+    return totalTime;
+  }
+
+  formatElapsedTime(timeInMs: number): string {
+    const totalSeconds = Math.floor(timeInMs / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+      return `${hours}h ${minutes}m ${seconds}s`;
+    } else if (minutes > 0) {
+      return `${minutes}m ${seconds}s`;
+    } else {
+      return `${seconds}s`;
+    }
+  }
+
   // Método para parar graciosamente
   async gracefulStop(): Promise<void> {
     console.log('\n🛑 Parando scraper de obras graciosamente...');
 
+    this.pauseTimer();
     this.shouldStop = true;
     this.state.isRunning = false;
     await this.saveState();
 
+    const totalTime = this.getTotalElapsedTime();
+    console.log(
+      `⏱ Tempo total de execução: ${this.formatElapsedTime(totalTime)}`
+    );
     console.log(
       '✅ Estado salvo com sucesso. Você pode continuar depois com "npm run work-scraper start"'
     );
@@ -545,7 +569,7 @@ class WorkScraper {
   }
 
   // Buscar compositor no banco de dados
-  async findComposerInDatabase(composerName: string): Promise<Composer | null> {
+  async findComposerInDatabase(composerName: string): Promise<any> {
     try {
       let composer = await prisma.composer.findFirst({
         where: {
@@ -577,7 +601,18 @@ class WorkScraper {
       }
 
       if (!composer) {
-        return null;
+        composer = await prisma.composer.findFirst({
+          where: {
+            OR: [
+              { name: { contains: 'Anonymous', mode: 'insensitive' } },
+              { fullName: { contains: 'Anonymous', mode: 'insensitive' } },
+            ],
+          },
+        });
+
+        console.error(
+          `❌ Compositor não encontrado: ${composerName}, usando 'Anonymous'`
+        );
       }
       return composer;
     } catch (error) {
@@ -880,8 +915,7 @@ class WorkScraper {
           // Instrumentação
           case header.includes('instrumentation') || header.includes('scoring'):
             if (value && value !== '-' && value.length > 0) {
-              workDetails.instrumentation =
-                this.translateInstrumentation(value);
+              workDetails.instrumentation = value;
             }
             break;
 
@@ -896,6 +930,9 @@ class WorkScraper {
             break;
         }
       });
+
+      // Extrair informações adicionais do conteúdo da página
+      const pageText = $('body').text().toLowerCase();
 
       // Extrair múltiplas categorias
       const categories = await this.extractWorkCategories($);
@@ -1023,38 +1060,48 @@ class WorkScraper {
       workDetails.genreId = primaryGenre?.id || DEFAULT_GENRE_ID;
       workDetails.workGenreId = primaryWorkGenre?.id || DEFAULT_WORK_GENRE_ID;
 
-      let epoch = workDetails.workStyle;
-      let epochData: null | Epoch = null;
+      // Determinar época baseada no compositor ou ano
+      let epoch = null;
+      if (workDetails.compositionYear) {
+        const year = parseInt(
+          workDetails.compositionYear.match(/\d{4}/)?.[0] || '0'
+        );
 
-      if (epoch) {
-        epochData = await prisma.epoch.findFirst({
-          where: { name: { contains: epoch, mode: 'insensitive' } },
-        });
+        if (year > 0) {
+          if (year < 1750) {
+            epoch = 'Barroco';
+          } else if (year < 1820) {
+            epoch = 'Clássico';
+          } else if (year < 1900) {
+            epoch = 'Romântico';
+          } else if (year < 1950) {
+            epoch = 'Moderno';
+          } else {
+            epoch = 'Contemporâneo';
+          }
+        }
       }
 
-      if (epoch == 'Early 20th century' || epoch === 'Modern') {
-        epochData = await prisma.epoch.findFirst({
-          where: { name: { contains: 'modernismo', mode: 'insensitive' } },
-        });
+      // Se não conseguiu determinar pela data, usar época do compositor
+      if (!epoch && composerData.epoch) {
+        epoch = composerData.epoch;
       }
-      // Se não conseguiu determinar pela época da obra, usar época do compositor
-      if (!epochData && composerData.epochName) {
-        epochData = await prisma.epoch.findFirst({
-          where: {
-            name: { contains: composerData.epochName, mode: 'insensitive' },
-          },
-        });
+
+      // Época padrão
+      if (!epoch) {
+        epoch = 'Clássico';
       }
+
+      // Buscar ou criar época
+      let epochData = await prisma.epoch.findFirst({
+        where: { name: { contains: epoch, mode: 'insensitive' } },
+      });
 
       if (!epochData) {
         epochData = await prisma.epoch.create({
-          data: { name: 'Desconhecido' },
+          data: { name: epoch },
         });
-        console.log(
-          `🏛️ Nova época criada: ${
-            epoch || composerData.epochName || 'Desconhecido'
-          }`
-        );
+        console.log(`🏛️ Nova época criada: ${epoch}`);
       }
 
       workDetails.epochId = epochData.id;
@@ -1176,66 +1223,74 @@ class WorkScraper {
         }
       }
 
-      // Usar transação para garantir consistência dos dados
-      const result = await prisma.$transaction(async (tx) => {
-        // Criar a obra no banco
-        const savedWork = await tx.work.create({
-          data: {
-            title: workData.title.replace(/"/g, ''),
-            composerId: workData.composerId,
-            genreId: workData.genreId,
-            instrumentId: workData.instrumentId,
-            epochId: workData.epochId,
-            imslpPermlink: workData.imslpPermlink,
-            imslpId: workData.imslpId,
-            videoUrl: workData.videoUrl,
-            opOrCatalog: workData.opOrCatalog,
-            compositionYear: workData.compositionYear,
-            firstPublishDate: workData.firstPublishDate,
-            tone: workData.tone,
-            mediaDuration: workData.mediaDuration,
-            workStyle: workData.workStyle,
-            moviment: workData.moviment,
-            dedicateTo: workData.dedicateTo,
-            dedicationComposerLink: workData.dedicationComposerLink,
-            instrumentation: workData.instrumentation,
-            genres: workData.genres,
-            workType: workData.workType,
-            isPartOfCollection: workData.isPartOfCollection,
-            parentWorkId: workData.parentWorkId,
-            movementNumber: workData.movementNumber,
-            createdAt: new Date(),
-          },
-        });
+      // Criar a obra no banco
+      const savedWork = await prisma.work.create({
+        data: {
+          title: workData.title.replace(/"/g, ''),
+          composerId: workData.composerId,
+          genreId: workData.genreId,
+          instrumentId: workData.instrumentId,
+          epochId: workData.epochId,
+          imslpPermlink: workData.imslpPermlink,
+          imslpId: workData.imslpId,
+          videoUrl: workData.videoUrl,
+          opOrCatalog: workData.opOrCatalog,
+          compositionYear: workData.compositionYear,
+          firstPublishDate: workData.firstPublishDate,
+          tone: workData.tone,
+          mediaDuration: workData.mediaDuration,
+          workStyle: workData.workStyle,
+          moviment: workData.moviment,
+          dedicateTo: workData.dedicateTo,
+          dedicationComposerLink: workData.dedicationComposerLink,
+          instrumentation: workData.instrumentation,
+          genres: workData.genres,
+          workType: workData.workType,
+          isPartOfCollection: workData.isPartOfCollection,
+          parentWorkId: workData.parentWorkId,
+          movementNumber: workData.movementNumber,
+          createdAt: new Date(),
+        },
+      });
 
-        // Criar relacionamentos com categorias (many-to-many)
-        if (categoryIds.length > 0) {
-          const categoryConnections = categoryIds.map((categoryId) => ({
-            workId: savedWork.id,
-            categorieId: categoryId,
-          }));
+      // Criar relacionamentos com categorias (many-to-many)
+      if (categoryIds.length > 0) {
+        const categoryConnections = categoryIds.map((categoryId) => ({
+          workId: savedWork.id,
+          categorieId: categoryId,
+        }));
 
-          await tx.workCategorie.createMany({
+        try {
+          await prisma.workCategorie.createMany({
             data: categoryConnections,
           });
 
           console.log(
-            `🏷️ Conectadas ${categoryIds} categorias à obra: ${workData.title.replace(
+            `🏷️ Conectadas ${
+              categoryIds.length
+            } categorias à obra: ${workData.title.replace(/"/g, '')}`
+          );
+        } catch (error) {
+          console.error(
+            `❌ Erro ao conectar categorias à obra ${workData.title.replace(
               /"/g,
               ''
-            )}`
+            )}:`,
+            error
           );
         }
+      }
 
-        // Criar relacionamentos com work genres (many-to-many)
-        if (workGenresId.length > 0) {
-          const workGenreConnections = workGenresId.map((workGenreID) => ({
-            workId: savedWork.id,
-            workGenreId: workGenreID,
-          }));
+      // Criar relacionamentos com work genres (many-to-many)
+      if (workGenresId.length > 0) {
+        const categoryConnections = workGenresId.map((workGenreID) => ({
+          workId: savedWork.id,
+          workGenreId: workGenreID,
+        }));
 
-          await tx.workGenresTypes.createMany({
-            data: workGenreConnections,
+        try {
+          await prisma.workGenresTypes.createMany({
+            data: categoryConnections,
           });
 
           console.log(
@@ -1243,15 +1298,20 @@ class WorkScraper {
               workGenresId.length
             } work genres à obra: ${workData.title.replace(/"/g, '')}`
           );
+        } catch (error) {
+          console.error(
+            `❌ Erro ao conectar categorias à obra ${workData.title.replace(
+              /"/g,
+              ''
+            )}:`,
+            error
+          );
         }
-
-        return savedWork;
-      });
+      }
 
       console.log(
         `💾 Obra salva com sucesso: ${workData.title.replace(/"/g, '')}\n`
       );
-
       await fs.appendFile(
         STATE_WORKS_FILE,
         `✅ ${workData.imslpId} / ${workData.title.replace(/"/g, '')} / ${
@@ -1344,6 +1404,9 @@ class WorkScraper {
       console.log(
         `🔄 Continuando scraper da posição ${this.state.currentStart} (já processados: ${this.state.totalProcessed}, já adicionados: ${this.state.totalAdded})`
       );
+      this.resumeTimer();
+    } else {
+      this.startTimer();
     }
 
     this.state.isRunning = true;
@@ -1354,6 +1417,13 @@ class WorkScraper {
       let hasMoreWorks = true;
 
       while (hasMoreWorks && !this.shouldStop) {
+        const currentElapsed = this.getTotalElapsedTime();
+        console.log(
+          `\n🔄 Iniciando lote - Start: ${
+            this.state.currentStart
+          } | Tempo: ${this.formatElapsedTime(currentElapsed)}`
+        );
+
         const works = await this.fetchWorks(this.state.currentStart);
 
         if (works.length === 0) {
@@ -1369,12 +1439,14 @@ class WorkScraper {
 
         await this.saveState();
 
+        const totalElapsed = this.getTotalElapsedTime();
         console.log(
           `📊 Lote concluído - Processados: ${result.processed}, Adicionados: ${result.added}`
         );
         console.log(
           `📈 Total - Processados: ${this.state.totalProcessed}, Adicionados: ${this.state.totalAdded}`
         );
+        console.log(`⏱ Tempo total: ${this.formatElapsedTime(totalElapsed)}`);
 
         if (this.shouldStop) {
           console.log('🛑 Scraper interrompido pelo usuário');
@@ -1394,13 +1466,19 @@ class WorkScraper {
       }
 
       if (!this.shouldStop) {
+        this.pauseTimer();
+        const finalTime = this.getTotalElapsedTime();
         console.log(`\n🎉 Work Scraper concluído!`);
         console.log(`📊 Estatísticas finais:`);
         console.log(`   - Total processados: ${this.state.totalProcessed}`);
         console.log(`   - Total adicionados: ${this.state.totalAdded}`);
+        console.log(`   - Tempo total: ${this.formatElapsedTime(finalTime)}`);
       }
     } catch (error) {
       console.error('❌ Erro fatal no scraper:', error);
+      this.pauseTimer();
+      const errorTime = this.getTotalElapsedTime();
+      console.log(`⏱ Tempo até o erro: ${this.formatElapsedTime(errorTime)}`);
       console.log(
         '💾 Estado foi salvo. Você pode continuar com "npm run work-scraper start"'
       );
@@ -1414,9 +1492,13 @@ class WorkScraper {
   // Métodos auxiliares (mesmo padrão do scraper de compositores)
   async stop(): Promise<void> {
     console.log('🛑 Parando scraper de obras...');
+    this.pauseTimer();
+    const totalTime = this.getTotalElapsedTime();
     this.state.isRunning = false;
     await this.saveState();
-
+    console.log(
+      `⏱ Tempo total de execução: ${this.formatElapsedTime(totalTime)}`
+    );
     console.log(
       '✅ Scraper parado. Estado salvo. Use "start" para continuar de onde parou.'
     );
@@ -1435,12 +1517,19 @@ class WorkScraper {
       totalSkipped: 0,
     };
 
+    this.timer = {
+      startTime: null,
+      totalElapsedTime: 0,
+      lastPauseTime: null,
+    };
+
     await this.saveState();
     console.log('✅ Estado resetado. Próxima execução começará do início.');
   }
 
   async status(): Promise<void> {
     await this.loadState();
+    const currentTime = this.getTotalElapsedTime();
 
     console.log('📊 Status do Scraper:');
     console.log(`   - Posição atual: ${this.state.currentStart}`);
@@ -1451,6 +1540,7 @@ class WorkScraper {
     console.log(`   - Total adicionados: ${this.state.totalAdded}`);
     console.log(`   - Rodando: ${this.state.isRunning ? 'Sim' : 'Não'}`);
     console.log(`   - Última atualização: ${this.state.lastUpdate}`);
+    console.log(`   - Tempo total: ${this.formatElapsedTime(currentTime)}`);
 
     if (this.state.totalProcessed > 0) {
       const successRate = (
@@ -1458,6 +1548,15 @@ class WorkScraper {
         100
       ).toFixed(2);
       console.log(`   - Taxa de sucesso: ${successRate}%`);
+
+      // Calcular velocidade média
+      if (currentTime > 0) {
+        const itemsPerSecond = (
+          this.state.totalProcessed /
+          (currentTime / 1000)
+        ).toFixed(2);
+        console.log(`   - Velocidade média: ${itemsPerSecond} items/s`);
+      }
     }
   }
   // Método para continuar de onde parou (alias para run)

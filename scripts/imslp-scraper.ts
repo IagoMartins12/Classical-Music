@@ -525,20 +525,80 @@ class IMSLPScraper {
       const $ = cheerio.load(pageResponse.data);
 
       // Verificar imagem
+      // Verificar imagem
       const imageElement = $('.cp_img img');
-      if (imageElement.length === 0) {
-        console.log(`⚠ Sem imagem: ${composer.id}`);
-        return null;
+      let hasValidImage = false;
+      let imageUrl = '';
+
+      if (imageElement.length > 0) {
+        const imgSrc = imageElement.attr('src');
+        if (imgSrc && !imgSrc.includes('Nocomposerphotoavailable')) {
+          hasValidImage = true;
+          imageUrl = imgSrc;
+        }
       }
 
-      const imageUrl = imageElement.attr('src');
-      if (!imageUrl || imageUrl.includes('Nocomposerphotoavailable')) {
-        console.log(`⚠ Compositor sem imagem: ${composer.id} \n`);
-        await fs.appendFile(
-          STATE_COMPOSERS_FILE,
-          ` ❌ ${composer.id} / Compositor sem image` + '\n'
+      // Se não tem imagem válida, verificar se tem pelo menos 5 composições
+      if (!hasValidImage) {
+        console.log(
+          `⚠ Compositor sem imagem: ${composer.id}, verificando composições...`
         );
-        return null;
+
+        // Buscar por link que contenha "Compositions" e extrair o número
+        const compositionsLink = $('.ui-tabs-nav a')
+          .filter((_, el) => {
+            return $(el).text().includes('Compositions');
+          })
+          .first();
+
+        if (compositionsLink.length > 0) {
+          const compositionsText = compositionsLink.text();
+          const compositionsMatch = compositionsText.match(
+            /Compositions \((\d+)\)/
+          );
+
+          if (compositionsMatch) {
+            const compositionsCount = parseInt(compositionsMatch[1]);
+            console.log(`🎼 Encontradas ${compositionsCount} composições`);
+
+            if (compositionsCount < 5) {
+              console.log(
+                `❌ Compositor sem imagem e com menos de 5 composições (${compositionsCount}): ${composer.id} \n`
+              );
+              await fs.appendFile(
+                STATE_COMPOSERS_FILE,
+                ` ❌ ${composer.id} / Compositor sem imagem e com menos de 5 composições (${compositionsCount})` +
+                  '\n'
+              );
+              return null;
+            } else {
+              console.log(
+                `✅ Compositor sem imagem mas com ${compositionsCount} composições (≥5), continuando...`
+              );
+              // Usar imagem padrão para compositores sem foto mas com composições suficientes
+              imageUrl =
+                'https://imslp.org/images/thumb/a/ad/Nocomposerphotoavailable.jpg/180px-Nocomposerphotoavailable.jpg';
+            }
+          } else {
+            console.log(
+              `⚠ Não foi possível extrair número de composições: ${composer.id} \n`
+            );
+            await fs.appendFile(
+              STATE_COMPOSERS_FILE,
+              ` ❌ ${composer.id} / Compositor sem imagem e não foi possível verificar composições` +
+                '\n'
+            );
+            return null;
+          }
+        } else {
+          console.log(`⚠ Não encontrou aba de composições: ${composer.id} \n`);
+          await fs.appendFile(
+            STATE_COMPOSERS_FILE,
+            ` ❌ ${composer.id} / Compositor sem imagem e sem aba de composições` +
+              '\n'
+          );
+          return null;
+        }
       }
 
       // Extrair link da Wikipedia (SEMPRE null se não encontrar)

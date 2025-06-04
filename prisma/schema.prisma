@@ -223,7 +223,7 @@ model Work {
 
   // Relations
   composer          Composer        @relation(fields: [composerId], references: [id])
-  genre             Genre           @relation(fields: [genreId], references: [id])
+  genre             Genre?           @relation(fields: [genreId], references: [id])
   epoch             Epoch           @relation(fields: [epochId], references: [id])
   instrument        Instrument      @relation(fields: [instrumentId], references: [id])
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { ComposerWork } from '@/app/requests/composer-details';
+import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import {
   FaGuitar,
@@ -231,9 +232,14 @@ export default function ComposerWorks({
                         {getInstrumentIcon(work.instrument.name)}
                       </div>
                     )}
-                    <h3 className="text-lg font-semibold text-gray-900">
+
+                    <Link
+                      href={`/works/${work.id}`}
+                      className="text-lg font-semibold text-blue-600 underline"
+                    >
                       {work.title}
-                    </h3>
+                    </Link>
+
                     {work.opOrCatalog && (
                       <span className="text-sm text-gray-500 bg-gray-200 px-2 py-1 rounded">
                         {work.opOrCatalog}

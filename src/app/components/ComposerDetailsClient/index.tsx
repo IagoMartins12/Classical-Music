@@ -7,7 +7,8 @@ import Link from 'next/link';
 import { ComposerDetails, ComposerWork } from '@/app/requests/composer-details';
 import { CiCalendar } from 'react-icons/ci';
 import { LuBookOpen, LuMapPin } from 'react-icons/lu';
-import { FaExternalLinkAlt, FaRegUser } from 'react-icons/fa';
+import { FaExternalLinkAlt, FaRegUser, FaUserTie } from 'react-icons/fa';
+import { MdPeople } from 'react-icons/md';
 import ComposerBiography from '../ComposerBiography';
 import ComposerWorks from '../ComposersClient/ComposerWorks';
 
@@ -39,6 +40,10 @@ export default function ComposerDetailsClient({
   };
 
   const lifeSpan = calculateLifeSpan();
+  console.log('composer', composer);
+
+  // Assumindo que composer tem uma propriedade roleNames (array de strings)
+  const secondaryRoles = composer.roleNames || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -199,6 +204,48 @@ export default function ComposerDetailsClient({
             </div>
           </div>
         </div>
+
+        {/* Seção de Papéis Secundários */}
+        {secondaryRoles.length > 0 && (
+          <div className="bg-white rounded-lg shadow-sm border p-8 mb-8">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full">
+                <FaUserTie className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Papéis Secundários
+                </h2>
+                <p className="text-gray-600">
+                  Outras funções exercidas por {composer.name}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              {secondaryRoles.map((role, index) => (
+                <span
+                  key={index}
+                  className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-full text-sm font-medium text-blue-800 shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <MdPeople className="w-4 h-4 mr-2 text-blue-600" />
+                  {role}
+                </span>
+              ))}
+            </div>
+
+            {secondaryRoles.length > 5 && (
+              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                <p className="text-sm text-gray-600">
+                  <strong>{composer.name}</strong> exerceu{' '}
+                  <strong>{secondaryRoles.length} funções diferentes</strong> ao
+                  longo de sua carreira, demonstrando sua versatilidade no mundo
+                  musical.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Biografia */}
         {
