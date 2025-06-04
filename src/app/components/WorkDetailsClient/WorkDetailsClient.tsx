@@ -144,19 +144,6 @@ export default function WorkDetailsClient({
                   </div>
                 )}
 
-                {/* Gênero */}
-                {work.genre && (
-                  <div className="flex items-start space-x-3">
-                    <LuTag className="w-5 h-5 text-gray-500 mt-0.5" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-500">
-                        Gênero
-                      </p>
-                      <p className="text-gray-900">{work.genre.name}</p>
-                    </div>
-                  </div>
-                )}
-
                 {/* Época */}
                 {work.epoch && (
                   <div className="flex items-start space-x-3">
@@ -219,29 +206,41 @@ export default function WorkDetailsClient({
                         </span>
                       </div>
                     )}
+
+                    {work.instrumentation && (
+                      <div className="md:col-span-2">
+                        <span className="font-medium text-gray-500">
+                          Gêneros:
+                        </span>
+                        <span className="ml-2 text-gray-900">
+                          {work.instrumentation}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
 
               {/* Tags de Categorias e Gêneros */}
-              {(work.categories.length > 0 || work.workGenres.length > 0) && (
+              {(work.categoryNames?.length > 0 ||
+                work.workGenres.length > 0) && (
                 <div className="border-t pt-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
                     Categorias e Gêneros
                   </h3>
                   <div className="space-y-3">
-                    {work.categories.length > 0 && (
+                    {work.categoryNames?.length > 0 && (
                       <div>
                         <span className="text-sm font-medium text-gray-500 block mb-2">
                           Categorias:
                         </span>
                         <div className="flex flex-wrap gap-2">
-                          {work.categories.map((category) => (
+                          {work.categoryNames.map((categoryName, index) => (
                             <span
-                              key={category.id}
+                              key={index}
                               className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
                             >
-                              {category.name}
+                              {categoryName}
                             </span>
                           ))}
                         </div>
@@ -256,7 +255,7 @@ export default function WorkDetailsClient({
                           {work.workGenres.map((genre) => (
                             <span
                               key={genre.id}
-                              className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full"
+                              className=" capitalize px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full"
                             >
                               {genre.name}
                             </span>

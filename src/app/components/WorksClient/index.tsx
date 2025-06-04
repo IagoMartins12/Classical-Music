@@ -160,7 +160,6 @@ export default function WorksClient({
   const hasActiveFilters =
     searchParams.search ||
     searchParams.composer ||
-    searchParams.genre ||
     searchParams.instrument ||
     searchParams.epoch;
 

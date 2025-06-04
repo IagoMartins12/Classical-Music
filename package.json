@@ -19,7 +19,9 @@
     "work-scraper:status": "tsx scripts/imslp-works-scraper.ts status",
     "clear-composers": "tsx scripts/clear-composers.ts",
     "clear-categories": "tsx scripts/clear-categories.ts",
-    "update-composers": "tsx scripts/update-composers.ts"
+    "update-composers": "tsx scripts/update-composers.ts",
+    "update-works": "tsx scripts/update-works.ts",
+    "fix-genre": "tsx scripts/fix-genre.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",

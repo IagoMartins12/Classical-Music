@@ -10,7 +10,7 @@ import {
   VALID_WORKGENRES,
   WORK_GENRE_TRANSLATIONS,
   INSTRUMENT_MAPPING,
-  NORMALIZED_SUBGENRES,
+  NORMALIZED_CATEGORIES,
   WORK_TYPE_KEYWORDS,
   NOTE_TRANSLATIONS,
   MODE_TRANSLATIONS,
@@ -34,7 +34,6 @@ interface Work {
 interface WorkData {
   title: string;
   composerId: string;
-  genreId: string;
   workGenreId: string;
   instrumentId: string;
   epochId: string;
@@ -51,12 +50,12 @@ interface WorkData {
   dedicateTo: string | null;
   dedicationComposerLink: string | null;
   instrumentation: string | null;
-  genres: string | null;
   workType: 'INDIVIDUAL' | 'COMPLETE_WORK' | 'ARRANGEMENT' | 'COLLECTION';
   isPartOfCollection: boolean;
   parentWorkId: string | null;
   movementNumber: number | null;
   categories: string[];
+  categoryNames?: string[];
   workGenres: string[];
 }
 
@@ -77,13 +76,11 @@ interface WorkGenreData {
 
 interface InstrumentGenreCache {
   instruments: Map<string, any>;
-  genres: Map<string, any>;
   categories: Map<string, any>;
   workGenres: Map<string, any>;
 }
 
 const DEFAULT_INSTRUMENT_ID = '68404f3b22f9d2cd16052284';
-const DEFAULT_GENRE_ID = '683da58e7620cf5c202dfeb7';
 const DEFAULT_WORK_GENRE_ID = '68404f6422f9d2cd16052285';
 
 const STATE_FILE = path.join(process.cwd(), 'work-scraper-state.json');
@@ -115,7 +112,6 @@ class WorkScraper {
 
     this.cache = {
       instruments: new Map(),
-      genres: new Map(),
       categories: new Map(),
       workGenres: new Map(),
     };
@@ -132,12 +128,6 @@ class WorkScraper {
         this.cache.instruments.set(instrument.name.toLowerCase(), instrument);
       });
 
-      // Carregar gêneros
-      const genres = await prisma.genre.findMany();
-      genres.forEach((genre) => {
-        this.cache.genres.set(genre.name.toLowerCase(), genre);
-      });
-
       // Carregar categorias
       const categories = await prisma.categorie.findMany();
       categories.forEach((category) => {
@@ -151,7 +141,7 @@ class WorkScraper {
       });
 
       console.log(
-        `📚 Cache inicializado: ${instruments.length} instrumentos, ${genres.length} gêneros, ${categories.length} categorias`
+        `📚 Cache inicializado: ${instruments.length} instrumentos, ${categories.length} categorias`
       );
     } catch (error) {
       console.error('❌ Erro ao inicializar cache:', error);
@@ -443,7 +433,9 @@ class WorkScraper {
     try {
       const normalizedName = workTypeName.toLowerCase().trim();
 
-      const translatedName = NORMALIZED_SUBGENRES[normalizedName];
+      const translatedName = NORMALIZED_CATEGORIES[normalizedName];
+
+      console.log('TRANSLATED NAMEEEE', translatedName);
 
       if (!translatedName) {
         // console.error(`❌ Categoria inválida ${workTypeName}:`);
@@ -661,7 +653,6 @@ class WorkScraper {
   async extractWorkCategories($: cheerio.CheerioAPI): Promise<string[]> {
     const categories: Set<string> = new Set();
 
-    // 1. Categorias de gênero
     $('.wp_header table tr').each((index, element) => {
       const $row = $(element);
       const header = $row.find('th').first().text().trim().toLowerCase();
@@ -673,13 +664,14 @@ class WorkScraper {
         $row.find('td a').each((i, link) => {
           const categoryName = $(link).text().trim();
 
-          const checkIfCategoryIsValid =
-            this.isValidMusicCategory(categoryName);
+          // Tenta obter o nome em português
+          const portugueseName = this.getCategoryNameInPortuguese(categoryName);
 
-          if (checkIfCategoryIsValid) {
-            if (categoryName && categoryName.length > 0) {
-              categories.add(categoryName);
-            }
+          if (portugueseName) {
+            categories.add(portugueseName);
+            console.log('CATEGORIA ADICIONADA EM PORTUGUÊS:', portugueseName);
+          } else {
+            console.log('CATEGORIA IGNORADA (não encontrada):', categoryName);
           }
         });
       }
@@ -687,7 +679,6 @@ class WorkScraper {
 
     return Array.from(categories);
   }
-
   async extractWorkGenres($: cheerio.CheerioAPI): Promise<string[]> {
     const workGenres: Set<string> = new Set();
 
@@ -759,6 +750,11 @@ class WorkScraper {
       validPatterns.some((pattern) => pattern.test(categoryName)) ||
       categoryName.length > 3
     ); // Aceitar categorias com mais de 3 caracteres
+  }
+
+  private getCategoryNameInPortuguese(categoryName: string): string | null {
+    const normalizedCategory = categoryName.toLowerCase().trim();
+    return NORMALIZED_CATEGORIES[normalizedCategory] || null;
   }
 
   // Extrair dados detalhados da obra com retry
@@ -899,7 +895,7 @@ class WorkScraper {
 
       // Extrair múltiplas categorias
       const categories = await this.extractWorkCategories($);
-      workDetails.categories = categories;
+      workDetails.categoryNames = categories;
       console.log('WORK CATEGORIES', categories);
 
       // Extrair múltiplas workGenres
@@ -979,30 +975,10 @@ class WorkScraper {
       workDetails.instrumentId = primaryInstrument?.id ?? DEFAULT_INSTRUMENT_ID;
 
       // Tentar identificar gênero principal
-      let primaryGenre = null;
       const titleLower = workDetails.title.toLowerCase();
 
-      for (const [key, value] of Object.entries(NORMALIZED_SUBGENRES)) {
-        if (titleLower.includes(key)) {
-          primaryGenre = await this.findOrCreateCategorie(key);
-          break;
-        }
-      }
-
-      // Se não encontrou gênero específico, usar gênero baseado no estilo ou período
-      if (!primaryGenre && workDetails.workStyle) {
-        primaryGenre = await this.findOrCreateCategorie(
-          workDetails.workStyle.toLowerCase()
-        );
-      }
-
-      // Gênero padrão
-      if (!primaryGenre) {
-        primaryGenre = await this.findOrCreateCategorie('Pieces');
-      }
-
       let primaryWorkGenre = null;
-      for (const [key, value] of Object.entries(NORMALIZED_SUBGENRES)) {
+      for (const [key, value] of Object.entries(NORMALIZED_CATEGORIES)) {
         if (titleLower.includes(key)) {
           primaryWorkGenre = await this.findOrCreateWorkGenre(key);
           break;
@@ -1020,7 +996,7 @@ class WorkScraper {
       if (!primaryWorkGenre) {
         primaryWorkGenre = await this.findOrCreateWorkGenre('Pieces');
       }
-      workDetails.genreId = primaryGenre?.id || DEFAULT_GENRE_ID;
+      // workDetails.genreId = primaryGenre?.id || DEFAULT_GENRE_ID;
       workDetails.workGenreId = primaryWorkGenre?.id || DEFAULT_WORK_GENRE_ID;
 
       let epoch = workDetails.workStyle;
@@ -1063,7 +1039,6 @@ class WorkScraper {
       const finalWorkData: WorkData = {
         title: workDetails.title.replace(/"/g, '') || worktitle,
         composerId: workDetails.composerId ?? '',
-        genreId: workDetails.genreId ?? DEFAULT_GENRE_ID,
         workGenreId: workDetails.workGenreId ?? DEFAULT_WORK_GENRE_ID,
         instrumentId: workDetails.instrumentId ?? DEFAULT_INSTRUMENT_ID,
         epochId: workDetails.epochId,
@@ -1080,24 +1055,24 @@ class WorkScraper {
         dedicateTo: workDetails.dedicateTo || null,
         dedicationComposerLink: workDetails.dedicationComposerLink || null,
         instrumentation: workDetails.instrumentation || null,
-        genres: null, // Será preenchido posteriormente se necessário
         workType: workDetails.workType,
         isPartOfCollection: workDetails.isPartOfCollection || false,
         parentWorkId: workDetails.parentWorkId || null,
         movementNumber: workDetails.movementNumber || null,
         categories: workDetails.categories || [],
         workGenres: workDetails.workGenres || [],
+        categoryNames: workDetails.categoryNames || [],
       };
 
       console.log(
         `✅ Dados extraídos para: ${finalWorkData.title.replace(/"/g, '')}`
       );
       console.log(`   🎼 Instrumento: ${primaryInstrument?.name || 'N/A'}`);
-      console.log(`   🎵 Gênero: ${primaryGenre?.name || 'N/A'}`);
+      // console.log(`   🎵 Gênero: ${primaryGenre?.name || 'N/A'}`);
       console.log(`   📋 Tonalidade: ${finalWorkData.tone}`);
 
       console.log(`   🏛️ Época: ${epoch}`);
-      console.log(`   📋 Categorias: ${finalWorkData.categories.length}`);
+      console.log(`   📋 Categorias: ${finalWorkData.categoryNames}`);
       console.log(`   📋 Work genres: ${finalWorkData.workGenres.length}`);
 
       console.log(`   🎯 Tipo: ${finalWorkData.workType}`);
@@ -1141,23 +1116,7 @@ class WorkScraper {
         return false;
       }
 
-      // Processar e criar todas as categorias
-      const categoryIds: string[] = [];
-
-      for (const categoryName of workData.categories) {
-        try {
-          const category = await this.findOrCreateCategorie(categoryName);
-
-          if (category && category.id) {
-            categoryIds.push(category.id);
-          }
-        } catch (error) {
-          console.error(
-            `❌ Erro ao processar categoria ${categoryName}:`,
-            error
-          );
-        }
-      }
+      console.log('CATEGORY NAMEEEEE', workData.categoryNames);
 
       const workGenresId: string[] = [];
 
@@ -1183,7 +1142,6 @@ class WorkScraper {
           data: {
             title: workData.title.replace(/"/g, ''),
             composerId: workData.composerId,
-            genreId: workData.genreId,
             instrumentId: workData.instrumentId,
             epochId: workData.epochId,
             imslpPermlink: workData.imslpPermlink,
@@ -1199,33 +1157,14 @@ class WorkScraper {
             dedicateTo: workData.dedicateTo,
             dedicationComposerLink: workData.dedicationComposerLink,
             instrumentation: workData.instrumentation,
-            genres: workData.genres,
             workType: workData.workType,
             isPartOfCollection: workData.isPartOfCollection,
             parentWorkId: workData.parentWorkId,
             movementNumber: workData.movementNumber,
+            categoryNames: workData.categoryNames,
             createdAt: new Date(),
           },
         });
-
-        // Criar relacionamentos com categorias (many-to-many)
-        if (categoryIds.length > 0) {
-          const categoryConnections = categoryIds.map((categoryId) => ({
-            workId: savedWork.id,
-            categorieId: categoryId,
-          }));
-
-          await tx.workCategorie.createMany({
-            data: categoryConnections,
-          });
-
-          console.log(
-            `🏷️ Conectadas ${categoryIds} categorias à obra: ${workData.title.replace(
-              /"/g,
-              ''
-            )}`
-          );
-        }
 
         // Criar relacionamentos com work genres (many-to-many)
         if (workGenresId.length > 0) {

@@ -63,12 +63,6 @@ const WorkCard: React.FC<workCardProps> = ({
             </div>
           )}
 
-          {work.genre?.name && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">{work.genre.name}</span>
-            </div>
-          )}
-
           {work.compositionYear && (
             <div className="flex items-center gap-2">
               <FiClock className="w-4 h-4 text-gray-400" />

@@ -10,7 +10,7 @@ import {
   VALID_WORKGENRES,
   WORK_GENRE_TRANSLATIONS,
   INSTRUMENT_MAPPING,
-  NORMALIZED_SUBGENRES,
+  NORMALIZED_CATEGORIES,
   WORK_TYPE_KEYWORDS,
   NOTE_TRANSLATIONS,
   MODE_TRANSLATIONS,
@@ -467,7 +467,7 @@ class WorkScraper {
     try {
       const normalizedName = workTypeName.toLowerCase().trim();
 
-      const translatedName = NORMALIZED_SUBGENRES[normalizedName];
+      const translatedName = NORMALIZED_CATEGORIES[normalizedName];
 
       if (!translatedName) {
         // console.error(`❌ Categoria inválida ${workTypeName}:`);
@@ -1019,7 +1019,7 @@ class WorkScraper {
       let primaryGenre = null;
       const titleLower = workDetails.title.toLowerCase();
 
-      for (const [key, value] of Object.entries(NORMALIZED_SUBGENRES)) {
+      for (const [key, value] of Object.entries(NORMALIZED_CATEGORIES)) {
         if (titleLower.includes(key)) {
           primaryGenre = await this.findOrCreateCategorie(key);
           break;
@@ -1039,7 +1039,7 @@ class WorkScraper {
       }
 
       let primaryWorkGenre = null;
-      for (const [key, value] of Object.entries(NORMALIZED_SUBGENRES)) {
+      for (const [key, value] of Object.entries(NORMALIZED_CATEGORIES)) {
         if (titleLower.includes(key)) {
           primaryWorkGenre = await this.findOrCreateWorkGenre(key);
           break;

@@ -824,6 +824,7 @@ export const INSTRUMENT_MAPPING: Record<string, string> = {
 
   // Conjuntos
   orchestra: 'Orquestra',
+  'orchestra;': 'Orquestra',
   'chamber orchestra': 'Orquestra de Câmara',
   'symphony orchestra': 'Orquestra Sinfônica',
   'philharmonic orchestra': 'Orquestra Filarmônica',
@@ -900,24 +901,50 @@ export const INSTRUMENT_MAPPING: Record<string, string> = {
   voices: 'vozes',
 };
 
-export const VALID_SUBGENRES: Record<string, string> = {
+export const VALID_CATEGORIES: Record<string, string> = {
+  // Peças gerais
   Pieces: 'Peças',
+  Works: 'Obras',
+  Compositions: 'Composições',
+
+  // Solo piano
+  'For piano (arr)': 'Arranjo para piano',
+  'For piano 3 hands': 'Para piano 3 mãos',
   'For piano 4 hands': 'Para piano 4 mãos',
   'For piano 4 hands (arr)': 'Arranjo para piano 4 mãos',
+
   'For 2 pianos': 'Para 2 pianos',
-  'For piano (arr)': 'Arranjo para piano ',
-  'For Symphonies': 'Sinfónias',
-  'For orchestra': 'Orquestra',
-  'For orchestra (arr)': 'Arranjo para orquestra',
-  'For 1 player (arr)': 'Arranjo para 1 pessoa',
-  'For 2 players (arr) ': 'Arranjo para 2 pessoas',
-  'For 3 players (arr)': ' Arranjo para 3 pessoas',
-  'For 4 players ': 'Para 4 pessoas',
-  'For 4 players (arr) ': ' Arranjo para 4 pessoas',
-  'For piano': 'Para piano',
+  'For 2 pianos (arr)': 'Arranjo para 2 pianos',
+
+  // Piano e orquestra
+  'For piano, orchestra': 'Para piano e orquestra',
+  'For piano, orchestra (arr)': 'Arranjo para piano e orquestra',
+  'For 2 pianos, orchestra': 'Para 2 pianos e orquestra',
+
+  // Número de players/instrumentistas
+  'For 1 player': 'Para 1 instrumentista',
+  'For 2 players': 'Para 2 instrumentistas',
+  'For 3 players': 'Para 3 instrumentistas',
+  'For 4 players': 'Para 4 instrumentistas',
+  'For 5 players': 'Para 5 instrumentistas',
+  'For 6 players': 'Para 6 instrumentistas',
+  'For 7 players': 'Para 7 instrumentistas',
+  'For 8 players': 'Para 8 instrumentistas',
+  'For 9 players': 'Para 9 instrumentistas',
+  'For 10 players': 'Para 10 instrumentistas',
+
+  // Arranjos por número de players
+  'For 1 player (arr)': 'Arranjo para 1 instrumentista',
+  'For 2 players (arr)': 'Arranjo para 2 instrumentistas',
+  'For 3 players (arr)': 'Arranjo para 3 instrumentistas',
+  'For 4 players (arr)': 'Arranjo para 4 instrumentistas',
+  'For 5 players (arr)': 'Arranjo para 5 instrumentistas',
+  'For 6 players (arr)': 'Arranjo para 6 instrumentistas',
+  'For 7 players (arr)': 'Arranjo para 7 instrumentistas',
+  'For 8 players (arr)': 'Arranjo para 8 instrumentistas',
 };
 
-export const NORMALIZED_SUBGENRES = Object.entries(VALID_SUBGENRES).reduce<
+export const NORMALIZED_CATEGORIES = Object.entries(VALID_CATEGORIES).reduce<
   Record<string, string>
 >((acc, [key, value]) => {
   acc[key.toLowerCase().trim()] = value;

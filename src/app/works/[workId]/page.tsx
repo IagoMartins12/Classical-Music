@@ -1,9 +1,9 @@
 // app/work/[workId]/page.tsx
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import { getWorkById } from '@/app/requests/work-details';
 import WorkDetailsLoading from './loading';
 import WorkDetailsServer from './WorkDetailsServer';
+import { getWorkById } from '@/app/requests/work-page-details';
 
 interface WorkParams {
   workId: string;

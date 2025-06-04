@@ -1,7 +1,7 @@
 // app/work/[workId]/WorkDetailsServer.tsx
 import { notFound } from 'next/navigation';
-import { getWorkById, getRelatedWorks } from '@/app/requests/work-details';
 import WorkDetailsClient from '../../components/WorkDetailsClient/WorkDetailsClient';
+import { getRelatedWorks, getWorkById } from '@/app/requests/work-page-details';
 
 interface WorkDetailsServerProps {
   workId: string;
