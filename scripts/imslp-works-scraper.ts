@@ -50,12 +50,21 @@ interface WorkData {
   dedicateTo: string | null;
   dedicationComposerLink: string | null;
   instrumentation: string | null;
-  workType: 'INDIVIDUAL' | 'COMPLETE_WORK' | 'ARRANGEMENT' | 'COLLECTION';
+  workType:
+    | 'INDIVIDUAL'
+    | 'COMPLETE_WORK'
+    | 'ARRANGEMENT'
+    | 'COLLECTION'
+    | 'COLLABORATION'
+    | 'COMPOSITION'
+    | 'COLLECTED_WORKS'
+    | 'COLLECTIONS_WITH';
   isPartOfCollection: boolean;
   parentWorkId: string | null;
   movementNumber: number | null;
   categories: string[];
   categoryNames?: string[];
+  workGenresArr?: string[];
   workGenres: string[];
 }
 
@@ -580,32 +589,195 @@ class WorkScraper {
 
   // Determinar tipo de trabalho baseado no título
   determineWorkType(
-    title: string
-  ): 'INDIVIDUAL' | 'COMPLETE_WORK' | 'ARRANGEMENT' | 'COLLECTION' {
+    title: string,
+    $?: cheerio.CheerioAPI // Parâmetro opcional para análise da página
+  ):
+    | 'INDIVIDUAL'
+    | 'COMPLETE_WORK'
+    | 'ARRANGEMENT'
+    | 'COLLECTION'
+    | 'COLLABORATION'
+    | 'COMPOSITION'
+    | 'COLLECTED_WORKS'
+    | 'COLLECTIONS_WITH' {
     const titleLower = title.toLowerCase();
 
-    // Verificar se é arranjo
+    // Palavras-chave para identificar cada tipo
+    const WORK_TYPE_KEYWORDS = {
+      COLLABORATION: [
+        'with',
+        'and',
+        '&',
+        'feat.',
+        'featuring',
+        'collaboration',
+        'collaborative',
+        'joint',
+        'together',
+        'co-composed',
+      ],
+      COLLECTED_WORKS: [
+        'complete works',
+        'complete pieces',
+        'complete',
+        'collected works',
+        'collected pieces',
+        'collected',
+        'opere complete',
+        'œuvres complètes',
+        'sämtliche werke',
+        'todo',
+        'todas as',
+        'all',
+        'entire',
+      ],
+      COLLECTIONS_WITH: [
+        'masterpieces',
+        'anthology',
+        'collection',
+        'album',
+        'selection',
+        'treasury',
+        'best of',
+        'favorites',
+        'favourites',
+        'compilation',
+        'various',
+        'mehrere',
+        'vários',
+        'diversos',
+      ],
+      ARRANGEMENT: [
+        'arr.',
+        'arranged',
+        'arrangement',
+        'transcription',
+        'adaptation',
+        'version',
+        'transcribed',
+        'adapted',
+      ],
+      COLLECTION: [
+        'op.',
+        'opus',
+        'set',
+        'book',
+        'volume',
+        'cahier',
+        'heft',
+        'collection',
+        'suite',
+        'cycle',
+      ],
+      INDIVIDUAL: ['no.', 'number', 'nr.', '#', 'piece', 'movement'],
+    };
+
+    // 1. Verificar se é uma COLLABORATION
+    // Colaborações geralmente têm múltiplos compositores indicados no título
+    for (const keyword of WORK_TYPE_KEYWORDS.COLLABORATION) {
+      if (titleLower.includes(keyword)) {
+        // Verificar se há indicação de múltiplos compositores
+        if (titleLower.match(/\b(with|and|&|feat\.)\s+[a-z]/i)) {
+          return 'COLLABORATION';
+        }
+      }
+    }
+
+    // 2. Verificar se é COLLECTED WORKS
+    // Obras coletadas de um compositor específico
+    for (const keyword of WORK_TYPE_KEYWORDS.COLLECTED_WORKS) {
+      if (titleLower.includes(keyword)) {
+        return 'COLLECTED_WORKS';
+      }
+    }
+
+    // 3. Verificar se é COLLECTIONS WITH
+    // Coleções que incluem obras de vários compositores
+    for (const keyword of WORK_TYPE_KEYWORDS.COLLECTIONS_WITH) {
+      if (titleLower.includes(keyword)) {
+        return 'COLLECTIONS_WITH';
+      }
+    }
+
+    // 4. Verificar se é arranjo
     for (const keyword of WORK_TYPE_KEYWORDS.ARRANGEMENT) {
       if (titleLower.includes(keyword)) {
         return 'ARRANGEMENT';
       }
     }
 
-    // Verificar se é coleção completa
+    // 5. Verificar se é coleção completa
     for (const keyword of WORK_TYPE_KEYWORDS.COLLECTION) {
       if (titleLower.includes(keyword)) {
         return 'COMPLETE_WORK';
       }
     }
 
-    // Verificar se é peça individual (tem numeração)
+    // 6. Verificar se é peça individual (tem numeração)
     for (const keyword of WORK_TYPE_KEYWORDS.INDIVIDUAL) {
       if (titleLower.includes(keyword)) {
         return 'INDIVIDUAL';
       }
     }
 
-    // Default para individual se não conseguir determinar
+    // Análise adicional usando o conteúdo da página (se disponível)
+    if ($) {
+      const pageText = $('body').text().toLowerCase();
+
+      // Verificar se a página menciona múltiplos compositores
+      const composerMentions = pageText.match(/composer[s]?:/gi);
+      if (composerMentions && composerMentions.length > 1) {
+        return 'COLLECTIONS_WITH';
+      }
+
+      // Verificar se há seções dedicadas a obras completas
+      if (
+        pageText.includes('complete works') ||
+        pageText.includes('collected works')
+      ) {
+        return 'COLLECTED_WORKS';
+      }
+
+      // Verificar indicadores de colaboração na página
+      if (
+        pageText.includes('collaboration') ||
+        pageText.includes('joint work')
+      ) {
+        return 'COLLABORATION';
+      }
+    }
+
+    // Análise baseada em padrões específicos do título
+
+    // Padrão para identificar obras coletadas por tema específico
+    // Ex: "Il mio primo Chopin" (Meu primeiro Chopin)
+    if (
+      titleLower.match(
+        /\b(primo|first|meu|my|introduction to|beginning)\s+\w+$/i
+      )
+    ) {
+      return 'COLLECTED_WORKS';
+    }
+
+    // Padrão para masterpieces e antologias
+    if (
+      titleLower.match(
+        /\b(masterpieces?|anthology|treasury|best)\s+(of|from)\b/i
+      )
+    ) {
+      return 'COLLECTIONS_WITH';
+    }
+
+    // Se contém nome de compositor no título mas não é do próprio compositor
+    // pode indicar uma coleção dedicada a esse compositor
+    const composerInTitle = titleLower.match(
+      /\b(bach|mozart|beethoven|chopin|brahms|liszt|schumann|debussy|ravel)\b/i
+    );
+    if (composerInTitle) {
+      return 'COLLECTED_WORKS';
+    }
+
+    // Default: assumir que é uma composição individual
     return 'INDIVIDUAL';
   }
 
@@ -721,37 +893,6 @@ class WorkScraper {
     return Array.from(workGenres);
   }
 
-  // Verificar se é uma categoria musical válida
-  private isValidMusicCategory(categoryName: string): boolean {
-    const validPatterns = [
-      /\d{4}s?/, // Anos (1800s, 1850, etc.)
-      /century/i, // Séculos
-      /baroque|classical|romantic|modern|contemporary/i, // Períodos
-      /piano|violin|orchestra|chamber|vocal|opera/i, // Instrumentos/tipos
-      /sonata|concerto|symphony|prelude|etude|waltz/i, // Formas musicais
-      /major|minor|flat|sharp/i, // Tonalidades
-      /pieces|works|compositions/i, // Tipos de obra
-    ];
-
-    // Verificar se a categoria não é muito genérica
-    const invalidPatterns = [
-      /^[A-Z]$/, // Letras únicas
-      /^page$/i, // Palavras genéricas
-      /^article$/i,
-      /^music$/i,
-      /^composer$/i,
-    ];
-
-    if (invalidPatterns.some((pattern) => pattern.test(categoryName))) {
-      return false;
-    }
-
-    return (
-      validPatterns.some((pattern) => pattern.test(categoryName)) ||
-      categoryName.length > 3
-    ); // Aceitar categorias com mais de 3 caracteres
-  }
-
   private getCategoryNameInPortuguese(categoryName: string): string | null {
     const normalizedCategory = categoryName.toLowerCase().trim();
     return NORMALIZED_CATEGORIES[normalizedCategory] || null;
@@ -769,7 +910,7 @@ class WorkScraper {
       // Buscar compositor no banco de dados
       const composerData = await this.findComposerInDatabase(composer);
       if (!composerData) {
-        console.log(`❌ Compositor não encontrado: ${composer}`);
+        console.log(`❌ Compositor não encontrado: ${composer} \n`);
         await fs.appendFile(
           STATE_WORKS_FILE,
           `❌ ${pageid || id} / Compositor não encontrado: ${composer}\n`
@@ -787,6 +928,7 @@ class WorkScraper {
       });
 
       const $ = cheerio.load(pageResponse.data);
+      const pageText = $('body').text().toLowerCase();
 
       // Extrair informações detalhadas
       const workDetails: Partial<WorkData> = {};
@@ -800,7 +942,8 @@ class WorkScraper {
       workDetails.imslpId = pageid || id;
 
       // Determinar tipo de trabalho
-      workDetails.workType = this.determineWorkType(worktitle);
+      let workTypeText = this.determineWorkType(worktitle, $);
+      workDetails.workType = this.determineWorkType(worktitle, $);
 
       // Extrair informações da tabela de detalhes
       $('.wi_body table tr, .wp_header table tr').each((index, element) => {
@@ -901,6 +1044,7 @@ class WorkScraper {
       // Extrair múltiplas workGenres
       const workGenres = await this.extractWorkGenres($);
       workDetails.workGenres = workGenres;
+      workDetails.workGenresArr = workGenres;
 
       console.log('WORK GENRES', workGenres);
 
@@ -1002,37 +1146,80 @@ class WorkScraper {
       let epoch = workDetails.workStyle;
       let epochData: null | Epoch = null;
 
-      if (epoch) {
-        epochData = await prisma.epoch.findFirst({
-          where: { name: { contains: epoch, mode: 'insensitive' } },
-        });
-      }
+      let epochObject: { [key: string]: string } = {
+        medieval: 'Medieval',
+        renaissance: 'Renascentista',
+        baroque: 'Barroco',
+        classical: 'Clássico',
+        romantic: 'Rômantico',
+        'early 20th century': 'Modernismo',
+        modern: 'Contemporâneo',
+      };
 
-      if (epoch == 'Early 20th century' || epoch === 'Modern') {
-        epochData = await prisma.epoch.findFirst({
-          where: { name: { contains: 'modernismo', mode: 'insensitive' } },
-        });
-      }
-      // Se não conseguiu determinar pela época da obra, usar época do compositor
-      if (!epochData && composerData.epochName) {
+      // Normalizar a chave para busca case-insensitive
+      const normalizedEpoch = epoch?.toLowerCase();
+
+      if (normalizedEpoch && epochObject[normalizedEpoch]) {
         epochData = await prisma.epoch.findFirst({
           where: {
-            name: { contains: composerData.epochName, mode: 'insensitive' },
+            name: {
+              contains: epochObject[normalizedEpoch],
+              mode: 'insensitive',
+            },
           },
         });
       }
 
-      if (!epochData) {
-        epochData = await prisma.epoch.create({
-          data: { name: 'Desconhecido' },
+      // Tratamento especial para épocas modernas
+      if (
+        normalizedEpoch === 'early 20th century' ||
+        normalizedEpoch === 'modern'
+      ) {
+        epochData = await prisma.epoch.findFirst({
+          where: {
+            name: {
+              contains: 'modernismo',
+              mode: 'insensitive',
+            },
+          },
         });
-        console.log(
-          `🏛️ Nova época criada: ${
-            epoch || composerData.epochName || 'Desconhecido'
-          }`
-        );
       }
 
+      // Se não conseguiu determinar pela época da obra, usar época do compositor
+      if (!epochData && composerData.epochName) {
+        epochData = await prisma.epoch.findFirst({
+          where: {
+            name: {
+              contains: composerData.epochName,
+              mode: 'insensitive',
+            },
+          },
+        });
+      }
+
+      // Verificar se já existe uma época "Desconhecido" antes de criar
+      if (!epochData) {
+        epochData = await prisma.epoch.findFirst({
+          where: {
+            name: {
+              equals: 'Desconhecido',
+              mode: 'insensitive',
+            },
+          },
+        });
+
+        // Só criar se realmente não existir
+        if (!epochData) {
+          epochData = await prisma.epoch.create({
+            data: { name: 'Desconhecido' },
+          });
+          console.log(
+            `🏛️ Nova época criada: ${
+              epoch || composerData.epochName || 'Desconhecido'
+            }`
+          );
+        }
+      }
       workDetails.epochId = epochData.id;
 
       // Compilar dados finais
@@ -1062,6 +1249,7 @@ class WorkScraper {
         categories: workDetails.categories || [],
         workGenres: workDetails.workGenres || [],
         categoryNames: workDetails.categoryNames || [],
+        workGenresArr: workDetails.workGenresArr || [],
       };
 
       console.log(
@@ -1073,6 +1261,10 @@ class WorkScraper {
 
       console.log(`   🏛️ Época: ${epoch}`);
       console.log(`   📋 Categorias: ${finalWorkData.categoryNames}`);
+      console.log(
+        `   📋 Wor genres (sem outro banco): ${finalWorkData.workGenresArr}`
+      );
+
       console.log(`   📋 Work genres: ${finalWorkData.workGenres.length}`);
 
       console.log(`   🎯 Tipo: ${finalWorkData.workType}`);
@@ -1115,8 +1307,6 @@ class WorkScraper {
         console.log(`⚠️ Obra já existe: ${workData.title.replace(/"/g, '')}`);
         return false;
       }
-
-      console.log('CATEGORY NAMEEEEE', workData.categoryNames);
 
       const workGenresId: string[] = [];
 
@@ -1162,6 +1352,8 @@ class WorkScraper {
             parentWorkId: workData.parentWorkId,
             movementNumber: workData.movementNumber,
             categoryNames: workData.categoryNames,
+            workGenresArr: workData.workGenresArr,
+
             createdAt: new Date(),
           },
         });

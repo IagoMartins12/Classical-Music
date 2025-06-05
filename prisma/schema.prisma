@@ -26,10 +26,14 @@ enum PracticeFocus {
 }
 
 enum WorkType {
-  INDIVIDUAL
-  COMPLETE_WORK
-  ARRANGEMENT
-  COLLECTION
+    INDIVIDUAL
+    COMPLETE_WORK
+    ARRANGEMENT
+    COLLECTION
+    COLLABORATION
+    COMPOSITION
+    COLLECTED_WORKS
+    COLLECTIONS_WITH
 }
 
 // Models
@@ -203,6 +207,7 @@ model Work {
   workStyle         String?
   moviment          String?
   categoryNames     String[]        @default([])
+  workGenresArr     String[]        @default([])
 
   dedicateTo             String?
   dedicationComposerLink String?

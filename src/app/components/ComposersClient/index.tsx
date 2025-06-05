@@ -59,7 +59,7 @@ export default function ComposersClient({
 
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [selectedEpoch, setSelectedEpoch] = useState(initialSelectedEpoch);
-  const [showPhotos, setShowPhotos] = useState(false); // Padrão sem fotos (modo lista)
+  const [showPhotos, setShowPhotos] = useState(true); // Padrão sem fotos (modo lista)
 
   // Função para atualizar URL com debounce
   const updateUrl = useCallback(
