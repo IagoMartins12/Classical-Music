@@ -13,8 +13,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log('🔍 Buscando partituras para URL:', imslpUrl);
-
     // Fazer o scraping no servidor (sem problemas de CORS)
     const scoresData = await IMSLPScraper.fetchAndExtractScores(imslpUrl);
 

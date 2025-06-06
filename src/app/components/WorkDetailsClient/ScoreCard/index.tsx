@@ -1,5 +1,6 @@
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import { LuClock, LuDownload, LuFileText, LuStar } from 'react-icons/lu';
+import { useState } from 'react';
 
 interface ScoreCardProps {
   score: IMSLPScore;
@@ -8,6 +9,9 @@ interface ScoreCardProps {
 }
 
 const ScoreCard = ({ score, isSelected, onSelect }: ScoreCardProps) => {
+  const [showMagnified, setShowMagnified] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
   return (
     <div
       className={`
@@ -20,14 +24,46 @@ const ScoreCard = ({ score, isSelected, onSelect }: ScoreCardProps) => {
         `}
       onClick={onSelect}
     >
-      <div className="flex items-start gap-4">
-        {/* Thumbnail */}
+      <div className="flex items-center gap-4">
+        {/* Thumbnail com efeito lupa */}
         {score.thumbnailUrl && (
-          <img
-            src={score.thumbnailUrl}
-            alt={`Preview de ${score.title}`}
-            className="w-16 h-20 object-cover rounded border"
-          />
+          <div
+            className="relative w-24 h-28 flex-shrink-0"
+            onMouseEnter={() => setShowMagnified(true)}
+            onMouseLeave={() => setShowMagnified(false)}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setMousePosition({
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top,
+              });
+            }}
+          >
+            <img
+              src={score.thumbnailUrl}
+              alt={`Preview de ${score.title}`}
+              className="w-full h-full object-cover rounded border"
+            />
+
+            {/* Lupa expandida */}
+            {showMagnified && (
+              <div
+                className="absolute z-[9999] pointer-events-none w-[20rem]"
+                style={{
+                  left: `${mousePosition.x + 30}px`,
+                  top: `${mousePosition.y - 50}px`,
+                }}
+              >
+                <div className="bg-white rounded-lg shadow-2xl border-2 border-gray-300 p-2">
+                  <img
+                    src={score.thumbnailUrl}
+                    alt={`Preview expandido de ${score.title}`}
+                    className="w-80 h-96 object-contain rounded"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         )}
 
         {/* Informações */}
@@ -42,6 +78,7 @@ const ScoreCard = ({ score, isSelected, onSelect }: ScoreCardProps) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700 transition-colors flex-shrink-0"
+                onClick={(e) => e.stopPropagation()}
               >
                 <LuDownload className="w-3 h-3" />
                 Download
@@ -57,14 +94,6 @@ const ScoreCard = ({ score, isSelected, onSelect }: ScoreCardProps) => {
                 {score.pageCount && ` • ${score.pageCount} páginas`}
               </div>
             )}
-
-            {/* {score.rating && (
-              <div className="flex items-center gap-1">
-                <LuStar className="w-3 h-3 text-yellow-500" />
-                {score.rating.toFixed(1)}
-                {score.ratingsCount && ` (${score.ratingsCount})`}
-              </div>
-            )} */}
 
             {score.uploader && (
               <div className="flex items-center gap-1">

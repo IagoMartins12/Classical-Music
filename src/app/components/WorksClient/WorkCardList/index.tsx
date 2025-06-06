@@ -58,13 +58,6 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
                 Coleção
               </span>
             )}
-            {work.categories && work.categories.length > 0 && (
-              <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">
-                {work.categories.length > 1
-                  ? `${work.categories[0].name} +${work.categories.length - 1}`
-                  : work.categories[0].name}
-              </span>
-            )}
           </div>
         </div>
       </div>

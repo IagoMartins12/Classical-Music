@@ -113,10 +113,13 @@ export class IMSLPScraper {
     // Processar cada tipo de aba
     Object.entries(this.TAB_TYPE_MAP).forEach(([tabId, type]) => {
       const tabContentId = tabId.replace('_tab', '');
+      console.log('tabContentId', tabContentId);
+
       const $tabContent = $(`#${tabContentId}`);
 
       if ($tabContent.length > 0) {
         const scoresInTab = this.extractScoresFromTab($, $tabContent, type);
+
         scoresByType[type] = scoresInTab;
         console.log(
           `🎼 Extraído: ${scoresInTab.length} itens do tipo "${type}"`
@@ -150,6 +153,8 @@ export class IMSLPScraper {
    * @param type Tipo da partitura
    * @returns Array de partituras
    */
+  // Parte do método extractScoresFromTab que precisa ser corrigida:
+
   private static extractScoresFromTab(
     $: cheerio.CheerioAPI,
     $tabContent: cheerio.Cheerio<AnyNode>,
@@ -158,8 +163,10 @@ export class IMSLPScraper {
     const scores: IMSLPScore[] = [];
 
     // Encontrar todos os blocos de arquivo na aba
-    $tabContent.find('.we_file_first').each((index, element) => {
+    $tabContent.find('[id^="IMSLP"]').each((index, element) => {
       const $element = $(element);
+      console.log(`\n🎵 Processando item ${index + 1} do tipo "${type}"`);
+
       const scoreId =
         $element.attr('id')?.replace('IMSLP', '') || `${type}_${index}`;
 
@@ -212,9 +219,11 @@ export class IMSLPScraper {
         'Direitos autorais'
       );
       const notes = this.extractTableValue($, $editionTable, 'Notas diversas');
-      const imgUrl = this.extractTableImgUrl($, $editionTable);
 
-      console.log('IMG URL', imgUrl);
+      // USAR A NOVA FUNÇÃO PARA EXTRAIR THUMBNAIL
+      const thumbnailUrl = this.extractThumbnailUrl($, $element);
+      console.log('THUMBANIL URL', thumbnailUrl);
+
       // Extrair informações do uploader
       const $fileInfo = $element.find('.we_file_info');
       const uploaderInfo = $fileInfo.find('.mh555').text();
@@ -224,27 +233,8 @@ export class IMSLPScraper {
       const uploadDateMatch = uploaderInfo.match(/\(([^)]+)\)$/);
       const uploadDate = uploadDateMatch ? uploadDateMatch[1] : undefined;
 
-      const $thumbContainer = $element.find('.we_thumb.preview.pvld');
-      let thumbnailUrl =
-        $thumbContainer.attr('data-img') ||
-        $thumbContainer.find('img').attr('data-src') ||
-        $thumbContainer.find('img').attr('src') ||
-        undefined;
-
-      if (thumbnailUrl?.startsWith('//')) {
-        thumbnailUrl = 'https:' + thumbnailUrl;
-      }
-
-      const fileName = hiddenLink?.split('/').pop() ?? ''; // "SIBLEY1802.17377.4c16-39087013698123score.pdf"
-
-      // Substitui o nome do arquivo no final do path
-      //   let downloadUrl = hiddenLink?.replace(
-      //     fileName,
-      //     `IMSLP${scoreId}-${fileName}`
-      //   );
-
+      const fileName = hiddenLink?.split('/').pop() ?? '';
       let downloadUrl = `https://imslp.org/${hiddenLink}`;
-      console.log('AAAAAAAAAAAA', downloadUrl);
 
       const score: IMSLPScore = {
         id: scoreId,
@@ -268,12 +258,146 @@ export class IMSLPScraper {
         type: type,
       };
 
+      console.log(
+        `📋 Item processado - Título: "${title}", Thumbnail: ${
+          thumbnailUrl ? '✅' : '❌'
+        }`
+      );
       scores.push(score);
     });
+
+    console.log('SCOREEE', scores);
 
     return scores;
   }
 
+  // Função corrigida para extrair thumbnail
+  private static extractThumbnailUrl(
+    $: cheerio.CheerioAPI,
+    $element: cheerio.Cheerio<AnyNode>
+  ): string | undefined {
+    console.log('🔍 Procurando thumbnail...');
+
+    // Array com diferentes estratégias para encontrar a thumbnail
+    const strategies = [
+      // Estratégia 1: Buscar no elemento atual
+      () => {
+        const $thumb = $element.find('.we_thumb.preview.pvld');
+        console.log(
+          '📍 Estratégia 1 - Elemento .we_thumb encontrado:',
+          $thumb.length > 0
+        );
+
+        if ($thumb.length > 0) {
+          const dataImg = $thumb.attr('data-img');
+          const imgSrc =
+            $thumb.find('img').attr('data-src') ||
+            $thumb.find('img').attr('src');
+          console.log('   - data-img:', dataImg);
+          console.log('   - img src:', imgSrc);
+          return dataImg || imgSrc;
+        }
+        return null;
+      },
+
+      // Estratégia 2: Buscar qualquer div com classe we_thumb
+      () => {
+        const $thumb = $element.find('div[class*="we_thumb"]');
+        console.log(
+          '📍 Estratégia 2 - Qualquer .we_thumb encontrado:',
+          $thumb.length > 0
+        );
+
+        if ($thumb.length > 0) {
+          const dataImg = $thumb.attr('data-img');
+          const imgSrc =
+            $thumb.find('img').attr('data-src') ||
+            $thumb.find('img').attr('src');
+          console.log('   - data-img:', dataImg);
+          console.log('   - img src:', imgSrc);
+          return dataImg || imgSrc;
+        }
+        return null;
+      },
+
+      // Estratégia 3: Buscar qualquer imagem dentro do elemento
+      () => {
+        const $img = $element.find('img').first();
+        console.log(
+          '📍 Estratégia 3 - Qualquer img encontrada:',
+          $img.length > 0
+        );
+
+        if ($img.length > 0) {
+          const src = $img.attr('src') || $img.attr('data-src');
+          console.log('   - img src:', src);
+          return src;
+        }
+        return null;
+      },
+
+      // Estratégia 4: Buscar no elemento pai e irmãos
+      () => {
+        const $parent = $element.parent();
+        const $thumb = $parent
+          .find('.we_thumb, [class*="thumb"], [data-img]')
+          .first();
+        console.log('📍 Estratégia 4 - Busca no pai:', $thumb.length > 0);
+
+        if ($thumb.length > 0) {
+          const dataImg = $thumb.attr('data-img');
+          const imgSrc =
+            $thumb.find('img').attr('data-src') ||
+            $thumb.find('img').attr('src');
+          console.log('   - data-img:', dataImg);
+          console.log('   - img src:', imgSrc);
+          return dataImg || imgSrc;
+        }
+        return null;
+      },
+
+      // Estratégia 5: Buscar em elementos irmãos
+      () => {
+        const $siblings = $element.siblings();
+        const $thumb = $siblings
+          .find('.we_thumb, [class*="thumb"], [data-img]')
+          .first();
+        console.log('📍 Estratégia 5 - Busca nos irmãos:', $thumb.length > 0);
+
+        if ($thumb.length > 0) {
+          const dataImg = $thumb.attr('data-img');
+          const imgSrc =
+            $thumb.find('img').attr('data-src') ||
+            $thumb.find('img').attr('src');
+          console.log('   - data-img:', dataImg);
+          console.log('   - img src:', imgSrc);
+          return dataImg || imgSrc;
+        }
+        return null;
+      },
+    ];
+
+    // Executar estratégias uma por vez até encontrar resultado
+    for (let i = 0; i < strategies.length; i++) {
+      const result = strategies[i]();
+      if (result) {
+        console.log(`✅ Thumbnail encontrada com estratégia ${i + 1}:`, result);
+
+        // Normalizar URL se necessário
+        let finalUrl = result;
+        if (finalUrl.startsWith('//')) {
+          finalUrl = 'https:' + finalUrl;
+        } else if (finalUrl.startsWith('/')) {
+          finalUrl = 'https://imslp.org' + finalUrl;
+        }
+
+        return finalUrl;
+      }
+    }
+
+    console.log('❌ Nenhuma thumbnail encontrada');
+    return undefined;
+  }
   /**
    * Retorna título padrão baseado no tipo
    * @param type Tipo da partitura
@@ -318,27 +442,6 @@ export class IMSLPScraper {
     return result;
   }
 
-  private static extractTableImgUrl(
-    $: cheerio.CheerioAPI,
-    $table: cheerio.Cheerio<Element>
-  ): string | undefined {
-    // Procurar o elemento de thumbnail dentro da tabela
-    const $thumbContainer = $table.find('.we_thumb.preview.pvld');
-
-    // Tentar extrair a URL da imagem a partir dos atributos disponíveis
-    let imgUrl =
-      $thumbContainer.attr('data-img') ||
-      $thumbContainer.find('img').attr('data-src') ||
-      $thumbContainer.find('img').attr('src');
-
-    // Adicionar o protocolo 'https:' se a URL começar com '//'
-    if (imgUrl && imgUrl.startsWith('//')) {
-      imgUrl = 'https:' + imgUrl;
-    }
-
-    return imgUrl;
-  }
-
   /**
    * Busca e extrai partituras de uma URL IMSLP
    * @param imslpUrl URL da página IMSLP
@@ -348,8 +451,6 @@ export class IMSLPScraper {
     imslpUrl: string
   ): Promise<IMSLPWorkScores> {
     try {
-      console.log('🌐 Fazendo requisição para:', imslpUrl);
-
       const response = await fetch(imslpUrl, {
         headers: {
           'User-Agent':
@@ -362,8 +463,6 @@ export class IMSLPScraper {
           'Upgrade-Insecure-Requests': '1',
         },
       });
-
-      console.log('📡 Status da resposta:', response.status);
 
       if (!response.ok) {
         throw new Error(`Erro HTTP ${response.status}: ${response.statusText}`);

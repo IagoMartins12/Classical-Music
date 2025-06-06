@@ -112,6 +112,8 @@ export default function IMSLPTabs({
     imslpData.scoresByType[activeTab as keyof typeof imslpData.scoresByType] ||
     [];
 
+  console.log('IMSLP DATAAA', imslpData);
+
   return (
     <div className="bg-white rounded-xl shadow-lg">
       {/* Header */}
@@ -194,7 +196,7 @@ export default function IMSLPTabs({
           </div>
         ) : (
           <p className="text-gray-500 text-center py-8">
-            Nenhum item encontrado nesta categoria.
+            Nenhuma partitura disponivel para essa peça.
           </p>
         )}
       </div>

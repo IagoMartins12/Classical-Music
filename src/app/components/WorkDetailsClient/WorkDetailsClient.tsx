@@ -13,7 +13,6 @@ import {
   LuMapPin,
 } from 'react-icons/lu';
 import { FaPlay, FaStop } from 'react-icons/fa';
-import ScoreCard from './ScoreCard';
 import { useIMSLPScores } from '@/app/hooks/useIMSLPScores';
 import IMSLPTabs from './IMSLPTabs';
 import { useNavigate } from '@/app/hooks/useNavigate';
@@ -45,14 +44,14 @@ export default function WorkDetailsClient({
     return duration;
   };
 
-  console.log('durtion', work);
   // Função para determinar o tipo de obra
   const getWorkTypeLabel = (type: string) => {
     const labels = {
       INDIVIDUAL: 'Obra Individual',
       COMPLETE_WORK: 'Obra Completa',
       ARRANGEMENT: 'Arranjo',
-      COLLECTION: 'Coleção',
+      COLLECTION: 'Coleção de peças',
+      COLLECTED_WORKS: 'Coleção de peças',
     };
     return labels[type as keyof typeof labels] || type;
   };

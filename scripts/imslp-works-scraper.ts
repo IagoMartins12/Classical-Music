@@ -589,9 +589,6 @@ class WorkScraper {
     // Palavras-chave para identificar cada tipo
     const WORK_TYPE_KEYWORDS = {
       COLLABORATION: [
-        'with',
-        'and',
-        '&',
         'feat.',
         'featuring',
         'collaboration',
@@ -617,9 +614,7 @@ class WorkScraper {
       ],
       COLLECTIONS_WITH: [
         'masterpieces',
-        'anthology',
         'collection',
-        'album',
         'selection',
         'treasury',
         'best of',
@@ -642,8 +637,6 @@ class WorkScraper {
         'adapted',
       ],
       COLLECTION: [
-        'op.',
-        'opus',
         'set',
         'book',
         'volume',
