@@ -39,7 +39,7 @@ export interface WorkDetails {
     name: string;
   } | null;
   categoryNames: string[];
-
+  workGenresArr?: string[];
   workGenres: {
     id: string;
     name: string;
@@ -65,10 +65,7 @@ export interface WorkListItem {
     name: string;
   } | null;
   // Novas propriedades para categorias e gêneros de trabalho
-  categories: {
-    id: string;
-    name: string;
-  }[];
+
   workGenres: {
     id: string;
     name: string;
@@ -158,6 +155,9 @@ export const getWorks = unstable_cache(
       categoryId?: string;
       workGenreId?: string;
       search?: string;
+      categoryNames?: string;
+      workGenre?: string;
+      workGenresArr?: string;
     }
   ): Promise<WorksListResponse> => {
     try {
@@ -178,20 +178,30 @@ export const getWorks = unstable_cache(
         whereClause.epochId = filters.epochId;
       }
 
-      // Filtro por categoria (através da tabela WorkCategorie)
-      if (filters?.categoryId) {
-        whereClause.workCategories = {
+      if (filters?.categoryNames) {
+        whereClause.categoryNames = {
+          has: filters.categoryNames,
+        };
+      }
+
+      if (filters?.workGenresArr) {
+        whereClause.workGenresArr = {
+          has: filters.workGenresArr,
+        };
+      }
+      if (filters?.workGenreId) {
+        whereClause.workGenresTypes = {
           some: {
-            categorieId: filters.categoryId,
+            workGenreId: filters.workGenreId,
           },
         };
       }
 
       // Filtro por gênero de trabalho (através da tabela WorkGenresTypes)
-      if (filters?.workGenreId) {
-        whereClause.workGenresTypes = {
+      if (filters?.workGenre) {
+        whereClause.workGenre = {
           some: {
-            workGenreId: filters.workGenreId,
+            workGenre: filters.workGenre,
           },
         };
       }
@@ -287,7 +297,6 @@ export const getWorks = unstable_cache(
           instrument: work.instrumentId
             ? instrumentMap.get(work.instrumentId) || null
             : null,
-          categories: categoriesMap.get(work.id) || [],
           workGenres: workGenresMap.get(work.id) || [],
         })),
         totalCount,

@@ -86,7 +86,7 @@ export default function ComposerDetailsClient({
                         Nascimento
                       </p>
                       <p className="text-gray-900">
-                        {new Date(composer.birthDate).getFullYear()}
+                        {new Date(composer.birthDate).getFullYear() + 1}
                       </p>
                     </div>
                   </div>
@@ -101,7 +101,7 @@ export default function ComposerDetailsClient({
                         Falecimento
                       </p>
                       <p className="text-gray-900">
-                        {new Date(composer.deathDate).getFullYear()}
+                        {new Date(composer.deathDate).getFullYear() + 1}
                         {lifeSpan && (
                           <span className="text-gray-600 ml-2">
                             ({lifeSpan} anos)

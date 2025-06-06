@@ -4,17 +4,19 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { WorkDetails } from '@/app/requests/work-details';
-import { CiCalendar, CiClock2, CiMusicNote1, CiPlay1 } from 'react-icons/ci';
+import { CiCalendar, CiMusicNote1 } from 'react-icons/ci';
 import {
   LuBookOpen,
   LuMusic,
-  LuUser,
-  LuTag,
   LuExternalLink,
   LuClock,
   LuMapPin,
 } from 'react-icons/lu';
-import { FaExternalLinkAlt, FaPlay, FaStop } from 'react-icons/fa';
+import { FaPlay, FaStop } from 'react-icons/fa';
+import ScoreCard from './ScoreCard';
+import { useIMSLPScores } from '@/app/hooks/useIMSLPScores';
+import IMSLPTabs from './IMSLPTabs';
+import { useNavigate } from '@/app/hooks/useNavigate';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -27,12 +29,23 @@ export default function WorkDetailsClient({
 }: WorkDetailsClientProps) {
   const [isPlaying, setIsPlaying] = useState(false);
 
+  // Usar o hook ao invés de gerenciar estado manualmente
+  const {
+    scores: imslpScores,
+    loading: loadingScores,
+    error: scoresError,
+    refetch: refetchScores,
+  } = useIMSLPScores(work.imslpPermlink);
+
+  const { navigateToUrl } = useNavigate();
+
   // Função para formatar duração
   const formatDuration = (duration?: string) => {
     if (!duration) return null;
     return duration;
   };
 
+  console.log('durtion', work);
   // Função para determinar o tipo de obra
   const getWorkTypeLabel = (type: string) => {
     const labels = {
@@ -44,7 +57,6 @@ export default function WorkDetailsClient({
     return labels[type as keyof typeof labels] || type;
   };
 
-  console.log('Categorias', work);
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto py-8 px-4">
@@ -238,7 +250,12 @@ export default function WorkDetailsClient({
                           {work.categoryNames.map((categoryName, index) => (
                             <span
                               key={index}
-                              className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
+                              className="px-3 py-1 cursor-pointer bg-blue-100 text-blue-800 text-sm rounded-full"
+                              onClick={() =>
+                                navigateToUrl(
+                                  `works?categoryNames=${categoryName}`
+                                )
+                              }
                             >
                               {categoryName}
                             </span>
@@ -246,18 +263,24 @@ export default function WorkDetailsClient({
                         </div>
                       </div>
                     )}
-                    {work.workGenres.length > 0 && (
+
+                    {work.workGenresArr && work.workGenresArr.length > 0 && (
                       <div>
                         <span className="text-sm font-medium text-gray-500 block mb-2">
-                          Tipos de Obra:
+                          Tipos de Obra: :
                         </span>
                         <div className="flex flex-wrap gap-2">
-                          {work.workGenres.map((genre) => (
+                          {work.workGenresArr.map((workGenre, index) => (
                             <span
-                              key={genre.id}
-                              className=" capitalize px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full"
+                              key={index}
+                              className=" capitalize cursor-pointer px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full"
+                              onClick={() =>
+                                navigateToUrl(
+                                  `works?workGenresArr=${workGenre}`
+                                )
+                              }
                             >
-                              {genre.name}
+                              {workGenre}
                             </span>
                           ))}
                         </div>
@@ -354,6 +377,38 @@ export default function WorkDetailsClient({
             </div>
           </div>
         </div>
+
+        {/* Seção de Partituras IMSLP */}
+        {work.imslpPermlink && (
+          <div className="bg-white rounded-xl shadow-lg mb-8">
+            <div>
+              {loadingScores && (
+                <div className="flex items-center justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <span className="ml-2 text-gray-600">
+                    Carregando partituras...
+                  </span>
+                </div>
+              )}
+
+              {scoresError && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+                  <p>{scoresError}</p>
+                  <button
+                    onClick={refetchScores}
+                    className="mt-2 text-sm underline hover:no-underline"
+                  >
+                    Tentar novamente
+                  </button>
+                </div>
+              )}
+
+              {imslpScores && !loadingScores && (
+                <IMSLPTabs imslpData={imslpScores} />
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Obras Relacionadas */}
         {relatedWorks.length > 0 && (

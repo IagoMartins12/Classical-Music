@@ -38,16 +38,13 @@ export interface WorkDetails {
     id: string;
     name: string;
   } | null;
-  // Novas propriedades para categorias e gêneros de trabalho
-  categories: {
-    id: string;
-    name: string;
-  }[];
+
   workGenres: {
     id: string;
     name: string;
   }[];
   categoryNames: string[];
+  workGenresArr: string[];
 }
 
 export interface WorkListItem {
@@ -68,11 +65,7 @@ export interface WorkListItem {
   instrument: {
     name: string;
   } | null;
-  // Novas propriedades para categorias e gêneros de trabalho
-  categories: {
-    id: string;
-    name: string;
-  }[];
+
   workGenres: {
     id: string;
     name: string;
@@ -182,6 +175,7 @@ const getCachedWorkData = unstable_cache(
           instrumentId: true,
           epochId: true,
           categoryNames: true,
+          workGenresArr: true,
           composer: {
             select: {
               id: true,
@@ -267,9 +261,9 @@ export const getWorkById = async (
       composer: work.composer,
       instrument: work.instrument,
       epoch: work.epoch,
-      categories: work.categories,
       workGenres: work.workGenres,
       categoryNames: work.categoryNames,
+      workGenresArr: work.workGenresArr,
     };
   } catch (error) {
     console.error('Erro ao buscar obra:', error);
@@ -362,7 +356,6 @@ export const getRelatedWorks = unstable_cache(
         instrument: work.instrumentId
           ? instrumentMap.get(work.instrumentId) || null
           : null,
-        categories: categoriesMap.get(work.id) || [],
         workGenres: workGenresMap.get(work.id) || [],
       }));
     } catch (error) {

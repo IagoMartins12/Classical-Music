@@ -10,6 +10,9 @@ interface WorksServerProps {
     instrument?: string;
     epoch?: string;
     search?: string;
+    categoryNames?: string;
+    workGenresArr?: string;
+    workGenres?: string;
   };
 }
 
@@ -25,6 +28,9 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
       instrumentId: searchParams.instrument,
       epochId: searchParams.epoch,
       search: searchParams.search,
+      categoryNames: searchParams.categoryNames,
+      workGenresArr: searchParams.workGenresArr,
+      workGenres: searchParams.workGenres,
     };
 
     // Remover filtros vazios
@@ -32,6 +38,7 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
       Object.entries(filters).filter(([_, value]) => value)
     );
 
+    console.log('cleanFilters', cleanFilters);
     // Buscar obras e instrumentos em paralelo
     const [worksData, instruments] = await Promise.all([
       getWorks(page, limit, cleanFilters),

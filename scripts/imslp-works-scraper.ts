@@ -409,9 +409,8 @@ class WorkScraper {
       });
 
       if (!instrument) {
-        translatedName =
-          translatedName.charAt(0).toUpperCase() + translatedName.slice(1);
-
+        translatedName = translatedName.toUpperCase() + translatedName.slice(1);
+        console.log('TRANSLATEDNAMEEE', translatedName);
         instrument = await prisma.instrument.create({
           data: {
             name: translatedName,
@@ -557,21 +556,6 @@ class WorkScraper {
           ],
         },
       });
-
-      if (!composer) {
-        const nameParts = composerName.split(',');
-        if (nameParts.length > 1) {
-          const lastName = nameParts[0].trim();
-          composer = await prisma.composer.findFirst({
-            where: {
-              OR: [
-                { name: { contains: lastName, mode: 'insensitive' } },
-                { fullName: { contains: lastName, mode: 'insensitive' } },
-              ],
-            },
-          });
-        }
-      }
 
       if (composer) {
         console.error(`✅ Compositor encontrado: ${composer.fullName}`);
@@ -1357,24 +1341,6 @@ class WorkScraper {
             createdAt: new Date(),
           },
         });
-
-        // Criar relacionamentos com work genres (many-to-many)
-        if (workGenresId.length > 0) {
-          const workGenreConnections = workGenresId.map((workGenreID) => ({
-            workId: savedWork.id,
-            workGenreId: workGenreID,
-          }));
-
-          await tx.workGenresTypes.createMany({
-            data: workGenreConnections,
-          });
-
-          console.log(
-            `🏷️ Conectadas ${
-              workGenresId.length
-            } work genres à obra: ${workData.title.replace(/"/g, '')}`
-          );
-        }
 
         return savedWork;
       });
