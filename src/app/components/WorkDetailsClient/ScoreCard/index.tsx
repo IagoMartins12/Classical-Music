@@ -6,11 +6,23 @@ interface ScoreCardProps {
   score: IMSLPScore;
   isSelected: boolean;
   onSelect: () => void;
+  isLastInGroup?: boolean; // Nova prop para identificar se é o último do grupo
+  groupSize?: number; // Nova prop para saber o tamanho do grupo
 }
 
-const ScoreCard = ({ score, isSelected, onSelect }: ScoreCardProps) => {
+const ScoreCard = ({
+  score,
+  isSelected,
+  onSelect,
+  isLastInGroup = false,
+  groupSize = 1,
+}: ScoreCardProps) => {
   const [showMagnified, setShowMagnified] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
+  // Determina se deve mostrar o thumbnail
+  // Mostra se: é o último do grupo E o grupo tem mais de 1 item, OU se o grupo tem apenas 1 item
+  const shouldShowThumbnail = groupSize === 1 || isLastInGroup;
 
   return (
     <div
@@ -21,12 +33,13 @@ const ScoreCard = ({ score, isSelected, onSelect }: ScoreCardProps) => {
               ? 'border-blue-500 bg-blue-50'
               : 'border-gray-200 hover:border-gray-300'
           }
+          ${shouldShowThumbnail ? '' : 'mb-0 border-b-0'}
         `}
       onClick={onSelect}
     >
       <div className="flex items-center gap-4">
-        {/* Thumbnail com efeito lupa */}
-        {score.thumbnailUrl && (
+        {/* Thumbnail com efeito lupa - só mostra se for o último do grupo */}
+        {shouldShowThumbnail && score.thumbnailUrl && (
           <div
             className="relative w-24 h-28 flex-shrink-0"
             onMouseEnter={() => setShowMagnified(true)}
@@ -95,7 +108,7 @@ const ScoreCard = ({ score, isSelected, onSelect }: ScoreCardProps) => {
               </div>
             )}
 
-            {score.uploader && (
+            {shouldShowThumbnail && score.uploader && (
               <div className="flex items-center gap-1">
                 <LuClock className="w-3 h-3" />
                 {score.uploader}
@@ -104,7 +117,7 @@ const ScoreCard = ({ score, isSelected, onSelect }: ScoreCardProps) => {
             )}
           </div>
 
-          {(score.editor || score.publisher) && (
+          {shouldShowThumbnail && (score.editor || score.publisher) && (
             <div className="mt-2 pt-2 border-t border-gray-100 text-xs text-gray-500">
               {score.editor && <div>Editor: {score.editor}</div>}
               {score.publisher && <div>Editora: {score.publisher}</div>}

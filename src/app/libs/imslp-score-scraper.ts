@@ -2,6 +2,19 @@
 import * as cheerio from 'cheerio';
 import { AnyNode, Element } from 'domhandler';
 
+export interface IMSLPWorkScores {
+  workTitle: string;
+  scoresByType: IMSLPScoresByType;
+  totalCounts: {
+    scores: number;
+    parts: number;
+    arrangements: number;
+    librettos: number;
+    others: number;
+    sources: number;
+  };
+}
+
 export interface IMSLPScore {
   id: string;
   title: string;
@@ -27,28 +40,22 @@ export interface IMSLPScore {
     | 'librettos'
     | 'others'
     | 'sources';
+  groupIndex?: number; // Novo campo para identificar o grupo
+}
+
+export interface IMSLPScoreGroup {
+  groupIndex: number;
+  scores: IMSLPScore[];
+  groupTitle?: string; // Título do grupo se disponível
 }
 
 export interface IMSLPScoresByType {
-  scores: IMSLPScore[];
-  parts: IMSLPScore[];
-  arrangements: IMSLPScore[];
-  librettos: IMSLPScore[];
-  others: IMSLPScore[];
-  sources: IMSLPScore[];
-}
-
-export interface IMSLPWorkScores {
-  workTitle: string;
-  scoresByType: IMSLPScoresByType;
-  totalCounts: {
-    scores: number;
-    parts: number;
-    arrangements: number;
-    librettos: number;
-    others: number;
-    sources: number;
-  };
+  scores: IMSLPScoreGroup[];
+  parts: IMSLPScoreGroup[];
+  arrangements: IMSLPScoreGroup[];
+  librettos: IMSLPScoreGroup[];
+  others: IMSLPScoreGroup[];
+  sources: IMSLPScoreGroup[];
 }
 
 export class IMSLPScraper {
@@ -69,12 +76,11 @@ export class IMSLPScraper {
    * @param html HTML da página IMSLP
    * @returns Objeto com informações das partituras organizadas por tipo
    */
-  static extractScores(html: string): IMSLPWorkScores {
+  static async extractScores(html: string): Promise<IMSLPWorkScores> {
     const $ = cheerio.load(html);
 
     // Verificar se a página foi carregada corretamente
     const pageTitle = $('title').text();
-    console.log('📄 Título da página:', pageTitle);
 
     // Verificar se há algum indicador de bloqueio
     if (
@@ -111,33 +117,27 @@ export class IMSLPScraper {
     });
 
     // Processar cada tipo de aba
-    Object.entries(this.TAB_TYPE_MAP).forEach(([tabId, type]) => {
+    for (const [tabId, type] of Object.entries(this.TAB_TYPE_MAP)) {
       const tabContentId = tabId.replace('_tab', '');
-      console.log('tabContentId', tabContentId);
 
       const $tabContent = $(`#${tabContentId}`);
 
       if ($tabContent.length > 0) {
-        const scoresInTab = this.extractScoresFromTab($, $tabContent, type);
+        const scoresInTab = await this.extractScoresFromTab(
+          $,
+          $tabContent,
+          type
+        );
 
         scoresByType[type] = scoresInTab;
-        console.log(
-          `🎼 Extraído: ${scoresInTab.length} itens do tipo "${type}"`
-        );
       }
-    });
+    }
 
     // Extrair título da obra
     const workTitle =
       $('h1').first().text().trim() ||
       $('#firstHeading').text().trim() ||
       'Obra Desconhecida';
-
-    console.log(
-      `📋 Resumo: ${
-        Object.values(scoresByType).flat().length
-      } itens total para "${workTitle}"`
-    );
 
     return {
       workTitle,
@@ -153,122 +153,230 @@ export class IMSLPScraper {
    * @param type Tipo da partitura
    * @returns Array de partituras
    */
-  // Parte do método extractScoresFromTab que precisa ser corrigida:
-
-  private static extractScoresFromTab(
+  private static async extractScoresFromTab(
     $: cheerio.CheerioAPI,
     $tabContent: cheerio.Cheerio<AnyNode>,
     type: IMSLPScore['type']
-  ): IMSLPScore[] {
-    const scores: IMSLPScore[] = [];
+  ): Promise<IMSLPScoreGroup[]> {
+    const scoreGroups: IMSLPScoreGroup[] = [];
 
-    // Encontrar todos os blocos de arquivo na aba
-    $tabContent.find('[id^="IMSLP"]').each((index, element) => {
-      const $element = $(element);
-      console.log(`\n🎵 Processando item ${index + 1} do tipo "${type}"`);
-
-      const scoreId =
-        $element.attr('id')?.replace('IMSLP', '') || `${type}_${index}`;
-
-      // Extrair informações básicas do download
-      const $downloadSection = $element.find('.we_file_download');
-
-      let title = $downloadSection.find('span[title*="Baixar"]').text().trim();
-      if (!title) {
-        title = $downloadSection.find('.we_file_download_link').text().trim();
-      }
-      if (!title) {
-        title = this.getDefaultTitleByType(type);
-      }
-
-      // Extrair informações do arquivo
-      const fileInfo = $downloadSection.find('.we_file_info2').text();
-      const hiddenLink = $downloadSection
-        .find('.we_file_info2 .hidden a')
-        .attr('href');
-
-      const fileSizeMatch = fileInfo.match(/(\d+\.?\d*)(MB|KB)/);
-      const pageCountMatch = fileInfo.match(/(\d+)\s*pp\./);
-      const downloadCountMatch = fileInfo.match(/(\d+)×/);
-
-      // Extrair rating
-      const ratingElement = $downloadSection.find('.current-rating');
-      const ratingStyle = ratingElement.attr('style') || '';
-      const ratingMatch = ratingStyle.match(/width:\s*(\d+\.?\d*)%/);
-      const rating = ratingMatch ? parseFloat(ratingMatch[1]) / 10 : undefined;
-
-      const ratingsCountText = $downloadSection
-        .find('[id^="num-of-ratings-"]')
-        .text();
-      const ratingsCount = ratingsCountText
-        ? parseInt(ratingsCountText)
-        : undefined;
-
-      // Extrair informações detalhadas da tabela de edição
-      const $editionTable = $element.next('.we_edition_info').find('table');
-
-      const editor = this.extractTableValue($, $editionTable, 'Editor');
-      const publisher = this.extractTableValue(
-        $,
-        $editionTable,
-        'Informação da editora'
-      );
-      const copyright = this.extractTableValue(
-        $,
-        $editionTable,
-        'Direitos autorais'
-      );
-      const notes = this.extractTableValue($, $editionTable, 'Notas diversas');
-
-      // USAR A NOVA FUNÇÃO PARA EXTRAIR THUMBNAIL
-      const thumbnailUrl = this.extractThumbnailUrl($, $element);
-      console.log('THUMBANIL URL', thumbnailUrl);
-
-      // Extrair informações do uploader
-      const $fileInfo = $element.find('.we_file_info');
-      const uploaderInfo = $fileInfo.find('.mh555').text();
-      const uploaderMatch = uploaderInfo.match(/digitalizado por ([^\n]+)\n/);
-      const uploader = uploaderMatch ? uploaderMatch[1].trim() : undefined;
-
-      const uploadDateMatch = uploaderInfo.match(/\(([^)]+)\)$/);
-      const uploadDate = uploadDateMatch ? uploadDateMatch[1] : undefined;
-
-      const fileName = hiddenLink?.split('/').pop() ?? '';
-      let downloadUrl = `https://imslp.org/${hiddenLink}`;
-
-      const score: IMSLPScore = {
-        id: scoreId,
-        title: title,
-        downloadUrl: downloadUrl ?? '',
-        fileSize: fileSizeMatch ? `${fileSizeMatch[1]}${fileSizeMatch[2]}` : '',
-        pageCount: pageCountMatch ? pageCountMatch[1] : '',
-        rating: rating,
-        ratingsCount: ratingsCount,
-        downloadCount: downloadCountMatch
-          ? parseInt(downloadCountMatch[1])
-          : undefined,
-        fileFormat: 'PDF',
-        editor: editor,
-        publisher: publisher,
-        copyright: copyright,
-        thumbnailUrl: thumbnailUrl,
-        uploadDate: uploadDate,
-        uploader: uploader,
-        notes: notes,
-        type: type,
-      };
-
-      console.log(
-        `📋 Item processado - Título: "${title}", Thumbnail: ${
-          thumbnailUrl ? '✅' : '❌'
-        }`
-      );
-      scores.push(score);
+    // Coletar todos os grupos primeiro
+    const groups: { element: cheerio.Cheerio<AnyNode>; index: number }[] = [];
+    $tabContent.find('.we').each((groupIndex, groupElement) => {
+      groups.push({ element: $(groupElement), index: groupIndex });
     });
 
-    console.log('SCOREEE', scores);
+    // Processar cada grupo sequencialmente
+    for (const { element: $groupElement, index: groupIndex } of groups) {
+      const groupScores: IMSLPScore[] = [];
+      let groupTitle: string | undefined;
 
-    return scores;
+      // Coletar todos os elementos de score primeiro
+      const scoreElements: {
+        element: cheerio.Cheerio<AnyNode>;
+        index: number;
+      }[] = [];
+      $groupElement.find('[id^="IMSLP"]').each((scoreIndex, scoreElement) => {
+        scoreElements.push({ element: $(scoreElement), index: scoreIndex });
+      });
+
+      // Processar cada score sequencialmente
+      for (const { element: $element, index: scoreIndex } of scoreElements) {
+        const scoreId =
+          $element.attr('id')?.replace('IMSLP', '') ||
+          `${type}_${groupIndex}_${scoreIndex}`;
+
+        // Extrair informações básicas do download
+        const $downloadSection = $element.find('.we_file_download');
+
+        let title = $downloadSection
+          .find('span[title*="Baixar"]')
+          .text()
+          .trim();
+        if (!title) {
+          title = $downloadSection.find('.we_file_download_link').text().trim();
+        }
+        if (!title) {
+          title = this.getDefaultTitleByType(type);
+        }
+
+        // Se é o primeiro item do grupo, usar seu título como título do grupo
+        if (scoreIndex === 0 && !groupTitle) {
+          groupTitle = title;
+        }
+
+        // Extrair informações do arquivo
+        const fileInfo = $downloadSection.find('.we_file_info2').text();
+        const hiddenLink = $downloadSection
+          .find('.we_file_info2 .hidden a')
+          .attr('href');
+
+        const fileSizeMatch = fileInfo.match(/(\d+\.?\d*)(MB|KB)/);
+        const pageCountMatch = fileInfo.match(/(\d+)\s*pp\./);
+        const downloadCountMatch = fileInfo.match(/(\d+)×/);
+
+        // Extrair rating
+        const ratingElement = $downloadSection.find('.current-rating');
+        const ratingStyle = ratingElement.attr('style') || '';
+        const ratingMatch = ratingStyle.match(/width:\s*(\d+\.?\d*)%/);
+        const rating = ratingMatch
+          ? parseFloat(ratingMatch[1]) / 10
+          : undefined;
+
+        const ratingsCountText = $downloadSection
+          .find('[id^="num-of-ratings-"]')
+          .text();
+        const ratingsCount = ratingsCountText
+          ? parseInt(ratingsCountText)
+          : undefined;
+
+        // Extrair informações detalhadas da tabela de edição (buscar no grupo inteiro)
+        const $editionTable = $groupElement
+          .find('.we_edition_info table')
+          .first();
+
+        const editor = this.extractTableValue($, $editionTable, 'Editor');
+        const publisher = this.extractTableValue(
+          $,
+          $editionTable,
+          'Informação da editora'
+        );
+        const copyright = this.extractTableValue(
+          $,
+          $editionTable,
+          'Direitos autorais'
+        );
+        const notes = this.extractTableValue(
+          $,
+          $editionTable,
+          'Notas diversas'
+        );
+
+        // Extrair thumbnail
+        const thumbnailUrl = this.extractThumbnailUrl($, $element);
+
+        // Extrair informações do uploader
+        const $fileInfo = $element.find('.we_file_info');
+        const uploaderInfo = $fileInfo.find('.mh555').text();
+        const uploaderMatch = uploaderInfo.match(/digitalizado por ([^\n]+)\n/);
+        const uploader = uploaderMatch ? uploaderMatch[1].trim() : undefined;
+
+        const uploadDateMatch = uploaderInfo.match(/\(([^)]+)\)$/);
+        const uploadDate = uploadDateMatch ? uploadDateMatch[1] : undefined;
+
+        const fileName = hiddenLink?.split('/').pop() ?? '';
+        let intermediateUrl = `https://imslp.org/${hiddenLink}`;
+        let downloadUrl = intermediateUrl;
+
+        if (hiddenLink) {
+          try {
+            downloadUrl = await this.extractRealDownloadUrl(intermediateUrl);
+          } catch (error) {
+            downloadUrl = intermediateUrl;
+          }
+        }
+
+        const score: IMSLPScore = {
+          id: scoreId,
+          title: title,
+          downloadUrl: downloadUrl ?? '',
+          fileSize: fileSizeMatch
+            ? `${fileSizeMatch[1]}${fileSizeMatch[2]}`
+            : '',
+          pageCount: pageCountMatch ? pageCountMatch[1] : '',
+          rating: rating,
+          ratingsCount: ratingsCount,
+          downloadCount: downloadCountMatch
+            ? parseInt(downloadCountMatch[1])
+            : undefined,
+          fileFormat: 'PDF',
+          editor: editor,
+          publisher: publisher,
+          copyright: copyright,
+          thumbnailUrl: thumbnailUrl,
+          uploadDate: uploadDate,
+          uploader: uploader,
+          notes: notes,
+          type: type,
+          groupIndex: groupIndex, // Adicionar índice do grupo
+        };
+
+        groupScores.push(score);
+      }
+
+      // Adicionar o grupo às coleções se tiver partituras
+      if (groupScores.length > 0) {
+        const scoreGroup: IMSLPScoreGroup = {
+          groupIndex: groupIndex,
+          scores: groupScores,
+          groupTitle: groupTitle,
+        };
+
+        scoreGroups.push(scoreGroup);
+      }
+    }
+
+    console.log(
+      `🎼 Total de grupos extraídos para "${type}": ${scoreGroups.length}`
+    );
+    return scoreGroups;
+  }
+
+  private static async extractRealDownloadUrl(
+    intermediateUrl: string
+  ): Promise<string> {
+    try {
+      const response = await fetch(intermediateUrl, {
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          Accept:
+            'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+          'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
+          'Accept-Encoding': 'gzip, deflate, br',
+          Connection: 'keep-alive',
+          'Upgrade-Insecure-Requests': '1',
+        },
+      });
+
+      if (!response.ok) {
+        console.warn(`⚠️ Erro ao buscar URL real: ${response.status}`);
+        return intermediateUrl; // Retorna a URL original como fallback
+      }
+
+      const html = await response.text();
+
+      const $ = cheerio.load(html);
+
+      // ✅ CORREÇÃO: Buscar o elemento span correto com id="sm_dl_wait"
+      const $downloadWait = $('#sm_dl_wait');
+
+      if ($downloadWait.length > 0) {
+        const realDownloadUrl = $downloadWait.attr('data-id');
+
+        if (realDownloadUrl) {
+          console.log('✅ URL real encontrada:', realDownloadUrl);
+          return realDownloadUrl;
+        } else {
+          console.warn(
+            '⚠️ Atributo data-id não encontrado no elemento sm_dl_wait'
+          );
+        }
+      } else {
+        $('[id*="dl"], [id*="wait"], [data-id]').each((i, el) => {
+          const $el = $(el);
+          console.log(
+            `   - ID: ${$el.attr('id')}, data-id: ${$el.attr('data-id')}`
+          );
+        });
+      }
+
+      console.warn('⚠️ URL real não encontrada, usando URL intermediária');
+      return intermediateUrl;
+    } catch (error) {
+      console.error('❌ Erro ao extrair URL real:', error);
+      return intermediateUrl; // Retorna a URL original como fallback
+    }
   }
 
   // Função corrigida para extrair thumbnail
@@ -276,101 +384,20 @@ export class IMSLPScraper {
     $: cheerio.CheerioAPI,
     $element: cheerio.Cheerio<AnyNode>
   ): string | undefined {
-    console.log('🔍 Procurando thumbnail...');
-
     // Array com diferentes estratégias para encontrar a thumbnail
     const strategies = [
-      // Estratégia 1: Buscar no elemento atual
-      () => {
-        const $thumb = $element.find('.we_thumb.preview.pvld');
-        console.log(
-          '📍 Estratégia 1 - Elemento .we_thumb encontrado:',
-          $thumb.length > 0
-        );
-
-        if ($thumb.length > 0) {
-          const dataImg = $thumb.attr('data-img');
-          const imgSrc =
-            $thumb.find('img').attr('data-src') ||
-            $thumb.find('img').attr('src');
-          console.log('   - data-img:', dataImg);
-          console.log('   - img src:', imgSrc);
-          return dataImg || imgSrc;
-        }
-        return null;
-      },
-
-      // Estratégia 2: Buscar qualquer div com classe we_thumb
-      () => {
-        const $thumb = $element.find('div[class*="we_thumb"]');
-        console.log(
-          '📍 Estratégia 2 - Qualquer .we_thumb encontrado:',
-          $thumb.length > 0
-        );
-
-        if ($thumb.length > 0) {
-          const dataImg = $thumb.attr('data-img');
-          const imgSrc =
-            $thumb.find('img').attr('data-src') ||
-            $thumb.find('img').attr('src');
-          console.log('   - data-img:', dataImg);
-          console.log('   - img src:', imgSrc);
-          return dataImg || imgSrc;
-        }
-        return null;
-      },
-
-      // Estratégia 3: Buscar qualquer imagem dentro do elemento
-      () => {
-        const $img = $element.find('img').first();
-        console.log(
-          '📍 Estratégia 3 - Qualquer img encontrada:',
-          $img.length > 0
-        );
-
-        if ($img.length > 0) {
-          const src = $img.attr('src') || $img.attr('data-src');
-          console.log('   - img src:', src);
-          return src;
-        }
-        return null;
-      },
-
       // Estratégia 4: Buscar no elemento pai e irmãos
       () => {
         const $parent = $element.parent();
         const $thumb = $parent
           .find('.we_thumb, [class*="thumb"], [data-img]')
           .first();
-        console.log('📍 Estratégia 4 - Busca no pai:', $thumb.length > 0);
 
         if ($thumb.length > 0) {
           const dataImg = $thumb.attr('data-img');
           const imgSrc =
             $thumb.find('img').attr('data-src') ||
             $thumb.find('img').attr('src');
-          console.log('   - data-img:', dataImg);
-          console.log('   - img src:', imgSrc);
-          return dataImg || imgSrc;
-        }
-        return null;
-      },
-
-      // Estratégia 5: Buscar em elementos irmãos
-      () => {
-        const $siblings = $element.siblings();
-        const $thumb = $siblings
-          .find('.we_thumb, [class*="thumb"], [data-img]')
-          .first();
-        console.log('📍 Estratégia 5 - Busca nos irmãos:', $thumb.length > 0);
-
-        if ($thumb.length > 0) {
-          const dataImg = $thumb.attr('data-img');
-          const imgSrc =
-            $thumb.find('img').attr('data-src') ||
-            $thumb.find('img').attr('src');
-          console.log('   - data-img:', dataImg);
-          console.log('   - img src:', imgSrc);
           return dataImg || imgSrc;
         }
         return null;
@@ -381,8 +408,6 @@ export class IMSLPScraper {
     for (let i = 0; i < strategies.length; i++) {
       const result = strategies[i]();
       if (result) {
-        console.log(`✅ Thumbnail encontrada com estratégia ${i + 1}:`, result);
-
         // Normalizar URL se necessário
         let finalUrl = result;
         if (finalUrl.startsWith('//')) {
@@ -395,14 +420,9 @@ export class IMSLPScraper {
       }
     }
 
-    console.log('❌ Nenhuma thumbnail encontrada');
     return undefined;
   }
-  /**
-   * Retorna título padrão baseado no tipo
-   * @param type Tipo da partitura
-   * @returns Título padrão
-   */
+
   private static getDefaultTitleByType(type: IMSLPScore['type']): string {
     const titles = {
       scores: 'Partitura Completa',
@@ -415,13 +435,6 @@ export class IMSLPScraper {
     return titles[type];
   }
 
-  /**
-   * Extrai valor de uma tabela baseado no nome da linha
-   * @param $ Instância do Cheerio
-   * @param $table Elemento da tabela jQuery/Cheerio
-   * @param rowName Nome da linha a ser extraída
-   * @returns Valor da célula ou undefined
-   */
   private static extractTableValue(
     $: cheerio.CheerioAPI,
     $table: cheerio.Cheerio<Element>,
@@ -480,10 +493,8 @@ export class IMSLPScraper {
         throw new Error('Resposta não é um documento HTML válido');
       }
 
-      return this.extractScores(html);
+      return await this.extractScores(html);
     } catch (error) {
-      console.error('❌ Erro detalhado ao extrair partituras do IMSLP:', error);
-
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
           'Erro de conexão com IMSLP. Verifique sua conexão com a internet.'

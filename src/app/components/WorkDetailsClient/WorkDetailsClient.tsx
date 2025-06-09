@@ -56,6 +56,8 @@ export default function WorkDetailsClient({
     return labels[type as keyof typeof labels] || type;
   };
 
+  console.log('work', work);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto py-8 px-4">
@@ -212,19 +214,19 @@ export default function WorkDetailsClient({
                         <span className="font-medium text-gray-500">
                           Instrumentação:
                         </span>
-                        <span className="ml-2 text-gray-900">
+                        <span className="ml-2 text-gray-900 whitespace-pre-line">
                           {work.instrumentation}
                         </span>
                       </div>
                     )}
 
-                    {work.instrumentation && (
+                    {work.moviment && (
                       <div className="md:col-span-2">
                         <span className="font-medium text-gray-500">
-                          Gêneros:
+                          Movimentos:
                         </span>
-                        <span className="ml-2 text-gray-900">
-                          {work.instrumentation}
+                        <span className="ml-2 text-gray-900 whitespace-pre-line">
+                          {work.moviment}
                         </span>
                       </div>
                     )}
@@ -266,7 +268,7 @@ export default function WorkDetailsClient({
                     {work.workGenresArr && work.workGenresArr.length > 0 && (
                       <div>
                         <span className="text-sm font-medium text-gray-500 block mb-2">
-                          Tipos de Obra: :
+                          Tipos de Obra:
                         </span>
                         <div className="flex flex-wrap gap-2">
                           {work.workGenresArr.map((workGenre, index) => (

@@ -871,32 +871,6 @@ export const INSTRUMENT_MAPPING: Record<string, string> = {
   optional: 'Opcional',
   'ad libitum': 'Ad Libitum',
 
-  // Números e quantidades
-  '1': '1',
-  '2': '2',
-  '3': '3',
-  '4': '4',
-  '5': '5',
-  '6': '6',
-  '7': '7',
-  '8': '8',
-  '9': '9',
-  '10': '10',
-  one: 'Um',
-  two: 'Dois',
-  three: 'Três',
-  four: 'Quatro',
-  five: 'Cinco',
-  six: 'Seis',
-  seven: 'Sete',
-  eight: 'Oito',
-  nine: 'Nove',
-  ten: 'Dez',
-
-  // Termos especiais
-  hands: 'mãos',
-  players: 'executantes',
-  performers: 'intérpretes',
   parts: 'partes',
   voices: 'vozes',
 };

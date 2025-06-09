@@ -112,15 +112,13 @@ export default function IMSLPTabs({
     imslpData.scoresByType[activeTab as keyof typeof imslpData.scoresByType] ||
     [];
 
-  console.log('IMSLP DATAAA', imslpData);
-
   return (
     <div className="bg-white rounded-xl shadow-lg">
       {/* Header */}
       <div className="border-b border-gray-200 p-6">
         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
           <LuMusic className="w-6 h-6" />
-          Partituras Disponiveis
+          Partituras Disponíveis
           <span className="text-sm font-normal text-gray-500">
             ({Object.values(imslpData.totalCounts).reduce((a, b) => a + b, 0)}{' '}
             itens)
@@ -165,38 +163,47 @@ export default function IMSLPTabs({
         {activeTabData.length > 0 ? (
           <div className="grid grid-cols-1 gap-6">
             {/* Lista de Partituras */}
-            <div className="space-y-4">
-              {activeTabData.map((score) => (
-                <ScoreCard
-                  key={score.id}
-                  score={score}
-                  isSelected={selectedScore?.id === score.id}
-                  onSelect={() =>
-                    setSelectedScore(
-                      selectedScore?.id === score.id ? null : score
-                    )
-                  }
-                />
+            <div className="space-y-6">
+              {activeTabData.map((scoreGroup) => (
+                <div key={scoreGroup.groupIndex} className="space-y-4">
+                  {/* Título do grupo, se disponível */}
+                  {scoreGroup.groupTitle && (
+                    <div className="border-b border-gray-200 pb-2">
+                      <h3 className="text-lg font-semibold text-gray-800">
+                        {scoreGroup.groupTitle}
+                      </h3>
+                    </div>
+                  )}
+
+                  {/* Scores do grupo */}
+                  {scoreGroup.scores.map((score, index) => (
+                    <ScoreCard
+                      key={score.id}
+                      score={score}
+                      isSelected={selectedScore?.id === score.id}
+                      onSelect={() =>
+                        setSelectedScore(
+                          selectedScore?.id === score.id ? null : score
+                        )
+                      }
+                      isLastInGroup={index === scoreGroup.scores.length - 1}
+                      groupSize={scoreGroup.scores.length}
+                    />
+                  ))}
+                </div>
               ))}
             </div>
 
             {/* Preview Panel */}
-            {/* <div className="lg:sticky lg:top-6">
-              {selectedScore ? (
+            {selectedScore && (
+              <div className="lg:sticky lg:top-6">
                 <ScorePreview score={selectedScore} />
-              ) : (
-                <div className="bg-gray-50 rounded-lg p-8 text-center">
-                  <LuEye className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500">
-                    Selecione uma partitura para ver o preview
-                  </p>
-                </div>
-              )}
-            </div> */}
+              </div>
+            )}
           </div>
         ) : (
           <p className="text-gray-500 text-center py-8">
-            Nenhuma partitura disponivel para essa peça.
+            Nenhuma partitura disponível para essa peça.
           </p>
         )}
       </div>
