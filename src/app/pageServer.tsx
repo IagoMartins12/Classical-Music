@@ -1,4 +1,5 @@
 import EssentialComposers from './components/EssentialComposers';
+import HeroMainPage from './components/HeroMainPage';
 import PopularComposers from './components/PopularComposers';
 import {
   getRecomendadedComposers,
@@ -16,6 +17,7 @@ export default async function PageServer() {
       <h1 className="text-3xl font-bold text-center mb-6">
         🎼 Sua enciclopédia de Música clássica
       </h1>
+      <HeroMainPage />
       <PopularComposers composersData={composersData} />
       <EssentialComposers composersData={recomendadData} />
     </div>

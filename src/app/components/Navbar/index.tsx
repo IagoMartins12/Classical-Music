@@ -17,7 +17,6 @@ const Navbar: React.FC = () => {
   };
 
   const optionsArr: NavItem[] = [
-    { label: 'Home', href: '/', active: true },
     { label: 'Historia da musica', href: '/music-history' },
     { label: 'Obras', href: '/works' },
     { label: 'Compositores', href: '/composers' },

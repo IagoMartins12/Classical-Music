@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
 import { FaUser, FaCalendarAlt, FaInfoCircle } from 'react-icons/fa';
 
@@ -34,8 +35,8 @@ export function HistoryComposerCard({ composer }: Props) {
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100">
-      <div className="p-6">
-        <div className="flex items-start space-x-4">
+      <Link href={`/composer/${composer.id}`} className="">
+        <div className={`p-6 pb-0 flex items-start space-x-4`}>
           {/* Portrait */}
           <div className="flex-shrink-0">
             {composer.portraitUrl && !imageError ? (
@@ -61,30 +62,26 @@ export function HistoryComposerCard({ composer }: Props) {
               <FaCalendarAlt className="mr-1 flex-shrink-0" />
               <span>{getLifespan()}</span>
             </div>
-
-            {composer.bio && (
-              <button
-                onClick={() => setShowBio(!showBio)}
-                className="flex items-center text-sm text-blue-600 hover:text-blue-700 mt-2 transition-colors"
-              >
-                <FaInfoCircle className="mr-1" />
-                {showBio ? 'Ocultar biografia' : 'Ver biografia'}
-              </button>
-            )}
           </div>
         </div>
 
         {/* Biography */}
-        {showBio && composer.bio && (
-          <div className="mt-4 pt-4 border-t border-gray-100">
+        {composer.bio ? (
+          <div className="mt-4 pt-4 px-6 pb-6">
             <p className="text-sm text-gray-700 leading-relaxed">
               {composer.bio.length > 200
                 ? `${composer.bio.substring(0, 200)}...`
                 : composer.bio}
             </p>
           </div>
+        ) : (
+          <div className="mt-4 pt-4 px-6 pb-6">
+            <p className="text-sm text-gray-700 leading-relaxed">
+              Sem biografia disponivel.
+            </p>
+          </div>
         )}
-      </div>
+      </Link>
     </div>
   );
 }
