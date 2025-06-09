@@ -39,6 +39,17 @@ export const getEpochsCache = unstable_cache(
 function buildWhereClause(search?: string, epochId?: string) {
   const where: any = {};
 
+  where.OR = [
+    {
+      primaryRoleId: '6839e5a5eba93979e36ad88b',
+    },
+    {
+      roles: {
+        contains: '6839e5a5eba93979e36ad88b',
+      },
+    },
+  ];
+
   if (search && search.trim()) {
     where.OR = [
       {

@@ -40,7 +40,6 @@ export default function ComposerDetailsClient({
   };
 
   const lifeSpan = calculateLifeSpan();
-  console.log('composer', composer);
 
   // Assumindo que composer tem uma propriedade roleNames (array de strings)
   const secondaryRoles = composer.roleNames || [];

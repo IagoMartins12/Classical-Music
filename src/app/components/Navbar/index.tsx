@@ -17,10 +17,12 @@ const Navbar: React.FC = () => {
   };
 
   const optionsArr: NavItem[] = [
-    { label: 'Home', href: '#', active: true },
-    { label: 'Gênero', href: '#' },
-    { label: 'Instrumento', href: '#' },
-    { label: 'Périodo', href: '#' },
+    { label: 'Home', href: '/', active: true },
+    { label: 'Historia da musica', href: '/music-history' },
+    { label: 'Obras', href: '/works' },
+    { label: 'Compositores', href: '/composers' },
+    { label: 'Instrumentos', href: '/instruments' },
+    { label: 'Periodos', href: '/periods' },
   ];
 
   return (

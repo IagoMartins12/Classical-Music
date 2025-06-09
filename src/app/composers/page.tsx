@@ -23,9 +23,5 @@ export default function ComposersPage({
   const search = searchParams.search || '';
   const epochId = searchParams.epoch || '';
 
-  return (
-    <Suspense fallback={<ComposersLoading />}>
-      <ComposersServer page={page} search={search} epochId={epochId} />
-    </Suspense>
-  );
+  return <ComposersServer page={page} search={search} epochId={epochId} />;
 }
