@@ -1,13 +1,23 @@
-// app/composers/ComposersClient.tsx
+// app/composers/ComposersClient.tsx - Premium version with theme system
 'use client';
 
 import { useState, useTransition, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
 import { useNavigate } from '@/app/hooks/useNavigate';
-import { BsGrid3X3Gap, BsList } from 'react-icons/bs';
+import {
+  FiSearch,
+  FiFilter,
+  FiGrid,
+  FiList,
+  FiUsers,
+  FiClock,
+  FiTrendingUp,
+  FiRefreshCw,
+} from 'react-icons/fi';
+import { GiMusicalNotes } from 'react-icons/gi';
 import ComposerCard from './ComposerCard';
 import ComposerCardList from './ComposerCardList';
+import PaginationControls from '../PaginationControls';
 
 export interface ComposerImslp {
   epochName: string;
@@ -56,10 +66,9 @@ export default function ComposersClient({
   const { navigateToUrl } = useNavigate();
 
   const [isPending, startTransition] = useTransition();
-
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [selectedEpoch, setSelectedEpoch] = useState(initialSelectedEpoch);
-  const [showPhotos, setShowPhotos] = useState(true); // Padrão sem fotos (modo lista)
+  const [showPhotos, setShowPhotos] = useState(true);
 
   // Função para atualizar URL com debounce
   const updateUrl = useCallback(
@@ -131,203 +140,291 @@ export default function ComposersClient({
     [updateUrl]
   );
 
-  return (
-    <div
-      className={`space-y-6 section-wrap ${
-        isPending ? 'opacity-75 pointer-events-none' : ''
-      }`}
-    >
-      {/* Filtros */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Campo de pesquisa */}
-          <div>
-            <label
-              htmlFor="search"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Pesquisar por nome
-            </label>
-            <input
-              id="search"
-              type="text"
-              placeholder="Digite o nome do compositor..."
-              value={searchTerm}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+  // Clear all filters
+  const clearFilters = useCallback(() => {
+    setSearchTerm('');
+    setSelectedEpoch('');
+    updateUrl({ search: '', epoch: '', page: 1 });
+  }, [updateUrl]);
 
-          {/* Filtro por época */}
-          <div>
-            <label
-              htmlFor="epoch"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Filtrar por época
-            </label>
-            <select
-              id="epoch"
-              value={selectedEpoch}
-              onChange={(e) => handleEpochChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Todas as épocas</option>
-              {epochs.map((epoch) => (
-                <option key={epoch.id} value={epoch.id}>
-                  {epoch.name}
-                </option>
-              ))}
-            </select>
+  const hasActiveFilters = searchTerm || selectedEpoch;
+
+  return (
+    <div className="section-wrap space-y-8">
+      {/* Header Section */}
+      {/* <div className="relative text-center py-12">
+        <div className="absolute inset-0 pointer-events-none opacity-10">
+          <div className="absolute top-4 left-10 text-4xl text-brand-primary">
+            <GiMusicalNotes />
+          </div>
+          <div className="absolute bottom-4 right-10 text-3xl text-brand-secondary">
+            <FiUsers />
           </div>
         </div>
 
-        {/* Toggle para alternar entre visualizações */}
-        <div className="mt-4 flex items-center justify-between">
-          <div className="text-sm text-gray-600">
-            Mostrando {composers.length} de {totalCount} compositores
-            {searchTerm && ` para "${searchTerm}"`}
-            {selectedEpoch &&
-              ` da época "${epochs.find((e) => e.id === selectedEpoch)?.name}"`}
+        <div className="relative z-10">
+          <div className="flex items-center justify-center mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
+              <FiUsers className="w-8 h-8 text-theme-inverse" />
+            </div>
+          </div>
+
+          <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
+            Compositores Clássicos
+          </h1>
+          <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-subtitle">
+            Explore nossa coleção completa de grandes mestres da música clássica
+          </p>
+        </div>
+      </div> */}
+
+      {/* Filters Section */}
+      <div
+        className={`classical-card p-6 transition-all duration-500 ${
+          isPending ? 'opacity-50' : ''
+        }`}
+      >
+        <div className="flex items-center mb-6">
+          <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mr-4">
+            <FiFilter className="w-5 h-5 text-theme-inverse" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-theme-primary classical-title">
+              Filtros e Busca
+            </h3>
+            <p className="text-theme-secondary text-sm">
+              Refine sua pesquisa para encontrar compositores específicos
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {/* Search Field */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-theme-secondary">
+              Pesquisar por nome
+            </label>
+            <div className="relative">
+              <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+              <input
+                type="text"
+                placeholder="Digite o nome do compositor..."
+                value={searchTerm}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                className="input-classical pl-12 w-full"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => handleSearchChange('')}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Epoch Filter */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-theme-secondary">
+              Filtrar por período
+            </label>
+            <div className="relative">
+              <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+              <select
+                value={selectedEpoch}
+                onChange={(e) => handleEpochChange(e.target.value)}
+                className="input-classical pl-12 w-full appearance-none"
+              >
+                <option value="">Todos os períodos</option>
+                {epochs.map((epoch) => (
+                  <option key={epoch.id} value={epoch.id}>
+                    {epoch.name}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                <svg
+                  className="w-4 h-4 text-theme-tertiary"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Filter Status and View Toggle */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4 border-t border-theme-secondary">
+          <div className="flex items-center space-x-4">
+            <div className="text-theme-secondary text-sm">
+              <span className="font-medium text-theme-primary">
+                {composers.length}
+              </span>{' '}
+              de{' '}
+              <span className="font-medium text-theme-primary">
+                {totalCount}
+              </span>{' '}
+              compositores
+              {searchTerm && (
+                <span className="text-brand-primary">
+                  {' '}
+                  para "<span className="font-medium">{searchTerm}</span>"
+                </span>
+              )}
+              {selectedEpoch && (
+                <span className="text-accent-purple">
+                  {' '}
+                  do período "
+                  <span className="font-medium">
+                    {epochs.find((e) => e.id === selectedEpoch)?.name}
+                  </span>
+                  "
+                </span>
+              )}
+            </div>
+
             {isPending && (
-              <span className="ml-2 text-blue-600">• Carregando...</span>
+              <div className="flex items-center text-brand-primary text-sm">
+                <FiRefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                Carregando...
+              </div>
             )}
           </div>
 
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-700 mr-2">Visualização:</span>
-            <button
-              onClick={() => setShowPhotos(false)}
-              className={`p-2 rounded-md transition-colors ${
-                !showPhotos
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-              title="Visualização em lista"
-            >
-              <BsList size={18} />
-            </button>
-            <button
-              onClick={() => setShowPhotos(true)}
-              className={`p-2 rounded-md transition-colors ${
-                showPhotos
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-              title="Visualização em grade com fotos"
-            >
-              <BsGrid3X3Gap size={18} />
-            </button>
+          <div className="flex items-center space-x-3">
+            {/* Clear Filters */}
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="btn-classical-secondary text-sm"
+              >
+                Limpar Filtros
+              </button>
+            )}
+
+            {/* View Toggle */}
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-theme-secondary">Vista:</span>
+              <div className="bg-theme-elevated border border-theme-primary rounded-lg p-1 flex">
+                <button
+                  onClick={() => setShowPhotos(false)}
+                  className={`p-2 rounded-md transition-all duration-300 ${
+                    !showPhotos
+                      ? 'bg-brand-gradient text-theme-inverse shadow-theme-glow'
+                      : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
+                  }`}
+                  title="Visualização em lista"
+                >
+                  <FiList className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setShowPhotos(true)}
+                  className={`p-2 rounded-md transition-all duration-300 ${
+                    showPhotos
+                      ? 'bg-brand-gradient text-theme-inverse shadow-theme-glow'
+                      : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
+                  }`}
+                  title="Visualização em grade"
+                >
+                  <FiGrid className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Lista de compositores */}
-      {composers.length > 0 ? (
-        showPhotos ? (
-          // Visualização em grade com fotos
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {composers.map((composer) => (
-              <div
-                key={composer.id}
-                className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow cursor-pointer"
-                onClick={() => navigateToUrl('composer', composer.id)}
-              >
-                <ComposerCard composer={composer} key={composer.id} />
+      {/* Results Section */}
+      <div className="relative">
+        {composers.length > 0 ? (
+          showPhotos ? (
+            // Grid View
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {composers.map((composer, index) => (
+                <div
+                  key={composer.id}
+                  className="animate-fade-in-up cursor-pointer"
+                  style={{
+                    animationDelay: `${index * 0.05}s`,
+                    animationFillMode: 'backwards',
+                  }}
+                  onClick={() => navigateToUrl('composer', composer.id)}
+                >
+                  <ComposerCard composer={composer} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            // List View
+            <div className="classical-card overflow-hidden">
+              <div className="divide-y divide-theme-secondary">
+                {composers.map((composer, index) => (
+                  <div
+                    key={composer.id}
+                    className="animate-fade-in-up p-4 hover:bg-interactive-hover transition-all duration-300 cursor-pointer group"
+                    style={{
+                      animationDelay: `${index * 0.02}s`,
+                      animationFillMode: 'backwards',
+                    }}
+                    onClick={() => navigateToUrl('composer', composer.id)}
+                  >
+                    <ComposerCardList composer={composer} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          )
         ) : (
-          // Visualização em lista simples
-          <div className="bg-white rounded-lg shadow-sm border divide-y divide-gray-200">
-            {composers.map((composer) => (
-              <div
-                key={composer.id}
-                className="p-4 hover:bg-gray-50 transition-colors cursor-pointer flex items-center justify-between"
-                onClick={() => navigateToUrl('composer', composer.id)}
-              >
-                <ComposerCardList composer={composer} key={composer.id} />
-              </div>
-            ))}
-          </div>
-        )
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">Nenhum compositor encontrado.</p>
-        </div>
-      )}
-
-      {/* Paginação */}
-      {totalPages > 1 && (
-        <div className="flex justify-center items-center space-x-2 py-8">
-          <button
-            onClick={() => handlePageChange(1)}
-            disabled={currentPage === 1 || isPending}
-            className="px-3 py-2 rounded-md border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Inicio
-          </button>
-
-          {/* Botão anterior */}
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1 || isPending}
-            className="px-3 py-2 rounded-md border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Anterior
-          </button>
-
-          {/* Números das páginas */}
-          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-            let pageNum;
-            if (totalPages <= 5) {
-              pageNum = i + 1;
-            } else if (currentPage <= 3) {
-              pageNum = i + 1;
-            } else if (currentPage >= totalPages - 2) {
-              pageNum = totalPages - 4 + i;
-            } else {
-              pageNum = currentPage - 2 + i;
-            }
-
-            return (
-              <button
-                key={pageNum}
-                onClick={() => handlePageChange(pageNum)}
-                disabled={isPending}
-                className={`px-3 py-2 rounded-md text-sm font-medium ${
-                  currentPage === pageNum
-                    ? 'bg-blue-600 text-white'
-                    : 'border border-gray-300 text-gray-700 bg-white hover:bg-gray-50'
-                } disabled:opacity-50 disabled:cursor-not-allowed`}
-              >
-                {pageNum}
+          // Empty State
+          <div className="classical-card p-12 text-center">
+            <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FiSearch className="w-8 h-8 text-theme-tertiary" />
+            </div>
+            <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
+              Nenhum compositor encontrado
+            </h3>
+            <p className="text-theme-secondary mb-6">
+              Tente ajustar seus filtros ou termo de busca para encontrar
+              compositores.
+            </p>
+            {hasActiveFilters && (
+              <button onClick={clearFilters} className="btn-classical-primary">
+                Limpar Filtros e Ver Todos
               </button>
-            );
-          })}
+            )}
+          </div>
+        )}
 
-          {/* Botão próximo */}
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages || isPending}
-            className="px-3 py-2 rounded-md border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Próximo
-          </button>
+        {/* Loading Overlay */}
+        {isPending && (
+          <div className="absolute inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl">
+            <div className="classical-card p-8 text-center">
+              <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-theme-primary font-medium">
+                Carregando compositores...
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
 
-          <button
-            onClick={() => handlePageChange(totalPages)}
-            disabled={currentPage === totalPages || isPending}
-            className="px-3 py-2 rounded-md border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Final
-          </button>
-
-          {/* Info da página atual */}
-          <span className="text-sm text-gray-700 ml-4">
-            Página {currentPage} de {totalPages}
-          </span>
-        </div>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          isPending={isPending}
+        />
       )}
     </div>
   );
