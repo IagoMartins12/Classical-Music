@@ -409,7 +409,8 @@ class WorkScraper {
       });
 
       if (!instrument) {
-        translatedName = translatedName.toUpperCase() + translatedName.slice(1);
+        translatedName =
+          translatedName.charAt(0).toUpperCase() + translatedName.slice(1);
         console.log('TRANSLATEDNAMEEE', translatedName);
         instrument = await prisma.instrument.create({
           data: {

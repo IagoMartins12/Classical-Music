@@ -35,7 +35,7 @@ const HeroMainPage = () => {
               conhecemos e amamos hoje.
             </p>
             <Link
-              href="/historia"
+              href="/music-history"
               className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white font-semibold hover:bg-white/30 transition-all duration-300 group/btn"
             >
               Explorar História Completa

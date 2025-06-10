@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+.scraper-works-state.log
+.scraper-composers-state.log
+
 # vercel
 .vercel
 
