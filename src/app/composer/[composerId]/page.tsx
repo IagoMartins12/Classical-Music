@@ -60,7 +60,7 @@ export default async function ComposerDetailsPage({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       <Suspense fallback={<ComposerDetailsLoading />}>
         <ComposerDetailsServer composerId={resolvedParams.composerId} />
       </Suspense>

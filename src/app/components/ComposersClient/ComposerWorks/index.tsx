@@ -1,16 +1,21 @@
+// ComposerWorks.tsx - Premium version with theme system
 'use client';
 
 import { ComposerWork } from '@/app/requests/composer-details';
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import {
-  FaGuitar,
-  FaMusic,
-  FaPlay,
-  FaExternalLinkAlt,
-  FaSearch,
-  FaFilter,
-} from 'react-icons/fa';
+  FiMusic,
+  FiPlay,
+  FiExternalLink,
+  FiSearch,
+  FiFilter,
+  FiClock,
+  FiX,
+  FiHeadphones,
+  FiBookOpen,
+  FiRefreshCw,
+} from 'react-icons/fi';
 import {
   GiViolin,
   GiFlute,
@@ -48,7 +53,7 @@ const getInstrumentIcon = (instrumentName: string) => {
     instrument.includes('violão') ||
     instrument.includes('guitarra')
   )
-    return <FaGuitar className="w-5 h-5" />;
+    return <GiMusicalNotes className="w-5 h-5" />;
   if (
     instrument.includes('drum') ||
     instrument.includes('bateria') ||
@@ -58,7 +63,7 @@ const getInstrumentIcon = (instrumentName: string) => {
   if (instrument.includes('orchestra') || instrument.includes('orquestra'))
     return <GiMusicalNotes className="w-5 h-5" />;
 
-  return <FaMusic className="w-5 h-5" />;
+  return <FiMusic className="w-5 h-5" />;
 };
 
 // Função para formatar duração
@@ -84,6 +89,7 @@ export default function ComposerWorks({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedInstrument, setSelectedInstrument] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
 
   // Extrair instrumentos e gêneros únicos para filtros
   const { instruments, genres } = useMemo(() => {
@@ -127,16 +133,32 @@ export default function ComposerWorks({
     setSelectedGenre('');
   };
 
+  const hasActiveFilters = searchTerm || selectedInstrument || selectedGenre;
+
   if (works.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border p-8 mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">
-          Obras Catalogadas
-        </h2>
+      <div className="classical-card p-12">
+        <div className="flex items-center space-x-3 mb-6">
+          <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
+            <FiBookOpen className="w-6 h-6 text-theme-inverse" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-theme-primary classical-title">
+              Obras Catalogadas
+            </h2>
+          </div>
+        </div>
+
         <div className="text-center py-12">
-          <MdLibraryMusic className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <p className="text-gray-500 text-lg">
-            Nenhuma obra catalogada encontrada
+          <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <MdLibraryMusic className="w-8 h-8 text-theme-tertiary" />
+          </div>
+          <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
+            Nenhuma obra catalogada
+          </h3>
+          <p className="text-theme-secondary">
+            Ainda não temos obras catalogadas para este compositor em nossa base
+            de dados.
           </p>
         </div>
       </div>
@@ -144,188 +166,357 @@ export default function ComposerWorks({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-8">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-8">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            Obras Catalogadas
-          </h2>
-          <p className="text-gray-600">
-            {filteredWorks.length} de {works.length} obras
-          </p>
+    <div className="classical-card overflow-hidden">
+      {/* Header */}
+      <div className="p-8 border-b border-theme-secondary bg-gradient-to-r from-theme-elevated to-interactive-hover">
+        <div className="flex items-center space-x-3 mb-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
+            <FiBookOpen className="w-6 h-6 text-theme-inverse" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-theme-primary classical-title">
+              Obras Catalogadas
+            </h2>
+            <p className="text-theme-secondary classical-subtitle">
+              {filteredWorks.length} de {works.length} obras de {composerName}
+            </p>
+          </div>
         </div>
-      </div>
 
-      {/* Filtros */}
-      <div className="mb-8 space-y-4">
         {/* Barra de busca */}
-        <div className="relative">
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <div className="relative mb-4">
+          <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
           <input
             type="text"
             placeholder="Buscar por título, opus ou tonalidade..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="input-classical w-full"
           />
-        </div>
-
-        {/* Filtros por instrumento e gênero */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex items-center space-x-2">
-            <FaFilter className="text-gray-400 w-4 h-4" />
-            <select
-              value={selectedInstrument}
-              onChange={(e) => setSelectedInstrument(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Todos os instrumentos</option>
-              {instruments.map((instrument) => (
-                <option key={instrument} value={instrument}>
-                  {instrument}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <FaFilter className="text-gray-400 w-4 h-4" />
-            <select
-              value={selectedGenre}
-              onChange={(e) => setSelectedGenre(e.target.value)}
-              className="px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Todos os gêneros</option>
-              {genres.map((genre) => (
-                <option key={genre} value={genre}>
-                  {genre}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {(searchTerm || selectedInstrument || selectedGenre) && (
+          {searchTerm && (
             <button
-              onClick={clearFilters}
-              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+              onClick={() => setSearchTerm('')}
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
             >
-              Limpar filtros
+              <FiX className="w-5 h-5" />
             </button>
           )}
         </div>
-      </div>
 
-      {/* Lista de obras */}
-      <div className="space-y-4">
-        {filteredWorks.map((work) => (
-          <div
-            key={work.id}
-            className="border border-gray-100 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+        {/* Toggle de filtros */}
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className="btn-classical-secondary flex items-center space-x-2"
           >
-            {/* Obra principal */}
-            <div className="p-6 bg-gray-50">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-3">
-                    {work.instrument?.name && (
-                      <div className="text-blue-600">
-                        {getInstrumentIcon(work.instrument.name)}
-                      </div>
-                    )}
+            <FiFilter className="w-4 h-4" />
+            <span>{showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}</span>
+            <div
+              className={`transition-transform duration-300 ${
+                showFilters ? 'rotate-180' : ''
+              }`}
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </div>
+          </button>
 
-                    <Link
-                      href={`/works/${work.id}`}
-                      className="text-lg font-semibold text-blue-600 underline"
-                    >
-                      {work.title}
-                    </Link>
+          {/* Stats rápidas */}
+          <div className="flex items-center space-x-4 text-sm text-theme-secondary">
+            <div className="flex items-center space-x-1">
+              <div className="w-2 h-2 bg-accent-green rounded-full"></div>
+              <span>{instruments.length} instrumentos</span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
+              <span>{genres.length} gêneros</span>
+            </div>
+          </div>
+        </div>
 
-                    {work.opOrCatalog && (
-                      <span className="text-sm text-gray-500 bg-gray-200 px-2 py-1 rounded">
-                        {work.opOrCatalog}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600">
-                    {work.instrument?.name && (
-                      <div className="flex items-center space-x-2">
-                        <FaMusic className="w-4 h-4 text-gray-400" />
-                        <span>{work.instrument.name}</span>
-                      </div>
-                    )}
-
-                    {work.genre?.name && (
-                      <div className="flex items-center space-x-2">
-                        <MdLibraryMusic className="w-4 h-4 text-gray-400" />
-                        <span>{work.genre.name}</span>
-                      </div>
-                    )}
-
-                    {work.tone && (
-                      <div className="flex items-center space-x-2">
-                        <GiMusicalNotes className="w-4 h-4 text-gray-400" />
-                        <span>{work.tone}</span>
-                      </div>
-                    )}
-
-                    {work.mediaDuration && (
-                      <div className="flex items-center space-x-2">
-                        <MdAccessTime className="w-4 h-4 text-gray-400" />
-                        <span>{formatDuration(work.mediaDuration)}</span>
-                      </div>
-                    )}
-
-                    {work.compositionYear && (
-                      <div className="flex items-center space-x-2">
-                        <span className="w-4 h-4 text-center text-gray-400 text-xs font-bold">
-                          Ano
-                        </span>
-                        <span>{work.compositionYear}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2 ml-4">
-                  {work.videoUrl && (
-                    <a
-                      href={work.videoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Assistir vídeo"
-                    >
-                      <FaPlay className="w-4 h-4" />
-                    </a>
-                  )}
-
-                  <a
-                    href={work.imslpPermlink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                    title="Ver partitura no IMSLP"
+        {/* Filtros expandidos */}
+        <div
+          className={`overflow-hidden transition-all duration-500 ${
+            showFilters ? 'max-h-96 opacity-100 mt-6' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-theme-elevated/50 border border-theme-primary rounded-xl">
+            {/* Filtro de instrumento */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-theme-secondary">
+                Instrumento
+              </label>
+              <div className="relative">
+                <FiMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                <select
+                  value={selectedInstrument}
+                  onChange={(e) => setSelectedInstrument(e.target.value)}
+                  className="input-classical w-full appearance-none pl-11"
+                >
+                  <option value="">Todos os instrumentos</option>
+                  {instruments.map((instrument) => (
+                    <option key={instrument} value={instrument}>
+                      {instrument}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 text-theme-tertiary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <FaExternalLinkAlt className="w-4 h-4" />
-                  </a>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Filtro de gênero */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-theme-secondary">
+                Gênero
+              </label>
+              <div className="relative">
+                <MdLibraryMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                <select
+                  value={selectedGenre}
+                  onChange={(e) => setSelectedGenre(e.target.value)}
+                  className="input-classical w-full appearance-none pl-11"
+                >
+                  <option value="">Todos os gêneros</option>
+                  {genres.map((genre) => (
+                    <option key={genre} value={genre}>
+                      {genre}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 text-theme-tertiary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
                 </div>
               </div>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
 
-      {filteredWorks.length === 0 &&
-        (searchTerm || selectedInstrument || selectedGenre) && (
-          <div className="text-center py-12">
-            <FaSearch className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg mb-2">
-              Nenhuma obra encontrada
-            </p>
-            <p className="text-gray-400">Tente ajustar os filtros de busca</p>
+        {/* Filtros ativos */}
+        {hasActiveFilters && (
+          <div className="flex items-center gap-3 mt-4 flex-wrap">
+            <span className="text-sm font-medium text-theme-secondary">
+              Filtros ativos:
+            </span>
+
+            {searchTerm && (
+              <div className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm">
+                <span>Busca: "{searchTerm}"</span>
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="hover:text-brand-secondary transition-colors"
+                >
+                  <FiX className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+
+            {selectedInstrument && (
+              <div className="flex items-center gap-2 px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm">
+                <span>Instrumento: {selectedInstrument}</span>
+                <button
+                  onClick={() => setSelectedInstrument('')}
+                  className="hover:text-accent-blue/80 transition-colors"
+                >
+                  <FiX className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+
+            {selectedGenre && (
+              <div className="flex items-center gap-2 px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm">
+                <span>Gênero: {selectedGenre}</span>
+                <button
+                  onClick={() => setSelectedGenre('')}
+                  className="hover:text-accent-green/80 transition-colors"
+                >
+                  <FiX className="w-3 h-3" />
+                </button>
+              </div>
+            )}
+
+            <button
+              onClick={clearFilters}
+              className="text-sm text-accent-red hover:text-accent-red/80 underline font-medium"
+            >
+              Limpar todos os filtros
+            </button>
           </div>
         )}
+      </div>
+
+      {/* Lista de obras */}
+      <div className="p-8">
+        {filteredWorks.length > 0 ? (
+          <div className="space-y-4">
+            {filteredWorks.map((work, index) => (
+              <div
+                key={work.id}
+                className="classical-card-simple hover:shadow-theme-glow transition-all duration-300 group animate-fade-in-up"
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
+                <div className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-4">
+                        {work.instrument?.name && (
+                          <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-inverse group-hover:scale-110 transition-transform duration-300">
+                            {getInstrumentIcon(work.instrument.name)}
+                          </div>
+                        )}
+
+                        <div className="flex-1">
+                          <Link
+                            href={`/works/${work.id}`}
+                            className="text-lg font-semibold text-brand-primary hover:text-brand-secondary transition-colors duration-300 classical-title"
+                          >
+                            {work.title}
+                          </Link>
+
+                          {work.opOrCatalog && (
+                            <span className="ml-3 text-sm text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
+                              {work.opOrCatalog}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-theme-secondary">
+                        {work.instrument?.name && (
+                          <div className="flex items-center space-x-2">
+                            <FiMusic className="w-4 h-4 text-theme-tertiary" />
+                            <span>{work.instrument.name}</span>
+                          </div>
+                        )}
+
+                        {work.genre?.name && (
+                          <div className="flex items-center space-x-2">
+                            <MdLibraryMusic className="w-4 h-4 text-theme-tertiary" />
+                            <span>{work.genre.name}</span>
+                          </div>
+                        )}
+
+                        {work.tone && (
+                          <div className="flex items-center space-x-2">
+                            <GiMusicalNotes className="w-4 h-4 text-theme-tertiary" />
+                            <span>{work.tone}</span>
+                          </div>
+                        )}
+
+                        {work.mediaDuration && (
+                          <div className="flex items-center space-x-2">
+                            <FiClock className="w-4 h-4 text-theme-tertiary" />
+                            <span>{formatDuration(work.mediaDuration)}</span>
+                          </div>
+                        )}
+
+                        {work.compositionYear && (
+                          <div className="flex items-center space-x-2">
+                            <span className="w-4 h-4 text-center text-theme-tertiary text-xs font-bold">
+                              Ano
+                            </span>
+                            <span>{work.compositionYear}</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2 ml-6 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      {work.videoUrl && (
+                        <a
+                          href={work.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-10 h-10 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-xl flex items-center justify-center hover:bg-accent-red/20 hover:scale-110 transition-all duration-300"
+                          title="Assistir vídeo"
+                        >
+                          <FiPlay className="w-4 h-4" />
+                        </a>
+                      )}
+
+                      <a
+                        href={work.imslpPermlink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-10 h-10 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-xl flex items-center justify-center hover:bg-accent-green/20 hover:scale-110 transition-all duration-300"
+                        title="Ver partitura no IMSLP"
+                      >
+                        <FiExternalLink className="w-4 h-4" />
+                      </a>
+
+                      <Link
+                        href={`/works/${work.id}`}
+                        className="w-10 h-10 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-xl flex items-center justify-center hover:bg-brand-primary/20 hover:scale-110 transition-all duration-300"
+                        title="Ver detalhes"
+                      >
+                        <FiHeadphones className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          // Empty state para resultados filtrados
+          <div className="text-center py-16">
+            <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <FiSearch className="w-8 h-8 text-theme-tertiary" />
+            </div>
+            <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
+              Nenhuma obra encontrada
+            </h3>
+            <p className="text-theme-secondary mb-6">
+              Tente ajustar os filtros de busca para encontrar mais resultados.
+            </p>
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="btn-classical-primary flex items-center space-x-2 mx-auto group"
+              >
+                <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+                <span>Limpar filtros</span>
+              </button>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

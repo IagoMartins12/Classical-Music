@@ -204,6 +204,7 @@ body {
   border-radius: 0.5rem;
   padding: 0.75rem 1rem;
   transition: var(--transition-smooth);
+  padding-left: 3rem;
 }
 
 .input-classical:focus {

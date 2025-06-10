@@ -152,7 +152,7 @@ export default function ComposersClient({
   return (
     <div className="section-wrap space-y-8">
       {/* Header Section */}
-      {/* <div className="relative text-center py-12">
+      <div className="relative text-center py-12">
         <div className="absolute inset-0 pointer-events-none opacity-10">
           <div className="absolute top-4 left-10 text-4xl text-brand-primary">
             <GiMusicalNotes />
@@ -176,7 +176,7 @@ export default function ComposersClient({
             Explore nossa coleção completa de grandes mestres da música clássica
           </p>
         </div>
-      </div> */}
+      </div>
 
       {/* Filters Section */}
       <div

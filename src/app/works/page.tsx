@@ -50,7 +50,7 @@ export default async function WorksPage({ searchParams }: WorksPageProps) {
   const resolvedParams = await searchParams;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <Suspense fallback={<WorksLoading />}>
         <WorksServer searchParams={resolvedParams} />
       </Suspense>
