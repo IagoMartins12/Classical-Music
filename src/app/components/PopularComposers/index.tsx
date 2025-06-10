@@ -1,10 +1,8 @@
+// app/components/PopularComposers.tsx - Updated with theme system
 'use client';
 
-import { useEffect, useState } from 'react';
+import { FiTrendingUp, FiUsers } from 'react-icons/fi';
 import SectionTitle from '../Utils/SectionTitle';
-import CarouselControl from '../Carousel';
-import { Composer } from '@prisma/client';
-import { ComposerImslp } from '../ComposersClient';
 import Carousel from '../Carousel/Carousel';
 
 export interface composerHomeProps {
@@ -21,18 +19,32 @@ export interface composerHomeProps {
 export interface pageComposersInterface {
   composersData: composerHomeProps[];
 }
+
 const PopularComposers: React.FC<pageComposersInterface> = ({
   composersData,
 }) => {
   return (
-    <section className="section-wrap ">
-      <SectionTitle title="Compositores populares" />
-      <Carousel
-        items={composersData}
-        itemsPerView={4}
-        autoPlay={false}
-        autoPlayInterval={4000}
+    <section className="section-wrap">
+      <SectionTitle
+        title="Compositores Populares"
+        subtitle="Os grandes mestres mais explorados pela comunidade"
+        linkText="Ver todos compositores"
+        linkHref="/composers"
+        icon={<FiTrendingUp className="w-6 h-6" />}
+        accent="gold"
       />
+
+      {/* Background decorative elements */}
+      <div className="relative">
+        <div className="absolute top-20 -left-10 w-24 h-24 bg-accent-purple/10 rounded-full blur-2xl"></div>
+
+        <Carousel
+          items={composersData}
+          itemsPerView={4}
+          autoPlay={false}
+          autoPlayInterval={4000}
+        />
+      </div>
     </section>
   );
 };

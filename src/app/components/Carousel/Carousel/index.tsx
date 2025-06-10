@@ -1,3 +1,4 @@
+// app/components/Carousel/Carousel.tsx - Updated with theme system
 import { useCallback, useEffect, useState } from 'react';
 import CarouselControls from '../CarouselControls';
 import CarouselContainer from '../CarouselContainer';
@@ -80,10 +81,13 @@ const Carousel: React.FC<ModernCarouselProps> = ({
   );
 
   return (
-    <div className="w-full mx-auto py-4">
+    <div className="w-full mx-auto py-6">
       <div className="relative">
-        {/* Container principal com gradiente */}
-        <div className="relative overflow-hidden rounded-3xl py-8">
+        {/* Container principal com tema */}
+        <div className="relative overflow-hidden rounded-3xl py-8 px-2">
+          {/* Background gradient usando tema */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-theme-elevated/30 to-transparent rounded-3xl"></div>
+
           <div className="relative">
             {/* Controles de navegação - escondidos no mobile */}
             {!isMobile && (
@@ -110,8 +114,8 @@ const Carousel: React.FC<ModernCarouselProps> = ({
                     isMobile
                       ? 'px-4' // Mobile: padding uniforme
                       : index !== 0
-                      ? 'px-4'
-                      : 'pr-4' // Desktop: comportamento original
+                      ? 'px-3'
+                      : 'pr-3 pl-6' // Desktop: comportamento original com padding do tema
                   }`}
                   style={{
                     width: isMobile
@@ -132,20 +136,12 @@ const Carousel: React.FC<ModernCarouselProps> = ({
           </div>
         </div>
 
-        {/* Indicadores - diferentes para mobile e desktop */}
-        {/* <CarouselIndicators
-          totalSlides={maxIndex + 1}
-          currentIndex={currentIndex}
-          onGoToSlide={goToSlide}
-          isAnimating={isAnimating}
-        /> */}
-
-        {/* Contador - apenas no desktop */}
-        {/* {!isMobile && (
-          <div className="text-center mt-6">
-            <div className="inline-flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-gray-700">
+        {/* Progress indicator - usando tema */}
+        {/* {!isMobile && items.length > itemsPerView && (
+          <div className="flex justify-center mt-6">
+            <div className="flex items-center space-x-2 bg-theme-elevated/80 backdrop-blur-md border border-theme-primary rounded-full px-4 py-2 shadow-theme-sm">
+              <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium text-theme-secondary">
                 {currentIndex + 1} -{' '}
                 {Math.min(currentIndex + responsiveItemsPerView, items.length)}{' '}
                 de {items.length}
@@ -154,12 +150,22 @@ const Carousel: React.FC<ModernCarouselProps> = ({
           </div>
         )} */}
 
-        {/* Contador mobile - mais simples */}
-        {/* {isMobile && (
-          <div className="text-center mt-4">
-            <span className="text-sm text-gray-600 font-medium">
-              {currentIndex + 1} de {items.length}
-            </span>
+        {/* Mobile counter - mais simples */}
+        {/* {isMobile && items.length > 1 && (
+          <div className="flex justify-center mt-4">
+            <div className="flex space-x-1">
+              {Array.from({ length: items.length }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    index === currentIndex
+                      ? 'bg-brand-primary w-6'
+                      : 'bg-theme-tertiary/50 hover:bg-theme-secondary'
+                  }`}
+                />
+              ))}
+            </div>
           </div>
         )} */}
       </div>

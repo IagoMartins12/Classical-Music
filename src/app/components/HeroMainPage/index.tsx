@@ -5,7 +5,7 @@ const HeroMainPage = () => {
   return (
     <div className="section-wrap flex flex-col lg:flex-row gap-6">
       {/* Seção Principal - História da Música */}
-      <div className="w-full lg:w-8/12 relative rounded-2xl bg-white shadow-xl overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+      <div className="w-full lg:w-8/12 relative rounded-2xl classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500">
         <div className="relative h-full ">
           <Image
             alt="Período clássico da música - Instrumentos históricos e partituras antigas"
@@ -60,8 +60,8 @@ const HeroMainPage = () => {
       {/* Seções Laterais */}
       <div className="w-full lg:w-4/12 flex flex-col gap-4">
         {/* Card Instrumentação */}
-        <div className="relative rounded-2xl bg-white shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-          <div className="relative h-52">
+        <div className="relative rounded-2xl bg-white shadow-lg classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500">
+          <div className="relative h-64">
             <Image
               alt="Instrumentos clássicos - Violino, piano e outros instrumentos históricos"
               src="/instrument-2.jpg"
@@ -110,8 +110,8 @@ const HeroMainPage = () => {
         </div>
 
         {/* Card Sobre o Projeto */}
-        <div className="relative rounded-2xl bg-white shadow-lg overflow-hidden group hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-          <div className="relative h-52">
+        <div className="relative rounded-2xl bg-white shadow-lg  classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500">
+          <div className="relative h-64">
             <Image
               alt="Ambiente de estudo musical - Partituras, metrônomo e instrumentos musicais"
               src="/wallpaper.jpg"
