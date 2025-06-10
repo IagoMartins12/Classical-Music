@@ -1,3 +1,4 @@
+// MusicHistoryPageClient.tsx - Premium version with theme system
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -76,7 +77,7 @@ export function MusicHistoryPageClient({
     'Moderno',
   ];
 
-  // Ordena as épocas cronologicamente (agora já vem ordenado do servidor, mas garantimos aqui também)
+  // Ordena as épocas cronologicamente
   const sortedEpochs = useMemo(() => {
     return [...epochs].sort((a, b) => {
       const aIndex = epochChronologicalOrder.findIndex(
@@ -107,34 +108,70 @@ export function MusicHistoryPageClient({
   }
 
   return (
-    <div className="w-full">
-      <HeroSection />
-
-      <DetailedMusicHistory />
-
-      <div className="section-wrap mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
-
-        {activeTab === 'history' && (
-          <div className="space-y-16">
-            {sortedEpochs.map((epoch, index) => (
-              <EpochSection
-                key={epoch.epochId}
-                epoch={epoch}
-                index={index}
-                isReversed={index % 2 === 1}
-              />
-            ))}
-          </div>
-        )}
-
-        {activeTab === 'timeline' && (
-          <ComposersTimeline
-            composers={composersTimeline}
-            epochsData={epochsHistoricalData}
-          />
-        )}
+    <div className="w-full min-h-screen ">
+      {/* Background Pattern */}
+      <div className="fixed inset-0 pointer-events-none opacity-5 z-0">
+        <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>
+        <div
+          className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl animate-pulse"
+          style={{ animationDelay: '1s' }}
+        ></div>
+        <div
+          className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl animate-pulse"
+          style={{ animationDelay: '2s' }}
+        ></div>
+        <div
+          className="absolute bottom-20 left-10 w-40 h-40 bg-brand-secondary/20 rounded-full blur-2xl animate-pulse"
+          style={{ animationDelay: '0.5s' }}
+        ></div>
       </div>
+
+      <div className="relative z-10">
+        <HeroSection />
+
+        <DetailedMusicHistory />
+
+        <div className="section-wrap space-y-12 relative z-10">
+          <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
+
+          {activeTab === 'history' && (
+            <div className="space-y-20">
+              {sortedEpochs.map((epoch, index) => (
+                <EpochSection
+                  key={epoch.epochId}
+                  epoch={epoch}
+                  index={index}
+                  isReversed={index % 2 === 1}
+                />
+              ))}
+            </div>
+          )}
+
+          {activeTab === 'timeline' && (
+            <div className="animate-fade-in-up">
+              <ComposersTimeline
+                composers={composersTimeline}
+                epochsData={epochsHistoricalData}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Floating Elements */}
+      <div className="fixed top-20 left-4 w-2 h-2 bg-brand-primary/30 rounded-full animate-pulse z-20"></div>
+      <div
+        className="fixed top-40 right-8 w-1.5 h-1.5 bg-accent-purple/40 rounded-full animate-pulse z-20"
+        style={{ animationDelay: '1s' }}
+      ></div>
+      <div
+        className="fixed bottom-32 left-8 w-1 h-1 bg-brand-secondary/50 rounded-full animate-pulse z-20"
+        style={{ animationDelay: '2s' }}
+      ></div>
+      <div
+        className="fixed bottom-20 right-4 w-1.5 h-1.5 bg-accent-blue/30 rounded-full animate-pulse z-20"
+        style={{ animationDelay: '0.5s' }}
+      ></div>
     </div>
   );
 }

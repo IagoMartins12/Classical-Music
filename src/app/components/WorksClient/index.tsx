@@ -221,7 +221,7 @@ export default function WorksClient({
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="classical-card p-6 text-center group hover:scale-105 transition-all duration-300">
             <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
               <FiBookOpen className="w-6 h-6 text-theme-inverse" />
@@ -261,7 +261,7 @@ export default function WorksClient({
             </h3>
             <p className="text-theme-secondary text-sm">Páginas</p>
           </div>
-        </div>
+        </div> */}
 
         {/* Search and Filters Section */}
         <div

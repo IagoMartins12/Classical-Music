@@ -1,8 +1,9 @@
+// HistoryComposerCard.tsx - Premium version with theme system
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { FaUser, FaCalendarAlt, FaInfoCircle } from 'react-icons/fa';
+import { FiUser, FiCalendar, FiExternalLink } from 'react-icons/fi';
+import { GiMusicalNotes } from 'react-icons/gi';
 
 interface Composer {
   id: string;
@@ -19,69 +20,116 @@ interface Props {
 }
 
 export function HistoryComposerCard({ composer }: Props) {
-  const [imageError, setImageError] = useState(false);
-  const [showBio, setShowBio] = useState(false);
-
-  const formatDate = (dateString: string | null) => {
-    if (!dateString) return '?';
-    return new Date(dateString).getFullYear().toString();
-  };
-
   const getLifespan = () => {
-    const birth = formatDate(composer.birthDate);
-    const death = formatDate(composer.deathDate);
-    return `${birth} - ${death}`;
+    if (!composer.birthDate && !composer.deathDate) return null;
+
+    const birth = composer.birthDate
+      ? new Date(composer.birthDate).getFullYear()
+      : null;
+    const death = composer.deathDate
+      ? new Date(composer.deathDate).getFullYear()
+      : null;
+
+    if (birth && death) {
+      return `${birth} - ${death}`;
+    } else if (birth) {
+      return `${birth} - presente`;
+    } else if (death) {
+      return `? - ${death}`;
+    }
+    return null;
   };
+
+  const lifespan = getLifespan();
 
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-gray-100">
-      <Link href={`/composer/${composer.id}`} className="">
-        <div className={`p-6 pb-0 flex items-start space-x-4`}>
+    <Link
+      href={`/composer/${composer.id}`}
+      className="block classical-card-simple p-4 hover:shadow-theme-glow transition-all duration-500 hover:scale-105 group relative overflow-hidden"
+    >
+      {/* Background decoration */}
+      <div className="absolute top-2 right-2 text-3xl text-brand-primary/5">
+        <GiMusicalNotes />
+      </div>
+
+      <div className="relative z-10">
+        <div className="flex items-center space-x-3 mb-3">
           {/* Portrait */}
-          <div className="flex-shrink-0">
-            {composer.portraitUrl && !imageError ? (
+          <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center shadow-theme-medium flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
+            {composer.portraitUrl ? (
               <img
                 src={composer.portraitUrl}
                 alt={composer.fullName}
-                className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
-                onError={() => setImageError(true)}
+                className="w-10 h-10 rounded-lg object-cover border-2 border-theme-inverse/20"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  target.nextElementSibling?.classList.remove('hidden');
+                }}
               />
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-                <FaUser className="text-white text-xl" />
+            ) : null}
+            <FiUser
+              className={`text-theme-inverse text-sm ${
+                composer.portraitUrl ? 'hidden' : ''
+              }`}
+            />
+          </div>
+
+          {/* Name and Link Icon */}
+          <div className="flex-1 min-w-0">
+            <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 line-clamp-1">
+              {composer.fullName}
+            </h4>
+            {lifespan && (
+              <div className="flex items-center text-theme-tertiary text-xs mt-1">
+                <FiCalendar className="w-3 h-3 mr-1" />
+                <span>{lifespan}</span>
               </div>
             )}
           </div>
 
-          {/* Info */}
-          <div className="flex-1 min-w-0">
-            <h4 className="font-semibold text-gray-900 truncate">
-              {composer.fullName}
-            </h4>
-            <div className="flex items-center text-sm text-gray-600 mt-1">
-              <FaCalendarAlt className="mr-1 flex-shrink-0" />
-              <span>{getLifespan()}</span>
-            </div>
+          {/* Link indicator */}
+          <div className="w-6 h-6 bg-interactive-hover border border-theme-secondary rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 group-hover:bg-brand-primary/10 group-hover:border-brand-primary/30 group-hover:text-brand-primary transition-all duration-300">
+            <FiExternalLink className="w-3 h-3" />
           </div>
         </div>
 
-        {/* Biography */}
-        {composer.bio ? (
-          <div className="mt-4 pt-4 px-6 pb-6">
-            <p className="text-sm text-gray-700 leading-relaxed">
-              {composer.bio.length > 200
-                ? `${composer.bio.substring(0, 200)}...`
-                : composer.bio}
-            </p>
-          </div>
-        ) : (
-          <div className="mt-4 pt-4 px-6 pb-6">
-            <p className="text-sm text-gray-700 leading-relaxed">
-              Sem biografia disponivel.
-            </p>
-          </div>
+        {/* Bio snippet */}
+        {composer.bio && (
+          <p className="text-theme-secondary text-xs leading-relaxed line-clamp-2 group-hover:text-theme-primary transition-colors duration-300">
+            {composer.bio.length > 80
+              ? `${composer.bio.substring(0, 80)}...`
+              : composer.bio}
+          </p>
         )}
-      </Link>
-    </div>
+
+        {/* Bottom indicator */}
+        <div className="flex items-center justify-between mt-3 pt-2 border-t border-theme-secondary">
+          <div className="flex items-center space-x-1">
+            <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
+            <span className="text-xs text-theme-tertiary font-medium">
+              Ver detalhes
+            </span>
+          </div>
+
+          <svg
+            className="w-3 h-3 text-theme-tertiary group-hover:text-brand-primary group-hover:translate-x-0.5 transition-all duration-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* Hover glow effect */}
+      <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl pointer-events-none"></div>
+    </Link>
   );
 }

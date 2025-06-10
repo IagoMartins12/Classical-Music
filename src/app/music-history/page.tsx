@@ -14,7 +14,7 @@ export const revalidate = 3600;
 
 export default function MusicClassicHistoryPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen">
       <Suspense fallback={<LoadingSkeleton />}>
         <MusicHistoryPageServer />
       </Suspense>
