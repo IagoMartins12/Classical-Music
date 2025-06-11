@@ -29,11 +29,6 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
 
   return (
     <div className="classical-card p-8 animate-fade-in-up relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-4 right-4 text-6xl text-brand-primary/5">
-        <GiMusicalNotes />
-      </div>
-
       <div className="relative z-10">
         {/* Header */}
         <div className="text-center mb-8">

@@ -41,7 +41,7 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
           <div
             className={`w-12 h-12 bg-gradient-to-br ${getAccentClasses()} rounded-xl flex items-center justify-center shadow-theme-glow icon-glow`}
           >
-            <div className="text-theme-inverse">{icon}</div>
+            <div className="text-theme-primary">{icon}</div>
           </div>
 
           {/* Title and subtitle */}

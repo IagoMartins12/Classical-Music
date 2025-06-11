@@ -129,9 +129,9 @@ export function MusicHistoryPageClient({
       <div className="relative z-10">
         <HeroSection />
 
-        <DetailedMusicHistory />
-
         <div className="section-wrap space-y-12 relative z-10">
+          <DetailedMusicHistory />
+
           <NavigationTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
           {activeTab === 'history' && (

@@ -98,7 +98,7 @@ const STATE_WORKS_FILE = path.join(process.cwd(), 'scraper-works-state.log');
 const BATCH_SIZE = 1000;
 const DELAY_BETWEEN_REQUESTS = 3000;
 const DELAY_BETWEEN_BATCHES = 10000;
-const MAX_RETRIES = 3;
+const MAX_RETRIES = 1;
 
 let globalWorkScraperInstance: WorkScraper | null = null;
 
@@ -345,8 +345,7 @@ class WorkScraper {
       return works;
     } catch (error) {
       console.error(
-        `❌ Erro ao buscar obras (start=${start}, tentativa ${retries + 1}):`,
-        error
+        `❌ ERRO ao buscar obras (start=${start}, tentativa ${retries + 1}):`
       );
 
       if (retries < MAX_RETRIES) {

@@ -22,8 +22,6 @@ const EssentialComposers: React.FC<pageComposersInterface> = ({
 
       {/* Background decorative elements */}
       <div className="relative">
-        <div className="absolute top-32 -right-10 w-28 h-28 bg-brand-gradient opacity-5 rounded-full blur-2xl"></div>
-
         <ListComposers composers={composersData} />
       </div>
     </section>

@@ -81,7 +81,7 @@ const Carousel: React.FC<ModernCarouselProps> = ({
   );
 
   return (
-    <div className="w-full mx-auto py-6">
+    <div className="w-full mx-auto sm:py-6">
       <div className="relative">
         {/* Container principal com tema */}
         <div className="relative overflow-hidden rounded-3xl py-8 px-2">
@@ -90,15 +90,13 @@ const Carousel: React.FC<ModernCarouselProps> = ({
 
           <div className="relative">
             {/* Controles de navegação - escondidos no mobile */}
-            {!isMobile && (
-              <CarouselControls
-                onPrevious={handlePrevious}
-                onNext={handleNext}
-                canGoPrevious={currentIndex > 0}
-                canGoNext={currentIndex < maxIndex}
-                isAnimating={isAnimating}
-              />
-            )}
+            <CarouselControls
+              onPrevious={handlePrevious}
+              onNext={handleNext}
+              canGoPrevious={currentIndex > 0}
+              canGoNext={currentIndex < maxIndex}
+              isAnimating={isAnimating}
+            />
 
             {/* Container com drag */}
             <CarouselContainer

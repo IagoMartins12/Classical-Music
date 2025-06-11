@@ -124,7 +124,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
         {epoch.historicalData?.description && (
           <div className="classical-card p-8 group hover:shadow-theme-glow transition-all duration-500 relative overflow-hidden">
             {/* Decorative element */}
-            <div className="absolute top-4 right-4 text-6xl text-brand-primary/5">
+            <div className="absolute top-4 right-4 text-3xl text-brand-primary/5">
               <GiMusicalNotes />
             </div>
 

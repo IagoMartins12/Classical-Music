@@ -124,20 +124,11 @@ export default function WorkDetailsClient({
         <div className="classical-card overflow-hidden relative animate-fade-in-up">
           {/* Animated Background Elements */}
           <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-6 left-12 text-5xl text-brand-primary/10 animate-float">
-              <GiMusicalNotes />
-            </div>
             <div
-              className="absolute bottom-6 right-12 text-4xl text-brand-secondary/10 animate-float"
+              className="absolute hidden sm:flex bottom-6 right-12 text-4xl text-brand-secondary/10 animate-float"
               style={{ animationDelay: '1s' }}
             >
               <FiMusic />
-            </div>
-            <div
-              className="absolute top-12 right-24 text-3xl text-accent-purple/10 animate-float"
-              style={{ animationDelay: '2s' }}
-            >
-              <GiGrandPiano />
             </div>
           </div>
 

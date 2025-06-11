@@ -47,11 +47,6 @@ export function HistoryComposerCard({ composer }: Props) {
       href={`/composer/${composer.id}`}
       className="block classical-card-simple p-4 hover:shadow-theme-glow transition-all duration-500 hover:scale-105 group relative overflow-hidden"
     >
-      {/* Background decoration */}
-      <div className="absolute top-2 right-2 text-3xl text-brand-primary/5">
-        <GiMusicalNotes />
-      </div>
-
       <div className="relative z-10">
         <div className="flex items-center space-x-3 mb-3">
           {/* Portrait */}

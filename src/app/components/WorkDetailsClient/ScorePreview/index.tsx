@@ -1,5 +1,5 @@
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
-import { LuDownload, LuFileText, LuStar } from 'react-icons/lu';
+import { LuDownload, LuFileText } from 'react-icons/lu';
 
 // Componente de Preview
 interface ScorePreviewProps {
@@ -14,9 +14,9 @@ const ScorePreview = ({ score }: ScorePreviewProps) => {
   };
 
   return (
-    <div className="bg-white border rounded-lg p-6">
+    <div className="classical-card-simple border rounded-lg p-6" id="preview">
       <div className="flex items-start justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
+        <h3 className="text-lg font-semibold text-theme-primary line-clamp-2">
           {score.title}
         </h3>
         <button
@@ -41,7 +41,7 @@ const ScorePreview = ({ score }: ScorePreviewProps) => {
       ) : (
         <div className="mb-6 bg-gray-100 rounded-lg p-8 text-center">
           <LuFileText className="w-16 h-16 text-gray-400 mx-auto mb-2" />
-          <p className="text-gray-500">Preview não disponível</p>
+          <p className="text-theme-primary">Preview não disponível</p>
         </div>
       )}
 
@@ -49,49 +49,57 @@ const ScorePreview = ({ score }: ScorePreviewProps) => {
       <div className="space-y-3 text-sm">
         {score.fileSize && (
           <div className="flex justify-between">
-            <span className="text-gray-500">Tamanho:</span>
-            <span className="text-gray-900">{score.fileSize}</span>
+            <span className="text-theme-primary font-bold">Tamanho:</span>
+            <span className="text-theme-primary ">{score.fileSize}</span>
           </div>
         )}
 
         {score.pageCount && (
           <div className="flex justify-between">
-            <span className="text-gray-500">Páginas:</span>
-            <span className="text-gray-900">{score.pageCount}</span>
+            <span className="text-theme-primary font-bold">Páginas:</span>
+            <span className="text-theme-primary">{score.pageCount}</span>
           </div>
         )}
 
-        {score.rating && (
+        {/* {score.rating && (
           <div className="flex justify-between">
-            <span className="text-gray-500">Avaliação:</span>
+            <span className="text-theme-primary">Avaliação:</span>
             <div className="flex items-center gap-1">
               <LuStar className="w-3 h-3 text-yellow-500" />
               <span className="text-gray-900">{score.rating.toFixed(1)}</span>
               {score.ratingsCount && (
-                <span className="text-gray-500">({score.ratingsCount})</span>
+                <span className="text-theme-primary">
+                  ({score.ratingsCount})
+                </span>
               )}
             </div>
           </div>
-        )}
+        )} */}
 
         {score.downloadCount && (
           <div className="flex justify-between">
-            <span className="text-gray-500">Downloads:</span>
-            <span className="text-gray-900">{score.downloadCount}</span>
+            <span className="text-theme-primary font-bold">Downloads:</span>
+            <span className="text-theme-primary0">{score.downloadCount}</span>
           </div>
         )}
 
         {score.copyright && (
           <div className="pt-3 border-t border-gray-100">
-            <span className="text-gray-500 block mb-1">Copyright:</span>
-            <span className="text-gray-900 text-xs">{score.copyright}</span>
+            <span className="text-theme-primary  font-bold block mb-1">
+              Copyright:
+            </span>
+            <span className="text-theme-primary text-xs">
+              {score.copyright}
+            </span>
           </div>
         )}
 
         {score.notes && (
           <div className="pt-3 border-t border-gray-100">
-            <span className="text-gray-500 block mb-1">Notas:</span>
-            <span className="text-gray-900 text-xs">{score.notes}</span>
+            <span className="text-theme-primary text-bold block mb-1">
+              Notas:
+            </span>
+            <span className="text-theme-primary text-xs">{score.notes}</span>
           </div>
         )}
       </div>

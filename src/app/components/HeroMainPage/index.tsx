@@ -87,7 +87,7 @@ const HeroMainPage = () => {
                 dos séculos.
               </p>
               <Link
-                href="/instrumentos"
+                href="/instruments"
                 className="inline-flex items-center text-sm font-semibold text-white hover:text-purple-200 transition-colors group/link"
               >
                 Descobrir mais

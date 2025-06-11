@@ -3,66 +3,50 @@
 
 import { FiMusic, FiBookOpen } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano, GiViolin } from 'react-icons/gi';
+import DetailedMusicHistorySkeleton from './DetailedMusicHistorySkeleton';
 
-const LoadingSkeleton = () => {
+const LoadingMusicHistorySkeleton = () => {
   return (
     <div className="min-h-screen bg-gradient-primary">
-      {/* Background Pattern */}
-      <div className="fixed inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>
-        <div
-          className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: '1s' }}
-        ></div>
-        <div
-          className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl animate-pulse"
-          style={{ animationDelay: '2s' }}
-        ></div>
-        <div
-          className="absolute bottom-20 left-10 w-40 h-40 bg-brand-secondary/20 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: '0.5s' }}
-        ></div>
-      </div>
-
-      {/* Animated musical notes */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <GiMusicalNotes />
-        </div>
-        <div
-          className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
-          style={{ animationDelay: '1s' }}
-        >
-          <FiMusic />
-        </div>
-        <div
-          className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
-          style={{ animationDelay: '2s' }}
-        >
-          <GiGrandPiano />
-        </div>
-        <div
-          className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
-          style={{ animationDelay: '0.5s' }}
-        >
-          <GiViolin />
-        </div>
-        <div
-          className="absolute top-1/2 left-8 text-2xl text-accent-green/10 animate-float"
-          style={{ animationDelay: '1.5s' }}
-        >
-          <FiBookOpen />
-        </div>
-        <div
-          className="absolute top-1/4 right-8 text-2xl text-brand-primary/10 animate-float"
-          style={{ animationDelay: '2.5s' }}
-        >
-          <GiMusicalNotes />
-        </div>
-      </div>
-
       {/* Hero Skeleton */}
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden bg-gradient-primary pt-8 md:pt-24 lg:pt-24 flex items-center">
+        {/* Animated musical notes */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
+            <GiMusicalNotes />
+          </div>
+          <div
+            className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
+            style={{ animationDelay: '1s' }}
+          >
+            <FiMusic />
+          </div>
+          <div
+            className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
+            style={{ animationDelay: '2s' }}
+          >
+            <GiGrandPiano />
+          </div>
+          <div
+            className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
+            style={{ animationDelay: '0.5s' }}
+          >
+            <GiViolin />
+          </div>
+          <div
+            className="absolute top-1/2 left-8 text-2xl text-accent-green/10 animate-float"
+            style={{ animationDelay: '1.5s' }}
+          >
+            <FiBookOpen />
+          </div>
+          <div
+            className="absolute top-1/4 right-8 text-2xl text-brand-primary/10 animate-float"
+            style={{ animationDelay: '2.5s' }}
+          >
+            <GiMusicalNotes />
+          </div>
+        </div>
+
         <div className="section-wrap py-24 lg:py-32">
           <div className="text-center">
             {/* Floating Icons Skeleton */}
@@ -108,7 +92,7 @@ const LoadingSkeleton = () => {
             </div>
 
             {/* Feature Stats Skeleton */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
               {[1, 2, 3].map((index) => (
                 <div
                   key={index}
@@ -120,13 +104,14 @@ const LoadingSkeleton = () => {
                   <div className="h-4 bg-theme-elevated rounded"></div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
 
       {/* Content Skeleton */}
       <div className="section-wrap space-y-12 relative z-10">
+        <DetailedMusicHistorySkeleton />
         {/* Navigation Tabs Skeleton */}
         <div className="classical-card p-8 animate-shimmer">
           <div className="text-center mb-8">
@@ -380,4 +365,4 @@ const LoadingSkeleton = () => {
   );
 };
 
-export default LoadingSkeleton;
+export default LoadingMusicHistorySkeleton;

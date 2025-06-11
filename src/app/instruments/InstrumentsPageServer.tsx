@@ -15,16 +15,16 @@ const composerPreferences: ComposerPreferences = {
   Piano: {
     preferredComposerId: '683bb049320ed96f5ac321a8', // Chopin como destaque para piano
   },
-  Violino: {
-    preferredComposerId: 'paganini-id', // Paganini como destaque para violino
-  },
-  Violoncelo: {
-    preferredComposerId: 'bach-id', // Bach como destaque para violoncelo
-    excludedComposerIds: ['composer-menor-id'], // Remove compositores menores
-  },
-  Órgão: {
-    preferredComposerId: 'bach-id', // Bach também para órgão
-  },
+  // Violino: {
+  //   preferredComposerId: 'paganini-id', // Paganini como destaque para violino
+  // },
+  // Violoncelo: {
+  // preferredComposerId: 'bach-id', // Bach como destaque para violoncelo
+  // excludedComposerIds: ['composer-menor-id'], // Remove compositores menores
+  // },
+  // Órgão: {
+  // preferredComposerId: 'bach-id', // Bach também para órgão
+  // },
   Orquestra: {
     excludedComposerIds: ['683a7e9af8ced962eff7c0d8'], // Remove compositores menores
   },
@@ -36,26 +36,26 @@ const worksPreferences: WorksPreferences = {
   Piano: {
     composerWorks: {
       '683bb049320ed96f5ac321a8': {
-        count: 6, // 6 peças de Chopin
+        count: 3, // 6 peças de Chopin
         // specificWorkTitles: [
         //   'Ballade No. 1', // OBRIGATÓRIA
         //   'Polonaise in A-flat major', // OBRIGATÓRIA
         // ],
         // Sistema vai buscar estas 2 específicas + 4 aleatórias de Chopin
       },
-      'bach-id': {
-        count: 4, // 4 peças de Bach
-        // specificWorkTitles: [
-        //   'Well-Tempered Clavier', // OBRIGATÓRIA
-        // ],
-        // Sistema vai buscar esta específica + 3 aleatórias de Bach
-      },
-      'beethoven-id': {
-        count: 3, // 3 peças de Beethoven (quaisquer)
-      },
-      'mozart-id': {
-        count: 2, // 2 peças de Mozart (quaisquer)
-      },
+      // 'bach-id': {
+      //   count: 4, // 4 peças de Bach
+      // specificWorkTitles: [
+      //   'Well-Tempered Clavier', // OBRIGATÓRIA
+      // ],
+      // Sistema vai buscar esta específica + 3 aleatórias de Bach
+      // },
+      // 'beethoven-id': {
+      //   count: 3, // 3 peças de Beethoven (quaisquer)
+      // },
+      // 'mozart-id': {
+      //   count: 2, // 2 peças de Mozart (quaisquer)
+      // },
     },
     totalMaxWorks: 20, // Máximo de 20 obras
     fallbackToAutomatic: true, // Completa com outras obras se necessário

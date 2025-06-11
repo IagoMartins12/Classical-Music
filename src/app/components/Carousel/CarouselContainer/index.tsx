@@ -176,23 +176,6 @@ const CarouselContainer: React.FC<CarouselContainerProps> = ({
       >
         {children}
       </div>
-
-      {/* Indicador visual de drag - AGORA COM TEMA */}
-      {isDragging && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30">
-          <div className="bg-theme-elevated/90 backdrop-blur-md border border-theme-primary text-theme-primary px-4 py-2 rounded-full text-sm font-medium flex items-center space-x-3 shadow-theme-glow">
-            <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
-            <span>
-              {Math.abs(dragOffset) > 50
-                ? `Solte para mover ${Math.min(
-                    Math.ceil(Math.abs(dragOffset) / 100),
-                    3
-                  )} slide(s)`
-                : 'Arraste para navegar'}
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

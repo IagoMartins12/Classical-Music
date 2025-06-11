@@ -1,7 +1,7 @@
-// components/IMSLPTabs.tsx - Premium version with theme system
+// components/IMSLPTabs.tsx - Com scroll automático para preview
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   FiMusic,
   FiEye,
@@ -92,6 +92,30 @@ export default function IMSLPTabs({
   });
 
   const [selectedScore, setSelectedScore] = useState<IMSLPScore | null>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  // Scroll automático para o preview quando uma partitura for selecionada
+  useEffect(() => {
+    if (selectedScore && previewRef.current) {
+      // Pequeno delay para garantir que o componente foi renderizado
+      setTimeout(() => {
+        previewRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest',
+        });
+      }, 100);
+    }
+  }, [selectedScore]);
+
+  const handleScoreSelect = (score: IMSLPScore) => {
+    // Se a mesma partitura for clicada, desselecioná-la
+    if (selectedScore?.id === score.id) {
+      setSelectedScore(null);
+    } else {
+      setSelectedScore(score);
+    }
+  };
 
   if (loading) {
     return (
@@ -191,39 +215,6 @@ export default function IMSLPTabs({
 
   return (
     <div className="classical-card overflow-hidden animate-fade-in-up">
-      {/* Header */}
-      {/* <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover relative">
-        <div className="absolute top-4 right-4 text-6xl text-brand-primary/5">
-          <GiMusicalNotes />
-        </div>
-
-        <div className="flex items-center justify-between relative z-10">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-              <FiMusic className="w-6 h-6 text-theme-inverse" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                Partituras Disponíveis
-              </h2>
-              <p className="text-theme-secondary classical-subtitle">
-                {totalItems}{' '}
-                {totalItems === 1 ? 'item disponível' : 'itens disponíveis'}
-              </p>
-            </div>
-          </div>
-
-          <div className="hidden md:flex items-center space-x-4">
-            <div className="text-center p-3 bg-theme-elevated border border-theme-primary rounded-xl">
-              <div className="text-lg font-bold text-brand-primary">
-                {totalItems}
-              </div>
-              <div className="text-xs text-theme-tertiary">Total</div>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       {/* Tabs Navigation */}
       <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
         <nav className="flex overflow-x-auto scrollbar-hide" aria-label="Tabs">
@@ -304,11 +295,7 @@ export default function IMSLPTabs({
                         key={score.id}
                         score={score}
                         isSelected={selectedScore?.id === score.id}
-                        onSelect={() =>
-                          setSelectedScore(
-                            selectedScore?.id === score.id ? null : score
-                          )
-                        }
+                        onSelect={() => handleScoreSelect(score)}
                         isLastInGroup={index === scoreGroup.scores.length - 1}
                         groupSize={scoreGroup.scores.length}
                       />
@@ -318,9 +305,12 @@ export default function IMSLPTabs({
               ))}
             </div>
 
-            {/* Preview Panel */}
+            {/* Preview Panel com ref para scroll */}
             {selectedScore && (
-              <div className="lg:sticky lg:top-6 animate-fade-in-up">
+              <div
+                ref={previewRef}
+                className="lg:sticky lg:top-6 animate-fade-in-up scroll-mt-4"
+              >
                 <ScorePreview score={selectedScore} />
               </div>
             )}

@@ -44,5 +44,4 @@ export default function InstrumentsPage() {
 }
 
 // Force static generation during build time for better performance
-export const dynamic = 'force-static';
 export const revalidate = 3600; // Revalidate every hour

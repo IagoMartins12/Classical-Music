@@ -6,7 +6,7 @@ import { GiMusicalNotes, GiViolin, GiGrandPiano } from 'react-icons/gi';
 
 export function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-primary pt-24 flex items-center">
+    <section className="relative overflow-hidden bg-gradient-primary pt-8 md:pt-24 lg:pt-24 flex items-center">
       {/* Background Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
         <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>
@@ -25,7 +25,7 @@ export function HeroSection() {
       </div>
 
       {/* Animated musical notes */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute hidden md:flex lg:flex  inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/20 animate-float">
           <GiMusicalNotes />
         </div>

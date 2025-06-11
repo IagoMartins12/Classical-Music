@@ -351,7 +351,7 @@ export const getInstrumentsWithWorks = unstable_cache(
     composerPreferences: ComposerPreferences = {},
     worksPreferences: WorksPreferences = {}
   ): Promise<InstrumentWithWorks[]> => {
-    // Busca instrumentos alvo
+    // Primeiro, busca apenas os instrumentos básicos
     const instruments = await prisma.instrument.findMany({
       where: {
         name: {
@@ -362,151 +362,257 @@ export const getInstrumentsWithWorks = unstable_cache(
       select: {
         id: true,
         name: true,
-        works: {
-          select: {
-            id: true,
-            title: true,
-            opOrCatalog: true,
-            compositionYear: true,
-            tone: true,
-            mediaDuration: true,
-            imslpPermlink: true,
-            videoUrl: true,
-            composer: {
-              select: {
-                id: true,
-                name: true,
-                fullName: true,
-                portraitUrl: true,
-                epochName: true,
-              },
-            },
-          },
-          orderBy: [{ compositionYear: 'asc' }, { title: 'asc' }],
-        },
       },
     });
 
-    // Mapeia com dados históricos e aplica preferências de obras
-    return instruments.map((instrument) => {
-      const worksPrefs = worksPreferences[instrument.name];
-      let selectedWorks: any[] = [];
+    // Para cada instrumento, faz uma query específica e otimizada
+    const instrumentsWithWorks = await Promise.all(
+      instruments.map(async (instrument) => {
+        const worksPrefs = worksPreferences[instrument.name];
+        let selectedWorks: any[] = [];
 
-      if (worksPrefs?.composerWorks) {
-        // Modo avançado: obras específicas por compositor
-        for (const [composerId, prefs] of Object.entries(
-          worksPrefs.composerWorks
-        )) {
-          let composerWorks = instrument.works.filter(
-            (work) => work.composer.id === composerId
-          );
+        if (worksPrefs?.composerWorks) {
+          // Modo avançado: obras específicas por compositor
+          for (const [composerId, prefs] of Object.entries(
+            worksPrefs.composerWorks
+          )) {
+            let composerWorks: any[] = [];
 
-          // Se há obras específicas definidas, busca elas primeiro
-          if (
-            prefs.specificWorkIds?.length ||
-            prefs.specificWorkTitles?.length
-          ) {
-            const specificWorks: any[] = [];
-
-            // Busca por IDs específicos
+            // Se há obras específicas definidas por ID
             if (prefs.specificWorkIds?.length) {
-              prefs.specificWorkIds.forEach((workId) => {
-                const work = composerWorks.find((w) => w.id === workId);
-                if (work) {
-                  specificWorks.push(work);
-                  composerWorks = composerWorks.filter((w) => w.id !== workId);
-                }
+              const specificWorks = await prisma.work.findMany({
+                where: {
+                  id: { in: prefs.specificWorkIds },
+                  instrumentId: instrument.id,
+                  composerId: composerId,
+                },
+                select: {
+                  id: true,
+                  title: true,
+                  opOrCatalog: true,
+                  compositionYear: true,
+                  tone: true,
+                  mediaDuration: true,
+                  imslpPermlink: true,
+                  composer: {
+                    select: {
+                      id: true,
+                      name: true,
+                      fullName: true,
+                      portraitUrl: true,
+                      epochName: true,
+                    },
+                  },
+                },
+                orderBy: [{ compositionYear: 'asc' }, { title: 'asc' }],
               });
+              composerWorks.push(...specificWorks);
             }
 
-            // Busca por títulos específicos (fallback)
+            // Se há obras específicas definidas por título (fallback)
             if (prefs.specificWorkTitles?.length) {
-              prefs.specificWorkTitles.forEach((title) => {
-                const work = composerWorks.find((w) =>
-                  w.title.toLowerCase().includes(title.toLowerCase())
-                );
-                if (work && !specificWorks.find((sw) => sw.id === work.id)) {
-                  specificWorks.push(work);
-                  composerWorks = composerWorks.filter((w) => w.id !== work.id);
-                }
+              const titleWorks = await prisma.work.findMany({
+                where: {
+                  instrumentId: instrument.id,
+                  composerId: composerId,
+                  OR: prefs.specificWorkTitles.map((title) => ({
+                    title: {
+                      contains: title,
+                      mode: 'insensitive' as const,
+                    },
+                  })),
+                  id: { notIn: composerWorks.map((w) => w.id) }, // Evita duplicatas
+                },
+                select: {
+                  id: true,
+                  title: true,
+                  opOrCatalog: true,
+                  compositionYear: true,
+                  tone: true,
+                  mediaDuration: true,
+                  imslpPermlink: true,
+                  composer: {
+                    select: {
+                      id: true,
+                      name: true,
+                      fullName: true,
+                      portraitUrl: true,
+                      epochName: true,
+                    },
+                  },
+                },
+                orderBy: [{ compositionYear: 'asc' }, { title: 'asc' }],
               });
+              composerWorks.push(...titleWorks);
             }
 
-            // Adiciona obras específicas
-            selectedWorks.push(...specificWorks);
-
-            // Completa com outras obras do compositor se necessário
-            const remainingCount = prefs.count - specificWorks.length;
+            // Completa com outras obras do mesmo compositor se necessário
+            const remainingCount = prefs.count - composerWorks.length;
             if (remainingCount > 0) {
-              selectedWorks.push(...composerWorks.slice(0, remainingCount));
+              const additionalWorks = await prisma.work.findMany({
+                where: {
+                  instrumentId: instrument.id,
+                  composerId: composerId,
+                  id: { notIn: composerWorks.map((w) => w.id) }, // Evita duplicatas
+                },
+                select: {
+                  id: true,
+                  title: true,
+                  opOrCatalog: true,
+                  compositionYear: true,
+                  tone: true,
+                  mediaDuration: true,
+                  imslpPermlink: true,
+                  composer: {
+                    select: {
+                      id: true,
+                      name: true,
+                      fullName: true,
+                      portraitUrl: true,
+                      epochName: true,
+                    },
+                  },
+                },
+                orderBy: [{ compositionYear: 'asc' }, { title: 'asc' }],
+                take: remainingCount,
+              });
+              composerWorks.push(...additionalWorks);
             }
-          } else {
-            // Só quantidade, sem obras específicas
-            selectedWorks.push(...composerWorks.slice(0, prefs.count));
+
+            selectedWorks.push(...composerWorks);
           }
+
+          // Se deve completar automaticamente até o limite
+          if (worksPrefs.fallbackToAutomatic !== false) {
+            const maxWorks = Math.min(worksPrefs.totalMaxWorks || 20, 20);
+            const remainingCount = maxWorks - selectedWorks.length;
+
+            if (remainingCount > 0) {
+              // Busca compositores com mais obras para este instrumento (excluindo já selecionados)
+              const additionalWorks = await prisma.work.findMany({
+                where: {
+                  instrumentId: instrument.id,
+                  id: { notIn: selectedWorks.map((w) => w.id) },
+                },
+                select: {
+                  id: true,
+                  title: true,
+                  opOrCatalog: true,
+                  compositionYear: true,
+                  tone: true,
+                  mediaDuration: true,
+                  imslpPermlink: true,
+                  composer: {
+                    select: {
+                      id: true,
+                      name: true,
+                      fullName: true,
+                      portraitUrl: true,
+                      epochName: true,
+                    },
+                  },
+                },
+                orderBy: [{ compositionYear: 'asc' }, { title: 'asc' }],
+                take: remainingCount,
+              });
+              selectedWorks.push(...additionalWorks);
+            }
+          }
+        } else {
+          // Modo padrão: busca as 20 melhores obras (por compositores com mais obras)
+          const composerPrefs = composerPreferences[instrument.name];
+
+          let whereClause: any = {
+            instrumentId: instrument.id,
+          };
+
+          // Se há compositor preferido, filtra por ele
+          if (composerPrefs?.preferredComposerId) {
+            whereClause.composerId = composerPrefs.preferredComposerId;
+          }
+
+          // Se há compositores excluídos, remove eles
+          if (composerPrefs?.excludedComposerIds?.length) {
+            whereClause.composerId = {
+              ...whereClause.composerId,
+              notIn: composerPrefs.excludedComposerIds,
+            };
+          }
+
+          selectedWorks = await prisma.work.findMany({
+            where: whereClause,
+            select: {
+              id: true,
+              title: true,
+              opOrCatalog: true,
+              compositionYear: true,
+              tone: true,
+              mediaDuration: true,
+              imslpPermlink: true,
+              composer: {
+                select: {
+                  id: true,
+                  name: true,
+                  fullName: true,
+                  portraitUrl: true,
+                  epochName: true,
+                },
+              },
+            },
+            orderBy: [{ compositionYear: 'asc' }, { title: 'asc' }],
+            take: 20, // Limita direto na query
+          });
         }
 
-        // Se deve completar automaticamente
-        if (worksPrefs.fallbackToAutomatic !== false) {
-          const maxWorks = worksPrefs.totalMaxWorks || 20;
-          const remainingCount = maxWorks - selectedWorks.length;
+        // Garante máximo de 20 obras
+        selectedWorks = selectedWorks.slice(0, 20);
 
-          if (remainingCount > 0) {
-            const usedWorkIds = new Set(selectedWorks.map((w) => w.id));
-            const remainingWorks = instrument.works.filter(
-              (work) => !usedWorkIds.has(work.id)
-            );
-            selectedWorks.push(...remainingWorks.slice(0, remainingCount));
-          }
-        }
-      } else {
-        // Modo padrão: 20 obras ordenadas
-        selectedWorks = instrument.works.slice(0, 20);
-      }
-
-      return {
-        id: instrument.id,
-        name: instrument.name,
-        historicalData: instrumentsHistoricalData[instrument.name] || {
+        return {
+          id: instrument.id,
           name: instrument.name,
-          category: 'Indefinido',
-          origin: 'Desconhecido',
-          inventor: null,
-          inventionPeriod: 'Indefinido',
-          description: 'Informações históricas não disponíveis.',
-          detailedHistory: 'História detalhada não disponível.',
-          characteristics: [],
-          evolution: [],
-          notableFeatures: [],
-          famousPerformers: [],
-          imageUrl: '/instruments/default.jpg',
-          iconName: 'Music',
-        },
-        works: selectedWorks.map((work) => ({
-          id: work.id,
-          title: work.title,
-          composer: work.composer,
-          opOrCatalog: work.opOrCatalog,
-          compositionYear: work.compositionYear,
-          tone: work.tone,
-          mediaDuration: work.mediaDuration,
-          imslpPermlink: work.imslpPermlink,
-          videoUrl: work.videoUrl,
-        })),
-      };
-    });
+          historicalData: instrumentsHistoricalData[instrument.name] || {
+            name: instrument.name,
+            category: 'Indefinido',
+            origin: 'Desconhecido',
+            inventor: null,
+            inventionPeriod: 'Indefinido',
+            description: 'Informações históricas não disponíveis.',
+            detailedHistory: 'História detalhada não disponível.',
+            characteristics: [],
+            evolution: [],
+            notableFeatures: [],
+            famousPerformers: [],
+            imageUrl: '/instruments/default.jpg',
+            iconName: 'Music',
+          },
+          works: selectedWorks.map((work) => ({
+            id: work.id,
+            title: work.title,
+            composer: work.composer,
+            opOrCatalog: work.opOrCatalog,
+            compositionYear: work.compositionYear,
+            tone: work.tone,
+            mediaDuration: work.mediaDuration,
+            imslpPermlink: work.imslpPermlink,
+            videoUrl: work.videoUrl,
+          })),
+        };
+      })
+    );
+
+    return instrumentsWithWorks;
   },
-  ['instruments-with-works-v2'],
+  ['instruments-with-works-v3'], // Nova versão do cache
   {
     revalidate: 3600, // 1 hora
     tags: ['instruments', 'works', 'composers'],
   }
 );
 
-// OTIMIZAÇÃO 2: Estatísticas dos instrumentos
 export const getInstrumentsStats = unstable_cache(
   async () => {
-    const stats = await prisma.instrument.findMany({
+    // Busca apenas os instrumentos básicos primeiro
+    const instruments = await prisma.instrument.findMany({
       where: {
         name: {
           in: targetInstruments,
@@ -516,31 +622,47 @@ export const getInstrumentsStats = unstable_cache(
       select: {
         id: true,
         name: true,
-        _count: {
-          select: {
-            works: true,
-            users: true,
-          },
-        },
       },
     });
 
-    return stats.map((stat) => ({
-      instrumentName: stat.name,
-      totalWorks: stat._count.works,
-      totalUsers: stat._count.users,
-    }));
+    // Para cada instrumento, faz uma query específica e otimizada usando aggregation
+    const stats = await Promise.all(
+      instruments.map(async (instrument) => {
+        // Query otimizada para contar works sem carregar dados desnecessários
+        const worksCount = await prisma.work.count({
+          where: {
+            instrumentId: instrument.id,
+          },
+        });
+
+        // Query otimizada para contar usuários sem carregar dados desnecessários
+        const usersCount = await prisma.userInstrument.count({
+          where: {
+            instrumentId: instrument.id,
+          },
+        });
+
+        return {
+          instrumentName: instrument.name,
+          totalWorks: worksCount,
+          totalUsers: usersCount,
+        };
+      })
+    );
+
+    return stats;
   },
-  ['instruments-stats-v1'],
+  ['instruments-stats-v2'], // Nova versão
   {
     revalidate: 7200, // 2 horas
     tags: ['instruments', 'stats'],
   }
 );
 
-// OTIMIZAÇÃO 3: Top compositores por instrumento com preferências
+// OTIMIZAÇÃO 3: Top compositores por instrumento - VERSÃO OTIMIZADA
 export const getTopComposersByInstrument = unstable_cache(
   async (composerPreferences: ComposerPreferences = {}) => {
+    // Busca apenas os instrumentos básicos primeiro
     const instruments = await prisma.instrument.findMany({
       where: {
         name: {
@@ -549,9 +671,66 @@ export const getTopComposersByInstrument = unstable_cache(
         },
       },
       select: {
+        id: true,
         name: true,
-        works: {
+      },
+    });
+
+    const results = await Promise.all(
+      instruments.map(async (instrument) => {
+        const preferences = composerPreferences[instrument.name] || {};
+
+        // Se há um compositor preferido definido, busca ele especificamente
+        if (preferences.preferredComposerId) {
+          // Busca apenas o compositor preferido e conta suas obras
+          const preferredComposer = await prisma.composer.findUnique({
+            where: {
+              id: preferences.preferredComposerId,
+            },
+            select: {
+              id: true,
+              name: true,
+              fullName: true,
+              portraitUrl: true,
+              epochName: true,
+            },
+          });
+
+          if (preferredComposer) {
+            // Conta as obras do compositor preferido para este instrumento
+            const worksCount = await prisma.work.count({
+              where: {
+                instrumentId: instrument.id,
+                composerId: preferences.preferredComposerId,
+              },
+            });
+
+            return {
+              instrumentName: instrument.name,
+              topComposers: [
+                {
+                  composer: preferredComposer,
+                  count: worksCount,
+                },
+              ],
+            };
+          }
+        }
+
+        // Abordagem alternativa mais simples: group by na aplicação
+        // Busca obras com apenas o composerId para este instrumento
+        const worksWithComposer = await prisma.work.findMany({
+          where: {
+            instrumentId: instrument.id,
+            // Filtra compositores excluídos se houver
+            ...(preferences.excludedComposerIds?.length && {
+              composerId: {
+                notIn: preferences.excludedComposerIds,
+              },
+            }),
+          },
           select: {
+            composerId: true,
             composer: {
               select: {
                 id: true,
@@ -562,74 +741,48 @@ export const getTopComposersByInstrument = unstable_cache(
               },
             },
           },
-        },
-      },
-    });
+        });
 
-    return instruments.map((instrument) => {
-      const preferences = composerPreferences[instrument.name] || {};
+        // Group by compositor usando Map para melhor performance
+        const composerCountMap = new Map<
+          string,
+          { composer: any; count: number }
+        >();
 
-      // Se há um compositor preferido definido, busca ele especificamente
-      if (preferences.preferredComposerId) {
-        const preferredComposer = instrument.works.find(
-          (work) => work.composer.id === preferences.preferredComposerId
-        );
+        worksWithComposer.forEach((work) => {
+          const composerId = work.composerId;
+          if (composerCountMap.has(composerId)) {
+            composerCountMap.get(composerId)!.count++;
+          } else {
+            composerCountMap.set(composerId, {
+              composer: work.composer,
+              count: 1,
+            });
+          }
+        });
 
-        if (preferredComposer) {
-          const worksCount = instrument.works.filter(
-            (work) => work.composer.id === preferences.preferredComposerId
-          ).length;
+        // Converte para array e ordena por count descendente
+        const topComposers = Array.from(composerCountMap.values())
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5); // Top 5 compositores
 
-          return {
-            instrumentName: instrument.name,
-            topComposers: [
-              {
-                composer: preferredComposer.composer,
-                count: worksCount,
-              },
-            ],
-          };
-        }
-      }
+        return {
+          instrumentName: instrument.name,
+          topComposers,
+        };
+      })
+    );
 
-      // Conta obras por compositor, excluindo os compositores na lista de exclusão
-      const composerCounts = instrument.works.reduce((acc, work) => {
-        const composerId = work.composer.id;
-
-        // Pula compositores excluídos
-        if (preferences.excludedComposerIds?.includes(composerId)) {
-          return acc;
-        }
-
-        if (!acc[composerId]) {
-          acc[composerId] = {
-            composer: work.composer,
-            count: 0,
-          };
-        }
-        acc[composerId].count++;
-        return acc;
-      }, {} as Record<string, { composer: any; count: number }>);
-
-      // Top 5 compositores
-      const topComposers = Object.values(composerCounts)
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 5);
-
-      return {
-        instrumentName: instrument.name,
-        topComposers,
-      };
-    });
+    return results;
   },
-  ['top-composers-by-instrument-v1'],
+  ['top-composers-by-instrument-v2'], // Nova versão
   {
     revalidate: 7200, // 2 horas
     tags: ['instruments', 'composers', 'stats'],
   }
 );
 
-// Função para limpar cache
+// Função para limpar cache - ATUALIZADA
 export async function revalidateInstrumentsCache() {
   const { revalidateTag } = await import('next/cache');
 
@@ -637,10 +790,9 @@ export async function revalidateInstrumentsCache() {
   revalidateTag('works');
   revalidateTag('composers');
   revalidateTag('stats');
-  revalidateTag('instruments-with-works-v1');
-  revalidateTag('instruments-with-works-v2');
-  revalidateTag('instruments-stats-v1');
-  revalidateTag('top-composers-by-instrument-v1');
+  revalidateTag('instruments-with-works-v3');
+  revalidateTag('instruments-stats-v2'); // Novo
+  revalidateTag('top-composers-by-instrument-v2'); // Novo
 }
 
 // Exporta interfaces para uso externo

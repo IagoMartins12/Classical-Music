@@ -36,8 +36,6 @@ const PopularComposers: React.FC<pageComposersInterface> = ({
 
       {/* Background decorative elements */}
       <div className="relative">
-        <div className="absolute top-20 -left-10 w-24 h-24 bg-accent-purple/10 rounded-full blur-2xl"></div>
-
         <Carousel
           items={composersData}
           itemsPerView={4}

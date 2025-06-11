@@ -229,7 +229,7 @@ export default function ComposerBiography({
   return (
     <div className="max-w-none relative">
       {/* Badge de biografia gerada por IA (se foi gerada) */}
-      {biography && (
+      {/* {biography && (
         <div className="flex items-center justify-between mb-6 p-3 bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-xl">
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 bg-accent-green/20 border border-accent-green/40 rounded-lg flex items-center justify-center">
@@ -241,7 +241,7 @@ export default function ComposerBiography({
           </div>
           <FiZap className="w-4 h-4 text-accent-green" />
         </div>
-      )}
+      )} */}
 
       {/* Conteúdo da biografia */}
       <div className="relative">
@@ -250,11 +250,7 @@ export default function ComposerBiography({
 
         <div className="relative z-10 whitespace-pre-line text-theme-secondary leading-relaxed text-base classical-body">
           {displayBio.split('\n').map((paragraph, index) => (
-            <p
-              key={index}
-              className="mb-4 animate-fade-in-up"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
+            <p key={index} className="mb-4 animate-fade-in-up">
               {paragraph}
             </p>
           ))}

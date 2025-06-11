@@ -12,7 +12,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Classicus - Enciclopédia de Música Clássica',
+  title: 'Classical Hub - Enciclopédia de Música Clássica',
   description:
     'Explore, aprenda e pratique música clássica com nossa enciclopédia interativa. Descubra compositores, obras e desenvolva suas habilidades musicais.',
   keywords: [
@@ -23,10 +23,10 @@ export const metadata: Metadata = {
     'piano',
     'estudo musical',
   ],
-  authors: [{ name: 'Classicus Team' }],
-  creator: 'Classicus',
+  authors: [{ name: 'Classical Hub Team' }],
+  creator: 'Classical Hub',
   openGraph: {
-    title: 'Classicus - Enciclopédia de Música Clássica',
+    title: 'Classical Hub - Enciclopédia de Música Clássica',
     description:
       'Explore, aprenda e pratique música clássica com nossa enciclopédia interativa.',
     type: 'website',
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Classicus - Enciclopédia de Música Clássica',
+    title: 'Classical Hub - Enciclopédia de Música Clássica',
     description:
       'Explore, aprenda e pratique música clássica com nossa enciclopédia interativa.',
   },

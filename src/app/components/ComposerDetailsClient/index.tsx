@@ -91,29 +91,10 @@ export default function ComposerDetailsClient({
 
         {/* Header Principal */}
         <div className="classical-card overflow-hidden relative">
-          {/* Animated Background Elements */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-6 left-12 text-5xl text-brand-primary/10 animate-float">
-              <GiMusicalNotes />
-            </div>
-            <div
-              className="absolute bottom-6 right-12 text-4xl text-brand-secondary/10 animate-float"
-              style={{ animationDelay: '1s' }}
-            >
-              <FiMusic />
-            </div>
-            <div
-              className="absolute top-12 right-24 text-3xl text-accent-purple/10 animate-float"
-              style={{ animationDelay: '2s' }}
-            >
-              <GiGrandPiano />
-            </div>
-          </div>
-
           <div className="p-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Informações do Compositor */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-6 order-2 md:order-1 lg:order-1">
                 {/* Nome e título */}
                 <div className="space-y-3">
                   <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title">
@@ -274,7 +255,7 @@ export default function ComposerDetailsClient({
               </div>
 
               {/* Imagem do Compositor */}
-              <div className="flex justify-center lg:justify-end">
+              <div className="flex justify-center order-1 md:order-2 lg:order-2 lg:justify-end">
                 <div className="relative group">
                   {composer.portraitUrl && !imageError ? (
                     <div className="relative w-64 h-80 rounded-2xl overflow-hidden shadow-theme-glow border border-theme-primary group-hover:scale-105 transition-all duration-500">

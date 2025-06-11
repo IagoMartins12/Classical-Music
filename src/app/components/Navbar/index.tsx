@@ -43,7 +43,7 @@ const Navbar: React.FC = () => {
               <GiGrandPiano className="w-8 h-8 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
             </div>
             <span className="text-xl font-bold text-gradient-brand classical-title">
-              Classicus
+              Classical Hub
             </span>
           </Link>
 

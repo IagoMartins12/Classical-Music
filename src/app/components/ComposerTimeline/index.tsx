@@ -53,6 +53,17 @@ const epochDotColors = {
   Modern: 'bg-gradient-to-br from-theme-tertiary to-theme-secondary',
 };
 
+// Mapeamento explícito entre nomes em português e inglês
+const epochMapping: Record<string, keyof typeof epochColors> = {
+  Medieval: 'Medieval',
+  Renascentista: 'Renaissance',
+  Barroco: 'Baroque',
+  Clássico: 'Classical',
+  Rômantico: 'Romantic',
+  Modernismo: 'Modern',
+  Moderno: 'Modern',
+};
+
 export function ComposersTimeline({ composers, epochsData }: Props) {
   const timelineData = useMemo(() => {
     const sortedComposers = [...composers].sort((a, b) => {
@@ -62,18 +73,14 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
     });
 
     return sortedComposers.map((composer) => {
-      const epochKey =
-        Object.keys(epochColors).find(
-          (key) =>
-            composer.epochName.toLowerCase().includes(key.toLowerCase()) ||
-            key.toLowerCase().includes(composer.epochName.toLowerCase())
-        ) || 'Modern';
+      // Usa o mapeamento explícito em vez de busca por substring
+      const epochKey = epochMapping[composer.epochName] || 'Modern';
 
       return {
         ...composer,
         epochKey,
-        gradientClass: epochColors[epochKey as keyof typeof epochColors],
-        dotColorClass: epochDotColors[epochKey as keyof typeof epochDotColors],
+        gradientClass: epochColors[epochKey],
+        dotColorClass: epochDotColors[epochKey],
       };
     });
   }, [composers]);
@@ -95,13 +102,13 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
       <div className="text-center mb-16 animate-fade-in-up">
         <div className="flex items-center justify-center space-x-3 mb-6">
           <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-            <FiClock className="w-6 h-6 text-theme-inverse" />
+            <FiClock className="w-6 h-6 text-theme-primary" />
           </div>
           <div className="text-6xl text-brand-primary/10">
             <GiMusicalNotes />
           </div>
           <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center shadow-theme-glow">
-            <GiGrandPiano className="w-6 h-6 text-theme-inverse" />
+            <GiGrandPiano className="w-6 h-6 text-theme-primary" />
           </div>
         </div>
 
@@ -112,37 +119,6 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
           Acompanhe a cronologia dos grandes mestres da música clássica através
           dos séculos
         </p>
-
-        {/* Stats */}
-        {/* <div className="flex items-center justify-center space-x-8 mt-8">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-brand-primary">
-              {composers.length}
-            </div>
-            <div className="text-sm text-theme-tertiary">Compositores</div>
-          </div>
-          <div className="w-1 h-8 bg-theme-secondary"></div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-accent-purple">
-              {epochsData.length}
-            </div>
-            <div className="text-sm text-theme-tertiary">Épocas</div>
-          </div>
-          <div className="w-1 h-8 bg-theme-secondary"></div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-accent-green">
-              {Math.max(
-                ...composers.filter((c) => c.deathYear).map((c) => c.deathYear!)
-              ) -
-                Math.min(
-                  ...composers
-                    .filter((c) => c.birthYear)
-                    .map((c) => c.birthYear!)
-                )}
-            </div>
-            <div className="text-sm text-theme-tertiary">Anos</div>
-          </div>
-        </div> */}
       </div>
 
       <div className="relative">
@@ -157,7 +133,7 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
             return (
               <div
                 key={composer.id}
-                className={`relative flex items-center ${
+                className={`relative flex items-center mb-16 lg:mb-12 justify-end ${
                   isLeft ? 'lg:justify-start' : 'lg:justify-end'
                 } animate-fade-in-up`}
                 style={{ animationDelay: `${index * 0.1}s` }}
@@ -165,7 +141,7 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
                 {/* Content Card */}
                 <Link
                   href={`/composer/${composer.id}`}
-                  className={`w-[85%] lg:w-[42%] classical-card p-6 hover:shadow-theme-glow transition-all duration-500 transform hover:scale-105 group relative overflow-hidden ${
+                  className={`w-[90%] lg:w-[42%] classical-card p-6 hover:shadow-theme-glow transition-all duration-500 transform hover:scale-105 group relative overflow-hidden ${
                     isLeft ? 'lg:mr-auto' : 'lg:ml-auto'
                   }`}
                 >
@@ -288,7 +264,7 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
                 {/* Era label for significant transitions */}
                 {index > 0 &&
                   timelineData[index - 1].epochKey !== composer.epochKey && (
-                    <div className="absolute left-0 lg:left-1/2 transform lg:-translate-x-1/2 -top-8 lg:-top-12">
+                    <div className="absolute left-0 lg:left-1/2 transform lg:-translate-x-1/2 -top-12 lg:-top-12">
                       <div
                         className={`px-4 py-2 bg-gradient-to-r classical-card-simple ${composer.gradientClass} text-theme-primary text-xs rounded-full shadow-theme-medium whitespace-nowrap font-medium`}
                       >

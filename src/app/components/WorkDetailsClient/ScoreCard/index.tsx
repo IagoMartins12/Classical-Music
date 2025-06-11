@@ -31,25 +31,27 @@ const ScoreCard = ({
   // Mostra se: é o último do grupo E o grupo tem mais de 1 item, OU se o grupo tem apenas 1 item
   const shouldShowThumbnail = groupSize === 1 || isLastInGroup;
 
+  const truncateText = (text: string, maxLength: number): string => {
+    if (!text) return '';
+    return text.length > maxLength
+      ? `${text.substring(0, maxLength)}...`
+      : text;
+  };
+
   return (
     <div
       className={`
-          classical-card-simple cursor-pointer transition-all duration-300 hover:shadow-theme-glow group relative overflow-hidden
+          cursor-pointer transition-all duration-300 hover:shadow-theme-glow group relative overflow-hidden
           ${
             isSelected
-              ? 'border-brand-primary bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 shadow-theme-glow'
-              : 'hover:border-theme-primary hover:bg-interactive-hover'
+              ? 'classical-card !p-0 border-brand-primary bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 shadow-theme-glow'
+              : 'classical-card-simple hover:border-theme-primary hover:bg-interactive-hover'
           }
           ${shouldShowThumbnail ? '' : 'mb-0 border-b-0 rounded-b-none'}
         `}
       onClick={onSelect}
     >
-      {/* Selection indicator */}
-      {isSelected && (
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-gradient"></div>
-      )}
-
-      <div className="flex items-center gap-6 p-6">
+      <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
         {/* Thumbnail com efeito lupa - só mostra se for o último do grupo */}
         {shouldShowThumbnail && score.thumbnailUrl && (
           <div
@@ -215,27 +217,33 @@ const ScoreCard = ({
               <div className="mt-4 pt-4 border-t border-theme-secondary">
                 <div className="space-y-2 text-xs text-theme-tertiary">
                   {score.editor && (
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-theme-secondary">
+                    <div className="flex flex-col sm:flex-row  items-center justify-between gap-2">
+                      <span className="font-medium text-theme-secondary w-2/12 sm:w-1/12">
                         Editor:
                       </span>
-                      <span>{score.editor}</span>
+                      <span className=" w-full sm:w-11/12 text-center sm:text-start ">
+                        {score.editor}
+                      </span>
                     </div>
                   )}
                   {score.publisher && (
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-theme-secondary">
+                    <div className="flex pt-2 sm:pt-0 flex-col sm:flex-row  items-center justify-between gap-2">
+                      <span className="font-medium text-theme-secondary w-2/12 sm:w-1/12">
                         Editora:
                       </span>
-                      <span>{score.publisher}</span>
+                      <span className=" w-full sm:w-11/12 text-center sm:text-start">
+                        {truncateText(score.publisher, 300)}
+                      </span>
                     </div>
                   )}
                   {score.copyright && (
-                    <div className="flex items-start gap-2">
-                      <span className="font-medium text-theme-secondary flex-shrink-0">
+                    <div className="flex pt-2 sm:pt-0 flex-col sm:flex-row items-center justify-between gap-2">
+                      <span className="font-medium text-theme-secondary w-3/12 sm:w-1/12">
                         Copyright:
                       </span>
-                      <span className="leading-relaxed">{score.copyright}</span>
+                      <span className=" w-full sm:w-11/12 text-center sm:text-start">
+                        {score.copyright}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -246,11 +254,6 @@ const ScoreCard = ({
 
       {/* Hover glow effect */}
       <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl pointer-events-none"></div>
-
-      {/* Selection highlight */}
-      {isSelected && (
-        <div className="absolute inset-0 bg-brand-gradient opacity-5 rounded-xl pointer-events-none"></div>
-      )}
     </div>
   );
 };
