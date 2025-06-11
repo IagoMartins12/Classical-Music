@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import {
   FaMusic,
   FaGuitar,
@@ -79,15 +79,15 @@ interface InstrumentWithWorks {
   }[];
 }
 
-interface InstrumentStats {
-  instrumentName: string;
-  totalWorks: number;
-  totalUsers: number;
-}
+// interface InstrumentStats {
+//   instrumentName: string;
+//   totalWorks: number;
+//   totalUsers: number;
+// }
 
 interface Props {
   instruments: InstrumentWithWorks[];
-  instrumentsStats: InstrumentStats[];
+  // instrumentsStats: InstrumentStats[];
   hasError?: boolean;
 }
 
@@ -110,7 +110,7 @@ const getIcon = (iconName: string) => {
 
 export function InstrumentsPageClient({
   instruments,
-  instrumentsStats,
+  // instrumentsStats,
   hasError = false,
 }: Props) {
   const [expandedSections, setExpandedSections] = useState<

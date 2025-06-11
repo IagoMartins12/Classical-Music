@@ -1,3 +1,5 @@
+import { CarouselIndicatorsProps } from '@/app/types/types';
+
 const CarouselIndicators: React.FC<CarouselIndicatorsProps> = ({
   totalSlides,
   currentIndex,

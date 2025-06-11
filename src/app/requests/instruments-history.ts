@@ -369,6 +369,7 @@ export const getInstrumentsWithWorks = unstable_cache(
     const instrumentsWithWorks = await Promise.all(
       instruments.map(async (instrument) => {
         const worksPrefs = worksPreferences[instrument.name];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let selectedWorks: any[] = [];
 
         if (worksPrefs?.composerWorks) {
@@ -376,6 +377,7 @@ export const getInstrumentsWithWorks = unstable_cache(
           for (const [composerId, prefs] of Object.entries(
             worksPrefs.composerWorks
           )) {
+            // eslint-disable-next-line
             let composerWorks: any[] = [];
 
             // Se há obras específicas definidas por ID
@@ -521,7 +523,7 @@ export const getInstrumentsWithWorks = unstable_cache(
         } else {
           // Modo padrão: busca as 20 melhores obras (por compositores com mais obras)
           const composerPrefs = composerPreferences[instrument.name];
-
+          // eslint-disable-next-line
           let whereClause: any = {
             instrumentId: instrument.id,
           };
@@ -746,6 +748,7 @@ export const getTopComposersByInstrument = unstable_cache(
         // Group by compositor usando Map para melhor performance
         const composerCountMap = new Map<
           string,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           { composer: any; count: number }
         >();
 

@@ -35,7 +35,7 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
 
     // Remover filtros vazios
     const cleanFilters = Object.fromEntries(
-      //@ts-ignore
+      // eslint-disable-next-line
       Object.entries(filters).filter(([_, value]) => value)
     );
 

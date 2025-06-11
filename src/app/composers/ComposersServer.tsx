@@ -4,6 +4,8 @@ import {
   getEpochsCache,
 } from '../requests/composers';
 import ComposersClient from '../components/ComposersClient';
+import ComposersLoading from './loading';
+import WorksLoading from '../works/loading';
 
 const ITEMS_PER_PAGE = 30;
 

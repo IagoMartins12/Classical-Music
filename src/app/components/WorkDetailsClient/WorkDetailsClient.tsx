@@ -13,7 +13,6 @@ import {
   FiBookOpen,
   FiPlay,
   FiPause,
-  FiUser,
   FiSettings,
   FiTag,
   FiInfo,
@@ -21,13 +20,14 @@ import {
   FiShare2,
   FiHeadphones,
 } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+import { GiMusicalNotes } from 'react-icons/gi';
 import { useIMSLPScores } from '@/app/hooks/useIMSLPScores';
 import IMSLPTabs from './IMSLPTabs';
 import { useNavigate } from '@/app/hooks/useNavigate';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   relatedWorks?: any[];
 }
 

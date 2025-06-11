@@ -336,8 +336,8 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => (
           <p className="leading-relaxed">
             <strong className="text-brand-primary">Josquin des Prez</strong>,
             talvez o maior compositor desta época, criou uma música de uma
-            beleza e expressividade que ainda hoje nos emociona. Sua "Ave
-            Maria... virgo serena" é um exemplo perfeito de como a técnica
+            beleza e expressividade que ainda hoje nos emociona. Sua &quot;Ave
+            Maria... virgo serena&quot; é um exemplo perfeito de como a técnica
             polifônica imitativa podia criar momentos de pura magia musical.
           </p>
         </div>
@@ -352,7 +352,9 @@ const RenaissanceSection = memo<SectionProps>(({ isExpanded, onToggle }) => (
           </div>
           <p className="leading-relaxed">
             Esta forma musical secular permitia aos compositores{' '}
-            <strong className="text-brand-primary">"pintar" com música</strong>{' '}
+            <strong className="text-brand-primary">
+              &quot;pintar&quot; com música
+            </strong>{' '}
             o significado das palavras. Se o texto falava de pássaros cantando,
             a música imitava o canto dos pássaros. Era uma revolução na
             expressividade musical.
@@ -460,7 +462,7 @@ const BaroqueSection = memo<SectionProps>(({ isExpanded, onToggle }) => {
               </h4>
               <p className="text-theme-secondary leading-relaxed">
                 A ópera nasceu da tentativa dos intelectuais florentinos de
-                recriar o drama grego antigo. "L'Orfeo" de{' '}
+                recriar o drama grego antigo. &quot;L&apos;Orfeo&quot; de{' '}
                 <strong className="text-brand-primary">Monteverdi</strong>{' '}
                 (1607) mostrou que a música podia contar histórias de forma mais
                 poderosa que qualquer outra arte.
@@ -638,7 +640,7 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => (
       <p className="text-lg leading-relaxed mb-6">
         O século XX começou com uma obra que chocou o mundo:{' '}
         <strong className="text-brand-primary">
-          "A Sagração da Primavera"
+          &quot;A Sagração da Primavera&quot;
         </strong>
         de Stravinsky. Na estreia (1913), o público parisiense literalmente
         brigou durante a apresentação. Era o início de uma nova era de
@@ -695,8 +697,8 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => (
                   Heitor Villa-Lobos:
                 </strong>{' '}
                 Criou síntese única entre tradição europeia e identidade
-                brasileira. Suas "Bachianas Brasileiras" fundem Bach com o
-                chorinho carioca.
+                brasileira. Suas &quot;Bachianas Brasileiras&quot; fundem Bach
+                com o chorinho carioca.
               </p>
             </div>
           </div>
@@ -714,10 +716,10 @@ const ModernSection = memo<SectionProps>(({ isExpanded, onToggle }) => (
             </h4>
             <p className="text-theme-secondary leading-relaxed">
               <strong className="text-brand-primary">John Cage</strong> levou a
-              experimentação aos extremos com "4'33"" - quatro minutos e trinta
-              e três segundos de "silêncio" onde a música é formada pelos sons
-              ambientais. Cage questionava a própria natureza da música e da
-              escuta.
+              experimentação aos extremos com &quot;4&apos;33&quot;&quot; -
+              quatro minutos e trinta e três segundos de &quot;silêncio&quot;
+              onde a música é formada pelos sons ambientais. Cage questionava a
+              própria natureza da música e da escuta.
             </p>
           </div>
         </div>
@@ -790,10 +792,10 @@ const ContemporarySection = memo<SectionProps>(({ isExpanded, onToggle }) => (
           </div>
         </div>
         <p className="text-theme-primary text-lg font-medium classical-subtitle italic">
-          "A música clássica não é um museu de relíquias do passado - é uma
+          &quot;A música clássica não é um museu de relíquias do passado - é uma
           tradição viva que continua evoluindo, questionando-se,
           reinventando-se. Cada geração redescobre seus clássicos e cria suas
-          próprias obras-primas."
+          próprias obras-primas.&quot;
         </p>
       </div>
     </div>
@@ -818,8 +820,8 @@ const PopularMusicSection = memo<SectionProps>(({ isExpanded, onToggle }) => (
         A relação entre música erudita e popular é uma questão polêmica,
         principalmente sobre o valor estético de cada uma. Contudo, muitas peças
         da música popular são reconhecidamente de elevado valor artístico - os
-        "clássicos" dos Beatles, Genesis, Jacques Brel, Edith Piaf e Billie
-        Holiday.
+        &quot;clássicos&quot; dos Beatles, Genesis, Jacques Brel, Edith Piaf e
+        Billie Holiday.
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">

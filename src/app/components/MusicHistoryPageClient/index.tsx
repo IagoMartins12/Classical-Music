@@ -41,44 +41,44 @@ interface ComposerTimeline extends Composer {
   deathYear: number | null;
 }
 
-interface EpochData {
-  id: string;
-  name: string;
-  period: string;
-  description: string;
-  characteristics: string[];
-  keyDevelopments: string[];
-  musicalForms: string[];
-  instruments: string[];
-}
+// interface EpochData {
+//   id: string;
+//   name: string;
+//   period: string;
+//   description: string;
+//   characteristics: string[];
+//   keyDevelopments: string[];
+//   musicalForms: string[];
+//   instruments: string[];
+// }
 
 interface Props {
   epochs: EpochComposers[];
   composersTimeline: ComposerTimeline[];
-  epochsHistoricalData: EpochData[];
+  // epochsHistoricalData: EpochData[];
   hasError?: boolean;
 }
 
 export function MusicHistoryPageClient({
   epochs,
   composersTimeline,
-  epochsHistoricalData,
+  // epochsHistoricalData,
   hasError = false,
 }: Props) {
   const [activeTab, setActiveTab] = useState<'history' | 'timeline'>('history');
 
-  // Ordem cronológica das épocas
-  const epochChronologicalOrder = [
-    'Medieval',
-    'Renascentista',
-    'Barroco',
-    'Clássico',
-    'Rômantico',
-    'Moderno',
-  ];
-
   // Ordena as épocas cronologicamente
   const sortedEpochs = useMemo(() => {
+    // Ordem cronológica das épocas
+    const epochChronologicalOrder = [
+      'Medieval',
+      'Renascentista',
+      'Barroco',
+      'Clássico',
+      'Rômantico',
+      'Moderno',
+    ];
+
     return [...epochs].sort((a, b) => {
       const aIndex = epochChronologicalOrder.findIndex(
         (epoch) =>
@@ -101,7 +101,7 @@ export function MusicHistoryPageClient({
 
       return finalAIndex - finalBIndex;
     });
-  }, [epochs, epochChronologicalOrder]);
+  }, [epochs]);
 
   if (hasError) {
     return <ErrorFallback />;

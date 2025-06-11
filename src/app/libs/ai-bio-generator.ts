@@ -211,7 +211,8 @@ export class AIBiographyGenerator {
                 }
               } catch (retryError) {
                 console.log(
-                  `Modelo ${model} também falhou, tentando próximo...`
+                  `Modelo ${model} também falhou, tentando próximo...`,
+                  retryError
                 );
               }
             }
@@ -254,8 +255,7 @@ export class AIBiographyGenerator {
   private static generateTemplateBiography(
     request: BioGenerationRequest
   ): BioGenerationResponse {
-    const { composerName, fullName, birthDate, deathDate, epoch, role } =
-      request;
+    const { composerName, fullName, birthDate, deathDate, epoch } = request;
 
     const name = fullName || composerName;
     const birth = birthDate

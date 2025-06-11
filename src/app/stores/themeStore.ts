@@ -120,7 +120,7 @@ export const useThemeInitializer = () => {
   React.useEffect(() => {
     applyTheme(mode);
 
-    //@ts-ignore
+    // eslint-disable-next-line
   }, []);
 
   // Handle system theme preference
@@ -138,6 +138,5 @@ export const useThemeInitializer = () => {
 
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
-    //@ts-ignore
   }, [applyTheme]);
 };

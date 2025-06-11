@@ -1,13 +1,8 @@
 // ScoreCard.tsx - Premium version with theme system
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
-import {
-  FiClock,
-  FiDownload,
-  FiFileText,
-  FiStar,
-  FiUser,
-} from 'react-icons/fi';
+import { FiClock, FiDownload, FiFileText, FiUser } from 'react-icons/fi';
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface ScoreCardProps {
   score: IMSLPScore;
@@ -67,10 +62,12 @@ const ScoreCard = ({
             }}
           >
             <div className="relative w-full h-full rounded-xl overflow-hidden border-2 border-theme-primary shadow-theme-medium group-hover/thumbnail:shadow-theme-glow transition-all duration-300 group-hover/thumbnail:scale-105">
-              <img
+              <Image
                 src={score.thumbnailUrl}
                 alt={`Preview de ${score.title}`}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover/thumbnail:scale-110"
+                width={60}
+                height={60}
               />
 
               {/* Overlay com ícone de zoom */}
@@ -103,10 +100,18 @@ const ScoreCard = ({
                 }}
               >
                 <div className="bg-theme-elevated rounded-2xl shadow-theme-large border-2 border-theme-primary p-3 backdrop-blur-md">
-                  <img
+                  {/* <img
                     src={score.thumbnailUrl}
                     alt={`Preview expandido de ${score.title}`}
                     className="w-80 h-96 object-contain rounded-xl"
+                  /> */}
+
+                  <Image
+                    src={score.thumbnailUrl}
+                    alt={`Preview expandido de ${score.title}`}
+                    className="w-80 h-96 object-contain rounded-xl"
+                    width={80}
+                    height={80}
                   />
                 </div>
               </div>

@@ -10,7 +10,7 @@ import { GiMusicalNotes } from 'react-icons/gi';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
   const [isFavorited, setIsFavorited] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  // const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <div className="group cursor-pointer select-none h-full">
@@ -30,9 +30,9 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
           {/* Image Container */}
           <div className="aspect-[4/5] relative overflow-hidden">
             {/* Loading Skeleton */}
-            {!imageLoaded && (
+            {/* {!imageLoaded && (
               <div className="absolute inset-0 loading-skeleton"></div>
-            )}
+            )} */}
 
             {/* Portrait Image */}
             <LazyImage
@@ -40,9 +40,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
               alt={item.name}
               width={400}
               height={500}
-              className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${
-                imageLoaded ? 'opacity-0' : 'opacity-95'
-              }`}
+              className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-95`}
             />
 
             {/* Gradient Overlays */}

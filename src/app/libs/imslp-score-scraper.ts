@@ -264,14 +264,15 @@ export class IMSLPScraper {
         const uploadDateMatch = uploaderInfo.match(/\(([^)]+)\)$/);
         const uploadDate = uploadDateMatch ? uploadDateMatch[1] : undefined;
 
-        const fileName = hiddenLink?.split('/').pop() ?? '';
-        let intermediateUrl = `https://imslp.org/${hiddenLink}`;
+        // const fileName = hiddenLink?.split('/').pop() ?? '';
+        const intermediateUrl = `https://imslp.org/${hiddenLink}`;
         let downloadUrl = intermediateUrl;
 
         if (hiddenLink) {
           try {
             downloadUrl = await this.extractRealDownloadUrl(intermediateUrl);
           } catch (error) {
+            console.log('error', error)
             downloadUrl = intermediateUrl;
           }
         }

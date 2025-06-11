@@ -30,7 +30,7 @@ export async function MusicHistoryPageServer() {
       <MusicHistoryPageClient
         epochs={enrichedEpochs}
         composersTimeline={composersTimeline}
-        epochsHistoricalData={epochsHistoricalData}
+        // epochsHistoricalData={epochsHistoricalData}
       />
     );
   } catch (error) {
@@ -41,7 +41,7 @@ export async function MusicHistoryPageServer() {
       <MusicHistoryPageClient
         epochs={[]}
         composersTimeline={[]}
-        epochsHistoricalData={[]}
+        // epochsHistoricalData={[]}
         hasError={true}
       />
     );

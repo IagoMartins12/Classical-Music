@@ -204,10 +204,10 @@ export default function IMSLPTabs({
     imslpData.scoresByType[activeTab as keyof typeof imslpData.scoresByType] ||
     [];
 
-  const totalItems = Object.values(imslpData.totalCounts).reduce(
-    (a, b) => a + b,
-    0
-  );
+  // const totalItems = Object.values(imslpData.totalCounts).reduce(
+  //   (a, b) => a + b,
+  //   0
+  // );
 
   return (
     <div className="classical-card overflow-hidden animate-fade-in-up">

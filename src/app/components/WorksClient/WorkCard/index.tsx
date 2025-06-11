@@ -9,8 +9,6 @@ import {
   FiMusic,
   FiUser,
   FiHeart,
-  FiPlay,
-  FiExternalLink,
   FiCalendar,
   FiBookOpen,
   FiHeadphones,

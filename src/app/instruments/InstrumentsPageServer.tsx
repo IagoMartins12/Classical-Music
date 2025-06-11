@@ -244,7 +244,7 @@ export async function InstrumentsPageServer() {
     return (
       <InstrumentsPageClient
         instruments={enrichedInstruments}
-        instrumentsStats={instrumentsStats}
+        // instrumentsStats={instrumentsStats}
       />
     );
   } catch (error) {
@@ -252,7 +252,7 @@ export async function InstrumentsPageServer() {
     return (
       <InstrumentsPageClient
         instruments={[]}
-        instrumentsStats={[]}
+        // instrumentsStats={[]}
         hasError={true}
       />
     );

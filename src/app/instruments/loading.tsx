@@ -1,8 +1,5 @@
 'use client';
 
-import { FaMusic, FaUsers } from 'react-icons/fa';
-import { GiViolin, GiGrandPiano, GiHarp, GiMusicalNotes } from 'react-icons/gi';
-import { FiBookOpen, FiSettings } from 'react-icons/fi';
 import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
 
 export default function InstrumentsLoading() {

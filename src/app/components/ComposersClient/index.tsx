@@ -272,17 +272,18 @@ export default function ComposersClient({
                 {searchTerm && (
                   <span className="text-brand-primary">
                     {' '}
-                    para "<span className="font-medium">{searchTerm}</span>"
+                    para &quot;<span className="font-medium">{searchTerm}</span>
+                    &quot;
                   </span>
                 )}
                 {selectedEpoch && (
                   <span className="text-accent-purple">
                     {' '}
-                    do período "
+                    do período &quot;
                     <span className="font-medium">
                       {epochs.find((e) => e.id === selectedEpoch)?.name}
                     </span>
-                    "
+                    &quot;
                   </span>
                 )}
               </div>

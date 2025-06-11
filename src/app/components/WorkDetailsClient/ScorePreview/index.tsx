@@ -1,4 +1,5 @@
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
+import Image from 'next/image';
 import { LuDownload, LuFileText } from 'react-icons/lu';
 
 // Componente de Preview
@@ -32,11 +33,19 @@ const ScorePreview = ({ score }: ScorePreviewProps) => {
       {/* Preview da Partitura */}
       {score.thumbnailUrl ? (
         <div className="mb-6">
-          <img
+          <Image
             src={score.thumbnailUrl}
             alt={`Preview de ${score.title}`}
             className="w-full max-w-sm mx-auto rounded-lg border shadow-sm"
+            width={100}
+            height={100}
           />
+
+          {/* <img
+            src={score.thumbnailUrl}
+            alt={`Preview de ${score.title}`}
+            className="w-full max-w-sm mx-auto rounded-lg border shadow-sm"
+          /> */}
         </div>
       ) : (
         <div className="mb-6 bg-gray-100 rounded-lg p-8 text-center">

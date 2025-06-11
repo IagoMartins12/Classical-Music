@@ -7,7 +7,7 @@ let client;
 let clientPromise: Promise<MongoClient>;
 
 declare global {
-  //@ts-ignore
+  // eslint-disable-next-line
   var _mongoClientPromise: Promise<MongoClient>;
 }
 

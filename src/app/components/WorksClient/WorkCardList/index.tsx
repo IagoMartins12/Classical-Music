@@ -4,7 +4,6 @@
 import { WorkListItem } from '@/app/requests/work-details';
 import Link from 'next/link';
 import {
-  FiExternalLink,
   FiUser,
   FiMusic,
   FiClock,

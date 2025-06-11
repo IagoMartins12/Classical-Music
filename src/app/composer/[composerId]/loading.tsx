@@ -1,17 +1,7 @@
 // app/composer/[composerId]/ComposerDetailsLoading.tsx - Premium version with theme system
 'use client';
 
-import {
-  FiUser,
-  FiCalendar,
-  FiMapPin,
-  FiExternalLink,
-  FiBookOpen,
-  FiUsers,
-  FiClock,
-  FiTrendingUp,
-  FiInfo,
-} from 'react-icons/fi';
+import { FiUser } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 
 export default function ComposerDetailsLoading() {

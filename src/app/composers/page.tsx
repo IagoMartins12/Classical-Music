@@ -1,6 +1,4 @@
-import { Suspense } from 'react';
 import ComposersServer from './ComposersServer';
-import ComposersLoading from './loading';
 
 export const metadata = {
   title: 'Compositores Clássicos - Lista Completa',
@@ -10,18 +8,22 @@ export const metadata = {
 
 export const revalidate = 3600;
 
-export default function ComposersPage({
+// A função agora é async e searchParams é uma Promise
+export default async function ComposersPage({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     search?: string;
     epoch?: string;
-  };
+  }>;
 }) {
-  const page = Number(searchParams.page) || 1;
-  const search = searchParams.search || '';
-  const epochId = searchParams.epoch || '';
+  // Aguarde a resolução dos searchParams
+  const resolvedSearchParams = await searchParams;
+
+  const page = Number(resolvedSearchParams.page) || 1;
+  const search = resolvedSearchParams.search || '';
+  const epochId = resolvedSearchParams.epoch || '';
 
   return <ComposersServer page={page} search={search} epochId={epochId} />;
 }

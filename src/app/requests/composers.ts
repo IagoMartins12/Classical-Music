@@ -37,6 +37,7 @@ export const getEpochsCache = unstable_cache(
 
 // Função para construir filtros WHERE reutilizável
 function buildWhereClause(search?: string, epochId?: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const where: any = {};
 
   where.OR = [

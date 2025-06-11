@@ -39,7 +39,7 @@ export interface CarouselCardProps {
   isActive: boolean;
 }
 
-interface CarouselControlsProps {
+export interface CarouselControlsProps {
   onPrevious: () => void;
   onNext: () => void;
   canGoPrevious: boolean;

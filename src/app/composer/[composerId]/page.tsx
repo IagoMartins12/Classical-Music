@@ -39,6 +39,7 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
       },
     };
   } catch (error) {
+    console.log('Error', error);
     return {
       title: 'Compositor não encontrado',
       description: 'O compositor solicitado não foi encontrado.',

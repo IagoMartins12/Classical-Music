@@ -1,9 +1,9 @@
 // HistoryComposerCard.tsx - Premium version with theme system
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { FiUser, FiCalendar, FiExternalLink } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
 
 interface Composer {
   id: string;
@@ -52,15 +52,12 @@ export function HistoryComposerCard({ composer }: Props) {
           {/* Portrait */}
           <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center shadow-theme-medium flex-shrink-0 group-hover:scale-110 transition-transform duration-500">
             {composer.portraitUrl ? (
-              <img
+              <Image
                 src={composer.portraitUrl}
                 alt={composer.fullName}
-                className="w-10 h-10 rounded-lg object-cover border-2 border-theme-inverse/20"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  target.nextElementSibling?.classList.remove('hidden');
-                }}
+                className="w-12 h-12 rounded-lg object-cover border-2 border-theme-inverse/20"
+                width={20}
+                height={20}
               />
             ) : null}
             <FiUser

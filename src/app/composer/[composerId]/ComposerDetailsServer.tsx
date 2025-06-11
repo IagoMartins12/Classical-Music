@@ -5,7 +5,6 @@ import {
   getComposerWorks,
 } from '@/app/requests/composer-details';
 import ComposerDetailsClient from '@/app/components/ComposerDetailsClient';
-import ComposerWorks from '@/app/components/ComposersClient/ComposerWorks';
 
 interface ComposerDetailsServerProps {
   composerId: string;

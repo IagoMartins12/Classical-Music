@@ -11,14 +11,9 @@ import {
   FiGrid,
   FiList,
   FiX,
-  FiUsers,
-  FiClock,
-  FiTrendingUp,
   FiRefreshCw,
   FiBookOpen,
-  FiHeadphones,
 } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 import WorkCard from './WorkCard';
 import WorkCardList from './WorkCardList';
 import PaginationControls from '../PaginationControls';
@@ -403,7 +398,7 @@ export default function WorksClient({
 
               {searchParams.search && (
                 <div className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm">
-                  <span>Busca: "{searchParams.search}"</span>
+                  <span>Busca: &quot;{searchParams.search}&quot;</span>
                   <button
                     onClick={() => removeFilter('search')}
                     className="hover:text-brand-secondary transition-colors"

@@ -18,7 +18,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
   isActive,
 }) => {
   const [isFavorited, setIsFavorited] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  // const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <div className="group cursor-pointer select-none h-full">
@@ -39,9 +39,9 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
           {/* Image Container */}
           <div className="aspect-square relative overflow-hidden">
             {/* Loading Skeleton */}
-            {!imageLoaded && (
+            {/* {!imageLoaded && (
               <div className="absolute inset-0 loading-skeleton"></div>
-            )}
+            )} */}
 
             {/* Portrait Image */}
             <LazyImage
@@ -49,9 +49,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
               alt={composer.name}
               width={300}
               height={300}
-              className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${
-                imageLoaded ? 'opacity-100' : 'opacity-100'
-              }`}
+              className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 opacity-100`}
             />
 
             {/* Gradient Overlays */}
