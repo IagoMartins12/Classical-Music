@@ -216,9 +216,13 @@ body {
 
 /* Navigation */
 .navbar-classical {
-  background: var(--bg-elevated);
+  background: linear-gradient(
+    135deg,
+    var(--bg-primary) 0%,
+    var(--bg-secondary) 100%
+  );
   border-bottom: 1px solid var(--border-secondary);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(16px);
   transition: var(--transition-theme);
 }
 

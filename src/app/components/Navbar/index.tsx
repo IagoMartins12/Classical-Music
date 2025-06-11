@@ -30,7 +30,7 @@ const Navbar: React.FC = () => {
     { label: 'Obras', href: '/works' },
     { label: 'Compositores', href: '/composers' },
     { label: 'Instrumentos', href: '/instruments' },
-    { label: 'Períodos', href: '/periods' },
+    { label: 'Quem somos', href: '/about-us' },
   ];
 
   return (
