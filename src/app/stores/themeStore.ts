@@ -91,6 +91,8 @@ export const useThemeStore = create<ThemeState>()(
         // Gradients
         root.style.setProperty('--gradient-primary', gradients.primary);
         root.style.setProperty('--gradient-card', gradients.card);
+        root.style.setProperty('--gradient-card-2', gradients.card2);
+
         root.style.setProperty('--gradient-hero', gradients.hero);
         root.style.setProperty('--gradient-overlay', gradients.overlay);
 

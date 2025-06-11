@@ -15,6 +15,7 @@ import {
   FiHeadphones,
   FiBookOpen,
   FiRefreshCw,
+  FiCalendar,
 } from 'react-icons/fi';
 import {
   GiViolin,
@@ -171,7 +172,7 @@ export default function ComposerWorks({
       <div className="p-8 border-b border-theme-secondary bg-gradient-to-r from-theme-elevated to-interactive-hover">
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
-            <FiBookOpen className="w-6 h-6 text-theme-inverse" />
+            <FiBookOpen className="w-6 h-6 text-theme-primary" />
           </div>
           <div className="flex-1">
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -231,18 +232,6 @@ export default function ComposerWorks({
               </svg>
             </div>
           </button>
-
-          {/* Stats rápidas */}
-          <div className="flex items-center space-x-4 text-sm text-theme-secondary">
-            <div className="flex items-center space-x-1">
-              <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-              <span>{instruments.length} instrumentos</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
-              <span>{genres.length} gêneros</span>
-            </div>
-          </div>
         </div>
 
         {/* Filtros expandidos */}
@@ -396,7 +385,7 @@ export default function ComposerWorks({
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-4">
                         {work.instrument?.name && (
-                          <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-inverse group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
                             {getInstrumentIcon(work.instrument.name)}
                           </div>
                         )}
@@ -448,10 +437,12 @@ export default function ComposerWorks({
 
                         {work.compositionYear && (
                           <div className="flex items-center space-x-2">
+                            <FiCalendar className="w-4 h-4 text-theme-tertiary" />
+
                             <span className="w-4 h-4 text-center text-theme-tertiary text-xs font-bold">
                               Ano
                             </span>
-                            <span>{work.compositionYear}</span>
+                            <span className="pl-2">{work.compositionYear}</span>
                           </div>
                         )}
                       </div>

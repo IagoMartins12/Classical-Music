@@ -114,14 +114,14 @@ const ScoreCard = ({
 
         {/* Informações */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-4 mb-4">
+          <div className="flex items-start justify-between gap-4 mb-2">
             <div className="flex-1">
               <h4 className="font-semibold text-theme-primary text-base leading-tight classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300">
                 {score.title}
               </h4>
 
               {/* Rating se disponível */}
-              {score.rating && (
+              {/* {score.rating && (
                 <div className="flex items-center space-x-1 mb-2">
                   <FiStar className="w-3 h-3 text-accent-gold fill-current" />
                   <span className="text-sm font-medium text-accent-gold">
@@ -133,7 +133,7 @@ const ScoreCard = ({
                     </span>
                   )}
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* Download button */}
@@ -142,7 +142,7 @@ const ScoreCard = ({
                 href={score.downloadUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 bg-brand-gradient text-theme-inverse px-4 py-2 rounded-xl text-sm font-medium hover:scale-105 hover:shadow-theme-glow transition-all duration-300 flex-shrink-0 group/download"
+                className="flex items-center gap-2 bg-brand-gradient text-theme-primarypx-4 py-2 rounded-xl text-sm font-medium hover:scale-105 hover:shadow-theme-glow transition-all duration-300 flex-shrink-0 group/download"
                 onClick={(e) => e.stopPropagation()}
               >
                 <FiDownload className="w-3 h-3 group-hover/download:animate-bounce" />
@@ -202,7 +202,7 @@ const ScoreCard = ({
             {shouldShowThumbnail && score.uploadDate && (
               <div className="flex items-center gap-2 text-theme-secondary">
                 <div className="w-5 h-5 bg-brand-primary/20 border border-brand-primary/30 rounded-lg flex items-center justify-center">
-                  <FiClock className="w-3 h-3 text-brand-primary" />
+                  <FiClock className="w-3 h-3 text-theme-primary" />
                 </div>
                 <span>{score.uploadDate}</span>
               </div>

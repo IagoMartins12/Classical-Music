@@ -34,7 +34,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
         {/* Musical icon */}
         <div className="relative w-10 h-10 flex-shrink-0">
           <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover:scale-110 transition-all duration-300 shadow-theme-sm group-hover:shadow-theme-glow">
-            <GiMusicalNotes className="w-5 h-5 text-theme-inverse" />
+            <GiMusicalNotes className="w-5 h-5 text-theme-primary" />
           </div>
         </div>
 

@@ -104,7 +104,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
 
             <div className="relative z-10 flex items-center">
               <div className="w-12 h-12 bg-theme-inverse/20 backdrop-blur-md rounded-xl flex items-center justify-center mr-4 group-hover:rotate-12 transition-transform duration-500">
-                <IconComponent className="text-2xl text-theme-inverse" />
+                <IconComponent className="text-2xl text-theme-primary" />
               </div>
               <div>
                 <h2 className="text-2xl lg:text-3xl font-bold classical-title">
@@ -131,7 +131,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
             <div className="relative z-10">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                  <FiBookOpen className="w-4 h-4 text-theme-inverse" />
+                  <FiBookOpen className="w-4 h-4 text-theme-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-theme-primary classical-title">
                   Sobre o Período
@@ -153,7 +153,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
             >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center group-hover/button:scale-110 transition-transform duration-300">
-                  <FiStar className="w-5 h-5 text-theme-inverse" />
+                  <FiStar className="w-5 h-5 text-theme-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-theme-primary classical-title">
                   Características e Desenvolvimentos
@@ -185,7 +185,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                        <GiMusicalNotes className="w-4 h-4 text-theme-inverse" />
+                        <GiMusicalNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
                         Características
@@ -211,7 +211,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                        <FiClock className="w-4 h-4 text-theme-inverse" />
+                        <FiClock className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
                         Desenvolvimentos-chave
@@ -237,7 +237,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center">
-                        <FiMusic className="w-4 h-4 text-theme-inverse" />
+                        <FiMusic className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
                         Formas Musicais
@@ -260,7 +260,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   <div className="space-y-4">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
-                        <GiGrandPiano className="w-4 h-4 text-theme-inverse" />
+                        <GiGrandPiano className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
                         Instrumentos
@@ -290,7 +290,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
         <div className="classical-card p-6 sticky top-6">
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-              <FiUsers className="w-5 h-5 text-theme-inverse" />
+              <FiUsers className="w-5 h-5 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-xl font-bold text-theme-primary classical-title">

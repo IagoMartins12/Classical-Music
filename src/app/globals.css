@@ -57,6 +57,12 @@
     rgba(45, 55, 72, 0.6) 0%,
     rgba(26, 26, 46, 0.6) 100%
   );
+  --gradient-card-2: linear-gradient(
+    90deg,
+    rgba(51, 65, 85, 0.3) 0%,
+    rgba(30, 41, 59, 0.3) 50%,
+    rgba(51, 65, 85, 0.3) 100%
+  );
   --gradient-hero: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
   --gradient-overlay: linear-gradient(
     to bottom,
@@ -105,7 +111,27 @@ body {
   transition: var(--transition-smooth);
 }
 
+.classical-card-2 {
+  background: var(--gradient-card-2);
+  border: 1px solid rgba(100, 116, 139, 0.25); /* border mais sutil */
+  backdrop-filter: blur(8px); /* blur reduzido */
+  border-radius: 1rem; /* border-radius menor que o pai */
+  transition: var(--transition-smooth);
+}
+
+.classical-card-2:hover {
+  border-color: rgba(212, 175, 55, 0.4); /* accent color com menos opacidade */
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.1); /* shadow mais sutil */
+  transform: translateY(-1px); /* movimento menor */
+}
+
 .classical-card:hover {
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+.classical-card-2:hover {
   border-color: var(--border-accent);
   box-shadow: var(--shadow-glow);
   transform: translateY(-2px);
@@ -411,6 +437,7 @@ body {
 .text-theme-primary {
   color: var(--text-primary);
 }
+
 .text-theme-secondary {
   color: var(--text-secondary);
 }
@@ -475,6 +502,10 @@ body {
     padding: 1rem;
   }
 
+  .classical-card-2 {
+    padding: 1rem;
+  }
+
   .btn-classical-primary,
   .btn-classical-secondary {
     padding: 0.625rem 1.25rem;
@@ -505,6 +536,11 @@ body {
   }
 
   .classical-card {
+    border: 1px solid #ccc !important;
+    background: white !important;
+  }
+
+  .classical-card-2 {
     border: 1px solid #ccc !important;
     background: white !important;
   }

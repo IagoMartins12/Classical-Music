@@ -64,6 +64,7 @@ const config: Config = {
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-card': 'var(--gradient-card)',
+        'gradient-card-2': 'var(--gradient-card-2)', // Novo gradient
         'gradient-hero': 'var(--gradient-hero)',
         'gradient-overlay': 'var(--gradient-overlay)',
         'gradient-brand': 'var(--brand-gradient)',
@@ -280,6 +281,21 @@ const config: Config = {
           borderColor: 'var(--border-accent)',
           boxShadow: 'var(--shadow-glow)',
           transform: 'translateY(-2px)',
+        },
+
+        // Novo: Card-2 utility
+        '.card-classical-2': {
+          background: 'var(--gradient-card-2)',
+          border: '1px solid rgba(100, 116, 139, 0.25)',
+          backdropFilter: 'blur(8px)',
+          borderRadius: '1rem',
+          transition: 'var(--transition-smooth)',
+        },
+
+        '.card-classical-2:hover': {
+          borderColor: 'rgba(212, 175, 55, 0.4)',
+          boxShadow: '0 4px 16px rgba(212, 175, 55, 0.1)',
+          transform: 'translateY(-1px)',
         },
       };
 

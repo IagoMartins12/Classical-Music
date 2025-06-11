@@ -39,7 +39,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-3 mb-4">
             <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center shadow-theme-glow">
-              <GiMusicalNotes className="w-5 h-5 text-theme-inverse" />
+              <GiMusicalNotes className="w-5 h-5 text-theme-primary" />
             </div>
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
               Navegue pela História
@@ -92,7 +92,7 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
                       w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 flex-shrink-0
                       ${
                         isActive
-                          ? `bg-gradient-to-br ${tab.gradient} text-theme-inverse shadow-theme-glow`
+                          ? `bg-gradient-to-br ${tab.gradient} text-theme-primary shadow-theme-glow`
                           : 'bg-theme-elevated border border-theme-secondary text-theme-primary group-hover:border-theme-primary'
                       }
                       group-hover:scale-110

@@ -151,29 +151,29 @@ export function InstrumentsPageClient({
 
   if (hasError) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950">
-        <div className="text-center text-gray-300">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-primary">
+        <div className="text-center text-theme-secundary ">
           <FaMusic className="w-16 h-16 mx-auto mb-4 opacity-50 text-amber-500" />
           <h2 className="text-2xl font-bold mb-2 text-white">
             Erro ao carregar instrumentos
           </h2>
-          <p className="text-gray-400">Tente recarregar a página</p>
+          <p className="text-theme-secondary">Tente recarregar a página</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950">
+    <div className="min-h-screen bg-gradient-primary">
       {/* Hero Section */}
-      <div className="relative py-24 px-4">
+      <div className="relative pt-24 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <div className="mb-8">
             <FaMusic className="w-20 h-20 mx-auto text-amber-500 mb-6" />
-            <h1 className="text-6xl font-bold text-white mb-6 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 bg-clip-text ">
+            <h1 className="text-5xl lg:text-7xl font-bold text-theme-primary classical-title tracking-tight leading-tight ">
               História dos Instrumentos
             </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl lg:text-2xl text-theme-secondary classical-subtitle mb-8 max-w-4xl mx-auto leading-relaxed">
               Explore a rica história e evolução dos instrumentos fundamentais
               da música clássica, desde suas origens até os grandes virtuosos
               que os eternizaram.
@@ -181,26 +181,26 @@ export function InstrumentsPageClient({
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-md rounded-2xl p-6 border border-slate-700/50">
               <div className="text-3xl font-bold text-amber-400">
                 {instruments.length}
               </div>
-              <div className="text-gray-300">Instrumentos</div>
+              <div className="text-theme-secundary ">Instrumentos</div>
             </div>
             <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-md rounded-2xl p-6 border border-slate-700/50">
               <div className="text-3xl font-bold text-amber-400">
                 {totalWorks}
               </div>
-              <div className="text-gray-300">Obras Catalogadas</div>
+              <div className="text-theme-secundary ">Obras Catalogadas</div>
             </div>
             <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-md rounded-2xl p-6 border border-slate-700/50">
               <div className="text-3xl font-bold text-amber-400">
                 {totalUsers}
               </div>
-              <div className="text-gray-300">Usuários Estudando</div>
+              <div className="text-theme-secundary ">Usuários Estudando</div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -214,14 +214,14 @@ export function InstrumentsPageClient({
             return (
               <div
                 key={instrument.id}
-                className="bg-gradient-to-br from-slate-800/60 to-slate-900/60 backdrop-blur-md rounded-3xl border border-slate-600/30 hover:border-amber-500/30 transition-all duration-500 overflow-hidden"
+                className="classical-card p-6 group hover:scale-105 transition-all duration-300 animate-fade-in-up"
                 style={{
                   animation: `fadeInUp 0.6s ease-out ${index * 0.1}s backwards`,
                 }}
               >
                 {/* Instrument Header - Always Visible */}
                 <div
-                  className="flex items-center justify-between p-8 cursor-pointer hover:bg-slate-700/20 transition-colors"
+                  className="flex items-center justify-between p-8 cursor-pointer transition-colors"
                   onClick={() => toggleInstrument(instrument.id)}
                 >
                   <div className="flex items-center">
@@ -229,10 +229,10 @@ export function InstrumentsPageClient({
                       <Icon className="w-10 h-10 text-gray-900" />
                     </div>
                     <div className="flex-1">
-                      <h2 className="text-4xl font-bold text-white mb-2">
+                      <h2 className="text-4xl text-theme-primary classical-title mb-2">
                         {instrument.name}
                       </h2>
-                      <p className="text-gray-400 text-lg">
+                      <p className="text-theme-secondary text-lg">
                         {instrument.historicalData.category} •{' '}
                         {instrument.historicalData.origin}
                       </p>
@@ -247,19 +247,21 @@ export function InstrumentsPageClient({
                       <div className="text-2xl font-bold text-amber-400">
                         {instrument.stats.totalWorks}
                       </div>
-                      <div className="text-sm text-gray-400">Obras</div>
+                      <div className="text-sm text-theme-secondary">Obras</div>
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-indigo-400">
                         {instrument.stats.totalUsers}
                       </div>
-                      <div className="text-sm text-gray-400">Usuários</div>
+                      <div className="text-sm text-theme-secondary">
+                        Usuários
+                      </div>
                     </div>
                     <div className="ml-4">
                       {isInstrumentOpen ? (
-                        <FaCompress className="w-6 h-6 text-gray-400" />
+                        <FaCompress className="w-6 h-6 text-theme-secondary" />
                       ) : (
-                        <FaExpand className="w-6 h-6 text-gray-400" />
+                        <FaExpand className="w-6 h-6 text-theme-secondary" />
                       )}
                     </div>
                   </div>
@@ -275,8 +277,8 @@ export function InstrumentsPageClient({
                 >
                   <div className="px-8 pb-8">
                     {/* Brief Description */}
-                    <div className="mb-8 bg-gradient-to-r from-slate-700/30 to-slate-800/30 rounded-2xl p-6 border border-slate-600/30">
-                      <p className="text-gray-300 text-lg leading-relaxed">
+                    <div className="mb-8  p-6  classical-card-2 ">
+                      <p className="text-theme-secundary  text-lg leading-relaxed">
                         {instrument.historicalData.description}
                       </p>
                     </div>
@@ -286,44 +288,52 @@ export function InstrumentsPageClient({
                       {/* Left Column - Historical Info */}
                       <div className="space-y-6">
                         {/* Detailed History */}
-                        <div className="bg-gradient-to-br from-slate-700/40 to-slate-800/40 rounded-2xl p-6 border border-slate-600/30">
-                          <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                        <div className="p-6 classical-card-2">
+                          <h3 className="text-xl font-bold text-theme-primary mb-4 flex items-center">
                             <FaHistory className="w-5 h-5 text-amber-400 mr-2" />
                             História Detalhada
                           </h3>
-                          <p className="text-gray-300 leading-relaxed text-sm">
+                          <p className="text-theme-secundary  leading-relaxed text-sm">
                             {instrument.historicalData.detailedHistory}
                           </p>
                         </div>
 
                         {/* Basic Info */}
-                        <div className="bg-gradient-to-br from-slate-700/40 to-slate-800/40 rounded-2xl p-6 border border-slate-600/30">
-                          <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                        <div className="p-6 classical-card-2">
+                          <h3 className="text-xl font-bold text-theme-primary mb-4 flex items-center">
                             <FaMapMarkerAlt className="w-5 h-5 text-amber-400 mr-2" />
                             Informações Básicas
                           </h3>
                           <div className="space-y-3">
                             <div className="flex justify-between">
-                              <span className="text-gray-400">Origem:</span>
+                              <span className="text-theme-secondary">
+                                Origem:
+                              </span>
                               <span className="text-white">
                                 {instrument.historicalData.origin}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-gray-400">Inventor:</span>
+                              <span className="text-theme-secondary">
+                                Inventor:
+                              </span>
                               <span className="text-white">
                                 {instrument.historicalData.inventor ||
                                   'Desconhecido'}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-gray-400">Período:</span>
+                              <span className="text-theme-secondary">
+                                Período:
+                              </span>
                               <span className="text-white">
                                 {instrument.historicalData.inventionPeriod}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-gray-400">Categoria:</span>
+                              <span className="text-theme-secondary">
+                                Categoria:
+                              </span>
                               <span className="text-white">
                                 {instrument.historicalData.category}
                               </span>
@@ -333,8 +343,8 @@ export function InstrumentsPageClient({
 
                         {/* Top Composer */}
                         {instrument.topComposers[0] && (
-                          <div className="bg-gradient-to-br from-slate-700/40 to-slate-800/40 rounded-2xl p-6 border border-slate-600/30">
-                            <h3 className="text-xl font-bold text-white mb-4 flex items-center">
+                          <div className="p-6 classical-card-2">
+                            <h3 className="text-xl font-bold text-theme-primary mb-4 flex items-center">
                               <FaAward className="w-5 h-5 text-amber-400 mr-2" />
                               Compositor Destaque
                             </h3>
@@ -355,10 +365,10 @@ export function InstrumentsPageClient({
                                 </div>
                               )}
                               <div>
-                                <div className="text-white font-bold text-lg">
+                                <div className="text-theme-primary font-bold text-lg">
                                   {instrument.topComposers[0].composer.fullName}
                                 </div>
-                                <div className="text-gray-400 text-sm">
+                                <div className="text-theme-secondary text-sm">
                                   {instrument.topComposers[0].count} obras •{' '}
                                   <span className="text-amber-400">
                                     {
@@ -376,21 +386,21 @@ export function InstrumentsPageClient({
                       {/* Right Column - Expandable Sections */}
                       <div className="space-y-4">
                         {/* Characteristics */}
-                        <div className="bg-gradient-to-br from-slate-700/40 to-slate-800/40 rounded-2xl overflow-hidden border border-slate-600/30">
+                        <div className="classical-card-2">
                           <button
                             onClick={() =>
                               toggleSection(instrument.id, 'characteristics')
                             }
-                            className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-600/20 transition-colors"
+                            className="w-full flex items-center justify-between p-6 text-left transition-colors"
                           >
-                            <h3 className="text-xl font-bold text-white flex items-center">
+                            <h3 className="text-xl font-bold text-theme-primary flex items-center">
                               <FaLightbulb className="w-5 h-5 text-amber-400 mr-2" />
                               Características
                             </h3>
                             {isExpanded(instrument.id, 'characteristics') ? (
-                              <FaChevronUp className="w-5 h-5 text-gray-400" />
+                              <FaChevronUp className="w-5 h-5 text-theme-secondary" />
                             ) : (
-                              <FaChevronDown className="w-5 h-5 text-gray-400" />
+                              <FaChevronDown className="w-5 h-5 text-theme-secondary" />
                             )}
                           </button>
                           <div
@@ -406,7 +416,7 @@ export function InstrumentsPageClient({
                                   (char, i) => (
                                     <li
                                       key={i}
-                                      className="flex items-start text-gray-300"
+                                      className="flex items-start text-theme-secundary "
                                     >
                                       <div className="w-2 h-2 bg-amber-400 rounded-full mt-2 mr-3 flex-shrink-0" />
                                       {char}
@@ -419,21 +429,21 @@ export function InstrumentsPageClient({
                         </div>
 
                         {/* Evolution */}
-                        <div className="bg-gradient-to-br from-slate-700/40 to-slate-800/40 rounded-2xl overflow-hidden border border-slate-600/30">
+                        <div className="classical-card-2">
                           <button
                             onClick={() =>
                               toggleSection(instrument.id, 'evolution')
                             }
-                            className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-600/20 transition-colors"
+                            className="w-full flex items-center justify-between p-6 text-left transition-colors"
                           >
-                            <h3 className="text-xl font-bold text-white flex items-center">
+                            <h3 className="text-xl font-bold text-theme-primary flex items-center">
                               <IoIosTrendingUp className="w-5 h-5 text-green-400 mr-2" />
                               Evolução Histórica
                             </h3>
                             {isExpanded(instrument.id, 'evolution') ? (
-                              <FaChevronUp className="w-5 h-5 text-gray-400" />
+                              <FaChevronUp className="w-5 h-5 text-theme-secondary" />
                             ) : (
-                              <FaChevronDown className="w-5 h-5 text-gray-400" />
+                              <FaChevronDown className="w-5 h-5 text-theme-secondary" />
                             )}
                           </button>
                           <div
@@ -451,7 +461,7 @@ export function InstrumentsPageClient({
                                       <div className="flex items-center justify-center w-7 h-7 bg-green-500 text-gray-900 rounded-full text-sm font-bold mr-3 flex-shrink-0">
                                         {i + 1}
                                       </div>
-                                      <div className="text-gray-300">
+                                      <div className="text-theme-secundary ">
                                         {stage}
                                       </div>
                                     </div>
@@ -463,21 +473,21 @@ export function InstrumentsPageClient({
                         </div>
 
                         {/* Notable Features */}
-                        <div className="bg-gradient-to-br from-slate-700/40 to-slate-800/40 rounded-2xl overflow-hidden border border-slate-600/30">
+                        <div className="classical-card-2">
                           <button
                             onClick={() =>
                               toggleSection(instrument.id, 'features')
                             }
-                            className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-600/20 transition-colors"
+                            className="w-full flex items-center justify-between p-6 text-left transition-colors"
                           >
-                            <h3 className="text-xl font-bold text-white flex items-center">
+                            <h3 className="text-xl font-bold text-theme-primary flex items-center">
                               <FaStar className="w-5 h-5 text-indigo-400 mr-2" />
                               Características Técnicas
                             </h3>
                             {isExpanded(instrument.id, 'features') ? (
-                              <FaChevronUp className="w-5 h-5 text-gray-400" />
+                              <FaChevronUp className="w-5 h-5 text-theme-secondary" />
                             ) : (
-                              <FaChevronDown className="w-5 h-5 text-gray-400" />
+                              <FaChevronDown className="w-5 h-5 text-theme-secondary" />
                             )}
                           </button>
                           <div
@@ -493,7 +503,7 @@ export function InstrumentsPageClient({
                                   (feature, i) => (
                                     <li
                                       key={i}
-                                      className="flex items-start text-gray-300"
+                                      className="flex items-start text-theme-secundary "
                                     >
                                       <div className="w-2 h-2 bg-indigo-400 rounded-full mt-2 mr-3 flex-shrink-0" />
                                       {feature}
@@ -506,21 +516,21 @@ export function InstrumentsPageClient({
                         </div>
 
                         {/* Famous Performers */}
-                        <div className="bg-gradient-to-br from-slate-700/40 to-slate-800/40 rounded-2xl overflow-hidden border border-slate-600/30">
+                        <div className="classical-card-2">
                           <button
                             onClick={() =>
                               toggleSection(instrument.id, 'performers')
                             }
-                            className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-600/20 transition-colors"
+                            className="w-full flex items-center justify-between p-6 text-left transition-colors"
                           >
-                            <h3 className="text-xl font-bold text-white flex items-center">
+                            <h3 className="text-xl font-bold text-theme-primary flex items-center  pb-4">
                               <FaStar className="w-5 h-5 text-amber-400 mr-2" />
                               Intérpretes Famosos
                             </h3>
                             {isExpanded(instrument.id, 'performers') ? (
-                              <FaChevronUp className="w-5 h-5 text-gray-400" />
+                              <FaChevronUp className="w-5 h-5 text-theme-secondary" />
                             ) : (
-                              <FaChevronDown className="w-5 h-5 text-gray-400" />
+                              <FaChevronDown className="w-5 h-5 text-theme-secondary" />
                             )}
                           </button>
                           <div
@@ -536,7 +546,7 @@ export function InstrumentsPageClient({
                                   (performer, i) => (
                                     <div
                                       key={i}
-                                      className="bg-slate-600/30 rounded-lg p-3 text-gray-300 hover:bg-slate-600/50 transition-colors border border-slate-500/20"
+                                      className="classical-card-simple rounded-lg p-3 text-theme-secundary"
                                     >
                                       {performer}
                                     </div>
@@ -551,22 +561,22 @@ export function InstrumentsPageClient({
 
                     {/* Works Section */}
                     <div>
-                      <div className="bg-gradient-to-br from-slate-700/40 to-slate-800/40 rounded-2xl overflow-hidden border border-slate-600/30">
+                      <div className="classical-card-2">
                         <button
                           onClick={() => toggleSection(instrument.id, 'works')}
-                          className="w-full flex items-center justify-between p-6 text-left hover:bg-slate-600/20 transition-colors"
+                          className="w-full flex items-center justify-between p-6 text-left transition-colors"
                         >
-                          <h3 className="text-2xl font-bold text-white flex items-center">
+                          <h3 className="text-2xl font-bold text-theme-primary flex items-center pb-4">
                             <FaMusic className="w-6 h-6 text-amber-400 mr-3" />
                             Obras Selecionadas
-                            <span className="ml-3 text-lg text-gray-400 font-normal">
+                            <span className="ml-3 text-lg text-theme-secondary font-normal">
                               ({instrument.works.length} obras)
                             </span>
                           </h3>
                           {isExpanded(instrument.id, 'works') ? (
-                            <FaChevronUp className="w-6 h-6 text-gray-400" />
+                            <FaChevronUp className="w-6 h-6 text-theme-secondary" />
                           ) : (
-                            <FaChevronDown className="w-6 h-6 text-gray-400" />
+                            <FaChevronDown className="w-6 h-6 text-theme-secondary" />
                           )}
                         </button>
 
@@ -582,7 +592,7 @@ export function InstrumentsPageClient({
                               {instrument.works.map((work, workIndex) => (
                                 <div
                                   key={work.id}
-                                  className="bg-gradient-to-br from-slate-600/40 to-slate-700/40 rounded-2xl p-5 border border-slate-500/30 hover:border-amber-400/50 hover:bg-slate-600/60 transition-all duration-300 group"
+                                  className="rounded-2xl p-5 border classical-card-simple"
                                   style={{
                                     animation: `fadeInUp 0.4s ease-out ${
                                       workIndex * 0.05
@@ -591,10 +601,10 @@ export function InstrumentsPageClient({
                                 >
                                   <div className="flex items-start justify-between mb-4">
                                     <div className="flex-1">
-                                      <h4 className="text-white font-bold text-lg line-clamp-2 group-hover:text-amber-300 transition-colors">
+                                      <h4 className="text-theme-primary font-bold text-lg line-clamp-2 group-hover:text-amber-300 transition-colors">
                                         {work.title}
                                       </h4>
-                                      <p className="text-gray-400 text-sm mt-1">
+                                      <p className="text-theme-secondary text-sm mt-1">
                                         {work.composer.name}
                                       </p>
                                     </div>
@@ -607,25 +617,25 @@ export function InstrumentsPageClient({
 
                                   <div className="space-y-2 text-sm mb-4">
                                     {work.opOrCatalog && (
-                                      <div className="flex items-center text-gray-400">
+                                      <div className="flex items-center text-theme-secondary">
                                         <FaMusic className="w-4 h-4 mr-2" />
                                         {work.opOrCatalog}
                                       </div>
                                     )}
                                     {work.compositionYear && (
-                                      <div className="flex items-center text-gray-400">
+                                      <div className="flex items-center text-theme-secondary">
                                         <FaCalendarAlt className="w-4 h-4 mr-2" />
                                         {work.compositionYear}
                                       </div>
                                     )}
                                     {work.tone && (
-                                      <div className="flex items-center text-gray-400">
+                                      <div className="flex items-center text-theme-secondary">
                                         <MdMusicNote className="w-4 h-4 mr-2" />
                                         {work.tone}
                                       </div>
                                     )}
                                     {work.mediaDuration && (
-                                      <div className="flex items-center text-gray-400">
+                                      <div className="flex items-center text-theme-secondary">
                                         <FaClock className="w-4 h-4 mr-2" />
                                         {work.mediaDuration}
                                       </div>
@@ -646,7 +656,7 @@ export function InstrumentsPageClient({
                                         </div>
                                       )}
                                       <div>
-                                        <div className="text-white text-sm font-medium">
+                                        <div className="text-theme-primary text-sm font-medium">
                                           {work.composer.fullName}
                                         </div>
                                         {work.composer.epochName && (

@@ -69,7 +69,7 @@ export function DetailedMusicHistory() {
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
-              <FiLock className="w-6 h-6 text-theme-inverse" />
+              <FiLock className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -109,7 +109,7 @@ export function DetailedMusicHistory() {
                 <div
                   className={`w-8 h-8 bg-gradient-to-br ${era.gradient} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
                 >
-                  <FiClock className="w-4 h-4 text-theme-inverse" />
+                  <FiClock className="w-4 h-4 text-theme-primary" />
                 </div>
                 <h4 className="font-bold text-lg text-theme-primary classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300">
                   {era.period}
@@ -132,7 +132,7 @@ export function DetailedMusicHistory() {
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-gold to-brand-secondary rounded-2xl flex items-center justify-center">
-              <GiScrollQuill className="w-6 h-6 text-theme-inverse" />
+              <GiScrollQuill className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -162,7 +162,7 @@ export function DetailedMusicHistory() {
             <div className="bg-gradient-to-r from-accent-gold/10 to-brand-secondary/10 border-l-4 border-accent-gold rounded-xl p-6 my-6">
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-gold to-brand-secondary rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <FiStar className="w-4 h-4 text-theme-inverse" />
+                  <FiStar className="w-4 h-4 text-theme-primary" />
                 </div>
                 <div>
                   <p className="text-theme-primary font-medium">
@@ -184,7 +184,7 @@ export function DetailedMusicHistory() {
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-2xl flex items-center justify-center">
-              <GiMusicalNotes className="w-6 h-6 text-theme-inverse" />
+              <GiMusicalNotes className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -199,7 +199,7 @@ export function DetailedMusicHistory() {
             <div className="classical-body text-theme-secondary">
               <h4 className="text-xl font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                 <div className="w-6 h-6 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center">
-                  <FiMusic className="w-3 h-3 text-theme-inverse" />
+                  <FiMusic className="w-3 h-3 text-theme-primary" />
                 </div>
                 <span>O Canto Gregoriano</span>
               </h4>
@@ -223,7 +223,7 @@ export function DetailedMusicHistory() {
             <div className="classical-body text-theme-secondary">
               <h4 className="text-xl font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                 <div className="w-6 h-6 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
-                  <FiTrendingUp className="w-3 h-3 text-theme-inverse" />
+                  <FiTrendingUp className="w-3 h-3 text-theme-primary" />
                 </div>
                 <span>A Revolução da Polifonia</span>
               </h4>
@@ -249,7 +249,7 @@ export function DetailedMusicHistory() {
           <div className="mt-8 bg-gradient-to-r from-accent-purple/10 to-accent-red/10 border-l-4 border-accent-purple rounded-xl p-6">
             <div className="flex items-start space-x-3">
               <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                <GiViolin className="w-4 h-4 text-theme-inverse" />
+                <GiViolin className="w-4 h-4 text-theme-primary" />
               </div>
               <div>
                 <h4 className="font-semibold text-theme-primary mb-2 classical-title">
@@ -275,7 +275,7 @@ export function DetailedMusicHistory() {
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
-              <FiGlobe className="w-6 h-6 text-theme-inverse" />
+              <FiGlobe className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -299,7 +299,7 @@ export function DetailedMusicHistory() {
               <div className="classical-card-simple p-6 group hover:scale-105 transition-all duration-300">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiUser className="w-4 h-4 text-theme-inverse" />
+                    <FiUser className="w-4 h-4 text-theme-primary" />
                   </div>
                   <h4 className="text-xl font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300">
                     Os Mestres Franco-Flamengos
@@ -319,7 +319,7 @@ export function DetailedMusicHistory() {
               <div className="classical-card-simple p-6 group hover:scale-105 transition-all duration-300">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <GiMusicalNotes className="w-4 h-4 text-theme-inverse" />
+                    <GiMusicalNotes className="w-4 h-4 text-theme-primary" />
                   </div>
                   <h4 className="text-xl font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300">
                     O Madrigal Italiano
@@ -340,7 +340,7 @@ export function DetailedMusicHistory() {
             <div className="bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border-l-4 border-accent-green rounded-xl p-6">
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <FiFileText className="w-4 h-4 text-theme-inverse" />
+                  <FiFileText className="w-4 h-4 text-theme-primary" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-theme-primary mb-2 classical-title">
@@ -366,7 +366,7 @@ export function DetailedMusicHistory() {
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-2xl flex items-center justify-center">
-              <FiMusic className="w-6 h-6 text-theme-inverse" />
+              <FiMusic className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -418,7 +418,7 @@ export function DetailedMusicHistory() {
                     <div
                       className={`w-8 h-8 bg-gradient-to-br ${composer.gradient} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
                     >
-                      <FiUser className="w-4 h-4 text-theme-inverse" />
+                      <FiUser className="w-4 h-4 text-theme-primary" />
                     </div>
                     <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300">
                       {composer.name}
@@ -434,7 +434,7 @@ export function DetailedMusicHistory() {
             <div className="bg-gradient-to-r from-accent-red/10 to-accent-purple/10 border-l-4 border-accent-red rounded-xl p-6">
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <GiGrandPiano className="w-4 h-4 text-theme-inverse" />
+                  <GiGrandPiano className="w-4 h-4 text-theme-primary" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-theme-primary mb-2 classical-title">
@@ -460,7 +460,7 @@ export function DetailedMusicHistory() {
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
-              <FiUser className="w-6 h-6 text-theme-inverse" />
+              <FiUser className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -511,7 +511,7 @@ export function DetailedMusicHistory() {
                     <div
                       className={`w-8 h-8 bg-gradient-to-br ${composer.gradient} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
                     >
-                      <FiStar className="w-4 h-4 text-theme-inverse" />
+                      <FiStar className="w-4 h-4 text-theme-primary" />
                     </div>
                     <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300">
                       {composer.name}
@@ -533,7 +533,7 @@ export function DetailedMusicHistory() {
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-2xl flex items-center justify-center">
-              <FiMusic className="w-6 h-6 text-theme-inverse" />
+              <FiMusic className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -590,7 +590,7 @@ export function DetailedMusicHistory() {
                     <div
                       className={`w-8 h-8 bg-gradient-to-br ${composer.gradient} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
                     >
-                      <FiUser className="w-4 h-4 text-theme-inverse" />
+                      <FiUser className="w-4 h-4 text-theme-primary" />
                     </div>
                     <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300">
                       {composer.name}
@@ -612,7 +612,7 @@ export function DetailedMusicHistory() {
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center">
-              <FiBookOpen className="w-6 h-6 text-theme-inverse" />
+              <FiBookOpen className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -638,7 +638,7 @@ export function DetailedMusicHistory() {
               <div className="space-y-6">
                 <h4 className="text-xl font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                   <div className="w-6 h-6 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center">
-                    <FiTrendingUp className="w-3 h-3 text-theme-inverse" />
+                    <FiTrendingUp className="w-3 h-3 text-theme-primary" />
                   </div>
                   <span>Revoluções Harmônicas</span>
                 </h4>
@@ -668,7 +668,7 @@ export function DetailedMusicHistory() {
               <div className="space-y-6">
                 <h4 className="text-xl font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                   <div className="w-6 h-6 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center">
-                    <FiGlobe className="w-3 h-3 text-theme-inverse" />
+                    <FiGlobe className="w-3 h-3 text-theme-primary" />
                   </div>
                   <span>Identidades Nacionais</span>
                 </h4>
@@ -700,7 +700,7 @@ export function DetailedMusicHistory() {
             <div className="bg-gradient-to-r from-accent-purple/10 to-accent-blue/10 border-l-4 border-accent-purple rounded-xl p-6">
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <FiStar className="w-4 h-4 text-theme-inverse" />
+                  <FiStar className="w-4 h-4 text-theme-primary" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-theme-primary mb-2 classical-title">
@@ -726,7 +726,7 @@ export function DetailedMusicHistory() {
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-green rounded-2xl flex items-center justify-center">
-              <FiGlobe className="w-6 h-6 text-theme-inverse" />
+              <FiGlobe className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -750,7 +750,7 @@ export function DetailedMusicHistory() {
               <div className="classical-card-simple p-6 group hover:scale-105 transition-all duration-300">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiClock className="w-4 h-4 text-theme-inverse" />
+                    <FiClock className="w-4 h-4 text-theme-primary" />
                   </div>
                   <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300">
                     Retorno à Simplicidade
@@ -768,7 +768,7 @@ export function DetailedMusicHistory() {
               <div className="classical-card-simple p-6 group hover:scale-105 transition-all duration-300">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiTrendingUp className="w-4 h-4 text-theme-inverse" />
+                    <FiTrendingUp className="w-4 h-4 text-theme-primary" />
                   </div>
                   <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300">
                     Tecnologia e IA
@@ -786,7 +786,7 @@ export function DetailedMusicHistory() {
             <div className="bg-gradient-to-r from-accent-blue/10 to-accent-green/10 border-l-4 border-accent-blue rounded-xl p-6 text-center">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-green rounded-2xl flex items-center justify-center">
-                  <FiStar className="w-6 h-6 text-theme-inverse" />
+                  <FiStar className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
               <p className="text-theme-primary text-lg font-medium classical-subtitle italic">
@@ -806,7 +806,7 @@ export function DetailedMusicHistory() {
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
-              <FiMusic className="w-6 h-6 text-theme-inverse" />
+              <FiMusic className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h3 className="text-2xl font-bold text-theme-primary classical-title">
@@ -830,7 +830,7 @@ export function DetailedMusicHistory() {
               <div className="classical-card-simple p-6 group hover:scale-105 transition-all duration-300">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiUser className="w-4 h-4 text-theme-inverse" />
+                    <FiUser className="w-4 h-4 text-theme-primary" />
                   </div>
                   <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300">
                     Características da Música Erudita
@@ -866,7 +866,7 @@ export function DetailedMusicHistory() {
               <div className="classical-card-simple p-6 group hover:scale-105 transition-all duration-300">
                 <div className="flex items-center space-x-3 mb-4">
                   <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <FiMusic className="w-4 h-4 text-theme-inverse" />
+                    <FiMusic className="w-4 h-4 text-theme-primary" />
                   </div>
                   <h4 className="font-semibold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300">
                     Pontes Entre os Mundos
@@ -904,7 +904,7 @@ export function DetailedMusicHistory() {
             <div className="bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border-l-4 border-accent-green rounded-xl p-6">
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <FiStar className="w-4 h-4 text-theme-inverse" />
+                  <FiStar className="w-4 h-4 text-theme-primary" />
                 </div>
                 <div>
                   <p className="text-theme-secondary leading-relaxed">

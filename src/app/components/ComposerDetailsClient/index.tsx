@@ -132,7 +132,7 @@ export default function ComposerDetailsClient({
                   {composer.birthDate && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <FiCalendar className="w-4 h-4 text-theme-inverse" />
+                        <FiCalendar className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -149,7 +149,7 @@ export default function ComposerDetailsClient({
                   {composer.deathDate ? (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <FiCalendar className="w-4 h-4 text-theme-inverse" />
+                        <FiCalendar className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -169,7 +169,7 @@ export default function ComposerDetailsClient({
                     composer.birthDate && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiHeart className="w-4 h-4 text-theme-inverse" />
+                          <FiHeart className="w-4 h-4 text-theme-primary" />
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
@@ -189,7 +189,7 @@ export default function ComposerDetailsClient({
                   {/* Época */}
                   <div className="flex items-start space-x-3 group">
                     <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                      <FiMapPin className="w-4 h-4 text-theme-inverse" />
+                      <FiMapPin className="w-4 h-4 text-theme-primary" />
                     </div>
                     <div>
                       <p className="text-sm font-medium text-theme-tertiary">
@@ -205,7 +205,7 @@ export default function ComposerDetailsClient({
                   {composer.primaryRoleName && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <FiUser className="w-4 h-4 text-theme-inverse" />
+                        <FiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -311,14 +311,14 @@ export default function ComposerDetailsClient({
           >
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center">
-                <FiUsers className="w-6 h-6 text-theme-inverse" />
+                <FiUsers className="w-6 h-6 text-theme-primary" />
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-theme-primary classical-title">
                   Papéis Secundários
                 </h2>
                 <p className="text-theme-secondary classical-subtitle">
-                  Outras funções exercidas por {composer.name}
+                  Outras funções exercidas por {composer.fullName}
                 </p>
               </div>
             </div>
@@ -331,7 +331,7 @@ export default function ComposerDetailsClient({
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
                   <div className="w-4 h-4 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2 group-hover:scale-110 transition-transform duration-300">
-                    <FiMusic className="w-2 h-2 text-theme-inverse" />
+                    <FiMusic className="w-3 h-3 text-theme-primary" />
                   </div>
                   {role}
                 </span>
@@ -363,7 +363,7 @@ export default function ComposerDetailsClient({
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center">
-              <FiBookOpen className="w-6 h-6 text-theme-inverse" />
+              <FiBookOpen className="w-6 h-6 text-theme-primary" />
             </div>
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -395,7 +395,7 @@ export default function ComposerDetailsClient({
         >
           <div className="flex items-center space-x-3 mb-6">
             <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
-              <FiTrendingUp className="w-6 h-6 text-theme-inverse" />
+              <FiTrendingUp className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -407,7 +407,7 @@ export default function ComposerDetailsClient({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="text-center p-6 bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 rounded-2xl group hover:scale-105 transition-all duration-300">
               <div className="w-12 h-12 bg-brand-gradient rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                <FiBookOpen className="w-6 h-6 text-theme-inverse" />
+                <FiBookOpen className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-3xl font-bold text-brand-primary mb-2">
                 {composer.worksCount}
@@ -419,7 +419,7 @@ export default function ComposerDetailsClient({
 
             <div className="text-center p-6 bg-gradient-to-br from-accent-purple/10 to-accent-blue/10 border border-accent-purple/30 rounded-2xl group hover:scale-105 transition-all duration-300">
               <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                <FiMapPin className="w-6 h-6 text-theme-inverse" />
+                <FiMapPin className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-3xl font-bold text-accent-purple mb-2">
                 {composer.epochName}
@@ -432,7 +432,7 @@ export default function ComposerDetailsClient({
             {lifeSpan && (
               <div className="text-center p-6 bg-gradient-to-br from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-2xl group hover:scale-105 transition-all duration-300">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <FiClock className="w-6 h-6 text-theme-inverse" />
+                  <FiClock className="w-6 h-6 text-theme-primary" />
                 </div>
                 <div className="text-3xl font-bold text-accent-green mb-2">
                   {lifeSpan}

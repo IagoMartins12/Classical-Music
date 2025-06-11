@@ -157,10 +157,10 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
             value={currentPage}
             onChange={(e) => onPageChange(Number(e.target.value))}
             disabled={isPending}
-            className="input-classical text-sm py-1 px-2 min-w-0 w-20"
+            className="input-classical text-theme-primary text-sm py-1 px-2 min-w-0 w-20"
           >
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <option key={page} value={page}>
+              <option key={page} value={page} className="text-theme-primary">
                 {page}
               </option>
             ))}

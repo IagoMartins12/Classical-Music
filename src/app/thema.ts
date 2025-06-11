@@ -160,6 +160,9 @@ export const THEME_GRADIENTS = {
   dark: {
     primary: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)',
     card: 'linear-gradient(135deg, rgba(45, 55, 72, 0.6) 0%, rgba(26, 26, 46, 0.6) 100%)',
+    card2:
+      'linear-gradient(90deg, rgba(51, 65, 85, 0.3) 0%, rgba(30, 41, 59, 0.3) 50%, rgba(51, 65, 85, 0.3) 100%)',
+
     hero: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)',
     overlay:
       'linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%)',
@@ -167,6 +170,9 @@ export const THEME_GRADIENTS = {
   light: {
     primary: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%)',
     card: 'linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(255, 255, 255, 0.9) 100%)',
+    card2:
+      'linear-gradient(90deg, rgba(148, 163, 184, 0.2) 0%, rgba(100, 116, 139, 0.2) 50%, rgba(148, 163, 184, 0.2) 100%)',
+
     hero: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
     overlay:
       'linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 100%)',

@@ -14,9 +14,6 @@ export default async function PageServer() {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-center mb-6">
-        🎼 Sua enciclopédia de Música clássica
-      </h1>
       <HeroMainPage />
       <PopularComposers composersData={composersData} />
       <EssentialComposers composersData={recomendadData} />

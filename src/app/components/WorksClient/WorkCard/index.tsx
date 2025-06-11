@@ -62,16 +62,6 @@ const WorkCard: React.FC<workCardProps> = ({ work }) => {
                 }`}
               />
             </button>
-
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-              className="w-8 h-8 bg-brand-primary/20 backdrop-blur-md border border-brand-primary/50 text-brand-primary rounded-full hover:bg-brand-primary/30 hover:scale-110 transition-all duration-300"
-            >
-              <FiPlay className="w-3 h-3 mx-auto ml-0.5" />
-            </button>
           </div>
 
           <div className="relative z-10">

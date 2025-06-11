@@ -69,19 +69,19 @@ export function HeroSection() {
               className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
               style={{ animationDelay: '0s' }}
             >
-              <FiMusic className="text-2xl text-theme-inverse" />
+              <FiMusic className="text-2xl text-theme-primary" />
             </div>
             <div
               className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
               style={{ animationDelay: '0.2s' }}
             >
-              <GiMusicalNotes className="text-3xl text-theme-inverse" />
+              <GiMusicalNotes className="text-3xl text-theme-primary" />
             </div>
             <div
               className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-red rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
               style={{ animationDelay: '0.4s' }}
             >
-              <GiViolin className="text-2xl text-theme-inverse" />
+              <GiViolin className="text-2xl text-theme-primary" />
             </div>
           </div>
 
@@ -111,7 +111,7 @@ export function HeroSection() {
           >
             <div className="classical-card p-6 text-center group hover:scale-105 transition-all duration-300">
               <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                <FiClock className="w-6 h-6 text-theme-inverse" />
+                <FiClock className="w-6 h-6 text-theme-primary" />
               </div>
               <h3 className="text-2xl font-bold text-brand-primary mb-2">
                 1000+
@@ -121,7 +121,7 @@ export function HeroSection() {
 
             <div className="classical-card p-6 text-center group hover:scale-105 transition-all duration-300">
               <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                <FiStar className="w-6 h-6 text-theme-inverse" />
+                <FiStar className="w-6 h-6 text-theme-primary" />
               </div>
               <h3 className="text-2xl font-bold text-accent-purple mb-2">6</h3>
               <p className="text-theme-secondary text-sm">Épocas Musicais</p>
@@ -129,7 +129,7 @@ export function HeroSection() {
 
             <div className="classical-card p-6 text-center group hover:scale-105 transition-all duration-300">
               <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                <GiMusicalNotes className="w-6 h-6 text-theme-inverse" />
+                <GiMusicalNotes className="w-6 h-6 text-theme-primary" />
               </div>
               <h3 className="text-2xl font-bold text-accent-green mb-2">
                 100+
@@ -146,7 +146,7 @@ export function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
               <div className="flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-accent-blue/10 to-accent-purple/10 border border-accent-blue/30 rounded-2xl backdrop-blur-md">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                  <FiClock className="w-4 h-4 text-theme-inverse" />
+                  <FiClock className="w-4 h-4 text-theme-primary" />
                 </div>
                 <div>
                   <span className="text-accent-blue font-semibold">
@@ -162,7 +162,7 @@ export function HeroSection() {
 
               <div className="flex items-center space-x-3 px-6 py-3 bg-gradient-to-r from-accent-purple/10 to-accent-red/10 border border-accent-purple/30 rounded-2xl backdrop-blur-md">
                 <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center">
-                  <FiStar className="w-4 h-4 text-theme-inverse" />
+                  <FiStar className="w-4 h-4 text-theme-primary" />
                 </div>
                 <div>
                   <span className="text-accent-purple font-semibold">

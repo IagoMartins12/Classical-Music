@@ -114,7 +114,7 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
         </p>
 
         {/* Stats */}
-        <div className="flex items-center justify-center space-x-8 mt-8">
+        {/* <div className="flex items-center justify-center space-x-8 mt-8">
           <div className="text-center">
             <div className="text-2xl font-bold text-brand-primary">
               {composers.length}
@@ -142,7 +142,7 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
             </div>
             <div className="text-sm text-theme-tertiary">Anos</div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="relative">
@@ -195,7 +195,7 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
                           />
                         ) : null}
                         <FiUser
-                          className={`text-theme-inverse text-lg ${
+                          className={`text-theme-primary text-lg ${
                             composer.portraitUrl ? 'hidden' : ''
                           }`}
                         />
@@ -207,9 +207,9 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
                           {composer.fullName}
                         </h3>
                         <span
-                          className={`inline-flex items-center px-3 py-1 bg-gradient-to-r ${composer.gradientClass} text-theme-inverse text-xs rounded-full font-medium shadow-theme-small mt-2`}
+                          className={`inline-flex items-center px-3 py-1 bg-gradient-to-r ${composer.gradientClass} text-theme-primary text-xs rounded-full font-medium shadow-theme-small classical-card-simple mt-2`}
                         >
-                          <FiMapPin className="w-3 h-3 mr-1" />
+                          <FiMapPin className="w-3 h-3 mr-1 text-theme-primary" />
                           {composer.epochName}
                         </span>
                       </div>
@@ -290,7 +290,7 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
                   timelineData[index - 1].epochKey !== composer.epochKey && (
                     <div className="absolute left-0 lg:left-1/2 transform lg:-translate-x-1/2 -top-8 lg:-top-12">
                       <div
-                        className={`px-4 py-2 bg-gradient-to-r ${composer.gradientClass} text-theme-inverse text-xs rounded-full shadow-theme-medium whitespace-nowrap font-medium`}
+                        className={`px-4 py-2 bg-gradient-to-r classical-card-simple ${composer.gradientClass} text-theme-primary text-xs rounded-full shadow-theme-medium whitespace-nowrap font-medium`}
                       >
                         Era {composer.epochName}
                       </div>

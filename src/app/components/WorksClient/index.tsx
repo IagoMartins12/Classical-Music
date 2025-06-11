@@ -207,7 +207,7 @@ export default function WorksClient({
           <div className="relative z-10">
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-                <FiBookOpen className="w-8 h-8 text-theme-inverse" />
+                <FiBookOpen className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
 
@@ -270,9 +270,9 @@ export default function WorksClient({
           }`}
         >
           <div className="flex items-center mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mr-4">
-              <FiSearch className="w-5 h-5 text-theme-inverse" />
-            </div>
+            {/* <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mr-4">
+              <FiSearch className="w-5 h-5 text-theme-primary" />
+            </div> */}
             <div>
               <h3 className="text-xl font-bold text-theme-primary classical-title">
                 Busca e Filtros
@@ -342,7 +342,7 @@ export default function WorksClient({
                   onClick={() => setViewMode('list')}
                   className={`p-2 rounded-md transition-all duration-300 ${
                     viewMode === 'list'
-                      ? 'bg-brand-gradient text-theme-inverse shadow-theme-glow'
+                      ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
                       : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
                   }`}
                   title="Visualização em lista"
@@ -353,7 +353,7 @@ export default function WorksClient({
                   onClick={() => setViewMode('cards')}
                   className={`p-2 rounded-md transition-all duration-300 ${
                     viewMode === 'cards'
-                      ? 'bg-brand-gradient text-theme-inverse shadow-theme-glow'
+                      ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
                       : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
                   }`}
                   title="Visualização em cards"

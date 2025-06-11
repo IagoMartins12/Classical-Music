@@ -198,7 +198,7 @@ export default function WorkDetailsClient({
                   {work.compositionYear && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <FiCalendar className="w-4 h-4 text-theme-inverse" />
+                        <FiCalendar className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -215,7 +215,7 @@ export default function WorkDetailsClient({
                   {work.mediaDuration && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <FiClock className="w-4 h-4 text-theme-inverse" />
+                        <FiClock className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -232,7 +232,7 @@ export default function WorkDetailsClient({
                   {work.tone && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <FiMusic className="w-4 h-4 text-theme-inverse" />
+                        <FiMusic className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -249,7 +249,7 @@ export default function WorkDetailsClient({
                   {work.instrument && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <GiMusicalNotes className="w-4 h-4 text-theme-inverse" />
+                        <GiMusicalNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -266,7 +266,7 @@ export default function WorkDetailsClient({
                   {work.epoch && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                        <FiMapPin className="w-4 h-4 text-theme-inverse" />
+                        <FiMapPin className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
@@ -415,7 +415,7 @@ export default function WorkDetailsClient({
                   >
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center">
-                        <FiHeadphones className="w-4 h-4 text-theme-inverse" />
+                        <FiHeadphones className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
                         Reprodução
@@ -466,7 +466,7 @@ export default function WorkDetailsClient({
                 >
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                      <FiBookOpen className="w-4 h-4 text-theme-inverse" />
+                      <FiBookOpen className="w-4 h-4 text-theme-primary" />
                     </div>
                     <h3 className="text-lg font-semibold text-theme-primary classical-title">
                       Recursos Externos
@@ -505,7 +505,7 @@ export default function WorkDetailsClient({
                 >
                   <div className="flex items-center space-x-3 mb-4">
                     <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                      <FiSettings className="w-4 h-4 text-theme-inverse" />
+                      <FiSettings className="w-4 h-4 text-theme-primary" />
                     </div>
                     <h3 className="text-lg font-semibold text-theme-primary classical-title">
                       Detalhes Técnicos
@@ -599,7 +599,7 @@ export default function WorkDetailsClient({
           >
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                <FiMusic className="w-5 h-5 text-theme-inverse" />
+                <FiMusic className="w-5 h-5 text-theme-primary" />
               </div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
                 Obras Relacionadas

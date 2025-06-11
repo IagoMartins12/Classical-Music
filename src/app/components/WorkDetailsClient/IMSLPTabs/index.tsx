@@ -192,8 +192,7 @@ export default function IMSLPTabs({
   return (
     <div className="classical-card overflow-hidden animate-fade-in-up">
       {/* Header */}
-      <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover relative">
-        {/* Background decoration */}
+      {/* <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover relative">
         <div className="absolute top-4 right-4 text-6xl text-brand-primary/5">
           <GiMusicalNotes />
         </div>
@@ -214,7 +213,6 @@ export default function IMSLPTabs({
             </div>
           </div>
 
-          {/* Quick stats */}
           <div className="hidden md:flex items-center space-x-4">
             <div className="text-center p-3 bg-theme-elevated border border-theme-primary rounded-xl">
               <div className="text-lg font-bold text-brand-primary">
@@ -224,7 +222,7 @@ export default function IMSLPTabs({
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Tabs Navigation */}
       <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
@@ -239,7 +237,7 @@ export default function IMSLPTabs({
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`
-                  flex items-center gap-3 px-6 py-4 text-sm font-medium border-b-2 transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up
+                  flex items-center gap-3 px-6 py-4 cursor-pointer text-sm font-medium border-b-2 transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up
                   ${
                     isActive
                       ? 'border-brand-primary text-brand-primary bg-gradient-to-t from-brand-primary/10 to-transparent'
@@ -249,9 +247,9 @@ export default function IMSLPTabs({
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div
-                  className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-300 ${
+                  className={`w-6 h-6 rounded-lg  flex items-center justify-center transition-all duration-300 ${
                     isActive
-                      ? `bg-gradient-to-br ${tab.gradient} text-theme-inverse shadow-theme-glow`
+                      ? `bg-gradient-to-br ${tab.gradient} text-theme-primary shadow-theme-glow`
                       : 'bg-theme-elevated text-theme-tertiary group-hover:text-theme-primary'
                   }`}
                 >
@@ -290,7 +288,7 @@ export default function IMSLPTabs({
                     <div className="border-b border-theme-secondary pb-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                          <GiMusicalNotes className="w-4 h-4 text-theme-inverse" />
+                          <GiMusicalNotes className="w-4 h-4 text-theme-primary" />
                         </div>
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
                           {scoreGroup.groupTitle}
