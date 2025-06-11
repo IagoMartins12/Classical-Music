@@ -7,12 +7,7 @@ import {
   FiBookOpen,
   FiLock,
 } from 'react-icons/fi';
-import {
-  GiMusicalNotes,
-  GiScrollQuill,
-  GiGrandPiano,
-  GiViolin,
-} from 'react-icons/gi';
+import { GiMusicalNotes, GiScrollQuill } from 'react-icons/gi';
 
 const DetailedMusicHistorySkeleton = () => {
   // Dados das seções para o skeleton

@@ -119,6 +119,8 @@ export const useThemeInitializer = () => {
   // Apply theme on mount
   React.useEffect(() => {
     applyTheme(mode);
+
+    //@ts-ignore
   }, []);
 
   // Handle system theme preference
@@ -136,5 +138,6 @@ export const useThemeInitializer = () => {
 
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
+    //@ts-ignore
   }, [applyTheme]);
 };

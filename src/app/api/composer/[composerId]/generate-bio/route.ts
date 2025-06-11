@@ -11,6 +11,7 @@ const processCache = new Map<
   {
     timestamp: number;
     processing: boolean;
+    //@ts-ignore
     result?: any; // Armazenar o resultado em vez da Promise
   }
 >();

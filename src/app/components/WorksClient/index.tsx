@@ -22,6 +22,7 @@ import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 import WorkCard from './WorkCard';
 import WorkCardList from './WorkCardList';
 import PaginationControls from '../PaginationControls';
+import AnimatedMusicalNotes2 from '../AnimatedMusicalNotes2';
 
 interface WorksClientProps {
   worksData: WorksListResponse;
@@ -164,45 +165,7 @@ export default function WorksClient({
       <div className="section-wrap space-y-8 relative z-10">
         {/* Header Section */}
         <div className="relative text-center py-16">
-          {/* Animated Background Elements */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-6 left-12 text-5xl text-brand-primary/20 animate-float">
-              <GiMusicalNotes />
-            </div>
-            <div
-              className="absolute bottom-6 right-12 text-4xl text-brand-secondary/20 animate-float"
-              style={{ animationDelay: '1s' }}
-            >
-              <FiMusic />
-            </div>
-            <div
-              className="absolute top-12 right-24 text-3xl text-accent-purple/20 animate-float"
-              style={{ animationDelay: '2s' }}
-            >
-              <GiGrandPiano />
-            </div>
-            <div
-              className="absolute bottom-12 left-24 text-3xl text-accent-blue/20 animate-float"
-              style={{ animationDelay: '0.5s' }}
-            >
-              <FiHeadphones />
-            </div>
-            <div
-              className="absolute top-1/2 left-8 text-2xl text-accent-green/20 animate-float"
-              style={{ animationDelay: '1.5s' }}
-            >
-              <FiBookOpen />
-            </div>
-            <div
-              className="absolute top-1/3 right-8 text-2xl text-brand-primary/15 animate-float"
-              style={{ animationDelay: '2.5s' }}
-            >
-              <GiMusicalNotes />
-            </div>
-          </div>
-
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-theme-primary/5 to-transparent"></div>
+          <AnimatedMusicalNotes2 />
 
           <div className="relative z-10">
             <div className="flex items-center justify-center mb-6">

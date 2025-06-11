@@ -1,7 +1,7 @@
 // app/components/EssentialComposers.tsx - Updated for list layout with theme system
 'use client';
 
-import { FiStar, FiAward } from 'react-icons/fi';
+import { FiAward } from 'react-icons/fi';
 import SectionTitle from '../Utils/SectionTitle';
 import ListComposers from '../Lists/ListComposers';
 import { pageComposersInterface } from '../PopularComposers';

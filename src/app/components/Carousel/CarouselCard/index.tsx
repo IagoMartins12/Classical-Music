@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { CarouselCardProps } from '@/app/types/types';
 import LazyImage from '../../LazyImage';
 import Link from 'next/link';
-import { FiHeart, FiPlay, FiUser, FiCalendar } from 'react-icons/fi';
+import { FiHeart, FiUser, FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
@@ -38,10 +38,11 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
             <LazyImage
               src={item.portraitUrl}
               alt={item.name}
+              width={400}
+              height={500}
               className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${
                 imageLoaded ? 'opacity-0' : 'opacity-95'
               }`}
-              onLoad={() => setImageLoaded(true)}
             />
 
             {/* Gradient Overlays */}

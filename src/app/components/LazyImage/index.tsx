@@ -1,6 +1,21 @@
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 
-const LazyImage: React.FC<LazyImageProps> = ({ src, alt, className = '' }) => {
+interface LazyImageProps {
+  src: string | null;
+  alt: string;
+  className?: string;
+  width: number;
+  height: number;
+}
+
+const LazyImage: React.FC<LazyImageProps> = ({
+  src,
+  alt,
+  className = '',
+  width,
+  height,
+}) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -34,14 +49,15 @@ const LazyImage: React.FC<LazyImageProps> = ({ src, alt, className = '' }) => {
         </div>
       )}
       {isInView && (
-        <img
-          src={src}
+        <Image
+          src={src ?? ''}
           alt={alt}
+          width={width}
+          height={height}
           className={`w-full h-full object-cover transition-all duration-700 ${
             isLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
           }`}
           onLoad={() => setIsLoaded(true)}
-          loading="lazy"
         />
       )}
     </div>

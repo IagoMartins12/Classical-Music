@@ -6,21 +6,18 @@ import {
   FiBookOpen,
   FiTarget,
   FiStar,
-  FiClock,
   FiTrendingUp,
   FiAward,
   FiGlobe,
   FiHeadphones,
-  FiEdit3,
 } from 'react-icons/fi';
 import {
   GiMusicalNotes,
   GiGrandPiano,
   GiScrollQuill,
-  GiTrumpet,
-  GiViolin,
   GiMetronome,
 } from 'react-icons/gi';
+import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
 
 export default function AboutPage() {
   const features = [
@@ -130,21 +127,7 @@ export default function AboutPage() {
         </div>
 
         {/* Floating Music Notes */}
-        <div className="absolute top-20 left-10 text-brand-primary/20 animate-float">
-          <GiMusicalNotes className="w-8 h-8" />
-        </div>
-        <div
-          className="absolute top-40 right-20 text-accent-purple/20 animate-float"
-          style={{ animationDelay: '1s' }}
-        >
-          <GiViolin className="w-6 h-6" />
-        </div>
-        <div
-          className="absolute bottom-20 left-20 text-accent-blue/20 animate-float"
-          style={{ animationDelay: '2s' }}
-        >
-          <GiTrumpet className="w-7 h-7" />
-        </div>
+        <AnimatedMusicalNotes />
       </section>
 
       {/* Mission Section */}

@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import LazyImage from '@/app/components/LazyImage';
 import { composerHomeProps } from '@/app/components/PopularComposers';
 import Link from 'next/link';
-import { FiHeart, FiPlay, FiUser, FiCalendar, FiMusic } from 'react-icons/fi';
+import { FiHeart, FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 
 interface listComposersCardsProps {
@@ -47,10 +47,11 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
             <LazyImage
               src={composer.portraitUrl}
               alt={composer.name}
+              width={300}
+              height={300}
               className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${
                 imageLoaded ? 'opacity-100' : 'opacity-100'
               }`}
-              onLoad={() => setImageLoaded(true)}
             />
 
             {/* Gradient Overlays */}

@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useMemo } from 'react';
 import { FiClock, FiUser, FiCalendar, FiMapPin } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
@@ -19,20 +20,20 @@ interface ComposerTimeline {
   deathYear: number | null;
 }
 
-interface EpochData {
-  id: string;
-  name: string;
-  period: string;
-  description: string;
-  characteristics: string[];
-  keyDevelopments: string[];
-  musicalForms: string[];
-  instruments: string[];
-}
+// interface EpochData {
+//   id: string;
+//   name: string;
+//   period: string;
+//   description: string;
+//   characteristics: string[];
+//   keyDevelopments: string[];
+//   musicalForms: string[];
+//   instruments: string[];
+// }
 
 interface Props {
   composers: ComposerTimeline[];
-  epochsData: EpochData[];
+  // epochsData: EpochData[];
 }
 
 const epochColors = {
@@ -64,7 +65,7 @@ const epochMapping: Record<string, keyof typeof epochColors> = {
   Moderno: 'Modern',
 };
 
-export function ComposersTimeline({ composers, epochsData }: Props) {
+export function ComposersTimeline({ composers }: Props) {
   const timelineData = useMemo(() => {
     const sortedComposers = [...composers].sort((a, b) => {
       const aYear = a.birthYear || 0;
@@ -157,10 +158,12 @@ export function ComposersTimeline({ composers, epochsData }: Props) {
                         className={`w-16 h-16 bg-gradient-to-br ${composer.gradientClass} rounded-2xl flex items-center justify-center shadow-theme-medium flex-shrink-0 group-hover:scale-110 transition-transform duration-500`}
                       >
                         {composer.portraitUrl ? (
-                          <img
+                          <Image
                             src={composer.portraitUrl}
                             alt={composer.fullName}
-                            className="w-14 h-14 rounded-xl object-cover border-2 border-theme-inverse/20"
+                            width={56}
+                            height={56}
+                            className="w-16 h-16 rounded-xl object-cover border-2 border-theme-inverse/20"
                             onError={(e) => {
                               const target = e.target as HTMLImageElement;
                               target.style.display = 'none';

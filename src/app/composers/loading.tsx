@@ -1,13 +1,7 @@
 // app/composers/ComposersLoading.tsx - Premium version with theme system
 'use client';
 
-import {
-  FiSearch,
-  FiFilter,
-  FiUser,
-  FiMusic,
-  FiBookOpen,
-} from 'react-icons/fi';
+import { FiUser, FiMusic } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 
 export default function ComposersLoading() {

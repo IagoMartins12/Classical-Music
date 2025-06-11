@@ -164,6 +164,8 @@ export const getWorks = unstable_cache(
       const skip = (page - 1) * limit;
 
       // Construir filtros WHERE
+      //@ts-ignore
+
       const whereClause: any = {};
 
       if (filters?.composerId) {
@@ -268,17 +270,15 @@ export const getWorks = unstable_cache(
       ];
       const workIds = works.map((w) => w.id);
 
-      const [instruments, { categoriesMap, workGenresMap }] = await Promise.all(
-        [
-          instrumentIds.length > 0
-            ? prisma.instrument.findMany({
-                where: { id: { in: instrumentIds } },
-                select: { id: true, name: true },
-              })
-            : [],
-          getWorkCategoriesAndGenres(workIds),
-        ]
-      );
+      const [instruments, { workGenresMap }] = await Promise.all([
+        instrumentIds.length > 0
+          ? prisma.instrument.findMany({
+              where: { id: { in: instrumentIds } },
+              select: { id: true, name: true },
+            })
+          : [],
+        getWorkCategoriesAndGenres(workIds),
+      ]);
 
       // Criar mapas para lookup rápido
       const instrumentMap = new Map(instruments.map((i) => [i.id, i]));

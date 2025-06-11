@@ -3,7 +3,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { FiMenu, FiX, FiUser, FiSettings } from 'react-icons/fi';
+import { FiMenu, FiX } from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
 import { ThemeToggle } from '../ThemeToggle';
 
@@ -15,15 +15,15 @@ interface NavItem {
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  // const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
-  const toggleProfileMenu = () => {
-    setIsProfileOpen((prev) => !prev);
-  };
+  // const toggleProfileMenu = () => {
+  //   setIsProfileOpen((prev) => !prev);
+  // };
 
   const optionsArr: NavItem[] = [
     { label: 'História da Música', href: '/music-history' },

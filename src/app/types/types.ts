@@ -1,6 +1,6 @@
 import { composerHomeProps } from '../components/PopularComposers';
 
-interface RandomWorkOptions {
+export interface RandomWorkOptions {
   popularwork?: number;
   recommendedwork?: number;
   popularcomposer?: number;
@@ -12,7 +12,7 @@ interface RandomWorkOptions {
   work?: string;
 }
 
-interface Composers {
+export interface Composers {
   birth: string;
   complete_name: string;
   death: string;
@@ -22,13 +22,13 @@ interface Composers {
   portrait: string;
 }
 
-interface CarouselItem {
+export interface CarouselItem {
   id: number;
   name: string;
   image: string;
 }
 
-interface LazyImageProps {
+export interface LazyImageProps {
   src: string;
   alt: string;
   className?: string;
@@ -47,14 +47,14 @@ interface CarouselControlsProps {
   isAnimating: boolean;
 }
 
-interface CarouselIndicatorsProps {
+export interface CarouselIndicatorsProps {
   totalSlides: number;
   currentIndex: number;
   onGoToSlide: (index: number) => void;
   isAnimating: boolean;
 }
 
-interface CarouselContainerProps {
+export interface CarouselContainerProps {
   children: React.ReactNode;
   currentIndex: number;
   itemsPerView: number;

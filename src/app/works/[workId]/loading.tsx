@@ -1,19 +1,7 @@
 // app/work/[workId]/loading.tsx - Premium version with theme system
 'use client';
 
-import {
-  FiMusic,
-  FiUser,
-  FiCalendar,
-  FiClock,
-  FiMapPin,
-  FiHeadphones,
-  FiBookOpen,
-  FiSettings,
-  FiTag,
-  FiHeart,
-  FiShare2,
-} from 'react-icons/fi';
+import { FiMusic } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 
 export default function WorkDetailsLoading() {

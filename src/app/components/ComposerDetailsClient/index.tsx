@@ -18,7 +18,6 @@ import {
   FiHeart,
   FiInfo,
 } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 import ComposerBiography from '../ComposerBiography';
 import ComposerWorks from '../ComposersClient/ComposerWorks';
 

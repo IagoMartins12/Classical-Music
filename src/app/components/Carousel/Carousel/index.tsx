@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react';
 import CarouselControls from '../CarouselControls';
 import CarouselContainer from '../CarouselContainer';
 import CarouselCard from '../CarouselCard';
-import CarouselIndicators from '../CarouselIndicators';
 import useIsMobile from '@/app/hooks/useIsMobile';
 import { ModernCarouselProps } from '@/app/types/types';
 
@@ -48,15 +47,15 @@ const Carousel: React.FC<ModernCarouselProps> = ({
     setTimeout(() => setIsAnimating(false), 500);
   }, [isAnimating, maxIndex]);
 
-  const goToSlide = useCallback(
-    (index: number) => {
-      if (isAnimating) return;
-      setIsAnimating(true);
-      setCurrentIndex(Math.min(maxIndex, index));
-      setTimeout(() => setIsAnimating(false), 500);
-    },
-    [isAnimating, maxIndex]
-  );
+  // const goToSlide = useCallback(
+  //   (index: number) => {
+  //     if (isAnimating) return;
+  //     setIsAnimating(true);
+  //     setCurrentIndex(Math.min(maxIndex, index));
+  //     setTimeout(() => setIsAnimating(false), 500);
+  //   },
+  //   [isAnimating, maxIndex]
+  // );
 
   // Drag handler otimizado para mobile/desktop
   const handleDrag = useCallback(

@@ -4,10 +4,6 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   FiMusic,
-  FiEye,
-  FiDownload,
-  FiStar,
-  FiClock,
   FiFileText,
   FiRefreshCw,
   FiAlertCircle,

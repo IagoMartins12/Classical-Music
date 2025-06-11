@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiChevronDown, FiUsers, FiGrid } from 'react-icons/fi';
+import { FiChevronDown, FiUsers } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import ListComposersCards from '../Cards/ListComposersCard';
 import { composerHomeProps } from '../../PopularComposers';

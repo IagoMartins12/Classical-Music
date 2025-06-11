@@ -27,7 +27,7 @@ import {
   GiMusicalNotes,
   GiGrandPiano,
 } from 'react-icons/gi';
-import { MdLibraryMusic, MdAccessTime } from 'react-icons/md';
+import { MdLibraryMusic } from 'react-icons/md';
 
 interface ComposerWorksProps {
   works: ComposerWork[];
@@ -326,7 +326,7 @@ export default function ComposerWorks({
 
             {searchTerm && (
               <div className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm">
-                <span>Busca: "{searchTerm}"</span>
+                <span>Busca: &quot;{searchTerm}&quot;</span>
                 <button
                   onClick={() => setSearchTerm('')}
                   className="hover:text-brand-secondary transition-colors"

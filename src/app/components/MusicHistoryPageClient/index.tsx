@@ -101,7 +101,7 @@ export function MusicHistoryPageClient({
 
       return finalAIndex - finalBIndex;
     });
-  }, [epochs]);
+  }, [epochs, epochChronologicalOrder]);
 
   if (hasError) {
     return <ErrorFallback />;
@@ -151,7 +151,7 @@ export function MusicHistoryPageClient({
             <div className="animate-fade-in-up">
               <ComposersTimeline
                 composers={composersTimeline}
-                epochsData={epochsHistoricalData}
+                // epochsData={epochsHistoricalData}
               />
             </div>
           )}

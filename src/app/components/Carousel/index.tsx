@@ -1,6 +1,4 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Carousel from './Carousel';
 import { composerHomeProps } from '../PopularComposers';
 

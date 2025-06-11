@@ -1,7 +1,7 @@
 // app/components/PopularComposers.tsx - Updated with theme system
 'use client';
 
-import { FiTrendingUp, FiUsers } from 'react-icons/fi';
+import { FiTrendingUp } from 'react-icons/fi';
 import SectionTitle from '../Utils/SectionTitle';
 import Carousel from '../Carousel/Carousel';
 

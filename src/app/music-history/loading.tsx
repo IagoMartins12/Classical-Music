@@ -1,9 +1,8 @@
 // LoadingSkeleton.tsx - Premium version with theme system
 'use client';
 
-import { FiMusic, FiBookOpen } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano, GiViolin } from 'react-icons/gi';
 import DetailedMusicHistorySkeleton from './DetailedMusicHistorySkeleton';
+import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
 
 const LoadingMusicHistorySkeleton = () => {
   return (
@@ -11,41 +10,7 @@ const LoadingMusicHistorySkeleton = () => {
       {/* Hero Skeleton */}
       <div className="relative overflow-hidden bg-gradient-primary pt-8 md:pt-24 lg:pt-24 flex items-center">
         {/* Animated musical notes */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-            <GiMusicalNotes />
-          </div>
-          <div
-            className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
-            style={{ animationDelay: '1s' }}
-          >
-            <FiMusic />
-          </div>
-          <div
-            className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
-            style={{ animationDelay: '2s' }}
-          >
-            <GiGrandPiano />
-          </div>
-          <div
-            className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
-            style={{ animationDelay: '0.5s' }}
-          >
-            <GiViolin />
-          </div>
-          <div
-            className="absolute top-1/2 left-8 text-2xl text-accent-green/10 animate-float"
-            style={{ animationDelay: '1.5s' }}
-          >
-            <FiBookOpen />
-          </div>
-          <div
-            className="absolute top-1/4 right-8 text-2xl text-brand-primary/10 animate-float"
-            style={{ animationDelay: '2.5s' }}
-          >
-            <GiMusicalNotes />
-          </div>
-        </div>
+        <AnimatedMusicalNotes />
 
         <div className="section-wrap py-24 lg:py-32">
           <div className="text-center">

@@ -3,14 +3,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import {
-  FiHeart,
-  FiPlay,
-  FiUser,
-  FiCalendar,
-  FiExternalLink,
-  FiMapPin,
-} from 'react-icons/fi';
+import { FiHeart, FiUser, FiCalendar, FiExternalLink } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { ComposerImslp } from '..';
 

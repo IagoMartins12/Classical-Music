@@ -35,10 +35,10 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
 
     // Remover filtros vazios
     const cleanFilters = Object.fromEntries(
+      //@ts-ignore
       Object.entries(filters).filter(([_, value]) => value)
     );
 
-    console.log('cleanFilters', cleanFilters);
     // Buscar obras e instrumentos em paralelo
     const [worksData, instruments] = await Promise.all([
       getWorks(page, limit, cleanFilters),

@@ -8,7 +8,6 @@ import {
   FiAlertCircle,
   FiBookOpen,
   FiZap,
-  FiCheck,
   FiX,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';

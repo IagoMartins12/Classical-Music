@@ -3,6 +3,7 @@
 import { FaMusic, FaUsers } from 'react-icons/fa';
 import { GiViolin, GiGrandPiano, GiHarp, GiMusicalNotes } from 'react-icons/gi';
 import { FiBookOpen, FiSettings } from 'react-icons/fi';
+import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
 
 export default function InstrumentsLoading() {
   return (
@@ -24,46 +25,10 @@ export default function InstrumentsLoading() {
         ></div>
       </div>
 
-      {/* Animated musical notes */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
-          <GiMusicalNotes />
-        </div>
-        <div
-          className="absolute bottom-16 right-16 text-4xl text-brand-secondary/10 animate-float"
-          style={{ animationDelay: '1s' }}
-        >
-          <FaMusic />
-        </div>
-        <div
-          className="absolute top-1/3 right-24 text-3xl text-accent-purple/10 animate-float"
-          style={{ animationDelay: '2s' }}
-        >
-          <GiGrandPiano />
-        </div>
-        <div
-          className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/10 animate-float"
-          style={{ animationDelay: '0.5s' }}
-        >
-          <GiViolin />
-        </div>
-        <div
-          className="absolute top-1/2 left-8 text-2xl text-accent-green/10 animate-float"
-          style={{ animationDelay: '1.5s' }}
-        >
-          <FiBookOpen />
-        </div>
-        <div
-          className="absolute top-1/4 right-8 text-2xl text-brand-primary/10 animate-float"
-          style={{ animationDelay: '2.5s' }}
-        >
-          <GiHarp />
-        </div>
-      </div>
-
       <div className="relative z-10">
-        {/* Hero Section Skeleton */}
         <section className="relative overflow-hidden bg-gradient-primary pt-24 flex items-center">
+          <AnimatedMusicalNotes />
+
           <div className="section-wrap mx-auto relative z-10">
             <div className="text-center space-y-8">
               {/* Floating Icons Skeleton */}

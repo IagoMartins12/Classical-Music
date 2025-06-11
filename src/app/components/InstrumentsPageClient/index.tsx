@@ -20,17 +20,13 @@ import {
   FaExpand,
   FaCompress,
 } from 'react-icons/fa';
-import {
-  GiGrandPiano,
-  GiViolin,
-  GiHarp,
-  GiPipeOrgan,
-  GiMusicalNotes,
-} from 'react-icons/gi';
+import { GiGrandPiano, GiViolin, GiHarp, GiPipeOrgan } from 'react-icons/gi';
 import { IoIosTrendingUp } from 'react-icons/io';
 import { MdMusicNote } from 'react-icons/md';
-import { FiBookOpen, FiMusic, FiSettings } from 'react-icons/fi';
 import Link from 'next/link';
+import FloatingIcons from '../FloatingIcons';
+import AnimatedMusicalNotes from '../AnimatedMusicalNotes';
+import Image from 'next/image';
 
 interface Composer {
   id: string;
@@ -124,15 +120,15 @@ export function InstrumentsPageClient({
     Record<string, boolean>
   >({});
 
-  const totalWorks = useMemo(
-    () => instrumentsStats.reduce((sum, stat) => sum + stat.totalWorks, 0),
-    [instrumentsStats]
-  );
+  // const totalWorks = useMemo(
+  //   () => instrumentsStats.reduce((sum, stat) => sum + stat.totalWorks, 0),
+  //   [instrumentsStats]
+  // );
 
-  const totalUsers = useMemo(
-    () => instrumentsStats.reduce((sum, stat) => sum + stat.totalUsers, 0),
-    [instrumentsStats]
-  );
+  // const totalUsers = useMemo(
+  //   () => instrumentsStats.reduce((sum, stat) => sum + stat.totalUsers, 0),
+  //   [instrumentsStats]
+  // );
 
   const toggleSection = (instrumentId: string, section: string) => {
     const key = `${instrumentId}-${section}`;
@@ -197,67 +193,12 @@ export function InstrumentsPageClient({
       <div className="relative z-10">
         {/* Hero Section */}
         <section className="relative overflow-hidden bg-gradient-primary pt-24 flex items-center">
-          {/* Animated musical notes */}
-          <div className="absolute hidden md:flex lg:flex  inset-0 pointer-events-none">
-            <div className="absolute top-16 left-16 text-5xl text-brand-primary/20 animate-float">
-              <GiMusicalNotes />
-            </div>
-            <div
-              className="absolute bottom-16 right-16 text-4xl text-brand-secondary/20 animate-float"
-              style={{ animationDelay: '1s' }}
-            >
-              <FiMusic />
-            </div>
-            <div
-              className="absolute top-1/3 right-24 text-3xl text-accent-purple/20 animate-float"
-              style={{ animationDelay: '2s' }}
-            >
-              <GiGrandPiano />
-            </div>
-            <div
-              className="absolute bottom-1/3 left-24 text-3xl text-accent-blue/20 animate-float"
-              style={{ animationDelay: '0.5s' }}
-            >
-              <GiViolin />
-            </div>
-            <div
-              className="absolute top-1/2 left-8 text-2xl text-accent-green/20 animate-float"
-              style={{ animationDelay: '1.5s' }}
-            >
-              <FiBookOpen />
-            </div>
-            <div
-              className="absolute top-1/4 right-8 text-2xl text-brand-primary/15 animate-float"
-              style={{ animationDelay: '2.5s' }}
-            >
-              <GiMusicalNotes />
-            </div>
-          </div>
+          <AnimatedMusicalNotes />
 
           <div className="section-wrap mx-auto relative z-10">
             <div className="text-center space-y-8">
               {/* Floating Icons */}
-              <div className="flex justify-center items-center mb-8 space-x-6 animate-fade-in-up">
-                <div
-                  className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
-                  style={{ animationDelay: '0s' }}
-                >
-                  <GiViolin className="text-2xl text-theme-primary" />
-                </div>
-                <div
-                  className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
-                  style={{ animationDelay: '0.2s' }}
-                >
-                  <GiGrandPiano className="text-3xl text-theme-primary" />
-                </div>
-                <div
-                  className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-red rounded-2xl flex items-center justify-center shadow-theme-glow animate-bounce"
-                  style={{ animationDelay: '0.4s' }}
-                >
-                  <GiHarp className="text-2xl text-theme-primary" />
-                </div>
-              </div>
-
+              <FloatingIcons />
               {/* Main Title */}
               <div
                 className="space-y-6 animate-fade-in-up"
@@ -490,7 +431,7 @@ export function InstrumentsPageClient({
                                   <Link
                                     href={`/composer/${instrument.topComposers[0].composer.id}`}
                                   >
-                                    <img
+                                    <Image
                                       src={
                                         instrument.topComposers[0].composer
                                           .portraitUrl
@@ -498,6 +439,8 @@ export function InstrumentsPageClient({
                                       alt={
                                         instrument.topComposers[0].composer.name
                                       }
+                                      width={56}
+                                      height={56}
                                       className="w-14 h-14 rounded-full border-2 border-brand-primary/30 shadow-theme-medium"
                                     />
                                   </Link>
@@ -883,9 +826,11 @@ export function InstrumentsPageClient({
                                       className="flex items-center space-x-3"
                                     >
                                       {work.composer.portraitUrl ? (
-                                        <img
+                                        <Image
                                           src={work.composer.portraitUrl}
                                           alt={work.composer.name}
+                                          width={32}
+                                          height={32}
                                           className="w-8 h-8 rounded-full border-2 border-brand-primary/30 shadow-theme-medium"
                                         />
                                       ) : (

@@ -18,7 +18,6 @@ const CarouselContainer: React.FC<CarouselContainerProps> = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
-  const [currentX, setCurrentX] = useState(0);
   const [dragOffset, setDragOffset] = useState(0);
   const [startTime, setStartTime] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -29,7 +28,6 @@ const CarouselContainer: React.FC<CarouselContainerProps> = ({
       if (isAnimating) return;
       setIsDragging(true);
       setStartX(e.pageX);
-      setCurrentX(e.pageX);
       setStartTime(Date.now());
       setDragOffset(0);
       e.preventDefault();
@@ -44,7 +42,6 @@ const CarouselContainer: React.FC<CarouselContainerProps> = ({
 
       const x = e.pageX;
       const deltaX = startX - x;
-      setCurrentX(x);
       setDragOffset(deltaX);
     },
     [isDragging, startX]
@@ -94,7 +91,6 @@ const CarouselContainer: React.FC<CarouselContainerProps> = ({
       const touch = e.touches[0];
       setIsDragging(true);
       setStartX(touch.pageX);
-      setCurrentX(touch.pageX);
       setStartTime(Date.now());
       setDragOffset(0);
     },
@@ -109,7 +105,6 @@ const CarouselContainer: React.FC<CarouselContainerProps> = ({
       const touch = e.touches[0];
       const x = touch.pageX;
       const deltaX = startX - x;
-      setCurrentX(x);
       setDragOffset(deltaX);
     },
     [isDragging, startX]
