@@ -52,6 +52,7 @@ export interface WorkListItem {
   composer: {
     id: string;
     name: string;
+    fullName: string | null;
     epochName: string | null;
   };
   instrument: {
@@ -61,7 +62,7 @@ export interface WorkListItem {
   epoch: {
     id: string;
     name: string;
-  } | null;
+  };
 }
 
 export interface WorksListResponse {
@@ -174,6 +175,7 @@ export const getWorks = unstable_cache(
               select: {
                 id: true,
                 name: true,
+                fullName: true,
                 epochName: true,
               },
             },

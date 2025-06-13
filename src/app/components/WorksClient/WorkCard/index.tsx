@@ -32,6 +32,7 @@ const WorkCard: React.FC<workCardProps> = ({ work }) => {
     return duration;
   };
 
+  console.log('WORK', work);
   return (
     <div className="group cursor-pointer select-none h-full">
       <div className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow">
@@ -93,7 +94,7 @@ const WorkCard: React.FC<workCardProps> = ({ work }) => {
                 className="text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium"
                 onClick={(e) => e.stopPropagation()}
               >
-                {work.composer.name}
+                {work.composer.fullName}
               </Link>
             </div>
           </div>
@@ -146,10 +147,10 @@ const WorkCard: React.FC<workCardProps> = ({ work }) => {
 
           {/* Badges */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {work.composer.epochName && (
+            {work.epoch.name && (
               <span className="inline-flex items-center px-2 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium">
                 <FiClock className="w-2.5 h-2.5 mr-1" />
-                {work.composer.epochName}
+                {work.epoch.name}
               </span>
             )}
 
