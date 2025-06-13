@@ -1,9 +1,9 @@
-// app/works/WorksClient.tsx - Premium version with theme system
+// app/works/WorksClient.tsx - Atualizado com filtros de época e gênero
 'use client';
 
-import { useState, useCallback, useTransition } from 'react';
+import { useState, useCallback, useTransition, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { WorksListResponse } from '@/app/requests/work-details';
+import { WorksListResponse, FilterOptions } from '@/app/requests/work-details';
 import {
   FiSearch,
   FiFilter,
@@ -13,11 +13,13 @@ import {
   FiX,
   FiRefreshCw,
   FiBookOpen,
+  FiClock,
 } from 'react-icons/fi';
 import WorkCard from './WorkCard';
 import WorkCardList from './WorkCardList';
 import PaginationControls from '../PaginationControls';
 import AnimatedMusicalNotes2 from '../AnimatedMusicalNotes2';
+import GenreSearchInput from '../GenreSearchInput';
 
 interface WorksClientProps {
   worksData: WorksListResponse;
@@ -29,18 +31,16 @@ interface WorksClientProps {
     instrument?: string;
     epoch?: string;
     search?: string;
+    workGenresArr?: string;
   };
-  instruments: {
-    id: string;
-    name: string;
-  }[];
+  filterOptions: FilterOptions; // Mudança: ao invés de só instruments
 }
 
 export default function WorksClient({
   worksData,
   currentPage,
   searchParams,
-  instruments,
+  filterOptions,
 }: WorksClientProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -49,6 +49,10 @@ export default function WorksClient({
   const [showFilters, setShowFilters] = useState(false);
   const [selectedInstrument, setSelectedInstrument] = useState(
     searchParams.instrument || ''
+  );
+  const [selectedEpoch, setSelectedEpoch] = useState(searchParams.epoch || '');
+  const [selectedGenre, setSelectedGenre] = useState(
+    searchParams.workGenresArr || ''
   );
   const [viewMode, setViewMode] = useState<'list' | 'cards'>('cards');
 
@@ -101,16 +105,28 @@ export default function WorksClient({
     [updateSearchParams]
   );
 
-  // Função para aplicar filtro de instrumento
+  // Funções para aplicar filtros
   const handleInstrumentFilter = (instrumentId: string) => {
     setSelectedInstrument(instrumentId);
     updateSearchParams({ instrument: instrumentId || undefined });
+  };
+
+  const handleEpochFilter = (epochId: string) => {
+    setSelectedEpoch(epochId);
+    updateSearchParams({ epoch: epochId || undefined });
+  };
+
+  const handleGenreFilter = (genreId: string) => {
+    setSelectedGenre(genreId);
+    updateSearchParams({ workGenresArr: genreId || undefined });
   };
 
   // Função para limpar filtros
   const clearFilters = () => {
     setSearchTerm('');
     setSelectedInstrument('');
+    setSelectedEpoch('');
+    setSelectedGenre('');
     startTransition(() => {
       router.push('/works');
     });
@@ -122,6 +138,10 @@ export default function WorksClient({
       setSearchTerm('');
     } else if (filterKey === 'instrument') {
       setSelectedInstrument('');
+    } else if (filterKey === 'epoch') {
+      setSelectedEpoch('');
+    } else if (filterKey === 'genre') {
+      setSelectedGenre('');
     }
     updateSearchParams({ [filterKey]: undefined });
   };
@@ -136,16 +156,24 @@ export default function WorksClient({
   );
 
   // Calcular estatísticas
-  const totalPages = Math.ceil(worksData.totalCount / 24);
-  const startItem = (currentPage - 1) * 24 + 1;
-  const endItem = Math.min(currentPage * 24, worksData.totalCount);
+  const totalPages = Math.ceil(worksData.totalCount / 32);
+  const startItem = (currentPage - 1) * 32 + 1;
+  const endItem = Math.min(currentPage * 32, worksData.totalCount);
 
   // Verificar se há filtros ativos
   const hasActiveFilters =
     searchParams.search ||
     searchParams.composer ||
     searchParams.instrument ||
-    searchParams.epoch;
+    searchParams.epoch ||
+    searchParams.workGenresArr;
+
+  //Verificar se existe algum filtro ativo para abrir a caixa de filtro
+  useEffect(() => {
+    if (hasActiveFilters) {
+      setShowFilters(true);
+    }
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen bg-gradient-primary">
@@ -178,49 +206,6 @@ export default function WorksClient({
           </div>
         </div>
 
-        {/* Stats Cards */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="classical-card p-6 text-center group hover:scale-105 transition-all duration-300">
-            <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-              <FiBookOpen className="w-6 h-6 text-theme-inverse" />
-            </div>
-            <h3 className="text-2xl font-bold text-brand-primary mb-2">
-              {worksData.totalCount.toLocaleString()}
-            </h3>
-            <p className="text-theme-secondary text-sm">Obras Total</p>
-          </div>
-
-          <div className="classical-card p-6 text-center group hover:scale-105 transition-all duration-300">
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-              <FiMusic className="w-6 h-6 text-theme-inverse" />
-            </div>
-            <h3 className="text-2xl font-bold text-accent-purple mb-2">
-              {instruments.length}
-            </h3>
-            <p className="text-theme-secondary text-sm">Instrumentos</p>
-          </div>
-
-          <div className="classical-card p-6 text-center group hover:scale-105 transition-all duration-300">
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-              <FiTrendingUp className="w-6 h-6 text-theme-inverse" />
-            </div>
-            <h3 className="text-2xl font-bold text-accent-green mb-2">
-              {worksData.works.length}
-            </h3>
-            <p className="text-theme-secondary text-sm">Resultados Atuais</p>
-          </div>
-
-          <div className="classical-card p-6 text-center group hover:scale-105 transition-all duration-300">
-            <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-              <FiHeadphones className="w-6 h-6 text-theme-inverse" />
-            </div>
-            <h3 className="text-2xl font-bold text-accent-red mb-2">
-              {totalPages}
-            </h3>
-            <p className="text-theme-secondary text-sm">Páginas</p>
-          </div>
-        </div> */}
-
         {/* Search and Filters Section */}
         <div
           className={`classical-card p-6 transition-all duration-500 ${
@@ -228,9 +213,6 @@ export default function WorksClient({
           }`}
         >
           <div className="flex items-center mb-6">
-            {/* <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mr-4">
-              <FiSearch className="w-5 h-5 text-theme-primary" />
-            </div> */}
             <div>
               <h3 className="text-xl font-bold text-theme-primary classical-title">
                 Busca e Filtros
@@ -324,12 +306,13 @@ export default function WorksClient({
 
           {/* Expanded Filters */}
           <div
-            className={`overflow-hidden transition-all duration-500 ${
+            className={` transition-all duration-500 ${
               showFilters ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
             }`}
+            style={{ zIndex: 'auto' }}
           >
             <div className="border-t border-theme-secondary pt-6 mb-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
                 {/* Instrument Filter */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-theme-secondary">
@@ -343,7 +326,7 @@ export default function WorksClient({
                       className="input-classical pl-11 w-full appearance-none"
                     >
                       <option value="">Todos os instrumentos</option>
-                      {instruments.map((instrument) => (
+                      {filterOptions.instruments.map((instrument) => (
                         <option key={instrument.id} value={instrument.id}>
                           {instrument.name}
                         </option>
@@ -367,22 +350,62 @@ export default function WorksClient({
                   </div>
                 </div>
 
-                {/* Additional filters could be added here */}
+                {/* Epoch Filter - NOVO */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-theme-secondary">
-                    Período (Em breve)
+                    Período
                   </label>
-                  <div className="input-classical bg-theme-tertiary/10 text-theme-tertiary cursor-not-allowed">
-                    Todos os períodos
+                  <div className="relative">
+                    <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                    <select
+                      value={selectedEpoch}
+                      onChange={(e) => handleEpochFilter(e.target.value)}
+                      className="input-classical pl-11 w-full appearance-none"
+                    >
+                      <option value="">Todos os períodos</option>
+                      {filterOptions.epochs.map((epoch) => (
+                        <option key={epoch.id} value={epoch.id}>
+                          {epoch.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                      <svg
+                        className="w-4 h-4 text-theme-tertiary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </div>
 
+                {/* Genre Filter - NOVO COMPONENTE DE BUSCA */}
+                <div className="space-y-2 relative z-[70]">
+                  <label className="text-sm font-medium text-theme-secondary">
+                    Gênero
+                  </label>
+                  <GenreSearchInput
+                    selectedGenre={selectedGenre}
+                    onGenreSelect={handleGenreFilter}
+                    initialGenres={filterOptions.workGenres}
+                  />
+                </div>
+
+                {/* Slot para futuros filtros */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-theme-secondary">
-                    Gênero (Em breve)
+                    Compositor (Em breve)
                   </label>
                   <div className="input-classical bg-theme-tertiary/10 text-theme-tertiary cursor-not-allowed">
-                    Todos os gêneros
+                    Todos os compositores
                   </div>
                 </div>
               </div>
@@ -412,12 +435,47 @@ export default function WorksClient({
                 <div className="flex items-center gap-2 px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm">
                   <span>
                     Instrumento:{' '}
-                    {instruments.find((i) => i.id === searchParams.instrument)
-                      ?.name || searchParams.instrument}
+                    {filterOptions.instruments.find(
+                      (i) => i.id === searchParams.instrument
+                    )?.name || searchParams.instrument}
                   </span>
                   <button
                     onClick={() => removeFilter('instrument')}
                     className="hover:text-accent-green/80 transition-colors"
+                  >
+                    <FiX className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+
+              {searchParams.epoch && (
+                <div className="flex items-center gap-2 px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm">
+                  <span>
+                    Período:{' '}
+                    {filterOptions.epochs.find(
+                      (e) => e.id === searchParams.epoch
+                    )?.name || searchParams.epoch}
+                  </span>
+                  <button
+                    onClick={() => removeFilter('epoch')}
+                    className="hover:text-accent-blue/80 transition-colors"
+                  >
+                    <FiX className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+
+              {searchParams.workGenresArr && (
+                <div className="flex items-center gap-2 px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
+                  <span className="capitalize">
+                    Gênero:{' '}
+                    {filterOptions.workGenres.find(
+                      (g) => g.id === searchParams.genre
+                    )?.name || searchParams.workGenresArr}
+                  </span>
+                  <button
+                    onClick={() => removeFilter('genre')}
+                    className="hover:text-accent-purple/80 transition-colors"
                   >
                     <FiX className="w-3 h-3" />
                   </button>
@@ -457,7 +515,7 @@ export default function WorksClient({
         </div>
 
         {/* Results Section */}
-        <div className="relative">
+        <div className="relative -z-10">
           {worksData.works.length > 0 ? (
             viewMode === 'cards' ? (
               // Cards View

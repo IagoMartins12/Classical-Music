@@ -243,7 +243,7 @@ const RandomDiscoveries: React.FC<RandomDiscoveriesProps> = ({
   composers,
 }) => {
   return (
-    <section className="section-wrap relative">
+    <section className="section-wrap relative !mb-8">
       <SectionTitle
         title="Descobertas Aleatórias"
         subtitle="Compositores e obras fascinantes esperando para serem explorados"
@@ -291,13 +291,13 @@ const RandomDiscoveries: React.FC<RandomDiscoveriesProps> = ({
       </div>
 
       {/* Mystery section footer */}
-      <div className="mt-8 text-center">
+      {/* <div className="mt-8 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500/10 to-purple-500/10 border border-orange-500/20 rounded-full text-theme-primary text-sm font-medium backdrop-blur-sm">
           <GiTreasureMap className="w-4 h-4 text-orange-400" />
           <span>Cada descoberta revela uma nova jornada musical</span>
           <GiMusicalNotes className="w-4 h-4 text-purple-400 animate-pulse" />
         </div>
-      </div>
+      </div> */}
 
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

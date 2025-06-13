@@ -234,7 +234,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
   };
 
   return (
-    <section className="section-wrap relative">
+    <section className="section-wrap relative !mb-8">
       <SectionTitle
         title="Curiosidades Musicais"
         subtitle="Fatos fascinantes e histórias interessantes do mundo da música clássica"

@@ -110,10 +110,16 @@ model Composer {
 
   @@index([name])
   @@index([epochId])
-  @@index([name, epochId])
   @@index([fullName])
   @@index([primaryRoleId])
   @@index([imslpId]) // Para busca eficiente pelo scraper
+
+  // ÍNDICES COMPOSTOS
+  @@index([name, epochId])
+  @@index([epochId, primaryRoleId])
+  
+  // ÍNDICE para busca de texto
+  @@index([name, fullName])
 }
 
 model Epoch {
@@ -207,6 +213,20 @@ model Work {
   @@index([workType])
   @@index([parentWorkId])
   @@index([isPartOfCollection])
+
+   // ÍNDICES COMPOSTOS para filtros combinados
+  @@index([composerId, instrumentId])
+  @@index([composerId, epochId])
+  @@index([instrumentId, epochId])
+  @@index([composerId, instrumentId, epochId])
+  
+  // ÍNDICES para busca de texto
+  @@index([opOrCatalog, composerId])
+
+  
+  // ÍNDICES para arrays (se suportado pelo MongoDB)
+  @@index([categoryNames])
+  @@index([workGenresArr])
 }
 
 

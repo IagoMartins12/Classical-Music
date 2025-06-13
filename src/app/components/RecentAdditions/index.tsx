@@ -26,7 +26,7 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
   works,
 }) => {
   return (
-    <section className="section-wrap relative">
+    <section className="section-wrap relative !mb-8">
       <SectionTitle
         title="Últimas Adições"
         subtitle="Novos compositores recém-adicionados à nossa enciclopédia"

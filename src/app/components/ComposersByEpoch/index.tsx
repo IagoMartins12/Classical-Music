@@ -222,7 +222,7 @@ const ComposersByEpoch: React.FC<ComposersByEpochProps> = ({ epochs }) => {
     name: 'Todos',
   };
   return (
-    <section className="section-wrap relative py-16">
+    <section className="section-wrap relative py-16 !mb-8">
       <SectionTitle
         title="Explore por Período"
         subtitle="Descubra a evolução da música através dos séculos"
