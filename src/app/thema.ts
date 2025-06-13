@@ -171,8 +171,7 @@ export const THEME_GRADIENTS = {
     primary: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%)',
     card: 'linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(255, 255, 255, 0.9) 100%)',
     card2:
-      'linear-gradient(90deg, rgba(148, 163, 184, 0.2) 0%, rgba(100, 116, 139, 0.2) 50%, rgba(148, 163, 184, 0.2) 100%)',
-
+      'linear-gradient(90deg, rgba(241, 245, 249, 0.3) 0%, rgba(226, 232, 240, 0.3) 50%, rgba(241, 245, 249, 0.3) 100%)',
     hero: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
     overlay:
       'linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 100%)',

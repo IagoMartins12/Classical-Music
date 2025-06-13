@@ -1,10 +1,16 @@
 // app/components/MusicalFacts/MusicalFacts.tsx
 'use client';
 
-import { FiBookOpen, FiZap, FiStar, FiInfo } from 'react-icons/fi';
+import { FiBookOpen, FiStar, FiRefreshCw, FiFilter } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SectionTitle from '../Utils/SectionTitle';
+import {
+  categories,
+  getFactsByCategory,
+  getRandomFacts,
+  musicalFacts,
+} from '@/app/requests/utils';
 
 interface MusicalFact {
   id: string;
@@ -16,7 +22,8 @@ interface MusicalFact {
 }
 
 interface MusicalFactsProps {
-  facts: MusicalFact[];
+  facts?: MusicalFact[];
+  initialCount?: number;
 }
 
 const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
@@ -25,41 +32,59 @@ const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
   // Definir estilos por tipo de curiosidade
   const getFactStyle = (type: string) => {
     const styles = {
-      curiosity: {
+      Medieval: {
         gradient: 'from-blue-600/20 to-cyan-500/20',
         border: 'border-blue-500/30',
         accent: 'text-blue-400',
         bg: 'bg-blue-500/10',
       },
-      anniversary: {
+      Renascimento: {
         gradient: 'from-pink-600/20 to-rose-500/20',
         border: 'border-pink-500/30',
         accent: 'text-pink-400',
         bg: 'bg-pink-500/10',
       },
-      instrument: {
+      Barroco: {
         gradient: 'from-purple-600/20 to-violet-500/20',
         border: 'border-purple-500/30',
         accent: 'text-purple-400',
         bg: 'bg-purple-500/10',
       },
-      technique: {
+      Clássico: {
         gradient: 'from-emerald-600/20 to-green-500/20',
         border: 'border-emerald-500/30',
         accent: 'text-emerald-400',
         bg: 'bg-emerald-500/10',
       },
-      record: {
+      Romântico: {
         gradient: 'from-amber-600/20 to-yellow-500/20',
         border: 'border-amber-500/30',
         accent: 'text-amber-400',
         bg: 'bg-amber-500/10',
       },
-      innovation: {
+      Impressionismo: {
         gradient: 'from-orange-600/20 to-red-500/20',
         border: 'border-orange-500/30',
         accent: 'text-orange-400',
         bg: 'bg-orange-500/10',
+      },
+      Moderno: {
+        gradient: 'from-indigo-600/20 to-purple-500/20',
+        border: 'border-indigo-500/30',
+        accent: 'text-indigo-400',
+        bg: 'bg-indigo-500/10',
+      },
+      Teoria: {
+        gradient: 'from-cyan-600/20 to-sky-500/20',
+        border: 'border-cyan-500/30',
+        accent: 'text-cyan-400',
+        bg: 'bg-cyan-500/10',
+      },
+      Futuro: {
+        gradient: 'from-gray-600/20 to-slate-500/20',
+        border: 'border-gray-500/30',
+        accent: 'text-gray-400',
+        bg: 'bg-gray-500/10',
       },
     };
 
@@ -73,7 +98,7 @@ const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
     );
   };
 
-  const style = getFactStyle(fact.type);
+  const style = getFactStyle(fact.category);
 
   // Animação escalonada baseada no índice
   const animationDelay = `${index * 100}ms`;
@@ -118,56 +143,10 @@ const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
 
             {/* Content preview */}
             <p
-              className={`text-theme-secondary leading-relaxed transition-all duration-300 ${
-                isExpanded ? '' : 'line-clamp-3'
-              }`}
+              className={`text-theme-secondary leading-relaxed transition-all duration-300 `}
             >
               {fact.content}
             </p>
-
-            {/* Expand/collapse indicator */}
-            {fact.content.length > 150 && (
-              <button className="mt-3 flex items-center gap-2 text-sm font-medium text-theme-tertiary hover:text-theme-primary transition-colors duration-300">
-                <span>{isExpanded ? 'Mostrar menos' : 'Ler mais'}</span>
-                <svg
-                  className={`w-4 h-4 transition-transform duration-300 ${
-                    isExpanded ? 'rotate-180' : ''
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Interactive elements */}
-      <div className="px-6 pb-6">
-        <div className="flex items-center justify-between pt-4 border-t border-theme-secondary/50">
-          <div className="flex items-center space-x-2 text-theme-tertiary text-sm">
-            <div
-              className={`w-2 h-2 rounded-full animate-pulse`}
-              style={{ backgroundColor: style.accent.split('-')[1] }}
-            ></div>
-            <span className="font-medium">Curiosidade Musical</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <FiInfo
-              className={`w-4 h-4 transition-colors duration-300 group-hover:${style.accent}`}
-            />
-            <span className="text-xs text-theme-tertiary group-hover:text-theme-secondary transition-colors duration-300">
-              Toque para {isExpanded ? 'recolher' : 'expandir'}
-            </span>
           </div>
         </div>
       </div>
@@ -185,7 +164,75 @@ const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
   );
 };
 
-const MusicalFacts: React.FC<MusicalFactsProps> = ({ facts }) => {
+const MusicalFacts: React.FC<MusicalFactsProps> = ({
+  facts: initialFacts,
+  initialCount = 4,
+}) => {
+  const [displayedFacts, setDisplayedFacts] = useState<MusicalFact[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [loadedCount, setLoadedCount] = useState(initialCount);
+
+  // Inicializar com fatos fornecidos ou buscar aleatórios
+  useEffect(() => {
+    if (initialFacts && initialFacts.length > 0) {
+      setDisplayedFacts(initialFacts);
+    } else {
+      loadInitialFacts();
+    }
+
+    //@es
+  }, [initialFacts, initialCount]);
+
+  const loadInitialFacts = () => {
+    const facts = getRandomFacts(initialCount);
+    setDisplayedFacts(facts);
+    setLoadedCount(initialCount);
+  };
+
+  const refreshFacts = async () => {
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 600));
+
+    if (selectedCategory === 'all') {
+      const facts = getRandomFacts(loadedCount);
+      setDisplayedFacts(facts);
+    } else {
+      const facts = getFactsByCategory(selectedCategory, loadedCount);
+      setDisplayedFacts(facts);
+    }
+
+    setIsLoading(false);
+  };
+
+  const handleCategoryChange = async (category: string) => {
+    setSelectedCategory(category);
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    if (category === 'all') {
+      const facts = getRandomFacts(initialCount);
+      setDisplayedFacts(facts);
+    } else {
+      const facts = getFactsByCategory(category, initialCount);
+      setDisplayedFacts(facts);
+    }
+
+    setLoadedCount(initialCount);
+    setIsLoading(false);
+  };
+
+  const hasMoreFacts = () => {
+    if (selectedCategory === 'all') {
+      return displayedFacts.length < musicalFacts.length;
+    } else {
+      const categoryFacts = musicalFacts.filter(
+        (fact) => fact.category === selectedCategory
+      );
+      return displayedFacts.length < categoryFacts.length;
+    }
+  };
+
   return (
     <section className="section-wrap relative">
       <SectionTitle
@@ -197,21 +244,87 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({ facts }) => {
         accent="blue"
       />
 
-      {/* Facts grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {facts.map((fact, index) => (
-          <FactCard key={fact.id} fact={fact} index={index} />
-        ))}
+      {/* Filter and Controls */}
+      <div className="mb-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+        {/* Category Filter */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 text-theme-secondary">
+            <FiFilter className="w-4 h-4" />
+            <span className="text-sm font-medium">Filtrar por período:</span>
+          </div>
+          <select
+            value={selectedCategory}
+            onChange={(e) => handleCategoryChange(e.target.value)}
+            className="input-classical text-sm !py-2 !px-3 min-w-[150px]"
+            disabled={isLoading}
+          >
+            <option value="all">Todos os Períodos</option>
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Refresh Button */}
+        <button
+          onClick={refreshFacts}
+          disabled={isLoading}
+          className="btn-classical-secondary flex items-center gap-2 text-sm"
+        >
+          <FiRefreshCw
+            className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
+          />
+          Embaralhar
+        </button>
       </div>
 
-      {/* Knowledge section footer */}
-      <div className="mt-8 text-center">
-        <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-2xl text-blue-400 text-sm font-medium backdrop-blur-sm">
-          <FiStar className="w-5 h-5" />
-          <span>Expandindo horizontes musicais diariamente</span>
-          <FiZap className="w-5 h-5 animate-pulse" />
+      {/* Facts grid */}
+      {isLoading ? (
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="classical-card-simple p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-2xl loading-skeleton"></div>
+                <div className="flex-1">
+                  <div className="h-4 loading-skeleton rounded mb-2"></div>
+                  <div className="h-3 loading-skeleton rounded mb-3 w-3/4"></div>
+                  <div className="h-3 loading-skeleton rounded mb-2"></div>
+                  <div className="h-3 loading-skeleton rounded w-1/2"></div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {displayedFacts.map((fact, index) => (
+            <FactCard
+              key={`${fact.id}-${selectedCategory}`}
+              fact={fact}
+              index={index}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* End message */}
+      {!isLoading &&
+        !hasMoreFacts() &&
+        displayedFacts.length > initialCount && (
+          <div className="mt-8 text-center">
+            <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl text-green-400 text-sm font-medium backdrop-blur-sm">
+              <FiStar className="w-5 h-5" />
+              <span>
+                {selectedCategory === 'all'
+                  ? 'Você explorou todas as curiosidades! 🎉'
+                  : `Todas as curiosidades de ${selectedCategory} foram exibidas! 🎵`}
+              </span>
+              <FiStar className="w-5 h-5" />
+            </div>
+          </div>
+        )}
 
       {/* Floating fact bubbles decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

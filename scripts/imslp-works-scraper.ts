@@ -85,7 +85,6 @@ interface WorkGenreData {
 
 interface InstrumentGenreCache {
   instruments: Map<string, any>;
-  categories: Map<string, any>;
   workGenres: Map<string, any>;
 }
 
@@ -121,7 +120,6 @@ class WorkScraper {
 
     this.cache = {
       instruments: new Map(),
-      categories: new Map(),
       workGenres: new Map(),
     };
 
@@ -137,21 +135,13 @@ class WorkScraper {
         this.cache.instruments.set(instrument.name.toLowerCase(), instrument);
       });
 
-      // Carregar categorias
-      const categories = await prisma.categorie.findMany();
-      categories.forEach((category) => {
-        this.cache.categories.set(category.name.toLowerCase(), category);
-      });
-
       // Carregar workGenres
       const workGenres = await prisma.workGenre.findMany();
       workGenres.forEach((workGenre) => {
         this.cache.workGenres.set(workGenre.name.toLowerCase(), workGenre);
       });
 
-      console.log(
-        `📚 Cache inicializado: ${instruments.length} instrumentos, ${categories.length} categorias`
-      );
+      console.log(`📚 Cache inicializado: ${instruments.length} instrumentos`);
     } catch (error) {
       console.error('❌ Erro ao inicializar cache:', error);
     }
@@ -435,64 +425,6 @@ class WorkScraper {
   }
 
   // Traduzir e buscar/criar gênero
-  async findOrCreateCategorie(
-    workTypeName: string
-  ): Promise<WorkGenreData | null> {
-    try {
-      const normalizedName = workTypeName.toLowerCase().trim();
-
-      const translatedName = NORMALIZED_CATEGORIES[normalizedName];
-
-      console.log('TRANSLATED NAMEEEE', translatedName);
-
-      if (!translatedName) {
-        // console.error(`❌ Categoria inválida ${workTypeName}:`);
-        return null;
-      }
-
-      // Verificar cache primeiro
-      if (this.cache.categories.has(translatedName)) {
-        return this.cache.categories.get(translatedName);
-      }
-
-      // Buscar no banco
-      let category = await prisma.categorie.findFirst({
-        where: {
-          name: { contains: translatedName, mode: 'insensitive' },
-        },
-      });
-
-      // Se não encontrou, criar nova
-      if (!category) {
-        const capitalizedName =
-          translatedName.charAt(0).toUpperCase() + translatedName.slice(1);
-
-        category = await prisma.categorie.create({
-          data: {
-            name: capitalizedName,
-            createdAt: new Date(),
-          },
-        });
-
-        console.log(`🏷️ Nova categoria criada: ${capitalizedName}`);
-      }
-
-      // Adicionar ao cache
-      this.cache.categories.set(normalizedName, category);
-
-      return category;
-    } catch (error) {
-      console.error(
-        `❌ Erro ao buscar/criar categoria ${workTypeName}:`,
-        error
-      );
-      // Retornar categoria padrão como fallback
-      return (
-        (await prisma.categorie.findFirst()) || { id: '', name: 'Classical' }
-      );
-    }
-  }
-
   async findOrCreateWorkGenre(
     workTypeName: string
   ): Promise<WorkGenreData | null> {

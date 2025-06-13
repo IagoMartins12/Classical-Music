@@ -3,46 +3,6 @@ import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 import { allFamousNames, getComposerCuriosities } from './utils';
 
-// Função para buscar épocas com compositores representativos
-export const getEpochsWithComposers = unstable_cache(
-  async () => {
-    const epochs = await prisma.epoch.findMany({
-      select: {
-        id: true,
-        name: true,
-        composers: {
-          where: {
-            OR: [
-              { primaryRoleId: '6839e5a5eba93979e36ad88b' },
-              { roles: { contains: '6839e5a5eba93979e36ad88b' } },
-            ],
-          },
-          select: {
-            id: true,
-            name: true,
-            fullName: true,
-            portraitUrl: true,
-          },
-          take: 8,
-          orderBy: {
-            name: 'asc',
-          },
-        },
-      },
-      orderBy: {
-        name: 'asc',
-      },
-    });
-
-    return epochs.filter((epoch) => epoch.composers.length > 0);
-  },
-  ['epochs-with-composers'],
-  {
-    revalidate: 86400, // 24 horas
-    tags: ['epochs', 'composers'],
-  }
-);
-
 // Compositor em destaque (muda a cada 24h)
 export const getFeaturedComposer = unstable_cache(
   async () => {
@@ -299,6 +259,30 @@ export const getRecentAdditions = unstable_cache(
         fullName: true,
         portraitUrl: true,
         createdAt: true,
+        epochName: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 4,
+    });
+
+    const recenteWorks = await prisma.work.findMany({
+      select: {
+        id: true,
+        title: true,
+        mediaDuration: true,
+        createdAt: true,
+        composer: {
+          select: {
+            fullName: true,
+          },
+        },
+        instrument: {
+          select: {
+            name: true,
+          },
+        },
         epoch: {
           select: {
             name: true,
@@ -308,13 +292,15 @@ export const getRecentAdditions = unstable_cache(
       orderBy: {
         createdAt: 'desc',
       },
-      take: 6,
+      take: 4,
     });
 
-    return recentComposers.map((composer) => ({
-      ...composer,
-      epochName: composer.epoch.name,
-    }));
+    const object = {
+      composers: recentComposers,
+      works: recenteWorks,
+    };
+
+    return object;
   },
   ['recent-additions'],
   {
@@ -396,7 +382,6 @@ export const getMusicalFacts = unstable_cache(
 // Função para invalidar caches
 export async function revalidateHomeComponentsCache() {
   const { revalidateTag } = await import('next/cache');
-  revalidateTag('epochs');
   revalidateTag('composers');
   revalidateTag('featured');
   revalidateTag('random');

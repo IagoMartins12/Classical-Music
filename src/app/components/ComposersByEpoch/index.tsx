@@ -11,12 +11,6 @@ import SectionTitle from '../Utils/SectionTitle';
 interface Epoch {
   id: string;
   name: string;
-  composers: Array<{
-    id: string;
-    name: string;
-    fullName: string;
-    portraitUrl?: string;
-  }>;
 }
 
 interface ComposersByEpochProps {
@@ -30,74 +24,36 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
   const getEpochData = (epochName: string) => {
     const epochData = {
       Medieval: {
-        gradient: 'from-amber-600/30 to-yellow-500/30',
-        border: 'border-amber-500/40',
-        icon: '🏰',
-        accent: 'text-amber-400',
-        bgColor: 'bg-amber-900/20',
         image: '/epochs/medieval.jpg',
         description: 'Século V - XV',
-        buttonGradient: 'from-amber-500 to-yellow-500',
       },
       Renascentista: {
-        gradient: 'from-emerald-600/30 to-green-500/30',
-        border: 'border-emerald-500/40',
-        icon: '🎨',
-        accent: 'text-emerald-400',
-        bgColor: 'bg-emerald-900/20',
         image: '/epochs/renaissance.webp',
         description: 'Século XV - XVI',
-        buttonGradient: 'from-emerald-500 to-green-500',
       },
       Barroco: {
-        gradient: 'from-purple-600/30 to-violet-500/30',
-        border: 'border-purple-500/40',
-        icon: '👑',
-        accent: 'text-purple-400',
-        bgColor: 'bg-purple-900/20',
         image: '/epochs/baroque.jpeg',
         description: '1600 - 1750',
-        buttonGradient: 'from-purple-500 to-violet-500',
       },
       Clássico: {
-        gradient: 'from-blue-600/30 to-cyan-500/30',
-        border: 'border-blue-500/40',
-        icon: '🎼',
-        accent: 'text-blue-400',
-        bgColor: 'bg-blue-900/20',
         image: '/epochs/classical.jpg',
         description: '1750 - 1820',
-        buttonGradient: 'from-blue-500 to-cyan-500',
       },
       Rômantico: {
-        gradient: 'from-rose-600/30 to-pink-500/30',
-        border: 'border-rose-500/40',
-        icon: '💕',
-        accent: 'text-rose-400',
-        bgColor: 'bg-rose-900/20',
         image: '/epochs/romantic.jpeg',
         description: '1820 - 1910',
-        buttonGradient: 'from-rose-500 to-pink-500',
       },
       Modernismo: {
-        gradient: 'from-orange-600/30 to-red-500/30',
-        border: 'border-orange-500/40',
-        icon: '⚡',
-        accent: 'text-orange-400',
-        bgColor: 'bg-orange-900/20',
         image: '/epochs/modern.jpg',
         description: '1910 - 1945',
-        buttonGradient: 'from-orange-500 to-red-500',
       },
       Contemporâneo: {
-        gradient: 'from-teal-600/30 to-cyan-500/30',
-        border: 'border-teal-500/40',
-        icon: '🚀',
-        accent: 'text-teal-400',
-        bgColor: 'bg-teal-900/20',
         image: '/epochs/contemporary.jpg',
         description: '1945 - presente',
-        buttonGradient: 'from-teal-500 to-cyan-500',
+      },
+      Todos: {
+        image: '/epochs/all.png',
+        description: 'Todos os periodos musicais',
       },
     };
 
@@ -107,10 +63,8 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
         border: 'border-brand-primary/40',
         icon: '🎵',
         accent: 'text-brand-primary',
-        bgColor: 'bg-brand-primary/20',
         image: '/epochs/default.jpg',
         description: 'Período musical',
-        buttonGradient: 'from-brand-primary to-brand-secondary',
       }
     );
   };
@@ -118,7 +72,10 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
   const epochData = getEpochData(epoch.name);
 
   return (
-    <div className="group cursor-pointer select-none">
+    <div
+      className="group cursor-pointer select-none"
+      onClick={() => setIsExpanded(!isExpanded)}
+    >
       {/* Círculo principal */}
       <div
         className={`
@@ -128,15 +85,9 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
           group-hover:scale-105 group-hover:shadow-theme-glow
           
         `}
-        onClick={() => setIsExpanded(!isExpanded)}
       >
         {/* Imagem de fundo da época */}
         <div className="absolute inset-0">
-          {/* Fallback com gradiente se não houver imagem */}
-          <div
-            className={`w-full h-full bg-gradient-to-br ${epochData.gradient}`}
-          ></div>
-
           {/* Imagem da época (comentado até você adicionar as imagens) */}
           <Image
             src={epochData.image}
@@ -188,7 +139,11 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
         <div className="space-y-3 px-4">
           {/* Botão Compositores */}
           <Link
-            href={`/composers?epoch=${epoch.id}`}
+            href={
+              epoch.name !== 'Todos'
+                ? `/composers?epoch=${epoch.id}`
+                : `/composers`
+            }
             className="group/btn flex items-center justify-between w-full px-4 py-3 bg-theme-elevated/90 backdrop-blur-md border border-theme-primary/30 rounded-xl text-theme-primary font-medium hover:bg-interactive-hover hover:border-brand-primary hover:text-brand-primary transition-all duration-300 shadow-theme-sm"
           >
             <div className="flex items-center gap-3">
@@ -217,7 +172,9 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
 
           {/* Botão Peças */}
           <Link
-            href={`/works?epoch=${epoch.id}`}
+            href={
+              epoch.name !== 'Todos' ? `/works?epoch=${epoch.id}` : `/works`
+            }
             className="group/btn flex items-center justify-between w-full px-4 py-3 bg-theme-elevated/90 backdrop-blur-md border border-theme-primary/30 rounded-xl text-theme-primary font-medium hover:bg-interactive-hover hover:border-brand-primary hover:text-brand-primary transition-all duration-300 shadow-theme-sm"
           >
             <div className="flex items-center gap-3">
@@ -260,6 +217,10 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
 };
 
 const ComposersByEpoch: React.FC<ComposersByEpochProps> = ({ epochs }) => {
+  const epochCardMock = {
+    id: '8',
+    name: 'Todos',
+  };
   return (
     <section className="section-wrap relative py-16">
       <SectionTitle
@@ -282,6 +243,13 @@ const ComposersByEpoch: React.FC<ComposersByEpochProps> = ({ epochs }) => {
             <EpochCard epoch={epoch} />
           </div>
         ))}
+
+        <div
+          className="animate-fade-in-up py-4"
+          style={{ animationDelay: `${8 * 150}ms` }}
+        >
+          <EpochCard epoch={epochCardMock} />
+        </div>
       </div>
 
       {/* Informação adicional */}

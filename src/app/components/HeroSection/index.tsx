@@ -7,23 +7,6 @@ import FloatingIcons from '../FloatingIcons';
 export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-gradient-primary pt-8 md:pt-24 lg:pt-24 flex items-center">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>
-        <div
-          className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: '1s' }}
-        ></div>
-        <div
-          className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl animate-pulse"
-          style={{ animationDelay: '2s' }}
-        ></div>
-        <div
-          className="absolute bottom-20 left-10 w-40 h-40 bg-brand-secondary/20 rounded-full blur-2xl animate-pulse"
-          style={{ animationDelay: '0.5s' }}
-        ></div>
-      </div>
-
       {/* Animated musical notes */}
       <AnimatedMusicalNotes />
       <div className="section-wrap mx-auto relative z-10">

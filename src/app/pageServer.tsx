@@ -4,13 +4,13 @@ import PopularComposers from './components/PopularComposers';
 import EssentialComposers from './components/EssentialComposers';
 
 import {
+  getEpochsCache,
   getRecomendadedComposers,
   getTop20FamousComposers,
 } from './requests/composers';
 
 import {
   getFeaturedComposer,
-  getEpochsWithComposers,
   getRandomDiscoveries,
   getRecentAdditions,
   getMusicalFacts,
@@ -35,7 +35,7 @@ export default async function EnhancedHomePage() {
     getTop20FamousComposers(),
     getRecomendadedComposers(),
     getFeaturedComposer(),
-    getEpochsWithComposers(),
+    getEpochsCache(),
     getRandomDiscoveries(),
     getRecentAdditions(),
     getMusicalFacts(),
@@ -55,21 +55,28 @@ export default async function EnhancedHomePage() {
       {/* Explore por período (novo) */}
       {epochsData.length > 0 && <ComposersByEpoch epochs={epochsData} />}
 
-      {/* Compositores essenciais (existente) */}
-      <EssentialComposers composersData={recomendadData} />
-
       {/* Descobertas aleatórias (novo) */}
       {(randomDiscoveries.composers.length > 0 ||
         randomDiscoveries.works.length > 0) && (
-        <RandomDiscoveries discoveries={randomDiscoveries} />
+        <RandomDiscoveries
+          composers={randomDiscoveries.composers}
+          works={randomDiscoveries.works}
+        />
       )}
       {/* Últimas adições (novo) */}
-      {recentComposers.length > 0 && (
-        <RecentAdditions composers={recentComposers} />
-      )}
+      {recentComposers.composers.length > 0 &&
+        recentComposers.works.length > 0 && (
+          <RecentAdditions
+            composers={recentComposers.composers}
+            works={recentComposers.works}
+          />
+        )}
 
       {/* Curiosidades musicais (novo) */}
       {musicalFacts.length > 0 && <MusicalFacts facts={musicalFacts} />}
+
+      {/* Compositores essenciais (existente) */}
+      <EssentialComposers composersData={recomendadData} />
     </div>
   );
 }

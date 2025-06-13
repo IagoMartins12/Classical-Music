@@ -1,7 +1,7 @@
 // app/components/RandomDiscoveries/RandomDiscoveries.tsx
 'use client';
 
-import { FiShuffle, FiHeart, FiUser, FiEye, FiMusic } from 'react-icons/fi';
+import { FiShuffle, FiUser, FiEye, FiMusic } from 'react-icons/fi';
 import { GiMusicalNotes, GiTreasureMap, GiPianoKeys } from 'react-icons/gi';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -12,7 +12,7 @@ interface Composer {
   id: string;
   name: string;
   fullName: string;
-  portraitUrl?: string;
+  portraitUrl?: string | null;
   epochName: string;
 }
 
@@ -20,8 +20,7 @@ interface Work {
   id: string;
   title: string;
   imslpPermlink: string;
-  opOrCatalog?: string;
-  tone?: string;
+  tone?: string | null;
   epochName: string;
   instrumentName: string;
   composerName: string;
@@ -29,19 +28,16 @@ interface Work {
     id: string;
     name: string;
     fullName: string;
-    portraitUrl?: string;
+    portraitUrl?: string | null;
   };
 }
 
 interface RandomDiscoveriesProps {
-  discoveries: {
-    composers: Composer[];
-    works: Work[];
-  };
+  composers: Composer[];
+  works: Work[];
 }
 
 const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
-  const [isFavorited, setIsFavorited] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -92,7 +88,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
 
             {/* Floating action button */}
             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-              <button
+              {/* <button
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -109,7 +105,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
                     isFavorited ? 'fill-current' : ''
                   }`}
                 />
-              </button>
+              </button> */}
             </div>
           </div>
 
@@ -149,7 +145,7 @@ const DiscoveryComposerCard = ({ composer }: { composer: Composer }) => {
 };
 
 const DiscoveryWorkCard = ({ work }: { work: Work }) => {
-  const [isFavorited, setIsFavorited] = useState(false);
+  // const [isFavorited, setIsFavorited] = useState(false);
 
   const formatTitle = (title: string) => {
     return title.length > 40 ? `${title.substring(0, 40)}...` : title;
@@ -157,7 +153,7 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
 
   return (
     <div className="group cursor-pointer select-none">
-      <Link href={`/work/${work.id}`}>
+      <Link href={`/works/${work.id}`}>
         <div className="classical-card overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-1 hover:shadow-theme-glow relative">
           {/* Discovery badge */}
           <div className="absolute top-3 left-3 z-10">
@@ -177,7 +173,7 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
 
             {/* Floating action button */}
             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
-              <button
+              {/* <button
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -194,7 +190,7 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
                     isFavorited ? 'fill-current' : ''
                   }`}
                 />
-              </button>
+              </button> */}
             </div>
           </div>
 
@@ -243,7 +239,8 @@ const DiscoveryWorkCard = ({ work }: { work: Work }) => {
 };
 
 const RandomDiscoveries: React.FC<RandomDiscoveriesProps> = ({
-  discoveries,
+  works,
+  composers,
 }) => {
   return (
     <section className="section-wrap relative">
@@ -268,7 +265,7 @@ const RandomDiscoveries: React.FC<RandomDiscoveriesProps> = ({
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          {discoveries.composers.map((composer) => (
+          {composers.map((composer) => (
             <DiscoveryComposerCard key={composer.id} composer={composer} />
           ))}
         </div>
@@ -287,7 +284,7 @@ const RandomDiscoveries: React.FC<RandomDiscoveriesProps> = ({
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-          {discoveries.works.map((work) => (
+          {works.map((work) => (
             <DiscoveryWorkCard key={work.id} work={work} />
           ))}
         </div>

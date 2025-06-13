@@ -2526,3 +2526,2764 @@ export const allFamousNames = [
   'Arvo Pärt',
   'Ennio Morricone',
 ];
+
+// 300 Curiosidades Musicais para Classical Hub
+export const musicalFacts = [
+  // PERÍODO MEDIEVAL (25 curiosidades)
+  {
+    id: '1',
+    type: 'curiosity',
+    icon: '⛪',
+    title: 'Canto Gregoriano',
+    content:
+      'O canto gregoriano, desenvolvido na Idade Média, era totalmente monofônico (uma única melodia) e cantado sem acompanhamento instrumental, criando uma atmosfera transcendental única.',
+    category: 'Medieval',
+  },
+  {
+    id: '2',
+    type: 'innovation',
+    icon: '📜',
+    title: 'Primeira Notação',
+    content:
+      "Guido d'Arezzo (c. 991-1033) revolucionou a música ao criar o sistema de notação com pautas de quatro linhas, predecessor do sistema atual de cinco linhas.",
+    category: 'Medieval',
+  },
+  {
+    id: '3',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'Trovadores e Trouvères',
+    content:
+      'Os trovadores do sul da França e os trouvères do norte criaram as primeiras canções seculares documentadas, estabelecendo tradições que influenciariam toda a música ocidental.',
+    category: 'Medieval',
+  },
+  {
+    id: '4',
+    type: 'technique',
+    icon: '🎵',
+    title: 'Organum',
+    content:
+      'O organum foi a primeira forma de polifonia organizada, onde uma segunda voz era adicionada ao canto gregoriano, marcando o início da harmonia ocidental.',
+    category: 'Medieval',
+  },
+  {
+    id: '5',
+    type: 'curiosity',
+    icon: '🏰',
+    title: 'Escola de Notre-Dame',
+    content:
+      'A Escola de Notre-Dame de Paris (séc. XII-XIII) foi o primeiro centro de composição polifônica, onde Léonin e Pérotin criaram obras revolucionárias.',
+    category: 'Medieval',
+  },
+  {
+    id: '6',
+    type: 'instrument',
+    icon: '🎻',
+    title: 'Viola da Gamba',
+    content:
+      'A viola da gamba medieval tinha trastes como um violão e era tocada entre as pernas, sendo precursora do violoncelo moderno.',
+    category: 'Medieval',
+  },
+  {
+    id: '7',
+    type: 'curiosity',
+    icon: '📿',
+    title: 'Dies Irae',
+    content:
+      'A melodia do "Dies Irae" (Dia da Ira) medieval foi citada por centenas de compositores posteriores, de Mozart a John Williams em Star Wars.',
+    category: 'Medieval',
+  },
+  {
+    id: '8',
+    type: 'innovation',
+    icon: '🎼',
+    title: 'Ars Nova',
+    content:
+      'O movimento Ars Nova (séc. XIV) introduziu valores rítmicos menores e maior complexidade, revolucionando a música com compositores como Machaut.',
+    category: 'Medieval',
+  },
+  {
+    id: '9',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Saltarello',
+    content:
+      'O saltarello era uma dança medieval italiana tão energética que seu nome significa "pequeno salto", sendo executada em festas populares.',
+    category: 'Medieval',
+  },
+  {
+    id: '10',
+    type: 'technique',
+    icon: '🔄',
+    title: 'Rondeau Medieval',
+    content:
+      'O rondeau medieval tinha a forma ABACA, onde o refrão (A) sempre retornava, influenciando formas musicais por séculos.',
+    category: 'Medieval',
+  },
+  {
+    id: '11',
+    type: 'curiosity',
+    icon: '🎶',
+    title: 'Manuscrito de Montpellier',
+    content:
+      'O Manuscrito de Montpellier (séc. XIII) contém alguns dos primeiros motetos polifônicos, revelando a sofisticação da música medieval.',
+    category: 'Medieval',
+  },
+  {
+    id: '12',
+    type: 'instrument',
+    icon: '🥁',
+    title: 'Tabor Medieval',
+    content:
+      'O tabor era um pequeno tambor tocado com uma mão enquanto a outra tocava uma flauta de três buracos, criando uma "orquestra de um homem só".',
+    category: 'Medieval',
+  },
+  {
+    id: '13',
+    type: 'curiosity',
+    icon: '📚',
+    title: 'Carmina Burana Original',
+    content:
+      'Os "Carmina Burana" originais eram canções de estudantes e clérigos medievais alemães, muito antes da famosa versão de Carl Orff.',
+    category: 'Medieval',
+  },
+  {
+    id: '14',
+    type: 'technique',
+    icon: '🎭',
+    title: 'Hoquetus',
+    content:
+      'O hoquetus era uma técnica medieval onde as vozes se alternavam rapidamente, criando um efeito de "soluço" musical muito característico.',
+    category: 'Medieval',
+  },
+  {
+    id: '15',
+    type: 'curiosity',
+    icon: '🌟',
+    title: 'Hildegard von Bingen',
+    content:
+      'Hildegard von Bingen (1098-1179) foi uma das primeiras compositoras conhecidas, criando cantos visionários que ela afirmava receber em revelações divinas.',
+    category: 'Medieval',
+  },
+  {
+    id: '16',
+    type: 'innovation',
+    icon: '🎵',
+    title: 'Solmização',
+    content:
+      "Guido d'Arezzo criou o sistema de solmização (ut-re-mi-fa-sol-la), baseado no hino a São João Batista, que ainda usamos hoje.",
+    category: 'Medieval',
+  },
+  {
+    id: '17',
+    type: 'curiosity',
+    icon: '🏛️',
+    title: 'Música Bizantina',
+    content:
+      'A música bizantina desenvolveu um sistema de notação próprio com "neumas" que indicavam não apenas alturas, mas também ornamentações complexas.',
+    category: 'Medieval',
+  },
+  {
+    id: '18',
+    type: 'instrument',
+    icon: '🎹',
+    title: 'Órgão Portativo',
+    content:
+      'O órgão portativo medieval era carregado e tocado por uma pessoa só, que bombeava o ar com uma mão e tocava com a outra.',
+    category: 'Medieval',
+  },
+  {
+    id: '19',
+    type: 'curiosity',
+    icon: '🎯',
+    title: 'Conductus',
+    content:
+      'O conductus era um tipo de música medieval processional, cantada enquanto o clero se movia durante cerimônias religiosas.',
+    category: 'Medieval',
+  },
+  {
+    id: '20',
+    type: 'technique',
+    icon: '🔢',
+    title: 'Modos Medievais',
+    content:
+      'A música medieval usava oito modos eclesiásticos, cada um com caráter emocional específico, muito antes do sistema maior-menor moderno.',
+    category: 'Medieval',
+  },
+  {
+    id: '21',
+    type: 'curiosity',
+    icon: '📖',
+    title: 'Cancioneiro da Vaticana',
+    content:
+      'O Cancioneiro da Biblioteca Vaticana preserva centenas de canções medievais que poderiam ter sido perdidas para sempre.',
+    category: 'Medieval',
+  },
+  {
+    id: '22',
+    type: 'innovation',
+    icon: '⚖️',
+    title: 'Tempus Perfectum',
+    content:
+      'Na música medieval, o "tempus perfectum" (tempo perfeito) era ternário, considerado divino, enquanto o binário era "imperfeito".',
+    category: 'Medieval',
+  },
+  {
+    id: '23',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Goliardos',
+    content:
+      'Os goliardos eram estudantes clérigos errantes que criaram canções satíricas e bebedeiras, desafiando a música religiosa oficial.',
+    category: 'Medieval',
+  },
+  {
+    id: '24',
+    type: 'instrument',
+    icon: '🪘',
+    title: 'Alaúde Medieval',
+    content:
+      'O alaúde chegou à Europa através dos árabes na Espanha, tornando-se o instrumento secular mais popular da Idade Média tardia.',
+    category: 'Medieval',
+  },
+  {
+    id: '25',
+    type: 'curiosity',
+    icon: '🌙',
+    title: 'Sérénade Medieval',
+    content:
+      'As primeiras serenatas eram canções de amor noturnas dos trovadores, cantadas sob as janelas das damas na corte medieval.',
+    category: 'Medieval',
+  },
+
+  // PERÍODO RENASCENTISTA (25 curiosidades)
+  {
+    id: '26',
+    type: 'innovation',
+    icon: '📰',
+    title: 'Impressão Musical',
+    content:
+      'Ottaviano Petrucci foi o primeiro a imprimir música em moveable type (1501), revolucionando a disseminação de partituras na Europa.',
+    category: 'Renascimento',
+  },
+  {
+    id: '27',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'Madrigal Renascentista',
+    content:
+      'O madrigal renascentista combinava poesia refinada com música polifônica complexa, sendo o equivalente musical da literatura humanística.',
+    category: 'Renascimento',
+  },
+  {
+    id: '28',
+    type: 'technique',
+    icon: '🎵',
+    title: 'Imitação Polifônica',
+    content:
+      'A técnica de imitação polifônica, onde cada voz repete o mesmo tema em momentos diferentes, foi aperfeiçoada no Renascimento.',
+    category: 'Renascimento',
+  },
+  {
+    id: '29',
+    type: 'curiosity',
+    icon: '⛪',
+    title: 'Missa Pange Lingua',
+    content:
+      'A "Missa Pange Lingua" de Josquin des Prez é considerada uma das obras-primas da polifonia renascentista, baseada em um hino gregoriano.',
+    category: 'Renascimento',
+  },
+  {
+    id: '30',
+    type: 'innovation',
+    icon: '🎼',
+    title: 'Concílio de Trento',
+    content:
+      'O Concílio de Trento (1545-1563) quase baniu a polifonia da música sacra, mas a "Missa Papae Marcelli" de Palestrina a salvou.',
+    category: 'Renascimento',
+  },
+  {
+    id: '31',
+    type: 'curiosity',
+    icon: '🏰',
+    title: 'Escola Franco-Flamenga',
+    content:
+      'Os compositores franco-flamengos dominaram a música europeia por 200 anos, espalhando-se por toda a Europa como maestros de capela.',
+    category: 'Renascimento',
+  },
+  {
+    id: '32',
+    type: 'instrument',
+    icon: '🎹',
+    title: 'Cravo Renascentista',
+    content:
+      'O cravo se tornou o rei dos instrumentos de teclado no Renascimento, com alguns exemplares tendo dois teclados e pedais.',
+    category: 'Renascimento',
+  },
+  {
+    id: '33',
+    type: 'curiosity',
+    icon: '📚',
+    title: 'Chanson Francesa',
+    content:
+      'A chanson francesa renascentista influenciou toda a música secular europeia, com compositores como Clément Janequin imitando sons da natureza.',
+    category: 'Renascimento',
+  },
+  {
+    id: '34',
+    type: 'technique',
+    icon: '🎭',
+    title: 'Palavra e Música',
+    content:
+      'Os compositores renascentistas desenvolveram a arte de "pintar" palavras com música, usando técnicas como melismas em palavras como "alegria".',
+    category: 'Renascimento',
+  },
+  {
+    id: '35',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Dança da Corte',
+    content:
+      'As danças de corte renascentistas como pavana e galharda eram verdadeiros espetáculos sociais, com coreografias complexas.',
+    category: 'Renascimento',
+  },
+  {
+    id: '36',
+    type: 'innovation',
+    icon: '🌟',
+    title: 'Camerata Florentina',
+    content:
+      'A Camerata Florentina tentou recriar o drama grego antigo, acabando por inventar a ópera no final do século XVI.',
+    category: 'Renascimento',
+  },
+  {
+    id: '37',
+    type: 'curiosity',
+    icon: '🎵',
+    title: 'Lamento di Arianna',
+    content:
+      'O "Lamento di Arianna" de Monteverdi foi tão popular que existia em versão operística e em versão madrigal.',
+    category: 'Renascimento',
+  },
+  {
+    id: '38',
+    type: 'instrument',
+    icon: '🎻',
+    title: 'Família das Violas',
+    content:
+      'No Renascimento, a família das violas tinha seis tamanhos diferentes, do soprano ao contra-baixo, cada um com afinação específica.',
+    category: 'Renascimento',
+  },
+  {
+    id: '39',
+    type: 'curiosity',
+    icon: '🏛️',
+    title: 'Música Veneziana',
+    content:
+      'A Basílica de São Marcos em Veneza tinha dois coros opostos, criando o estilo policoral com efeitos estereofônicos únicos.',
+    category: 'Renascimento',
+  },
+  {
+    id: '40',
+    type: 'technique',
+    icon: '🔄',
+    title: 'Cantus Firmus',
+    content:
+      'A técnica do cantus firmus usava melodias pré-existentes (geralmente gregorianas) como base estrutural para composições polifônicas.',
+    category: 'Renascimento',
+  },
+  {
+    id: '41',
+    type: 'curiosity',
+    icon: '📖',
+    title: 'El Maestro',
+    content:
+      '"El Maestro" de Luis de Milán (1536) foi o primeiro livro de música para vihuela impresso na Espanha, influenciando toda a música de cordas.',
+    category: 'Renascimento',
+  },
+  {
+    id: '42',
+    type: 'innovation',
+    icon: '🎭',
+    title: 'Intermezzi',
+    content:
+      'Os intermezzi eram espetáculos musicais entre os atos de peças teatrais, precursores diretos da ópera barroca.',
+    category: 'Renascimento',
+  },
+  {
+    id: '43',
+    type: 'curiosity',
+    icon: '🌹',
+    title: 'Guerra dos Madrigais',
+    content:
+      'Houve uma verdadeira "guerra" estilística entre madrigalistas italianos, com compositores criando versões rivais das mesmas poesias.',
+    category: 'Renascimento',
+  },
+  {
+    id: '44',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Sacabuxa',
+    content:
+      'A sacabuxa renascentista era o ancestral do trombone moderno, mas com sonoridade mais suave e adaptada à música vocal.',
+    category: 'Renascimento',
+  },
+  {
+    id: '45',
+    type: 'curiosity',
+    icon: '📜',
+    title: 'Cancionero de Palacio',
+    content:
+      'O Cancionero de Palacio preserva a música da corte espanhola dos Reis Católicos, mostrando a fusão de tradições cristãs, árabes e judaicas.',
+    category: 'Renascimento',
+  },
+  {
+    id: '46',
+    type: 'technique',
+    icon: '🎯',
+    title: 'Musica Ficta',
+    content:
+      'A musica ficta permitia aos intérpretes acrescentar acidentes não escritos, criando uma dimensão interpretativa perdida hoje.',
+    category: 'Renascimento',
+  },
+  {
+    id: '47',
+    type: 'curiosity',
+    icon: '🎪',
+    title: "Commedia dell'Arte Musical",
+    content:
+      "A commedia dell'arte influenciou a música renascentista, com compositores criando canções para os personagens típicos como Arlequim.",
+    category: 'Renascimento',
+  },
+  {
+    id: '48',
+    type: 'innovation',
+    icon: '🔢',
+    title: 'Temperamento Mesotônico',
+    content:
+      'O temperamento mesotônico renascentista privilegiava certas tonalidades, criando cores harmônicas distintas para cada tom.',
+    category: 'Renascimento',
+  },
+  {
+    id: '49',
+    type: 'curiosity',
+    icon: '👑',
+    title: 'Henrique VIII Compositor',
+    content:
+      'O rei Henrique VIII da Inglaterra era compositor talentoso, tendo escrito "Greensleeves" e outras canções populares.',
+    category: 'Renascimento',
+  },
+  {
+    id: '50',
+    type: 'instrument',
+    icon: '🎶',
+    title: 'Consort Inglês',
+    content:
+      'O "consort" inglês reunia instrumentos da mesma família (como violas) em diferentes tamanhos, criando texturas homogêneas únicas.',
+    category: 'Renascimento',
+  },
+
+  // PERÍODO BARROCO (50 curiosidades)
+  {
+    id: '51',
+    type: 'curiosity',
+    icon: '🎼',
+    title: 'Bach e seus Filhos',
+    content:
+      'Johann Sebastian Bach teve 20 filhos, e quatro deles (Wilhelm Friedemann, Carl Philipp Emanuel, Johann Christoph Friedrich e Johann Christian) tornaram-se compositores renomados.',
+    category: 'Barroco',
+  },
+  {
+    id: '52',
+    type: 'innovation',
+    icon: '🎭',
+    title: 'Nascimento da Ópera',
+    content:
+      'A primeira ópera conhecida, "Dafne" de Jacopo Peri (1598), marcou o nascimento de um gênero que dominaria a música por séculos.',
+    category: 'Barroco',
+  },
+  {
+    id: '53',
+    type: 'technique',
+    icon: '🎵',
+    title: 'Baixo Contínuo',
+    content:
+      'O baixo contínuo (basso continuo) era a "espinha dorsal" da música barroca, com cravo ou órgão realizando harmonias a partir de cifras.',
+    category: 'Barroco',
+  },
+  {
+    id: '54',
+    type: 'curiosity',
+    icon: '👑',
+    title: 'Luís XIV e Lully',
+    content:
+      'Luís XIV, o Rei Sol, dançava pessoalmente nas óperas de Lully, estabelecendo a ópera francesa como espetáculo da realeza.',
+    category: 'Barroco',
+  },
+  {
+    id: '55',
+    type: 'instrument',
+    icon: '🎻',
+    title: 'Stradivarius',
+    content:
+      'Antonio Stradivari (1644-1737) produziu cerca de 1.100 instrumentos, dos quais 650 sobrevivem hoje, valendo milhões de dólares cada.',
+    category: 'Barroco',
+  },
+  {
+    id: '56',
+    type: 'curiosity',
+    icon: '⛪',
+    title: 'Bach Esquecido',
+    content:
+      'Bach foi quase esquecido após sua morte, sendo redescoberto apenas quando Mendelssohn regeu a "Paixão segundo São Mateus" em 1829.',
+    category: 'Barroco',
+  },
+  {
+    id: '57',
+    type: 'technique',
+    icon: '🔄',
+    title: 'Fuga',
+    content:
+      'A fuga barroca é como uma conversa musical onde um tema é apresentado e depois imitado por outras vozes em diferentes alturas.',
+    category: 'Barroco',
+  },
+  {
+    id: '58',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Castrati',
+    content:
+      'Os castrati eram cantores masculinos castrados na infância para manter voz aguda, sendo as maiores estrelas da ópera barroca.',
+    category: 'Barroco',
+  },
+  {
+    id: '59',
+    type: 'innovation',
+    icon: '🎹',
+    title: 'Temperamento Igual',
+    content:
+      'Bach demonstrou as possibilidades do temperamento igual no "Cravo Bem Temperado", permitindo tocar em todas as 24 tonalidades.',
+    category: 'Barroco',
+  },
+  {
+    id: '60',
+    type: 'curiosity',
+    icon: '🌊',
+    title: 'Água Musicada',
+    content:
+      'A "Música Aquática" de Händel foi composta para acompanhar o rei Jorge I numa festa em barcos no Rio Tâmisa em 1717.',
+    category: 'Barroco',
+  },
+  {
+    id: '61',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Trompete Barroco',
+    content:
+      'Os trompetes barrocos não tinham válvulas e tocavam apenas notas da série harmônica, exigindo técnica extraordinária dos músicos.',
+    category: 'Barroco',
+  },
+  {
+    id: '62',
+    type: 'curiosity',
+    icon: '💰',
+    title: 'Vivaldi Empresário',
+    content:
+      'Vivaldi não era apenas compositor, mas também empresário musical, produzindo suas próprias óperas e gerenciando teatros em Veneza.',
+    category: 'Barroco',
+  },
+  {
+    id: '63',
+    type: 'technique',
+    icon: '🎭',
+    title: 'Affekt',
+    content:
+      'A teoria dos Affekt (afetos) ditava que cada peça deveria expressar uma única emoção de forma consistente e intensa.',
+    category: 'Barroco',
+  },
+  {
+    id: '64',
+    type: 'curiosity',
+    icon: '🎻',
+    title: 'As Quatro Estações',
+    content:
+      'Vivaldi escreveu "As Quatro Estações" como música programática, incluindo sonetos que descrevem cada movimento de forma detalhada.',
+    category: 'Barroco',
+  },
+  {
+    id: '65',
+    type: 'innovation',
+    icon: '🏛️',
+    title: 'Concerto Grosso',
+    content:
+      'O concerto grosso criou o contraste entre solistas (concertino) e orquestra (ripieno), estabelecendo o princípio do concerto moderno.',
+    category: 'Barroco',
+  },
+  {
+    id: '66',
+    type: 'curiosity',
+    icon: '📚',
+    title: 'Rameau Teórico',
+    content:
+      'Jean-Philippe Rameau revolucionou a teoria musical com seu "Tratado de Harmonia" (1722), estabelecendo bases da harmonia tonal.',
+    category: 'Barroco',
+  },
+  {
+    id: '67',
+    type: 'instrument',
+    icon: '🎹',
+    title: 'Cravo vs Piano',
+    content:
+      'O cravo barroco não podia fazer crescendos ou diminuendos, mas compensava com ornamentação elaborada e registros variados.',
+    category: 'Barroco',
+  },
+  {
+    id: '68',
+    type: 'curiosity',
+    icon: '🎵',
+    title: 'Händel vs Bach',
+    content:
+      'Händel e Bach nasceram no mesmo ano (1685) na Alemanha, mas Händel tornou-se famoso internacionalmente enquanto Bach permaneceu local.',
+    category: 'Barroco',
+  },
+  {
+    id: '69',
+    type: 'technique',
+    icon: '⚡',
+    title: 'Ritornello',
+    content:
+      'A forma ritornello alterava seções do grupo completo (tutti) com seções solísticas, criando dinamismo e contraste.',
+    category: 'Barroco',
+  },
+  {
+    id: '70',
+    type: 'curiosity',
+    icon: '🏰',
+    title: 'Corte de Versalhes',
+    content:
+      'A música em Versalhes seguia etiqueta rígida: até a duração das peças era determinada pelo protocolo real francês.',
+    category: 'Barroco',
+  },
+  {
+    id: '71',
+    type: 'instrument',
+    icon: '🥁',
+    title: 'Tímpanos Barrocos',
+    content:
+      'Os tímpanos barrocos eram afinados manualmente com chaves, limitando as mudanças de altura durante a performance.',
+    category: 'Barroco',
+  },
+  {
+    id: '72',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'Ópera Seria',
+    content:
+      'A ópera seria seguia regras rígidas: exatamente seis personagens, alternância de recitativos e árias, e finais felizes obrigatórios.',
+    category: 'Barroco',
+  },
+  {
+    id: '73',
+    type: 'innovation',
+    icon: '🎼',
+    title: 'Suite de Danças',
+    content:
+      'A suíte barroca padronizou a sequência Allemande-Courante-Sarabande-Gigue, representando diferentes países e características.',
+    category: 'Barroco',
+  },
+  {
+    id: '74',
+    type: 'curiosity',
+    icon: '🌟',
+    title: 'Farinelli',
+    content:
+      'Farinelli, o castrato mais famoso, tinha alcance vocal de três oitavas e meio e podia sustentar notas por mais de um minuto.',
+    category: 'Barroco',
+  },
+  {
+    id: '75',
+    type: 'technique',
+    icon: '🎯',
+    title: 'Ornamentação',
+    content:
+      'A ornamentação barroca era parcialmente improvisada, com cada país desenvolvendo símbolos e estilos próprios de decoração.',
+    category: 'Barroco',
+  },
+  {
+    id: '76',
+    type: 'curiosity',
+    icon: '⛪',
+    title: 'Paixões de Bach',
+    content:
+      'Bach compôs pelo menos cinco Paixões, mas apenas duas sobreviveram completas: segundo São Mateus e segundo São João.',
+    category: 'Barroco',
+  },
+  {
+    id: '77',
+    type: 'instrument',
+    icon: '🎵',
+    title: 'Viola da Gamba',
+    content:
+      'A viola da gamba tinha até sete cordas e trastes, permitindo expressividade única que influenciou compositores como Bach.',
+    category: 'Barroco',
+  },
+  {
+    id: '78',
+    type: 'curiosity',
+    icon: '🇮🇹',
+    title: 'Escola Napolitana',
+    content:
+      'Nápoles era o centro mundial da ópera no século XVIII, com conservatórios que treinavam os melhores cantores da Europa.',
+    category: 'Barroco',
+  },
+  {
+    id: '79',
+    type: 'innovation',
+    icon: '🎹',
+    title: 'Invenções de Bach',
+    content:
+      'Bach criou as "Invenções" especificamente como material didático, estabelecendo princípios pedagógicos ainda usados hoje.',
+    category: 'Barroco',
+  },
+  {
+    id: '80',
+    type: 'curiosity',
+    icon: '☕',
+    title: 'Cantata do Café',
+    content:
+      'Bach compôs a humorística "Cantata do Café" satirizando o vício feminino no café, bebida nova e controversa na época.',
+    category: 'Barroco',
+  },
+  {
+    id: '81',
+    type: 'technique',
+    icon: '🔄',
+    title: 'Imitação Canônica',
+    content:
+      'O cânone barroco era mathematical music, com vozes seguindo regras estritas de imitação em diferentes intervalos de tempo.',
+    category: 'Barroco',
+  },
+  {
+    id: '82',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Intermezzi Cômicos',
+    content:
+      'Os intermezzi cômicos entre atos de óperas sérias acabaram evoluindo para a ópera bufa, gênero independente.',
+    category: 'Barroco',
+  },
+  {
+    id: '83',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Trompa Natural',
+    content:
+      'A trompa natural barroca usava diferentes tubos (crooks) para mudar de tonalidade, cada um alterando a cor do som.',
+    category: 'Barroco',
+  },
+  {
+    id: '84',
+    type: 'curiosity',
+    icon: '🌊',
+    title: 'Tempestades Musicais',
+    content:
+      'As "tempestades" eram tópica musical barroca, com escalas rápidas, tremolo e dinâmicas contrastantes pintando a fúria natural.',
+    category: 'Barroco',
+  },
+  {
+    id: '85',
+    type: 'innovation',
+    icon: '📖',
+    title: 'Partitura Moderna',
+    content:
+      'O sistema de partitura moderno, com chaves, armaduras e fórmulas de compasso padronizadas, foi estabelecido no Barroco.',
+    category: 'Barroco',
+  },
+  {
+    id: '86',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'Ópera de Hambúrgo',
+    content:
+      'A Ópera de Hambúrgo foi o primeiro teatro lírico público da Alemanha, democratizando o acesso à ópera além da aristocracia.',
+    category: 'Barroco',
+  },
+  {
+    id: '87',
+    type: 'technique',
+    icon: '🎨',
+    title: 'Madrigalismo Tardio',
+    content:
+      'O madrigalismo barroco levou a pintura musical ao extremo, com notas literalmente "subindo" em palavras como "céu".',
+    category: 'Barroco',
+  },
+  {
+    id: '88',
+    type: 'curiosity',
+    icon: '⏰',
+    title: 'Goldberg Variations',
+    content:
+      'As Variações Goldberg foram encomendadas pelo Conde Keyserlingk para curar sua insônia, devendo ser tocadas durante a noite.',
+    category: 'Barroco',
+  },
+  {
+    id: '89',
+    type: 'instrument',
+    icon: '🎹',
+    title: 'Clavicórdio',
+    content:
+      'O clavicórdio permitia vibrato (bebung) e controle dinâmico, sendo o instrumento de teclado mais expressivo da época.',
+    category: 'Barroco',
+  },
+  {
+    id: '90',
+    type: 'curiosity',
+    icon: '🎼',
+    title: 'Guerra dos Buffões',
+    content:
+      'A "Guerre des Bouffons" em Paris dividiu intelectuais entre ópera francesa (Rameau) e italiana (Pergolesi), influenciando a estética.',
+    category: 'Barroco',
+  },
+  {
+    id: '91',
+    type: 'innovation',
+    icon: '🎵',
+    title: 'Forma Sonata Primitiva',
+    content:
+      'A forma sonata começou a emergir no Barroco tardio, com Domenico Scarlatti explorando desenvolvimentos temáticos em suas sonatas.',
+    category: 'Barroco',
+  },
+  {
+    id: '92',
+    type: 'curiosity',
+    icon: '🏰',
+    title: 'Música de Câmara',
+    content:
+      'A música de câmara barroca era literalmente música para "câmaras" (quartos) pequenos, contrastando com música de igreja ou teatro.',
+    category: 'Barroco',
+  },
+  {
+    id: '93',
+    type: 'technique',
+    icon: '⚖️',
+    title: 'Rhetorica Musical',
+    content:
+      'Compositores barrocos estudavam retórica clássica, aplicando figuras de linguagem como anáfora e quiasmo na música.',
+    category: 'Barroco',
+  },
+  {
+    id: '94',
+    type: 'curiosity',
+    icon: '🎻',
+    title: 'Escola de Violino',
+    content:
+      'Arcangelo Corelli estabeleceu a escola italiana de violino, padronizando técnicas de arco e dedilhado ainda usadas hoje.',
+    category: 'Barroco',
+  },
+  {
+    id: '95',
+    type: 'instrument',
+    icon: '🎶',
+    title: 'Família de Flautas',
+    content:
+      'No Barroco existiam flautas em várias afinações (soprano, alto, tenor), cada uma com características timbrísticas específicas.',
+    category: 'Barroco',
+  },
+  {
+    id: '96',
+    type: 'curiosity',
+    icon: '📜',
+    title: 'Manuscritos de Bach',
+    content:
+      'Bach copiava música de outros compositores para estudo, incluindo toda a obra de Vivaldi, absorvendo o estilo italiano.',
+    category: 'Barroco',
+  },
+  {
+    id: '97',
+    type: 'innovation',
+    icon: '🎭',
+    title: 'Recitativo',
+    content:
+      'O recitativo secco (com apenas cravo) permitia declamação natural do texto, aproximando a ópera da fala humana.',
+    category: 'Barroco',
+  },
+  {
+    id: '98',
+    type: 'curiosity',
+    icon: '🌟',
+    title: 'Academia de Arcádia',
+    content:
+      'A Academia de Arcádia em Roma padronizou libretos de ópera, estabelecendo temas pastorais e estruturas dramáticas.',
+    category: 'Barroco',
+  },
+  {
+    id: '99',
+    type: 'technique',
+    icon: '🎯',
+    title: 'Concertato',
+    content:
+      'O estilo concertato barroco contrastava grupos instrumentais e vocais, criando efeitos de eco e diálogo espacial.',
+    category: 'Barroco',
+  },
+  {
+    id: '100',
+    type: 'curiosity',
+    icon: '🎼',
+    title: 'Arte da Fuga',
+    content:
+      'Bach morreu enquanto trabalhava na "Arte da Fuga", deixando a última fuga incompleta precisamente onde introduz seu nome.',
+    category: 'Barroco',
+  },
+
+  // PERÍODO CLÁSSICO (50 curiosidades)
+  {
+    id: '101',
+    type: 'curiosity',
+    icon: '🎼',
+    title: 'Mozart Precoce',
+    content:
+      'Mozart começou a compor aos 5 anos e escreveu sua primeira sinfonia aos 8 anos, demonstrando um talento extraordinário desde a infância.',
+    category: 'Clássico',
+  },
+  {
+    id: '102',
+    type: 'innovation',
+    icon: '🏛️',
+    title: 'Forma Sonata',
+    content:
+      'A forma sonata clássica (exposição-desenvolvimento-recapitulação) tornou-se a estrutura fundamental da música instrumental.',
+    category: 'Clássico',
+  },
+  {
+    id: '103',
+    type: 'curiosity',
+    icon: '🎹',
+    title: 'Revolução do Piano',
+    content:
+      'O fortepiano substituiu o cravo por permitir dinâmicas graduais, revolucionando a expressividade musical no período clássico.',
+    category: 'Clássico',
+  },
+  {
+    id: '104',
+    type: 'technique',
+    icon: '⚖️',
+    title: 'Clareza e Equilíbrio',
+    content:
+      'O estilo clássico priorizava clareza formal, equilíbrio entre seções e elegância melódica sobre complexidade contrapuntística.',
+    category: 'Clássico',
+  },
+  {
+    id: '105',
+    type: 'curiosity',
+    icon: '👑',
+    title: 'Haydn "Pai da Sinfonia"',
+    content:
+      'Haydn compôs 104 sinfonias, estabelecendo o gênero sinfônico e ganhando o título de "Pai da Sinfonia".',
+    category: 'Clássico',
+  },
+  {
+    id: '106',
+    type: 'innovation',
+    icon: '🎭',
+    title: 'Ópera Buffa',
+    content:
+      'A ópera buffa democratizou a ópera com personagens comuns e situações cotidianas, contrastando com a ópera seria aristocrática.',
+    category: 'Clássico',
+  },
+  {
+    id: '107',
+    type: 'curiosity',
+    icon: '🎵',
+    title: 'Quarteto de Cordas',
+    content:
+      'Haydn praticamente inventou o quarteto de cordas moderno, compondo 83 quartetos que definiram o gênero.',
+    category: 'Clássico',
+  },
+  {
+    id: '108',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Clarinete Clássico',
+    content:
+      'Mozart foi um dos primeiros compositores a explorar totalmente o clarinete, escrevendo seu famoso Concerto em Lá maior.',
+    category: 'Clássico',
+  },
+  {
+    id: '109',
+    type: 'curiosity',
+    icon: '⛪',
+    title: 'Requiem de Mozart',
+    content:
+      'Mozart estava compondo seu Requiem quando morreu, deixando a obra inacabada e envolta em mistério até hoje.',
+    category: 'Clássico',
+  },
+  {
+    id: '110',
+    type: 'technique',
+    icon: '🎯',
+    title: 'Desenvolvimento Motívico',
+    content:
+      'Beethoven levou o desenvolvimento motívico ao extremo, construindo movimentos inteiros a partir de fragmentos melódicos simples.',
+    category: 'Clássico',
+  },
+  {
+    id: '111',
+    type: 'curiosity',
+    icon: '🏰',
+    title: 'Corte de Esterházy',
+    content:
+      'Haydn trabalhou 30 anos para a família Esterházy, isolado mas com orquestra própria para experimentar suas composições.',
+    category: 'Clássico',
+  },
+  {
+    id: '112',
+    type: 'innovation',
+    icon: '🎶',
+    title: 'Concerto Clássico',
+    content:
+      'O concerto clássico estabeleceu o padrão de três movimentos (rápido-lento-rápido) e a cadenza como momento de virtuosismo.',
+    category: 'Clássico',
+  },
+  {
+    id: '113',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'As Bodas de Fígaro',
+    content:
+      'A ópera "As Bodas de Fígaro" de Mozart foi inicialmente censurada por críticar a aristocracia, mas conseguiu estrear em Viena.',
+    category: 'Clássico',
+  },
+  {
+    id: '114',
+    type: 'technique',
+    icon: '🔄',
+    title: 'Rondó Clássico',
+    content:
+      'A forma rondó (ABACA ou ABACABA) tornou-se padrão para movimentos finais, proporcionando leveza e memorabilidade.',
+    category: 'Clássico',
+  },
+  {
+    id: '115',
+    type: 'curiosity',
+    icon: '🌟',
+    title: 'Mannheim Rocket',
+    content:
+      'A Orquestra de Mannheim criou o "foguete de Mannheim" - escalas ascendentes rápidas que causavam sensação na audiência.',
+    category: 'Clássico',
+  },
+  {
+    id: '116',
+    type: 'instrument',
+    icon: '🥁',
+    title: 'Tímpanos Temperados',
+    content:
+      'No período clássico, os tímpanos começaram a ser afinados cromàticamente, expandindo suas possibilidades melódicas.',
+    category: 'Clássico',
+  },
+  {
+    id: '117',
+    type: 'curiosity',
+    icon: '💰',
+    title: 'Mozart e Dinheiro',
+    content:
+      'Apesar do talento, Mozart teve problemas financeiros crônicos, morrendo pobre e sendo enterrado numa vala comum.',
+    category: 'Clássico',
+  },
+  {
+    id: '118',
+    type: 'innovation',
+    icon: '🎼',
+    title: 'Orquestra Clássica',
+    content:
+      'A orquestra clássica padronizou instrumentação: cordas, madeiras aos pares, 2 trompas e às vezes trompetes e tímpanos.',
+    category: 'Clássico',
+  },
+  {
+    id: '119',
+    type: 'curiosity',
+    icon: '🎹',
+    title: 'Sonatas de Scarlatti',
+    content:
+      'Domenico Scarlatti compôs 555 sonatas para cravo, explorando técnicas que anteciparam o virtuosismo pianístico.',
+    category: 'Clássico',
+  },
+  {
+    id: '120',
+    type: 'technique',
+    icon: '⚡',
+    title: 'Sturm und Drang',
+    content:
+      'O movimento "Sturm und Drang" influenciou compositores como Haydn a usar tonalidades menores e expressões dramáticas.',
+    category: 'Clássico',
+  },
+  {
+    id: '121',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Música Turca',
+    content:
+      'A "música turca" estava na moda no século XVIII, com Mozart incorporando percussão exótica no Rapto do Serralho.',
+    category: 'Clássico',
+  },
+  {
+    id: '122',
+    type: 'instrument',
+    icon: '🎻',
+    title: 'Escola de Arco',
+    content:
+      'O arco moderno foi aperfeiçoado por François Tourte, permitindo maior controle dinâmico e articulação.',
+    category: 'Clássico',
+  },
+  {
+    id: '123',
+    type: 'curiosity',
+    icon: '📚',
+    title: 'C.P.E. Bach',
+    content:
+      'Carl Philipp Emanuel Bach, filho de J.S. Bach, foi considerado o maior compositor de sua época, influenciando Mozart.',
+    category: 'Clássico',
+  },
+  {
+    id: '124',
+    type: 'innovation',
+    icon: '🎭',
+    title: 'Singspiel',
+    content:
+      'O Singspiel alemão combinava música e diálogos falados, democratizando a ópera em língua vernácula.',
+    category: 'Clássico',
+  },
+  {
+    id: '125',
+    type: 'curiosity',
+    icon: '🌙',
+    title: 'Sonata ao Luar',
+    content:
+      'A "Sonata ao Luar" de Beethoven só recebeu esse nome após sua morte - ele a dedicou à Condessa Giulietta Guicciardi.',
+    category: 'Clássico',
+  },
+  {
+    id: '126',
+    type: 'technique',
+    icon: '🎯',
+    title: 'Tema com Variações',
+    content:
+      'As variações clássicas exploravam diferentes aspectos de um tema: ornamentação, mudança de modo, alteração rítmica.',
+    category: 'Clássico',
+  },
+  {
+    id: '127',
+    type: 'curiosity',
+    icon: '🎵',
+    title: 'Minueto e Trio',
+    content:
+      'O minueto era a única forma de dança que sobreviveu na sinfonia clássica, sempre no terceiro movimento.',
+    category: 'Clássico',
+  },
+  {
+    id: '128',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Trompa Clássica',
+    content:
+      'Mozart revolucionou a escrita para trompa, tratando-a como instrumento melódico e não apenas de apoio harmônico.',
+    category: 'Clássico',
+  },
+  {
+    id: '129',
+    type: 'curiosity',
+    icon: '🏛️',
+    title: 'Concertos Públicos',
+    content:
+      'O período clássico viu o nascimento dos concertos públicos, democratizando o acesso à música além da aristocracia.',
+    category: 'Clássico',
+  },
+  {
+    id: '130',
+    type: 'innovation',
+    icon: '📖',
+    title: 'Publicação Musical',
+    content:
+      'A impressão musical em larga escala permitiu disseminação internacional das obras, criando um "mercado" musical.',
+    category: 'Clássico',
+  },
+  {
+    id: '131',
+    type: 'curiosity',
+    icon: '🎼',
+    title: 'Sinfonia Pastoral',
+    content:
+      'A 6ª Sinfonia de Beethoven foi uma das primeiras sinfonias programáticas, descrevendo cenas da vida rural.',
+    category: 'Clássico',
+  },
+  {
+    id: '132',
+    type: 'technique',
+    icon: '🔄',
+    title: 'Modulação Clássica',
+    content:
+      'As modulações clássicas seguiam rotas harmônicas previsíveis: tônica para dominante na exposição, explorações no desenvolvimento.',
+    category: 'Clássico',
+  },
+  {
+    id: '133',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'Don Giovanni',
+    content:
+      'A ópera "Don Giovanni" de Mozart foi chamada de "ópera das óperas" por muitos críticos e compositores posteriores.',
+    category: 'Clássico',
+  },
+  {
+    id: '134',
+    type: 'instrument',
+    icon: '🎹',
+    title: 'Sonata para Piano',
+    content:
+      'Beethoven expandiu a sonata para piano de entretenimento doméstico para forma artística profunda e pessoal.',
+    category: 'Clássico',
+  },
+  {
+    id: '135',
+    type: 'curiosity',
+    icon: '👂',
+    title: 'Surdez de Beethoven',
+    content:
+      'Beethoven começou a perder audição aos 28 anos, mas compôs suas obras mais importantes já completamente surdo.',
+    category: 'Clássico',
+  },
+  {
+    id: '136',
+    type: 'innovation',
+    icon: '🎶',
+    title: 'Frase Musical',
+    content:
+      'O período clássico estabeleceu a frase de 8 compassos (antecedente-consequente) como unidade básica da música.',
+    category: 'Clássico',
+  },
+  {
+    id: '137',
+    type: 'curiosity',
+    icon: '🌟',
+    title: 'Crianças Prodígio',
+    content:
+      'Além de Mozart, o período clássico teve muitas crianças prodígio, incluindo Hummel, que estudou com Mozart.',
+    category: 'Clássico',
+  },
+  {
+    id: '138',
+    type: 'technique',
+    icon: '⚖️',
+    title: 'Proporção Áurea',
+    content:
+      'Muitas obras clássicas seguem proporções matemáticas, com clímaxes ocorrendo em pontos de proporção áurea.',
+    category: 'Clássico',
+  },
+  {
+    id: '139',
+    type: 'curiosity',
+    icon: '🎹',
+    title: 'Competição Musical',
+    content:
+      'Mozart e Clementi fizeram uma famosa competição de piano diante do Imperador José II em 1781.',
+    category: 'Clássico',
+  },
+  {
+    id: '140',
+    type: 'instrument',
+    icon: '🎵',
+    title: 'Flauta Clássica',
+    content:
+      'A flauta de madeira foi gradualmente substituída pela de metal no período clássico, mudando seu timbre.',
+    category: 'Clássico',
+  },
+  {
+    id: '141',
+    type: 'curiosity',
+    icon: '📜',
+    title: 'Cartas de Mozart',
+    content:
+      'As cartas de Mozart revelam sua personalidade irreverente e humor escatológico, contrastando com sua música sublime.',
+    category: 'Clássico',
+  },
+  {
+    id: '142',
+    type: 'innovation',
+    icon: '🎭',
+    title: 'Ópera Reformada',
+    content:
+      'Gluck reformou a ópera eliminando ornamentação excessiva e priorizando drama e expressão natural.',
+    category: 'Clássico',
+  },
+  {
+    id: '143',
+    type: 'curiosity',
+    icon: '🏰',
+    title: 'Salzbur​go',
+    content:
+      'Mozart odiava trabalhar para o Arcebispo de Salzburgo, chegando a ser literalmente "chutado" para fora do palácio.',
+    category: 'Clássico',
+  },
+  {
+    id: '144',
+    type: 'technique',
+    icon: '🎯',
+    title: 'Cadência Clássica',
+    content:
+      'A cadência perfeita (V-I) tornou-se fundamental na música clássica, criando pontos de repouso estruturais.',
+    category: 'Clássico',
+  },
+  {
+    id: '145',
+    type: 'curiosity',
+    icon: '🎼',
+    title: 'Sinfonia nº 41',
+    content:
+      'A última sinfonia de Mozart (nº 41 "Júpiter") termina com uma fuga dupla que combina cinco temas simultaneamente.',
+    category: 'Clássico',
+  },
+  {
+    id: '146',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Serpentão',
+    content:
+      'O serpentão, precursor da tuba, era usado em igrejas e bandas militares por seu som poderoso nos graves.',
+    category: 'Clássico',
+  },
+  {
+    id: '147',
+    type: 'curiosity',
+    icon: '💫',
+    title: 'Estrela Cadente',
+    content:
+      'Haydn incluiu efeitos especiais como tiros de canhão na "Sinfonia Militar" e relógio na "Sinfonia do Relógio".',
+    category: 'Clássico',
+  },
+  {
+    id: '148',
+    type: 'innovation',
+    icon: '📚',
+    title: 'Educação Musical',
+    content:
+      'O método de Clementi "Gradus ad Parnassum" estabeleceu princípios de ensino pianístico ainda usados hoje.',
+    category: 'Clássico',
+  },
+  {
+    id: '149',
+    type: 'curiosity',
+    icon: '🎵',
+    title: 'Divertimento',
+    content:
+      'Os divertimenti eram música de entretenimento para eventos sociais, mais leves que sinfonias mas ainda sofisticados.',
+    category: 'Clássico',
+  },
+  {
+    id: '150',
+    type: 'technique',
+    icon: '🌟',
+    title: 'Estilo Galante',
+    content:
+      'O estilo galante priorizava melodias elegantes e acompanhamentos simples, rejeitando a complexidade barroca.',
+    category: 'Clássico',
+  },
+
+  // PERÍODO ROMÂNTICO (50 curiosidades)
+  {
+    id: '151',
+    type: 'curiosity',
+    icon: '💕',
+    title: 'Amor e Música',
+    content:
+      'Schumann dedicou seu "Ano das Canções" (1840) a Clara Wieck, compondo 138 lieder no ano de seu casamento.',
+    category: 'Romântico',
+  },
+  {
+    id: '152',
+    type: 'innovation',
+    icon: '🎼',
+    title: 'Música Programática',
+    content:
+      'A "Sinfonia Fantástica" de Berlioz revolucionou a música sinfônica ao contar uma história específica através de música.',
+    category: 'Romântico',
+  },
+  {
+    id: '153',
+    type: 'curiosity',
+    icon: '🎹',
+    title: 'Liszt Popstar',
+    content:
+      'Franz Liszt causava "Lisztomania" - histeria coletiva em seus concertos, sendo considerado o primeiro popstar da música clássica.',
+    category: 'Romântico',
+  },
+  {
+    id: '154',
+    type: 'technique',
+    icon: '🌊',
+    title: 'Rubato',
+    content:
+      'O rubato romântico permitia flexibilidade temporal expressiva, com Chopin sendo mestre nesta técnica interpretativa.',
+    category: 'Romântico',
+  },
+  {
+    id: '155',
+    type: 'instrument',
+    icon: '🎹',
+    title: 'Piano Romântico',
+    content:
+      'O piano romântico ganhou pedais, maior extensão e som mais poderoso, inspirando o virtuosismo de Liszt e Chopin.',
+    category: 'Romântico',
+  },
+  {
+    id: '156',
+    type: 'curiosity',
+    icon: '🌙',
+    title: 'Noturnos de Chopin',
+    content:
+      'Chopin criou o noturno pianístico moderno, inspirado nos noturnos para piano de John Field mas com maior sofisticação.',
+    category: 'Romântico',
+  },
+  {
+    id: '157',
+    type: 'innovation',
+    icon: '🎭',
+    title: 'Leitmotiv',
+    content:
+      'Wagner desenvolveu o sistema de leitmotiv - temas musicais associados a personagens, objetos ou ideias específicas.',
+    category: 'Romântico',
+  },
+  {
+    id: '158',
+    type: 'curiosity',
+    icon: '💰',
+    title: 'Paganini Diabólico',
+    content:
+      'Paganini era tão virtuoso que rumores diziam ter vendido a alma ao diabo - suas técnicas violinísticas pareciam impossíveis.',
+    category: 'Romântico',
+  },
+  {
+    id: '159',
+    type: 'technique',
+    icon: '🎨',
+    title: 'Miniatura Musical',
+    content:
+      'O Romantismo valorizou formas pequenas como o lied, mazurca e impromptu, explorando momentos íntimos de expressão.',
+    category: 'Romântico',
+  },
+  {
+    id: '160',
+    type: 'curiosity',
+    icon: '🏰',
+    title: 'Castelos e Natureza',
+    content:
+      'Os românticos se inspiravam na natureza e ruínas medievais - Mendelssohn compôs após visitar as Hébridas na Escócia.',
+    category: 'Romântico',
+  },
+  {
+    id: '161',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Válvulas de Bronze',
+    content:
+      'A invenção das válvulas transformou trompetes e trompas em instrumentos cromáticos, expandindo suas possibilidades.',
+    category: 'Romântico',
+  },
+  {
+    id: '162',
+    type: 'curiosity',
+    icon: '📚',
+    title: 'Literatura e Música',
+    content:
+      'Berlioz baseou obras em Shakespeare, Byron e Goethe, estabelecendo conexões profundas entre música e literatura.',
+    category: 'Romântico',
+  },
+  {
+    id: '163',
+    type: 'innovation',
+    icon: '🎶',
+    title: 'Forma Cíclica',
+    content:
+      'Berlioz e Liszt desenvolveram a forma cíclica, onde temas retornam transformados ao longo de obras multi-movimentos.',
+    category: 'Romântico',
+  },
+  {
+    id: '164',
+    type: 'curiosity',
+    icon: '🌟',
+    title: 'Virtuosismo Transcendental',
+    content:
+      'Os "Estudos Transcendentais" de Liszt levaram a técnica pianística aos limites extremos da possibilidade humana.',
+    category: 'Romântico',
+  },
+  {
+    id: '165',
+    type: 'technique',
+    icon: '🎭',
+    title: 'Drama Musical',
+    content:
+      'Wagner revolucionou a ópera com "dramas musicais" onde música, texto e cenário formavam uma obra de arte total.',
+    category: 'Romântico',
+  },
+  {
+    id: '166',
+    type: 'curiosity',
+    icon: '🏔️',
+    title: 'Alpinismo Musical',
+    content:
+      'Liszt compôs "Années de Pèlerinage" baseado em suas viagens pela Suíça e Itália, criando "cartões postais" musicais.',
+    category: 'Romântico',
+  },
+  {
+    id: '167',
+    type: 'instrument',
+    icon: '🎻',
+    title: 'Violino Romântico',
+    content:
+      'O arco de Tourte e cordas de metal permitiram maior potência sonora, atendendo às demandas expressivas românticas.',
+    category: 'Romântico',
+  },
+  {
+    id: '168',
+    type: 'curiosity',
+    icon: '💔',
+    title: 'Amor Não Correspondido',
+    content:
+      'Brahms amou Clara Schumann por toda vida, mas nunca se casaram - essa tensão emocional permeia sua música.',
+    category: 'Romântico',
+  },
+  {
+    id: '169',
+    type: 'innovation',
+    icon: '🎼',
+    title: 'Poema Sinfônico',
+    content:
+      'Liszt inventou o poema sinfônico - forma orquestral de um movimento que narra história ou evoca imagens.',
+    category: 'Romântico',
+  },
+  {
+    id: '170',
+    type: 'curiosity',
+    icon: '🌹',
+    title: 'Baladas de Chopin',
+    content:
+      'As quatro baladas de Chopin foram inspiradas por poemas de Adam Mickiewicz, criando narrativas musicais abstratas.',
+    category: 'Romântico',
+  },
+  {
+    id: '171',
+    type: 'technique',
+    icon: '🎨',
+    title: 'Colorismo Orquestral',
+    content:
+      'Berlioz foi pioneiro na orquestração colorística, usando timbres instrumentais como um pintor usa cores.',
+    category: 'Romântico',
+  },
+  {
+    id: '172',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Circo Musical',
+    content:
+      'Paganini se apresentava como showman, usando efeitos teatrais e chegando a tocar uma sonata inteira numa só corda.',
+    category: 'Romântico',
+  },
+  {
+    id: '173',
+    type: 'instrument',
+    icon: '🎹',
+    title: 'Harmonium',
+    content:
+      'O harmonium (órgão portátil) tornou-se popular na música doméstica, influenciando compositores como Dvořák.',
+    category: 'Romântico',
+  },
+  {
+    id: '174',
+    type: 'curiosity',
+    icon: '🎵',
+    title: 'Canção sem Palavras',
+    content:
+      'Mendelssohn criou as "Canções sem Palavras" - peças pianísticas que cantam melodias sem texto.',
+    category: 'Romântico',
+  },
+  {
+    id: '175',
+    type: 'innovation',
+    icon: '🌍',
+    title: 'Nacionalismo Musical',
+    content:
+      'O Romantismo incentivou nacionalismos musicais, com compositores usando folclore e história pátria como inspiração.',
+    category: 'Romântico',
+  },
+  {
+    id: '176',
+    type: 'curiosity',
+    icon: '💊',
+    title: 'Tuberculose Romântica',
+    content:
+      'Muitos compositores românticos morreram de tuberculose (Chopin, Bellini), doença que simbolizava sensibilidade artística.',
+    category: 'Romântico',
+  },
+  {
+    id: '177',
+    type: 'technique',
+    icon: '🎭',
+    title: 'Transformação Temática',
+    content:
+      'Liszt desenvolveu a transformação temática, onde um tema aparece em diferentes caracteres ao longo da obra.',
+    category: 'Romântico',
+  },
+  {
+    id: '178',
+    type: 'curiosity',
+    icon: '🎼',
+    title: 'Sinfonia Inacabada',
+    content:
+      'A "Sinfonia Inacabada" de Schubert tem apenas dois movimentos, permanecendo um mistério por que foi abandonada.',
+    category: 'Romântico',
+  },
+  {
+    id: '179',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Saxofone',
+    content:
+      'Adolphe Sax inventou o saxofone em 1840, mas este só se tornou popular no jazz, raramente usado na música clássica.',
+    category: 'Romântico',
+  },
+  {
+    id: '180',
+    type: 'curiosity',
+    icon: '🏛️',
+    title: 'Conservatórios',
+    content:
+      'O século XIX viu a expansão dos conservatórios nacionais, profissionalizando o ensino musical e criando "escolas" nacionais.',
+    category: 'Romântico',
+  },
+  {
+    id: '181',
+    type: 'innovation',
+    icon: '🎭',
+    title: 'Gesamtkunstwerk',
+    content:
+      'Wagner concebeu a "obra de arte total" onde música, drama, poesia e artes visuais se uniriam em experiência transcendente.',
+    category: 'Romântico',
+  },
+  {
+    id: '182',
+    type: 'curiosity',
+    icon: '🌊',
+    title: 'Barcarola Veneziana',
+    content:
+      'As barcarolas evocavam as canções dos gondoleiros venezianos, criando atmosferas aquáticas e nostálgicas.',
+    category: 'Romântico',
+  },
+  {
+    id: '183',
+    type: 'technique',
+    icon: '🎨',
+    title: 'Impressionismo Precursor',
+    content:
+      'Liszt antecipou o impressionismo em obras como "Os Jogos de Água na Villa d\'Este", explorando atmosferas sonoras.',
+    category: 'Romântico',
+  },
+  {
+    id: '184',
+    type: 'curiosity',
+    icon: '📖',
+    title: 'Crítica Musical',
+    content:
+      'Schumann foi pioneiro da crítica musical moderna, "descobrindo" Chopin e defendendo Brahms em seus escritos.',
+    category: 'Romântico',
+  },
+  {
+    id: '185',
+    type: 'instrument',
+    icon: '🎹',
+    title: 'Piano de Cauda',
+    content:
+      'O piano de cauda romântico atingiu dimensões monumentais, com alguns instrumentos de Liszt tendo mais de 3 metros.',
+    category: 'Romântico',
+  },
+  {
+    id: '186',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Tournées Virtuosísticas',
+    content:
+      'As tournées de concertos se tornaram fenômeno social, com virtuoses viajando pela Europa como verdadeiras celebridades.',
+    category: 'Romântico',
+  },
+  {
+    id: '187',
+    type: 'innovation',
+    icon: '🎵',
+    title: 'Ciclo de Canções',
+    content:
+      'Schubert e Schumann criaram ciclos de lieder que contam histórias completas, como "A Bela Moleira" e "Amor de Poeta".',
+    category: 'Romântico',
+  },
+  {
+    id: '188',
+    type: 'curiosity',
+    icon: '🌙',
+    title: 'Sonambulismo Musical',
+    content:
+      'A ópera "La Sonnambula" de Bellini explorou o tema romântico do sonambulismo e estados alterados de consciência.',
+    category: 'Romântico',
+  },
+  {
+    id: '189',
+    type: 'technique',
+    icon: '🎭',
+    title: 'Melodia Infinita',
+    content:
+      'Wagner desenvolveu a "melodia infinita", evitando cadências e criando fluxo musical contínuo sem pausas estruturais.',
+    category: 'Romântico',
+  },
+  {
+    id: '190',
+    type: 'curiosity',
+    icon: '🏰',
+    title: 'Bayreuth',
+    content:
+      'Wagner construiu seu próprio teatro em Bayreuth especificamente para apresentar suas óperas, ainda ativo hoje.',
+    category: 'Romântico',
+  },
+  {
+    id: '191',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Tuba Wagneriana',
+    content:
+      'Wagner encomendou tubas especiais para "O Anel", criando instrumentos únicos para sua sonoridade épica.',
+    category: 'Romântico',
+  },
+  {
+    id: '192',
+    type: 'curiosity',
+    icon: '💔',
+    title: 'Morte de Amor',
+    content:
+      'O "Liebestod" (Morte de Amor) de Wagner influenciou toda a música posterior, explorando êxtase erótico e morte.',
+    category: 'Romântico',
+  },
+  {
+    id: '193',
+    type: 'innovation',
+    icon: '🎼',
+    title: 'Orquestra Romântica',
+    content:
+      'A orquestra romântica expandiu dramaticamente, com Berlioz chegando a escrever para mais de 400 instrumentistas.',
+    category: 'Romântico',
+  },
+  {
+    id: '194',
+    type: 'curiosity',
+    icon: '🌟',
+    title: 'Clara Wieck',
+    content:
+      'Clara Schumann foi uma das primeiras pianistas profissionais, mantendo carreira de concertista por mais de 60 anos.',
+    category: 'Romântico',
+  },
+  {
+    id: '195',
+    type: 'technique',
+    icon: '🎨',
+    title: 'Sinestesia Musical',
+    content:
+      'Compositores românticos exploraram sinestesia, associando cores a tonalidades e criando "pinturas" sonoras.',
+    category: 'Romântico',
+  },
+  {
+    id: '196',
+    type: 'curiosity',
+    icon: '📜',
+    title: 'Manuscritos Perdidos',
+    content:
+      'Muitas obras românticas foram perdidas ou destruídas - Schumann queimou várias composições por autocrítica excessiva.',
+    category: 'Romântico',
+  },
+  {
+    id: '197',
+    type: 'instrument',
+    icon: '🎻',
+    title: 'Viola Romântica',
+    content:
+      'A viola ganhou importância no Romantismo, com Berlioz compondo "Haroldo na Itália" especificamente para o instrumento.',
+    category: 'Romântico',
+  },
+  {
+    id: '198',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'Ópera Verista',
+    content:
+      'O verismo operístico retratou a vida cotidiana com realismo brutal, contrastando com o escapismo romântico anterior.',
+    category: 'Romântico',
+  },
+  {
+    id: '199',
+    type: 'innovation',
+    icon: '🎵',
+    title: 'Forma Livre',
+    content:
+      'Compositores românticos experimentaram formas livres, criando estruturas únicas para cada obra em vez de moldes pré-existentes.',
+    category: 'Romântico',
+  },
+  {
+    id: '200',
+    type: 'curiosity',
+    icon: '🌹',
+    title: 'Salões Musicais',
+    content:
+      'Os salões parisienses eram centros da vida musical romântica, onde compositores apresentavam primeiras audições de obras.',
+    category: 'Romântico',
+  },
+
+  // IMPRESSIONISMO (25 curiosidades)
+  {
+    id: '201',
+    type: 'innovation',
+    icon: '🎨',
+    title: 'Debussy Impressionista',
+    content:
+      'Debussy odiava ser chamado de "impressionista", preferindo "simbolista", mas sua música evoca cores e atmosferas como a pintura impressionista.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '202',
+    type: 'curiosity',
+    icon: '🌊',
+    title: 'La Mer',
+    content:
+      '"La Mer" de Debussy foi composta longe do mar, no interior da França, mostrando como a música pode capturar essências emocionais.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '203',
+    type: 'technique',
+    icon: '🎵',
+    title: 'Escalas Exóticas',
+    content:
+      'Debussy usou escalas pentafônicas, octatônicas e de tons inteiros, expandindo o vocabulário harmônico para além do sistema tonal.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '204',
+    type: 'curiosity',
+    icon: '🏮',
+    title: 'Influência Oriental',
+    content:
+      'A Exposição Universal de Paris (1889) introduziu música javanesa a Debussy, influenciando profundamente seu estilo harmônico.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '205',
+    type: 'instrument',
+    icon: '🎹',
+    title: 'Piano Impressionista',
+    content:
+      'Os impressionistas exploraram novos efeitos pianísticos usando pedais, harmônicos e texturas que imitavam orquestras.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '206',
+    type: 'innovation',
+    icon: '🌫️',
+    title: 'Atmosfera Musical',
+    content:
+      'Ravel e Debussy priorizaram atmosfera sobre desenvolvimento temático, criando "quadros" sonoros ao invés de argumentos musicais.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '207',
+    type: 'curiosity',
+    icon: '🌸',
+    title: 'Jardins na Chuva',
+    content:
+      '"Jardins na Chuva" de Debussy usa técnicas pianísticas que realmente evocam gotas de chuva e folhas tremulando.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '208',
+    type: 'technique',
+    icon: '🎭',
+    title: 'Paralelismos',
+    content:
+      'Os acordes paralelos impressionistas criavam coloração harmônica única, abandonando as regras de condução de vozes tradicionais.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '209',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Bolero de Ravel',
+    content:
+      'O "Bolero" cresceu de uma experiência rítmica para obra icônica, com Ravel surpreendido pelo sucesso popular.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '210',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Instrumentação Sutil',
+    content:
+      'Ravel foi mestre da orquestração sutil, usando combinações inusitadas de instrumentos para criar timbres únicos.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '211',
+    type: 'innovation',
+    icon: '⏰',
+    title: 'Tempo Suspenso',
+    content:
+      'A música impressionista muitas vezes parece suspender o tempo, criando momentos de contemplação estática.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '212',
+    type: 'curiosity',
+    icon: '🌙',
+    title: 'Clair de Lune',
+    content:
+      '"Clair de Lune" tornou-se a peça impressionista mais famosa, mas é apenas o terceiro movimento da "Suite Bergamasque".',
+    category: 'Impressionismo',
+  },
+  {
+    id: '213',
+    type: 'technique',
+    icon: '🎨',
+    title: 'Forma Fluida',
+    content:
+      'Os impressionistas evitavam formas rígidas, preferindo estruturas orgânicas que fluem como água ou luz.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '214',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'Pelléas et Mélisande',
+    content:
+      'A ópera "Pelléas et Mélisande" de Debussy revolucionou o gênero com recitativo naturalístico e orquestra sussurrante.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '215',
+    type: 'instrument',
+    icon: '🎵',
+    title: 'Harpa Impressionista',
+    content:
+      'A harpa ganhou protagonismo no impressionismo, com glissandos e harmônicos criando efeitos aquáticos e etéreos.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '216',
+    type: 'innovation',
+    icon: '🌈',
+    title: 'Harmonia Colorística',
+    content:
+      'A harmonia impressionista priorizava cor sobre função, usando acordes como "cores" em uma paleta sonora.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '217',
+    type: 'curiosity',
+    icon: '🏰',
+    title: 'Catedral Submersa',
+    content:
+      '"A Catedral Submersa" evoca lenda bretã sobre catedral que emerge das águas, demonstrando narrativa impressionista.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '218',
+    type: 'technique',
+    icon: '🌊',
+    title: 'Fluidity Rhythm',
+    content:
+      'Os ritmos impressionistas fluem sem acentos marcados, criando sensação de movimento orgânico e natural.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '219',
+    type: 'curiosity',
+    icon: '🎹',
+    title: 'Ravel vs Debussy',
+    content:
+      'Embora agrupados, Ravel era mais clássico e preciso, enquanto Debussy era mais experimental e atmosférico.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '220',
+    type: 'instrument',
+    icon: '🎻',
+    title: 'Cordas Impressionistas',
+    content:
+      'Técnicas como surdina, harmônicos artificiais e tremolo criavam texturas veladas características do impressionismo.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '221',
+    type: 'innovation',
+    icon: '🎵',
+    title: 'Modalidade',
+    content:
+      'O retorno aos modos antigos deu aos impressionistas alternativas ao sistema tonal maior-menor tradicional.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '222',
+    type: 'curiosity',
+    icon: '🌺',
+    title: 'Estampes',
+    content:
+      'As "Estampes" de Debussy retratam paisagens exóticas: Pagodes (Ásia), Soirée dans Grenade (Espanha), Jardins na Chuva (França).',
+    category: 'Impressionismo',
+  },
+  {
+    id: '223',
+    type: 'technique',
+    icon: '🎭',
+    title: 'Simbolismo Musical',
+    content:
+      'A música impressionista frequentemente simbolizava estados emocionais através de gestos musicais sutis e sugestivos.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '224',
+    type: 'curiosity',
+    icon: '🦢',
+    title: 'Pavane',
+    content:
+      'A "Pavane para uma Infanta Defunta" de Ravel não tem significado fúnebre - o título evoca apenas sonoridades nostálgicas.',
+    category: 'Impressionismo',
+  },
+  {
+    id: '225',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Metais Velados',
+    content:
+      'Instrumentos de metal com surdina criavam timbres pastéis essenciais à paleta sonora impressionista.',
+    category: 'Impressionismo',
+  },
+
+  // MODERNISMO/CONTEMPORÂNEO (50 curiosidades)
+  {
+    id: '226',
+    type: 'innovation',
+    icon: '🎵',
+    title: 'Atonalidade',
+    content:
+      'Schoenberg abandonou totalmente o sistema tonal em 1908, criando a primeira música verdadeiramente atonal da história.',
+    category: 'Moderno',
+  },
+  {
+    id: '227',
+    type: 'curiosity',
+    icon: '🌊',
+    title: 'Sagração da Primavera',
+    content:
+      'A estreia de "A Sagração da Primavera" de Stravinsky (1913) causou um motim no teatro, dividindo o público.',
+    category: 'Moderno',
+  },
+  {
+    id: '228',
+    type: 'technique',
+    icon: '🔢',
+    title: 'Dodecafonismo',
+    content:
+      'Schoenberg criou o sistema dodecafônico, usando todas as 12 notas cromáticas em sequências específicas (séries).',
+    category: 'Moderno',
+  },
+  {
+    id: '229',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'Pierrot Lunaire',
+    content:
+      '"Pierrot Lunaire" de Schoenberg usa Sprechgesang - técnica vocal entre fala e canto que ainda causa controvérsia.',
+    category: 'Moderno',
+  },
+  {
+    id: '230',
+    type: 'innovation',
+    icon: '🎹',
+    title: 'Piano Preparado',
+    content:
+      'John Cage inseriu objetos entre as cordas do piano, criando um "gamelan de um homem só" com sonoridades únicas.',
+    category: 'Moderno',
+  },
+  {
+    id: '231',
+    type: 'curiosity',
+    icon: '⏰',
+    title: '4\'33"',
+    content:
+      'A peça "4\'33"" de Cage consiste em 4 minutos e 33 segundos de silêncio, questionando a própria definição de música.',
+    category: 'Moderno',
+  },
+  {
+    id: '232',
+    type: 'technique',
+    icon: '🎵',
+    title: 'Politonalidade',
+    content:
+      'Compositores como Milhaud usaram múltiplas tonalidades simultaneamente, criando complexidade harmônica única.',
+    category: 'Moderno',
+  },
+  {
+    id: '233',
+    type: 'curiosity',
+    icon: '🌟',
+    title: 'Bartók Etnomusicólogo',
+    content:
+      'Bartók coletou milhares de melodias folclóricas com fonógrafo, preservando tradições musicais do Leste Europeu.',
+    category: 'Moderno',
+  },
+  {
+    id: '234',
+    type: 'instrument',
+    icon: '🎹',
+    title: 'Ondas Martenot',
+    content:
+      'As Ondas Martenot, instrumento eletrônico inventado em 1928, foram usadas por Messiaen e Honegger.',
+    category: 'Moderno',
+  },
+  {
+    id: '235',
+    type: 'innovation',
+    icon: '📡',
+    title: 'Música Eletrônica',
+    content:
+      'A música eletrônica nasceu na década de 1950 com estúdios em Paris e Colônia experimentando com fitas magnéticas.',
+    category: 'Moderno',
+  },
+  {
+    id: '236',
+    type: 'curiosity',
+    icon: '🎺',
+    title: 'Trompete de Brinquedo',
+    content:
+      'Mahler incluiu instrumentos infantis como trompete de brinquedo em sinfonias, antecipando experimentações modernas.',
+    category: 'Moderno',
+  },
+  {
+    id: '237',
+    type: 'technique',
+    icon: '🔄',
+    title: 'Música Aleatória',
+    content:
+      'Cage e outros criaram música aleatória onde intérpretes fazem escolhas durante a performance, nunca resultando igual.',
+    category: 'Moderno',
+  },
+  {
+    id: '238',
+    type: 'curiosity',
+    icon: '🌍',
+    title: 'Messiaen Ornitólogo',
+    content:
+      'Messiaen transcreveu cantos de pássaros do mundo todo, incorporando-os em obras como "Catálogo dos Pássaros".',
+    category: 'Moderno',
+  },
+  {
+    id: '239',
+    type: 'innovation',
+    icon: '⚡',
+    title: 'Música Espectral',
+    content:
+      'Compositores espectrais como Grisey analisam espectros sonoros cientificamente, baseando harmonias em acústica.',
+    category: 'Moderno',
+  },
+  {
+    id: '240',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Cirque du Soleil Clássico',
+    content:
+      'Ligeti\'s "Atmosphères" foi usada em "2001: Uma Odisseia no Espaço", levando música de vanguarda ao cinema mainstream.',
+    category: 'Moderno',
+  },
+  {
+    id: '241',
+    type: 'technique',
+    icon: '🎨',
+    title: 'Microtonalidade',
+    content:
+      'Compositores como Partch criaram instrumentos afinados em intervalos menores que semitons, expandindo o espectro tonal.',
+    category: 'Moderno',
+  },
+  {
+    id: '242',
+    type: 'curiosity',
+    icon: '🏗️',
+    title: 'Xenakis Arquiteto',
+    content:
+      'Iannis Xenakis era arquiteto (trabalhou com Le Corbusier) e aplicou princípios matemáticos e arquitetônicos à música.',
+    category: 'Moderno',
+  },
+  {
+    id: '243',
+    type: 'instrument',
+    icon: '🎻',
+    title: 'Técnicas Estendidas',
+    content:
+      'Técnicas estendidas como col legno, sul ponticello e multifônicos expandiram dramaticamente as possibilidades instrumentais.',
+    category: 'Moderno',
+  },
+  {
+    id: '244',
+    type: 'innovation',
+    icon: '💻',
+    title: 'Música por Computador',
+    content:
+      'O IRCAM em Paris pioneirou música por computador, com Boulez criando centro de pesquisa musical e tecnológica.',
+    category: 'Moderno',
+  },
+  {
+    id: '245',
+    type: 'curiosity',
+    icon: '🌌',
+    title: 'Música Espacial',
+    content:
+      'Stockhausen compôs para performances em múltiplos andares, criando experiências musicais tridimensionais.',
+    category: 'Moderno',
+  },
+  {
+    id: '246',
+    type: 'technique',
+    icon: '🔧',
+    title: 'Serialismo Integral',
+    content:
+      'Boulez e outros aplicaram organização serial não apenas a alturas, mas também a durações, dinâmicas e articulações.',
+    category: 'Moderno',
+  },
+  {
+    id: '247',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'Teatro Musical',
+    content:
+      'Kagel e outros criaram "teatro musical" onde instrumentistas também atuam, borrando fronteiras entre artes.',
+    category: 'Moderno',
+  },
+  {
+    id: '248',
+    type: 'instrument',
+    icon: '🎹',
+    title: 'Sintetizadores',
+    content:
+      'Sintetizadores como o Moog revolucionaram música experimental, com compositores explorando sons impossíveis acusticamente.',
+    category: 'Moderno',
+  },
+  {
+    id: '249',
+    type: 'innovation',
+    icon: '🔄',
+    title: 'Minimalismo',
+    content:
+      'Steve Reich e Philip Glass criaram minimalismo musical, usando repetição e mudança gradual para hipnotizar audientes.',
+    category: 'Moderno',
+  },
+  {
+    id: '250',
+    type: 'curiosity',
+    icon: '🌊',
+    title: 'Música Ambiente',
+    content:
+      'Brian Eno criou o conceito de "música ambiente" - música que pode ser ignorada mas que enriquece o ambiente sonoro.',
+    category: 'Moderno',
+  },
+  {
+    id: '251',
+    type: 'technique',
+    icon: '📊',
+    title: 'Análise Espectral',
+    content:
+      'Compositores modernos usam análise espectral por computador para compreender e manipular timbres com precisão científica.',
+    category: 'Moderno',
+  },
+  {
+    id: '252',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Happenings Musicais',
+    content:
+      'Nos anos 1960, compositores criaram "happenings" - eventos multimídia onde música se misturava com arte visual e performance.',
+    category: 'Moderno',
+  },
+  {
+    id: '253',
+    type: 'innovation',
+    icon: '🔊',
+    title: 'Live Electronics',
+    content:
+      'Música eletroacústica ao vivo combina instrumentos tradicionais com eletrônicos, criando interação em tempo real.',
+    category: 'Moderno',
+  },
+  {
+    id: '254',
+    type: 'curiosity',
+    icon: '🌍',
+    title: 'World Music Fusion',
+    content:
+      'Compositores como Tan Dun fusionam tradições musicais orientais e ocidentais, criando linguagem musical verdadeiramente global.',
+    category: 'Moderno',
+  },
+  {
+    id: '255',
+    type: 'technique',
+    icon: '🎯',
+    title: 'Música Gestual',
+    content:
+      'Lachenmann e outros exploraram "música gestual" onde o gesto físico de tocar é tão importante quanto o som resultante.',
+    category: 'Moderno',
+  },
+  {
+    id: '256',
+    type: 'curiosity',
+    icon: '🏢',
+    title: 'Música Urbana',
+    content:
+      'Compositores incorporam sons urbanos - trânsito, construção, multidões - como material musical legítimo.',
+    category: 'Moderno',
+  },
+  {
+    id: '257',
+    type: 'instrument',
+    icon: '📱',
+    title: 'Apps Musicais',
+    content:
+      'Smartphones e tablets tornaram-se instrumentos musicais legítimos, com apps permitindo performances complexas.',
+    category: 'Moderno',
+  },
+  {
+    id: '258',
+    type: 'innovation',
+    icon: '🤖',
+    title: 'IA Compositora',
+    content:
+      'Inteligência artificial já compõe música autonomamente, levantando questões sobre criatividade e autoria artística.',
+    category: 'Moderno',
+  },
+  {
+    id: '259',
+    type: 'curiosity',
+    icon: '🌌',
+    title: 'Música Cósmica',
+    content:
+      'Compositores usam dados astronômicos - pulsares, radiação cósmica - como fonte de material musical.',
+    category: 'Moderno',
+  },
+  {
+    id: '260',
+    type: 'technique',
+    icon: '🔄',
+    title: 'Looping ao Vivo',
+    content:
+      'Steve Reich pioneirou loop delay, técnica hoje comum onde performers criam camadas em tempo real.',
+    category: 'Moderno',
+  },
+  {
+    id: '261',
+    type: 'curiosity',
+    icon: '🏛️',
+    title: 'Neo-Romantismo',
+    content:
+      'Compositores como John Adams retornaram à tonalidade e melodia, criando "neo-romantismo" acessível ao público.',
+    category: 'Moderno',
+  },
+  {
+    id: '262',
+    type: 'innovation',
+    icon: '🎮',
+    title: 'Música Interativa',
+    content:
+      'Música interativa responde a ações do público ou intérpretes, criando experiências únicas a cada performance.',
+    category: 'Moderno',
+  },
+  {
+    id: '263',
+    type: 'curiosity',
+    icon: '🧬',
+    title: 'Música Genética',
+    content:
+      'Compositores traduzem sequências de DNA em música, explorando padrões da vida como material compositivo.',
+    category: 'Moderno',
+  },
+  {
+    id: '264',
+    type: 'technique',
+    icon: '🌐',
+    title: 'Teleconcertos',
+    content:
+      'Internet permite performances colaborativas globais, com músicos em continentes diferentes tocando juntos.',
+    category: 'Moderno',
+  },
+  {
+    id: '265',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'Ópera Contemporânea',
+    content:
+      'Óperas modernas abordam temas atuais - terrorismo, mudança climática, redes sociais - mantendo o gênero relevante.',
+    category: 'Moderno',
+  },
+  {
+    id: '266',
+    type: 'instrument',
+    icon: '🎺',
+    title: 'Instrumentos Híbridos',
+    content:
+      'Luthiers criam instrumentos híbridos combinando tradições diferentes, expandindo possibilidades sonoras.',
+    category: 'Moderno',
+  },
+  {
+    id: '267',
+    type: 'innovation',
+    icon: '🔬',
+    title: 'Psicoacústica',
+    content:
+      'Compositores usam pesquisa psicoacústica para criar ilusões auditivas e efeitos perceptivos específicos.',
+    category: 'Moderno',
+  },
+  {
+    id: '268',
+    type: 'curiosity',
+    icon: '🌿',
+    title: 'Eco-Música',
+    content:
+      'Movimento de "eco-música" incorpora sons naturais e consciência ambiental nas composições contemporâneas.',
+    category: 'Moderno',
+  },
+  {
+    id: '269',
+    type: 'technique',
+    icon: '🎨',
+    title: 'Notação Gráfica',
+    content:
+      'Partituras contemporâneas usam símbolos visuais, cores e formas gráficas para comunicar ideias musicais.',
+    category: 'Moderno',
+  },
+  {
+    id: '270',
+    type: 'curiosity',
+    icon: '🏠',
+    title: 'Música Doméstica',
+    content:
+      'Pandemia levou compositores a criar obras para performance doméstica, adaptando-se a realidades contemporâneas.',
+    category: 'Moderno',
+  },
+  {
+    id: '271',
+    type: 'innovation',
+    icon: '🎧',
+    title: 'Música Binaural',
+    content:
+      'Gravação binaural cria experiências 3D através de fones, permitindo composições específicas para este meio.',
+    category: 'Moderno',
+  },
+  {
+    id: '272',
+    type: 'curiosity',
+    icon: '⚡',
+    title: 'Música Energética',
+    content:
+      'Compositores exploram sons de fontes energéticas - eletricidade, magnetismo - como material musical.',
+    category: 'Moderno',
+  },
+  {
+    id: '273',
+    type: 'technique',
+    icon: '🔢',
+    title: 'Algoritmos Musicais',
+    content:
+      'Algoritmos matemáticos geram estruturas musicais complexas, explorando padrões impossíveis para mente humana.',
+    category: 'Moderno',
+  },
+  {
+    id: '274',
+    type: 'curiosity',
+    icon: '🎪',
+    title: 'Flashmobs Musicais',
+    content:
+      'Flashmobs musicais levam música clássica a espaços públicos, democratizando acesso e surpreendendo transeuntes.',
+    category: 'Moderno',
+  },
+  {
+    id: '275',
+    type: 'instrument',
+    icon: '🌊',
+    title: 'Aquafone',
+    content:
+      'Instrumentos aquáticos usam água como meio sonoro, explorando acústica líquida para efeitos únicos.',
+    category: 'Moderno',
+  },
+
+  // TEORIA E TÉCNICA GERAL (25 curiosidades finais)
+  {
+    id: '276',
+    type: 'theory',
+    icon: '🎵',
+    title: 'Círculo das Quintas',
+    content:
+      'O círculo das quintas organiza todas as tonalidades em relação matemática perfeita, sendo ferramenta fundamental da harmonia.',
+    category: 'Teoria',
+  },
+  {
+    id: '277',
+    type: 'curiosity',
+    icon: '🔢',
+    title: 'Proporção Divina',
+    content:
+      'A proporção áurea (1:1.618) aparece em muitas obras clássicas, desde Bach até Debussy, criando satisfação estética.',
+    category: 'Teoria',
+  },
+  {
+    id: '278',
+    type: 'technique',
+    icon: '🎯',
+    title: 'Análise Schenkeriana',
+    content:
+      'Heinrich Schenker desenvolveu método analítico que reduz obras a estruturas fundamentais, revelando lógica profunda.',
+    category: 'Teoria',
+  },
+  {
+    id: '279',
+    type: 'curiosity',
+    icon: '🌊',
+    title: 'Efeito Doppler Musical',
+    content:
+      'Compositores exploram efeito Doppler (mudança de altura por movimento) criando ilusões espaciais na música.',
+    category: 'Teoria',
+  },
+  {
+    id: '280',
+    type: 'innovation',
+    icon: '📊',
+    title: 'Análise por Computador',
+    content:
+      'Software moderno analisa milhares de obras simultaneamente, revelando padrões estatísticos na música clássica.',
+    category: 'Teoria',
+  },
+  {
+    id: '281',
+    type: 'curiosity',
+    icon: '🧠',
+    title: 'Neurociência Musical',
+    content:
+      'Pesquisas revelam que música ativa múltiplas áreas cerebrais simultaneamente, sendo "ginástica" para o cérebro.',
+    category: 'Teoria',
+  },
+  {
+    id: '282',
+    type: 'technique',
+    icon: '🎨',
+    title: 'Teoria dos Conjuntos',
+    content:
+      'Teoria dos conjuntos aplica matemática à análise musical, especialmente útil para música atonal e serial.',
+    category: 'Teoria',
+  },
+  {
+    id: '283',
+    type: 'curiosity',
+    icon: '🔊',
+    title: 'Síntese Subtrativa',
+    content:
+      'Instrumentos acústicos funcionam por síntese subtrativa - produzem espectro rico que é filtrado pela ressonância.',
+    category: 'Teoria',
+  },
+  {
+    id: '284',
+    type: 'innovation',
+    icon: '🎼',
+    title: 'Música Fractal',
+    content:
+      'Composições fractais repetem padrões em diferentes escalas, criando autossimilaridade hipnótica.',
+    category: 'Teoria',
+  },
+  {
+    id: '285',
+    type: 'curiosity',
+    icon: '🌟',
+    title: 'Frequência 440 Hz',
+    content:
+      'A afinação em 440 Hz para o Lá foi padronizada internacionalmente apenas em 1939, variando muito antes disso.',
+    category: 'Teoria',
+  },
+  {
+    id: '286',
+    type: 'technique',
+    icon: '⚖️',
+    title: 'Contraponto Espécies',
+    content:
+      'O sistema de cinco espécies do contraponto de Fux ainda é base do ensino musical, codificando movimento de vozes.',
+    category: 'Teoria',
+  },
+  {
+    id: '287',
+    type: 'curiosity',
+    icon: '🎭',
+    title: 'Síndrome do Ouvido Absoluto',
+    content:
+      'Apenas 1 em 10.000 pessoas tem ouvido absoluto, capacidade mais comum entre músicos que começaram muito cedo.',
+    category: 'Teoria',
+  },
+  {
+    id: '288',
+    type: 'innovation',
+    icon: '🔄',
+    title: 'Transformações Neo-Riemannianas',
+    content:
+      'Teoria neo-riemanniana explica progressões harmônicas românticas através de transformações geométricas.',
+    category: 'Teoria',
+  },
+  {
+    id: '289',
+    type: 'curiosity',
+    icon: '🌈',
+    title: 'Sinestesia Musical',
+    content:
+      'Cerca de 4% das pessoas experienciam sinestesia, vendo cores específicas para diferentes notas musicais.',
+    category: 'Teoria',
+  },
+  {
+    id: '290',
+    type: 'technique',
+    icon: '📏',
+    title: 'Métrica Assimétrica',
+    content:
+      'Métricas como 5/8 ou 7/8 criam assimetrias rítmicas que desafiam expectativas baseadas em métrica binária.',
+    category: 'Teoria',
+  },
+  {
+    id: '291',
+    type: 'curiosity',
+    icon: '🔊',
+    title: 'Batimentos Acústicos',
+    content:
+      'Batimentos entre frequências próximas criam pulsações audíveis, fenômeno usado para afinar instrumentos.',
+    category: 'Teoria',
+  },
+  {
+    id: '292',
+    type: 'innovation',
+    icon: '🎯',
+    title: 'Análise Paradigmática',
+    content:
+      'Análise paradigmática de Ruwet organiza música em segmentos similares, revelando estruturas repetitivas ocultas.',
+    category: 'Teoria',
+  },
+  {
+    id: '293',
+    type: 'curiosity',
+    icon: '⏰',
+    title: 'Tempo Psicológico',
+    content:
+      'Percepção temporal na música varia dramaticamente - trechos lentos parecem mais longos que indicam cronômetros.',
+    category: 'Teoria',
+  },
+  {
+    id: '294',
+    type: 'technique',
+    icon: '🎨',
+    title: 'Klangfarbenmelodie',
+    content:
+      'Schoenberg criou "melodia de timbres" onde cores instrumentais, não alturas, criam linha melódica.',
+    category: 'Teoria',
+  },
+  {
+    id: '295',
+    type: 'curiosity',
+    icon: '🧮',
+    title: 'Sequência de Fibonacci',
+    content:
+      'Sequência de Fibonacci aparece naturalmente na música, influenciando proporções em obras de Bartók e outros.',
+    category: 'Teoria',
+  },
+  {
+    id: '296',
+    type: 'innovation',
+    icon: '🌐',
+    title: 'Topologia Musical',
+    content:
+      'Topologia musical estuda transformações contínuas entre objetos musicais, criando "geometria" harmônica.',
+    category: 'Teoria',
+  },
+  {
+    id: '297',
+    type: 'curiosity',
+    icon: '🎵',
+    title: 'Escala Cromática Natural',
+    content:
+      'A série harmônica natural produz microtons entre semitons, mas instrumentos temperados aproximam estas frequências.',
+    category: 'Teoria',
+  },
+  {
+    id: '298',
+    type: 'technique',
+    icon: '📊',
+    title: 'Análise Estatística',
+    content:
+      'Análise estatística revela "impressões digitais" composicionais únicas para cada compositor através de padrões.',
+    category: 'Teoria',
+  },
+  {
+    id: '299',
+    type: 'curiosity',
+    icon: '🌟',
+    title: 'Música das Esferas',
+    content:
+      'Kepler calculou "música das esferas" baseada em órbitas planetárias, conectando astronomia e harmonia musical.',
+    category: 'Teoria',
+  },
+  {
+    id: '300',
+    type: 'innovation',
+    icon: '🚀',
+    title: 'Futuro da Música',
+    content:
+      'A música clássica continua evoluindo com novas tecnologias, mantendo tradições milenares enquanto explora possibilidades infinitas.',
+    category: 'Futuro',
+  },
+];
+
+// Função para embaralhar e selecionar curiosidades
+export const getRandomFacts = (count = 4) => {
+  const shuffled = [...musicalFacts].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+};
+
+// Função para obter fatos por categoria
+export const getFactsByCategory = (category: string, count = 10) => {
+  const filtered = musicalFacts.filter((fact) => fact.category === category);
+  return filtered.sort(() => 0.5 - Math.random()).slice(0, count);
+};
+
+// Função para obter fatos por tipo
+export const getFactsByType = (type: string, count = 10) => {
+  const filtered = musicalFacts.filter((fact) => fact.type === type);
+  return filtered.sort(() => 0.5 - Math.random()).slice(0, count);
+};
+
+// Todas as categorias disponíveis
+export const categories = [
+  'Medieval',
+  'Renascimento',
+  'Barroco',
+  'Clássico',
+  'Romântico',
+  'Impressionismo',
+  'Moderno',
+  'Teoria',
+  'Futuro',
+];
+
+// Todos os tipos disponíveis
+export const factTypes = [
+  'curiosity',
+  'innovation',
+  'technique',
+  'instrument',
+  'record',
+  'anniversary',
+  'theory',
+];

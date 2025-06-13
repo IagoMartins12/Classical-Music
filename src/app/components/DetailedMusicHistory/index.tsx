@@ -955,31 +955,6 @@ export function DetailedMusicHistory(): JSX.Element {
         ></div>
       </div>
 
-      {/* Floating musical notes otimizadas */}
-      <div className="absolute inset-0 pointer-events-none will-change-auto">
-        <div className="absolute top-32 left-16 text-4xl text-brand-primary/10 animate-float">
-          <GiMusicalNotes />
-        </div>
-        <div
-          className="absolute bottom-32 right-16 text-3xl text-brand-secondary/10 animate-float"
-          style={{ animationDelay: '1s' }}
-        >
-          <FiMusic />
-        </div>
-        <div
-          className="absolute top-1/2 right-32 text-2xl text-accent-purple/10 animate-float"
-          style={{ animationDelay: '2s' }}
-        >
-          <GiGrandPiano />
-        </div>
-        <div
-          className="absolute bottom-1/2 left-32 text-2xl text-accent-blue/10 animate-float"
-          style={{ animationDelay: '0.5s' }}
-        >
-          <GiViolin />
-        </div>
-      </div>
-
       <div className="relative z-10">
         <TimelineOverview
           isExpanded={expandedSections.has('timeline-overview')}

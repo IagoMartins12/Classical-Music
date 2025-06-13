@@ -34,7 +34,7 @@ const WorkCard: React.FC<workCardProps> = ({ work }) => {
 
   return (
     <div className="group cursor-pointer select-none h-full">
-      <div className="classical-card h-full overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow">
+      <div className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow">
         {/* Header Section */}
         <div className="relative p-6 pb-4 border-b border-theme-secondary">
           {/* Background pattern */}
@@ -86,7 +86,7 @@ const WorkCard: React.FC<workCardProps> = ({ work }) => {
             {/* Composer */}
             <div className="flex items-center mb-4">
               <div className="w-6 h-6 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-2">
-                <FiUser className="w-3 h-3 text-theme-inverse" />
+                <FiUser className="w-3 h-3 text-theme-primary" />
               </div>
               <Link
                 href={`/composer/${work.composer.id}`}
@@ -100,7 +100,7 @@ const WorkCard: React.FC<workCardProps> = ({ work }) => {
         </div>
 
         {/* Content Section */}
-        <div className="p-6 flex-1 flex flex-col">
+        <div className="p-6 flex-1 w-full flex flex-col">
           {/* Work Details */}
           <div className="space-y-3 mb-4 flex-1">
             {/* Instrument */}

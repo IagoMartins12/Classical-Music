@@ -22,11 +22,8 @@ export const getEpochsCache = unstable_cache(
         id: true,
         name: true,
       },
-      orderBy: {
-        name: 'asc',
-      },
     });
-    return epochs;
+    return epochs.filter((epoch) => epoch.name !== 'Desconhecido');
   },
   ['epochs-list'],
   {

@@ -146,47 +146,12 @@ model Instrument {
   works     Work[]
 }
 
-model Categorie {
-  id            String          @id @default(auto()) @map("_id") @db.ObjectId
-  name          String          @unique
-  createdAt     DateTime        @default(now())
-  workCategories WorkCategorie[] // Relação many-to-many com works
-}
-
-// NOVA TABELA: Relação many-to-many entre Work e Categorie
-model WorkCategorie {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  workId      String @db.ObjectId
-  categorieId String @db.ObjectId
-  
-  work      Work      @relation(fields: [workId], references: [id], onDelete: Cascade)
-  categorie Categorie @relation(fields: [categorieId], references: [id], onDelete: Cascade)
-  
-  @@unique([workId, categorieId])
-  @@index([workId])
-  @@index([categorieId])
-}
-
-model WorkGenresTypes {
-  id          String @id @default(auto()) @map("_id") @db.ObjectId
-  workId      String @db.ObjectId
-  workGenreId String @db.ObjectId
-
-  work      Work      @relation(fields: [workId], references: [id], onDelete: Cascade)
-  workGenre WorkGenre @relation(fields: [workGenreId], references: [id], onDelete: Cascade)
-
-  @@unique([workId, workGenreId])
-  @@index([workId])
-  @@index([workGenreId])
-}
-
 model WorkGenre {
   id        String             @id @default(auto()) @map("_id") @db.ObjectId
   name      String             @unique
   createdAt DateTime           @default(now())
   updatedAt DateTime           @updatedAt
 
-  works     WorkGenresTypes[]  // relação com tabela intermediária
 }
 
 model Work {
@@ -225,8 +190,6 @@ model Work {
   epoch             Epoch           @relation(fields: [epochId], references: [id])
   instrument        Instrument      @relation(fields: [instrumentId], references: [id])
 
-  workCategories    WorkCategorie[]
-  workGenresTypes   WorkGenresTypes[] // relação many-to-many correta
 
   parentWork        Work?           @relation("WorkHierarchy", fields: [parentWorkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   childWorks        Work[]          @relation("WorkHierarchy")

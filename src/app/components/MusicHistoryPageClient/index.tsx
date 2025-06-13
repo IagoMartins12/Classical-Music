@@ -157,21 +157,6 @@ export function MusicHistoryPageClient({
           )}
         </div>
       </div>
-
-      {/* Floating Elements */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-brand-primary/30 rounded-full animate-pulse z-20"></div>
-      <div
-        className="fixed top-40 right-8 w-1.5 h-1.5 bg-accent-purple/40 rounded-full animate-pulse z-20"
-        style={{ animationDelay: '1s' }}
-      ></div>
-      <div
-        className="fixed bottom-32 left-8 w-1 h-1 bg-brand-secondary/50 rounded-full animate-pulse z-20"
-        style={{ animationDelay: '2s' }}
-      ></div>
-      <div
-        className="fixed bottom-20 right-4 w-1.5 h-1.5 bg-accent-blue/30 rounded-full animate-pulse z-20"
-        style={{ animationDelay: '0.5s' }}
-      ></div>
     </div>
   );
 }

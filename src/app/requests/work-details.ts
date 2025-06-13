@@ -40,10 +40,6 @@ export interface WorkDetails {
   } | null;
   categoryNames: string[];
   workGenresArr?: string[];
-  workGenres: {
-    id: string;
-    name: string;
-  }[];
 }
 
 export interface WorkListItem {
@@ -64,12 +60,6 @@ export interface WorkListItem {
   instrument: {
     name: string;
   } | null;
-  // Novas propriedades para categorias e gêneros de trabalho
-
-  workGenres: {
-    id: string;
-    name: string;
-  }[];
 }
 
 export interface WorksListResponse {
@@ -79,69 +69,6 @@ export interface WorksListResponse {
 }
 
 // Função auxiliar para buscar categorias e gêneros de trabalho
-async function getWorkCategoriesAndGenres(workIds: string[]) {
-  if (workIds.length === 0)
-    return { categoriesMap: new Map(), workGenresMap: new Map() };
-
-  const [workCategories, workGenresTypes] = await Promise.all([
-    // Buscar categorias através da tabela WorkCategorie
-    prisma.workCategorie.findMany({
-      where: {
-        workId: { in: workIds },
-      },
-      include: {
-        categorie: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    }),
-    // Buscar gêneros de trabalho através da tabela WorkGenresTypes
-    prisma.workGenresTypes.findMany({
-      where: {
-        workId: { in: workIds },
-      },
-      include: {
-        workGenre: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    }),
-  ]);
-
-  // Criar mapas agrupados por workId
-  const categoriesMap = new Map<string, { id: string; name: string }[]>();
-  const workGenresMap = new Map<string, { id: string; name: string }[]>();
-
-  // Agrupar categorias por workId
-  workCategories.forEach((wc) => {
-    if (!categoriesMap.has(wc.workId)) {
-      categoriesMap.set(wc.workId, []);
-    }
-    categoriesMap.get(wc.workId)!.push({
-      id: wc.categorie.id,
-      name: wc.categorie.name,
-    });
-  });
-
-  // Agrupar gêneros de trabalho por workId
-  workGenresTypes.forEach((wgt) => {
-    if (!workGenresMap.has(wgt.workId)) {
-      workGenresMap.set(wgt.workId, []);
-    }
-    workGenresMap.get(wgt.workId)!.push({
-      id: wgt.workGenre.id,
-      name: wgt.workGenre.name,
-    });
-  });
-
-  return { categoriesMap, workGenresMap };
-}
 
 // Buscar todas as obras com paginação
 export const getWorks = unstable_cache(
@@ -267,16 +194,14 @@ export const getWorks = unstable_cache(
       const instrumentIds = [
         ...new Set(works.map((w) => w.instrumentId).filter(Boolean)),
       ];
-      const workIds = works.map((w) => w.id);
 
-      const [instruments, { workGenresMap }] = await Promise.all([
+      const [instruments] = await Promise.all([
         instrumentIds.length > 0
           ? prisma.instrument.findMany({
               where: { id: { in: instrumentIds } },
               select: { id: true, name: true },
             })
           : [],
-        getWorkCategoriesAndGenres(workIds),
       ]);
 
       // Criar mapas para lookup rápido
@@ -296,7 +221,6 @@ export const getWorks = unstable_cache(
           instrument: work.instrumentId
             ? instrumentMap.get(work.instrumentId) || null
             : null,
-          workGenres: workGenresMap.get(work.id) || [],
         })),
         totalCount,
         hasMore: skip + works.length < totalCount,

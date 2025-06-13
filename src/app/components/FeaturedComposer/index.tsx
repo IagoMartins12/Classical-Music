@@ -19,23 +19,23 @@ interface FeaturedComposerProps {
     id: string;
     name: string;
     fullName: string;
-    birthDate?: string;
-    deathDate?: string;
-    portraitUrl?: string;
-    bio?: string;
-    permLinkImslp?: string;
-    wikipediaLink?: string;
-    epochName: string;
-    works: Array<{
+    birthDate?: string | null;
+    deathDate?: string | null;
+    portraitUrl: string | null;
+    bio: string | null;
+    permLinkImslp: string | null;
+    wikipediaLink: string | null;
+    epochName: string | null;
+    works: {
       id: string;
       title: string;
       imslpPermlink: string;
-    }>;
-    curiosities: Array<{
+    }[];
+    curiosities: {
       id: string;
       icon: string;
       text: string;
-    }>;
+    }[];
   };
 }
 
@@ -68,13 +68,11 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
         {/* Background Pattern */}
         <div className="absolute inset-0 music-note-background opacity-5"></div>
 
-        {/* Gradient Background */}
-
         <div className="relative p-8 lg:p-12">
           {/* Header */}
           <div className="flex items-center gap-3 mb-8">
             <div className="w-12 h-12 bg-brand-gradient rounded-2xl flex items-center justify-center">
-              <GiMusicalNotes className="w-6 h-6 text-theme-inverse" />
+              <GiMusicalNotes className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -91,7 +89,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
             {/* Portrait Section */}
             <div className="lg:col-span-1 flex flex-col items-center text-center">
               <div className="relative mb-6">
-                <div className="relative w-48 h-48 lg:w-56 lg:h-56">
+                <div className="relative w-48 h-48 lg:w-72 lg:h-72">
                   {/* Loading skeleton */}
                   {!imageLoaded && !imageError && (
                     <div className="absolute inset-0 loading-skeleton rounded-3xl"></div>
@@ -99,24 +97,26 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
 
                   {/* Portrait or fallback */}
                   {composer.portraitUrl && !imageError ? (
-                    <div className="relative w-full h-full rounded-3xl overflow-hidden border-4 border-brand-primary/20 group-hover:border-brand-primary/40 transition-all duration-500 shadow-theme-medium group-hover:shadow-theme-glow">
-                      <Image
-                        src={composer.portraitUrl}
-                        alt={composer.name}
-                        fill
-                        sizes="224px"
-                        className={`object-cover transition-all duration-700 group-hover:scale-110 ${
-                          imageLoaded ? 'opacity-100' : 'opacity-0'
-                        }`}
-                        onLoad={() => setImageLoaded(true)}
-                        onError={() => setImageError(true)}
-                        priority
-                        quality={90}
-                      />
+                    <Link href={`/composer/${composer.id}`}>
+                      <div className="relative w-full h-full rounded-3xl overflow-hidden border-2 border-brand-primary/20 group-hover:border-brand-primary/40 transition-all duration-500 shadow-theme-medium group-hover:shadow-theme-glow">
+                        <Image
+                          src={composer.portraitUrl}
+                          alt={composer.name}
+                          fill
+                          sizes="224px"
+                          className={`object-cover transition-all duration-700 group-hover:scale-110 ${
+                            imageLoaded ? 'opacity-100' : 'opacity-0'
+                          }`}
+                          onLoad={() => setImageLoaded(true)}
+                          onError={() => setImageError(true)}
+                          priority
+                          quality={90}
+                        />
 
-                      {/* Overlay gradient */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                    </div>
+                        {/* Overlay gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                      </div>
+                    </Link>
                   ) : (
                     <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center border-4 border-brand-primary/20 group-hover:border-brand-primary/40 transition-all duration-500 shadow-theme-medium group-hover:shadow-theme-glow">
                       <FiUser className="w-16 h-16 text-theme-inverse" />
@@ -253,25 +253,19 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                   </h4>
                   <div className="grid gap-3">
                     {composer.works.map((work) => (
-                      <div
-                        key={work.id}
-                        className="flex items-center justify-between p-4 classical-card-simple hover:scale-[1.02] transition-all duration-300 group/work"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
-                          <span className="text-theme-primary font-medium group-hover/work:text-brand-primary transition-colors">
-                            {work.title}
-                          </span>
+                      <Link href={`/works/${work.id}`} key={work.id}>
+                        <div className="flex items-center justify-between p-4 classical-card-simple hover:scale-[1.02] transition-all duration-300 group/work">
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
+                            <span className="text-theme-primary font-medium group-hover/work:text-brand-primary transition-colors">
+                              {work.title}
+                            </span>
+                          </div>
+                          <div className="text-theme-tertiary hover:text-brand-primary transition-colors">
+                            <FiExternalLink className="w-4 h-4" />
+                          </div>
                         </div>
-                        <a
-                          href={work.imslpPermlink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-theme-tertiary hover:text-brand-primary transition-colors"
-                        >
-                          <FiExternalLink className="w-4 h-4" />
-                        </a>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 </div>
