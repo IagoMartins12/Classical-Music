@@ -574,25 +574,6 @@ class IMSLPScraper {
           }
         }
 
-        // SOLUÇÃO 3: Se ainda não encontrou, tentar pelo texto da categoria
-        if (compositionsCount === 0) {
-          const categoryText = $('.mw-content-ltr').text();
-          const match = categoryText.match(
-            /Esta categoria contém as seguintes\s+(\d+)\s+páginas/
-          );
-          if (match) {
-            console.log(`Match encontrado no texto: "${match[1]}"`);
-            compositionsCount = parseInt(match[1]) || 0;
-          }
-        }
-
-        // SOLUÇÃO 4: Contar diretamente os links das composições
-        if (compositionsCount === 0) {
-          const compositionLinks = $('.categorypagelink');
-          compositionsCount = compositionLinks.length;
-          console.log(`Contagem direta de links: ${compositionsCount}`);
-        }
-
         console.log(
           `🎼 Total de composições encontradas: ${compositionsCount}`
         );

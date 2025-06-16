@@ -1,5 +1,4 @@
-// This is your Prisma schema file for the classical music encyclopedia project
-// Learn more: https://pris.ly/d/prisma-schema
+// Updated Prisma schema with authentication and onboarding fields
 
 generator client {
   provider = "prisma-client-js"
@@ -26,42 +25,30 @@ enum PracticeFocus {
 }
 
 enum WorkType {
-    INDIVIDUAL
-    COMPLETE_WORK
-    ARRANGEMENT
-    COLLECTION
-    COLLABORATION
-    COMPOSITION
-    COLLECTED_WORKS
-    COLLECTIONS_WITH
+  INDIVIDUAL
+  COMPLETE_WORK
+  ARRANGEMENT
+  COLLECTION
+  COLLABORATION
+  COMPOSITION
+  COLLECTED_WORKS
+  COLLECTIONS_WITH
+}
+
+enum UserType {
+  MUSIC_STUDENT
+  CASUAL_USER
+  PROFESSIONAL
+  TEACHER
+}
+
+enum AccountProvider {
+  GOOGLE
+  EMAIL
+  FACEBOOK
 }
 
 // Models
-model User {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  firstName      String?
-  lastName       String?
-  username       String?   @unique
-  email          String?   @unique
-  emailVerified  DateTime?
-  hashedPassword String?
-  image          String?
-  bio            String?
-  gender         String?
-  birthday       DateTime?
-  createdAt      DateTime  @default(now())
-
-  // Relations
-  Account           Account[]
-  instruments       UserInstrument[]
-  annotations       Annotation[]
-  favoriteWorks     FavoriteWork[]
-  favoriteComposers FavoriteComposer[]
-  wantToLearn       WantToLearn[]
-  learned           Learned[]
-  studySessions     StudySession[]
-}
-
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
   userId            String  @db.ObjectId
@@ -81,43 +68,119 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String   @unique
+  userId       String   @db.ObjectId
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model User {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  firstName      String?
+  lastName       String?
+  username       String?   @unique
+  email          String?   @unique
+  emailVerified  DateTime?
+  hashedPassword String?
+  image          String?
+  bio            String?
+  gender         String?
+  birthday       DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Role system
+  role Int @default(0) //0 = usuario normal 1 = estudante. 2 = admin, 3 = super admin
+
+  // New onboarding fields
+  userType            UserType?
+  onboardingCompleted Boolean   @default(false)
+
+  // Location (optional)
+  city    String?
+  state   String?
+  country String?
+
+  // Preferences
+  favoriteComposerId String? @db.ObjectId
+  favoriteEpochId    String? @db.ObjectId
+
+  // Learning preferences
+  experienceLevel     DifficultyLevel @default(null)
+  practiceTimePerWeek Int? // minutes per week
+
+  // Privacy settings
+  profilePublic Boolean @default(true)
+  showLocation  Boolean @default(false)
+
+  // Relations
+  accounts Account[]
+  sessions Session[]
+
+  favoriteComposer Composer? @relation("FavoriteComposer", fields: [favoriteComposerId], references: [id])
+  favoriteEpoch    Epoch?    @relation("FavoriteEpoch", fields: [favoriteEpochId], references: [id])
+
+  instruments       UserInstrument[]
+  annotations       Annotation[]
+  favoriteWorks     FavoriteWork[]
+  favoriteComposers FavoriteComposer[]
+  wantToLearn       WantToLearn[]
+  learned           Learned[]
+  studySessions     StudySession[]
+
+  @@index([userType])
+  @@index([onboardingCompleted])
+}
+
 model Composer {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
-  name            String
-  fullName        String
-  birthDate       String?
-  deathDate       String?
-  portraitUrl     String?
-  epochId         String         @db.ObjectId
-  epochName       String?
-  bio             String?
-  createdAt       DateTime       @default(now())
-  permLinkImslp   String?
-  imslpId         String?        // IMPORTANTE: usado pelo scraper para matching
-  wikipediaLink   String?
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  fullName      String
+  birthDate     String?
+  deathDate     String?
+  portraitUrl   String?
+  epochId       String   @db.ObjectId
+  epochName     String?
+  bio           String?
+  createdAt     DateTime @default(now())
+  permLinkImslp String?
+  imslpId       String? // IMPORTANTE: usado pelo scraper para matching
+  wikipediaLink String?
 
   // Primary role
-  primaryRoleId   String         @db.ObjectId
-  primaryRole     Role           @relation("PrimaryRole", fields: [primaryRoleId], references: [id])
+  primaryRoleId String @db.ObjectId
+  primaryRole   Role   @relation("PrimaryRole", fields: [primaryRoleId], references: [id])
 
   // Relationships
-  epoch           Epoch          @relation(fields: [epochId], references: [id])
-  works           Work[]
-  favoritedBy     FavoriteComposer[]
+  epoch       Epoch              @relation(fields: [epochId], references: [id])
+  works       Work[]
+  favoritedBy FavoriteComposer[]
+
+  // Users who have this as favorite composer
+  favoriteByUsers User[] @relation("FavoriteComposer")
 
   // Additional roles (many-to-many)
-  roles           String?
+  roles String?
 
   @@index([name])
   @@index([epochId])
   @@index([fullName])
   @@index([primaryRoleId])
   @@index([imslpId]) // Para busca eficiente pelo scraper
-
   // ÍNDICES COMPOSTOS
   @@index([name, epochId])
   @@index([epochId, primaryRoleId])
-  
   // ÍNDICE para busca de texto
   @@index([name, fullName])
 }
@@ -126,85 +189,86 @@ model Epoch {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
 
-  composers Composer[]
-  works Work[]
+  composers       Composer[]
+  works           Work[]
+  favoriteByUsers User[]     @relation("FavoriteEpoch")
 
   @@index([name])
 }
 
-
-
 model Role {
-  id               String         @id @default(auto()) @map("_id") @db.ObjectId
-  name             String
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
 
   // Composers with this as their primary role
-  primaryComposers Composer[]     @relation("PrimaryRole")
+  primaryComposers Composer[] @relation("PrimaryRole")
 
   @@index([name])
 }
 
 model Instrument {
-  id        String           @id @default(auto()) @map("_id") @db.ObjectId
-  name      String           @unique
-  createdAt DateTime         @default(now())
-  users     UserInstrument[]
-  works     Work[]
+  id         String           @id @default(auto()) @map("_id") @db.ObjectId
+  name       String           @unique
+  category   String? // Piano, Strings, Woodwinds, etc.
+  difficulty String? // Beginner-friendly, Intermediate, Advanced
+  createdAt  DateTime         @default(now())
+  users      UserInstrument[]
+  works      Work[]
+
+  @@index([category])
 }
 
 model WorkGenre {
-  id        String             @id @default(auto()) @map("_id") @db.ObjectId
-  name      String             @unique
-  createdAt DateTime           @default(now())
-  updatedAt DateTime           @updatedAt
-
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Work {
-  id                String             @id @default(auto()) @map("_id") @db.ObjectId
-  title             String
-  composerId        String             @db.ObjectId
-  instrumentId      String             @db.ObjectId
-  epochId           String             @db.ObjectId
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  composerId   String @db.ObjectId
+  instrumentId String @db.ObjectId
+  epochId      String @db.ObjectId
 
-  videoUrl          String?
-  imslpPermlink     String
-  imslpId           String
-  opOrCatalog       String?
-  compositionYear   String?
-  firstPublishDate  String?
-  tone              String?
-  mediaDuration     String?
-  workStyle         String?
-  moviment          String?
-  categoryNames     String[]        @default([])
-  workGenresArr     String[]        @default([])
+  videoUrl         String?
+  imslpPermlink    String
+  imslpId          String
+  opOrCatalog      String?
+  compositionYear  String?
+  firstPublishDate String?
+  tone             String?
+  mediaDuration    String?
+  workStyle        String?
+  moviment         String?
+  categoryNames    String[] @default([])
+  workGenresArr    String[] @default([])
 
   dedicateTo             String?
   dedicationComposerLink String?
   instrumentation        String?
-  workType               WorkType       @default(INDIVIDUAL)
+  workType               WorkType @default(INDIVIDUAL)
 
-  isPartOfCollection     Boolean        @default(false)
-  parentWorkId           String?        @db.ObjectId
-  movementNumber         Int?
+  isPartOfCollection Boolean @default(false)
+  parentWorkId       String? @db.ObjectId
+  movementNumber     Int?
 
-  createdAt              DateTime       @default(now())
+  createdAt DateTime @default(now())
 
   // Relations
-  composer          Composer        @relation(fields: [composerId], references: [id])
-  epoch             Epoch           @relation(fields: [epochId], references: [id])
-  instrument        Instrument      @relation(fields: [instrumentId], references: [id])
+  composer   Composer   @relation(fields: [composerId], references: [id])
+  epoch      Epoch      @relation(fields: [epochId], references: [id])
+  instrument Instrument @relation(fields: [instrumentId], references: [id])
 
+  parentWork Work?  @relation("WorkHierarchy", fields: [parentWorkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childWorks Work[] @relation("WorkHierarchy")
 
-  parentWork        Work?           @relation("WorkHierarchy", fields: [parentWorkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  childWorks        Work[]          @relation("WorkHierarchy")
-
-  annotations       Annotation[]
-  favoriteBy        FavoriteWork[]
-  wantToLearners    WantToLearn[]
-  learners          Learned[]
-  studySessions     StudySession[]
+  annotations    Annotation[]
+  favoriteBy     FavoriteWork[]
+  wantToLearners WantToLearn[]
+  learners       Learned[]
+  studySessions  StudySession[]
 
   @@index([title])
   @@index([composerId])
@@ -213,30 +277,29 @@ model Work {
   @@index([workType])
   @@index([parentWorkId])
   @@index([isPartOfCollection])
-
-   // ÍNDICES COMPOSTOS para filtros combinados
+  // ÍNDICES COMPOSTOS para filtros combinados
   @@index([composerId, instrumentId])
   @@index([composerId, epochId])
   @@index([instrumentId, epochId])
   @@index([composerId, instrumentId, epochId])
-  
   // ÍNDICES para busca de texto
   @@index([opOrCatalog, composerId])
-
-  
   // ÍNDICES para arrays (se suportado pelo MongoDB)
   @@index([categoryNames])
   @@index([workGenresArr])
 }
-
-
-
 
 // Join tables
 model UserInstrument {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   userId       String @db.ObjectId
   instrumentId String @db.ObjectId
+
+  // New fields for better tracking
+  level      DifficultyLevel @default(BEGINNER)
+  isPrimary  Boolean         @default(false)
+  isLearning Boolean         @default(true)
+  startedAt  DateTime        @default(now())
 
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   instrument Instrument @relation(fields: [instrumentId], references: [id], onDelete: Cascade)
@@ -250,7 +313,9 @@ model Annotation {
   userId    String   @db.ObjectId
   workId    String   @db.ObjectId
   content   String
+  isPublic  Boolean  @default(false)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
@@ -265,6 +330,7 @@ model StudySession {
   metronomeUsed Boolean       @default(false)
   focus         PracticeFocus
   notes         String?
+  rating        Int? // 1-5 how the session went
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
@@ -272,9 +338,11 @@ model StudySession {
 
 // Wishlists and favorites
 model WantToLearn {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  userId String @db.ObjectId
-  workId String @db.ObjectId
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String   @db.ObjectId
+  workId   String   @db.ObjectId
+  priority Int      @default(1) // 1-5 priority level
+  addedAt  DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
@@ -287,6 +355,7 @@ model Learned {
   userId    String   @db.ObjectId
   workId    String   @db.ObjectId
   learnedAt DateTime @default(now())
+  mastery   Int      @default(1) // 1-5 mastery level
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
