@@ -96,6 +96,7 @@ export const getWorks = unstable_cache(
       const skip = (page - 1) * limit;
 
       // Construir filtros WHERE de forma mais eficiente
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const whereClause: any = {};
 
       if (filters?.composerId) {

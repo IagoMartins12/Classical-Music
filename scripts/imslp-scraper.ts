@@ -544,60 +544,76 @@ class IMSLPScraper {
           `⚠ Compositor sem imagem: ${composer.id}, verificando composições...`
         );
 
-        // Buscar por link que contenha "Compositions" e extrair o número
-        const compositionsLink = $('.ui-tabs-nav a')
-          .filter((_, el) => {
-            return $(el).text().includes('Compositions');
-          })
-          .first();
+        let compositionsCount = 0;
 
-        if (compositionsLink.length > 0) {
-          const compositionsText = compositionsLink.text();
+        // SOLUÇÃO 1: Tentar encontrar na aba de composições
+        const compositionsTab = $('.ui-tabs-nav li a, .ui-tabs-nav a').filter(
+          (_, el) => {
+            return $(el).text().includes('Compositions');
+          }
+        );
+
+        if (compositionsTab.length > 0) {
+          const compositionsText = compositionsTab.text();
+          console.log(`Texto da aba encontrado: "${compositionsText}"`);
           const compositionsMatch = compositionsText.match(
             /Compositions \((\d+)\)/
           );
-
           if (compositionsMatch) {
-            const compositionsCount = parseInt(compositionsMatch[1]);
-            console.log(`🎼 Encontradas ${compositionsCount} composições`);
-
-            if (compositionsCount < 5) {
-              console.log(
-                `❌ Compositor sem imagem e com menos de 5 composições (${compositionsCount}): ${composer.id} \n`
-              );
-              await fs.appendFile(
-                STATE_COMPOSERS_FILE,
-                ` ❌ ${composer.id} / Compositor sem imagem e com menos de 5 composições (${compositionsCount})` +
-                  '\n'
-              );
-              return null;
-            } else {
-              console.log(
-                `✅ Compositor sem imagem mas com ${compositionsCount} composições (≥5), continuando...`
-              );
-              // Usar imagem padrão para compositores sem foto mas com composições suficientes
-              imageUrl =
-                'https://imslp.org/images/thumb/a/ad/Nocomposerphotoavailable.jpg/180px-Nocomposerphotoavailable.jpg';
-            }
-          } else {
-            console.log(
-              `⚠ Não foi possível extrair número de composições: ${composer.id} \n`
-            );
-            await fs.appendFile(
-              STATE_COMPOSERS_FILE,
-              ` ❌ ${composer.id} / Compositor sem imagem e não foi possível verificar composições` +
-                '\n'
-            );
-            return null;
+            compositionsCount = parseInt(compositionsMatch[1]);
           }
-        } else {
-          console.log(`⚠ Não encontrou aba de composições: ${composer.id} \n`);
+        }
+
+        // SOLUÇÃO 2: Se não encontrou na aba, tentar pelo span com ID
+        if (compositionsCount === 0) {
+          const countSpan = $('#catnummsgp1');
+          if (countSpan.length > 0) {
+            const spanText = countSpan.text();
+            console.log(`Span encontrado: "${spanText}"`);
+            compositionsCount = parseInt(spanText) || 0;
+          }
+        }
+
+        // SOLUÇÃO 3: Se ainda não encontrou, tentar pelo texto da categoria
+        if (compositionsCount === 0) {
+          const categoryText = $('.mw-content-ltr').text();
+          const match = categoryText.match(
+            /Esta categoria contém as seguintes\s+(\d+)\s+páginas/
+          );
+          if (match) {
+            console.log(`Match encontrado no texto: "${match[1]}"`);
+            compositionsCount = parseInt(match[1]) || 0;
+          }
+        }
+
+        // SOLUÇÃO 4: Contar diretamente os links das composições
+        if (compositionsCount === 0) {
+          const compositionLinks = $('.categorypagelink');
+          compositionsCount = compositionLinks.length;
+          console.log(`Contagem direta de links: ${compositionsCount}`);
+        }
+
+        console.log(
+          `🎼 Total de composições encontradas: ${compositionsCount}`
+        );
+
+        if (compositionsCount < 5) {
+          console.log(
+            `❌ Compositor sem imagem e com menos de 5 composições (${compositionsCount}): ${composer.id} \n`
+          );
           await fs.appendFile(
             STATE_COMPOSERS_FILE,
-            ` ❌ ${composer.id} / Compositor sem imagem e sem aba de composições` +
+            ` ❌ ${composer.id} / Compositor sem imagem e com menos de 5 composições (${compositionsCount})` +
               '\n'
           );
           return null;
+        } else {
+          console.log(
+            `✅ Compositor sem imagem mas com ${compositionsCount} composições (≥5), continuando...`
+          );
+          // Usar imagem padrão para compositores sem foto mas com composições suficientes
+          imageUrl =
+            'https://imslp.org/images/thumb/a/ad/Nocomposerphotoavailable.jpg/180px-Nocomposerphotoavailable.jpg';
         }
       }
 
