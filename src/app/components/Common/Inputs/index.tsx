@@ -47,7 +47,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3 top-[38%] transform -translate-y-1/2 text-theme-tertiary">
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary">
               {leftIcon}
             </div>
           )}

@@ -9,7 +9,11 @@ import { GiGrandPiano } from 'react-icons/gi';
 import { ThemeToggle } from '../ThemeToggle';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
-import { useLoginModal, useRegisterModal } from '@/app/stores/authStore';
+import {
+  useLoginModal,
+  useOnboardingModal,
+  useRegisterModal,
+} from '@/app/stores/authStore';
 import Button from '../Common/Button';
 
 interface NavItem {
@@ -25,6 +29,7 @@ const Navbar: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
   const { open: openLogin } = useLoginModal();
   const { open: openRegister } = useRegisterModal();
+  const { open } = useOnboardingModal();
 
   const toggleMobileMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -183,9 +188,12 @@ const Navbar: React.FC = () => {
                           {user.email}
                         </p>
                         {!user.onboardingCompleted && (
-                          <p className="text-xs text-accent-amber mt-1">
-                            ⚠️ Complete seu perfil para uma melhor experiência
-                          </p>
+                          <div
+                            className="classical-card py-2 px-2 text-xs text-center text-brand-primary my-4 cursor-pointer"
+                            onClick={open}
+                          >
+                            Clique aqui para completar seu perfil.
+                          </div>
                         )}
                       </div>
 

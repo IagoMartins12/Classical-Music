@@ -10,8 +10,7 @@ import { allFamousNames } from '../requests/utils';
 
 // Validation schemas
 const registerSchema = z.object({
-  firstName: z.string().min(1, 'Nome é obrigatório').max(50),
-  lastName: z.string().min(1, 'Sobrenome é obrigatório').max(50),
+  username: z.string().min(1, 'Username é obrigatório').max(50),
   email: z.string().email('Email inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
 });
@@ -82,13 +81,13 @@ export interface OnboardingOptionsResult {
 
 // Register user with email and password
 export async function registerUser(data: {
-  firstName: string;
-  lastName: string;
+  username: string;
   email: string;
   password: string;
 }): Promise<AuthResult> {
   try {
     // Validate input
+    console.log('DATA', data);
     const validatedData = registerSchema.parse(data);
 
     // Check if user already exists
@@ -103,14 +102,28 @@ export async function registerUser(data: {
       };
     }
 
+    const existingUserUsername = await prisma.user.findFirst({
+      where: {
+        username: {
+          equals: validatedData.username,
+          mode: 'insensitive',
+        },
+      },
+    });
+    if (existingUserUsername) {
+      return {
+        success: false,
+        message: 'Um usuário com este nome de usuário existe.',
+      };
+    }
+
     // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 12);
 
     // Create user
     const user = await prisma.user.create({
       data: {
-        firstName: validatedData.firstName,
-        lastName: validatedData.lastName,
+        username: validatedData.username,
         email: validatedData.email.toLowerCase(),
         hashedPassword,
         role: 0, // normal user
@@ -234,78 +247,94 @@ export async function loginUser(data: {
   }
 }
 
+export async function getSpecificsInstrument() {
+  const instrumentsData = await prisma.instrument.findMany({
+    select: {
+      id: true,
+      name: true,
+      category: true,
+    },
+    where: {
+      name: {
+        in: [
+          'Piano',
+          'Violão',
+          'Voz',
+          'Clarinete',
+          'Violino',
+          'Violoncelo',
+          'Flauta',
+          'Clavicórdio',
+          'Harpa',
+          'Órgão',
+          'Viola',
+          'Saxophone',
+          'Corneta',
+          'Contrabaixo',
+          'Trombete',
+          'Teclado',
+          'Banjo',
+          'Trompa',
+          'Oboé',
+          'Vocal',
+          'Alaúde',
+          'Orquestra',
+          'Soprano',
+        ],
+      },
+    },
+    orderBy: [{ category: 'asc' }, { name: 'asc' }],
+  });
+
+  return instrumentsData;
+}
+
+export async function getFamousComposers() {
+  const composerData = await prisma.composer.findMany({
+    where: {
+      AND: [
+        {
+          fullName: {
+            in: allFamousNames,
+          },
+        },
+      ],
+    },
+    select: {
+      id: true,
+      name: true,
+      fullName: true,
+      portraitUrl: true,
+      epochName: true,
+    },
+    orderBy: { name: 'asc' },
+  });
+
+  return composerData;
+}
+export async function getEpochs() {
+  const epochsData = await prisma.epoch.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+    orderBy: { name: 'asc' },
+  });
+
+  return epochsData;
+}
+
 // Get onboarding options (instruments, composers, epochs)
 export async function getOnboardingOptions(): Promise<OnboardingOptionsResult> {
   try {
     const [instruments, composers, epochs] = await Promise.all([
       // Get instruments grouped by category
-      prisma.instrument.findMany({
-        select: {
-          id: true,
-          name: true,
-          category: true,
-        },
-        where: {
-          name: {
-            in: [
-              'Piano',
-              'Violão',
-              'Voz',
-              'Clarinete',
-              'Violino',
-              'Violoncelo',
-              'Flauta',
-              'Clavicórdio',
-              'Harpa',
-              'Órgão',
-              'Viola',
-              'Saxophone',
-              'Corneta',
-              'Contrabaixo',
-              'Trombete',
-              'Teclado',
-              'Banjo',
-              'Trompa',
-              'Oboé',
-              'Vocal',
-              'Alaúde',
-              'Orquestra',
-              'Soprano',
-            ],
-          },
-        },
-        orderBy: [{ category: 'asc' }, { name: 'asc' }],
-      }),
+      getSpecificsInstrument(),
 
       // Get popular composers with portraits
-      prisma.composer.findMany({
-        where: {
-          AND: [
-            {
-              fullName: {
-                in: allFamousNames,
-              },
-            },
-          ],
-        },
-        select: {
-          id: true,
-          name: true,
-          fullName: true,
-          portraitUrl: true,
-          epochName: true,
-        },
-        orderBy: { name: 'asc' },
-      }),
-
+      getFamousComposers(),
       // Get all epochs
-      prisma.epoch.findMany({
-        select: {
-          id: true,
-          name: true,
-        },
-        orderBy: { name: 'asc' },
-      }),
+      getEpochs(),
     ]);
 
     return {

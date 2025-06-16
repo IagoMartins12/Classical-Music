@@ -37,6 +37,8 @@ yarn-error.log*
 .scraper-composers-state.log
 classical-music/scraper-composers-state.log
 
+scraper-works-state.log
+scraper-composers-state.log
 # vercel
 .vercel
 

@@ -33,12 +33,6 @@ const OnboardingChecker: React.FC = () => {
       !user.onboardingCompleted &&
       !isOnboardingOpen
     ) {
-      // Small delay to ensure modals don't conflict
-      const timer = setTimeout(() => {
-        openOnboarding();
-      }, 1000);
-
-      return () => clearTimeout(timer);
     }
   }, [isLoading, isAuthenticated, user, openOnboarding, isOnboardingOpen]);
 

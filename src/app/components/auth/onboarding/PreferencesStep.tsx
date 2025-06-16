@@ -168,11 +168,10 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
             value={composerSearch}
             onChange={(e) => setComposerSearch(e.target.value)}
             leftIcon={<FiSearch className="w-4 h-4" />}
-            className="mb-4"
           />
 
           {selectedComposer && (
-            <div className="mb-4  classical-card p-3 rounded-lg border ">
+            <div className="my-4  classical-card p-3 rounded-lg border ">
               <div className="flex items-center space-x-3">
                 {selectedComposer.portraitUrl && (
                   <img
@@ -201,7 +200,7 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
             </div>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 py-2 px-2 gap-3 max-h-60 overflow-y-auto overflow-x-hidden classical-scrollbar">
+          <div className="grid mt-4 grid-cols-1 sm:grid-cols-2 py-2 px-2 gap-3 max-h-60 overflow-y-auto overflow-x-hidden classical-scrollbar">
             {filteredComposers.map((composer) => (
               <button
                 key={composer.id}

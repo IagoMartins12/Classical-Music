@@ -13,7 +13,6 @@ import { useOnboardingModal, useRegisterModal } from '@/app/stores/authStore';
 import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
-import Checkbox from '../../Common/Checkbox';
 
 const RegisterModal: React.FC = () => {
   const { isOpen, close, switchToLogin } = useRegisterModal();
@@ -21,12 +20,10 @@ const RegisterModal: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
-    acceptTerms: false,
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -46,16 +43,10 @@ const RegisterModal: React.FC = () => {
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'Nome é obrigatório';
-    } else if (formData.firstName.trim().length < 2) {
-      newErrors.firstName = 'Nome deve ter pelo menos 2 caracteres';
-    }
-
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Sobrenome é obrigatório';
-    } else if (formData.lastName.trim().length < 2) {
-      newErrors.lastName = 'Sobrenome deve ter pelo menos 2 caracteres';
+    if (!formData.username.trim()) {
+      newErrors.username = 'Nome de usuário é obrigatório';
+    } else if (formData.username.trim().length < 2) {
+      newErrors.username = 'Nome de usuário deve ter pelo menos 2 caracteres';
     }
 
     if (!formData.email.trim()) {
@@ -92,8 +83,7 @@ const RegisterModal: React.FC = () => {
 
     try {
       const result = await registerUser({
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
+        username: formData.username.trim(),
         email: formData.email.trim(),
         password: formData.password,
       });
@@ -163,12 +153,10 @@ const RegisterModal: React.FC = () => {
 
   const handleClose = () => {
     setFormData({
-      firstName: '',
-      lastName: '',
+      username: '',
       email: '',
       password: '',
       confirmPassword: '',
-      acceptTerms: false,
     });
     setErrors({});
     close();
@@ -178,13 +166,13 @@ const RegisterModal: React.FC = () => {
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      maxWidth="md"
+      maxWidth="lg"
       showCloseButton={true}
     >
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-brand-gradient rounded-full flex items-center justify-center shadow-theme-glow">
-            <GiGrandPiano className="w-8 h-8 text-theme-inverse" />
+            <GiGrandPiano className="w-8 h-8 text-theme-primary" />
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
@@ -230,29 +218,16 @@ const RegisterModal: React.FC = () => {
         )}
 
         {/* Name Fields */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <Input
-            label="Nome"
+            label="Nome de usuário"
             type="text"
-            name="firstName"
-            value={formData.firstName}
+            name="username"
+            value={formData.username}
             onChange={handleInputChange}
             leftIcon={<FiUser className="w-4 h-4" />}
-            placeholder="Seu nome"
-            error={errors.firstName}
-            disabled={isLoading || isGoogleLoading}
-            autoComplete="given-name"
-          />
-
-          <Input
-            label="Sobrenome"
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleInputChange}
-            leftIcon={<FiUser className="w-4 h-4" />}
-            placeholder="Seu sobrenome"
-            error={errors.lastName}
+            placeholder="Seu nome de usuário"
+            error={errors.username}
             disabled={isLoading || isGoogleLoading}
             autoComplete="family-name"
           />

@@ -120,13 +120,13 @@ const LoginModal: React.FC = () => {
     <Modal
       isOpen={isOpen}
       onClose={handleClose}
-      maxWidth="md"
+      maxWidth="lg"
       showCloseButton={true}
     >
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-brand-gradient rounded-full flex items-center justify-center shadow-theme-glow">
-            <GiGrandPiano className="w-8 h-8 text-theme-inverse" />
+            <GiGrandPiano className="w-8 h-8 text-theme-primary" />
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
