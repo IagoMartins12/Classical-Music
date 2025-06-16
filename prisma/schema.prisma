@@ -11,12 +11,11 @@ datasource db {
 
 // Enums
 enum DifficultyLevel {
-  null
-  UNKNOWN
   BEGINNER
   INTERMEDIATE
   ADVANCED
 }
+
 
 enum PracticeFocus {
   TECHNICAL
@@ -117,7 +116,7 @@ model User {
   favoriteEpochId    String? @db.ObjectId
 
   // Learning preferences
-  experienceLevel     DifficultyLevel @default(null)
+  experienceLevel     DifficultyLevel @default(BEGINNER)
   practiceTimePerWeek Int? // minutes per week
 
   // Privacy settings

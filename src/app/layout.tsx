@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { ClientThemeWrapper } from './components/ClientThemeWrapper';
 import Navbar from './components/Navbar';
+import AuthProvider from './providers/AuthProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -75,11 +76,13 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         {/* Client-side theme wrapper - mantém SSR */}
         <ClientThemeWrapper>
-          {/* Navbar como client component */}
-          <Navbar />
+          <AuthProvider>
+            {/* Navbar como client component */}
+            <Navbar />
 
-          {/* Main content - pode ser server ou client components */}
-          <main className="min-h-screen">{children}</main>
+            {/* Main content - pode ser server ou client components */}
+            <main className="min-h-screen">{children}</main>
+          </AuthProvider>
         </ClientThemeWrapper>
       </body>
     </html>

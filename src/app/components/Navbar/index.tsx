@@ -3,9 +3,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { FiMenu, FiX } from 'react-icons/fi';
+import { signOut } from 'next-auth/react';
+import { FiMenu, FiX, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
 import { ThemeToggle } from '../ThemeToggle';
+import { toast } from 'react-hot-toast';
+import { useAuth } from '@/app/hooks/useAuth';
+import { useLoginModal, useRegisterModal } from '@/app/stores/authStore';
+import Button from '../Common/Button';
 
 interface NavItem {
   label: string;
@@ -15,15 +20,30 @@ interface NavItem {
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const { user, isAuthenticated, isLoading } = useAuth();
+  const { open: openLogin } = useLoginModal();
+  const { open: openRegister } = useRegisterModal();
 
   const toggleMobileMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
-  // const toggleProfileMenu = () => {
-  //   setIsProfileOpen((prev) => !prev);
-  // };
+  const toggleProfileMenu = () => {
+    setIsProfileOpen((prev) => !prev);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut({ redirect: false });
+      toast.success('Logout realizado com sucesso!');
+      setIsProfileOpen(false);
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Erro ao fazer logout');
+    }
+  };
 
   const optionsArr: NavItem[] = [
     { label: 'História da Música', href: '/music-history' },
@@ -33,9 +53,45 @@ const Navbar: React.FC = () => {
     { label: 'Quem somos', href: '/about-us' },
   ];
 
+  const getUserDisplayName = () => {
+    if (!user) return '';
+
+    if (user.firstName && user.lastName) {
+      return `${user.firstName} ${user.lastName}`;
+    }
+
+    if (user.firstName) {
+      return user.firstName;
+    }
+
+    if (user.email) {
+      return user.email.split('@')[0];
+    }
+
+    return 'Usuário';
+  };
+
+  const getUserInitials = () => {
+    if (!user) return '';
+
+    if (user.firstName && user.lastName) {
+      return `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
+    }
+
+    if (user.firstName) {
+      return user.firstName[0].toUpperCase();
+    }
+
+    if (user.email) {
+      return user.email[0].toUpperCase();
+    }
+
+    return 'U';
+  };
+
   return (
     <nav className="navbar-classical sticky top-0 z-50">
-      <div className="section-wrap-nav pt-1 pb-2 ">
+      <div className="section-wrap-nav pt-1 pb-2">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
@@ -75,51 +131,113 @@ const Navbar: React.FC = () => {
             {/* Theme Toggle */}
             <ThemeToggle variant="navbar" />
 
-            {/* Profile Menu */}
-            {/* <div className="relative">
-              <button
-                onClick={toggleProfileMenu}
-                className="flex items-center space-x-2 btn-classical-secondary text-sm"
-              >
-                <FiUser className="w-4 h-4" />
-                <span className="hidden sm:inline">Perfil</span>
-              </button>
+            {/* Authentication Section */}
+            {isLoading ? (
+              <div className="w-8 h-8 animate-spin border-2 border-brand-primary border-t-transparent rounded-full" />
+            ) : isAuthenticated && user ? (
+              /* Authenticated User Menu */
+              <div className="relative">
+                <button
+                  onClick={toggleProfileMenu}
+                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-interactive-hover transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-opacity-50"
+                >
+                  {user.image ? (
+                    <img
+                      src={user.image}
+                      alt={getUserDisplayName()}
+                      className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-inverse text-sm font-semibold">
+                      {getUserInitials()}
+                    </div>
+                  )}
 
-              {isProfileOpen && (
-                <>
-                  <div
-                    className="fixed inset-0 z-10"
-                    onClick={() => setIsProfileOpen(false)}
-                  />
-
-                  <div className="absolute right-0 top-full mt-2 w-48 classical-card z-20 p-2">
-                    <Link
-                      href="/profile"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
-                    >
-                      <FiUser className="w-4 h-4" />
-                      <span>Meu Perfil</span>
-                    </Link>
-                    <Link
-                      href="/settings"
-                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
-                    >
-                      <FiSettings className="w-4 h-4" />
-                      <span>Configurações</span>
-                    </Link>
-                    <hr className="my-2 border-theme-secondary" />
-                    <button className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-accent-red hover:bg-interactive-hover rounded-lg transition-all">
-                      <span>Sair</span>
-                    </button>
+                  <div className="hidden sm:block text-left">
+                    <p className="text-sm font-medium text-theme-primary truncate max-w-32">
+                      {getUserDisplayName()}
+                    </p>
+                    {!user.onboardingCompleted && (
+                      <p className="text-xs text-accent-amber">
+                        Configure seu perfil
+                      </p>
+                    )}
                   </div>
-                </>
-              )}
-            </div> */}
+                </button>
 
-            {/* Login Button */}
-            <button className="btn-classical-primary text-sm">
-              Fazer Login
-            </button>
+                {/* Profile Dropdown */}
+                {isProfileOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-10"
+                      onClick={() => setIsProfileOpen(false)}
+                    />
+
+                    <div className="absolute right-0 top-full mt-2 w-64 classical-card z-20 p-2">
+                      {/* User Info */}
+                      <div className="px-3 py-2 border-b border-theme-secondary mb-2">
+                        <p className="font-medium text-theme-primary">
+                          {getUserDisplayName()}
+                        </p>
+                        <p className="text-sm text-theme-tertiary">
+                          {user.email}
+                        </p>
+                        {!user.onboardingCompleted && (
+                          <p className="text-xs text-accent-amber mt-1">
+                            ⚠️ Complete seu perfil para uma melhor experiência
+                          </p>
+                        )}
+                      </div>
+
+                      {/* Menu Items */}
+                      <Link
+                        href="/profile"
+                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <FiUser className="w-4 h-4" />
+                        <span>Meu Perfil</span>
+                      </Link>
+
+                      <Link
+                        href="/settings"
+                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <FiSettings className="w-4 h-4" />
+                        <span>Configurações</span>
+                      </Link>
+
+                      <hr className="my-2 border-theme-secondary" />
+
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-accent-red hover:bg-accent-red hover:bg-opacity-10 rounded-lg transition-all"
+                      >
+                        <FiLogOut className="w-4 h-4" />
+                        <span>Sair</span>
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ) : (
+              /* Unauthenticated User Buttons */
+              <div className="flex items-center space-x-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={openLogin}
+                  className="hidden sm:inline-flex"
+                >
+                  Entrar
+                </Button>
+
+                <Button variant="primary" size="sm" onClick={openRegister}>
+                  Criar Conta
+                </Button>
+              </div>
+            )}
 
             {/* Mobile Menu Button */}
             <button
@@ -171,6 +289,34 @@ const Navbar: React.FC = () => {
                   </Link>
                 </li>
               ))}
+
+              {/* Mobile Auth Buttons */}
+              {!isAuthenticated && (
+                <>
+                  <li className="pt-4 border-t border-theme-secondary">
+                    <button
+                      onClick={() => {
+                        openLogin();
+                        setIsMenuOpen(false);
+                      }}
+                      className="block w-full px-4 py-3 text-left rounded-lg font-medium text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover transition-all"
+                    >
+                      Fazer Login
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        openRegister();
+                        setIsMenuOpen(false);
+                      }}
+                      className="block w-full px-4 py-3 text-left rounded-lg font-medium text-brand-primary bg-brand-primary bg-opacity-10 hover:bg-opacity-20 transition-all"
+                    >
+                      Criar Conta
+                    </button>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>

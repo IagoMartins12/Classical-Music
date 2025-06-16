@@ -1,0 +1,132 @@
+// components/auth/onboarding/UserTypeStep.tsx
+'use client';
+
+import { useOnboardingModal } from '@/app/stores/authStore';
+import React from 'react';
+import {
+  GiGraduateCap,
+  GiMusicalScore,
+  GiTeacher,
+  GiMicrophone,
+} from 'react-icons/gi';
+
+const USER_TYPES = [
+  {
+    value: 'MUSIC_STUDENT',
+    label: 'Estudante de Música',
+    description:
+      'Estudo música formalmente (conservatório, universidade, aulas particulares)',
+    icon: GiGraduateCap,
+    color: 'bg-accent-blue',
+  },
+  {
+    value: 'CASUAL_USER',
+    label: 'Entusiasta',
+    description: 'Aprecio música clássica como hobby e quero aprender mais',
+    icon: GiMusicalScore,
+    color: 'bg-accent-green',
+  },
+  {
+    value: 'PROFESSIONAL',
+    label: 'Profissional',
+    description:
+      'Sou músico profissional, intérprete ou trabalho na área musical',
+    icon: GiMicrophone,
+    color: 'bg-accent-purple',
+  },
+  {
+    value: 'TEACHER',
+    label: 'Professor',
+    description: 'Ensino música ou uso este conteúdo para fins educacionais',
+    icon: GiTeacher,
+    color: 'bg-accent-amber',
+  },
+] as const;
+
+const UserTypeStep: React.FC = () => {
+  const { data, updateData } = useOnboardingModal();
+
+  const handleSelect = (userType: (typeof USER_TYPES)[number]['value']) => {
+    updateData({ userType });
+  };
+
+  return (
+    <div className="py-6">
+      <div className="text-center mb-8">
+        <h3 className="text-2xl font-bold text-theme-primary classical-title mb-3">
+          Como você se identifica?
+        </h3>
+        <p className="text-theme-secondary max-w-lg mx-auto">
+          Isso nos ajuda a personalizar sua experiência e mostrar conteúdo
+          relevante para você.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+        {USER_TYPES.map((type) => {
+          const Icon = type.icon;
+          const isSelected = data.userType === type.value;
+
+          return (
+            <button
+              key={type.value}
+              onClick={() => handleSelect(type.value)}
+              className={`
+                classical-card p-6 text-left transition-all duration-300
+                hover:scale-105 focus:outline-none focus:ring-2 focus:ring-brand-primary
+                ${isSelected ? 'border-brand-primary shadow-theme-glow' : ''}
+              `}
+            >
+              <div className="flex items-start space-x-4 relative">
+                <div
+                  className={`
+                  w-12 h-12 ${type.color} bg-opacity-20 rounded-full 
+                  flex items-center justify-center flex-shrink-0
+                `}
+                >
+                  <Icon
+                    className={`w-6 h-6 ${type.color.replace('bg-', 'text-')}`}
+                  />
+                </div>
+
+                <div className="flex-1">
+                  <h4 className="font-semibold text-theme-primary mb-2">
+                    {type.label}
+                  </h4>
+                  <p className="text-sm text-theme-secondary leading-relaxed">
+                    {type.description}
+                  </p>
+                </div>
+
+                {isSelected && (
+                  <div className="absolute right-0 ">
+                    <svg
+                      className="w-4 h-4 text-theme-primary"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 text-center">
+        <p className="text-sm text-theme-tertiary">
+          Você pode alterar essa informação a qualquer momento nas configurações
+          do seu perfil.
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default UserTypeStep;
