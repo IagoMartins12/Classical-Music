@@ -1,4 +1,4 @@
-// app/libs/auth.ts (versão completa e corrigida)
+// app/libs/auth.ts (alternativa - forçar refresh sempre para imagem)
 import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -37,6 +37,7 @@ export const authOptions: NextAuthOptions = {
             id: true,
             firstName: true,
             lastName: true,
+            bio: true,
             email: true,
             hashedPassword: true,
             image: true,
@@ -73,6 +74,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email!,
           name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
           image: user.image,
+          bio: user.bio,
           firstName: user.firstName,
           lastName: user.lastName,
           role: user.role,
@@ -93,22 +95,19 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      // Handle Google sign-in
       if (account?.provider === 'google') {
         try {
-          // Check if user exists
           const existingUser = await prisma.user.findUnique({
             where: { email: user.email! },
           });
 
           if (!existingUser) {
-            // Create new user from Google profile with proper typing
             const googleProfile = profile as {
               given_name?: string;
               family_name?: string;
             };
 
-            await prisma.user.create({
+            const newUser = await prisma.user.create({
               data: {
                 email: user.email!,
                 firstName:
@@ -124,6 +123,23 @@ export const authOptions: NextAuthOptions = {
                 showLocation: false,
               },
             });
+
+            user.id = newUser.id;
+            user.firstName = newUser.firstName;
+            user.lastName = newUser.lastName;
+            user.bio = newUser.bio;
+            user.role = newUser.role;
+            user.onboardingCompleted = newUser.onboardingCompleted;
+            user.userType = newUser.userType;
+            user.city = newUser.city;
+            user.state = newUser.state;
+            user.country = newUser.country;
+            user.favoriteComposerId = newUser.favoriteComposerId;
+            user.favoriteEpochId = newUser.favoriteEpochId;
+            user.experienceLevel = newUser.experienceLevel;
+            user.practiceTimePerWeek = newUser.practiceTimePerWeek;
+            user.profilePublic = newUser.profilePublic;
+            user.showLocation = newUser.showLocation;
           }
 
           return true;
@@ -135,7 +151,8 @@ export const authOptions: NextAuthOptions = {
 
       return true;
     },
-    async jwt({ token, user, account }) {
+
+    async jwt({ token, user, account, trigger }) {
       // Initial sign in
       if (account && user) {
         return {
@@ -143,6 +160,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           firstName: user.firstName,
           lastName: user.lastName,
+          bio: user.bio,
           role: user.role,
           onboardingCompleted: user.onboardingCompleted,
           userType: user.userType,
@@ -158,11 +176,61 @@ export const authOptions: NextAuthOptions = {
         };
       }
 
-      // Return previous token if the access token has not expired yet
+      // Se for um update, buscar dados frescos do banco
+      if (trigger === 'update' && token.id) {
+        const freshUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            image: true,
+            bio: true,
+            role: true,
+            onboardingCompleted: true,
+            userType: true,
+            city: true,
+            state: true,
+            country: true,
+            favoriteComposerId: true,
+            favoriteEpochId: true,
+            experienceLevel: true,
+            practiceTimePerWeek: true,
+            profilePublic: true,
+            showLocation: true,
+          },
+        });
+
+        if (freshUser) {
+          return {
+            ...token,
+            firstName: freshUser.firstName,
+            lastName: freshUser.lastName,
+            bio: freshUser.bio,
+            role: freshUser.role,
+            onboardingCompleted: freshUser.onboardingCompleted,
+            userType: freshUser.userType,
+            city: freshUser.city,
+            state: freshUser.state,
+            country: freshUser.country,
+            favoriteComposerId: freshUser.favoriteComposerId,
+            favoriteEpochId: freshUser.favoriteEpochId,
+            experienceLevel: freshUser.experienceLevel,
+            practiceTimePerWeek: freshUser.practiceTimePerWeek,
+            profilePublic: freshUser.profilePublic,
+            showLocation: freshUser.showLocation,
+            // Importante: atualizar a imagem também
+            picture: freshUser.image,
+          };
+        }
+      }
+
       return token;
     },
+
     async session({ session, token }) {
-      // Get fresh user data from database
+      // SEMPRE buscar dados frescos do banco (para garantir dados atualizados)
       if (token.id) {
         const user = await prisma.user.findUnique({
           where: { id: token.id as string },
@@ -172,6 +240,7 @@ export const authOptions: NextAuthOptions = {
             lastName: true,
             email: true,
             image: true,
+            bio: true,
             role: true,
             onboardingCompleted: true,
             userType: true,
@@ -189,10 +258,13 @@ export const authOptions: NextAuthOptions = {
 
         if (user) {
           session.user = {
-            ...session.user,
             id: user.id,
+            email: user.email!,
+            name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+            image: user.image, // Sempre pegará a imagem atualizada do banco
             firstName: user.firstName,
             lastName: user.lastName,
+            bio: user.bio,
             role: user.role,
             onboardingCompleted: user.onboardingCompleted,
             userType: user.userType,
@@ -213,13 +285,14 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/', // Redirect to home page with modal
-    error: '/', // Redirect to home page with error
+    signIn: '/',
+    error: '/',
   },
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
+    updateAge: 0, // Força update da sessão a cada requisição
   },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === 'development', // Adicionar debug para desenvolvimento
+  debug: process.env.NODE_ENV === 'development',
 };

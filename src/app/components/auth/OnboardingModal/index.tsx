@@ -8,7 +8,7 @@ import { toast } from 'react-hot-toast';
 
 // Import step components
 
-import { useOnboardingModal, useUser } from '@/app/stores/authStore';
+import { useOnboardingModal } from '@/app/stores/authStore';
 import Button from '../../Common/Button';
 import Modal from '../../Modal';
 import WelcomeStep from '../onboarding/WelcomeStep';
@@ -17,6 +17,7 @@ import InstrumentsStep from '../onboarding/InstrumentsStep';
 import PreferencesStep from '../onboarding/PreferencesStep';
 import ProfileStep from '../onboarding/ProfileStep';
 import CompletionStep from '../onboarding/CompletionStep';
+import { useUserStore } from '@/app/hooks/userStore';
 
 interface OnboardingOptions {
   instruments: Array<{ id: string; name: string; category: string | null }>;
@@ -31,17 +32,15 @@ interface OnboardingOptions {
 }
 
 const OnboardingModal: React.FC = () => {
-  const user = useUser();
+  const user = useUserStore();
   const {
     isOpen,
     close,
     step,
     data,
     isLoading,
-    setStep,
     nextStep,
     prevStep,
-    updateData,
     resetData,
     setLoading,
     complete,
@@ -75,7 +74,9 @@ const OnboardingModal: React.FC = () => {
   };
 
   const handleComplete = async () => {
-    if (!user) {
+    console.log('data', user);
+
+    if (!user.user?.id) {
       toast.error('Usuário não encontrado');
       return;
     }
@@ -83,7 +84,7 @@ const OnboardingModal: React.FC = () => {
     setLoading(true);
 
     try {
-      const result = await completeOnboarding(user.id, data);
+      const result = await completeOnboarding(user.user?.id, data);
 
       if (result.success) {
         toast.success(result.message);
@@ -104,7 +105,6 @@ const OnboardingModal: React.FC = () => {
 
   const handleSkip = () => {
     close();
-    resetData();
   };
 
   const handleClose = () => {

@@ -1,4 +1,4 @@
-// app/profile/ProfilePageClient.tsx
+// app/profile/ProfilePageClient.tsx (versão atualizada)
 'use client';
 
 import React, { useState, useCallback, useMemo } from 'react';
@@ -13,8 +13,6 @@ import {
   FiChevronRight,
 } from 'react-icons/fi';
 
-import { User } from 'next-auth';
-
 // Import all profile sections
 import PersonalInfoSection from './PersonalInfoSection';
 import InstrumentsSection from './InstrumentsSection';
@@ -22,6 +20,7 @@ import MusicalPreferencesSection from './MusicalPreferencesSection';
 import PrivacySection from './PrivacySection';
 import AccountSettingsSection from './AccountSettingsSection';
 import { useAuth } from '@/app/hooks/useAuth';
+import { User } from '@/app/stores/authStore';
 
 interface Tab {
   id: string;
@@ -34,21 +33,8 @@ interface Tab {
 }
 
 export default function ProfilePageClient() {
-  const { user, isLoading, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, updateUser } = useAuth(); // Usar o novo hook
   const [activeTab, setActiveTab] = useState('personal');
-  const [localUser, setLocalUser] = useState<User | null>(null);
-
-  // Update local user when auth user changes
-  React.useEffect(() => {
-    if (user) {
-      setLocalUser(user);
-    }
-  }, [user]);
-
-  // Optimized user update function
-  const updateUser = useCallback((data: Partial<User>) => {
-    setLocalUser((prev) => (prev ? { ...prev, ...data } : null));
-  }, []);
 
   // Memoized tabs configuration
   const tabs: Tab[] = useMemo(
@@ -123,17 +109,8 @@ export default function ProfilePageClient() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [goToPrevTab, goToNextTab]);
 
-  //   // Loading state
-  //   if (isLoading) {
-  //     return (
-  //       <div className="flex items-center justify-center py-12">
-  //         <LoadingSpinner size="lg" />
-  //       </div>
-  //     );
-  //   }
-
   // Not authenticated
-  if (!isAuthenticated || !localUser) {
+  if (!isAuthenticated || !user) {
     return (
       <div className="text-center py-12">
         <div className="classical-card-2 p-8 max-w-md mx-auto">
@@ -175,7 +152,7 @@ export default function ProfilePageClient() {
                       w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-all duration-200
                       ${
                         isActive
-                          ? 'bg-brand-primary text-brand-primary  shadow-sm'
+                          ? 'bg-brand-primary text-brand-primary shadow-sm'
                           : 'text-theme-secondary hover:text-theme-primary hover:bg-theme-secondary hover:bg-opacity-50'
                       }
                     `}
@@ -225,24 +202,11 @@ export default function ProfilePageClient() {
 
             {/* Tab Content */}
             {ActiveComponent && (
-              <ActiveComponent user={localUser} updateUser={updateUser} />
+              <ActiveComponent user={user} updateUser={updateUser} />
             )}
           </div>
         </div>
       </div>
-
-      {/* Toast Container */}
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: 'var(--theme-background)',
-            color: 'var(--theme-primary)',
-            border: '1px solid var(--theme-secondary)',
-          },
-        }}
-      />
     </>
   );
 }

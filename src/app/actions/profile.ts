@@ -8,8 +8,9 @@ import { revalidatePath } from 'next/cache';
 
 // Validation schemas
 const updatePersonalInfoSchema = z.object({
-  firstName: z.string().min(1, 'Nome é obrigatório').max(50),
-  lastName: z.string().min(1, 'Sobrenome é obrigatório').max(50),
+  firstName: z.string().max(50),
+  lastName: z.string().max(50),
+  image: z.string().optional(),
   bio: z.string().max(500).optional(),
   city: z.string().max(100).optional(),
   state: z.string().max(100).optional(),
@@ -53,6 +54,7 @@ export async function updatePersonalInfo(
   data: {
     firstName: string;
     lastName: string;
+    image?: string;
     bio?: string;
     city?: string;
     state?: string;
@@ -71,6 +73,7 @@ export async function updatePersonalInfo(
         city: validatedData.city || null,
         state: validatedData.state || null,
         country: validatedData.country || null,
+        image: validatedData.image,
       },
       select: {
         id: true,
@@ -107,6 +110,43 @@ export async function updatePersonalInfo(
   }
 }
 
+export async function updateProfile(
+  userId: string,
+  image: string
+): Promise<ProfileResult> {
+  try {
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        image: image,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        bio: true,
+        city: true,
+        state: true,
+        country: true,
+      },
+    });
+
+    revalidatePath('/profile');
+
+    return {
+      success: true,
+      message: 'Informações pessoais atualizadas com sucesso!',
+      data: user,
+    };
+  } catch (error) {
+    console.error('Update personal info error:', error);
+
+    return {
+      success: false,
+      message: 'Erro ao atualizar informações. Tente novamente.',
+    };
+  }
+}
 // Update musical preferences
 export async function updateMusicalPreferences(
   userId: string,

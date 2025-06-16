@@ -1,35 +1,6 @@
-// stores/authStore.ts (versão com proteção SSR)
+// stores/authStore.ts (versão simplificada - apenas onboarding e modais)
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-
-export interface User {
-  id: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  username?: string | null;
-  email?: string | null;
-  image?: string | null;
-  bio?: string | null;
-  gender?: string | null;
-  birthday?: Date | null;
-  role: number;
-  userType?:
-    | 'MUSIC_STUDENT'
-    | 'CASUAL_USER'
-    | 'PROFESSIONAL'
-    | 'TEACHER'
-    | null;
-  onboardingCompleted: boolean;
-  city?: string | null;
-  state?: string | null;
-  country?: string | null;
-  favoriteComposerId?: string | null;
-  favoriteEpochId?: string | null;
-  experienceLevel?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | null;
-  practiceTimePerWeek?: number | null;
-  profilePublic: boolean;
-  showLocation: boolean;
-}
 
 export interface OnboardingData {
   userType?: 'MUSIC_STUDENT' | 'CASUAL_USER' | 'PROFESSIONAL' | 'TEACHER';
@@ -54,12 +25,6 @@ export interface OnboardingData {
 }
 
 interface AuthState {
-  // User state
-  user: User | null;
-  isLoading: boolean;
-  isAuthenticated: boolean;
-  isHydrated: boolean; // Nova flag para controlar hidratação
-
   // Modal state
   isLoginModalOpen: boolean;
   isRegisterModalOpen: boolean;
@@ -87,11 +52,6 @@ interface AuthState {
     isLoading: boolean;
     error?: string;
   };
-
-  // Actions
-  setUser: (user: User | null) => void;
-  setLoading: (loading: boolean) => void;
-  setHydrated: (hydrated: boolean) => void;
 
   // Modal actions
   openLoginModal: () => void;
@@ -153,12 +113,6 @@ const initialOnboardingData: OnboardingData = {
 
 export const useAuthStore = create<AuthState>()(
   subscribeWithSelector((set, get) => ({
-    // Initial state
-    user: null,
-    isLoading: false,
-    isAuthenticated: false,
-    isHydrated: false,
-
     // Modal state
     isLoginModalOpen: false,
     isRegisterModalOpen: false,
@@ -172,18 +126,6 @@ export const useAuthStore = create<AuthState>()(
     // Form state
     loginForm: initialLoginForm,
     registerForm: initialRegisterForm,
-
-    // Actions
-    setUser: (user) =>
-      set({
-        user,
-        isAuthenticated: !!user,
-        isLoading: false,
-      }),
-
-    setLoading: (loading) => set({ isLoading: loading }),
-
-    setHydrated: (hydrated) => set({ isHydrated: hydrated }),
 
     // Modal actions
     openLoginModal: () =>
@@ -285,8 +227,6 @@ export const useAuthStore = create<AuthState>()(
     // Auth actions
     logout: () =>
       set({
-        user: null,
-        isAuthenticated: false,
         isLoginModalOpen: false,
         isRegisterModalOpen: false,
         isOnboardingModalOpen: false,
@@ -297,32 +237,15 @@ export const useAuthStore = create<AuthState>()(
       }),
 
     completeOnboarding: () =>
-      set((state) => ({
-        user: state.user ? { ...state.user, onboardingCompleted: true } : null,
+      set({
         isOnboardingModalOpen: false,
         onboardingStep: 1,
         onboardingData: initialOnboardingData,
-      })),
+      }),
   }))
 );
 
-// Hooks com proteção SSR
-export const useUser = () => {
-  const store = useAuthStore();
-  return typeof window !== 'undefined' ? store.user : null;
-};
-
-export const useIsAuthenticated = () => {
-  const store = useAuthStore();
-  return typeof window !== 'undefined' ? store.isAuthenticated : false;
-};
-
-export const useAuthLoading = () => {
-  const store = useAuthStore();
-  return typeof window !== 'undefined' ? store.isLoading : false;
-};
-
-// Hooks para modais com proteção SSR e cache
+// Hooks para modais com proteção SSR
 export const useLoginModal = () => {
   const store = useAuthStore();
 

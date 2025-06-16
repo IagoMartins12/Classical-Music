@@ -10,6 +10,7 @@ declare module 'next-auth' {
       lastName?: string | null;
       role: number;
       onboardingCompleted: boolean;
+      bio: string | null;
       userType?:
         | 'MUSIC_STUDENT'
         | 'CASUAL_USER'

@@ -140,7 +140,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
         className="px-8"
         rightIcon={<FiArrowRight />}
       >
-        {isLoading ? 'Finalizando...' : 'Entrar na Classical Hub'}
+        {isLoading ? 'Finalizando...' : 'Concluir perfil'}
       </Button>
 
       <div className="mt-6">

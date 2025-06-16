@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
 import { GiMusicalNotes } from 'react-icons/gi';
 import Select from '../../Common/Select';
+import { getAvailableInstruments } from '@/app/actions/profile';
 
 interface Instrument {
   id: string;
@@ -89,16 +90,14 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({
 
   const loadAvailableInstruments = async () => {
     try {
-      // Simular instrumentos disponíveis
-      setAvailableInstruments([
-        { id: 'piano', name: 'Piano', category: 'Teclado' },
-        { id: 'violin', name: 'Violino', category: 'Cordas' },
-        { id: 'guitar', name: 'Violão', category: 'Cordas' },
-        { id: 'flute', name: 'Flauta', category: 'Sopro' },
-        { id: 'cello', name: 'Violoncelo', category: 'Cordas' },
-      ]);
+      const result = await getAvailableInstruments();
+      if (result.success && result.data) {
+        setAvailableInstruments(result.data);
+      } else {
+        toast.error('Erro ao carregar opções');
+      }
     } catch (error) {
-      console.error('Error loading instruments:', error);
+      toast.error('Erro ao carregar opções');
     }
   };
 
@@ -185,6 +184,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({
     loadUserInstruments(); // Recarregar dados originais
   };
 
+  console.log('userInstruments', userInstruments);
   return (
     <div className="space-y-6">
       {/* Header */}

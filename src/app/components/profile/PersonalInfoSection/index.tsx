@@ -1,8 +1,7 @@
-// app/profile/components/PersonalInfoSection.tsx (versão atualizada)
+// app/profile/components/PersonalInfoSection.tsx (versão com hook personalizado)
 'use client';
 
 import React, { useState } from 'react';
-import { User } from 'next-auth';
 import { FiEdit3, FiSave, FiX, FiMapPin } from 'react-icons/fi';
 
 import { updatePersonalInfo } from '@/app/actions/profile';
@@ -10,6 +9,9 @@ import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import ProfileImageUpload from '../../ProfileImageUpload';
+import { useAuth } from '@/app/hooks/useAuth';
+import { useSessionUpdate } from '@/app/hooks/useSessionUpdate'; // Hook personalizado
+import { User } from '@/app/stores/authStore';
 
 interface PersonalInfoSectionProps {
   user: User;
@@ -18,8 +20,10 @@ interface PersonalInfoSectionProps {
 
 const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   user,
-  updateUser,
+  updateUser: localUpdateUser,
 }) => {
+  const { updateUser: globalUpdateUser } = useAuth();
+  const { updateUserSession } = useSessionUpdate(); // Hook personalizado
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -30,6 +34,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
     city: user.city || '',
     state: user.state || '',
     country: user.country || '',
+    image: user.image || '',
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -39,7 +44,6 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
@@ -48,20 +52,22 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'Nome é obrigatório';
-    }
-
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Sobrenome é obrigatório';
-    }
-
     if (formData.bio.length > 500) {
       newErrors.bio = 'Bio não pode ter mais de 500 caracteres';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  // Função para sincronizar todos os estados após update
+  const syncUserData = async (data: Partial<User>) => {
+    // 1. Atualizar stores locais
+    localUpdateUser(data);
+    globalUpdateUser(data);
+
+    // 2. Forçar refresh da sessão NextAuth
+    await updateUserSession();
   };
 
   const handleSave = async () => {
@@ -72,7 +78,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       const result = await updatePersonalInfo(user.id, formData);
 
       if (result.success) {
-        updateUser(formData);
+        await syncUserData(formData);
         setIsEditing(false);
         toast.success(result.message);
       } else {
@@ -93,6 +99,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       city: user.city || '',
       state: user.state || '',
       country: user.country || '',
+      image: user.image || '',
     });
     setErrors({});
     setIsEditing(false);
@@ -101,12 +108,10 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   const handleImageUpload = async (file: File) => {
     setIsUploadingImage(true);
     try {
-      // Criar FormData para upload
       const formData = new FormData();
       formData.append('file', file);
       formData.append('userId', user.id);
 
-      // Fazer upload da imagem
       const response = await fetch('/api/upload/profile-image', {
         method: 'POST',
         body: formData,
@@ -115,7 +120,11 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       const result = await response.json();
 
       if (result.success) {
-        updateUser({ image: result.imageUrl });
+        const imageUpdate = { image: result.imageUrl };
+
+        // Sincronizar todos os estados
+        await syncUserData(imageUpdate);
+
         toast.success('Foto atualizada com sucesso!');
       } else {
         toast.error(result.message || 'Erro ao fazer upload da imagem');
@@ -128,7 +137,9 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   };
 
   const handleImageChange = (imageUrl: string | null) => {
-    updateUser({ image: imageUrl });
+    const imageUpdate = { image: imageUrl };
+    localUpdateUser(imageUpdate);
+    globalUpdateUser(imageUpdate);
   };
 
   const getUserDisplayName = () => {

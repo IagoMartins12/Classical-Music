@@ -1,6 +1,7 @@
-// app/Common/ProfileImageUpload.tsx
+// app/Common/ProfileImageUpload.tsx (versão atualizada)
 'use client';
 
+import { useOnboardingModal } from '@/app/stores/authStore';
 import React, { useRef, useState, useEffect } from 'react';
 import { FiCamera, FiEdit3, FiTrash2 } from 'react-icons/fi';
 
@@ -25,6 +26,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
   fallbackText,
   className = '',
 }) => {
+  const { updateData } = useOnboardingModal();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
     currentImage || null
@@ -54,9 +56,13 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
     lg: 'w-8 h-8',
   };
 
+  // Sincronizar com a prop currentImage
   useEffect(() => {
     setImagePreview(currentImage || null);
-  }, [currentImage]);
+    if (currentImage && typeof updateData === 'function') {
+      updateData({ image: currentImage });
+    }
+  }, [currentImage, updateData]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -76,7 +82,7 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
     try {
       if (onImageUpload) {
-        // Upload via API
+        // Upload via API (para perfil)
         await onImageUpload(file);
       } else {
         // Preview local (para onboarding)
@@ -135,62 +141,51 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
             ? 'bg-brand-gradient'
             : 'bg-theme-secondary'
         }
-        relative
+        relative cursor-pointer hover:opacity-90 transition-opacity
       `}
       >
         {imagePreview ? (
           <img
             src={imagePreview}
             alt="Foto do perfil"
-            className="w-full h-full object-cover rounded-2xl"
+            className="w-full h-full object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-theme-tertiary">
-            <FiCamera className="w-8 h-8" />
+            {getFallbackContent()}
           </div>
         )}
 
         {/* Upload Loading Overlay */}
         {isUploading && (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex bg- items-center justify-center">
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
           </div>
         )}
-      </div>
 
-      {/* Edit Button */}
-      {/* <button
-        onClick={triggerImageUpload}
-        disabled={isUploading}
-        className={`
-          absolute bottom-0 right-0 shadow-2xl ${buttonSizes[size]}
-          bg-brand-primary rounded-full flex items-center justify-center 
-          text-theme-inverse shadow-lg hover:scale-110 transition-transform
-          disabled:opacity-50 disabled:cursor-not-allowed
-        `}
-        title={imagePreview ? 'Alterar foto' : 'Adicionar foto'}
-      >
-        {isUploading ? (
-          <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
-        ) : (
-          <FiEdit3 className="w-3 h-3 text-theme-primary" />
-        )}
-      </button> */}
+        {/* Upload Overlay Hint */}
+        <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 flex items-center justify-center transition-all opacity-0 hover:opacity-100">
+          <FiEdit3 className="text-white text-lg" />
+        </div>
+      </div>
 
       {/* Remove Button */}
       {imagePreview && showRemove && (
         <button
-          onClick={handleRemoveImage}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleRemoveImage();
+          }}
           disabled={isUploading}
           className={`
-            absolute top-0 right-0 ${removeSizes[size]}
+            absolute -top-2 -right-2 ${removeSizes[size]}
             bg-accent-red rounded-full flex items-center justify-center 
-            text-white hover:scale-110 transition-transform
+            text-white hover:scale-110 transition-transform shadow-lg
             disabled:opacity-50 disabled:cursor-not-allowed
           `}
           title="Remover foto"
         >
-          <FiTrash2 className="w-4 h-4" />
+          <FiTrash2 className="w-3 h-3" />
         </button>
       )}
 

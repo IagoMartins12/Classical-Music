@@ -150,10 +150,10 @@ const Navbar: React.FC = () => {
                     <img
                       src={user.image}
                       alt={getUserDisplayName()}
-                      className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary"
+                      className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary bg-theme-secondary"
                     />
                   ) : (
-                    <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center justify-center text-theme-inverse text-sm font-semibold">
+                    <div className="w-8 h-8 bg-brand-gradient rounded-full flex items-center bg-theme-secondary justify-center text-theme-primary text-sm font-semibold">
                       {getUserInitials()}
                     </div>
                   )}
