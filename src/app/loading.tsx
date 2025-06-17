@@ -1,10 +1,23 @@
-// app/composers/ComposersLoading.tsx - Premium version with theme system
+// app/loading.tsx - Home Page Loading Skeleton
 'use client';
 
-import { FiUser, FiMusic } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+import {
+  FiUser,
+  FiMusic,
+  FiTrendingUp,
+  FiAward,
+  FiPlus,
+  FiBookOpen,
+  FiClock,
+} from 'react-icons/fi';
+import {
+  GiMusicalNotes,
+  GiGrandPiano,
+  GiTreasureMap,
+  GiPianoKeys,
+} from 'react-icons/gi';
 
-export default function PageLoading() {
+export default function HomeLoading() {
   return (
     <div className="min-h-screen bg-gradient-primary">
       {/* Background Pattern */}
@@ -49,182 +62,337 @@ export default function PageLoading() {
         </div>
       </div>
 
-      <div className="section-wrap space-y-8 relative z-10">
-        {/* Header Skeleton */}
-        <div className="text-center py-16 animate-fade-in-up">
-          <div className="flex items-center justify-center space-x-4 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-2xl flex items-center justify-center shadow-theme-glow animate-shimmer">
-              <div className="w-8 h-8 bg-theme-inverse/20 rounded-lg"></div>
-            </div>
-            <div className="text-6xl text-brand-primary/10">
-              <GiMusicalNotes />
-            </div>
-            <div
-              className="w-16 h-16 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-2xl flex items-center justify-center shadow-theme-glow animate-shimmer"
-              style={{ animationDelay: '0.2s' }}
-            >
-              <div className="w-8 h-8 bg-theme-inverse/20 rounded-lg"></div>
-            </div>
-          </div>
+      <div className="section-wrap space-y-16 relative z-10">
+        {/* Hero Section Skeleton */}
+        <div className="animate-fade-in-up">
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Main Hero Card */}
+            <div className="lg:col-span-2 relative rounded-2xl overflow-hidden">
+              <div className="classical-card h-96 lg:h-[500px] relative group animate-shimmer">
+                {/* Image placeholder */}
+                <div className="absolute inset-0 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20"></div>
 
-          <div className="space-y-4 mb-6">
-            <div className="h-12 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-primary rounded-2xl mx-auto max-w-2xl animate-shimmer shadow-theme-medium"></div>
-            <div
-              className="h-6 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg mx-auto max-w-xl animate-shimmer"
-              style={{ animationDelay: '0.1s' }}
-            ></div>
+                {/* Content overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 space-y-4">
+                  <div className="w-32 h-6 bg-accent-blue/20 rounded-full"></div>
+                  <div className="h-8 bg-gradient-to-r from-theme-inverse/20 to-theme-inverse/10 rounded w-3/4"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-theme-inverse/15 rounded"></div>
+                    <div className="h-4 bg-theme-inverse/15 rounded w-5/6"></div>
+                    <div className="h-4 bg-theme-inverse/15 rounded w-4/6"></div>
+                  </div>
+                  <div className="h-10 w-48 bg-theme-inverse/20 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Side Cards */}
+            <div className="space-y-4">
+              {[1, 2].map((index) => (
+                <div
+                  key={index}
+                  className="classical-card h-44 relative group animate-shimmer"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 space-y-2">
+                    <div className="w-20 h-4 bg-accent-green/20 rounded-full"></div>
+                    <div className="h-5 bg-theme-inverse/20 rounded w-2/3"></div>
+                    <div className="h-3 bg-theme-inverse/15 rounded"></div>
+                    <div className="h-3 bg-theme-inverse/15 rounded w-3/4"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Stats Cards Skeleton */}
-        <div
-          className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-fade-in-up"
-          style={{ animationDelay: '0.1s' }}
-        >
-          {[
-            {
-              gradient: 'from-brand-primary/20 to-brand-secondary/20',
-              border: 'border-brand-primary/30',
-            },
-            {
-              gradient: 'from-accent-purple/20 to-accent-blue/20',
-              border: 'border-accent-purple/30',
-            },
-            {
-              gradient: 'from-accent-green/20 to-accent-blue/20',
-              border: 'border-accent-green/30',
-            },
-            {
-              gradient: 'from-accent-red/20 to-accent-purple/20',
-              border: 'border-accent-red/30',
-            },
-          ].map((style, index) => (
-            <div
-              key={index}
-              className={`classical-card p-6 text-center group hover:scale-105 transition-all duration-300 animate-shimmer`}
-              style={{ animationDelay: `${0.2 + index * 0.1}s` }}
-            >
+        {/* Popular Composers Section */}
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-xl flex items-center justify-center animate-shimmer">
+                <FiTrendingUp className="w-6 h-6 text-brand-primary/50" />
+              </div>
+              <div>
+                <div className="h-8 w-64 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+                <div className="h-4 w-80 bg-theme-elevated rounded"></div>
+              </div>
+            </div>
+            <div className="h-10 w-48 bg-theme-elevated border border-theme-secondary rounded-xl"></div>
+          </div>
+
+          {/* Carousel Skeleton */}
+          <div className="relative overflow-hidden rounded-3xl py-8 px-2">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-theme-elevated/30 to-transparent rounded-3xl"></div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-6">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="classical-card p-4 group animate-shimmer"
+                  style={{ animationDelay: `${0.2 + i * 0.1}s` }}
+                >
+                  <div className="aspect-[4/5] bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl mb-4"></div>
+                  <div className="space-y-3">
+                    <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+                    <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
+                    <div className="flex justify-center">
+                      <div className="h-5 w-20 bg-theme-tertiary/20 rounded-full"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Featured Composer Section */}
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <div className="classical-card p-8 lg:p-12 animate-shimmer">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-12 h-12 bg-brand-gradient rounded-2xl flex items-center justify-center">
+                <GiMusicalNotes className="w-6 h-6 text-theme-primary/50" />
+              </div>
+              <div>
+                <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+                <div className="h-4 w-56 bg-theme-elevated rounded"></div>
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+              {/* Portrait Section */}
+              <div className="lg:col-span-1 flex flex-col items-center text-center">
+                <div className="w-48 h-48 lg:w-72 lg:h-72 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-3xl mb-6"></div>
+                <div className="space-y-3 w-full">
+                  <div className="h-7 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded w-3/4 mx-auto"></div>
+                  <div className="h-5 bg-theme-elevated rounded w-1/2 mx-auto"></div>
+                  <div className="h-4 bg-theme-tertiary/20 rounded w-2/3 mx-auto"></div>
+                  <div className="h-8 w-32 bg-theme-tertiary/20 rounded-2xl mx-auto"></div>
+                </div>
+              </div>
+
+              {/* Content Section */}
+              <div className="lg:col-span-2 space-y-6">
+                <div className="space-y-3">
+                  <div className="h-5 w-24 bg-theme-primary/20 rounded"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-theme-elevated rounded"></div>
+                    <div className="h-4 bg-theme-elevated rounded w-5/6"></div>
+                    <div className="h-4 bg-theme-elevated rounded w-4/6"></div>
+                  </div>
+                </div>
+
+                <div className="grid gap-3">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-12 bg-theme-elevated rounded-xl"
+                    ></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Composers by Epoch Section */}
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+          {/* Section Header */}
+          <div className="flex items-center space-x-4 mb-8">
+            <div className="w-12 h-12 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
+              <FiClock className="w-6 h-6 text-accent-purple/50" />
+            </div>
+            <div>
+              <div className="h-8 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+              <div className="h-4 w-64 bg-theme-elevated rounded"></div>
+            </div>
+          </div>
+
+          {/* Epochs Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8">
+            {Array.from({ length: 8 }).map((_, i) => (
               <div
-                className={`w-12 h-12 bg-gradient-to-br ${style.gradient} border ${style.border} rounded-xl mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}
-              ></div>
-              <div className="h-8 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 rounded-lg mb-2"></div>
-              <div className="h-4 bg-theme-elevated rounded"></div>
-            </div>
-          ))}
+                key={i}
+                className="text-center animate-shimmer"
+                style={{ animationDelay: `${0.4 + i * 0.1}s` }}
+              >
+                <div className="w-40 h-40 mx-auto bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-full mb-4 border-2 border-theme-primary/20"></div>
+                <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2 w-2/3 mx-auto"></div>
+                <div className="h-3 bg-theme-elevated rounded w-1/2 mx-auto"></div>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Filtros Skeleton */}
-        <div
-          className="classical-card p-6 animate-shimmer"
-          style={{ animationDelay: '0.2s' }}
-        >
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl"></div>
-            <div className="space-y-2">
-              <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
-              <div className="h-3 w-48 bg-theme-elevated rounded"></div>
+        {/* Random Discoveries Section */}
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          {/* Section Header */}
+          <div className="flex items-center space-x-4 mb-8">
+            <div className="w-12 h-12 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-xl flex items-center justify-center">
+              <GiTreasureMap className="w-6 h-6 text-orange-400/50" />
+            </div>
+            <div>
+              <div className="h-8 w-56 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+              <div className="h-4 w-72 bg-theme-elevated rounded"></div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[1, 2].map((index) => (
-              <div key={index} className="space-y-2">
-                <div className="h-4 w-24 bg-theme-elevated rounded"></div>
-                <div className="relative">
-                  <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 bg-theme-tertiary/30 rounded"></div>
-                  <div className="h-10 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg pl-12"></div>
+          {/* Composers Grid */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-5 w-48 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 rounded"></div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="classical-card p-4 animate-shimmer"
+                  style={{ animationDelay: `${0.5 + i * 0.05}s` }}
+                >
+                  <div className="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 rounded-full mx-auto mb-3"></div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-theme-primary/20 rounded"></div>
+                    <div className="h-3 bg-theme-elevated rounded w-3/4 mx-auto"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Works Grid */}
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-5 w-40 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded"></div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="classical-card p-4 animate-shimmer"
+                  style={{ animationDelay: `${0.7 + i * 0.05}s` }}
+                >
+                  <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full mx-auto mb-3 flex items-center justify-center">
+                    <FiMusic className="w-6 h-6 text-purple-400/50" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-4 bg-theme-primary/20 rounded"></div>
+                    <div className="h-3 bg-theme-elevated rounded w-3/4 mx-auto"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Additions Section */}
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+          {/* Section Header */}
+          <div className="flex items-center space-x-4 mb-8">
+            <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl flex items-center justify-center">
+              <FiPlus className="w-6 h-6 text-green-400/50" />
+            </div>
+            <div>
+              <div className="h-8 w-44 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+              <div className="h-4 w-64 bg-theme-elevated rounded"></div>
+            </div>
+          </div>
+
+          {/* Recent Items Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div
+                key={i}
+                className="classical-card-simple p-4 animate-shimmer"
+                style={{ animationDelay: `${0.6 + i * 0.05}s` }}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl"></div>
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-theme-primary/20 rounded"></div>
+                    <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
+                  </div>
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t border-theme-secondary/50">
+                  <div className="h-3 bg-green-400/20 rounded w-24"></div>
+                  <div className="w-6 h-6 bg-theme-tertiary/20 rounded-full"></div>
                 </div>
               </div>
             ))}
           </div>
+        </div>
 
-          <div className="mt-6 pt-4 border-t border-theme-secondary">
-            <div className="h-4 w-64 bg-theme-elevated rounded"></div>
+        {/* Musical Facts Section */}
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+          {/* Section Header */}
+          <div className="flex items-center space-x-4 mb-8">
+            <div className="w-12 h-12 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-xl flex items-center justify-center">
+              <FiBookOpen className="w-6 h-6 text-accent-blue/50" />
+            </div>
+            <div>
+              <div className="h-8 w-52 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+              <div className="h-4 w-80 bg-theme-elevated rounded"></div>
+            </div>
+          </div>
+
+          {/* Facts Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="classical-card-simple p-6 animate-shimmer"
+                style={{ animationDelay: `${0.7 + i * 0.1}s` }}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 rounded-2xl"></div>
+                  <div className="flex-1 space-y-3">
+                    <div className="flex justify-between items-start">
+                      <div className="h-5 bg-theme-primary/20 rounded w-2/3"></div>
+                      <div className="h-5 w-16 bg-accent-blue/20 rounded-full"></div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="h-3 bg-theme-elevated rounded"></div>
+                      <div className="h-3 bg-theme-elevated rounded w-5/6"></div>
+                      <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Composers Grid Skeleton */}
-        <div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up"
-          style={{ animationDelay: '0.3s' }}
-        >
-          {Array.from({ length: 12 }).map((_, i) => (
-            <div
-              key={i}
-              className={`classical-card p-6 group hover:scale-105 transition-all duration-300 animate-shimmer`}
-              style={{ animationDelay: `${0.4 + i * 0.05}s` }}
-            >
-              {/* Portrait */}
-              <div className="mb-6 flex justify-center">
-                <div className="w-24 h-24 bg-gradient-to-br from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-2xl shadow-theme-medium group-hover:scale-110 transition-transform duration-500"></div>
-              </div>
+        {/* Essential Composers Section */}
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
+          {/* Section Header */}
+          <div className="flex items-center space-x-4 mb-8">
+            <div className="w-12 h-12 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
+              <FiAward className="w-6 h-6 text-accent-purple/50" />
+            </div>
+            <div>
+              <div className="h-8 w-60 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2"></div>
+              <div className="h-4 w-96 bg-theme-elevated rounded"></div>
+            </div>
+          </div>
 
-              {/* Info */}
-              <div className="space-y-3 text-center">
-                <div className="h-6 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mx-auto w-3/4"></div>
-                <div className="h-4 bg-theme-elevated rounded mx-auto w-1/2"></div>
-
-                {/* Details */}
-                <div className="space-y-2 pt-2">
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="w-3 h-3 bg-theme-tertiary/30 rounded"></div>
-                    <div className="h-3 bg-theme-elevated rounded w-20"></div>
-                  </div>
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="w-3 h-3 bg-theme-tertiary/30 rounded"></div>
-                    <div className="h-3 bg-theme-elevated rounded w-16"></div>
-                  </div>
-                </div>
-
-                {/* Bio preview */}
-                <div className="space-y-2 pt-3 border-t border-theme-secondary">
-                  <div className="h-3 bg-theme-elevated rounded"></div>
-                  <div className="h-3 bg-theme-elevated rounded w-5/6"></div>
-                  <div className="h-3 bg-theme-elevated rounded w-2/3"></div>
-                </div>
-
-                {/* Tags */}
-                <div className="flex justify-center gap-2 pt-4">
-                  <div className="h-6 w-16 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full"></div>
-                  <div className="h-6 w-12 bg-gradient-to-r from-accent-green/20 to-accent-blue/20 border border-accent-green/30 rounded-full"></div>
-                </div>
-
-                {/* Action button */}
-                <div className="pt-4">
-                  <div className="h-9 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-xl shadow-theme-small"></div>
+          {/* Essential Composers Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div
+                key={i}
+                className="classical-card p-4 animate-shimmer"
+                style={{ animationDelay: `${0.8 + i * 0.05}s` }}
+              >
+                <div className="aspect-square bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-xl mb-4"></div>
+                <div className="space-y-2">
+                  <div className="h-4 bg-theme-primary/20 rounded"></div>
+                  <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
+                  <div className="h-6 bg-theme-tertiary/20 rounded-full"></div>
                 </div>
               </div>
-
-              {/* Hover glow effect */}
-              <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl pointer-events-none"></div>
-            </div>
-          ))}
-        </div>
-
-        {/* Paginação Skeleton */}
-        <div
-          className="classical-card p-6 animate-shimmer"
-          style={{ animationDelay: '0.8s' }}
-        >
-          <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
-            {/* Info */}
-            <div className="h-4 w-48 bg-theme-elevated rounded"></div>
-
-            {/* Pagination controls */}
-            <div className="flex items-center space-x-2">
-              <div className="h-10 w-20 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
-              {Array.from({ length: 5 }).map((_, i) => (
-                <div
-                  key={i}
-                  className={`h-10 w-10 rounded-lg ${
-                    i === 2
-                      ? 'bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30'
-                      : 'bg-theme-elevated border border-theme-secondary'
-                  }`}
-                ></div>
-              ))}
-              <div className="h-10 w-20 bg-gradient-to-r from-theme-elevated to-interactive-hover border border-theme-secondary rounded-lg"></div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
@@ -280,6 +448,22 @@ export default function PageLoading() {
           );
           background-size: 200% 100%;
           animation: shimmer 2s infinite;
+        }
+
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 0.6s ease-out forwards;
+          opacity: 0;
         }
       `}</style>
     </div>

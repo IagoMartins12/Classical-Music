@@ -35,12 +35,6 @@ const PRACTICE_TIME_OPTIONS = [
   { value: '1200', label: '20+ horas por semana' },
 ];
 
-const EXPERIENCE_LEVELS = [
-  { value: 'BEGINNER', label: 'Iniciante' },
-  { value: 'INTERMEDIATE', label: 'Intermediário' },
-  { value: 'ADVANCED', label: 'Avançado' },
-];
-
 const PreferencesStep: React.FC<PreferencesStepProps> = ({
   composers,
   epochs,

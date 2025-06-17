@@ -46,6 +46,7 @@ interface AuthState {
   // Modal state
   isLoginModalOpen: boolean;
   isRegisterModalOpen: boolean;
+  isPromptModalOpen: boolean;
 
   // Onboarding persistido
   onboarding: OnboardingState;
@@ -73,6 +74,8 @@ interface AuthState {
   closeLoginModal: () => void;
   openRegisterModal: () => void;
   closeRegisterModal: () => void;
+  openPromptModal: () => void;
+  closePromptModal: () => void;
   switchToRegister: () => void;
   switchToLogin: () => void;
 
@@ -170,6 +173,7 @@ export const useAuthStore = create<AuthState>()(
           // Modal state
           isLoginModalOpen: false,
           isRegisterModalOpen: false,
+          isPromptModalOpen: false,
 
           // Onboarding state
           onboarding: initialOnboardingState,
@@ -201,6 +205,16 @@ export const useAuthStore = create<AuthState>()(
             set({
               isRegisterModalOpen: false,
               registerForm: initialRegisterForm,
+            }),
+
+          openPromptModal: () =>
+            set({
+              isPromptModalOpen: true,
+            }),
+
+          closePromptModal: () =>
+            set({
+              isPromptModalOpen: false,
             }),
 
           switchToRegister: () =>
@@ -453,6 +467,25 @@ export const useRegisterModal = () => {
     open: store.openRegisterModal,
     close: store.closeRegisterModal,
     switchToLogin: store.switchToLogin,
+  };
+};
+
+export const usePromptModal = () => {
+  const store = useAuthStore();
+
+  if (typeof window === 'undefined') {
+    return {
+      isOpen: false,
+      open: () => {},
+      close: () => {},
+      switchToLogin: () => {},
+    };
+  }
+
+  return {
+    isOpen: store.isPromptModalOpen,
+    open: store.openPromptModal,
+    close: store.closePromptModal,
   };
 };
 

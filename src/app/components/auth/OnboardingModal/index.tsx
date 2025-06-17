@@ -16,6 +16,7 @@ import PreferencesStep from '../onboarding/PreferencesStep';
 import ProfileStep from '../onboarding/ProfileStep';
 import CompletionStep from '../onboarding/CompletionStep';
 import { useUserStore } from '@/app/hooks/userStore';
+import OnboardingProgressIndicator from '../onboarding/OnboardingProgressIndicator';
 
 interface OnboardingOptions {
   instruments: Array<{ id: string; name: string; category: string | null }>;
@@ -38,7 +39,6 @@ const OnboardingModal: React.FC = () => {
     data,
     isLoading,
     hasProgress,
-    lastSaved,
     nextStep,
     prevStep,
     resetData,
@@ -48,17 +48,6 @@ const OnboardingModal: React.FC = () => {
 
   const [options, setOptions] = useState<OnboardingOptions | null>(null);
   const [isLoadingOptions, setIsLoadingOptions] = useState(false);
-  const [showProgressBanner, setShowProgressBanner] = useState(false);
-
-  // Verificar se existe progresso salvo quando modal abre
-  useEffect(() => {
-    if (isOpen && hasProgress && lastSaved) {
-      setShowProgressBanner(true);
-      // Auto-hide banner após 5 segundos
-      const timer = setTimeout(() => setShowProgressBanner(false), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen, hasProgress, lastSaved]);
 
   // Load onboarding options when modal opens
   useEffect(() => {
@@ -282,14 +271,14 @@ const OnboardingModal: React.FC = () => {
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
               {getStepTitle()}
             </h2>
-            {hasProgress && !showProgressBanner && (
+            {/* {hasProgress && !showProgressBanner && (
               <div className="flex items-center space-x-2 mt-1">
                 <FiClock className="w-3 h-3 text-theme-tertiary" />
                 <span className="text-xs text-theme-tertiary">
                   Progresso salvo {formatLastSaved(lastSaved)}
                 </span>
               </div>
-            )}
+            )} */}
           </div>
           <span className="text-sm text-theme-tertiary">{step} de 6</span>
         </div>
@@ -301,6 +290,8 @@ const OnboardingModal: React.FC = () => {
           />
         </div>
       </div>
+
+      {/* <OnboardingProgressIndicator /> */}
 
       {/* Step Content */}
       <div className="">{renderStep()}</div>

@@ -318,7 +318,6 @@ export async function getEpochs() {
       id: true,
       name: true,
     },
-    orderBy: { name: 'asc' },
   });
 
   return epochsData;

@@ -180,8 +180,6 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
     } else {
       loadInitialFacts();
     }
-
-    //@es
   }, [initialFacts, initialCount]);
 
   const loadInitialFacts = () => {

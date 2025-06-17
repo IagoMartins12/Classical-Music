@@ -12,10 +12,11 @@ import OnboardingModal from '@/app/components/auth/OnboardingModal';
 
 // Import hooks and stores
 import { useAuth } from '@/app/hooks/useAuth';
-import { useOnboardingModal } from '../stores/authStore';
+import { useOnboardingModal, usePromptModal } from '../stores/authStore';
 import { useHydration } from '../hooks/useHydration';
 import { useUserStore } from '../hooks/userStore';
 import { useOnboardingPersistence } from '../hooks/useOnboardingPersistence';
+import OnboardingPrompt from '../components/auth/onboarding/OnboardingPrompt';
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -33,6 +34,7 @@ const OnboardingManager: React.FC = () => {
     isOpen: isOnboardingOpen,
     hasProgress,
   } = useOnboardingModal();
+  const { open: openPromptModal, isOpen: isPromptModalOpen } = usePromptModal();
   const { isHydrated } = useHydration();
   const [hasCheckedProgress, setHasCheckedProgress] = useState(false);
 
@@ -72,7 +74,9 @@ const OnboardingManager: React.FC = () => {
       if (hasProgress) {
         // Tem progresso salvo, perguntar se quer continuar
         console.log('🔄 Progresso do onboarding encontrado, abrindo modal...');
-        openOnboarding();
+        if (!isPromptModalOpen) {
+          openPromptModal();
+        }
       } else {
         // Não tem progresso, iniciar novo onboarding
         console.log('🚀 Iniciando novo onboarding para usuário:', user?.id);
@@ -223,7 +227,6 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [mounted, setMounted] = useState(false);
-  const { isHydrated } = useHydration();
 
   useEffect(() => {
     setMounted(true);
@@ -243,6 +246,7 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
       {/* Lógica de onboarding com persistência */}
       <OnboardingManager />
 
+      <OnboardingPrompt />
       {/* Conteúdo da aplicação */}
       {children}
     </PersistenceErrorBoundary>

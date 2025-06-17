@@ -40,8 +40,6 @@ interface FeaturedComposerProps {
 }
 
 const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [imageError, setImageError] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
 
   const formatDates = () => {
@@ -90,13 +88,8 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
             <div className="lg:col-span-1 flex flex-col items-center text-center">
               <div className="relative mb-6">
                 <div className="relative w-48 h-48 lg:w-72 lg:h-72">
-                  {/* Loading skeleton */}
-                  {!imageLoaded && !imageError && (
-                    <div className="absolute inset-0 loading-skeleton rounded-3xl"></div>
-                  )}
-
                   {/* Portrait or fallback */}
-                  {composer.portraitUrl && !imageError ? (
+                  {composer.portraitUrl ? (
                     <Link href={`/composer/${composer.id}`}>
                       <div className="relative w-full h-full rounded-3xl overflow-hidden border-2 border-brand-primary/20 group-hover:border-brand-primary/40 transition-all duration-500 shadow-theme-medium group-hover:shadow-theme-glow">
                         <Image
@@ -104,11 +97,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                           alt={composer.name}
                           fill
                           sizes="224px"
-                          className={`object-cover transition-all duration-700 group-hover:scale-110 ${
-                            imageLoaded ? 'opacity-100' : 'opacity-0'
-                          }`}
-                          onLoad={() => setImageLoaded(true)}
-                          onError={() => setImageError(true)}
+                          className={`object-cover transition-all duration-700 group-hover:scale-110  opacity-100`}
                           priority
                           quality={90}
                         />
