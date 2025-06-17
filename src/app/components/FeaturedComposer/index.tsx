@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { useState } from 'react';
+import FavoriteButton from '../FavoriteButton';
 
 interface FeaturedComposerProps {
   composer: {
@@ -113,23 +114,16 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                   )}
 
                   {/* Floating action button */}
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsFavorited(!isFavorited);
-                    }}
-                    className={`absolute -top-2 -right-2 w-12 h-12 rounded-2xl backdrop-blur-md transition-all duration-300 hover:scale-110 ${
-                      isFavorited
-                        ? 'bg-accent-red/20 border-2 border-accent-red/50 text-accent-red shadow-theme-glow'
-                        : 'bg-theme-elevated/80 border-2 border-theme-primary/30 text-theme-primary hover:bg-interactive-hover hover:border-brand-primary'
-                    }`}
-                  >
-                    <FiHeart
-                      className={`w-5 h-5 mx-auto ${
-                        isFavorited ? 'fill-current' : ''
-                      }`}
+                  <div className="absolute -top-2 -right-2 ">
+                    <FavoriteButton
+                      id={composer.id}
+                      type="composer"
+                      variant="default"
+                      size="lg"
+                      itemName={composer.fullName}
+                      showToast={true}
                     />
-                  </button>
+                  </div>
                 </div>
 
                 {/* Period badge */}

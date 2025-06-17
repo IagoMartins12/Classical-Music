@@ -7,6 +7,7 @@ import LazyImage from '../../LazyImage';
 import Link from 'next/link';
 import { FiHeart, FiUser, FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
+import FavoriteButton from '../../FavoriteButton';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
   const [isFavorited, setIsFavorited] = useState(false);
@@ -50,28 +51,14 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
             {/* Floating Action Buttons */}
             <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
               {/* Favorite Button */}
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsFavorited(!isFavorited);
-                }}
-                className={`
-                  w-10 h-10 rounded-full backdrop-blur-md
-                  transition-all duration-300 hover:scale-110
-                  ${
-                    isFavorited
-                      ? 'bg-accent-red/20 border border-accent-red/50 text-accent-red'
-                      : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
-                  }
-                `}
-              >
-                <FiHeart
-                  className={`w-4 h-4 mx-auto ${
-                    isFavorited ? 'fill-current' : ''
-                  }`}
-                />
-              </button>
+              <FavoriteButton
+                id={item.id}
+                type="composer"
+                variant="small"
+                size="md"
+                itemName={item.fullName}
+                showToast={true}
+              />
             </div>
 
             {/* Period Badge */}

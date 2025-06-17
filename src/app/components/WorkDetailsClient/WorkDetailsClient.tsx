@@ -24,6 +24,7 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import { useIMSLPScores } from '@/app/hooks/useIMSLPScores';
 import IMSLPTabs from './IMSLPTabs';
 import { useNavigate } from '@/app/hooks/useNavigate';
+import FavoriteButton from '../FavoriteButton';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -161,20 +162,14 @@ export default function WorkDetailsClient({
 
                     {/* Action buttons */}
                     <div className="flex items-center space-x-3 ml-4">
-                      <button
-                        onClick={() => setIsFavorited(!isFavorited)}
-                        className={`w-12 h-12 rounded-xl border transition-all duration-300 hover:scale-110 ${
-                          isFavorited
-                            ? 'bg-accent-red/20 border-accent-red/50 text-accent-red'
-                            : 'bg-theme-elevated border-theme-primary text-theme-primary hover:bg-interactive-hover'
-                        }`}
-                      >
-                        <FiHeart
-                          className={`w-5 h-5 mx-auto ${
-                            isFavorited ? 'fill-current' : ''
-                          }`}
-                        />
-                      </button>
+                      <FavoriteButton
+                        id={work.id}
+                        type="work"
+                        variant="default"
+                        size="lg"
+                        itemName={work.title}
+                        showToast={true}
+                      />
 
                       <button className="w-12 h-12 bg-interactive-hover border border-theme-primary text-theme-primary rounded-xl hover:bg-brand-primary/20 hover:border-brand-primary hover:text-brand-primary hover:scale-110 transition-all duration-300">
                         <FiShare2 className="w-5 h-5 mx-auto" />

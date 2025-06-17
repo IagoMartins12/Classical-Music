@@ -1,18 +1,18 @@
-// app/composers/ComposerCard.tsx - Premium version with theme system
+// app/composers/ComposerCard.tsx - Updated with Favorites
 'use client';
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { FiHeart, FiUser, FiCalendar, FiExternalLink } from 'react-icons/fi';
+import { FiUser, FiCalendar, FiExternalLink } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { ComposerImslp } from '..';
+import FavoriteButton from '../../FavoriteButton';
 
 interface composerCardProps {
   composer: ComposerImslp;
 }
 
 const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
-  const [isFavorited, setIsFavorited] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -74,24 +74,14 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
 
           {/* Floating action buttons */}
           <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setIsFavorited(!isFavorited);
-              }}
-              className={`w-8 h-8 rounded-full backdrop-blur-md transition-all duration-300 hover:scale-110 ${
-                isFavorited
-                  ? 'bg-accent-red/20 border border-accent-red/50 text-accent-red'
-                  : 'bg-theme-elevated/80 border border-theme-primary/30 text-theme-primary hover:bg-interactive-hover'
-              }`}
-            >
-              <FiHeart
-                className={`w-3 h-3 mx-auto ${
-                  isFavorited ? 'fill-current' : ''
-                }`}
-              />
-            </button>
+            <FavoriteButton
+              id={composer.id}
+              type="composer"
+              variant="small"
+              size="md"
+              itemName={composer.name}
+              showToast={true}
+            />
           </div>
         </div>
 

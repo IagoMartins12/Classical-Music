@@ -5,6 +5,7 @@ import './globals.css';
 import { ClientThemeWrapper } from './components/ClientThemeWrapper';
 import Navbar from './components/Navbar';
 import AuthProvider from './providers/AuthProvider';
+import { FavoritesProvider } from './providers/FavoritesProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -77,11 +78,13 @@ export default function RootLayout({
         {/* Client-side theme wrapper - mantém SSR */}
         <ClientThemeWrapper>
           <AuthProvider>
-            {/* Navbar como client component */}
-            <Navbar />
+            <FavoritesProvider>
+              {/* Navbar como client component */}
+              <Navbar />
 
-            {/* Main content - pode ser server ou client components */}
-            <main className="min-h-screen">{children}</main>
+              {/* Main content - pode ser server ou client components */}
+              <main className="min-h-screen">{children}</main>
+            </FavoritesProvider>
           </AuthProvider>
         </ClientThemeWrapper>
       </body>

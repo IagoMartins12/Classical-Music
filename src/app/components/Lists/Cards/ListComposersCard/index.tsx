@@ -7,6 +7,7 @@ import { composerHomeProps } from '@/app/components/PopularComposers';
 import Link from 'next/link';
 import { FiHeart, FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
+import FavoriteButton from '@/app/components/FavoriteButton';
 
 interface listComposersCardsProps {
   composer: composerHomeProps;
@@ -59,28 +60,15 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
             {/* Floating Action Buttons */}
             <div className="absolute top-3 right-3 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
               {/* Favorite Button */}
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setIsFavorited(!isFavorited);
-                }}
-                className={`
-                  w-8 h-8 rounded-full backdrop-blur-md
-                  transition-all duration-300 hover:scale-110
-                  ${
-                    isFavorited
-                      ? 'bg-accent-red/20 border border-accent-red/50 text-accent-red'
-                      : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
-                  }
-                `}
-              >
-                <FiHeart
-                  className={`w-3 h-3 mx-auto ${
-                    isFavorited ? 'fill-current' : ''
-                  }`}
-                />
-              </button>
+              <FavoriteButton
+                id={composer.id}
+                type="composer"
+                variant="small"
+                size="md"
+                typeButton="square"
+                itemName={composer.fullName}
+                showToast={true}
+              />
             </div>
 
             {/* Period Badge */}

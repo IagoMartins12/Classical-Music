@@ -366,7 +366,7 @@ model FavoriteWork {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   userId String @db.ObjectId
   workId String @db.ObjectId
-
+  
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
 
