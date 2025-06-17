@@ -1,12 +1,10 @@
-// components/auth/OnboardingModal.tsx
+// components/auth/OnboardingModal.tsx - Versão com persistência
 'use client';
 
 import React, { useEffect, useState } from 'react';
-
 import { getOnboardingOptions, completeOnboarding } from '@/app/actions/auth';
 import { toast } from 'react-hot-toast';
-
-// Import step components
+import { FiSave, FiClock, FiAlertCircle } from 'react-icons/fi';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import Button from '../../Common/Button';
@@ -39,6 +37,8 @@ const OnboardingModal: React.FC = () => {
     step,
     data,
     isLoading,
+    hasProgress,
+    lastSaved,
     nextStep,
     prevStep,
     resetData,
@@ -48,6 +48,17 @@ const OnboardingModal: React.FC = () => {
 
   const [options, setOptions] = useState<OnboardingOptions | null>(null);
   const [isLoadingOptions, setIsLoadingOptions] = useState(false);
+  const [showProgressBanner, setShowProgressBanner] = useState(false);
+
+  // Verificar se existe progresso salvo quando modal abre
+  useEffect(() => {
+    if (isOpen && hasProgress && lastSaved) {
+      setShowProgressBanner(true);
+      // Auto-hide banner após 5 segundos
+      const timer = setTimeout(() => setShowProgressBanner(false), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, hasProgress, lastSaved]);
 
   // Load onboarding options when modal opens
   useEffect(() => {
@@ -74,8 +85,6 @@ const OnboardingModal: React.FC = () => {
   };
 
   const handleComplete = async () => {
-    console.log('data', user);
-
     if (!user.user?.id) {
       toast.error('Usuário não encontrado');
       return;
@@ -88,7 +97,8 @@ const OnboardingModal: React.FC = () => {
 
       if (result.success) {
         toast.success(result.message);
-        complete();
+
+        complete(); // Isso limpa os dados persistidos
 
         // Refresh the page to update the session
         window.location.reload();
@@ -104,12 +114,23 @@ const OnboardingModal: React.FC = () => {
   };
 
   const handleSkip = () => {
-    close();
+    close(); // Mantém o progresso salvo
   };
 
   const handleClose = () => {
+    // Apenas fecha o modal, mantém progresso salvo
     close();
-    resetData();
+  };
+
+  const handleStartOver = () => {
+    if (
+      window.confirm(
+        'Tem certeza que deseja recomeçar? Todo o progresso será perdido.'
+      )
+    ) {
+      resetData();
+      toast.success('Progresso removido. Começando do início...');
+    }
   };
 
   const canProceed = () => {
@@ -132,6 +153,21 @@ const OnboardingModal: React.FC = () => {
       default:
         return false;
     }
+  };
+
+  const formatLastSaved = (timestamp?: number) => {
+    if (!timestamp) return '';
+
+    const now = Date.now();
+    const diff = now - timestamp;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+
+    if (minutes < 1) return 'agora mesmo';
+    if (minutes < 60) return `${minutes} min atrás`;
+    if (hours < 24) return `${hours}h atrás`;
+
+    return new Date(timestamp).toLocaleDateString('pt-BR');
   };
 
   const renderStep = () => {
@@ -204,15 +240,57 @@ const OnboardingModal: React.FC = () => {
       isOpen={isOpen}
       onClose={handleClose}
       maxWidth="3xl"
-      showCloseButton={false}
+      showCloseButton={true}
       closeOnOverlayClick={false}
     >
+      {/* Progress Banner - Mostra quando há progresso salvo */}
+      {/* {showProgressBanner && hasProgress && (
+        <div className="mb-6 classical-card bg-accent-blue bg-opacity-10 border-accent-blue p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <FiSave className="w-5 h-5 text-accent-blue" />
+              <div>
+                <p className="text-sm font-medium text-theme-primary">
+                  Progresso restaurado
+                </p>
+                <p className="text-xs text-theme-secondary">
+                  Última edição: {formatLastSaved(lastSaved)}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowProgressBanner(false)}
+              >
+                Dispensar
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleStartOver}>
+                Recomeçar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )} */}
+
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-theme-primary classical-title">
-            {getStepTitle()}
-          </h2>
+          <div>
+            <h2 className="text-2xl font-bold text-theme-primary classical-title">
+              {getStepTitle()}
+            </h2>
+            {hasProgress && !showProgressBanner && (
+              <div className="flex items-center space-x-2 mt-1">
+                <FiClock className="w-3 h-3 text-theme-tertiary" />
+                <span className="text-xs text-theme-tertiary">
+                  Progresso salvo {formatLastSaved(lastSaved)}
+                </span>
+              </div>
+            )}
+          </div>
           <span className="text-sm text-theme-tertiary">{step} de 6</span>
         </div>
 
@@ -237,18 +315,42 @@ const OnboardingModal: React.FC = () => {
               </Button>
             )}
 
-            <Button variant="outline" onClick={handleSkip} disabled={isLoading}>
-              Pular por agora
+            <Button
+              variant="outline"
+              onClick={handleSkip}
+              disabled={isLoading}
+              title="Salva o progresso e fecha o modal"
+            >
+              Continuar depois
             </Button>
           </div>
 
-          <Button
-            variant="primary"
-            onClick={nextStep}
-            disabled={!canProceed() || isLoading}
-          >
-            {step === 6 ? 'Finalizar' : 'Continuar'}
-          </Button>
+          <div className="flex items-center space-x-3">
+            {/* Indicador de auto-save */}
+
+            <Button
+              variant="primary"
+              onClick={nextStep}
+              disabled={!canProceed() || isLoading}
+            >
+              {step === 6 ? 'Finalizar' : 'Continuar'}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Reset Progress Option (discreto) */}
+      {hasProgress && step === 1 && (
+        <div className="mt-4 pt-4 border-t border-theme-secondary">
+          <div className="flex items-center justify-center">
+            <button
+              onClick={handleStartOver}
+              className="text-xs text-theme-tertiary hover:text-accent-red transition-colors flex items-center space-x-1"
+            >
+              <FiAlertCircle className="w-3 h-3" />
+              <span>Recomeçar do zero</span>
+            </button>
+          </div>
         </div>
       )}
     </Modal>

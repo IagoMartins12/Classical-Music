@@ -1,6 +1,11 @@
-// stores/authStore.ts (versão simplificada - apenas onboarding e modais)
+// stores/authStore.ts - Versão com persistência completa
 import { create } from 'zustand';
-import { subscribeWithSelector } from 'zustand/middleware';
+import {
+  subscribeWithSelector,
+  persist,
+  createJSONStorage,
+} from 'zustand/middleware';
+import { debounce } from 'lodash';
 
 export interface OnboardingData {
   userType?: 'MUSIC_STUDENT' | 'CASUAL_USER' | 'PROFESSIONAL' | 'TEACHER';
@@ -24,16 +29,26 @@ export interface OnboardingData {
   bio?: string;
 }
 
+interface OnboardingState {
+  // Persistência do onboarding
+  currentStep: number;
+  data: OnboardingData;
+  isStarted: boolean;
+  lastSavedAt?: number;
+
+  // Estado temporário (não persistido)
+  isModalOpen: boolean;
+  isLoading: boolean;
+  hasUnsavedChanges: boolean;
+}
+
 interface AuthState {
   // Modal state
   isLoginModalOpen: boolean;
   isRegisterModalOpen: boolean;
-  isOnboardingModalOpen: boolean;
 
-  // Onboarding state
-  onboardingStep: number;
-  onboardingData: OnboardingData;
-  isOnboardingLoading: boolean;
+  // Onboarding persistido
+  onboarding: OnboardingState;
 
   // Login/Register form state
   loginForm: {
@@ -70,6 +85,10 @@ interface AuthState {
   updateOnboardingData: (data: Partial<OnboardingData>) => void;
   resetOnboardingData: () => void;
   setOnboardingLoading: (loading: boolean) => void;
+  restoreOnboardingProgress: () => void;
+  saveOnboardingProgress: () => void;
+  hasOnboardingProgress: () => boolean;
+  markOnboardingComplete: () => void;
 
   // Form actions
   updateLoginForm: (data: Partial<AuthState['loginForm']>) => void;
@@ -111,141 +130,292 @@ const initialOnboardingData: OnboardingData = {
   bio: undefined,
 };
 
+const initialOnboardingState: OnboardingState = {
+  currentStep: 1,
+  data: initialOnboardingData,
+  isStarted: false,
+  lastSavedAt: undefined,
+  isModalOpen: false,
+  isLoading: false,
+  hasUnsavedChanges: false,
+};
+
+// Função debounced para auto-save
+const createDebouncedSave = (saveFunction: () => void) =>
+  debounce(saveFunction, 1000, { leading: false, trailing: true });
+
 export const useAuthStore = create<AuthState>()(
-  subscribeWithSelector((set, get) => ({
-    // Modal state
-    isLoginModalOpen: false,
-    isRegisterModalOpen: false,
-    isOnboardingModalOpen: false,
+  subscribeWithSelector(
+    persist(
+      (set, get) => {
+        // Auto-save debounced function
+        const debouncedSave = createDebouncedSave(() => {
+          const state = get();
+          if (state.onboarding.hasUnsavedChanges) {
+            set((state) => ({
+              onboarding: {
+                ...state.onboarding,
+                hasUnsavedChanges: false,
+                lastSavedAt: Date.now(),
+              },
+            }));
 
-    // Onboarding state
-    onboardingStep: 1,
-    onboardingData: initialOnboardingData,
-    isOnboardingLoading: false,
+            if (process.env.NODE_ENV === 'development') {
+              console.log('💾 Onboarding auto-saved:', get().onboarding);
+            }
+          }
+        });
 
-    // Form state
-    loginForm: initialLoginForm,
-    registerForm: initialRegisterForm,
+        return {
+          // Modal state
+          isLoginModalOpen: false,
+          isRegisterModalOpen: false,
 
-    // Modal actions
-    openLoginModal: () =>
-      set({
-        isLoginModalOpen: true,
-        isRegisterModalOpen: false,
-        isOnboardingModalOpen: false,
-      }),
+          // Onboarding state
+          onboarding: initialOnboardingState,
 
-    closeLoginModal: () =>
-      set({
-        isLoginModalOpen: false,
-        loginForm: initialLoginForm,
-      }),
+          // Form state
+          loginForm: initialLoginForm,
+          registerForm: initialRegisterForm,
 
-    openRegisterModal: () =>
-      set({
-        isRegisterModalOpen: true,
-        isLoginModalOpen: false,
-        isOnboardingModalOpen: false,
-      }),
+          // Modal actions
+          openLoginModal: () =>
+            set({
+              isLoginModalOpen: true,
+              isRegisterModalOpen: false,
+            }),
 
-    closeRegisterModal: () =>
-      set({
-        isRegisterModalOpen: false,
-        registerForm: initialRegisterForm,
-      }),
+          closeLoginModal: () =>
+            set({
+              isLoginModalOpen: false,
+              loginForm: initialLoginForm,
+            }),
 
-    switchToRegister: () =>
-      set({
-        isLoginModalOpen: false,
-        isRegisterModalOpen: true,
-        loginForm: initialLoginForm,
-      }),
+          openRegisterModal: () =>
+            set({
+              isRegisterModalOpen: true,
+              isLoginModalOpen: false,
+            }),
 
-    switchToLogin: () =>
-      set({
-        isRegisterModalOpen: false,
-        isLoginModalOpen: true,
-        registerForm: initialRegisterForm,
-      }),
+          closeRegisterModal: () =>
+            set({
+              isRegisterModalOpen: false,
+              registerForm: initialRegisterForm,
+            }),
 
-    // Onboarding actions
-    openOnboardingModal: () =>
-      set({
-        isOnboardingModalOpen: true,
-        isLoginModalOpen: false,
-        isRegisterModalOpen: false,
-        onboardingStep: 1,
-      }),
+          switchToRegister: () =>
+            set({
+              isLoginModalOpen: false,
+              isRegisterModalOpen: true,
+              loginForm: initialLoginForm,
+            }),
 
-    closeOnboardingModal: () =>
-      set({
-        isOnboardingModalOpen: false,
-        onboardingStep: 1,
-        onboardingData: initialOnboardingData,
-      }),
+          switchToLogin: () =>
+            set({
+              isRegisterModalOpen: false,
+              isLoginModalOpen: true,
+              registerForm: initialRegisterForm,
+            }),
 
-    setOnboardingStep: (step) => set({ onboardingStep: step }),
+          // Onboarding actions
+          openOnboardingModal: () => {
+            const currentOnboarding = get().onboarding;
 
-    nextOnboardingStep: () => {
-      const { onboardingStep } = get();
-      if (onboardingStep < 6) {
-        set({ onboardingStep: onboardingStep + 1 });
+            set((state) => ({
+              isLoginModalOpen: false,
+              isRegisterModalOpen: false,
+              onboarding: {
+                ...state.onboarding,
+                isModalOpen: true,
+                isStarted: true,
+              },
+            }));
+
+            // Restaurar progresso se existir
+            if (currentOnboarding.isStarted && currentOnboarding.lastSavedAt) {
+              console.log('🔄 Restaurando progresso do onboarding...');
+              get().restoreOnboardingProgress();
+            }
+          },
+
+          closeOnboardingModal: () => {
+            // Salvar progresso antes de fechar
+            get().saveOnboardingProgress();
+
+            set((state) => ({
+              onboarding: {
+                ...state.onboarding,
+                isModalOpen: false,
+              },
+            }));
+          },
+
+          setOnboardingStep: (step) => {
+            set((state) => ({
+              onboarding: {
+                ...state.onboarding,
+                currentStep: step,
+                hasUnsavedChanges: true,
+              },
+            }));
+            debouncedSave();
+          },
+
+          nextOnboardingStep: () => {
+            const currentStep = get().onboarding.currentStep;
+            if (currentStep < 6) {
+              set((state) => ({
+                onboarding: {
+                  ...state.onboarding,
+                  currentStep: currentStep + 1,
+                  hasUnsavedChanges: true,
+                },
+              }));
+              debouncedSave();
+            }
+          },
+
+          prevOnboardingStep: () => {
+            const currentStep = get().onboarding.currentStep;
+            if (currentStep > 1) {
+              set((state) => ({
+                onboarding: {
+                  ...state.onboarding,
+                  currentStep: currentStep - 1,
+                  hasUnsavedChanges: true,
+                },
+              }));
+              debouncedSave();
+            }
+          },
+
+          updateOnboardingData: (data) => {
+            set((state) => ({
+              onboarding: {
+                ...state.onboarding,
+                data: { ...state.onboarding.data, ...data },
+                hasUnsavedChanges: true,
+              },
+            }));
+            debouncedSave();
+          },
+
+          resetOnboardingData: () => {
+            set({
+              onboarding: initialOnboardingState,
+            });
+
+            // Limpar localStorage também
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('classical-hub-onboarding');
+            }
+          },
+
+          setOnboardingLoading: (loading) =>
+            set((state) => ({
+              onboarding: {
+                ...state.onboarding,
+                isLoading: loading,
+              },
+            })),
+
+          restoreOnboardingProgress: () => {
+            const state = get();
+            if (state.onboarding.isStarted && state.onboarding.lastSavedAt) {
+              console.log(
+                '✅ Progresso restaurado - Etapa:',
+                state.onboarding.currentStep
+              );
+            }
+          },
+
+          saveOnboardingProgress: () => {
+            set((state) => ({
+              onboarding: {
+                ...state.onboarding,
+                hasUnsavedChanges: false,
+                lastSavedAt: Date.now(),
+              },
+            }));
+          },
+
+          hasOnboardingProgress: () => {
+            const state = get();
+            return (
+              state.onboarding.isStarted &&
+              (state.onboarding.currentStep > 1 ||
+                Object.keys(state.onboarding.data).some(
+                  (key) =>
+                    state.onboarding.data[key as keyof OnboardingData] !==
+                    undefined
+                ))
+            );
+          },
+
+          markOnboardingComplete: () => {
+            // Salvar dados finais e limpar estado temporário
+            get().resetOnboardingData();
+          },
+
+          // Form actions
+          updateLoginForm: (data) =>
+            set((state) => ({
+              loginForm: { ...state.loginForm, ...data },
+            })),
+
+          updateRegisterForm: (data) =>
+            set((state) => ({
+              registerForm: { ...state.registerForm, ...data },
+            })),
+
+          resetLoginForm: () => set({ loginForm: initialLoginForm }),
+
+          resetRegisterForm: () => set({ registerForm: initialRegisterForm }),
+
+          // Auth actions
+          logout: () =>
+            set({
+              isLoginModalOpen: false,
+              isRegisterModalOpen: false,
+              loginForm: initialLoginForm,
+              registerForm: initialRegisterForm,
+              onboarding: initialOnboardingState,
+            }),
+
+          completeOnboarding: () => {
+            get().markOnboardingComplete();
+            set((state) => ({
+              onboarding: {
+                ...initialOnboardingState,
+                isModalOpen: false,
+              },
+            }));
+          },
+        };
+      },
+      {
+        name: 'classical-hub-auth',
+        storage: createJSONStorage(() => localStorage),
+        partialize: (state) => ({
+          // Apenas persistir dados do onboarding, não modais
+          onboarding: {
+            currentStep: state.onboarding.currentStep,
+            data: state.onboarding.data,
+            isStarted: state.onboarding.isStarted,
+            lastSavedAt: state.onboarding.lastSavedAt,
+          },
+        }),
+        version: 1,
+        migrate: (persistedState: any, version: number) => {
+          // Migração de versões futuras se necessário
+          return persistedState;
+        },
       }
-    },
-
-    prevOnboardingStep: () => {
-      const { onboardingStep } = get();
-      if (onboardingStep > 1) {
-        set({ onboardingStep: onboardingStep - 1 });
-      }
-    },
-
-    updateOnboardingData: (data) =>
-      set((state) => ({
-        onboardingData: { ...state.onboardingData, ...data },
-      })),
-
-    resetOnboardingData: () => set({ onboardingData: initialOnboardingData }),
-
-    setOnboardingLoading: (loading) => set({ isOnboardingLoading: loading }),
-
-    // Form actions
-    updateLoginForm: (data) =>
-      set((state) => ({
-        loginForm: { ...state.loginForm, ...data },
-      })),
-
-    updateRegisterForm: (data) =>
-      set((state) => ({
-        registerForm: { ...state.registerForm, ...data },
-      })),
-
-    resetLoginForm: () => set({ loginForm: initialLoginForm }),
-
-    resetRegisterForm: () => set({ registerForm: initialRegisterForm }),
-
-    // Auth actions
-    logout: () =>
-      set({
-        isLoginModalOpen: false,
-        isRegisterModalOpen: false,
-        isOnboardingModalOpen: false,
-        loginForm: initialLoginForm,
-        registerForm: initialRegisterForm,
-        onboardingData: initialOnboardingData,
-        onboardingStep: 1,
-      }),
-
-    completeOnboarding: () =>
-      set({
-        isOnboardingModalOpen: false,
-        onboardingStep: 1,
-        onboardingData: initialOnboardingData,
-      }),
-  }))
+    )
+  )
 );
 
-// Hooks para modais com proteção SSR
+// Hooks com proteção SSR e persistência
 export const useLoginModal = () => {
   const store = useAuthStore();
 
@@ -297,6 +467,8 @@ export const useOnboardingModal = () => {
       step: 1,
       data: initialOnboardingData,
       isLoading: false,
+      hasProgress: false,
+      lastSaved: undefined,
       setStep: () => {},
       nextStep: () => {},
       prevStep: () => {},
@@ -308,12 +480,14 @@ export const useOnboardingModal = () => {
   }
 
   return {
-    isOpen: store.isOnboardingModalOpen,
+    isOpen: store.onboarding.isModalOpen,
     open: store.openOnboardingModal,
     close: store.closeOnboardingModal,
-    step: store.onboardingStep,
-    data: store.onboardingData,
-    isLoading: store.isOnboardingLoading,
+    step: store.onboarding.currentStep,
+    data: store.onboarding.data,
+    isLoading: store.onboarding.isLoading,
+    hasProgress: store.hasOnboardingProgress(),
+    lastSaved: store.onboarding.lastSavedAt,
     setStep: store.setOnboardingStep,
     nextStep: store.nextOnboardingStep,
     prevStep: store.prevOnboardingStep,

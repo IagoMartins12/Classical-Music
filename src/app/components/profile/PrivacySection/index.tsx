@@ -1,11 +1,14 @@
-// app/profile/components/PrivacySection.tsx
+// app/profile/components/PrivacySection.tsx (versão atualizada)
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { User } from 'next-auth';
 import { FiEye, FiEyeOff, FiMapPin, FiSave } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
+import { updatePrivacySettings } from '@/app/actions/profile';
+import { useAuth } from '@/app/hooks/useAuth';
+import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 
 interface PrivacySectionProps {
   user: User;
@@ -14,8 +17,10 @@ interface PrivacySectionProps {
 
 const PrivacySection: React.FC<PrivacySectionProps> = ({
   user,
-  updateUser,
+  updateUser: localUpdateUser,
 }) => {
+  const { updateUser: globalUpdateUser } = useAuth();
+  const { updateUserSession } = useSessionUpdate();
   const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState({
     profilePublic: user.profilePublic || true,
@@ -24,6 +29,16 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
     showActivity: true, // Exemplo adicional
   });
 
+  // Atualizar settings quando user mudar
+  useEffect(() => {
+    setSettings({
+      profilePublic: user.profilePublic || true,
+      showLocation: user.showLocation || false,
+      showInstruments: true,
+      showActivity: true,
+    });
+  }, [user.profilePublic, user.showLocation]);
+
   const handleToggle = (setting: keyof typeof settings) => {
     setSettings((prev) => ({
       ...prev,
@@ -31,17 +46,37 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
     }));
   };
 
+  // Função para sincronizar todos os estados após update
+  const syncUserData = useCallback(
+    async (data: Partial<User>) => {
+      // 1. Atualizar stores locais
+      localUpdateUser(data);
+      globalUpdateUser(data);
+
+      // 2. Forçar refresh da sessão NextAuth
+      await updateUserSession();
+    },
+    [localUpdateUser, globalUpdateUser, updateUserSession]
+  );
+
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      // Aqui você salvaria as configurações de privacidade
-      updateUser({
+      const dataToSave = {
         profilePublic: settings.profilePublic,
         showLocation: settings.showLocation,
-      });
+      };
 
-      toast.success('Configurações de privacidade atualizadas!');
+      const result = await updatePrivacySettings(user.id, dataToSave);
+
+      if (result.success) {
+        await syncUserData(dataToSave);
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
     } catch (error) {
+      console.error('Erro ao salvar configurações de privacidade:', error);
       toast.error('Erro ao atualizar configurações.');
     } finally {
       setIsLoading(false);
@@ -173,6 +208,12 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               disabled={!settings.profilePublic}
             />
           </div>
+
+          {!settings.profilePublic && (
+            <p className="text-xs text-theme-tertiary mt-2 ml-8">
+              Disponível apenas com perfil público ativo
+            </p>
+          )}
         </div>
 
         {/* Activity Visibility */}
@@ -196,19 +237,57 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               disabled={!settings.profilePublic}
             />
           </div>
+
+          {!settings.profilePublic && (
+            <p className="text-xs text-theme-tertiary mt-2 ml-8">
+              Disponível apenas com perfil público ativo
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Privacy Summary */}
+      <div className="classical-card-2 p-4 bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30">
+        <h4 className="font-medium text-brand-primary mb-2">
+          📋 Resumo da Privacidade
+        </h4>
+        <div className="text-sm text-theme-secondary space-y-1">
+          <p>
+            • <strong>Perfil:</strong>{' '}
+            {settings.profilePublic ? 'Público' : 'Privado'}
+          </p>
+          <p>
+            • <strong>Localização:</strong>{' '}
+            {settings.showLocation && settings.profilePublic
+              ? 'Visível'
+              : 'Oculta'}
+          </p>
+          <p>
+            • <strong>Instrumentos:</strong>{' '}
+            {settings.showInstruments && settings.profilePublic
+              ? 'Visíveis'
+              : 'Ocultos'}
+          </p>
+          <p>
+            • <strong>Atividade:</strong>{' '}
+            {settings.showActivity && settings.profilePublic
+              ? 'Visível'
+              : 'Oculta'}
+          </p>
         </div>
       </div>
 
       {/* Info Box */}
-      <div className="classical-card-2 p-4 bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30">
-        <h4 className="font-medium text-brand-primary mb-2">
-          📋 Sobre a Privacidade
+      <div className="classical-card-2 p-4 bg-theme-secondary bg-opacity-20">
+        <h4 className="font-medium text-theme-primary mb-2">
+          🔒 Informações de Segurança
         </h4>
         <ul className="text-sm text-theme-secondary space-y-1">
           <li>• Seu email nunca é mostrado publicamente</li>
           <li>• Apenas administradores podem ver informações privadas</li>
           <li>• Você pode alterar essas configurações a qualquer momento</li>
           <li>• Dados de estudo são sempre privados por padrão</li>
+          <li>• Configurações são salvas automaticamente no banco de dados</li>
         </ul>
       </div>
     </div>

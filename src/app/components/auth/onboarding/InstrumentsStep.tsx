@@ -34,21 +34,8 @@ const EXPERIENCE_LEVELS = [
 
 const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
   const { data, updateData } = useOnboardingModal();
-  const [searchTerm, setSearchTerm] = useState('');
 
   // Filter instruments
-  const filteredInstruments = useMemo(() => {
-    let filtered = instruments;
-
-    if (searchTerm) {
-      filtered = filtered.filter((inst) =>
-        inst.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    return filtered;
-  }, [instruments, searchTerm]);
-
   const selectedInstruments = data.instruments || [];
 
   const addInstrument = (instrument: Instrument) => {
@@ -230,7 +217,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
 
       {/* Available Instruments */}
       <div className="grid grid-cols-1 py-1 px-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto overflow-x-hidden classical-scrollbar">
-        {filteredInstruments.map((instrument) => (
+        {instruments.map((instrument) => (
           <button
             key={instrument.id}
             onClick={() => addInstrument(instrument)}
@@ -261,7 +248,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
         ))}
       </div>
 
-      {filteredInstruments.length === 0 && (
+      {instruments.length === 0 && (
         <div className="text-center py-8">
           <p className="text-theme-secondary">
             Nenhum instrumento encontrado com os filtros atuais.

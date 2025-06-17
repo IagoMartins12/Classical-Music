@@ -4,6 +4,7 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { useOnboardingModal } from '@/app/stores/authStore';
 import { useAuth } from './useAuth';
+import { debounce } from 'lodash';
 
 interface OnboardingPersistenceOptions {
   autoSaveDelay?: number;

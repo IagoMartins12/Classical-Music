@@ -2,7 +2,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiEdit3, FiSave, FiX, FiMapPin } from 'react-icons/fi';
+import { FiEdit3, FiSave, FiX, FiMapPin, FiUser } from 'react-icons/fi';
 
 import { updatePersonalInfo } from '@/app/actions/profile';
 import { toast } from 'react-hot-toast';
@@ -11,7 +11,8 @@ import Input from '../../Common/Inputs';
 import ProfileImageUpload from '../../ProfileImageUpload';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate'; // Hook personalizado
-import { User } from '@/app/stores/authStore';
+import { User } from 'next-auth';
+import { FaCity, FaGlobeAmericas, FaMapPin } from 'react-icons/fa';
 
 interface PersonalInfoSectionProps {
   user: User;
@@ -229,6 +230,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           disabled={!isEditing}
           placeholder="Seu nome"
           error={errors.firstName}
+          leftIcon={<FiUser className="w-4 h-4" />}
         />
 
         <Input
@@ -238,6 +240,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           onChange={handleInputChange}
           disabled={!isEditing}
           placeholder="Seu sobrenome"
+          leftIcon={<FiUser className="w-4 h-4" />}
           error={errors.lastName}
         />
       </div>
@@ -246,19 +249,21 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         <label className="block text-sm font-medium text-theme-secondary mb-2">
           Sobre você
         </label>
-        <textarea
-          name="bio"
-          value={formData.bio}
-          onChange={handleInputChange}
-          disabled={!isEditing}
-          placeholder="Conte um pouco sobre sua paixão pela música clássica..."
-          className={`input-classical w-full h-24 resize-none ${
-            !isEditing
-              ? 'bg-theme-secondary bg-opacity-50 cursor-not-allowed'
-              : ''
-          }`}
-          maxLength={500}
-        />
+        <div className="relative">
+          <textarea
+            name="bio"
+            value={formData.bio}
+            onChange={handleInputChange}
+            disabled={!isEditing}
+            placeholder="Conte um pouco sobre sua paixão pela música clássica..."
+            className={`input-classical !px-8 w-full h-24 resize-none ${
+              !isEditing
+                ? 'bg-theme-secondary bg-opacity-50 cursor-not-allowed'
+                : ''
+            }`}
+            maxLength={500}
+          />
+        </div>
         <p className="text-xs text-theme-tertiary mt-1">
           {formData.bio.length}/500 caracteres
         </p>
@@ -282,6 +287,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
             onChange={handleInputChange}
             disabled={!isEditing}
             placeholder="Sua cidade"
+            leftIcon={<FaCity className="w-4 h-4" />}
           />
 
           <Input
@@ -291,6 +297,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
             onChange={handleInputChange}
             disabled={!isEditing}
             placeholder="Seu estado"
+            leftIcon={<FaMapPin className="w-4 h-4" />}
           />
 
           <Input
@@ -300,6 +307,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
             onChange={handleInputChange}
             disabled={!isEditing}
             placeholder="Seu país"
+            leftIcon={<FaGlobeAmericas className="w-4 h-4" />}
           />
         </div>
       </div>

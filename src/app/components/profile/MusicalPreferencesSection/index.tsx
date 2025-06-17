@@ -1,16 +1,17 @@
+// app/profile/components/MusicalPreferencesSection.tsx (versão atualizada)
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { User } from 'next-auth';
 import { FiEdit3, FiSave, FiX, FiClock, FiHeart } from 'react-icons/fi';
 
-import {
-  updateMusicalPreferences,
-  getComposersAndEpochs,
-} from '@/app/actions/profile';
+import { updateMusicalPreferences } from '@/app/actions/profile';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
 import Select from '../../Common/Select';
+import { getEpochs, getFamousComposers } from '@/app/actions/auth';
+import { useAuth } from '@/app/hooks/useAuth';
+import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 
 interface MusicalPreferencesSectionProps {
   user: User;
@@ -19,17 +20,23 @@ interface MusicalPreferencesSectionProps {
 
 const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
   user,
-  updateUser,
+  updateUser: localUpdateUser,
 }) => {
+  const { updateUser: globalUpdateUser } = useAuth();
+  const { updateUserSession } = useSessionUpdate();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [composers, setComposers] = useState<any[]>([]);
   const [epochs, setEpochs] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     favoriteComposerId: user.favoriteComposerId || '',
     favoriteEpochId: user.favoriteEpochId || '',
-    experienceLevel: user.experienceLevel || '',
+    experienceLevel: (user.experienceLevel || '') as
+      | 'BEGINNER'
+      | 'INTERMEDIATE'
+      | 'ADVANCED'
+      | '',
     practiceTimePerWeek: user.practiceTimePerWeek || 0,
   });
 
@@ -51,22 +58,39 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
   ];
 
   useEffect(() => {
-    if (isEditing && composers.length === 0) {
-      loadOptions();
-    }
-  }, [isEditing]);
+    loadOptions();
+  }, []);
+
+  // Atualizar formData quando user mudar
+  useEffect(() => {
+    setFormData({
+      favoriteComposerId: user.favoriteComposerId || '',
+      favoriteEpochId: user.favoriteEpochId || '',
+      experienceLevel: (user.experienceLevel || '') as
+        | 'BEGINNER'
+        | 'INTERMEDIATE'
+        | 'ADVANCED'
+        | '',
+      practiceTimePerWeek: user.practiceTimePerWeek || 0,
+    });
+  }, [user]);
 
   const loadOptions = async () => {
     setIsLoadingData(true);
     try {
-      const result = await getComposersAndEpochs();
-      if (result.success && result.data) {
-        setComposers(result.data.composers);
-        setEpochs(result.data.epochs);
+      const [epochsData, composersData] = await Promise.all([
+        getEpochs(),
+        getFamousComposers(),
+      ]);
+
+      if (epochsData && composersData) {
+        setComposers(composersData);
+        setEpochs(epochsData);
       } else {
         toast.error('Erro ao carregar opções');
       }
     } catch (error) {
+      console.error('Erro ao carregar opções:', error);
       toast.error('Erro ao carregar opções');
     } finally {
       setIsLoadingData(false);
@@ -81,20 +105,57 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
     }));
   };
 
+  // Função para sincronizar todos os estados após update
+  const syncUserData = useCallback(
+    async (data: Partial<User>) => {
+      // 1. Atualizar stores locais
+      localUpdateUser(data);
+      globalUpdateUser(data);
+
+      // 2. Forçar refresh da sessão NextAuth
+      await updateUserSession();
+    },
+    [localUpdateUser, globalUpdateUser, updateUserSession]
+  );
+
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      console.log('formdata', formData);
-      // const result = await updateMusicalPreferences(user.id, formData);
+      // Preparar dados com tipagem correta
+      const dataToSave = {
+        favoriteComposerId: formData.favoriteComposerId || undefined,
+        favoriteEpochId: formData.favoriteEpochId || undefined,
+        experienceLevel: formData.experienceLevel as
+          | 'BEGINNER'
+          | 'INTERMEDIATE'
+          | 'ADVANCED'
+          | undefined,
+        practiceTimePerWeek: formData.practiceTimePerWeek,
+      };
 
-      // if (result.success) {
-      //   updateUser(formData);
-      //   setIsEditing(false);
-      //   toast.success(result.message);
-      // } else {
-      //   toast.error(result.message);
-      // }
+      const result = await updateMusicalPreferences(user.id, dataToSave);
+
+      if (result.success) {
+        // Preparar dados para sincronização local com tipagem correta
+        const syncData: Partial<User> = {
+          favoriteComposerId: formData.favoriteComposerId || null,
+          favoriteEpochId: formData.favoriteEpochId || null,
+          experienceLevel: (formData.experienceLevel || null) as
+            | 'BEGINNER'
+            | 'INTERMEDIATE'
+            | 'ADVANCED'
+            | null,
+          practiceTimePerWeek: formData.practiceTimePerWeek,
+        };
+
+        await syncUserData(syncData);
+        setIsEditing(false);
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
     } catch (error) {
+      console.error('Erro ao salvar preferências:', error);
       toast.error('Erro ao atualizar preferências.');
     } finally {
       setIsLoading(false);
@@ -105,7 +166,11 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
     setFormData({
       favoriteComposerId: user.favoriteComposerId || '',
       favoriteEpochId: user.favoriteEpochId || '',
-      experienceLevel: user.experienceLevel || '',
+      experienceLevel: (user.experienceLevel || '') as
+        | 'BEGINNER'
+        | 'INTERMEDIATE'
+        | 'ADVANCED'
+        | '',
       practiceTimePerWeek: user.practiceTimePerWeek || 0,
     });
     setIsEditing(false);
@@ -114,7 +179,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
   const getComposerName = (id: string) => {
     if (!id) return 'Não selecionado';
     const composer = composers.find((c) => c.id === id);
-    return composer ? composer.name : 'Compositor não encontrado';
+    return composer ? composer.fullName : 'Compositor não encontrado';
   };
 
   const getEpochName = (id: string) => {
@@ -122,6 +187,33 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
     const epoch = epochs.find((e) => e.id === id);
     return epoch ? epoch.name : 'Período não encontrado';
   };
+
+  // Loading inicial
+  if (isLoadingData) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-theme-primary">
+              Preferências Musicais
+            </h3>
+            <p className="text-sm text-theme-secondary">
+              Carregando suas preferências...
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {[...Array(4)].map((_, index) => (
+            <div key={index} className="animate-pulse">
+              <div className="h-4 bg-theme-secondary rounded w-24 mb-2" />
+              <div className="h-12 bg-theme-secondary rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -231,7 +323,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
                   { value: '', label: 'Selecione um compositor...' },
                   ...composers.map((composer) => ({
                     value: composer.id,
-                    label: composer.name,
+                    label: composer.fullName,
                   })),
                 ]}
                 disabled={isLoadingData}
@@ -265,6 +357,45 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Summary Card */}
+      {formData.experienceLevel && formData.practiceTimePerWeek > 0 && (
+        <div className="classical-card-2 p-4 bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30">
+          <h4 className="font-medium text-brand-primary mb-2">
+            📊 Resumo do seu Perfil Musical
+          </h4>
+          <div className="text-sm text-theme-secondary space-y-1">
+            <p>
+              • <strong>Nível:</strong>{' '}
+              {
+                EXPERIENCE_LEVELS.find(
+                  (l) => l.value === formData.experienceLevel
+                )?.label
+              }
+            </p>
+            <p>
+              • <strong>Prática:</strong>{' '}
+              {
+                PRACTICE_TIME_OPTIONS.find(
+                  (p) => p.value === formData.practiceTimePerWeek.toString()
+                )?.label
+              }
+            </p>
+            {formData.favoriteComposerId && (
+              <p>
+                • <strong>Compositor favorito:</strong>{' '}
+                {getComposerName(formData.favoriteComposerId)}
+              </p>
+            )}
+            {formData.favoriteEpochId && (
+              <p>
+                • <strong>Período favorito:</strong>{' '}
+                {getEpochName(formData.favoriteEpochId)}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

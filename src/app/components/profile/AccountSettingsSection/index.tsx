@@ -1,4 +1,4 @@
-// app/profile/components/AccountSettingsSection.tsx
+// app/profile/components/AccountSettingsSection.tsx (versão atualizada)
 'use client';
 
 import React, { useState } from 'react';
@@ -9,6 +9,8 @@ import { FiMail, FiLock, FiTrash2, FiAlertTriangle } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import Input from '../../Common/Inputs';
 import Button from '../../Common/Button';
+import { changePassword, deleteUserAccount } from '@/app/actions/profile';
+import { useAuth } from '@/app/hooks/useAuth';
 
 interface AccountSettingsSectionProps {
   user: User;
@@ -17,11 +19,13 @@ interface AccountSettingsSectionProps {
 
 const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
   user,
-  updateUser,
+  updateUser: localUpdateUser,
 }) => {
+  const { logout } = useAuth();
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -29,6 +33,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
   });
 
   const handlePasswordChange = async () => {
+    // Validações básicas
     if (!passwordData.currentPassword || !passwordData.newPassword) {
       toast.error('Preencha todos os campos');
       return;
@@ -44,33 +49,77 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       return;
     }
 
+    if (passwordData.currentPassword === passwordData.newPassword) {
+      toast.error('A nova senha deve ser diferente da atual');
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // Aqui você faria a chamada para mudar a senha
-      toast.success('Senha alterada com sucesso!');
-      setIsChangingPassword(false);
-      setPasswordData({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
+      const result = await changePassword(user.id, {
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword,
       });
+
+      if (result.success) {
+        toast.success(result.message);
+        setIsChangingPassword(false);
+        setPasswordData({
+          currentPassword: '',
+          newPassword: '',
+          confirmPassword: '',
+        });
+      } else {
+        toast.error(result.message);
+      }
     } catch (error) {
-      toast.error('Erro ao alterar senha. Verifique sua senha atual.');
+      console.error('Erro ao alterar senha:', error);
+      toast.error('Erro ao alterar senha. Tente novamente.');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDeleteAccount = async () => {
+    // Validar confirmação
+    if (deleteConfirmText.toLowerCase() !== 'deletar') {
+      toast.error('Digite "deletar" para confirmar');
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // Aqui você faria a chamada para deletar a conta
-      toast.success('Conta deletada com sucesso');
-      await signOut({ redirect: true, callbackUrl: '/' });
+      const result = await deleteUserAccount(user.id);
+
+      if (result.success) {
+        toast.success(result.message);
+        // Fazer logout e limpar dados locais
+        logout();
+        // Redirecionar via NextAuth
+        await signOut({ redirect: true, callbackUrl: '/' });
+      } else {
+        toast.error(result.message);
+      }
     } catch (error) {
+      console.error('Erro ao deletar conta:', error);
       toast.error('Erro ao deletar conta. Tente novamente.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getUserTypeLabel = (userType: string | null | undefined) => {
+    switch (userType) {
+      case 'MUSIC_STUDENT':
+        return 'Estudante de Música';
+      case 'CASUAL_USER':
+        return 'Entusiasta';
+      case 'PROFESSIONAL':
+        return 'Profissional';
+      case 'TEACHER':
+        return 'Professor';
+      default:
+        return 'Não definido';
     }
   };
 
@@ -98,6 +147,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 Alterar Email
               </Button>
             </div>
+            <p className="text-xs text-theme-tertiary mt-1">
+              Entre em contato com o suporte para alterar seu email
+            </p>
           </div>
         </div>
       </div>
@@ -124,7 +176,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         {isChangingPassword && (
           <div className="classical-card-2 p-4 space-y-4">
             <Input
-              label="Senha Atual"
+              label="Senha Atual *"
               type="password"
               value={passwordData.currentPassword}
               onChange={(e) =>
@@ -138,7 +190,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             />
 
             <Input
-              label="Nova Senha"
+              label="Nova Senha *"
               type="password"
               value={passwordData.newPassword}
               onChange={(e) =>
@@ -148,11 +200,11 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 }))
               }
               leftIcon={<FiLock className="w-4 h-4" />}
-              placeholder="Digite sua nova senha"
+              placeholder="Digite sua nova senha (mín. 6 caracteres)"
             />
 
             <Input
-              label="Confirmar Nova Senha"
+              label="Confirmar Nova Senha *"
               type="password"
               value={passwordData.confirmPassword}
               onChange={(e) =>
@@ -171,6 +223,11 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 size="sm"
                 onClick={handlePasswordChange}
                 isLoading={isLoading}
+                disabled={
+                  !passwordData.currentPassword ||
+                  !passwordData.newPassword ||
+                  !passwordData.confirmPassword
+                }
               >
                 Alterar Senha
               </Button>
@@ -203,11 +260,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           <div className="flex items-center justify-between">
             <div>
               <p className="font-medium text-theme-primary">
-                {user.userType === 'MUSIC_STUDENT' && 'Estudante de Música'}
-                {user.userType === 'CASUAL_USER' && 'Entusiasta'}
-                {user.userType === 'PROFESSIONAL' && 'Profissional'}
-                {user.userType === 'TEACHER' && 'Professor'}
-                {!user.userType && 'Não definido'}
+                {getUserTypeLabel(user.userType)}
               </p>
               <p className="text-sm text-theme-secondary">
                 Para alterar o tipo de conta, complete novamente o onboarding
@@ -217,6 +270,31 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             <Button variant="outline" size="sm" disabled>
               Alterar Tipo
             </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Account Info */}
+      <div className="border-t border-theme-secondary pt-8">
+        <h3 className="text-lg font-semibold text-theme-primary mb-4">
+          Informações da Conta
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="classical-card-2 p-4">
+            <h4 className="font-medium text-theme-primary mb-2">
+              ID do Usuário
+            </h4>
+            <p className="text-sm text-theme-secondary font-mono break-all">
+              {user.id}
+            </p>
+          </div>
+
+          <div className="classical-card-2 p-4">
+            <h4 className="font-medium text-theme-primary mb-2">Status</h4>
+            <span className="inline-flex px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
+              Conta Ativa
+            </span>
           </div>
         </div>
       </div>
@@ -231,10 +309,10 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         </div>
 
         <div className="classical-card-2 p-4 border border-accent-red bg-accent-red bg-opacity-5">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <h4 className="font-medium text-theme-primary mb-1">
-                Deletar Conta
+                Deletar Conta Permanentemente
               </h4>
               <p className="text-sm text-theme-secondary">
                 Esta ação não pode ser desfeita. Todos os seus dados serão
@@ -254,28 +332,58 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           </div>
 
           {showDeleteConfirm && (
-            <div className="mt-4 pt-4 border-t border-accent-red">
-              <p className="text-sm text-accent-red mb-4 font-medium">
-                ⚠️ Tem certeza? Esta ação é irreversível!
-              </p>
+            <div className="border-t border-accent-red pt-4">
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-accent-red mb-2 font-medium">
+                    ⚠️ Esta ação é irreversível!
+                  </p>
+                  <p className="text-sm text-theme-secondary mb-4">
+                    Os seguintes dados serão deletados permanentemente:
+                  </p>
+                  <ul className="text-sm text-theme-secondary list-disc list-inside space-y-1 mb-4">
+                    <li>Todas as suas informações pessoais</li>
+                    <li>Seus instrumentos e preferências musicais</li>
+                    <li>Histórico de estudos e anotações</li>
+                    <li>Obras favoritas e progresso</li>
+                    <li>Dados de sessões de estudo</li>
+                  </ul>
+                </div>
 
-              <div className="flex space-x-3">
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={handleDeleteAccount}
-                  isLoading={isLoading}
-                  className="bg-accent-red hover:bg-red-700"
-                >
-                  Sim, deletar minha conta
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowDeleteConfirm(false)}
-                >
-                  Cancelar
-                </Button>
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    Digite "deletar" para confirmar:
+                  </label>
+                  <Input
+                    value={deleteConfirmText}
+                    onChange={(e) => setDeleteConfirmText(e.target.value)}
+                    placeholder="deletar"
+                    className="mb-4"
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={handleDeleteAccount}
+                    isLoading={isLoading}
+                    disabled={deleteConfirmText.toLowerCase() !== 'deletar'}
+                    className="bg-accent-red hover:bg-red-700"
+                  >
+                    Sim, deletar minha conta permanentemente
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setDeleteConfirmText('');
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                </div>
               </div>
             </div>
           )}

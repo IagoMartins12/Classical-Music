@@ -10,6 +10,7 @@ import { ThemeToggle } from '../ThemeToggle';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
 import {
+  useAuthStore,
   useLoginModal,
   useOnboardingModal,
   useRegisterModal,
@@ -25,8 +26,8 @@ interface NavItem {
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { logout: authLogout, hasOnboardingProgress } = useAuthStore();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { open: openLogin } = useLoginModal();
   const { open: openRegister } = useRegisterModal();
   const { open } = useOnboardingModal();
@@ -41,6 +42,8 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
+      logout();
+      authLogout();
       await signOut({ redirect: false });
       toast.success('Logout realizado com sucesso!');
       setIsProfileOpen(false);
@@ -198,23 +201,16 @@ const Navbar: React.FC = () => {
                       </div>
 
                       {/* Menu Items */}
-                      <Link
-                        href="/profile"
-                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
-                        onClick={() => setIsProfileOpen(false)}
-                      >
-                        <FiUser className="w-4 h-4" />
-                        <span>Meu Perfil</span>
-                      </Link>
-
-                      <Link
-                        href="/settings"
-                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
-                        onClick={() => setIsProfileOpen(false)}
-                      >
-                        <FiSettings className="w-4 h-4" />
-                        <span>Configurações</span>
-                      </Link>
+                      {!hasOnboardingProgress() && (
+                        <Link
+                          href="/profile"
+                          className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FiUser className="w-4 h-4" />
+                          <span>Meu Perfil</span>
+                        </Link>
+                      )}
 
                       <hr className="my-2 border-theme-secondary" />
 

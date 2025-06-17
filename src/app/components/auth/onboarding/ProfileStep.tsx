@@ -2,16 +2,67 @@
 'use client';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
-import React from 'react';
+import React, { useState } from 'react';
 import { FiMapPin } from 'react-icons/fi';
 import Input from '../../Common/Inputs';
 import ProfileImageUpload from '../../ProfileImageUpload';
+import toast from 'react-hot-toast';
+import { User } from 'next-auth';
+import { useAuth } from '@/app/hooks/useAuth';
+import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
+import { FaCity, FaGlobeAmericas, FaMapPin } from 'react-icons/fa';
 
 const ProfileStep: React.FC = () => {
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
   const { data, updateData } = useOnboardingModal();
+  const { updateUser: globalUpdateUser, user } = useAuth();
+
+  const { updateUserSession } = useSessionUpdate(); // Hook personalizado
 
   const handleImageChange = (imageUrl: string | null) => {
     updateData({ image: imageUrl || undefined });
+  };
+
+  const syncUserData = async (data: Partial<User>) => {
+    // 1. Atualizar stores locais
+    globalUpdateUser(data);
+
+    // 2. Forçar refresh da sessão NextAuth
+    await updateUserSession();
+  };
+
+  const handleImageUpload = async (file: File) => {
+    setIsUploadingImage(true);
+    try {
+      if (!user) return;
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('userId', user.id);
+
+      const response = await fetch('/api/upload/profile-image', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        const imageUpdate = { image: result.imageUrl };
+
+        // Sincronizar todos os estados
+        await syncUserData(imageUpdate);
+
+        toast.success('Foto atualizada com sucesso!');
+      } else {
+        toast.error(result.message || 'Erro ao fazer upload da imagem');
+      }
+    } catch (error) {
+      toast.error('Erro ao fazer upload da imagem');
+    } finally {
+      setIsUploadingImage(false);
+    }
   };
 
   const getUserDisplayName = () => {
@@ -40,13 +91,23 @@ const ProfileStep: React.FC = () => {
           </label>
 
           <ProfileImageUpload
+            currentImage={user?.image}
+            onImageUpload={handleImageUpload}
+            onImageChange={handleImageChange}
+            size="lg"
+            isUploading={isUploadingImage}
+            fallbackText={getUserDisplayName()}
+            showRemove={!!user?.image}
+          />
+
+          {/* <ProfileImageUpload
             currentImage={data.image}
             onImageChange={handleImageChange}
             size="lg"
             fallbackText={getUserDisplayName()}
             showRemove={!!data.image}
             className="mx-auto"
-          />
+          /> */}
 
           <p className="text-xs text-theme-tertiary mt-2">
             Clique no ícone para adicionar uma foto
@@ -82,36 +143,36 @@ const ProfileStep: React.FC = () => {
           <div className="space-y-3">
             <Input
               placeholder="Cidade"
-              className="input-classical-2"
               value={data.location?.city || ''}
               onChange={(e) =>
                 updateData({
                   location: { ...data.location, city: e.target.value },
                 })
               }
+              leftIcon={<FaCity className="w-4 h-4" />}
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
                 placeholder="Estado"
-                className="input-classical-2"
                 value={data.location?.state || ''}
                 onChange={(e) =>
                   updateData({
                     location: { ...data.location, state: e.target.value },
                   })
                 }
+                leftIcon={<FaMapPin className="w-4 h-4" />}
               />
 
               <Input
                 placeholder="País"
-                className="input-classical-2"
                 value={data.location?.country || ''}
                 onChange={(e) =>
                   updateData({
                     location: { ...data.location, country: e.target.value },
                   })
                 }
+                leftIcon={<FaGlobeAmericas className="w-4 h-4" />}
               />
             </div>
           </div>
