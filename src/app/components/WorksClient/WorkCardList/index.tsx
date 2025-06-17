@@ -61,7 +61,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
               onClick={(e) => e.stopPropagation()}
             >
               <FiUser className="w-3 h-3 mr-1" />
-              {work.composer.name}
+              {work.composer.fullName}
             </Link>
 
             {work.composer.epochName && (

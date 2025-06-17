@@ -2,11 +2,9 @@
 'use client';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
-import React, { useState, useMemo } from 'react';
-import { FiSearch, FiPlus, FiX } from 'react-icons/fi';
-import Button from '../../Common/Button';
+import React from 'react';
+import { FiPlus, FiX } from 'react-icons/fi';
 import Select from '../../Common/Select';
-import Input from '../../Common/Inputs';
 
 interface Instrument {
   id: string;

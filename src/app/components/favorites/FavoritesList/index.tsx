@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { FiUser, FiMusic, FiHeart, FiExternalLink } from 'react-icons/fi';
 import Image from 'next/image';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
+import ComposerCardList from '../../ComposersClient/ComposerCardList';
+import ComposerCard from '../../ComposersClient/ComposerCard';
+import WorkCardList from '../../WorksClient/WorkCardList';
 
 interface FavoritesListProps {
   type?: 'all' | 'composers' | 'works';
@@ -52,11 +55,13 @@ export const FavoritesList = ({
     );
   }
 
+  console.log('composer', composers);
+
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Compositores Favoritos */}
       {showComposers && composers.length > 0 && (
-        <div className="classical-card p-6">
+        <div className="classical-card p-6 gap-4 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
@@ -79,34 +84,9 @@ export const FavoritesList = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {composers.map((favorite) => (
-              <Link
-                key={favorite.id}
-                href={`/composer/${favorite.composerId}`}
-                className="flex items-center space-x-3 p-3 bg-theme-elevated hover:bg-interactive-hover border border-theme-secondary rounded-xl transition-all duration-300 hover:scale-105 group"
-              >
-                <div className="relative w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
-                  {favorite.composer?.portraitUrl ? (
-                    <Image
-                      src={favorite.composer.portraitUrl}
-                      alt={favorite.composer.name || ''}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <FiUser className="w-6 h-6 text-white" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-theme-primary text-sm line-clamp-1 group-hover:text-blue-500 transition-colors">
-                    {favorite.composer?.name}
-                  </h4>
-                  {favorite.composer?.epochName && (
-                    <p className="text-xs text-theme-tertiary">
-                      {favorite.composer.epochName}
-                    </p>
-                  )}
-                </div>
-              </Link>
+              <div className="classical-card-simple cursor-pointer px-3 py-3">
+                <ComposerCardList composer={favorite.composer} />
+              </div>
             ))}
           </div>
         </div>
@@ -114,7 +94,7 @@ export const FavoritesList = ({
 
       {/* Obras Favoritas */}
       {showWorks && works.length > 0 && (
-        <div className="classical-card p-6">
+        <div className="classical-card p-6 gap-4 flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center">
@@ -137,25 +117,9 @@ export const FavoritesList = ({
 
           <div className="space-y-3">
             {works.map((favorite) => (
-              <Link
-                key={favorite.id}
-                href={`/works/${favorite.workId}`}
-                className="flex items-center space-x-3 p-3 bg-theme-elevated hover:bg-interactive-hover border border-theme-secondary rounded-xl transition-all duration-300 hover:scale-105 group"
-              >
-                <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center">
-                  <FiMusic className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-theme-primary text-sm line-clamp-1 group-hover:text-yellow-500 transition-colors">
-                    {favorite.work?.title}
-                  </h4>
-                  <p className="text-xs text-theme-tertiary">
-                    {favorite.work?.composer.fullName}
-                    {favorite.work?.opOrCatalog &&
-                      ` • ${favorite.work.opOrCatalog}`}
-                  </p>
-                </div>
-              </Link>
+              <div className="classical-card-simple cursor-pointer px-3 py-3">
+                <WorkCardList work={favorite.work} />
+              </div>
             ))}
           </div>
         </div>

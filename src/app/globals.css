@@ -460,6 +460,11 @@ body {
   background: var(--bg-elevated);
 }
 
+.bg-theme-classical {
+  background: var(--gradient-card);
+  border: 1px solid var(--border-primary);
+}
+
 .text-theme-primary {
   color: var(--text-primary);
 }

@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - Premium version with theme system
+// app/work/[workId]/WorkDetailsClient.tsx - Updated with Learning Components
 'use client';
 
 import { useState } from 'react';
@@ -16,7 +16,6 @@ import {
   FiSettings,
   FiTag,
   FiInfo,
-  FiHeart,
   FiShare2,
   FiHeadphones,
 } from 'react-icons/fi';
@@ -25,19 +24,26 @@ import { useIMSLPScores } from '@/app/hooks/useIMSLPScores';
 import IMSLPTabs from './IMSLPTabs';
 import { useNavigate } from '@/app/hooks/useNavigate';
 import FavoriteButton from '../FavoriteButton';
+import { LearningInitializer } from '../LearningInitializer';
+import LearningButtonWithModal from '../LearningButtonWithModal';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   relatedWorks?: any[];
+  // Dados de aprendizado iniciais do SSR
+  learningData?: {
+    wantToLearn: any[];
+    learned: any[];
+  };
 }
 
 export default function WorkDetailsClient({
   work,
   relatedWorks = [],
+  learningData = { wantToLearn: [], learned: [] },
 }: WorkDetailsClientProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
 
   // Usar o hook ao invés de gerenciar estado manualmente
   const {
@@ -69,6 +75,9 @@ export default function WorkDetailsClient({
 
   return (
     <div className="min-h-screen bg-gradient-primary">
+      {/* Inicializar dados de aprendizado do SSR */}
+      <LearningInitializer learningData={learningData} />
+
       {/* Background Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
         <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
@@ -175,6 +184,26 @@ export default function WorkDetailsClient({
                         <FiShare2 className="w-5 h-5 mx-auto" />
                       </button>
                     </div>
+                  </div>
+
+                  {/* Learning Action Buttons */}
+                  <div className="flex flex-wrap gap-3 pt-4 border-t border-theme-secondary/50">
+                    <LearningButtonWithModal
+                      workId={work.id}
+                      workTitle={work.title}
+                      composerName={work.composer.fullName}
+                      type="want-to-learn"
+                      variant="detailed"
+                      size="md"
+                    />
+                    <LearningButtonWithModal
+                      workId={work.id}
+                      workTitle={work.title}
+                      composerName={work.composer.fullName}
+                      type="learned"
+                      variant="detailed"
+                      size="md"
+                    />
                   </div>
                 </div>
 

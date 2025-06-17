@@ -123,6 +123,16 @@ model User {
   profilePublic Boolean @default(true)
   showLocation  Boolean @default(false)
 
+    // Configurações de aprendizado
+  practiceReminders Boolean @default(true)
+  progressTracking  Boolean @default(true)
+  publicProgress    Boolean @default(false) // Se o progresso é público
+
+  // Estatísticas calculadas (podem ser campos virtuais)
+  totalStudyTime    Int     @default(0) // em minutos
+  currentStreak     Int     @default(0) // dias consecutivos estudando
+  longestStreak     Int     @default(0) // maior sequência de dias
+
   // Relations
   accounts Account[]
   sessions Session[]
@@ -137,7 +147,7 @@ model User {
   wantToLearn       WantToLearn[]
   learned           Learned[]
   studySessions     StudySession[]
-
+  learningGoals     LearningGoal[]
   @@index([userType])
   @@index([onboardingCompleted])
 }
@@ -320,33 +330,32 @@ model Annotation {
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
 }
 
-model StudySession {
-  id            String        @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String        @db.ObjectId
-  workId        String        @db.ObjectId
-  date          DateTime      @default(now())
-  durationMin   Int // duração em minutos
-  metronomeUsed Boolean       @default(false)
-  focus         PracticeFocus
-  notes         String?
-  rating        Int? // 1-5 how the session went
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-}
-
 // Wishlists and favorites
 model WantToLearn {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   userId   String   @db.ObjectId
   workId   String   @db.ObjectId
-  priority Int      @default(1) // 1-5 priority level
+  priority Int      @default(3) // 1-5 priority level
   addedAt  DateTime @default(now())
 
+  // Campos adicionais para enriquecer a experiência
+  notes            String?        // Notas pessoais sobre por que quer estudar
+  targetDate       DateTime?      // Data alvo para aprender
+  estimatedStudyTime Int?         // Tempo estimado em horas
+  difficulty       DifficultyLevel? // Dificuldade estimada pelo usuário
+  reminder         Boolean        @default(false) // Se quer lembrete
+  reminderFrequency String?       // weekly, monthly, etc.
+  
+  // Motivação e contexto
+  motivation       String?        // Por que quer aprender esta obra
+  context          String?        // Em que contexto planeja tocar (concerto, estudo, etc.)
+  
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workId])
+  @@index([userId, priority])
+  @@index([targetDate])
 }
 
 model Learned {
@@ -354,13 +363,94 @@ model Learned {
   userId    String   @db.ObjectId
   workId    String   @db.ObjectId
   learnedAt DateTime @default(now())
-  mastery   Int      @default(1) // 1-5 mastery level
+  mastery   Int      @default(3) // 1-5 mastery level
 
+  // Campos adicionais para tracking do progresso
+  studyStartDate    DateTime?     // Quando começou a estudar
+  studyDuration     Int?          // Quanto tempo levou em dias
+  notes             String?       // Notas sobre a experiência
+  wouldRecommend    Boolean       @default(true) // Se recomendaria para outros
+  publicPerformance Boolean       @default(false) // Se já tocou em público
+  lastPracticed     DateTime?     // Última vez que praticou
+  
+  // Avaliação da experiência
+  difficulty        DifficultyLevel? // Dificuldade real encontrada
+  enjoyment         Int?          // 1-5 o quanto gostou de estudar
+  technicalChallenges String?     // Principais desafios técnicos
+  musicalInsights   String?       // Insights musicais obtidos
+  
+  // Performance tracking
+  performanceCount  Int           @default(0) // Quantas vezes tocou
+  bestPerformance   String?       // Descrição da melhor performance
+  
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
 
   @@unique([userId, workId])
+  @@index([userId, mastery])
+  @@index([learnedAt])
+  @@index([lastPracticed])
 }
+
+// Novo model para tracking de sessões de estudo detalhadas
+model StudySession {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String        @db.ObjectId
+  workId        String        @db.ObjectId
+  date          DateTime      @default(now())
+  durationMin   Int           // duração em minutos
+  
+  // Detalhes da sessão
+  metronomeUsed Boolean       @default(false)
+  tempoMarking  String?       // Andamento praticado
+  focus         PracticeFocus
+  notes         String?
+  rating        Int?          // 1-5 como foi a sessão
+  
+  // Progresso específico
+  sectionsWorked String[]     @default([]) // Seções específicas trabalhadas
+  challenges     String?      // Desafios encontrados
+  breakthroughs  String?      // Progressos ou descobertas
+  
+  // Ambiente e condições
+  instrument     String?      // Instrumento usado (se tiver múltiplos)
+  location       String?      // Onde praticou
+  mood           Int?         // 1-5 humor antes da prática
+  energy         Int?         // 1-5 energia depois da prática
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@index([workId, date])
+}
+
+// Novo model para metas de aprendizado
+model LearningGoal {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  title       String   // Ex: "Tocar Chopin Ballade No. 1"
+  description String?
+  targetDate  DateTime?
+  isCompleted Boolean  @default(false)
+  completedAt DateTime?
+  
+  // Obras relacionadas à meta
+  workIds     String[] @db.ObjectId @default([])
+  
+  // Progresso
+  progressNotes String?
+  milestones    String[] @default([]) // Marcos intermediários
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, targetDate])
+  @@index([isCompleted])
+}
+
 
 model FavoriteWork {
   id     String @id @default(auto()) @map("_id") @db.ObjectId

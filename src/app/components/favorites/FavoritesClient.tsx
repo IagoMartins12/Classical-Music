@@ -1,20 +1,14 @@
 'use client';
 
-import { getCurrentUserFavorites } from '@/app/requests/favorites';
-
-import { redirect } from 'next/navigation';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
 import { FiHeart, FiMusic, FiUser, FiTrendingUp, FiStar } from 'react-icons/fi';
-import { FavoritesInitializer } from '../FavoritesInitializer';
-import { FavoritesStats } from './FavoritesStats';
 import { FavoritesList } from './FavoritesList';
+import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 
-export default function FavoritesClient({ favorites }) {
+export default function FavoritesClient() {
+  const { favoriteComposers, favoriteWorks } = useFavoritesStore();
   return (
     <div className="classical-theme">
       {/* Inicializar favoritos no cliente */}
-      <FavoritesInitializer favorites={favorites} />
 
       {/* Background Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
@@ -45,30 +39,20 @@ export default function FavoritesClient({ favorites }) {
             <div className="flex items-center space-x-2 px-4 py-2 bg-theme-elevated/60 border border-theme-secondary rounded-full">
               <FiUser className="w-4 h-4 text-blue-500" />
               <span className="text-sm font-medium text-theme-primary">
-                {favorites.composers.length} Compositores
+                {favoriteComposers.length} Compositores
               </span>
             </div>
             <div className="flex items-center space-x-2 px-4 py-2 bg-theme-elevated/60 border border-theme-secondary rounded-full">
               <FiMusic className="w-4 h-4 text-yellow-500" />
               <span className="text-sm font-medium text-theme-primary">
-                {favorites.works.length} Obras
+                {favoriteWorks.length} Obras
               </span>
             </div>
           </div>
         </div>
 
-        {/* Estatísticas Detalhadas */}
-        {favorites.totalCount > 0 && (
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: '0.1s' }}
-          >
-            <FavoritesStats variant="detailed" />
-          </div>
-        )}
-
         {/* Conteúdo Principal */}
-        {favorites.totalCount > 0 ? (
+        {favoriteComposers.length > 0 || favoriteWorks.length > 0 ? (
           <div
             className="animate-fade-in-up"
             style={{ animationDelay: '0.2s' }}
@@ -81,7 +65,7 @@ export default function FavoritesClient({ favorites }) {
             className="classical-card p-12 text-center animate-fade-in-up"
             style={{ animationDelay: '0.1s' }}
           >
-            <div className="max-w-md mx-auto">
+            <div className="max-w-none lg:max-w-8/12 mx-auto">
               <div className="w-24 h-24 bg-gradient-to-br from-red-500/20 to-red-600/20 border border-red-500/30 rounded-3xl flex items-center justify-center mx-auto mb-6">
                 <FiHeart className="w-12 h-12 text-red-500/60" />
               </div>
@@ -157,75 +141,6 @@ export default function FavoritesClient({ favorites }) {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Seção de Descobertas (se houver favoritos) */}
-        {favorites.totalCount > 0 && (
-          <div
-            className="classical-card p-8 animate-fade-in-up"
-            style={{ animationDelay: '0.3s' }}
-          >
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center">
-                <FiTrendingUp className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                  Continue Explorando
-                </h2>
-                <p className="text-theme-secondary">
-                  Descubra mais música baseada em seus favoritos
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <a
-                href="/composers?recommended=true"
-                className="p-6 bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-xl hover:border-blue-500/40 transition-all duration-300 hover:scale-105 group"
-              >
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <FiUser className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="font-bold text-theme-primary mb-2">
-                  Compositores Similares
-                </h3>
-                <p className="text-sm text-theme-secondary">
-                  Baseado nos seus favoritos
-                </p>
-              </a>
-
-              <a
-                href="/works?similar=true"
-                className="p-6 bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 border border-yellow-500/20 rounded-xl hover:border-yellow-500/40 transition-all duration-300 hover:scale-105 group"
-              >
-                <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <FiMusic className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="font-bold text-theme-primary mb-2">
-                  Obras Relacionadas
-                </h3>
-                <p className="text-sm text-theme-secondary">
-                  Explore peças similares
-                </p>
-              </a>
-
-              <a
-                href="/discover"
-                className="p-6 bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20 rounded-xl hover:border-green-500/40 transition-all duration-300 hover:scale-105 group"
-              >
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                  <FiStar className="w-6 h-6 text-white" />
-                </div>
-                <h3 className="font-bold text-theme-primary mb-2">
-                  Descobertas Diárias
-                </h3>
-                <p className="text-sm text-theme-secondary">
-                  Novidades personalizadas
-                </p>
-              </a>
             </div>
           </div>
         )}

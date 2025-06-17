@@ -198,6 +198,9 @@ const config: Config = {
         '.bg-theme-elevated': {
           backgroundColor: 'var(--bg-elevated)',
         },
+        '.bg-theme-classical': {
+          backgroundColor: 'var(--bg-secondary)',
+        },
 
         // Textos temáticos
         '.text-theme-primary': {

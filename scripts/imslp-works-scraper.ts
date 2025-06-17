@@ -356,13 +356,14 @@ class WorkScraper {
     try {
       const existing = await prisma.work.findFirst({
         where: {
-          OR: [
-            { imslpId: imslpId },
-            {
-              title: title,
-              imslpId: { not: imslpId },
-            },
-          ],
+          imslpId: imslpId,
+          // OR: [
+          //   { imslpId: imslpId },
+          //   {
+          // title: title,
+          // imslpId: { not: imslpId },
+          // },
+          // ],
         },
       });
       return !!existing;
