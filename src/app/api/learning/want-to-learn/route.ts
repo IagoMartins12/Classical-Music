@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const {
       workId,
       action,
-      priority = 3,
+      priority = 0,
       // Campos adicionais
       notes,
       targetDate,
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validar prioridade (1-5)
-    if (priority < 1 || priority > 5) {
+    if (priority < 0 || priority > 5) {
       return NextResponse.json(
         { error: 'Prioridade deve ser entre 1 e 5' },
         { status: 400 }
@@ -188,7 +188,7 @@ export async function PATCH(request: NextRequest) {
     const dataToUpdate: any = {};
 
     if (priority !== undefined) {
-      if (priority < 1 || priority > 5) {
+      if (priority < 0 || priority > 5) {
         return NextResponse.json(
           { error: 'Prioridade deve ser entre 1 e 5' },
           { status: 400 }

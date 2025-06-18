@@ -142,7 +142,7 @@ export const useLearningStore = create<LearningStore>()(
       toggleWantToLearn: async (
         workId: string,
         userId: string,
-        priority = 3,
+        priority = 0,
         additionalData = {}
       ) => {
         const {

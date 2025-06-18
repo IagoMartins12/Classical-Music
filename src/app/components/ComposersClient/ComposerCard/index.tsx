@@ -79,7 +79,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
               type="composer"
               variant="small"
               size="md"
-              itemName={composer.name}
+              itemName={composer.fullName}
               showToast={true}
             />
           </div>

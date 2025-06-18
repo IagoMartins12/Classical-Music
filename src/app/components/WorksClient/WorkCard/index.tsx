@@ -8,7 +8,6 @@ import {
   FiClock,
   FiMusic,
   FiUser,
-  FiHeart,
   FiCalendar,
   FiBookOpen,
   FiHeadphones,
@@ -21,8 +20,6 @@ interface workCardProps {
 }
 
 const WorkCard: React.FC<workCardProps> = ({ work }) => {
-  const [isFavorited, setIsFavorited] = useState(false);
-
   const formatDuration = (duration: string | null) => {
     if (!duration) return null;
     // Se já está formatado, retorna como está
@@ -33,7 +30,6 @@ const WorkCard: React.FC<workCardProps> = ({ work }) => {
     return duration;
   };
 
-  console.log('WORK', work);
   return (
     <div className="group cursor-pointer select-none h-full">
       <div className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow">

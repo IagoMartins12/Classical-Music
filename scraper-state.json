@@ -1,13 +1,13 @@
 {
-  "currentStart": 47000,
-  "totalProcessed": 44594,
-  "totalAdded": 2960,
-  "lastUpdate": "2025-06-18T00:35:42.909Z",
-  "isRunning": true,
-  "lastSuccessfulBatch": 47000,
+  "currentStart": 194000,
+  "totalProcessed": 48513,
+  "totalAdded": 3248,
+  "lastUpdate": "2025-06-18T02:47:35.660Z",
+  "isRunning": false,
+  "lastSuccessfulBatch": 194000,
   "timer": {
-    "startTime": 1750188493330,
-    "totalElapsedTime": 60965508,
-    "lastPauseTime": 1750188394220
+    "startTime": null,
+    "totalElapsedTime": 87327838,
+    "lastPauseTime": 1750214855660
   }
 }

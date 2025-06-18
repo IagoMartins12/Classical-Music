@@ -4,7 +4,15 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
-import { FiMenu, FiX, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
+import {
+  FiMenu,
+  FiX,
+  FiUser,
+  FiSettings,
+  FiLogOut,
+  FiHeart,
+  FiBookOpen,
+} from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
 import { ThemeToggle } from '../ThemeToggle';
 import { toast } from 'react-hot-toast';
@@ -211,6 +219,24 @@ const Navbar: React.FC = () => {
                           <span>Meu Perfil</span>
                         </Link>
                       )}
+
+                      <Link
+                        href="/favorites"
+                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <FiHeart className="w-4 h-4" />
+                        <span>Favoritos</span>
+                      </Link>
+
+                      <Link
+                        href="/learning"
+                        className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <FiBookOpen className="w-4 h-4" />
+                        <span>Lições</span>
+                      </Link>
 
                       <hr className="my-2 border-theme-secondary" />
 

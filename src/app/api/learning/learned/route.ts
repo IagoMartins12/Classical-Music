@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     const {
       workId,
       action,
-      mastery = 3,
+      mastery = 0,
       // Campos adicionais
       studyStartDate,
       studyDuration,
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Validar maestria (1-5)
-    if (mastery < 1 || mastery > 5) {
+    if (mastery < 0 || mastery > 5) {
       return NextResponse.json(
         { error: 'Maestria deve ser entre 1 e 5' },
         { status: 400 }
@@ -205,7 +205,7 @@ export async function PATCH(request: NextRequest) {
     const dataToUpdate: any = {};
 
     if (mastery !== undefined) {
-      if (mastery < 1 || mastery > 5) {
+      if (mastery < 0 || mastery > 5) {
         return NextResponse.json(
           { error: 'Maestria deve ser entre 1 e 5' },
           { status: 400 }

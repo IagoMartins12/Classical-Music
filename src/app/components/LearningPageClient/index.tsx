@@ -10,7 +10,6 @@ import {
   FiList,
   FiSearch,
   FiMusic,
-  FiTrendingUp,
   FiBookOpen,
   FiFilter,
   FiX,
@@ -44,6 +43,8 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
   const { user, isAuthenticated } = useAuth();
   const { wantToLearn, learned, initializeLearning, initialized } =
     useLearningStore();
+
+  console.log('initialData', { wantToLearn, learned });
 
   // States
   const [mounted, setMounted] = useState(false);
@@ -219,14 +220,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-primary">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
-        <div className="absolute bottom-40 right-32 w-48 h-48 bg-accent-purple/30 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl"></div>
-      </div>
-
+    <div className=" bg-gradient-primary">
       <div className="section-wrap space-y-8 relative z-10">
         {/* Header */}
         <div className="animate-fade-in-up">
@@ -240,7 +234,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
           </div>
 
           {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <StatCard
               icon={<FiMusic className="w-6 h-6 text-theme-primary" />}
               title="Total de Obras"
@@ -271,14 +265,6 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
               }
               color="green"
             />
-
-            <StatCard
-              icon={<FiTrendingUp className="w-6 h-6 text-theme-primary" />}
-              title="Maestria Média"
-              value={stats.avgMastery}
-              subtitle={`Prioridade Média: ${stats.avgPriority}`}
-              color="purple"
-            />
           </div>
         </div>
 
@@ -296,7 +282,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                   onClick={() => setActiveTab('all')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeTab === 'all'
-                      ? 'bg-brand-primary text-theme-primary shadow-md'
+                      ? 'bg-brand-primary bg-theme-tertiary text-theme-primary shadow-md'
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
@@ -306,7 +292,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                   onClick={() => setActiveTab('want-to-learn')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeTab === 'want-to-learn'
-                      ? 'bg-accent-blue text-theme-primary shadow-md'
+                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
@@ -316,7 +302,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                   onClick={() => setActiveTab('learned')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeTab === 'learned'
-                      ? 'bg-accent-green text-theme-primary shadow-md'
+                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
@@ -367,26 +353,26 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                 </button>
 
                 {/* View Mode Toggle */}
-                <div className="flex bg-theme-secondary rounded-lg p-1">
+                <div className="bg-theme-secundary border border-theme-primary rounded-lg p-1 flex">
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`p-2 rounded-md transition-all duration-300 ${
+                      viewMode === 'list'
+                        ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
+                        : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
+                    }`}
+                  >
+                    <FiList className="w-4 h-4" />
+                  </button>
                   <button
                     onClick={() => setViewMode('grid')}
-                    className={`p-2 rounded transition-all ${
+                    className={`p-2 rounded-md transition-all duration-300 ${
                       viewMode === 'grid'
-                        ? 'bg-brand-primary text-theme-primary'
+                        ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
                     <FiGrid className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 rounded transition-all ${
-                      viewMode === 'list'
-                        ? 'bg-brand-primary text-theme-primary'
-                        : 'text-theme-tertiary hover:text-theme-primary'
-                    }`}
-                  >
-                    <FiList className="w-4 h-4" />
                   </button>
                 </div>
               </div>

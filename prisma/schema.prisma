@@ -335,7 +335,7 @@ model WantToLearn {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   userId   String   @db.ObjectId
   workId   String   @db.ObjectId
-  priority Int      @default(3) // 1-5 priority level
+  priority Int      @default(0) // 1-5 priority level
   addedAt  DateTime @default(now())
 
   // Campos adicionais para enriquecer a experiência
@@ -363,7 +363,7 @@ model Learned {
   userId    String   @db.ObjectId
   workId    String   @db.ObjectId
   learnedAt DateTime @default(now())
-  mastery   Int      @default(3) // 1-5 mastery level
+  mastery   Int      @default(0) // 1-5 mastery level
 
   // Campos adicionais para tracking do progresso
   studyStartDate    DateTime?     // Quando começou a estudar

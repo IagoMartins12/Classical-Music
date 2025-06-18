@@ -1,7 +1,8 @@
 // app/learning/components/LearningCard.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import {
   FiStar,
@@ -16,6 +17,9 @@ import {
   FiX,
   FiTrash2,
   FiAlertTriangle,
+  FiBookOpen,
+  FiChevronDown,
+  FiChevronUp,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import {
@@ -50,14 +54,44 @@ const ConfirmDeleteModal = ({
   workTitle: string;
   type: 'want-to-learn' | 'learned';
 }) => {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
+
+  // Verificar se está montado (lado do cliente)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Controlar scroll do body
+  useEffect(() => {
+    if (isOpen) {
+      // Salvar o estilo atual do overflow
+      const originalOverflow = document.body.style.overflow;
+
+      // Remover scroll
+      document.body.style.overflow = 'hidden';
+
+      // Cleanup function - restaurar o scroll quando o modal fechar
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isOpen]);
+
+  if (!mounted || !isOpen) return null;
 
   const typeText =
     type === 'want-to-learn' ? 'lista de estudos' : 'lista de obras aprendidas';
 
-  return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-      <div className="bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 animate-fade-in-scale">
+  const modalContent = (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+      {/* Overlay */}
+      <div
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+        onClick={!isLoading ? onClose : undefined}
+      />
+
+      {/* Modal Content */}
+      <div className="relative bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 animate-fade-in-scale border border-theme-secondary">
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center">
             <FiAlertTriangle className="w-6 h-6 text-accent-red" />
@@ -108,6 +142,9 @@ const ConfirmDeleteModal = ({
       </div>
     </div>
   );
+
+  // Usar createPortal para renderizar no body
+  return createPortal(modalContent, document.body);
 };
 
 const getDifficultyLabel = (difficulty?: DifficultyLevel) => {
@@ -150,6 +187,19 @@ export const LearningCard = ({
   const wantToLearnItem = item as WantToLearnItem;
   const learnedItem = item as LearnedItem;
 
+  // Check if has expandable content
+  const hasExpandableContent = isWantToLearn
+    ? !!(
+        wantToLearnItem.notes ||
+        wantToLearnItem.motivation ||
+        wantToLearnItem.context
+      )
+    : !!(
+        learnedItem.notes ||
+        learnedItem.technicalChallenges ||
+        learnedItem.musicalInsights
+      );
+
   // Handle removal
   const handleRemove = async () => {
     if (!user?.id) return;
@@ -181,76 +231,137 @@ export const LearningCard = ({
   if (viewMode === 'list') {
     return (
       <>
-        <div className="classical-card p-6 group hover:shadow-theme-glow transition-all hover:scale-105 animate-fade-in-up flex items-center space-x-6">
-          <div className="flex-1">
-            <div className="flex items-center space-x-4">
-              <div className="flex-1">
-                <h3 className="font-bold text-theme-primary">
-                  {item.work?.title}
-                </h3>
-                <p className="text-theme-secondary">
-                  {item.work?.composer.fullName}
-                </p>
-              </div>
-              <div className="flex items-center space-x-1">
-                {[...Array(5)].map((_, i) => (
-                  <FiStar
-                    key={i}
-                    className={`w-4 h-4 ${
-                      i <
-                      (isWantToLearn
-                        ? wantToLearnItem.priority
-                        : learnedItem.mastery)
-                        ? `fill-current ${
-                            isWantToLearn
-                              ? 'text-yellow-400'
-                              : 'text-accent-green'
-                          }`
-                        : 'text-theme-tertiary/30'
-                    }`}
-                  />
-                ))}
-              </div>
-              {item.difficulty && (
-                <span
-                  className={`text-xs px-2 py-1 rounded-full border ${getDifficultyColor(
-                    item.difficulty
-                  )}`}
-                >
-                  {getDifficultyLabel(item.difficulty)}
-                </span>
-              )}
-              {!isWantToLearn && (
-                <div className="flex items-center space-x-2 text-sm">
-                  {learnedItem.wouldRecommend && (
-                    <FiUsers
-                      className="w-4 h-4 text-accent-green"
-                      title="Recomenda"
-                    />
-                  )}
-                  {learnedItem.publicPerformance && (
-                    <FiPlay
-                      className="w-4 h-4 text-accent-blue"
-                      title="Tocou em público"
-                    />
+        <div className="classical-card p-6 group hover:shadow-theme-glow transition-all hover:scale-105 animate-fade-in-up">
+          <div className="flex items-center space-x-6">
+            <div className="flex-1">
+              <div className="flex items-center space-x-4">
+                <div className="flex-1">
+                  <h3 className="font-bold text-theme-primary">
+                    {item.work?.title}
+                  </h3>
+                  <p className="text-theme-secondary">
+                    {item.work?.composer.fullName}
+                  </p>
+                  {item.work?.opOrCatalog && (
+                    <p className="text-sm text-theme-tertiary">
+                      {item.work.opOrCatalog}
+                    </p>
                   )}
                 </div>
-              )}
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={onEdit}
-                  className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-                  title="Editar"
-                >
-                  <FiEdit3 className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => setShowDeleteModal(true)}
-                  className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
-                  title="Remover"
-                >
-                  <FiX className="w-4 h-4" />
-                </button>
+
+                {/* Compact info */}
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-0 items-center space-x-3 text-sm text-theme-tertiary">
+                  {/* Stars */}
+                  <div
+                    className="flex items-center space-x-1"
+                    title={
+                      isWantToLearn
+                        ? `Prioridade: ${wantToLearnItem.priority}/5`
+                        : `Maestria: ${learnedItem.mastery}/5`
+                    }
+                  >
+                    {[...Array(5)].map((_, i) => (
+                      <FiStar
+                        key={i}
+                        className={`w-4 h-4 ${
+                          i <
+                          (isWantToLearn
+                            ? wantToLearnItem.priority
+                            : learnedItem.mastery)
+                            ? `fill-current ${
+                                isWantToLearn
+                                  ? 'text-yellow-400'
+                                  : 'text-accent-green'
+                              }`
+                            : 'text-theme-tertiary/30'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Difficulty */}
+                  {item.difficulty && (
+                    <span
+                      className={`text-xs px-2 py-1 rounded-full border ${getDifficultyColor(
+                        item.difficulty
+                      )}`}
+                    >
+                      {getDifficultyLabel(item.difficulty)}
+                    </span>
+                  )}
+
+                  {/* Quick info */}
+                  <div className="flex items-center space-x-2">
+                    {isWantToLearn ? (
+                      <>
+                        {wantToLearnItem.targetDate && (
+                          <FiCalendar
+                            className="w-4 h-4"
+                            title={`Meta: ${formatDate(
+                              wantToLearnItem.targetDate
+                            )}`}
+                          />
+                        )}
+                        {wantToLearnItem.context && (
+                          <span className="text-xs bg-accent-blue/10 px-2 py-1 rounded text-accent-blue">
+                            {wantToLearnItem.context}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {learnedItem.wouldRecommend && (
+                          <FiUsers
+                            className="w-4 h-4 text-accent-green"
+                            title="Recomenda"
+                          />
+                        )}
+                        {learnedItem.publicPerformance && (
+                          <FiPlay
+                            className="w-4 h-4 text-accent-blue"
+                            title="Tocou em público"
+                          />
+                        )}
+                        {learnedItem.enjoyment && (
+                          <div
+                            className="flex items-center space-x-1"
+                            title={`Satisfação: ${learnedItem.enjoyment}/5`}
+                          >
+                            <FiHeart className="w-4 h-4" />
+                            <span>{learnedItem.enjoyment}</span>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex items-center flex-col sm:flex-row gap-4 sm:gap-0 space-x-2">
+                  <button
+                    onClick={onEdit}
+                    className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
+                    title="Editar"
+                  >
+                    <FiEdit3 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
+                    title="Remover"
+                  >
+                    <FiX className="w-4 h-4" />
+                  </button>
+                  {((isWantToLearn && wantToLearnItem.notes) ||
+                    (!isWantToLearn && learnedItem.notes)) && (
+                    <div
+                      className="w-6 h-6 flex items-center justify-center"
+                      title="Tem anotações"
+                    >
+                      <FiBookOpen className="w-3 h-3 text-accent-purple" />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -318,9 +429,7 @@ export const LearningCard = ({
                   (isWantToLearn
                     ? wantToLearnItem.priority
                     : learnedItem.mastery)
-                    ? `fill-current ${
-                        isWantToLearn ? 'text-yellow-400' : 'text-accent-green'
-                      }`
+                    ? `fill-current text-yellow-400`
                     : 'text-theme-tertiary/30'
                 }`}
               />
@@ -359,6 +468,13 @@ export const LearningCard = ({
                 </div>
               )}
 
+              {wantToLearnItem.context && (
+                <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+                  <FiUsers className="w-4 h-4" />
+                  <span>Contexto: {wantToLearnItem.context}</span>
+                </div>
+              )}
+
               {wantToLearnItem.motivation && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-blue">
                   <div className="flex items-center space-x-2 mb-1">
@@ -372,9 +488,32 @@ export const LearningCard = ({
                   </p>
                 </div>
               )}
+
+              {wantToLearnItem.notes && (
+                <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <FiBookOpen className="w-4 h-4 text-accent-purple" />
+                    <span className="text-sm font-medium text-theme-secondary">
+                      Anotações
+                    </span>
+                  </div>
+                  <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
+                    {wantToLearnItem.notes}
+                  </p>
+                </div>
+              )}
             </>
           ) : (
             <>
+              {learnedItem.studyStartDate && (
+                <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+                  <FiCalendar className="w-4 h-4" />
+                  <span>
+                    Início do estudo: {formatDate(learnedItem.studyStartDate)}
+                  </span>
+                </div>
+              )}
+
               {learnedItem.studyDuration && (
                 <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
                   <FiClock className="w-4 h-4" />
@@ -404,16 +543,44 @@ export const LearningCard = ({
                 )}
               </div>
 
+              {learnedItem.technicalChallenges && (
+                <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-red">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <FiTrendingUp className="w-4 h-4 text-accent-red" />
+                    <span className="text-sm font-medium text-theme-secondary">
+                      Desafios Técnicos
+                    </span>
+                  </div>
+                  <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
+                    {learnedItem.technicalChallenges}
+                  </p>
+                </div>
+              )}
+
               {learnedItem.musicalInsights && (
                 <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-green">
                   <div className="flex items-center space-x-2 mb-1">
                     <FiAward className="w-4 h-4 text-accent-green" />
                     <span className="text-sm font-medium text-theme-secondary">
-                      Insights
+                      Insights Musicais
                     </span>
                   </div>
-                  <p className="text-sm text-theme-tertiary">
+                  <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
                     {learnedItem.musicalInsights}
+                  </p>
+                </div>
+              )}
+
+              {learnedItem.notes && (
+                <div className="bg-theme-secondary rounded-lg p-3 border-l-4 border-accent-purple">
+                  <div className="flex items-center space-x-2 mb-1">
+                    <FiBookOpen className="w-4 h-4 text-accent-purple" />
+                    <span className="text-sm font-medium text-theme-secondary">
+                      Anotações
+                    </span>
+                  </div>
+                  <p className="text-sm text-theme-tertiary whitespace-pre-wrap">
+                    {learnedItem.notes}
                   </p>
                 </div>
               )}
@@ -428,12 +595,14 @@ export const LearningCard = ({
               ? `Adicionada em ${formatDate(wantToLearnItem.addedAt)}`
               : `Aprendida em ${formatDate(learnedItem.learnedAt)}`}
           </span>
-          <Link
-            href={`/works/${item.workId}`}
-            className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
-          >
-            Ver Obra →
-          </Link>
+          <div className="flex items-center space-x-3">
+            <Link
+              href={`/works/${item.workId}`}
+              className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
+            >
+              Ver Obra →
+            </Link>
+          </div>
         </div>
       </div>
 

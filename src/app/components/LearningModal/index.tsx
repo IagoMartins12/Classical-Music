@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 import {
   FiTarget,
   FiCheckCircle,
-  FiStar,
   FiCalendar,
   FiClock,
   FiMusic,
@@ -72,7 +71,6 @@ const LearningModal = ({
     toggleLearned,
     removeWantToLearn,
     removeLearned,
-    loading,
     getWantToLearnItem,
     getLearnedItem,
     isWantToLearn,
@@ -94,11 +92,11 @@ const LearningModal = ({
 
   // Form states
   const [wantToLearnForm, setWantToLearnForm] = useState<WantToLearnFormData>({
-    priority: 3,
+    priority: 0,
   });
 
   const [learnedForm, setLearnedForm] = useState<LearnedFormData>({
-    mastery: 3,
+    mastery: 0,
     wouldRecommend: true,
     publicPerformance: false,
   });
@@ -109,7 +107,7 @@ const LearningModal = ({
       if (type === 'want-to-learn') {
         const item = currentItem as any; // WantToLearnItem
         setWantToLearnForm({
-          priority: item.priority || 3,
+          priority: item.priority || 0,
           notes: item.notes || '',
           targetDate: item.targetDate ? item.targetDate.split('T')[0] : '',
           estimatedStudyTime: item.estimatedStudyTime || undefined,
@@ -120,7 +118,7 @@ const LearningModal = ({
       } else {
         const item = currentItem as any; // LearnedItem
         setLearnedForm({
-          mastery: item.mastery || 3,
+          mastery: item.mastery || 0,
           studyStartDate: item.studyStartDate
             ? item.studyStartDate.split('T')[0]
             : '',
@@ -136,9 +134,9 @@ const LearningModal = ({
       }
     } else {
       // Reset to defaults when no existing item
-      setWantToLearnForm({ priority: 3 });
+      setWantToLearnForm({ priority: 0 });
       setLearnedForm({
-        mastery: 3,
+        mastery: 0,
         wouldRecommend: true,
         publicPerformance: false,
       });
@@ -309,7 +307,7 @@ const LearningModal = ({
       className="max-h-[90vh] overflow-hidden"
     >
       {/* Header */}
-      <div className="px-6 py-4 border-b border-theme-secondary">
+      <div className="px-6 py-4 ">
         <div className="flex items-center space-x-3">
           <div
             className={`w-10 h-10 rounded-xl bg-gradient-to-br ${
@@ -318,7 +316,7 @@ const LearningModal = ({
                 : 'from-accent-green to-brand-primary'
             } flex items-center justify-center shadow-theme-glow`}
           >
-            <config.icon className="w-5 h-5 text-theme-inverse" />
+            <config.icon className="w-5 h-5 text-theme-primary" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -330,7 +328,7 @@ const LearningModal = ({
       </div>
 
       {/* Work Info */}
-      <div className="px-6 py-4 bg-theme-secondary border-b border-theme-secondary">
+      <div className="px-6 py-4 classical-card !rounded-2xl !shadow-none !border-none !transform-none border-b border-theme-secondary">
         <div className="flex items-center space-x-3">
           <FiMusic className="w-5 h-5 text-theme-tertiary" />
           <div>
@@ -545,7 +543,7 @@ const LearningModal = ({
 
               <div className="space-y-2">
                 <StarRating
-                  value={learnedForm.enjoyment || 3}
+                  value={learnedForm.enjoyment || 0}
                   onChange={(value) =>
                     setLearnedForm((prev) => ({
                       ...prev,
@@ -666,7 +664,7 @@ const LearningModal = ({
 
       {/* Footer */}
       <div
-        className={`px-6 py-4 border-t border-theme-secondary bg-theme-secondary flex items-center ${
+        className={`px-6 py-4 border-t border-theme-secondary flex items-center ${
           isCurrentlyActive && !isSubmitting ? 'justify-between' : 'justify-end'
         } space-x-3`}
       >
@@ -683,7 +681,7 @@ const LearningModal = ({
             variant="primary"
             onClick={handleSubmit}
             isLoading={isSubmitting}
-            rightIcon={<span className="text-lg">{config.emoji}</span>}
+            rightIcon={config.emoji}
           >
             {isCurrentlyActive ? 'Atualizar' : 'Salvar'}
           </Button>

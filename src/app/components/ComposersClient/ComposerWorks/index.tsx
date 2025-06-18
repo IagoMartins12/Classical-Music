@@ -28,6 +28,7 @@ import {
   GiGrandPiano,
 } from 'react-icons/gi';
 import { MdLibraryMusic } from 'react-icons/md';
+import FavoriteButton from '../../FavoriteButton';
 
 interface ComposerWorksProps {
   works: ComposerWork[];
@@ -461,23 +462,14 @@ export default function ComposerWorks({
                         </a>
                       )}
 
-                      <a
-                        href={work.imslpPermlink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-10 h-10 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-xl flex items-center justify-center hover:bg-accent-green/20 hover:scale-110 transition-all duration-300"
-                        title="Ver partitura no IMSLP"
-                      >
-                        <FiExternalLink className="w-4 h-4" />
-                      </a>
-
-                      <Link
-                        href={`/works/${work.id}`}
-                        className="w-10 h-10 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-xl flex items-center justify-center hover:bg-brand-primary/20 hover:scale-110 transition-all duration-300"
-                        title="Ver detalhes"
-                      >
-                        <FiHeadphones className="w-4 h-4" />
-                      </Link>
+                      <FavoriteButton
+                        id={work.id}
+                        type="work"
+                        variant="default"
+                        size="md"
+                        itemName={work.title}
+                        showToast={true}
+                      />
                     </div>
                   </div>
                 </div>

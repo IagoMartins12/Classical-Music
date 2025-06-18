@@ -310,12 +310,12 @@ export default function ComposersClient({
               {/* View Toggle */}
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-theme-secondary">Vista:</span>
-                <div className="bg-theme-elevated border border-theme-primary rounded-lg p-1 flex">
+                <div className="bg-theme-secundary border border-theme-primary rounded-lg p-1 flex">
                   <button
                     onClick={() => setShowPhotos(false)}
                     className={`p-2 rounded-md transition-all duration-300 ${
                       !showPhotos
-                        ? 'bg-brand-gradient text-theme-inverse shadow-theme-glow'
+                        ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
                         : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
                     }`}
                     title="Visualização em lista"
@@ -326,7 +326,7 @@ export default function ComposersClient({
                     onClick={() => setShowPhotos(true)}
                     className={`p-2 rounded-md transition-all duration-300 ${
                       showPhotos
-                        ? 'bg-brand-gradient text-theme-inverse shadow-theme-glow'
+                        ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
                         : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
                     }`}
                     title="Visualização em grade"
@@ -361,12 +361,12 @@ export default function ComposersClient({
               </div>
             ) : (
               // List View
-              <div className="classical-card overflow-hidden">
-                <div className="divide-y divide-theme-secondary">
+              <div className="bg-theme-secundary rounded-2xl overflow-hidden">
+                <div className="divide-y divide-theme-secondary flex flex-col gap-4 py-4">
                   {composers.map((composer, index) => (
                     <div
                       key={composer.id}
-                      className="animate-fade-in-up p-4 hover:bg-interactive-hover transition-all duration-300 cursor-pointer group"
+                      className="animate-fade-in-up classical-card p-4 hover:bg-interactive-hover transition-all duration-300 cursor-pointer group"
                       style={{
                         animationDelay: `${index * 0.02}s`,
                         animationFillMode: 'backwards',

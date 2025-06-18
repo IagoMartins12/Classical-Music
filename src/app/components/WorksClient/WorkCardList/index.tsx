@@ -12,6 +12,8 @@ import {
   FiBookOpen,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
+import FavoriteButton from '../../FavoriteButton';
+import { FaBook } from 'react-icons/fa';
 
 interface workCardListProps {
   work: WorkListItem;
@@ -41,16 +43,31 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
         <div className="flex-1 min-w-0">
           {/* Title and opus */}
           <div className="flex items-start gap-3 mb-1">
-            <h3 className="font-bold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 truncate flex-1">
-              {work.title}
-            </h3>
+            <div className="inline-flex items-center py-0.5">
+              <FaBook className="w-2.5 h-2.5 mr-1" />
+              <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 truncate flex-1">
+                {work.title}
+              </h3>
+            </div>
 
-            {work.opOrCatalog && (
-              <span className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 text-theme-secondary rounded-md text-xs font-medium flex-shrink-0">
-                <FiBookOpen className="w-2.5 h-2.5 mr-1" />
-                {work.opOrCatalog}
-              </span>
-            )}
+            <div className="flex gap-4 items-center">
+              {work.opOrCatalog && (
+                <span className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 text-theme-secondary rounded-md text-xs font-medium flex-shrink-0">
+                  <FiBookOpen className="w-2.5 h-2.5 mr-1" />
+                  {work.opOrCatalog}
+                </span>
+              )}
+              <div className=" flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                <FavoriteButton
+                  id={work.id}
+                  type="work"
+                  variant="default"
+                  size="md"
+                  itemName={work.title}
+                  showToast={true}
+                />
+              </div>
+            </div>
           </div>
 
           {/* Composer info */}

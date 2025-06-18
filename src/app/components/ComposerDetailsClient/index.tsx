@@ -17,9 +17,11 @@ import {
   FiTrendingUp,
   FiHeart,
   FiInfo,
+  FiShare2,
 } from 'react-icons/fi';
 import ComposerBiography from '../ComposerBiography';
 import ComposerWorks from '../ComposersClient/ComposerWorks';
+import FavoriteButton from '../FavoriteButton';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
@@ -96,14 +98,34 @@ export default function ComposerDetailsClient({
               <div className="lg:col-span-2 space-y-6 order-2 md:order-1 lg:order-1">
                 {/* Nome e título */}
                 <div className="space-y-3">
-                  <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title">
-                    {composer.name}
-                  </h1>
-                  {composer.fullName !== composer.name && (
-                    <p className="text-xl text-theme-secondary classical-subtitle">
-                      {composer.fullName}
-                    </p>
-                  )}
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
+                        {composer.name}
+                      </h1>
+                      {composer.fullName !== composer.name && (
+                        <p className="space-x-2 text-xl text-theme-secondary mt-3">
+                          {composer.fullName}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex items-center space-x-3 ml-4">
+                      <FavoriteButton
+                        id={composer.id}
+                        type="composer"
+                        variant="default"
+                        size="lg"
+                        itemName={composer.fullName}
+                        showToast={true}
+                      />
+
+                      <button className="w-12 h-12 bg-interactive-hover border border-theme-primary text-theme-primary rounded-xl hover:bg-brand-primary/20 hover:border-brand-primary hover:text-brand-primary hover:scale-110 transition-all duration-300">
+                        <FiShare2 className="w-5 h-5 mx-auto" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Grid de informações */}
@@ -254,7 +276,7 @@ export default function ComposerDetailsClient({
               </div>
 
               {/* Imagem do Compositor */}
-              <div className="flex justify-center order-1 md:order-2 lg:order-2 lg:justify-end">
+              <div className="flex justify-center order-1 md:order-2 space-y-6 lg:order-2 lg:justify-end">
                 <div className="relative group">
                   {composer.portraitUrl && !imageError ? (
                     <div className="relative w-64 h-80 rounded-2xl overflow-hidden shadow-theme-glow border border-theme-primary group-hover:scale-105 transition-all duration-500">

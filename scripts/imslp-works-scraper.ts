@@ -315,6 +315,7 @@ class WorkScraper {
       });
 
       let works: Work[] = [];
+
       if (Array.isArray(response.data)) {
         works = response.data;
       } else if (response.data && typeof response.data === 'object') {

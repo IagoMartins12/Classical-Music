@@ -5,7 +5,7 @@ import React from 'react';
 import { BiLoader } from 'react-icons/bi';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'google';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'google' | 'delete';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
@@ -34,6 +34,7 @@ const Button: React.FC<ButtonProps> = ({
   const variants = {
     primary: 'btn-classical-primary',
     secondary: 'btn-classical-secondary',
+    delete: 'btn-classical-secondary',
     outline: `
       bg-transparent border-2 border-theme-accent text-brand-primary
       hover:bg-brand-primary hover:text-theme-inverse hover:border-brand-primary
@@ -79,7 +80,11 @@ const Button: React.FC<ButtonProps> = ({
       )}
       <span>{children}</span>
       {!isLoading && rightIcon && (
-        <span className={`${iconSizes[size]} ml-2`}>{rightIcon}</span>
+        <span
+          className={`${iconSizes[size]} flex justify-center items-center ml-2 `}
+        >
+          {rightIcon}
+        </span>
       )}
     </button>
   );

@@ -201,7 +201,7 @@ const LearningButtonWithModal = ({
 
   // Loading component
   const LoadingSpinner = () => (
-    <div className="absolute inset-0 flex items-center justify-center bg-white/80 rounded-xl">
+    <div className="absolute inset-0 flex items-center justify-center bg-transparent rounded-xl">
       <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin opacity-60"></div>
     </div>
   );
