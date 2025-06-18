@@ -29,7 +29,6 @@ import LearningButtonWithModal from '../LearningButtonWithModal';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   relatedWorks?: any[];
   // Dados de aprendizado iniciais do SSR
   learningData?: {

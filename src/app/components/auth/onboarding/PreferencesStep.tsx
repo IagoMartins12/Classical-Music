@@ -3,9 +3,10 @@
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React, { useState } from 'react';
-import { FiSearch, FiHeart, FiClock } from 'react-icons/fi';
+import { FiSearch, FiHeart } from 'react-icons/fi';
 import Select from '../../Common/Select';
 import Input from '../../Common/Inputs';
+import Image from 'next/image';
 
 interface Composer {
   id: string;
@@ -49,7 +50,6 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
   const selectedComposer = composers.find(
     (c) => c.id === data.favoriteComposerId
   );
-  const selectedEpoch = epochs.find((e) => e.id === data.favoriteEpochId);
 
   return (
     <div className="py-6">
@@ -168,7 +168,9 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
             <div className="my-4  classical-card p-3 rounded-lg border ">
               <div className="flex items-center space-x-3">
                 {selectedComposer.portraitUrl && (
-                  <img
+                  <Image
+                    width={24}
+                    height={24}
                     src={selectedComposer.portraitUrl}
                     alt={selectedComposer.fullName}
                     className="w-12 h-12 rounded-full object-cover"
@@ -203,7 +205,9 @@ const PreferencesStep: React.FC<PreferencesStepProps> = ({
               >
                 <div className="flex items-center space-x-3">
                   {composer.portraitUrl && (
-                    <img
+                    <Image
+                      width={24}
+                      height={24}
                       src={composer.portraitUrl}
                       alt={composer.fullName}
                       className="w-10 h-10 rounded-full object-cover"

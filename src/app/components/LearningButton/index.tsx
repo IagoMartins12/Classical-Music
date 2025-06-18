@@ -145,7 +145,6 @@ const LearningButton = ({
 
   // Cores baseadas no tipo e estado
   const getVariantClasses = () => {
-    const labels = getLabels();
     const baseClasses = `
       ${sizeClasses[size]} 
       rounded-xl

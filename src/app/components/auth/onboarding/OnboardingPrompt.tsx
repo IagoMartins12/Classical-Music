@@ -6,17 +6,9 @@ import { useOnboardingModal, usePromptModal } from '@/app/stores/authStore';
 import { useUser } from '@/app/hooks/userStore';
 import Button from '../../Common/Button';
 
-interface OnboardingPromptProps {
-  onDismiss?: () => void;
-  className?: string;
-}
-
-const OnboardingPrompt: React.FC<OnboardingPromptProps> = ({
-  onDismiss,
-  className = '',
-}) => {
+const OnboardingPrompt = () => {
   const user = useUser();
-  const { close: closePrompt, isOpen, open } = usePromptModal();
+  const { close: closePrompt, isOpen } = usePromptModal();
   const {
     open: openOnboarding,
     isOpen: isOnboardingModalOpen,
@@ -34,7 +26,7 @@ const OnboardingPrompt: React.FC<OnboardingPromptProps> = ({
         isOpen && !isOnboardingModalOpen
           ? 'fixed bottom-1 right-0 z-50'
           : 'hidden'
-      } p-4 border-accent-amber bg-accent-amber bg-opacity-5 ${className}`}
+      } p-4 border-accent-amber bg-accent-amber bg-opacity-5 `}
     >
       <div className="flex items-start space-x-3">
         <div className="w-10 h-10 bg-accent-amber bg-opacity-20 rounded-full flex items-center justify-center flex-shrink-0">

@@ -26,7 +26,7 @@ interface OnboardingProgressIndicatorProps {
 const OnboardingProgressIndicator: React.FC<
   OnboardingProgressIndicatorProps
 > = ({ className = '', showDetails = true, compact = false }) => {
-  const { step, data } = useOnboardingModal();
+  const { step } = useOnboardingModal();
   const { isSaving, lastSaved, hasUnsavedChanges, getProgressSummary } =
     useOnboardingPersistence();
   const { getCompletionPercentage, validateCurrentStep } =
@@ -271,7 +271,7 @@ export default OnboardingProgressIndicator;
 
 // Hook para usar o indicador em outros componentes
 export function useOnboardingProgress() {
-  const { step, data, hasProgress } = useOnboardingModal();
+  const { step, hasProgress } = useOnboardingModal();
   const { lastSaved, hasUnsavedChanges } = useOnboardingPersistence();
   const { getCompletionPercentage } = useOnboardingValidation();
 

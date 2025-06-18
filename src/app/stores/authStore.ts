@@ -398,7 +398,7 @@ export const useAuthStore = create<AuthState>()(
 
           completeOnboarding: () => {
             get().markOnboardingComplete();
-            set((state) => ({
+            set(() => ({
               onboarding: {
                 ...initialOnboardingState,
                 isModalOpen: false,
@@ -420,7 +420,7 @@ export const useAuthStore = create<AuthState>()(
           },
         }),
         version: 1,
-        migrate: (persistedState: any, version: number) => {
+        migrate: (persistedState: any) => {
           // Migração de versões futuras se necessário
           return persistedState;
         },

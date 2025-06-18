@@ -87,7 +87,6 @@ export async function registerUser(data: {
 }): Promise<AuthResult> {
   try {
     // Validate input
-    console.log('DATA', data);
     const validatedData = registerSchema.parse(data);
 
     // Check if user already exists
@@ -222,7 +221,9 @@ export async function loginUser(data: {
     }
 
     // Remove password from response
-    const { hashedPassword, ...safeUser } = user;
+    const { ...safeUser } = user;
+
+    // const { hashedPassword, ...safeUser } = user;
 
     return {
       success: true,

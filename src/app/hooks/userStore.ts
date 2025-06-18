@@ -47,7 +47,7 @@ interface UserState {
 }
 
 export const useUserStore = create<UserState>()(
-  subscribeWithSelector((set, get) => ({
+  subscribeWithSelector((set) => ({
     // Initial state
     user: null,
     isLoading: false,

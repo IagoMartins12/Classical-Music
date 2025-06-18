@@ -40,7 +40,7 @@ interface LearningPageClientProps {
 }
 
 const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { wantToLearn, learned, initializeLearning, initialized } =
     useLearningStore();
 
@@ -485,7 +485,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       : 'space-y-4'
                   }
                 >
-                  {filteredData.wantToLearn.map((item, index) => (
+                  {filteredData.wantToLearn.map((item) => (
                     <LearningCard
                       key={item.id}
                       item={item}
@@ -533,7 +533,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                       : 'space-y-4'
                   }
                 >
-                  {filteredData.learned.map((item, index) => (
+                  {filteredData.learned.map((item) => (
                     <LearningCard
                       key={item.id}
                       item={item}

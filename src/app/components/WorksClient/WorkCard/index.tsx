@@ -1,7 +1,6 @@
 // app/works/WorkCard.tsx - Premium version with theme system
 'use client';
 
-import { useState } from 'react';
 import { WorkListItem } from '@/app/requests/work-details';
 import Link from 'next/link';
 import {

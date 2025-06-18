@@ -8,7 +8,6 @@ import {
   FiMenu,
   FiX,
   FiUser,
-  FiSettings,
   FiLogOut,
   FiHeart,
   FiBookOpen,
@@ -24,6 +23,7 @@ import {
   useRegisterModal,
 } from '@/app/stores/authStore';
 import Button from '../Common/Button';
+import Image from 'next/image';
 
 interface NavItem {
   label: string;
@@ -34,7 +34,7 @@ interface NavItem {
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const { logout: authLogout, hasOnboardingProgress } = useAuthStore();
+  const { logout: authLogout } = useAuthStore();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { open: openLogin } = useLoginModal();
   const { open: openRegister } = useRegisterModal();
@@ -158,8 +158,10 @@ const Navbar: React.FC = () => {
                   className="flex items-center space-x-2 p-2 rounded-lg hover:bg-interactive-hover transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-opacity-50"
                 >
                   {user.image ? (
-                    <img
+                    <Image
                       src={user.image}
+                      width={24}
+                      height={24}
                       alt={getUserDisplayName()}
                       className="w-8 h-8 rounded-full object-cover border-2 border-brand-primary bg-theme-secondary"
                     />
@@ -209,7 +211,7 @@ const Navbar: React.FC = () => {
                       </div>
 
                       {/* Menu Items */}
-                      {!hasOnboardingProgress() && (
+                      {user.onboardingCompleted && (
                         <Link
                           href="/profile"
                           className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"

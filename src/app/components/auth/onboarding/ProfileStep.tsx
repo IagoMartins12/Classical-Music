@@ -58,8 +58,8 @@ const ProfileStep: React.FC = () => {
       } else {
         toast.error(result.message || 'Erro ao fazer upload da imagem');
       }
-    } catch (error) {
-      toast.error('Erro ao fazer upload da imagem');
+    } catch (error: any) {
+      toast.error('Erro ao fazer upload da imagem', error);
     } finally {
       setIsUploadingImage(false);
     }

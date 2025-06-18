@@ -1,11 +1,11 @@
 // app/components/Cards/ListComposersCard.tsx - Sophisticated version matching CarouselCard design
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import LazyImage from '@/app/components/LazyImage';
 import { composerHomeProps } from '@/app/components/PopularComposers';
 import Link from 'next/link';
-import { FiHeart, FiCalendar } from 'react-icons/fi';
+import { FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '@/app/components/FavoriteButton';
 
@@ -18,7 +18,6 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
   composer,
   isActive,
 }) => {
-  const [isFavorited, setIsFavorited] = useState(false);
   // const [imageLoaded, setImageLoaded] = useState(false);
 
   return (

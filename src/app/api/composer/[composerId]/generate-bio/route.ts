@@ -11,7 +11,6 @@ const processCache = new Map<
   {
     timestamp: number;
     processing: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result?: any; // Armazenar o resultado em vez da Promise
   }
 >();

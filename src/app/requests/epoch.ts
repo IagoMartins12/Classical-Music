@@ -6,7 +6,6 @@ export default async function getAllEpochs() {
     const epochs = await prisma.epoch.findMany({});
 
     return epochs;
-    // eslint-disable-next-line
   } catch (error: any) {
     throw new Error(error);
   }

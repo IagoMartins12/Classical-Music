@@ -1,16 +1,14 @@
 // app/components/Carousel/CarouselCard.tsx - Sophisticated version with theme system
 'use client';
 
-import { useState } from 'react';
 import { CarouselCardProps } from '@/app/types/types';
 import LazyImage from '../../LazyImage';
 import Link from 'next/link';
-import { FiHeart, FiUser, FiCalendar } from 'react-icons/fi';
+import { FiUser, FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../../FavoriteButton';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
-  const [isFavorited, setIsFavorited] = useState(false);
   // const [imageLoaded, setImageLoaded] = useState(false);
 
   return (

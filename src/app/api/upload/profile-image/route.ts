@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 6. Gerar nome do arquivo e salvar
-    const fileName = generateFileName(file.name, userId);
+    const fileName = generateFileName(file.name);
     const filePath = path.join(userUploadDir, fileName);
 
     console.log(`💾 Salvando nova imagem: ${fileName}`);
@@ -140,7 +140,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Endpoint para remover imagem de perfil
-export async function DELETE(request: NextRequest) {
+export async function DELETE() {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
@@ -190,7 +190,7 @@ export async function DELETE(request: NextRequest) {
 }
 
 // Endpoint para obter informações das imagens do usuário (opcional)
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {

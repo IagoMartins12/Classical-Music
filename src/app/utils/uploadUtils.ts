@@ -104,7 +104,7 @@ export async function cleanOldImages(directoryPath: string): Promise<{
 }
 
 // Função para gerar nome de arquivo único
-export function generateFileName(originalName: string, userId: string): string {
+export function generateFileName(originalName: string): string {
   const fileExtension = path.extname(originalName);
   const timestamp = Date.now();
   const random = Math.random().toString(36).substring(2, 8);

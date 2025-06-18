@@ -307,7 +307,9 @@ export default function WorksClient({
           {/* Expanded Filters */}
           <div
             className={` transition-all duration-500 ${
-              showFilters ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+              showFilters
+                ? 'max-h-96 opacity-100 block'
+                : 'max-h-0 opacity-0 hidden'
             }`}
             style={{ zIndex: 'auto' }}
           >

@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { PROTECTED_ROUTES, PUBLIC_ROUTES } from './utils/auth';
 
 export default withAuth(
-  function middleware(req) {
+  function middleware() {
     // Add any custom middleware logic here
     return NextResponse.next();
   },

@@ -2,7 +2,6 @@
 'use client';
 
 import React, { useState, useCallback, useMemo } from 'react';
-import { Toaster } from 'react-hot-toast';
 import {
   FiUser,
   FiMusic,
@@ -137,7 +136,7 @@ export default function ProfilePageClient() {
 
   return (
     <>
-      {hasOnboardingProgress() ? (
+      {hasOnboardingProgress() && !user.onboardingCompleted ? (
         <>
           <div className="text-center py-12">
             <div className="classical-card-2 p-8 max-w-md mx-auto">

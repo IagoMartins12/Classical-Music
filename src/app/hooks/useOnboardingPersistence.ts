@@ -39,7 +39,7 @@ export function useOnboardingPersistence(
   // Refs para controle de estado
   const isSavingRef = useRef(false);
   const lastDataRef = useRef(data);
-  const saveTimeoutRef = useRef<NodeJS.Timeout>();
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null); // ✅ Valor inicial adicionado
 
   // Função de save direto
   const forceSave = useCallback(() => {
@@ -205,7 +205,7 @@ export function useOnboardingPersistence(
 
 // Hook para monitorar performance do onboarding
 export function useOnboardingPerformance() {
-  const startTimeRef = useRef<number>();
+  const startTimeRef = useRef<number | undefined>(undefined); // ✅ Valor inicial adicionado
   const stepTimesRef = useRef<Record<number, number>>({});
 
   const { isOpen, step } = useOnboardingModal();

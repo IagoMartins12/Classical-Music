@@ -10,12 +10,7 @@ import {
   FiBookOpen,
   FiClock,
 } from 'react-icons/fi';
-import {
-  GiMusicalNotes,
-  GiGrandPiano,
-  GiTreasureMap,
-  GiPianoKeys,
-} from 'react-icons/gi';
+import { GiMusicalNotes, GiGrandPiano, GiTreasureMap } from 'react-icons/gi';
 
 export default function HomeLoading() {
   return (

@@ -14,7 +14,6 @@ import {
   getUserInstruments,
   updateUserInstruments,
 } from '@/app/actions/profile';
-import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 
 interface Instrument {
@@ -36,14 +35,9 @@ interface UserInstrument {
 
 interface InstrumentsSectionProps {
   user: User;
-  updateUser: (data: Partial<User>) => void;
 }
 
-const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({
-  user,
-  updateUser: localUpdateUser,
-}) => {
-  const { updateUser: globalUpdateUser } = useAuth();
+const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
   const { updateUserSession } = useSessionUpdate();
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -564,8 +558,8 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({
           {isEditing && (
             <div className="mt-4 text-center">
               <p className="text-xs text-theme-tertiary">
-                💡 Dica: Marque um instrumento como "Principal" para destacá-lo
-                no seu perfil
+                💡 Dica: Marque um instrumento como &quot;Principal&quot; para
+                destacá-lo no seu perfil
               </p>
             </div>
           )}

@@ -226,12 +226,6 @@ const PersistenceErrorBoundary: React.FC<{ children: React.ReactNode }> = ({
 const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
     <PersistenceErrorBoundary>
       {/* Gerenciadores */}

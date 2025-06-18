@@ -10,7 +10,6 @@ import {
   FiGrid,
   FiList,
   FiSearch,
-  FiStar,
   FiExternalLink,
   FiClock,
   FiBookOpen,
@@ -44,8 +43,6 @@ export default function FavoritesClient() {
     setSearchQuery('');
     setActiveTab('all');
   };
-
-  const hasActiveFilters = searchQuery.trim() !== '' || activeTab !== 'all';
 
   // Filter logic
   const filteredData = useMemo(() => {

@@ -2,14 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  FiBookOpen,
-  FiCheckCircle,
-  FiTarget,
-  FiStar,
-  FiEdit3,
-  FiX,
-} from 'react-icons/fi';
+import { FiBookOpen, FiCheckCircle, FiTarget, FiStar } from 'react-icons/fi';
 import {
   LearnedItem,
   useLearningStore,
@@ -43,15 +36,14 @@ const LearningButtonWithModal = ({
   disabled = false,
   style,
 }: LearningButtonWithModalProps) => {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   const {
     isWantToLearn,
     isLearned,
-    removeWantToLearn,
-    removeLearned,
+
     loading,
     getWantToLearnItem,
     getLearnedItem,

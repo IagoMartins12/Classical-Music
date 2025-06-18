@@ -369,7 +369,6 @@ export const getInstrumentsWithWorks = unstable_cache(
     const instrumentsWithWorks = await Promise.all(
       instruments.map(async (instrument) => {
         const worksPrefs = worksPreferences[instrument.name];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let selectedWorks: any[] = [];
 
         if (worksPrefs?.composerWorks) {
@@ -748,7 +747,6 @@ export const getTopComposersByInstrument = unstable_cache(
         // Group by compositor usando Map para melhor performance
         const composerCountMap = new Map<
           string,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           { composer: any; count: number }
         >();
 

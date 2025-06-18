@@ -14,12 +14,10 @@ import { useAuth } from '@/app/hooks/useAuth';
 
 interface AccountSettingsSectionProps {
   user: User;
-  updateUser: (data: Partial<User>) => void;
 }
 
 const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
   user,
-  updateUser: localUpdateUser,
 }) => {
   const { logout } = useAuth();
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -352,7 +350,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
                 <div>
                   <label className="block text-sm font-medium text-theme-secondary mb-2">
-                    Digite "deletar" para confirmar:
+                    Digite &quot;deletar&quot; para confirmar:
                   </label>
                   <Input
                     value={deleteConfirmText}

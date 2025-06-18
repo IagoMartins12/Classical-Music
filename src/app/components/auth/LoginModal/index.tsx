@@ -8,14 +8,13 @@ import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
 
 import { toast } from 'react-hot-toast';
-import { useLoginModal, useOnboardingModal } from '@/app/stores/authStore';
+import { useLoginModal } from '@/app/stores/authStore';
 import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 
 const LoginModal: React.FC = () => {
   const { isOpen, close, switchToRegister } = useLoginModal();
-  const { open: openOnboarding } = useOnboardingModal();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [formData, setFormData] = useState({

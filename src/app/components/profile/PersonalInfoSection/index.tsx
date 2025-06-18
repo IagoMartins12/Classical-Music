@@ -85,8 +85,8 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       } else {
         toast.error(result.message);
       }
-    } catch (error) {
-      toast.error('Erro ao atualizar informações.');
+    } catch (error: any) {
+      toast.error('Erro ao atualizar informações.', error);
     } finally {
       setIsLoading(false);
     }
@@ -130,8 +130,8 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       } else {
         toast.error(result.message || 'Erro ao fazer upload da imagem');
       }
-    } catch (error) {
-      toast.error('Erro ao fazer upload da imagem');
+    } catch (error: any) {
+      toast.error('Erro ao fazer upload da imagem', error);
     } finally {
       setIsUploadingImage(false);
     }

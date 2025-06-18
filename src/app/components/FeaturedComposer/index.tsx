@@ -8,11 +8,9 @@ import {
   FiCalendar,
   FiExternalLink,
   FiMusic,
-  FiHeart,
   FiStar,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
-import { useState } from 'react';
 import FavoriteButton from '../FavoriteButton';
 
 interface FeaturedComposerProps {
@@ -41,8 +39,6 @@ interface FeaturedComposerProps {
 }
 
 const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
-  const [isFavorited, setIsFavorited] = useState(false);
-
   const formatDates = () => {
     if (!composer.birthDate && !composer.deathDate) return null;
 

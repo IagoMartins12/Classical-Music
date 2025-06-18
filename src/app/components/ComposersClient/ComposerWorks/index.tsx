@@ -7,12 +7,10 @@ import { useState, useMemo } from 'react';
 import {
   FiMusic,
   FiPlay,
-  FiExternalLink,
   FiSearch,
   FiFilter,
   FiClock,
   FiX,
-  FiHeadphones,
   FiBookOpen,
   FiRefreshCw,
   FiCalendar,

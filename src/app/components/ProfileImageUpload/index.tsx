@@ -2,6 +2,7 @@
 'use client';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
+import Image from 'next/image';
 import React, { useRef, useState, useEffect } from 'react';
 import { FiCamera, FiEdit3, FiTrash2 } from 'react-icons/fi';
 
@@ -42,12 +43,6 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
     sm: 'w-4 h-4',
     md: 'w-5 h-5',
     lg: 'w-8 h-8',
-  };
-
-  const buttonSizes = {
-    sm: 'w-6 h-6',
-    md: 'w-7 h-7',
-    lg: 'w-10 h-10',
   };
 
   const removeSizes = {
@@ -145,8 +140,10 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
       `}
       >
         {imagePreview ? (
-          <img
+          <Image
             src={imagePreview}
+            width={100}
+            height={100}
             alt="Foto do perfil"
             className="w-full h-full object-cover"
           />

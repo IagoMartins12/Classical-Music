@@ -18,8 +18,6 @@ import {
   FiTrash2,
   FiAlertTriangle,
   FiBookOpen,
-  FiChevronDown,
-  FiChevronUp,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import {
@@ -108,8 +106,8 @@ const ConfirmDeleteModal = ({
 
         <div className="mb-6">
           <p className="text-theme-secondary">
-            Tem certeza que deseja remover <strong>"{workTitle}"</strong> da sua{' '}
-            {typeText}?
+            Tem certeza que deseja remover{' '}
+            <strong>&quot;{workTitle}&quot;</strong> da sua {typeText}?
           </p>
         </div>
 
@@ -186,19 +184,6 @@ export const LearningCard = ({
   const isWantToLearn = type === 'want-to-learn';
   const wantToLearnItem = item as WantToLearnItem;
   const learnedItem = item as LearnedItem;
-
-  // Check if has expandable content
-  const hasExpandableContent = isWantToLearn
-    ? !!(
-        wantToLearnItem.notes ||
-        wantToLearnItem.motivation ||
-        wantToLearnItem.context
-      )
-    : !!(
-        learnedItem.notes ||
-        learnedItem.technicalChallenges ||
-        learnedItem.musicalInsights
-      );
 
   // Handle removal
   const handleRemove = async () => {

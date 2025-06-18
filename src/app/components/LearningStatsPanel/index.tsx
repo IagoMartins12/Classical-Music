@@ -382,7 +382,7 @@ export default function LearningStatsPanel() {
               </div>
               {item.musicalInsights && (
                 <p className="text-xs text-gray-600 mt-2 italic">
-                  "{item.musicalInsights}"
+                  &quot;{item.musicalInsights}&quot;
                 </p>
               )}
             </div>

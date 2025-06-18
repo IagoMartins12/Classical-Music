@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import { getOnboardingOptions, completeOnboarding } from '@/app/actions/auth';
 import { toast } from 'react-hot-toast';
-import { FiSave, FiClock, FiAlertCircle } from 'react-icons/fi';
+import { FiAlertCircle } from 'react-icons/fi';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import Button from '../../Common/Button';
@@ -16,7 +16,6 @@ import PreferencesStep from '../onboarding/PreferencesStep';
 import ProfileStep from '../onboarding/ProfileStep';
 import CompletionStep from '../onboarding/CompletionStep';
 import { useUserStore } from '@/app/hooks/userStore';
-import OnboardingProgressIndicator from '../onboarding/OnboardingProgressIndicator';
 
 interface OnboardingOptions {
   instruments: Array<{ id: string; name: string; category: string | null }>;
@@ -142,21 +141,6 @@ const OnboardingModal: React.FC = () => {
       default:
         return false;
     }
-  };
-
-  const formatLastSaved = (timestamp?: number) => {
-    if (!timestamp) return '';
-
-    const now = Date.now();
-    const diff = now - timestamp;
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-
-    if (minutes < 1) return 'agora mesmo';
-    if (minutes < 60) return `${minutes} min atrás`;
-    if (hours < 24) return `${hours}h atrás`;
-
-    return new Date(timestamp).toLocaleDateString('pt-BR');
   };
 
   const renderStep = () => {
