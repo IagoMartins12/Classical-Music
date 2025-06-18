@@ -1,10 +1,10 @@
 {
-  "currentStart": 44000,
-  "totalProcessed": 41850,
-  "totalAdded": 2768,
-  "lastUpdate": "2025-06-17T23:14:52.602Z",
+  "currentStart": 47000,
+  "totalProcessed": 44594,
+  "totalAdded": 2960,
+  "lastUpdate": "2025-06-18T00:35:42.909Z",
   "isRunning": true,
-  "lastSuccessfulBatch": 44000,
+  "lastSuccessfulBatch": 47000,
   "timer": {
     "startTime": 1750188493330,
     "totalElapsedTime": 60965508,
