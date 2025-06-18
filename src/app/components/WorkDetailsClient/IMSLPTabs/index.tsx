@@ -1,4 +1,4 @@
-// components/IMSLPTabs.tsx - Com scroll automático para preview
+// components/IMSLPTabs.tsx - Com callback para seleção de partitura para estudo
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -7,17 +7,23 @@ import {
   FiFileText,
   FiRefreshCw,
   FiAlertCircle,
+  FiBookOpen,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import ScoreCard from '../ScoreCard';
 import { IMSLPScore, IMSLPWorkScores } from '@/app/libs/imslp-score-scraper';
 import ScorePreview from '../ScorePreview';
+import StudyModeButton from '../../StudyMode/StudyModeButton';
 
 interface IMSLPTabsProps {
   imslpData: IMSLPWorkScores;
   loading?: boolean;
   error?: string;
   onRefetch?: () => void;
+  onScoreSelect?: (score: IMSLPScore) => void; // Novo callback
+  workId?: string; // Para o botão de estudo
+  workTitle?: string;
+  composerName?: string;
 }
 
 interface TabInfo {
@@ -78,6 +84,10 @@ export default function IMSLPTabs({
   loading,
   error,
   onRefetch,
+  onScoreSelect,
+  workId,
+  workTitle,
+  composerName,
 }: IMSLPTabsProps) {
   const [activeTab, setActiveTab] = useState<string>(() => {
     // Encontrar a primeira aba com conteúdo
@@ -90,26 +100,14 @@ export default function IMSLPTabs({
   const [selectedScore, setSelectedScore] = useState<IMSLPScore | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Scroll automático para o preview quando uma partitura for selecionada
-  useEffect(() => {
-    if (selectedScore && previewRef.current) {
-      // Pequeno delay para garantir que o componente foi renderizado
-      setTimeout(() => {
-        previewRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-          inline: 'nearest',
-        });
-      }, 100);
-    }
-  }, [selectedScore]);
-
   const handleScoreSelect = (score: IMSLPScore) => {
     // Se a mesma partitura for clicada, desselecioná-la
     if (selectedScore?.id === score.id) {
       setSelectedScore(null);
+      onScoreSelect?.(null as any); // Notificar parent que nenhuma partitura está selecionada
     } else {
       setSelectedScore(score);
+      onScoreSelect?.(score); // Notificar parent da seleção
     }
   };
 
@@ -119,7 +117,7 @@ export default function IMSLPTabs({
         <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
-              <FiMusic className="w-6 h-6 text-theme-inverse" />
+              <FiMusic className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -158,7 +156,7 @@ export default function IMSLPTabs({
         <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-2xl flex items-center justify-center">
-              <FiAlertCircle className="w-6 h-6 text-theme-inverse" />
+              <FiAlertCircle className="w-6 h-6 text-theme-primary" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -204,16 +202,58 @@ export default function IMSLPTabs({
     imslpData.scoresByType[activeTab as keyof typeof imslpData.scoresByType] ||
     [];
 
-  // const totalItems = Object.values(imslpData.totalCounts).reduce(
-  //   (a, b) => a + b,
-  //   0
-  // );
-
+  console.log('scoreGroup', activeTabData);
   return (
     <div className="classical-card overflow-hidden animate-fade-in-up">
-      {/* Tabs Navigation */}
+      {/* Header com informações da partitura selecionada */}
       <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
-        <nav className="flex overflow-x-auto scrollbar-hide" aria-label="Tabs">
+        <div className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
+                <FiMusic className="w-6 h-6 text-theme-primary" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                  Partituras IMSLP
+                </h2>
+                <p className="text-theme-secondary classical-subtitle">
+                  {selectedScore
+                    ? `Partitura selecionada: ${selectedScore.title}`
+                    : 'Selecione uma partitura para estudo'}
+                </p>
+              </div>
+            </div>
+
+            {/* Botão de Modo Estudo - só aparece se uma partitura estiver selecionada */}
+            {selectedScore && workId && workTitle && composerName && (
+              <div className="flex items-center space-x-3">
+                <div className="bg-theme-elevated/50 border border-theme-primary/30 rounded-xl px-4 py-2">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
+                    <span className="text-theme-secondary font-medium">
+                      Partitura selecionada para estudo
+                    </span>
+                  </div>
+                </div>
+
+                <StudyModeButton
+                  workId={workId}
+                  workTitle={workTitle}
+                  composerName={composerName}
+                  selectedScore={selectedScore}
+                  variant="compact"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Tabs Navigation */}
+        <nav
+          className="flex overflow-x-auto scrollbar-hide px-6"
+          aria-label="Tabs"
+        >
           {visibleTabs.map((tab, index) => {
             const Icon = tab.icon;
             const count = imslpData.totalCounts[tab.type];
@@ -307,7 +347,48 @@ export default function IMSLPTabs({
                 ref={previewRef}
                 className="lg:sticky lg:top-6 animate-fade-in-up scroll-mt-4"
               >
-                <ScorePreview score={selectedScore} />
+                <div className="classical-card-2 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+                      <FiBookOpen className="w-5 h-5 text-accent-blue" />
+                      <span>Preview da Partitura</span>
+                    </h3>
+
+                    {/* Info sobre seleção para estudo */}
+                    <div className="flex items-center space-x-2 text-sm">
+                      <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
+                      <span className="text-theme-secondary">
+                        Selecionada para estudo
+                      </span>
+                    </div>
+                  </div>
+
+                  <ScorePreview score={selectedScore} />
+
+                  {/* Ações do preview */}
+                  <div className="mt-4 pt-4 border-t border-theme-secondary">
+                    <div className="flex flex-wrap gap-3">
+                      {workId && workTitle && composerName && (
+                        <StudyModeButton
+                          workId={workId}
+                          workTitle={workTitle}
+                          composerName={composerName}
+                          selectedScore={selectedScore}
+                          variant="default"
+                          className="flex-1 min-w-[200px]"
+                        />
+                      )}
+
+                      <button
+                        onClick={() => handleScoreSelect(selectedScore)}
+                        className="btn-classical-secondary flex items-center space-x-2"
+                      >
+                        <FiMusic className="w-4 h-4" />
+                        <span>Desselecionar</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>

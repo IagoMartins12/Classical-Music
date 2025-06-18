@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - Updated with Learning Components
+// app/work/[workId]/WorkDetailsClient.tsx - Updated with Study Mode
 'use client';
 
 import { useState } from 'react';
@@ -27,6 +27,11 @@ import FavoriteButton from '../FavoriteButton';
 import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
 
+import { useStudyModeStore } from '@/app/stores/useStudyModeStore';
+import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
+import StudyModeButton from '../StudyMode/StudyModeButton';
+import StudyModeModal from '../StudyMode/StudyModeModal';
+
 interface WorkDetailsClientProps {
   work: WorkDetails;
   relatedWorks?: any[];
@@ -43,6 +48,11 @@ export default function WorkDetailsClient({
   learningData = { wantToLearn: [], learned: [] },
 }: WorkDetailsClientProps) {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedScoreForStudy, setSelectedScoreForStudy] =
+    useState<IMSLPScore | null>(null);
+
+  // Study mode store
+  const { isStudyModeOpen, closeStudyMode } = useStudyModeStore();
 
   // Usar o hook ao invés de gerenciar estado manualmente
   const {
@@ -70,6 +80,11 @@ export default function WorkDetailsClient({
       COLLECTED_WORKS: 'Coleção de peças',
     };
     return labels[type as keyof typeof labels] || type;
+  };
+
+  // Callback para quando uma partitura é selecionada
+  const handleScoreSelect = (score: IMSLPScore) => {
+    setSelectedScoreForStudy(score);
   };
 
   return (
@@ -599,7 +614,13 @@ export default function WorkDetailsClient({
             )}
 
             {imslpScores && !loadingScores && (
-              <IMSLPTabs imslpData={imslpScores} />
+              <IMSLPTabs
+                imslpData={imslpScores}
+                onScoreSelect={handleScoreSelect}
+                composerName={work.composer.fullName}
+                workId={work.id}
+                workTitle={work.title}
+              />
             )}
           </div>
         )}

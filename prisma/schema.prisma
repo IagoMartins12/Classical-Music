@@ -18,10 +18,15 @@ enum DifficultyLevel {
 
 
 enum PracticeFocus {
-  TECHNICAL
-  EXPRESSIVITY
-  PRECISION
+  TECHNICAL     // Foco técnico
+  EXPRESSIVITY  // Foco na expressividade
+  PRECISION     // Foco na precisão
+  SIGHT_READING // Leitura à primeira vista
+  MEMORIZATION  // Memorização
+  PERFORMANCE   // Preparação para performance
+  REVIEW        // Revisão geral
 }
+
 
 enum WorkType {
   INDIVIDUAL
@@ -33,6 +38,7 @@ enum WorkType {
   COLLECTED_WORKS
   COLLECTIONS_WITH
 }
+
 
 enum UserType {
   MUSIC_STUDENT
@@ -418,11 +424,31 @@ model StudySession {
   mood           Int?         // 1-5 humor antes da prática
   energy         Int?         // 1-5 energia depois da prática
 
+  // NOVOS CAMPOS para modo estudo
+  metronomeSettings Json?     // Configurações do metrônomo { bpm: number, timeSignature: string }
+  selectedScore     Json?     // Dados da partitura selecionada
+  studyNotes        String?   // Anotações durante o estudo
+  practiceGoals     String[]  @default([]) // Objetivos para esta sessão
+  technicalFocus    String[]  @default([]) // Focos técnicos trabalhados
+  expressiveFocus   String[]  @default([]) // Focos expressivos trabalhados
+  precisionFocus    String[]  @default([]) // Focos de precisão trabalhados
+  
+  // Avaliação pós-prática
+  postPracticeRating Int?     // 1-5 satisfação com a sessão
+  postPracticeNotes  String?  // Notas de reflexão
+  nextSessionGoals   String[] @default([]) // Objetivos para próxima sessão
+  
+  // Métricas detalhadas
+  pauseCount        Int       @default(0) // Quantas vezes pausou
+  restartCount      Int       @default(0) // Quantas vezes recomeçou
+  sectionsRepeated  Json?     // Seções que foram repetidas e quantas vezes
+  
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
 
   @@index([userId, date])
   @@index([workId, date])
+  @@index([userId, workId])
 }
 
 // Novo model para metas de aprendizado
