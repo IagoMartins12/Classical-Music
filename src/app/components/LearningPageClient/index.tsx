@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import Link from 'next/link';
 import {
   FiTarget,
   FiCheckCircle,
@@ -10,7 +9,6 @@ import {
   FiList,
   FiSearch,
   FiMusic,
-  FiBookOpen,
   FiFilter,
   FiX,
 } from 'react-icons/fi';
@@ -19,12 +17,14 @@ import {
   WantToLearnItem,
   LearnedItem,
 } from '@/app/stores/useLearningStore';
-import { useAuth } from '@/app/hooks/useAuth';
 import LearningModal from '@/app/components/LearningModal';
 import { StatCard } from './StatCard';
 import { EmptyState } from './EmptyState';
 import { LearningCard } from './LearningCard';
 import Select from '../Common/Select';
+import LearningLoading from '@/app/learning/loading';
+import AuthCheck from '../AuthCheck';
+import { useAuth } from '@/app/hooks/useAuth';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 type ViewMode = 'grid' | 'list';
@@ -39,13 +39,23 @@ interface LearningPageClientProps {
   };
 }
 
+const priorityOptions = [
+  { value: 'all', label: 'Todas as prioridades' },
+  { value: '5', label: 'Prioridade Alta (5)' },
+  { value: '4', label: 'Prioridade Média-Alta (4)' },
+  { value: '3', label: 'Prioridade Média (3)' },
+  { value: '2', label: 'Prioridade Baixa-Média (2)' },
+  { value: '1', label: 'Prioridade Baixa (1)' },
+];
+
+const dificultyOptions = [
+  { value: 'all', label: 'Todas as dificuldades' },
+  { value: 'BEGINNER', label: 'Iniciante' },
+  { value: 'INTERMEDIATE', label: 'Intermediário' },
+  { value: 'ADVANCED', label: 'Avançado' },
+];
+
 const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
-  const { isAuthenticated } = useAuth();
-  const { wantToLearn, learned, initializeLearning, initialized } =
-    useLearningStore();
-
-  console.log('initialData', { wantToLearn, learned });
-
   // States
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
@@ -63,6 +73,11 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
     composerName: string;
     type: 'want-to-learn' | 'learned';
   } | null>(null);
+
+  const { wantToLearn, learned, initializeLearning, initialized } =
+    useLearningStore();
+
+  const { isAuthenticated } = useAuth();
 
   // ✅ CORREÇÃO: Remover initializeLearning das dependências
   useEffect(() => {
@@ -133,22 +148,6 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
     return { wantToLearn: wantToLearnFiltered, learned: learnedFiltered };
   }, [wantToLearn, learned, searchQuery, difficultyFilter, priorityFilter]);
 
-  const priorityOptions = [
-    { value: 'all', label: 'Todas as prioridades' },
-    { value: '5', label: 'Prioridade Alta (5)' },
-    { value: '4', label: 'Prioridade Média-Alta (4)' },
-    { value: '3', label: 'Prioridade Média (3)' },
-    { value: '2', label: 'Prioridade Baixa-Média (2)' },
-    { value: '1', label: 'Prioridade Baixa (1)' },
-  ];
-
-  const dificultyOptions = [
-    { value: 'all', label: 'Todas as dificuldades' },
-    { value: 'BEGINNER', label: 'Iniciante' },
-    { value: 'INTERMEDIATE', label: 'Intermediário' },
-    { value: 'ADVANCED', label: 'Avançado' },
-  ];
-
   // Statistics
   const stats = useMemo(() => {
     const totalItems = wantToLearn.length + learned.length;
@@ -190,35 +189,12 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
   };
 
   if (!mounted) {
-    return (
-      <div className="min-h-screen bg-gradient-primary flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-theme-secondary">Carregando seu aprendizado...</p>
-        </div>
-      </div>
-    );
+    return <LearningLoading />;
   }
 
   if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen bg-gradient-primary flex items-center justify-center">
-        <div className="text-center classical-card p-8 max-w-md">
-          <FiBookOpen className="w-16 h-16 text-brand-primary mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-theme-primary mb-2">
-            Acesso Necessário
-          </h1>
-          <p className="text-theme-secondary mb-6">
-            Faça login para acessar seu progresso musical
-          </p>
-          <Link href="/login" className="btn-classical-primary">
-            Fazer Login
-          </Link>
-        </div>
-      </div>
-    );
+    return <AuthCheck title="Suas lições" />;
   }
-
   return (
     <div className=" bg-gradient-primary">
       <div className="section-wrap space-y-8 relative z-10">

@@ -93,7 +93,7 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
 
             {/* Name and Info */}
             <div className="relative z-10">
-              <h3 className="font-bold text-theme-primary mb-3 text-sm classical-title mb-1 group-hover:text-brand-primary transition-colors duration-300 line-clamp-2 leading-tight">
+              <h3 className="font-bold text-theme-primary mb-3 text-sm classical-title group-hover:text-brand-primary transition-colors duration-300 line-clamp-2 leading-tight">
                 {composer.fullName || composer.name}
               </h3>
 

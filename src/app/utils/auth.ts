@@ -1,4 +1,4 @@
-// utils/auth.ts
+// utils/auth.ts - Updated with learning and favorites routes
 export const AUTH_PAGES = {
   LOGIN: '/auth/login',
   REGISTER: '/auth/register',
@@ -9,6 +9,7 @@ export const PROTECTED_ROUTES = [
   '/profile',
   '/settings',
   '/favorites',
+  '/learning', // ✅ Added learning route
   '/study-sessions',
   '/annotations',
 ] as const;

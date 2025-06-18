@@ -15,11 +15,13 @@ import {
   FiBookOpen,
 } from 'react-icons/fi';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
-import { useAuth } from '@/app/hooks/useAuth';
 import Image from 'next/image';
 import FavoriteButton from '../FavoriteButton';
 import { FaBook } from 'react-icons/fa';
 import EmptyStateFavorites from './EmptyStateFavorites';
+import FavoritesLoading from '@/app/favorites/loading';
+import { useAuth } from '@/app/hooks/useAuth';
+import AuthCheck from '../AuthCheck';
 
 type ViewMode = 'grid' | 'list';
 type FilterTab = 'all' | 'composers' | 'works';
@@ -27,7 +29,6 @@ type FilterTab = 'all' | 'composers' | 'works';
 export default function FavoritesClient() {
   const { favoriteComposers, favoriteWorks } = useFavoritesStore();
   const { isAuthenticated } = useAuth();
-
   // States
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
@@ -85,33 +86,11 @@ export default function FavoritesClient() {
   }, [favoriteComposers, favoriteWorks]);
 
   if (!mounted) {
-    return (
-      <div className="bg-gradient-primary flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-theme-secondary">Carregando seus favoritos...</p>
-        </div>
-      </div>
-    );
+    return <FavoritesLoading />;
   }
 
   if (!isAuthenticated) {
-    return (
-      <div className=" bg-gradient-primary flex items-center justify-center">
-        <div className="text-center classical-card p-8 max-w-md">
-          <FiHeart className="w-16 h-16 text-brand-primary mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-theme-primary mb-2">
-            Acesso Necessário
-          </h1>
-          <p className="text-theme-secondary mb-6">
-            Faça login para acessar seus favoritos
-          </p>
-          <Link href="/login" className="btn-classical-primary">
-            Fazer Login
-          </Link>
-        </div>
-      </div>
-    );
+    return <AuthCheck title="Seus favoritos" />;
   }
 
   return (

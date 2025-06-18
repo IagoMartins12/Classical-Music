@@ -83,7 +83,7 @@ export default function RootLayout({
               <Navbar />
 
               {/* Main content - pode ser server ou client components */}
-              <main className="min-h-screen">{children}</main>
+              <main className="">{children}</main>
             </FavoritesProvider>
           </AuthProvider>
         </ClientThemeWrapper>

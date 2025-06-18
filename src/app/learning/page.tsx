@@ -1,7 +1,10 @@
 // app/learning/page.tsx
 import { Metadata } from 'next';
-import { getCurrentUserLearningData } from '@/app/requests/learning';
-import LearningPageClient from '../components/LearningPageClient';
+
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../libs/auth';
+import AuthCheck from '../components/AuthCheck';
+import LearningPageServer from './pageServer';
 
 export const metadata: Metadata = {
   title: 'Meu Aprendizado | Classical Music App',
@@ -10,8 +13,11 @@ export const metadata: Metadata = {
 };
 
 export default async function LearningPage() {
-  // Buscar dados do servidor (SSR)
-  const learningData = await getCurrentUserLearningData();
+  const session = await getServerSession(authOptions);
 
-  return <LearningPageClient initialData={learningData} />;
+  if (!session?.user?.id) {
+    return <AuthCheck title="Suas lições" />;
+  }
+
+  return <LearningPageServer />;
 }
