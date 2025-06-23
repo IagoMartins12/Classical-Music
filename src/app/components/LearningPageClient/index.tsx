@@ -25,9 +25,9 @@ import Select from '../Common/Select';
 import LearningLoading from '@/app/learning/loading';
 import AuthCheck from '../AuthCheck';
 import { useAuth } from '@/app/hooks/useAuth';
+import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
-type ViewMode = 'grid' | 'list';
 type FilterTab = 'all' | 'want-to-learn' | 'learned';
 
 interface LearningPageClientProps {
@@ -59,7 +59,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
   // States
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [searchQuery, setSearchQuery] = useState('');
   const [difficultyFilter, setDifficultyFilter] = useState<
     DifficultyLevel | 'all'
@@ -329,28 +329,10 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                 </button>
 
                 {/* View Mode Toggle */}
-                <div className="bg-theme-secundary border border-theme-primary rounded-lg p-1 flex">
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 rounded-md transition-all duration-300 ${
-                      viewMode === 'list'
-                        ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
-                        : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
-                    }`}
-                  >
-                    <FiList className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 rounded-md transition-all duration-300 ${
-                      viewMode === 'grid'
-                        ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
-                        : 'text-theme-tertiary hover:text-theme-primary'
-                    }`}
-                  >
-                    <FiGrid className="w-4 h-4" />
-                  </button>
-                </div>
+                <ViewModeToggle
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                />
               </div>
             </div>
 
@@ -456,7 +438,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
               ) : (
                 <div
                   className={
-                    viewMode === 'grid'
+                    viewMode === 'cards'
                       ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
                       : 'space-y-4'
                   }
@@ -504,7 +486,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
               ) : (
                 <div
                   className={
-                    viewMode === 'grid'
+                    viewMode === 'cards'
                       ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
                       : 'space-y-4'
                   }

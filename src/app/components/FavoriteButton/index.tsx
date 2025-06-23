@@ -7,6 +7,7 @@ import { FiHeart } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
+import { useLoginModal } from '@/app/stores/authStore';
 
 export type FavoriteType = 'composer' | 'work';
 
@@ -51,6 +52,7 @@ const FavoriteButton = ({
   style,
 }: FavoriteButtonProps) => {
   const { user, isAuthenticated } = useAuth();
+  const { open } = useLoginModal();
   const [mounted, setMounted] = useState(false);
 
   // Store actions baseadas no tipo
@@ -139,6 +141,7 @@ const FavoriteButton = ({
     if (disabled || isLoading || !user?.id || !isAuthenticated) {
       if (!isAuthenticated && showToast) {
         toast.error('Faça login para favoritar itens');
+        open();
       }
       return;
     }

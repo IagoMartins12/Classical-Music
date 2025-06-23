@@ -20,6 +20,7 @@ import WorkCardList from './WorkCardList';
 import PaginationControls from '../PaginationControls';
 import AnimatedMusicalNotes2 from '../AnimatedMusicalNotes2';
 import GenreSearchInput from '../GenreSearchInput';
+import ViewModeToggle from '../ViewModeToggle';
 
 interface WorksClientProps {
   worksData: WorksListResponse;
@@ -275,33 +276,10 @@ export default function WorksClient({
             </button>
 
             {/* View Mode Toggle */}
-            <div className="flex items-center space-x-3">
-              <span className="text-sm text-theme-secondary">Vista:</span>
-              <div className="bg-theme-secundary border border-theme-primary rounded-lg p-1 flex">
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded-md transition-all duration-300 ${
-                    viewMode === 'list'
-                      ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
-                      : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
-                  }`}
-                  title="Visualização em lista"
-                >
-                  <FiList className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => setViewMode('cards')}
-                  className={`p-2 rounded-md transition-all duration-300 ${
-                    viewMode === 'cards'
-                      ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
-                      : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
-                  }`}
-                  title="Visualização em cards"
-                >
-                  <FiGrid className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
+            <ViewModeToggle
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+            />
           </div>
 
           {/* Expanded Filters */}

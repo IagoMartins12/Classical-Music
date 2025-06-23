@@ -22,8 +22,8 @@ import EmptyStateFavorites from './EmptyStateFavorites';
 import FavoritesLoading from '@/app/favorites/loading';
 import { useAuth } from '@/app/hooks/useAuth';
 import AuthCheck from '../AuthCheck';
+import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
 
-type ViewMode = 'grid' | 'list';
 type FilterTab = 'all' | 'composers' | 'works';
 
 export default function FavoritesClient() {
@@ -32,7 +32,7 @@ export default function FavoritesClient() {
   // States
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
-  const [viewMode, setViewMode] = useState<ViewMode>('grid');
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -204,29 +204,10 @@ export default function FavoritesClient() {
               </div>
 
               {/* View Mode Toggle */}
-              <div className="bg-theme-secundary border border-theme-primary rounded-lg p-1 flex">
-                <button
-                  onClick={() => setViewMode('list')}
-                  className={`p-2 rounded transition-all ${
-                    viewMode === 'list'
-                      ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
-                      : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
-                  }`}
-                >
-                  <FiList className="w-4 h-4" />
-                </button>
-
-                <button
-                  onClick={() => setViewMode('grid')}
-                  className={`p-2 rounded transition-all ${
-                    viewMode === 'grid'
-                      ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
-                      : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
-                  }`}
-                >
-                  <FiGrid className="w-4 h-4" />
-                </button>
-              </div>
+              <ViewModeToggle
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+              />
             </div>
           </div>
         </div>
@@ -266,7 +247,7 @@ export default function FavoritesClient() {
 
                     <div
                       className={
-                        viewMode === 'grid'
+                        viewMode === 'cards'
                           ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
                           : 'space-y-4'
                       }
@@ -348,7 +329,7 @@ export default function FavoritesClient() {
                               </div>
                             )}
 
-                            {viewMode === 'grid' && (
+                            {viewMode === 'cards' && (
                               <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
                                 <Link
                                   href={`/composer/${favorite.composer?.id}`}
@@ -416,7 +397,7 @@ export default function FavoritesClient() {
 
                     <div
                       className={
-                        viewMode === 'grid'
+                        viewMode === 'cards'
                           ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
                           : 'space-y-4'
                       }
@@ -447,7 +428,7 @@ export default function FavoritesClient() {
                                   {/* Title and opus */}
                                   <div
                                     className={`flex items-start gap-3 mb-1 ${
-                                      viewMode === 'grid' ? 'flex-col' : ''
+                                      viewMode === 'cards' ? 'flex-col' : ''
                                     }`}
                                   >
                                     <div className="inline-flex items-center py-0.5">
@@ -491,7 +472,7 @@ export default function FavoritesClient() {
                               </div>
                             )}
 
-                            {viewMode === 'grid' && (
+                            {viewMode === 'cards' && (
                               <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
                                 <Link
                                   href={`/works/${favorite.work?.id}`}

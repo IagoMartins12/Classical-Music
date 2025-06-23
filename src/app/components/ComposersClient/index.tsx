@@ -10,6 +10,7 @@ import ComposerCardList from './ComposerCardList';
 import PaginationControls from '../PaginationControls';
 import { FaRegUser } from 'react-icons/fa';
 import AnimatedMusicalNotes2 from '../AnimatedMusicalNotes2';
+import ViewModeToggle from '../ViewModeToggle';
 
 export interface ComposerImslp {
   epochName: string;
@@ -60,7 +61,7 @@ export default function ComposersClient({
   const [isPending, startTransition] = useTransition();
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [selectedEpoch, setSelectedEpoch] = useState(initialSelectedEpoch);
-  const [showPhotos, setShowPhotos] = useState(true);
+  const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
 
   // Função para atualizar URL com debounce
   const updateUrl = useCallback(
@@ -308,33 +309,10 @@ export default function ComposersClient({
               )}
 
               {/* View Toggle */}
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-theme-secondary">Vista:</span>
-                <div className="bg-theme-secundary border border-theme-primary rounded-lg p-1 flex">
-                  <button
-                    onClick={() => setShowPhotos(false)}
-                    className={`p-2 rounded-md transition-all duration-300 ${
-                      !showPhotos
-                        ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
-                        : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
-                    }`}
-                    title="Visualização em lista"
-                  >
-                    <FiList className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setShowPhotos(true)}
-                    className={`p-2 rounded-md transition-all duration-300 ${
-                      showPhotos
-                        ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
-                        : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
-                    }`}
-                    title="Visualização em grade"
-                  >
-                    <FiGrid className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+              <ViewModeToggle
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+              />
             </div>
           </div>
         </div>
@@ -342,7 +320,7 @@ export default function ComposersClient({
         {/* Results Section */}
         <div className="relative">
           {composers.length > 0 ? (
-            showPhotos ? (
+            viewMode === 'cards' ? (
               // Grid View
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {composers.map((composer, index) => (

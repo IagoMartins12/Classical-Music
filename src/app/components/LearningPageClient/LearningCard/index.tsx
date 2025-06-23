@@ -32,7 +32,7 @@ type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 interface LearningCardProps {
   item: WantToLearnItem | LearnedItem;
   type: 'want-to-learn' | 'learned';
-  viewMode: 'grid' | 'list';
+  viewMode: 'cards' | 'list';
   onEdit: () => void;
 }
 

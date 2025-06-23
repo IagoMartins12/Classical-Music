@@ -15,6 +15,7 @@ import {
   FiChevronUp,
 } from 'react-icons/fi';
 import AnimatedMusicalNotes2 from '../AnimatedMusicalNotes2';
+import ViewModeToggle from '../ViewModeToggle';
 
 interface Genre {
   id: string;
@@ -28,7 +29,7 @@ interface GenresClientProps {
 export default function GenresClient({ genres }: GenresClientProps) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
   const [collapsedSections, setCollapsedSections] = useState<Set<string>>(
     new Set()
   );
@@ -177,33 +178,10 @@ export default function GenresClient({ genres }: GenresClientProps) {
               )}
 
               {/* View Mode Toggle */}
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-theme-secondary">Vista:</span>
-                <div className="bg-theme-secundary border border-theme-primary rounded-lg p-1 flex">
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 rounded-md transition-all duration-300 ${
-                      viewMode === 'list'
-                        ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
-                        : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
-                    }`}
-                    title="Visualização em lista"
-                  >
-                    <FiList className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 rounded-md transition-all duration-300 ${
-                      viewMode === 'grid'
-                        ? 'bg-brand-gradient text-brand-primary shadow-theme-glow'
-                        : 'text-theme-tertiary hover:text-theme-primary hover:bg-interactive-hover'
-                    }`}
-                    title="Visualização em grade"
-                  >
-                    <FiGrid className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+              <ViewModeToggle
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+              />
             </div>
           </div>
 
@@ -290,7 +268,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
                 {/* Section Content - Condicionalmente renderizado */}
                 {!isSectionCollapsed(letter) && (
                   <div className="animate-fade-in-up">
-                    {viewMode === 'grid' ? (
+                    {viewMode === 'cards' ? (
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         {genresInGroup.map((genre, index) => (
                           <button

@@ -148,9 +148,7 @@ const Navbar: React.FC = () => {
             <ThemeToggle variant="navbar" />
 
             {/* Authentication Section */}
-            {isLoading ? (
-              <div className="w-8 h-8 animate-spin border-2 border-brand-primary border-t-transparent rounded-full" />
-            ) : isAuthenticated && user ? (
+            {isLoading ? null : isAuthenticated && user ? (
               /* Authenticated User Menu */
               <div className="relative">
                 <button
