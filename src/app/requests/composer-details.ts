@@ -35,10 +35,7 @@ export interface ComposerWork {
     id: string;
     name: string;
   };
-  genre?: {
-    id: string;
-    name: string;
-  };
+
   epoch?: {
     id: string;
     name: string;
@@ -71,19 +68,6 @@ export const getComposerWorks = unstable_cache(
           workType: true,
           isPartOfCollection: true,
           parentWorkId: true,
-
-          // genre: {
-          //   select: {
-          //     id: true,
-          //     name: true,
-          //   },
-          // },
-          // epoch: {
-          //   select: {
-          //     id: true,
-          //     name: true,
-          //   },
-          // },
         },
         orderBy: [
           {

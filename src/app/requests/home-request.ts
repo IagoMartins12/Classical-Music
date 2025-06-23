@@ -1,7 +1,7 @@
 // app/requests/home-components.ts
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
-import { allFamousNames, getComposerCuriosities } from './utils';
+import { allFamousNames, getComposerCuriosities, musicalFacts } from './utils';
 
 // Compositor em destaque (muda a cada 24h)
 export const getFeaturedComposer = unstable_cache(
@@ -312,65 +312,8 @@ export const getRecentAdditions = unstable_cache(
 // Curiosidades musicais e fatos interessantes
 export const getMusicalFacts = unstable_cache(
   async () => {
-    const facts = [
-      {
-        id: '1',
-        type: 'curiosity',
-        icon: '🎼',
-        title: 'Você sabia?',
-        content:
-          'Mozart compôs sua primeira sinfonia aos 8 anos de idade, demonstrando um talento extraordinário desde muito jovem.',
-        category: 'História',
-      },
-      {
-        id: '2',
-        type: 'anniversary',
-        icon: '🎂',
-        title: 'Aniversário',
-        content:
-          'Bach nasceu em 21 de março de 1685, há mais de 300 anos, e suas obras continuam influenciando músicos até hoje.',
-        category: 'Efeméride',
-      },
-      {
-        id: '3',
-        type: 'instrument',
-        icon: '🎹',
-        title: 'Instrumentos',
-        content:
-          'O piano moderno tem 88 teclas, mas os primeiros pianos tinham apenas 54 teclas.',
-        category: 'Instrumentos',
-      },
-      {
-        id: '4',
-        type: 'technique',
-        icon: '🎵',
-        title: 'Técnica',
-        content:
-          'A técnica de contraponto, desenvolvida no período barroco, ainda é fundamental para compositores contemporâneos.',
-        category: 'Teoria',
-      },
-      {
-        id: '5',
-        type: 'record',
-        icon: '⏰',
-        title: 'Recorde',
-        content:
-          'A "Sinfonia dos Mil" de Mahler é uma das peças que exige o maior número de músicos para sua execução.',
-        category: 'Curiosidades',
-      },
-      {
-        id: '6',
-        type: 'innovation',
-        icon: '💡',
-        title: 'Inovação',
-        content:
-          'Beethoven foi um dos primeiros compositores a usar indicações de dinâmica muito detalhadas em suas partituras.',
-        category: 'Inovação',
-      },
-    ];
-
     // Randomizar as curiosidades para variar o conteúdo
-    return facts.sort(() => 0.5 - Math.random()).slice(0, 4);
+    return musicalFacts.sort(() => 0.5 - Math.random()).slice(0, 4);
   },
   ['musical-facts'],
   {

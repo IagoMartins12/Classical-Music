@@ -100,9 +100,6 @@ export default function ComposerWorks({
       if (work.instrument?.name) {
         instrumentsSet.add(work.instrument.name);
       }
-      if (work.genre?.name) {
-        genresSet.add(work.genre.name);
-      }
     });
 
     return {
@@ -121,9 +118,8 @@ export default function ComposerWorks({
 
       const matchesInstrument =
         !selectedInstrument || work.instrument?.name === selectedInstrument;
-      const matchesGenre = !selectedGenre || work.genre?.name === selectedGenre;
 
-      return matchesSearch && matchesInstrument && matchesGenre;
+      return matchesSearch && matchesInstrument;
     });
   }, [works, searchTerm, selectedInstrument, selectedGenre]);
 
@@ -408,13 +404,6 @@ export default function ComposerWorks({
                           <div className="flex items-center space-x-2">
                             <FiMusic className="w-4 h-4 text-theme-tertiary" />
                             <span>{work.instrument.name}</span>
-                          </div>
-                        )}
-
-                        {work.genre?.name && (
-                          <div className="flex items-center space-x-2">
-                            <MdLibraryMusic className="w-4 h-4 text-theme-tertiary" />
-                            <span>{work.genre.name}</span>
                           </div>
                         )}
 
