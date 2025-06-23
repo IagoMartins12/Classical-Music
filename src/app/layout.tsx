@@ -1,5 +1,4 @@
-// app/layout.tsx (Server Component - SEM 'use client')
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { ClientThemeWrapper } from './components/ClientThemeWrapper';
@@ -40,15 +39,16 @@ export const metadata: Metadata = {
     description:
       'Explore, aprenda e pratique música clássica com nossa enciclopédia interativa.',
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
   robots: {
     index: true,
     follow: true,
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -59,9 +59,6 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        {/* Preload critical fonts */}
-
-        {/* Theme meta tags */}
         <meta name="color-scheme" content="dark light" />
         <meta
           name="theme-color"
@@ -75,15 +72,11 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} font-sans antialiased`}>
-        {/* Client-side theme wrapper - mantém SSR */}
         <ClientThemeWrapper>
           <AuthProvider>
             <FavoritesProvider>
-              {/* Navbar como client component */}
               <Navbar />
-
-              {/* Main content - pode ser server ou client components */}
-              <main className="">{children}</main>
+              <main>{children}</main>
             </FavoritesProvider>
           </AuthProvider>
         </ClientThemeWrapper>

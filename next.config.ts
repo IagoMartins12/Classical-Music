@@ -2,10 +2,6 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
-    domains: [
-      'lh3.googleusercontent.com', // Google profile images
-      'avatars.githubusercontent.com', // GitHub profile images
-    ],
     remotePatterns: [
       new URL('https://imslp.org/images/**'),
       new URL('https://**.imslp.org/images/**'),
