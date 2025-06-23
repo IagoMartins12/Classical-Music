@@ -21,6 +21,7 @@ import AccountSettingsSection from './AccountSettingsSection';
 import { useAuth } from '@/app/hooks/useAuth';
 import { User } from 'next-auth';
 import { useAuthStore } from '@/app/stores/authStore';
+import AuthCheck from '../AuthCheck';
 
 interface Tab {
   id: string;
@@ -111,28 +112,14 @@ export default function ProfilePageClient() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [goToPrevTab, goToNextTab]);
 
-  // Not authenticated
-  if (!isAuthenticated || !user) {
-    return (
-      <div className="text-center py-12">
-        <div className="classical-card-2 p-8 max-w-md mx-auto">
-          <h2 className="text-xl font-semibold text-theme-primary mb-4">
-            Acesso Restrito
-          </h2>
-          <p className="text-theme-secondary mb-6">
-            Você precisa estar logado para acessar seu perfil.
-          </p>
-          <button onClick={openLoginModal} className="btn-primary">
-            Fazer Login
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   const activeTabData = tabs.find((tab) => tab.id === activeTab);
   const ActiveComponent = activeTabData?.component;
   const currentTabIndex = tabs.findIndex((tab) => tab.id === activeTab);
+
+  // Not authenticated
+  if (!isAuthenticated || !user) {
+    return <AuthCheck title="Seu perfil" />;
+  }
 
   return (
     <>

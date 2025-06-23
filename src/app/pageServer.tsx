@@ -80,7 +80,3 @@ export default async function EnhancedHomePage() {
     </div>
   );
 }
-
-// Exportar também os tipos para uso em outros componentes
-export type {} from // Types para os novos componentes
-'./requests/home-components';

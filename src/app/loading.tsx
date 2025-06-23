@@ -14,7 +14,7 @@ import { GiMusicalNotes, GiGrandPiano, GiTreasureMap } from 'react-icons/gi';
 
 export default function HomeLoading() {
   return (
-    <div className="min-h-screen bg-gradient-primary">
+    <div className=" bg-gradient-primary">
       {/* Background Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
         <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>

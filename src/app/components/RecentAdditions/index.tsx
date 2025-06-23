@@ -69,13 +69,13 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
       </div>
 
       {/* Fresh content indicator */}
-      <div className="mt-8 text-center">
+      {/* <div className="mt-8 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-full text-green-400 text-sm font-medium backdrop-blur-sm">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
           <span>Conteúdo sempre atualizado</span>
           <FiPlus className="w-4 h-4" />
         </div>
-      </div>
+      </div> */}
 
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

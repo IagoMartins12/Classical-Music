@@ -108,7 +108,7 @@ export function MusicHistoryPageClient({
   }
 
   return (
-    <div className="w-full min-h-screen ">
+    <div className="w-full  ">
       {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none opacity-5 z-0">
         <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>

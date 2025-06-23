@@ -18,6 +18,8 @@ import {
   GiMetronome,
 } from 'react-icons/gi';
 import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
+import Button from './Button';
+import Link from 'next/link';
 
 export default function AboutPage() {
   const features = [
@@ -81,7 +83,7 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="classical-theme min-h-screen">
+    <div className="classical-theme">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 lg:py-32">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
@@ -114,14 +116,14 @@ export default function AboutPage() {
               className="flex flex-col sm:flex-row gap-4 justify-center mt-12 animate-fade-in-up"
               style={{ animationDelay: '0.4s' }}
             >
-              <button className="btn-classical-primary flex items-center justify-center space-x-2 px-8 py-4 text-lg hover:scale-105">
-                <FiMusic className="w-5 h-5" />
-                <span>Comece Agora</span>
-              </button>
-              <button className="btn-classical-secondary flex items-center justify-center space-x-2 px-8 py-4 text-lg">
+              <Button action="register" />
+              <Link
+                href="/composers"
+                className="btn-classical-secondary flex items-center justify-center space-x-2 px-8 py-4 text-lg"
+              >
                 <FiBookOpen className="w-5 h-5" />
                 <span>Explore a Enciclopédia</span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -349,15 +351,15 @@ export default function AboutPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <button className="btn-classical-primary flex items-center justify-center space-x-3 px-10 py-4 text-lg hover:scale-105">
-                <FiUsers className="w-5 h-5" />
-                <span>Criar Conta Gratuita</span>
-              </button>
+              <Button action="login" />
 
-              <button className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg">
+              <Link
+                href="/"
+                className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
+              >
                 <FiHeadphones className="w-5 h-5" />
                 <span>Explorar Sem Cadastro</span>
-              </button>
+              </Link>
             </div>
 
             <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">

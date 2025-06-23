@@ -40,14 +40,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   // Durante a hidratação, renderiza com classe neutra
   if (!mounted) {
-    return (
-      <div className="bg-gray-950 text-white min-h-screen">{children}</div>
-    );
+    return <div className="bg-gray-950 text-white ">{children}</div>;
   }
 
-  return (
-    <div className="classical-theme min-h-screen transition-theme">
-      {children}
-    </div>
-  );
+  return <div className="classical-theme  transition-theme">{children}</div>;
 };

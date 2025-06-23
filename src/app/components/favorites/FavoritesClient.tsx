@@ -321,7 +321,7 @@ export default function FavoritesClient() {
                                   <div className="flex flex-col justify-center">
                                     <div className="inline-flex items-center py-0.5">
                                       <FiUser className="w-3 h-3 mr-1" />
-                                      <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 max-w-11/12 flex-1">
+                                      <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 w-11/12 truncate flex-1">
                                         {favorite.composer?.fullName ||
                                           favorite.composer?.name}{' '}
                                       </h3>
@@ -435,7 +435,7 @@ export default function FavoritesClient() {
                             className={`${
                               viewMode === 'list'
                                 ? 'flex items-center space-x-4 flex-1'
-                                : ''
+                                : 'flex flex-col justify-between h-full'
                             }`}
                           >
                             {favorite.work && (
@@ -451,8 +451,7 @@ export default function FavoritesClient() {
                                     }`}
                                   >
                                     <div className="inline-flex items-center py-0.5">
-                                      <FaBook className="w-3 h-3 mr-1" />
-                                      <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 max-w-11/12 flex-1">
+                                      <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 w-11/12 flex-1">
                                         {favorite.work.title}
                                       </h3>
                                     </div>

@@ -253,13 +253,13 @@ const ComposersByEpoch: React.FC<ComposersByEpochProps> = ({ epochs }) => {
       </div>
 
       {/* Informação adicional */}
-      <div className="mt-16 text-center">
+      {/* <div className="mt-16 text-center">
         <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-purple-500/10 to-violet-500/10 border border-purple-500/20 rounded-2xl text-purple-400 text-sm font-medium backdrop-blur-sm">
           <GiMusicalNotes className="w-5 h-5" />
           <span>Cada período representa uma revolução na história musical</span>
           <FiClock className="w-5 h-5 animate-pulse" />
         </div>
-      </div>
+      </div> */}
 
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

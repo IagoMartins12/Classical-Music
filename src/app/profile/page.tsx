@@ -21,14 +21,8 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-theme-background">
+    <div className=" bg-theme-background">
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-theme-primary mb-2">
-            Meu Perfil
-          </h1>
-        </div>
-
         <Suspense fallback={<ProfileSkeleton />}>
           <ProfilePageClient />
         </Suspense>

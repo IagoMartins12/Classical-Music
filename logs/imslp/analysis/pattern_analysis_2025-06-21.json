@@ -1,0 +1,164 @@
+{
+  "generatedAt": "2025-06-21T22:52:37.297Z",
+  "topPatterns": [
+    {
+      "pattern": "3/3a",
+      "data": {
+        "pattern": "3/3a",
+        "subdomains": [
+          "ks15.imslp.org"
+        ],
+        "successRate": 1,
+        "averageTime": 791.8654479980469,
+        "lastSeen": "2025-06-21T22:40:29.044Z",
+        "confidence": 0.9000000000000002
+      }
+    },
+    {
+      "pattern": "e/ea",
+      "data": {
+        "pattern": "e/ea",
+        "subdomains": [
+          "ks15.imslp.org"
+        ],
+        "successRate": 1,
+        "averageTime": 556.5416259765625,
+        "lastSeen": "2025-06-21T22:40:33.425Z",
+        "confidence": 0.7000000000000001
+      }
+    },
+    {
+      "pattern": "9/9c",
+      "data": {
+        "pattern": "9/9c",
+        "subdomains": [
+          "ks15.imslp.org",
+          "imslp.eu"
+        ],
+        "successRate": 1,
+        "averageTime": 832.112060546875,
+        "lastSeen": "2025-06-21T22:40:31.603Z",
+        "confidence": 0.6
+      }
+    },
+    {
+      "pattern": "6/6a",
+      "data": {
+        "pattern": "6/6a",
+        "subdomains": [
+          "ks15.imslp.org",
+          "imslp.eu"
+        ],
+        "successRate": 0.9999999999999999,
+        "averageTime": 483.2001953125,
+        "lastSeen": "2025-06-21T22:40:39.280Z",
+        "confidence": 0.49999999999999994
+      }
+    },
+    {
+      "pattern": "f/f5",
+      "data": {
+        "pattern": "f/f5",
+        "subdomains": [
+          "ks15.imslp.org",
+          "imslp.eu"
+        ],
+        "successRate": 0.9999999999999999,
+        "averageTime": 545.6484375,
+        "lastSeen": "2025-06-21T22:40:35.404Z",
+        "confidence": 0.49999999999999994
+      }
+    },
+    {
+      "pattern": "8/8f",
+      "data": {
+        "pattern": "8/8f",
+        "subdomains": [
+          "ks15.imslp.org"
+        ],
+        "successRate": 0.9999999999999999,
+        "averageTime": 471.5302734375,
+        "lastSeen": "2025-06-21T22:40:37.320Z",
+        "confidence": 0.49999999999999994
+      }
+    },
+    {
+      "pattern": "b/b0",
+      "data": {
+        "pattern": "b/b0",
+        "subdomains": [
+          "ks15.imslp.org",
+          "imslp.eu"
+        ],
+        "successRate": 0.9999999999999999,
+        "averageTime": 1131.54296875,
+        "lastSeen": "2025-06-21T22:40:31.968Z",
+        "confidence": 0.49999999999999994
+      }
+    },
+    {
+      "pattern": "a/a4",
+      "data": {
+        "pattern": "a/a4",
+        "subdomains": [
+          "ks15.imslp.org"
+        ],
+        "successRate": 0.9999999999999999,
+        "averageTime": 482.8974609375,
+        "lastSeen": "2025-06-21T22:40:34.425Z",
+        "confidence": 0.49999999999999994
+      }
+    },
+    {
+      "pattern": "1/19",
+      "data": {
+        "pattern": "1/19",
+        "subdomains": [
+          "ks15.imslp.org"
+        ],
+        "successRate": 0.7999999999999999,
+        "averageTime": 506.6953125,
+        "lastSeen": "2025-06-21T22:34:33.898Z",
+        "confidence": 0.39999999999999997
+      }
+    },
+    {
+      "pattern": "9/9e",
+      "data": {
+        "pattern": "9/9e",
+        "subdomains": [
+          "ks15.imslp.org",
+          "imslp.eu"
+        ],
+        "successRate": 0.7999999999999999,
+        "averageTime": 956.796875,
+        "lastSeen": "2025-06-21T22:52:37.077Z",
+        "confidence": 0.39999999999999997
+      }
+    }
+  ],
+  "subdomainRanking": [
+    {
+      "subdomain": "ks15.imslp.org",
+      "score": 0.7682603140655059
+    },
+    {
+      "subdomain": "imslp.eu",
+      "score": 0.7682258116875552
+    }
+  ],
+  "recommendations": [
+    "Priorizar ks15.imslp.org para novos requests"
+  ],
+  "insights": [
+    "Subdomain mais confiável: ks15.imslp.org",
+    "1 padrões com alta confiança (>80%)"
+  ],
+  "globalStats": {
+    "totalRequests": 680,
+    "successfulRequests": 680,
+    "averageResponseTime": 1021.3280621158117,
+    "mostReliableSubdomain": "",
+    "lastUpdated": "2025-06-21T22:52:37.289Z"
+  }
+}

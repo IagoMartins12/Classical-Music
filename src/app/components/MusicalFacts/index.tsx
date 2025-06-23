@@ -1,9 +1,9 @@
 // app/components/MusicalFacts/MusicalFacts.tsx
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import { FiBookOpen, FiStar, FiRefreshCw, FiFilter } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
-import { useState, useEffect } from 'react';
 import SectionTitle from '../Utils/SectionTitle';
 import {
   categories,
@@ -27,7 +27,7 @@ interface MusicalFactsProps {
 }
 
 const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
   // Definir estilos por tipo de curiosidade
   const getFactStyle = (type: string) => {
@@ -168,24 +168,34 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
   facts: initialFacts,
   initialCount = 4,
 }) => {
-  const [displayedFacts, setDisplayedFacts] = useState<MusicalFact[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [loadedCount, setLoadedCount] = useState(initialCount);
+  const [displayedFacts, setDisplayedFacts] = React.useState<MusicalFact[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
+  const [loadedCount, setLoadedCount] = React.useState(initialCount);
+  const [mounted, setMounted] = React.useState(false);
+
+  // Garantir que o componente está montado no cliente
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Inicializar com fatos fornecidos ou buscar aleatórios
-  useEffect(() => {
+  React.useEffect(() => {
+    if (!mounted) return;
+
     if (initialFacts && initialFacts.length > 0) {
       setDisplayedFacts(initialFacts);
     } else {
       loadInitialFacts();
     }
-  }, [initialFacts, initialCount]);
+  }, [initialFacts, initialCount, mounted]);
 
   const loadInitialFacts = () => {
-    const facts = getRandomFacts(initialCount);
-    setDisplayedFacts(facts);
-    setLoadedCount(initialCount);
+    if (typeof getRandomFacts === 'function') {
+      const facts = getRandomFacts(initialCount);
+      setDisplayedFacts(facts);
+      setLoadedCount(initialCount);
+    }
   };
 
   const refreshFacts = async () => {
@@ -230,6 +240,32 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
       return displayedFacts.length < categoryFacts.length;
     }
   };
+
+  // Não renderizar até estar montado no cliente
+  if (!mounted) {
+    return (
+      <section className="section-wrap relative !mb-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded mb-4"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="classical-card-simple p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gray-200"></div>
+                  <div className="flex-1">
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded mb-3 w-3/4"></div>
+                    <div className="h-3 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="section-wrap relative !mb-8">

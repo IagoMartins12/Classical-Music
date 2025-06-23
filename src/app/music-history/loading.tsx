@@ -6,7 +6,7 @@ import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
 
 const LoadingMusicHistorySkeleton = () => {
   return (
-    <div className="min-h-screen bg-gradient-primary">
+    <div className=" bg-gradient-primary">
       {/* Hero Skeleton */}
       <div className="relative overflow-hidden bg-gradient-primary pt-8 md:pt-24 lg:pt-24 flex items-center">
         {/* Animated musical notes */}

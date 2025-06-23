@@ -54,7 +54,7 @@ export default function ComposerDetailsClient({
   const secondaryRoles = composer.roleNames || [];
 
   return (
-    <div className="min-h-screen bg-gradient-primary">
+    <div className="bg-gradient-primary">
       {/* Background Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
         <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
@@ -391,7 +391,7 @@ export default function ComposerDetailsClient({
         </div>
 
         {/* Estatísticas */}
-        <div
+        {/* <div
           className="classical-card p-8 animate-fade-in-up"
           style={{ animationDelay: '0.3s' }}
         >
@@ -443,7 +443,7 @@ export default function ComposerDetailsClient({
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
         {/* Obras do Compositor */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>

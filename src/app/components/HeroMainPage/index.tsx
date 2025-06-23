@@ -5,7 +5,10 @@ const HeroMainPage = () => {
   return (
     <div className="section-wrap flex flex-col lg:flex-row gap-6">
       {/* Seção Principal - História da Música */}
-      <div className="w-full lg:w-8/12 relative rounded-2xl classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500">
+      <Link
+        href="/music-history"
+        className="w-full lg:w-8/12 relative rounded-2xl classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500"
+      >
         <div className="relative h-full ">
           <Image
             alt="Período clássico da música - Instrumentos históricos e partituras antigas"
@@ -34,10 +37,7 @@ const HeroMainPage = () => {
               Descubra como cada período histórico moldou a música que
               conhecemos e amamos hoje.
             </p>
-            <Link
-              href="/music-history"
-              className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white font-semibold hover:bg-white/30 transition-all duration-300 group/btn"
-            >
+            <div className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white font-semibold hover:bg-white/30 transition-all duration-300 group/btn">
               Explorar História Completa
               <svg
                 className="ml-2 w-4 h-4 transition-transform group-hover/btn:translate-x-1"
@@ -52,15 +52,18 @@ const HeroMainPage = () => {
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-            </Link>
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
 
       {/* Seções Laterais */}
       <div className="w-full lg:w-4/12 flex flex-col gap-4">
         {/* Card Instrumentação */}
-        <div className="relative rounded-2xl bg-white shadow-lg classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500">
+        <Link
+          href="/instruments"
+          className="relative rounded-2xl bg-white shadow-lg classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500"
+        >
           <div className="relative h-64">
             <Image
               alt="Instrumentos clássicos - Violino, piano e outros instrumentos históricos"
@@ -86,10 +89,7 @@ const HeroMainPage = () => {
                 contribuiu para o desenvolvimento da música clássica ao longo
                 dos séculos.
               </p>
-              <Link
-                href="/instruments"
-                className="inline-flex items-center text-sm font-semibold text-white hover:text-purple-200 transition-colors group/link"
-              >
+              <div className="inline-flex items-center text-sm font-semibold text-white hover:text-purple-200 transition-colors group/div">
                 Descobrir mais
                 <svg
                   className="ml-1 w-3 h-3 transition-transform group-hover/link:translate-x-1"
@@ -104,13 +104,16 @@ const HeroMainPage = () => {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* Card Sobre o Projeto */}
-        <div className="relative rounded-2xl bg-white shadow-lg  classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500">
+        <Link
+          href="/sobre"
+          className="relative rounded-2xl bg-white shadow-lg  classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500"
+        >
           <div className="relative h-64">
             <Image
               alt="Ambiente de estudo musical - Partituras, metrônomo e instrumentos musicais"
@@ -134,10 +137,7 @@ const HeroMainPage = () => {
                 plataforma completa que combina conhecimento histórico com
                 ferramentas práticas de estudo.
               </p>
-              <Link
-                href="/sobre"
-                className="inline-flex items-center text-sm font-semibold text-white hover:text-green-200 transition-colors group/link"
-              >
+              <div className="inline-flex items-center text-sm font-semibold text-white hover:text-green-200 transition-colors group/link">
                 Conheça nossa história
                 <svg
                   className="ml-1 w-3 h-3 transition-transform group-hover/link:translate-x-1"
@@ -152,10 +152,10 @@ const HeroMainPage = () => {
                     d="M9 5l7 7-7 7"
                   />
                 </svg>
-              </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   );

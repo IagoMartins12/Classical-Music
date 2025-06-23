@@ -82,7 +82,7 @@ export default async function WorkDetailsPage({
   }
 
   return (
-    <div className="min-h-screen ">
+    <div className=" ">
       <Suspense fallback={<WorkDetailsLoading />}>
         <WorkDetailsServer workId={resolvedParams.workId} />
       </Suspense>

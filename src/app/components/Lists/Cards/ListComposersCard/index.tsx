@@ -64,7 +64,6 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
                 type="composer"
                 variant="small"
                 size="md"
-                typeButton="square"
                 itemName={composer.fullName}
                 showToast={true}
               />

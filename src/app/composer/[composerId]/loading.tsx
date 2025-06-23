@@ -6,7 +6,7 @@ import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 
 export default function ComposerDetailsLoading() {
   return (
-    <div className="min-h-screen bg-gradient-primary">
+    <div className=" bg-gradient-primary">
       {/* Background Pattern */}
       <div className="absolute inset-0 pointer-events-none opacity-5">
         <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>
@@ -216,7 +216,7 @@ export default function ComposerDetailsLoading() {
         </div>
 
         {/* Estatísticas Skeleton */}
-        <div
+        {/* <div
           className="classical-card p-8 animate-fade-in-up"
           style={{ animationDelay: '0.3s' }}
         >
@@ -253,7 +253,7 @@ export default function ComposerDetailsLoading() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Obras do Compositor Skeleton */}
         <div

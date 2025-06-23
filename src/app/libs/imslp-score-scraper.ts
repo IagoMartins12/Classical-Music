@@ -1,6 +1,8 @@
-// lib/imslp-scraper.ts
+// lib/imslp-scraper.ts - Versão Ultra-Otimizada com Novo Sistema
 import * as cheerio from 'cheerio';
 import { AnyNode, Element } from 'domhandler';
+import { IMSLPBatchProcessorOptimized } from './imslp-batch-processor-optimized';
+import { IMSLPDirectUrlResolverOptimized } from './imslp-url-resolver';
 
 export interface IMSLPWorkScores {
   workTitle: string;
@@ -40,13 +42,13 @@ export interface IMSLPScore {
     | 'librettos'
     | 'others'
     | 'sources';
-  groupIndex?: number; // Novo campo para identificar o grupo
+  groupIndex?: number;
 }
 
 export interface IMSLPScoreGroup {
   groupIndex: number;
   scores: IMSLPScore[];
-  groupTitle?: string; // Título do grupo se disponível
+  groupTitle?: string;
 }
 
 export interface IMSLPScoresByType {
@@ -59,9 +61,6 @@ export interface IMSLPScoresByType {
 }
 
 export class IMSLPScraper {
-  /**
-   * Mapeia os IDs das abas para os tipos de partituras
-   */
   private static readonly TAB_TYPE_MAP = {
     tabScore1: 'scores' as const,
     tabScore3: 'parts' as const,
@@ -73,8 +72,6 @@ export class IMSLPScraper {
 
   /**
    * Extrai informações das partituras de uma página IMSLP
-   * @param html HTML da página IMSLP
-   * @returns Objeto com informações das partituras organizadas por tipo
    */
   static async extractScores(html: string): Promise<IMSLPWorkScores> {
     const $ = cheerio.load(html);
@@ -82,7 +79,6 @@ export class IMSLPScraper {
     // Verificar se a página foi carregada corretamente
     const pageTitle = $('title').text();
 
-    // Verificar se há algum indicador de bloqueio
     if (
       pageTitle.includes('Access denied') ||
       pageTitle.includes('403') ||
@@ -119,11 +115,10 @@ export class IMSLPScraper {
     // Processar cada tipo de aba
     for (const [tabId, type] of Object.entries(this.TAB_TYPE_MAP)) {
       const tabContentId = tabId.replace('_tab', '');
-
       const $tabContent = $(`#${tabContentId}`);
 
       if ($tabContent.length > 0) {
-        const scoresInTab = await this.extractScoresFromTab(
+        const scoresInTab = await this.extractScoresFromTabOptimized(
           $,
           $tabContent,
           type
@@ -147,13 +142,9 @@ export class IMSLPScraper {
   }
 
   /**
-   * Extrai partituras de uma aba específica
-   * @param $ Instância do Cheerio
-   * @param $tabContent Elemento da aba
-   * @param type Tipo da partitura
-   * @returns Array de partituras
+   * 🚀 VERSÃO ULTRA-OTIMIZADA: Extrai partituras com processamento em lote inteligente
    */
-  private static async extractScoresFromTab(
+  private static async extractScoresFromTabOptimized(
     $: cheerio.CheerioAPI,
     $tabContent: cheerio.Cheerio<AnyNode>,
     type: IMSLPScore['type']
@@ -166,12 +157,21 @@ export class IMSLPScraper {
       groups.push({ element: $(groupElement), index: groupIndex });
     });
 
-    // Processar cada grupo sequencialmente
-    for (const { element: $groupElement, index: groupIndex } of groups) {
-      const groupScores: IMSLPScore[] = [];
-      let groupTitle: string | undefined;
+    console.log(
+      `🎼 [SCRAPER] Processando ${groups.length} grupos para tipo "${type}"`
+    );
 
-      // Coletar todos os elementos de score primeiro
+    // 🚀 FASE 1: Extrair metadados sem fazer requisições de URL
+    const scoreMetadataList: Array<{
+      scoreId: string;
+      hiddenLink: string;
+      groupIndex: number;
+      scoreIndex: number;
+      groupElement: cheerio.Cheerio<AnyNode>;
+      metadata: any;
+    }> = [];
+
+    for (const { element: $groupElement, index: groupIndex } of groups) {
       const scoreElements: {
         element: cheerio.Cheerio<AnyNode>;
         index: number;
@@ -180,13 +180,12 @@ export class IMSLPScraper {
         scoreElements.push({ element: $(scoreElement), index: scoreIndex });
       });
 
-      // Processar cada score sequencialmente
       for (const { element: $element, index: scoreIndex } of scoreElements) {
         const scoreId =
           $element.attr('id')?.replace('IMSLP', '') ||
           `${type}_${groupIndex}_${scoreIndex}`;
 
-        // Extrair informações básicas do download
+        // Extrair informações básicas
         const $downloadSection = $element.find('.we_file_download');
 
         let title = $downloadSection
@@ -200,194 +199,199 @@ export class IMSLPScraper {
           title = this.getDefaultTitleByType(type);
         }
 
-        // Se é o primeiro item do grupo, usar seu título como título do grupo
-        if (scoreIndex === 0 && !groupTitle) {
-          groupTitle = title;
-        }
-
-        // Extrair informações do arquivo
-        const fileInfo = $downloadSection.find('.we_file_info2').text();
+        // Extrair hiddenLink
         const hiddenLink = $downloadSection
           .find('.we_file_info2 .hidden a')
           .attr('href');
 
-        const fileSizeMatch = fileInfo.match(/(\d+\.?\d*)(MB|KB)/);
-        const pageCountMatch = fileInfo.match(/(\d+)\s*pp\./);
-        const downloadCountMatch = fileInfo.match(/(\d+)×/);
-
-        // Extrair rating
-        const ratingElement = $downloadSection.find('.current-rating');
-        const ratingStyle = ratingElement.attr('style') || '';
-        const ratingMatch = ratingStyle.match(/width:\s*(\d+\.?\d*)%/);
-        const rating = ratingMatch
-          ? parseFloat(ratingMatch[1]) / 10
-          : undefined;
-
-        const ratingsCountText = $downloadSection
-          .find('[id^="num-of-ratings-"]')
-          .text();
-        const ratingsCount = ratingsCountText
-          ? parseInt(ratingsCountText)
-          : undefined;
-
-        // Extrair informações detalhadas da tabela de edição (buscar no grupo inteiro)
-        const $editionTable = $groupElement
-          .find('.we_edition_info table')
-          .first();
-
-        const editor = this.extractTableValue($, $editionTable, 'Editor');
-        const publisher = this.extractTableValue(
-          $,
-          $editionTable,
-          'Informação da editora'
-        );
-        const copyright = this.extractTableValue(
-          $,
-          $editionTable,
-          'Direitos autorais'
-        );
-        const notes = this.extractTableValue(
-          $,
-          $editionTable,
-          'Notas diversas'
-        );
-
-        // Extrair thumbnail
-        const thumbnailUrl = this.extractThumbnailUrl($, $element);
-
-        // Extrair informações do uploader
-        const $fileInfo = $element.find('.we_file_info');
-        const uploaderInfo = $fileInfo.find('.mh555').text();
-        const uploaderMatch = uploaderInfo.match(/digitalizado por ([^\n]+)\n/);
-        const uploader = uploaderMatch ? uploaderMatch[1].trim() : undefined;
-
-        const uploadDateMatch = uploaderInfo.match(/\(([^)]+)\)$/);
-        const uploadDate = uploadDateMatch ? uploadDateMatch[1] : undefined;
-
-        // const fileName = hiddenLink?.split('/').pop() ?? '';
-        const intermediateUrl = `https://imslp.org/${hiddenLink}`;
-        let downloadUrl = intermediateUrl;
-
         if (hiddenLink) {
-          try {
-            downloadUrl = await this.extractRealDownloadUrl(intermediateUrl);
-          } catch (error) {
-            console.log('error', error)
-            downloadUrl = intermediateUrl;
-          }
+          // Extrair todos os outros metadados
+          const fileInfo = $downloadSection.find('.we_file_info2').text();
+          const fileSizeMatch = fileInfo.match(/(\d+\.?\d*)(MB|KB)/);
+          const pageCountMatch = fileInfo.match(/(\d+)\s*pp\./);
+          const downloadCountMatch = fileInfo.match(/(\d+)×/);
+
+          // Extrair rating
+          const ratingElement = $downloadSection.find('.current-rating');
+          const ratingStyle = ratingElement.attr('style') || '';
+          const ratingMatch = ratingStyle.match(/width:\s*(\d+\.?\d*)%/);
+          const rating = ratingMatch
+            ? parseFloat(ratingMatch[1]) / 10
+            : undefined;
+
+          const ratingsCountText = $downloadSection
+            .find('[id^="num-of-ratings-"]')
+            .text();
+          const ratingsCount = ratingsCountText
+            ? parseInt(ratingsCountText)
+            : undefined;
+
+          // Extrair informações detalhadas
+          const $editionTable = $groupElement
+            .find('.we_edition_info table')
+            .first();
+          const editor = this.extractTableValue($, $editionTable, 'Editor');
+          const publisher = this.extractTableValue(
+            $,
+            $editionTable,
+            'Informação da editora'
+          );
+          const copyright = this.extractTableValue(
+            $,
+            $editionTable,
+            'Direitos autorais'
+          );
+          const notes = this.extractTableValue(
+            $,
+            $editionTable,
+            'Notas diversas'
+          );
+
+          // Extrair thumbnail
+          const thumbnailUrl = this.extractThumbnailUrl($, $element);
+
+          // Extrair informações do uploader
+          const $fileInfo = $element.find('.we_file_info');
+          const uploaderInfo = $fileInfo.find('.mh555').text();
+          const uploaderMatch = uploaderInfo.match(
+            /digitalizado por ([^\n]+)\n/
+          );
+          const uploader = uploaderMatch ? uploaderMatch[1].trim() : undefined;
+
+          const uploadDateMatch = uploaderInfo.match(/\(([^)]+)\)$/);
+          const uploadDate = uploadDateMatch ? uploadDateMatch[1] : undefined;
+
+          scoreMetadataList.push({
+            scoreId,
+            hiddenLink,
+            groupIndex,
+            scoreIndex,
+            groupElement: $groupElement,
+            metadata: {
+              title,
+              fileSize: fileSizeMatch
+                ? `${fileSizeMatch[1]}${fileSizeMatch[2]}`
+                : '',
+              pageCount: pageCountMatch ? pageCountMatch[1] : '',
+              rating,
+              ratingsCount,
+              downloadCount: downloadCountMatch
+                ? parseInt(downloadCountMatch[1])
+                : undefined,
+              editor,
+              publisher,
+              copyright,
+              thumbnailUrl,
+              uploadDate,
+              uploader,
+              notes,
+              type,
+            },
+          });
         }
-
-        const score: IMSLPScore = {
-          id: scoreId,
-          title: title,
-          downloadUrl: downloadUrl ?? '',
-          fileSize: fileSizeMatch
-            ? `${fileSizeMatch[1]}${fileSizeMatch[2]}`
-            : '',
-          pageCount: pageCountMatch ? pageCountMatch[1] : '',
-          rating: rating,
-          ratingsCount: ratingsCount,
-          downloadCount: downloadCountMatch
-            ? parseInt(downloadCountMatch[1])
-            : undefined,
-          fileFormat: 'PDF',
-          editor: editor,
-          publisher: publisher,
-          copyright: copyright,
-          thumbnailUrl: thumbnailUrl,
-          uploadDate: uploadDate,
-          uploader: uploader,
-          notes: notes,
-          type: type,
-          groupIndex: groupIndex, // Adicionar índice do grupo
-        };
-
-        groupScores.push(score);
-      }
-
-      // Adicionar o grupo às coleções se tiver partituras
-      if (groupScores.length > 0) {
-        const scoreGroup: IMSLPScoreGroup = {
-          groupIndex: groupIndex,
-          scores: groupScores,
-          groupTitle: groupTitle,
-        };
-
-        scoreGroups.push(scoreGroup);
       }
     }
 
-    console.log(
-      `🎼 Total de grupos extraídos para "${type}": ${scoreGroups.length}`
-    );
+    // 🚀 FASE 2: Resolver URLs em lote com processamento inteligente
+    if (scoreMetadataList.length > 0) {
+      const urlRequests = scoreMetadataList.map((item) => ({
+        hiddenLink: item.hiddenLink,
+        scoreId: item.scoreId,
+      }));
+
+      console.log(
+        `🔗 [SCRAPER] Resolvendo ${urlRequests.length} URLs em lote...`
+      );
+      const startTime = Date.now();
+
+      // 🚀 Usar o processador em lote otimizado com estratégia adaptativa
+      const urlResults =
+        await IMSLPBatchProcessorOptimized.processBatchAdaptive(urlRequests);
+
+      const endTime = Date.now();
+      console.log(
+        `✅ [SCRAPER] URLs resolvidos em ${endTime - startTime}ms (${Math.round(
+          (endTime - startTime) / urlRequests.length
+        )}ms por URL)`
+      );
+
+      // 📊 Análise de performance do lote
+      const performance =
+        IMSLPBatchProcessorOptimized.analyzePerformance(urlResults);
+      console.log(`📊 [SCRAPER] ${performance.summary}`);
+
+      if (performance.recommendations.length > 0) {
+        console.log(`💡 [SCRAPER] Recomendações:`);
+        performance.recommendations.forEach((rec) =>
+          console.log(`   - ${rec}`)
+        );
+      }
+
+      // Criar mapa de resultados para lookup rápido
+      const urlMap = new Map(
+        urlResults.map((result) => [result.scoreId, result.downloadUrl])
+      );
+
+      // 🚀 FASE 3: Construir objetos Score finais
+      const scoresByGroup = new Map<number, IMSLPScore[]>();
+
+      for (const item of scoreMetadataList) {
+        const downloadUrl =
+          urlMap.get(item.scoreId) || `https://imslp.org${item.hiddenLink}`;
+
+        const score: IMSLPScore = {
+          id: item.scoreId,
+          title: item.metadata.title,
+          downloadUrl: downloadUrl,
+          fileSize: item.metadata.fileSize,
+          pageCount: item.metadata.pageCount,
+          rating: item.metadata.rating,
+          ratingsCount: item.metadata.ratingsCount,
+          downloadCount: item.metadata.downloadCount,
+          fileFormat: 'PDF',
+          editor: item.metadata.editor,
+          publisher: item.metadata.publisher,
+          copyright: item.metadata.copyright,
+          thumbnailUrl: item.metadata.thumbnailUrl,
+          uploadDate: item.metadata.uploadDate,
+          uploader: item.metadata.uploader,
+          notes: item.metadata.notes,
+          type: item.metadata.type,
+          groupIndex: item.groupIndex,
+        };
+
+        // Agrupar por groupIndex
+        if (!scoresByGroup.has(item.groupIndex)) {
+          scoresByGroup.set(item.groupIndex, []);
+        }
+        scoresByGroup.get(item.groupIndex)!.push(score);
+      }
+
+      // Construir grupos finais
+      for (const [groupIndex, scores] of scoresByGroup.entries()) {
+        if (scores.length > 0) {
+          const groupTitle = scores[0].title; // Usar título da primeira partitura como título do grupo
+
+          const scoreGroup: IMSLPScoreGroup = {
+            groupIndex,
+            scores,
+            groupTitle,
+          };
+
+          scoreGroups.push(scoreGroup);
+        }
+      }
+    }
+
     return scoreGroups;
   }
 
-  private static async extractRealDownloadUrl(
-    intermediateUrl: string
-  ): Promise<string> {
-    try {
-      const response = await fetch(intermediateUrl, {
-        headers: {
-          'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          Accept:
-            'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
-          'Accept-Encoding': 'gzip, deflate, br',
-          Connection: 'keep-alive',
-          'Upgrade-Insecure-Requests': '1',
-        },
-      });
-
-      if (!response.ok) {
-        console.warn(`⚠️ Erro ao buscar URL real: ${response.status}`);
-        return intermediateUrl; // Retorna a URL original como fallback
-      }
-
-      const html = await response.text();
-
-      const $ = cheerio.load(html);
-
-      // ✅ CORREÇÃO: Buscar o elemento span correto com id="sm_dl_wait"
-      const $downloadWait = $('#sm_dl_wait');
-
-      if ($downloadWait.length > 0) {
-        const realDownloadUrl = $downloadWait.attr('data-id');
-
-        if (realDownloadUrl) {
-          console.log('✅ URL real encontrada:', realDownloadUrl);
-          return realDownloadUrl;
-        } else {
-          console.warn(
-            '⚠️ Atributo data-id não encontrado no elemento sm_dl_wait'
-          );
-        }
-      } else {
-        $('[id*="dl"], [id*="wait"], [data-id]').each((i, el) => {
-          const $el = $(el);
-          console.log(
-            `   - ID: ${$el.attr('id')}, data-id: ${$el.attr('data-id')}`
-          );
-        });
-      }
-
-      console.warn('⚠️ URL real não encontrada, usando URL intermediária');
-      return intermediateUrl;
-    } catch (error) {
-      console.error('❌ Erro ao extrair URL real:', error);
-      return intermediateUrl; // Retorna a URL original como fallback
-    }
-  }
-
-  // Função corrigida para extrair thumbnail
+  // Métodos auxiliares permanecem os mesmos
   private static extractThumbnailUrl(
     $: cheerio.CheerioAPI,
     $element: cheerio.Cheerio<AnyNode>
   ): string | undefined {
-    // Array com diferentes estratégias para encontrar a thumbnail
     const strategies = [
-      // Estratégia 4: Buscar no elemento pai e irmãos
       () => {
         const $parent = $element.parent();
         const $thumb = $parent
@@ -405,18 +409,15 @@ export class IMSLPScraper {
       },
     ];
 
-    // Executar estratégias uma por vez até encontrar resultado
     for (let i = 0; i < strategies.length; i++) {
       const result = strategies[i]();
       if (result) {
-        // Normalizar URL se necessário
         let finalUrl = result;
         if (finalUrl.startsWith('//')) {
           finalUrl = 'https:' + finalUrl;
         } else if (finalUrl.startsWith('/')) {
           finalUrl = 'https://imslp.org' + finalUrl;
         }
-
         return finalUrl;
       }
     }
@@ -449,7 +450,7 @@ export class IMSLPScraper {
 
       if (headerText === rowName) {
         result = $row.find('td').text().trim();
-        return false; // Break the loop
+        return false;
       }
     });
 
@@ -458,13 +459,14 @@ export class IMSLPScraper {
 
   /**
    * Busca e extrai partituras de uma URL IMSLP
-   * @param imslpUrl URL da página IMSLP
-   * @returns Promise com informações das partituras organizadas por tipo
    */
   static async fetchAndExtractScores(
     imslpUrl: string
   ): Promise<IMSLPWorkScores> {
     try {
+      console.log(`🌐 [SCRAPER] Buscando página IMSLP: ${imslpUrl}`);
+      const startTime = Date.now();
+
       const response = await fetch(imslpUrl, {
         headers: {
           'User-Agent':
@@ -489,19 +491,42 @@ export class IMSLPScraper {
 
       const html = await response.text();
 
-      // Verificar se realmente é HTML válido
       if (!html.includes('<!DOCTYPE') && !html.includes('<html')) {
         throw new Error('Resposta não é um documento HTML válido');
       }
 
-      return await this.extractScores(html);
+      const fetchTime = Date.now() - startTime;
+      console.log(`✅ [SCRAPER] Página carregada em ${fetchTime}ms`);
+
+      const result = await this.extractScores(html);
+
+      const totalTime = Date.now() - startTime;
+      console.log(`🎯 [SCRAPER] Processamento completo em ${totalTime}ms`);
+
+      // Log das estatísticas do cache e sistema IA
+      const cacheStats = IMSLPDirectUrlResolverOptimized.getCacheStats();
+      const urlLogStats = IMSLPDirectUrlResolverOptimized.getUrlLogStats();
+
+      console.log(
+        `📊 [SCRAPER] Cache: ${
+          cacheStats.totalEntries
+        } entradas (conf. média: ${(cacheStats.avgConfidence * 100).toFixed(
+          1
+        )}%)`
+      );
+      console.log(
+        `🧠 [SCRAPER] IA: ${
+          urlLogStats.patternCount
+        } padrões, ${urlLogStats.successRate.toFixed(1)}% taxa de sucesso`
+      );
+
+      return result;
     } catch (error) {
       if (error instanceof TypeError && error.message.includes('fetch')) {
         throw new Error(
           'Erro de conexão com IMSLP. Verifique sua conexão com a internet.'
         );
       }
-
       throw error;
     }
   }

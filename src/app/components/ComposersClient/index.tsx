@@ -142,7 +142,7 @@ export default function ComposersClient({
   const hasActiveFilters = searchTerm || selectedEpoch;
 
   return (
-    <div className="min-h-screen bg-gradient-primary">
+    <div className=" bg-gradient-primary">
       <div className="section-wrap space-y-8">
         {/* Background Pattern */}
         <div className="absolute inset-0 pointer-events-none opacity-5">

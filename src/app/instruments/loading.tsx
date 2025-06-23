@@ -4,7 +4,7 @@ import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
 
 export default function InstrumentsLoading() {
   return (
-    <div className="w-full min-h-screen bg-gradient-primary">
+    <div className="w-full  bg-gradient-primary">
       {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none opacity-5 z-0">
         <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>
@@ -198,7 +198,7 @@ export default function InstrumentsLoading() {
 
 // export default function InstrumentsLoading() {
 //   return (
-//     <div className="min-h-screen bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950 flex items-center justify-center">
+//     <div className=" bg-gradient-to-br from-gray-950 via-slate-900 to-gray-950 flex items-center justify-center">
 //       <div className="text-center">
 //         {/* Main Loading Animation */}
 //         <div className="relative mb-12 mx-auto w-fit animate-pulse">

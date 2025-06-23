@@ -14,7 +14,7 @@ export const revalidate = 3600;
 
 export default function MusicClassicHistoryPage() {
   return (
-    <div className="min-h-screen">
+    <div className="">
       <Suspense fallback={<LoadingSkeleton />}>
         <MusicHistoryPageServer />
       </Suspense>

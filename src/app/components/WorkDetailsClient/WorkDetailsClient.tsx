@@ -29,8 +29,6 @@ import LearningButtonWithModal from '../LearningButtonWithModal';
 
 import { useStudyModeStore } from '@/app/stores/useStudyModeStore';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
-import StudyModeButton from '../StudyMode/StudyModeButton';
-import StudyModeModal from '../StudyMode/StudyModeModal';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -88,7 +86,7 @@ export default function WorkDetailsClient({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-primary">
+    <div className=" bg-gradient-primary">
       {/* Inicializar dados de aprendizado do SSR */}
       <LearningInitializer learningData={learningData} />
 

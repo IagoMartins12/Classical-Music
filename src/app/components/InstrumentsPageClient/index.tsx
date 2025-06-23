@@ -155,7 +155,7 @@ export function InstrumentsPageClient({
 
   if (hasError) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-primary">
+      <div className=" flex items-center justify-center bg-gradient-primary">
         <div className="text-center">
           <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
             <FaMusic className="w-10 h-10 text-theme-primary" />
@@ -172,7 +172,7 @@ export function InstrumentsPageClient({
   }
 
   return (
-    <div className="w-full min-h-screen bg-gradient-primary">
+    <div className="w-full  bg-gradient-primary">
       {/* Background Pattern */}
       <div className="fixed inset-0 pointer-events-none opacity-5 z-0">
         <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>

@@ -155,7 +155,7 @@ const Navbar: React.FC = () => {
               <div className="relative">
                 <button
                   onClick={toggleProfileMenu}
-                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-interactive-hover transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-opacity-50"
+                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-interactive-hover transition-colors "
                 >
                   {user.image ? (
                     <Image
@@ -191,7 +191,7 @@ const Navbar: React.FC = () => {
                       onClick={() => setIsProfileOpen(false)}
                     />
 
-                    <div className="absolute right-0 top-full mt-2 w-64 classical-card z-20 p-2">
+                    <div className="absolute right-0 top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-20 p-2">
                       {/* User Info */}
                       <div className="px-3 py-2 border-b border-theme-secondary mb-2">
                         <p className="font-medium text-theme-primary">

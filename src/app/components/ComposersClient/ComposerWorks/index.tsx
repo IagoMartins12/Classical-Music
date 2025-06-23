@@ -374,9 +374,10 @@ export default function ComposerWorks({
         {filteredWorks.length > 0 ? (
           <div className="space-y-4">
             {filteredWorks.map((work, index) => (
-              <div
+              <Link
+                href={`/works/${work.id}`}
                 key={work.id}
-                className="classical-card-simple hover:shadow-theme-glow transition-all duration-300 group animate-fade-in-up"
+                className="classical-card-simple hover:shadow-theme-glow transition-all duration-300 group animate-fade-in-up block"
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
                 <div className="p-6">
@@ -390,12 +391,9 @@ export default function ComposerWorks({
                         )}
 
                         <div className="flex-1">
-                          <Link
-                            href={`/works/${work.id}`}
-                            className="text-lg font-semibold text-brand-primary hover:text-brand-secondary transition-colors duration-300 classical-title"
-                          >
+                          <span className="text-lg font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
                             {work.title}
-                          </Link>
+                          </span>
 
                           {work.opOrCatalog && (
                             <span className="ml-3 text-sm text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
@@ -437,7 +435,6 @@ export default function ComposerWorks({
                         {work.compositionYear && (
                           <div className="flex items-center space-x-2">
                             <FiCalendar className="w-4 h-4 text-theme-tertiary" />
-
                             <span className="w-4 h-4 text-center text-theme-tertiary text-xs font-bold">
                               Ano
                             </span>
@@ -447,7 +444,10 @@ export default function ComposerWorks({
                       </div>
                     </div>
 
-                    <div className="flex items-center space-x-2 ml-6 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <div
+                      className="flex items-center space-x-2 ml-6 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       {work.videoUrl && (
                         <a
                           href={work.videoUrl}
@@ -455,6 +455,7 @@ export default function ComposerWorks({
                           rel="noopener noreferrer"
                           className="w-10 h-10 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-xl flex items-center justify-center hover:bg-accent-red/20 hover:scale-110 transition-all duration-300"
                           title="Assistir vídeo"
+                          onClick={(e) => e.stopPropagation()}
                         >
                           <FiPlay className="w-4 h-4" />
                         </a>
@@ -471,7 +472,7 @@ export default function ComposerWorks({
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         ) : (

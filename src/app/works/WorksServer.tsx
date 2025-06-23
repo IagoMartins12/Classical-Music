@@ -59,7 +59,7 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
 
     // Componente de erro mais informativo
     return (
-      <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
+      <div className=" bg-gradient-primary flex items-center justify-center p-4">
         <div className="classical-card p-8 text-center max-w-md w-full">
           <div className="w-16 h-16 bg-accent-red/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg
