@@ -18,6 +18,7 @@ import {
 import { useStudyModeStore } from '@/app/stores/useStudyModeStore';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 interface StudyModeModalProps {
   isOpen: boolean;
@@ -581,7 +582,9 @@ const StudyModeModal: React.FC<StudyModeModalProps> = ({
                 </div>
 
                 <div className="text-center">
-                  <img
+                  <Image
+                    width={100}
+                    height={100}
                     src={selectedScore.thumbnailUrl}
                     alt={`Preview de ${selectedScore.title}`}
                     className="max-w-full h-auto rounded-xl border border-theme-secondary shadow-theme-medium"
@@ -645,19 +648,19 @@ const PostPracticeEvaluation: React.FC<{
 }> = ({ onSubmit, currentSession, onSkip }) => {
   const [rating, setRating] = useState(3);
   const [notes, setNotes] = useState('');
-  const [nextGoals, setNextGoals] = useState<string[]>([]);
-  const [technicalFocus, setTechnicalFocus] = useState<string[]>([]);
-  const [expressiveFocus, setExpressiveFocus] = useState<string[]>([]);
-  const [precisionFocus, setPrecisionFocus] = useState<string[]>([]);
+  // const [nextGoals, setNextGoals] = useState<string[]>([]);
+  // const [technicalFocus, setTechnicalFocus] = useState<string[]>([]);
+  // const [expressiveFocus, setExpressiveFocus] = useState<string[]>([]);
+  // const [precisionFocus, setPrecisionFocus] = useState<string[]>([]);
 
   const handleSubmit = () => {
     onSubmit({
       rating,
       notes,
-      nextSessionGoals: nextGoals,
-      technicalFocus,
-      expressiveFocus,
-      precisionFocus,
+      // nextSessionGoals: nextGoals,
+      // technicalFocus,
+      // expressiveFocus,
+      // precisionFocus,
     });
   };
 

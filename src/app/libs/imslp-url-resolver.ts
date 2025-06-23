@@ -64,7 +64,7 @@ export class IMSLPDirectUrlResolverOptimized {
     let httpStatus: number | undefined;
     let headers: Record<string, string> | undefined;
     let error: string | undefined;
-    let attemptedSubdomains: string[] = [];
+    const attemptedSubdomains: string[] = [];
     let successfulSubdomainIndex = -1;
     let retry = 0;
 

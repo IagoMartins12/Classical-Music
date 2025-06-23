@@ -231,6 +231,7 @@ export class IMSLPAdvancedLogger {
 
     // Ordenar subdomains por confiabilidade
     const sortedSubdomains = pattern.subdomains.sort((a, b) => {
+      console.log('a/b', { a, b });
       // Priorizar por sucesso histórico e velocidade
       const scoreA =
         pattern.successRate * 0.7 + (1 / pattern.averageTime) * 0.3;
@@ -370,7 +371,10 @@ export class IMSLPAdvancedLogger {
         `🔄 Modelo carregado: ${this.predictionModel.patterns.size} padrões`
       );
     } catch (error) {
-      console.log('ℹ️ Nenhum modelo salvo encontrado, iniciando do zero');
+      console.log(
+        'ℹ️ Nenhum modelo salvo encontrado, iniciando do zero',
+        error
+      );
     }
   }
 

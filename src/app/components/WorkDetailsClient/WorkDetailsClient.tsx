@@ -27,7 +27,6 @@ import FavoriteButton from '../FavoriteButton';
 import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
 
-import { useStudyModeStore } from '@/app/stores/useStudyModeStore';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 
 interface WorkDetailsClientProps {
@@ -49,9 +48,7 @@ export default function WorkDetailsClient({
   const [selectedScoreForStudy, setSelectedScoreForStudy] =
     useState<IMSLPScore | null>(null);
 
-  // Study mode store
-  const { isStudyModeOpen, closeStudyMode } = useStudyModeStore();
-
+  console.log('selectedScoreForStudy', selectedScoreForStudy);
   // Usar o hook ao invés de gerenciar estado manualmente
   const {
     scores: imslpScores,
@@ -297,7 +294,7 @@ export default function WorkDetailsClient({
                       </div>
                       <div>
                         <p className="text-sm font-medium text-theme-tertiary">
-                          Época
+                          Época/Estilo
                         </p>
                         <p className="text-brand-primary font-semibold">
                           {work.epoch.name}
@@ -662,17 +659,6 @@ export default function WorkDetailsClient({
           </div>
         )}
       </div>
-
-      {/* Floating Elements */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-brand-primary/30 rounded-full animate-pulse"></div>
-      <div
-        className="fixed top-40 right-8 w-1.5 h-1.5 bg-accent-purple/40 rounded-full animate-pulse"
-        style={{ animationDelay: '1s' }}
-      ></div>
-      <div
-        className="fixed bottom-32 left-8 w-1 h-1 bg-brand-secondary/50 rounded-full animate-pulse"
-        style={{ animationDelay: '2s' }}
-      ></div>
 
       {/* CSS for animations */}
       <style jsx>{`

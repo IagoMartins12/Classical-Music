@@ -1,7 +1,7 @@
 // components/Navbar.tsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import {
@@ -60,6 +60,7 @@ const Navbar: React.FC = () => {
       toast.error('Erro ao fazer logout');
     }
   };
+  const profileRef = useRef<HTMLDivElement>(null);
 
   const optionsArr: NavItem[] = [
     { label: 'História da Música', href: '/music-history' },
@@ -105,6 +106,26 @@ const Navbar: React.FC = () => {
     return 'U';
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    if (isProfileOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isProfileOpen]);
   return (
     <nav className="navbar-classical sticky top-0 z-50">
       <div className="section-wrap-nav pt-1 pb-2">
@@ -150,7 +171,7 @@ const Navbar: React.FC = () => {
             {/* Authentication Section */}
             {isLoading ? null : isAuthenticated && user ? (
               /* Authenticated User Menu */
-              <div className="relative">
+              <div className="relative" ref={profileRef}>
                 <button
                   onClick={toggleProfileMenu}
                   className="flex items-center space-x-2 p-2 rounded-lg hover:bg-interactive-hover transition-colors "
@@ -184,11 +205,6 @@ const Navbar: React.FC = () => {
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
                   <>
-                    <div
-                      className="fixed inset-0 z-10"
-                      onClick={() => setIsProfileOpen(false)}
-                    />
-
                     <div className="absolute right-0 top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-20 p-2">
                       {/* User Info */}
                       <div className="px-3 py-2 border-b border-theme-secondary mb-2">

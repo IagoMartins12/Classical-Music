@@ -2,7 +2,6 @@
 'use client';
 
 import { FiClock, FiUsers, FiMusic, FiChevronDown } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';

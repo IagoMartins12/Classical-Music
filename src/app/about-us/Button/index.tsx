@@ -1,7 +1,7 @@
 'use client';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useRegisterModal } from '@/app/stores/authStore';
-import { FiHeadphones, FiMusic, FiUsers } from 'react-icons/fi';
+import { FiMusic, FiUsers } from 'react-icons/fi';
 
 interface buttonProps {
   action: 'login' | 'register';

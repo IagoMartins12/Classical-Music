@@ -1,7 +1,7 @@
 // app/components/MusicalFacts/MusicalFacts.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { FiBookOpen, FiStar, FiRefreshCw, FiFilter } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import SectionTitle from '../Utils/SectionTitle';

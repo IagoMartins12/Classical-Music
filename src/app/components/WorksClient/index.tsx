@@ -8,8 +8,6 @@ import {
   FiSearch,
   FiFilter,
   FiMusic,
-  FiGrid,
-  FiList,
   FiX,
   FiRefreshCw,
   FiBookOpen,

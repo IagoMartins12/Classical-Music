@@ -9,8 +9,6 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  LineChart,
-  Line,
   PieChart,
   Pie,
   Cell,
@@ -73,9 +71,6 @@ const IMSLPAnalyticsDashboard: React.FC = () => {
   const [analysis, setAnalysis] = useState<PatternAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [lastUpdate, setLastUpdate] = useState<string>(
-    new Date().toLocaleString('pt-BR')
-  );
 
   const fetchData = async () => {
     try {
@@ -94,7 +89,6 @@ const IMSLPAnalyticsDashboard: React.FC = () => {
 
       setData(statsData);
       setAnalysis(analysisData);
-      setLastUpdate(new Date().toLocaleString('pt-BR'));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro desconhecido');
     } finally {

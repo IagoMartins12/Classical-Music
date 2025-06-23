@@ -5,8 +5,7 @@ import { useState, useEffect, useMemo } from 'react';
 import {
   FiTarget,
   FiCheckCircle,
-  FiGrid,
-  FiList,
+
   FiSearch,
   FiMusic,
   FiFilter,

@@ -1,10 +1,8 @@
 // components/auth/AuthCheck.tsx - Component to handle client-side auth checks with modal
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useAuth } from '@/app/hooks/useAuth';
 import { useLoginModal } from '@/app/stores/authStore';
-import { FiHeart, FiBookOpen } from 'react-icons/fi';
+import { FiHeart } from 'react-icons/fi';
 
 interface AuthCheckProps {
   title: 'Seus favoritos' | 'Seu perfil' | 'Suas lições';

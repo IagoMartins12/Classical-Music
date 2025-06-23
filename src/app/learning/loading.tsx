@@ -7,11 +7,10 @@ import {
   FiMusic,
   FiGrid,
   FiList,
-  FiSearch,
   FiFilter,
   FiBookOpen,
 } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+import { GiGrandPiano } from 'react-icons/gi';
 
 export default function LearningLoading() {
   return (

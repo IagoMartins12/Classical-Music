@@ -1,6 +1,5 @@
 // app/favorites/page.tsx - Página Completa de Favoritos
 
-import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 

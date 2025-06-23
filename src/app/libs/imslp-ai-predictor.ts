@@ -166,8 +166,7 @@ export class IMSLPAIPredictor {
     pathPattern: PathPattern,
     subdomain: string,
     success: boolean,
-    responseTime: number,
-    httpStatus?: number
+    responseTime: number
   ): void {
     const { basePath } = pathPattern;
     const currentHour = new Date().getHours();

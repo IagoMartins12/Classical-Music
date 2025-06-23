@@ -7,10 +7,9 @@ import {
   FiMusic,
   FiGrid,
   FiList,
-  FiSearch,
   FiExternalLink,
 } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+import { GiGrandPiano } from 'react-icons/gi';
 
 export default function FavoritesLoading() {
   return (

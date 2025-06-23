@@ -38,9 +38,7 @@ const Metronome: React.FC<MetronomeProps> = ({
   const scheduleAheadTime = 0.1; // How far ahead to schedule audio (sec)
 
   // Parse time signature
-  const [beatsPerMeasure, noteValue] = settings.timeSignature
-    .split('/')
-    .map(Number);
+  const [beatsPerMeasure] = settings.timeSignature.split('/').map(Number);
 
   // Initialize audio context
   useEffect(() => {

@@ -1,7 +1,7 @@
 // components/IMSLPTabs.tsx - Com callback para seleção de partitura para estudo
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import {
   FiMusic,
   FiFileText,

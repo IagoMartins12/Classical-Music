@@ -10,7 +10,6 @@ import {
   FiBarChart2,
 } from 'react-icons/fi';
 import { useStudySessions } from '@/app/hooks/useStudySessions';
-import { useAuth } from '@/app/hooks/useAuth';
 
 interface StudySessionsDashboardProps {
   workId?: string; // Para filtrar por obra específica
@@ -21,15 +20,12 @@ const StudySessionsDashboard: React.FC<StudySessionsDashboardProps> = ({
   workId,
   className = '',
 }) => {
-  const { user } = useAuth();
   const {
     sessions,
     stats,
     loading,
-    error,
     pagination,
     fetchSessions,
-    updateSession,
     deleteSession,
     getSessionsThisWeek,
     getSessionsThisMonth,
@@ -363,7 +359,7 @@ const StudySessionsDashboard: React.FC<StudySessionsDashboardProps> = ({
 
           {/* Sessions List */}
           <div className="space-y-4">
-            {sortedSessions.map((session, index) => (
+            {sortedSessions.map((session) => (
               <div
                 key={session.id}
                 className="bg-theme-elevated rounded-xl border border-theme-secondary p-4 hover:border-theme-primary transition-all duration-300"

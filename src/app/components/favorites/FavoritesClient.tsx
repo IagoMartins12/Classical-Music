@@ -7,8 +7,6 @@ import {
   FiHeart,
   FiUser,
   FiMusic,
-  FiGrid,
-  FiList,
   FiSearch,
   FiExternalLink,
   FiClock,
@@ -17,7 +15,6 @@ import {
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import Image from 'next/image';
 import FavoriteButton from '../FavoriteButton';
-import { FaBook } from 'react-icons/fa';
 import EmptyStateFavorites from './EmptyStateFavorites';
 import FavoritesLoading from '@/app/favorites/loading';
 import { useAuth } from '@/app/hooks/useAuth';

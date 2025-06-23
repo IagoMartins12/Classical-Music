@@ -35,8 +35,7 @@ interface Tab {
 
 export default function ProfilePageClient() {
   const { user, isAuthenticated, updateUser } = useAuth(); // Usar o novo hook
-  const { hasOnboardingProgress, openOnboardingModal, openLoginModal } =
-    useAuthStore();
+  const { hasOnboardingProgress, openOnboardingModal } = useAuthStore();
   const [activeTab, setActiveTab] = useState('personal');
 
   // Memoized tabs configuration

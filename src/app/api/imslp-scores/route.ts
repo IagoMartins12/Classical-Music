@@ -229,8 +229,8 @@ export async function GET(request: NextRequest) {
       case 'patterns':
         const model = IMSLPDirectUrlResolverOptimized.getPredictionModel();
         const patternsArray = Array.from(model.patterns.entries()).map(
-          ([pattern, data]) => ({
-            pattern,
+          ([patterns, data]) => ({
+            patterns,
             ...data,
           })
         );
@@ -293,7 +293,7 @@ export async function GET(request: NextRequest) {
           });
         } catch (error) {
           return NextResponse.json(
-            { error: 'Erro ao salvar logs' },
+            { error: `Erro ao salvar logs ${error}` },
             { status: 500 }
           );
         }

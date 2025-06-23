@@ -8,8 +8,7 @@ import {
   FiSearch,
   FiX,
   FiArrowLeft,
-  FiGrid,
-  FiList,
+
   FiMusic,
   FiChevronDown,
   FiChevronUp,

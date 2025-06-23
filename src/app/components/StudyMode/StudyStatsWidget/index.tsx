@@ -39,15 +39,15 @@ const StudyStatsWidget: React.FC<StudyStatsWidgetProps> = ({
   };
 
   // Get current streak (simplified - você pode expandir isso)
-  const getCurrentStreak = () => {
-    const sessionsThisWeek = getSessionsThisWeek();
-    return sessionsThisWeek.length;
-  };
+  // const getCurrentStreak = () => {
+  //   const sessionsThisWeek = getSessionsThisWeek();
+  //   return sessionsThisWeek.length;
+  // };
 
   const thisWeekSessions = getSessionsThisWeek();
   const thisMonthSessions = getSessionsThisMonth();
   const mostStudiedWorks = getMostStudiedWorks();
-  const currentStreak = getCurrentStreak();
+  // const currentStreak = getCurrentStreak();
 
   if (loading) {
     return (
