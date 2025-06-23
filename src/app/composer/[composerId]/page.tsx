@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: ComposerDetailsPageProps) {
     }
 
     return {
-      title: `${composer.name} - Compositor ${composer.epochName}`,
+      title: `${composer.fullName} - Compositor ${composer.epochName}`,
       description: `Conheça ${composer.fullName}, compositor da época ${
         composer.epochName
       }. ${composer.bio ? composer.bio.substring(0, 160) + '...' : ''}`,

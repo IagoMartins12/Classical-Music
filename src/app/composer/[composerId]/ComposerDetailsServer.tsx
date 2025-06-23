@@ -1,8 +1,9 @@
-// app/composer/[composerId]/ComposerDetailsServer.tsx
+// app/composer/[composerId]/ComposerDetailsServer.tsx - Versão otimizada
 import { notFound } from 'next/navigation';
 import {
   getComposerById,
-  getComposerWorks,
+  getComposerWorksWithFilters,
+  getComposerFilterOptions,
 } from '@/app/requests/composer-details';
 import ComposerDetailsClient from '@/app/components/ComposerDetailsClient';
 
@@ -14,10 +15,11 @@ export default async function ComposerDetailsServer({
   composerId,
 }: ComposerDetailsServerProps) {
   try {
-    // Carregar dados do compositor e obras em paralelo para máxima performance
-    const [composer, works] = await Promise.all([
+    // OTIMIZAÇÃO: Carregar dados do compositor, obras iniciais e opções de filtro em paralelo
+    const [composer, initialWorksData, filterOptions] = await Promise.all([
       getComposerById(composerId),
-      getComposerWorks(composerId),
+      getComposerWorksWithFilters(composerId, 1, 50), // Primeira página com 50 obras
+      getComposerFilterOptions(composerId),
     ]);
 
     if (!composer) {
@@ -25,9 +27,11 @@ export default async function ComposerDetailsServer({
     }
 
     return (
-      <>
-        <ComposerDetailsClient composer={composer} works={works} />
-      </>
+      <ComposerDetailsClient
+        composer={composer}
+        initialWorksData={initialWorksData}
+        filterOptions={filterOptions}
+      />
     );
   } catch (error) {
     console.error('Erro ao carregar compositor:', error);

@@ -7,6 +7,7 @@ import { FiChevronDown } from 'react-icons/fi';
 interface SelectOption {
   value: string;
   label: string;
+  key?: string;
   disabled?: boolean;
 }
 
@@ -63,7 +64,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             )}
             {options.map((option) => (
               <option
-                key={option.value}
+                key={option.key ? option.key : option.value}
                 value={option.value}
                 disabled={option.disabled}
               >

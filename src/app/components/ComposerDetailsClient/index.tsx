@@ -1,10 +1,14 @@
-// app/composer/[composerId]/ComposerDetailsClient.tsx - Premium version with theme system
+// app/composer/[composerId]/ComposerDetailsClient.tsx - Versão otimizada
 'use client';
 
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ComposerDetails, ComposerWork } from '@/app/requests/composer-details';
+import {
+  ComposerDetails,
+  ComposerWorksResponse,
+  ComposerFilterOptions,
+} from '@/app/requests/composer-details';
 import {
   FiCalendar,
   FiMapPin,
@@ -23,12 +27,14 @@ import FavoriteButton from '../FavoriteButton';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
-  works: ComposerWork[];
+  initialWorksData: ComposerWorksResponse;
+  filterOptions: ComposerFilterOptions;
 }
 
 export default function ComposerDetailsClient({
   composer,
-  works,
+  initialWorksData,
+  filterOptions,
 }: ComposerDetailsClientProps) {
   const [imageError, setImageError] = useState(false);
 
@@ -388,9 +394,16 @@ export default function ComposerDetailsClient({
           />
         </div>
 
-        {/* Obras do Compositor */}
+        {/* Obras do Compositor - NOVA VERSÃO COM PAGINAÇÃO */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <ComposerWorks works={works} composerName={composer.name} />
+          <ComposerWorks
+            composerId={composer.id}
+            composerName={composer.name}
+            initialWorks={initialWorksData.works}
+            initialTotalCount={initialWorksData.totalCount}
+            initialHasMore={initialWorksData.hasMore}
+            filterOptions={filterOptions}
+          />
         </div>
       </div>
 
