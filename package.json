@@ -21,7 +21,8 @@
     "clear-categories": "tsx scripts/clear-categories.ts",
     "update-composers": "tsx scripts/update-composers.ts",
     "update-works": "tsx scripts/update-works.ts",
-    "fix-genre": "tsx scripts/fix-genre.ts"
+    "fix-genre": "tsx scripts/fix-genre.ts",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.7",
