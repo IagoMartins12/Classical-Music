@@ -1,38 +1,23 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BiBrain } from 'react-icons/bi';
 import {
   FiMic,
-  FiVolume2,
-  FiActivity,
-  FiTrendingUp,
+
   FiAlertCircle,
   FiCheckCircle,
-  FiZap,
-  FiEye,
-  FiTarget,
-  FiClock,
+
   FiSettings,
   FiRefreshCw,
-  FiPlay,
-  FiPause,
-  FiSquare,
-  FiSave,
+
   FiDownload,
   FiShare2,
   FiMessageCircle,
-  FiAward,
-  FiHeart,
-  FiMusic,
-  FiEdit3,
-  FiFilter,
-  FiMaximize2,
-  FiMinimize2,
+
   FiXCircle,
 } from 'react-icons/fi';
 import {
   GiArtificialIntelligence,
-  GiSoundWaves,
-  GiMusicalNotes,
+
   GiLightBulb,
 } from 'react-icons/gi';
 
@@ -110,7 +95,6 @@ const AIFeedbackSystem: React.FC<{
 }> = ({
   isRecording = false,
   onStartRecording,
-  onStopRecording,
   instrument = 'piano',
 }) => {
   const [aiSettings, setAISettings] = useState<AISettings>({
@@ -179,13 +163,13 @@ const AIFeedbackSystem: React.FC<{
       startRealTimeAnalysis();
     } catch (error) {
       console.error('Erro ao inicializar análise de áudio:', error);
-      addFeedback({
-        type: 'general',
-        severity: 'error',
-        message: 'Erro ao acessar microfone',
-        suggestion: 'Verifique as permissões do navegador',
-        confidence: 100,
-      });
+      // addFeedback({
+      //   type: 'general',
+      //   severity: 'error',
+      //   message: 'Erro ao acessar microfone',
+      //   suggestion: 'Verifique as permissões do navegador',
+      //   confidence: 100,
+      // });
     }
   };
 
@@ -334,6 +318,7 @@ const AIFeedbackSystem: React.FC<{
   };
 
   const analyzeRhythmicStability = (timeData: Uint8Array): number => {
+    console.log('timeData', timeData)
     // Análise simplificada de estabilidade rítmica
     return Math.random() * 25 + 75;
   };
@@ -541,7 +526,7 @@ const AIFeedbackSystem: React.FC<{
       });
     }
 
-    suggestions.forEach((suggestion) => addFeedback(suggestion));
+    // suggestions.forEach((suggestion) => addFeedback(suggestion));
   };
 
   const clearFeedback = () => {

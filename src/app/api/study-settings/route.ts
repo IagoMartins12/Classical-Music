@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession();
 
@@ -53,9 +53,12 @@ export async function GET(request: NextRequest) {
       },
     };
 
-    const studyModeSettings = user.studyModeSettings
-      ? { ...defaultSettings, ...user.studyModeSettings }
-      : defaultSettings;
+    const studyModeSettings =
+      user.studyModeSettings &&
+      typeof user.studyModeSettings === 'object' &&
+      !Array.isArray(user.studyModeSettings)
+        ? { ...defaultSettings, ...user.studyModeSettings }
+        : defaultSettings;
 
     return NextResponse.json({
       success: true,
@@ -197,7 +200,7 @@ export async function PATCH(request: NextRequest) {
 }
 
 // app/api/user/study-settings/reset/route.ts - Para resetar configurações
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     const session = await getServerSession();
 

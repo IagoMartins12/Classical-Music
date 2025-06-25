@@ -3,7 +3,6 @@
 
 import React, { useState } from 'react';
 import {
-  FiClock,
   FiPlay,
   FiPause,
   FiRotateCcw,

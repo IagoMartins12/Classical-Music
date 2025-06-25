@@ -1,6 +1,6 @@
 // app/study/[workId]/[[...scoreId]]/page.tsx
 import { Suspense } from 'react';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import StudyModeServer from './pageServer';
 import StudyModeLoading from './loading';
@@ -39,6 +39,7 @@ export async function generateMetadata({ params }: StudyPageProps) {
       robots: 'noindex, nofollow', // Páginas de estudo são privadas
     };
   } catch (error) {
+    console.log('error', error);
     return {
       title: 'Modo Estudo',
       description: 'Ambiente completo para estudo de partituras.',

@@ -904,8 +904,8 @@ const AdvancedSettingsSystem: React.FC = () => {
               <div className="flex items-center space-x-3">
                 <FiAlertTriangle className="w-5 h-5 text-yellow-400" />
                 <span className="text-yellow-200">
-                  Você tem alterações não salvas. Clique em "Salvar Alterações"
-                  para aplicá-las.
+                  Você tem alterações não salvas. Clique em &quot;Salvar
+                  Alterações&quot; para aplicá-las.
                 </span>
               </div>
             </div>

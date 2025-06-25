@@ -1,7 +1,7 @@
 // app/components/StudyMode/components/StudySessionSummary.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   FiClock,
   FiTarget,
@@ -10,7 +10,6 @@ import {
   FiMusic,
   FiTrendingUp,
   FiStar,
-  FiCalendar,
   FiCheckCircle,
   FiX,
   FiDownload,
@@ -56,19 +55,19 @@ const RATING_LABELS = [
   { value: 5, label: 'Excelente', emoji: '🤩', color: 'text-green-500' },
 ];
 
-const FOCUS_SUGGESTIONS = {
-  TECHNICAL: ['Dedilhado', 'Articulação', 'Velocidade', 'Precisão técnica'],
-  EXPRESSIVITY: ['Dinâmicas', 'Fraseado', 'Rubato', 'Caráter'],
-  PRECISION: ['Ritmo', 'Afinação', 'Sincronia', 'Timing'],
-  SIGHT_READING: ['Leitura de notas', 'Reconhecimento de padrões', 'Fluência'],
-  MEMORIZATION: [
-    'Memorização auditiva',
-    'Memorização muscular',
-    'Análise harmônica',
-  ],
-  PERFORMANCE: ['Presença de palco', 'Controle de nervosismo', 'Comunicação'],
-  REVIEW: ['Manutenção', 'Polimento', 'Consolidação'],
-};
+// const FOCUS_SUGGESTIONS = {
+//   TECHNICAL: ['Dedilhado', 'Articulação', 'Velocidade', 'Precisão técnica'],
+//   EXPRESSIVITY: ['Dinâmicas', 'Fraseado', 'Rubato', 'Caráter'],
+//   PRECISION: ['Ritmo', 'Afinação', 'Sincronia', 'Timing'],
+//   SIGHT_READING: ['Leitura de notas', 'Reconhecimento de padrões', 'Fluência'],
+//   MEMORIZATION: [
+//     'Memorização auditiva',
+//     'Memorização muscular',
+//     'Análise harmônica',
+//   ],
+//   PERFORMANCE: ['Presença de palco', 'Controle de nervosismo', 'Comunicação'],
+//   REVIEW: ['Manutenção', 'Polimento', 'Consolidação'],
+// };
 
 const StudySessionSummary: React.FC<StudySessionSummaryProps> = ({
   session,
@@ -192,22 +191,22 @@ const StudySessionSummary: React.FC<StudySessionSummaryProps> = ({
   };
 
   // Toggle foco
-  const toggleFocus = (
-    category: 'technicalFocus' | 'expressiveFocus' | 'precisionFocus',
-    item: string
-  ) => {
-    setEvaluation((prev) => {
-      const currentList = prev[category];
-      const isSelected = currentList.includes(item);
+  // const toggleFocus = (
+  //   category: 'technicalFocus' | 'expressiveFocus' | 'precisionFocus',
+  //   item: string
+  // ) => {
+  //   setEvaluation((prev) => {
+  //     const currentList = prev[category];
+  //     const isSelected = currentList.includes(item);
 
-      return {
-        ...prev,
-        [category]: isSelected
-          ? currentList.filter((i) => i !== item)
-          : [...currentList, item],
-      };
-    });
-  };
+  //     return {
+  //       ...prev,
+  //       [category]: isSelected
+  //         ? currentList.filter((i) => i !== item)
+  //         : [...currentList, item],
+  //     };
+  //   });
+  // };
 
   // Salvar avaliação
   const saveEvaluation = async () => {
@@ -292,9 +291,9 @@ ${evaluation.nextSessionGoals.map((goal) => `• ${goal}`).join('\n')}
     navigator.clipboard.writeText(summary);
   };
 
-  const currentRating = RATING_LABELS.find(
-    (r) => r.value === evaluation.rating
-  );
+  // const currentRating = RATING_LABELS.find(
+  //   (r) => r.value === evaluation.rating
+  // );
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">

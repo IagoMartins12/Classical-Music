@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { BiBrain } from 'react-icons/bi';
 import {
   FiFileText,
@@ -116,9 +116,7 @@ const AdvancedReportsSystem: React.FC = () => {
   });
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<
-    Record<string, boolean>
-  >({});
+
 
   // Dados simulados
   const [reportData] = useState<ReportData>({

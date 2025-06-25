@@ -62,6 +62,14 @@ enum AnnotationType {
   TEMPO_MARK   // Marcação de tempo
 }
 
+enum IMSLPScoreType {
+  SCORES
+  PARTS
+  ARRANGEMENTS
+  LIBRETTOS
+  OTHERS
+  SOURCES
+}
 // Models existentes... (mantenho os existentes)
 
 model User {
@@ -111,6 +119,7 @@ model User {
   // Relations
   accounts Account[]
   sessions Session[]
+  selectedScores UserSelectedScore[]
 
   favoriteComposer Composer? @relation("FavoriteComposer", fields: [favoriteComposerId], references: [id])
   favoriteEpoch    Epoch?    @relation("FavoriteEpoch", fields: [favoriteEpochId], references: [id])
@@ -436,7 +445,8 @@ model Work {
   wantToLearners WantToLearn[]
   learners       Learned[]
   studySessions  StudySession[]
-  
+    selectedScores UserSelectedScore[]
+
   // NOVOS: Anotações PDF e bookmarks
   pdfAnnotations PdfAnnotation[]
   scoreBookmarks ScoreBookmark[]
@@ -540,6 +550,56 @@ model Learned {
   @@index([userId, mastery])
   @@index([learnedAt])
   @@index([lastPracticed])
+}
+
+model UserSelectedScore {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  workId    String
+  
+  // Dados da partitura (copiados do IMSLP)
+  imslpScoreId   String   // ID original do IMSLP
+  title          String
+  downloadUrl    String
+  fileSize       String?
+  pageCount      String?
+  fileFormat     String   @default("PDF")
+  
+  // Metadados adicionais
+  editor         String?
+  publisher      String?
+  copyright      String?
+  thumbnailUrl   String?
+  uploadDate     String?
+  uploader       String?
+  notes          String?
+  
+  // Classificação IMSLP
+  type           IMSLPScoreType  @default(SCORES)
+  groupIndex     Int?
+  groupTitle     String?
+  
+  // Rating e downloads do IMSLP
+  rating         Float?
+  ratingsCount   Int?
+  downloadCount  Int?
+  
+  // Cache e timestamps
+  lastVerified   DateTime @default(now())
+  isActive       Boolean  @default(true)
+  
+  // Relacionamentos
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work           Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
+  
+  // Índices para performance
+  @@unique([userId, workId, imslpScoreId])
+  @@index([userId, workId])
+  @@index([workId])
+  @@map("user_selected_scores")
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model LearningGoal {

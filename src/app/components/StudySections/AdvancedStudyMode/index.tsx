@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { BiStop } from 'react-icons/bi';
 import {
@@ -149,6 +150,7 @@ const AdvancedStudyMode: React.FC = () => {
   const [zoom, setZoom] = useState(100);
   const [selectedLayer, setSelectedLayer] = useState('general');
 
+  console.log('teste', { setZoom, setAnnotations, setCurrentScore });
   // Inicializar sessão de exemplo
   useEffect(() => {
     if (!session) {
@@ -372,6 +374,7 @@ const AdvancedStudyMode: React.FC = () => {
       session?.metronome.timeSignature.split('/')[0] || '4'
     );
 
+    console.log('setCurrent', setCurrentBeat)
     return (
       <div className="space-y-6">
         {/* Display principal do metrônomo */}
@@ -595,7 +598,9 @@ const AdvancedStudyMode: React.FC = () => {
           </div>
 
           <div className="relative bg-white rounded-lg p-4 min-h-[400px] overflow-auto">
-            <img
+            <Image
+            width={100}
+            height={100}
               src={currentScore}
               alt="Partitura"
               className="w-full h-auto"
@@ -740,7 +745,6 @@ const AdvancedStudyMode: React.FC = () => {
   // Dashboard principal
   const Dashboard = () => {
     const todayMinutes = 127;
-    const weekMinutes = 423;
     const streak = 5;
 
     return (

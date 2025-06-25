@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Atualizar sessão com avaliação
-    const updatedSession = await prisma.studySession.update({
+    await prisma.studySession.update({
       where: { id: sessionId },
       data: {
         postPracticeRating: evaluation.rating,

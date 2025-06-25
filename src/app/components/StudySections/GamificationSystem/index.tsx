@@ -1,30 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BiTrophy } from 'react-icons/bi';
 import {
   FiAward,
   FiTarget,
-  FiTrendingUp,
-  FiCalendar,
   FiZap,
-  FiStar,
-  FiClock,
-  FiMusic,
   FiGift,
-  FiUsers,
-  FiShare2,
-  FiChevronRight,
   FiCheckCircle,
   FiLock,
-  FiRefreshCw,
   FiActivity,
-  FiHeart,
-  FiEye,
-  FiSettings,
   FiPlus,
-  FiEdit3,
-  FiTrash2,
 } from 'react-icons/fi';
-import { GiMedal, GiCrown, GiFireFlower } from 'react-icons/gi';
+import { GiCrown } from 'react-icons/gi';
 
 interface Achievement {
   id: string;

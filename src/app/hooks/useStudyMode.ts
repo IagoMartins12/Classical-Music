@@ -69,7 +69,6 @@ export const useStudyMode = (options: UseStudyModeOptions) => {
     workTitle,
     composerName,
     scoreId,
-    selectedScore,
     userSettings,
     activeSession,
   } = options;
@@ -355,6 +354,7 @@ export const useStudyMode = (options: UseStudyModeOptions) => {
       toast.error('Erro ao finalizar sessão');
       return false;
     } catch (error) {
+      console.log('erro', error);
       toast.error('Erro ao finalizar sessão');
       return false;
     }

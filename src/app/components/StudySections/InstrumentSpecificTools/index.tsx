@@ -1,32 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
-  FiMusic,
   FiSettings,
   FiTarget,
   FiEdit3,
-  FiLayers,
-  FiRotateCcw,
-  FiZoomIn,
-  FiZoomOut,
-  FiSave,
-  FiEye,
-  FiVolume2,
-  FiMic,
+
   FiActivity,
-  FiTrendingUp,
-  FiBookOpen,
-  FiPlay,
-  FiPause,
+
   FiAlertCircle,
 } from 'react-icons/fi';
 import {
   GiPianoKeys,
   GiViolin,
   GiTrumpet,
-  GiDrumKit,
-  GiGuitar,
-  GiMusicalScore,
-  GiMetronome,
+ 
 } from 'react-icons/gi';
 
 interface InstrumentTool {

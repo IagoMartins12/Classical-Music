@@ -315,7 +315,7 @@ async function calculateCurrentStreak(userId: string): Promise<number> {
 
     // Contar dias consecutivos
     let streak = 0;
-    let currentDate = new Date();
+    const currentDate = new Date();
 
     for (const dateString of uniqueDates) {
       const sessionDate = dateString;

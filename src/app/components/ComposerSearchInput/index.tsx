@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { FiSearch, FiUser, FiX, FiTrendingUp } from 'react-icons/fi';
+import { FiSearch, FiUser, FiX } from 'react-icons/fi';
 import { searchComposers } from '@/app/requests/work-details';
 
 interface Composer {

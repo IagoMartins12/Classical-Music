@@ -1,266 +1,315 @@
-// ScoreCard.tsx - Premium version with theme system
-import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
-import { FiClock, FiDownload, FiFileText, FiUser } from 'react-icons/fi';
-import { useState } from 'react';
-import Image from 'next/image';
+// components/ScoreCardEnhanced.tsx
+'use client';
 
-interface ScoreCardProps {
+import React from 'react';
+import {
+  FiFileText,
+  FiDownload,
+  FiStar,
+  FiBookmark,
+  FiClock,
+  FiUser,
+  FiCheck,
+  FiHeart,
+} from 'react-icons/fi';
+import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
+
+interface ScoreCardEnhancedProps {
   score: IMSLPScore;
-  isSelected: boolean;
-  onSelect: () => void;
-  isLastInGroup?: boolean; // Nova prop para identificar se é o último do grupo
-  groupSize?: number; // Nova prop para saber o tamanho do grupo
+  isSelected?: boolean;
+  isSaved?: boolean; // Nova prop para indicar se está salva no banco
+  onSelect?: () => void;
+  isLastInGroup?: boolean;
+  groupSize?: number;
+  showSavedIndicator?: boolean;
+  className?: string;
 }
 
-const ScoreCard = ({
+const ScoreCard: React.FC<ScoreCardEnhancedProps> = ({
   score,
-  isSelected,
+  isSelected = false,
+  isSaved = false,
   onSelect,
   isLastInGroup = false,
   groupSize = 1,
-}: ScoreCardProps) => {
-  const [showMagnified, setShowMagnified] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-
-  // Determina se deve mostrar o thumbnail
-  // Mostra se: é o último do grupo E o grupo tem mais de 1 item, OU se o grupo tem apenas 1 item
-  const shouldShowThumbnail = groupSize === 1 || isLastInGroup;
-
-  const truncateText = (text: string, maxLength: number): string => {
-    if (!text) return '';
-    return text.length > maxLength
-      ? `${text.substring(0, maxLength)}...`
-      : text;
+  showSavedIndicator = false,
+  className = '',
+}) => {
+  // Formatação de dados
+  const formatFileSize = (size: string) => {
+    if (!size) return '';
+    return size.includes('MB') || size.includes('KB') ? size : `${size} MB`;
   };
+
+  const formatPageCount = (pages: string) => {
+    if (!pages) return '';
+    const num = parseInt(pages);
+    return num ? `${num} pág${num > 1 ? 's' : ''}` : '';
+  };
+
+  const formatRating = (rating?: number, count?: number) => {
+    if (!rating) return null;
+    const stars = Math.round(rating);
+    return { stars, count: count || 0 };
+  };
+
+  const ratingData = formatRating(score.rating, score.ratingsCount);
 
   return (
     <div
       className={`
-          cursor-pointer transition-all duration-300 hover:shadow-theme-glow group relative overflow-hidden
-          ${
-            isSelected
-              ? 'classical-card !p-0 border-brand-primary bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 shadow-theme-glow'
-              : 'classical-card-simple hover:border-theme-primary hover:bg-interactive-hover'
-          }
-          ${shouldShowThumbnail ? '' : 'mb-0 border-b-0 rounded-b-none'}
-        `}
+        group relative p-4 rounded-xl border transition-all duration-300 cursor-pointer
+        ${
+          isSelected
+            ? 'bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border-brand-primary shadow-theme-glow'
+            : 'bg-theme-elevated border-theme-secondary hover:border-theme-primary hover:bg-interactive-hover'
+        }
+        ${!isLastInGroup && groupSize > 1 ? 'mb-2' : ''}
+        ${className}
+      `}
       onClick={onSelect}
     >
-      <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
-        {/* Thumbnail com efeito lupa - só mostra se for o último do grupo */}
-        {shouldShowThumbnail && score.thumbnailUrl && (
+      {/* Indicadores de status */}
+      <div className="absolute top-2 right-2 flex items-center space-x-1">
+        {/* Indicador de partitura salva */}
+        {isSaved && showSavedIndicator && (
           <div
-            className="relative w-24 h-32 flex-shrink-0 group/thumbnail"
-            onMouseEnter={() => setShowMagnified(true)}
-            onMouseLeave={() => setShowMagnified(false)}
-            onMouseMove={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              setMousePosition({
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top,
-              });
-            }}
+            className="w-6 h-6 bg-accent-green/20 border border-accent-green/40 rounded-full flex items-center justify-center"
+            title="Partitura salva na sua biblioteca"
           >
-            <div className="relative w-full h-full rounded-xl overflow-hidden border-2 border-theme-primary shadow-theme-medium group-hover/thumbnail:shadow-theme-glow transition-all duration-300 group-hover/thumbnail:scale-105">
-              <Image
-                src={score.thumbnailUrl}
-                alt={`Preview de ${score.title}`}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover/thumbnail:scale-110"
-                width={60}
-                height={60}
-              />
-
-              {/* Overlay com ícone de zoom */}
-              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/thumbnail:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <div className="w-8 h-8 bg-theme-inverse rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-4 h-4 text-theme-primary"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            {/* Lupa expandida */}
-            {showMagnified && (
-              <div
-                className="fixed z-[9999] pointer-events-none animate-fade-in-scale"
-                style={{
-                  left: `${mousePosition.x + 50}px`,
-                  top: `${mousePosition.y - 100}px`,
-                }}
-              >
-                <div className="bg-theme-elevated rounded-2xl shadow-theme-large border-2 border-theme-primary p-3 backdrop-blur-md">
-                  {/* <img
-                    src={score.thumbnailUrl}
-                    alt={`Preview expandido de ${score.title}`}
-                    className="w-80 h-96 object-contain rounded-xl"
-                  /> */}
-
-                  <Image
-                    src={score.thumbnailUrl}
-                    alt={`Preview expandido de ${score.title}`}
-                    className="w-80 h-96 object-contain rounded-xl"
-                    width={80}
-                    height={80}
-                  />
-                </div>
-              </div>
-            )}
+            <FiBookmark className="w-3 h-3 text-accent-green" />
           </div>
         )}
 
-        {/* Informações */}
+        {/* Indicador de seleção atual */}
+        {isSelected && (
+          <div className="w-6 h-6 bg-brand-primary/20 border border-brand-primary/40 rounded-full flex items-center justify-center">
+            <FiCheck className="w-3 h-3 text-brand-primary" />
+          </div>
+        )}
+
+        {/* Indicador de alta qualidade (rating alto) */}
+        {ratingData && ratingData.stars >= 4 && (
+          <div
+            className="w-6 h-6 bg-accent-yellow/20 border border-accent-yellow/40 rounded-full flex items-center justify-center"
+            title={`${ratingData.stars}/5 estrelas (${ratingData.count} avaliações)`}
+          >
+            <FiStar className="w-3 h-3 text-accent-yellow" />
+          </div>
+        )}
+      </div>
+
+      {/* Conteúdo principal */}
+      <div className="flex items-start space-x-4">
+        {/* Ícone do tipo de arquivo */}
+        <div
+          className={`
+            w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300
+            ${
+              isSelected
+                ? 'bg-gradient-to-br from-brand-primary to-brand-secondary text-theme-primary shadow-theme-glow'
+                : 'bg-theme-primary border border-theme-secondary text-theme-tertiary group-hover:text-theme-primary'
+            }
+          `}
+        >
+          <FiFileText className="w-6 h-6" />
+        </div>
+
+        {/* Informações da partitura */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-4 mb-2">
-            <div className="flex-1">
-              <h4 className="font-semibold text-theme-primary text-base leading-tight classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300">
-                {score.title}
-              </h4>
+          {/* Título */}
+          <h3
+            className={`
+              font-semibold text-lg leading-tight mb-2 line-clamp-2 transition-colors duration-300
+              ${
+                isSelected
+                  ? 'text-brand-primary'
+                  : 'text-theme-primary group-hover:text-brand-primary'
+              }
+            `}
+          >
+            {score.title}
+          </h3>
 
-              {/* Rating se disponível */}
-              {/* {score.rating && (
-                <div className="flex items-center space-x-1 mb-2">
-                  <FiStar className="w-3 h-3 text-accent-gold fill-current" />
-                  <span className="text-sm font-medium text-accent-gold">
-                    {score.rating.toFixed(1)}
-                  </span>
-                  {score.ratingsCount && (
-                    <span className="text-xs text-theme-tertiary">
-                      ({score.ratingsCount})
-                    </span>
-                  )}
-                </div>
-              )} */}
-            </div>
+          {/* Metadados principais */}
+          <div className="flex flex-wrap items-center gap-4 mb-3 text-sm">
+            {/* Tamanho do arquivo */}
+            {score.fileSize && (
+              <span className="flex items-center space-x-1 text-theme-tertiary">
+                <FiDownload className="w-3 h-3" />
+                <span>{formatFileSize(score.fileSize)}</span>
+              </span>
+            )}
 
-            {/* Download button */}
-            {score.downloadUrl && (
-              <a
-                href={score.downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 bg-brand-gradient text-theme-primarypx-4 py-2 rounded-xl text-sm font-medium hover:scale-105 hover:shadow-theme-glow transition-all duration-300 flex-shrink-0 group/download"
-                onClick={(e) => e.stopPropagation()}
+            {/* Número de páginas */}
+            {score.pageCount && (
+              <span className="flex items-center space-x-1 text-theme-tertiary">
+                <FiFileText className="w-3 h-3" />
+                <span>{formatPageCount(score.pageCount)}</span>
+              </span>
+            )}
+
+            {/* Formato do arquivo */}
+            <span className="px-2 py-1 bg-theme-primary border border-theme-secondary rounded text-theme-secondary text-xs font-medium">
+              {score.fileFormat || 'PDF'}
+            </span>
+
+            {/* Tipo de partitura */}
+            {score.type && (
+              <span
+                className={`
+                  px-2 py-1 rounded text-xs font-medium capitalize
+                  ${getTypeStyle(score.type)}
+                `}
               >
-                <FiDownload className="w-3 h-3 group-hover/download:animate-bounce" />
-                <span>Download</span>
-                <svg
-                  className="w-3 h-3 transition-transform group-hover/download:translate-x-0.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </a>
+                {getTypeLabel(score.type)}
+              </span>
             )}
           </div>
 
-          {/* Detalhes em grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            {score.fileSize && (
-              <div className="flex items-center gap-2 text-theme-secondary">
-                <div className="w-5 h-5 bg-accent-blue/20 border border-accent-blue/30 rounded-lg flex items-center justify-center">
-                  <FiFileText className="w-3 h-3 text-accent-blue" />
-                </div>
-                <span>
-                  {score.fileSize}
-                  {score.pageCount && ` • ${score.pageCount} páginas`}
-                </span>
+          {/* Rating */}
+          {ratingData && (
+            <div className="flex items-center space-x-2 mb-3">
+              <div className="flex items-center space-x-1">
+                {[...Array(5)].map((_, i) => (
+                  <FiStar
+                    key={i}
+                    className={`w-3 h-3 ${
+                      i < ratingData.stars
+                        ? 'text-accent-yellow fill-current'
+                        : 'text-theme-tertiary'
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-theme-tertiary">
+                ({ratingData.count}{' '}
+                {ratingData.count === 1 ? 'avaliação' : 'avaliações'})
+              </span>
+            </div>
+          )}
+
+          {/* Informações detalhadas */}
+          <div className="space-y-1 text-xs text-theme-tertiary">
+            {/* Editor */}
+            {score.editor && (
+              <div className="flex items-center space-x-2">
+                <span className="font-medium">Editor:</span>
+                <span>{score.editor}</span>
               </div>
             )}
 
-            {shouldShowThumbnail && score.uploader && (
-              <div className="flex items-center gap-2 text-theme-secondary">
-                <div className="w-5 h-5 bg-accent-green/20 border border-accent-green/30 rounded-lg flex items-center justify-center">
-                  <FiUser className="w-3 h-3 text-accent-green" />
-                </div>
-                <span>
-                  {score.uploader}
-                  {score.uploadDate && ` • ${score.uploadDate}`}
-                </span>
+            {/* Publisher */}
+            {score.publisher && (
+              <div className="flex items-center space-x-2">
+                <span className="font-medium">Editora:</span>
+                <span>{score.publisher}</span>
               </div>
             )}
 
-            {score.downloadCount && (
-              <div className="flex items-center gap-2 text-theme-secondary">
-                <div className="w-5 h-5 bg-accent-purple/20 border border-accent-purple/30 rounded-lg flex items-center justify-center">
-                  <FiDownload className="w-3 h-3 text-accent-purple" />
-                </div>
+            {/* Upload info */}
+            {score.uploader && (
+              <div className="flex items-center space-x-2">
+                <FiUser className="w-3 h-3" />
+                <span>Por {score.uploader}</span>
+                {score.uploadDate && (
+                  <>
+                    <FiClock className="w-3 h-3" />
+                    <span>{score.uploadDate}</span>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* Downloads count */}
+            {score.downloadCount && score.downloadCount > 0 && (
+              <div className="flex items-center space-x-2">
+                <FiDownload className="w-3 h-3" />
                 <span>{score.downloadCount} downloads</span>
               </div>
             )}
-
-            {shouldShowThumbnail && score.uploadDate && (
-              <div className="flex items-center gap-2 text-theme-secondary">
-                <div className="w-5 h-5 bg-brand-primary/20 border border-brand-primary/30 rounded-lg flex items-center justify-center">
-                  <FiClock className="w-3 h-3 text-theme-primary" />
-                </div>
-                <span>{score.uploadDate}</span>
-              </div>
-            )}
           </div>
-
-          {/* Informações adicionais para thumbnail */}
-          {shouldShowThumbnail &&
-            (score.editor || score.publisher || score.copyright) && (
-              <div className="mt-4 pt-4 border-t border-theme-secondary">
-                <div className="space-y-2 text-xs text-theme-tertiary">
-                  {score.editor && (
-                    <div className="flex flex-col sm:flex-row  items-center justify-between gap-2">
-                      <span className="font-medium text-theme-secondary w-2/12 sm:w-1/12">
-                        Editor:
-                      </span>
-                      <span className=" w-full sm:w-11/12 text-center sm:text-start ">
-                        {score.editor}
-                      </span>
-                    </div>
-                  )}
-                  {score.publisher && (
-                    <div className="flex pt-2 sm:pt-0 flex-col sm:flex-row  items-center justify-between gap-2">
-                      <span className="font-medium text-theme-secondary w-2/12 sm:w-1/12">
-                        Editora:
-                      </span>
-                      <span className=" w-full sm:w-11/12 text-center sm:text-start">
-                        {truncateText(score.publisher, 300)}
-                      </span>
-                    </div>
-                  )}
-                  {score.copyright && (
-                    <div className="flex pt-2 sm:pt-0 flex-col sm:flex-row items-center justify-between gap-2">
-                      <span className="font-medium text-theme-secondary w-3/12 sm:w-1/12">
-                        Copyright:
-                      </span>
-                      <span className=" w-full sm:w-11/12 text-center sm:text-start">
-                        {score.copyright}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
         </div>
       </div>
 
-      {/* Hover glow effect */}
-      <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl pointer-events-none"></div>
+      {/* Actions overlay (aparece no hover) */}
+      <div
+        className={`
+          absolute inset-0 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 rounded-xl
+          flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300
+          ${isSelected ? 'opacity-100' : ''}
+        `}
+      >
+        <div className="text-center">
+          <div
+            className={`
+              w-16 h-16 rounded-full flex items-center justify-center mb-2 transition-all duration-300
+              ${
+                isSelected
+                  ? 'bg-brand-primary text-theme-primary shadow-lg'
+                  : 'bg-theme-primary border-2 border-brand-primary text-brand-primary group-hover:bg-brand-primary group-hover:text-theme-primary'
+              }
+            `}
+          >
+            {isSelected ? (
+              <FiCheck className="w-8 h-8" />
+            ) : (
+              <FiHeart className="w-8 h-8" />
+            )}
+          </div>
+          <p className="text-sm font-medium text-theme-primary">
+            {isSelected ? 'Selecionada' : 'Selecionar para estudo'}
+          </p>
+          {isSaved && !isSelected && (
+            <p className="text-xs text-accent-green mt-1">
+              ★ Salva na biblioteca
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom gradient border */}
+      <div
+        className={`
+          absolute bottom-0 left-0 right-0 h-1 rounded-b-xl transition-all duration-300
+          ${
+            isSelected
+              ? 'bg-gradient-to-r from-brand-primary to-brand-secondary'
+              : 'bg-transparent group-hover:bg-gradient-to-r group-hover:from-brand-primary/50 group-hover:to-brand-secondary/50'
+          }
+        `}
+      />
     </div>
   );
 };
+
+// Funções auxiliares
+function getTypeStyle(type: string): string {
+  const styles = {
+    scores:
+      'bg-brand-primary/20 text-brand-primary border border-brand-primary/30',
+    parts: 'bg-accent-blue/20 text-accent-blue border border-accent-blue/30',
+    arrangements:
+      'bg-accent-green/20 text-accent-green border border-accent-green/30',
+    librettos:
+      'bg-accent-purple/20 text-accent-purple border border-accent-purple/30',
+    others: 'bg-accent-red/20 text-accent-red border border-accent-red/30',
+    sources:
+      'bg-accent-yellow/20 text-accent-yellow border border-accent-yellow/30',
+  };
+  return styles[type as keyof typeof styles] || styles.others;
+}
+
+function getTypeLabel(type: string): string {
+  const labels = {
+    scores: 'Partitura',
+    parts: 'Parte',
+    arrangements: 'Arranjo',
+    librettos: 'Libreto',
+    others: 'Outro',
+    sources: 'Fonte',
+  };
+  return labels[type as keyof typeof labels] || 'Outro';
+}
 
 export default ScoreCard;

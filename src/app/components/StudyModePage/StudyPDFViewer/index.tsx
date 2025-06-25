@@ -16,7 +16,6 @@ import {
   FiSun,
   FiMoon,
   FiGrid,
-  FiSquare,
   FiTarget,
   FiEye,
   FiEyeOff,
@@ -56,7 +55,7 @@ interface Annotation {
   path?: string; // Para desenhos livres
 }
 
-type LayoutMode = 'single' | 'spread' ;
+type LayoutMode = 'single' | 'spread';
 type Theme = 'light' | 'dark';
 
 const StudyPDFViewer: React.FC<StudyPDFViewerProps> = ({
@@ -66,6 +65,7 @@ const StudyPDFViewer: React.FC<StudyPDFViewerProps> = ({
   onUpdateSession,
   className = '',
 }) => {
+  console.log('work', work);
   // Estados principais
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -98,14 +98,6 @@ const StudyPDFViewer: React.FC<StudyPDFViewerProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const annotationCanvasRef = useRef<HTMLCanvasElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Estados de desenho
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [currentPath, setCurrentPath] = useState<string>('');
-  const [lastPoint, setLastPoint] = useState<{ x: number; y: number } | null>(
-    null
-  );
 
   // Carregar PDF quando score muda
   useEffect(() => {
@@ -145,7 +137,7 @@ const StudyPDFViewer: React.FC<StudyPDFViewerProps> = ({
   const loadPDF = async (url: string) => {
     setIsLoading(true);
     setError(null);
-
+    console.log(url);
     try {
       // Aqui integraria com uma biblioteca de PDF como PDF.js
       // Por enquanto, simular carregamento
@@ -268,6 +260,7 @@ const StudyPDFViewer: React.FC<StudyPDFViewerProps> = ({
 
   // Salvar bookmark no backend
   const saveBookmark = async (bookmark: Bookmark) => {
+    console.log(bookmark);
     try {
       // Implementar API call
       // await fetch('/api/score-bookmarks', {
@@ -348,6 +341,7 @@ const StudyPDFViewer: React.FC<StudyPDFViewerProps> = ({
 
   // Salvar anotação no backend
   const saveAnnotation = async (annotation: Annotation) => {
+    console.log(annotation)
     try {
       // Implementar API call
       // await fetch('/api/pdf-annotations', {

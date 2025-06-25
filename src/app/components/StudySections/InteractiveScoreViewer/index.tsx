@@ -1,38 +1,23 @@
+import Image from 'next/image';
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { FaHighlighter } from 'react-icons/fa';
 import {
   FiZoomIn,
   FiZoomOut,
   FiRotateCcw,
-  FiSave,
   FiDownload,
-  FiUpload,
-  FiEdit3,
   FiTrash2,
-  FiEye,
-  FiEyeOff,
   FiLayers,
-  FiSettings,
   FiMaximize2,
   FiMinimize2,
   FiSkipBack,
   FiSkipForward,
-  FiPlay,
-  FiPause,
-  FiVolume2,
   FiMic,
   FiCamera,
-  FiShare2,
-  FiCopy,
-  FiMove,
-  FiMousePointer,
   FiSquare,
   FiCircle,
   FiType,
   FiPenTool,
-  FiBookmark,
-  FiClock,
-  FiTarget,
 } from 'react-icons/fi';
 import { GiPianoKeys, GiViolin, GiTrumpet } from 'react-icons/gi';
 
@@ -125,7 +110,7 @@ const InteractiveScoreViewer: React.FC<{
     y: 0,
     color: '#3B82F6',
   });
-  const [followPlayback, setFollowPlayback] = useState(true);
+  console.log('setPlaybackCursor', setPlaybackCursor);
 
   // Refs
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -858,7 +843,9 @@ const InteractiveScoreViewer: React.FC<{
         <div className="flex-1 relative overflow-auto" ref={containerRef}>
           <div className="relative inline-block">
             {/* Imagem da partitura */}
-            <img
+            <Image
+              width={100}
+              height={100}
               ref={scoreImageRef}
               src={score.pages[currentPage]?.imageUrl}
               alt={`Página ${currentPage + 1} de ${score.title}`}

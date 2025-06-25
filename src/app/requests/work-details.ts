@@ -475,7 +475,6 @@ export const searchComposers = async (
   { id: string; name: string; fullName?: string; worksCount?: number }[]
 > => {
   try {
-    console.log;
     if (!searchTerm.trim()) {
       // Se não há busca, retorna compositores populares
       return await getPopularComposers();

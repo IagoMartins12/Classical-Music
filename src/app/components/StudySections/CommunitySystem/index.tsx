@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import {
   FiUsers,
@@ -7,32 +8,18 @@ import {
   FiPlay,
   FiMusic,
   FiStar,
-  FiCalendar,
-  FiMapPin,
   FiSearch,
-  FiFilter,
   FiPlus,
-  FiSettings,
-  FiFlag,
   FiMoreHorizontal,
   FiEye,
   FiClock,
-  FiThumbsUp,
-  FiThumbsDown,
   FiBookmark,
   FiSend,
   FiImage,
   FiVideo,
   FiMic,
-  FiUpload,
-  FiDownload,
-  FiEdit3,
-  FiTrash2,
-  FiUserPlus,
-  FiUserCheck,
   FiGlobe,
   FiLock,
-  FiZap,
   FiTarget,
   FiUser,
   FiActivity,
@@ -145,9 +132,9 @@ const CommunitySystem: React.FC = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [showCreatePost, setShowCreatePost] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  console.log('setUsers', setUsers);
   // Dados simulados
   useEffect(() => {
     // Simular carregamento de dados
@@ -435,8 +422,10 @@ const CommunitySystem: React.FC = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <img
-                  src={post.author.avatar}
+                <Image
+                  width={25}
+                  height={25}
+                  src={post.author.avatar ?? ''}
                   alt={post.author.name}
                   className="w-10 h-10 rounded-full object-cover"
                 />
@@ -573,8 +562,10 @@ const CommunitySystem: React.FC = () => {
 
               {post.media.type === 'video' && (
                 <div className="relative">
-                  <img
-                    src={post.media.thumbnail}
+                  <Image
+                    width={100}
+                    height={100}
+                    src={post.media.thumbnail ?? ''}
                     alt="Video thumbnail"
                     className="w-full h-48 object-cover"
                   />
@@ -650,7 +641,9 @@ const CommunitySystem: React.FC = () => {
             <div className="mt-4 pt-4 border-t border-white/10">
               <div className="space-y-3">
                 <div className="flex space-x-3">
-                  <img
+                  <Image
+                    width={25}
+                    height={25}
                     src="/api/placeholder/32/32"
                     alt="User"
                     className="w-8 h-8 rounded-full object-cover"
@@ -675,7 +668,9 @@ const CommunitySystem: React.FC = () => {
                 </div>
 
                 <div className="flex space-x-3">
-                  <img
+                  <Image
+                    width={25}
+                    height={25}
                     src="/api/placeholder/32/32"
                     alt="User"
                     className="w-8 h-8 rounded-full object-cover"
@@ -768,8 +763,10 @@ const CommunitySystem: React.FC = () => {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <img
-              src={challenge.creator.avatar}
+            <Image
+              width={25}
+              height={25}
+              src={challenge.creator.avatar ?? ''}
               alt={challenge.creator.name}
               className="w-6 h-6 rounded-full object-cover"
             />
@@ -797,8 +794,10 @@ const CommunitySystem: React.FC = () => {
     return (
       <div className="bg-white/5 rounded-xl border border-white/20 p-6">
         <div className="flex items-start space-x-4">
-          <img
-            src={group.avatar}
+          <Image
+            width={25}
+            height={25}
+            src={group.avatar ?? ''}
             alt={group.name}
             className="w-12 h-12 rounded-full object-cover"
           />
@@ -952,8 +951,10 @@ const CommunitySystem: React.FC = () => {
                       className="flex items-center justify-between"
                     >
                       <div className="flex items-center space-x-3">
-                        <img
-                          src={user.avatar}
+                        <Image
+                          width={25}
+                          height={25}
+                          src={user.avatar ?? ''}
                           alt={user.name}
                           className="w-8 h-8 rounded-full object-cover"
                         />

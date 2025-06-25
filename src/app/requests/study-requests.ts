@@ -111,9 +111,12 @@ const getUserStudySettingsCache = unstable_cache(
 
       return {
         id: user.id,
-        studyModeSettings: user.studyModeSettings
-          ? { ...defaultSettings, ...user.studyModeSettings }
-          : defaultSettings,
+        studyModeSettings:
+          user.studyModeSettings &&
+          typeof user.studyModeSettings === 'object' &&
+          !Array.isArray(user.studyModeSettings)
+            ? { ...defaultSettings, ...user.studyModeSettings }
+            : defaultSettings,
       };
     } catch (error) {
       console.error('Erro ao buscar configurações de estudo:', error);

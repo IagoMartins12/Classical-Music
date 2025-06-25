@@ -1,4 +1,4 @@
-// app/components/StudyMode/StudyModeClient.tsx
+// app/components/StudyMode/StudyModeClientOptimized.tsx
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -15,8 +15,8 @@ import {
   FiSquare,
   FiMaximize2,
   FiMinimize2,
+  FiAlertCircle,
   FiSave,
-  FiRotateCcw,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { WorkDetails } from '@/app/requests/work-details';
@@ -24,7 +24,8 @@ import {
   UserStudySettings,
   ActiveStudySession,
 } from '@/app/requests/study-requests';
-import { useIMSLPScores } from '@/app/hooks/useIMSLPScores';
+import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
+import { useIMSLPScoresOptimized } from '@/app/hooks/useIMSLPScoresOptimized';
 
 // Componentes do modo estudo
 import StudyTimer from '../StudyTimer';
@@ -34,7 +35,7 @@ import StudyPDFViewer from '../StudyPDFViewer';
 import StudyControls from '../StudyControls';
 import StudySessionSummary from '../StudySessionSummary';
 
-interface StudyModeClientProps {
+interface StudyModeClientOptimizedProps {
   work: WorkDetails;
   scoreId?: string;
   userId: string;
@@ -50,11 +51,9 @@ export interface StudySession {
   workTitle: string;
   composerName: string;
   startTime: string;
-  duration: number; // em segundos
+  duration: number;
   isActive: boolean;
   isPaused: boolean;
-
-  // Configurações do metrônomo
   metronome: {
     bpm: number;
     timeSignature: string;
@@ -62,13 +61,9 @@ export interface StudySession {
     sound: 'click' | 'beep' | 'wood';
     volume: number;
   };
-
-  // Anotações e objetivos
   studyNotes: string;
   practiceGoals: string[];
   sectionsWorked: string[];
-
-  // Foco da sessão
   focus:
     | 'TECHNICAL'
     | 'EXPRESSIVITY'
@@ -77,15 +72,11 @@ export interface StudySession {
     | 'MEMORIZATION'
     | 'PERFORMANCE'
     | 'REVIEW';
-
-  // Métricas
   pauseCount: number;
   restartCount: number;
   pagesViewed: number[];
   annotationsCreated: number;
   bookmarksCreated: number;
-
-  // Configurações da sessão
   pdfSettings: {
     zoom: number;
     theme: 'light' | 'dark';
@@ -96,7 +87,7 @@ export interface StudySession {
 type StudyLayout = 'focus' | 'split' | 'full-pdf';
 type ActivePanel = 'timer' | 'metronome' | 'notes' | 'settings';
 
-const StudyModeClient: React.FC<StudyModeClientProps> = ({
+const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
   work,
   scoreId,
   userId,
@@ -106,6 +97,7 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
 }) => {
   const router = useRouter();
 
+  console.log('props', { userId, searchParams });
   // Estados principais
   const [currentSession, setCurrentSession] = useState<StudySession | null>(
     null
@@ -113,23 +105,117 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
   const [layout, setLayout] = useState<StudyLayout>('split');
   const [activePanel, setActivePanel] = useState<ActivePanel>('timer');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [selectedScore, setSelectedScore] = useState<any>(null);
   const [showSessionSummary, setShowSessionSummary] = useState(false);
+  const [currentScore, setCurrentScore] = useState<IMSLPScore | undefined>(
+    undefined
+  );
 
   // Refs para controle
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const metronomeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const autoSaveIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Hook para buscar partituras IMSLP
-  const { scores: imslpScores, loading: loadingScores } = useIMSLPScores(
-    work.imslpPermlink
-  );
+  // Hook para partituras otimizado
+  const {
+    scores: imslpScores,
+    selectedScores,
+    loading: loadingScores,
+    error: scoresError,
+  } = useIMSLPScoresOptimized(work.imslpPermlink, work.id);
+
+  // Carregar partitura específica
+  const loadSelectedScore = useCallback(async () => {
+    if (!scoreId) {
+      // Se não há scoreId, tentar usar a primeira partitura selecionada
+      if (selectedScores.length > 0) {
+        setCurrentScore(selectedScores[0]);
+        console.log(
+          '📖 [STUDY] Usando primeira partitura selecionada:',
+          selectedScores[0].title
+        );
+      } else if (imslpScores?.scoresByType.scores?.[0]?.scores?.[0]) {
+        // Fallback para primeira partitura disponível
+        setCurrentScore(imslpScores.scoresByType.scores[0].scores[0]);
+        console.log('📖 [STUDY] Usando primeira partitura disponível');
+      }
+      return;
+    }
+
+    try {
+      // Primeiro, tentar buscar nas partituras selecionadas (cache local)
+      const savedScore = selectedScores.find((score) => score.id === scoreId);
+      if (savedScore) {
+        setCurrentScore(savedScore);
+        console.log(
+          '⚡ [STUDY] Partitura carregada do cache local:',
+          savedScore.title
+        );
+        return;
+      }
+
+      // Se não está no cache local, buscar nas partituras do IMSLP
+      if (imslpScores) {
+        const allScores = [
+          ...imslpScores.scoresByType.scores.flatMap((group) => group.scores),
+          ...imslpScores.scoresByType.parts.flatMap((group) => group.scores),
+          ...imslpScores.scoresByType.arrangements.flatMap(
+            (group) => group.scores
+          ),
+          ...imslpScores.scoresByType.librettos.flatMap(
+            (group) => group.scores
+          ),
+          ...imslpScores.scoresByType.others.flatMap((group) => group.scores),
+          ...imslpScores.scoresByType.sources.flatMap((group) => group.scores),
+        ];
+
+        const foundScore = allScores.find((score) => score.id === scoreId);
+        if (foundScore) {
+          setCurrentScore(foundScore);
+          console.log(
+            '🌐 [STUDY] Partitura encontrada no scraping:',
+            foundScore.title
+          );
+          return;
+        }
+      }
+
+      // Se ainda não encontrou, tentar buscar nas partituras salvas do usuário via API
+      const response = await fetch(
+        `/api/user/selected-scores?workId=${work.id}&scoreId=${scoreId}`
+      );
+      const result = await response.json();
+
+      if (result.success && result.selectedScores.length > 0) {
+        const apiScore = result.selectedScores[0];
+        setCurrentScore(apiScore);
+        console.log('💾 [STUDY] Partitura carregada da API:', apiScore.title);
+        return;
+      }
+
+      console.warn('⚠️ [STUDY] Partitura não encontrada:', scoreId);
+      toast.error('Partitura não encontrada. Redirecionando...');
+
+      // Redirecionar para a página da obra se partitura não foi encontrada
+      setTimeout(() => {
+        router.push(`/works/${work.id}`);
+      }, 2000);
+    } catch (error) {
+      console.error('❌ [STUDY] Erro ao carregar partitura:', error);
+      toast.error('Erro ao carregar partitura');
+    }
+  }, [scoreId, selectedScores, imslpScores, work.id, router]);
 
   // Inicializar sessão quando componente monta
   useEffect(() => {
     initializeStudySession();
   }, [work, scoreId, userSettings, activeSession]);
+
+  // Carregar partitura quando dados estão disponíveis
+  useEffect(() => {
+    if (!loadingScores && (selectedScores.length > 0 || imslpScores)) {
+      loadSelectedScore();
+    }
+  }, [loadingScores, selectedScores, imslpScores, loadSelectedScore]);
 
   // Cleanup quando componente desmonta
   useEffect(() => {
@@ -147,7 +233,7 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
     if (currentSession?.isActive && !currentSession.isPaused) {
       autoSaveIntervalRef.current = setInterval(() => {
         saveSessionToBackend();
-      }, 30000); // 30 segundos
+      }, 30000);
 
       return () => {
         if (autoSaveIntervalRef.current) {
@@ -174,7 +260,7 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
       setCurrentSession({
         id: activeSession.id,
         workId: work.id,
-        scoreId: scoreId,
+        scoreId: scoreId || currentScore?.id,
         workTitle: work.title,
         composerName: work.composer.fullName,
         startTime: activeSession.startTime,
@@ -215,7 +301,7 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
       // Criar nova sessão
       const newSession: StudySession = {
         workId: work.id,
-        scoreId: scoreId,
+        scoreId: scoreId || currentScore?.id,
         workTitle: work.title,
         composerName: work.composer.fullName,
         startTime: new Date().toISOString(),
@@ -246,103 +332,67 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
       };
 
       setCurrentSession(newSession);
-
-      // Criar sessão no backend
       createSessionInBackend(newSession);
     }
 
-    // Iniciar timer
     startTimer();
-  }, [work, scoreId, userSettings, activeSession]);
+  }, [work, scoreId, currentScore, userSettings, activeSession]);
 
-  // Iniciar timer
+  // ... (resto dos métodos permanecem iguais: startTimer, togglePause, resetTimer, etc.)
+  // [Incluir todos os métodos do componente original aqui]
+
   const startTimer = useCallback(() => {
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
 
     timerIntervalRef.current = setInterval(() => {
       setCurrentSession((prev) => {
         if (!prev || prev.isPaused) return prev;
-
-        return {
-          ...prev,
-          duration: prev.duration + 1,
-        };
+        return { ...prev, duration: prev.duration + 1 };
       });
     }, 1000);
   }, []);
 
-  // Pausar/Retomar sessão
   const togglePause = useCallback(() => {
     setCurrentSession((prev) => {
       if (!prev) return prev;
-
       const newIsPaused = !prev.isPaused;
-
       if (newIsPaused) {
-        // Pausar
         if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-        return {
-          ...prev,
-          isPaused: true,
-          pauseCount: prev.pauseCount + 1,
-        };
+        return { ...prev, isPaused: true, pauseCount: prev.pauseCount + 1 };
       } else {
-        // Retomar
         startTimer();
-        return {
-          ...prev,
-          isPaused: false,
-        };
+        return { ...prev, isPaused: false };
       }
     });
   }, [startTimer]);
 
-  // Resetar timer
   const resetTimer = useCallback(() => {
     setCurrentSession((prev) => {
       if (!prev) return prev;
-
-      return {
-        ...prev,
-        duration: 0,
-        restartCount: prev.restartCount + 1,
-      };
+      return { ...prev, duration: 0, restartCount: prev.restartCount + 1 };
     });
   }, []);
 
-  // Finalizar sessão
   const endSession = useCallback(async () => {
     if (!currentSession) return;
-
     try {
-      // Salvar sessão final
       await saveSessionToBackend(true);
-
-      // Mostrar resumo
       setShowSessionSummary(true);
-
-      // Parar timer
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
-
       setCurrentSession((prev) => (prev ? { ...prev, isActive: false } : null));
-
       toast.success('Sessão de estudo finalizada!');
     } catch (error) {
+      console.log(error);
       toast.error('Erro ao finalizar sessão');
     }
   }, [currentSession]);
 
-  // Salvar sessão no backend
   const saveSessionToBackend = useCallback(
     async (isFinal = false) => {
       if (!currentSession) return;
-
       try {
-        const endpoint = currentSession.id
-          ? '/api/study-sessions'
-          : '/api/study-sessions';
+        const endpoint = '/api/study-sessions/enhanced';
         const method = currentSession.id ? 'PATCH' : 'POST';
-
         const sessionData = {
           ...(currentSession.id && { id: currentSession.id }),
           workId: currentSession.workId,
@@ -370,9 +420,7 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
         });
 
         const result = await response.json();
-
         if (result.success && !currentSession.id) {
-          // Primeira salvada - armazenar ID
           setCurrentSession((prev) =>
             prev ? { ...prev, id: result.studySession.id } : null
           );
@@ -384,10 +432,9 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
     [currentSession]
   );
 
-  // Criar sessão no backend
   const createSessionInBackend = useCallback(async (session: StudySession) => {
     try {
-      const response = await fetch('/api/study-sessions', {
+      const response = await fetch('/api/study-sessions/enhanced', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -404,7 +451,6 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
       });
 
       const result = await response.json();
-
       if (result.success) {
         setCurrentSession((prev) =>
           prev ? { ...prev, id: result.studySession.id } : null
@@ -415,27 +461,22 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
     }
   }, []);
 
-  // Atualizar configurações da sessão
   const updateSession = useCallback((updates: Partial<StudySession>) => {
     setCurrentSession((prev) => (prev ? { ...prev, ...updates } : null));
   }, []);
 
-  // Sair do modo estudo
   const exitStudyMode = useCallback(() => {
     if (currentSession?.isActive) {
       const confirmExit = window.confirm(
         'Você tem uma sessão ativa. Deseja salvar antes de sair?'
       );
-
       if (confirmExit) {
         saveSessionToBackend(true);
       }
     }
-
     router.push(`/works/${work.id}`);
   }, [currentSession, work.id, router, saveSessionToBackend]);
 
-  // Toggle fullscreen
   const toggleFullscreen = useCallback(() => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
@@ -446,12 +487,7 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
     }
   }, []);
 
-  // Selecionar partitura específica
-  const selectScore = useCallback((score: any) => {
-    setSelectedScore(score);
-    setCurrentSession((prev) => (prev ? { ...prev, scoreId: score.id } : null));
-  }, []);
-
+  // Loading state
   if (!currentSession) {
     return (
       <div className="min-h-screen bg-theme-primary flex items-center justify-center">
@@ -462,6 +498,44 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
           <p className="text-theme-secondary">
             Inicializando sessão de estudo...
           </p>
+          {loadingScores && (
+            <p className="text-theme-tertiary text-sm mt-2">
+              Carregando partituras...
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Error state para partituras
+  if (scoresError && !currentScore) {
+    return (
+      <div className="min-h-screen bg-theme-primary flex items-center justify-center">
+        <div className="text-center space-y-4 max-w-md">
+          <div className="w-16 h-16 bg-accent-red/20 rounded-full flex items-center justify-center mx-auto">
+            <FiAlertCircle className="w-8 h-8 text-accent-red" />
+          </div>
+          <div className="space-y-2">
+            <p className="text-theme-primary font-medium">
+              Erro ao carregar partituras
+            </p>
+            <p className="text-theme-secondary text-sm">{scoresError}</p>
+          </div>
+          <div className="flex space-x-3 justify-center">
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-brand-gradient text-theme-primary px-6 py-2 rounded-xl hover:scale-105 transition-all duration-300"
+            >
+              Tentar novamente
+            </button>
+            <button
+              onClick={() => router.push(`/works/${work.id}`)}
+              className="bg-theme-elevated border border-theme-secondary text-theme-primary px-6 py-2 rounded-xl hover:bg-interactive-hover transition-all duration-300"
+            >
+              Voltar à obra
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -483,6 +557,11 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
               </h1>
               <p className="text-sm text-theme-secondary">
                 {currentSession.composerName}
+                {currentScore && (
+                  <span className="ml-2 px-2 py-1 bg-theme-elevated rounded text-xs">
+                    {currentScore.title.substring(0, 30)}...
+                  </span>
+                )}
               </p>
             </div>
           </div>
@@ -576,10 +655,7 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
           <div className="flex-1">
             <StudyPDFViewer
               work={work}
-              selectedScore={
-                selectedScore ||
-                imslpScores?.scoresByType.scores?.[0]?.scores?.[0]
-              }
+              selectedScore={currentScore}
               session={currentSession}
               onUpdateSession={updateSession}
               className="h-full"
@@ -595,10 +671,7 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
             >
               <StudyPDFViewer
                 work={work}
-                selectedScore={
-                  selectedScore ||
-                  imslpScores?.scoresByType.scores?.[0]?.scores?.[0]
-                }
+                selectedScore={currentScore}
                 session={currentSession}
                 onUpdateSession={updateSession}
                 className="h-full"
@@ -689,4 +762,4 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
   );
 };
 
-export default StudyModeClient;
+export default StudyModeClientOptimized;
