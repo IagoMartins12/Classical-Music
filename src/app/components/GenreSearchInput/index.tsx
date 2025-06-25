@@ -21,12 +21,14 @@ interface GenreSearchInputProps {
   selectedGenre: string;
   onGenreSelect: (genreId: string) => void;
   initialGenres: Genre[];
+  isDisabled?: boolean;
 }
 
 export default function GenreSearchInput({
   selectedGenre,
   onGenreSelect,
   initialGenres,
+  isDisabled,
 }: GenreSearchInputProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -117,6 +119,7 @@ export default function GenreSearchInput({
           onChange={(e) => setSearchTerm(e.target.value)}
           onFocus={() => setIsOpen(true)}
           className="input-classical pl-11 pr-16 w-full capitalize"
+          disabled={isDisabled}
         />
 
         <div className="absolute right-4 top-1/2 transform -translate-y-1/2 flex items-center space-x-2">

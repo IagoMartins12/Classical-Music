@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2025-06-23T19:44:11.701Z",
+  "generatedAt": "2025-06-23T19:48:51.479Z",
   "topPatterns": [
     {
       "pattern": "3/3a",
@@ -83,6 +83,19 @@
       }
     },
     {
+      "pattern": "3/3d",
+      "data": {
+        "pattern": "3/3d",
+        "subdomains": [
+          "ks15.imslp.org"
+        ],
+        "successRate": 1,
+        "averageTime": 476.49267578125,
+        "lastSeen": "2025-06-23T19:48:51.471Z",
+        "confidence": 0.5499999999999999
+      }
+    },
+    {
       "pattern": "1/19",
       "data": {
         "pattern": "1/19",
@@ -121,30 +134,16 @@
         "lastSeen": "2025-06-21T22:40:37.320Z",
         "confidence": 0.49999999999999994
       }
-    },
-    {
-      "pattern": "b/b0",
-      "data": {
-        "pattern": "b/b0",
-        "subdomains": [
-          "ks15.imslp.org",
-          "imslp.eu"
-        ],
-        "successRate": 0.9999999999999999,
-        "averageTime": 1131.54296875,
-        "lastSeen": "2025-06-21T22:40:31.968Z",
-        "confidence": 0.49999999999999994
-      }
     }
   ],
   "subdomainRanking": [
     {
       "subdomain": "ks15.imslp.org",
-      "score": 0.8002201399729204
+      "score": 0.8003048258221807
     },
     {
       "subdomain": "imslp.eu",
-      "score": 0.8001889235943194
+      "score": 0.8002028983879612
     }
   ],
   "recommendations": [
@@ -155,10 +154,10 @@
     "1 padrões com alta confiança (>80%)"
   ],
   "globalStats": {
-    "totalRequests": 808,
-    "successfulRequests": 808,
-    "averageResponseTime": 663.9887588952081,
+    "totalRequests": 812,
+    "successfulRequests": 812,
+    "averageResponseTime": 569.1867974309505,
     "mostReliableSubdomain": "",
-    "lastUpdated": "2025-06-23T19:44:11.672Z"
+    "lastUpdated": "2025-06-23T19:48:51.471Z"
   }
 }

@@ -440,7 +440,7 @@ export default function ComposerWorks({
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-theme-elevated/50 border border-theme-primary rounded-xl">
               {/* Filtro de instrumento */}
-              <div className="space-y-2">
+              <div className="flex flex-col gap-3">
                 <label className="text-sm font-medium text-theme-secondary">
                   Instrumento ({filterOptions.instruments.length})
                 </label>
@@ -454,7 +454,11 @@ export default function ComposerWorks({
                   >
                     <option value="">Todos os instrumentos</option>
                     {filterOptions.instruments.map((instrument) => (
-                      <option key={instrument.id} value={instrument.id}>
+                      <option
+                        key={instrument.id}
+                        value={instrument.id}
+                        className="capitalize"
+                      >
                         {instrument.name}
                       </option>
                     ))}
@@ -478,7 +482,7 @@ export default function ComposerWorks({
               </div>
 
               {/* Filtro de gênero */}
-              <div className="space-y-2">
+              <div className="flex flex-col gap-3">
                 <label className="text-sm font-medium text-theme-secondary">
                   Gênero ({filterOptions.workGenres.length})
                 </label>
@@ -487,12 +491,12 @@ export default function ComposerWorks({
                   <select
                     value={selectedGenre}
                     onChange={(e) => handleGenreChange(e.target.value)}
-                    className="input-classical w-full appearance-none pl-11"
+                    className="input-classical capitalize w-full appearance-none pl-11"
                     disabled={loading}
                   >
                     <option value="">Todos os gêneros</option>
                     {filterOptions.workGenres.map((genre) => (
-                      <option key={genre} value={genre}>
+                      <option key={genre} value={genre} className="capitalize">
                         {genre}
                       </option>
                     ))}
@@ -516,7 +520,7 @@ export default function ComposerWorks({
               </div>
 
               {/* Filtro de categoria */}
-              <div className="space-y-2">
+              <div className="flex flex-col gap-3">
                 <label className="text-sm font-medium text-theme-secondary">
                   Categoria ({filterOptions.categories.length})
                 </label>
@@ -530,7 +534,11 @@ export default function ComposerWorks({
                   >
                     <option value="">Todas as categorias</option>
                     {filterOptions.categories.map((category) => (
-                      <option key={category} value={category}>
+                      <option
+                        key={category}
+                        value={category}
+                        className="capitalize"
+                      >
                         {category}
                       </option>
                     ))}

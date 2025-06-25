@@ -321,7 +321,7 @@ export async function getEpochs() {
     },
   });
 
-  return epochsData;
+  return epochsData.filter((epoch) => epoch.name !== 'Desconhecido');
 }
 
 // Get onboarding options (instruments, composers, epochs)

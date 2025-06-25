@@ -28,6 +28,7 @@ import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
 
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
+import StudyModeModal from '../StudyMode/StudyModeModal';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -48,7 +49,6 @@ export default function WorkDetailsClient({
   const [selectedScoreForStudy, setSelectedScoreForStudy] =
     useState<IMSLPScore | null>(null);
 
-  console.log('selectedScoreForStudy', selectedScoreForStudy);
   // Usar o hook ao invés de gerenciar estado manualmente
   const {
     scores: imslpScores,
@@ -658,6 +658,13 @@ export default function WorkDetailsClient({
             </div>
           </div>
         )}
+
+        <StudyModeModal
+          composerName={work.composer.fullName}
+          workId={work.id}
+          workTitle={work.title}
+          selectedScore={selectedScoreForStudy}
+        />
       </div>
 
       {/* CSS for animations */}

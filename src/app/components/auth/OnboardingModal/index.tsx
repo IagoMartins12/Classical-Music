@@ -1,14 +1,14 @@
-// components/auth/OnboardingModal.tsx - Versão com persistência
+// components/auth/OnboardingModal.tsx - Versão usando Modal com ref
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { getOnboardingOptions, completeOnboarding } from '@/app/actions/auth';
 import { toast } from 'react-hot-toast';
 import { FiAlertCircle } from 'react-icons/fi';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import Button from '../../Common/Button';
-import Modal from '../../Modal';
+import Modal, { ModalRef } from '../../Modal'; // Importar o tipo ModalRef
 import WelcomeStep from '../onboarding/WelcomeStep';
 import UserTypeStep from '../onboarding/UserTypeStep';
 import InstrumentsStep from '../onboarding/InstrumentsStep';
@@ -48,12 +48,22 @@ const OnboardingModal: React.FC = () => {
   const [options, setOptions] = useState<OnboardingOptions | null>(null);
   const [isLoadingOptions, setIsLoadingOptions] = useState(false);
 
+  // Ref para controlar o scroll do modal
+  const modalRef = useRef<ModalRef>(null);
+
   // Load onboarding options when modal opens
   useEffect(() => {
     if (isOpen && !options) {
       loadOptions();
     }
   }, [isOpen, options]);
+
+  // Scroll suave para o topo sempre que o step mudar
+  useEffect(() => {
+    if (modalRef.current && isOpen) {
+      modalRef.current.scrollToTop();
+    }
+  }, [step, isOpen]);
 
   const loadOptions = async () => {
     setIsLoadingOptions(true);
@@ -85,10 +95,7 @@ const OnboardingModal: React.FC = () => {
 
       if (result.success) {
         toast.success(result.message);
-
-        complete(); // Isso limpa os dados persistidos
-
-        // Refresh the page to update the session
+        complete();
         window.location.reload();
       } else {
         toast.error(result.message);
@@ -102,11 +109,10 @@ const OnboardingModal: React.FC = () => {
   };
 
   const handleSkip = () => {
-    close(); // Mantém o progresso salvo
+    close();
   };
 
   const handleClose = () => {
-    // Apenas fecha o modal, mantém progresso salvo
     close();
   };
 
@@ -121,23 +127,28 @@ const OnboardingModal: React.FC = () => {
     }
   };
 
+  // Função para avançar step (o useEffect cuida do scroll)
+  const handleNextStep = () => {
+    nextStep();
+  };
+
   const canProceed = () => {
     switch (step) {
       case 1:
-        return true; // Welcome step
+        return true;
       case 2:
-        return !!data.userType; // User type required
+        return !!data.userType;
       case 3:
         return (
           data.userType !== 'MUSIC_STUDENT' ||
           (data.instruments && data.instruments.length > 0)
         );
       case 4:
-        return true; // Preferences are optional
+        return true;
       case 5:
-        return true; // Profile info is optional
+        return true;
       case 6:
-        return true; // Completion step
+        return true;
       default:
         return false;
     }
@@ -210,44 +221,13 @@ const OnboardingModal: React.FC = () => {
 
   return (
     <Modal
+      ref={modalRef}
       isOpen={isOpen}
       onClose={handleClose}
       maxWidth="3xl"
       showCloseButton={true}
       closeOnOverlayClick={false}
     >
-      {/* Progress Banner - Mostra quando há progresso salvo */}
-      {/* {showProgressBanner && hasProgress && (
-        <div className="mb-6 classical-card bg-accent-blue bg-opacity-10 border-accent-blue p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <FiSave className="w-5 h-5 text-accent-blue" />
-              <div>
-                <p className="text-sm font-medium text-theme-primary">
-                  Progresso restaurado
-                </p>
-                <p className="text-xs text-theme-secondary">
-                  Última edição: {formatLastSaved(lastSaved)}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowProgressBanner(false)}
-              >
-                Dispensar
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleStartOver}>
-                Recomeçar
-              </Button>
-            </div>
-          </div>
-        </div>
-      )} */}
-
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
@@ -255,14 +235,6 @@ const OnboardingModal: React.FC = () => {
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
               {getStepTitle()}
             </h2>
-            {/* {hasProgress && !showProgressBanner && (
-              <div className="flex items-center space-x-2 mt-1">
-                <FiClock className="w-3 h-3 text-theme-tertiary" />
-                <span className="text-xs text-theme-tertiary">
-                  Progresso salvo {formatLastSaved(lastSaved)}
-                </span>
-              </div>
-            )} */}
           </div>
           <span className="text-sm text-theme-tertiary">{step} de 6</span>
         </div>
@@ -274,8 +246,6 @@ const OnboardingModal: React.FC = () => {
           />
         </div>
       </div>
-
-      {/* <OnboardingProgressIndicator /> */}
 
       {/* Step Content */}
       <div className="">{renderStep()}</div>
@@ -301,11 +271,9 @@ const OnboardingModal: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-3">
-            {/* Indicador de auto-save */}
-
             <Button
               variant="primary"
-              onClick={nextStep}
+              onClick={handleNextStep}
               disabled={!canProceed() || isLoading}
             >
               {step === 6 ? 'Finalizar' : 'Continuar'}
@@ -314,7 +282,7 @@ const OnboardingModal: React.FC = () => {
         </div>
       )}
 
-      {/* Reset Progress Option (discreto) */}
+      {/* Reset Progress Option */}
       {hasProgress && step === 1 && (
         <div className="mt-4 pt-4 border-t border-theme-secondary">
           <div className="flex items-center justify-center">

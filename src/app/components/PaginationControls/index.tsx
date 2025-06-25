@@ -120,7 +120,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
                     flex items-center justify-center w-10 h-10 text-sm font-medium rounded-lg transition-all duration-300 disabled:cursor-not-allowed hover:scale-105
                     ${
                       isActive
-                        ? 'bg-brand-gradient text-theme-inverse shadow-theme-glow border-2 border-brand-primary/30'
+                        ? 'bg-brand-gradient text-theme-primary shadow-theme-glow border-2 border-brand-primary/30'
                         : 'text-theme-secondary hover:text-brand-primary bg-theme-elevated border border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
                     }
                   `}
@@ -151,21 +151,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         </div>
 
         {/* Quick jump (mobile hidden) */}
-        <div className="hidden lg:flex items-center space-x-2 text-sm">
-          <span className="text-theme-secondary">Ir para:</span>
-          <select
-            value={currentPage}
-            onChange={(e) => onPageChange(Number(e.target.value))}
-            disabled={isPending}
-            className="input-classical text-theme-primary text-sm py-1 px-2 min-w-0 w-20"
-          >
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <option key={page} value={page} className="text-theme-primary">
-                {page}
-              </option>
-            ))}
-          </select>
-        </div>
+        <div className="hidden lg:flex items-center space-x-2 text-sm"></div>
       </div>
 
       {/* Loading indicator */}
@@ -173,7 +159,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         <div className="mt-4 flex items-center justify-center">
           <div className="flex items-center space-x-2 text-brand-primary text-sm">
             <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
-            <span>Carregando próxima página...</span>
+            <span>Carregando...</span>
           </div>
         </div>
       )}

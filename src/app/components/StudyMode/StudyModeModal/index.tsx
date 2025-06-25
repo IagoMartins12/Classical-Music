@@ -21,8 +21,6 @@ import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 
 interface StudyModeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   workId: string;
   workTitle: string;
   composerName: string;
@@ -30,8 +28,6 @@ interface StudyModeModalProps {
 }
 
 const StudyModeModal: React.FC<StudyModeModalProps> = ({
-  isOpen,
-  onClose,
   workId,
   workTitle,
   composerName,
@@ -52,6 +48,8 @@ const StudyModeModal: React.FC<StudyModeModalProps> = ({
     savePostPracticeEvaluation,
     resetTimer,
     cleanup,
+    closeStudyMode,
+    isStudyModeOpen,
   } = useStudyModeStore();
 
   const [activeTab, setActiveTab] = useState<
@@ -68,11 +66,11 @@ const StudyModeModal: React.FC<StudyModeModalProps> = ({
 
   // Inicializar sessão quando modal abre
   useEffect(() => {
-    if (isOpen && !currentSession) {
+    if (isStudyModeOpen && !currentSession) {
       startStudySession(workId, workTitle, composerName, selectedScore);
     }
   }, [
-    isOpen,
+    isStudyModeOpen,
     currentSession,
     workId,
     workTitle,
@@ -83,14 +81,14 @@ const StudyModeModal: React.FC<StudyModeModalProps> = ({
 
   // Limpeza quando modal fecha
   useEffect(() => {
-    if (!isOpen) {
+    if (!isStudyModeOpen) {
       cleanup();
       if (metronomeInterval) {
         clearInterval(metronomeInterval);
         setMetronomeInterval(null);
       }
     }
-  }, [isOpen, cleanup, metronomeInterval]);
+  }, [isStudyModeOpen, cleanup, metronomeInterval]);
 
   // Controle do metrônomo
   useEffect(() => {
@@ -185,7 +183,7 @@ const StudyModeModal: React.FC<StudyModeModalProps> = ({
       const success = await endSession();
       if (success) {
         toast.success('Sessão de estudo salva!');
-        onClose();
+        closeStudyMode();
       } else {
         toast.error('Erro ao salvar sessão');
       }
@@ -201,13 +199,13 @@ const StudyModeModal: React.FC<StudyModeModalProps> = ({
     if (success) {
       toast.success('Sessão de estudo concluída e salva!');
       setShowPostPractice(false);
-      onClose();
+      closeStudyMode();
     } else {
       toast.error('Erro ao salvar avaliação');
     }
   };
 
-  if (!isOpen || !currentSession) return null;
+  if (!isStudyModeOpen || !currentSession) return null;
 
   return (
     <div className="fixed inset-0 z-50 bg-theme-primary">
@@ -239,7 +237,7 @@ const StudyModeModal: React.FC<StudyModeModalProps> = ({
 
             {/* Close button */}
             <button
-              onClick={onClose}
+              onClick={closeStudyMode}
               className="w-10 h-10 bg-theme-elevated border border-theme-secondary rounded-xl hover:bg-interactive-hover hover:border-theme-primary transition-all duration-300 flex items-center justify-center"
             >
               <FiX className="w-5 h-5 text-theme-primary" />
@@ -629,7 +627,7 @@ const StudyModeModal: React.FC<StudyModeModalProps> = ({
                 if (success) {
                   toast.success('Sessão salva!');
                   setShowPostPractice(false);
-                  onClose();
+                  closeStudyMode();
                 }
               }}
             />
