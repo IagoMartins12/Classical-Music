@@ -14,8 +14,8 @@ interface SectionTitleProps {
 const SectionTitle: React.FC<SectionTitleProps> = ({
   title,
   subtitle,
-  linkText = 'Ver todos compositores',
-  linkHref = '/composers',
+  linkText,
+  linkHref,
   icon = <FiUsers className="w-6 h-6" />,
   accent = 'gold',
 }) => {
@@ -58,13 +58,15 @@ const SectionTitle: React.FC<SectionTitleProps> = ({
         </div>
 
         {/* Action Link */}
-        <Link
-          href={linkHref}
-          className="inline-flex items-center px-6 py-3 bg-theme-elevated border border-theme-primary rounded-xl text-theme-primary hover:text-brand-primary hover:border-brand-primary hover:bg-interactive-hover hover:scale-105 transition-all duration-300 group shadow-theme-sm hover:shadow-theme-md font-medium"
-        >
-          {linkText}
-          <FiArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-        </Link>
+        {linkHref && (
+          <Link
+            href={linkHref}
+            className="inline-flex items-center px-6 py-3 bg-theme-elevated border border-theme-primary rounded-xl text-theme-primary hover:text-brand-primary hover:border-brand-primary hover:bg-interactive-hover hover:scale-105 transition-all duration-300 group shadow-theme-sm hover:shadow-theme-md font-medium"
+          >
+            {linkText}
+            <FiArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        )}
       </div>
 
       {/* Decorative line */}

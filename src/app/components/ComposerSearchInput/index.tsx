@@ -56,6 +56,8 @@ export default function ComposerSearchInput({
         clearTimeout(debounceRef.current);
       }
 
+      console.log('term', term);
+
       debounceRef.current = setTimeout(async () => {
         setIsLoading(true);
         try {

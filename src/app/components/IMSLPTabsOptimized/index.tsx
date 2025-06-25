@@ -396,11 +396,11 @@ export default function IMSLPTabsOptimized({
                         key={score.id}
                         score={score}
                         isSelected={currentSelectedScore?.id === score.id}
-                        isSaved={isScoreSelected(score.id)}
+                        // isSaved={isScoreSelected(score.id)}
                         onSelect={() => handleScoreSelect(score)}
                         isLastInGroup={index === scoreGroup.scores.length - 1}
                         groupSize={scoreGroup.scores.length}
-                        showSavedIndicator={true}
+                        // showSavedIndicator={true}
                       />
                     ))}
                   </div>

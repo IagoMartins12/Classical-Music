@@ -32,6 +32,7 @@ import {
 } from 'react-icons/gi';
 import { MdLibraryMusic } from 'react-icons/md';
 import FavoriteButton from '../../FavoriteButton';
+import ViewModeToggle from '../../ViewModeToggle';
 
 interface ComposerWorksProps {
   composerId: string;
@@ -161,6 +162,7 @@ export default function ComposerWorks({
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
 
   // Estados de filtros
   const [searchTerm, setSearchTerm] = useState('');
@@ -430,6 +432,11 @@ export default function ComposerWorks({
                 Filtrando...
               </div>
             )}
+
+            <ViewModeToggle
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+            />
           </div>
 
           {/* Filtros expandidos */}
@@ -727,7 +734,13 @@ export default function ComposerWorks({
               </div>
             </div>
           ) : works.length > 0 ? (
-            <div className="space-y-4 content-transition">
+            <div
+              className={`${
+                viewMode === 'cards'
+                  ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+                  : 'space-y-4 content-transition'
+              } `}
+            >
               {works.map((work, index) => (
                 <Link
                   href={`/works/${work.id}`}
@@ -761,7 +774,13 @@ export default function ComposerWorks({
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-theme-secondary">
+                        <div
+                          className={`${
+                            viewMode === 'cards'
+                              ? 'flex flex-col'
+                              : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+                          } gap-4 text-sm text-theme-secondary`}
+                        >
                           {work.instrument?.name && (
                             <div className="flex items-center space-x-2">
                               <FiMusic className="w-4 h-4 text-theme-tertiary" />
@@ -798,7 +817,7 @@ export default function ComposerWorks({
                             {work.workGenresArr?.slice(0, 3).map((genre) => (
                               <span
                                 key={genre}
-                                className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green text-xs rounded-full"
+                                className="px-2 capitalize py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green text-xs rounded-full"
                               >
                                 {genre}
                               </span>
@@ -816,22 +835,9 @@ export default function ComposerWorks({
                       </div>
 
                       <div
-                        className="flex items-center space-x-2 ml-6 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                        className="flex items-center space-x-2  opacity-0 group-hover:opacity-100 transition-all duration-300"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {work.videoUrl && (
-                          <a
-                            href={work.videoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-10 h-10 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-xl flex items-center justify-center hover:bg-accent-red/20 hover:scale-110 transition-all duration-300"
-                            title="Assistir vídeo"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <FiPlay className="w-4 h-4" />
-                          </a>
-                        )}
-
                         <FavoriteButton
                           id={work.id}
                           type="work"

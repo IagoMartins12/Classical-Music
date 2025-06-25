@@ -66,21 +66,25 @@ const OnboardingManager: React.FC = () => {
 
   // Verificar progresso salvo e decidir se abre modal
   useEffect(() => {
-    if (!shouldShowOnboarding() || hasCheckedProgress) {
-      return;
-    }
-
+    console.log('isloading', isLoading);
     const checkAndOpenOnboarding = () => {
       if (hasProgress) {
         // Tem progresso salvo, perguntar se quer continuar
         console.log('🔄 Progresso do onboarding encontrado, abrindo modal...');
-        if (!isPromptModalOpen) {
+        if (!isPromptModalOpen && !isLoading) {
           openPromptModal();
         }
       } else {
         // Não tem progresso, iniciar novo onboarding
         console.log('🚀 Iniciando novo onboarding para usuário:', user?.id);
-        openOnboarding();
+
+        console.log('PROPS', {
+          isAuthenticated,
+          hasCheckedProgress,
+          isLoading,
+        });
+        if (!isAuthenticated) return;
+        // openOnboarding();
       }
 
       setHasCheckedProgress(true);

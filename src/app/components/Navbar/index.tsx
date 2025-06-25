@@ -24,6 +24,8 @@ import {
 } from '@/app/stores/authStore';
 import Button from '../Common/Button';
 import Image from 'next/image';
+import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
+import { useLearningStore } from '@/app/stores/useLearningStore';
 
 interface NavItem {
   label: string;
@@ -36,6 +38,8 @@ const Navbar: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { logout: authLogout } = useAuthStore();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const { reset } = useLearningStore();
+  const { reset: resetFavorite } = useFavoritesStore();
   const { open: openLogin } = useLoginModal();
   const { open: openRegister } = useRegisterModal();
   const { open } = useOnboardingModal();
@@ -50,7 +54,9 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     try {
+      resetFavorite();
       logout();
+      reset();
       authLogout();
       await signOut({ redirect: false });
       toast.success('Logout realizado com sucesso!');

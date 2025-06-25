@@ -107,7 +107,7 @@ const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
     <div
       className={`
         classical-card-simple overflow-hidden transition-all duration-500 ease-out 
-        group hover:scale-[1.02] cursor-pointer relative
+        group hover:scale-[1.02] relative
         bg-gradient-to-br ${style.gradient} border ${style.border}
         animate-fade-in-up
       `}
@@ -272,8 +272,6 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
       <SectionTitle
         title="Curiosidades Musicais"
         subtitle="Fatos fascinantes e histórias interessantes do mundo da música clássica"
-        linkText="Ver mais curiosidades"
-        linkHref="/curiosities"
         icon={<FiBookOpen className="w-6 h-6" />}
         accent="blue"
       />
