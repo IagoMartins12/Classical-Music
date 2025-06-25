@@ -1,6 +1,7 @@
-// app/api/imslp-scores/route.ts - Versão Ultra-Otimizada com IA e Analytics
+// app/api/imslp-scores/route.ts - API Ultra-Otimizada com Cache Inteligente
 import { NextRequest, NextResponse } from 'next/server';
 import { IMSLPScraper } from '@/app/libs/imslp-score-scraper';
+import { ScoresCacheService } from '@/app/libs/scores-cache-service';
 import { IMSLPAdvancedLogger } from '@/app/libs/imslp-advanced-logger';
 import { IMSLPDirectUrlResolverOptimized } from '@/app/libs/imslp-url-resolver';
 
@@ -8,7 +9,9 @@ export async function POST(request: NextRequest) {
   const startTime = Date.now();
 
   try {
-    const { imslpUrl } = await request.json();
+    const body = await request.json();
+
+    const { imslpUrl, workId, priorityScoreId, forceRefresh = false } = body;
 
     if (!imslpUrl) {
       return NextResponse.json(
@@ -17,97 +20,195 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`\n🚀 [API] === SCRAPING ULTRA-OTIMIZADO ===`);
+    console.log(`\n🚀 [API] === BUSCA OTIMIZADA COM CACHE ===`);
     console.log(`🌐 URL: ${imslpUrl}`);
-    console.log(`🕐 Timestamp: ${new Date().toISOString()}`);
-    console.log(`🧠 IA Ativada: Predição inteligente de subdomínios\n`);
+    console.log(`🎼 WorkID: ${workId || 'não informado'}`);
+    console.log(`⭐ Partitura prioritária: ${priorityScoreId || 'nenhuma'}`);
+    console.log(`🔄 Force refresh: ${forceRefresh}`);
+    console.log(`🕐 Timestamp: ${new Date().toISOString()}\n`);
 
-    // 🚀 Usar o scraper ultra-otimizado
-    const scoresData = await IMSLPScraper.fetchAndExtractScores(imslpUrl);
+    let scoresData: any = null;
+    let fromCache = false;
+    let cacheStats = null;
+
+    console.log('TESTE', { imslpUrl, workId });
+    // 1️⃣ PRIMEIRA FASE: Verificar cache (se workId foi fornecido)
+    if (workId && !forceRefresh) {
+      console.log(`💾 [API] Verificando cache para workId: ${workId}`);
+
+      const cacheResult = await ScoresCacheService.getWorkScores(workId, {
+        priorityScore: priorityScoreId,
+      });
+
+      if (cacheResult.scores) {
+        console.log(
+          `✅ [API] Cache HIT! Retornando ${cacheResult.cacheStats.totalCached} partituras do cache`
+        );
+
+        scoresData = cacheResult.scores;
+        fromCache = true;
+        cacheStats = cacheResult.cacheStats;
+      } else {
+        console.log(`❌ [API] Cache MISS - será necessário fazer scraping`);
+      }
+    }
+
+    // 2️⃣ SEGUNDA FASE: Scraping IMSLP (se não temos cache)
+    if (!scoresData) {
+      console.log(`🕷️ [API] Iniciando scraping IMSLP...`);
+
+      // Usar o scraper ultra-otimizado
+      scoresData = await IMSLPScraper.fetchAndExtractScores(imslpUrl);
+      fromCache = false;
+
+      console.log(`✅ [API] Scraping concluído:`, {
+        totalScores: Object.values(scoresData.totalCounts).reduce(
+          (sum: number, count: number) => sum + count,
+          0
+        ),
+        scoresByType: scoresData.totalCounts,
+      });
+
+      // 3️⃣ TERCEIRA FASE: Salvar no cache (se workId foi fornecido)
+      if (workId) {
+        console.log(`💾 [API] Salvando partituras no cache...`);
+
+        // Salvar em background (não bloqueia a resposta)
+        ScoresCacheService.cacheScoresFromIMSLP(
+          workId,
+          scoresData,
+          priorityScoreId
+        )
+          .then(() => {
+            console.log(
+              `✅ [API] Cache salvo com sucesso para workId: ${workId}`
+            );
+          })
+          .catch((error) => {
+            console.error(`❌ [API] Erro ao salvar cache:`, error);
+          });
+      }
+    }
 
     const processingTime = Date.now() - startTime;
 
-    console.log(`\n✅ [API] === SCRAPING CONCLUÍDO ===`);
+    console.log(`\n✅ [API] === BUSCA CONCLUÍDA ===`);
     console.log(`⏱️ Tempo total: ${processingTime}ms`);
-    console.log(`📊 Partituras encontradas:`, scoresData.totalCounts);
+    console.log(`📊 Fonte: ${fromCache ? 'CACHE' : 'SCRAPING'}`);
+    console.log(`📈 Partituras encontradas:`, scoresData.totalCounts);
 
-    // 📊 Estatísticas avançadas
-    const cacheStats = IMSLPDirectUrlResolverOptimized.getCacheStats();
-    const urlLogStats = IMSLPDirectUrlResolverOptimized.getUrlLogStats();
-    const predictionModel =
-      IMSLPDirectUrlResolverOptimized.getPredictionModel();
+    // 📊 Estatísticas avançadas (só para scraping)
+    if (!fromCache) {
+      const cacheStatsAdv = IMSLPDirectUrlResolverOptimized.getCacheStats();
+      const urlLogStats = IMSLPDirectUrlResolverOptimized.getUrlLogStats();
+      const predictionModel =
+        IMSLPDirectUrlResolverOptimized.getPredictionModel();
 
-    console.log(
-      `💾 Cache: ${cacheStats.totalEntries} entradas, conf. média: ${(
-        cacheStats.avgConfidence * 100
-      ).toFixed(1)}%`
-    );
-    console.log(
-      `📝 Logs: ${
-        urlLogStats.totalEntries
-      } entradas, ${urlLogStats.cacheHitRate.toFixed(1)}% cache hit`
-    );
-    console.log(
-      `🧠 Padrões IA: ${predictionModel.patterns.size} padrões aprendidos`
-    );
+      console.log(
+        `💾 Cache interno: ${
+          cacheStatsAdv.totalEntries
+        } entradas, conf. média: ${(cacheStatsAdv.avgConfidence * 100).toFixed(
+          1
+        )}%`
+      );
+      console.log(
+        `📝 Logs: ${
+          urlLogStats.totalEntries
+        } entradas, ${urlLogStats.cacheHitRate.toFixed(1)}% cache hit`
+      );
+      console.log(
+        `🧠 Padrões IA: ${predictionModel.patterns.size} padrões aprendidos`
+      );
+    }
+
     console.log(`${'='.repeat(60)}\n`);
 
-    // 💾 Auto-save inteligente
-    if (urlLogStats.totalEntries > 0 && urlLogStats.totalEntries % 25 === 0) {
-      try {
-        await IMSLPDirectUrlResolverOptimized.saveLogsToFile();
-        console.log(
-          `💾 [API] Auto-save executado aos ${urlLogStats.totalEntries} logs`
-        );
-      } catch (error) {
-        console.error('❌ [API] Erro no auto-save:', error);
+    // 💾 Auto-save inteligente (só para scraping)
+    if (!fromCache) {
+      const urlLogStats = IMSLPDirectUrlResolverOptimized.getUrlLogStats();
+
+      if (urlLogStats.totalEntries > 0 && urlLogStats.totalEntries % 25 === 0) {
+        try {
+          await IMSLPDirectUrlResolverOptimized.saveLogsToFile();
+          console.log(
+            `💾 [API] Auto-save executado aos ${urlLogStats.totalEntries} logs`
+          );
+        } catch (error) {
+          console.error('❌ [API] Erro no auto-save:', error);
+        }
+      }
+
+      // 🧠 Análise de padrões automática
+      const predictionModel =
+        IMSLPDirectUrlResolverOptimized.getPredictionModel();
+      if (
+        predictionModel.patterns.size > 0 &&
+        predictionModel.patterns.size % 10 === 0
+      ) {
+        try {
+          await IMSLPAdvancedLogger.generatePatternAnalysis();
+          console.log(
+            `🧠 [API] Análise de padrões atualizada (${predictionModel.patterns.size} padrões)`
+          );
+        } catch (error) {
+          console.error('❌ [API] Erro na análise de padrões:', error);
+        }
       }
     }
 
-    // 🧠 Análise de padrões automática
-    if (
-      predictionModel.patterns.size > 0 &&
-      predictionModel.patterns.size % 10 === 0
-    ) {
-      try {
-        await IMSLPAdvancedLogger.generatePatternAnalysis();
-        console.log(
-          `🧠 [API] Análise de padrões atualizada (${predictionModel.patterns.size} padrões)`
-        );
-      } catch (error) {
-        console.error('❌ [API] Erro na análise de padrões:', error);
-      }
-    }
-
-    // Response com métricas avançadas
+    // Preparar resposta com metadados
     const responseData = {
       ...scoresData,
+      fromCache,
+      cacheStats,
       _metadata: {
         processingTime,
-        performance: {
-          cache: {
-            entries: cacheStats.totalEntries,
-            avgConfidence: cacheStats.avgConfidence,
-            avgResponseTime: cacheStats.avgResponseTime,
-          },
-          logs: {
-            totalEntries: urlLogStats.totalEntries,
-            cacheHitRate: urlLogStats.cacheHitRate,
-            successRate: urlLogStats.successRate,
-            avgProcessingTime: urlLogStats.averageTime,
-          },
-          ai: {
-            learnedPatterns: predictionModel.patterns.size,
-            globalSuccessRate:
-              (predictionModel.globalStats.successfulRequests /
-                Math.max(predictionModel.globalStats.totalRequests, 1)) *
-              100,
-            mostReliableSubdomain:
-              predictionModel.globalStats.mostReliableSubdomain,
-          },
-        },
-        version: '2.0-AI',
+        source: fromCache ? 'cache' : 'scraping',
+        workId,
+        priorityScoreId,
+        performance: !fromCache
+          ? {
+              cache: {
+                entries:
+                  IMSLPDirectUrlResolverOptimized.getCacheStats().totalEntries,
+                avgConfidence:
+                  IMSLPDirectUrlResolverOptimized.getCacheStats().avgConfidence,
+                avgResponseTime:
+                  IMSLPDirectUrlResolverOptimized.getCacheStats()
+                    .avgResponseTime,
+              },
+              logs: {
+                totalEntries:
+                  IMSLPDirectUrlResolverOptimized.getUrlLogStats().totalEntries,
+                cacheHitRate:
+                  IMSLPDirectUrlResolverOptimized.getUrlLogStats().cacheHitRate,
+                successRate:
+                  IMSLPDirectUrlResolverOptimized.getUrlLogStats().successRate,
+                avgProcessingTime:
+                  IMSLPDirectUrlResolverOptimized.getUrlLogStats().averageTime,
+              },
+              ai: {
+                learnedPatterns:
+                  IMSLPDirectUrlResolverOptimized.getPredictionModel().patterns
+                    .size,
+                globalSuccessRate:
+                  (IMSLPDirectUrlResolverOptimized.getPredictionModel()
+                    .globalStats.successfulRequests /
+                    Math.max(
+                      IMSLPDirectUrlResolverOptimized.getPredictionModel()
+                        .globalStats.totalRequests,
+                      1
+                    )) *
+                  100,
+                mostReliableSubdomain:
+                  IMSLPDirectUrlResolverOptimized.getPredictionModel()
+                    .globalStats.mostReliableSubdomain,
+              },
+            }
+          : undefined,
+        version: '3.0-CACHE',
         optimized: true,
+        cached: fromCache,
         timestamp: new Date().toISOString(),
       },
     };
@@ -137,71 +238,37 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 🆕 Endpoint DELETE aprimorado
-export async function DELETE(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const action = searchParams.get('action');
-
-    switch (action) {
-      case 'clear-cache':
-        IMSLPDirectUrlResolverOptimized.clearCache();
-        return NextResponse.json({
-          success: true,
-          message: 'Cache limpo com sucesso',
-        });
-
-      case 'clear-logs':
-        IMSLPDirectUrlResolverOptimized.clearUrlLogs();
-        return NextResponse.json({
-          success: true,
-          message: 'Logs limpos com sucesso',
-        });
-
-      case 'clear-patterns':
-        // Limpar padrões da IA (requer restart para recarregar)
-        const predictionModel =
-          IMSLPDirectUrlResolverOptimized.getPredictionModel();
-        predictionModel.patterns.clear();
-        return NextResponse.json({
-          success: true,
-          message: 'Padrões de IA limpos com sucesso',
-        });
-
-      case 'clear-all':
-        IMSLPDirectUrlResolverOptimized.clearCache();
-        IMSLPDirectUrlResolverOptimized.clearUrlLogs();
-        return NextResponse.json({
-          success: true,
-          message: 'Cache, logs e padrões limpos com sucesso',
-        });
-
-      default:
-        return NextResponse.json(
-          {
-            error:
-              'Ação não reconhecida. Use: clear-cache, clear-logs, clear-patterns, ou clear-all',
-          },
-          { status: 400 }
-        );
-    }
-  } catch (error) {
-    console.error('❌ [API] Erro ao limpar dados:', error);
-
-    return NextResponse.json(
-      { error: 'Erro ao limpar dados' },
-      { status: 500 }
-    );
-  }
-}
-
-// 🆕 Endpoint GET super aprimorado com análise inteligente
+// 🆕 Endpoint para verificação rápida de cache
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type') || 'stats';
+    const workId = searchParams.get('workId');
 
     switch (type) {
+      case 'cache-check':
+        if (!workId) {
+          return NextResponse.json(
+            { error: 'workId é obrigatório' },
+            { status: 400 }
+          );
+        }
+
+        const cacheResult = await ScoresCacheService.getWorkScores(workId);
+        return NextResponse.json({
+          cached: !!cacheResult.scores,
+          fromCache: cacheResult.fromCache,
+          stats: cacheResult.cacheStats,
+          timestamp: new Date().toISOString(),
+        });
+
+      case 'cache-stats':
+        const stats = await ScoresCacheService.getCacheStatistics();
+        return NextResponse.json({
+          ...stats,
+          timestamp: new Date().toISOString(),
+        });
+
       case 'stats':
         const cacheStats = IMSLPDirectUrlResolverOptimized.getCacheStats();
         const urlLogStats = IMSLPDirectUrlResolverOptimized.getUrlLogStats();
@@ -243,7 +310,6 @@ export async function GET(request: NextRequest) {
         });
 
       case 'analysis':
-        // 🧠 Análise inteligente completa
         const analysis =
           await IMSLPDirectUrlResolverOptimized.generateIntelligentReport();
         return NextResponse.json(analysis);
@@ -262,46 +328,10 @@ export async function GET(request: NextRequest) {
           },
         });
 
-      case 'export-patterns':
-        // 🆕 Export de padrões para análise externa
-        const modelData = IMSLPDirectUrlResolverOptimized.getPredictionModel();
-        const exportPatterns = {
-          patterns: Object.fromEntries(modelData.patterns),
-          globalStats: modelData.globalStats,
-          exportedAt: new Date().toISOString(),
-          version: '2.0-AI',
-        };
-
-        return new NextResponse(JSON.stringify(exportPatterns, null, 2), {
-          status: 200,
-          headers: {
-            'Content-Type': 'application/json',
-            'Content-Disposition': `attachment; filename="imslp-patterns-${
-              new Date().toISOString().split('T')[0]
-            }.json"`,
-          },
-        });
-
-      case 'save':
-        try {
-          const filePath =
-            await IMSLPDirectUrlResolverOptimized.saveLogsToFile();
-          return NextResponse.json({
-            success: true,
-            message: 'Logs e análise salvos com sucesso',
-            filePath: filePath,
-          });
-        } catch (error) {
-          return NextResponse.json(
-            { error: `Erro ao salvar logs ${error}` },
-            { status: 500 }
-          );
-        }
-
       case 'health':
-        // 🆕 Health check com métricas detalhadas
         const healthStats = IMSLPDirectUrlResolverOptimized.getUrlLogStats();
         const cacheHealth = IMSLPDirectUrlResolverOptimized.getCacheStats();
+        const dbCacheStats = await ScoresCacheService.getCacheStatistics();
 
         const isHealthy =
           healthStats.successRate > 70 &&
@@ -318,6 +348,7 @@ export async function GET(request: NextRequest) {
             aiPatterns:
               IMSLPDirectUrlResolverOptimized.getPredictionModel().patterns
                 .size,
+            dbCacheStats: dbCacheStats,
           },
           recommendations: isHealthy
             ? []
@@ -335,72 +366,11 @@ export async function GET(request: NextRequest) {
           timestamp: new Date().toISOString(),
         });
 
-      case 'insights':
-        // 🆕 Insights automáticos baseados em IA
-        const insightStats = IMSLPDirectUrlResolverOptimized.getUrlLogStats();
-        const insights = [];
-
-        if (insightStats.totalEntries > 100) {
-          insights.push(
-            `${
-              insightStats.totalEntries
-            } requisições processadas com ${insightStats.cacheHitRate.toFixed(
-              1
-            )}% de cache hit rate`
-          );
-        }
-
-        if (insightStats.cacheHitRate > 80) {
-          insights.push(
-            'Excelente performance de cache - sistema bem otimizado'
-          );
-        } else if (insightStats.cacheHitRate < 50) {
-          insights.push(
-            'Cache hit rate baixo - considere ajustar TTL ou implementar pré-cache'
-          );
-        }
-
-        if (insightStats.successRate < 80) {
-          insights.push(
-            'Taxa de sucesso baixa - alguns subdomínios podem estar instáveis'
-          );
-        }
-
-        const topSubdomains = insightStats.topSubdomains.slice(0, 3);
-        if (topSubdomains.length > 0) {
-          insights.push(
-            `Subdomínios mais utilizados: ${topSubdomains
-              .map((s) => s.subdomain)
-              .join(', ')}`
-          );
-        }
-
-        return NextResponse.json({
-          insights,
-          recommendations: [
-            insightStats.cacheHitRate < 60
-              ? 'Implementar pré-cache para padrões frequentes'
-              : null,
-            insightStats.averageTime > 3000
-              ? 'Reduzir timeout ou paralelização mais agressiva'
-              : null,
-            insightStats.totalEntries > 1000
-              ? 'Considerar implementar limpeza automática de logs antigos'
-              : null,
-          ].filter(Boolean),
-          actionItems: [
-            'Monitorar tendências de performance',
-            'Analisar padrões de falha',
-            'Otimizar ordem de subdomínios baseado em dados',
-          ],
-          timestamp: new Date().toISOString(),
-        });
-
       default:
         return NextResponse.json(
           {
             error:
-              'Tipo não reconhecido. Use: stats, logs, patterns, analysis, export, export-patterns, save, health, insights',
+              'Tipo não reconhecido. Use: cache-check, cache-stats, stats, logs, patterns, analysis, export, health',
           },
           { status: 400 }
         );
@@ -413,6 +383,102 @@ export async function GET(request: NextRequest) {
         error: 'Erro ao obter dados',
         details: error instanceof Error ? error.message : 'Erro desconhecido',
       },
+      { status: 500 }
+    );
+  }
+}
+
+// Endpoint DELETE aprimorado
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const action = searchParams.get('action');
+    const workId = searchParams.get('workId');
+
+    switch (action) {
+      case 'clear-cache':
+        IMSLPDirectUrlResolverOptimized.clearCache();
+        return NextResponse.json({
+          success: true,
+          message: 'Cache interno limpo com sucesso',
+        });
+
+      case 'clear-db-cache':
+        if (workId) {
+          // Limpar cache específico de uma obra
+          await ScoresCacheService.cleanExpiredCache(0); // Força limpeza
+          return NextResponse.json({
+            success: true,
+            message: `Cache da obra ${workId} limpo com sucesso`,
+          });
+        } else {
+          // Limpar todo o cache do banco
+          const cleanedCount = await ScoresCacheService.cleanExpiredCache(0);
+          return NextResponse.json({
+            success: true,
+            message: `${cleanedCount} entradas de cache limpas`,
+          });
+        }
+
+      case 'clear-logs':
+        IMSLPDirectUrlResolverOptimized.clearUrlLogs();
+        return NextResponse.json({
+          success: true,
+          message: 'Logs limpos com sucesso',
+        });
+
+      case 'clear-all':
+        IMSLPDirectUrlResolverOptimized.clearCache();
+        IMSLPDirectUrlResolverOptimized.clearUrlLogs();
+        await ScoresCacheService.cleanExpiredCache(0);
+        return NextResponse.json({
+          success: true,
+          message: 'Todos os caches e logs limpos com sucesso',
+        });
+
+      default:
+        return NextResponse.json(
+          {
+            error:
+              'Ação não reconhecida. Use: clear-cache, clear-db-cache, clear-logs, clear-all',
+          },
+          { status: 400 }
+        );
+    }
+  } catch (error) {
+    console.error('❌ [API] Erro ao limpar dados:', error);
+
+    return NextResponse.json(
+      { error: 'Erro ao limpar dados' },
+      { status: 500 }
+    );
+  }
+}
+
+// 🆕 Endpoint específico para verificação de cache
+export async function PUT(request: NextRequest) {
+  try {
+    const { workId } = await request.json();
+
+    if (!workId) {
+      return NextResponse.json(
+        { error: 'workId é obrigatório' },
+        { status: 400 }
+      );
+    }
+
+    const cacheResult = await ScoresCacheService.getWorkScores(workId);
+
+    return NextResponse.json({
+      cached: !!cacheResult.scores,
+      needsProcessing: cacheResult.needsProcessing,
+      stats: cacheResult.cacheStats,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('❌ [API] Erro ao verificar cache:', error);
+    return NextResponse.json(
+      { error: 'Erro ao verificar cache' },
       { status: 500 }
     );
   }

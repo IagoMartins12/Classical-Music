@@ -203,7 +203,6 @@ export default function IMSLPTabs({
     imslpData.scoresByType[activeTab as keyof typeof imslpData.scoresByType] ||
     [];
 
-  console.log('scoreGroup', activeTabData);
   return (
     <div className="classical-card overflow-hidden animate-fade-in-up">
       {/* Header com informações da partitura selecionada */}

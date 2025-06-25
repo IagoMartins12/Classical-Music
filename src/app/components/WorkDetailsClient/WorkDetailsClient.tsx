@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - Updated with Study Mode
+// app/work/[workId]/WorkDetailsClient.tsx - Atualizado apenas com workId (sem mudanças visuais)
 'use client';
 
 import { useState } from 'react';
@@ -49,13 +49,32 @@ export default function WorkDetailsClient({
   const [selectedScoreForStudy, setSelectedScoreForStudy] =
     useState<IMSLPScore | null>(null);
 
-  // Usar o hook ao invés de gerenciar estado manualmente
+  // 🆕 ÚNICA MUDANÇA: Incluir workId no hook para cache
   const {
     scores: imslpScores,
     loading: loadingScores,
     error: scoresError,
     refetch: refetchScores,
-  } = useIMSLPScores(work.imslpPermlink);
+    fromCache,
+    cacheStats,
+  } = useIMSLPScores(work.imslpPermlink, {
+    // 🚀 Passar workId para habilitar cache
+    workId: work.id,
+    // 🚀 Se há uma partitura selecionada, priorizá-la no cache
+    priorityScoreId: selectedScoreForStudy?.id,
+    // Callback para quando partituras são carregadas
+    onScoresCached: (fromCache) => {
+      if (fromCache) {
+        console.log(
+          `✅ Partituras carregadas do cache para obra ${work.title}`
+        );
+      } else {
+        console.log(
+          `🕷️ Partituras obtidas via scraping para obra ${work.title}`
+        );
+      }
+    },
+  });
 
   const { navigateToUrl } = useNavigate();
 
@@ -561,6 +580,22 @@ export default function WorkDetailsClient({
                         {new Date(work.createdAt).toLocaleDateString('pt-BR')}
                       </span>
                     </div>
+
+                    {/* 🆕 Indicador de cache (só para dev/debug) */}
+                    {process.env.NODE_ENV === 'development' && (
+                      <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
+                        <span className="font-medium text-theme-tertiary">
+                          Cache Status:
+                        </span>
+                        <span
+                          className={`text-xs font-semibold ${
+                            fromCache ? 'text-accent-green' : 'text-accent-blue'
+                          }`}
+                        >
+                          {fromCache ? '💾 Cache' : '🕷️ Scraping'}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -588,7 +623,9 @@ export default function WorkDetailsClient({
                     ></div>
                   </div>
                   <span className="text-theme-primary font-medium">
-                    Carregando partituras...
+                    {fromCache
+                      ? 'Carregando do cache...'
+                      : 'Carregando partituras...'}
                   </span>
                 </div>
               </div>
