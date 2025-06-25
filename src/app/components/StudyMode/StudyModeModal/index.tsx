@@ -24,7 +24,7 @@ interface StudyModeModalProps {
   workId: string;
   workTitle: string;
   composerName: string;
-  selectedScore?: IMSLPScore;
+  selectedScore: IMSLPScore | null;
 }
 
 const StudyModeModal: React.FC<StudyModeModalProps> = ({

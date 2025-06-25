@@ -1,4 +1,4 @@
-// Updated Prisma schema with authentication and onboarding fields
+// Updated Prisma schema with enhanced study mode fields
 
 generator client {
   provider = "prisma-client-js"
@@ -9,13 +9,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Enums
+// Enums existentes + novos
 enum DifficultyLevel {
   BEGINNER
   INTERMEDIATE
   ADVANCED
 }
-
 
 enum PracticeFocus {
   TECHNICAL     // Foco técnico
@@ -27,7 +26,6 @@ enum PracticeFocus {
   REVIEW        // Revisão geral
 }
 
-
 enum WorkType {
   INDIVIDUAL
   COMPLETE_WORK
@@ -38,7 +36,6 @@ enum WorkType {
   COLLECTED_WORKS
   COLLECTIONS_WITH
 }
-
 
 enum UserType {
   MUSIC_STUDENT
@@ -53,7 +50,238 @@ enum AccountProvider {
   FACEBOOK
 }
 
-// Models
+// NOVO: Tipos de anotações no PDF
+enum AnnotationType {
+  TEXT_NOTE    // Nota de texto
+  HIGHLIGHT    // Destaque
+  DRAWING      // Desenho livre
+  BOOKMARK     // Marcador
+  FINGERING    // Dedilhado
+  BOWINGS      // Arcadas (cordas)
+  DYNAMICS     // Dinâmicas
+  TEMPO_MARK   // Marcação de tempo
+}
+
+// Models existentes... (mantenho os existentes)
+
+model User {
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  firstName      String?
+  lastName       String?
+  username       String?   @unique
+  email          String?   @unique
+  emailVerified  DateTime?
+  hashedPassword String?
+  image          String?
+  bio            String?
+  gender         String?
+  birthday       DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  role Int @default(0)
+
+  userType            UserType?
+  onboardingCompleted Boolean   @default(false)
+
+  city    String?
+  state   String?
+  country String?
+
+  favoriteComposerId String? @db.ObjectId
+  favoriteEpochId    String? @db.ObjectId
+
+  experienceLevel     DifficultyLevel @default(BEGINNER)
+  practiceTimePerWeek Int?
+
+  profilePublic Boolean @default(true)
+  showLocation  Boolean @default(false)
+
+  practiceReminders Boolean @default(true)
+  progressTracking  Boolean @default(true)
+  publicProgress    Boolean @default(false)
+
+  totalStudyTime    Int     @default(0)
+  currentStreak     Int     @default(0)
+  longestStreak     Int     @default(0)
+
+  // NOVOS: Configurações do modo estudo
+  studyModeSettings Json? // { defaultMetronome: { bpm: 120, sound: 'click' }, pdfSettings: { zoom: 1.2, theme: 'light' } }
+
+  // Relations
+  accounts Account[]
+  sessions Session[]
+
+  favoriteComposer Composer? @relation("FavoriteComposer", fields: [favoriteComposerId], references: [id])
+  favoriteEpoch    Epoch?    @relation("FavoriteEpoch", fields: [favoriteEpochId], references: [id])
+
+  instruments       UserInstrument[]
+  annotations       Annotation[]
+  favoriteWorks     FavoriteWork[]
+  favoriteComposers FavoriteComposer[]
+  wantToLearn       WantToLearn[]
+  learned           Learned[]
+  studySessions     StudySession[]
+  learningGoals     LearningGoal[]
+  
+  // NOVOS: Anotações no PDF e bookmarks
+  pdfAnnotations    PdfAnnotation[]
+  scoreBookmarks    ScoreBookmark[]
+
+  @@index([userType])
+  @@index([onboardingCompleted])
+}
+
+// Todos os outros models existentes permanecem... 
+// (Composer, Epoch, Role, Instrument, Work, etc.)
+
+// NOVO: Model para anotações específicas no PDF
+model PdfAnnotation {
+  id       String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String         @db.ObjectId
+  workId   String         @db.ObjectId
+  scoreId  String         // ID da partitura IMSLP
+  
+  type     AnnotationType
+  content  String?        // Texto da anotação
+  
+  // Posição no PDF
+  page     Int            // Página do PDF
+  x        Float          // Coordenada X (percentual)
+  y        Float          // Coordenada Y (percentual)
+  width    Float?         // Largura (para highlights/desenhos)
+  height   Float?         // Altura (para highlights/desenhos)
+  
+  // Dados específicos por tipo
+  color    String?        // Cor da anotação (#hex)
+  fontSize Int?          // Tamanho da fonte (para texto)
+  strokeWidth Float?     // Espessura do traço (para desenhos)
+  drawing  Json?         // Dados do desenho livre (SVG path)
+  
+  // Metadados
+  measure  Int?          // Compasso relacionado (se aplicável)
+  beat     Float?        // Tempo do compasso
+  voice    Int?          // Voz musical (1, 2, 3...)
+  
+  isPublic Boolean       @default(false)
+  tags     String[]      @default([])
+  
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, workId, scoreId])
+  @@index([workId, scoreId, page])
+  @@index([type])
+}
+
+// NOVO: Model para bookmarks/marcadores na partitura
+model ScoreBookmark {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  workId      String   @db.ObjectId
+  scoreId     String   // ID da partitura IMSLP
+  
+  title       String   // Ex: "Desenvolvimento", "Tema principal"
+  description String?
+  color       String   @default("#3B82F6") // Cor do marcador
+  
+  // Posição
+  page        Int      // Página
+  measure     Int?     // Compasso (se identificado)
+  system      Int?     // Sistema na página
+  
+  // Coordenadas aproximadas para visualização
+  x           Float?
+  y           Float?
+  
+  // Ordem personalizada pelo usuário
+  sortOrder   Int      @default(0)
+  
+  isPublic    Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, workId, scoreId])
+  @@index([workId, scoreId])
+  @@index([sortOrder])
+}
+
+// MELHORADO: StudySession com mais campos
+model StudySession {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String        @db.ObjectId
+  workId        String        @db.ObjectId
+  scoreId       String?       // ID da partitura específica estudada
+  
+  date          DateTime      @default(now())
+  durationMin   Int           // duração em minutos
+  
+  // Detalhes da sessão
+  metronomeUsed Boolean       @default(false)
+  tempoMarking  String?       // Andamento praticado
+  focus         PracticeFocus
+  notes         String?
+  rating        Int?          // 1-5 como foi a sessão
+  
+  // Progresso específico
+  sectionsWorked String[]     @default([]) // Seções específicas trabalhadas
+  challenges     String?      // Desafios encontrados
+  breakthroughs  String?      // Progressos ou descobertas
+  
+  // Ambiente e condições
+  instrument     String?      // Instrumento usado (se tiver múltiplos)
+  location       String?      // Onde praticou
+  mood           Int?         // 1-5 humor antes da prática
+  energy         Int?         // 1-5 energia depois da prática
+
+  // Configurações detalhadas
+  metronomeSettings Json?     // { bpm: number, timeSignature: string, sound: string, volume: number }
+  selectedScore     Json?     // Dados da partitura selecionada
+  studyNotes        String?   // Anotações durante o estudo
+  practiceGoals     String[]  @default([]) // Objetivos para esta sessão
+  technicalFocus    String[]  @default([]) // Focos técnicos trabalhados
+  expressiveFocus   String[]  @default([]) // Focos expressivos trabalhados
+  precisionFocus    String[]  @default([]) // Focos de precisão trabalhados
+  
+  // Avaliação pós-prática
+  postPracticeRating Int?     // 1-5 satisfação com a sessão
+  postPracticeNotes  String?  // Notas de reflexão
+  nextSessionGoals   String[] @default([]) // Objetivos para próxima sessão
+  
+  // Métricas detalhadas
+  pauseCount        Int       @default(0) // Quantas vezes pausou
+  restartCount      Int       @default(0) // Quantas vezes recomeçou
+  sectionsRepeated  Json?     // Seções que foram repetidas e quantas vezes
+  
+  // NOVOS: Tracking de interações com a partitura
+  pagesViewed       Int[]     @default([]) // Páginas que foram visualizadas
+  annotationsCreated Int      @default(0)  // Quantas anotações foram criadas
+  bookmarksCreated   Int      @default(0)  // Quantos bookmarks foram criados
+  pdfZoomChanges     Int      @default(0)  // Quantas vezes mudou o zoom
+  
+  // Configurações da sessão
+  pdfSettings       Json?     // { zoom: number, theme: 'light'|'dark', layout: 'single'|'spread' }
+  windowLayout      Json?     // Layout da tela (posições dos painéis)
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@index([workId, date])
+  @@index([userId, workId])
+  @@index([scoreId])
+}
+
+// Restante dos models existentes permanecem iguais...
+// (Account, Session, VerificationToken, Composer, Epoch, Role, Instrument, Work, etc.)
+
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
   userId            String  @db.ObjectId
@@ -90,74 +318,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model User {
-  id             String    @id @default(auto()) @map("_id") @db.ObjectId
-  firstName      String?
-  lastName       String?
-  username       String?   @unique
-  email          String?   @unique
-  emailVerified  DateTime?
-  hashedPassword String?
-  image          String?
-  bio            String?
-  gender         String?
-  birthday       DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-
-  // Role system
-  role Int @default(0) //0 = usuario normal 1 = estudante. 2 = admin, 3 = super admin
-
-  // New onboarding fields
-  userType            UserType?
-  onboardingCompleted Boolean   @default(false)
-
-  // Location (optional)
-  city    String?
-  state   String?
-  country String?
-
-  // Preferences
-  favoriteComposerId String? @db.ObjectId
-  favoriteEpochId    String? @db.ObjectId
-
-  // Learning preferences
-  experienceLevel     DifficultyLevel @default(BEGINNER)
-  practiceTimePerWeek Int? // minutes per week
-
-  // Privacy settings
-  profilePublic Boolean @default(true)
-  showLocation  Boolean @default(false)
-
-    // Configurações de aprendizado
-  practiceReminders Boolean @default(true)
-  progressTracking  Boolean @default(true)
-  publicProgress    Boolean @default(false) // Se o progresso é público
-
-  // Estatísticas calculadas (podem ser campos virtuais)
-  totalStudyTime    Int     @default(0) // em minutos
-  currentStreak     Int     @default(0) // dias consecutivos estudando
-  longestStreak     Int     @default(0) // maior sequência de dias
-
-  // Relations
-  accounts Account[]
-  sessions Session[]
-
-  favoriteComposer Composer? @relation("FavoriteComposer", fields: [favoriteComposerId], references: [id])
-  favoriteEpoch    Epoch?    @relation("FavoriteEpoch", fields: [favoriteEpochId], references: [id])
-
-  instruments       UserInstrument[]
-  annotations       Annotation[]
-  favoriteWorks     FavoriteWork[]
-  favoriteComposers FavoriteComposer[]
-  wantToLearn       WantToLearn[]
-  learned           Learned[]
-  studySessions     StudySession[]
-  learningGoals     LearningGoal[]
-  @@index([userType])
-  @@index([onboardingCompleted])
-}
-
 model Composer {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
@@ -170,33 +330,27 @@ model Composer {
   bio           String?
   createdAt     DateTime @default(now())
   permLinkImslp String?
-  imslpId       String? // IMPORTANTE: usado pelo scraper para matching
+  imslpId       String?
   wikipediaLink String?
 
-  // Primary role
   primaryRoleId String @db.ObjectId
   primaryRole   Role   @relation("PrimaryRole", fields: [primaryRoleId], references: [id])
 
-  // Relationships
   epoch       Epoch              @relation(fields: [epochId], references: [id])
   works       Work[]
   favoritedBy FavoriteComposer[]
 
-  // Users who have this as favorite composer
   favoriteByUsers User[] @relation("FavoriteComposer")
 
-  // Additional roles (many-to-many)
   roles String?
 
   @@index([name])
   @@index([epochId])
   @@index([fullName])
   @@index([primaryRoleId])
-  @@index([imslpId]) // Para busca eficiente pelo scraper
-  // ÍNDICES COMPOSTOS
+  @@index([imslpId])
   @@index([name, epochId])
   @@index([epochId, primaryRoleId])
-  // ÍNDICE para busca de texto
   @@index([name, fullName])
 }
 
@@ -215,7 +369,6 @@ model Role {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
 
-  // Composers with this as their primary role
   primaryComposers Composer[] @relation("PrimaryRole")
 
   @@index([name])
@@ -224,8 +377,8 @@ model Role {
 model Instrument {
   id         String           @id @default(auto()) @map("_id") @db.ObjectId
   name       String           @unique
-  category   String? // Piano, Strings, Woodwinds, etc.
-  difficulty String? // Beginner-friendly, Intermediate, Advanced
+  category   String?
+  difficulty String?
   createdAt  DateTime         @default(now())
   users      UserInstrument[]
   works      Work[]
@@ -271,7 +424,6 @@ model Work {
 
   createdAt DateTime @default(now())
 
-  // Relations
   composer   Composer   @relation(fields: [composerId], references: [id])
   epoch      Epoch      @relation(fields: [epochId], references: [id])
   instrument Instrument @relation(fields: [instrumentId], references: [id])
@@ -284,6 +436,10 @@ model Work {
   wantToLearners WantToLearn[]
   learners       Learned[]
   studySessions  StudySession[]
+  
+  // NOVOS: Anotações PDF e bookmarks
+  pdfAnnotations PdfAnnotation[]
+  scoreBookmarks ScoreBookmark[]
 
   @@index([title])
   @@index([composerId])
@@ -292,25 +448,20 @@ model Work {
   @@index([workType])
   @@index([parentWorkId])
   @@index([isPartOfCollection])
-  // ÍNDICES COMPOSTOS para filtros combinados
   @@index([composerId, instrumentId])
   @@index([composerId, epochId])
   @@index([instrumentId, epochId])
   @@index([composerId, instrumentId, epochId])
-  // ÍNDICES para busca de texto
   @@index([opOrCatalog, composerId])
-  // ÍNDICES para arrays (se suportado pelo MongoDB)
   @@index([categoryNames])
   @@index([workGenresArr])
 }
 
-// Join tables
 model UserInstrument {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   userId       String @db.ObjectId
   instrumentId String @db.ObjectId
 
-  // New fields for better tracking
   level      DifficultyLevel @default(BEGINNER)
   isPrimary  Boolean         @default(false)
   isLearning Boolean         @default(true)
@@ -322,7 +473,6 @@ model UserInstrument {
   @@unique([userId, instrumentId])
 }
 
-// User-generated content
 model Annotation {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId
@@ -336,25 +486,22 @@ model Annotation {
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
 }
 
-// Wishlists and favorites
 model WantToLearn {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
   userId   String   @db.ObjectId
   workId   String   @db.ObjectId
-  priority Int      @default(0) // 1-5 priority level
+  priority Int      @default(0)
   addedAt  DateTime @default(now())
 
-  // Campos adicionais para enriquecer a experiência
-  notes            String?        // Notas pessoais sobre por que quer estudar
-  targetDate       DateTime?      // Data alvo para aprender
-  estimatedStudyTime Int?         // Tempo estimado em horas
-  difficulty       DifficultyLevel? // Dificuldade estimada pelo usuário
-  reminder         Boolean        @default(false) // Se quer lembrete
-  reminderFrequency String?       // weekly, monthly, etc.
+  notes            String?        
+  targetDate       DateTime?      
+  estimatedStudyTime Int?         
+  difficulty       DifficultyLevel? 
+  reminder         Boolean        @default(false) 
+  reminderFrequency String?       
   
-  // Motivação e contexto
-  motivation       String?        // Por que quer aprender esta obra
-  context          String?        // Em que contexto planeja tocar (concerto, estudo, etc.)
+  motivation       String?        
+  context          String?        
   
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
@@ -369,25 +516,22 @@ model Learned {
   userId    String   @db.ObjectId
   workId    String   @db.ObjectId
   learnedAt DateTime @default(now())
-  mastery   Int      @default(0) // 1-5 mastery level
+  mastery   Int      @default(0)
 
-  // Campos adicionais para tracking do progresso
-  studyStartDate    DateTime?     // Quando começou a estudar
-  studyDuration     Int?          // Quanto tempo levou em dias
-  notes             String?       // Notas sobre a experiência
-  wouldRecommend    Boolean       @default(true) // Se recomendaria para outros
-  publicPerformance Boolean       @default(false) // Se já tocou em público
-  lastPracticed     DateTime?     // Última vez que praticou
+  studyStartDate    DateTime?     
+  studyDuration     Int?          
+  notes             String?       
+  wouldRecommend    Boolean       @default(true) 
+  publicPerformance Boolean       @default(false) 
+  lastPracticed     DateTime?     
   
-  // Avaliação da experiência
-  difficulty        DifficultyLevel? // Dificuldade real encontrada
-  enjoyment         Int?          // 1-5 o quanto gostou de estudar
-  technicalChallenges String?     // Principais desafios técnicos
-  musicalInsights   String?       // Insights musicais obtidos
+  difficulty        DifficultyLevel? 
+  enjoyment         Int?          
+  technicalChallenges String?     
+  musicalInsights   String?       
   
-  // Performance tracking
-  performanceCount  Int           @default(0) // Quantas vezes tocou
-  bestPerformance   String?       // Descrição da melhor performance
+  performanceCount  Int           @default(0) 
+  bestPerformance   String?       
   
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
@@ -398,75 +542,19 @@ model Learned {
   @@index([lastPracticed])
 }
 
-// Novo model para tracking de sessões de estudo detalhadas
-model StudySession {
-  id            String        @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String        @db.ObjectId
-  workId        String        @db.ObjectId
-  date          DateTime      @default(now())
-  durationMin   Int           // duração em minutos
-  
-  // Detalhes da sessão
-  metronomeUsed Boolean       @default(false)
-  tempoMarking  String?       // Andamento praticado
-  focus         PracticeFocus
-  notes         String?
-  rating        Int?          // 1-5 como foi a sessão
-  
-  // Progresso específico
-  sectionsWorked String[]     @default([]) // Seções específicas trabalhadas
-  challenges     String?      // Desafios encontrados
-  breakthroughs  String?      // Progressos ou descobertas
-  
-  // Ambiente e condições
-  instrument     String?      // Instrumento usado (se tiver múltiplos)
-  location       String?      // Onde praticou
-  mood           Int?         // 1-5 humor antes da prática
-  energy         Int?         // 1-5 energia depois da prática
-
-  // NOVOS CAMPOS para modo estudo
-  metronomeSettings Json?     // Configurações do metrônomo { bpm: number, timeSignature: string }
-  selectedScore     Json?     // Dados da partitura selecionada
-  studyNotes        String?   // Anotações durante o estudo
-  practiceGoals     String[]  @default([]) // Objetivos para esta sessão
-  technicalFocus    String[]  @default([]) // Focos técnicos trabalhados
-  expressiveFocus   String[]  @default([]) // Focos expressivos trabalhados
-  precisionFocus    String[]  @default([]) // Focos de precisão trabalhados
-  
-  // Avaliação pós-prática
-  postPracticeRating Int?     // 1-5 satisfação com a sessão
-  postPracticeNotes  String?  // Notas de reflexão
-  nextSessionGoals   String[] @default([]) // Objetivos para próxima sessão
-  
-  // Métricas detalhadas
-  pauseCount        Int       @default(0) // Quantas vezes pausou
-  restartCount      Int       @default(0) // Quantas vezes recomeçou
-  sectionsRepeated  Json?     // Seções que foram repetidas e quantas vezes
-  
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-
-  @@index([userId, date])
-  @@index([workId, date])
-  @@index([userId, workId])
-}
-
-// Novo model para metas de aprendizado
 model LearningGoal {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   userId      String   @db.ObjectId
-  title       String   // Ex: "Tocar Chopin Ballade No. 1"
+  title       String   
   description String?
   targetDate  DateTime?
   isCompleted Boolean  @default(false)
   completedAt DateTime?
   
-  // Obras relacionadas à meta
   workIds     String[] @db.ObjectId @default([])
   
-  // Progresso
   progressNotes String?
-  milestones    String[] @default([]) // Marcos intermediários
+  milestones    String[] @default([]) 
   
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   
@@ -476,7 +564,6 @@ model LearningGoal {
   @@index([userId, targetDate])
   @@index([isCompleted])
 }
-
 
 model FavoriteWork {
   id     String @id @default(auto()) @map("_id") @db.ObjectId

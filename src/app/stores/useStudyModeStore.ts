@@ -8,7 +8,7 @@ export interface StudySession {
   workId: string;
   workTitle: string;
   composerName: string;
-  selectedScore?: IMSLPScore;
+  selectedScore?: IMSLPScore | null;
   startTime: string;
   duration: number; // em segundos
   isActive: boolean;
@@ -68,7 +68,7 @@ interface StudyModeStore {
     workId: string,
     workTitle: string,
     composerName: string,
-    selectedScore?: IMSLPScore
+    selectedScore?: IMSLPScore | null
   ) => void;
   pauseSession: () => void;
   resumeSession: () => void;
@@ -115,7 +115,7 @@ export const useStudyModeStore = create<StudyModeStore>()(
         workId: string,
         workTitle: string,
         composerName: string,
-        selectedScore?: IMSLPScore
+        selectedScore?: IMSLPScore | null
       ) => {
         const { cleanup } = get();
 

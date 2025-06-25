@@ -14,6 +14,7 @@ import ScoreCard from '../ScoreCard';
 import { IMSLPScore, IMSLPWorkScores } from '@/app/libs/imslp-score-scraper';
 import ScorePreview from '../ScorePreview';
 import StudyModeButton from '../../StudyMode/StudyModeButton';
+import Link from 'next/link';
 
 interface IMSLPTabsProps {
   imslpData: IMSLPWorkScores;
@@ -236,6 +237,15 @@ export default function IMSLPTabs({
                     </span>
                   </div>
                 </div>
+                <Link
+                  href={`${workId}${
+                    selectedScore ? `/${selectedScore.id}` : ''
+                  }`}
+                  className="btn-classical-primary flex items-center space-x-2"
+                >
+                  <FiBookOpen className="w-4 h-4" />
+                  <span>Abrir Modo Estudo</span>
+                </Link>
 
                 <StudyModeButton
                   workId={workId}
