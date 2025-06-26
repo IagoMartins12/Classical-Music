@@ -544,6 +544,7 @@ class IMSLPScraper {
       let namesInOtherLangs: string | null = null;
       let pseudonyms: string | null = null;
 
+      console.log('MAIN LINK DIVS', mainLinksDiv.length);
       if (mainLinksDiv.length === 0) {
         return { alternativeNames, namesInOtherLangs, pseudonyms };
       }
@@ -553,31 +554,55 @@ class IMSLPScraper {
         .find('span[style="font-weight:normal"]')
         .each((_, element) => {
           const spanText = $(element).text().trim();
+          console.log('span', spanText);
 
-          if (spanText.includes('Nomes alternativos/Transliterações:')) {
-            alternativeNames = spanText
-              .replace('Nomes alternativos/Transliterações:', '')
-              .trim();
+          const alternativeNamesLabels = [
+            'Nomes alternativos/Transliterações:',
+            'Alternative Names/Transliterations:',
+          ];
+
+          const namesInOtherLangsLabels = [
+            'Nome em outras línguas:',
+            'Names in other languages:',
+          ];
+
+          const pseudonymsLabels = ['Pseudônimos:', 'Pseudonyms:'];
+
+          if (
+            alternativeNamesLabels.some((label) => spanText.includes(label))
+          ) {
+            alternativeNames = spanText;
+            alternativeNamesLabels.forEach((label) => {
+              alternativeNames = (alternativeNames || '').replace(label, '');
+            });
+            alternativeNames = alternativeNames.trim();
             console.log(
               `📝 Nomes alternativos encontrados: "${alternativeNames}"`
             );
           }
 
-          if (spanText.includes('Nome em outras línguas:')) {
-            namesInOtherLangs = spanText
-              .replace('Nome em outras línguas:', '')
-              .trim();
+          if (
+            namesInOtherLangsLabels.some((label) => spanText.includes(label))
+          ) {
+            namesInOtherLangs = spanText;
+            namesInOtherLangsLabels.forEach((label) => {
+              namesInOtherLangs = (namesInOtherLangs || '').replace(label, '');
+            });
+            namesInOtherLangs = namesInOtherLangs.trim();
             console.log(
               `🌐 Nomes em outras línguas encontrados: "${namesInOtherLangs}"`
             );
           }
 
-          if (spanText.includes('Pseudônimos:')) {
-            pseudonyms = spanText.replace('Pseudônimos:', '').trim();
+          if (pseudonymsLabels.some((label) => spanText.includes(label))) {
+            pseudonyms = spanText;
+            pseudonymsLabels.forEach((label) => {
+              pseudonyms = (pseudonyms || '').replace(label, '');
+            });
+            pseudonyms = pseudonyms.trim();
             console.log(`🎭 Pseudônimos encontrados: "${pseudonyms}"`);
           }
         });
-
       return {
         alternativeNames,
         namesInOtherLangs,
@@ -1075,14 +1100,26 @@ class IMSLPScraper {
       if (mwPagesDiv.length > 0) {
         const compositionLinks = mwPagesDiv.find('a').filter((_, el) => {
           const href = $(el).attr('href');
-          return (
-            href && !href.includes('Category:') && !href.includes('Template:')
-          );
+          if (!href) return false;
+          return !href.includes('Category:') && !href.includes('Template:');
         });
+
         if (compositionLinks.length > 0) {
           return compositionLinks.length;
         }
       }
+      // const mwPagesDiv = $('#mw-pages');
+      // if (mwPagesDiv.length > 0) {
+      //   const compositionLinks = mwPagesDiv.find('a').filter((_, el) => {
+      //     const href = $(el).attr('href');
+      //     return (
+      //       href && !href.includes('Category:') && !href.includes('Template:')
+      //     );
+      //   });
+      //   if (compositionLinks.length > 0) {
+      //     return compositionLinks.length;
+      //   }
+      // }
 
       return 0;
     } catch (error) {

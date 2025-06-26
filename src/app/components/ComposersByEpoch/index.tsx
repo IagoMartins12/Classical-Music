@@ -38,7 +38,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
         image: '/epochs/classical.jpg',
         description: '1750 - 1820',
       },
-      Rômantico: {
+      Romântico: {
         image: '/epochs/romantic.jpeg',
         description: '1820 - 1910',
       },

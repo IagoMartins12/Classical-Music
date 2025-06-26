@@ -115,7 +115,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
             <div className="classical-card p-6 max-w-md mx-auto">
               <div className="flex items-center justify-center mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-brand-primary rounded-full flex items-center justify-center shadow-theme-glow">
-                  <GiMusicalNotes className="w-6 h-6 text-theme-inverse" />
+                  <GiMusicalNotes className="w-6 h-6 text-theme-primary" />
                 </div>
               </div>
               <h4 className="text-lg font-bold text-theme-primary classical-title mb-2">

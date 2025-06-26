@@ -110,7 +110,7 @@ export const getComposersWithPagination = unstable_cache(
       epochName: composer.epoch.name,
     }));
   },
-  ['composers-paginated'],
+  ['composers-paginated-2'],
   {
     revalidate: 1800, // 30 minutos
     tags: ['composers'],
