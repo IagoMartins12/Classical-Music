@@ -76,6 +76,12 @@ export interface FilterOptions {
   instruments: { id: string; name: string }[];
   epochs: { id: string; name: string }[];
   workGenres: { id: string; name: string }[];
+  popularComposers: {
+    id: string;
+    name: string;
+    fullName?: string;
+    worksCount?: number;
+  }[];
 }
 
 // Buscar todas as obras com paginação - VERSÃO OTIMIZADA
@@ -245,51 +251,131 @@ export const getWorks = unstable_cache(
   }
 );
 
+const FAMOUS_COMPOSERS = [
+  'Ludwig van Beethoven',
+  'Wolfgang Amadeus Mozart',
+  'Johann Sebastian Bach',
+  'Frédéric Chopin',
+  'Franz Liszt',
+  'Pyotr Ilyich Tchaikovsky',
+  'Claude Debussy',
+  'Johannes Brahms',
+  'Antonio Vivaldi',
+  'Franz Schubert',
+  'Robert Schumann',
+  'Sergei Rachmaninoff',
+  'Maurice Ravel',
+  'Giuseppe Verdi',
+  'Richard Wagner',
+  'Felix Mendelssohn',
+  'Dmitri Shostakovich',
+  'Igor Stravinsky',
+  'George Frideric Handel',
+  'Joseph Haydn',
+];
+
+// Buscar compositores populares
+export const getPopularComposers = unstable_cache(
+  async (): Promise<
+    { id: string; name: string; fullName?: string; worksCount?: number }[]
+  > => {
+    try {
+      // Buscar compositores famosos com contagem de obras
+      const popularComposers = await prisma.composer.findMany({
+        where: {
+          OR: FAMOUS_COMPOSERS.map((name) => ({
+            OR: [
+              { name: { contains: name, mode: 'insensitive' } },
+              { fullName: { contains: name, mode: 'insensitive' } },
+            ],
+          })),
+        },
+        select: {
+          id: true,
+          name: true,
+          fullName: true,
+          _count: {
+            select: {
+              works: true,
+            },
+          },
+        },
+        orderBy: {
+          works: {
+            _count: 'desc',
+          },
+        },
+        take: 20,
+      });
+
+      return popularComposers.map((composer) => ({
+        id: composer.id,
+        name: composer.name,
+        fullName: composer.fullName || undefined,
+        worksCount: composer._count.works,
+      }));
+    } catch (error) {
+      console.error('Erro ao buscar compositores populares:', error);
+      return [];
+    }
+  },
+  ['popular-composers'],
+  {
+    revalidate: 7200, // 2 horas
+    tags: ['popular-composers'],
+  }
+);
+
 // Buscar todas as opções de filtro em uma única função otimizada
 export const getFilterOptions = unstable_cache(
   async (): Promise<FilterOptions> => {
     try {
       // Executar todas as consultas em paralelo para máxima eficiência
-      const [instruments, epochs, workGenres] = await Promise.all([
-        // Instrumentos
-        prisma.instrument.findMany({
-          select: {
-            id: true,
-            name: true,
-          },
-          orderBy: {
-            name: 'asc',
-          },
-        }),
+      const [instruments, epochs, workGenres, popularComposers] =
+        await Promise.all([
+          // Instrumentos
+          prisma.instrument.findMany({
+            select: {
+              id: true,
+              name: true,
+            },
+            orderBy: {
+              name: 'asc',
+            },
+          }),
 
-        // Épocas
-        prisma.epoch.findMany({
-          select: {
-            id: true,
-            name: true,
-          },
-          orderBy: {
-            name: 'asc',
-          },
-        }),
+          // Épocas
+          prisma.epoch.findMany({
+            select: {
+              id: true,
+              name: true,
+            },
+            orderBy: {
+              name: 'asc',
+            },
+          }),
 
-        // Gêneros de trabalho (apenas os primeiros 20 para performance)
-        prisma.workGenre.findMany({
-          select: {
-            id: true,
-            name: true,
-          },
-          orderBy: {
-            name: 'asc',
-          },
-          take: 20,
-        }),
-      ]);
+          // Gêneros de trabalho (apenas os primeiros 20 para performance)
+          prisma.workGenre.findMany({
+            select: {
+              id: true,
+              name: true,
+            },
+            orderBy: {
+              name: 'asc',
+            },
+            take: 20,
+          }),
+
+          // Compositores populares
+          getPopularComposers(),
+        ]);
 
       return {
         instruments,
         epochs,
         workGenres,
+        popularComposers,
       };
     } catch (error) {
       console.error('Erro ao buscar opções de filtro:', error);
@@ -297,6 +383,7 @@ export const getFilterOptions = unstable_cache(
         instruments: [],
         epochs: [],
         workGenres: [],
+        popularComposers: [],
       };
     }
   },
@@ -399,138 +486,6 @@ export const getAllWorkGenres = unstable_cache(
   }
 );
 
-const FAMOUS_COMPOSERS = [
-  'Ludwig van Beethoven',
-  'Wolfgang Amadeus Mozart',
-  'Johann Sebastian Bach',
-  'Frédéric Chopin',
-  'Franz Liszt',
-  'Pyotr Ilyich Tchaikovsky',
-  'Claude Debussy',
-  'Johannes Brahms',
-  'Antonio Vivaldi',
-  'Franz Schubert',
-  'Robert Schumann',
-  'Sergei Rachmaninoff',
-  'Maurice Ravel',
-  'Giuseppe Verdi',
-  'Richard Wagner',
-  'Felix Mendelssohn',
-  'Dmitri Shostakovich',
-  'Igor Stravinsky',
-  'George Frideric Handel',
-  'Joseph Haydn',
-];
-
-export const getPopularComposers = unstable_cache(
-  async (): Promise<
-    { id: string; name: string; fullName?: string; worksCount?: number }[]
-  > => {
-    try {
-      // Buscar compositores famosos com contagem de obras
-      const popularComposers = await prisma.composer.findMany({
-        where: {
-          OR: FAMOUS_COMPOSERS.map((name) => ({
-            OR: [
-              { name: { contains: name, mode: 'insensitive' } },
-              { fullName: { contains: name, mode: 'insensitive' } },
-            ],
-          })),
-        },
-        select: {
-          id: true,
-          name: true,
-          fullName: true,
-          _count: {
-            select: {
-              works: true,
-            },
-          },
-        },
-        orderBy: {
-          works: {
-            _count: 'desc',
-          },
-        },
-        take: 20,
-      });
-
-      return popularComposers.map((composer) => ({
-        id: composer.id,
-        name: composer.name,
-        fullName: composer.fullName || undefined,
-        worksCount: composer._count.works,
-      }));
-    } catch (error) {
-      console.error('Erro ao buscar compositores populares:', error);
-      return [];
-    }
-  }
-);
-
-export const searchComposers = async (
-  searchTerm: string = '',
-  limit: number = 15
-): Promise<
-  { id: string; name: string; fullName?: string; worksCount?: number }[]
-> => {
-  try {
-    if (!searchTerm.trim()) {
-      // Se não há busca, retorna compositores populares
-      return await getPopularComposers();
-    }
-
-    const composers = await prisma.composer.findMany({
-      where: {
-        OR: [
-          {
-            name: {
-              contains: searchTerm,
-              mode: 'insensitive',
-            },
-          },
-          {
-            fullName: {
-              contains: searchTerm,
-              mode: 'insensitive',
-            },
-          },
-        ],
-      },
-      select: {
-        id: true,
-        name: true,
-        fullName: true,
-        _count: {
-          select: {
-            works: true,
-          },
-        },
-      },
-      orderBy: [
-        {
-          works: {
-            _count: 'desc',
-          },
-        },
-        {
-          name: 'asc',
-        },
-      ],
-      take: limit,
-    });
-
-    return composers.map((composer) => ({
-      id: composer.id,
-      name: composer.name,
-      fullName: composer.fullName || undefined,
-      worksCount: composer._count.works,
-    }));
-  } catch (error) {
-    console.error('Erro ao buscar compositores:', error);
-    return [];
-  }
-};
 // Função para invalidar cache - ATUALIZADA
 export async function revalidateWorkCache(workId?: string) {
   const { revalidateTag } = await import('next/cache');
@@ -544,6 +499,7 @@ export async function revalidateWorkCache(workId?: string) {
   revalidateTag('epochs-list');
   revalidateTag('work-genres-list');
   revalidateTag('works-stats');
+  revalidateTag('popular-composers');
 
   if (workId) {
     revalidateTag(`work-${workId}`);

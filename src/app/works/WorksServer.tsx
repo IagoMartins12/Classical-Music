@@ -43,7 +43,7 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
         limit,
         Object.keys(filters).length > 0 ? filters : undefined
       ),
-      getFilterOptions(), // Uma única função que retorna todos os filtros
+      getFilterOptions(), // Uma única função que retorna todos os filtros incluindo compositores populares
     ]);
 
     return (
@@ -51,7 +51,7 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
         worksData={worksData}
         currentPage={page}
         searchParams={searchParams}
-        filterOptions={filterOptions} // Passa todos os filtros de uma vez
+        filterOptions={filterOptions} // Agora inclui popularComposers
       />
     );
   } catch (error) {

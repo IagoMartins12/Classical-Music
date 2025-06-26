@@ -2,8 +2,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { FiSearch, FiUser, FiX } from 'react-icons/fi';
-import { searchComposers } from '@/app/requests/work-details';
+import { FiSearch, FiUser, FiX, FiTrendingUp } from 'react-icons/fi';
 
 interface Composer {
   id: string;
@@ -22,14 +21,12 @@ interface ComposerSearchInputProps {
 export default function ComposerSearchInput({
   selectedComposer,
   onComposerSelect,
-  popularComposers,
+  popularComposers = [],
   isDisabled = false,
 }: ComposerSearchInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [composers, setComposers] = useState<Composer[] | undefined | null>(
-    popularComposers
-  );
+  const [composers, setComposers] = useState<Composer[]>(popularComposers);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedComposerName, setSelectedComposerName] = useState('');
 
@@ -49,23 +46,32 @@ export default function ComposerSearchInput({
     }
   }, [selectedComposer, popularComposers, composers]);
 
-  // Busca de compositores com debounce
+  // Busca de compositores com debounce usando a API route
   const searchComposersDebounced = useCallback(
     async (term: string) => {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
       }
 
-      console.log('term', term);
-
       debounceRef.current = setTimeout(async () => {
         setIsLoading(true);
         try {
-          const results = await searchComposers(term, 15);
+          const params = new URLSearchParams({
+            q: term,
+            limit: '20',
+          });
+
+          const response = await fetch(`/api/composers/search?${params}`);
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const results = await response.json();
           setComposers(results);
         } catch (error) {
           console.error('Erro ao buscar compositores:', error);
-          setComposers(popularComposers); // Fallback para compositores populares
+          setComposers(popularComposers || []); // Fallback para compositores populares
         } finally {
           setIsLoading(false);
         }
@@ -79,7 +85,7 @@ export default function ComposerSearchInput({
     if (searchTerm.trim()) {
       searchComposersDebounced(searchTerm);
     } else {
-      setComposers(popularComposers);
+      setComposers(popularComposers || []);
       setIsLoading(false);
     }
   }, [searchTerm, searchComposersDebounced, popularComposers]);
@@ -116,7 +122,7 @@ export default function ComposerSearchInput({
   const handleInputFocus = () => {
     setIsOpen(true);
     if (!searchTerm) {
-      setComposers(popularComposers);
+      setComposers(popularComposers || []);
     }
   };
 
@@ -143,8 +149,9 @@ export default function ComposerSearchInput({
     }
   };
 
-  const displayComposers = searchTerm ? composers : popularComposers;
-  //   const showPopularLabel = !searchTerm && popularComposers.length > 0;
+  const displayComposers = composers;
+  const showPopularLabel =
+    !searchTerm && popularComposers && popularComposers.length > 0;
 
   return (
     <div className="relative">
@@ -186,14 +193,14 @@ export default function ComposerSearchInput({
           className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[80] max-h-80 overflow-hidden"
         >
           {/* Header com label */}
-          {/* {showPopularLabel && (
+          {showPopularLabel && (
             <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
               <FiTrendingUp className="w-4 h-4 text-brand-primary" />
               <span className="text-sm font-medium text-theme-secondary">
                 Compositores Populares
               </span>
             </div>
-          )} */}
+          )}
 
           {/* Loading */}
           {isLoading && (
@@ -219,7 +226,7 @@ export default function ComposerSearchInput({
                         ? 'bg-brand-primary/10 text-brand-primary font-medium'
                         : ''
                     }
-                    ${index === 0 ? 'border-t-0' : ''}
+                    ${index === 0 && !showPopularLabel ? 'border-t-0' : ''}
                   `}
                 >
                   <div className="flex items-center justify-between">
@@ -235,7 +242,7 @@ export default function ComposerSearchInput({
                         )}
                     </div>
 
-                    {composer.worksCount && (
+                    {composer.worksCount && composer.worksCount > 0 && (
                       <div className="ml-3 flex-shrink-0">
                         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-theme-secondary/20 text-theme-secondary">
                           {composer.worksCount} obra
@@ -250,21 +257,22 @@ export default function ComposerSearchInput({
           )}
 
           {/* Empty state */}
-          {!isLoading && displayComposers && displayComposers.length === 0 && (
-            <div className="px-4 py-8 text-center">
-              <FiUser className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-              <p className="text-sm text-theme-secondary">
-                {searchTerm
-                  ? `Nenhum compositor encontrado para "${searchTerm}"`
-                  : 'Nenhum compositor disponível'}
-              </p>
-              {searchTerm && (
-                <p className="text-xs text-theme-tertiary mt-1">
-                  Tente uma busca mais geral
+          {!isLoading &&
+            (!displayComposers || displayComposers.length === 0) && (
+              <div className="px-4 py-8 text-center">
+                <FiUser className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                <p className="text-sm text-theme-secondary">
+                  {searchTerm
+                    ? `Nenhum compositor encontrado para "${searchTerm}"`
+                    : 'Nenhum compositor disponível'}
                 </p>
-              )}
-            </div>
-          )}
+                {searchTerm && (
+                  <p className="text-xs text-theme-tertiary mt-1">
+                    Tente uma busca mais geral
+                  </p>
+                )}
+              </div>
+            )}
         </div>
       )}
     </div>

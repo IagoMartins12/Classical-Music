@@ -143,9 +143,9 @@ const ActiveFilters = memo(
           <div className="flex items-center gap-2 px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
             <span>
               Compositor:{' '}
-              {/* {filterOptions.popularComposers.find(
+              {filterOptions.popularComposers.find(
                 (c) => c.id === searchParams.composer
-              )?.name || searchParams.composer} */}
+              )?.fullName || searchParams.composer}
             </span>
             <button
               onClick={() => onRemoveFilter('composer')}
@@ -582,7 +582,7 @@ const WorksClient = memo(
             >
               <div className="border-t border-theme-secondary pt-6 mb-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-                  {/* Composer Filter - NOVO */}
+                  {/* Composer Filter - ATUALIZADO */}
                   <div className="space-y-2 relative z-[90]">
                     <label className="text-sm font-medium text-theme-secondary">
                       Compositor
@@ -590,7 +590,7 @@ const WorksClient = memo(
                     <ComposerSearchInput
                       selectedComposer={selectedComposer}
                       onComposerSelect={handleComposerFilter}
-                      // popularComposers={filterOptions.popularComposers}
+                      popularComposers={filterOptions.popularComposers}
                       isDisabled={isPending}
                     />
                   </div>

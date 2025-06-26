@@ -1845,18 +1845,28 @@
       "averageTime": 447.25,
       "lastSeen": "2025-06-25T17:36:01.555Z",
       "confidence": 0.2
+    },
+    "0/0a": {
+      "pattern": "0/0a",
+      "subdomains": [
+        "ks15.imslp.org"
+      ],
+      "successRate": 0.30000000000000004,
+      "averageTime": 650.5,
+      "lastSeen": "2025-06-25T20:35:24.911Z",
+      "confidence": 0.15000000000000002
     }
   },
   "globalStats": {
-    "totalRequests": 1638,
-    "successfulRequests": 1638,
-    "averageResponseTime": 446.2856683251398,
+    "totalRequests": 1641,
+    "successfulRequests": 1641,
+    "averageResponseTime": 706.2857085406424,
     "mostReliableSubdomain": "",
-    "lastUpdated": "2025-06-25T20:26:25.949Z"
+    "lastUpdated": "2025-06-25T20:35:24.911Z"
   },
   "metadata": {
-    "savedAt": "2025-06-25T20:26:30.951Z",
-    "sessionId": "session_1750882922788_czr21jn",
+    "savedAt": "2025-06-25T20:35:29.914Z",
+    "sessionId": "session_1750883695323_07ue02f",
     "version": "2.0"
   }
 }

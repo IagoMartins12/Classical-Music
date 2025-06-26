@@ -55,6 +55,8 @@ export default function WorkDetailsClient({
     loading: loadingScores,
     error: scoresError,
     refetch: refetchScores,
+    setSelectedScore,
+    selectedScore,
     fromCache,
     cacheStats,
   } = useIMSLPScores(work.imslpPermlink, {
@@ -76,6 +78,7 @@ export default function WorkDetailsClient({
     },
   });
 
+  console.log('TESTE', selectedScore);
   const { navigateToUrl } = useNavigate();
 
   // Função para formatar duração
@@ -99,6 +102,7 @@ export default function WorkDetailsClient({
   // Callback para quando uma partitura é selecionada
   const handleScoreSelect = (score: IMSLPScore) => {
     setSelectedScoreForStudy(score);
+    setSelectedScore(score.id);
   };
 
   return (
