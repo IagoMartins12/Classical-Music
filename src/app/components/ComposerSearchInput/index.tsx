@@ -1,4 +1,4 @@
-// components/ComposerSearchInput.tsx - Componente otimizado para busca de compositores
+// components/ComposerSearchInput.tsx - Versão com POST
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -36,17 +36,50 @@ export default function ComposerSearchInput({
 
   // Encontrar nome do compositor selecionado
   useEffect(() => {
-    if (selectedComposer) {
-      const composer =
-        popularComposers?.find((c) => c.id === selectedComposer) ||
-        composers?.find((c) => c.id === selectedComposer);
-      setSelectedComposerName(composer?.name || '');
-    } else {
-      setSelectedComposerName('');
-    }
+    const findSelectedComposer = async () => {
+      if (selectedComposer) {
+        // Primeiro tenta encontrar nas listas locais
+        const composer =
+          popularComposers?.find((c) => c.id === selectedComposer) ||
+          composers?.find((c) => c.id === selectedComposer);
+
+        if (composer) {
+          setSelectedComposerName(composer.name);
+        } else {
+          // Se não encontrou nas listas locais, busca na API
+          try {
+            const response = await fetch('/api/composers', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                id: selectedComposer,
+              }),
+            });
+
+            if (response.ok) {
+              const composer = await response.json();
+              if (composer && composer.name) {
+                setSelectedComposerName(composer.name);
+              } else {
+                setSelectedComposerName('');
+              }
+            }
+          } catch (error) {
+            console.error('Erro ao buscar nome do compositor:', error);
+            setSelectedComposerName('');
+          }
+        }
+      } else {
+        setSelectedComposerName('');
+      }
+    };
+
+    findSelectedComposer();
   }, [selectedComposer, popularComposers, composers]);
 
-  // Busca de compositores com debounce usando a API route
+  // Busca de compositores com debounce usando POST
   const searchComposersDebounced = useCallback(
     async (term: string) => {
       if (debounceRef.current) {
@@ -56,18 +89,25 @@ export default function ComposerSearchInput({
       debounceRef.current = setTimeout(async () => {
         setIsLoading(true);
         try {
-          const params = new URLSearchParams({
-            q: term,
-            limit: '20',
-          });
+          console.log('Fazendo busca para:', term);
 
-          const response = await fetch(`/api/composers/search?${params}`);
+          const response = await fetch('/api/composers', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              q: term,
+              limit: 20,
+            }),
+          });
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
 
           const results = await response.json();
+          console.log('Resultados recebidos:', results);
           setComposers(results);
         } catch (error) {
           console.error('Erro ao buscar compositores:', error);
@@ -119,10 +159,32 @@ export default function ComposerSearchInput({
     };
   }, []);
 
-  const handleInputFocus = () => {
+  const handleInputFocus = async () => {
     setIsOpen(true);
-    if (!searchTerm) {
-      setComposers(popularComposers || []);
+    if (!searchTerm && (!composers || composers.length === 0)) {
+      // Carregar compositores populares se não tiver dados
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/composers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            q: '',
+            limit: 20,
+          }),
+        });
+
+        if (response.ok) {
+          const results = await response.json();
+          setComposers(results);
+        }
+      } catch (error) {
+        console.error('Erro ao carregar compositores populares:', error);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 

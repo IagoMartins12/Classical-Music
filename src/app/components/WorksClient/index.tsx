@@ -43,6 +43,61 @@ interface WorksClientProps {
   filterOptions: FilterOptions;
 }
 
+// Hook para buscar nome do compositor
+function useComposerName(composerId: string, popularComposers: any[]) {
+  const [composerName, setComposerName] = useState('');
+
+  useEffect(() => {
+    const findComposerName = async () => {
+      if (!composerId) {
+        setComposerName('');
+        return;
+      }
+
+      // Primeiro tenta encontrar nos compositores populares
+      const popularComposer = popularComposers?.find(
+        (c) => c.id === composerId
+      );
+
+      if (popularComposer) {
+        setComposerName(popularComposer.name);
+        return;
+      }
+
+      // Se não encontrou, busca na API
+      try {
+        const response = await fetch('/api/composers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: composerId,
+          }),
+        });
+
+        if (response.ok) {
+          const composer = await response.json();
+          if (composer && composer.name) {
+            setComposerName(composer.name);
+          } else {
+            setComposerName(composerId);
+          }
+        } else {
+          setComposerName(composerId);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar nome do compositor:', error);
+        setComposerName(composerId);
+      }
+    };
+
+    findComposerName();
+  }, [composerId, popularComposers]);
+
+  return composerName;
+}
+
 // Componente de Loading Skeleton otimizado
 const WorksSkeleton = memo(() => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -119,6 +174,12 @@ const ActiveFilters = memo(
       [searchParams]
     );
 
+    // Usar o hook para buscar nome do compositor
+    const composerName = useComposerName(
+      searchParams.composer || '',
+      filterOptions.popularComposers || []
+    );
+
     if (!hasActiveFilters) return null;
 
     return (
@@ -141,12 +202,7 @@ const ActiveFilters = memo(
 
         {searchParams.composer && (
           <div className="flex items-center gap-2 px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
-            <span>
-              Compositor:{' '}
-              {filterOptions.popularComposers.find(
-                (c) => c.id === searchParams.composer
-              )?.fullName || searchParams.composer}
-            </span>
+            <span>Compositor: {composerName || 'Carregando...'}</span>
             <button
               onClick={() => onRemoveFilter('composer')}
               className="hover:text-accent-purple/80 transition-colors"
