@@ -1,15 +1,15 @@
-// components/animation/AnimatedComponents.tsx - Componentes reutilizáveis
+// components/animation/AnimatedComponents.tsx - Versão final sem erros
 'use client';
 
 import React from 'react';
-import { motion, HTMLMotionProps, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   createContainerVariants,
   createItemVariants,
   hoverVariants,
   skeletonPulse,
   skeletonShimmer,
-} from '@/app/libs/animation-variant';
+} from '@/app/libs/animation-variants';
 
 // Tipos base
 type AnimationSpeed = 'fast' | 'normal' | 'slow';
@@ -30,7 +30,6 @@ interface BaseAnimationProps {
 
 interface AnimatedContainerProps extends BaseAnimationProps {
   staggerSpeed?: AnimationSpeed;
-  as?: keyof JSX.IntrinsicElements;
 }
 
 export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
@@ -38,13 +37,11 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
   delay = 0.1,
   staggerSpeed = 'normal',
   className = '',
-  as: Component = 'div',
 }) => {
   const variants = createContainerVariants(staggerSpeed, delay);
 
   return (
     <motion.div
-      as={Component}
       className={className}
       variants={variants}
       initial="hidden"
@@ -63,7 +60,8 @@ interface AnimatedItemProps extends BaseAnimationProps {
   direction?: AnimationDirection;
   springType?: SpringType;
   hover?: HoverEffect;
-  as?: keyof JSX.IntrinsicElements;
+  onClick?: () => void;
+  style?: React.CSSProperties;
 }
 
 export const AnimatedItem: React.FC<AnimatedItemProps> = ({
@@ -72,18 +70,23 @@ export const AnimatedItem: React.FC<AnimatedItemProps> = ({
   springType = 'smooth',
   hover = 'none',
   className = '',
-  as: Component = 'div',
+  onClick,
+  style,
 }) => {
   const variants = createItemVariants(direction, springType);
-  const hoverProps = hover !== 'none' ? hoverVariants[hover] : {};
+
+  // Configuração do hover segura
+  const hoverConfig =
+    hover !== 'none' && hoverVariants[hover] ? hoverVariants[hover] : {};
 
   return (
     <motion.div
-      as={Component}
       className={className}
       variants={variants}
-      whileHover={hoverProps.hover}
-      whileTap={hoverProps.tap}
+      onClick={onClick}
+      style={style}
+      whileHover={hoverConfig.hover}
+      whileTap={hoverConfig.tap}
     >
       {children}
     </motion.div>
@@ -97,7 +100,7 @@ export const AnimatedItem: React.FC<AnimatedItemProps> = ({
 interface AnimatedCardProps extends BaseAnimationProps {
   hover?: HoverEffect;
   clickable?: boolean;
-  as?: keyof JSX.IntrinsicElements;
+  onClick?: () => void;
 }
 
 export const AnimatedCard: React.FC<AnimatedCardProps> = ({
@@ -105,18 +108,19 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
   hover = 'lift',
   clickable = false,
   className = '',
-  as: Component = 'div',
+  onClick,
 }) => {
   const variants = createItemVariants('scale', 'bouncy');
-  const hoverProps = hoverVariants[hover] || {};
+  const hoverConfig = hoverVariants[hover] || {};
+  const cursorClass = clickable ? 'cursor-pointer' : '';
 
   return (
     <motion.div
-      as={Component}
-      className={`${className} ${clickable ? 'cursor-pointer' : ''}`}
+      className={`${className} ${cursorClass}`}
       variants={variants}
-      whileHover={hoverProps.hover}
-      whileTap={clickable ? hoverProps.tap : undefined}
+      onClick={clickable ? onClick : undefined}
+      whileHover={hoverConfig.hover}
+      whileTap={clickable ? hoverConfig.tap : undefined}
     >
       {children}
     </motion.div>
@@ -143,19 +147,24 @@ export const StaggerGrid: React.FC<StaggerGridProps> = ({
 }) => {
   const containerVariants = createContainerVariants(staggerSpeed, delay);
 
-  const gridClass = `grid gap-${gap} ${
-    cols === 1
-      ? 'grid-cols-1'
-      : cols === 2
-      ? 'grid-cols-1 md:grid-cols-2'
-      : cols === 3
-      ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-      : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-  }`;
+  const getGridCols = () => {
+    switch (cols) {
+      case 1:
+        return 'grid-cols-1';
+      case 2:
+        return 'grid-cols-1 md:grid-cols-2';
+      case 3:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+      case 4:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+      default:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+    }
+  };
 
   return (
     <motion.div
-      className={`${gridClass} ${className}`}
+      className={`grid gap-${gap} ${getGridCols()} ${className}`}
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -189,30 +198,28 @@ export const SkeletonItem: React.FC<SkeletonItemProps> = ({
   const baseClass = `${width} ${height} ${
     rounded ? 'rounded' : ''
   } bg-theme-elevated`;
-  const animationClass = shimmer ? 'bg-gradient-shimmer' : '';
 
-  const MotionComponent = motion.div;
   const variants = shimmer
     ? skeletonShimmer
     : pulse
     ? skeletonPulse
     : undefined;
 
+  const shimmerStyle = shimmer
+    ? {
+        background:
+          'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent)',
+        backgroundSize: '200% 100%',
+      }
+    : {};
+
   return (
-    <MotionComponent
-      className={`${baseClass} ${animationClass} ${className}`}
+    <motion.div
+      className={`${baseClass} ${className}`}
       variants={variants}
       initial="hidden"
       animate="visible"
-      style={
-        shimmer
-          ? {
-              background:
-                'linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent)',
-              backgroundSize: '200% 100%',
-            }
-          : undefined
-      }
+      style={shimmerStyle}
     />
   );
 };
@@ -232,7 +239,6 @@ export const SkeletonCard: React.FC<SkeletonCardProps> = ({
 }) => {
   return (
     <AnimatedCard className={`classical-card p-6 ${className}`} hover="none">
-      {/* Header with icon */}
       {showIcon && (
         <div className="flex items-center space-x-3 mb-4">
           <SkeletonItem width="w-12" height="h-12" />
@@ -243,7 +249,6 @@ export const SkeletonCard: React.FC<SkeletonCardProps> = ({
         </div>
       )}
 
-      {/* Content lines */}
       <div className="space-y-3">
         {Array.from({ length: lines }).map((_, i) => (
           <SkeletonItem
@@ -254,7 +259,6 @@ export const SkeletonCard: React.FC<SkeletonCardProps> = ({
         ))}
       </div>
 
-      {/* Footer button */}
       {showButton && (
         <div className="mt-4 pt-4 border-t border-theme-secondary">
           <SkeletonItem width="w-32" height="h-10" />
@@ -283,7 +287,6 @@ export const PageContainer: React.FC<PageContainerProps> = ({
     <div
       className={`${showBackground ? 'bg-gradient-primary' : ''} ${className}`}
     >
-      {/* Background Pattern */}
       {showBackground && (
         <div className="absolute inset-0 pointer-events-none opacity-5">
           <motion.div
@@ -314,7 +317,6 @@ export const PageContainer: React.FC<PageContainerProps> = ({
         </div>
       )}
 
-      {/* Content */}
       <div className="section-wrap space-y-8 relative z-10">{children}</div>
     </div>
   );
@@ -384,5 +386,347 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         ease: 'linear',
       }}
     />
+  );
+};
+
+// =================================
+// COMPOSTOS ESPECÍFICOS
+// =================================
+
+interface ComposerCardAnimatedProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  index?: number;
+  className?: string;
+  delayMultiplier?: number; // Permite controlar o delay entre cards
+}
+
+export const ComposerCardAnimated: React.FC<ComposerCardAnimatedProps> = ({
+  children,
+  onClick,
+  index = 0,
+  className = '',
+  delayMultiplier = 0.1, // Delay padrão de 0.1s entre cada card
+}) => {
+  return (
+    <motion.div
+      className={`cursor-pointer ${className}`}
+      onClick={onClick}
+      initial={{ opacity: 0, y: 30 }} // ✅ Removido scale - card aparece no tamanho normal
+      animate={{ opacity: 1, y: 0 }} // ✅ Apenas fade-in e movimento vertical
+      transition={{
+        duration: 0.6,
+        delay: index * delayMultiplier, // Delay progressivo baseado no index
+        ease: [0.25, 0.46, 0.45, 0.94], // Easing suave
+      }}
+      whileHover={{
+        y: -5,
+        transition: { duration: 0.2 },
+      }}
+      whileTap={{
+        y: 0, // ✅ Removido scale no tap
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// =================================
+// GRID COM ANIMAÇÃO SEQUENCIAL
+// =================================
+
+interface SequentialGridProps {
+  children: React.ReactNode;
+  cols?: number;
+  gap?: number;
+  delayBetweenItems?: number; // Delay entre cada item
+  className?: string;
+}
+
+export const SequentialGrid: React.FC<SequentialGridProps> = ({
+  children,
+  cols = 4,
+  gap = 6,
+  delayBetweenItems = 0.1,
+  className = '',
+}) => {
+  const getGridCols = () => {
+    switch (cols) {
+      case 1:
+        return 'grid-cols-1';
+      case 2:
+        return 'grid-cols-1 md:grid-cols-2';
+      case 3:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+      case 4:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+      default:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+    }
+  };
+
+  return (
+    <div className={`grid gap-${gap} ${getGridCols()} ${className}`}>
+      {React.Children.map(children, (child, index) => (
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, y: 30 }} // ✅ Removido scale - card aparece no tamanho normal
+          animate={{ opacity: 1, y: 0 }} // ✅ Apenas fade-in e movimento vertical
+          transition={{
+            duration: 0.6,
+            delay: index * delayBetweenItems,
+            ease: [0.25, 0.46, 0.45, 0.94],
+          }}
+          whileHover={{
+            y: -5,
+            transition: { duration: 0.2 },
+          }}
+        >
+          {child}
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
+// =================================
+// OUTROS COMPONENTES ÚTEIS
+// =================================
+
+interface FadeInProps {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}
+
+export const FadeIn: React.FC<FadeInProps> = ({
+  children,
+  className = '',
+  delay = 0,
+}) => {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+interface SlideInProps {
+  children: React.ReactNode;
+  direction?: 'left' | 'right' | 'up' | 'down';
+  className?: string;
+  delay?: number;
+}
+
+export const SlideIn: React.FC<SlideInProps> = ({
+  children,
+  direction = 'up',
+  className = '',
+  delay = 0,
+}) => {
+  const getInitialPosition = () => {
+    switch (direction) {
+      case 'left':
+        return { x: -50 };
+      case 'right':
+        return { x: 50 };
+      case 'up':
+        return { y: 50 };
+      case 'down':
+        return { y: -50 };
+    }
+  };
+
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, ...getInitialPosition() }}
+      animate={{ opacity: 1, x: 0, y: 0 }}
+      transition={{ duration: 0.6, delay, ease: 'easeOut' }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+interface ScaleInProps {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}
+
+export const ScaleIn: React.FC<ScaleInProps> = ({
+  children,
+  className = '',
+  delay = 0,
+}) => {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5, delay, ease: 'easeOut' }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// =================================
+// COMPONENTES DE ANIMAÇÃO SEQUENCIAL AVANÇADA
+// =================================
+
+interface WaveAnimationProps {
+  children: React.ReactNode;
+  cols?: number;
+  gap?: number;
+  delayBetweenRows?: number;
+  delayBetweenCols?: number;
+  className?: string;
+}
+
+export const WaveAnimation: React.FC<WaveAnimationProps> = ({
+  children,
+  cols = 4,
+  gap = 6,
+  delayBetweenRows = 0.2,
+  delayBetweenCols = 0.05,
+  className = '',
+}) => {
+  const getGridCols = () => {
+    switch (cols) {
+      case 1:
+        return 'grid-cols-1';
+      case 2:
+        return 'grid-cols-1 md:grid-cols-2';
+      case 3:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+      case 4:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+      default:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+    }
+  };
+
+  return (
+    <div className={`grid gap-${gap} ${getGridCols()} ${className}`}>
+      {React.Children.map(children, (child, index) => {
+        const row = Math.floor(index / cols);
+        const col = index % cols;
+        const delay = row * delayBetweenRows + col * delayBetweenCols;
+
+        return (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 30 }} // ✅ Removido scale - card aparece no tamanho normal
+            animate={{ opacity: 1, y: 0 }} // ✅ Apenas fade-in e movimento vertical
+            transition={{
+              duration: 0.6,
+              delay,
+              ease: [0.25, 0.46, 0.45, 0.94],
+            }}
+            whileHover={{
+              y: -3,
+              transition: { duration: 0.2 },
+            }}
+          >
+            {child}
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+};
+
+interface TypewriterGridProps {
+  children: React.ReactNode;
+  cols?: number;
+  gap?: number;
+  delayBetweenItems?: number;
+  animationType?: 'typewriter' | 'cascade' | 'spiral';
+  className?: string;
+}
+
+export const TypewriterGrid: React.FC<TypewriterGridProps> = ({
+  children,
+  cols = 4,
+  gap = 6,
+  delayBetweenItems = 0.15,
+  animationType = 'typewriter',
+  className = '',
+}) => {
+  const getGridCols = () => {
+    switch (cols) {
+      case 1:
+        return 'grid-cols-1';
+      case 2:
+        return 'grid-cols-1 md:grid-cols-2';
+      case 3:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+      case 4:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+      default:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+    }
+  };
+
+  const getDelay = (index: number) => {
+    switch (animationType) {
+      case 'typewriter':
+        return index * delayBetweenItems;
+      case 'cascade':
+        const row = Math.floor(index / cols);
+        const col = index % cols;
+        return (row + col) * delayBetweenItems;
+      case 'spiral':
+        return index * delayBetweenItems * 0.8;
+      default:
+        return index * delayBetweenItems;
+    }
+  };
+
+  return (
+    <div className={`grid gap-${gap} ${getGridCols()} ${className}`}>
+      {React.Children.map(children, (child, index) => (
+        <motion.div
+          key={index}
+          initial={{
+            opacity: 0,
+            y: 30, // ✅ Reduzido movimento vertical
+            x: animationType === 'cascade' ? -15 : 0, // ✅ Reduzido movimento horizontal
+            // ✅ Removido scale e rotate - card aparece no tamanho normal
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            x: 0,
+            // ✅ Removido scale: 1 e rotate: 0
+          }}
+          transition={{
+            duration: 0.6, // ✅ Reduzida duração para ser mais suave
+            delay: getDelay(index),
+            ease: [0.25, 0.46, 0.45, 0.94],
+            type: 'spring',
+            stiffness: 100,
+            damping: 15,
+          }}
+          whileHover={{
+            y: -5,
+            transition: { duration: 0.2 },
+          }}
+          whileTap={{
+            y: 0, // ✅ Removido scale no tap
+          }}
+        >
+          {child}
+        </motion.div>
+      ))}
+    </div>
   );
 };

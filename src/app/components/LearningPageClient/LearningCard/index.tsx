@@ -1,4 +1,4 @@
-// app/learning/components/LearningCard.tsx
+// app/learning/components/LearningCard.tsx - Com Sistema de Animação
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -27,6 +27,9 @@ import {
 } from '@/app/stores/useLearningStore';
 import { useAuth } from '@/app/hooks/useAuth';
 
+// Importar componentes de animação
+import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
+
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 
 interface LearningCardProps {
@@ -54,21 +57,14 @@ const ConfirmDeleteModal = ({
 }) => {
   const [mounted, setMounted] = useState(false);
 
-  // Verificar se está montado (lado do cliente)
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Controlar scroll do body
   useEffect(() => {
     if (isOpen) {
-      // Salvar o estilo atual do overflow
       const originalOverflow = document.body.style.overflow;
-
-      // Remover scroll
       document.body.style.overflow = 'hidden';
-
-      // Cleanup function - restaurar o scroll quando o modal fechar
       return () => {
         document.body.style.overflow = originalOverflow;
       };
@@ -82,14 +78,15 @@ const ConfirmDeleteModal = ({
 
   const modalContent = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-      {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
         onClick={!isLoading ? onClose : undefined}
       />
 
-      {/* Modal Content */}
-      <div className="relative bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 animate-fade-in-scale border border-theme-secondary">
+      <AnimatedCard
+        hover="none"
+        className="relative bg-theme-primary rounded-xl shadow-xl max-w-md w-full p-6 border border-theme-secondary"
+      >
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center">
             <FiAlertTriangle className="w-6 h-6 text-accent-red" />
@@ -137,11 +134,10 @@ const ConfirmDeleteModal = ({
             )}
           </button>
         </div>
-      </div>
+      </AnimatedCard>
     </div>
   );
 
-  // Usar createPortal para renderizar no body
   return createPortal(modalContent, document.body);
 };
 
@@ -185,7 +181,6 @@ export const LearningCard = ({
   const wantToLearnItem = item as WantToLearnItem;
   const learnedItem = item as LearnedItem;
 
-  // Handle removal
   const handleRemove = async () => {
     if (!user?.id) return;
 
@@ -216,7 +211,10 @@ export const LearningCard = ({
   if (viewMode === 'list') {
     return (
       <>
-        <div className="classical-card p-6 group hover:shadow-theme-glow transition-all hover:scale-105 animate-fade-in-up">
+        <AnimatedCard
+          hover="lift"
+          className="classical-card p-6 group hover:shadow-theme-glow transition-all"
+        >
           <div className="flex items-center space-x-6">
             <div className="flex-1">
               <div className="flex items-center space-x-4">
@@ -248,7 +246,7 @@ export const LearningCard = ({
                     {[...Array(5)].map((_, i) => (
                       <FiStar
                         key={i}
-                        className={`w-4 h-4 ${
+                        className={`w-4 h-4 transition-colors ${
                           i <
                           (isWantToLearn
                             ? wantToLearnItem.priority
@@ -267,7 +265,7 @@ export const LearningCard = ({
                   {/* Difficulty */}
                   {item.difficulty && (
                     <span
-                      className={`text-xs px-2 py-1 rounded-full border ${getDifficultyColor(
+                      className={`text-xs px-2 py-1 rounded-full border transition-colors ${getDifficultyColor(
                         item.difficulty
                       )}`}
                     >
@@ -323,20 +321,24 @@ export const LearningCard = ({
 
                 {/* Action buttons */}
                 <div className="flex items-center flex-col sm:flex-row gap-4 sm:gap-0 space-x-2">
-                  <button
-                    onClick={onEdit}
-                    className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-                    title="Editar"
-                  >
-                    <FiEdit3 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setShowDeleteModal(true)}
-                    className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
-                    title="Remover"
-                  >
-                    <FiX className="w-4 h-4" />
-                  </button>
+                  <AnimatedItem hover="scale">
+                    <button
+                      onClick={onEdit}
+                      className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
+                      title="Editar"
+                    >
+                      <FiEdit3 className="w-4 h-4" />
+                    </button>
+                  </AnimatedItem>
+                  <AnimatedItem hover="scale">
+                    <button
+                      onClick={() => setShowDeleteModal(true)}
+                      className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
+                      title="Remover"
+                    >
+                      <FiX className="w-4 h-4" />
+                    </button>
+                  </AnimatedItem>
                   {((isWantToLearn && wantToLearnItem.notes) ||
                     (!isWantToLearn && learnedItem.notes)) && (
                     <div
@@ -350,7 +352,7 @@ export const LearningCard = ({
               </div>
             </div>
           </div>
-        </div>
+        </AnimatedCard>
 
         <ConfirmDeleteModal
           isOpen={showDeleteModal}
@@ -366,7 +368,10 @@ export const LearningCard = ({
 
   return (
     <>
-      <div className="classical-card p-6 group hover:shadow-theme-glow transition-all hover:scale-105 animate-fade-in-up">
+      <AnimatedCard
+        hover="lift"
+        className="classical-card p-6 group hover:shadow-theme-glow transition-all"
+      >
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
@@ -383,20 +388,24 @@ export const LearningCard = ({
             )}
           </div>
           <div className="flex items-center space-x-2">
-            <button
-              onClick={onEdit}
-              className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-              title="Editar"
-            >
-              <FiEdit3 className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => setShowDeleteModal(true)}
-              className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
-              title="Remover"
-            >
-              <FiX className="w-4 h-4" />
-            </button>
+            <AnimatedItem hover="scale">
+              <button
+                onClick={onEdit}
+                className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
+                title="Editar"
+              >
+                <FiEdit3 className="w-4 h-4" />
+              </button>
+            </AnimatedItem>
+            <AnimatedItem hover="scale">
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
+                title="Remover"
+              >
+                <FiX className="w-4 h-4" />
+              </button>
+            </AnimatedItem>
           </div>
         </div>
 
@@ -409,7 +418,7 @@ export const LearningCard = ({
             {[...Array(5)].map((_, i) => (
               <FiStar
                 key={i}
-                className={`w-4 h-4 ${
+                className={`w-4 h-4 transition-colors ${
                   i <
                   (isWantToLearn
                     ? wantToLearnItem.priority
@@ -428,7 +437,7 @@ export const LearningCard = ({
             <div className="flex items-center space-x-2">
               <FiTrendingUp className="w-4 h-4 text-theme-tertiary" />
               <span
-                className={`text-xs px-2 py-1 rounded-full border ${getDifficultyColor(
+                className={`text-xs px-2 py-1 rounded-full border transition-colors ${getDifficultyColor(
                   item.difficulty
                 )}`}
               >
@@ -581,15 +590,17 @@ export const LearningCard = ({
               : `Aprendida em ${formatDate(learnedItem.learnedAt)}`}
           </span>
           <div className="flex items-center space-x-3">
-            <Link
-              href={`/works/${item.workId}`}
-              className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
-            >
-              Ver Obra →
-            </Link>
+            <AnimatedItem hover="scale">
+              <Link
+                href={`/works/${item.workId}`}
+                className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
+              >
+                Ver Obra →
+              </Link>
+            </AnimatedItem>
           </div>
         </div>
-      </div>
+      </AnimatedCard>
 
       <ConfirmDeleteModal
         isOpen={showDeleteModal}

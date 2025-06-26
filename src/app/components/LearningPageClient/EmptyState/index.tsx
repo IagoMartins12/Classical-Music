@@ -1,7 +1,8 @@
+// app/learning/components/EmptyState.tsx
+
 import Link from 'next/link';
 import { FiCheckCircle, FiSearch, FiTarget } from 'react-icons/fi';
 
-// app/learning/components/EmptyState.tsx
 interface EmptyStateProps {
   type: 'want-to-learn' | 'learned' | 'search';
   searchQuery?: string;

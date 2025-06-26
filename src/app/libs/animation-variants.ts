@@ -1,4 +1,4 @@
-// lib/animation-variants.ts - Sistema de variantes reutilizáveis
+// libs/animation-variants.ts - Sistema de variantes reutilizáveis
 import { Variants } from 'framer-motion';
 
 // Configurações base
@@ -18,7 +18,7 @@ export const ANIMATION_CONFIG = {
     bouncy: { stiffness: 300, damping: 20, mass: 1 },
     gentle: { stiffness: 80, damping: 25, mass: 1 },
   },
-};
+} as const;
 
 // Factory para criar variantes de container
 export const createContainerVariants = (
@@ -107,8 +107,8 @@ export const skeletonPulse: Variants = {
   },
 };
 
-// Variantes para hover effects
-export const hoverVariants = {
+// Variantes para hover effects - CORRIGIDO
+export const hoverVariants: Record<string, { hover?: any; tap?: any }> = {
   scale: {
     hover: { scale: 1.05, transition: { duration: 0.2 } },
     tap: { scale: 0.95 },
@@ -122,7 +122,9 @@ export const hoverVariants = {
       boxShadow: '0 10px 30px rgba(212, 175, 55, 0.3)',
       transition: { duration: 0.2 },
     },
+    tap: { scale: 0.98 },
   },
+  none: {}, // Adicionado para resolver o erro
 };
 
 // Variantes para floating elements
@@ -137,4 +139,87 @@ export const floatingVariants: Variants = {
       ease: 'easeInOut',
     },
   },
+};
+
+// Variantes para header/hero sections
+export const heroVariants: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: 'easeOut',
+    },
+  },
+};
+
+// Variantes para modais
+export const modalVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.3,
+      ease: 'easeOut',
+    },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.95,
+    transition: {
+      duration: 0.2,
+      ease: 'easeIn',
+    },
+  },
+};
+
+// Variantes para listas
+export const listVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+export const listItemVariants: Variants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.4,
+      ease: 'easeOut',
+    },
+  },
+};
+
+// Variantes para navegação
+export const navVariants: Variants = {
+  hidden: { opacity: 0, y: -10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.3,
+      ease: 'easeOut',
+    },
+  },
+};
+
+// Variantes para páginas
+export const pageVariants: Variants = {
+  initial: { opacity: 0, y: 20 },
+  in: { opacity: 1, y: 0 },
+  out: { opacity: 0, y: -20 },
+};
+
+export const pageTransition = {
+  type: 'tween',
+  ease: 'anticipate',
+  duration: 0.5,
 };

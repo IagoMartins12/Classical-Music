@@ -125,7 +125,7 @@ const LoadingMusicHistorySkeleton = () => {
                   <div className="inline-flex items-center px-12 py-4 rounded-2xl bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 shadow-theme-glow backdrop-blur-md">
                     <div className="w-12 h-12 bg-theme-inverse/20 rounded-xl mr-4"></div>
                     <div className="space-y-2">
-                      <div className="h-8 w-48 bg-theme-inverse/30 rounded"></div>
+                      <div className="h-8 w-48 bg-theme-primary/30 rounded"></div>
                       <div className="h-4 w-32 bg-theme-inverse/20 rounded"></div>
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-// app/favorites/FavoritesClient.tsx - REDESIGN PREMIUM
+// app/favorites/FavoritesClient.tsx - Com Sistema de Animação
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -21,11 +21,21 @@ import { useAuth } from '@/app/hooks/useAuth';
 import AuthCheck from '../AuthCheck';
 import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
 
+// Importar componentes de animação
+import {
+  PageContainer,
+  AnimatedContainer,
+  AnimatedItem,
+  AnimatedCard,
+  SequentialGrid,
+} from '../animation/AnimatedComponents';
+
 type FilterTab = 'all' | 'composers' | 'works';
 
 export default function FavoritesClient() {
   const { favoriteComposers, favoriteWorks } = useFavoritesStore();
   const { isAuthenticated } = useAuth();
+
   // States
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
@@ -91,13 +101,13 @@ export default function FavoritesClient() {
   }
 
   return (
-    <div className="bg-gradient-primary">
-      <div className="section-wrap space-y-8 relative z-10">
+    <PageContainer showBackground={true}>
+      <AnimatedContainer delay={0.1} staggerSpeed="normal">
         {/* Header */}
-        <div className="animate-fade-in-up">
-          <div className="text-center mb-8">
+        <AnimatedItem direction="up" springType="gentle">
+          <div className="text-center mb-8 py-16">
             <div className="flex items-center justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br rounded-3xl flex items-center justify-center shadow-theme-glow">
+              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
                 <FiHeart className="w-8 h-8 text-theme-primary" />
               </div>
             </div>
@@ -109,10 +119,15 @@ export default function FavoritesClient() {
               tocam seu coração
             </p>
           </div>
+        </AnimatedItem>
 
-          {/* Statistics Cards */}
+        {/* Statistics Cards */}
+        <AnimatedItem direction="up" springType="gentle">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <div className="classical-card p-6 text-center group hover:scale-105 transition-transform">
+            <AnimatedCard
+              hover="scale"
+              className="classical-card p-6 text-center"
+            >
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
                 <FiHeart className="w-6 h-6 text-theme-primary" />
               </div>
@@ -122,9 +137,12 @@ export default function FavoritesClient() {
               <div className="text-sm text-theme-tertiary">
                 Total de Favoritos
               </div>
-            </div>
+            </AnimatedCard>
 
-            <div className="classical-card p-6 text-center group hover:scale-105 transition-transform">
+            <AnimatedCard
+              hover="scale"
+              className="classical-card p-6 text-center"
+            >
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
                 <FiUser className="w-6 h-6 text-theme-primary" />
               </div>
@@ -132,9 +150,12 @@ export default function FavoritesClient() {
                 {stats.composersCount}
               </div>
               <div className="text-sm text-theme-tertiary">Compositores</div>
-            </div>
+            </AnimatedCard>
 
-            <div className="classical-card p-6 text-center group hover:scale-105 transition-transform">
+            <AnimatedCard
+              hover="scale"
+              className="classical-card p-6 text-center"
+            >
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
                 <FiMusic className="w-6 h-6 text-theme-primary" />
               </div>
@@ -142,90 +163,92 @@ export default function FavoritesClient() {
                 {stats.worksCount}
               </div>
               <div className="text-sm text-theme-tertiary">Obras</div>
-            </div>
+            </AnimatedCard>
           </div>
-        </div>
+        </AnimatedItem>
 
         {/* Controls */}
-        <div
-          className="classical-card p-6 animate-fade-in-up"
-          style={{ animationDelay: '0.1s' }}
-        >
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-            {/* Tabs */}
-            <div className="flex bg-theme-secondary rounded-xl p-1">
-              <button
-                onClick={() => setActiveTab('all')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  activeTab === 'all'
-                    ? 'bg-brand-primary bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                Todos ({stats.totalItems})
-              </button>
-              <button
-                onClick={() => setActiveTab('composers')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  activeTab === 'composers'
-                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                Compositores ({stats.composersCount})
-              </button>
-              <button
-                onClick={() => setActiveTab('works')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  activeTab === 'works'
-                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                    : 'text-theme-tertiary hover:text-theme-primary'
-                }`}
-              >
-                Obras ({stats.worksCount})
-              </button>
-            </div>
-
-            {/* Search and View Mode */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              {/* Search */}
-              <div className="relative">
-                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Buscar nos favoritos..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="input-classical w-full sm:w-96"
-                />
+        <AnimatedItem direction="up" springType="gentle">
+          <AnimatedCard hover="none" className="classical-card p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Tabs */}
+              <div className="flex bg-theme-secondary rounded-xl p-1">
+                <button
+                  onClick={() => setActiveTab('all')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    activeTab === 'all'
+                      ? 'bg-brand-primary bg-theme-tertiary text-theme-primary shadow-md'
+                      : 'text-theme-tertiary hover:text-theme-primary'
+                  }`}
+                >
+                  Todos ({stats.totalItems})
+                </button>
+                <button
+                  onClick={() => setActiveTab('composers')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    activeTab === 'composers'
+                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                      : 'text-theme-tertiary hover:text-theme-primary'
+                  }`}
+                >
+                  Compositores ({stats.composersCount})
+                </button>
+                <button
+                  onClick={() => setActiveTab('works')}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    activeTab === 'works'
+                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                      : 'text-theme-tertiary hover:text-theme-primary'
+                  }`}
+                >
+                  Obras ({stats.worksCount})
+                </button>
               </div>
 
-              {/* View Mode Toggle */}
-              <ViewModeToggle
-                viewMode={viewMode}
-                onViewModeChange={setViewMode}
-              />
+              {/* Search and View Mode */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                {/* Search */}
+                <div className="relative">
+                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                  <input
+                    type="text"
+                    placeholder="Buscar nos favoritos..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="input-classical w-full sm:w-96"
+                  />
+                </div>
+
+                {/* View Mode Toggle */}
+                <ViewModeToggle
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                />
+              </div>
             </div>
-          </div>
-        </div>
+          </AnimatedCard>
+        </AnimatedItem>
 
         {/* Content */}
         {stats.totalItems === 0 ? (
           /* Estado completamente vazio - nenhum favorito */
-          <EmptyStateFavorites
-            emptyState="all"
-            filters={false}
-            onClearFilters={clearFilters}
-          />
+          <AnimatedItem direction="scale" springType="bouncy">
+            <EmptyStateFavorites
+              emptyState="all"
+              filters={false}
+              onClearFilters={clearFilters}
+            />
+          </AnimatedItem>
         ) : (
           <div className="space-y-8">
             {/* Composers Section */}
             {(activeTab === 'all' || activeTab === 'composers') && (
               <>
                 {filteredData.composers.length > 0 ? (
-                  <div
-                    className="animate-fade-in-up"
-                    style={{ animationDelay: '0.2s' }}
+                  <AnimatedItem
+                    direction="up"
+                    className="mt-4"
+                    springType="gentle"
                   >
                     <div className="flex items-center space-x-3 mb-6">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center">
@@ -242,111 +265,47 @@ export default function FavoritesClient() {
                       </div>
                     </div>
 
-                    <div
-                      className={
-                        viewMode === 'cards'
-                          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-                          : 'space-y-4'
-                      }
-                    >
-                      {filteredData.composers.map((favorite, index) => (
-                        <div
-                          key={favorite.id}
-                          className={`classical-card p-6 group hover:shadow-theme-glow transition-all hover:scale-105 animate-fade-in-up ${
-                            viewMode === 'list'
-                              ? 'flex items-center space-x-6'
-                              : ''
-                          }`}
-                          style={{ animationDelay: `${0.3 + index * 0.05}s` }}
-                        >
-                          <div
-                            className={`${
-                              viewMode === 'list'
-                                ? 'flex items-center space-x-4 flex-1'
-                                : ''
-                            }`}
+                    {viewMode === 'cards' ? (
+                      <SequentialGrid
+                        cols={3}
+                        gap={6}
+                        delayBetweenItems={0.1}
+                        className=""
+                      >
+                        {filteredData.composers.map((favorite) => (
+                          <ComposerFavoriteCard
+                            key={favorite.id}
+                            favorite={favorite}
+                            viewMode={viewMode}
+                          />
+                        ))}
+                      </SequentialGrid>
+                    ) : (
+                      <div className="space-y-4">
+                        {filteredData.composers.map((favorite, index) => (
+                          <AnimatedItem
+                            key={favorite.id}
+                            direction="left"
+                            hover="lift"
+                            style={{
+                              animationDelay: `${index * 0.1}s`,
+                              animationFillMode: 'backwards',
+                            }}
                           >
-                            {favorite.composer && (
-                              <div className="flex-1">
-                                <Link
-                                  href={`/composer/${favorite.composer.id}`}
-                                  className="flex align-center gap-6 group-hover:text-brand-primary transition-colors"
-                                >
-                                  <div className="relative w-16 h-16 ">
-                                    {favorite.composer?.portraitUrl ? (
-                                      <div className="relative w-full h-full rounded-full overflow-hidden border-3 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-500">
-                                        <Image
-                                          src={favorite.composer.portraitUrl}
-                                          alt={favorite.composer.name}
-                                          fill
-                                          sizes="112px"
-                                          className={`object-cover transition-all duration-700 group-hover:scale-110 opacity-100`}
-                                          priority={false}
-                                          loading="lazy"
-                                        />
-
-                                        {/* Overlay gradient */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-full"></div>
-                                      </div>
-                                    ) : (
-                                      // Fallback avatar
-                                      <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-3 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-500 group-hover:scale-110">
-                                        <FiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
-                                      </div>
-                                    )}
-                                  </div>
-
-                                  <div className="flex flex-col justify-center">
-                                    <div className="inline-flex items-center py-0.5">
-                                      <FiUser className="w-3 h-3 mr-1" />
-                                      <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 w-11/12 truncate flex-1">
-                                        {favorite.composer?.fullName ||
-                                          favorite.composer?.name}{' '}
-                                      </h3>
-                                    </div>
-
-                                    <span className="inline-flex items-center px-3 justify-center py-1 mt-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium">
-                                      <FiClock className="w-2.5 h-2.5 mr-1" />
-                                      {favorite.composer?.epochName &&
-                                        `${favorite.composer.epochName}`}{' '}
-                                    </span>
-                                  </div>
-
-                                  <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                                    <FavoriteButton
-                                      id={favorite.composer.id}
-                                      type="composer"
-                                      variant="small"
-                                      size="md"
-                                      itemName={favorite.composer.fullName}
-                                      showToast={true}
-                                    />
-                                  </div>
-                                </Link>
-                              </div>
-                            )}
-
-                            {viewMode === 'cards' && (
-                              <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
-                                <Link
-                                  href={`/composer/${favorite.composer?.id}`}
-                                  className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
-                                >
-                                  <span>Ver Perfil</span>
-                                  <FiExternalLink className="w-3 h-3" />
-                                </Link>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                            <ComposerFavoriteCard
+                              favorite={favorite}
+                              viewMode={viewMode}
+                            />
+                          </AnimatedItem>
+                        ))}
+                      </div>
+                    )}
+                  </AnimatedItem>
                 ) : (
                   /* Estado vazio para compositores - só na aba específica */
                   <>
                     {activeTab === 'composers' && (
-                      <>
+                      <AnimatedItem direction="scale" springType="bouncy">
                         {favoriteComposers.length === 0 ? (
                           /* Nunca favoritou compositores */
                           <EmptyStateFavorites
@@ -362,7 +321,7 @@ export default function FavoritesClient() {
                             onClearFilters={clearFilters}
                           />
                         )}
-                      </>
+                      </AnimatedItem>
                     )}
                   </>
                 )}
@@ -373,9 +332,10 @@ export default function FavoritesClient() {
             {(activeTab === 'all' || activeTab === 'works') && (
               <>
                 {filteredData.works.length > 0 ? (
-                  <div
-                    className="animate-fade-in-up"
-                    style={{ animationDelay: '0.4s' }}
+                  <AnimatedItem
+                    direction="up"
+                    className="mt-4"
+                    springType="gentle"
                   >
                     <div className="flex items-center space-x-3 mb-6">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center">
@@ -392,104 +352,47 @@ export default function FavoritesClient() {
                       </div>
                     </div>
 
-                    <div
-                      className={
-                        viewMode === 'cards'
-                          ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-                          : 'space-y-4'
-                      }
-                    >
-                      {filteredData.works.map((favorite, index) => (
-                        <div
-                          key={favorite.id}
-                          className={`classical-card p-6 group hover:shadow-theme-glow transition-all hover:scale-105 animate-fade-in-up ${
-                            viewMode === 'list'
-                              ? 'flex items-center space-x-6'
-                              : ''
-                          }`}
-                          style={{ animationDelay: `${0.5 + index * 0.05}s` }}
-                        >
-                          <div
-                            className={`${
-                              viewMode === 'list'
-                                ? 'flex items-center space-x-4 flex-1'
-                                : 'flex flex-col justify-between h-full'
-                            }`}
+                    {viewMode === 'cards' ? (
+                      <SequentialGrid
+                        cols={3}
+                        gap={6}
+                        delayBetweenItems={0.1}
+                        className=""
+                      >
+                        {filteredData.works.map((favorite) => (
+                          <WorkFavoriteCard
+                            key={favorite.id}
+                            favorite={favorite}
+                            viewMode={viewMode}
+                          />
+                        ))}
+                      </SequentialGrid>
+                    ) : (
+                      <div className="space-y-4">
+                        {filteredData.works.map((favorite, index) => (
+                          <AnimatedItem
+                            key={favorite.id}
+                            direction="left"
+                            hover="lift"
+                            style={{
+                              animationDelay: `${index * 0.1}s`,
+                              animationFillMode: 'backwards',
+                            }}
                           >
-                            {favorite.work && (
-                              <div className="flex-1">
-                                <Link
-                                  href={`/works/${favorite.work?.id}`}
-                                  className="block group-hover:text-brand-primary transition-colors"
-                                >
-                                  {/* Title and opus */}
-                                  <div
-                                    className={`flex items-start gap-3 mb-1 ${
-                                      viewMode === 'cards' ? 'flex-col' : ''
-                                    }`}
-                                  >
-                                    <div className="inline-flex items-center py-0.5">
-                                      <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 w-11/12 flex-1">
-                                        {favorite.work.title}
-                                      </h3>
-                                    </div>
-                                    <div className="flex gap-4 items-center">
-                                      {favorite.work?.opOrCatalog && (
-                                        <span className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 text-theme-secondary rounded-md text-xs font-medium flex-shrink-0">
-                                          <FiBookOpen className="w-2.5 h-2.5 mr-1" />
-                                          {favorite.work?.opOrCatalog}
-                                        </span>
-                                      )}
-                                    </div>
-
-                                    <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                                      {/* Favorite Button */}
-                                      <FavoriteButton
-                                        id={favorite.work.id}
-                                        type="work"
-                                        variant="small"
-                                        size="md"
-                                        itemName={favorite.work.title}
-                                        showToast={true}
-                                      />
-                                    </div>
-                                  </div>
-
-                                  {/* Composer info */}
-                                  <div className="flex items-center space-x-2 mb-2">
-                                    <div
-                                      className="inline-flex items-center text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium"
-                                      onClick={(e) => e.stopPropagation()}
-                                    >
-                                      <FiUser className="w-3 h-3 mr-1" />
-                                      {favorite.work.composer.fullName}
-                                    </div>
-                                  </div>
-                                </Link>
-                              </div>
-                            )}
-
-                            {viewMode === 'cards' && (
-                              <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
-                                <Link
-                                  href={`/works/${favorite.work?.id}`}
-                                  className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
-                                >
-                                  <span>Ver Obra</span>
-                                  <FiExternalLink className="w-3 h-3" />
-                                </Link>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                            <WorkFavoriteCard
+                              favorite={favorite}
+                              viewMode={viewMode}
+                            />
+                          </AnimatedItem>
+                        ))}
+                      </div>
+                    )}
+                  </AnimatedItem>
                 ) : (
                   /* Estado vazio para obras - só na aba específica */
                   <>
                     {activeTab === 'works' && (
-                      <>
+                      <AnimatedItem direction="scale" springType="bouncy">
                         {favoriteWorks.length === 0 ? (
                           /* Nunca favoritou obras */
                           <EmptyStateFavorites
@@ -505,7 +408,7 @@ export default function FavoritesClient() {
                             onClearFilters={clearFilters}
                           />
                         )}
-                      </>
+                      </AnimatedItem>
                     )}
                   </>
                 )}
@@ -517,26 +420,202 @@ export default function FavoritesClient() {
               filteredData.composers.length === 0 &&
               filteredData.works.length === 0 &&
               (favoriteComposers.length > 0 || favoriteWorks.length > 0) && (
-                <EmptyStateFavorites
-                  emptyState="all"
-                  filters={true}
-                  onClearFilters={clearFilters}
-                />
+                <AnimatedItem
+                  direction="scale"
+                  className="mt-4"
+                  springType="bouncy"
+                >
+                  <EmptyStateFavorites
+                    emptyState="all"
+                    filters={true}
+                    onClearFilters={clearFilters}
+                  />
+                </AnimatedItem>
               )}
           </div>
         )}
-      </div>
+      </AnimatedContainer>
+    </PageContainer>
+  );
+}
 
-      {/* Floating Elements */}
-      <div className="fixed top-20 left-4 w-2 h-2 bg-red-500/30 rounded-full animate-pulse"></div>
+// Componente para Composer Favorite Card
+interface ComposerFavoriteCardProps {
+  favorite: any;
+  viewMode: ViewMode;
+}
+
+function ComposerFavoriteCard({
+  favorite,
+  viewMode,
+}: ComposerFavoriteCardProps) {
+  return (
+    <AnimatedCard
+      hover="lift"
+      className={`classical-card p-6 group hover:shadow-theme-glow transition-all ${
+        viewMode === 'list' ? 'flex items-center space-x-6' : ''
+      }`}
+    >
       <div
-        className="fixed top-40 right-8 w-1.5 h-1.5 bg-yellow-500/40 rounded-full animate-pulse"
-        style={{ animationDelay: '1s' }}
-      ></div>
+        className={`${
+          viewMode === 'list' ? 'flex items-center space-x-4 flex-1' : ''
+        }`}
+      >
+        {favorite.composer && (
+          <div className="flex-1">
+            <Link
+              href={`/composer/${favorite.composer.id}`}
+              className="flex align-center gap-6 group-hover:text-brand-primary transition-colors"
+            >
+              <div className="relative w-16 h-16">
+                {favorite.composer?.portraitUrl ? (
+                  <div className="relative w-full h-full rounded-full overflow-hidden border-3 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-500">
+                    <Image
+                      src={favorite.composer.portraitUrl}
+                      alt={favorite.composer.name}
+                      fill
+                      sizes="112px"
+                      className="object-cover transition-all duration-700 group-hover:scale-110 opacity-100"
+                      priority={false}
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 rounded-full"></div>
+                  </div>
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-3 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-500 group-hover:scale-110">
+                    <FiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col justify-center">
+                <div className="inline-flex items-center py-0.5">
+                  <FiUser className="w-3 h-3 mr-1" />
+                  <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 w-11/12 truncate flex-1">
+                    {favorite.composer?.fullName || favorite.composer?.name}
+                  </h3>
+                </div>
+
+                <span className="inline-flex items-center px-3 justify-center py-1 mt-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium">
+                  <FiClock className="w-2.5 h-2.5 mr-1" />
+                  {favorite.composer?.epochName &&
+                    `${favorite.composer.epochName}`}
+                </span>
+              </div>
+
+              <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                <FavoriteButton
+                  id={favorite.composer.id}
+                  type="composer"
+                  variant="small"
+                  size="md"
+                  itemName={favorite.composer.fullName}
+                  showToast={true}
+                />
+              </div>
+            </Link>
+          </div>
+        )}
+
+        {viewMode === 'cards' && (
+          <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
+            <Link
+              href={`/composer/${favorite.composer?.id}`}
+              className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
+            >
+              <span>Ver Perfil</span>
+              <FiExternalLink className="w-3 h-3" />
+            </Link>
+          </div>
+        )}
+      </div>
+    </AnimatedCard>
+  );
+}
+
+// Componente para Work Favorite Card
+interface WorkFavoriteCardProps {
+  favorite: any;
+  viewMode: ViewMode;
+}
+
+function WorkFavoriteCard({ favorite, viewMode }: WorkFavoriteCardProps) {
+  return (
+    <AnimatedCard
+      hover="lift"
+      className={`classical-card p-6 group hover:shadow-theme-glow transition-all ${
+        viewMode === 'list' ? 'flex items-center space-x-6' : ''
+      }`}
+    >
       <div
-        className="fixed bottom-32 left-8 w-1 h-1 bg-blue-500/50 rounded-full animate-pulse"
-        style={{ animationDelay: '2s' }}
-      ></div>
-    </div>
+        className={`${
+          viewMode === 'list'
+            ? 'flex items-center space-x-4 flex-1'
+            : 'flex flex-col justify-between h-full'
+        }`}
+      >
+        {favorite.work && (
+          <div className="flex-1">
+            <Link
+              href={`/works/${favorite.work?.id}`}
+              className="block group-hover:text-brand-primary transition-colors"
+            >
+              <div
+                className={`flex items-start gap-3 mb-1 ${
+                  viewMode === 'cards' ? 'flex-col' : ''
+                }`}
+              >
+                <div className="inline-flex items-center py-0.5">
+                  <h3 className="font-bold ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 w-11/12 flex-1">
+                    {favorite.work.title}
+                  </h3>
+                </div>
+                <div className="flex gap-4 items-center">
+                  {favorite.work?.opOrCatalog && (
+                    <span className="inline-flex items-center px-2 py-0.5 bg-theme-elevated border border-theme-primary/30 text-theme-secondary rounded-md text-xs font-medium flex-shrink-0">
+                      <FiBookOpen className="w-2.5 h-2.5 mr-1" />
+                      {favorite.work?.opOrCatalog}
+                    </span>
+                  )}
+                </div>
+
+                <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                  <FavoriteButton
+                    id={favorite.work.id}
+                    type="work"
+                    variant="small"
+                    size="md"
+                    itemName={favorite.work.title}
+                    showToast={true}
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2 mb-2">
+                <div
+                  className="inline-flex items-center text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <FiUser className="w-3 h-3 mr-1" />
+                  {favorite.work.composer.fullName}
+                </div>
+              </div>
+            </Link>
+          </div>
+        )}
+
+        {viewMode === 'cards' && (
+          <div className="mt-4 pt-4 border-t border-theme-secondary flex items-center justify-end">
+            <Link
+              href={`/works/${favorite.work?.id}`}
+              className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
+            >
+              <span>Ver Obra</span>
+              <FiExternalLink className="w-3 h-3" />
+            </Link>
+          </div>
+        )}
+      </div>
+    </AnimatedCard>
   );
 }

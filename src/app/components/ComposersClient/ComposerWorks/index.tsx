@@ -329,7 +329,7 @@ export default function ComposerWorks({
       <div className="classical-card p-12">
         <div className="flex items-center space-x-3 mb-6">
           <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
-            <FiBookOpen className="w-6 h-6 text-theme-inverse" />
+            <FiBookOpen className="w-6 h-6 text-theme-primary" />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
@@ -366,7 +366,7 @@ export default function ComposerWorks({
             </div>
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                Obras Catalogadas
+                bg-theme-primary{' '}
               </h2>
               <p className="text-theme-secondary classical-subtitle">
                 {works.length} de {totalCount} obras de {composerName}

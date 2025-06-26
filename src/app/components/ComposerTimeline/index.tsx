@@ -286,7 +286,7 @@ export function ComposersTimeline({ composers }: Props) {
           style={{ animationDelay: `${timelineData.length * 0.1}s` }}
         >
           <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto shadow-theme-glow">
-            <FiClock className="w-6 h-6 text-theme-inverse" />
+            <FiClock className="w-6 h-6 text-theme-primary" />
           </div>
           <p className="text-theme-tertiary text-sm mt-3 classical-caption">
             Fim da linha do tempo

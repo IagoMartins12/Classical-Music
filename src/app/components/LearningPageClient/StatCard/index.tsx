@@ -1,4 +1,6 @@
-// app/learning/components/StatCard.tsx
+// app/learning/components/StatCard.tsx - Com Sistema de Animação
+import { AnimatedCard } from '../../animation/AnimatedComponents';
+
 interface StatCardProps {
   icon: React.ReactNode;
   title: string;
@@ -22,7 +24,7 @@ export const StatCard = ({
   };
 
   return (
-    <div className="classical-card p-6 text-center group hover:scale-105 transition-transform">
+    <AnimatedCard hover="scale" className="classical-card p-6 text-center">
       <div
         className={`w-12 h-12 bg-gradient-to-br ${
           colorClasses[color as keyof typeof colorClasses]
@@ -35,6 +37,6 @@ export const StatCard = ({
       {subtitle && (
         <div className="text-xs text-theme-tertiary mt-1">{subtitle}</div>
       )}
-    </div>
+    </AnimatedCard>
   );
 };

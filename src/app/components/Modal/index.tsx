@@ -84,9 +84,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
 
     // Handle click outside
     const handleOverlayClick = (e: React.MouseEvent) => {
-      if (closeOnOverlayClick && e.target === e.currentTarget) {
-        onClose();
-      }
+      onClose();
     };
 
     if (!isOpen) return null;
