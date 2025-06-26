@@ -28,7 +28,6 @@ const FAMOUS_COMPOSERS = [
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    console.log('TESTE', request);
     const searchTerm = searchParams.get('q') || '';
     const limit = parseInt(searchParams.get('limit') || '20');
 

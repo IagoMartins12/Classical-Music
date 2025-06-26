@@ -486,11 +486,104 @@ export const getAllWorkGenres = unstable_cache(
   }
 );
 
-// Função para invalidar cache - ATUALIZADA
+// Função para verificar se uma obra tem partituras em cache
+export const hasScoresInCache = unstable_cache(
+  async (
+    workId: string
+  ): Promise<{
+    hasCache: boolean;
+    cacheInfo: {
+      totalScores: number;
+      lastUpdated: Date | null;
+      types: string[];
+    } | null;
+  }> => {
+    try {
+      const cachedScores = await prisma.workScore.findMany({
+        where: {
+          workId,
+          isActive: true,
+          OR: [{ expiresAt: { gt: new Date() } }, { expiresAt: null }],
+        },
+        select: {
+          type: true,
+          updatedAt: true,
+        },
+      });
+
+      if (cachedScores.length === 0) {
+        return { hasCache: false, cacheInfo: null };
+      }
+
+      const lastUpdated = cachedScores.reduce((latest, score) => {
+        const scoreDate = new Date(score.updatedAt);
+        return latest > scoreDate ? latest : scoreDate;
+      }, new Date(0));
+
+      const types = [...new Set(cachedScores.map((score) => score.type))];
+
+      return {
+        hasCache: true,
+        cacheInfo: {
+          totalScores: cachedScores.length,
+          lastUpdated: lastUpdated > new Date(0) ? lastUpdated : null,
+          types,
+        },
+      };
+    } catch (error) {
+      console.error('Erro ao verificar cache de partituras:', error);
+      return { hasCache: false, cacheInfo: null };
+    }
+  },
+  ['work-scores-cache'],
+  {
+    revalidate: 300, // Cache por 5 minutos
+    tags: ['work-scores-cache'],
+  }
+);
+
+// Função para obter estatísticas de cache de uma obra
+export const getWorkCacheStats = async (workId: string) => {
+  try {
+    const [cacheInfo, processingLogs] = await Promise.all([
+      hasScoresInCache(workId),
+      // Verificar se a tabela existe antes de consultar
+      prisma.scoreProcessingLog
+        .findMany({
+          where: { workId },
+          orderBy: { createdAt: 'desc' },
+          take: 5,
+          select: {
+            action: true,
+            status: true,
+            createdAt: true,
+            completedAt: true,
+            itemsSuccess: true,
+            itemsFailed: true,
+            duration: true,
+          },
+        })
+        .catch(() => []), // Retornar array vazio se tabela não existir ainda
+    ]);
+
+    return {
+      cache: cacheInfo,
+      recentProcessing: processingLogs,
+    };
+  } catch (error) {
+    console.error('Erro ao obter estatísticas de cache:', error);
+    return {
+      cache: { hasCache: false, cacheInfo: null },
+      recentProcessing: [],
+    };
+  }
+};
+
+// 🆕 ATUALIZAR a função revalidateWorkCache existente:
 export async function revalidateWorkCache(workId?: string) {
   const { revalidateTag } = await import('next/cache');
 
-  // Invalidar todos os caches relacionados
+  // Tags existentes
   revalidateTag('works-list');
   revalidateTag('work-basic-data');
   revalidateTag('related-works');
@@ -499,9 +592,22 @@ export async function revalidateWorkCache(workId?: string) {
   revalidateTag('epochs-list');
   revalidateTag('work-genres-list');
   revalidateTag('works-stats');
-  revalidateTag('popular-composers');
+
+  // 🆕 Novas tags para cache de partituras
+  revalidateTag('work-scores-cache');
+  revalidateTag('global-cache-stats');
 
   if (workId) {
     revalidateTag(`work-${workId}`);
+    revalidateTag(`work-cache-${workId}`);
   }
+}
+
+// 🚀 ADICIONAR ao final do arquivo:
+// Função para invalidar cache específico de partituras
+export async function revalidateWorkScoreCache(workId: string) {
+  const { revalidateTag } = await import('next/cache');
+  revalidateTag('work-scores-cache');
+  revalidateTag(`work-cache-${workId}`);
+  console.log(`🔄 Cache de partituras invalidado para obra: ${workId}`);
 }

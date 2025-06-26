@@ -25,7 +25,7 @@ interface ComposerData {
   imageUrl: string;
   fullName: string;
 
-  // Datas melhoradas
+  // 🆕 Datas melhoradas
   birthDate: string | null;
   deathDate: string | null;
 
@@ -34,20 +34,12 @@ interface ComposerData {
   primaryRole: string | null;
   roles: string | null;
 
-  // 🆕 Nomes alternativos
-  otherName: string | null; // Nome alternativo (contentSub)
-  alternativeNames: string | null; // 🆕 Nomes alternativos/Transliterações
-  namesInOtherLangs: string | null; // 🆕 Nome em outras línguas
-  pseudonyms: string | null; // 🆕 Pseudônimos
-
-  // 🆕 Informações detalhadas
-  diverseInfo: string | null; // 🆕 Informação diversa
-  externalLinks: string | null; // 🆕 Links externos
-
-  // Dados mantidos
+  // 🆕 Novos dados
+  otherName: string | null; // 🆕 Nome alternativo (contentSub)
+  compositionsCount: number | null;
   nationality: string | null;
+  imslpCategories: string | null;
   instruments: string | null;
-  imslpCategories: string | null; // 🔄 VOLTOU - Categorias IMSLP
   lastModifiedImslp: string | null;
   pageStatus: string | null;
   pageQuality: string | null;
@@ -532,169 +524,42 @@ class IMSLPScraper {
     return roleIds.length > 0 ? roleIds.join(', ') : null;
   }
 
-  // 🆕 Método para extrair nomes alternativos da div cp_mainlinks
-  extractAlternativeNames($: cheerio.CheerioAPI): {
-    alternativeNames: string | null;
-    namesInOtherLangs: string | null;
-    pseudonyms: string | null;
-  } {
+  // 🆕 Método para extrair nome alternativo (contentSub)
+  extractOtherName($: cheerio.CheerioAPI): string | null {
     try {
-      const mainLinksDiv = $('.cp_mainlinks');
-      let alternativeNames: string | null = null;
-      let namesInOtherLangs: string | null = null;
-      let pseudonyms: string | null = null;
-
-      if (mainLinksDiv.length === 0) {
-        return { alternativeNames, namesInOtherLangs, pseudonyms };
-      }
-
-      // Buscar por spans com diferentes tipos de nomes
-      mainLinksDiv
-        .find('span[style="font-weight:normal"]')
-        .each((_, element) => {
-          const spanText = $(element).text().trim();
-
-          if (spanText.includes('Nomes alternativos/Transliterações:')) {
-            alternativeNames = spanText
-              .replace('Nomes alternativos/Transliterações:', '')
-              .trim();
-            console.log(
-              `📝 Nomes alternativos encontrados: "${alternativeNames}"`
-            );
-          }
-
-          if (spanText.includes('Nome em outras línguas:')) {
-            namesInOtherLangs = spanText
-              .replace('Nome em outras línguas:', '')
-              .trim();
-            console.log(
-              `🌐 Nomes em outras línguas encontrados: "${namesInOtherLangs}"`
-            );
-          }
-
-          if (spanText.includes('Pseudônimos:')) {
-            pseudonyms = spanText.replace('Pseudônimos:', '').trim();
-            console.log(`🎭 Pseudônimos encontrados: "${pseudonyms}"`);
-          }
-        });
-
-      return {
-        alternativeNames,
-        namesInOtherLangs,
-        pseudonyms,
-      };
-    } catch (error) {
-      console.error('❌ Erro ao extrair nomes alternativos:', error);
-      return {
-        alternativeNames: null,
-        namesInOtherLangs: null,
-        pseudonyms: null,
-      };
-    }
-  }
-
-  // 🆕 Método para extrair informação diversa
-  extractDiverseInfo($: cheerio.CheerioAPI): string | null {
-    try {
-      // Buscar pela seção "Informação diversa"
-      const diverseHeader = $('h2')
-        .find('span[id*="Informa"], span[id*="diversa"]')
-        .first();
-
-      if (diverseHeader.length === 0) {
+      const contentSubDiv = $('#contentSub');
+      if (contentSubDiv.length === 0) {
         return null;
       }
 
-      // Encontrar a div cp_links que vem depois do header
-      const diverseSection = diverseHeader.closest('h2').next('.cp_links');
+      const otherName = contentSubDiv.text().trim();
 
-      if (diverseSection.length === 0) {
-        return null;
-      }
-
-      // Extrair o texto da lista
-      const diverseText = diverseSection
-        .find('li')
-        .map((_, el) => $(el).text().trim())
-        .get()
-        .join(' ');
-
-      if (diverseText && diverseText.length > 10) {
-        console.log(
-          `📚 Informação diversa encontrada: "${diverseText.substring(
-            0,
-            100
-          )}..."`
-        );
-        return diverseText;
+      // Verificar se não é vazio e não é igual ao nome principal
+      if (otherName && otherName.length > 0) {
+        console.log(`👤 Nome alternativo encontrado: "${otherName}"`);
+        return otherName;
       }
 
       return null;
     } catch (error) {
-      console.error('❌ Erro ao extrair informação diversa:', error);
+      console.error('❌ Erro ao extrair nome alternativo:', error);
       return null;
     }
   }
 
-  // 🆕 Método para extrair links externos
-  extractExternalLinks($: cheerio.CheerioAPI): string | null {
-    try {
-      // Buscar pela seção "Links externos"
-      const linksHeader = $('h2').find('span[id*="Links_externos"]').first();
-
-      if (linksHeader.length === 0) {
-        return null;
-      }
-
-      // Encontrar a div cp_links que vem depois do header
-      const linksSection = linksHeader.closest('h2').next('.cp_links');
-
-      if (linksSection.length === 0) {
-        return null;
-      }
-
-      // Extrair links e suas descrições
-      const links: string[] = [];
-      linksSection.find('li').each((_, el) => {
-        const linkElement = $(el);
-        const linkText = linkElement.text().trim();
-        const linkUrl = linkElement.find('a').attr('href');
-
-        if (linkText && linkUrl) {
-          links.push(`${linkText} (${linkUrl})`);
-        } else if (linkText) {
-          links.push(linkText);
-        }
-      });
-
-      const externalLinks = links.join('; ');
-
-      if (externalLinks && externalLinks.length > 5) {
-        console.log(
-          `🔗 Links externos encontrados: "${externalLinks.substring(
-            0,
-            100
-          )}..."`
-        );
-        return externalLinks;
-      }
-
-      return null;
-    } catch (error) {
-      console.error('❌ Erro ao extrair links externos:', error);
-      return null;
-    }
-  }
-
-  // 🆕 Método para extrair datas melhoradas (atualizado - removido birthPlace e deathPlace)
+  // 🆕 Método para extrair datas melhoradas
   extractImprovedDates($: cheerio.CheerioAPI): {
     birthDate: string | null;
     deathDate: string | null;
+    birthPlace: string | null;
+    deathPlace: string | null;
   } {
     try {
       const firsthDiv = $('.cp_firsth');
       let birthDate: string | null = null;
       let deathDate: string | null = null;
+      let birthPlace: string | null = null;
+      let deathPlace: string | null = null;
 
       if (firsthDiv.length > 0) {
         const fullText = firsthDiv.text();
@@ -719,9 +584,19 @@ class IMSLPScraper {
             let death = match[2]?.trim();
 
             if (birth && death) {
-              // Remover locais se existirem (não salvamos mais)
-              birth = birth.replace(/^[^,]+,\s*/, '');
-              death = death.replace(/^[^,]+,\s*/, '');
+              // Extrair locais (se existirem)
+              const birthLocationMatch = birth.match(/^([^,]+),/);
+              const deathLocationMatch = death.match(/^([^,]+),/);
+
+              if (birthLocationMatch) {
+                birthPlace = birthLocationMatch[1].trim();
+                birth = birth.replace(/^[^,]+,\s*/, ''); // Remove local da data
+              }
+
+              if (deathLocationMatch) {
+                deathPlace = deathLocationMatch[1].trim();
+                death = death.replace(/^[^,]+,\s*/, ''); // Remove local da data
+              }
 
               birthDate = birth;
               deathDate = death;
@@ -742,16 +617,25 @@ class IMSLPScraper {
       console.log(
         `📅 Datas extraídas - Nascimento: ${birthDate}, Morte: ${deathDate}`
       );
+      if (birthPlace || deathPlace) {
+        console.log(
+          `📍 Locais - Nascimento: ${birthPlace}, Morte: ${deathPlace}`
+        );
+      }
 
       return {
         birthDate,
         deathDate,
+        birthPlace,
+        deathPlace,
       };
     } catch (error) {
       console.error('❌ Erro ao extrair datas:', error);
       return {
         birthDate: null,
         deathDate: null,
+        birthPlace: null,
+        deathPlace: null,
       };
     }
   }
@@ -803,12 +687,12 @@ class IMSLPScraper {
       }
 
       // Tentar extrair de categorias se não encontrou no texto principal
-      const categoriesText = this.extractCategories($)?.toLowerCase();
+      const categoriesText = this.extractCategories($).toLowerCase();
       for (const [nationality, patterns] of Object.entries(
         nationalityPatterns
       )) {
         for (const pattern of patterns) {
-          if (categoriesText?.includes(pattern)) {
+          if (categoriesText.includes(pattern)) {
             console.log(
               `🌍 Nacionalidade encontrada nas categorias: ${nationality}`
             );
@@ -824,69 +708,51 @@ class IMSLPScraper {
     }
   }
 
-  // 🆕 Método para avaliar qualidade da página (atualizado - sem compositionsCount)
-  evaluatePageQuality($: cheerio.CheerioAPI): {
-    pageStatus: string;
-    pageQuality: string;
-    dataCompleteness: number;
-  } {
+  // 🆕 Método para extrair categorias IMSLP
+  extractCategories($: cheerio.CheerioAPI): string {
     try {
-      let completenessScore = 0;
-      let maxScore = 8; // Reduzido de 10 para 8 (removido compositionsCount)
+      const categories: string[] = [];
 
-      // Verificar elementos presentes
-      if ($('.cp_firsth h2').length > 0) completenessScore += 1; // Tem nome
-      if (
-        $('.cp_firsth').text().includes('(') &&
-        $('.cp_firsth').text().includes(')')
-      )
-        completenessScore += 1; // Tem datas
-      if (
-        $('.cp_img img').length > 0 &&
-        !$('.cp_img img').attr('src')?.includes('Nocomposerphotoavailable')
-      )
-        completenessScore += 1; // Tem imagem
-      if ($('.cp_links a').length > 0) completenessScore += 1; // Tem links externos
-      if ($('#mw-pages').length > 0) completenessScore += 1; // Tem seções organizadas
-      if ($('.cp_firsth').text().length > 100) completenessScore += 1; // Tem descrição substancial
-      if ($('a[href*="wikipedia"]').length > 0) completenessScore += 1; // Tem link Wikipedia
-      if ($('.cp_mainlinks').length > 0) completenessScore += 1; // Tem informações adicionais
+      // Buscar no rodapé da página por categorias
+      const categoryLinks = $('a[href*="Category:"]');
 
-      const completenessPercentage = (completenessScore / maxScore) * 100;
+      categoryLinks.each((_, element) => {
+        const categoryText = $(element).text().trim();
+        if (
+          categoryText &&
+          !categoryText.includes('IMSLP') &&
+          categoryText.length > 2
+        ) {
+          categories.push(categoryText);
+        }
+      });
 
-      // Determinar status da página
-      let pageStatus = 'needs_work';
-      if (completenessScore >= 7) pageStatus = 'complete';
-      else if (completenessScore >= 5) pageStatus = 'good';
-      else if (completenessScore >= 3) pageStatus = 'stub';
-
-      // Determinar qualidade
-      let pageQuality = 'low';
-      if (completenessPercentage >= 80) pageQuality = 'high';
-      else if (completenessPercentage >= 60) pageQuality = 'medium';
-
-      console.log(
-        `📊 Qualidade da página - Status: ${pageStatus}, Qualidade: ${pageQuality}, Completude: ${completenessPercentage.toFixed(
-          1
-        )}%`
+      // Buscar em divs específicas que podem conter categorias
+      const potentialCategoryDivs = $(
+        '.catlinks, .mw-normal-catlinks, #catlinks'
       );
+      potentialCategoryDivs.each((_, element) => {
+        const text = $(element).text();
+        if (text.includes('Categories:') || text.includes('Category:')) {
+          const categoryMatches = text.match(
+            /([A-Z][a-z\s]+(?:composers?|musicians?|pianists?|violinists?|singers?))/g
+          );
+          if (categoryMatches) {
+            categories.push(...categoryMatches);
+          }
+        }
+      });
 
-      return {
-        pageStatus,
-        pageQuality,
-        dataCompleteness: Math.round(completenessPercentage),
-      };
+      const categoriesString = [...new Set(categories)].join(', ');
+
+      return categoriesString;
     } catch (error) {
-      console.error('❌ Erro ao avaliar qualidade da página:', error);
-      return {
-        pageStatus: 'unknown',
-        pageQuality: 'low',
-        dataCompleteness: 0,
-      };
+      console.error('❌ Erro ao extrair categorias:', error);
+      return '';
     }
   }
 
-  // 🆕 Método para extrair instrumentos (mantido)
+  // 🆕 Método para extrair instrumentos
   extractInstruments($: cheerio.CheerioAPI): string | null {
     try {
       const instruments: string[] = [];
@@ -966,50 +832,69 @@ class IMSLPScraper {
     }
   }
 
-  // 🔄 Método para extrair categorias IMSLP (VOLTOU)
-  extractCategories($: cheerio.CheerioAPI): string | null {
+  // 🆕 Método para avaliar qualidade da página
+  evaluatePageQuality(
+    $: cheerio.CheerioAPI,
+    compositionsCount: number
+  ): {
+    pageStatus: string;
+    pageQuality: string;
+    dataCompleteness: number;
+  } {
     try {
-      const categories: string[] = [];
+      let completenessScore = 0;
+      let maxScore = 10;
 
-      // Buscar no rodapé da página por categorias
-      const categoryLinks = $('a[href*="Category:"]');
+      // Verificar elementos presentes
+      if ($('.cp_firsth h2').length > 0) completenessScore += 1; // Tem nome
+      if (
+        $('.cp_firsth').text().includes('(') &&
+        $('.cp_firsth').text().includes(')')
+      )
+        completenessScore += 1; // Tem datas
+      if (
+        $('.cp_img img').length > 0 &&
+        !$('.cp_img img').attr('src')?.includes('Nocomposerphotoavailable')
+      )
+        completenessScore += 1; // Tem imagem
+      if (compositionsCount > 0) completenessScore += 2; // Tem composições
+      if (compositionsCount >= 5) completenessScore += 1; // Tem várias composições
+      if ($('.cp_links a').length > 0) completenessScore += 1; // Tem links externos
+      if ($('#mw-pages').length > 0) completenessScore += 1; // Tem seções organizadas
+      if ($('.cp_firsth').text().length > 100) completenessScore += 1; // Tem descrição substancial
+      if ($('a[href*="wikipedia"]').length > 0) completenessScore += 1; // Tem link Wikipedia
 
-      categoryLinks.each((_, element) => {
-        const categoryText = $(element).text().trim();
-        if (
-          categoryText &&
-          !categoryText.includes('IMSLP') &&
-          categoryText.length > 2
-        ) {
-          categories.push(categoryText);
-        }
-      });
+      const completenessPercentage = (completenessScore / maxScore) * 100;
 
-      // Buscar em divs específicas que podem conter categorias
-      const potentialCategoryDivs = $(
-        '.catlinks, .mw-normal-catlinks, #catlinks'
+      // Determinar status da página
+      let pageStatus = 'needs_work';
+      if (completenessScore >= 8) pageStatus = 'complete';
+      else if (completenessScore >= 5) pageStatus = 'good';
+      else if (completenessScore >= 3) pageStatus = 'stub';
+
+      // Determinar qualidade
+      let pageQuality = 'low';
+      if (completenessPercentage >= 80) pageQuality = 'high';
+      else if (completenessPercentage >= 60) pageQuality = 'medium';
+
+      console.log(
+        `📊 Qualidade da página - Status: ${pageStatus}, Qualidade: ${pageQuality}, Completude: ${completenessPercentage.toFixed(
+          1
+        )}%`
       );
-      potentialCategoryDivs.each((_, element) => {
-        const text = $(element).text();
-        if (text.includes('Categories:') || text.includes('Category:')) {
-          const categoryMatches = text.match(
-            /([A-Z][a-z\s]+(?:composers?|musicians?|pianists?|violinists?|singers?))/g
-          );
-          if (categoryMatches) {
-            categories.push(...categoryMatches);
-          }
-        }
-      });
 
-      const categoriesString = [...new Set(categories)].join(', ');
-      if (categoriesString) {
-        return categoriesString;
-      }
-
-      return null;
+      return {
+        pageStatus,
+        pageQuality,
+        dataCompleteness: Math.round(completenessPercentage),
+      };
     } catch (error) {
-      console.error('❌ Erro ao extrair categorias:', error);
-      return null;
+      console.error('❌ Erro ao avaliar qualidade da página:', error);
+      return {
+        pageStatus: 'unknown',
+        pageQuality: 'low',
+        dataCompleteness: 0,
+      };
     }
   }
 
@@ -1194,7 +1079,7 @@ class IMSLPScraper {
     }
   }
 
-  // Método extractComposerDetails ATUALIZADO com os novos dados
+  // Método extractComposerDetails ATUALIZADO com todos os novos dados
   async extractComposerDetails(
     composer: Composer
   ): Promise<ComposerData | null> {
@@ -1210,6 +1095,8 @@ class IMSLPScraper {
       });
 
       const $ = cheerio.load(pageResponse.data);
+
+      // 🆕 Extrair contagem de composições PRIMEIRO
       const compositionsCount = this.getCompositionsCount($);
       console.log(`🎼 Composições encontradas: ${compositionsCount}`);
 
@@ -1226,7 +1113,7 @@ class IMSLPScraper {
         }
       }
 
-      // 🔄 Lógica simplificada: aceitar todos os compositores (removida verificação de composições)
+      // Se não tem imagem válida, verificar se tem pelo menos 5 composições
       if (!hasValidImage) {
         console.log(
           `⚠ Compositor sem imagem: ${composer.id}, verificando composições...`
@@ -1254,32 +1141,23 @@ class IMSLPScraper {
       // 🆕 Extrair nome alternativo (contentSub)
       const otherName = this.extractOtherName($);
 
-      // 🆕 Extrair nomes alternativos da página
-      const alternativeNamesInfo = this.extractAlternativeNames($);
-
-      // 🆕 Extrair informação diversa
-      const diverseInfo = this.extractDiverseInfo($);
-
-      // 🆕 Extrair links externos
-      const externalLinks = this.extractExternalLinks($);
-
       // 🆕 Extrair datas melhoradas
       const dateInfo = this.extractImprovedDates($);
 
       // 🆕 Extrair nacionalidade
       const nationality = this.extractNationality($);
 
-      // 🆕 Extrair instrumentos (mantido)
-      const instruments = this.extractInstruments($);
-
-      // 🔄 Extrair categorias IMSLP (VOLTOU)
+      // 🆕 Extrair categorias IMSLP
       const imslpCategories = this.extractCategories($);
+
+      // 🆕 Extrair instrumentos
+      const instruments = this.extractInstruments($);
 
       // 🆕 Extrair data de última modificação
       const lastModifiedImslp = this.extractLastModified($);
 
       // 🆕 Avaliar qualidade da página
-      const qualityInfo = this.evaluatePageQuality($);
+      const qualityInfo = this.evaluatePageQuality($, compositionsCount);
 
       // Extrair link da Wikipedia (mantendo método existente)
       const wikipediaLink = this.extractWikipediaLink($) || null;
@@ -1326,37 +1204,21 @@ class IMSLPScraper {
       // 🆕 Log de todos os dados extraídos
       console.log(`📊 DADOS EXTRAÍDOS PARA ${firstName}:`);
       console.log(`   - Nome alternativo: ${otherName || 'Não encontrado'}`);
-      console.log(
-        `   - Nomes alternativos: ${
-          alternativeNamesInfo.alternativeNames || 'Não encontrados'
-        }`
-      );
-      console.log(
-        `   - Nomes outras línguas: ${
-          alternativeNamesInfo.namesInOtherLangs || 'Não encontrados'
-        }`
-      );
-      console.log(
-        `   - Pseudônimos: ${
-          alternativeNamesInfo.pseudonyms || 'Não encontrados'
-        }`
-      );
-      console.log(
-        `   - Info diversa: ${diverseInfo ? 'Encontrada' : 'Não encontrada'}`
-      );
-      console.log(
-        `   - Links externos: ${
-          externalLinks ? 'Encontrados' : 'Não encontrados'
-        }`
-      );
+      console.log(`   - Composições: ${compositionsCount}`);
       console.log(`   - Nacionalidade: ${nationality || 'Não encontrada'}`);
       console.log(`   - Nascimento: ${dateInfo.birthDate}`);
+      console.log(
+        `   - Local nasc.: ${dateInfo.birthPlace || 'Não encontrado'}`
+      );
       console.log(`   - Morte: ${dateInfo.deathDate}`);
+      console.log(
+        `   - Local morte: ${dateInfo.deathPlace || 'Não encontrado'}`
+      );
       console.log(`   - Instrumentos: ${instruments || 'Não encontrados'}`);
-      console.log(`   - Categorias: ${imslpCategories || 'Não encontradas'}`);
       console.log(
         `   - Qualidade: ${qualityInfo.pageQuality} (${qualityInfo.dataCompleteness}%)`
       );
+      console.log(`   - Categorias: ${imslpCategories || 'Não encontradas'}`);
 
       return {
         imslpId: composer.id,
@@ -1364,7 +1226,7 @@ class IMSLPScraper {
         permLinkImslp: composer.permlink,
         fullName: fullName,
 
-        // Datas melhoradas
+        // 🆕 Datas melhoradas
         birthDate: dateInfo.birthDate,
         deathDate: dateInfo.deathDate,
 
@@ -1376,20 +1238,13 @@ class IMSLPScraper {
           ? `https://imslp.org${imageUrl}`
           : imageUrl,
 
-        // 🆕 Nomes alternativos
-        otherName: otherName,
-        alternativeNames: alternativeNamesInfo.alternativeNames,
-        namesInOtherLangs: alternativeNamesInfo.namesInOtherLangs,
-        pseudonyms: alternativeNamesInfo.pseudonyms,
-
-        // 🆕 Informações detalhadas
-        diverseInfo: diverseInfo,
-        externalLinks: externalLinks,
-
-        // Dados mantidos
+        // 🆕 Novos dados
+        otherName: otherName, // 🆕 Nome alternativo
+        compositionsCount: null,
         nationality: nationality,
+
+        imslpCategories: imslpCategories || null,
         instruments: instruments,
-        imslpCategories: imslpCategories, // 🔄 VOLTOU
         lastModifiedImslp: lastModifiedImslp,
         pageStatus: qualityInfo.pageStatus,
         pageQuality: qualityInfo.pageQuality,
@@ -1397,34 +1252,11 @@ class IMSLPScraper {
         hasValidImage: hasValidImage,
       };
     } catch (error) {
-      console.error(`❌ Erro ao extrair dados de ${composer.id}\n`);
+      console.error(`❌ Erro ao extrair dados de ${composer.id}: \n`);
       await fs.appendFile(
         STATE_COMPOSERS_FILE,
         ` ❌ ${composer.id} / Erro ao extrair dados` + '\n'
       );
-      return null;
-    }
-  }
-
-  // 🆕 Método para extrair nome alternativo (contentSub)
-  extractOtherName($: cheerio.CheerioAPI): string | null {
-    try {
-      const contentSubDiv = $('#contentSub');
-      if (contentSubDiv.length === 0) {
-        return null;
-      }
-
-      const otherName = contentSubDiv.text().trim();
-
-      // Verificar se não é vazio e não é igual ao nome principal
-      if (otherName && otherName.length > 0) {
-        console.log(`👤 Nome alternativo encontrado: "${otherName}"`);
-        return otherName;
-      }
-
-      return null;
-    } catch (error) {
-      console.error('❌ Erro ao extrair nome alternativo:', error);
       return null;
     }
   }
@@ -1494,7 +1326,7 @@ class IMSLPScraper {
     }
   }
 
-  // Método saveComposer ATUALIZADO para os novos campos
+  // Método saveComposer ATUALIZADO para salvar todos os novos campos
   async saveComposer(composerData: ComposerData): Promise<boolean> {
     try {
       // Verificar se já existe
@@ -1528,26 +1360,19 @@ class IMSLPScraper {
           permLinkImslp: composerData.permLinkImslp,
           imslpId: composerData.imslpId,
 
-          // 🆕 NOMES ALTERNATIVOS
+          // 🆕 NOME ALTERNATIVO
           otherName: composerData.otherName,
-          alternativeNames: composerData.alternativeNames,
-          namesInOtherLangs: composerData.namesInOtherLangs,
-          pseudonyms: composerData.pseudonyms,
 
           // 🆕 DATAS MELHORADAS
           birthDate: composerData.birthDate,
           deathDate: composerData.deathDate,
 
-          // 🆕 INFORMAÇÕES DETALHADAS
-          diverseInfo: composerData.diverseInfo,
-          externalLinks: composerData.externalLinks,
-
-          // 🆕 DADOS GEOGRÁFICOS E TÉCNICOS (mantidos)
+          // 🆕 DADOS GEOGRÁFICOS
           nationality: composerData.nationality,
-          instruments: composerData.instruments,
 
-          // 🔄 CATEGORIAS E CLASSIFICAÇÕES IMSLP (VOLTOU)
+          // 🆕 CATEGORIAS E CLASSIFICAÇÕES
           imslpCategories: composerData.imslpCategories,
+          instruments: composerData.instruments,
 
           // 🆕 METADADOS DA PÁGINA
           lastModifiedImslp: composerData.lastModifiedImslp,
@@ -1570,11 +1395,12 @@ class IMSLPScraper {
       const logParts = [
         `✅ ${composerData.fullName}`,
         `(${epoch.name})`,
+        composerData.compositionsCount
+          ? `${composerData.compositionsCount} obras`
+          : '',
         composerData.nationality ? `${composerData.nationality}` : '',
         birthYear ? `${birthYear}` : '',
         composerData.wikipediaLink ? '🔗 Wiki' : '',
-        composerData.diverseInfo ? '📚 Info' : '',
-        composerData.externalLinks ? '🔗 Links' : '',
         `${composerData.dataCompleteness}% completo`,
       ]
         .filter(Boolean)
@@ -1586,9 +1412,9 @@ class IMSLPScraper {
         STATE_COMPOSERS_FILE,
         ` ✅ ${composerData.imslpId} / ${composerData.fullName}${
           composerData.otherName ? ` (${composerData.otherName})` : ''
-        } / ${composerData.nationality || 'sem nacionalidade'} / ${
-          composerData.dataCompleteness
-        }% completo` + '\n'
+        } / ${composerData.compositionsCount || 0} obras / ${
+          composerData.nationality || 'sem nacionalidade'
+        } / ${composerData.dataCompleteness}% completo` + '\n'
       );
 
       return true;
@@ -1674,15 +1500,8 @@ class IMSLPScraper {
   async getDatabaseStats(): Promise<{
     totalComposers: number;
     withValidImage: number;
-    withOtherName: number;
-    withAlternativeNames: number; // 🆕 Adicionado
-    withNamesInOtherLangs: number; // 🆕 Adicionado
-    withPseudonyms: number; // 🆕 Adicionado
-    withDiverseInfo: number; // 🆕 Adicionado
-    withExternalLinks: number; // 🆕 Adicionado
-    withImslpCategories: number; // 🆕 Adicionado
+    withOtherName: number; // 🆕
     withNationality: number;
-    withBirthDate: number; // 🔄 Corrigido (era withBirthYear)
     withWikipedia: number;
     avgCompleteness: number;
     topNationalities: Array<{ nationality: string; count: number }>;
@@ -1701,28 +1520,6 @@ class IMSLPScraper {
         where: { nationality: { not: null } },
       });
 
-      const withAlternativeNames = await prisma.composer.count({
-        where: { alternativeNames: { not: null } },
-      });
-      const withBirthDate = await prisma.composer.count({
-        where: { birthDate: { not: null } },
-      });
-
-      const withDiverseInfo = await prisma.composer.count({
-        where: { diverseInfo: { not: null } },
-      });
-      const withExternalLinks = await prisma.composer.count({
-        where: { externalLinks: { not: null } },
-      });
-      const withImslpCategories = await prisma.composer.count({
-        where: { imslpCategories: { not: null } },
-      });
-      const withNamesInOtherLangs = await prisma.composer.count({
-        where: { namesInOtherLangs: { not: null } },
-      });
-      const withPseudonyms = await prisma.composer.count({
-        where: { pseudonyms: { not: null } },
-      });
       const withWikipedia = await prisma.composer.count({
         where: { wikipediaLink: { not: null } },
       });
@@ -1770,26 +1567,12 @@ class IMSLPScraper {
         avgCompleteness,
         topNationalities,
         epochDistribution,
-        withAlternativeNames,
-        withBirthDate,
-        withDiverseInfo,
-        withExternalLinks,
-        withImslpCategories,
-        withNamesInOtherLangs,
-        withPseudonyms,
       };
     } catch (error) {
       console.error('❌ Erro ao calcular estatísticas:', error);
       return {
         totalComposers: 0,
         withValidImage: 0,
-        withAlternativeNames: 0,
-        withBirthDate: 0,
-        withDiverseInfo: 0,
-        withExternalLinks: 0,
-        withImslpCategories: 0,
-        withNamesInOtherLangs: 0,
-        withPseudonyms: 0,
         withOtherName: 0, // 🆕
         withNationality: 0,
         withWikipedia: 0,
@@ -1997,42 +1780,6 @@ class IMSLPScraper {
       console.log(
         `   - Com nome alternativo: ${dbStats.withOtherName} (${(
           (dbStats.withOtherName / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com nomes alternativos: ${dbStats.withAlternativeNames} (${(
-          (dbStats.withAlternativeNames / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com nomes outras línguas: ${dbStats.withNamesInOtherLangs} (${(
-          (dbStats.withNamesInOtherLangs / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com pseudônimos: ${dbStats.withPseudonyms} (${(
-          (dbStats.withPseudonyms / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com informação diversa: ${dbStats.withDiverseInfo} (${(
-          (dbStats.withDiverseInfo / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com links externos: ${dbStats.withExternalLinks} (${(
-          (dbStats.withExternalLinks / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com categorias IMSLP: ${dbStats.withImslpCategories} (${(
-          (dbStats.withImslpCategories / dbStats.totalComposers) *
           100
         ).toFixed(1)}%)`
       );

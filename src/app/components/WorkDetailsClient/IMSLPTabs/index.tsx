@@ -1,4 +1,4 @@
-// components/IMSLPTabs.tsx - Com callback para seleção de partitura para estudo
+// components/IMSLPTabs.tsx - Otimizado com Carregamento Incremental
 'use client';
 
 import { useState, useRef } from 'react';
@@ -8,6 +8,9 @@ import {
   FiRefreshCw,
   FiAlertCircle,
   FiBookOpen,
+  FiMoreHorizontal,
+  FiDownload,
+  FiLayers,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import ScoreCard from '../ScoreCard';
@@ -21,10 +24,17 @@ interface IMSLPTabsProps {
   loading?: boolean;
   error?: string;
   onRefetch?: () => void;
-  onScoreSelect?: (score: IMSLPScore) => void; // Novo callback
-  workId?: string; // Para o botão de estudo
+  onScoreSelect?: (score: IMSLPScore) => void;
+  workId?: string;
   workTitle?: string;
   composerName?: string;
+  // 🆕 Props para carregamento incremental
+  hasMore?: boolean;
+  totalAvailable?: number;
+  loadingMore?: boolean;
+  onLoadMore?: () => void;
+  onLoadAll?: () => void;
+  canLoadMore?: boolean;
 }
 
 interface TabInfo {
@@ -89,9 +99,15 @@ export default function IMSLPTabs({
   workId,
   workTitle,
   composerName,
+  // 🆕 Props de carregamento incremental
+  hasMore = false,
+  totalAvailable = 0,
+  loadingMore = false,
+  onLoadMore,
+  onLoadAll,
+  canLoadMore = false,
 }: IMSLPTabsProps) {
   const [activeTab, setActiveTab] = useState<string>(() => {
-    // Encontrar a primeira aba com conteúdo
     const firstTabWithContent = TABS.find(
       (tab) => imslpData?.totalCounts[tab.type] > 0
     );
@@ -102,15 +118,22 @@ export default function IMSLPTabs({
   const previewRef = useRef<HTMLDivElement>(null);
 
   const handleScoreSelect = (score: IMSLPScore) => {
-    // Se a mesma partitura for clicada, desselecioná-la
     if (selectedScore?.id === score.id) {
       setSelectedScore(null);
-      onScoreSelect?.(null as any); // Notificar parent que nenhuma partitura está selecionada
+      onScoreSelect?.(null as any);
     } else {
       setSelectedScore(score);
-      onScoreSelect?.(score); // Notificar parent da seleção
+      onScoreSelect?.(score);
     }
   };
+
+  // 🆕 Calcular estatísticas de carregamento
+  const currentlyLoaded = imslpData
+    ? Object.values(imslpData.totalCounts).reduce(
+        (sum, count) => sum + count,
+        0
+      )
+    : 0;
 
   if (loading) {
     return (
@@ -205,7 +228,7 @@ export default function IMSLPTabs({
 
   return (
     <div className="classical-card overflow-hidden animate-fade-in-up">
-      {/* Header com informações da partitura selecionada */}
+      {/* Header otimizado com informações de carregamento */}
       <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
         <div className="p-6">
           <div className="flex items-center justify-between">
@@ -217,15 +240,26 @@ export default function IMSLPTabs({
                 <h2 className="text-2xl font-bold text-theme-primary classical-title">
                   Partituras IMSLP
                 </h2>
-                <p className="text-theme-secondary classical-subtitle">
-                  {selectedScore
-                    ? `Partitura selecionada: ${selectedScore.title}`
-                    : 'Selecione uma partitura para estudo'}
-                </p>
+                <div className="flex items-center space-x-2">
+                  <p className="text-theme-secondary classical-subtitle">
+                    {selectedScore
+                      ? `Partitura selecionada: ${selectedScore.title}`
+                      : 'Selecione uma partitura para estudo'}
+                  </p>
+                  {/* 🆕 Indicador de carregamento incremental */}
+                  {totalAvailable > 0 && (
+                    <div className="flex items-center space-x-2 text-sm">
+                      <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
+                      <span className="text-theme-tertiary">
+                        {currentlyLoaded} de {totalAvailable} carregadas
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Botão de Modo Estudo - só aparece se uma partitura estiver selecionada */}
+            {/* Botão de Modo Estudo */}
             {selectedScore && workId && workTitle && composerName && (
               <div className="flex items-center space-x-3">
                 <div className="bg-theme-elevated/50 border border-theme-primary/30 rounded-xl px-4 py-2">
@@ -256,6 +290,28 @@ export default function IMSLPTabs({
               </div>
             )}
           </div>
+
+          {/* 🆕 Barra de progresso de carregamento */}
+          {totalAvailable > 0 && currentlyLoaded < totalAvailable && (
+            <div className="mt-4">
+              <div className="flex items-center justify-between text-sm text-theme-tertiary mb-2">
+                <span>Progresso do carregamento</span>
+                <span>
+                  {Math.round((currentlyLoaded / totalAvailable) * 100)}%
+                </span>
+              </div>
+              <div className="w-full bg-theme-elevated border border-theme-primary/20 rounded-full h-2">
+                <div
+                  className="bg-gradient-to-r from-brand-primary to-brand-secondary h-2 rounded-full transition-all duration-500"
+                  style={{
+                    width: `${Math.round(
+                      (currentlyLoaded / totalAvailable) * 100
+                    )}%`,
+                  }}
+                ></div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Tabs Navigation */}
@@ -283,7 +339,7 @@ export default function IMSLPTabs({
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div
-                  className={`w-6 h-6 rounded-lg  flex items-center justify-center transition-all duration-300 ${
+                  className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-300 ${
                     isActive
                       ? `bg-gradient-to-br ${tab.gradient} text-theme-primary shadow-theme-glow`
                       : 'bg-theme-elevated text-theme-tertiary group-hover:text-theme-primary'
@@ -319,7 +375,6 @@ export default function IMSLPTabs({
                   className="space-y-4 animate-fade-in-up"
                   style={{ animationDelay: `${groupIndex * 0.1}s` }}
                 >
-                  {/* Título do grupo, se disponível */}
                   {scoreGroup.groupTitle && (
                     <div className="border-b border-theme-secondary pb-3">
                       <div className="flex items-center space-x-3">
@@ -333,7 +388,6 @@ export default function IMSLPTabs({
                     </div>
                   )}
 
-                  {/* Scores do grupo */}
                   <div className="space-y-2">
                     {scoreGroup.scores.map((score, index) => (
                       <ScoreCard
@@ -348,9 +402,71 @@ export default function IMSLPTabs({
                   </div>
                 </div>
               ))}
+
+              {/* 🆕 Botões de carregamento incremental */}
+              {(hasMore || canLoadMore) && (
+                <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
+                  <div className="text-center">
+                    <p className="text-theme-secondary text-sm mb-2">
+                      {loadingMore
+                        ? 'Carregando mais partituras...'
+                        : `Mostrando ${currentlyLoaded} de ${totalAvailable} partituras disponíveis`}
+                    </p>
+
+                    {totalAvailable > 0 && (
+                      <div className="w-64 bg-theme-elevated border border-theme-primary/20 rounded-full h-1.5 mx-auto mb-4">
+                        <div
+                          className="bg-gradient-to-r from-accent-blue to-accent-purple h-1.5 rounded-full transition-all duration-500"
+                          style={{
+                            width: `${Math.round(
+                              (currentlyLoaded / totalAvailable) * 100
+                            )}%`,
+                          }}
+                        ></div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap gap-3 justify-center">
+                    {canLoadMore && onLoadMore && (
+                      <button
+                        onClick={onLoadMore}
+                        disabled={loadingMore}
+                        className="btn-classical-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {loadingMore ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            <span>Carregando...</span>
+                          </>
+                        ) : (
+                          <>
+                            <FiMoreHorizontal className="w-4 h-4" />
+                            <span>Carregar Mais (20)</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+
+                    {hasMore && onLoadAll && (
+                      <button
+                        onClick={onLoadAll}
+                        disabled={loadingMore}
+                        className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <FiLayers className="w-4 h-4" />
+                        <span>
+                          Carregar Todas ({totalAvailable - currentlyLoaded}{' '}
+                          restantes)
+                        </span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Preview Panel com ref para scroll */}
+            {/* Preview Panel */}
             {selectedScore && (
               <div
                 ref={previewRef}
@@ -363,7 +479,6 @@ export default function IMSLPTabs({
                       <span>Preview da Partitura</span>
                     </h3>
 
-                    {/* Info sobre seleção para estudo */}
                     <div className="flex items-center space-x-2 text-sm">
                       <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
                       <span className="text-theme-secondary">
@@ -374,7 +489,6 @@ export default function IMSLPTabs({
 
                   <ScorePreview score={selectedScore} />
 
-                  {/* Ações do preview */}
                   <div className="mt-4 pt-4 border-t border-theme-secondary">
                     <div className="flex flex-wrap gap-3">
                       {workId && workTitle && composerName && (

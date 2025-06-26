@@ -1,4 +1,4 @@
-// Updated Prisma schema with enhanced study mode fields
+// schema.prisma - Schema otimizado com sistema de cache de partituras
 
 generator client {
   provider = "prisma-client-js"
@@ -9,7 +9,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Enums existentes + novos
+// Enums existentes
 enum DifficultyLevel {
   BEGINNER
   INTERMEDIATE
@@ -17,13 +17,13 @@ enum DifficultyLevel {
 }
 
 enum PracticeFocus {
-  TECHNICAL     // Foco técnico
-  EXPRESSIVITY  // Foco na expressividade
-  PRECISION     // Foco na precisão
-  SIGHT_READING // Leitura à primeira vista
-  MEMORIZATION  // Memorização
-  PERFORMANCE   // Preparação para performance
-  REVIEW        // Revisão geral
+  TECHNICAL
+  EXPRESSIVITY
+  PRECISION
+  SIGHT_READING
+  MEMORIZATION
+  PERFORMANCE
+  REVIEW
 }
 
 enum WorkType {
@@ -50,16 +50,15 @@ enum AccountProvider {
   FACEBOOK
 }
 
-// NOVO: Tipos de anotações no PDF
 enum AnnotationType {
-  TEXT_NOTE    // Nota de texto
-  HIGHLIGHT    // Destaque
-  DRAWING      // Desenho livre
-  BOOKMARK     // Marcador
-  FINGERING    // Dedilhado
-  BOWINGS      // Arcadas (cordas)
-  DYNAMICS     // Dinâmicas
-  TEMPO_MARK   // Marcação de tempo
+  TEXT_NOTE
+  HIGHLIGHT
+  DRAWING
+  BOOKMARK
+  FINGERING
+  BOWINGS
+  DYNAMICS
+  TEMPO_MARK
 }
 
 enum IMSLPScoreType {
@@ -70,7 +69,23 @@ enum IMSLPScoreType {
   OTHERS
   SOURCES
 }
-// Models existentes... (mantenho os existentes)
+
+// 🆕 Novos enums para sistema de cache
+enum ScoreSource {
+  IMSLP    // Do IMSLP
+  CUSTOM   // Adicionado manualmente
+  UPLOAD   // Upload do usuário
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+// Models existentes (mantendo todos os existentes)
 
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -113,8 +128,7 @@ model User {
   currentStreak     Int     @default(0)
   longestStreak     Int     @default(0)
 
-  // NOVOS: Configurações do modo estudo
-  studyModeSettings Json? // { defaultMetronome: { bpm: 120, sound: 'click' }, pdfSettings: { zoom: 1.2, theme: 'light' } }
+  studyModeSettings Json?
 
   // Relations
   accounts Account[]
@@ -133,7 +147,6 @@ model User {
   studySessions     StudySession[]
   learningGoals     LearningGoal[]
   
-  // NOVOS: Anotações no PDF e bookmarks
   pdfAnnotations    PdfAnnotation[]
   scoreBookmarks    ScoreBookmark[]
 
@@ -141,155 +154,119 @@ model User {
   @@index([onboardingCompleted])
 }
 
-// Todos os outros models existentes permanecem... 
-// (Composer, Epoch, Role, Instrument, Work, etc.)
-
-// NOVO: Model para anotações específicas no PDF
-model PdfAnnotation {
-  id       String         @id @default(auto()) @map("_id") @db.ObjectId
-  userId   String         @db.ObjectId
-  workId   String         @db.ObjectId
-  scoreId  String         // ID da partitura IMSLP
+// 🆕 Model principal para cache de partituras
+model WorkScore {
+  id       String      @id @default(auto()) @map("_id") @db.ObjectId
+  workId   String      @db.ObjectId
+  sourceId String      // ID da partitura na fonte (IMSLP ID, custom ID, etc.)
+  source   ScoreSource @default(IMSLP)
   
-  type     AnnotationType
-  content  String?        // Texto da anotação
+  // Dados básicos da partitura
+  title       String
+  downloadUrl String?
+  fileSize    String?
+  pageCount   String?
+  fileFormat  String   @default("PDF")
   
-  // Posição no PDF
-  page     Int            // Página do PDF
-  x        Float          // Coordenada X (percentual)
-  y        Float          // Coordenada Y (percentual)
-  width    Float?         // Largura (para highlights/desenhos)
-  height   Float?         // Altura (para highlights/desenhos)
+  // Metadados IMSLP
+  editor       String?
+  publisher    String?
+  copyright    String?
+  thumbnailUrl String?
+  uploadDate   String?
+  uploader     String?
+  notes        String?
   
-  // Dados específicos por tipo
-  color    String?        // Cor da anotação (#hex)
-  fontSize Int?          // Tamanho da fonte (para texto)
-  strokeWidth Float?     // Espessura do traço (para desenhos)
-  drawing  Json?         // Dados do desenho livre (SVG path)
+  // Classificação e organização
+  type        IMSLPScoreType @default(SCORES)
+  groupIndex  Int?           @default(0)
+  groupTitle  String?
   
-  // Metadados
-  measure  Int?          // Compasso relacionado (se aplicável)
-  beat     Float?        // Tempo do compasso
-  voice    Int?          // Voz musical (1, 2, 3...)
+  // Métricas do IMSLP
+  rating        Float?
+  ratingsCount  Int?
+  downloadCount Int?
   
-  isPublic Boolean       @default(false)
-  tags     String[]      @default([])
+  // Dados customizados (para partituras não-IMSLP)
+  isCustom     Boolean @default(false)
+  uploadedBy   String? // ID do usuário que fez upload
+  customData   Json?   // Dados extras específicos
   
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  // Cache e controle
+  isActive       Boolean           @default(true)
+  isVerified     Boolean           @default(false)
+  lastVerified   DateTime          @default(now())
+  lastAccessed   DateTime          @default(now())
+  accessCount    Int               @default(0)
+  priority       Int               @default(0) // Para ordenação
+  expiresAt      DateTime?         // TTL do cache
+  cacheVersion   String            @default("1.0")
   
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Status de processamento
+  processingStatus ProcessingStatus @default(PENDING)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
   
-  @@index([userId, workId, scoreId])
-  @@index([workId, scoreId, page])
-  @@index([type])
+  // Índices otimizados para performance
+  @@unique([workId, sourceId, source], name: "workId_sourceId_source")
+  @@index([workId, isActive, priority])
+  @@index([workId, type, groupIndex])
+  @@index([source, processingStatus])
+  @@index([isActive, expiresAt])
+  @@index([lastAccessed, isActive])
+  @@index([priority, createdAt])
+  @@map("work_scores")
 }
 
-// NOVO: Model para bookmarks/marcadores na partitura
-model ScoreBookmark {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @db.ObjectId
-  workId      String   @db.ObjectId
-  scoreId     String   // ID da partitura IMSLP
+// 🆕 Model para logs de processamento em background
+model ScoreProcessingLog {
+  id       String           @id @default(auto()) @map("_id") @db.ObjectId
+  workId   String           @db.ObjectId
+  action   String           // Tipo de ação: 'cache_scores', 'cache_scores_background', 'maintenance', etc.
+  status   ProcessingStatus @default(PENDING)
   
-  title       String   // Ex: "Desenvolvimento", "Tema principal"
-  description String?
-  color       String   @default("#3B82F6") // Cor do marcador
+  // Dados de execução
+  startedAt    DateTime?
+  completedAt  DateTime?
+  duration     Int?      // Duração em milissegundos
   
-  // Posição
-  page        Int      // Página
-  measure     Int?     // Compasso (se identificado)
-  system      Int?     // Sistema na página
+  // Dados da fila
+  priority     Int       @default(5) // 1-10 (10 = máxima prioridade)
+  scheduledFor DateTime? // Para agendamento
+  retryCount   Int       @default(0)
+  maxRetries   Int       @default(3)
   
-  // Coordenadas aproximadas para visualização
-  x           Float?
-  y           Float?
+  // Estatísticas de processamento
+  itemsTotal   Int? // Total de itens a processar
+  itemsSuccess Int? // Itens processados com sucesso
+  itemsFailed  Int? // Itens que falharam
+  itemsSkipped Int? // Itens que foram pulados
   
-  // Ordem personalizada pelo usuário
-  sortOrder   Int      @default(0)
+  // Dados adicionais
+  details Json? // Dados específicos do job
+  error   String? // Mensagem de erro se falhou
   
-  isPublic    Boolean  @default(false)
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Relação
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
   
-  @@index([userId, workId, scoreId])
-  @@index([workId, scoreId])
-  @@index([sortOrder])
+  // Índices para performance
+  @@index([status, priority, scheduledFor])
+  @@index([workId, action, status])
+  @@index([status, createdAt])
+  @@index([action, status])
+  @@map("score_processing_logs")
 }
 
-// MELHORADO: StudySession com mais campos
-model StudySession {
-  id            String        @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String        @db.ObjectId
-  workId        String        @db.ObjectId
-  scoreId       String?       // ID da partitura específica estudada
-  
-  date          DateTime      @default(now())
-  durationMin   Int           // duração em minutos
-  
-  // Detalhes da sessão
-  metronomeUsed Boolean       @default(false)
-  tempoMarking  String?       // Andamento praticado
-  focus         PracticeFocus
-  notes         String?
-  rating        Int?          // 1-5 como foi a sessão
-  
-  // Progresso específico
-  sectionsWorked String[]     @default([]) // Seções específicas trabalhadas
-  challenges     String?      // Desafios encontrados
-  breakthroughs  String?      // Progressos ou descobertas
-  
-  // Ambiente e condições
-  instrument     String?      // Instrumento usado (se tiver múltiplos)
-  location       String?      // Onde praticou
-  mood           Int?         // 1-5 humor antes da prática
-  energy         Int?         // 1-5 energia depois da prática
-
-  // Configurações detalhadas
-  metronomeSettings Json?     // { bpm: number, timeSignature: string, sound: string, volume: number }
-  selectedScore     Json?     // Dados da partitura selecionada
-  studyNotes        String?   // Anotações durante o estudo
-  practiceGoals     String[]  @default([]) // Objetivos para esta sessão
-  technicalFocus    String[]  @default([]) // Focos técnicos trabalhados
-  expressiveFocus   String[]  @default([]) // Focos expressivos trabalhados
-  precisionFocus    String[]  @default([]) // Focos de precisão trabalhados
-  
-  // Avaliação pós-prática
-  postPracticeRating Int?     // 1-5 satisfação com a sessão
-  postPracticeNotes  String?  // Notas de reflexão
-  nextSessionGoals   String[] @default([]) // Objetivos para próxima sessão
-  
-  // Métricas detalhadas
-  pauseCount        Int       @default(0) // Quantas vezes pausou
-  restartCount      Int       @default(0) // Quantas vezes recomeçou
-  sectionsRepeated  Json?     // Seções que foram repetidas e quantas vezes
-  
-  // NOVOS: Tracking de interações com a partitura
-  pagesViewed       Int[]     @default([]) // Páginas que foram visualizadas
-  annotationsCreated Int      @default(0)  // Quantas anotações foram criadas
-  bookmarksCreated   Int      @default(0)  // Quantos bookmarks foram criados
-  pdfZoomChanges     Int      @default(0)  // Quantas vezes mudou o zoom
-  
-  // Configurações da sessão
-  pdfSettings       Json?     // { zoom: number, theme: 'light'|'dark', layout: 'single'|'spread' }
-  windowLayout      Json?     // Layout da tela (posições dos painéis)
-  
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-
-  @@index([userId, date])
-  @@index([workId, date])
-  @@index([userId, workId])
-  @@index([scoreId])
-}
-
-// Restante dos models existentes permanecem iguais...
-// (Account, Session, VerificationToken, Composer, Epoch, Role, Instrument, Work, etc.)
+// Models existentes (mantendo todos)
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -331,38 +308,78 @@ model Composer {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   fullName      String
-  birthDate     String?
-  deathDate     String?
+  otherName     String?  // Nome alternativo (contentSub)
+  
+  // 🆕 Nomes alternativos da página IMSLP
+  alternativeNames    String?  // 🆕 Nomes alternativos/Transliterações
+  namesInOtherLangs   String?  // 🆕 Nome em outras línguas  
+  pseudonyms          String?  // 🆕 Pseudônimos
+  
+  // Datas melhoradas - podem conter dia/mês/ano
+  birthDate     String?  // Ex: "31 de janeiro de 1797", "1797", "January 31, 1797"
+  deathDate     String?  // Ex: "28 de novembro de 1828", "1828", "November 28, 1828"
+  
   portraitUrl   String?
   epochId       String   @db.ObjectId
   epochName     String?
   bio           String?
-  createdAt     DateTime @default(now())
+  
+  // 🆕 Informações detalhadas da página IMSLP
+  diverseInfo         String?  // 🆕 Informação diversa (biografia detalhada)
+  externalLinks       String?  // 🆕 Links externos úteis
+  
+  // Dados IMSLP
   permLinkImslp String?
   imslpId       String?
   wikipediaLink String?
-
+  
+  // 🆕 Dados estatísticos e geográficos (mantidos)
+  nationality          String?  // País/nacionalidade (ex: "German", "Austrian", "Brazilian")
+  instruments          String?  // Instrumentos associados (ex: "Piano, Violin, Orchestra")
+  
+  // 🆕 Categorias e classificações IMSLP
+  imslpCategories      String?  // 🔄 VOLTOU - Categorias do IMSLP (ex: "Romantic composers, German composers, Pianists")
+  
+  // 🆕 Metadados da página IMSLP
+  lastModifiedImslp    String?  // Data da última modificação no IMSLP
+  pageStatus           String?  // Status da página: "complete", "stub", "needs_work"
+  pageQuality          String?  // Qualidade da página: "high", "medium", "low"
+  
+  // 🆕 Dados de cache e verificação
+  lastVerified         DateTime @default(now())
+  dataCompleteness     Float?   // Porcentagem de completude dos dados (0-100)
+  hasValidImage        Boolean  @default(false) // Se tem imagem válida (não placeholder)
+  
+  // Campos existentes
   primaryRoleId String @db.ObjectId
   primaryRole   Role   @relation("PrimaryRole", fields: [primaryRoleId], references: [id])
+  roles         String?
+  createdAt     DateTime @default(now())
 
+  // Relações existentes
   epoch       Epoch              @relation(fields: [epochId], references: [id])
   works       Work[]
   favoritedBy FavoriteComposer[]
-
   favoriteByUsers User[] @relation("FavoriteComposer")
 
-  roles String?
-
+  // 🆕 Índices otimizados
   @@index([name])
   @@index([epochId])
   @@index([fullName])
+  @@index([otherName])             // Índice para nome alternativo
+  @@index([alternativeNames])      // 🆕 Índice para nomes alternativos
+  @@index([imslpCategories])       // 🔄 VOLTOU - Índice para categorias IMSLP
   @@index([primaryRoleId])
   @@index([imslpId])
+  @@index([nationality])
+  @@index([birthDate])             // Para filtros por período
+  @@index([deathDate])             // Para filtros por período
+  @@index([hasValidImage])
   @@index([name, epochId])
   @@index([epochId, primaryRoleId])
   @@index([name, fullName])
+  @@index([nationality, epochId])
 }
-
 model Epoch {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
@@ -445,11 +462,14 @@ model Work {
   wantToLearners WantToLearn[]
   learners       Learned[]
   studySessions  StudySession[]
-    selectedScores UserSelectedScore[]
+  selectedScores UserSelectedScore[]
 
-  // NOVOS: Anotações PDF e bookmarks
   pdfAnnotations PdfAnnotation[]
   scoreBookmarks ScoreBookmark[]
+  
+  // 🆕 Relações com sistema de cache
+  cachedScores       WorkScore[]
+  processingLogs     ScoreProcessingLog[]
 
   @@index([title])
   @@index([composerId])
@@ -466,6 +486,8 @@ model Work {
   @@index([categoryNames])
   @@index([workGenresArr])
 }
+
+// Outros models permanecem iguais...
 
 model UserInstrument {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
@@ -494,6 +516,133 @@ model Annotation {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+}
+
+model PdfAnnotation {
+  id       String         @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String         @db.ObjectId
+  workId   String         @db.ObjectId
+  scoreId  String
+  
+  type     AnnotationType
+  content  String?
+  
+  page     Int
+  x        Float
+  y        Float
+  width    Float?
+  height   Float?
+  
+  color    String?
+  fontSize Int?
+  strokeWidth Float?
+  drawing  Json?
+  
+  measure  Int?
+  beat     Float?
+  voice    Int?
+  
+  isPublic Boolean       @default(false)
+  tags     String[]      @default([])
+  
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, workId, scoreId])
+  @@index([workId, scoreId, page])
+  @@index([type])
+}
+
+model ScoreBookmark {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  workId      String   @db.ObjectId
+  scoreId     String
+  
+  title       String
+  description String?
+  color       String   @default("#3B82F6")
+  
+  page        Int
+  measure     Int?
+  system      Int?
+  
+  x           Float?
+  y           Float?
+  
+  sortOrder   Int      @default(0)
+  
+  isPublic    Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  
+  @@index([userId, workId, scoreId])
+  @@index([workId, scoreId])
+  @@index([sortOrder])
+}
+
+model StudySession {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String        @db.ObjectId
+  workId        String        @db.ObjectId
+  scoreId       String?
+  
+  date          DateTime      @default(now())
+  durationMin   Int
+  
+  metronomeUsed Boolean       @default(false)
+  tempoMarking  String?
+  focus         PracticeFocus
+  notes         String?
+  rating        Int?
+  
+  sectionsWorked String[]     @default([])
+  challenges     String?
+  breakthroughs  String?
+  
+  instrument     String?
+  location       String?
+  mood           Int?
+  energy         Int?
+
+  metronomeSettings Json?
+  selectedScore     Json?
+  studyNotes        String?
+  practiceGoals     String[]  @default([])
+  technicalFocus    String[]  @default([])
+  expressiveFocus   String[]  @default([])
+  precisionFocus    String[]  @default([])
+  
+  postPracticeRating Int?
+  postPracticeNotes  String?
+  nextSessionGoals   String[] @default([])
+  
+  pauseCount        Int       @default(0)
+  restartCount      Int       @default(0)
+  sectionsRepeated  Json?
+  
+  pagesViewed       Int[]     @default([])
+  annotationsCreated Int      @default(0)
+  bookmarksCreated   Int      @default(0)
+  pdfZoomChanges     Int      @default(0)
+  
+  pdfSettings       Json?
+  windowLayout      Json?
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@index([workId, date])
+  @@index([userId, workId])
+  @@index([scoreId])
 }
 
 model WantToLearn {
@@ -557,15 +706,13 @@ model UserSelectedScore {
   userId    String
   workId    String
   
-  // Dados da partitura (copiados do IMSLP)
-  imslpScoreId   String   // ID original do IMSLP
+  imslpScoreId   String
   title          String
   downloadUrl    String
   fileSize       String?
   pageCount      String?
   fileFormat     String   @default("PDF")
   
-  // Metadados adicionais
   editor         String?
   publisher      String?
   copyright      String?
@@ -574,25 +721,20 @@ model UserSelectedScore {
   uploader       String?
   notes          String?
   
-  // Classificação IMSLP
   type           IMSLPScoreType  @default(SCORES)
   groupIndex     Int?
   groupTitle     String?
   
-  // Rating e downloads do IMSLP
   rating         Float?
   ratingsCount   Int?
   downloadCount  Int?
   
-  // Cache e timestamps
   lastVerified   DateTime @default(now())
   isActive       Boolean  @default(true)
   
-  // Relacionamentos
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   work           Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
   
-  // Índices para performance
   @@unique([userId, workId, imslpScoreId])
   @@index([userId, workId])
   @@index([workId])
