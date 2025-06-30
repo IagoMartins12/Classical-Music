@@ -450,6 +450,13 @@ model Work {
 
   createdAt DateTime @default(now())
 
+  subtitle             String?
+  timeSignature        String?
+  tempoMarking         String?
+  movementsDetailed    Json?
+  imslpTags            String[] @default([])
+  difficultyLevel      DifficultyLevel?
+
   composer   Composer   @relation(fields: [composerId], references: [id])
   epoch      Epoch      @relation(fields: [epochId], references: [id])
   instrument Instrument @relation(fields: [instrumentId], references: [id])

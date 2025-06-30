@@ -94,7 +94,7 @@ export default function AboutPage() {
   return (
     <PageContainer showBackground={true} className="classical-theme">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 lg:py-32">
+      <section className="relative overflow-hidden py-16">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="relative section-wrap">
@@ -146,7 +146,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission Section */}
-      <section className="py-20">
+      <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="section-wrap">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -272,7 +272,7 @@ export default function AboutPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gradient-to-b from-transparent to-theme-secondary/30">
+      <section className="py-8 bg-gradient-to-b from-transparent to-theme-secondary/30">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
           <div className="section-wrap">
             <div className="text-center mb-16">
@@ -315,7 +315,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-20">
+      <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="section-wrap">
             <div className="text-center mb-16">
@@ -351,7 +351,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 relative overflow-hidden">
+      <section className="py-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/10 via-accent-purple/5 to-accent-blue/10"></div>
 
         <AnimatedContainer delay={0.1} staggerSpeed="normal">

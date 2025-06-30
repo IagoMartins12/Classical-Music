@@ -66,6 +66,7 @@ interface AnimatedItemProps extends BaseAnimationProps {
 
 export const AnimatedItem: React.FC<AnimatedItemProps> = ({
   children,
+  speed,
   direction = 'up',
   springType = 'smooth',
   hover = 'none',

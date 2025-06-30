@@ -107,147 +107,128 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
   const IconComponent = config.icon;
 
   return (
-    <AnimatedCard hover="none" className="classical-card p-12 mt-4 text-center">
-      <AnimatedContainer delay={0.1} staggerSpeed="normal">
-        <div className="max-w-none lg:max-w-3xl mx-auto">
-          {/* Ícone */}
-          <AnimatedItem direction="scale" springType="bouncy">
-            <div className="w-16 h-16 bg-gradient-to-br from-theme-secondary to-theme-elevated rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <IconComponent className="w-8 h-8 text-theme-tertiary" />
-            </div>
-          </AnimatedItem>
-
-          {/* Título e Descrição */}
-          <AnimatedItem direction="up" springType="gentle">
-            <h3 className="text-2xl font-bold text-theme-primary mb-4 classical-title">
-              {config.title}
-            </h3>
-          </AnimatedItem>
-
-          <AnimatedItem direction="up" springType="gentle">
-            <p className="text-theme-secondary mb-8 classical-body">
-              {config.description}
-            </p>
-          </AnimatedItem>
-
-          {/* Ações */}
-          <div className="space-y-4">
-            {/* Ação principal personalizada (filtros) */}
-            {config.primaryAction && config.primaryAction.onClick && (
-              <AnimatedItem direction="up" springType="gentle" hover="scale">
-                <button
-                  onClick={config.primaryAction.onClick}
-                  className="btn-classical-primary flex items-center justify-center space-x-2 group mx-auto"
-                >
-                  <config.primaryAction.icon className="w-4 h-4" />
-                  <span>{config.primaryAction.label}</span>
-                </button>
-              </AnimatedItem>
-            )}
-
-            {/* Ação principal com link */}
-            {config.primaryAction && config.primaryAction.href && (
-              <AnimatedItem direction="up" springType="gentle" hover="scale">
-                <Link
-                  href={config.primaryAction.href}
-                  className="btn-classical-primary flex items-center justify-center space-x-2 group mx-auto"
-                >
-                  <config.primaryAction.icon className="w-4 h-4" />
-                  <span>{config.primaryAction.label}</span>
-                  <svg
-                    className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </Link>
-              </AnimatedItem>
-            )}
-
-            {/* Ações secundárias (para estado 'all' sem filtros) */}
-            {config.showSecondaryActions && (
-              <AnimatedItem direction="up" springType="gentle">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <AnimatedItem hover="scale">
-                    <Link
-                      href="/composers"
-                      className="btn-classical-primary flex items-center justify-center space-x-2 group"
-                    >
-                      <FiUser className="w-4 h-4" />
-                      <span>Explorar Compositores</span>
-                      <svg
-                        className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </Link>
-                  </AnimatedItem>
-
-                  <AnimatedItem hover="scale">
-                    <Link
-                      href="/works"
-                      className="btn-classical-secondary flex items-center justify-center space-x-2 group"
-                    >
-                      <FiMusic className="w-4 h-4" />
-                      <span>Descobrir Obras</span>
-                      <svg
-                        className="w-4 h-4 transition-transform group-hover:translate-x-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </Link>
-                  </AnimatedItem>
-                </div>
-              </AnimatedItem>
-            )}
-
-            {/* Dica */}
-            {config.tip && (
-              <AnimatedItem direction="scale" springType="gentle">
-                <div className="mt-8 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-6 h-6 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mt-0.5">
-                      <FiStar className="w-3 h-3 text-white" />
-                    </div>
-                    <div className="text-left">
-                      <h4 className="font-semibold text-theme-primary text-sm mb-1">
-                        Dica para começar
-                      </h4>
-                      <p className="text-xs text-theme-secondary">
-                        {config.tip}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </AnimatedItem>
-            )}
-          </div>
+    <AnimatedContainer
+      speed="fast"
+      className="classical-card p-12 mt-4 text-center"
+    >
+      <div className="max-w-none lg:max-w-3xl mx-auto">
+        {/* Ícone */}
+        <div className="w-16 h-16 bg-gradient-to-br from-theme-secondary to-theme-elevated rounded-3xl flex items-center justify-center mx-auto mb-6">
+          <IconComponent className="w-8 h-8 text-theme-tertiary" />
         </div>
-      </AnimatedContainer>
-    </AnimatedCard>
+
+        {/* Título e Descrição */}
+        <h3 className="text-2xl font-bold text-theme-primary mb-4 classical-title">
+          {config.title}
+        </h3>
+
+        <p className="text-theme-secondary mb-8 classical-body">
+          {config.description}
+        </p>
+
+        {/* Ações */}
+        <div className="space-y-4">
+          {/* Ação principal personalizada (filtros) */}
+          {config.primaryAction && config.primaryAction.onClick && (
+            <button
+              onClick={config.primaryAction.onClick}
+              className="btn-classical-primary flex items-center justify-center space-x-2 group mx-auto"
+            >
+              <config.primaryAction.icon className="w-4 h-4" />
+              <span>{config.primaryAction.label}</span>
+            </button>
+          )}
+
+          {/* Ação principal com link */}
+          {config.primaryAction && config.primaryAction.href && (
+            <Link
+              href={config.primaryAction.href}
+              className="btn-classical-primary flex items-center justify-center space-x-2 group mx-auto"
+            >
+              <config.primaryAction.icon className="w-4 h-4" />
+              <span>{config.primaryAction.label}</span>
+              <svg
+                className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Link>
+          )}
+
+          {/* Ações secundárias (para estado 'all' sem filtros) */}
+          {config.showSecondaryActions && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Link
+                href="/composers"
+                className="btn-classical-primary flex items-center justify-center space-x-2 group"
+              >
+                <FiUser className="w-4 h-4" />
+                <span>Explorar Compositores</span>
+                <svg
+                  className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </Link>
+
+              <Link
+                href="/works"
+                className="btn-classical-secondary flex items-center justify-center space-x-2 group"
+              >
+                <FiMusic className="w-4 h-4" />
+                <span>Descobrir Obras</span>
+                <svg
+                  className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </Link>
+            </div>
+          )}
+
+          {/* Dica */}
+          {config.tip && (
+            <div className="mt-8 p-4 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
+              <div className="flex items-start space-x-3">
+                <div className="w-6 h-6 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-lg flex items-center justify-center mt-0.5">
+                  <FiStar className="w-3 h-3 text-white" />
+                </div>
+                <div className="text-left">
+                  <h4 className="font-semibold text-theme-primary text-sm mb-1">
+                    Dica para começar
+                  </h4>
+                  <p className="text-xs text-theme-secondary">{config.tip}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </AnimatedContainer>
   );
 };
 

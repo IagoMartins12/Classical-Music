@@ -31,8 +31,16 @@ interface Work {
   };
 }
 
+interface MovementDetail {
+  number: number;
+  title: string;
+  tempo: string;
+  key?: string;
+}
+
 interface WorkData {
   title: string;
+  subtitle: string | null;
   composerId: string;
   workGenreId: string;
   instrumentId: string;
@@ -40,16 +48,21 @@ interface WorkData {
   imslpPermlink: string;
   imslpId: string;
   videoUrl: string | null;
-  opOrCatalog: string | null;
+  opOrCatalog?: string | null;
   compositionYear: string | null;
   firstPublishDate: string | null;
   tone: string | null;
+  timeSignature: string | null;
+  tempoMarking: string | null;
   mediaDuration: string | null;
   workStyle: string | null;
   moviment: string | null;
+  movementsDetailed: MovementDetail[];
   dedicateTo: string | null;
   dedicationComposerLink: string | null;
   instrumentation: string | null;
+  imslpTags: string[];
+  difficultyLevel: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | null;
   workType:
     | 'INDIVIDUAL'
     | 'COMPLETE_WORK'
@@ -197,6 +210,7 @@ class WorkScraper {
       return translatedNote;
     }
   }
+
   translateInstrumentation(instrumentation: string): string {
     if (!instrumentation || typeof instrumentation !== 'string') {
       return '';
@@ -204,6 +218,10 @@ class WorkScraper {
 
     // Limpar e normalizar a string
     let translated = instrumentation.toLowerCase().trim();
+
+    // CORREÇÃO DO BUG: Remover padrões como "1 piano", "2 violins", "3 flutes" etc.
+    // Manter apenas o nome do instrumento
+    translated = translated.replace(/\b\d+\s+/g, '');
 
     // Substituir vírgulas seguidas por espaços para padronizar separadores
     translated = translated.replace(/,\s*/g, ', ');
@@ -358,13 +376,6 @@ class WorkScraper {
       const existing = await prisma.work.findFirst({
         where: {
           imslpId: imslpId,
-          // OR: [
-          //   { imslpId: imslpId },
-          //   {
-          // title: title,
-          // imslpId: { not: imslpId },
-          // },
-          // ],
         },
       });
       return !!existing;
@@ -435,7 +446,6 @@ class WorkScraper {
 
       // Verificar se o gênero em português é válido
       if (!this.isValidPortugueseGenre(normalizedName)) {
-        // console.log(`⚠️ WorkGenre inválido ignorado: ${workTypeName}`);
         return null;
       }
 
@@ -508,7 +518,7 @@ class WorkScraper {
   // Determinar tipo de trabalho baseado no título
   determineWorkType(
     title: string,
-    $?: cheerio.CheerioAPI // Parâmetro opcional para análise da página
+    $?: cheerio.CheerioAPI
   ):
     | 'INDIVIDUAL'
     | 'COMPLETE_WORK'
@@ -584,10 +594,8 @@ class WorkScraper {
     };
 
     // 1. Verificar se é uma COLLABORATION
-    // Colaborações geralmente têm múltiplos compositores indicados no título
     for (const keyword of WORK_TYPE_KEYWORDS.COLLABORATION) {
       if (titleLower.includes(keyword)) {
-        // Verificar se há indicação de múltiplos compositores
         if (titleLower.match(/\b(with|and|&|feat\.)\s+[a-z]/i)) {
           return 'COLLABORATION';
         }
@@ -595,7 +603,6 @@ class WorkScraper {
     }
 
     // 2. Verificar se é COLLECTED WORKS
-    // Obras coletadas de um compositor específico
     for (const keyword of WORK_TYPE_KEYWORDS.COLLECTED_WORKS) {
       if (titleLower.includes(keyword)) {
         return 'COLLECTED_WORKS';
@@ -603,7 +610,6 @@ class WorkScraper {
     }
 
     // 3. Verificar se é COLLECTIONS WITH
-    // Coleções que incluem obras de vários compositores
     for (const keyword of WORK_TYPE_KEYWORDS.COLLECTIONS_WITH) {
       if (titleLower.includes(keyword)) {
         return 'COLLECTIONS_WITH';
@@ -656,36 +662,6 @@ class WorkScraper {
       ) {
         return 'COLLABORATION';
       }
-    }
-
-    // Análise baseada em padrões específicos do título
-
-    // Padrão para identificar obras coletadas por tema específico
-    // Ex: "Il mio primo Chopin" (Meu primeiro Chopin)
-    if (
-      titleLower.match(
-        /\b(primo|first|meu|my|introduction to|beginning)\s+\w+$/i
-      )
-    ) {
-      return 'COLLECTED_WORKS';
-    }
-
-    // Padrão para masterpieces e antologias
-    if (
-      titleLower.match(
-        /\b(masterpieces?|anthology|treasury|best)\s+(of|from)\b/i
-      )
-    ) {
-      return 'COLLECTIONS_WITH';
-    }
-
-    // Se contém nome de compositor no título mas não é do próprio compositor
-    // pode indicar uma coleção dedicada a esse compositor
-    const composerInTitle = titleLower.match(
-      /\b(bach|mozart|beethoven|chopin|brahms|liszt|schumann|debussy|ravel)\b/i
-    );
-    if (composerInTitle) {
-      return 'COLLECTED_WORKS';
     }
 
     // Default: assumir que é uma composição individual
@@ -762,11 +738,11 @@ class WorkScraper {
 
     return Array.from(categories);
   }
+
   async extractWorkGenres($: cheerio.CheerioAPI): Promise<string[]> {
     const workGenres: Set<string> = new Set();
 
     // Buscar em diferentes locais da página
-    // 1. Categorias de gênero
     $('.wp_header table tr').each((index, element) => {
       const $row = $(element);
       const header = $row.find('th').first().text().trim().toLowerCase();
@@ -798,7 +774,7 @@ class WorkScraper {
     });
 
     if (workGenres.size === 0) {
-      workGenres.add('não definido'); // Traduzido para português
+      workGenres.add('não definido');
     }
 
     return Array.from(workGenres);
@@ -807,6 +783,325 @@ class WorkScraper {
   private getCategoryNameInPortuguese(categoryName: string): string | null {
     const normalizedCategory = categoryName.toLowerCase().trim();
     return NORMALIZED_CATEGORIES[normalizedCategory] || null;
+  }
+
+  // Extrair subtítulo/apelido da obra
+  extractSubtitle(title: string, $: cheerio.CheerioAPI): string | null {
+    // Procurar por "Alternative Title" na página
+    let subtitle: string | null = null;
+
+    $('.wp_header table tr').each((index, element) => {
+      const $row = $(element);
+      const header = $row.find('th').first().text().trim().toLowerCase();
+      const value = $row.find('td').text().trim();
+
+      if (header.includes('alternative') && header.includes('title')) {
+        subtitle = value;
+        return false; // break
+      }
+    });
+
+    // Se não encontrou, tentar extrair do título entre parênteses ou aspas
+    if (!subtitle) {
+      // Procurar por texto entre parênteses ou aspas no título
+      const parenthesesMatch = title.match(/\((.*?)\)/);
+      const quotesMatch = title.match(/"(.*?)"/);
+
+      if (parenthesesMatch && parenthesesMatch[1]) {
+        subtitle = parenthesesMatch[1];
+      } else if (quotesMatch && quotesMatch[1]) {
+        subtitle = quotesMatch[1];
+      }
+    }
+
+    // Procurar por nomes famosos na página
+    if (!subtitle) {
+      const pageText = $('body').text().toLowerCase();
+      const famousNicknames = [
+        'moonlight',
+        'pathétique',
+        'pastoral',
+        'emperor',
+        'heroic',
+        'jupiter',
+        'prague',
+        'linz',
+        'great',
+        'little',
+        'spring',
+        'kreutzer',
+        'appassionata',
+        'waldstein',
+        'hammerklavier',
+        'tempest',
+        'hunt',
+        'clock',
+        'surprise',
+        'military',
+        'london',
+      ];
+
+      for (const nickname of famousNicknames) {
+        if (
+          pageText.includes(nickname) &&
+          !title.toLowerCase().includes(nickname)
+        ) {
+          subtitle = nickname.charAt(0).toUpperCase() + nickname.slice(1);
+          break;
+        }
+      }
+    }
+
+    return subtitle && subtitle.length > 0 ? subtitle : null;
+  }
+
+  // Extrair detalhes dos movimentos
+  extractMovementsDetailed($: cheerio.CheerioAPI): MovementDetail[] {
+    const movements: MovementDetail[] = [];
+
+    // Procurar pela seção de movimentos/conteúdo
+    $('.wp_header table tr').each((index, element) => {
+      const $row = $(element);
+      const header = $row.find('th').first().text().trim().toLowerCase();
+
+      if (header.includes('movements') || header.includes('contents')) {
+        const movementText = $row.find('td').text().trim();
+
+        // Parse dos movimentos
+        const movementLines = movementText
+          .split('\n')
+          .filter((line) => line.trim());
+
+        movementLines.forEach((line, index) => {
+          const trimmedLine = line.trim();
+          if (trimmedLine) {
+            // Extrair andamento (palavras em itálico ou maiúscula)
+            const tempoMatch = trimmedLine.match(
+              /(Adagio|Allegro|Andante|Presto|Largo|Moderato|Vivace|Lento)[^,]*/i
+            );
+            const tempo = tempoMatch ? tempoMatch[0] : '';
+
+            movements.push({
+              number: index + 1,
+              title: trimmedLine,
+              tempo: tempo,
+            });
+          }
+        });
+      }
+    });
+
+    // Se não encontrou movimentos na tabela, procurar em outras seções
+    if (movements.length === 0) {
+      // Procurar links ou texto que indique movimentos
+      $('a').each((index, element) => {
+        const text = $(element).text().trim();
+        const movementMatch = text.match(/(\d+)\.\s*(.*?)(?:\(|$)/);
+
+        if (movementMatch) {
+          const number = parseInt(movementMatch[1]);
+          const title = movementMatch[2].trim();
+          const tempoMatch = title.match(
+            /(Adagio|Allegro|Andante|Presto|Largo|Moderato|Vivace|Lento)[^,]*/i
+          );
+
+          movements.push({
+            number: number,
+            title: title,
+            tempo: tempoMatch ? tempoMatch[0] : '',
+          });
+        }
+      });
+    }
+
+    return movements;
+  }
+
+  // Extrair compasso
+  extractTimeSignature($: cheerio.CheerioAPI): string | null {
+    let timeSignature: string | null = null;
+
+    $('.wp_header table tr').each((index, element) => {
+      const $row = $(element);
+      const header = $row.find('th').first().text().trim().toLowerCase();
+      const value = $row.find('td').text().trim();
+
+      if (header.includes('time signature') || header.includes('meter')) {
+        timeSignature = value;
+        return false;
+      }
+    });
+
+    // Se não encontrou, procurar por padrões comuns
+    if (!timeSignature) {
+      const pageText = $('body').text();
+      const timeSignatureMatch = pageText.match(/\b(\d+\/\d+)\b/);
+      if (timeSignatureMatch) {
+        timeSignature = timeSignatureMatch[1];
+      }
+    }
+
+    return timeSignature && timeSignature !== '-' ? timeSignature : null;
+  }
+
+  // Extrair andamento
+  extractTempoMarking($: cheerio.CheerioAPI): string | null {
+    let tempoMarking: string | null = null;
+
+    $('.wp_header table tr').each((index, element) => {
+      const $row = $(element);
+      const header = $row.find('th').first().text().trim().toLowerCase();
+      const value = $row.find('td').text().trim();
+
+      if (header.includes('tempo') || header.includes('andamento')) {
+        tempoMarking = value;
+        return false;
+      }
+    });
+
+    // Se não encontrou, procurar por indicações de andamento no texto
+    if (!tempoMarking) {
+      const pageText = $('body').text();
+      const tempoTerms = [
+        'Allegro',
+        'Adagio',
+        'Andante',
+        'Presto',
+        'Largo',
+        'Moderato',
+        'Vivace',
+        'Lento',
+      ];
+
+      for (const term of tempoTerms) {
+        const regex = new RegExp(`\\b${term}[^,]*`, 'i');
+        const match = pageText.match(regex);
+        if (match) {
+          tempoMarking = match[0];
+          break;
+        }
+      }
+    }
+
+    return tempoMarking && tempoMarking !== '-' ? tempoMarking : null;
+  }
+
+  // Extrair tags do IMSLP
+  extractIMSLPTags($: cheerio.CheerioAPI): string[] {
+    const tags: Set<string> = new Set();
+
+    // Procurar por categorias na página
+    $('a[href*="Category:"]').each((index, element) => {
+      const href = $(element).attr('href');
+      if (href) {
+        const categoryMatch = href.match(/Category:(.+)/);
+        if (categoryMatch) {
+          const tag = decodeURIComponent(categoryMatch[1]).replace(/_/g, ' ');
+          tags.add(tag);
+        }
+      }
+    });
+
+    return Array.from(tags);
+  }
+
+  // Determinar nível de dificuldade
+  determineDifficultyLevel(
+    title: string,
+    opOrCatalog: string | null | undefined,
+    workGenres: string[]
+  ): 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | null {
+    const titleLower = title.toLowerCase();
+
+    // Indicadores de nível iniciante
+    const beginnerIndicators = [
+      'easy',
+      'simple',
+      'first',
+      'elementary',
+      'children',
+      'student',
+      'lesson',
+      'exercise',
+      'étude facile',
+      'fácil',
+      'iniciante',
+      'beginner',
+      'albumblätter',
+      'lyric pieces',
+    ];
+
+    // Indicadores de nível avançado
+    const advancedIndicators = [
+      'concert',
+      'concerto',
+      'virtuoso',
+      'transcendental',
+      'paganini',
+      'liszt',
+      'chopin etude',
+      'ballad',
+      'scherzo',
+      'sonata',
+      'rhapsody',
+      'fantasy',
+      'variations',
+      'toccata',
+    ];
+
+    // Verificar indicadores no título
+    for (const indicator of beginnerIndicators) {
+      if (titleLower.includes(indicator)) {
+        return 'BEGINNER';
+      }
+    }
+
+    for (const indicator of advancedIndicators) {
+      if (titleLower.includes(indicator)) {
+        return 'ADVANCED';
+      }
+    }
+
+    // Verificar por opus numbers (geralmente números baixos são mais fáceis)
+    if (opOrCatalog) {
+      const opusMatch = opOrCatalog.match(/op\.?\s*(\d+)/i);
+      if (opusMatch) {
+        const opusNumber = parseInt(opusMatch[1]);
+        if (opusNumber <= 10) {
+          return 'BEGINNER';
+        } else if (opusNumber >= 50) {
+          return 'ADVANCED';
+        }
+      }
+    }
+
+    // Verificar gêneros
+    const beginnerGenres = [
+      'estudos',
+      'exercícios',
+      'minuetos',
+      'danças simples',
+    ];
+    const advancedGenres = [
+      'concertos',
+      'sonatas',
+      'rapsódias',
+      'fantasias',
+      'baladas',
+    ];
+
+    for (const genre of workGenres) {
+      const genreLower = genre.toLowerCase();
+      if (beginnerGenres.some((bg) => genreLower.includes(bg))) {
+        return 'BEGINNER';
+      }
+      if (advancedGenres.some((ag) => genreLower.includes(ag))) {
+        return 'ADVANCED';
+      }
+    }
+
+    // Default para intermediário se não conseguir determinar
+    return 'INTERMEDIATE';
   }
 
   // Extrair dados detalhados da obra com retry
@@ -839,7 +1134,6 @@ class WorkScraper {
       });
 
       const $ = cheerio.load(pageResponse.data);
-      const pageText = $('body').text().toLowerCase();
 
       // Extrair informações detalhadas
       const workDetails: Partial<WorkData> = {};
@@ -847,14 +1141,26 @@ class WorkScraper {
       // Título limpo
       workDetails.title = worktitle.trim();
 
+      // Extrair subtítulo
+      workDetails.subtitle = this.extractSubtitle(worktitle, $);
+
       // IDs básicos
       workDetails.composerId = composerData.id;
       workDetails.imslpPermlink = permlink;
       workDetails.imslpId = pageid || id;
 
       // Determinar tipo de trabalho
-      let workTypeText = this.determineWorkType(worktitle, $);
       workDetails.workType = this.determineWorkType(worktitle, $);
+
+      // Extrair movimentos detalhados
+      workDetails.movementsDetailed = this.extractMovementsDetailed($);
+
+      // Extrair compasso e andamento
+      workDetails.timeSignature = this.extractTimeSignature($);
+      workDetails.tempoMarking = this.extractTempoMarking($);
+
+      // Extrair tags do IMSLP
+      workDetails.imslpTags = this.extractIMSLPTags($);
 
       // Extrair informações da tabela de detalhes
       $('.wi_body table tr, .wp_header table tr').each((index, element) => {
@@ -950,14 +1256,18 @@ class WorkScraper {
       // Extrair múltiplas categorias
       const categories = await this.extractWorkCategories($);
       workDetails.categoryNames = categories;
-      console.log('WORK CATEGORIES', categories);
 
       // Extrair múltiplas workGenres
       const workGenres = await this.extractWorkGenres($);
       workDetails.workGenres = workGenres;
       workDetails.workGenresArr = workGenres;
 
-      console.log('WORK GENRES', workGenres);
+      // Determinar nível de dificuldade
+      workDetails.difficultyLevel = this.determineDifficultyLevel(
+        workDetails.title,
+        workDetails.opOrCatalog,
+        workGenres
+      );
 
       // Determinar se é parte de uma coleção
       workDetails.isPartOfCollection =
@@ -967,7 +1277,6 @@ class WorkScraper {
 
       // Buscar trabalho pai se for parte de uma coleção
       if (workDetails.isPartOfCollection) {
-        // Tentar encontrar o trabalho pai baseado no título
         const baseTitle = workDetails.title
           .replace(/No\.\s*\d+.*$/i, '')
           .trim();
@@ -1051,7 +1360,7 @@ class WorkScraper {
       if (!primaryWorkGenre) {
         primaryWorkGenre = await this.findOrCreateWorkGenre('Pieces');
       }
-      // workDetails.genreId = primaryGenre?.id || DEFAULT_GENRE_ID;
+
       workDetails.workGenreId = primaryWorkGenre?.id || DEFAULT_WORK_GENRE_ID;
 
       let epoch = workDetails.workStyle;
@@ -1136,6 +1445,7 @@ class WorkScraper {
       // Compilar dados finais
       const finalWorkData: WorkData = {
         title: workDetails.title.replace(/"/g, '') || worktitle,
+        subtitle: workDetails.subtitle,
         composerId: workDetails.composerId ?? '',
         workGenreId: workDetails.workGenreId ?? DEFAULT_WORK_GENRE_ID,
         instrumentId: workDetails.instrumentId ?? DEFAULT_INSTRUMENT_ID,
@@ -1147,12 +1457,17 @@ class WorkScraper {
         compositionYear: workDetails.compositionYear || null,
         firstPublishDate: workDetails.firstPublishDate || null,
         tone: workDetails.tone || null,
+        timeSignature: workDetails.timeSignature || null,
+        tempoMarking: workDetails.tempoMarking || null,
         mediaDuration: workDetails.mediaDuration || null,
         workStyle: workDetails.workStyle || null,
         moviment: workDetails.moviment || null,
+        movementsDetailed: workDetails.movementsDetailed || [],
         dedicateTo: workDetails.dedicateTo || null,
         dedicationComposerLink: workDetails.dedicationComposerLink || null,
         instrumentation: workDetails.instrumentation || null,
+        imslpTags: workDetails.imslpTags || [],
+        difficultyLevel: workDetails.difficultyLevel,
         workType: workDetails.workType,
         isPartOfCollection: workDetails.isPartOfCollection || false,
         parentWorkId: workDetails.parentWorkId || null,
@@ -1166,19 +1481,20 @@ class WorkScraper {
       console.log(
         `✅ Dados extraídos para: ${finalWorkData.title.replace(/"/g, '')}`
       );
+      console.log(`   📛 Subtítulo: ${finalWorkData.subtitle || 'N/A'}`);
       console.log(`   🎼 Instrumento: ${primaryInstrument?.name || 'N/A'}`);
-      // console.log(`   🎵 Gênero: ${primaryGenre?.name || 'N/A'}`);
       console.log(`   📋 Tonalidade: ${finalWorkData.tone}`);
-
+      console.log(`   🎵 Compasso: ${finalWorkData.timeSignature || 'N/A'}`);
+      console.log(`   ⏱️ Andamento: ${finalWorkData.tempoMarking || 'N/A'}`);
+      console.log(`   🎯 Dificuldade: ${finalWorkData.difficultyLevel}`);
       console.log(`   🏛️ Época: ${epoch}`);
       console.log(`   📋 Categorias: ${finalWorkData.categoryNames}`);
-      console.log(
-        `   📋 Wor genres (sem outro banco): ${finalWorkData.workGenresArr}`
-      );
-
       console.log(`   📋 Work genres: ${finalWorkData.workGenres.length}`);
-
+      console.log(`   🏷️ IMSLP Tags: ${finalWorkData.imslpTags.length}`);
       console.log(`   🎯 Tipo: ${finalWorkData.workType}`);
+      console.log(
+        `   🎼 Movimentos: ${finalWorkData.movementsDetailed.length}`
+      );
 
       return finalWorkData;
     } catch (error) {
@@ -1242,6 +1558,7 @@ class WorkScraper {
         const savedWork = await tx.work.create({
           data: {
             title: workData.title.replace(/"/g, ''),
+            subtitle: workData.subtitle,
             composerId: workData.composerId,
             instrumentId: workData.instrumentId,
             epochId: workData.epochId,
@@ -1252,19 +1569,23 @@ class WorkScraper {
             compositionYear: workData.compositionYear,
             firstPublishDate: workData.firstPublishDate,
             tone: workData.tone,
+            timeSignature: workData.timeSignature,
+            tempoMarking: workData.tempoMarking,
             mediaDuration: workData.mediaDuration,
             workStyle: workData.workStyle,
             moviment: workData.moviment,
+            movementsDetailed: workData.movementsDetailed,
             dedicateTo: workData.dedicateTo,
             dedicationComposerLink: workData.dedicationComposerLink,
             instrumentation: workData.instrumentation,
+            imslpTags: workData.imslpTags,
+            difficultyLevel: workData.difficultyLevel,
             workType: workData.workType,
             isPartOfCollection: workData.isPartOfCollection,
             parentWorkId: workData.parentWorkId,
             movementNumber: workData.movementNumber,
             categoryNames: workData.categoryNames,
             workGenresArr: workData.workGenresArr,
-
             createdAt: new Date(),
           },
         });

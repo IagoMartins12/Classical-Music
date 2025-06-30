@@ -1,84 +1,92 @@
-// app/api/composer-works/route.ts
+// app/api/composer-works/route.ts - API para obras do compositor com filtros
 import { NextRequest, NextResponse } from 'next/server';
 import { getComposerWorksWithFilters } from '@/app/requests/composer-details';
 
+// Interface para o corpo da requisição
+interface ComposerWorksRequestBody {
+  composerId: string;
+  page?: number;
+  limit?: number;
+  filters?: {
+    instrumentId?: string;
+    workGenresArr?: string;
+    categoryNames?: string;
+    search?: string;
+    workType?: string; // Novo filtro
+  };
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { composerId, page = 1, limit = 50, filters } = await request.json();
+    const body: ComposerWorksRequestBody = await request.json();
 
     // Validação básica
-    if (!composerId) {
+    if (!body.composerId) {
       return NextResponse.json(
-        { error: 'Compositor ID é obrigatório' },
+        { error: 'composerId é obrigatório' },
         { status: 400 }
       );
     }
 
-    // Validação do ID do compositor (MongoDB ObjectId)
-    if (typeof composerId !== 'string' || composerId.length !== 24) {
-      return NextResponse.json(
-        { error: 'ID do compositor inválido' },
-        { status: 400 }
-      );
-    }
+    // Parâmetros com valores padrão
+    const page = body.page || 1;
+    const limit = Math.min(body.limit || 50, 100); // Máximo de 100 por página
+    const filters = body.filters;
 
-    // Validação da página
-    const pageNum = parseInt(page);
-    if (isNaN(pageNum) || pageNum < 1) {
-      return NextResponse.json(
-        { error: 'Número da página inválido' },
-        { status: 400 }
-      );
-    }
-
-    // Validação do limite
-    const limitNum = parseInt(limit);
-    if (isNaN(limitNum) || limitNum < 1 || limitNum > 100) {
-      return NextResponse.json(
-        { error: 'Limite deve ser entre 1 e 100' },
-        { status: 400 }
-      );
-    }
+    // Log para debug
+    console.log('Buscando obras do compositor:', {
+      composerId: body.composerId,
+      page,
+      limit,
+      filters,
+    });
 
     // Buscar obras com filtros
     const result = await getComposerWorksWithFilters(
-      composerId,
-      pageNum,
-      limitNum,
+      body.composerId,
+      page,
+      limit,
       filters
     );
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Erro na API de obras do compositor:', error);
+    console.error('Erro na API composer-works:', error);
+
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+      },
       { status: 500 }
     );
   }
 }
 
-// GET method para compatibilidade (sem filtros)
+// Método GET para casos simples (sem filtros)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const composerId = searchParams.get('composerId');
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '50');
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100);
 
     if (!composerId) {
       return NextResponse.json(
-        { error: 'Compositor ID é obrigatório' },
+        { error: 'composerId é obrigatório' },
         { status: 400 }
       );
     }
 
     const result = await getComposerWorksWithFilters(composerId, page, limit);
+
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Erro na API GET de obras do compositor:', error);
+    console.error('Erro na API composer-works (GET):', error);
+
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+      },
       { status: 500 }
     );
   }

@@ -192,106 +192,104 @@ const ActiveFilters = memo(
     if (!hasActiveFilters) return null;
 
     return (
-      <AnimatedItem direction="up" springType="gentle">
-        <div className="flex items-center gap-3 mb-4 flex-wrap pt-4 border-t border-theme-secondary">
-          <span className="text-sm font-medium text-theme-secondary">
-            Filtros ativos:
-          </span>
+      <div className="flex items-center gap-3 mb-4 flex-wrap pt-4 border-t border-theme-secondary">
+        <span className="text-sm font-medium text-theme-secondary">
+          Filtros ativos:
+        </span>
 
-          {searchParams.search && (
-            <AnimatedItem hover="scale">
-              <div className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm">
-                <span>Busca: &quot;{searchParams.search}&quot;</span>
-                <button
-                  onClick={() => onRemoveFilter('search')}
-                  className="hover:text-brand-secondary transition-colors"
-                >
-                  <FiX className="w-3 h-3" />
-                </button>
-              </div>
-            </AnimatedItem>
-          )}
-
-          {searchParams.composer && (
-            <AnimatedItem hover="scale">
-              <div className="flex items-center gap-2 px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
-                <span>Compositor: {composerName || 'Carregando...'}</span>
-                <button
-                  onClick={() => onRemoveFilter('composer')}
-                  className="hover:text-accent-purple/80 transition-colors"
-                >
-                  <FiX className="w-3 h-3" />
-                </button>
-              </div>
-            </AnimatedItem>
-          )}
-
-          {searchParams.instrument && (
-            <AnimatedItem hover="scale">
-              <div className="flex items-center gap-2 px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm">
-                <span>
-                  Instrumento:{' '}
-                  {filterOptions.instruments.find(
-                    (i) => i.id === searchParams.instrument
-                  )?.name || searchParams.instrument}
-                </span>
-                <button
-                  onClick={() => onRemoveFilter('instrument')}
-                  className="hover:text-accent-green/80 transition-colors"
-                >
-                  <FiX className="w-3 h-3" />
-                </button>
-              </div>
-            </AnimatedItem>
-          )}
-
-          {searchParams.epoch && (
-            <AnimatedItem hover="scale">
-              <div className="flex items-center gap-2 px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm">
-                <span>
-                  Período:{' '}
-                  {filterOptions.epochs.find((e) => e.id === searchParams.epoch)
-                    ?.name || searchParams.epoch}
-                </span>
-                <button
-                  onClick={() => onRemoveFilter('epoch')}
-                  className="hover:text-accent-blue/80 transition-colors"
-                >
-                  <FiX className="w-3 h-3" />
-                </button>
-              </div>
-            </AnimatedItem>
-          )}
-
-          {searchParams.workGenresArr && (
-            <AnimatedItem hover="scale">
-              <div className="flex items-center gap-2 px-3 py-1 bg-accent-orange/10 border border-accent-orange/30 text-accent-orange rounded-full text-sm">
-                <span>
-                  Gênero:{' '}
-                  {filterOptions.workGenres.find(
-                    (g) => g.id === searchParams.workGenresArr
-                  )?.name || searchParams.workGenresArr}
-                </span>
-                <button
-                  onClick={() => onRemoveFilter('genre')}
-                  className="hover:text-accent-orange/80 transition-colors"
-                >
-                  <FiX className="w-3 h-3" />
-                </button>
-              </div>
-            </AnimatedItem>
-          )}
-
+        {searchParams.search && (
           <AnimatedItem hover="scale">
-            <button
-              onClick={onClearAll}
-              className="text-sm text-accent-red hover:text-accent-red/80 underline font-medium"
-            >
-              Limpar todos os filtros
-            </button>
+            <div className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm">
+              <span>Busca: &quot;{searchParams.search}&quot;</span>
+              <button
+                onClick={() => onRemoveFilter('search')}
+                className="hover:text-brand-secondary transition-colors"
+              >
+                <FiX className="w-3 h-3" />
+              </button>
+            </div>
           </AnimatedItem>
-        </div>
-      </AnimatedItem>
+        )}
+
+        {searchParams.composer && (
+          <AnimatedItem hover="scale">
+            <div className="flex items-center gap-2 px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
+              <span>Compositor: {composerName || 'Carregando...'}</span>
+              <button
+                onClick={() => onRemoveFilter('composer')}
+                className="hover:text-accent-purple/80 transition-colors"
+              >
+                <FiX className="w-3 h-3" />
+              </button>
+            </div>
+          </AnimatedItem>
+        )}
+
+        {searchParams.instrument && (
+          <AnimatedItem hover="scale">
+            <div className="flex items-center gap-2 px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm">
+              <span>
+                Instrumento:{' '}
+                {filterOptions.instruments.find(
+                  (i) => i.id === searchParams.instrument
+                )?.name || searchParams.instrument}
+              </span>
+              <button
+                onClick={() => onRemoveFilter('instrument')}
+                className="hover:text-accent-green/80 transition-colors"
+              >
+                <FiX className="w-3 h-3" />
+              </button>
+            </div>
+          </AnimatedItem>
+        )}
+
+        {searchParams.epoch && (
+          <AnimatedItem hover="scale">
+            <div className="flex items-center gap-2 px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm">
+              <span>
+                Período:{' '}
+                {filterOptions.epochs.find((e) => e.id === searchParams.epoch)
+                  ?.name || searchParams.epoch}
+              </span>
+              <button
+                onClick={() => onRemoveFilter('epoch')}
+                className="hover:text-accent-blue/80 transition-colors"
+              >
+                <FiX className="w-3 h-3" />
+              </button>
+            </div>
+          </AnimatedItem>
+        )}
+
+        {searchParams.workGenresArr && (
+          <AnimatedItem hover="scale">
+            <div className="flex items-center gap-2 px-3 py-1 bg-accent-orange/10 border border-accent-orange/30 text-accent-orange rounded-full text-sm">
+              <span>
+                Gênero:{' '}
+                {filterOptions.workGenres.find(
+                  (g) => g.id === searchParams.workGenresArr
+                )?.name || searchParams.workGenresArr}
+              </span>
+              <button
+                onClick={() => onRemoveFilter('genre')}
+                className="hover:text-accent-orange/80 transition-colors"
+              >
+                <FiX className="w-3 h-3" />
+              </button>
+            </div>
+          </AnimatedItem>
+        )}
+
+        <AnimatedItem hover="scale">
+          <button
+            onClick={onClearAll}
+            className="text-sm text-accent-red hover:text-accent-red/80 underline font-medium"
+          >
+            Limpar todos os filtros
+          </button>
+        </AnimatedItem>
+      </div>
     );
   }
 );
@@ -549,244 +547,240 @@ const WorksClient = memo(
       <PageContainer showBackground={true}>
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           {/* Header Section */}
-          <AnimatedItem direction="up" springType="gentle">
-            <div className="relative text-center py-16">
-              <AnimatedMusicalNotes2 />
+          <div className="relative text-center py-16">
+            <AnimatedMusicalNotes2 />
 
-              <div className="relative z-10">
-                <div className="flex items-center justify-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
-                    <FiBookOpen className="w-8 h-8 text-theme-primary" />
-                  </div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-center mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center shadow-theme-glow">
+                  <FiBookOpen className="w-8 h-8 text-theme-primary" />
                 </div>
+              </div>
 
-                <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-                  Obras de Música Clássica
-                </h1>
-                <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-subtitle">
-                  Explore nossa vasta coleção de obras-primas da música clássica
+              <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
+                Obras de Música Clássica
+              </h1>
+              <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-subtitle">
+                Explore nossa vasta coleção de obras-primas da música clássica
+              </p>
+            </div>
+          </div>
+
+          {/* Search and Filters Section */}
+          <AnimatedCard
+            hover="none"
+            className={`classical-card p-6 transition-all duration-500 ${
+              isPending ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+          >
+            <div className="flex items-center mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-theme-primary classical-title">
+                  Busca e Filtros
+                </h3>
+                <p className="text-theme-secondary text-sm">
+                  Encontre exatamente a obra que procura
                 </p>
               </div>
             </div>
-          </AnimatedItem>
 
-          {/* Search and Filters Section */}
-          <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard
-              hover="none"
-              className={`classical-card p-6 transition-all duration-500 ${
-                isPending ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-            >
-              <div className="flex items-center mb-6">
-                <div>
-                  <h3 className="text-xl font-bold text-theme-primary classical-title">
-                    Busca e Filtros
-                  </h3>
-                  <p className="text-theme-secondary text-sm">
-                    Encontre exatamente a obra que procura
-                  </p>
-                </div>
-              </div>
-
-              {/* Search Bar */}
-              <div className="mb-6">
-                <div className="relative">
-                  <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
-                  <input
-                    type="text"
-                    placeholder="Buscar por título, opus, compositor..."
-                    value={searchTerm}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    className={`input-classical pl-12 pr-12 w-full ${
-                      isPending ? 'cursor-not-allowed' : ''
-                    }`}
-                    disabled={isPending}
-                  />
-                  {searchTerm && (
-                    <button
-                      onClick={() => handleSearchChange('')}
-                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
-                    >
-                      <FiX className="w-5 h-5" />
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Filter Toggle */}
-              <div className="flex items-center justify-between mb-4">
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className={`btn-classical-secondary flex items-center space-x-2 ${
-                    isPending ? '!cursor-not-allowed !hover:transform-none' : ''
+            {/* Search Bar */}
+            <div className="mb-6">
+              <div className="relative">
+                <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+                <input
+                  type="text"
+                  placeholder="Buscar por título, opus, compositor..."
+                  value={searchTerm}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className={`input-classical pl-12 pr-12 w-full ${
+                    isPending ? 'cursor-not-allowed' : ''
                   }`}
                   disabled={isPending}
-                >
-                  <FiFilter className="w-4 h-4" />
-                  <span>
-                    {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
-                  </span>
-                  <div
-                    className={`transition-transform duration-300 ${
-                      showFilters ? 'rotate-180' : ''
-                    }`}
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </div>
-                </button>
-
-                <ViewModeToggle
-                  viewMode={viewMode}
-                  onViewModeChange={setViewMode}
                 />
+                {searchTerm && (
+                  <button
+                    onClick={() => handleSearchChange('')}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
+                  >
+                    <FiX className="w-5 h-5" />
+                  </button>
+                )}
               </div>
+            </div>
 
-              {/* Expanded Filters */}
-              {showFilters && (
-                <AnimatedItem direction="scale" springType="gentle">
-                  <div className="border-t border-theme-secondary pt-6 mb-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-                      {/* Composer Filter */}
-                      <div className="space-y-2 relative z-[90]">
-                        <label className="text-sm font-medium text-theme-secondary">
-                          Compositor
-                        </label>
-                        <ComposerSearchInput
-                          selectedComposer={selectedComposer}
-                          onComposerSelect={handleComposerFilter}
-                          popularComposers={filterOptions.popularComposers}
-                          isDisabled={isPending}
-                        />
-                      </div>
+            {/* Filter Toggle */}
+            <div className="flex items-center justify-between mb-4">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`btn-classical-secondary flex items-center space-x-2 ${
+                  isPending ? '!cursor-not-allowed !hover:transform-none' : ''
+                }`}
+                disabled={isPending}
+              >
+                <FiFilter className="w-4 h-4" />
+                <span>
+                  {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
+                </span>
+                <div
+                  className={`transition-transform duration-300 ${
+                    showFilters ? 'rotate-180' : ''
+                  }`}
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </button>
 
-                      {/* Instrument Filter */}
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-theme-secondary">
-                          Instrumento
-                        </label>
-                        <div className="relative">
-                          <FiMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-                          <select
-                            value={selectedInstrument}
-                            onChange={(e) =>
-                              handleInstrumentFilter(e.target.value)
-                            }
-                            className="input-classical pl-11 w-full appearance-none"
-                            disabled={isPending}
+              <ViewModeToggle
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+              />
+            </div>
+
+            {/* Expanded Filters */}
+            {showFilters && (
+              <AnimatedContainer speed="fast" delay={0}>
+                <div className="border-t border-theme-secondary pt-6 mb-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
+                    {/* Composer Filter */}
+                    <div className="space-y-2 flex flex-col gap-1 relative z-[90]">
+                      <label className="text-sm font-medium text-theme-secondary ">
+                        Compositor
+                      </label>
+                      <ComposerSearchInput
+                        selectedComposer={selectedComposer}
+                        onComposerSelect={handleComposerFilter}
+                        popularComposers={filterOptions.popularComposers}
+                        isDisabled={isPending}
+                      />
+                    </div>
+
+                    {/* Instrument Filter */}
+                    <div className="space-y-2 flex flex-col gap-1">
+                      <label className="text-sm font-medium text-theme-secondary ">
+                        Instrumento
+                      </label>
+                      <div className="relative">
+                        <FiMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                        <select
+                          value={selectedInstrument}
+                          onChange={(e) =>
+                            handleInstrumentFilter(e.target.value)
+                          }
+                          className="input-classical pl-11 w-full appearance-none"
+                          disabled={isPending}
+                        >
+                          <option value="">Todos os instrumentos</option>
+                          {filterOptions.instruments.map((instrument) => (
+                            <option key={instrument.id} value={instrument.id}>
+                              {instrument.name}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                          <svg
+                            className="w-4 h-4 text-theme-tertiary"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
                           >
-                            <option value="">Todos os instrumentos</option>
-                            {filterOptions.instruments.map((instrument) => (
-                              <option key={instrument.id} value={instrument.id}>
-                                {instrument.name}
-                              </option>
-                            ))}
-                          </select>
-                          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                            <svg
-                              className="w-4 h-4 text-theme-tertiary"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 9l-7 7-7-7"
-                              />
-                            </svg>
-                          </div>
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
                         </div>
-                      </div>
-
-                      {/* Epoch Filter */}
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-theme-secondary">
-                          Período
-                        </label>
-                        <div className="relative">
-                          <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-                          <select
-                            value={selectedEpoch}
-                            onChange={(e) => handleEpochFilter(e.target.value)}
-                            className="input-classical pl-11 w-full appearance-none"
-                            disabled={isPending}
-                          >
-                            <option value="">Todos os períodos</option>
-                            {filterOptions.epochs.map((epoch) => (
-                              <option key={epoch.id} value={epoch.id}>
-                                {epoch.name}
-                              </option>
-                            ))}
-                          </select>
-                          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                            <svg
-                              className="w-4 h-4 text-theme-tertiary"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 9l-7 7-7-7"
-                              />
-                            </svg>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Genre Filter */}
-                      <div className="space-y-2 relative z-[70]">
-                        <label className="text-sm font-medium text-theme-secondary">
-                          Gênero
-                        </label>
-                        <GenreSearchInput
-                          selectedGenre={selectedGenre}
-                          onGenreSelect={handleGenreFilter}
-                          initialGenres={filterOptions.workGenres}
-                          isDisabled={isPending}
-                        />
                       </div>
                     </div>
+
+                    {/* Epoch Filter */}
+                    <div className="space-y-2 flex flex-col gap-1">
+                      <label className="text-sm font-medium text-theme-secondary ">
+                        Período
+                      </label>
+                      <div className="relative">
+                        <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                        <select
+                          value={selectedEpoch}
+                          onChange={(e) => handleEpochFilter(e.target.value)}
+                          className="input-classical pl-11 w-full appearance-none"
+                          disabled={isPending}
+                        >
+                          <option value="">Todos os períodos</option>
+                          {filterOptions.epochs.map((epoch) => (
+                            <option key={epoch.id} value={epoch.id}>
+                              {epoch.name}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                          <svg
+                            className="w-4 h-4 text-theme-tertiary"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Genre Filter */}
+                    <div className="space-y-2 flex flex-col gap-1 relative z-[70]">
+                      <label className="text-sm font-medium text-theme-secondary ">
+                        Gênero
+                      </label>
+                      <GenreSearchInput
+                        selectedGenre={selectedGenre}
+                        onGenreSelect={handleGenreFilter}
+                        initialGenres={filterOptions.workGenres}
+                        isDisabled={isPending}
+                      />
+                    </div>
                   </div>
-                </AnimatedItem>
-              )}
+                </div>
+              </AnimatedContainer>
+            )}
 
-              {/* Active Filters */}
-              <ActiveFilters
-                searchParams={searchParams}
-                filterOptions={filterOptions}
-                onRemoveFilter={removeFilter}
-                onClearAll={clearFilters}
-              />
+            {/* Active Filters */}
+            <ActiveFilters
+              searchParams={searchParams}
+              filterOptions={filterOptions}
+              onRemoveFilter={removeFilter}
+              onClearAll={clearFilters}
+            />
 
-              {/* Results Info */}
-              <ResultsInfo
-                startItem={startItem}
-                endItem={endItem}
-                totalCount={worksData.totalCount}
-                isPending={isPending}
-              />
-            </AnimatedCard>
-          </AnimatedItem>
+            {/* Results Info */}
+            <ResultsInfo
+              startItem={startItem}
+              endItem={endItem}
+              totalCount={worksData.totalCount}
+              isPending={isPending}
+            />
+          </AnimatedCard>
 
           {/* Results Section */}
-          <div className="relative">
+          <div className="relative mt-4">
             {isPending ? <WorksSkeleton /> : worksGrid}
 
             {/* Loading Overlay */}

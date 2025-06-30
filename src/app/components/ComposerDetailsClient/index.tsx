@@ -1,4 +1,4 @@
-// app/composer/[composerId]/ComposerDetailsClient.tsx - Versão otimizada
+// app/composer/[composerId]/ComposerDetailsClient.tsx - Versão atualizada
 'use client';
 
 import { useState } from 'react';
@@ -19,11 +19,11 @@ import {
   FiMusic,
   FiHeart,
   FiInfo,
-  FiShare2,
 } from 'react-icons/fi';
 import ComposerBiography from '../ComposerBiography';
 import ComposerWorks from '../ComposersClient/ComposerWorks';
 import FavoriteButton from '../FavoriteButton';
+import ShareButton from '../ShareButton'; // Novo componente
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
@@ -95,15 +95,15 @@ export default function ComposerDetailsClient({
         </nav>
 
         {/* Header Principal */}
-        <div className="classical-card overflow-hidden relative">
+        <div className="classical-card relative">
           <div className="p-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Informações do Compositor */}
               <div className="lg:col-span-2 space-y-6 order-2 md:order-1 lg:order-1">
                 {/* Nome e título */}
                 <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
+                  <div className="flex items-start border-b border-theme-secondary/50 pb-1 justify-between">
+                    <div className="flex-1 ">
                       <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
                         {composer.name}
                       </h1>
@@ -113,9 +113,8 @@ export default function ComposerDetailsClient({
                         </p>
                       )}
                     </div>
-
-                    {/* Action buttons */}
-                    <div className="flex items-center space-x-3 ml-4">
+                    {/* Ações */}
+                    <div className="flex items-center space-x-3 pt-2 b">
                       <FavoriteButton
                         id={composer.id}
                         type="composer"
@@ -125,9 +124,12 @@ export default function ComposerDetailsClient({
                         showToast={true}
                       />
 
-                      <button className="w-12 h-12 bg-interactive-hover border border-theme-primary text-theme-primary rounded-xl hover:bg-brand-primary/20 hover:border-brand-primary hover:text-brand-primary hover:scale-110 transition-all duration-300">
-                        <FiShare2 className="w-5 h-5 mx-auto" />
-                      </button>
+                      <ShareButton
+                        title={`${composer.fullName} - Compositor`}
+                        description={`Explore as obras de ${composer.fullName}, compositor do período ${composer.epochName}. Acesse partituras, biografia e mais informações.`}
+                        variant="default"
+                        size="lg"
+                      />
                     </div>
                   </div>
                 </div>
@@ -225,57 +227,59 @@ export default function ComposerDetailsClient({
                   )}
                 </div>
 
-                {/* Links Externos */}
-                <div className="flex flex-wrap gap-3 pt-4">
-                  {composer.wikipediaLink && (
-                    <a
-                      href={composer.wikipediaLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-classical-primary flex items-center space-x-2 group/btn"
-                    >
-                      <FiExternalLink className="w-4 h-4" />
-                      <span>Wikipedia</span>
-                      <svg
-                        className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                {/* Recursos Externos */}
+                <div className="space-y-4 pt-4">
+                  <div className="flex flex-wrap gap-3">
+                    {composer.wikipediaLink && (
+                      <a
+                        href={composer.wikipediaLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-classical-primary flex items-center space-x-2 group/btn"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </a>
-                  )}
+                        <FiExternalLink className="w-4 h-4" />
+                        <span>Wikipedia</span>
+                        <svg
+                          className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </a>
+                    )}
 
-                  {composer.permLinkImslp && (
-                    <a
-                      href={composer.permLinkImslp}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-classical-secondary flex items-center space-x-2 group/btn"
-                    >
-                      <FiBookOpen className="w-4 h-4" />
-                      <span>IMSLP</span>
-                      <svg
-                        className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                    {composer.permLinkImslp && (
+                      <a
+                        href={composer.permLinkImslp}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-classical-secondary flex items-center space-x-2 group/btn"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </a>
-                  )}
+                        <FiBookOpen className="w-4 h-4" />
+                        <span>IMSLP</span>
+                        <svg
+                          className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -312,7 +316,7 @@ export default function ComposerDetailsClient({
         {/* Seção de Papéis Secundários */}
         {secondaryRoles.length > 0 && (
           <div
-            className="classical-card p-8 animate-fade-in-up"
+            className="classical-card p-8 -z-10 relative animate-fade-in-up"
             style={{ animationDelay: '0.1s' }}
           >
             <div className="flex items-center space-x-3 mb-6">
@@ -394,7 +398,7 @@ export default function ComposerDetailsClient({
           />
         </div>
 
-        {/* Obras do Compositor - NOVA VERSÃO COM PAGINAÇÃO */}
+        {/* Obras do Compositor - NOVA VERSÃO COM TABS E PAGINAÇÃO */}
         <div className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
           <ComposerWorks
             composerId={composer.id}

@@ -1,4 +1,4 @@
-// app/requests/composer-details.ts - Versão corrigida para MongoDB
+// app/requests/composer-details.ts - Versão com suporte a workType
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 
@@ -21,7 +21,7 @@ export interface ComposerDetails {
   roleNames?: string[];
 }
 
-// Interface atualizada para incluir arrays de gêneros/categorias
+// Interface atualizada para incluir arrays de gêneros/categorias e workType
 export interface ComposerWork {
   id: string;
   title: string;
@@ -35,7 +35,7 @@ export interface ComposerWork {
     id: string;
     name: string;
   };
-  workType: string;
+  workType: string; // Atualizado para incluir workType
   isPartOfCollection: boolean;
   parentWorkId?: string;
   workGenresArr?: string[];
@@ -57,143 +57,142 @@ export interface ComposerFilterOptions {
   categories: string[];
 }
 
-// Função OTIMIZADA para buscar obras do compositor com paginação e filtros
-export const getComposerWorksWithFilters = unstable_cache(
-  async (
-    composerId: string,
-    page: number = 1,
-    limit: number = 50,
-    filters?: {
-      instrumentId?: string;
-      workGenresArr?: string;
-      categoryNames?: string;
-      search?: string;
-    }
-  ): Promise<ComposerWorksResponse> => {
-    try {
-      const skip = (page - 1) * limit;
-
-      // Construir filtros WHERE de forma eficiente
-      const whereClause: any = {
-        composerId: composerId,
-      };
-
-      if (filters?.instrumentId) {
-        whereClause.instrumentId = filters.instrumentId;
-      }
-
-      if (filters?.workGenresArr) {
-        whereClause.workGenresArr = {
-          has: filters.workGenresArr,
-        };
-      }
-
-      if (filters?.categoryNames) {
-        whereClause.categoryNames = {
-          has: filters.categoryNames,
-        };
-      }
-
-      if (filters?.search) {
-        whereClause.OR = [
-          {
-            title: {
-              contains: filters.search,
-              mode: 'insensitive',
-            },
-          },
-          {
-            opOrCatalog: {
-              contains: filters.search,
-              mode: 'insensitive',
-            },
-          },
-          {
-            tone: {
-              contains: filters.search,
-              mode: 'insensitive',
-            },
-          },
-        ];
-      }
-
-      // OTIMIZAÇÃO: Buscar obras e contagem total em paralelo
-      const [works, totalCount] = await Promise.all([
-        prisma.work.findMany({
-          where: whereClause,
-          select: {
-            id: true,
-            title: true,
-            opOrCatalog: true,
-            compositionYear: true,
-            tone: true,
-            mediaDuration: true,
-            imslpPermlink: true,
-            videoUrl: true,
-            workType: true,
-            isPartOfCollection: true,
-            parentWorkId: true,
-            workGenresArr: true,
-            categoryNames: true,
-            // JOIN otimizado com instrument
-            instrument: {
-              select: {
-                id: true,
-                name: true,
-              },
-            },
-          },
-          orderBy: [
-            {
-              title: 'asc',
-            },
-          ],
-          skip,
-          take: limit,
-        }),
-        // Contagem otimizada
-        prisma.work.count({
-          where: whereClause,
-        }),
-      ]);
-
-      return {
-        works: works.map((work) => ({
-          id: work.id,
-          title: work.title,
-          opOrCatalog: work.opOrCatalog || undefined,
-          compositionYear: work.compositionYear || undefined,
-          tone: work.tone || undefined,
-          mediaDuration: work.mediaDuration || undefined,
-          imslpPermlink: work.imslpPermlink,
-          videoUrl: work.videoUrl || undefined,
-          instrument: work.instrument,
-          workType: work.workType,
-          isPartOfCollection: work.isPartOfCollection,
-          parentWorkId: work.parentWorkId || undefined,
-          workGenresArr: work.workGenresArr,
-          categoryNames: work.categoryNames,
-        })),
-        totalCount,
-        hasMore: skip + works.length < totalCount,
-        currentPage: page,
-      };
-    } catch (error) {
-      console.error('Erro ao buscar obras do compositor com filtros:', error);
-      return {
-        works: [],
-        totalCount: 0,
-        hasMore: false,
-        currentPage: page,
-      };
-    }
-  },
-  [`composer-works-filtered`],
-  {
-    revalidate: 3600, // 1 hora
-    tags: ['composer-works-filtered'],
+// Função OTIMIZADA para buscar obras do compositor com paginação e filtros (incluindo workType)
+export const getComposerWorksWithFilters = async (
+  composerId: string,
+  page: number = 1,
+  limit: number = 50,
+  filters?: {
+    instrumentId?: string;
+    workGenresArr?: string;
+    categoryNames?: string;
+    search?: string;
+    workType?: string; // Novo filtro adicionado
   }
-);
+): Promise<ComposerWorksResponse> => {
+  try {
+    const skip = (page - 1) * limit;
+
+    // Construir filtros WHERE de forma eficiente
+    const whereClause: any = {
+      composerId: composerId,
+    };
+
+    if (filters?.instrumentId) {
+      whereClause.instrumentId = filters.instrumentId;
+    }
+
+    if (filters?.workGenresArr) {
+      whereClause.workGenresArr = {
+        has: filters.workGenresArr,
+      };
+    }
+
+    if (filters?.categoryNames) {
+      whereClause.categoryNames = {
+        has: filters.categoryNames,
+      };
+    }
+
+    // Novo filtro por workType
+    if (filters?.workType) {
+      whereClause.workType = filters.workType;
+    }
+
+    if (filters?.search) {
+      whereClause.OR = [
+        {
+          title: {
+            contains: filters.search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          opOrCatalog: {
+            contains: filters.search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          tone: {
+            contains: filters.search,
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
+
+    // OTIMIZAÇÃO: Buscar obras e contagem total em paralelo
+    const [works, totalCount] = await Promise.all([
+      prisma.work.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          title: true,
+          opOrCatalog: true,
+          compositionYear: true,
+          tone: true,
+          mediaDuration: true,
+          imslpPermlink: true,
+          videoUrl: true,
+          workType: true, // Incluído workType na seleção
+          isPartOfCollection: true,
+          parentWorkId: true,
+          workGenresArr: true,
+          categoryNames: true,
+          // JOIN otimizado com instrument
+          instrument: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+        orderBy: [
+          {
+            title: 'asc',
+          },
+        ],
+        skip,
+        take: limit,
+      }),
+      // Contagem otimizada
+      prisma.work.count({
+        where: whereClause,
+      }),
+    ]);
+
+    return {
+      works: works.map((work) => ({
+        id: work.id,
+        title: work.title,
+        opOrCatalog: work.opOrCatalog || undefined,
+        compositionYear: work.compositionYear || undefined,
+        tone: work.tone || undefined,
+        mediaDuration: work.mediaDuration || undefined,
+        imslpPermlink: work.imslpPermlink,
+        videoUrl: work.videoUrl || undefined,
+        instrument: work.instrument,
+        workType: work.workType, // Incluído workType no retorno
+        isPartOfCollection: work.isPartOfCollection,
+        parentWorkId: work.parentWorkId || undefined,
+        workGenresArr: work.workGenresArr,
+        categoryNames: work.categoryNames,
+      })),
+      totalCount,
+      hasMore: skip + works.length < totalCount,
+      currentPage: page,
+    };
+  } catch (error) {
+    console.error('Erro ao buscar obras do compositor com filtros:', error);
+    return {
+      works: [],
+      totalCount: 0,
+      hasMore: false,
+      currentPage: page,
+    };
+  }
+};
 
 // Função SIMPLIFICADA para buscar opções de filtros específicas do compositor
 export const getComposerFilterOptions = unstable_cache(

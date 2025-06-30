@@ -363,6 +363,8 @@ export const WORK_GENRE_TRANSLATIONS: Record<string, string> = {
   zarzuelas: 'zarzuelas',
   zortzicos: 'zortzicos',
   zwiefache: 'zwiefache',
+  fantasies: 'fantasias',
+  etudes: 'estudos',
   'not defined': 'não definido',
 };
 
@@ -479,6 +481,8 @@ export const VALID_WORKGENRES = new Set([
   'epithalamia',
   'equali',
   'estampies',
+  'etudes',
+  'etude',
   'ethnomusicology',
   'exercises',
   'fairy operas',
@@ -732,6 +736,7 @@ export const VALID_WORKGENRES = new Set([
   'zarzuelas',
   'zortzicos',
   'zwiefache',
+
   'not defined',
 ]);
 

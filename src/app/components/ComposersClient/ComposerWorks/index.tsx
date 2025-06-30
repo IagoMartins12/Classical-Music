@@ -1,4 +1,4 @@
-// ComposerWorks.tsx - Versão otimizada com paginação "Load More" e filtros
+// ComposerWorks.tsx - Versão com tabs de workType
 'use client';
 
 import {
@@ -6,7 +6,7 @@ import {
   ComposerFilterOptions,
 } from '@/app/requests/composer-details';
 import Link from 'next/link';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   FiMusic,
   FiPlay,
@@ -19,6 +19,7 @@ import {
   FiCalendar,
   FiLoader,
   FiPlus,
+  FiLayers,
 } from 'react-icons/fi';
 import {
   GiViolin,
@@ -42,6 +43,36 @@ interface ComposerWorksProps {
   initialHasMore: boolean;
   filterOptions: ComposerFilterOptions;
 }
+
+// Mapeamento dos tipos de trabalho para nomes amigáveis
+const WORK_TYPE_LABELS: Record<string, string> = {
+  INDIVIDUAL_COMPOSITION: 'Obras Individuais', // Agrupa INDIVIDUAL e COMPOSITION
+  COMPLETE_WORK: 'Obras Completas',
+  ARRANGEMENT: 'Arranjos',
+  COLLECTION_WORKS: 'Coleções', // Agrupa COLLECTION e COLLECTED_WORKS
+  COLLABORATION: 'Colaborações',
+  COLLECTIONS_WITH: 'Coleções com',
+};
+
+// Grupos de workTypes que devem ser tratados como um só
+const WORK_TYPE_GROUPS: Record<string, string[]> = {
+  INDIVIDUAL_COMPOSITION: ['INDIVIDUAL', 'COMPOSITION'],
+  COLLECTION_WORKS: ['COLLECTION', 'COLLECTED_WORKS'],
+  COMPLETE_WORK: ['COMPLETE_WORK'],
+  ARRANGEMENT: ['ARRANGEMENT'],
+  COLLABORATION: ['COLLABORATION'],
+  COLLECTIONS_WITH: ['COLLECTIONS_WITH'],
+};
+
+// Ordem específica das tabs (INDIVIDUAL_COMPOSITION vem primeiro)
+const TAB_ORDER = [
+  'INDIVIDUAL_COMPOSITION',
+  'COMPLETE_WORK',
+  'ARRANGEMENT',
+  'COLLECTION_WORKS',
+  'COLLABORATION',
+  'COLLECTIONS_WITH',
+];
 
 // Função para determinar o ícone do instrumento
 const getInstrumentIcon = (instrumentName: string) => {
@@ -163,13 +194,75 @@ export default function ComposerWorks({
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
+  const [workTypeCounts, setWorkTypeCounts] = useState<Record<string, number>>(
+    {}
+  );
 
   // Estados de filtros
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedInstrument, setSelectedInstrument] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedWorkType, setSelectedWorkType] = useState<string>('all'); // Novo estado para workType
   const [showFilters, setShowFilters] = useState(false);
+
+  // Buscar contagens reais dos workTypes
+  useEffect(() => {
+    const fetchWorkTypeCounts = async () => {
+      try {
+        const response = await fetch('/api/composer-work-types', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            composerId,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setWorkTypeCounts(data.workTypeCounts || {});
+        }
+      } catch (error) {
+        console.error('Erro ao buscar contagens dos workTypes:', error);
+      }
+    };
+
+    fetchWorkTypeCounts();
+  }, [composerId]);
+
+  // Calcular workTypes disponíveis a partir das obras iniciais (agrupados)
+  const availableWorkTypes = useMemo(() => {
+    const availableGroups = new Set<string>();
+
+    initialWorks.forEach((work) => {
+      if (work.workType) {
+        // Encontrar qual grupo este workType pertence
+        for (const [groupKey, types] of Object.entries(WORK_TYPE_GROUPS)) {
+          if (types.includes(work.workType)) {
+            availableGroups.add(groupKey);
+            break;
+          }
+        }
+      }
+    });
+
+    // Retornar na ordem específica, filtrando apenas os disponíveis
+    return TAB_ORDER.filter((group) => availableGroups.has(group));
+  }, [initialWorks]);
+
+  // Função para obter contagem agrupada
+  const getGroupedCount = useCallback(
+    (groupKey: string): number => {
+      const types = WORK_TYPE_GROUPS[groupKey] || [];
+      return types.reduce(
+        (total, type) => total + (workTypeCounts[type] || 0),
+        0
+      );
+    },
+    [workTypeCounts]
+  );
 
   // Função para aplicar filtros
   const applyFilters = useCallback(
@@ -178,17 +271,68 @@ export default function ComposerWorks({
       workGenresArr?: string;
       categoryNames?: string;
       search?: string;
+      workType?: string;
     }) => {
       setLoading(true);
       try {
         // Usar filtros customizados se fornecidos, senão usar os estados atuais
-        const filters = customFilters || {
+        let filters = customFilters || {
           ...(selectedInstrument && { instrumentId: selectedInstrument }),
           ...(selectedGenre && { workGenresArr: selectedGenre }),
           ...(selectedCategory && { categoryNames: selectedCategory }),
           ...(searchTerm && { search: searchTerm }),
         };
 
+        // Tratar workType agrupado
+        if (selectedWorkType !== 'all') {
+          const workTypesToFilter = WORK_TYPE_GROUPS[selectedWorkType];
+          if (workTypesToFilter && workTypesToFilter.length > 0) {
+            // Para múltiplos workTypes, enviamos como array ou fazemos múltiplas chamadas
+            // Por ora, vamos fazer chamadas separadas e unir os resultados
+            const promises = workTypesToFilter.map((type) =>
+              fetch('/api/composer-works', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  composerId,
+                  page: 1,
+                  limit: 1000, // Buscar todas para unir
+                  filters: {
+                    ...filters,
+                    workType: type,
+                  },
+                }),
+              }).then((res) => res.json())
+            );
+
+            const results = await Promise.all(promises);
+
+            // Unir todas as obras e remover duplicatas
+            const allWorks: ComposerWork[] = [];
+            const seenIds = new Set<string>();
+            let totalCount = 0;
+
+            results.forEach((result) => {
+              totalCount += result.totalCount;
+              result.works.forEach((work: ComposerWork) => {
+                if (!seenIds.has(work.id)) {
+                  seenIds.add(work.id);
+                  allWorks.push(work);
+                }
+              });
+            });
+
+            setWorks(allWorks);
+            setTotalCount(totalCount);
+            setHasMore(false); // Como buscamos todas, não há mais
+            setCurrentPage(1);
+            return;
+          }
+        }
+
+        // Filtro normal para workTypes únicos ou sem filtro de workType
         const response = await fetch('/api/composer-works', {
           method: 'POST',
           headers: {
@@ -224,6 +368,7 @@ export default function ComposerWorks({
       selectedInstrument,
       selectedGenre,
       selectedCategory,
+      selectedWorkType,
     ]
   );
 
@@ -234,12 +379,12 @@ export default function ComposerWorks({
     }, 500);
 
     return () => clearTimeout(timeoutId);
-  }, [searchTerm]); // Removido os outros filtros daqui
+  }, [searchTerm]);
 
   // Aplicar filtros imediatamente quando filtros de select mudarem
   useEffect(() => {
     applyFilters();
-  }, [selectedInstrument, selectedGenre, selectedCategory]);
+  }, [selectedInstrument, selectedGenre, selectedCategory, selectedWorkType]);
 
   // Função para carregar mais obras
   const loadMore = useCallback(async () => {
@@ -247,11 +392,19 @@ export default function ComposerWorks({
 
     setLoadingMore(true);
     try {
+      // Para workTypes agrupados, não implementamos loadMore por simplicidade
+      // (já carregamos todas as obras na primeira busca)
+      if (selectedWorkType !== 'all' && WORK_TYPE_GROUPS[selectedWorkType]) {
+        setLoadingMore(false);
+        return;
+      }
+
       const filters = {
         ...(selectedInstrument && { instrumentId: selectedInstrument }),
         ...(selectedGenre && { workGenresArr: selectedGenre }),
         ...(selectedCategory && { categoryNames: selectedCategory }),
         ...(searchTerm && { search: searchTerm }),
+        ...(selectedWorkType !== 'all' && { workType: selectedWorkType }),
       };
 
       const response = await fetch('/api/composer-works', {
@@ -289,6 +442,7 @@ export default function ComposerWorks({
     selectedInstrument,
     selectedGenre,
     selectedCategory,
+    selectedWorkType,
   ]);
 
   // Função para limpar filtros
@@ -297,6 +451,7 @@ export default function ComposerWorks({
     setSelectedInstrument('');
     setSelectedGenre('');
     setSelectedCategory('');
+    setSelectedWorkType('all');
 
     // Restaurar dados iniciais
     setWorks(initialWorks);
@@ -308,21 +463,26 @@ export default function ComposerWorks({
   // Funções simplificadas para mudanças de filtros
   const handleInstrumentChange = (value: string) => {
     setSelectedInstrument(value);
-    // O useEffect vai cuidar de aplicar os filtros
   };
 
   const handleGenreChange = (value: string) => {
     setSelectedGenre(value);
-    // O useEffect vai cuidar de aplicar os filtros
   };
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
-    // O useEffect vai cuidar de aplicar os filtros
+  };
+
+  const handleWorkTypeChange = (workType: string) => {
+    setSelectedWorkType(workType);
   };
 
   const hasActiveFilters =
-    searchTerm || selectedInstrument || selectedGenre || selectedCategory;
+    searchTerm ||
+    selectedInstrument ||
+    selectedGenre ||
+    selectedCategory ||
+    selectedWorkType !== 'all';
 
   if (initialTotalCount === 0) {
     return (
@@ -357,7 +517,7 @@ export default function ComposerWorks({
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
-      <div className="classical-card overflow-hidden">
+      <div className="classical-card">
         {/* Header */}
         <div className="p-8 border-b border-theme-secondary bg-gradient-to-r from-theme-elevated to-interactive-hover">
           <div className="flex items-center space-x-3 mb-4">
@@ -366,13 +526,65 @@ export default function ComposerWorks({
             </div>
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                bg-theme-primary{' '}
+                Obras Catalogadas
               </h2>
               <p className="text-theme-secondary classical-subtitle">
                 {works.length} de {totalCount} obras de {composerName}
               </p>
             </div>
           </div>
+
+          {/* Tabs de WorkType */}
+          {availableWorkTypes.length > 0 && (
+            <div className="mb-6">
+              <div className="flex items-center space-x-2 mb-3">
+                <FiLayers className="w-4 h-4 text-theme-primary" />
+                <span className="text-sm font-medium text-theme-primary">
+                  Filtrar por tipo de obra
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {/* Tab "Todos" */}
+                <button
+                  onClick={() => handleWorkTypeChange('all')}
+                  className={`
+                    px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 
+                    ${
+                      selectedWorkType === 'all'
+                        ? 'bg-brand-primary text-theme-primary shadow-theme-medium border-2 border-brand-primary'
+                        : 'bg-interactive-hover border border-theme-secondary text-theme-secondary hover:bg-brand-primary/10 hover:border-brand-primary/30 hover:text-brand-primary'
+                    }
+                  `}
+                  disabled={loading}
+                >
+                  Todos ({initialTotalCount})
+                </button>
+
+                {/* Tabs dos workTypes disponíveis */}
+                {availableWorkTypes.map((groupKey) => {
+                  const groupCount = getGroupedCount(groupKey);
+                  return (
+                    <button
+                      key={groupKey}
+                      onClick={() => handleWorkTypeChange(groupKey)}
+                      className={`
+                        px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 
+                        ${
+                          selectedWorkType === groupKey
+                            ? 'bg-accent-blue text-theme-primary shadow-theme-medium border-2 border-accent-blue'
+                            : 'bg-interactive-hover border border-theme-secondary text-theme-secondary hover:bg-accent-blue/10 hover:border-accent-blue/30 hover:text-accent-blue'
+                        }
+                      `}
+                      disabled={loading}
+                    >
+                      {WORK_TYPE_LABELS[groupKey]} ({groupCount})
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Barra de busca */}
           <div className="relative mb-4">
@@ -382,7 +594,9 @@ export default function ComposerWorks({
               placeholder="Buscar por título, opus ou tonalidade..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="input-classical w-full pl-12 pr-12"
+              className={`input-classical w-full pl-12 pr-12 ${
+                loading ? 'cursor-not-allowed' : ''
+              }`}
               disabled={loading}
             />
             {searchTerm && (
@@ -400,7 +614,9 @@ export default function ComposerWorks({
           <div className="flex items-center justify-between">
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="btn-classical-secondary flex items-center space-x-2"
+              className={`btn-classical-secondary flex items-center space-x-2 ${
+                loading ? '!cursor-not-allowed !hover:transform-none' : ''
+              }`}
               disabled={loading}
             >
               <FiFilter className="w-4 h-4" />
@@ -440,135 +656,137 @@ export default function ComposerWorks({
           </div>
 
           {/* Filtros expandidos */}
-          <div
-            className={`overflow-hidden transition-all duration-500 ${
-              showFilters ? 'max-h-96 opacity-100 mt-6' : 'max-h-0 opacity-0'
-            }`}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-theme-elevated/50 border border-theme-primary rounded-xl">
-              {/* Filtro de instrumento */}
-              <div className="flex flex-col gap-3">
-                <label className="text-sm font-medium text-theme-secondary">
-                  Instrumento ({filterOptions.instruments.length})
-                </label>
-                <div className="relative">
-                  <FiMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-                  <select
-                    value={selectedInstrument}
-                    onChange={(e) => handleInstrumentChange(e.target.value)}
-                    className="input-classical w-full appearance-none pl-11"
-                    disabled={loading}
-                  >
-                    <option value="">Todos os instrumentos</option>
-                    {filterOptions.instruments.map((instrument) => (
-                      <option
-                        key={instrument.id}
-                        value={instrument.id}
-                        className="capitalize"
-                      >
-                        {instrument.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-theme-tertiary"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+          {showFilters && (
+            <div className="overflow-hidden transition-all duration-500 max-h-96 opacity-100 mt-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-theme-elevated/50 border border-theme-primary rounded-xl">
+                {/* Filtro de instrumento */}
+                <div className="space-y-2 flex flex-col gap-1">
+                  <label className="text-sm font-medium text-theme-secondary">
+                    Instrumento ({filterOptions.instruments.length})
+                  </label>
+                  <div className="relative">
+                    <FiMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                    <select
+                      value={selectedInstrument}
+                      onChange={(e) => handleInstrumentChange(e.target.value)}
+                      className="input-classical w-full appearance-none pl-11"
+                      disabled={loading}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
+                      <option value="">Todos os instrumentos</option>
+                      {filterOptions.instruments.map((instrument) => (
+                        <option
+                          key={instrument.id}
+                          value={instrument.id}
+                          className="capitalize"
+                        >
+                          {instrument.name}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                      <svg
+                        className="w-4 h-4 text-theme-tertiary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Filtro de gênero */}
-              <div className="flex flex-col gap-3">
-                <label className="text-sm font-medium text-theme-secondary">
-                  Gênero ({filterOptions.workGenres.length})
-                </label>
-                <div className="relative">
-                  <MdLibraryMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-                  <select
-                    value={selectedGenre}
-                    onChange={(e) => handleGenreChange(e.target.value)}
-                    className="input-classical capitalize w-full appearance-none pl-11"
-                    disabled={loading}
-                  >
-                    <option value="">Todos os gêneros</option>
-                    {filterOptions.workGenres.map((genre) => (
-                      <option key={genre} value={genre} className="capitalize">
-                        {genre}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-theme-tertiary"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                {/* Filtro de gênero */}
+                <div className="space-y-2 flex flex-col gap-1">
+                  <label className="text-sm font-medium text-theme-secondary">
+                    Gênero ({filterOptions.workGenres.length})
+                  </label>
+                  <div className="relative">
+                    <MdLibraryMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                    <select
+                      value={selectedGenre}
+                      onChange={(e) => handleGenreChange(e.target.value)}
+                      className="input-classical capitalize w-full appearance-none pl-11"
+                      disabled={loading}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
+                      <option value="">Todos os gêneros</option>
+                      {filterOptions.workGenres.map((genre) => (
+                        <option
+                          key={genre}
+                          value={genre}
+                          className="capitalize"
+                        >
+                          {genre}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                      <svg
+                        className="w-4 h-4 text-theme-tertiary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Filtro de categoria */}
-              <div className="flex flex-col gap-3">
-                <label className="text-sm font-medium text-theme-secondary">
-                  Categoria ({filterOptions.categories.length})
-                </label>
-                <div className="relative">
-                  <FiBookOpen className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => handleCategoryChange(e.target.value)}
-                    className="input-classical w-full appearance-none pl-11"
-                    disabled={loading}
-                  >
-                    <option value="">Todas as categorias</option>
-                    {filterOptions.categories.map((category) => (
-                      <option
-                        key={category}
-                        value={category}
-                        className="capitalize"
-                      >
-                        {category}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                    <svg
-                      className="w-4 h-4 text-theme-tertiary"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                {/* Filtro de categoria */}
+                <div className="space-y-2 flex flex-col gap-1">
+                  <label className="text-sm font-medium text-theme-secondary">
+                    Categoria ({filterOptions.categories.length})
+                  </label>
+                  <div className="relative">
+                    <FiBookOpen className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
+                    <select
+                      value={selectedCategory}
+                      onChange={(e) => handleCategoryChange(e.target.value)}
+                      className="input-classical w-full appearance-none pl-11"
+                      disabled={loading}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
+                      <option value="">Todas as categorias</option>
+                      {filterOptions.categories.map((category) => (
+                        <option
+                          key={category}
+                          value={category}
+                          className="capitalize"
+                        >
+                          {category}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                      <svg
+                        className="w-4 h-4 text-theme-tertiary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Filtros ativos */}
           {hasActiveFilters && (
@@ -590,8 +808,24 @@ export default function ComposerWorks({
                 </div>
               )}
 
-              {selectedInstrument && (
+              {selectedWorkType !== 'all' && (
                 <div className="flex items-center gap-2 px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm">
+                  <span>
+                    Tipo:{' '}
+                    {WORK_TYPE_LABELS[selectedWorkType] || selectedWorkType}
+                  </span>
+                  <button
+                    onClick={() => setSelectedWorkType('all')}
+                    className="hover:text-accent-blue/80 transition-colors"
+                    disabled={loading}
+                  >
+                    <FiX className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+
+              {selectedInstrument && (
+                <div className="flex items-center gap-2 px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm">
                   <span>
                     Instrumento:{' '}
                     {
@@ -602,19 +836,6 @@ export default function ComposerWorks({
                   </span>
                   <button
                     onClick={() => setSelectedInstrument('')}
-                    className="hover:text-accent-blue/80 transition-colors"
-                    disabled={loading}
-                  >
-                    <FiX className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-
-              {selectedGenre && (
-                <div className="flex items-center gap-2 px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm">
-                  <span>Gênero: {selectedGenre}</span>
-                  <button
-                    onClick={() => setSelectedGenre('')}
                     className="hover:text-accent-green/80 transition-colors"
                     disabled={loading}
                   >
@@ -623,12 +844,25 @@ export default function ComposerWorks({
                 </div>
               )}
 
-              {selectedCategory && (
+              {selectedGenre && (
                 <div className="flex items-center gap-2 px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
+                  <span>Gênero: {selectedGenre}</span>
+                  <button
+                    onClick={() => setSelectedGenre('')}
+                    className="hover:text-accent-purple/80 transition-colors"
+                    disabled={loading}
+                  >
+                    <FiX className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+
+              {selectedCategory && (
+                <div className="flex items-center gap-2 px-3 py-1 bg-accent-orange/10 border border-accent-orange/30 text-accent-orange rounded-full text-sm">
                   <span>Categoria: {selectedCategory}</span>
                   <button
                     onClick={() => setSelectedCategory('')}
-                    className="hover:text-accent-purple/80 transition-colors"
+                    className="hover:text-accent-orange/80 transition-colors"
                     disabled={loading}
                   >
                     <FiX className="w-3 h-3" />
@@ -734,123 +968,129 @@ export default function ComposerWorks({
               </div>
             </div>
           ) : works.length > 0 ? (
-            <div
-              className={`${
-                viewMode === 'cards'
-                  ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-                  : 'space-y-4 content-transition'
-              } `}
-            >
-              {works.map((work, index) => (
-                <Link
-                  href={`/works/${work.id}`}
-                  key={work.id}
-                  className="classical-card-simple hover:shadow-theme-glow transition-all duration-300 group block opacity-0 animate-slide-up"
-                  style={{
-                    animationDelay: `${index * 0.03}s`,
-                    animationFillMode: 'forwards',
-                  }}
-                >
-                  <div className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-4">
-                          {work.instrument?.name && (
-                            <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
-                              {getInstrumentIcon(work.instrument.name)}
-                            </div>
-                          )}
+            <>
+              <div
+                className={`${
+                  viewMode === 'cards'
+                    ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+                    : 'space-y-4 content-transition'
+                } `}
+              >
+                {works.map((work, index) => (
+                  <Link
+                    href={`/works/${work.id}`}
+                    key={work.id}
+                    className="classical-card-simple hover:shadow-theme-glow transition-all duration-300 group block opacity-0 animate-slide-up"
+                    style={{
+                      animationDelay: `${index * 0.03}s`,
+                      animationFillMode: 'forwards',
+                    }}
+                  >
+                    <div className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-4">
+                            {work.instrument?.name && (
+                              <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
+                                {getInstrumentIcon(work.instrument.name)}
+                              </div>
+                            )}
 
-                          <div className="flex-1">
-                            <span className="text-lg font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
-                              {work.title}
-                            </span>
-
-                            {work.opOrCatalog && (
-                              <span className="ml-3 text-sm text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
-                                {work.opOrCatalog}
+                            <div className="flex-1">
+                              <span className="text-lg font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
+                                {work.title}
                               </span>
+
+                              {work.opOrCatalog && (
+                                <span className="ml-3 text-sm text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
+                                  {work.opOrCatalog}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div
+                            className={`${
+                              viewMode === 'cards'
+                                ? 'flex flex-col'
+                                : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+                            } gap-4 text-sm text-theme-secondary`}
+                          >
+                            {work.instrument?.name && (
+                              <div className="flex items-center space-x-2">
+                                <FiMusic className="w-4 h-4 text-theme-tertiary" />
+                                <span>{work.instrument.name}</span>
+                              </div>
+                            )}
+
+                            {work.tone && (
+                              <div className="flex items-center space-x-2">
+                                <GiMusicalNotes className="w-4 h-4 text-theme-tertiary" />
+                                <span>{work.tone}</span>
+                              </div>
+                            )}
+
+                            {work.mediaDuration && (
+                              <div className="flex items-center space-x-2">
+                                <FiClock className="w-4 h-4 text-theme-tertiary" />
+                                <span>
+                                  {formatDuration(work.mediaDuration)}
+                                </span>
+                              </div>
+                            )}
+
+                            {work.compositionYear && (
+                              <div className="flex items-center space-x-2">
+                                <FiCalendar className="w-4 h-4 text-theme-tertiary" />
+                                <span>{work.compositionYear}</span>
+                              </div>
                             )}
                           </div>
+
+                          {/* Mostrar gêneros e categorias se existirem */}
+                          {(work.workGenresArr?.length ||
+                            work.categoryNames?.length) && (
+                            <div className="flex flex-wrap gap-2 mt-3">
+                              {work.workGenresArr?.slice(0, 3).map((genre) => (
+                                <span
+                                  key={genre}
+                                  className="px-2 capitalize py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green text-xs rounded-full"
+                                >
+                                  {genre}
+                                </span>
+                              ))}
+                              {work.categoryNames
+                                ?.slice(0, 2)
+                                .map((category) => (
+                                  <span
+                                    key={category}
+                                    className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-xs rounded-full"
+                                  >
+                                    {category}
+                                  </span>
+                                ))}
+                            </div>
+                          )}
                         </div>
 
                         <div
-                          className={`${
-                            viewMode === 'cards'
-                              ? 'flex flex-col'
-                              : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-                          } gap-4 text-sm text-theme-secondary`}
+                          className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          {work.instrument?.name && (
-                            <div className="flex items-center space-x-2">
-                              <FiMusic className="w-4 h-4 text-theme-tertiary" />
-                              <span>{work.instrument.name}</span>
-                            </div>
-                          )}
-
-                          {work.tone && (
-                            <div className="flex items-center space-x-2">
-                              <GiMusicalNotes className="w-4 h-4 text-theme-tertiary" />
-                              <span>{work.tone}</span>
-                            </div>
-                          )}
-
-                          {work.mediaDuration && (
-                            <div className="flex items-center space-x-2">
-                              <FiClock className="w-4 h-4 text-theme-tertiary" />
-                              <span>{formatDuration(work.mediaDuration)}</span>
-                            </div>
-                          )}
-
-                          {work.compositionYear && (
-                            <div className="flex items-center space-x-2">
-                              <FiCalendar className="w-4 h-4 text-theme-tertiary" />
-                              <span>{work.compositionYear}</span>
-                            </div>
-                          )}
+                          <FavoriteButton
+                            id={work.id}
+                            type="work"
+                            variant="default"
+                            size="md"
+                            itemName={work.title}
+                            showToast={true}
+                          />
                         </div>
-
-                        {/* Mostrar gêneros e categorias se existirem */}
-                        {(work.workGenresArr?.length ||
-                          work.categoryNames?.length) && (
-                          <div className="flex flex-wrap gap-2 mt-3">
-                            {work.workGenresArr?.slice(0, 3).map((genre) => (
-                              <span
-                                key={genre}
-                                className="px-2 capitalize py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green text-xs rounded-full"
-                              >
-                                {genre}
-                              </span>
-                            ))}
-                            {work.categoryNames?.slice(0, 2).map((category) => (
-                              <span
-                                key={category}
-                                className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-xs rounded-full"
-                              >
-                                {category}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      <div
-                        className="flex items-center space-x-2  opacity-0 group-hover:opacity-100 transition-all duration-300"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <FavoriteButton
-                          id={work.id}
-                          type="work"
-                          variant="default"
-                          size="md"
-                          itemName={work.title}
-                          showToast={true}
-                        />
                       </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ))}
+              </div>
 
               {/* Botão Carregar Mais */}
               {hasMore && (
@@ -875,7 +1115,7 @@ export default function ComposerWorks({
                   </button>
                 </div>
               )}
-            </div>
+            </>
           ) : (
             // Empty state para resultados filtrados
             <div className="text-center py-16">

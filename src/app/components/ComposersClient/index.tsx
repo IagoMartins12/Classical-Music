@@ -19,8 +19,6 @@ import {
   AnimatedItem,
   AnimatedCard,
   SequentialGrid, // ✅ NOVO - Para animação sequencial
-  TypewriterGrid, // ✅ OPÇÃO ALTERNATIVA
-  WaveAnimation, // ✅ OPÇÃO ALTERNATIVA
   LoadingSpinner,
 } from '../animation/AnimatedComponents';
 
@@ -198,150 +196,138 @@ export default function ComposersClient({
             isPending ? 'opacity-50' : ''
           }`}
         >
-          <AnimatedContainer staggerSpeed="fast">
-            <AnimatedItem direction="left">
-              <div className="flex items-center mb-6">
-                <div>
-                  <h3 className="text-xl font-bold text-theme-primary classical-title">
-                    Busca e Filtros
-                  </h3>
-                  <p className="text-theme-secondary text-sm">
-                    Encontre exatamente o compositor que você procura.
-                  </p>
-                </div>
+          <div className="flex items-center mb-6">
+            <div>
+              <h3 className="text-xl font-bold text-theme-primary classical-title">
+                Busca e Filtros
+              </h3>
+              <p className="text-theme-secondary text-sm">
+                Encontre exatamente o compositor que você procura.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* Search Field */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-theme-secondary">
+                Pesquisar por nome
+              </label>
+              <div className="relative mt-2">
+                <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+                <input
+                  type="text"
+                  placeholder="Digite o nome do compositor..."
+                  value={searchTerm}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  className="input-classical pl-12 w-full"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => handleSearchChange('')}
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
+                  >
+                    ✕
+                  </button>
+                )}
               </div>
-            </AnimatedItem>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              {/* Search Field */}
-              <AnimatedItem direction="left">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-theme-secondary">
-                    Pesquisar por nome
-                  </label>
-                  <div className="relative mt-2">
-                    <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
-                    <input
-                      type="text"
-                      placeholder="Digite o nome do compositor..."
-                      value={searchTerm}
-                      onChange={(e) => handleSearchChange(e.target.value)}
-                      className="input-classical pl-12 w-full"
-                    />
-                    {searchTerm && (
-                      <button
-                        onClick={() => handleSearchChange('')}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
-                      >
-                        ✕
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </AnimatedItem>
-
-              {/* Epoch Filter */}
-              <AnimatedItem direction="right">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-theme-secondary">
-                    Filtrar por período
-                  </label>
-                  <div className="relative mt-2">
-                    <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
-                    <select
-                      value={selectedEpoch}
-                      onChange={(e) => handleEpochChange(e.target.value)}
-                      className="input-classical pl-12 w-full appearance-none"
-                    >
-                      <option value="">Todos os períodos</option>
-                      {epochs.map((epoch) => (
-                        <option key={epoch.id} value={epoch.id}>
-                          {epoch.name}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <svg
-                        className="w-4 h-4 text-theme-tertiary"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </AnimatedItem>
             </div>
 
-            {/* Filter Status and View Toggle */}
-            <AnimatedItem direction="up">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4 border-t border-theme-secondary">
-                <div className="flex items-center space-x-4">
-                  <div className="text-theme-secondary text-sm">
-                    <span className="font-medium text-theme-primary">
-                      {composers.length}
-                    </span>{' '}
-                    de{' '}
-                    <span className="font-medium text-theme-primary">
-                      {totalCount}
-                    </span>{' '}
-                    compositores
-                    {searchTerm && (
-                      <span className="text-brand-primary">
-                        {' '}
-                        para &quot;
-                        <span className="font-medium">{searchTerm}</span>&quot;
-                      </span>
-                    )}
-                    {selectedEpoch && (
-                      <span className="text-accent-purple">
-                        {' '}
-                        do período &quot;
-                        <span className="font-medium">
-                          {epochs.find((e) => e.id === selectedEpoch)?.name}
-                        </span>
-                        &quot;
-                      </span>
-                    )}
-                  </div>
-
-                  {isPending && (
-                    <div className="flex items-center text-brand-primary text-sm">
-                      <LoadingSpinner size="sm" />
-                      <span className="ml-2">Carregando...</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center space-x-3">
-                  {/* Clear Filters */}
-                  {hasActiveFilters && (
-                    <AnimatedItem hover="scale">
-                      <button
-                        onClick={clearFilters}
-                        className="btn-classical-secondary text-sm"
-                      >
-                        Limpar Filtros
-                      </button>
-                    </AnimatedItem>
-                  )}
-
-                  {/* View Toggle */}
-                  <ViewModeToggle
-                    viewMode={viewMode}
-                    onViewModeChange={setViewMode}
-                  />
+            {/* Epoch Filter */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-theme-secondary">
+                Filtrar por período
+              </label>
+              <div className="relative mt-2">
+                <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
+                <select
+                  value={selectedEpoch}
+                  onChange={(e) => handleEpochChange(e.target.value)}
+                  className="input-classical pl-12 w-full appearance-none"
+                >
+                  <option value="">Todos os períodos</option>
+                  {epochs.map((epoch) => (
+                    <option key={epoch.id} value={epoch.id}>
+                      {epoch.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 text-theme-tertiary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
                 </div>
               </div>
-            </AnimatedItem>
-          </AnimatedContainer>
+            </div>
+          </div>
+
+          {/* Filter Status and View Toggle */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4 border-t border-theme-secondary">
+            <div className="flex items-center space-x-4">
+              <div className="text-theme-secondary text-sm">
+                <span className="font-medium text-theme-primary">
+                  {composers.length}
+                </span>{' '}
+                de{' '}
+                <span className="font-medium text-theme-primary">
+                  {totalCount}
+                </span>{' '}
+                compositores
+                {searchTerm && (
+                  <span className="text-brand-primary">
+                    {' '}
+                    para &quot;
+                    <span className="font-medium">{searchTerm}</span>&quot;
+                  </span>
+                )}
+                {selectedEpoch && (
+                  <span className="text-accent-purple">
+                    {' '}
+                    do período &quot;
+                    <span className="font-medium">
+                      {epochs.find((e) => e.id === selectedEpoch)?.name}
+                    </span>
+                    &quot;
+                  </span>
+                )}
+              </div>
+
+              {isPending && (
+                <div className="flex items-center text-brand-primary text-sm">
+                  <LoadingSpinner size="sm" />
+                  <span className="ml-2">Carregando...</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center space-x-3">
+              {/* Clear Filters */}
+              {hasActiveFilters && (
+                <button
+                  onClick={clearFilters}
+                  className="btn-classical-secondary text-sm"
+                >
+                  Limpar Filtros
+                </button>
+              )}
+
+              {/* View Toggle */}
+              <ViewModeToggle
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+              />
+            </div>
+          </div>
         </AnimatedItem>
 
         {/* Results Section - AQUI ESTÁ A ANIMAÇÃO SEQUENCIAL! */}
@@ -349,12 +335,7 @@ export default function ComposersClient({
           {composers.length > 0 ? (
             viewMode === 'cards' ? (
               // 🎬 ANIMAÇÃO SEQUENCIAL - Cards aparecem um por vez!
-              <SequentialGrid
-                cols={4}
-                gap={6}
-                delayBetweenItems={0.01} // 150ms entre cada card
-                className="px-4"
-              >
+              <SequentialGrid cols={4} gap={6} className="px-4">
                 {composers.map((composer) => (
                   <div
                     key={composer.id}
@@ -366,46 +347,22 @@ export default function ComposersClient({
                 ))}
               </SequentialGrid>
             ) : (
-              // <TypewriterGrid
-              //   cols={4}
-              //   gap={6}
-              //   delayBetweenItems={0.1}
-              //   animationType="cascade"
-              //   className="px-4"
-              // >
-              //   {composers.map((composer) => (
-              //     <div
-              //       key={composer.id}
-              //       className="cursor-pointer"
-              //       onClick={() => navigateToUrl('composer', composer.id)}
-              //     >
-              //       <ComposerCard composer={composer} />
-              //     </div>
-              //   ))}
-              // </TypewriterGrid>
-              // List View com animação sequencial também
-              <AnimatedCard
-                hover="none"
-                className="bg-theme-secundary px-4 rounded-2xl overflow-hidden"
-              >
-                <div className="divide-y divide-theme-secondary flex flex-col gap-4 py-4">
-                  {composers.map((composer, index) => (
-                    <AnimatedItem
-                      key={composer.id}
-                      direction="left"
-                      hover="lift"
-                      className="classical-card p-4 hover:bg-interactive-hover transition-all duration-300 cursor-pointer group"
-                      onClick={() => navigateToUrl('composer', composer.id)}
-                      style={{
-                        animationDelay: `${index * 0.1}s`,
-                        animationFillMode: 'backwards',
-                      }}
-                    >
-                      <ComposerCardList composer={composer} />
-                    </AnimatedItem>
-                  ))}
-                </div>
-              </AnimatedCard>
+              <div className="divide-y divide-theme-secondary flex flex-col gap-4 py-4 mx-4">
+                {composers.map((composer, index) => (
+                  <AnimatedItem
+                    key={composer.id}
+                    direction="left"
+                    className="classical-card p-4 hover:bg-interactive-hover transition-all duration-300 cursor-pointer group"
+                    onClick={() => navigateToUrl('composer', composer.id)}
+                    style={{
+                      animationDelay: `${index * 0.1}s`,
+                      animationFillMode: 'backwards',
+                    }}
+                  >
+                    <ComposerCardList composer={composer} />
+                  </AnimatedItem>
+                ))}
+              </div>
             )
           ) : (
             // Empty State com animação
@@ -415,34 +372,25 @@ export default function ComposersClient({
               springType="bouncy"
             >
               <div className="classical-card p-12 text-center">
-                <AnimatedItem direction="scale">
-                  <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <FiSearch className="w-8 h-8 text-theme-tertiary" />
-                  </div>
-                </AnimatedItem>
+                <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FiSearch className="w-8 h-8 text-theme-tertiary" />
+                </div>
 
-                <AnimatedItem direction="up">
-                  <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
-                    Nenhum compositor encontrado
-                  </h3>
-                </AnimatedItem>
+                <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
+                  Nenhum compositor encontrado
+                </h3>
 
-                <AnimatedItem direction="up">
-                  <p className="text-theme-secondary mb-6">
-                    Tente ajustar seus filtros ou termo de busca para encontrar
-                    compositores.
-                  </p>
-                </AnimatedItem>
-
+                <p className="text-theme-secondary mb-6">
+                  Tente ajustar seus filtros ou termo de busca para encontrar
+                  compositores.
+                </p>
                 {hasActiveFilters && (
-                  <AnimatedItem direction="up" hover="scale">
-                    <button
-                      onClick={clearFilters}
-                      className="btn-classical-primary"
-                    >
-                      Limpar Filtros e Ver Todos
-                    </button>
-                  </AnimatedItem>
+                  <button
+                    onClick={clearFilters}
+                    className="btn-classical-primary"
+                  >
+                    Limpar Filtros e Ver Todos
+                  </button>
                 )}
               </div>
             </AnimatedItem>
