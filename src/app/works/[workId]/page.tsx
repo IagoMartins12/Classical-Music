@@ -184,7 +184,7 @@ export default async function WorkDetailsPage({
   return (
     <div className="min-h-screen">
       {/* 🆕 Preload crítico para melhor performance */}
-      <link rel="preload" href="/api/imslp-scores" as="fetch" />
+      {/* <link rel="preload" href="/api/imslp-scores" as="fetch" /> */}
 
       <Suspense fallback={<WorkDetailsLoading />}>
         <WorkDetailsServer workId={resolvedParams.workId} />

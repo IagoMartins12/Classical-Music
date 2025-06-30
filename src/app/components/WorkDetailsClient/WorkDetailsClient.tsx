@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - Atualizado com carregamento incremental otimizado
+// app/work/[workId]/WorkDetailsClient.tsx - Atualizado apenas com workId (sem mudanças visuais)
 'use client';
 
 import { useState } from 'react';
@@ -18,8 +18,6 @@ import {
   FiInfo,
   FiShare2,
   FiHeadphones,
-  FiDownload,
-  FiLayers,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { useIMSLPScores } from '@/app/hooks/useIMSLPScores';
@@ -28,24 +26,17 @@ import { useNavigate } from '@/app/hooks/useNavigate';
 import FavoriteButton from '../FavoriteButton';
 import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
+
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import StudyModeModal from '../StudyMode/StudyModeModal';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
   relatedWorks?: any[];
+  // Dados de aprendizado iniciais do SSR
   learningData?: {
     wantToLearn: any[];
     learned: any[];
-  };
-  // 🆕 Informações de cache inicial
-  initialCacheInfo?: {
-    hasCache: boolean;
-    cacheInfo: {
-      totalScores: number;
-      lastUpdated: Date | null;
-      types: string[];
-    } | null;
   };
 }
 
@@ -53,33 +44,25 @@ export default function WorkDetailsClient({
   work,
   relatedWorks = [],
   learningData = { wantToLearn: [], learned: [] },
-  initialCacheInfo,
 }: WorkDetailsClientProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedScoreForStudy, setSelectedScoreForStudy] =
     useState<IMSLPScore | null>(null);
 
-  // 🚀 Hook otimizado com carregamento incremental
+  // 🆕 ÚNICA MUDANÇA: Incluir workId no hook para cache
   const {
     scores: imslpScores,
     loading: loadingScores,
     error: scoresError,
     refetch: refetchScores,
-    setSelectedScore,
-    selectedScore,
     fromCache,
     cacheStats,
-    // 🆕 Novos campos para carregamento incremental
-    hasMore,
-    totalAvailable,
-    loadingMore,
-    loadMore,
-    loadAll,
-    canLoadMore,
   } = useIMSLPScores(work.imslpPermlink, {
+    // 🚀 Passar workId para habilitar cache
     workId: work.id,
+    // 🚀 Se há uma partitura selecionada, priorizá-la no cache
     priorityScoreId: selectedScoreForStudy?.id,
-    initialLimit: 5, // Começar com apenas 5 partituras
+    // Callback para quando partituras são carregadas
     onScoresCached: (fromCache) => {
       if (fromCache) {
         console.log(
@@ -88,14 +71,6 @@ export default function WorkDetailsClient({
       } else {
         console.log(
           `🕷️ Partituras obtidas via scraping para obra ${work.title}`
-        );
-      }
-    },
-    onScoreSelected: (score) => {
-      // Callback automático quando uma partitura é selecionada
-      if (score) {
-        console.log(
-          `📚 Partitura selecionada automaticamente salva: ${score.title}`
         );
       }
     },
@@ -121,17 +96,14 @@ export default function WorkDetailsClient({
     return labels[type as keyof typeof labels] || type;
   };
 
-  // Callback otimizado para seleção de partitura
+  // Callback para quando uma partitura é selecionada
   const handleScoreSelect = (score: IMSLPScore) => {
     setSelectedScoreForStudy(score);
-    setSelectedScore(score.id);
-
-    // A partitura já é salva automaticamente pelo hook otimizado
-    console.log(`🎼 Partitura selecionada: ${score.title}`);
   };
 
   return (
-    <div className="bg-gradient-primary">
+    <div className=" bg-gradient-primary">
+      {/* Inicializar dados de aprendizado do SSR */}
       <LearningInitializer learningData={learningData} />
 
       {/* Background Pattern */}
@@ -265,6 +237,7 @@ export default function WorkDetailsClient({
 
                 {/* Grid de Informações Detalhadas */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Ano de Composição */}
                   {work.compositionYear && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -281,6 +254,7 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
+                  {/* Duração */}
                   {work.mediaDuration && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -297,6 +271,7 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
+                  {/* Tom */}
                   {work.tone && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -313,6 +288,7 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
+                  {/* Instrumento */}
                   {work.instrument && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -329,6 +305,7 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
+                  {/* Época */}
                   {work.epoch && (
                     <div className="flex items-start space-x-3 group">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -376,6 +353,7 @@ export default function WorkDetailsClient({
                           </span>
                         </div>
                       )}
+
                       {work.workStyle && (
                         <div className="flex items-center space-x-2">
                           <span className="font-medium text-theme-tertiary">
@@ -396,6 +374,7 @@ export default function WorkDetailsClient({
                           </span>
                         </div>
                       )}
+
                       {work.moviment && (
                         <div className="md:col-span-2 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
                           <span className="font-medium text-theme-tertiary block mb-1">
@@ -504,6 +483,19 @@ export default function WorkDetailsClient({
                       >
                         <FiExternalLink className="w-4 h-4" />
                         <span>Abrir no Player Externo</span>
+                        <svg
+                          className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
                       </a>
                     </div>
                   </div>
@@ -531,100 +523,22 @@ export default function WorkDetailsClient({
                     >
                       <FiBookOpen className="w-4 h-4" />
                       <span>Ver Partitura (IMSLP)</span>
+                      <svg
+                        className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
                     </a>
                   </div>
                 </div>
-
-                {/* 🆕 Card de Status de Cache Otimizado */}
-                {(fromCache !== null ||
-                  cacheStats ||
-                  totalAvailable > 0 ||
-                  initialCacheInfo) && (
-                  <div
-                    className="classical-card-simple p-6 animate-fade-in-up"
-                    style={{ animationDelay: '0.25s' }}
-                  >
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                        <FiLayers className="w-4 h-4 text-theme-primary" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                        Status das Partituras
-                      </h3>
-                    </div>
-                    <div className="space-y-3 text-sm">
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-theme-tertiary">
-                          Fonte:
-                        </span>
-                        <span
-                          className={`font-semibold ${
-                            fromCache ? 'text-accent-green' : 'text-accent-blue'
-                          }`}
-                        >
-                          {fromCache ? '💾 Cache' : '🕷️ Scraping'}
-                        </span>
-                      </div>
-                      {(totalAvailable > 0 ||
-                        initialCacheInfo?.cacheInfo?.totalScores) && (
-                        <>
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-theme-tertiary">
-                              Disponíveis:
-                            </span>
-                            <span className="text-theme-primary font-semibold">
-                              {totalAvailable ||
-                                initialCacheInfo?.cacheInfo?.totalScores ||
-                                0}
-                            </span>
-                          </div>
-                          {hasMore && (
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium text-theme-tertiary">
-                                Carregamento:
-                              </span>
-                              <span className="text-accent-blue font-semibold">
-                                Incremental
-                              </span>
-                            </div>
-                          )}
-                        </>
-                      )}
-                      {(cacheStats?.lastUpdated ||
-                        initialCacheInfo?.cacheInfo?.lastUpdated) && (
-                        <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
-                          <span className="font-medium text-theme-tertiary">
-                            Última atualização:
-                          </span>
-                          <span className="text-theme-primary font-semibold text-xs">
-                            {new Date(
-                              cacheStats?.lastUpdated ||
-                                initialCacheInfo?.cacheInfo?.lastUpdated!
-                            ).toLocaleDateString('pt-BR')}
-                          </span>
-                        </div>
-                      )}
-                      {initialCacheInfo && !fromCache && (
-                        <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
-                          <span className="font-medium text-theme-tertiary">
-                            Cache Inicial:
-                          </span>
-                          <span
-                            className={`text-xs font-semibold ${
-                              initialCacheInfo.hasCache
-                                ? 'text-accent-green'
-                                : 'text-accent-blue'
-                            }`}
-                          >
-                            {initialCacheInfo.hasCache
-                              ? '✅ Disponível'
-                              : '🔄 Processando'}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
 
                 {/* Informações Técnicas */}
                 <div
@@ -666,6 +580,22 @@ export default function WorkDetailsClient({
                         {new Date(work.createdAt).toLocaleDateString('pt-BR')}
                       </span>
                     </div>
+
+                    {/* 🆕 Indicador de cache (só para dev/debug) */}
+                    {process.env.NODE_ENV === 'development' && (
+                      <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
+                        <span className="font-medium text-theme-tertiary">
+                          Cache Status:
+                        </span>
+                        <span
+                          className={`text-xs font-semibold ${
+                            fromCache ? 'text-accent-green' : 'text-accent-blue'
+                          }`}
+                        >
+                          {fromCache ? '💾 Cache' : '🕷️ Scraping'}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -673,7 +603,7 @@ export default function WorkDetailsClient({
           </div>
         </div>
 
-        {/* 🚀 Seção de Partituras IMSLP Otimizada */}
+        {/* Seção de Partituras IMSLP */}
         {work.imslpPermlink && (
           <div
             className="animate-fade-in-up"
@@ -722,13 +652,6 @@ export default function WorkDetailsClient({
                 composerName={work.composer.fullName}
                 workId={work.id}
                 workTitle={work.title}
-                // 🆕 Props de carregamento incremental
-                hasMore={hasMore}
-                totalAvailable={totalAvailable}
-                loadingMore={loadingMore}
-                onLoadMore={loadMore}
-                onLoadAll={loadAll}
-                canLoadMore={canLoadMore}
               />
             )}
           </div>

@@ -542,43 +542,6 @@ export const hasScoresInCache = unstable_cache(
   }
 );
 
-// Função para obter estatísticas de cache de uma obra
-export const getWorkCacheStats = async (workId: string) => {
-  try {
-    const [cacheInfo, processingLogs] = await Promise.all([
-      hasScoresInCache(workId),
-      // Verificar se a tabela existe antes de consultar
-      prisma.scoreProcessingLog
-        .findMany({
-          where: { workId },
-          orderBy: { createdAt: 'desc' },
-          take: 5,
-          select: {
-            action: true,
-            status: true,
-            createdAt: true,
-            completedAt: true,
-            itemsSuccess: true,
-            itemsFailed: true,
-            duration: true,
-          },
-        })
-        .catch(() => []), // Retornar array vazio se tabela não existir ainda
-    ]);
-
-    return {
-      cache: cacheInfo,
-      recentProcessing: processingLogs,
-    };
-  } catch (error) {
-    console.error('Erro ao obter estatísticas de cache:', error);
-    return {
-      cache: { hasCache: false, cacheInfo: null },
-      recentProcessing: [],
-    };
-  }
-};
-
 // 🆕 ATUALIZAR a função revalidateWorkCache existente:
 export async function revalidateWorkCache(workId?: string) {
   const { revalidateTag } = await import('next/cache');

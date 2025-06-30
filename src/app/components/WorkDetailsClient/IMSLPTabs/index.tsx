@@ -127,6 +127,7 @@ export default function IMSLPTabs({
     }
   };
 
+  console.log('IMSLP', { imslpData, loading });
   // 🆕 Calcular estatísticas de carregamento
   const currentlyLoaded = imslpData
     ? Object.values(imslpData.totalCounts).reduce(
@@ -215,10 +216,6 @@ export default function IMSLPTabs({
         </div>
       </div>
     );
-  }
-
-  if (!imslpData) {
-    return null;
   }
 
   const visibleTabs = TABS.filter((tab) => imslpData.totalCounts[tab.type] > 0);

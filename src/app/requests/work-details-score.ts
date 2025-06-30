@@ -341,47 +341,12 @@ export const hasScoresInCache = unstable_cache(
   }
 );
 
-// 🆕 Função para obter estatísticas de cache de uma obra
-export const getWorkCacheStats = async (workId: string) => {
-  try {
-    const [cacheInfo, processingLogs] = await Promise.all([
-      hasScoresInCache(workId),
-      prisma.scoreProcessingLog.findMany({
-        where: { workId },
-        orderBy: { createdAt: 'desc' },
-        take: 5,
-        select: {
-          action: true,
-          status: true,
-          createdAt: true,
-          completedAt: true,
-          itemsSuccess: true,
-          itemsFailed: true,
-          duration: true,
-        },
-      }),
-    ]);
-
-    return {
-      cache: cacheInfo,
-      recentProcessing: processingLogs,
-    };
-  } catch (error) {
-    console.error('Erro ao obter estatísticas de cache:', error);
-    return {
-      cache: { hasCache: false, cacheInfo: null },
-      recentProcessing: [],
-    };
-  }
-};
-
 // Função para invalidar cache
 export async function revalidateWorkCache(workId?: string) {
   const { revalidateTag } = await import('next/cache');
   revalidateTag('works-list');
   revalidateTag('work-basic-data');
   revalidateTag('related-works');
-  revalidateTag('work-scores-cache'); // 🆕 Invalidar cache de partituras
   revalidateTag('instruments-list');
   if (workId) {
     revalidateTag(`work-${workId}`);
