@@ -443,6 +443,7 @@ interface SequentialGridProps {
   gap?: number;
   delayBetweenItems?: number; // Delay entre cada item
   className?: string;
+  classNameSub?: string;
 }
 
 export const SequentialGrid: React.FC<SequentialGridProps> = ({
@@ -451,6 +452,7 @@ export const SequentialGrid: React.FC<SequentialGridProps> = ({
   gap = 6,
   delayBetweenItems = 0.1,
   className = '',
+  classNameSub,
 }) => {
   const getGridCols = () => {
     switch (cols) {
@@ -483,6 +485,7 @@ export const SequentialGrid: React.FC<SequentialGridProps> = ({
             y: -5,
             transition: { duration: 0.2 },
           }}
+          className={`${classNameSub}`}
         >
           {child}
         </motion.div>

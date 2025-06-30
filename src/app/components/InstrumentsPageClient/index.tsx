@@ -307,14 +307,7 @@ export function InstrumentsPageClient({
                       </div>
                       <div className="text-sm text-theme-secondary">Obras</div>
                     </div>
-                    {/* <div className="text-center">
-                      <div className="text-2xl font-bold text-accent-purple classical-title">
-                        {instrument.stats.totalUsers}
-                      </div>
-                      <div className="text-sm text-theme-secondary">
-                        Usuários
-                      </div>
-                    </div> */}
+
                     <div className="w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 group-hover:bg-brand-primary/20">
                       {isInstrumentOpen ? (
                         <FaCompress className="w-4 h-4 text-theme-primary" />
@@ -333,7 +326,7 @@ export function InstrumentsPageClient({
                       : 'max-h-0 opacity-0'
                   }`}
                 >
-                  <div className="px-8 pb-8 space-y-8">
+                  <div className="px-8 py-8 space-y-8">
                     {/* Brief Description */}
                     <div className="classical-card-2 p-6 relative overflow-hidden">
                       <div className="relative z-10">

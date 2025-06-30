@@ -1,4 +1,4 @@
-// app/requests/composer-details.ts - Versão com suporte a workType
+// app/requests/composer-details.ts - Updated with new properties
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 
@@ -6,8 +6,17 @@ export interface ComposerDetails {
   id: string;
   name: string;
   fullName: string;
+  otherName?: string; // Existing
+
+  // 🆕 New name properties
+  alternativeNames?: string;
+  namesInOtherLangs?: string;
+  pseudonyms?: string;
+
+  // Enhanced date properties (can contain full dates now)
   birthDate?: string;
   deathDate?: string;
+
   portraitUrl?: string;
   bio?: string;
   permLinkImslp?: string;
@@ -19,12 +28,28 @@ export interface ComposerDetails {
   worksCount: number;
   createdAt: Date;
   roleNames?: string[];
+
+  // 🆕 New detailed information properties
+  diverseInfo?: string;
+  externalLinks?: string;
+  nationality?: string;
+  instruments?: string;
+  imslpCategories?: string;
+
+  // 🆕 New metadata properties
+  lastModifiedImslp?: string;
+  pageStatus?: string;
+  pageQuality?: string;
+  lastVerified?: Date;
+  dataCompleteness?: number;
+  hasValidImage?: boolean;
 }
 
 // Interface atualizada para incluir arrays de gêneros/categorias e workType
 export interface ComposerWork {
   id: string;
   title: string;
+  subtitle?: string; // 🆕 New property
   opOrCatalog?: string;
   compositionYear?: string;
   tone?: string;
@@ -35,11 +60,17 @@ export interface ComposerWork {
     id: string;
     name: string;
   };
-  workType: string; // Atualizado para incluir workType
+  workType: string;
   isPartOfCollection: boolean;
   parentWorkId?: string;
   workGenresArr?: string[];
   categoryNames?: string[];
+
+  // 🆕 New work properties
+  timeSignature?: string;
+  tempoMarking?: string;
+  difficultyLevel?: string;
+  imslpTags?: string[];
 }
 
 // Nova interface para resposta paginada
@@ -55,9 +86,10 @@ export interface ComposerFilterOptions {
   instruments: { id: string; name: string }[];
   workGenres: string[];
   categories: string[];
+  difficultyLevels: { value: string; label: string }[]; // 🆕 New filter
 }
 
-// Função OTIMIZADA para buscar obras do compositor com paginação e filtros (incluindo workType)
+// Função OTIMIZADA para buscar obras do compositor com paginação e filtros (incluindo novas propriedades)
 export const getComposerWorksWithFilters = async (
   composerId: string,
   page: number = 1,
@@ -67,7 +99,8 @@ export const getComposerWorksWithFilters = async (
     workGenresArr?: string;
     categoryNames?: string;
     search?: string;
-    workType?: string; // Novo filtro adicionado
+    workType?: string;
+    difficultyLevel?: string; // 🆕 New filter
   }
 ): Promise<ComposerWorksResponse> => {
   try {
@@ -94,15 +127,26 @@ export const getComposerWorksWithFilters = async (
       };
     }
 
-    // Novo filtro por workType
     if (filters?.workType) {
       whereClause.workType = filters.workType;
+    }
+
+    // 🆕 New filter for difficulty level
+    if (filters?.difficultyLevel) {
+      whereClause.difficultyLevel = filters.difficultyLevel;
     }
 
     if (filters?.search) {
       whereClause.OR = [
         {
           title: {
+            contains: filters.search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          subtitle: {
+            // 🆕 Include subtitle in search
             contains: filters.search,
             mode: 'insensitive',
           },
@@ -129,17 +173,25 @@ export const getComposerWorksWithFilters = async (
         select: {
           id: true,
           title: true,
+          subtitle: true, // 🆕
           opOrCatalog: true,
           compositionYear: true,
           tone: true,
           mediaDuration: true,
           imslpPermlink: true,
           videoUrl: true,
-          workType: true, // Incluído workType na seleção
+          workType: true,
           isPartOfCollection: true,
           parentWorkId: true,
           workGenresArr: true,
           categoryNames: true,
+
+          // 🆕 New properties
+          timeSignature: true,
+          tempoMarking: true,
+          difficultyLevel: true,
+          imslpTags: true,
+
           // JOIN otimizado com instrument
           instrument: {
             select: {
@@ -166,6 +218,7 @@ export const getComposerWorksWithFilters = async (
       works: works.map((work) => ({
         id: work.id,
         title: work.title,
+        subtitle: work.subtitle || undefined,
         opOrCatalog: work.opOrCatalog || undefined,
         compositionYear: work.compositionYear || undefined,
         tone: work.tone || undefined,
@@ -173,11 +226,17 @@ export const getComposerWorksWithFilters = async (
         imslpPermlink: work.imslpPermlink,
         videoUrl: work.videoUrl || undefined,
         instrument: work.instrument,
-        workType: work.workType, // Incluído workType no retorno
+        workType: work.workType,
         isPartOfCollection: work.isPartOfCollection,
         parentWorkId: work.parentWorkId || undefined,
         workGenresArr: work.workGenresArr,
         categoryNames: work.categoryNames,
+
+        // 🆕 New properties
+        timeSignature: work.timeSignature || undefined,
+        tempoMarking: work.tempoMarking || undefined,
+        difficultyLevel: work.difficultyLevel || undefined,
+        imslpTags: work.imslpTags || undefined,
       })),
       totalCount,
       hasMore: skip + works.length < totalCount,
@@ -194,7 +253,14 @@ export const getComposerWorksWithFilters = async (
   }
 };
 
-// Função SIMPLIFICADA para buscar opções de filtros específicas do compositor
+// 🆕 Difficulty levels for filtering
+const DIFFICULTY_LEVELS = [
+  { value: 'BEGINNER', label: 'Iniciante' },
+  { value: 'INTERMEDIATE', label: 'Intermediário' },
+  { value: 'ADVANCED', label: 'Avançado' },
+];
+
+// Função SIMPLIFICADA para buscar opções de filtros específicas do compositor - UPDATED
 export const getComposerFilterOptions = unstable_cache(
   async (composerId: string): Promise<ComposerFilterOptions> => {
     try {
@@ -207,6 +273,7 @@ export const getComposerFilterOptions = unstable_cache(
           instrumentId: true,
           workGenresArr: true,
           categoryNames: true,
+          difficultyLevel: true, // 🆕 Include difficulty level
           instrument: {
             select: {
               id: true,
@@ -261,6 +328,7 @@ export const getComposerFilterOptions = unstable_cache(
         instruments,
         workGenres: Array.from(genresSet).sort(),
         categories: Array.from(categoriesSet).sort(),
+        difficultyLevels: DIFFICULTY_LEVELS, // 🆕 Add difficulty levels
       };
     } catch (error) {
       console.error('Erro ao buscar opções de filtros do compositor:', error);
@@ -268,6 +336,7 @@ export const getComposerFilterOptions = unstable_cache(
         instruments: [],
         workGenres: [],
         categories: [],
+        difficultyLevels: DIFFICULTY_LEVELS,
       };
     }
   },
@@ -296,7 +365,7 @@ export const getComposerWorks = unstable_cache(
   }
 );
 
-// Cache dos dados do compositor (exceto bio) por 2 horas
+// Cache dos dados do compositor (exceto bio) por 2 horas - UPDATED with new properties
 const getCachedComposerData = unstable_cache(
   async (composerId: string) => {
     try {
@@ -308,8 +377,17 @@ const getCachedComposerData = unstable_cache(
           id: true,
           name: true,
           fullName: true,
+          otherName: true, // Existing
+
+          // 🆕 New name properties
+          alternativeNames: true,
+          namesInOtherLangs: true,
+          pseudonyms: true,
+
+          // Enhanced date properties
           birthDate: true,
           deathDate: true,
+
           portraitUrl: true,
           roles: true,
           // bio: true, // Removido do cache
@@ -318,6 +396,22 @@ const getCachedComposerData = unstable_cache(
           epochId: true,
           primaryRoleId: true,
           createdAt: true,
+
+          // 🆕 New detailed information properties
+          diverseInfo: true,
+          externalLinks: true,
+          nationality: true,
+          instruments: true,
+          imslpCategories: true,
+
+          // 🆕 New metadata properties
+          lastModifiedImslp: true,
+          pageStatus: true,
+          pageQuality: true,
+          lastVerified: true,
+          dataCompleteness: true,
+          hasValidImage: true,
+
           epoch: {
             select: {
               name: true,
@@ -363,8 +457,17 @@ const getCachedComposerData = unstable_cache(
         id: composer.id,
         name: composer.name,
         fullName: composer.fullName,
+        otherName: composer.otherName || undefined,
+
+        // 🆕 New name properties
+        alternativeNames: composer.alternativeNames || undefined,
+        namesInOtherLangs: composer.namesInOtherLangs || undefined,
+        pseudonyms: composer.pseudonyms || undefined,
+
+        // Enhanced date properties
         birthDate: composer.birthDate || undefined,
         deathDate: composer.deathDate || undefined,
+
         portraitUrl: composer.portraitUrl || undefined,
         permLinkImslp: composer.permLinkImslp || undefined,
         wikipediaLink: composer.wikipediaLink || undefined,
@@ -376,6 +479,21 @@ const getCachedComposerData = unstable_cache(
         createdAt: composer.createdAt,
         roles: composer.roles, // IDs originais
         roleNames: roleNames, // Nomes dos roles
+
+        // 🆕 New detailed information properties
+        diverseInfo: composer.diverseInfo || undefined,
+        externalLinks: composer.externalLinks || undefined,
+        nationality: composer.nationality || undefined,
+        instruments: composer.instruments || undefined,
+        imslpCategories: composer.imslpCategories || undefined,
+
+        // 🆕 New metadata properties
+        lastModifiedImslp: composer.lastModifiedImslp || undefined,
+        pageStatus: composer.pageStatus || undefined,
+        pageQuality: composer.pageQuality || undefined,
+        lastVerified: composer.lastVerified || undefined,
+        dataCompleteness: composer.dataCompleteness || undefined,
+        hasValidImage: composer.hasValidImage || false,
       };
     } catch (error) {
       console.error('Erro ao buscar dados básicos do compositor:', error);
@@ -410,7 +528,7 @@ const getComposerBio = async (
   }
 };
 
-// Função principal que combina dados cacheados com bio dinâmica
+// Função principal que combina dados cacheados com bio dinâmica - UPDATED
 export const getComposerById = async (
   composerId: string
 ): Promise<ComposerDetails | null> => {

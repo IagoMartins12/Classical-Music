@@ -1777,7 +1777,6 @@ class IMSLPScraper {
         _count: { nationality: true },
         where: { nationality: { not: null } },
         orderBy: { _count: { nationality: 'desc' } },
-        take: 5,
       });
 
       const topNationalities = nationalityGroups.map((group) => ({

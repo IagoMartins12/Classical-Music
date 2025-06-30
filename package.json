@@ -17,10 +17,9 @@
     "work-scraper:stop": "tsx scripts/imslp-works-scraper.ts stop",
     "work-scraper:reset": "tsx scripts/imslp-works-scraper.ts reset",
     "work-scraper:status": "tsx scripts/imslp-works-scraper.ts status",
-    "clear-composers": "tsx scripts/clear-composers.ts",
-    "clear-categories": "tsx scripts/clear-categories.ts",
-    "update-composers": "tsx scripts/update-composers.ts",
-    "update-works": "tsx scripts/update-works.ts",
+    "update-works": "tsx scripts/workstyle-epoch-fixer.ts",
+    "update-nacionality": "tsx scripts/composers-nacionality.ts",
+    "update-composers-epoch": "tsx scripts/composers-epoch.ts",
     "fix-genre": "tsx scripts/fix-genre.ts",
     "vercel-build": "prisma generate && next build"
   },

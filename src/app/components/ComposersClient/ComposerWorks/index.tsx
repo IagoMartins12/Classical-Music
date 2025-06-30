@@ -1,4 +1,4 @@
-// ComposerWorks.tsx - Versão com tabs de workType
+// ComposerWorks.tsx - Com sistema de animações
 'use client';
 
 import {
@@ -9,7 +9,6 @@ import Link from 'next/link';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   FiMusic,
-  FiPlay,
   FiSearch,
   FiFilter,
   FiClock,
@@ -34,6 +33,15 @@ import {
 import { MdLibraryMusic } from 'react-icons/md';
 import FavoriteButton from '../../FavoriteButton';
 import ViewModeToggle from '../../ViewModeToggle';
+
+// Importar componentes de animação
+import {
+  AnimatedContainer,
+  AnimatedCard,
+  AnimatedItem,
+  SequentialGrid,
+  SkeletonCard,
+} from '../../animation/AnimatedComponents';
 
 interface ComposerWorksProps {
   composerId: string;
@@ -131,61 +139,6 @@ export default function ComposerWorks({
   initialHasMore,
   filterOptions,
 }: ComposerWorksProps) {
-  // Adicionar estilos de animação
-  const animationStyles = `
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    
-    @keyframes shimmer {
-      0% {
-        background-position: -200% 0;
-      }
-      100% {
-        background-position: 200% 0;
-      }
-    }
-    
-    .animate-fade-in-up {
-      animation: fadeInUp 0.6s ease-out;
-    }
-    
-    .animate-slide-up {
-      animation: slideUp 0.5s ease-out;
-    }
-    
-    .skeleton-shimmer {
-      background: linear-gradient(90deg, 
-        rgba(156, 163, 175, 0.1) 25%, 
-        rgba(156, 163, 175, 0.3) 50%, 
-        rgba(156, 163, 175, 0.1) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 2s infinite linear;
-    }
-    
-    .content-transition {
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-  `;
-
   // Estados principais
   const [works, setWorks] = useState<ComposerWork[]>(initialWorks);
   const [totalCount, setTotalCount] = useState(initialTotalCount);
@@ -486,40 +439,47 @@ export default function ComposerWorks({
 
   if (initialTotalCount === 0) {
     return (
-      <div className="classical-card p-12">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
-            <FiBookOpen className="w-6 h-6 text-theme-primary" />
+      <AnimatedCard hover="lift" className="classical-card p-12">
+        <AnimatedItem direction="up" springType="bouncy">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
+              <FiBookOpen className="w-6 h-6 text-theme-primary" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                Obras Catalogadas
+              </h2>
+            </div>
           </div>
-          <div>
-            <h2 className="text-2xl font-bold text-theme-primary classical-title">
-              Obras Catalogadas
-            </h2>
-          </div>
-        </div>
+        </AnimatedItem>
 
-        <div className="text-center py-12">
-          <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <MdLibraryMusic className="w-8 h-8 text-theme-tertiary" />
+        <AnimatedItem direction="scale" springType="gentle">
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <MdLibraryMusic className="w-8 h-8 text-theme-tertiary" />
+            </div>
+            <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
+              Nenhuma obra catalogada
+            </h3>
+            <p className="text-theme-secondary">
+              Ainda não temos obras catalogadas para este compositor em nossa
+              base de dados.
+            </p>
           </div>
-          <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-            Nenhuma obra catalogada
-          </h3>
-          <p className="text-theme-secondary">
-            Ainda não temos obras catalogadas para este compositor em nossa base
-            de dados.
-          </p>
-        </div>
-      </div>
+        </AnimatedItem>
+      </AnimatedCard>
     );
   }
 
   return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: animationStyles }} />
-      <div className="classical-card">
+    <AnimatedCard hover="none" className="classical-card">
+      <AnimatedContainer delay={0.1} staggerSpeed="fast">
         {/* Header */}
-        <div className="p-8 border-b border-theme-secondary bg-gradient-to-r from-theme-elevated to-interactive-hover">
+        <AnimatedItem
+          direction="up"
+          springType="smooth"
+          className="p-8 border-b border-theme-secondary bg-gradient-to-r from-theme-elevated to-interactive-hover"
+        >
           <div className="flex items-center space-x-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-2xl flex items-center justify-center">
               <FiBookOpen className="w-6 h-6 text-theme-primary" />
@@ -537,49 +497,54 @@ export default function ComposerWorks({
           {/* Tabs de WorkType */}
           {availableWorkTypes.length > 0 && (
             <div className="mb-6">
-              <div className="flex items-center space-x-2 mb-3">
+              {/* <div className="flex items-center space-x-2 mb-3">
                 <FiLayers className="w-4 h-4 text-theme-primary" />
                 <span className="text-sm font-medium text-theme-primary">
                   Filtrar por tipo de obra
                 </span>
-              </div>
+              </div> */}
 
               <div className="flex flex-wrap gap-2">
                 {/* Tab "Todos" */}
                 <button
                   onClick={() => handleWorkTypeChange('all')}
                   className={`
-                    px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 
-                    ${
-                      selectedWorkType === 'all'
-                        ? 'bg-brand-primary text-theme-primary shadow-theme-medium border-2 border-brand-primary'
-                        : 'bg-interactive-hover border border-theme-secondary text-theme-secondary hover:bg-brand-primary/10 hover:border-brand-primary/30 hover:text-brand-primary'
-                    }
-                  `}
+                        px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 
+                        ${
+                          selectedWorkType === 'all'
+                            ? 'bg-brand-primary text-theme-primary shadow-theme-medium border-2 border-brand-primary'
+                            : 'bg-interactive-hover border border-theme-secondary text-theme-secondary hover:bg-brand-primary/10 hover:border-brand-primary/30 hover:text-brand-primary'
+                        }
+                      `}
                   disabled={loading}
                 >
                   Todos ({initialTotalCount})
                 </button>
 
                 {/* Tabs dos workTypes disponíveis */}
-                {availableWorkTypes.map((groupKey) => {
+                {availableWorkTypes.map((groupKey, index) => {
                   const groupCount = getGroupedCount(groupKey);
                   return (
-                    <button
+                    <AnimatedItem
                       key={groupKey}
-                      onClick={() => handleWorkTypeChange(groupKey)}
-                      className={`
-                        px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 
-                        ${
-                          selectedWorkType === groupKey
-                            ? 'bg-accent-blue text-theme-primary shadow-theme-medium border-2 border-accent-blue'
-                            : 'bg-interactive-hover border border-theme-secondary text-theme-secondary hover:bg-accent-blue/10 hover:border-accent-blue/30 hover:text-accent-blue'
-                        }
-                      `}
-                      disabled={loading}
+                      hover="scale"
+                      springType="bouncy"
                     >
-                      {WORK_TYPE_LABELS[groupKey]} ({groupCount})
-                    </button>
+                      <button
+                        onClick={() => handleWorkTypeChange(groupKey)}
+                        className={`
+                            px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 
+                            ${
+                              selectedWorkType === groupKey
+                                ? 'bg-accent-blue text-theme-primary shadow-theme-medium border-2 border-accent-blue'
+                                : 'bg-interactive-hover border border-theme-secondary text-theme-secondary hover:bg-accent-blue/10 hover:border-accent-blue/30 hover:text-accent-blue'
+                            }
+                          `}
+                        disabled={loading}
+                      >
+                        {WORK_TYPE_LABELS[groupKey]} ({groupCount})
+                      </button>
+                    </AnimatedItem>
                   );
                 })}
               </div>
@@ -879,218 +844,267 @@ export default function ComposerWorks({
               </button>
             </div>
           )}
-        </div>
+        </AnimatedItem>
 
         {/* Lista de obras */}
-        <div className="p-8 content-transition">
+        <div className="p-8">
           {loading ? (
-            <div className="space-y-4">
+            <AnimatedContainer delay={0.1} staggerSpeed="fast">
               {Array.from({ length: 6 }).map((_, index) => (
-                <div
+                <SkeletonCard
                   key={index}
-                  className="classical-card-simple animate-fade-in-up"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-4">
-                          {/* Skeleton para ícone do instrumento */}
-                          <div className="w-8 h-8 bg-theme-tertiary/20 rounded-xl skeleton-shimmer"></div>
-
-                          <div className="flex-1">
-                            {/* Skeleton para título */}
-                            <div
-                              className="h-5 bg-theme-tertiary/20 rounded-lg mb-2 skeleton-shimmer"
-                              style={{ width: `${60 + Math.random() * 30}%` }}
-                            ></div>
-                            {/* Skeleton para opus */}
-                            <div className="h-4 bg-theme-tertiary/20 rounded-full w-20 skeleton-shimmer"></div>
-                          </div>
-                        </div>
-
-                        {/* Skeleton para informações */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-3">
-                          {Array.from({ length: 4 }).map((_, i) => (
-                            <div
-                              key={i}
-                              className="flex items-center space-x-2"
-                            >
-                              <div className="w-4 h-4 bg-theme-tertiary/20 rounded skeleton-shimmer"></div>
-                              <div
-                                className="h-4 bg-theme-tertiary/20 rounded skeleton-shimmer"
-                                style={{
-                                  width: `${40 + Math.random() * 40}px`,
-                                }}
-                              ></div>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Skeleton para tags */}
-                        <div className="flex flex-wrap gap-2">
-                          {Array.from({
-                            length: 2 + Math.floor(Math.random() * 2),
-                          }).map((_, i) => (
-                            <div
-                              key={i}
-                              className="h-6 bg-theme-tertiary/20 rounded-full skeleton-shimmer"
-                              style={{ width: `${50 + Math.random() * 30}px` }}
-                            ></div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Skeleton para botões */}
-                      <div className="flex items-center space-x-2 ml-6">
-                        <div className="w-10 h-10 bg-theme-tertiary/20 rounded-xl skeleton-shimmer"></div>
-                        <div className="w-10 h-10 bg-theme-tertiary/20 rounded-xl skeleton-shimmer"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  lines={4}
+                  showIcon={true}
+                  showButton={true}
+                  className="mb-4"
+                />
               ))}
 
               {/* Loading indicator sutil */}
-              <div className="flex items-center justify-center py-4 opacity-70">
-                <div className="flex items-center space-x-2 text-sm text-theme-secondary">
-                  <div className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"></div>
-                  <div
-                    className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"
-                    style={{ animationDelay: '0.1s' }}
-                  ></div>
-                  <div
-                    className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"
-                    style={{ animationDelay: '0.2s' }}
-                  ></div>
-                  <span className="ml-2">Carregando obras...</span>
+              <AnimatedItem direction="scale" springType="gentle">
+                <div className="flex items-center justify-center py-4 opacity-70">
+                  <div className="flex items-center space-x-2 text-sm text-theme-secondary">
+                    <div className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"></div>
+                    <div
+                      className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"
+                      style={{ animationDelay: '0.1s' }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"
+                      style={{ animationDelay: '0.2s' }}
+                    ></div>
+                    <span className="ml-2">Carregando obras...</span>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </AnimatedItem>
+            </AnimatedContainer>
           ) : works.length > 0 ? (
             <>
-              <div
-                className={`${
-                  viewMode === 'cards'
-                    ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-                    : 'space-y-4 content-transition'
-                } `}
-              >
-                {works.map((work, index) => (
-                  <Link
-                    href={`/works/${work.id}`}
-                    key={work.id}
-                    className="classical-card-simple hover:shadow-theme-glow transition-all duration-300 group block opacity-0 animate-slide-up"
-                    style={{
-                      animationDelay: `${index * 0.03}s`,
-                      animationFillMode: 'forwards',
-                    }}
-                  >
-                    <div className="p-6">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-4">
-                            {work.instrument?.name && (
-                              <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
-                                {getInstrumentIcon(work.instrument.name)}
-                              </div>
-                            )}
+              {viewMode === 'cards' ? (
+                <SequentialGrid
+                  cols={4}
+                  gap={6}
+                  delayBetweenItems={0.01}
+                  classNameSub="flex items-stretch"
+                >
+                  {works.map((work) => (
+                    <Link
+                      href={`/works/${work.id}`}
+                      key={work.id}
+                      className="classical-card-simple w-full hover:shadow-theme-glow transition-all duration-300 group block"
+                    >
+                      <div className="p-6">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-3 mb-4">
+                              {work.instrument?.name && (
+                                <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
+                                  {getInstrumentIcon(work.instrument.name)}
+                                </div>
+                              )}
 
-                            <div className="flex-1">
-                              <span className="text-lg font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
-                                {work.title}
-                              </span>
-
-                              {work.opOrCatalog && (
-                                <span className="ml-3 text-sm text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
-                                  {work.opOrCatalog}
+                              <div className="flex-1 flex flex-col gap-2">
+                                <span className="text-lg font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
+                                  {work.title}
                                 </span>
+
+                                {work.opOrCatalog && (
+                                  <span className="text-sm w-min text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
+                                    {work.opOrCatalog}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col gap-4 text-sm text-theme-secondary">
+                              {work.instrument?.name && (
+                                <div className="flex items-center space-x-2">
+                                  <FiMusic className="w-4 h-4 text-theme-tertiary" />
+                                  <span>{work.instrument.name}</span>
+                                </div>
+                              )}
+
+                              {work.tone && (
+                                <div className="flex items-center space-x-2">
+                                  <GiMusicalNotes className="w-4 h-4 text-theme-tertiary" />
+                                  <span>{work.tone}</span>
+                                </div>
+                              )}
+
+                              {work.mediaDuration && (
+                                <div className="flex items-center space-x-2">
+                                  <FiClock className="w-4 h-4 text-theme-tertiary" />
+                                  <span>
+                                    {formatDuration(work.mediaDuration)}
+                                  </span>
+                                </div>
+                              )}
+
+                              {work.compositionYear && (
+                                <div className="flex items-center space-x-2">
+                                  <FiCalendar className="w-4 h-4 text-theme-tertiary" />
+                                  <span>{work.compositionYear}</span>
+                                </div>
                               )}
                             </div>
+
+                            {/* Mostrar gêneros e categorias se existirem */}
+                            {(work.workGenresArr?.length ||
+                              work.categoryNames?.length) && (
+                              <div className="flex flex-wrap gap-2 mt-3">
+                                {work.workGenresArr
+                                  ?.slice(0, 3)
+                                  .map((genre) => (
+                                    <span
+                                      key={genre}
+                                      className="px-2 capitalize py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green text-xs rounded-full"
+                                    >
+                                      {genre}
+                                    </span>
+                                  ))}
+                                {work.categoryNames
+                                  ?.slice(0, 2)
+                                  .map((category) => (
+                                    <span
+                                      key={category}
+                                      className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-xs rounded-full"
+                                    >
+                                      {category}
+                                    </span>
+                                  ))}
+                              </div>
+                            )}
                           </div>
 
                           <div
-                            className={`${
-                              viewMode === 'cards'
-                                ? 'flex flex-col'
-                                : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-                            } gap-4 text-sm text-theme-secondary`}
+                            className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                            onClick={(e) => e.stopPropagation()}
                           >
-                            {work.instrument?.name && (
-                              <div className="flex items-center space-x-2">
-                                <FiMusic className="w-4 h-4 text-theme-tertiary" />
-                                <span>{work.instrument.name}</span>
-                              </div>
-                            )}
-
-                            {work.tone && (
-                              <div className="flex items-center space-x-2">
-                                <GiMusicalNotes className="w-4 h-4 text-theme-tertiary" />
-                                <span>{work.tone}</span>
-                              </div>
-                            )}
-
-                            {work.mediaDuration && (
-                              <div className="flex items-center space-x-2">
-                                <FiClock className="w-4 h-4 text-theme-tertiary" />
-                                <span>
-                                  {formatDuration(work.mediaDuration)}
-                                </span>
-                              </div>
-                            )}
-
-                            {work.compositionYear && (
-                              <div className="flex items-center space-x-2">
-                                <FiCalendar className="w-4 h-4 text-theme-tertiary" />
-                                <span>{work.compositionYear}</span>
-                              </div>
-                            )}
+                            <FavoriteButton
+                              id={work.id}
+                              type="work"
+                              variant="default"
+                              size="md"
+                              itemName={work.title}
+                              showToast={true}
+                            />
                           </div>
-
-                          {/* Mostrar gêneros e categorias se existirem */}
-                          {(work.workGenresArr?.length ||
-                            work.categoryNames?.length) && (
-                            <div className="flex flex-wrap gap-2 mt-3">
-                              {work.workGenresArr?.slice(0, 3).map((genre) => (
-                                <span
-                                  key={genre}
-                                  className="px-2 capitalize py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green text-xs rounded-full"
-                                >
-                                  {genre}
-                                </span>
-                              ))}
-                              {work.categoryNames
-                                ?.slice(0, 2)
-                                .map((category) => (
-                                  <span
-                                    key={category}
-                                    className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-xs rounded-full"
-                                  >
-                                    {category}
-                                  </span>
-                                ))}
-                            </div>
-                          )}
-                        </div>
-
-                        <div
-                          className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <FavoriteButton
-                            id={work.id}
-                            type="work"
-                            variant="default"
-                            size="md"
-                            itemName={work.title}
-                            showToast={true}
-                          />
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+                    </Link>
+                  ))}
+                </SequentialGrid>
+              ) : (
+                <AnimatedContainer delay={0.1} staggerSpeed="fast">
+                  {works.map((work) => (
+                    <AnimatedItem key={work.id} direction="left" speed="fast">
+                      <Link
+                        href={`/works/${work.id}`}
+                        className="classical-card-simple hover:shadow-theme-glow transition-all duration-300 group block mb-4"
+                      >
+                        <div className="p-6">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-3 mb-4">
+                                {work.instrument?.name && (
+                                  <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
+                                    {getInstrumentIcon(work.instrument.name)}
+                                  </div>
+                                )}
+
+                                <div className="flex-1">
+                                  <span className="text-lg font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
+                                    {work.title}
+                                  </span>
+
+                                  {work.opOrCatalog && (
+                                    <span className="ml-3 text-sm text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
+                                      {work.opOrCatalog}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-theme-secondary">
+                                {work.instrument?.name && (
+                                  <div className="flex items-center space-x-2">
+                                    <FiMusic className="w-4 h-4 text-theme-tertiary" />
+                                    <span>{work.instrument.name}</span>
+                                  </div>
+                                )}
+
+                                {work.tone && (
+                                  <div className="flex items-center space-x-2">
+                                    <GiMusicalNotes className="w-4 h-4 text-theme-tertiary" />
+                                    <span>{work.tone}</span>
+                                  </div>
+                                )}
+
+                                {work.mediaDuration && (
+                                  <div className="flex items-center space-x-2">
+                                    <FiClock className="w-4 h-4 text-theme-tertiary" />
+                                    <span>
+                                      {formatDuration(work.mediaDuration)}
+                                    </span>
+                                  </div>
+                                )}
+
+                                {work.compositionYear && (
+                                  <div className="flex items-center space-x-2">
+                                    <FiCalendar className="w-4 h-4 text-theme-tertiary" />
+                                    <span>{work.compositionYear}</span>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Mostrar gêneros e categorias se existirem */}
+                              {(work.workGenresArr?.length ||
+                                work.categoryNames?.length) && (
+                                <div className="flex flex-wrap gap-2 mt-3">
+                                  {work.workGenresArr
+                                    ?.slice(0, 3)
+                                    .map((genre) => (
+                                      <span
+                                        key={genre}
+                                        className="px-2 capitalize py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green text-xs rounded-full"
+                                      >
+                                        {genre}
+                                      </span>
+                                    ))}
+                                  {work.categoryNames
+                                    ?.slice(0, 2)
+                                    .map((category) => (
+                                      <span
+                                        key={category}
+                                        className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-xs rounded-full"
+                                      >
+                                        {category}
+                                      </span>
+                                    ))}
+                                </div>
+                              )}
+                            </div>
+
+                            <div
+                              className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <FavoriteButton
+                                id={work.id}
+                                type="work"
+                                variant="default"
+                                size="md"
+                                itemName={work.title}
+                                showToast={true}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+                    </AnimatedItem>
+                  ))}
+                </AnimatedContainer>
+              )}
 
               {/* Botão Carregar Mais */}
               {hasMore && (
@@ -1118,30 +1132,34 @@ export default function ComposerWorks({
             </>
           ) : (
             // Empty state para resultados filtrados
-            <div className="text-center py-16">
-              <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FiSearch className="w-8 h-8 text-theme-tertiary" />
+            <AnimatedItem direction="scale" springType="gentle">
+              <div className="text-center py-16">
+                <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <FiSearch className="w-8 h-8 text-theme-tertiary" />
+                </div>
+                <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
+                  Nenhuma obra encontrada
+                </h3>
+                <p className="text-theme-secondary mb-6">
+                  Tente ajustar os filtros de busca para encontrar mais
+                  resultados.
+                </p>
+                {hasActiveFilters && (
+                  <AnimatedItem hover="scale" springType="bouncy">
+                    <button
+                      onClick={clearFilters}
+                      className="btn-classical-primary flex items-center space-x-2 mx-auto group"
+                    >
+                      <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
+                      <span>Limpar filtros</span>
+                    </button>
+                  </AnimatedItem>
+                )}
               </div>
-              <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-                Nenhuma obra encontrada
-              </h3>
-              <p className="text-theme-secondary mb-6">
-                Tente ajustar os filtros de busca para encontrar mais
-                resultados.
-              </p>
-              {hasActiveFilters && (
-                <button
-                  onClick={clearFilters}
-                  className="btn-classical-primary flex items-center space-x-2 mx-auto group"
-                >
-                  <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
-                  <span>Limpar filtros</span>
-                </button>
-              )}
-            </div>
+            </AnimatedItem>
           )}
         </div>
-      </div>
-    </>
+      </AnimatedContainer>
+    </AnimatedCard>
   );
 }

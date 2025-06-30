@@ -209,6 +209,7 @@ const LearningButton = ({
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    console.log('oi');
 
     if (disabled || isLoading || !user?.id || !isAuthenticated) {
       if (!isAuthenticated && showToast) {

@@ -27,8 +27,6 @@ import AnimatedMusicalNotes2 from '../AnimatedMusicalNotes2';
 import GenreSearchInput from '../GenreSearchInput';
 import ComposerSearchInput from '../ComposerSearchInput';
 import ViewModeToggle from '../ViewModeToggle';
-
-// Importar componentes de animação
 import {
   PageContainer,
   AnimatedContainer,

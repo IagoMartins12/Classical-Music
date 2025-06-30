@@ -1214,7 +1214,9 @@ class WorkScraper {
             break;
 
           // Estilo
-          case header.includes('style') || header.includes('period'):
+          case header.includes('style') ||
+            header.includes('period') ||
+            header.includes('estilo'):
             if (value && value !== '-' && value.length > 0) {
               workDetails.workStyle = value;
             }
