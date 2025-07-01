@@ -85,7 +85,30 @@ enum ProcessingStatus {
   CANCELLED
 }
 
-// Models existentes (mantendo todos os existentes)
+// 🆕 Novos enums para anotações musicais
+enum AnnotationCategory {
+  TECHNIQUE        // Técnica (dedilhado, articulação, etc.)
+  INTERPRETATION   // Interpretação (dinâmica, fraseado, etc.)
+  THEORY          // Teoria (harmonia, forma, análise)
+  PRACTICE_TIP    // Dicas de estudo
+  PERFORMANCE     // Performance e palco
+  HISTORICAL      // Contexto histórico
+  GENERAL         // Anotação geral
+}
+
+enum AnnotationDifficulty {
+  BEGINNER         // Para iniciantes
+  INTERMEDIATE     // Para nível intermediário  
+  ADVANCED         // Para avançados
+  ALL_LEVELS       // Para todos os níveis
+}
+
+enum AnnotationScope {
+  SPECIFIC_MEASURE    // Compasso específico
+  SECTION            // Seção da obra
+  MOVEMENT           // Movimento inteiro
+  ENTIRE_WORK        // Obra inteira
+}
 
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -129,6 +152,19 @@ model User {
   longestStreak     Int     @default(0)
 
   studyModeSettings Json?
+
+  // 🆕 Anotações relacionadas
+  workAnnotations     WorkAnnotation[]
+  annotationVotes     AnnotationHelpfulVote[]
+  annotationReplies   AnnotationReply[]
+  
+  // 🆕 Configurações de anotações
+  annotationPreferences Json? // Preferências de exibição, notificações, etc.
+  
+  // 🆕 Estatísticas de contribuição
+  helpfulAnnotationsCount Int @default(0) // Cache de anotações úteis
+  totalAnnotationsCount   Int @default(0) // Cache total de anotações
+  expertInstruments       String[] @default([]) // Instrumentos que o usuário é expert
 
   // Relations
   accounts Account[]
@@ -474,6 +510,14 @@ model Work {
   pdfAnnotations PdfAnnotation[]
   scoreBookmarks ScoreBookmark[]
   
+  // 🆕 Anotações relacionadas
+  workAnnotations WorkAnnotation[]
+  
+  // 🆕 Estatísticas de anotações (cache para performance)
+  annotationsCount        Int @default(0)
+  helpfulAnnotationsCount Int @default(0)
+  lastAnnotationAt        DateTime?
+
   // 🆕 Relações com sistema de cache
   cachedScores       WorkScore[]
   processingLogs     ScoreProcessingLog[]
@@ -794,4 +838,129 @@ model FavoriteComposer {
   composer Composer @relation(fields: [composerId], references: [id], onDelete: Cascade)
 
   @@unique([userId, composerId])
+}
+
+model WorkAnnotation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  workId    String   @db.ObjectId
+  
+  // Conteúdo da anotação
+  title       String              // Título/resumo da anotação
+  content     String              // Conteúdo principal
+  category    AnnotationCategory  @default(GENERAL)
+  
+  // Localização na obra
+  scope           AnnotationScope  @default(ENTIRE_WORK)
+  measureStart    Int?             // Compasso inicial (se específico)
+  measureEnd      Int?             // Compasso final (se range)
+  movement        String?          // Nome do movimento
+  section         String?          // Nome da seção (ex: "Exposição", "Desenvolvimento")
+  pageNumber      Int?             // Página da partitura (se aplicável)
+  
+  // Metadata musical
+  hand            String?          // "left", "right", "both"
+  voice           String?          // "soprano", "alto", "tenor", "bass"
+  instrument      String?          // Instrumento específico (para obras de conjunto)
+  
+  // Classificação e utilidade
+  difficulty      AnnotationDifficulty @default(ALL_LEVELS)
+  tags            String[]         @default([])
+  
+  // Interação social
+  isPublic        Boolean          @default(true)
+  isVerified      Boolean          @default(false)  // Verificado por moderador/expert
+  helpfulCount    Int              @default(0)      // Quantos acharam útil
+  viewCount       Int              @default(0)      // Visualizações
+  
+  // Moderação
+  isFlagged       Boolean          @default(false)
+  flagReason      String?
+  moderatedBy     String?          @db.ObjectId
+  moderatedAt     DateTime?
+  
+  // Timestamps
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  // Relações
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  
+  // Relações de interação
+  helpfulVotes    AnnotationHelpfulVote[]
+  replies         AnnotationReply[]
+  
+  // Índices otimizados
+  @@index([workId, isPublic, category])
+  @@index([workId, scope, measureStart])
+  @@index([userId, createdAt])
+  @@index([category, difficulty])
+  @@index([isPublic, helpfulCount])
+  @@index([tags])
+  @@index([isVerified, isPublic])
+  @@map("work_annotations")
+}
+
+// 🆕 Model para votos de utilidade
+model AnnotationHelpfulVote {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String @db.ObjectId
+  annotationId String @db.ObjectId
+  isHelpful    Boolean @default(true)
+  createdAt    DateTime @default(now())
+  
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  annotation WorkAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, annotationId])
+  @@index([annotationId, isHelpful])
+  @@map("annotation_helpful_votes")
+}
+
+// 🆕 Model para respostas às anotações
+model AnnotationReply {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String @db.ObjectId
+  annotationId String @db.ObjectId
+  
+  content      String
+  isPublic     Boolean @default(true)
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  annotation WorkAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
+  
+  @@index([annotationId, createdAt])
+  @@index([userId, createdAt])
+  @@map("annotation_replies")
+}
+
+model AnnotationStats {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Período das estatísticas
+  period    String   // "daily", "weekly", "monthly"
+  date      DateTime
+  
+  // Estatísticas gerais
+  totalAnnotations      Int @default(0)
+  newAnnotations        Int @default(0)
+  totalHelpfulVotes     Int @default(0)
+  activeUsers           Int @default(0)
+  
+  // Top anotações por categoria
+  topByTechnique        Json? // IDs das top anotações
+  topByInterpretation   Json?
+  topByPracticeTip      Json?
+  
+  // Top obras com mais anotações
+  topWorksAnnotated     Json?
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([period, date])
+  @@map("annotation_stats")
 }

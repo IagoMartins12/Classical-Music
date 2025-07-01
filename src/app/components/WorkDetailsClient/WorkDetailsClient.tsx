@@ -43,6 +43,7 @@ import {
   SequentialGrid,
 } from '../animation/AnimatedComponents';
 import ShareButton from '../ShareButton';
+import AnnotationsSection from '../Annotations/AnnotationsSection';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -880,6 +881,12 @@ export default function WorkDetailsClient({
               )}
             </AnimatedCard>
           )}
+
+          <AnnotationsSection
+            workId={work.id}
+            workTitle={work.title}
+            composerName={work.composer.fullName}
+          />
 
           {/* Obras Relacionadas */}
           {relatedWorks.length > 0 && (
