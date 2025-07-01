@@ -1,4 +1,4 @@
-// stores/useAnnotationsStore.ts
+// stores/useAnnotationsStore.ts - VERSÃO CORRIGIDA
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -90,8 +90,8 @@ export interface AnnotationPagination {
 }
 
 interface AnnotationsStore {
-  // Estados
-  annotations: Map<string, WorkAnnotation[]>; // Map por workId
+  // 🔧 CORREÇÃO: Mudou de Map para Record (objeto simples)
+  annotations: Record<string, WorkAnnotation[]>; // workId -> annotations[]
   loading: {
     fetch: Set<string>; // workIds being fetched
     create: boolean;
@@ -99,7 +99,8 @@ interface AnnotationsStore {
     vote: Set<string>; // annotationIds being voted on
   };
   filters: AnnotationFilters;
-  pagination: Map<string, AnnotationPagination>; // Map por workId
+  // 🔧 CORREÇÃO: Mudou de Map para Record
+  pagination: Record<string, AnnotationPagination>; // workId -> pagination
 
   // Actions para buscar anotações
   fetchWorkAnnotations: (
@@ -169,8 +170,8 @@ interface AnnotationsStore {
 export const useAnnotationsStore = create<AnnotationsStore>()(
   persist(
     (set, get) => ({
-      // Estados iniciais
-      annotations: new Map(),
+      // 🔧 CORREÇÃO: Estados iniciais usando objetos simples
+      annotations: {}, // Objeto simples ao invés de new Map()
       loading: {
         fetch: new Set(),
         create: false,
@@ -178,7 +179,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         vote: new Set(),
       },
       filters: {},
-      pagination: new Map(),
+      pagination: {}, // Objeto simples ao invés de new Map()
 
       // Buscar anotações de uma obra
       fetchWorkAnnotations: async (workId: string, filters = {}, page = 1) => {
@@ -203,19 +204,20 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           const data = await response.json();
 
           set((state) => {
-            const newAnnotations = new Map(state.annotations);
-            const newPagination = new Map(state.pagination);
+            // 🔧 CORREÇÃO: Trabalhar com objetos simples
+            const newAnnotations = { ...state.annotations };
+            const newPagination = { ...state.pagination };
 
             if (page === 1) {
               // Primeira página - substituir
-              newAnnotations.set(workId, data.annotations);
+              newAnnotations[workId] = data.annotations;
             } else {
               // Páginas adicionais - concatenar
-              const existing = newAnnotations.get(workId) || [];
-              newAnnotations.set(workId, [...existing, ...data.annotations]);
+              const existing = newAnnotations[workId] || [];
+              newAnnotations[workId] = [...existing, ...data.annotations];
             }
 
-            newPagination.set(workId, data.pagination);
+            newPagination[workId] = data.pagination;
 
             return {
               annotations: newAnnotations,
@@ -402,14 +404,15 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         set({ filters: {} });
       },
 
-      // Getters
+      // 🔧 CORREÇÃO: Getters atualizados para trabalhar com objetos
       getWorkAnnotations: (workId) => {
-        return get().annotations.get(workId) || [];
+        return get().annotations[workId] || []; // Acesso direto ao objeto
       },
 
       getAnnotationById: (annotationId) => {
         const { annotations } = get();
-        for (const workAnnotations of annotations.values()) {
+        // 🔧 CORREÇÃO: Iterar sobre valores do objeto
+        for (const workAnnotations of Object.values(annotations)) {
           const annotation = workAnnotations.find((a) => a.id === annotationId);
           if (annotation) return annotation;
         }
@@ -466,7 +469,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         };
       },
 
-      // Loading states
+      // Loading states (mantidos iguais)
       setFetchLoading: (workId, loading) => {
         set((state) => {
           const newLoading = new Set(state.loading.fetch);
@@ -527,49 +530,50 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         });
       },
 
-      // Utilities
+      // 🔧 CORREÇÃO: Utilities atualizados para trabalhar com objetos
       addAnnotationToWork: (workId, annotation) => {
         set((state) => {
-          const newAnnotations = new Map(state.annotations);
-          const existing = newAnnotations.get(workId) || [];
-          newAnnotations.set(workId, [annotation, ...existing]);
+          const newAnnotations = { ...state.annotations };
+          const existing = newAnnotations[workId] || [];
+          newAnnotations[workId] = [annotation, ...existing];
           return { annotations: newAnnotations };
         });
       },
 
       updateAnnotationInWork: (workId, updatedAnnotation) => {
         set((state) => {
-          const newAnnotations = new Map(state.annotations);
-          const existing = newAnnotations.get(workId) || [];
+          const newAnnotations = { ...state.annotations };
+          const existing = newAnnotations[workId] || [];
           const updated = existing.map((a) =>
             a.id === updatedAnnotation.id ? updatedAnnotation : a
           );
-          newAnnotations.set(workId, updated);
+          newAnnotations[workId] = updated;
           return { annotations: newAnnotations };
         });
       },
 
       removeAnnotationFromWork: (workId, annotationId) => {
         set((state) => {
-          const newAnnotations = new Map(state.annotations);
-          const existing = newAnnotations.get(workId) || [];
+          const newAnnotations = { ...state.annotations };
+          const existing = newAnnotations[workId] || [];
           const filtered = existing.filter((a) => a.id !== annotationId);
-          newAnnotations.set(workId, filtered);
+          newAnnotations[workId] = filtered;
           return { annotations: newAnnotations };
         });
       },
 
       updateAnnotationVote: (annotationId, userVote, helpfulCount) => {
         set((state) => {
-          const newAnnotations = new Map();
+          const newAnnotations = { ...state.annotations };
 
-          for (const [workId, annotations] of state.annotations.entries()) {
+          // 🔧 CORREÇÃO: Iterar sobre entries do objeto
+          for (const [workId, annotations] of Object.entries(newAnnotations)) {
             const updated = annotations.map((annotation) =>
               annotation.id === annotationId
                 ? { ...annotation, userVote, helpfulCount }
                 : annotation
             );
-            newAnnotations.set(workId, updated);
+            newAnnotations[workId] = updated;
           }
 
           return { annotations: newAnnotations };
@@ -579,7 +583,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
       // Reset
       reset: () => {
         set({
-          annotations: new Map(),
+          annotations: {}, // Objeto vazio ao invés de new Map()
           loading: {
             fetch: new Set(),
             create: false,
@@ -587,16 +591,16 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             vote: new Set(),
           },
           filters: {},
-          pagination: new Map(),
+          pagination: {}, // Objeto vazio ao invés de new Map()
         });
       },
 
       clearWorkAnnotations: (workId) => {
         set((state) => {
-          const newAnnotations = new Map(state.annotations);
-          const newPagination = new Map(state.pagination);
-          newAnnotations.delete(workId);
-          newPagination.delete(workId);
+          const newAnnotations = { ...state.annotations };
+          const newPagination = { ...state.pagination };
+          delete newAnnotations[workId]; // delete ao invés de .delete()
+          delete newPagination[workId]; // delete ao invés de .delete()
           return {
             annotations: newAnnotations,
             pagination: newPagination,
@@ -622,6 +626,14 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             update: new Set(),
             vote: new Set(),
           };
+
+          // 🔧 CORREÇÃO: Garantir que annotations e pagination sejam objetos
+          if (!state.annotations || typeof state.annotations !== 'object') {
+            state.annotations = {};
+          }
+          if (!state.pagination || typeof state.pagination !== 'object') {
+            state.pagination = {};
+          }
         }
       },
     }

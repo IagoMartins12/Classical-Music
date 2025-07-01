@@ -1,29 +1,44 @@
-// ScoreCard.tsx - Premium version with theme system
+// ScoreCard.tsx - VERSÃO ATUALIZADA com sistema de favoritos
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import { FiClock, FiDownload, FiFileText, FiUser } from 'react-icons/fi';
 import { useState } from 'react';
 import Image from 'next/image';
+import FavoriteScoreButton from '../../FavoriteScoreButton';
+import MostFavoritedBadge from '../../MostFavoritedBadge';
 
 interface ScoreCardProps {
   score: IMSLPScore;
+  workId: string;
   isSelected: boolean;
   onSelect: () => void;
-  isLastInGroup?: boolean; // Nova prop para identificar se é o último do grupo
-  groupSize?: number; // Nova prop para saber o tamanho do grupo
+  isLastInGroup?: boolean;
+  groupSize?: number;
+  // 🆕 Props para favoritos
+  showFavoriteStats?: boolean;
+  showFavor?: boolean;
+  showMostFavoritedBadge?: boolean;
+  favoriteStats?: {
+    totalFavorites: number;
+    avgRating?: number;
+    isMostFavorited?: boolean;
+  };
 }
 
 const ScoreCard = ({
   score,
+  workId,
   isSelected,
   onSelect,
   isLastInGroup = false,
   groupSize = 1,
+  showFavoriteStats = true,
+  showMostFavoritedBadge = true,
+  favoriteStats,
 }: ScoreCardProps) => {
   const [showMagnified, setShowMagnified] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   // Determina se deve mostrar o thumbnail
-  // Mostra se: é o último do grupo E o grupo tem mais de 1 item, OU se o grupo tem apenas 1 item
   const shouldShowThumbnail = groupSize === 1 || isLastInGroup;
 
   const truncateText = (text: string, maxLength: number): string => {
@@ -31,6 +46,13 @@ const ScoreCard = ({
     return text.length > maxLength
       ? `${text.substring(0, maxLength)}...`
       : text;
+  };
+
+  const formatFavoriteCount = (count: number): string => {
+    if (count >= 1000) {
+      return `${(count / 1000).toFixed(1)}k`;
+    }
+    return count.toString();
   };
 
   return (
@@ -43,11 +65,18 @@ const ScoreCard = ({
               : 'classical-card-simple hover:border-theme-primary hover:bg-interactive-hover'
           }
           ${shouldShowThumbnail ? '' : 'mb-0 border-b-0 rounded-b-none'}
+          ${
+            favoriteStats?.isMostFavorited
+              ? 'ring-2 ring-accent-gold/50 shadow-accent-gold/20'
+              : ''
+          }
         `}
       onClick={onSelect}
     >
+      {/* 🆕 Badge de "Mais Favoritada" */}
+
       <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
-        {/* Thumbnail com efeito lupa - só mostra se for o último do grupo */}
+        {/* Thumbnail com efeito lupa */}
         {shouldShowThumbnail && score.thumbnailUrl && (
           <div
             className="relative w-24 h-32 flex-shrink-0 group/thumbnail"
@@ -100,12 +129,6 @@ const ScoreCard = ({
                 }}
               >
                 <div className="bg-theme-elevated rounded-2xl shadow-theme-large border-2 border-theme-primary p-3 backdrop-blur-md">
-                  {/* <img
-                    src={score.thumbnailUrl}
-                    alt={`Preview expandido de ${score.title}`}
-                    className="w-80 h-96 object-contain rounded-xl"
-                  /> */}
-
                   <Image
                     src={score.thumbnailUrl}
                     alt={`Preview expandido de ${score.title}`}
@@ -127,48 +150,77 @@ const ScoreCard = ({
                 {score.title}
               </h4>
 
-              {/* Rating se disponível */}
-              {/* {score.rating && (
-                <div className="flex items-center space-x-1 mb-2">
-                  <FiStar className="w-3 h-3 text-accent-gold fill-current" />
-                  <span className="text-sm font-medium text-accent-gold">
-                    {score.rating.toFixed(1)}
-                  </span>
-                  {score.ratingsCount && (
-                    <span className="text-xs text-theme-tertiary">
-                      ({score.ratingsCount})
-                    </span>
-                  )}
-                </div>
-              )} */}
+              {/* 🆕 Estatísticas de favoritos */}
+              {/* {showFavoriteStats &&
+                favoriteStats &&
+                favoriteStats.totalFavorites > 0 && (
+                  <div className="flex items-center space-x-4 mb-2">
+                    <div className="flex items-center space-x-1">
+                      <FiUsers className="w-3 h-3 text-accent-red" />
+                      <span className="text-sm font-medium text-accent-red">
+                        {formatFavoriteCount(favoriteStats.totalFavorites)}{' '}
+                        favoritos
+                      </span>
+                    </div>
+
+                    {favoriteStats.avgRating && favoriteStats.avgRating > 0 && (
+                      <div className="flex items-center space-x-1">
+                        <FiStar className="w-3 h-3 text-accent-gold fill-current" />
+                        <span className="text-sm font-medium text-accent-gold">
+                          {favoriteStats.avgRating.toFixed(1)} média
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )} */}
             </div>
 
-            {/* Download button */}
-            {score.downloadUrl && (
-              <a
-                href={score.downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 bg-brand-gradient text-theme-primarypx-4 py-2 rounded-xl text-sm font-medium hover:scale-105 hover:shadow-theme-glow transition-all duration-300 flex-shrink-0 group/download"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <FiDownload className="w-3 h-3 group-hover/download:animate-bounce" />
-                <span>Download</span>
-                <svg
-                  className="w-3 h-3 transition-transform group-hover/download:translate-x-0.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+            {/* Action buttons */}
+            <div className="flex items-center space-x-2 flex-shrink-0">
+              {/* 🆕 Botão de favoritar */}
+              <FavoriteScoreButton
+                workId={workId}
+                score={score}
+                variant="default"
+                size="md"
+                showToast={true}
+                onFavoriteChange={(isFavorited) => {
+                  // Callback opcional para atualizar estado local
+                  console.log(
+                    `Partitura ${score.title} ${
+                      isFavorited ? 'favoritada' : 'desfavoritada'
+                    }`
+                  );
+                }}
+              />
+
+              {/* Download button */}
+              {score.downloadUrl && (
+                <a
+                  href={score.downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-brand-gradient text-theme-primary px-4 py-2 rounded-xl text-sm font-medium hover:scale-105 hover:shadow-theme-glow transition-all duration-300 group/download"
+                  onClick={(e) => e.stopPropagation()}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </a>
-            )}
+                  <FiDownload className="w-3 h-3 group-hover/download:animate-bounce" />
+                  <span>Download</span>
+                  <svg
+                    className="w-3 h-3 transition-transform group-hover/download:translate-x-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </a>
+              )}
+            </div>
           </div>
 
           {/* Detalhes em grid */}
@@ -222,21 +274,21 @@ const ScoreCard = ({
               <div className="mt-4 pt-4 border-t border-theme-secondary">
                 <div className="space-y-2 text-xs text-theme-tertiary">
                   {score.editor && (
-                    <div className="flex flex-col sm:flex-row  items-center justify-between gap-2">
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
                       <span className="font-medium text-theme-secondary w-2/12 sm:w-1/12">
                         Editor:
                       </span>
-                      <span className=" w-full sm:w-11/12 text-center sm:text-start ">
+                      <span className="w-full sm:w-11/12 text-center sm:text-start">
                         {score.editor}
                       </span>
                     </div>
                   )}
                   {score.publisher && (
-                    <div className="flex pt-2 sm:pt-0 flex-col sm:flex-row  items-center justify-between gap-2">
+                    <div className="flex pt-2 sm:pt-0 flex-col sm:flex-row items-center justify-between gap-2">
                       <span className="font-medium text-theme-secondary w-2/12 sm:w-1/12">
                         Editora:
                       </span>
-                      <span className=" w-full sm:w-11/12 text-center sm:text-start">
+                      <span className="w-full sm:w-11/12 text-center sm:text-start">
                         {truncateText(score.publisher, 300)}
                       </span>
                     </div>
@@ -246,7 +298,7 @@ const ScoreCard = ({
                       <span className="font-medium text-theme-secondary w-3/12 sm:w-1/12">
                         Copyright:
                       </span>
-                      <span className=" w-full sm:w-11/12 text-center sm:text-start">
+                      <span className="w-full sm:w-11/12 text-center sm:text-start">
                         {score.copyright}
                       </span>
                     </div>
@@ -259,6 +311,21 @@ const ScoreCard = ({
 
       {/* Hover glow effect */}
       <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl pointer-events-none"></div>
+
+      {showMostFavoritedBadge && (
+        <MostFavoritedBadge
+          workId={workId}
+          scoreId={score.id}
+          scoreSource="IMSLP"
+          variant="crown"
+          size="md"
+          position="corner"
+        />
+      )}
+      {/* 🆕 Efeito especial para a mais favoritada */}
+      {showMostFavoritedBadge && (
+        <div className="absolute inset-0 bg-gradient-to-r from-accent-gold/5 to-accent-orange/5 rounded-xl pointer-events-none"></div>
+      )}
     </div>
   );
 };

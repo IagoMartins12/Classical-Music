@@ -1,7 +1,7 @@
-// app/work/[workId]/WorkDetailsClient.tsx - Updated with new properties and premium design
+// app/work/[workId]/WorkDetailsClient.tsx - VERSÃO ATUALIZADA com favoritos de partituras
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { WorkDetails } from '@/app/requests/work-details';
 import {
@@ -24,6 +24,9 @@ import {
   FiTarget,
   FiAward,
   FiZap,
+  FiHeart,
+  FiStar,
+  FiUsers,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiMetronome } from 'react-icons/gi';
 import { useIMSLPScores } from '@/app/hooks/useIMSLPScores';
@@ -34,6 +37,9 @@ import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import StudyModeModal from '../StudyMode/StudyModeModal';
+import ScoreFavoritesInitializer from '../ScoreFavoritesInitializer';
+import { useScoreFavorites } from '@/app/hooks/useScoreFavorites';
+import MostFavoritedScoreDisplay from '../MostFavoritedScoreDisplay';
 
 // Importar componentes de animação
 import {
@@ -53,12 +59,18 @@ interface WorkDetailsClientProps {
     wantToLearn: any[];
     learned: any[];
   };
+  // 🆕 Dados de favoritos de partituras iniciais
+  scoreFavoritesData?: {
+    userFavorites: any[];
+    workStats: any[];
+  };
 }
 
 export default function WorkDetailsClient({
   work,
   relatedWorks = [],
   learningData = { wantToLearn: [], learned: [] },
+  scoreFavoritesData = { userFavorites: [], workStats: [] },
 }: WorkDetailsClientProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedScoreForStudy, setSelectedScoreForStudy] =
@@ -88,6 +100,15 @@ export default function WorkDetailsClient({
     },
   });
 
+  // 🆕 Hook para estatísticas de favoritos de partituras
+  const {
+    stats: favoriteStats,
+    loading: loadingFavorites,
+    error: favoritesError,
+    mostFavorited,
+    refetch: refetchFavorites,
+  } = useScoreFavorites(work.id);
+
   const { navigateToUrl } = useNavigate();
 
   // Função para formatar duração
@@ -111,7 +132,7 @@ export default function WorkDetailsClient({
     return labels[type as keyof typeof labels] || type;
   };
 
-  // 🆕 Função para obter label do nível de dificuldade
+  // Função para obter label do nível de dificuldade
   const getDifficultyLabel = (level?: string) => {
     const labels = {
       BEGINNER: 'Iniciante',
@@ -121,7 +142,7 @@ export default function WorkDetailsClient({
     return level ? labels[level as keyof typeof labels] || level : null;
   };
 
-  // 🆕 Função para obter cor do nível de dificuldade
+  // Função para obter cor do nível de dificuldade
   const getDifficultyColor = (level?: string) => {
     const colors = {
       BEGINNER: 'from-accent-green to-accent-blue',
@@ -134,7 +155,7 @@ export default function WorkDetailsClient({
       : 'from-theme-primary to-theme-secondary';
   };
 
-  // 🆕 Função para renderizar movimentos detalhados
+  // Função para renderizar movimentos detalhados
   const renderMovementsDetailed = (movements?: any) => {
     if (!movements) return null;
 
@@ -210,10 +231,32 @@ export default function WorkDetailsClient({
     setSelectedScoreForStudy(score);
   };
 
+  // 🆕 Calcular estatísticas de favoritos para exibição
+  const getTotalScoreFavorites = () => {
+    return favoriteStats.reduce((sum, stat) => sum + stat.totalFavorites, 0);
+  };
+
+  const getAverageRating = () => {
+    const ratingsStats = favoriteStats.filter(
+      (stat) => stat.avgRating && stat.avgRating > 0
+    );
+    if (ratingsStats.length === 0) return null;
+
+    const avgSum = ratingsStats.reduce(
+      (sum, stat) => sum + (stat.avgRating || 0),
+      0
+    );
+    return avgSum / ratingsStats.length;
+  };
+
   return (
     <div className=" bg-gradient-primary">
-      {/* Inicializar dados de aprendizado do SSR */}
+      {/* Inicializar dados de aprendizado e favoritos do SSR */}
       <LearningInitializer learningData={learningData} />
+      {/* <ScoreFavoritesInitializer
+        initialScoreFavorites={scoreFavoritesData.userFavorites}
+        workId={work.id}
+      /> */}
 
       <div className="section-wrap space-y-8 relative z-10">
         {/* Breadcrumb */}
@@ -293,7 +336,7 @@ export default function WorkDetailsClient({
                           {work.title}
                         </h1>
 
-                        {/* 🆕 Subtitle */}
+                        {/* Subtitle */}
                         {work.subtitle && (
                           <h2 className="text-2xl md:text-3xl text-theme-secondary mt-2 classical-subtitle font-medium">
                             {work.subtitle}
@@ -335,7 +378,7 @@ export default function WorkDetailsClient({
                       </div>
                     </div>
 
-                    {/* 🆕 Difficulty Level Badge */}
+                    {/* Difficulty Level Badge */}
                     {work.difficultyLevel && (
                       <div className="flex items-center space-x-3">
                         <div
@@ -372,7 +415,7 @@ export default function WorkDetailsClient({
                     </div>
                   </div>
 
-                  {/* Grid de Informações Detalhadas - UPDATED com novas propriedades */}
+                  {/* Grid de Informações Detalhadas */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Ano de Composição */}
                     {work.compositionYear && (
@@ -425,7 +468,7 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {/* 🆕 Time Signature */}
+                    {/* Time Signature */}
                     {work.timeSignature && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -442,7 +485,7 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {/* 🆕 Tempo Marking */}
+                    {/* Tempo Marking */}
                     {work.tempoMarking && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -494,7 +537,7 @@ export default function WorkDetailsClient({
                     )}
                   </div>
 
-                  {/* 🆕 Movements Detailed Section */}
+                  {/* Movements Detailed Section */}
                   {work.movementsDetailed && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
@@ -571,7 +614,7 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
-                  {/* 🆕 IMSLP Tags Section */}
+                  {/* IMSLP Tags Section */}
                   {work.imslpTags && work.imslpTags.length > 0 && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
@@ -594,7 +637,7 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
-                  {/* Tags de Categorias e Gêneros - UPDATED */}
+                  {/* Tags de Categorias e Gêneros */}
                   {work.workGenresArr &&
                     (work.categoryNames?.length > 0 ||
                       work.workGenresArr?.length > 0) && (
@@ -756,7 +799,7 @@ export default function WorkDetailsClient({
                     </div>
                   </div>
 
-                  {/* Informações Técnicas - UPDATED */}
+                  {/* Informações Técnicas */}
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
@@ -776,7 +819,7 @@ export default function WorkDetailsClient({
                         </span>
                       </div>
 
-                      {/* 🆕 Difficulty Level in Technical Details */}
+                      {/* Difficulty Level in Technical Details */}
                       {work.difficultyLevel && (
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-theme-tertiary">
@@ -871,13 +914,21 @@ export default function WorkDetailsClient({
               )}
 
               {imslpScores && !loadingScores && (
-                <IMSLPTabs
-                  imslpData={imslpScores}
-                  onScoreSelect={handleScoreSelect}
-                  composerName={work.composer.fullName}
-                  workId={work.id}
-                  workTitle={work.title}
-                />
+                <>
+                  {/* <MostFavoritedScoreDisplay
+                    workId={work.id}
+                    workTitle={work.title}
+                    composerName={work.composer.fullName}
+                    className="mb-6"
+                  /> */}
+                  <IMSLPTabs
+                    imslpData={imslpScores}
+                    onScoreSelect={handleScoreSelect}
+                    composerName={work.composer.fullName}
+                    workId={work.id}
+                    workTitle={work.title}
+                  />
+                </>
               )}
             </AnimatedCard>
           )}

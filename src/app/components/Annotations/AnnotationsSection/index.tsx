@@ -113,7 +113,7 @@ export default function AnnotationsSection({
   const annotations = getWorkAnnotations(workId);
   const stats = getAnnotationStats(workId);
   const isLoading = loading.fetch.has(workId);
-  const workPagination = pagination.get(workId);
+  const workPagination = pagination[workId];
 
   // Carregar anotações ao montar
   useEffect(() => {

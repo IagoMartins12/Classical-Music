@@ -1,4 +1,4 @@
-// components/IMSLPTabs.tsx - Otimizado com Carregamento Incremental
+// components/IMSLPTabs.tsx - VERSÃO ATUALIZADA com favoritos
 'use client';
 
 import { useState, useRef } from 'react';
@@ -11,6 +11,10 @@ import {
   FiMoreHorizontal,
   FiDownload,
   FiLayers,
+  FiStar,
+  FiUsers,
+  FiHeart,
+  FiTrendingUp,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import ScoreCard from '../ScoreCard';
@@ -24,6 +28,7 @@ import {
   AnimatedItem,
   SequentialGrid,
 } from '../../animation/AnimatedComponents';
+import { useScoreFavorites } from '@/app/hooks/useScoreFavorites';
 
 interface IMSLPTabsProps {
   imslpData: IMSLPWorkScores;
@@ -34,7 +39,7 @@ interface IMSLPTabsProps {
   workId?: string;
   workTitle?: string;
   composerName?: string;
-  // 🆕 Props para carregamento incremental
+  // Props existentes para carregamento incremental
   hasMore?: boolean;
   totalAvailable?: number;
   loadingMore?: boolean;
@@ -105,7 +110,6 @@ export default function IMSLPTabs({
   workId,
   workTitle,
   composerName,
-  // 🆕 Props de carregamento incremental
   hasMore = false,
   totalAvailable = 0,
   loadingMore = false,
@@ -123,6 +127,16 @@ export default function IMSLPTabs({
   const [selectedScore, setSelectedScore] = useState<IMSLPScore | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
+  // 🆕 Hook para estatísticas de favoritos
+  const {
+    stats: favoriteStats,
+    loading: loadingFavorites,
+    error: favoritesError,
+    mostFavorited,
+    refetch: refetchFavorites,
+    getScoreStats,
+  } = useScoreFavorites(workId || '');
+
   const handleScoreSelect = (score: IMSLPScore) => {
     if (selectedScore?.id === score.id) {
       setSelectedScore(null);
@@ -133,8 +147,6 @@ export default function IMSLPTabs({
     }
   };
 
-  console.log('IMSLP', { imslpData, loading });
-  // 🆕 Calcular estatísticas de carregamento
   const currentlyLoaded = imslpData
     ? Object.values(imslpData.totalCounts).reduce(
         (sum, count) => sum + count,
@@ -233,7 +245,7 @@ export default function IMSLPTabs({
     <AnimatedCard hover="none" className="classical-card overflow-hidden">
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
         <div className="classical-card overflow-hidden animate-fade-in-up">
-          {/* Header otimizado com informações de carregamento */}
+          {/* Header com estatísticas de favoritos */}
           <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
             <div className="p-6">
               <div className="flex items-center justify-between">
@@ -241,7 +253,7 @@ export default function IMSLPTabs({
                   <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
                     <FiMusic className="w-6 h-6 text-theme-primary" />
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <h2 className="text-2xl font-bold text-theme-primary classical-title">
                       Partituras IMSLP
                     </h2>
@@ -251,7 +263,33 @@ export default function IMSLPTabs({
                           ? `Partitura selecionada: ${selectedScore.title}`
                           : 'Selecione uma partitura para estudo'}
                       </p>
-                      {/* 🆕 Indicador de carregamento incremental */}
+
+                      {/* 🆕 Estatísticas de favoritos */}
+                      {!loadingFavorites && favoriteStats.length > 0 && (
+                        <div className="flex items-center space-x-4 text-sm">
+                          <div className="flex items-center space-x-1 text-accent-red">
+                            <FiHeart className="w-3 h-3" />
+                            <span className="font-medium">
+                              {favoriteStats.reduce(
+                                (sum, stat) => sum + stat.totalFavorites,
+                                0
+                              )}{' '}
+                              favoritos
+                            </span>
+                          </div>
+
+                          {mostFavorited && (
+                            <div className="flex items-center space-x-1 text-accent-gold">
+                              <FiStar className="w-3 h-3" />
+                              <span className="font-medium">
+                                {mostFavorited.scoreTitle} (mais favoritada)
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Indicador de carregamento incremental */}
                       {totalAvailable > 0 && (
                         <div className="flex items-center space-x-2 text-sm">
                           <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
@@ -264,7 +302,7 @@ export default function IMSLPTabs({
                   </div>
                 </div>
 
-                {/* Botão de Modo Estudo */}
+                {/* Action buttons */}
                 {selectedScore && workId && workTitle && composerName && (
                   <div className="flex items-center space-x-3">
                     <div className="bg-theme-elevated/50 border border-theme-primary/30 rounded-xl px-4 py-2">
@@ -296,7 +334,55 @@ export default function IMSLPTabs({
                 )}
               </div>
 
-              {/* 🆕 Barra de progresso de carregamento */}
+              {/* 🆕 Seção de estatísticas destacadas */}
+              {!loadingFavorites && favoriteStats.length > 0 && (
+                <div className="mt-4 p-4 bg-gradient-to-r from-accent-red/5 to-accent-gold/5 border border-accent-red/20 rounded-xl">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-2">
+                        <FiTrendingUp className="w-4 h-4 text-accent-red" />
+                        <span className="text-sm font-medium text-theme-primary">
+                          Estatísticas de Favoritos
+                        </span>
+                      </div>
+
+                      <div className="text-xs text-theme-secondary space-x-4">
+                        <span>
+                          Total:{' '}
+                          {favoriteStats.reduce(
+                            (sum, stat) => sum + stat.totalFavorites,
+                            0
+                          )}{' '}
+                          favoritos
+                        </span>
+                        <span>•</span>
+                        <span>
+                          {favoriteStats.length} partituras favoritadas
+                        </span>
+                        {mostFavorited && (
+                          <>
+                            <span>•</span>
+                            <span>
+                              Líder: {mostFavorited.totalFavorites} favoritos
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={refetchFavorites}
+                      className="text-xs text-theme-tertiary hover:text-theme-primary transition-colors flex items-center space-x-1"
+                      title="Atualizar estatísticas"
+                    >
+                      <FiRefreshCw className="w-3 h-3" />
+                      <span>Atualizar</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Barra de progresso de carregamento */}
               {totalAvailable > 0 && currentlyLoaded < totalAvailable && (
                 <div className="mt-4">
                   <div className="flex items-center justify-between text-sm text-theme-tertiary mb-2">
@@ -329,13 +415,23 @@ export default function IMSLPTabs({
                 const count = imslpData.totalCounts[tab.type];
                 const isActive = activeTab === tab.id;
 
+                // 🆕 Calcular favoritos para esta aba
+                const tabFavorites = favoriteStats.filter(
+                  (stat) =>
+                    stat.scoreType?.toLowerCase() === tab.type.toLowerCase()
+                );
+                const tabFavoritesCount = tabFavorites.reduce(
+                  (sum, stat) => sum + stat.totalFavorites,
+                  0
+                );
+
                 return (
                   <AnimatedItem key={tab.id} hover="scale" springType="bouncy">
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
                       className={`
-                  flex items-center gap-3 px-6 py-4 cursor-pointer text-sm font-medium border-b-2 transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up
+                  flex items-center gap-3 px-6 py-4 cursor-pointer text-sm font-medium border-b-2 transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up relative
                   ${
                     isActive
                       ? 'border-brand-primary text-brand-primary bg-gradient-to-t from-brand-primary/10 to-transparent'
@@ -363,6 +459,15 @@ export default function IMSLPTabs({
                       >
                         {count}
                       </span>
+
+                      {/* 🆕 Badge de favoritos da aba */}
+                      {tabFavoritesCount > 0 && (
+                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-accent-red to-accent-pink rounded-full flex items-center justify-center">
+                          <span className="text-xs font-bold text-theme-primary">
+                            {tabFavoritesCount > 99 ? '99+' : tabFavoritesCount}
+                          </span>
+                        </div>
+                      )}
                     </button>
                   </AnimatedItem>
                 );
@@ -396,30 +501,48 @@ export default function IMSLPTabs({
                       )}
 
                       <div className="space-y-2">
-                        {scoreGroup.scores.map((score, index) => (
-                          <SequentialGrid
-                            cols={1}
-                            gap={2}
-                            delayBetweenItems={0.05}
-                            className="space-y-2"
-                            key={score.id}
-                          >
-                            <ScoreCard
-                              score={score}
-                              isSelected={selectedScore?.id === score.id}
-                              onSelect={() => handleScoreSelect(score)}
-                              isLastInGroup={
-                                index === scoreGroup.scores.length - 1
-                              }
-                              groupSize={scoreGroup.scores.length}
-                            />
-                          </SequentialGrid>
-                        ))}
+                        {scoreGroup.scores.map((score, index) => {
+                          // 🆕 Obter estatísticas de favoritos para esta partitura
+                          const scoreStats = getScoreStats(score.id, 'IMSLP');
+
+                          return (
+                            <SequentialGrid
+                              cols={1}
+                              gap={2}
+                              delayBetweenItems={0.05}
+                              className="space-y-2"
+                              key={score.id}
+                            >
+                              <ScoreCard
+                                score={score}
+                                workId={workId || ''}
+                                isSelected={selectedScore?.id === score.id}
+                                onSelect={() => handleScoreSelect(score)}
+                                isLastInGroup={
+                                  index === scoreGroup.scores.length - 1
+                                }
+                                groupSize={scoreGroup.scores.length}
+                                showFavoriteStats={true}
+                                favoriteStats={
+                                  scoreStats
+                                    ? {
+                                        totalFavorites:
+                                          scoreStats.totalFavorites,
+                                        avgRating: scoreStats.avgRating,
+                                        isMostFavorited:
+                                          scoreStats.isMostFavorited,
+                                      }
+                                    : undefined
+                                }
+                              />
+                            </SequentialGrid>
+                          );
+                        })}
                       </div>
                     </div>
                   ))}
 
-                  {/* 🆕 Botões de carregamento incremental */}
+                  {/* Botões de carregamento incremental */}
                   {(hasMore || canLoadMore) && (
                     <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
                       <div className="text-center">
@@ -553,7 +676,7 @@ export default function IMSLPTabs({
             className="absolute top-1/2 left-4 w-1.5 h-1.5 bg-accent-purple/40 rounded-full animate-pulse"
             style={{ animationDelay: '1s' }}
           ></div>
-        </div>{' '}
+        </div>
       </AnimatedContainer>
     </AnimatedCard>
   );
