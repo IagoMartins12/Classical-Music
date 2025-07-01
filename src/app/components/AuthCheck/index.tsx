@@ -5,7 +5,11 @@ import { useLoginModal } from '@/app/stores/authStore';
 import { FiHeart } from 'react-icons/fi';
 
 interface AuthCheckProps {
-  title: 'Seus favoritos' | 'Seu perfil' | 'Suas lições';
+  title:
+    | 'Seus favoritos'
+    | 'Seu perfil'
+    | 'Suas lições'
+    | 'Suas anotações musicais';
 }
 
 export default function AuthCheck({ title }: AuthCheckProps) {
