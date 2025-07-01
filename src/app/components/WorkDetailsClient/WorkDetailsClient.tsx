@@ -32,7 +32,6 @@ import { useNavigate } from '@/app/hooks/useNavigate';
 import FavoriteButton from '../FavoriteButton';
 import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
-
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import StudyModeModal from '../StudyMode/StudyModeModal';
 
