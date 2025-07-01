@@ -1,17 +1,23 @@
 import Link from 'next/link';
-import { FiMusic, FiStar, FiUser, FiSearch, FiX } from 'react-icons/fi';
+import {
+  FiMusic,
+  FiStar,
+  FiUser,
+  FiSearch,
+  FiX,
+  FiFileText,
+} from 'react-icons/fi'; // 🆕 Adicionado FiFileText
 import {
   AnimatedCard,
   AnimatedContainer,
   AnimatedItem,
 } from '../../animation/AnimatedComponents';
 
-// Importar componentes de animação
-
+// 🆕 Atualizado para incluir 'scores'
 interface emptyStatesProps {
-  emptyState: 'all' | 'works' | 'composers';
+  emptyState: 'all' | 'works' | 'composers' | 'scores';
   filters?: boolean;
-  onClearFilters?: () => void; // Função para limpar filtros
+  onClearFilters?: () => void;
 }
 
 const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
@@ -61,6 +67,19 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
           },
           showSecondaryActions: false,
         },
+        // 🆕 Novo estado para partituras com filtros
+        scores: {
+          icon: FiSearch,
+          title: 'Nenhuma partitura encontrada',
+          description:
+            'Não encontramos partituras favoritas que correspondam à sua busca.',
+          primaryAction: {
+            label: 'Limpar Filtros',
+            onClick: onClearFilters,
+            icon: FiX,
+          },
+          showSecondaryActions: false,
+        },
       };
     }
 
@@ -70,9 +89,9 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
         icon: FiStar,
         title: 'Comece sua jornada musical',
         description:
-          'Descubra e favorite compositores e obras que inspiram você. Sua coleção pessoal aguarda para ser criada.',
+          'Descubra e favorite compositores, obras e partituras que inspiram você. Sua coleção pessoal aguarda para ser criada.',
         showSecondaryActions: true,
-        tip: 'Clique no ícone de coração ❤️ ao lado de qualquer compositor ou obra para adicioná-los aos seus favoritos.',
+        tip: 'Clique no ícone de coração ❤️ ao lado de qualquer compositor, obra ou partitura para adicioná-los aos seus favoritos.',
       },
       composers: {
         icon: FiUser,
@@ -99,6 +118,20 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
         },
         showSecondaryActions: false,
         tip: 'Favorite obras para criar sua playlist pessoal de música clássica.',
+      },
+      // 🆕 Novo estado para partituras sem filtros
+      scores: {
+        icon: FiFileText,
+        title: 'Nenhuma partitura favorita',
+        description:
+          'Você ainda não favoritou nenhuma partitura. Explore as páginas de obras para encontrar e favoritar as melhores versões de partituras.',
+        primaryAction: {
+          label: 'Descobrir Obras',
+          href: '/works',
+          icon: FiMusic,
+        },
+        showSecondaryActions: false,
+        tip: 'Favorite partituras específicas dentro das páginas de obras para ter acesso rápido às versões que mais gosta.',
       },
     };
   };
@@ -163,9 +196,9 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
             </Link>
           )}
 
-          {/* Ações secundárias (para estado 'all' sem filtros) */}
+          {/* 🆕 Ações secundárias atualizadas para incluir partituras */}
           {config.showSecondaryActions && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link
                 href="/composers"
                 className="btn-classical-primary flex items-center justify-center space-x-2 group"
@@ -193,6 +226,28 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
               >
                 <FiMusic className="w-4 h-4" />
                 <span>Descobrir Obras</span>
+                <svg
+                  className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </Link>
+
+              {/* 🆕 Novo botão para partituras */}
+              <Link
+                href="/works"
+                className="btn-classical-tertiary flex items-center justify-center space-x-2 group"
+              >
+                <FiFileText className="w-4 h-4" />
+                <span>Ver Partituras</span>
                 <svg
                   className="w-4 h-4 transition-transform group-hover:translate-x-1"
                   fill="none"
