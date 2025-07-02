@@ -794,9 +794,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
 
         // Separar otimísticas das reais para o total
         const realAnnotations = allAnnotations.filter((a) => !a.isOptimistic);
-        const optimisticAnnotations = allAnnotations.filter(
-          (a) => a.isOptimistic
-        );
+
 
         const byCategory: Record<AnnotationCategory, number> = {
           TECHNIQUE: 0,

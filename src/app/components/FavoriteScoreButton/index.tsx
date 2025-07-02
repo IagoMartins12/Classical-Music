@@ -1,7 +1,7 @@
 // components/FavoriteScoreButton.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
@@ -22,7 +22,6 @@ interface FavoriteScoreButtonProps {
   score: IMSLPScore;
   variant?: 'default' | 'compact' | 'detailed';
   size?: 'sm' | 'md' | 'lg';
-  showLabel?: boolean;
   showToast?: boolean;
   className?: string;
   onFavoriteChange?: (isFavorited: boolean) => void;
@@ -223,10 +222,8 @@ export default function FavoriteScoreButton({
   score,
   variant = 'default',
   size = 'md',
-  showLabel = true,
   showToast = true,
   className = '',
-  onFavoriteChange,
 }: FavoriteScoreButtonProps) {
   const { data: session } = useSession();
   const {
@@ -272,7 +269,8 @@ export default function FavoriteScoreButton({
           fileFormat: score.fileFormat,
         }
       );
-      pageCount: score.pageCount, onFavoriteChange?.(result);
+
+      // pageCount: score.pageCount, onFavoriteChange?.(result);
 
       if (showToast) {
         toast.success(

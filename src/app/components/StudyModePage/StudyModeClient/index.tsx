@@ -121,11 +121,8 @@ const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
     selectedScores,
     loading: loadingScores,
     error: scoresError,
-    isScoreSelected,
-    saveSelectedScore,
   } = useIMSLPScoresOptimized(work.imslpPermlink, work.id);
 
-  console.log('imslpScores', { imslpScores, selectedScores });
 
   // Carregar partitura específica
   const loadSelectedScore = useCallback(async () => {

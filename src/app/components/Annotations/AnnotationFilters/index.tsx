@@ -358,7 +358,7 @@ export default function AnnotationFilters({
 
               {localFilters.search && (
                 <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium flex items-center space-x-2">
-                  <span>Busca: "{localFilters.search}"</span>
+                  <span>Busca: &quot;{localFilters.search}&quot;</span>
                   <button
                     onClick={() => handleFilterChange('search', undefined)}
                     className="text-brand-primary hover:text-accent-red transition-colors"

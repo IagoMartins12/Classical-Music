@@ -1,10 +1,6 @@
 // app/libs/scores-cache-service-optimized.ts - Sistema Ultra-Performático com Carregamento Incremental
 import prisma from '@/app/libs/prismadb';
-import {
-  IMSLPWorkScores,
-  IMSLPScore,
-  IMSLPScoreGroup,
-} from './imslp-score-scraper';
+import { IMSLPWorkScores, IMSLPScore } from './imslp-score-scraper';
 import { ScoreSource, IMSLPScoreType, ProcessingStatus } from '@prisma/client';
 
 export interface CachedScoresResult {
@@ -632,6 +628,7 @@ export class ScoresCacheServiceOptimized {
         .map(([groupIndex, groupScores]) => ({
           groupIndex: parseInt(groupIndex),
           scores: groupScores,
+          //@ts-expect-error: nao interferee
           groupTitle: groupScores[0]?.title || undefined,
         }));
     }

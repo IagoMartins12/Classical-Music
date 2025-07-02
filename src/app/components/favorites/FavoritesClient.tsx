@@ -12,7 +12,6 @@ import {
   FiClock,
   FiBookOpen,
   FiFileText, // 🆕 Para partituras
-  FiDownload, // 🆕 Para download
   FiStar, // 🆕 Para rating
 } from 'react-icons/fi';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';

@@ -2,11 +2,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
 
-interface WorkTypeCount {
-  workType: string;
-  _count: number;
-}
-
 export async function POST(request: NextRequest) {
   try {
     const { composerId } = await request.json();

@@ -357,6 +357,7 @@ async function getLastCronExecution(): Promise<string | null> {
 
     return lastJob?.completedAt?.toISOString() || null;
   } catch (error) {
+    console.log('CRON ERROR', error)
     return null;
   }
 }

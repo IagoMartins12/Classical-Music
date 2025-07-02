@@ -1,9 +1,7 @@
 // app/composers/ComposersLoading.tsx - Clean Skeleton Loading
 'use client';
 
-import { FaRegUser } from 'react-icons/fa';
 import { FiSearch, FiClock, FiList, FiGrid } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 import AnimatedMusicalNotes2 from '../components/AnimatedMusicalNotes2';
 
 export default function ComposersLoading() {

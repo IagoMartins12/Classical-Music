@@ -1,10 +1,6 @@
 // app/libs/scores-cache-service.ts - Sistema Ultra-Performático de Cache de Partituras
 import prisma from '@/app/libs/prismadb';
-import {
-  IMSLPWorkScores,
-  IMSLPScore,
-  IMSLPScoreGroup,
-} from './imslp-score-scraper';
+import { IMSLPWorkScores, IMSLPScore } from './imslp-score-scraper';
 import { ScoreSource, IMSLPScoreType, ProcessingStatus } from '@prisma/client';
 
 export interface CachedScoresResult {
@@ -205,6 +201,7 @@ export class ScoresCacheService {
 
       // Processar cada tipo de partitura
       for (const [type, groups] of Object.entries(imslpData.scoresByType)) {
+        console.log('TYPE', type);
         for (const group of groups) {
           for (const score of group.scores) {
             // Skip da partitura prioritária se já foi salva
@@ -368,6 +365,7 @@ export class ScoresCacheService {
         .map(([groupIndex, groupScores]) => ({
           groupIndex: parseInt(groupIndex),
           scores: groupScores,
+          //@ts-expect-error: nao interferee
           groupTitle: groupScores[0]?.title || undefined,
         }));
     }

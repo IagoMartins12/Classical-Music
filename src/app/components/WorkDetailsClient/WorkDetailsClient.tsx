@@ -31,9 +31,6 @@ import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import StudyModeModal from '../StudyMode/StudyModeModal';
-import { useScoreFavorites } from '@/app/hooks/useScoreFavorites';
-
-// Importar componentes de animação
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -77,7 +74,6 @@ export default function WorkDetailsClient({
     error: scoresError,
     refetch: refetchScores,
     fromCache,
-    cacheStats,
   } = useIMSLPScores(mounted ? work.imslpPermlink : '', {
     workId: work.id,
     priorityScoreId: selectedScoreForStudy?.id,
@@ -94,14 +90,6 @@ export default function WorkDetailsClient({
     },
   });
 
-  // Hook para estatísticas de favoritos de partituras
-  const {
-    stats: favoriteStats,
-    loading: loadingFavorites,
-    error: favoritesError,
-    mostFavorited,
-    refetch: refetchFavorites,
-  } = useScoreFavorites(work.id);
 
   const { navigateToUrl } = useNavigate();
 
@@ -238,22 +226,6 @@ export default function WorkDetailsClient({
     setSelectedScoreForStudy(score);
   };
 
-  const getTotalScoreFavorites = () => {
-    return favoriteStats.reduce((sum, stat) => sum + stat.totalFavorites, 0);
-  };
-
-  const getAverageRating = () => {
-    const ratingsStats = favoriteStats.filter(
-      (stat) => stat.avgRating && stat.avgRating > 0
-    );
-    if (ratingsStats.length === 0) return null;
-
-    const avgSum = ratingsStats.reduce(
-      (sum, stat) => sum + (stat.avgRating || 0),
-      0
-    );
-    return avgSum / ratingsStats.length;
-  };
 
   return (
     <div className="bg-gradient-primary">

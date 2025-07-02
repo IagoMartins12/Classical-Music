@@ -97,7 +97,6 @@ export default function AnnotationsSection({
 
   const { open } = useLoginModal();
   const {
-    getAllWorkAnnotations, // 🔧 NOVO: Para estatísticas (sempre todas as anotações)
     getWorkAnnotations, // Para anotações filtradas
     getAnnotationStats,
     fetchWorkAnnotations,
@@ -385,12 +384,12 @@ export default function AnnotationsSection({
                       )}
                       {filters.search && (
                         <span className="bg-accent-purple/10 text-accent-purple px-2 py-1 rounded-lg text-xs">
-                          "{filters.search}"
+                          &quot;{filters.search}&quot;
                         </span>
                       )}
                       {localSearchTerm && (
                         <span className="bg-accent-red/10 text-accent-red px-2 py-1 rounded-lg text-xs">
-                          Busca: "{localSearchTerm}"
+                          Busca: &quot;{localSearchTerm}&quot;
                         </span>
                       )}
                     </div>

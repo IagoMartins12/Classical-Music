@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
 
       console.log(`✅ [API] Scraping concluído:`, {
         totalScores: Object.values(scoresData.totalCounts).reduce(
+          //@ts-expect-error: nao interfere
           (sum: number, count: number) => sum + count,
           0
         ),

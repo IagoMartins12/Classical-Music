@@ -1,11 +1,9 @@
 // components/Annotations/DeleteAnnotationModal.tsx - NOVO COMPONENTE
 'use client';
 
-import { useState } from 'react';
-import { FiTrash2, FiAlertTriangle, FiX, FiLoader } from 'react-icons/fi';
+import { FiTrash2, FiAlertTriangle, FiLoader } from 'react-icons/fi';
 import Modal from '../../Modal';
 import Button from '../../Common/Button';
-import { AnimatedItem } from '../../animation/AnimatedComponents';
 
 interface DeleteAnnotationModalProps {
   isOpen: boolean;
@@ -22,10 +20,6 @@ export default function DeleteAnnotationModal({
   annotationTitle,
   isDeleting = false,
 }: DeleteAnnotationModalProps) {
-  const [confirmText, setConfirmText] = useState('');
-  const expectedText = 'DELETAR';
-  const canDelete = confirmText.toUpperCase() === expectedText;
-
   const handleConfirm = async () => {
     if (!isDeleting) {
       await onConfirm();
@@ -34,7 +28,6 @@ export default function DeleteAnnotationModal({
 
   const handleClose = () => {
     if (!isDeleting) {
-      setConfirmText('');
       onClose();
     }
   };
@@ -80,7 +73,7 @@ export default function DeleteAnnotationModal({
           <div className="flex-1">
             <div className="p-3 bg-theme-elevated rounded-xl border border-theme-primary/20">
               <p className="font-medium text-theme-primary mb-1">
-                "{annotationTitle}"
+                &quot;{annotationTitle}&quot;
               </p>
               <p className="text-sm text-theme-tertiary">
                 Esta anotação será permanentemente removida, incluindo todos os

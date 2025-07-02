@@ -10,11 +10,9 @@ import {
   FiLayers,
   FiBookOpen,
   FiAward,
-  FiMapPin,
   FiTag,
   FiEye,
   FiEyeOff,
-  FiSave,
   FiX,
   FiPlus,
 } from 'react-icons/fi';

@@ -9,10 +9,8 @@ import {
   FiAlertCircle,
   FiBookOpen,
   FiMoreHorizontal,
-  FiDownload,
   FiLayers,
   FiStar,
-  FiUsers,
   FiHeart,
   FiTrendingUp,
 } from 'react-icons/fi';
@@ -131,7 +129,6 @@ export default function IMSLPTabs({
   const {
     stats: favoriteStats,
     loading: loadingFavorites,
-    error: favoritesError,
     mostFavorited,
     refetch: refetchFavorites,
     getScoreStats,

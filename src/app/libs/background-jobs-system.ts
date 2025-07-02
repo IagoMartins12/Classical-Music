@@ -178,7 +178,7 @@ export class BackgroundJobsSystemOptimized {
           result = await this.executeCacheScoresBackgroundJob(job);
           break;
         case 'maintenance':
-          result = await this.executeMaintenanceJob(job);
+          result = await this.executeMaintenanceJob();
           break;
         default:
           throw new Error(`Ação não reconhecida: ${job.action}`);
@@ -282,7 +282,7 @@ export class BackgroundJobsSystemOptimized {
    * 🚀 Executar job de cache em background
    */
   private static async executeCacheScoresBackgroundJob(job: any): Promise<any> {
-    const { workId, details } = job;
+    const { workId } = job;
 
     console.log(
       `🔄 [JOBS-OPT] Executando cache background para workId: ${workId}`
@@ -302,7 +302,7 @@ export class BackgroundJobsSystemOptimized {
   /**
    * 🚀 Executar job de manutenção
    */
-  private static async executeMaintenanceJob(job: any): Promise<any> {
+  private static async executeMaintenanceJob(): Promise<any> {
     console.log(`🧹 [JOBS-OPT] Executando manutenção`);
 
     // Limpeza de cache expirado
@@ -404,7 +404,7 @@ export class BackgroundJobsSystemOptimized {
    */
   static async cancelJob(jobId: string): Promise<boolean> {
     try {
-      const result = await prisma.scoreProcessingLog.update({
+      await prisma.scoreProcessingLog.update({
         where: {
           id: jobId,
           status: ProcessingStatus.PENDING,

@@ -1576,6 +1576,7 @@ class WorkScraper {
             mediaDuration: workData.mediaDuration,
             workStyle: workData.workStyle,
             moviment: workData.moviment,
+            //@ts-ignore
             movementsDetailed: workData.movementsDetailed,
             dedicateTo: workData.dedicateTo,
             dedicationComposerLink: workData.dedicationComposerLink,

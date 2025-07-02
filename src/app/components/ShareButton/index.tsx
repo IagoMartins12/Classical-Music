@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiShare2, FiCopy, FiExternalLink, FiCheck, FiX } from 'react-icons/fi';
+import { FiShare2, FiCopy, FiCheck, FiX } from 'react-icons/fi';
 import { FaWhatsapp, FaTwitter, FaTelegram, FaFacebook } from 'react-icons/fa';
 
 interface ShareButtonProps {
@@ -55,7 +55,7 @@ export default function ShareButton({
   const handleShare = (platform: string) => {
     const encodedUrl = encodeURIComponent(shareUrl);
     const encodedTitle = encodeURIComponent(title);
-    const encodedDescription = encodeURIComponent(description || '');
+    // const encodedDescription = encodeURIComponent(description || '');
 
     let shareLink = '';
 

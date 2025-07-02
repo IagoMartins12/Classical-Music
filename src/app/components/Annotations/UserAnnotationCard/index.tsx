@@ -1,8 +1,7 @@
 // app/annotations/components/UserAnnotationCard.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import { useState } from 'react';
 import Link from 'next/link';
 import {
   FiThumbsUp,
@@ -18,8 +17,6 @@ import {
   FiAward,
   FiMessageSquare,
   FiClock,
-  FiX,
-  FiAlertTriangle,
   FiLock,
   FiGlobe,
 } from 'react-icons/fi';

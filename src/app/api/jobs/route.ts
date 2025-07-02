@@ -8,15 +8,8 @@ import { BackgroundJobsSystemOptimized } from '@/app/libs/background-jobs-system
 // POST - Criar e gerenciar jobs otimizados
 export async function POST(request: NextRequest) {
   try {
-    const {
-      action,
-      workId,
-      imslpUrl,
-      priority,
-      priorityScoreId,
-      scheduledFor,
-      details,
-    } = await request.json();
+    const { action, workId, imslpUrl, priority, scheduledFor, details } =
+      await request.json();
 
     console.log(`📋 [JOBS-API-OPT] Ação solicitada: ${action}`);
 
@@ -38,7 +31,6 @@ export async function POST(request: NextRequest) {
           imslpUrl,
           {
             priority: priority || 5,
-            priorityScoreId,
             scheduledFor: scheduledFor ? new Date(scheduledFor) : undefined,
             details: details || {},
           }

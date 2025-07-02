@@ -28,15 +28,13 @@ import { toast } from 'react-hot-toast';
 import {
   useAnnotationsStore,
   WorkAnnotation,
-  AnnotationCategory,
 } from '@/app/stores/useAnnotationsStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import CreateAnnotationModal from '../CreateAnnotationModal';
-import DeleteAnnotationModal from '../DeleteAnnotationModal';
-import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
+import { AnimatedItem } from '../../animation/AnimatedComponents';
 import { MdVerified } from 'react-icons/md';
 import ConfirmDeleteModal from '../DeleteAnnotationModal2';
-// import VoteDebugger from '../Debug/VoteDebugger'; // 🔍 Uncomment para debug
+import Image from 'next/image';
 
 interface AnnotationCardProps {
   annotation: WorkAnnotation;
@@ -227,7 +225,9 @@ export default function AnnotationCard({
               {/* Avatar/Icon */}
               <div className="flex-shrink-0">
                 {annotation.user.image ? (
-                  <img
+                  <Image
+                    width={25}
+                    height={25}
                     src={annotation.user.image}
                     alt={
                       annotation.user.firstName ||

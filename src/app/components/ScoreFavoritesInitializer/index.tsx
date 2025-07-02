@@ -66,7 +66,7 @@ export default function ScoreFavoritesInitializer({
 // 🆕 Função externa para evitar loops
 async function loadWorkSpecificData(workId: string, userId: string) {
   try {
-    console.log('📊 Carregando dados específicos da obra:', workId);
+    console.log('📊 Carregando dados específicos da obra:', { workId, userId });
 
     const response = await fetch(`/api/favorites/scores?workId=${workId}`, {
       method: 'GET',

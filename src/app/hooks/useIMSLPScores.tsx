@@ -64,7 +64,7 @@ export function useIMSLPScores(
 
     // Criar novo AbortController
     abortControllerRef.current = new AbortController();
-    const signal = abortControllerRef.current.signal;
+    // const signal = abortControllerRef.current.signal;
 
     setLoading(true);
     setError(null);

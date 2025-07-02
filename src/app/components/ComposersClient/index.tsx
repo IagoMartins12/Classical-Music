@@ -4,7 +4,7 @@
 import { useState, useTransition, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useNavigate } from '@/app/hooks/useNavigate';
-import { FiSearch, FiClock, FiRefreshCw } from 'react-icons/fi';
+import { FiSearch, FiClock } from 'react-icons/fi';
 import ComposerCard from './ComposerCard';
 import ComposerCardList from './ComposerCardList';
 import PaginationControls from '../PaginationControls';
@@ -17,7 +17,6 @@ import {
   PageContainer,
   AnimatedContainer,
   AnimatedItem,
-  AnimatedCard,
   SequentialGrid, // ✅ NOVO - Para animação sequencial
   LoadingSpinner,
 } from '../animation/AnimatedComponents';

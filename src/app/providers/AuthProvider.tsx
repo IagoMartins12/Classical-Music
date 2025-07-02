@@ -154,26 +154,26 @@ const AuthMonitor: React.FC = () => {
 
     const logAuthState = () => {
       if (sessionUser && storeUser) {
-        const syncData = {
-          session: {
-            id: sessionUser.id,
-            onboardingCompleted: sessionUser.onboardingCompleted,
-            userType: sessionUser.userType,
-          },
-          store: {
-            id: storeUser.id,
-            onboardingCompleted: storeUser.onboardingCompleted,
-            userType: storeUser.userType,
-          },
-          synced: {
-            id: sessionUser.id === storeUser.id,
-            onboarding:
-              sessionUser.onboardingCompleted === storeUser.onboardingCompleted,
-          },
-          onboardingProgress: hasProgress
-            ? getProgressSummary()
-            : 'Nenhum progresso',
-        };
+        // const syncData = {
+        //   session: {
+        //     id: sessionUser.id,
+        //     onboardingCompleted: sessionUser.onboardingCompleted,
+        //     userType: sessionUser.userType,
+        //   },
+        //   store: {
+        //     id: storeUser.id,
+        //     onboardingCompleted: storeUser.onboardingCompleted,
+        //     userType: storeUser.userType,
+        //   },
+        //   synced: {
+        //     id: sessionUser.id === storeUser.id,
+        //     onboarding:
+        //       sessionUser.onboardingCompleted === storeUser.onboardingCompleted,
+        //   },
+        //   onboardingProgress: hasProgress
+        //     ? getProgressSummary()
+        //     : 'Nenhum progresso',
+        // };
       }
     };
 

@@ -18,7 +18,6 @@ import {
   FiCalendar,
   FiLoader,
   FiPlus,
-  FiLayers,
 } from 'react-icons/fi';
 import {
   GiViolin,
@@ -229,7 +228,7 @@ export default function ComposerWorks({
       setLoading(true);
       try {
         // Usar filtros customizados se fornecidos, senão usar os estados atuais
-        let filters = customFilters || {
+        const filters = customFilters || {
           ...(selectedInstrument && { instrumentId: selectedInstrument }),
           ...(selectedGenre && { workGenresArr: selectedGenre }),
           ...(selectedCategory && { categoryNames: selectedCategory }),
@@ -522,7 +521,7 @@ export default function ComposerWorks({
                 </button>
 
                 {/* Tabs dos workTypes disponíveis */}
-                {availableWorkTypes.map((groupKey, index) => {
+                {availableWorkTypes.map((groupKey) => {
                   const groupCount = getGroupedCount(groupKey);
                   return (
                     <AnimatedItem

@@ -203,11 +203,7 @@ export const useScrollReveal = (options?: {
   triggerOnce?: boolean;
   rootMargin?: string;
 }) => {
-  const {
-    threshold = 0.1,
-    triggerOnce = true,
-    rootMargin = '0px 0px -100px 0px',
-  } = options || {};
+  const { threshold = 0.1, triggerOnce = true } = options || {};
 
   const ref = useRef(null);
   const isInView = useInView(ref, {

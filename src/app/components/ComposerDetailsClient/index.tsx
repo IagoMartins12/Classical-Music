@@ -20,7 +20,6 @@ import {
   FiHeart,
   FiInfo,
 } from 'react-icons/fi';
-import { CiMusicNote1 } from 'react-icons/ci';
 
 import ComposerBiography from '../ComposerBiography';
 import ComposerWorks from '../ComposersClient/ComposerWorks';
@@ -32,7 +31,6 @@ import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
-  SequentialGrid,
 } from '../animation/AnimatedComponents';
 import { getComposerNationalityDisplay } from '../Utils/nationalityFlags';
 
@@ -54,124 +52,98 @@ export default function ComposerDetailsClient({
     ? getComposerNationalityDisplay(composer.nationality)
     : null;
   // 🆕 Função para formatar datas (pode conter dia/mês/ano)
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return null;
+  // const formatDate = (dateString?: string) => {
+  //   if (!dateString) return null;
 
-    // Tentar diversos formatos de data
-    const formats = [
-      // Formato ISO
-      /^\d{4}-\d{2}-\d{2}$/,
-      // Formato brasileiro
-      /^\d{1,2}\/\d{1,2}\/\d{4}$/,
-      // Formato com mês por extenso
-      /^\d{1,2} de \w+ de \d{4}$/,
-      // Apenas ano
-      /^\d{4}$/,
-    ];
+  //   // Tentar diversos formatos de data
+  //   const formats = [
+  //     // Formato ISO
+  //     /^\d{4}-\d{2}-\d{2}$/,
+  //     // Formato brasileiro
+  //     /^\d{1,2}\/\d{1,2}\/\d{4}$/,
+  //     // Formato com mês por extenso
+  //     /^\d{1,2} de \w+ de \d{4}$/,
+  //     // Apenas ano
+  //     /^\d{4}$/,
+  //   ];
 
-    // Se é apenas o ano, retornar como está
-    if (/^\d{4}$/.test(dateString)) {
-      return dateString;
-    }
+  //   // Se é apenas o ano, retornar como está
+  //   if (/^\d{4}$/.test(dateString)) {
+  //     return dateString;
+  //   }
 
-    // Se contém informações mais detalhadas, retornar como está
-    return dateString;
-  };
+  //   // Se contém informações mais detalhadas, retornar como está
+  //   return dateString;
+  // };
 
   // 🆕 Função para calcular idade aproximada
-  const calculateAge = (birthDate?: string, deathDate?: string) => {
-    if (!birthDate) return null;
+  // const calculateAge = (birthDate?: string, deathDate?: string) => {
+  //   if (!birthDate) return null;
 
-    try {
-      // Extrair o ano da data de nascimento
-      const birthYear = parseInt(birthDate.match(/\d{4}/)?.[0] || '');
-      if (!birthYear) return null;
+  //   try {
+  //     // Extrair o ano da data de nascimento
+  //     const birthYear = parseInt(birthDate.match(/\d{4}/)?.[0] || '');
+  //     if (!birthYear) return null;
 
-      let endYear;
-      if (deathDate) {
-        endYear = parseInt(deathDate.match(/\d{4}/)?.[0] || '');
-      } else {
-        endYear = new Date().getFullYear();
-      }
+  //     let endYear;
+  //     if (deathDate) {
+  //       endYear = parseInt(deathDate.match(/\d{4}/)?.[0] || '');
+  //     } else {
+  //       endYear = new Date().getFullYear();
+  //     }
 
-      if (!endYear) return null;
+  //     if (!endYear) return null;
 
-      const age = endYear - birthYear;
-      return age > 0 ? age : null;
-    } catch {
-      return null;
-    }
-  };
-
-  // 🆕 Função para obter cor da qualidade da página
-  const getPageQualityColor = (quality?: string) => {
-    const colors = {
-      high: 'from-accent-green to-accent-blue',
-      medium: 'from-accent-blue to-accent-purple',
-      low: 'from-accent-red to-accent-purple',
-    };
-    return quality
-      ? colors[quality as keyof typeof colors] ||
-          'from-theme-primary to-theme-secondary'
-      : 'from-theme-primary to-theme-secondary';
-  };
-
-  // 🆕 Função para obter label da qualidade da página
-  const getPageQualityLabel = (quality?: string) => {
-    const labels = {
-      high: 'Alta Qualidade',
-      medium: 'Qualidade Média',
-      low: 'Qualidade Baixa',
-      complete: 'Completa',
-      stub: 'Esboço',
-      needs_work: 'Precisa de Trabalho',
-    };
-    return quality ? labels[quality as keyof typeof labels] || quality : null;
-  };
+  //     const age = endYear - birthYear;
+  //     return age > 0 ? age : null;
+  //   } catch {
+  //     return null;
+  //   }
+  // };
 
   // 🆕 Função para processar categorias IMSLP
-  const processIMSLPCategories = (categories?: string) => {
-    if (!categories) return [];
-    return categories
-      .split(',')
-      .map((cat) => cat.trim())
-      .filter((cat) => cat.length > 0);
-  };
+  // const processIMSLPCategories = (categories?: string) => {
+  //   if (!categories) return [];
+  //   return categories
+  //     .split(',')
+  //     .map((cat) => cat.trim())
+  //     .filter((cat) => cat.length > 0);
+  // };
 
   // 🆕 Função para processar instrumentos
-  const processInstruments = (instruments?: string) => {
-    if (!instruments) return [];
-    return instruments
-      .split(',')
-      .map((inst) => inst.trim())
-      .filter((inst) => inst.length > 0);
-  };
+  // const processInstruments = (instruments?: string) => {
+  //   if (!instruments) return [];
+  //   return instruments
+  //     .split(',')
+  //     .map((inst) => inst.trim())
+  //     .filter((inst) => inst.length > 0);
+  // };
 
-  // 🆕 Função para processar links externos
-  const processExternalLinks = (links?: string) => {
-    if (!links) return [];
+  // // 🆕 Função para processar links externos
+  // const processExternalLinks = (links?: string) => {
+  //   if (!links) return [];
 
-    try {
-      // Tentar parsear como JSON primeiro
-      const parsed = JSON.parse(links);
-      if (Array.isArray(parsed)) {
-        return parsed;
-      }
-    } catch {
-      // Se não é JSON, tratar como string separada por vírgulas ou quebras de linha
-      return links
-        .split(/[,\n]/)
-        .map((link) => link.trim())
-        .filter((link) => link.length > 0);
-    }
+  //   try {
+  //     // Tentar parsear como JSON primeiro
+  //     const parsed = JSON.parse(links);
+  //     if (Array.isArray(parsed)) {
+  //       return parsed;
+  //     }
+  //   } catch {
+  //     // Se não é JSON, tratar como string separada por vírgulas ou quebras de linha
+  //     return links
+  //       .split(/[,\n]/)
+  //       .map((link) => link.trim())
+  //       .filter((link) => link.length > 0);
+  //   }
 
-    return [];
-  };
+  //   return [];
+  // };
 
-  const age = calculateAge(composer.birthDate, composer.deathDate);
-  const imslpCategories = processIMSLPCategories(composer.imslpCategories);
-  const composerInstruments = processInstruments(composer.instruments);
-  const externalLinks = processExternalLinks(composer.externalLinks);
+  // const age = calculateAge(composer.birthDate, composer.deathDate);
+  // const imslpCategories = processIMSLPCategories(composer.imslpCategories);
+  // const composerInstruments = processInstruments(composer.instruments);
+  // const externalLinks = processExternalLinks(composer.externalLinks);
 
   // Calcular idade e anos de vida
   const calculateLifeSpan = () => {

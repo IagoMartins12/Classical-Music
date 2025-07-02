@@ -17,7 +17,6 @@ import Link from 'next/link';
 import {
   AnimatedCard,
   AnimatedItem,
-  SequentialGrid,
 } from '@/app/components/animation/AnimatedComponents';
 import { BiTrophy } from 'react-icons/bi';
 import { MdVerified } from 'react-icons/md';

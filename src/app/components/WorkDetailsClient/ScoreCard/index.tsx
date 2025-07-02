@@ -31,7 +31,6 @@ const ScoreCard = ({
   onSelect,
   isLastInGroup = false,
   groupSize = 1,
-  showFavoriteStats = true,
   showMostFavoritedBadge = true,
   favoriteStats,
 }: ScoreCardProps) => {
@@ -46,13 +45,6 @@ const ScoreCard = ({
     return text.length > maxLength
       ? `${text.substring(0, maxLength)}...`
       : text;
-  };
-
-  const formatFavoriteCount = (count: number): string => {
-    if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}k`;
-    }
-    return count.toString();
   };
 
   return (

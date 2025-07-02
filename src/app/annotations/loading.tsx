@@ -13,13 +13,11 @@ import {
   FiSearch,
   FiMusic,
   FiLayers,
-  FiAward,
   FiEdit3,
   FiTrash2,
   FiGlobe,
-  FiLock,
 } from 'react-icons/fi';
-import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+import { GiMusicalNotes } from 'react-icons/gi';
 
 export default function AnnotationsPageLoading() {
   return (

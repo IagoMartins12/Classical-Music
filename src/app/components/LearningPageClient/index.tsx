@@ -9,7 +9,6 @@ import {
   FiMusic,
   FiFilter,
   FiX,
-  FiHeart,
 } from 'react-icons/fi';
 import {
   useLearningStore,

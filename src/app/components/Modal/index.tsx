@@ -34,7 +34,6 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       children,
       maxWidth = 'md',
       showCloseButton = true,
-      closeOnOverlayClick = true,
       className = '',
     },
     ref
@@ -83,7 +82,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
     }, [isOpen, onClose]);
 
     // Handle click outside
-    const handleOverlayClick = (e: React.MouseEvent) => {
+    const handleOverlayClick = () => {
       onClose();
     };
 

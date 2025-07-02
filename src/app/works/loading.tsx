@@ -1,13 +1,7 @@
 // app/works/loading.tsx - Clean Skeleton Loading
 'use client';
 
-import {
-  FiMusic,
-  FiHeadphones,
-  FiBookOpen,
-  FiSearch,
-  FiFilter,
-} from 'react-icons/fi';
+import { FiMusic, FiHeadphones, FiSearch } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 
 export default function WorksLoading() {

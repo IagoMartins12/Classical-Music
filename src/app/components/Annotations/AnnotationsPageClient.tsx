@@ -28,7 +28,6 @@ import Select from '../Common/Select';
 import UserAnnotationCard from './UserAnnotationCard';
 import AnnotationsStatsWidget from './AnnotationsStatsWidget';
 import CreateAnnotationModal from './CreateAnnotationModal';
-import { useAnnotationsStore } from '@/app/stores/useAnnotationsStore';
 
 type AnnotationCategory =
   | 'TECHNIQUE'
@@ -117,6 +116,7 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
   );
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  console.log('isRefreshing', isRefreshing);
   const { isAuthenticated, user } = useAuth();
 
   const refreshAnnotations = async () => {

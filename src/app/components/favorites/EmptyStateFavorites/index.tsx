@@ -7,11 +7,7 @@ import {
   FiX,
   FiFileText,
 } from 'react-icons/fi'; // 🆕 Adicionado FiFileText
-import {
-  AnimatedCard,
-  AnimatedContainer,
-  AnimatedItem,
-} from '../../animation/AnimatedComponents';
+import { AnimatedContainer } from '../../animation/AnimatedComponents';
 
 // 🆕 Atualizado para incluir 'scores'
 interface emptyStatesProps {
