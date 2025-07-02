@@ -167,7 +167,13 @@ export function useOnboardingPersistence(
 
   // Restaurar backup se necessário
   useEffect(() => {
-    if (!isAuthenticated || !user?.id || !config.enableLocalBackup) return;
+    if (
+      !isAuthenticated ||
+      !user?.id ||
+      !config.enableLocalBackup ||
+      user.onboardingCompleted
+    )
+      return;
 
     try {
       const backupKey = `onboarding-backup-${user.id}`;

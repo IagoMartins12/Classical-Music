@@ -1,4 +1,4 @@
-// app/api/annotations/[annotationId]/vote/route.ts
+// app/api/annotations/[annotationId]/vote/route.ts - CORRIGIDO para Next.js 15
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -7,7 +7,7 @@ import { revalidateTag } from 'next/cache';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { annotationId: string } }
+  { params }: { params: Promise<{ annotationId: string }> } // 🔧 CORREÇÃO: Promise
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -16,7 +16,7 @@ export async function POST(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    const { annotationId } = params;
+    const { annotationId } = await params; // 🔧 CORREÇÃO: await params
     const { isHelpful } = await request.json();
 
     if (typeof isHelpful !== 'boolean') {
@@ -75,7 +75,8 @@ export async function POST(
             id: existingVote.id,
           },
         });
-        voteChange = existingVote.isHelpful ? -1 : 1;
+        // 🔧 CORREÇÃO: Só afetar helpfulCount se for voto útil
+        voteChange = existingVote.isHelpful ? -1 : 0;
       } else {
         // Alterar voto
         await prisma.annotationHelpfulVote.update({
@@ -86,7 +87,15 @@ export async function POST(
             isHelpful,
           },
         });
-        voteChange = isHelpful ? 2 : -2; // Muda de -1 para +1 ou vice-versa
+        // 🔧 CORREÇÃO: Lógica corrigida para troca de votos
+        if (existingVote.isHelpful && !isHelpful) {
+          // Era útil, agora não é
+          voteChange = -1;
+        } else if (!existingVote.isHelpful && isHelpful) {
+          // Era "não útil", agora é útil
+          voteChange = 1;
+        }
+        // Se era e continua "não útil", não muda nada
       }
     } else {
       // Criar novo voto
@@ -97,7 +106,8 @@ export async function POST(
           isHelpful,
         },
       });
-      voteChange = isHelpful ? 1 : -1;
+      // 🔧 CORREÇÃO: Só incrementar se for voto útil
+      voteChange = isHelpful ? 1 : 0;
     }
 
     // Atualizar contador na anotação
@@ -151,11 +161,11 @@ export async function POST(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { annotationId: string } }
+  { params }: { params: Promise<{ annotationId: string }> } // 🔧 CORREÇÃO: Promise
 ) {
   try {
     const session = await getServerSession(authOptions);
-    const { annotationId } = params;
+    const { annotationId } = await params; // 🔧 CORREÇÃO: await params
 
     // Buscar estatísticas de votos
     const [totalVotes, helpfulVotes, userVote] = await Promise.all([

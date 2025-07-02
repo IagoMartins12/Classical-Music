@@ -1,7 +1,8 @@
-// components/Annotations/CreateAnnotationModal.tsx
+// components/Annotations/CreateAnnotationModal.tsx - VERSÃO COM ZOD + SCROLL AUTOMÁTICO
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { z } from 'zod';
 import {
   FiMessageSquare,
   FiMusic,
@@ -15,6 +16,7 @@ import {
   FiEyeOff,
   FiSave,
   FiX,
+  FiPlus,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { toast } from 'react-hot-toast';
@@ -25,6 +27,7 @@ import {
   AnnotationScope,
   WorkAnnotation,
 } from '@/app/stores/useAnnotationsStore';
+import { useAuth } from '@/app/hooks/useAuth';
 import Modal from '../../Modal';
 import Button from '../../Common/Button';
 
@@ -36,6 +39,41 @@ interface CreateAnnotationModalProps {
   composerName: string;
   editingAnnotation?: WorkAnnotation;
 }
+
+// 🎯 Schema de validação com Zod
+const annotationSchema = z.object({
+  title: z
+    .string()
+    .min(1, 'Título é obrigatório')
+    .min(3, 'Título deve ter pelo menos 3 caracteres')
+    .max(100, 'Título deve ter no máximo 100 caracteres'),
+  content: z
+    .string()
+    .min(1, 'Conteúdo é obrigatório')
+    .min(10, 'Conteúdo deve ter pelo menos 10 caracteres')
+    .max(2000, 'Conteúdo deve ter no máximo 2000 caracteres'),
+  category: z.enum([
+    'TECHNIQUE',
+    'INTERPRETATION',
+    'PRACTICE_TIP',
+    'THEORY',
+    'PERFORMANCE',
+    'HISTORICAL',
+    'GENERAL',
+  ]),
+  difficulty: z.enum(['ALL_LEVELS', 'BEGINNER', 'INTERMEDIATE', 'ADVANCED']),
+  scope: z.enum(['ENTIRE_WORK', 'MOVEMENT', 'SECTION', 'SPECIFIC_MEASURE']),
+  measureStart: z.string().optional(),
+  measureEnd: z.string().optional(),
+  movement: z.string().optional(),
+  section: z.string().optional(),
+  pageNumber: z.string().optional(),
+  hand: z.string().optional(),
+  voice: z.string().optional(),
+  instrument: z.string().optional(),
+  tags: z.array(z.string()).max(10, 'Máximo 10 tags permitidas'),
+  isPublic: z.boolean(),
+});
 
 const CATEGORY_OPTIONS = [
   {
@@ -103,6 +141,108 @@ const HAND_OPTIONS = [
   { value: 'both', label: 'Ambas as mãos' },
 ];
 
+// Tags sugeridas por categoria
+const SUGGESTED_TAGS_BY_CATEGORY: Record<AnnotationCategory, string[]> = {
+  TECHNIQUE: [
+    'dedilhado',
+    'articulação',
+    'postura',
+    'legato',
+    'staccato',
+    'pedal',
+    'velocidade',
+    'precisão',
+    'relaxamento',
+    'força',
+    'agilidade',
+    'coordenação',
+  ],
+  INTERPRETATION: [
+    'dinâmica',
+    'fraseado',
+    'expressão',
+    'rubato',
+    'agógica',
+    'caráter',
+    'estilo',
+    'crescendo',
+    'diminuendo',
+    'cantabile',
+    'espressivo',
+    'dolce',
+  ],
+  PRACTICE_TIP: [
+    'estudo-lento',
+    'metrônomo',
+    'repetição',
+    'isolamento',
+    'mãos-separadas',
+    'memorização',
+    'análise',
+    'escalas',
+    'exercícios',
+    'aquecimento',
+    'concentração',
+    'paciência',
+  ],
+  THEORY: [
+    'harmonia',
+    'análise',
+    'cadência',
+    'modulação',
+    'tonalidade',
+    'forma',
+    'estrutura',
+    'progressão',
+    'acorde',
+    'contraponto',
+    'fuga',
+    'variação',
+  ],
+  PERFORMANCE: [
+    'palco',
+    'nervosismo',
+    'confiança',
+    'presença',
+    'comunicação',
+    'público',
+    'concentração',
+    'respiração',
+    'postura-cênica',
+    'entrada',
+    'final',
+    'expressão-corporal',
+  ],
+  HISTORICAL: [
+    'barroco',
+    'clássico',
+    'romântico',
+    'impressionista',
+    'contexto',
+    'época',
+    'estilo-período',
+    'influências',
+    'tradição',
+    'escola',
+    'manuscrito',
+    'edição',
+  ],
+  GENERAL: [
+    'importante',
+    'dificuldade',
+    'beleza',
+    'curiosidade',
+    'atenção',
+    'fundamental',
+    'interessante',
+    'útil',
+    'prático',
+    'essencial',
+    'recomendado',
+    'destaque',
+  ],
+};
+
 export default function CreateAnnotationModal({
   isOpen,
   onClose,
@@ -111,10 +251,22 @@ export default function CreateAnnotationModal({
   composerName,
   editingAnnotation,
 }: CreateAnnotationModalProps) {
+  const { user } = useAuth();
   const { createAnnotation, updateAnnotation, loading } = useAnnotationsStore();
   const isEditing = !!editingAnnotation;
   const isSubmitting =
     loading.create || (isEditing && loading.update.has(editingAnnotation.id));
+
+  // 🎯 Refs para scroll automático
+  const fieldRefs = {
+    title: useRef<HTMLInputElement>(null),
+    content: useRef<HTMLTextAreaElement>(null),
+    category: useRef<HTMLSelectElement>(null),
+    measureStart: useRef<HTMLInputElement>(null),
+    measureEnd: useRef<HTMLInputElement>(null),
+    movement: useRef<HTMLInputElement>(null),
+    section: useRef<HTMLInputElement>(null),
+  };
 
   // Form state
   const [formData, setFormData] = useState({
@@ -137,6 +289,81 @@ export default function CreateAnnotationModal({
 
   const [newTag, setNewTag] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // 🎯 Função para scroll automático para o primeiro erro
+  const scrollToFirstError = (errorFields: string[]) => {
+    if (errorFields.length > 0) {
+      const firstErrorField = errorFields[0] as keyof typeof fieldRefs;
+      const fieldRef = fieldRefs[firstErrorField];
+
+      if (fieldRef?.current) {
+        fieldRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+
+        // Focus no campo após um pequeno delay
+        setTimeout(() => {
+          fieldRef.current?.focus();
+        }, 500);
+      }
+    }
+  };
+
+  // 🎯 Validação com Zod + validações condicionais
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    try {
+      // Validação básica com Zod
+      annotationSchema.parse(formData);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        error.errors.forEach((err) => {
+          if (err.path.length > 0) {
+            newErrors[err.path[0] as string] = err.message;
+          }
+        });
+      }
+    }
+
+    // 🎯 Validações condicionais específicas
+    if (formData.scope === 'SPECIFIC_MEASURE') {
+      if (!formData.measureStart.trim()) {
+        newErrors.measureStart = 'Compasso inicial é obrigatório';
+      } else if (parseInt(formData.measureStart) < 1) {
+        newErrors.measureStart = 'Compasso deve ser maior que 0';
+      }
+
+      if (
+        formData.measureEnd &&
+        formData.measureStart &&
+        parseInt(formData.measureEnd) < parseInt(formData.measureStart)
+      ) {
+        newErrors.measureEnd = 'Compasso final deve ser maior que o inicial';
+      }
+    }
+
+    if (formData.scope === 'MOVEMENT' && !formData.movement.trim()) {
+      newErrors.movement = 'Nome do movimento é obrigatório';
+    }
+
+    if (formData.scope === 'SECTION' && !formData.section.trim()) {
+      newErrors.section = 'Nome da seção é obrigatório';
+    }
+
+    setErrors(newErrors);
+
+    // 🎯 Scroll automático para erros
+    const errorFields = Object.keys(newErrors);
+    if (errorFields.length > 0) {
+      setTimeout(() => {
+        scrollToFirstError(errorFields);
+      }, 100);
+    }
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   // Initialize form with editing data
   useEffect(() => {
@@ -182,59 +409,19 @@ export default function CreateAnnotationModal({
     setNewTag('');
   }, [isEditing, editingAnnotation, isOpen]);
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.title.trim()) {
-      newErrors.title = 'Título é obrigatório';
-    } else if (formData.title.length < 3) {
-      newErrors.title = 'Título deve ter pelo menos 3 caracteres';
-    } else if (formData.title.length > 100) {
-      newErrors.title = 'Título deve ter no máximo 100 caracteres';
-    }
-
-    if (!formData.content.trim()) {
-      newErrors.content = 'Conteúdo é obrigatório';
-    } else if (formData.content.length < 10) {
-      newErrors.content = 'Conteúdo deve ter pelo menos 10 caracteres';
-    } else if (formData.content.length > 2000) {
-      newErrors.content = 'Conteúdo deve ter no máximo 2000 caracteres';
-    }
-
-    if (formData.scope === 'SPECIFIC_MEASURE') {
-      if (!formData.measureStart) {
-        newErrors.measureStart = 'Compasso inicial é obrigatório';
-      } else if (parseInt(formData.measureStart) < 1) {
-        newErrors.measureStart = 'Compasso deve ser maior que 0';
-      }
-
-      if (
-        formData.measureEnd &&
-        parseInt(formData.measureEnd) < parseInt(formData.measureStart)
-      ) {
-        newErrors.measureEnd = 'Compasso final deve ser maior que o inicial';
-      }
-    }
-
-    if (formData.scope === 'MOVEMENT' && !formData.movement.trim()) {
-      newErrors.movement = 'Nome do movimento é obrigatório';
-    }
-
-    if (formData.scope === 'SECTION' && !formData.section.trim()) {
-      newErrors.section = 'Nome da seção é obrigatório';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async () => {
     if (!validateForm()) {
       return;
     }
 
+    if (!user?.id) {
+      toast.error('Você precisa estar logado para criar anotações');
+      return;
+    }
+
     const submitData = {
       workId,
+      userId: user.id,
       title: formData.title.trim(),
       content: formData.content.trim(),
       category: formData.category,
@@ -283,15 +470,23 @@ export default function CreateAnnotationModal({
     }
   };
 
-  const addTag = () => {
-    const tag = newTag.trim().toLowerCase();
-    if (tag && !formData.tags.includes(tag) && formData.tags.length < 10) {
+  const addTag = (tag?: string) => {
+    const tagToAdd = tag || newTag.trim().toLowerCase();
+    if (
+      tagToAdd &&
+      !formData.tags.includes(tagToAdd) &&
+      formData.tags.length < 10
+    ) {
       setFormData((prev) => ({
         ...prev,
-        tags: [...prev.tags, tag],
+        tags: [...prev.tags, tagToAdd],
       }));
-      setNewTag('');
+      if (!tag) setNewTag('');
     }
+  };
+
+  const addSuggestedTag = (tag: string) => {
+    addTag(tag);
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -310,6 +505,12 @@ export default function CreateAnnotationModal({
       addTag();
     }
   };
+
+  // Get suggested tags for current category
+  const suggestedTags = SUGGESTED_TAGS_BY_CATEGORY[formData.category] || [];
+  const availableSuggestedTags = suggestedTags.filter(
+    (tag) => !formData.tags.includes(tag)
+  );
 
   return (
     <Modal
@@ -350,26 +551,27 @@ export default function CreateAnnotationModal({
       </div>
 
       {/* Form Content - Scrollable */}
-      <div className="px-6 py-6 max-h-[60vh] overflow-y-auto space-y-6">
+      <div className="px-6 py-6 space-y-6 overflow-y-auto">
         {/* Title */}
         <div>
           <label className="block text-sm font-medium text-theme-primary mb-2">
             Título da Anotação *
           </label>
           <input
+            ref={fieldRefs.title}
             type="text"
             value={formData.title}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, title: e.target.value }))
             }
             className={`w-full input-classical-2 ${
-              errors.title ? 'border-accent-red' : ''
+              errors.title ? '!border-red-400' : ''
             }`}
             placeholder="Ex: Dedilhado para arpejos nos compassos 15-20"
             maxLength={100}
           />
           {errors.title && (
-            <p className="text-accent-red text-sm mt-1">{errors.title}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.title}</p>
           )}
           <p className="text-theme-tertiary text-xs mt-1">
             {formData.title.length}/100 caracteres
@@ -383,6 +585,7 @@ export default function CreateAnnotationModal({
               Categoria *
             </label>
             <select
+              ref={fieldRefs.category}
               value={formData.category}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -390,7 +593,9 @@ export default function CreateAnnotationModal({
                   category: e.target.value as AnnotationCategory,
                 }))
               }
-              className="w-full input-classical-2"
+              className={`w-full input-classical-2 ${
+                errors.category ? 'border-accent-red' : ''
+              }`}
             >
               {CATEGORY_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -398,6 +603,9 @@ export default function CreateAnnotationModal({
                 </option>
               ))}
             </select>
+            {errors.category && (
+              <p className="text-accent-red text-sm mt-1">{errors.category}</p>
+            )}
           </div>
 
           <div>
@@ -454,6 +662,7 @@ export default function CreateAnnotationModal({
                 Compasso Inicial *
               </label>
               <input
+                ref={fieldRefs.measureStart}
                 type="number"
                 min="1"
                 value={formData.measureStart}
@@ -479,6 +688,7 @@ export default function CreateAnnotationModal({
                 Compasso Final (opcional)
               </label>
               <input
+                ref={fieldRefs.measureEnd}
                 type="number"
                 min="1"
                 value={formData.measureEnd}
@@ -508,6 +718,7 @@ export default function CreateAnnotationModal({
               Nome do Movimento *
             </label>
             <input
+              ref={fieldRefs.movement}
               type="text"
               value={formData.movement}
               onChange={(e) =>
@@ -530,6 +741,7 @@ export default function CreateAnnotationModal({
               Nome da Seção *
             </label>
             <input
+              ref={fieldRefs.section}
               type="text"
               value={formData.section}
               onChange={(e) =>
@@ -605,19 +817,20 @@ export default function CreateAnnotationModal({
             Conteúdo da Anotação *
           </label>
           <textarea
+            ref={fieldRefs.content}
             value={formData.content}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, content: e.target.value }))
             }
             className={`w-full input-classical-2 resize-none ${
-              errors.content ? 'border-accent-red' : ''
+              errors.content ? '!border-red-400' : ''
             }`}
             rows={6}
             placeholder="Descreva sua dica, observação ou conhecimento sobre esta parte da obra..."
             maxLength={2000}
           />
           {errors.content && (
-            <p className="text-accent-red text-sm mt-1">{errors.content}</p>
+            <p className="text-red-500 text-sm mt-1">{errors.content}</p>
           )}
           <p className="text-theme-tertiary text-xs mt-1">
             {formData.content.length}/2000 caracteres
@@ -629,7 +842,9 @@ export default function CreateAnnotationModal({
           <label className="block text-sm font-medium text-theme-primary mb-2">
             Tags (opcional)
           </label>
-          <div className="flex flex-wrap gap-2 mb-2">
+
+          {/* Current Tags */}
+          <div className="flex flex-wrap gap-2 mb-3">
             {formData.tags.map((tag, index) => (
               <span
                 key={index}
@@ -638,14 +853,16 @@ export default function CreateAnnotationModal({
                 <span>#{tag}</span>
                 <button
                   onClick={() => removeTag(tag)}
-                  className="text-brand-primary hover:text-accent-red"
+                  className="text-brand-primary hover:text-accent-red transition-colors"
                 >
                   <FiX className="w-3 h-3" />
                 </button>
               </span>
             ))}
           </div>
-          <div className="flex space-x-2">
+
+          {/* Add Tag Input */}
+          <div className="flex space-x-2 mb-3">
             <input
               type="text"
               value={newTag}
@@ -656,7 +873,7 @@ export default function CreateAnnotationModal({
               maxLength={20}
             />
             <button
-              onClick={addTag}
+              onClick={() => addTag()}
               disabled={!newTag.trim() || formData.tags.length >= 10}
               className="btn-classical-secondary flex items-center space-x-1"
             >
@@ -664,9 +881,42 @@ export default function CreateAnnotationModal({
               <span>Adicionar</span>
             </button>
           </div>
-          <p className="text-theme-tertiary text-xs mt-1">
-            Máximo 10 tags. Use palavras-chave como: dedilhado, staccato, pedal,
-            etc.
+
+          {/* Suggested Tags */}
+          {availableSuggestedTags.length > 0 && formData.tags.length < 10 && (
+            <div className="mb-3">
+              <div className="flex items-center space-x-2 mb-2">
+                <FiPlus className="w-4 h-4 text-theme-tertiary" />
+                <span className="text-sm font-medium text-theme-secondary">
+                  Tags sugeridas para{' '}
+                  {
+                    CATEGORY_OPTIONS.find((c) => c.value === formData.category)
+                      ?.label
+                  }
+                  :
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {availableSuggestedTags.slice(0, 8).map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => addSuggestedTag(tag)}
+                    className="px-2 py-1 bg-theme-elevated hover:bg-brand-primary/10 border border-theme-secondary hover:border-brand-primary/30 text-theme-secondary hover:text-brand-primary rounded-md text-xs transition-all duration-200 flex items-center space-x-1"
+                  >
+                    <FiPlus className="w-3 h-3" />
+                    <span>#{tag}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {errors.tags && (
+            <p className="text-accent-red text-sm mt-1">{errors.tags}</p>
+          )}
+          <p className="text-theme-tertiary text-xs">
+            Máximo 10 tags. Use palavras-chave relevantes para facilitar a
+            busca.
           </p>
         </div>
 
@@ -678,11 +928,15 @@ export default function CreateAnnotationModal({
             }
             className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
               formData.isPublic
-                ? 'bg-accent-green border-accent-green text-theme-primary'
-                : 'border-theme-primary/30 text-transparent hover:border-accent-green/50'
+                ? 'bg-accent-green border-none text-theme-primary'
+                : 'bg-accent-red border-none text-theme-primary'
             }`}
           >
-            {formData.isPublic && <FiEye className="w-4 h-4" />}
+            {formData.isPublic ? (
+              <FiEye className="w-4 h-4" />
+            ) : (
+              <FiEyeOff className="w-4 h-4" />
+            )}
           </button>
           <div>
             <div className="flex items-center space-x-2">
@@ -692,7 +946,7 @@ export default function CreateAnnotationModal({
               {formData.isPublic ? (
                 <FiEye className="w-4 h-4 text-accent-green" />
               ) : (
-                <FiEyeOff className="w-4 h-4 text-theme-tertiary" />
+                <FiEyeOff className="w-4 h-4 text-accent-red" />
               )}
             </div>
             <p className="text-sm text-theme-secondary">
@@ -713,7 +967,6 @@ export default function CreateAnnotationModal({
           variant="primary"
           onClick={handleSubmit}
           isLoading={isSubmitting}
-          //   leftIcon={FiSave}
         >
           {isEditing ? 'Atualizar Anotação' : 'Criar Anotação'}
         </Button>

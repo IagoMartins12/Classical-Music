@@ -1,7 +1,7 @@
-// components/Annotations/AnnotationFilters.tsx
+// components/Annotations/AnnotationFilters.tsx - VERSÃO LIMPA E CORRIGIDA
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   FiFilter,
   FiX,
@@ -9,17 +9,15 @@ import {
   FiLayers,
   FiMusic,
   FiBookOpen,
-  FiAward,
-  FiMessageSquare,
   FiTrendingUp,
   FiClock,
   FiUser,
   FiMapPin,
+  FiSearch,
+  FiRefreshCw,
 } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
 import {
   AnnotationFilters as Filters,
-  AnnotationCategory,
   AnnotationDifficulty,
   AnnotationScope,
 } from '@/app/stores/useAnnotationsStore';
@@ -31,28 +29,18 @@ interface AnnotationFiltersProps {
   onClose: () => void;
 }
 
-const CATEGORY_OPTIONS = [
-  { value: 'TECHNIQUE', label: 'Técnica', icon: FiTarget },
-  { value: 'INTERPRETATION', label: 'Interpretação', icon: GiMusicalNotes },
-  { value: 'PRACTICE_TIP', label: 'Dicas de Estudo', icon: FiBookOpen },
-  { value: 'THEORY', label: 'Teoria', icon: FiLayers },
-  { value: 'PERFORMANCE', label: 'Performance', icon: FiMusic },
-  { value: 'HISTORICAL', label: 'Contexto', icon: FiAward },
-  { value: 'GENERAL', label: 'Geral', icon: FiMessageSquare },
-];
-
 const DIFFICULTY_OPTIONS = [
-  { value: 'ALL_LEVELS', label: 'Todos os níveis' },
-  { value: 'BEGINNER', label: 'Iniciante' },
-  { value: 'INTERMEDIATE', label: 'Intermediário' },
-  { value: 'ADVANCED', label: 'Avançado' },
+  { value: 'BEGINNER', label: 'Iniciante', icon: FiTarget },
+  { value: 'INTERMEDIATE', label: 'Intermediário', icon: FiTarget },
+  { value: 'ADVANCED', label: 'Avançado', icon: FiTarget },
+  { value: 'ALL_LEVELS', label: 'Todos os níveis', icon: FiTarget },
 ];
 
 const SCOPE_OPTIONS = [
-  { value: 'ENTIRE_WORK', label: 'Obra inteira' },
-  { value: 'MOVEMENT', label: 'Movimento' },
-  { value: 'SECTION', label: 'Seção' },
-  { value: 'SPECIFIC_MEASURE', label: 'Compasso específico' },
+  { value: 'ENTIRE_WORK', label: 'Obra inteira', icon: FiMusic },
+  { value: 'MOVEMENT', label: 'Movimento', icon: FiLayers },
+  { value: 'SECTION', label: 'Seção', icon: FiBookOpen },
+  { value: 'SPECIFIC_MEASURE', label: 'Compasso específico', icon: FiMapPin },
 ];
 
 const SORT_OPTIONS = [
@@ -68,24 +56,31 @@ export default function AnnotationFilters({
 }: AnnotationFiltersProps) {
   const [localFilters, setLocalFilters] = useState<Filters>(filters);
 
+  // Sincronizar com filtros externos
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
+
   const handleFilterChange = (key: keyof Filters, value: any) => {
     const newFilters = { ...localFilters, [key]: value };
     setLocalFilters(newFilters);
+
+    // Aplicar filtros imediatamente
+    onFiltersChange(newFilters);
   };
 
-  const applyFilters = () => {
-    onFiltersChange(localFilters);
-  };
-
-  const clearFilters = () => {
+  const clearAllFilters = () => {
+    // Manter apenas sortBy ao limpar (padrão)
     const clearedFilters = { sortBy: 'helpful' as const };
     setLocalFilters(clearedFilters);
     onFiltersChange(clearedFilters);
   };
 
-  const hasActiveFilters = Object.keys(localFilters).some(
-    (key) => key !== 'sortBy' && localFilters[key as keyof Filters]
-  );
+  // Verificar filtros ativos (excluindo sortBy padrão)
+  const hasActiveFilters = Object.entries(localFilters).some(([key, value]) => {
+    if (key === 'sortBy') return value !== 'helpful' && value !== undefined;
+    return value !== undefined && value !== '';
+  });
 
   return (
     <AnimatedCard hover="none" className="border-t border-theme-secondary">
@@ -98,6 +93,16 @@ export default function AnnotationFilters({
             <h3 className="text-lg font-semibold text-theme-primary classical-title">
               Filtros Avançados
             </h3>
+            {hasActiveFilters && (
+              <span className="bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium">
+                {
+                  Object.values(localFilters).filter(
+                    (v) => v !== undefined && v !== '' && v !== 'helpful'
+                  ).length
+                }{' '}
+                ativos
+              </span>
+            )}
           </div>
           <button
             onClick={onClose}
@@ -107,54 +112,16 @@ export default function AnnotationFilters({
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Categoria */}
-          <div>
-            <label className="block text-sm font-medium text-theme-primary mb-3">
-              Categoria
-            </label>
-            <div className="space-y-2">
-              {CATEGORY_OPTIONS.map((option) => {
-                const Icon = option.icon;
-                const isSelected = localFilters.category === option.value;
-
-                return (
-                  <AnimatedItem
-                    key={option.value}
-                    hover="scale"
-                    springType="bouncy"
-                  >
-                    <button
-                      onClick={() =>
-                        handleFilterChange(
-                          'category',
-                          isSelected
-                            ? undefined
-                            : (option.value as AnnotationCategory)
-                        )
-                      }
-                      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
-                        isSelected
-                          ? 'bg-brand-primary/10 border border-brand-primary/30 text-brand-primary'
-                          : 'bg-theme-elevated border border-theme-primary/20 text-theme-secondary hover:border-brand-primary/50 hover:text-theme-primary'
-                      }`}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span>{option.label}</span>
-                    </button>
-                  </AnimatedItem>
-                );
-              })}
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Dificuldade */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-3">
-              Nível de Dificuldade
+            <label className=" text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+              <FiTarget className="w-4 h-4" />
+              <span>Nível de Dificuldade</span>
             </label>
             <div className="space-y-2">
               {DIFFICULTY_OPTIONS.map((option) => {
+                const Icon = option.icon;
                 const isSelected = localFilters.difficulty === option.value;
 
                 return (
@@ -178,8 +145,9 @@ export default function AnnotationFilters({
                           : 'bg-theme-elevated border border-theme-primary/20 text-theme-secondary hover:border-accent-blue/50 hover:text-theme-primary'
                       }`}
                     >
-                      <FiTarget className="w-4 h-4" />
+                      <Icon className="w-4 h-4" />
                       <span>{option.label}</span>
+                      {isSelected && <FiX className="w-3 h-3 ml-auto" />}
                     </button>
                   </AnimatedItem>
                 );
@@ -189,11 +157,13 @@ export default function AnnotationFilters({
 
           {/* Abrangência */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-3">
-              Abrangência
+            <label className=" text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+              <FiLayers className="w-4 h-4" />
+              <span>Abrangência</span>
             </label>
             <div className="space-y-2">
               {SCOPE_OPTIONS.map((option) => {
+                const Icon = option.icon;
                 const isSelected = localFilters.scope === option.value;
 
                 return (
@@ -217,8 +187,9 @@ export default function AnnotationFilters({
                           : 'bg-theme-elevated border border-theme-primary/20 text-theme-secondary hover:border-accent-green/50 hover:text-theme-primary'
                       }`}
                     >
-                      <FiMapPin className="w-4 h-4" />
+                      <Icon className="w-4 h-4" />
                       <span>{option.label}</span>
+                      {isSelected && <FiX className="w-3 h-3 ml-auto" />}
                     </button>
                   </AnimatedItem>
                 );
@@ -228,8 +199,9 @@ export default function AnnotationFilters({
 
           {/* Ordenação */}
           <div>
-            <label className="block text-sm font-medium text-theme-primary mb-3">
-              Ordenar por
+            <label className=" text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+              <FiTrendingUp className="w-4 h-4" />
+              <span>Ordenar por</span>
             </label>
             <div className="space-y-2">
               {SORT_OPTIONS.map((option) => {
@@ -261,68 +233,210 @@ export default function AnnotationFilters({
           </div>
         </div>
 
-        {/* Filtro por usuário específico */}
+        {/* Filtros de busca avançada */}
         <div className="mt-6 pt-6 border-t border-theme-secondary">
-          <label className="block text-sm font-medium text-theme-primary mb-3">
-            Filtros Específicos
+          <label className=" text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+            <FiSearch className="w-4 h-4" />
+            <span>Busca Avançada</span>
           </label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-theme-tertiary mb-2">
-                ID do Usuário (opcional)
+              <label className=" text-xs text-theme-tertiary mb-2 flex items-center space-x-1">
+                <FiSearch className="w-3 h-3" />
+                <span>Buscar em títulos, conteúdo e tags</span>
               </label>
-              <input
-                type="text"
-                value={localFilters.userId || ''}
-                onChange={(e) =>
-                  handleFilterChange('userId', e.target.value || undefined)
-                }
-                className="w-full input-classical-2 text-sm"
-                placeholder="Ver anotações de usuário específico"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={localFilters.search || ''}
+                  onChange={(e) =>
+                    handleFilterChange('search', e.target.value || undefined)
+                  }
+                  className="w-full input-classical-2 text-sm pr-8"
+                  placeholder="Digite para buscar..."
+                />
+                {localFilters.search && (
+                  <button
+                    onClick={() => handleFilterChange('search', undefined)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-accent-red transition-colors"
+                  >
+                    <FiX className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             </div>
             <div>
-              <label className="block text-xs text-theme-tertiary mb-2">
-                Busca personalizada
+              <label className=" text-xs text-theme-tertiary mb-2 flex items-center space-x-1">
+                <FiUser className="w-3 h-3" />
+                <span>Filtrar por usuário (ID)</span>
               </label>
-              <input
-                type="text"
-                value={localFilters.search || ''}
-                onChange={(e) =>
-                  handleFilterChange('search', e.target.value || undefined)
-                }
-                className="w-full input-classical-2 text-sm"
-                placeholder="Buscar em títulos, conteúdo e tags"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={localFilters.userId || ''}
+                  onChange={(e) =>
+                    handleFilterChange('userId', e.target.value || undefined)
+                  }
+                  className="w-full input-classical-2 text-sm pr-8"
+                  placeholder="ID do usuário..."
+                />
+                {localFilters.userId && (
+                  <button
+                    onClick={() => handleFilterChange('userId', undefined)}
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-accent-red transition-colors"
+                  >
+                    <FiX className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
+        {/* Resumo de filtros ativos */}
+        {hasActiveFilters && (
+          <div className="mt-6 pt-6 border-t border-theme-secondary">
+            <label className=" text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+              <FiFilter className="w-4 h-4" />
+              <span>Filtros Ativos</span>
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {localFilters.difficulty && (
+                <span className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm font-medium flex items-center space-x-2">
+                  <span>
+                    Dificuldade:{' '}
+                    {
+                      DIFFICULTY_OPTIONS.find(
+                        (d) => d.value === localFilters.difficulty
+                      )?.label
+                    }
+                  </span>
+                  <button
+                    onClick={() => handleFilterChange('difficulty', undefined)}
+                    className="text-accent-blue hover:text-accent-red transition-colors"
+                  >
+                    <FiX className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+
+              {localFilters.scope && (
+                <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm font-medium flex items-center space-x-2">
+                  <span>
+                    Abrangência:{' '}
+                    {
+                      SCOPE_OPTIONS.find((s) => s.value === localFilters.scope)
+                        ?.label
+                    }
+                  </span>
+                  <button
+                    onClick={() => handleFilterChange('scope', undefined)}
+                    className="text-accent-green hover:text-accent-red transition-colors"
+                  >
+                    <FiX className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+
+              {localFilters.sortBy && localFilters.sortBy !== 'helpful' && (
+                <span className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm font-medium flex items-center space-x-2">
+                  <span>
+                    Ordem:{' '}
+                    {
+                      SORT_OPTIONS.find((s) => s.value === localFilters.sortBy)
+                        ?.label
+                    }
+                  </span>
+                  <button
+                    onClick={() => handleFilterChange('sortBy', 'helpful')}
+                    className="text-accent-purple hover:text-accent-red transition-colors"
+                  >
+                    <FiX className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+
+              {localFilters.search && (
+                <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium flex items-center space-x-2">
+                  <span>Busca: "{localFilters.search}"</span>
+                  <button
+                    onClick={() => handleFilterChange('search', undefined)}
+                    className="text-brand-primary hover:text-accent-red transition-colors"
+                  >
+                    <FiX className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+
+              {localFilters.userId && (
+                <span className="px-3 py-1 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-full text-sm font-medium flex items-center space-x-2">
+                  <span>Usuário: {localFilters.userId}</span>
+                  <button
+                    onClick={() => handleFilterChange('userId', undefined)}
+                    className="text-accent-red hover:text-accent-red/80 transition-colors"
+                  >
+                    <FiX className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Actions */}
         <div className="flex items-center justify-between mt-6 pt-6 border-t border-theme-secondary">
           <div className="flex items-center space-x-2">
-            {hasActiveFilters && (
-              <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium">
-                Filtros aplicados
+            {hasActiveFilters ? (
+              <span className="px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium flex items-center space-x-1">
+                <FiFilter className="w-3 h-3" />
+                <span>
+                  {
+                    Object.entries(localFilters).filter(([key, value]) => {
+                      if (key === 'sortBy')
+                        return value !== 'helpful' && value !== undefined;
+                      return value !== undefined && value !== '';
+                    }).length
+                  }{' '}
+                  filtro(s) aplicado(s)
+                </span>
+              </span>
+            ) : (
+              <span className="text-theme-tertiary text-sm flex items-center space-x-1">
+                <FiFilter className="w-3 h-3" />
+                <span>Nenhum filtro ativo</span>
               </span>
             )}
           </div>
 
           <div className="flex items-center space-x-3">
+            {hasActiveFilters && (
+              <button
+                onClick={clearAllFilters}
+                className="btn-classical-secondary text-sm flex items-center space-x-1"
+              >
+                <FiRefreshCw className="w-4 h-4" />
+                <span>Limpar Todos</span>
+              </button>
+            )}
             <button
-              onClick={clearFilters}
-              disabled={!hasActiveFilters}
-              className="btn-classical-secondary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Limpar Filtros
-            </button>
-            <button
-              onClick={applyFilters}
+              onClick={onClose}
               className="btn-classical-primary text-sm flex items-center space-x-2"
             >
-              <FiFilter className="w-4 h-4" />
-              <span>Aplicar Filtros</span>
+              <FiX className="w-4 h-4" />
+              <span>Fechar</span>
             </button>
+          </div>
+        </div>
+
+        {/* Dica de uso */}
+        <div className="mt-4 p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl">
+          <div className="flex items-start space-x-2 text-xs text-theme-tertiary">
+            <FiSearch className="w-3 h-3 mt-0.5 flex-shrink-0" />
+            <span>
+              <strong>Dica:</strong> Os filtros avançados buscam no servidor e
+              são mais precisos. Use-os para encontrar anotações específicas por
+              nível de dificuldade, abrangência ou conteúdo.
+            </span>
           </div>
         </div>
       </div>

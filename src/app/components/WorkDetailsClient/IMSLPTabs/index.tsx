@@ -406,10 +406,7 @@ export default function IMSLPTabs({
             </div>
 
             {/* Tabs Navigation */}
-            <nav
-              className="flex overflow-x-auto scrollbar-hide px-6"
-              aria-label="Tabs"
-            >
+            <nav className="flex scrollbar-hide px-6" aria-label="Tabs">
               {visibleTabs.map((tab, index) => {
                 const Icon = tab.icon;
                 const count = imslpData.totalCounts[tab.type];

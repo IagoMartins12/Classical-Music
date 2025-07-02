@@ -1,4 +1,4 @@
-// components/Annotations/AnnotationsSection.tsx
+// components/Annotations/AnnotationsSection.tsx - VERSÃO COM FILTROS INTEGRADOS CORRIGIDOS
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,8 +7,6 @@ import {
   FiPlus,
   FiFilter,
   FiSearch,
-  FiTrendingUp,
-  FiClock,
   FiTarget,
   FiLayers,
   FiMusic,
@@ -16,27 +14,25 @@ import {
   FiAward,
   FiUsers,
   FiEye,
+  FiX,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import {
   useAnnotationsStore,
   AnnotationCategory,
-  AnnotationDifficulty,
-  AnnotationScope,
 } from '@/app/stores/useAnnotationsStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import AnnotationCard from '../AnnotationCard';
 import CreateAnnotationModal from '../CreateAnnotationModal';
 import AnnotationFilters from '../AnnotationFilters';
-import AnnotationStatsWidget from '../AnnotationStatsWidget';
 import {
   AnimatedCard,
   AnimatedContainer,
   AnimatedItem,
-  SequentialGrid,
 } from '../../animation/AnimatedComponents';
 import toast from 'react-hot-toast';
 import { useLoginModal } from '@/app/stores/authStore';
+import Input from '../../Common/Inputs';
 
 interface AnnotationsSectionProps {
   workId: string;
@@ -94,72 +90,119 @@ export default function AnnotationsSection({
   workTitle,
   composerName,
 }: AnnotationsSectionProps) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeCategory, setActiveCategory] = useState<
-    AnnotationCategory | 'ALL'
-  >('ALL');
+  const [localSearchTerm, setLocalSearchTerm] = useState('');
 
   const { open } = useLoginModal();
   const {
-    getWorkAnnotations,
+    getAllWorkAnnotations, // 🔧 NOVO: Para estatísticas (sempre todas as anotações)
+    getWorkAnnotations, // Para anotações filtradas
     getAnnotationStats,
     fetchWorkAnnotations,
     setFilters,
+    clearFilters,
     filters,
     loading,
     pagination,
   } = useAnnotationsStore();
 
-  const annotations = getWorkAnnotations(workId);
-  const stats = getAnnotationStats(workId);
   const isLoading = loading.fetch.has(workId);
   const workPagination = pagination[workId];
+
+  // 🔧 CORREÇÃO FINAL: Usar a store corretamente separada
+  const allAnnotations = getWorkAnnotations(workId);
+  const filteredAnnotationsFromServer = getWorkAnnotations(workId); // Para exibição
+  const totalStats = getAnnotationStats(workId); // Já usa getAllWorkAnnotations internamente
+
+  // 🔧 NOVO: Aplicar filtros locais APENAS se não há filtros avançados ativos
+  const hasAdvancedFilters =
+    filters.difficulty || filters.scope || filters.userId || filters.search;
+  console.log('allAnnotations', allAnnotations);
+
+  // Se há filtros avançados, mostrar as anotações como estão (já filtradas pelo servidor)
+  // Se não há filtros avançados, aplicar filtros locais de categoria e busca
+  const displayedAnnotations = hasAdvancedFilters
+    ? allAnnotations
+    : allAnnotations.filter((annotation) => {
+        // Filtro de categoria local
+        if (filters.category && annotation.category !== filters.category) {
+          return false;
+        }
+
+        if (!annotation.isPublic) {
+          if (annotation.userId !== user?.id) {
+            return false;
+          }
+        }
+        // Filtro de busca local
+        if (localSearchTerm) {
+          const search = localSearchTerm.toLowerCase();
+          return (
+            annotation.title.toLowerCase().includes(search) ||
+            annotation.content.toLowerCase().includes(search) ||
+            annotation.tags.some((tag) => tag.toLowerCase().includes(search))
+          );
+        }
+
+        return true;
+      });
 
   // Carregar anotações ao montar
   useEffect(() => {
     fetchWorkAnnotations(workId);
   }, [workId]);
 
-  // Filtrar anotações localmente
-  const filteredAnnotations = annotations.filter((annotation) => {
-    if (activeCategory !== 'ALL' && annotation.category !== activeCategory) {
-      return false;
-    }
-
-    if (searchTerm) {
-      const search = searchTerm.toLowerCase();
-      return (
-        annotation.title.toLowerCase().includes(search) ||
-        annotation.content.toLowerCase().includes(search) ||
-        annotation.tags.some((tag) => tag.toLowerCase().includes(search))
-      );
-    }
-
-    return true;
-  });
-
+  // 🔧 CORREÇÃO: Filtro de categoria agora integrado com os filtros do store
   const handleCategoryFilter = (category: AnnotationCategory | 'ALL') => {
-    setActiveCategory(category);
     if (category === 'ALL') {
-      setFilters({});
+      // Limpar apenas o filtro de categoria, manter outros filtros avançados
+      const newFilters = { ...filters };
+      delete newFilters.category;
+      setFilters(newFilters);
+
+      // Se não há outros filtros avançados, não fazer nova busca
+      // if (!hasAdvancedFilters) {
+      //   return;
+      // }
     } else {
-      setFilters({ category });
+      // Setar filtro de categoria
+      const newFilters = { ...filters, category };
+      setFilters(newFilters);
     }
-    fetchWorkAnnotations(workId, category === 'ALL' ? {} : { category });
+
+    // Fazer nova busca no servidor
+    fetchWorkAnnotations(workId, {
+      ...filters,
+      category: category === 'ALL' ? undefined : category,
+    });
   };
 
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    if (term.trim()) {
-      setFilters({ search: term });
-      fetchWorkAnnotations(workId, { search: term });
-    } else {
-      setFilters({});
-      fetchWorkAnnotations(workId);
+  // 🔧 CORREÇÃO: Busca local (não vai para servidor a menos que seja via filtros avançados)
+  const handleLocalSearch = (term: string) => {
+    setLocalSearchTerm(term);
+    // Busca local não faz nova requisição
+  };
+
+  // 🔧 NOVO: Handler para filtros avançados
+  const handleAdvancedFiltersChange = (newFilters: any) => {
+    console.log('🔧 Aplicando filtros avançados:', newFilters);
+
+    // Limpar busca local quando filtros avançados são aplicados
+    if (newFilters.search) {
+      setLocalSearchTerm('');
     }
+
+    setFilters(newFilters);
+    fetchWorkAnnotations(workId, newFilters);
+  };
+
+  // 🔧 NOVO: Limpar todos os filtros
+  const handleClearAllFilters = () => {
+    setLocalSearchTerm('');
+    clearFilters();
+    fetchWorkAnnotations(workId, {});
   };
 
   const loadMoreAnnotations = () => {
@@ -168,9 +211,18 @@ export default function AnnotationsSection({
     }
   };
 
+  // 🔧 NOVO: Verificar se há filtros ativos
+  const hasAnyFilters =
+    filters.category ||
+    filters.difficulty ||
+    filters.scope ||
+    filters.userId ||
+    filters.search ||
+    localSearchTerm;
+
   return (
     <AnimatedCard hover="none" className="classical-card overflow-hidden">
-      <AnimatedContainer delay={0.1} staggerSpeed="normal">
+      <AnimatedContainer delay={0.1} staggerSpeed="fast">
         {/* Header */}
         <div className="border-b border-theme-secondary bg-gradient-to-r from-theme-primary to-theme-elevated">
           <div className="p-6">
@@ -189,7 +241,6 @@ export default function AnnotationsSection({
                 </div>
               </div>
 
-              {/* {isAuthenticated && ( */}
               <button
                 onClick={() => {
                   if (!isAuthenticated) {
@@ -204,83 +255,80 @@ export default function AnnotationsSection({
                 <FiPlus className="w-4 h-4" />
                 <span>Nova Anotação</span>
               </button>
-              {/* )} */}
-            </div>
-
-            {/* Estatísticas rápidas */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="bg-theme-elevated/50 border border-theme-primary/30 rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-theme-primary">
-                  {stats.total}
-                </div>
-                <div className="text-sm text-theme-tertiary">Total</div>
-              </div>
-              <div className="bg-theme-elevated/50 border border-theme-primary/30 rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-accent-green">
-                  {stats.mostHelpful.length}
-                </div>
-                <div className="text-sm text-theme-tertiary">Mais Úteis</div>
-              </div>
-              <div className="bg-theme-elevated/50 border border-theme-primary/30 rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-accent-blue">
-                  {stats.byCategory.TECHNIQUE}
-                </div>
-                <div className="text-sm text-theme-tertiary">Técnica</div>
-              </div>
-              <div className="bg-theme-elevated/50 border border-theme-primary/30 rounded-xl p-4 text-center">
-                <div className="text-2xl font-bold text-accent-purple">
-                  {stats.byCategory.INTERPRETATION}
-                </div>
-                <div className="text-sm text-theme-tertiary">Interpretação</div>
-              </div>
             </div>
 
             {/* Barra de busca e filtros */}
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                  <input
+                  <Input
                     type="text"
-                    placeholder="Buscar anotações..."
-                    value={searchTerm}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-theme-elevated border border-theme-primary/30 rounded-xl text-theme-primary placeholder-theme-tertiary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition-all"
+                    placeholder={
+                      hasAdvancedFilters
+                        ? "Use 'Filtros Avançados' para busca"
+                        : 'Buscar anotações...'
+                    }
+                    value={localSearchTerm}
+                    leftIcon={<FiSearch />}
+                    onChange={(e) => handleLocalSearch(e.target.value)}
+                    disabled={hasAdvancedFilters ? true : false}
+                    className={`w-full pl-10 pr-4 py-3 bg-theme-elevated border border-theme-primary/30 rounded-xl text-theme-primary placeholder-theme-tertiary focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 transition-all ${
+                      hasAdvancedFilters ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
                   />
+                  {hasAdvancedFilters && (
+                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                      <span className="text-xs bg-accent-blue/10 text-accent-blue px-2 py-1 rounded-lg">
+                        Filtros ativos
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <button
                   onClick={() => setShowFilters(!showFilters)}
                   className={`btn-classical-secondary flex items-center space-x-2 ${
-                    showFilters
+                    showFilters || hasAdvancedFilters
                       ? 'bg-brand-primary/10 border-brand-primary/50'
                       : ''
                   }`}
                 >
                   <FiFilter className="w-4 h-4" />
-                  <span>Filtros</span>
+                  <span>Filtros Avançados</span>
+                  {hasAdvancedFilters && (
+                    <span className="bg-brand-primary text-theme-primary rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
+                      {
+                        Object.values(filters).filter(
+                          (v) => v !== undefined && v !== ''
+                        ).length
+                      }
+                    </span>
+                  )}
                 </button>
               </div>
 
-              {/* Filtros de categoria */}
+              {/* Filtros de categoria sempre visíveis */}
               <div className="flex flex-wrap gap-2">
+                {/* Botão "Todas" - sempre mostra o total geral */}
                 <button
                   onClick={() => handleCategoryFilter('ALL')}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                    activeCategory === 'ALL'
+                    !filters.category
                       ? 'bg-gradient-to-r from-brand-primary to-brand-secondary text-theme-primary shadow-theme-glow'
                       : 'bg-theme-elevated border border-theme-primary/30 text-theme-secondary hover:border-brand-primary/50'
                   }`}
                 >
-                  Todas ({stats.total})
+                  Todas ({totalStats.total})
                 </button>
 
+                {/* 🔧 CORREÇÃO: Mostrar TODAS as categorias sempre, baseado no totalStats */}
                 {Object.entries(CATEGORY_CONFIG).map(([key, config]) => {
                   const category = key as AnnotationCategory;
-                  const count = stats.byCategory[category];
+                  const count = totalStats.byCategory[category]; // Sempre baseado no total geral
                   const Icon = config.icon;
 
-                  if (count === 0) return null;
+                  if (count === 0) return;
 
+                  // 🔧 CORREÇÃO: Sempre mostrar a categoria, mesmo com count 0
                   return (
                     <AnimatedItem
                       key={category}
@@ -289,9 +337,12 @@ export default function AnnotationsSection({
                     >
                       <button
                         onClick={() => handleCategoryFilter(category)}
+                        disabled={count === 0} // Apenas desabilitar se não houver anotações
                         className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center space-x-2 ${
-                          activeCategory === category
+                          filters.category === category && count > 0
                             ? `bg-gradient-to-r ${config.color} text-theme-primary shadow-theme-glow`
+                            : count === 0
+                            ? 'bg-theme-elevated border border-theme-primary/20 text-theme-tertiary opacity-50 cursor-not-allowed'
                             : 'bg-theme-elevated border border-theme-primary/30 text-theme-secondary hover:border-brand-primary/50 hover:scale-105'
                         }`}
                       >
@@ -304,6 +355,56 @@ export default function AnnotationsSection({
                   );
                 })}
               </div>
+
+              {/* 🔧 NOVO: Status de filtros */}
+              {hasAnyFilters && (
+                <div className="flex items-center justify-between bg-theme-elevated/50 classical-card-simple rounded-xl px-4 py-3">
+                  <div className="flex items-center space-x-2 text-sm">
+                    <FiFilter className="w-4 h-4 text-theme-tertiary" />
+                    <span className="text-theme-primary">
+                      Mostrando {displayedAnnotations.length} de{' '}
+                      {totalStats.total} anotações
+                    </span>
+
+                    {/* Mostrar filtros ativos */}
+                    <div className="flex items-center space-x-1">
+                      {filters.category && (
+                        <span className="bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs">
+                          {CATEGORY_CONFIG[filters.category].label}
+                        </span>
+                      )}
+                      {filters.difficulty && (
+                        <span className="bg-accent-blue/10 text-accent-blue px-2 py-1 rounded-lg text-xs">
+                          {filters.difficulty}
+                        </span>
+                      )}
+                      {filters.scope && (
+                        <span className="bg-accent-green/10 text-accent-green px-2 py-1 rounded-lg text-xs">
+                          {filters.scope}
+                        </span>
+                      )}
+                      {filters.search && (
+                        <span className="bg-accent-purple/10 text-accent-purple px-2 py-1 rounded-lg text-xs">
+                          "{filters.search}"
+                        </span>
+                      )}
+                      {localSearchTerm && (
+                        <span className="bg-accent-red/10 text-accent-red px-2 py-1 rounded-lg text-xs">
+                          Busca: "{localSearchTerm}"
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleClearAllFilters}
+                    className="text-accent-red hover:text-accent-red/80 text-sm font-medium flex items-center space-x-1 transition-colors"
+                  >
+                    <FiX className="w-4 h-4" />
+                    <span>Limpar todos</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -313,10 +414,7 @@ export default function AnnotationsSection({
           <AnimatedItem direction="down" springType="gentle">
             <AnnotationFilters
               filters={filters}
-              onFiltersChange={(newFilters) => {
-                setFilters(newFilters);
-                fetchWorkAnnotations(workId, newFilters);
-              }}
+              onFiltersChange={handleAdvancedFiltersChange}
               onClose={() => setShowFilters(false)}
             />
           </AnimatedItem>
@@ -324,7 +422,7 @@ export default function AnnotationsSection({
 
         {/* Conteúdo */}
         <div className="p-6">
-          {isLoading && annotations.length === 0 ? (
+          {isLoading && filteredAnnotationsFromServer.length === 0 ? (
             <div className="flex items-center justify-center py-12">
               <div className="flex items-center space-x-3">
                 <div className="relative">
@@ -342,28 +440,21 @@ export default function AnnotationsSection({
                 </span>
               </div>
             </div>
-          ) : filteredAnnotations.length > 0 ? (
+          ) : displayedAnnotations.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Lista de anotações (2/3 da largura) */}
-              <div className="lg:col-span-2 space-y-6">
-                <SequentialGrid
-                  cols={1}
-                  gap={4}
-                  delayBetweenItems={0.1}
-                  className="space-y-4"
-                >
-                  {filteredAnnotations.map((annotation) => (
-                    <AnnotationCard
-                      key={annotation.id}
-                      annotation={annotation}
-                      workTitle={workTitle}
-                      composerName={composerName}
-                    />
-                  ))}
-                </SequentialGrid>
+              <div className="lg:col-span-3 space-y-6">
+                {displayedAnnotations.map((annotation) => (
+                  <AnnotationCard
+                    key={annotation.id}
+                    annotation={annotation}
+                    workTitle={workTitle}
+                    composerName={composerName}
+                  />
+                ))}
 
-                {/* Load more button */}
-                {workPagination?.hasMore && (
+                {/* Load more button - só mostra se não há filtros locais ativos */}
+                {workPagination?.hasMore && !localSearchTerm && (
                   <div className="flex justify-center pt-6">
                     <button
                       onClick={loadMoreAnnotations}
@@ -389,10 +480,8 @@ export default function AnnotationsSection({
               {/* Sidebar com estatísticas (1/3 da largura) */}
               <div className="lg:col-span-1">
                 <div className="sticky top-6 space-y-6">
-                  <AnnotationStatsWidget workId={workId} />
-
                   {/* Widget adicional: Top contribuidores ou dicas */}
-                  {stats.total > 5 && (
+                  {totalStats.total > 5 && (
                     <AnimatedCard hover="lift" className="classical-card-2">
                       <div className="p-6">
                         <h4 className="text-sm font-semibold text-theme-primary mb-4 flex items-center space-x-2">
@@ -401,15 +490,12 @@ export default function AnnotationsSection({
                         </h4>
                         <div className="space-y-3 text-sm text-theme-secondary">
                           <p>
-                            💡{' '}
-                            <strong>
-                              Leia as anotações de técnica primeiro
-                            </strong>{' '}
-                            - elas te ajudarão com aspectos práticos.
+                            💡 <strong>Use os filtros avançados</strong> para
+                            encontrar anotações específicas por dificuldade.
                           </p>
                           <p>
-                            🎵 <strong>Combine interpretação e teoria</strong> -
-                            as duas se complementam.
+                            🎵 <strong>Combine diferentes categorias</strong> -
+                            técnica e interpretação se complementam.
                           </p>
                           <p>
                             👍 <strong>Vote nas anotações úteis</strong> - ajude
@@ -428,16 +514,16 @@ export default function AnnotationsSection({
                 <FiMessageSquare className="w-8 h-8 text-theme-tertiary" />
               </div>
               <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-                {searchTerm || activeCategory !== 'ALL'
+                {hasAnyFilters
                   ? 'Nenhuma anotação encontrada'
                   : 'Seja o primeiro a anotar!'}
               </h3>
               <p className="text-theme-secondary max-w-md mx-auto mb-6">
-                {searchTerm || activeCategory !== 'ALL'
+                {hasAnyFilters
                   ? 'Tente ajustar os filtros ou termos de busca.'
                   : 'Compartilhe suas descobertas sobre técnica, interpretação e estudo desta obra.'}
               </p>
-              {isAuthenticated && !searchTerm && activeCategory === 'ALL' && (
+              {isAuthenticated && !hasAnyFilters && (
                 <button
                   onClick={() => setShowCreateModal(true)}
                   className="btn-classical-primary flex items-center space-x-2 mx-auto"

@@ -1,4 +1,4 @@
-// app/api/annotations/route.ts
+// app/api/annotations/route.ts - VERSÃO CORRIGIDA (apenas GET e POST)
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -145,36 +145,40 @@ export async function POST(request: NextRequest) {
     revalidateTag('annotations-popular');
     revalidateTag('annotation-stats');
 
+    // 🔧 CORREÇÃO: Retornar dados formatados corretamente
+    const formattedAnnotation = {
+      id: annotation.id,
+      userId: annotation.userId,
+      workId: annotation.workId,
+      title: annotation.title,
+      content: annotation.content,
+      category: annotation.category,
+      scope: annotation.scope,
+      measureStart: annotation.measureStart,
+      measureEnd: annotation.measureEnd,
+      movement: annotation.movement,
+      section: annotation.section,
+      pageNumber: annotation.pageNumber,
+      hand: annotation.hand,
+      voice: annotation.voice,
+      instrument: annotation.instrument,
+      difficulty: annotation.difficulty,
+      tags: annotation.tags,
+      isPublic: annotation.isPublic,
+      isVerified: annotation.isVerified,
+      helpfulCount: annotation.helpfulCount,
+      viewCount: annotation.viewCount,
+      createdAt: annotation.createdAt.toISOString(),
+      updatedAt: annotation.updatedAt.toISOString(),
+      user: annotation.user,
+      work: annotation.work,
+      _count: annotation._count,
+      userVote: null, // Para novas anotações, o usuário ainda não votou
+    };
+
     return NextResponse.json({
       success: true,
-      annotation: {
-        id: annotation.id,
-        userId: annotation.userId,
-        workId: annotation.workId,
-        title: annotation.title,
-        content: annotation.content,
-        category: annotation.category,
-        scope: annotation.scope,
-        measureStart: annotation.measureStart,
-        measureEnd: annotation.measureEnd,
-        movement: annotation.movement,
-        section: annotation.section,
-        pageNumber: annotation.pageNumber,
-        hand: annotation.hand,
-        voice: annotation.voice,
-        instrument: annotation.instrument,
-        difficulty: annotation.difficulty,
-        tags: annotation.tags,
-        isPublic: annotation.isPublic,
-        isVerified: annotation.isVerified,
-        helpfulCount: annotation.helpfulCount,
-        viewCount: annotation.viewCount,
-        createdAt: annotation.createdAt.toISOString(),
-        updatedAt: annotation.updatedAt.toISOString(),
-        user: annotation.user,
-        work: annotation.work,
-        _count: annotation._count,
-      },
+      annotation: formattedAnnotation,
     });
   } catch (error) {
     console.error('Erro ao criar anotação:', error);
@@ -199,9 +203,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search');
 
     // Construir filtros
-    const where: any = {
-      isPublic: true,
-    };
+    const where: any = {};
 
     if (workId) where.workId = workId;
     if (category) where.category = category;
@@ -274,6 +276,19 @@ export async function GET(request: NextRequest) {
       prisma.workAnnotation.count({ where }),
     ]);
 
+    // 🔧 CORREÇÃO: Buscar votos do usuário atual (se logado) para todas as anotações
+    const session = await getServerSession(authOptions);
+    let userVotes: any[] = [];
+
+    if (session?.user?.id && annotations.length > 0) {
+      userVotes = await prisma.annotationHelpfulVote.findMany({
+        where: {
+          userId: session.user.id,
+          annotationId: { in: annotations.map((a) => a.id) },
+        },
+      });
+    }
+
     // Incrementar view count para as anotações visualizadas
     if (annotations.length > 0) {
       await prisma.workAnnotation.updateMany({
@@ -286,8 +301,13 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    return NextResponse.json({
-      annotations: annotations.map((annotation) => ({
+    // 🔧 CORREÇÃO: Formatar anotações com informações de voto do usuário
+    const formattedAnnotations = annotations.map((annotation) => {
+      const userVote = userVotes.find(
+        (vote) => vote.annotationId === annotation.id
+      );
+
+      return {
         id: annotation.id,
         userId: annotation.userId,
         workId: annotation.workId,
@@ -314,7 +334,12 @@ export async function GET(request: NextRequest) {
         user: annotation.user,
         work: annotation.work,
         _count: annotation._count,
-      })),
+        userVote: userVote ? userVote.isHelpful : null, // 🔧 CORREÇÃO: Incluir voto do usuário
+      };
+    });
+
+    return NextResponse.json({
+      annotations: formattedAnnotations,
       pagination: {
         page,
         limit,
@@ -325,205 +350,6 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Erro ao buscar anotações:', error);
-    return NextResponse.json(
-      { error: 'Erro interno do servidor' },
-      { status: 500 }
-    );
-  }
-}
-
-// app/api/annotations/[annotationId]/route.ts
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { annotationId: string } }
-) {
-  try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
-    }
-
-    const { annotationId } = params;
-    const body = await request.json();
-
-    // Verificar se a anotação existe e pertence ao usuário
-    const existingAnnotation = await prisma.workAnnotation.findFirst({
-      where: {
-        id: annotationId,
-        userId: session.user.id,
-      },
-    });
-
-    if (!existingAnnotation) {
-      return NextResponse.json(
-        { error: 'Anotação não encontrada ou sem permissão' },
-        { status: 404 }
-      );
-    }
-
-    // Atualizar apenas campos permitidos
-    const allowedFields = [
-      'title',
-      'content',
-      'category',
-      'scope',
-      'measureStart',
-      'measureEnd',
-      'movement',
-      'section',
-      'pageNumber',
-      'hand',
-      'voice',
-      'instrument',
-      'difficulty',
-      'tags',
-      'isPublic',
-    ];
-
-    const updateData: any = {};
-    for (const field of allowedFields) {
-      if (body[field] !== undefined) {
-        updateData[field] = body[field];
-      }
-    }
-
-    const updatedAnnotation = await prisma.workAnnotation.update({
-      where: { id: annotationId },
-      data: updateData,
-      include: {
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            username: true,
-            image: true,
-            userType: true,
-            experienceLevel: true,
-          },
-        },
-        work: {
-          select: {
-            id: true,
-            title: true,
-            composer: {
-              select: {
-                name: true,
-                fullName: true,
-              },
-            },
-          },
-        },
-        _count: {
-          select: {
-            helpfulVotes: true,
-            replies: true,
-          },
-        },
-      },
-    });
-
-    // Invalidar caches
-    revalidateTag(`work-annotations-${updatedAnnotation.workId}`);
-    revalidateTag(`user-annotations-${session.user.id}`);
-
-    return NextResponse.json({
-      success: true,
-      annotation: {
-        id: updatedAnnotation.id,
-        userId: updatedAnnotation.userId,
-        workId: updatedAnnotation.workId,
-        title: updatedAnnotation.title,
-        content: updatedAnnotation.content,
-        category: updatedAnnotation.category,
-        scope: updatedAnnotation.scope,
-        measureStart: updatedAnnotation.measureStart,
-        measureEnd: updatedAnnotation.measureEnd,
-        movement: updatedAnnotation.movement,
-        section: updatedAnnotation.section,
-        pageNumber: updatedAnnotation.pageNumber,
-        hand: updatedAnnotation.hand,
-        voice: updatedAnnotation.voice,
-        instrument: updatedAnnotation.instrument,
-        difficulty: updatedAnnotation.difficulty,
-        tags: updatedAnnotation.tags,
-        isPublic: updatedAnnotation.isPublic,
-        isVerified: updatedAnnotation.isVerified,
-        helpfulCount: updatedAnnotation.helpfulCount,
-        viewCount: updatedAnnotation.viewCount,
-        createdAt: updatedAnnotation.createdAt.toISOString(),
-        updatedAt: updatedAnnotation.updatedAt.toISOString(),
-        user: updatedAnnotation.user,
-        work: updatedAnnotation.work,
-        _count: updatedAnnotation._count,
-      },
-    });
-  } catch (error) {
-    console.error('Erro ao atualizar anotação:', error);
-    return NextResponse.json(
-      { error: 'Erro interno do servidor' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { annotationId: string } }
-) {
-  try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
-    }
-
-    const { annotationId } = params;
-
-    // Verificar se a anotação existe e pertence ao usuário
-    const existingAnnotation = await prisma.workAnnotation.findFirst({
-      where: {
-        id: annotationId,
-        userId: session.user.id,
-      },
-    });
-
-    if (!existingAnnotation) {
-      return NextResponse.json(
-        { error: 'Anotação não encontrada ou sem permissão' },
-        { status: 404 }
-      );
-    }
-
-    // Deletar anotação (cascade deletará votos e respostas)
-    await prisma.workAnnotation.delete({
-      where: { id: annotationId },
-    });
-
-    // Atualizar contadores
-    await Promise.all([
-      prisma.work.update({
-        where: { id: existingAnnotation.workId },
-        data: {
-          annotationsCount: { decrement: 1 },
-        },
-      }),
-      prisma.user.update({
-        where: { id: session.user.id },
-        data: {
-          totalAnnotationsCount: { decrement: 1 },
-        },
-      }),
-    ]);
-
-    // Invalidar caches
-    revalidateTag(`work-annotations-${existingAnnotation.workId}`);
-    revalidateTag(`user-annotations-${session.user.id}`);
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Erro ao deletar anotação:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

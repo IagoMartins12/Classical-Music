@@ -174,8 +174,6 @@ const AuthMonitor: React.FC = () => {
             ? getProgressSummary()
             : 'Nenhum progresso',
         };
-
-        console.log('🔄 Auth Sync Monitor:', syncData);
       }
     };
 

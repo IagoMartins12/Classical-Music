@@ -895,7 +895,7 @@ export default function ComposerWorks({
                     >
                       <div className="p-6">
                         <div className="flex items-start justify-between">
-                          <div className="flex-1">
+                          <div className="flex-1 max-w-full">
                             <div className="flex items-center space-x-3 mb-4">
                               {work.instrument?.name && (
                                 <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center text-theme-primary group-hover:scale-110 transition-transform duration-300">
@@ -909,7 +909,7 @@ export default function ComposerWorks({
                                 </span>
 
                                 {work.opOrCatalog && (
-                                  <span className="text-sm w-min text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
+                                  <span className="text-sm w-max text-theme-tertiary bg-theme-elevated border border-theme-secondary px-3 py-1 rounded-full">
                                     {work.opOrCatalog}
                                   </span>
                                 )}

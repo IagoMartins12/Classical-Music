@@ -1,4 +1,4 @@
-// stores/useAnnotationsStore.ts - VERSÃO CORRIGIDA
+// stores/useAnnotationsStore.ts - VERSÃO COM FILTROS AVANÇADOS CORRIGIDOS
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -68,8 +68,9 @@ export interface WorkAnnotation {
     helpfulVotes: number;
     replies: number;
   };
-  // Estado local de voto do usuário
   userVote: boolean | null;
+  isOptimistic?: boolean;
+  isUpdating?: boolean;
 }
 
 export interface AnnotationFilters {
@@ -90,8 +91,8 @@ export interface AnnotationPagination {
 }
 
 interface AnnotationsStore {
-  // 🔧 CORREÇÃO: Mudou de Map para Record (objeto simples)
-  annotations: Record<string, WorkAnnotation[]>; // workId -> annotations[]
+  annotations: Record<string, WorkAnnotation[]>; // workId -> todas as anotações
+  filteredAnnotations: Record<string, WorkAnnotation[]>; // workId -> anotações filtradas
   loading: {
     fetch: Set<string>; // workIds being fetched
     create: boolean;
@@ -99,7 +100,6 @@ interface AnnotationsStore {
     vote: Set<string>; // annotationIds being voted on
   };
   filters: AnnotationFilters;
-  // 🔧 CORREÇÃO: Mudou de Map para Record
   pagination: Record<string, AnnotationPagination>; // workId -> pagination
 
   // Actions para buscar anotações
@@ -129,8 +129,9 @@ interface AnnotationsStore {
   setFilters: (filters: AnnotationFilters) => void;
   clearFilters: () => void;
 
-  // Getters
-  getWorkAnnotations: (workId: string) => WorkAnnotation[];
+  // Getters - 🔧 NOVO: Separar anotações totais das filtradas
+  getAllWorkAnnotations: (workId: string) => WorkAnnotation[]; // TODAS as anotações
+  getWorkAnnotations: (workId: string) => WorkAnnotation[]; // Anotações filtradas (se houver filtros)
   getAnnotationById: (annotationId: string) => WorkAnnotation | undefined;
   getAnnotationsByCategory: (
     workId: string,
@@ -138,7 +139,7 @@ interface AnnotationsStore {
   ) => WorkAnnotation[];
   getAnnotationsByUser: (workId: string, userId: string) => WorkAnnotation[];
 
-  // Estatísticas
+  // Estatísticas sempre baseadas em TODAS as anotações
   getAnnotationStats: (workId: string) => {
     total: number;
     byCategory: Record<AnnotationCategory, number>;
@@ -162,16 +163,36 @@ interface AnnotationsStore {
     helpfulCount: number
   ) => void;
 
+  // Optimistic updates
+  addOptimisticAnnotation: (workId: string, annotation: WorkAnnotation) => void;
+  removeOptimisticAnnotation: (workId: string, annotationId: string) => void;
+  markAnnotationAsUpdating: (annotationId: string, updating: boolean) => void;
+
   // Reset
   reset: () => void;
   clearWorkAnnotations: (workId: string) => void;
 }
 
+const invalidateNextJSCache = async (userId?: string) => {
+  try {
+    // Invalidar cache via API route
+    await fetch('/api/revalidate-annotations', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }),
+    });
+  } catch (error) {
+    console.error('Erro ao invalidar cache:', error);
+  }
+};
+
 export const useAnnotationsStore = create<AnnotationsStore>()(
   persist(
     (set, get) => ({
-      // 🔧 CORREÇÃO: Estados iniciais usando objetos simples
-      annotations: {}, // Objeto simples ao invés de new Map()
+      annotations: {}, // Todas as anotações
+      filteredAnnotations: {}, // Anotações filtradas
       loading: {
         fetch: new Set(),
         create: false,
@@ -179,20 +200,59 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         vote: new Set(),
       },
       filters: {},
-      pagination: {}, // Objeto simples ao invés de new Map()
+      pagination: {},
 
-      // Buscar anotações de uma obra
+      // 🔧 CORREÇÃO PRINCIPAL: Manter separação entre anotações totais e filtradas
       fetchWorkAnnotations: async (workId: string, filters = {}, page = 1) => {
         const { setFetchLoading } = get();
 
         setFetchLoading(workId, true);
 
         try {
+          // 🔧 CORREÇÃO: Construir searchParams com TODOS os filtros
           const searchParams = new URLSearchParams({
             workId,
             page: page.toString(),
             limit: '20',
-            ...filters,
+          });
+
+          // Verificar se há filtros aplicados
+          const hasFilters = Object.keys(filters).some(
+            (key) =>
+              filters[key as keyof typeof filters] !== undefined &&
+              filters[key as keyof typeof filters] !== ''
+          );
+
+          // 🔧 NOVO: Adicionar todos os filtros disponíveis
+          if (filters.category) {
+            searchParams.append('category', filters.category);
+          }
+
+          if (filters.difficulty) {
+            searchParams.append('difficulty', filters.difficulty);
+          }
+
+          if (filters.scope) {
+            searchParams.append('scope', filters.scope);
+          }
+
+          if (filters.userId) {
+            searchParams.append('userId', filters.userId);
+          }
+
+          if (filters.search) {
+            searchParams.append('search', filters.search);
+          }
+
+          if (filters.sortBy) {
+            searchParams.append('sortBy', filters.sortBy);
+          }
+
+          console.log('🔍 Buscando anotações:', {
+            workId,
+            filters,
+            hasFilters,
+            searchParams: searchParams.toString(),
           });
 
           const response = await fetch(`/api/annotations?${searchParams}`);
@@ -203,24 +263,68 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
 
           const data = await response.json();
 
+          console.log('🔍 Dados recebidos:', {
+            total: data.annotations?.length,
+            pagination: data.pagination,
+            filters: filters,
+          });
+
           set((state) => {
-            // 🔧 CORREÇÃO: Trabalhar com objetos simples
             const newAnnotations = { ...state.annotations };
+            const newFilteredAnnotations = { ...state.filteredAnnotations };
             const newPagination = { ...state.pagination };
 
             if (page === 1) {
-              // Primeira página - substituir
-              newAnnotations[workId] = data.annotations;
-            } else {
-              // Páginas adicionais - concatenar
+              // Primeira página
               const existing = newAnnotations[workId] || [];
-              newAnnotations[workId] = [...existing, ...data.annotations];
+              const optimisticAnnotations = existing.filter(
+                (a) => a.isOptimistic
+              );
+
+              if (hasFilters) {
+                // Com filtros: manter annotations originais, atualizar filteredAnnotations
+                if (!newAnnotations[workId]) {
+                  // Se não temos as anotações originais ainda, estas são as originais
+                  newAnnotations[workId] = [
+                    ...optimisticAnnotations,
+                    ...data.annotations,
+                  ];
+                }
+                newFilteredAnnotations[workId] = [
+                  ...optimisticAnnotations,
+                  ...data.annotations,
+                ];
+              } else {
+                // Sem filtros: estas são TODAS as anotações da obra
+                newAnnotations[workId] = [
+                  ...optimisticAnnotations,
+                  ...data.annotations,
+                ];
+                newFilteredAnnotations[workId] = [
+                  ...optimisticAnnotations,
+                  ...data.annotations,
+                ];
+              }
+            } else {
+              // Páginas adicionais - concatenar nas filtered
+              const existingFiltered = newFilteredAnnotations[workId] || [];
+              newFilteredAnnotations[workId] = [
+                ...existingFiltered,
+                ...data.annotations,
+              ];
+
+              if (!hasFilters) {
+                // Se não há filtros, também atualizar as annotations principais
+                const existingAll = newAnnotations[workId] || [];
+                newAnnotations[workId] = [...existingAll, ...data.annotations];
+              }
             }
 
             newPagination[workId] = data.pagination;
 
             return {
               annotations: newAnnotations,
+              filteredAnnotations: newFilteredAnnotations,
               pagination: newPagination,
               filters: { ...state.filters, ...filters },
             };
@@ -232,11 +336,61 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         }
       },
 
-      // Criar anotação
+      // Criar anotação com update otimista (mantido igual)
       createAnnotation: async (data) => {
-        const { setCreateLoading, addAnnotationToWork } = get();
+        const {
+          setCreateLoading,
+          addOptimisticAnnotation,
+          removeOptimisticAnnotation,
+        } = get();
+
+        if (!data.workId || !data.title || !data.content) {
+          throw new Error('Dados incompletos para criar anotação');
+        }
 
         setCreateLoading(true);
+
+        // Criar anotação otimística temporária
+        const optimisticId = `optimistic_${Date.now()}_${Math.random()}`;
+        const optimisticAnnotation: WorkAnnotation = {
+          id: optimisticId,
+          userId: data.userId || '',
+          workId: data.workId,
+          title: data.title,
+          content: data.content,
+          category: data.category || 'GENERAL',
+          scope: data.scope || 'ENTIRE_WORK',
+          measureStart: data.measureStart,
+          measureEnd: data.measureEnd,
+          movement: data.movement,
+          section: data.section,
+          pageNumber: data.pageNumber,
+          hand: data.hand,
+          voice: data.voice,
+          instrument: data.instrument,
+          difficulty: data.difficulty || 'ALL_LEVELS',
+          tags: data.tags || [],
+          isPublic: data.isPublic !== undefined ? data.isPublic : true,
+          isVerified: false,
+          helpfulCount: 0,
+          viewCount: 0,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          user: {
+            id: data.userId || '',
+            firstName: 'Você',
+            lastName: '',
+          },
+          work: data.work,
+          _count: {
+            helpfulVotes: 0,
+            replies: 0,
+          },
+          userVote: null,
+          isOptimistic: true,
+        };
+
+        addOptimisticAnnotation(data.workId, optimisticAnnotation);
 
         try {
           const response = await fetch('/api/annotations', {
@@ -252,24 +406,89 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           const result = await response.json();
 
           if (result.success && result.annotation) {
-            addAnnotationToWork(result.annotation.workId, result.annotation);
+            removeOptimisticAnnotation(data.workId, optimisticId);
+
+            set((state) => {
+              const newAnnotations = { ...state.annotations };
+              const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+              const existingAll = newAnnotations[data.workId || 0] || [];
+              const existingFiltered =
+                newFilteredAnnotations[data.workId || 0] || [];
+
+              newAnnotations[data.workId || 0] = [
+                result.annotation,
+                ...existingAll,
+              ];
+              newFilteredAnnotations[data.workId || 0] = [
+                result.annotation,
+                ...existingFiltered,
+              ];
+
+              return {
+                annotations: newAnnotations,
+                filteredAnnotations: newFilteredAnnotations,
+              };
+            });
+
+            // 🔧 NOVO: Invalidar cache do Next.js após criação
+            await invalidateNextJSCache(data.userId);
+
             return result.annotation;
           }
 
-          return null;
+          throw new Error('Resposta inválida do servidor');
         } catch (error) {
           console.error('Erro ao criar anotação:', error);
+          removeOptimisticAnnotation(data.workId, optimisticId);
           return null;
         } finally {
           setCreateLoading(false);
         }
       },
 
-      // Atualizar anotação
+      // 🔧 CORREÇÃO: Atualizar anotação com invalidação de cache
       updateAnnotation: async (annotationId, data) => {
-        const { setUpdateLoading, updateAnnotationInWork } = get();
+        const {
+          setUpdateLoading,
+          getAnnotationById,
+          markAnnotationAsUpdating,
+        } = get();
+
+        const annotation = getAnnotationById(annotationId);
+        if (!annotation) return null;
 
         setUpdateLoading(annotationId, true);
+        markAnnotationAsUpdating(annotationId, true);
+
+        const optimisticUpdate = { ...annotation, ...data, isUpdating: true };
+
+        // Update otimista
+        set((state) => {
+          const newAnnotations = { ...state.annotations };
+          const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+          for (const [workId, annotations] of Object.entries(newAnnotations)) {
+            const updated = annotations.map((a) =>
+              a.id === annotationId ? optimisticUpdate : a
+            );
+            newAnnotations[workId] = updated;
+          }
+
+          for (const [workId, annotations] of Object.entries(
+            newFilteredAnnotations
+          )) {
+            const updated = annotations.map((a) =>
+              a.id === annotationId ? optimisticUpdate : a
+            );
+            newFilteredAnnotations[workId] = updated;
+          }
+
+          return {
+            annotations: newAnnotations,
+            filteredAnnotations: newFilteredAnnotations,
+          };
+        });
 
         try {
           const response = await fetch(`/api/annotations/${annotationId}`, {
@@ -279,13 +498,80 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           });
 
           if (!response.ok) {
+            // Reverter se deu erro
+            set((state) => {
+              const newAnnotations = { ...state.annotations };
+              const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+              for (const [workId, annotations] of Object.entries(
+                newAnnotations
+              )) {
+                const reverted = annotations.map((a) =>
+                  a.id === annotationId
+                    ? { ...annotation, isUpdating: false }
+                    : a
+                );
+                newAnnotations[workId] = reverted;
+              }
+
+              for (const [workId, annotations] of Object.entries(
+                newFilteredAnnotations
+              )) {
+                const reverted = annotations.map((a) =>
+                  a.id === annotationId
+                    ? { ...annotation, isUpdating: false }
+                    : a
+                );
+                newFilteredAnnotations[workId] = reverted;
+              }
+
+              return {
+                annotations: newAnnotations,
+                filteredAnnotations: newFilteredAnnotations,
+              };
+            });
+
             throw new Error('Erro ao atualizar anotação');
           }
 
           const result = await response.json();
 
           if (result.success && result.annotation) {
-            updateAnnotationInWork(result.annotation.workId, result.annotation);
+            set((state) => {
+              const newAnnotations = { ...state.annotations };
+              const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+              for (const [workId, annotations] of Object.entries(
+                newAnnotations
+              )) {
+                const updated = annotations.map((a) =>
+                  a.id === annotationId
+                    ? { ...result.annotation, isUpdating: false }
+                    : a
+                );
+                newAnnotations[workId] = updated;
+              }
+
+              for (const [workId, annotations] of Object.entries(
+                newFilteredAnnotations
+              )) {
+                const updated = annotations.map((a) =>
+                  a.id === annotationId
+                    ? { ...result.annotation, isUpdating: false }
+                    : a
+                );
+                newFilteredAnnotations[workId] = updated;
+              }
+
+              return {
+                annotations: newAnnotations,
+                filteredAnnotations: newFilteredAnnotations,
+              };
+            });
+
+            // 🔧 NOVO: Invalidar cache do Next.js após atualização
+            await invalidateNextJSCache(annotation.userId);
+
             return result.annotation;
           }
 
@@ -295,10 +581,11 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           return null;
         } finally {
           setUpdateLoading(annotationId, false);
+          markAnnotationAsUpdating(annotationId, false);
         }
       },
 
-      // Deletar anotação
+      // 🔧 CORREÇÃO: Deletar anotação com invalidação de cache
       deleteAnnotation: async (annotationId) => {
         const { getAnnotationById, removeAnnotationFromWork } = get();
 
@@ -315,6 +602,10 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           }
 
           removeAnnotationFromWork(annotation.workId, annotationId);
+
+          // 🔧 NOVO: Invalidar cache do Next.js após deleção
+          await invalidateNextJSCache(annotation.userId);
+
           return true;
         } catch (error) {
           console.error('Erro ao deletar anotação:', error);
@@ -322,7 +613,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         }
       },
 
-      // Votar em anotação
+      // Votar em anotação (mantido igual)
       voteAnnotation: async (annotationId, isHelpful) => {
         const { setVoteLoading, updateAnnotationVote, getAnnotationById } =
           get();
@@ -332,23 +623,27 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
 
         setVoteLoading(annotationId, true);
 
-        // Optimistic update
         const currentVote = annotation.userVote;
         let newHelpfulCount = annotation.helpfulCount;
         let newUserVote: boolean | null = null;
 
         if (currentVote === null) {
-          // Novo voto
           newUserVote = isHelpful;
-          newHelpfulCount += isHelpful ? 1 : -1;
+          if (isHelpful) {
+            newHelpfulCount += 1;
+          }
         } else if (currentVote === isHelpful) {
-          // Remover voto
           newUserVote = null;
-          newHelpfulCount += currentVote ? -1 : 1;
+          if (currentVote) {
+            newHelpfulCount -= 1;
+          }
         } else {
-          // Trocar voto
           newUserVote = isHelpful;
-          newHelpfulCount += isHelpful ? 2 : -2;
+          if (currentVote && !isHelpful) {
+            newHelpfulCount -= 1;
+          } else if (!currentVote && isHelpful) {
+            newHelpfulCount += 1;
+          }
         }
 
         updateAnnotationVote(annotationId, newUserVote, newHelpfulCount);
@@ -364,7 +659,6 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           );
 
           if (!response.ok) {
-            // Reverter optimistic update
             updateAnnotationVote(
               annotationId,
               currentVote,
@@ -393,47 +687,116 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         }
       },
 
-      // Filtros
+      // 🔧 CORREÇÃO: Melhorar setFilters para resetar paginação quando filtros mudam
       setFilters: (filters) => {
-        set((state) => ({
-          filters: { ...state.filters, ...filters },
-        }));
+        set((state) => {
+          // Se os filtros mudaram, resetar paginação para forçar nova busca
+          const filtersChanged =
+            JSON.stringify(state.filters) !== JSON.stringify(filters);
+
+          return {
+            filters: { ...state.filters, ...filters },
+            // Resetar paginação se filtros mudaram
+            ...(filtersChanged && {
+              pagination: Object.keys(state.pagination).reduce(
+                (acc, workId) => ({
+                  ...acc,
+                  [workId]: {
+                    ...state.pagination[workId],
+                    page: 1,
+                    hasMore: true,
+                  },
+                }),
+                {}
+              ),
+            }),
+          };
+        });
       },
 
       clearFilters: () => {
-        set({ filters: {} });
+        set((state) => ({
+          filters: {},
+          // Resetar paginação ao limpar filtros
+          pagination: Object.keys(state.pagination).reduce(
+            (acc, workId) => ({
+              ...acc,
+              [workId]: {
+                ...state.pagination[workId],
+                page: 1,
+                hasMore: true,
+              },
+            }),
+            {}
+          ),
+        }));
       },
 
-      // 🔧 CORREÇÃO: Getters atualizados para trabalhar com objetos
+      // 🔧 NOVO: Getters separados para anotações totais e filtradas
+      getAllWorkAnnotations: (workId) => {
+        // Sempre retorna TODAS as anotações da obra (para estatísticas)
+        return get().annotations[workId] || [];
+      },
+
       getWorkAnnotations: (workId) => {
-        return get().annotations[workId] || []; // Acesso direto ao objeto
+        // Retorna anotações filtradas se houver filtros, senão todas
+        const { filteredAnnotations, annotations, filters } = get();
+        const hasFilters = Object.keys(filters).some(
+          (key) =>
+            filters[key as keyof typeof filters] !== undefined &&
+            filters[key as keyof typeof filters] !== ''
+        );
+
+        if (hasFilters && filteredAnnotations[workId]) {
+          return filteredAnnotations[workId];
+        }
+
+        return annotations[workId] || [];
       },
 
       getAnnotationById: (annotationId) => {
-        const { annotations } = get();
-        // 🔧 CORREÇÃO: Iterar sobre valores do objeto
+        const { annotations, filteredAnnotations } = get();
+
+        // Buscar primeiro nas anotações principais
         for (const workAnnotations of Object.values(annotations)) {
           const annotation = workAnnotations.find((a) => a.id === annotationId);
           if (annotation) return annotation;
         }
+
+        // Se não encontrou, buscar nas filtradas
+        for (const workAnnotations of Object.values(filteredAnnotations)) {
+          const annotation = workAnnotations.find((a) => a.id === annotationId);
+          if (annotation) return annotation;
+        }
+
         return undefined;
       },
 
       getAnnotationsByCategory: (workId, category) => {
-        const { getWorkAnnotations } = get();
-        return getWorkAnnotations(workId).filter(
+        const { getAllWorkAnnotations } = get();
+        return getAllWorkAnnotations(workId).filter(
           (a) => a.category === category
         );
       },
 
       getAnnotationsByUser: (workId, userId) => {
-        const { getWorkAnnotations } = get();
-        return getWorkAnnotations(workId).filter((a) => a.userId === userId);
+        const { getAllWorkAnnotations } = get();
+        return getAllWorkAnnotations(workId).filter((a) => a.userId === userId);
       },
 
+      // 🔧 CORREÇÃO: Estatísticas sempre baseadas em TODAS as anotações da obra (independente de filtros)
       getAnnotationStats: (workId) => {
-        const { getWorkAnnotations } = get();
-        const annotations = getWorkAnnotations(workId);
+        const { getAllWorkAnnotations } = get();
+
+        // 🔧 IMPORTANTE: Sempre calcular sobre TODAS as anotações da obra, independente dos filtros aplicados
+        // Isso garante que as estatísticas sejam consistentes e que o botão "Todas" sempre mostre o total correto
+        const allAnnotations = getAllWorkAnnotations(workId);
+
+        // Separar otimísticas das reais para o total
+        const realAnnotations = allAnnotations.filter((a) => !a.isOptimistic);
+        const optimisticAnnotations = allAnnotations.filter(
+          (a) => a.isOptimistic
+        );
 
         const byCategory: Record<AnnotationCategory, number> = {
           TECHNIQUE: 0,
@@ -452,17 +815,19 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           ALL_LEVELS: 0,
         };
 
-        annotations.forEach((annotation) => {
+        // 🔧 CORREÇÃO: Contar todas as anotações (reais + otimísticas) para estatísticas
+        allAnnotations.forEach((annotation) => {
           byCategory[annotation.category]++;
           byDifficulty[annotation.difficulty]++;
         });
 
-        const mostHelpful = [...annotations]
+        // Para "mais úteis", usar apenas as reais (otimísticas ainda não têm votos)
+        const mostHelpful = [...realAnnotations]
           .sort((a, b) => b.helpfulCount - a.helpfulCount)
           .slice(0, 5);
 
         return {
-          total: annotations.length,
+          total: allAnnotations.length, // Total inclui otimísticas
           byCategory,
           byDifficulty,
           mostHelpful,
@@ -530,43 +895,79 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         });
       },
 
-      // 🔧 CORREÇÃO: Utilities atualizados para trabalhar com objetos
+      // Utilities - 🔧 ATUALIZADO: Trabalhar com ambas as estruturas
       addAnnotationToWork: (workId, annotation) => {
         set((state) => {
           const newAnnotations = { ...state.annotations };
-          const existing = newAnnotations[workId] || [];
-          newAnnotations[workId] = [annotation, ...existing];
-          return { annotations: newAnnotations };
+          const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+          const existingAll = newAnnotations[workId] || [];
+          const existingFiltered = newFilteredAnnotations[workId] || [];
+
+          newAnnotations[workId] = [annotation, ...existingAll];
+          newFilteredAnnotations[workId] = [annotation, ...existingFiltered];
+
+          return {
+            annotations: newAnnotations,
+            filteredAnnotations: newFilteredAnnotations,
+          };
         });
       },
 
       updateAnnotationInWork: (workId, updatedAnnotation) => {
         set((state) => {
           const newAnnotations = { ...state.annotations };
-          const existing = newAnnotations[workId] || [];
-          const updated = existing.map((a) =>
+          const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+          const existingAll = newAnnotations[workId] || [];
+          const existingFiltered = newFilteredAnnotations[workId] || [];
+
+          const updatedAll = existingAll.map((a) =>
             a.id === updatedAnnotation.id ? updatedAnnotation : a
           );
-          newAnnotations[workId] = updated;
-          return { annotations: newAnnotations };
+          const updatedFiltered = existingFiltered.map((a) =>
+            a.id === updatedAnnotation.id ? updatedAnnotation : a
+          );
+
+          newAnnotations[workId] = updatedAll;
+          newFilteredAnnotations[workId] = updatedFiltered;
+
+          return {
+            annotations: newAnnotations,
+            filteredAnnotations: newFilteredAnnotations,
+          };
         });
       },
 
       removeAnnotationFromWork: (workId, annotationId) => {
         set((state) => {
           const newAnnotations = { ...state.annotations };
-          const existing = newAnnotations[workId] || [];
-          const filtered = existing.filter((a) => a.id !== annotationId);
-          newAnnotations[workId] = filtered;
-          return { annotations: newAnnotations };
+          const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+          const existingAll = newAnnotations[workId] || [];
+          const existingFiltered = newFilteredAnnotations[workId] || [];
+
+          const filteredAll = existingAll.filter((a) => a.id !== annotationId);
+          const filteredFiltered = existingFiltered.filter(
+            (a) => a.id !== annotationId
+          );
+
+          newAnnotations[workId] = filteredAll;
+          newFilteredAnnotations[workId] = filteredFiltered;
+
+          return {
+            annotations: newAnnotations,
+            filteredAnnotations: newFilteredAnnotations,
+          };
         });
       },
 
       updateAnnotationVote: (annotationId, userVote, helpfulCount) => {
         set((state) => {
           const newAnnotations = { ...state.annotations };
+          const newFilteredAnnotations = { ...state.filteredAnnotations };
 
-          // 🔧 CORREÇÃO: Iterar sobre entries do objeto
+          // Atualizar em ambas as estruturas
           for (const [workId, annotations] of Object.entries(newAnnotations)) {
             const updated = annotations.map((annotation) =>
               annotation.id === annotationId
@@ -576,14 +977,104 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             newAnnotations[workId] = updated;
           }
 
-          return { annotations: newAnnotations };
+          for (const [workId, annotations] of Object.entries(
+            newFilteredAnnotations
+          )) {
+            const updated = annotations.map((annotation) =>
+              annotation.id === annotationId
+                ? { ...annotation, userVote, helpfulCount }
+                : annotation
+            );
+            newFilteredAnnotations[workId] = updated;
+          }
+
+          return {
+            annotations: newAnnotations,
+            filteredAnnotations: newFilteredAnnotations,
+          };
         });
       },
 
-      // Reset
+      // Métodos para updates otimistas - 🔧 ATUALIZADO
+      addOptimisticAnnotation: (workId, annotation) => {
+        set((state) => {
+          const newAnnotations = { ...state.annotations };
+          const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+          const existingAll = newAnnotations[workId] || [];
+          const existingFiltered = newFilteredAnnotations[workId] || [];
+
+          newAnnotations[workId] = [annotation, ...existingAll];
+          newFilteredAnnotations[workId] = [annotation, ...existingFiltered];
+
+          return {
+            annotations: newAnnotations,
+            filteredAnnotations: newFilteredAnnotations,
+          };
+        });
+      },
+
+      removeOptimisticAnnotation: (workId, annotationId) => {
+        set((state) => {
+          const newAnnotations = { ...state.annotations };
+          const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+          const existingAll = newAnnotations[workId] || [];
+          const existingFiltered = newFilteredAnnotations[workId] || [];
+
+          const filteredAll = existingAll.filter((a) => a.id !== annotationId);
+          const filteredFiltered = existingFiltered.filter(
+            (a) => a.id !== annotationId
+          );
+
+          newAnnotations[workId] = filteredAll;
+          newFilteredAnnotations[workId] = filteredFiltered;
+
+          return {
+            annotations: newAnnotations,
+            filteredAnnotations: newFilteredAnnotations,
+          };
+        });
+      },
+
+      markAnnotationAsUpdating: (annotationId, updating) => {
+        set((state) => {
+          const newAnnotations = { ...state.annotations };
+          const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+          // Atualizar em ambas as estruturas
+          for (const [workId, annotations] of Object.entries(newAnnotations)) {
+            const updated = annotations.map((annotation) =>
+              annotation.id === annotationId
+                ? { ...annotation, isUpdating: updating }
+                : annotation
+            );
+            newAnnotations[workId] = updated;
+          }
+
+          for (const [workId, annotations] of Object.entries(
+            newFilteredAnnotations
+          )) {
+            const updated = annotations.map((annotation) =>
+              annotation.id === annotationId
+                ? { ...annotation, isUpdating: updating }
+                : annotation
+            );
+            newFilteredAnnotations[workId] = updated;
+          }
+
+          return {
+            annotations: newAnnotations,
+            filteredAnnotations: newFilteredAnnotations,
+          };
+        });
+      },
+
+      // Reset - 🔧 ATUALIZADO
       reset: () => {
         set({
-          annotations: {}, // Objeto vazio ao invés de new Map()
+          annotations: {},
+          filteredAnnotations: {},
           loading: {
             fetch: new Set(),
             create: false,
@@ -591,18 +1082,23 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             vote: new Set(),
           },
           filters: {},
-          pagination: {}, // Objeto vazio ao invés de new Map()
+          pagination: {},
         });
       },
 
       clearWorkAnnotations: (workId) => {
         set((state) => {
           const newAnnotations = { ...state.annotations };
+          const newFilteredAnnotations = { ...state.filteredAnnotations };
           const newPagination = { ...state.pagination };
-          delete newAnnotations[workId]; // delete ao invés de .delete()
-          delete newPagination[workId]; // delete ao invés de .delete()
+
+          delete newAnnotations[workId];
+          delete newFilteredAnnotations[workId];
+          delete newPagination[workId];
+
           return {
             annotations: newAnnotations,
+            filteredAnnotations: newFilteredAnnotations,
             pagination: newPagination,
           };
         });
@@ -612,13 +1108,12 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
       name: 'annotations-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        // Persistir apenas dados essenciais, não loading states
         annotations: state.annotations,
+        filteredAnnotations: state.filteredAnnotations,
         filters: state.filters,
         pagination: state.pagination,
       }),
       onRehydrateStorage: () => (state) => {
-        // Garantir que loading states sejam sempre Sets/booleans vazios ao recarregar
         if (state) {
           state.loading = {
             fetch: new Set(),
@@ -627,9 +1122,14 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             vote: new Set(),
           };
 
-          // 🔧 CORREÇÃO: Garantir que annotations e pagination sejam objetos
           if (!state.annotations || typeof state.annotations !== 'object') {
             state.annotations = {};
+          }
+          if (
+            !state.filteredAnnotations ||
+            typeof state.filteredAnnotations !== 'object'
+          ) {
+            state.filteredAnnotations = {};
           }
           if (!state.pagination || typeof state.pagination !== 'object') {
             state.pagination = {};

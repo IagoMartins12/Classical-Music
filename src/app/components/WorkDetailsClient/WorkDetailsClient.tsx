@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - VERSÃO ATUALIZADA com favoritos de partituras
+// app/work/[workId]/WorkDetailsClient.tsx - VERSÃO CORRIGIDA (SSR Safe)
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -16,17 +16,11 @@ import {
   FiSettings,
   FiTag,
   FiInfo,
-  FiShare2,
   FiHeadphones,
   FiActivity,
   FiLayers,
-  FiTrendingUp,
   FiTarget,
-  FiAward,
   FiZap,
-  FiHeart,
-  FiStar,
-  FiUsers,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiMetronome } from 'react-icons/gi';
 import { useIMSLPScores } from '@/app/hooks/useIMSLPScores';
@@ -37,9 +31,7 @@ import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import StudyModeModal from '../StudyMode/StudyModeModal';
-import ScoreFavoritesInitializer from '../ScoreFavoritesInitializer';
 import { useScoreFavorites } from '@/app/hooks/useScoreFavorites';
-import MostFavoritedScoreDisplay from '../MostFavoritedScoreDisplay';
 
 // Importar componentes de animação
 import {
@@ -59,24 +51,26 @@ interface WorkDetailsClientProps {
     wantToLearn: any[];
     learned: any[];
   };
-  // 🆕 Dados de favoritos de partituras iniciais
-  scoreFavoritesData?: {
-    userFavorites: any[];
-    workStats: any[];
-  };
+  // Dados de favoritos de partituras iniciais
 }
 
 export default function WorkDetailsClient({
   work,
   relatedWorks = [],
   learningData = { wantToLearn: [], learned: [] },
-  scoreFavoritesData = { userFavorites: [], workStats: [] },
 }: WorkDetailsClientProps) {
+  // 🔧 CORREÇÃO: Estados seguros para SSR
+  const [mounted, setMounted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedScoreForStudy, setSelectedScoreForStudy] =
     useState<IMSLPScore | null>(null);
 
-  // Hook para cache de partituras com workId
+  // 🔧 CORREÇÃO: Verificar se está montado (hidratado)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Hook para cache de partituras com workId - só inicializar após mounted
   const {
     scores: imslpScores,
     loading: loadingScores,
@@ -84,7 +78,7 @@ export default function WorkDetailsClient({
     refetch: refetchScores,
     fromCache,
     cacheStats,
-  } = useIMSLPScores(work.imslpPermlink, {
+  } = useIMSLPScores(mounted ? work.imslpPermlink : '', {
     workId: work.id,
     priorityScoreId: selectedScoreForStudy?.id,
     onScoresCached: (fromCache) => {
@@ -100,7 +94,7 @@ export default function WorkDetailsClient({
     },
   });
 
-  // 🆕 Hook para estatísticas de favoritos de partituras
+  // Hook para estatísticas de favoritos de partituras
   const {
     stats: favoriteStats,
     loading: loadingFavorites,
@@ -111,13 +105,30 @@ export default function WorkDetailsClient({
 
   const { navigateToUrl } = useNavigate();
 
-  // Função para formatar duração
+  // 🔧 CORREÇÃO: Não renderizar até estar montado
+  if (!mounted) {
+    return (
+      <div className="bg-gradient-primary">
+        <div className="section-wrap">
+          <div className="flex items-center justify-center py-16">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
+              <span className="text-theme-primary font-medium">
+                Carregando obra...
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Funções utilitárias (mantidas iguais)
   const formatDuration = (duration?: string) => {
     if (!duration) return null;
     return duration;
   };
 
-  // Função para determinar o tipo de obra
   const getWorkTypeLabel = (type: string) => {
     const labels = {
       INDIVIDUAL: 'Obra Individual',
@@ -132,7 +143,6 @@ export default function WorkDetailsClient({
     return labels[type as keyof typeof labels] || type;
   };
 
-  // Função para obter label do nível de dificuldade
   const getDifficultyLabel = (level?: string) => {
     const labels = {
       BEGINNER: 'Iniciante',
@@ -142,7 +152,6 @@ export default function WorkDetailsClient({
     return level ? labels[level as keyof typeof labels] || level : null;
   };
 
-  // Função para obter cor do nível de dificuldade
   const getDifficultyColor = (level?: string) => {
     const colors = {
       BEGINNER: 'from-accent-green to-accent-blue',
@@ -155,7 +164,6 @@ export default function WorkDetailsClient({
       : 'from-theme-primary to-theme-secondary';
   };
 
-  // Função para renderizar movimentos detalhados
   const renderMovementsDetailed = (movements?: any) => {
     if (!movements) return null;
 
@@ -226,12 +234,10 @@ export default function WorkDetailsClient({
     );
   };
 
-  // Callback para quando uma partitura é selecionada
   const handleScoreSelect = (score: IMSLPScore) => {
     setSelectedScoreForStudy(score);
   };
 
-  // 🆕 Calcular estatísticas de favoritos para exibição
   const getTotalScoreFavorites = () => {
     return favoriteStats.reduce((sum, stat) => sum + stat.totalFavorites, 0);
   };
@@ -250,13 +256,9 @@ export default function WorkDetailsClient({
   };
 
   return (
-    <div className=" bg-gradient-primary">
+    <div className="bg-gradient-primary">
       {/* Inicializar dados de aprendizado e favoritos do SSR */}
       <LearningInitializer learningData={learningData} />
-      {/* <ScoreFavoritesInitializer
-        initialScoreFavorites={scoreFavoritesData.userFavorites}
-        workId={work.id}
-      /> */}
 
       <div className="section-wrap space-y-8 relative z-10">
         {/* Breadcrumb */}
@@ -915,12 +917,6 @@ export default function WorkDetailsClient({
 
               {imslpScores && !loadingScores && (
                 <>
-                  {/* <MostFavoritedScoreDisplay
-                    workId={work.id}
-                    workTitle={work.title}
-                    composerName={work.composer.fullName}
-                    className="mb-6"
-                  /> */}
                   <IMSLPTabs
                     imslpData={imslpScores}
                     onScoreSelect={handleScoreSelect}

@@ -229,7 +229,6 @@ export default function FavoriteScoreButton({
   onFavoriteChange,
 }: FavoriteScoreButtonProps) {
   const { data: session } = useSession();
-  console.log('scoreeee', score);
   const {
     isScoreFavorited,
     getScoreFavorite,

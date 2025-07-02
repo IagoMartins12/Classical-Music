@@ -8,17 +8,11 @@ import {
   FiFilter,
   FiX,
   FiTarget,
-  FiLayers,
-  FiMusic,
-  FiBookOpen,
-  FiAward,
   FiEye,
   FiThumbsUp,
-  FiEdit3,
   FiPlus,
 } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
-import { PiTarget } from 'react-icons/pi';
+
 import { useAuth } from '@/app/hooks/useAuth';
 import { UserAnnotation } from '@/app/requests/user-annotations';
 import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
@@ -27,7 +21,6 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
-  SequentialGrid,
 } from '../animation/AnimatedComponents';
 import AuthCheck from '../AuthCheck';
 import { StatCard } from '../LearningPageClient/StatCard';
@@ -35,6 +28,7 @@ import Select from '../Common/Select';
 import UserAnnotationCard from './UserAnnotationCard';
 import AnnotationsStatsWidget from './AnnotationsStatsWidget';
 import CreateAnnotationModal from './CreateAnnotationModal';
+import { useAnnotationsStore } from '@/app/stores/useAnnotationsStore';
 
 type AnnotationCategory =
   | 'TECHNIQUE'
@@ -118,7 +112,57 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const { isAuthenticated } = useAuth();
+  const [annotations, setAnnotations] = useState<UserAnnotation[]>(
+    initialData.annotations
+  );
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const { isAuthenticated, user } = useAuth();
+
+  const refreshAnnotations = async () => {
+    if (!user?.id) return;
+
+    setIsRefreshing(true);
+    try {
+      const response = await fetch(`/api/users/${user.id}/annotations`);
+      if (response.ok) {
+        const data = await response.json();
+        setAnnotations(data.annotations || []);
+
+        console.log('🔄 Anotações atualizadas:', data.annotations?.length);
+      }
+    } catch (error) {
+      console.error('Erro ao recarregar anotações:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  // 🔧 NOVO: Escutar mudanças do store para invalidar dados locais
+  useEffect(() => {
+    if (!mounted) return;
+
+    // Escutar eventos customizados de mudança de anotações
+    const handleAnnotationChange = () => {
+      console.log('🔄 Detectada mudança em anotações, recarregando...');
+      refreshAnnotations();
+    };
+
+    // Adicionar listeners
+    window.addEventListener('annotationCreated', handleAnnotationChange);
+    window.addEventListener('annotationUpdated', handleAnnotationChange);
+    window.addEventListener('annotationDeleted', handleAnnotationChange);
+
+    return () => {
+      window.removeEventListener('annotationCreated', handleAnnotationChange);
+      window.removeEventListener('annotationUpdated', handleAnnotationChange);
+      window.removeEventListener('annotationDeleted', handleAnnotationChange);
+    };
+  }, [mounted, user?.id]);
+
+  // 🔧 NOVO: Usar dados reativos ao invés dos iniciais
+  const currentAnnotations =
+    annotations.length > 0 ? annotations : initialData.annotations;
 
   useEffect(() => {
     setMounted(true);
@@ -144,7 +188,7 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
 
   // Filter and search logic
   const filteredAnnotations = useMemo(() => {
-    let filtered = [...initialData.annotations];
+    let filtered = [...currentAnnotations];
 
     // Tab filter
     if (activeTab === 'public') {
@@ -155,7 +199,6 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
       filtered = filtered.filter((annotation) => annotation.isVerified);
     }
 
-    // Search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -169,21 +212,18 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
       );
     }
 
-    // Category filter
     if (categoryFilter !== 'all') {
       filtered = filtered.filter(
         (annotation) => annotation.category === categoryFilter
       );
     }
 
-    // Difficulty filter
     if (difficultyFilter !== 'all') {
       filtered = filtered.filter(
         (annotation) => annotation.difficulty === difficultyFilter
       );
     }
 
-    // Scope filter
     if (scopeFilter !== 'all') {
       filtered = filtered.filter(
         (annotation) => annotation.scope === scopeFilter
@@ -192,7 +232,7 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
 
     return filtered;
   }, [
-    initialData.annotations,
+    currentAnnotations,
     activeTab,
     searchQuery,
     categoryFilter,
@@ -202,33 +242,44 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
 
   // Statistics
   const stats = useMemo(() => {
+    const totalAnnotations = currentAnnotations.length;
+    const publicAnnotations = currentAnnotations.filter(
+      (a) => a.isPublic
+    ).length;
+    const verifiedAnnotations = currentAnnotations.filter(
+      (a) => a.isVerified
+    ).length;
+    const privateAnnotations = totalAnnotations - publicAnnotations;
+
+    const totalHelpfulVotes = currentAnnotations.reduce(
+      (sum, a) => sum + a.helpfulCount,
+      0
+    );
+    const totalViews = currentAnnotations.reduce(
+      (sum, a) => sum + a.viewCount,
+      0
+    );
+
     const avgHelpfulVotes =
-      initialData.totalAnnotations > 0
-        ? initialData.totalHelpfulVotes / initialData.totalAnnotations
-        : 0;
+      totalAnnotations > 0 ? totalHelpfulVotes / totalAnnotations : 0;
+    const avgViews = totalAnnotations > 0 ? totalViews / totalAnnotations : 0;
 
-    const avgViews =
-      initialData.totalAnnotations > 0
-        ? initialData.totalViews / initialData.totalAnnotations
-        : 0;
-
-    const highPerformingCount = initialData.annotations.filter(
+    const highPerformingCount = currentAnnotations.filter(
       (annotation) => annotation.helpfulCount >= 5
     ).length;
 
     return {
-      totalAnnotations: initialData.totalAnnotations,
-      publicAnnotations: initialData.publicAnnotations,
-      verifiedAnnotations: initialData.verifiedAnnotations,
-      privateAnnotations:
-        initialData.totalAnnotations - initialData.publicAnnotations,
-      totalHelpfulVotes: initialData.totalHelpfulVotes,
-      totalViews: initialData.totalViews,
+      totalAnnotations,
+      publicAnnotations,
+      verifiedAnnotations,
+      privateAnnotations,
+      totalHelpfulVotes,
+      totalViews,
       avgHelpfulVotes: Math.round(avgHelpfulVotes * 10) / 10,
       avgViews: Math.round(avgViews),
       highPerformingCount,
     };
-  }, [initialData]);
+  }, [currentAnnotations]);
 
   if (!mounted) {
     return (
@@ -499,7 +550,7 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
         </AnimatedItem>
 
         {/* Content */}
-        <div className="space-y-8">
+        <div className="space-y-8 mt-8">
           {/* Main Content */}
           <AnimatedItem direction="up" springType="gentle">
             {filteredAnnotations.length === 0 ? (
@@ -551,7 +602,7 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
                   </div>
 
                   {viewMode === 'cards' ? (
-                    <SequentialGrid cols={1} gap={4} delayBetweenItems={0.1}>
+                    <div className="space-y-4">
                       {filteredAnnotations.map((annotation) => (
                         <UserAnnotationCard
                           key={annotation.id}
@@ -559,7 +610,7 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
                           viewMode={viewMode}
                         />
                       ))}
-                    </SequentialGrid>
+                    </div>
                   ) : (
                     <div className="space-y-4">
                       {filteredAnnotations.map((annotation, index) => (
