@@ -9,13 +9,13 @@ import {
   FiHeart,
   FiStar,
   FiEdit3,
-  FiTag,
-  FiMessageCircle,
   FiX,
   FiCheck,
   FiLoader,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
+import { useAuth } from '@/app/hooks/useAuth';
+import { useLoginModal } from '@/app/stores/authStore';
 
 interface FavoriteScoreButtonProps {
   workId: string;
@@ -229,6 +229,7 @@ export default function FavoriteScoreButton({
   onFavoriteChange,
 }: FavoriteScoreButtonProps) {
   const { data: session } = useSession();
+  console.log('scoreeee', score);
   const {
     isScoreFavorited,
     getScoreFavorite,
@@ -239,13 +240,20 @@ export default function FavoriteScoreButton({
 
   const [showModal, setShowModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-
+  const { open } = useLoginModal();
   const scoreKey = `${workId}-${score.id}-IMSLP`;
   const isFavorited = isScoreFavorited(workId, score.id, 'IMSLP');
   const favoriteData = getScoreFavorite(workId, score.id, 'IMSLP');
   const isLoading = loading.scores.has(scoreKey) || isProcessing;
 
+  const { isAuthenticated } = useAuth();
   const handleToggleFavorite = async () => {
+    if (!isAuthenticated) {
+      toast.error('Faça login para favoritar partituras');
+      open();
+      return;
+    }
+
     if (!session?.user?.id || isLoading) return;
 
     setIsProcessing(true);
@@ -262,10 +270,10 @@ export default function FavoriteScoreButton({
           downloadUrl: score.downloadUrl,
           fileSize: score.fileSize,
           pageCount: score.pageCount,
+          fileFormat: score.fileFormat,
         }
       );
-
-      onFavoriteChange?.(result);
+      pageCount: score.pageCount, onFavoriteChange?.(result);
 
       if (showToast) {
         toast.success(
@@ -315,11 +323,6 @@ export default function FavoriteScoreButton({
       }
     }
   };
-
-  // Não mostrar se não há usuário logado
-  if (!session?.user?.id) {
-    return null;
-  }
 
   // Classes baseadas no variant e size
   const getButtonClasses = () => {

@@ -35,6 +35,8 @@ import {
   AnimatedItem,
   SequentialGrid,
 } from '../../animation/AnimatedComponents';
+import toast from 'react-hot-toast';
+import { useLoginModal } from '@/app/stores/authStore';
 
 interface AnnotationsSectionProps {
   workId: string;
@@ -100,6 +102,7 @@ export default function AnnotationsSection({
     AnnotationCategory | 'ALL'
   >('ALL');
 
+  const { open } = useLoginModal();
   const {
     getWorkAnnotations,
     getAnnotationStats,
@@ -186,15 +189,22 @@ export default function AnnotationsSection({
                 </div>
               </div>
 
-              {isAuthenticated && (
-                <button
-                  onClick={() => setShowCreateModal(true)}
-                  className="btn-classical-primary flex items-center space-x-2"
-                >
-                  <FiPlus className="w-4 h-4" />
-                  <span>Nova Anotação</span>
-                </button>
-              )}
+              {/* {isAuthenticated && ( */}
+              <button
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    toast.error('Faça login para fazer anotações.');
+                    open();
+                    return;
+                  }
+                  setShowCreateModal(true);
+                }}
+                className="btn-classical-primary flex items-center space-x-2"
+              >
+                <FiPlus className="w-4 h-4" />
+                <span>Nova Anotação</span>
+              </button>
+              {/* )} */}
             </div>
 
             {/* Estatísticas rápidas */}

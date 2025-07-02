@@ -891,10 +891,10 @@ function ScoreFavoriteCard({ favorite, viewMode }: ScoreFavoriteCardProps) {
                 id: favorite.scoreId,
                 title: favorite.scoreTitle,
                 type: favorite.scoreType,
-                downloadUrl: '', // Não temos esse dado aqui
-                fileSize: '',
-                pageCount: '',
-                fileFormat: '',
+                downloadUrl: favorite.downloadUrl, // Não temos esse dado aqui
+                fileSize: favorite.fileSize,
+                pageCount: favorite.pageCount,
+                fileFormat: favorite.fileFormat,
               }}
               variant="compact"
               size="sm"
