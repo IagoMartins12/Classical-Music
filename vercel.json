@@ -2,45 +2,6 @@
   "crons": [
     {
       "path": "/api/cron",
-      "schedule": "0 0 * * *",
-      "description": "Manutenção diária - limpeza de cache e processamento de fila",
-      "method": "POST",
-      "headers": {
-        "content-type": "application/json",
-        "x-cron-key": "${CRON_SECRET_KEY}"
-      },
-      "body": {
-        "action": "daily-maintenance"
-      }
-    },
-    {
-      "path": "/api/cron",
-      "schedule": "*/30 * * * *",
-      "description": "Processamento da fila de jobs a cada 30 minutos",
-      "method": "POST",
-      "headers": {
-        "content-type": "application/json",
-        "x-cron-key": "${CRON_SECRET_KEY}"
-      },
-      "body": {
-        "action": "process-queue"
-      }
-    },
-    {
-      "path": "/api/cron",
-      "schedule": "0 */6 * * *",
-      "description": "Verificação de saúde do sistema a cada 6 horas",
-      "method": "POST",
-      "headers": {
-        "content-type": "application/json",
-        "x-cron-key": "${CRON_SECRET_KEY}"
-      },
-      "body": {
-        "action": "health-check"
-      }
-    },
-    {
-      "path": "/api/cron",
       "schedule": "0 2 * * 0",
       "description": "Limpeza profunda semanal - domingos às 2h UTC",
       "method": "POST",
@@ -54,12 +15,6 @@
     }
   ],
   "functions": {
-    "app/api/cron/route.ts": {
-      "maxDuration": 300
-    },
-    "app/api/jobs/route.ts": {
-      "maxDuration": 180
-    },
     "app/api/imslp-scores/route.ts": {
       "maxDuration": 120
     }
