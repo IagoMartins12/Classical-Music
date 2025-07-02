@@ -1,6 +1,6 @@
-// app/api/revalidate-annotations/route.ts
+// app/api/revalidate-annotations/route.ts - VERSÃO MELHORADA
 import { NextRequest, NextResponse } from 'next/server';
-import { revalidateTag } from 'next/cache';
+import { revalidateTag, revalidatePath } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 
@@ -13,44 +13,92 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { userId } = body;
+    const { userId, workId, action } = body;
 
-    // Invalidar todas as tags relacionadas a anotações
-    revalidateTag('user-annotations');
-    revalidateTag('user-annotations-stats');
-    revalidateTag('user-top-annotations');
-    revalidateTag('user-most-annotated-works');
-    revalidateTag('annotation-stats');
+    console.log('🔄 Invalidando cache de anotações:', {
+      userId,
+      workId,
+      action,
+      timestamp: new Date().toISOString(),
+    });
 
-    // Invalidar tags específicas do usuário se fornecido
+    // 🔧 NOVO: Tags mais específicas e granulares
+    const tagsToRevalidate = [
+      // Tags gerais de anotações
+      'user-annotations',
+      'user-annotations-stats',
+      'user-top-annotations',
+      'user-most-annotated-works',
+      'annotation-stats',
+      'annotations-popular',
+    ];
+
+    // Tags específicas do usuário
     if (userId) {
-      revalidateTag(`user-annotations-${userId}`);
-      revalidateTag(`user-annotations-stats-${userId}`);
+      tagsToRevalidate.push(
+        `user-annotations-${userId}`,
+        `user-annotations-stats-${userId}`,
+        `user-top-annotations-${userId}`,
+        `user-most-annotated-works-${userId}`
+      );
     }
 
-    console.log('🔄 Cache de anotações invalidado:', {
+    // Tags específicas da obra
+    if (workId) {
+      tagsToRevalidate.push(
+        `work-annotations-${workId}`,
+        `work-details-${workId}`,
+        `work-stats-${workId}`
+      );
+    }
+
+    // Invalidar todas as tags
+    for (const tag of tagsToRevalidate) {
+      revalidateTag(tag);
+    }
+
+    // 🔧 NOVO: Invalidar paths específicos também
+    const pathsToRevalidate = [
+      '/annotations', // Página principal de anotações
+    ];
+
+    // Path específico da obra se fornecido
+    if (workId) {
+      pathsToRevalidate.push(`/works/${workId}`);
+    }
+
+    // Invalidar paths
+    for (const path of pathsToRevalidate) {
+      try {
+        revalidatePath(path);
+      } catch (error) {
+        console.warn(`Erro ao invalidar path ${path}:`, error);
+      }
+    }
+
+    console.log('✅ Cache invalidado com sucesso:', {
+      tags: tagsToRevalidate.length,
+      paths: pathsToRevalidate.length,
       userId,
-      timestamp: new Date().toISOString(),
+      workId,
     });
 
     return NextResponse.json({
       success: true,
       message: 'Cache invalidado com sucesso',
-      invalidatedTags: [
-        'user-annotations',
-        'user-annotations-stats',
-        'user-top-annotations',
-        'user-most-annotated-works',
-        'annotation-stats',
-        ...(userId
-          ? [`user-annotations-${userId}`, `user-annotations-stats-${userId}`]
-          : []),
-      ],
+      invalidated: {
+        tags: tagsToRevalidate,
+        paths: pathsToRevalidate,
+      },
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     console.error('Erro ao invalidar cache de anotações:', error);
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+        success: false,
+      },
       { status: 500 }
     );
   }

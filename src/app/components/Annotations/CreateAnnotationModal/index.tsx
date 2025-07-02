@@ -1,4 +1,4 @@
-// components/Annotations/CreateAnnotationModal.tsx - VERSÃO COM ZOD + SCROLL AUTOMÁTICO
+// app/annotations/components/CreateAnnotationModal.tsx - VERSÃO COM SELEÇÃO DE OBRA
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -15,6 +15,7 @@ import {
   FiEyeOff,
   FiX,
   FiPlus,
+  FiSearch,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { toast } from 'react-hot-toast';
@@ -26,20 +27,22 @@ import {
   WorkAnnotation,
 } from '@/app/stores/useAnnotationsStore';
 import { useAuth } from '@/app/hooks/useAuth';
-import Modal from '../../Modal';
-import Button from '../../Common/Button';
+import Modal from '@/app/components/Modal';
+import Button from '@/app/components/Common/Button';
+import Select from '@/app/components/Common/Select';
 
 interface CreateAnnotationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  workId: string;
-  workTitle: string;
-  composerName: string;
+  workId?: string; // 🔧 NOVO: Agora opcional
+  workTitle?: string; // 🔧 NOVO: Agora opcional
+  composerName?: string; // 🔧 NOVO: Agora opcional
   editingAnnotation?: WorkAnnotation;
 }
 
-// 🎯 Schema de validação com Zod
+// 🔧 Schema de validação atualizado
 const annotationSchema = z.object({
+  workId: z.string().min(1, 'Obra é obrigatória'),
   title: z
     .string()
     .min(1, 'Título é obrigatório')
@@ -118,14 +121,14 @@ const CATEGORY_OPTIONS = [
   },
 ];
 
-const DIFFICULTY_OPTIONS = [
+export const DIFFICULTY_OPTIONS = [
   { value: 'ALL_LEVELS', label: 'Todos os níveis' },
   { value: 'BEGINNER', label: 'Iniciante' },
   { value: 'INTERMEDIATE', label: 'Intermediário' },
   { value: 'ADVANCED', label: 'Avançado' },
 ];
 
-const SCOPE_OPTIONS = [
+export const SCOPE_OPTIONS = [
   { value: 'ENTIRE_WORK', label: 'Obra inteira' },
   { value: 'MOVEMENT', label: 'Movimento específico' },
   { value: 'SECTION', label: 'Seção específica' },
@@ -139,7 +142,18 @@ const HAND_OPTIONS = [
   { value: 'both', label: 'Ambas as mãos' },
 ];
 
-// Tags sugeridas por categoria
+// 🔧 NOVO: Interface para obras na busca
+interface WorkSearchResult {
+  id: string;
+  title: string;
+  composer: {
+    name: string;
+    fullName: string;
+  };
+  opOrCatalog?: string;
+}
+
+// Tags sugeridas por categoria (mantidas iguais)
 const SUGGESTED_TAGS_BY_CATEGORY: Record<AnnotationCategory, string[]> = {
   TECHNIQUE: [
     'dedilhado',
@@ -244,9 +258,9 @@ const SUGGESTED_TAGS_BY_CATEGORY: Record<AnnotationCategory, string[]> = {
 export default function CreateAnnotationModal({
   isOpen,
   onClose,
-  workId,
-  workTitle,
-  composerName,
+  workId = '',
+  workTitle = '',
+  composerName = '',
   editingAnnotation,
 }: CreateAnnotationModalProps) {
   const { user } = useAuth();
@@ -255,7 +269,18 @@ export default function CreateAnnotationModal({
   const isSubmitting =
     loading.create || (isEditing && loading.update.has(editingAnnotation.id));
 
-  // 🎯 Refs para scroll automático
+  // 🔧 NOVO: Estados para busca de obras
+  const [workSearchTerm, setWorkSearchTerm] = useState('');
+  const [workSearchResults, setWorkSearchResults] = useState<
+    WorkSearchResult[]
+  >([]);
+  const [showWorkSearch, setShowWorkSearch] = useState(!workId);
+  const [selectedWork, setSelectedWork] = useState<WorkSearchResult | null>(
+    null
+  );
+  const [loadingWorks, setLoadingWorks] = useState(false);
+
+  // Refs para scroll automático
   const fieldRefs = {
     title: useRef<HTMLInputElement>(null),
     content: useRef<HTMLTextAreaElement>(null),
@@ -268,6 +293,7 @@ export default function CreateAnnotationModal({
 
   // Form state
   const [formData, setFormData] = useState({
+    workId: workId,
     title: '',
     content: '',
     category: 'GENERAL' as AnnotationCategory,
@@ -288,7 +314,50 @@ export default function CreateAnnotationModal({
   const [newTag, setNewTag] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // 🎯 Função para scroll automático para o primeiro erro
+  // 🔧 NOVO: Função para buscar obras
+  const searchWorks = async (query: string) => {
+    if (query.length < 2) {
+      setWorkSearchResults([]);
+      return;
+    }
+
+    setLoadingWorks(true);
+    try {
+      const response = await fetch(
+        `/api/works/search?q=${encodeURIComponent(query)}&limit=10`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setWorkSearchResults(data.works || []);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar obras:', error);
+    } finally {
+      setLoadingWorks(false);
+    }
+  };
+
+  // 🔧 NOVO: Effect para busca de obras
+  useEffect(() => {
+    const delayedSearch = setTimeout(() => {
+      if (workSearchTerm && showWorkSearch) {
+        searchWorks(workSearchTerm);
+      }
+    }, 300);
+
+    return () => clearTimeout(delayedSearch);
+  }, [workSearchTerm, showWorkSearch]);
+
+  // 🔧 NOVO: Handler para selecionar obra
+  const handleWorkSelect = (work: WorkSearchResult) => {
+    setSelectedWork(work);
+    setFormData((prev) => ({ ...prev, workId: work.id }));
+    setShowWorkSearch(false);
+    setWorkSearchTerm('');
+    setWorkSearchResults([]);
+  };
+
+  // Função para scroll automático para o primeiro erro
   const scrollToFirstError = (errorFields: string[]) => {
     if (errorFields.length > 0) {
       const firstErrorField = errorFields[0] as keyof typeof fieldRefs;
@@ -300,7 +369,6 @@ export default function CreateAnnotationModal({
           block: 'center',
         });
 
-        // Focus no campo após um pequeno delay
         setTimeout(() => {
           fieldRef.current?.focus();
         }, 500);
@@ -308,12 +376,11 @@ export default function CreateAnnotationModal({
     }
   };
 
-  // 🎯 Validação com Zod + validações condicionais
+  // Validação com Zod + validações condicionais
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
     try {
-      // Validação básica com Zod
       annotationSchema.parse(formData);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -325,7 +392,7 @@ export default function CreateAnnotationModal({
       }
     }
 
-    // 🎯 Validações condicionais específicas
+    // Validações condicionais específicas
     if (formData.scope === 'SPECIFIC_MEASURE') {
       if (!formData.measureStart.trim()) {
         newErrors.measureStart = 'Compasso inicial é obrigatório';
@@ -352,7 +419,6 @@ export default function CreateAnnotationModal({
 
     setErrors(newErrors);
 
-    // 🎯 Scroll automático para erros
     const errorFields = Object.keys(newErrors);
     if (errorFields.length > 0) {
       setTimeout(() => {
@@ -367,6 +433,7 @@ export default function CreateAnnotationModal({
   useEffect(() => {
     if (isEditing && editingAnnotation) {
       setFormData({
+        workId: editingAnnotation.workId,
         title: editingAnnotation.title,
         content: editingAnnotation.content,
         category: editingAnnotation.category,
@@ -383,9 +450,20 @@ export default function CreateAnnotationModal({
         tags: editingAnnotation.tags || [],
         isPublic: editingAnnotation.isPublic,
       });
+
+      // 🔧 NOVO: Configurar obra selecionada para edição
+      if (editingAnnotation.work) {
+        setSelectedWork({
+          id: editingAnnotation.workId,
+          title: editingAnnotation.work.title,
+          composer: editingAnnotation.work.composer,
+        });
+        setShowWorkSearch(false);
+      }
     } else {
       // Reset form for new annotation
       setFormData({
+        workId: workId,
         title: '',
         content: '',
         category: 'GENERAL',
@@ -402,10 +480,26 @@ export default function CreateAnnotationModal({
         tags: [],
         isPublic: true,
       });
+
+      // 🔧 NOVO: Configurar obra selecionada para nova anotação
+      if (workId && workTitle && composerName) {
+        setSelectedWork({
+          id: workId,
+          title: workTitle,
+          composer: {
+            name: composerName.split(' ')[0] || composerName,
+            fullName: composerName,
+          },
+        });
+        setShowWorkSearch(false);
+      } else {
+        setSelectedWork(null);
+        setShowWorkSearch(true);
+      }
     }
     setErrors({});
     setNewTag('');
-  }, [isEditing, editingAnnotation, isOpen]);
+  }, [isEditing, editingAnnotation, isOpen, workId, workTitle, composerName]);
 
   const handleSubmit = async () => {
     if (!validateForm()) {
@@ -418,7 +512,7 @@ export default function CreateAnnotationModal({
     }
 
     const submitData = {
-      workId,
+      workId: formData.workId,
       userId: user.id,
       title: formData.title.trim(),
       content: formData.content.trim(),
@@ -441,6 +535,14 @@ export default function CreateAnnotationModal({
       instrument: formData.instrument.trim() || undefined,
       tags: formData.tags.filter((tag) => tag.trim().length > 0),
       isPublic: formData.isPublic,
+      // 🔧 NOVO: Incluir dados da obra
+      work: selectedWork
+        ? {
+            id: selectedWork.id,
+            title: selectedWork.title,
+            composer: selectedWork.composer,
+          }
+        : undefined,
     };
 
     try {
@@ -481,10 +583,6 @@ export default function CreateAnnotationModal({
       }));
       if (!tag) setNewTag('');
     }
-  };
-
-  const addSuggestedTag = (tag: string) => {
-    addTag(tag);
   };
 
   const removeTag = (tagToRemove: string) => {
@@ -531,21 +629,76 @@ export default function CreateAnnotationModal({
             <p className="text-sm text-theme-secondary">
               {isEditing
                 ? 'Atualize sua anotação'
-                : 'Compartilhe conhecimento sobre esta obra'}
+                : 'Compartilhe conhecimento sobre uma obra'}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Work Info */}
+      {/* Work Info/Selection */}
       <div className="px-6 py-4 bg-theme-elevated/50 border-b border-theme-secondary">
-        <div className="flex items-center space-x-3">
-          <FiMusic className="w-5 h-5 text-theme-tertiary" />
-          <div>
-            <h3 className="font-semibold text-theme-primary">{workTitle}</h3>
-            <p className="text-sm text-theme-secondary">{composerName}</p>
+        {selectedWork ? (
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <FiMusic className="w-5 h-5 text-theme-tertiary" />
+              <div>
+                <h3 className="font-semibold text-theme-primary">
+                  {selectedWork.title}
+                </h3>
+                <p className="text-sm text-theme-secondary">
+                  {selectedWork.composer.fullName}
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div>
+            <div className="flex items-center space-x-2 mb-3">
+              <FiSearch className="w-4 h-4 text-theme-tertiary" />
+              <span className="text-sm font-medium text-theme-primary">
+                Selecionar Obra
+              </span>
+            </div>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Busque por título da obra ou compositor..."
+                value={workSearchTerm}
+                onChange={(e) => setWorkSearchTerm(e.target.value)}
+                className="w-full input-classical-2"
+              />
+              {loadingWorks && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin text-theme-tertiary"></div>
+                </div>
+              )}
+            </div>
+
+            {workSearchResults.length > 0 && (
+              <div className="mt-2 max-h-40 overflow-y-auto bg-theme-elevated border border-theme-primary/30 rounded-xl">
+                {workSearchResults.map((work) => (
+                  <button
+                    key={work.id}
+                    onClick={() => handleWorkSelect(work)}
+                    className="w-full p-3 text-left hover:bg-interactive-hover border-b border-theme-primary/20 last:border-b-0 transition-colors"
+                  >
+                    <div className="font-medium text-theme-primary text-sm">
+                      {work.title}
+                    </div>
+                    <div className="text-xs text-theme-secondary">
+                      {work.composer.fullName}
+                      {work.opOrCatalog && ` • ${work.opOrCatalog}`}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {errors.workId && (
+              <p className="text-accent-red text-sm mt-1">{errors.workId}</p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Form Content - Scrollable */}
@@ -582,7 +735,8 @@ export default function CreateAnnotationModal({
             <label className="block text-sm font-medium text-theme-primary mb-2">
               Categoria *
             </label>
-            <select
+            <Select
+              options={CATEGORY_OPTIONS}
               ref={fieldRefs.category}
               value={formData.category}
               onChange={(e) =>
@@ -594,13 +748,7 @@ export default function CreateAnnotationModal({
               className={`w-full input-classical-2 ${
                 errors.category ? 'border-accent-red' : ''
               }`}
-            >
-              {CATEGORY_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label} - {option.description}
-                </option>
-              ))}
-            </select>
+            />
             {errors.category && (
               <p className="text-accent-red text-sm mt-1">{errors.category}</p>
             )}
@@ -610,7 +758,8 @@ export default function CreateAnnotationModal({
             <label className="block text-sm font-medium text-theme-primary mb-2">
               Nível de Dificuldade
             </label>
-            <select
+            <Select
+              options={DIFFICULTY_OPTIONS}
               value={formData.difficulty}
               onChange={(e) =>
                 setFormData((prev) => ({
@@ -619,13 +768,7 @@ export default function CreateAnnotationModal({
                 }))
               }
               className="w-full input-classical-2"
-            >
-              {DIFFICULTY_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            />
           </div>
         </div>
 
@@ -634,7 +777,8 @@ export default function CreateAnnotationModal({
           <label className="block text-sm font-medium text-theme-primary mb-2">
             Abrangência da Anotação
           </label>
-          <select
+          <Select
+            options={SCOPE_OPTIONS}
             value={formData.scope}
             onChange={(e) =>
               setFormData((prev) => ({
@@ -643,13 +787,7 @@ export default function CreateAnnotationModal({
               }))
             }
             className="w-full input-classical-2"
-          >
-            {SCOPE_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         {/* Conditional location fields */}
@@ -757,24 +895,19 @@ export default function CreateAnnotationModal({
         )}
 
         {/* Additional details */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-theme-primary mb-2">
               Mão Específica
             </label>
-            <select
+            <Select
+              options={HAND_OPTIONS}
               value={formData.hand}
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, hand: e.target.value }))
               }
               className="w-full input-classical-2"
-            >
-              {HAND_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           <div>
@@ -790,21 +923,6 @@ export default function CreateAnnotationModal({
               }
               className="w-full input-classical-2"
               placeholder="Ex: 3"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-theme-primary mb-2">
-              Voz/Linha Melódica
-            </label>
-            <input
-              type="text"
-              value={formData.voice}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, voice: e.target.value }))
-              }
-              className="w-full input-classical-2"
-              placeholder="Ex: Soprano, Baixo"
             />
           </div>
         </div>
@@ -898,7 +1016,7 @@ export default function CreateAnnotationModal({
                 {availableSuggestedTags.slice(0, 8).map((tag) => (
                   <button
                     key={tag}
-                    onClick={() => addSuggestedTag(tag)}
+                    onClick={() => addTag(tag)}
                     className="px-2 py-1 bg-theme-elevated hover:bg-brand-primary/10 border border-theme-secondary hover:border-brand-primary/30 text-theme-secondary hover:text-brand-primary rounded-md text-xs transition-all duration-200 flex items-center space-x-1"
                   >
                     <FiPlus className="w-3 h-3" />
@@ -965,6 +1083,7 @@ export default function CreateAnnotationModal({
           variant="primary"
           onClick={handleSubmit}
           isLoading={isSubmitting}
+          disabled={!selectedWork} // 🔧 NOVO: Desabilitar se não há obra selecionada
         >
           {isEditing ? 'Atualizar Anotação' : 'Criar Anotação'}
         </Button>

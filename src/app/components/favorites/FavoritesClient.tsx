@@ -149,7 +149,7 @@ export default function FavoritesClient() {
         </AnimatedItem>
 
         {/* 🆕 Statistics Cards atualizadas */}
-        <AnimatedItem direction="up" springType="gentle">
+        {/* <AnimatedItem direction="up" springType="gentle">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <AnimatedCard
               hover="scale"
@@ -192,7 +192,6 @@ export default function FavoritesClient() {
               <div className="text-sm text-theme-tertiary">Obras</div>
             </AnimatedCard>
 
-            {/* 🆕 Card de estatísticas para partituras */}
             <AnimatedCard
               hover="scale"
               className="classical-card p-6 text-center"
@@ -206,7 +205,7 @@ export default function FavoritesClient() {
               <div className="text-sm text-theme-tertiary">Partituras</div>
             </AnimatedCard>
           </div>
-        </AnimatedItem>
+        </AnimatedItem> */}
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">

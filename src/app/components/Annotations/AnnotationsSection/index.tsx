@@ -23,7 +23,10 @@ import {
 } from '@/app/stores/useAnnotationsStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import AnnotationCard from '../AnnotationCard';
-import CreateAnnotationModal from '../CreateAnnotationModal';
+import CreateAnnotationModal, {
+  DIFFICULTY_OPTIONS,
+  SCOPE_OPTIONS,
+} from '../CreateAnnotationModal';
 import AnnotationFilters from '../AnnotationFilters';
 import {
   AnimatedCard,
@@ -118,7 +121,6 @@ export default function AnnotationsSection({
   // 🔧 NOVO: Aplicar filtros locais APENAS se não há filtros avançados ativos
   const hasAdvancedFilters =
     filters.difficulty || filters.scope || filters.userId || filters.search;
-  console.log('allAnnotations', allAnnotations);
 
   // Se há filtros avançados, mostrar as anotações como estão (já filtradas pelo servidor)
   // Se não há filtros avançados, aplicar filtros locais de categoria e busca
@@ -316,7 +318,8 @@ export default function AnnotationsSection({
                       : 'bg-theme-elevated border border-theme-primary/30 text-theme-secondary hover:border-brand-primary/50'
                   }`}
                 >
-                  Todas ({totalStats.total})
+                  Todas (
+                  {hasAnyFilters ? totalStats.total : allAnnotations.length})
                 </button>
 
                 {/* 🔧 CORREÇÃO: Mostrar TODAS as categorias sempre, baseado no totalStats */}
@@ -360,10 +363,7 @@ export default function AnnotationsSection({
                 <div className="flex items-center justify-between bg-theme-elevated/50 classical-card-simple rounded-xl px-4 py-3">
                   <div className="flex items-center space-x-2 text-sm">
                     <FiFilter className="w-4 h-4 text-theme-tertiary" />
-                    <span className="text-theme-primary">
-                      Mostrando {displayedAnnotations.length} de{' '}
-                      {totalStats.total} anotações
-                    </span>
+                    <span className="text-theme-primary">Filtros ativos:</span>
 
                     {/* Mostrar filtros ativos */}
                     <div className="flex items-center space-x-1">
@@ -374,12 +374,20 @@ export default function AnnotationsSection({
                       )}
                       {filters.difficulty && (
                         <span className="bg-accent-blue/10 text-accent-blue px-2 py-1 rounded-lg text-xs">
-                          {filters.difficulty}
+                          {
+                            DIFFICULTY_OPTIONS.find(
+                              (opt) => opt.value === filters.difficulty
+                            )?.label || filters.difficulty // Caso não ache, mostra o valor original
+                          }{' '}
                         </span>
                       )}
                       {filters.scope && (
                         <span className="bg-accent-green/10 text-accent-green px-2 py-1 rounded-lg text-xs">
-                          {filters.scope}
+                          {
+                            SCOPE_OPTIONS.find(
+                              (opt) => opt.value === filters.scope
+                            )?.label || filters.scope // Caso não ache, mostra o valor original
+                          }{' '}
                         </span>
                       )}
                       {filters.search && (
@@ -415,6 +423,7 @@ export default function AnnotationsSection({
               filters={filters}
               onFiltersChange={handleAdvancedFiltersChange}
               onClose={() => setShowFilters(false)}
+              clearFilters={handleClearAllFilters}
             />
           </AnimatedItem>
         )}

@@ -67,7 +67,7 @@ export default function AnnotationsPageLoading() {
         </div>
 
         {/* Stats Cards Skeleton - 4 cards para anotações */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[
             {
               icon: (
@@ -89,7 +89,7 @@ export default function AnnotationsPageLoading() {
               <div className="h-4 bg-theme-elevated rounded"></div>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* Controls Skeleton */}
         <div className="classical-card p-6">

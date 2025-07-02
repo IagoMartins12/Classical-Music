@@ -31,7 +31,6 @@ import {
 } from '@/app/stores/useAnnotationsStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import CreateAnnotationModal from '../CreateAnnotationModal';
-import { AnimatedItem } from '../../animation/AnimatedComponents';
 import { MdVerified } from 'react-icons/md';
 import ConfirmDeleteModal from '../DeleteAnnotationModal2';
 import Image from 'next/image';
@@ -311,30 +310,28 @@ export default function AnnotationCard({
                 </button>
 
                 {showActions && !isUpdating && (
-                  <AnimatedItem direction="down" springType="gentle">
-                    <div className="absolute right-0 top-10 bg-theme-elevated border border-theme-primary/30 rounded-xl shadow-theme-glow z-10 py-2 min-w-[120px]">
-                      <button
-                        onClick={() => {
-                          setShowEditModal(true);
-                          setShowActions(false);
-                        }}
-                        className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
-                      >
-                        <FiEdit3 className="w-3 h-3" />
-                        <span>Editar</span>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowDeleteModal(true);
-                          setShowActions(false);
-                        }}
-                        className="w-full px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
-                      >
-                        <FiTrash2 className="w-3 h-3" />
-                        <span>Deletar</span>
-                      </button>
-                    </div>
-                  </AnimatedItem>
+                  <div className="absolute right-0 top-9 bg-theme-elevated border border-theme-primary/30 rounded-xl shadow-theme-glow z-10 py-2 min-w-[120px]">
+                    <button
+                      onClick={() => {
+                        setShowEditModal(true);
+                        setShowActions(false);
+                      }}
+                      className="w-full cursor-pointer px-4 py-2 text-left text-sm text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
+                    >
+                      <FiEdit3 className="w-3 h-3" />
+                      <span>Editar</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowDeleteModal(true);
+                        setShowActions(false);
+                      }}
+                      className="w-full cursor-pointer  px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
+                    >
+                      <FiTrash2 className="w-3 h-3" />
+                      <span>Deletar</span>
+                    </button>
+                  </div>
                 )}
               </div>
             )}

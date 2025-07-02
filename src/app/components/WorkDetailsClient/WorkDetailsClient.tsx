@@ -48,7 +48,6 @@ interface WorkDetailsClientProps {
     wantToLearn: any[];
     learned: any[];
   };
-  // Dados de favoritos de partituras iniciais
 }
 
 export default function WorkDetailsClient({
@@ -89,7 +88,6 @@ export default function WorkDetailsClient({
       }
     },
   });
-
 
   const { navigateToUrl } = useNavigate();
 
@@ -225,7 +223,6 @@ export default function WorkDetailsClient({
   const handleScoreSelect = (score: IMSLPScore) => {
     setSelectedScoreForStudy(score);
   };
-
 
   return (
     <div className="bg-gradient-primary">

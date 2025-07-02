@@ -50,7 +50,7 @@ const ScoreCard = ({
   return (
     <div
       className={`
-          cursor-pointer transition-all duration-300 hover:shadow-theme-glow group relative overflow-hidden
+          cursor-pointer transition-all flex flex-col-reverse duration-300 hover:shadow-theme-glow group relative overflow-hidden
           ${
             isSelected
               ? 'classical-card !p-0 border-brand-primary bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 shadow-theme-glow'
@@ -65,8 +65,6 @@ const ScoreCard = ({
         `}
       onClick={onSelect}
     >
-      {/* 🆕 Badge de "Mais Favoritada" */}
-
       <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
         {/* Thumbnail com efeito lupa */}
         {shouldShowThumbnail && score.thumbnailUrl && (
@@ -311,7 +309,7 @@ const ScoreCard = ({
           scoreSource="IMSLP"
           variant="crown"
           size="md"
-          position="corner"
+          position="inline"
         />
       )}
       {/* 🆕 Efeito especial para a mais favoritada */}

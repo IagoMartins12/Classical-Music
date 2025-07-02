@@ -224,7 +224,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
         </AnimatedItem>
 
         {/* Statistics Cards */}
-        <AnimatedItem direction="up" springType="gentle">
+        {/* <AnimatedItem direction="up" springType="gentle">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <StatCard
               icon={<FiMusic className="w-6 h-6 text-theme-primary" />}
@@ -257,7 +257,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
               color="green"
             />
           </div>
-        </AnimatedItem>
+        </AnimatedItem> */}
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">

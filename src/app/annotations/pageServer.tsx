@@ -16,23 +16,5 @@ export default async function AnnotationsPageServer() {
     return null;
   }
 
-  // Carregar dados das anotações em paralelo para máxima performance
-  const [annotationsData, stats, topAnnotations, mostAnnotatedWorks] =
-    await Promise.all([
-      getCurrentUserAnnotations(),
-      getUserAnnotationStats(session.user.id),
-      getUserTopAnnotations(session.user.id, 5),
-      getUserMostAnnotatedWorks(session.user.id, 5),
-    ]);
-
-  return (
-    <AnnotationsPageClient
-      initialData={{
-        ...annotationsData,
-        stats,
-        topAnnotations,
-        mostAnnotatedWorks,
-      }}
-    />
-  );
+  return <AnnotationsPageClient />;
 }

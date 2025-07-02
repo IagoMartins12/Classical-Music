@@ -1,4 +1,4 @@
-// app/requests/user-annotations.ts
+// app/requests/user-annotations.ts - VERSÃO CORRIGIDA
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 import { getServerSession } from 'next-auth';
@@ -43,10 +43,12 @@ export interface UserAnnotation {
   };
 }
 
-// Buscar todas as anotações do usuário (SSR otimizado)
+// 🔧 CORRIGIDO: Cache com assinatura correta
 export const getUserAnnotations = unstable_cache(
   async (userId: string) => {
     try {
+      console.log('🔍 [SSR] Buscando anotações do usuário:', userId);
+
       const annotations = await prisma.workAnnotation.findMany({
         where: { userId },
         select: {
@@ -99,6 +101,8 @@ export const getUserAnnotations = unstable_cache(
         ],
       });
 
+      console.log('✅ [SSR] Anotações encontradas:', annotations.length);
+
       return {
         annotations: annotations.map((annotation) => ({
           ...annotation,
@@ -126,14 +130,15 @@ export const getUserAnnotations = unstable_cache(
       };
     }
   },
+  // 🔧 CORRIGIDO: Tags como array de strings diretamente
   ['user-annotations'],
   {
-    revalidate: 300, // 5 minutos
-    tags: ['user-annotations'],
+    revalidate: 60, // Cache de 1 minuto
+    tags: ['user-annotations', 'annotations-stats'],
   }
 );
 
-// Buscar anotações do usuário logado (SSR)
+// 🔧 MELHORADO: Buscar anotações do usuário logado com cache mais específico
 export const getCurrentUserAnnotations = async () => {
   try {
     const session = await getServerSession(authOptions);
@@ -149,6 +154,10 @@ export const getCurrentUserAnnotations = async () => {
       };
     }
 
+    console.log(
+      '🔍 [SSR] Buscando anotações do usuário logado:',
+      session.user.id
+    );
     return await getUserAnnotations(session.user.id);
   } catch (error) {
     console.error('Erro ao buscar anotações do usuário atual:', error);
@@ -163,10 +172,12 @@ export const getCurrentUserAnnotations = async () => {
   }
 };
 
-// Estatísticas das anotações por categoria
+// 🔧 CORRIGIDO: Estatísticas com cache correto
 export const getUserAnnotationStats = unstable_cache(
   async (userId: string) => {
     try {
+      console.log('🔍 [SSR] Buscando estatísticas do usuário:', userId);
+
       const [categoryStats, difficultyStats, scopeStats, recentActivity] =
         await Promise.all([
           // Agrupamento por categoria
@@ -205,6 +216,8 @@ export const getUserAnnotationStats = unstable_cache(
           }),
         ]);
 
+      console.log('✅ [SSR] Estatísticas calculadas para usuário:', userId);
+
       return {
         categoryDistribution: categoryStats,
         difficultyDistribution: difficultyStats,
@@ -221,17 +234,20 @@ export const getUserAnnotationStats = unstable_cache(
       };
     }
   },
+  // 🔧 CORRIGIDO: Tags como array de strings
   ['user-annotations-stats'],
   {
-    revalidate: 1800, // 30 minutos
+    revalidate: 300, // 5 minutos
     tags: ['user-annotations', 'annotation-stats'],
   }
 );
 
-// Anotações mais populares do usuário
+// 🔧 CORRIGIDO: Top anotações com cache correto
 export const getUserTopAnnotations = unstable_cache(
   async (userId: string, limit: number = 10) => {
     try {
+      console.log('🔍 [SSR] Buscando top anotações do usuário:', userId);
+
       const topAnnotations = await prisma.workAnnotation.findMany({
         where: { userId },
         select: {
@@ -256,23 +272,31 @@ export const getUserTopAnnotations = unstable_cache(
         take: limit,
       });
 
+      console.log('✅ [SSR] Top anotações encontradas:', topAnnotations.length);
+
       return topAnnotations;
     } catch (error) {
       console.error('Erro ao buscar top anotações do usuário:', error);
       return [];
     }
   },
+  // 🔧 CORRIGIDO: Tags como array de strings
   ['user-top-annotations'],
   {
-    revalidate: 3600, // 1 hora
+    revalidate: 1800, // 30 minutos
     tags: ['user-annotations', 'annotation-stats'],
   }
 );
 
-// Obras mais anotadas pelo usuário
+// 🔧 CORRIGIDO: Obras mais anotadas com cache correto
 export const getUserMostAnnotatedWorks = unstable_cache(
   async (userId: string, limit: number = 5) => {
     try {
+      console.log(
+        '🔍 [SSR] Buscando obras mais anotadas pelo usuário:',
+        userId
+      );
+
       const worksWithAnnotations = await prisma.work.findMany({
         where: {
           workAnnotations: {
@@ -305,6 +329,11 @@ export const getUserMostAnnotatedWorks = unstable_cache(
         take: limit,
       });
 
+      console.log(
+        '✅ [SSR] Obras mais anotadas encontradas:',
+        worksWithAnnotations.length
+      );
+
       return worksWithAnnotations.map((work) => ({
         ...work,
         annotationsCount: work._count.workAnnotations,
@@ -314,25 +343,56 @@ export const getUserMostAnnotatedWorks = unstable_cache(
       return [];
     }
   },
+  // 🔧 CORRIGIDO: Tags como array de strings
   ['user-most-annotated-works'],
   {
-    revalidate: 3600, // 1 hora
+    revalidate: 1800, // 30 minutos
     tags: ['user-annotations', 'works'],
   }
 );
 
-// Função para invalidar caches de anotações
-export async function revalidateAnnotationsCache(userId?: string) {
+// 🔧 MELHORADO: Função para invalidar caches com mais granularidade
+export async function revalidateAnnotationsCache(
+  userId?: string,
+  workId?: string
+) {
   const { revalidateTag } = await import('next/cache');
 
-  revalidateTag('user-annotations');
-  revalidateTag('user-annotations-stats');
-  revalidateTag('user-top-annotations');
-  revalidateTag('user-most-annotated-works');
-  revalidateTag('annotation-stats');
+  console.log('🔄 Invalidando cache de anotações:', { userId, workId });
 
+  // Tags gerais
+  const tagsToInvalidate = [
+    'user-annotations',
+    'user-annotations-stats',
+    'user-top-annotations',
+    'user-most-annotated-works',
+    'annotation-stats',
+    'annotations-popular',
+  ];
+
+  // Tags específicas do usuário
   if (userId) {
-    revalidateTag(`user-annotations-${userId}`);
-    revalidateTag(`user-annotations-stats-${userId}`);
+    tagsToInvalidate.push(
+      `user-annotations-${userId}`,
+      `user-annotations-stats-${userId}`,
+      `user-top-annotations-${userId}`,
+      `user-most-annotated-works-${userId}`
+    );
   }
+
+  // Tags específicas da obra
+  if (workId) {
+    tagsToInvalidate.push(
+      `work-annotations-${workId}`,
+      `work-details-${workId}`,
+      `work-stats-${workId}`
+    );
+  }
+
+  // Invalidar todas as tags
+  for (const tag of tagsToInvalidate) {
+    revalidateTag(tag);
+  }
+
+  console.log('✅ Cache invalidado:', tagsToInvalidate.length, 'tags');
 }

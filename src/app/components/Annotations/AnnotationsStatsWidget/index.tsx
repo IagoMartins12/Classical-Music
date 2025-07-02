@@ -119,7 +119,7 @@ export default function AnnotationsStatsWidget({
                     springType="bouncy"
                     delay={index * 0.1}
                   >
-                    <div className="flex items-center space-x-3 p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl">
+                    <div className="flex items-center space-x-3 p-3 classical-card-simple rounded-xl">
                       <div
                         className={`w-8 h-8 rounded-lg bg-gradient-to-br ${
                           config?.color ||
@@ -180,7 +180,7 @@ export default function AnnotationsStatsWidget({
                     springType="bouncy"
                     delay={index * 0.1}
                   >
-                    <div className="flex items-center space-x-3 p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl group hover:border-brand-primary/50 transition-all">
+                    <div className="flex items-center space-x-3 p-3 classical-card-simple rounded-xl group hover:border-brand-primary/50 transition-all">
                       <div className="flex items-center space-x-2">
                         <div
                           className={`w-6 h-6 rounded-lg ${
@@ -240,7 +240,7 @@ export default function AnnotationsStatsWidget({
                 >
                   <Link
                     href={`/works/${work.id}`}
-                    className="block p-3 bg-theme-elevated/50 border border-theme-primary/20 rounded-xl group hover:border-brand-primary/50 transition-all"
+                    className="block p-3 classical-card-simple rounded-xl group "
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">

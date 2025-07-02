@@ -27,6 +27,7 @@ interface AnnotationFiltersProps {
   filters: Filters;
   onFiltersChange: (filters: Filters) => void;
   onClose: () => void;
+  clearFilters: () => void;
 }
 
 const DIFFICULTY_OPTIONS = [
@@ -53,6 +54,7 @@ export default function AnnotationFilters({
   filters,
   onFiltersChange,
   onClose,
+  clearFilters,
 }: AnnotationFiltersProps) {
   const [localFilters, setLocalFilters] = useState<Filters>(filters);
 
@@ -70,7 +72,8 @@ export default function AnnotationFilters({
   };
 
   const clearAllFilters = () => {
-    // Manter apenas sortBy ao limpar (padrão)
+    clearFilters();
+    onClose();
     const clearedFilters = { sortBy: 'helpful' as const };
     setLocalFilters(clearedFilters);
     onFiltersChange(clearedFilters);
@@ -239,10 +242,9 @@ export default function AnnotationFilters({
             <FiSearch className="w-4 h-4" />
             <span>Busca Avançada</span>
           </label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <div>
               <label className=" text-xs text-theme-tertiary mb-2 flex items-center space-x-1">
-                <FiSearch className="w-3 h-3" />
                 <span>Buscar em títulos, conteúdo e tags</span>
               </label>
               <div className="relative">
@@ -258,31 +260,6 @@ export default function AnnotationFilters({
                 {localFilters.search && (
                   <button
                     onClick={() => handleFilterChange('search', undefined)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-accent-red transition-colors"
-                  >
-                    <FiX className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-            </div>
-            <div>
-              <label className=" text-xs text-theme-tertiary mb-2 flex items-center space-x-1">
-                <FiUser className="w-3 h-3" />
-                <span>Filtrar por usuário (ID)</span>
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={localFilters.userId || ''}
-                  onChange={(e) =>
-                    handleFilterChange('userId', e.target.value || undefined)
-                  }
-                  className="w-full input-classical-2 text-sm pr-8"
-                  placeholder="ID do usuário..."
-                />
-                {localFilters.userId && (
-                  <button
-                    onClick={() => handleFilterChange('userId', undefined)}
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-accent-red transition-colors"
                   >
                     <FiX className="w-4 h-4" />

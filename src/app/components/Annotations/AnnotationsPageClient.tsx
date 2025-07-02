@@ -1,7 +1,7 @@
-// app/annotations/AnnotationsPageClient.tsx
+// app/annotations/AnnotationsPageClient.tsx - VERSÃO STORE ONLY
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   FiMessageSquare,
   FiSearch,
@@ -11,11 +11,11 @@ import {
   FiEye,
   FiThumbsUp,
   FiPlus,
+  FiRefreshCw,
 } from 'react-icons/fi';
 
 import { useAuth } from '@/app/hooks/useAuth';
-import { UserAnnotation } from '@/app/requests/user-annotations';
-import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
+import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -28,6 +28,12 @@ import Select from '../Common/Select';
 import UserAnnotationCard from './UserAnnotationCard';
 import AnnotationsStatsWidget from './AnnotationsStatsWidget';
 import CreateAnnotationModal from './CreateAnnotationModal';
+import {
+  useAnnotationsStore,
+  AnnotationFilters,
+} from '@/app/stores/useAnnotationsStore';
+import { toast } from 'react-hot-toast';
+import Link from 'next/link';
 
 type AnnotationCategory =
   | 'TECHNIQUE'
@@ -51,20 +57,6 @@ type AnnotationScope =
   | 'ENTIRE_WORK';
 
 type FilterTab = 'all' | 'public' | 'private' | 'verified';
-
-interface AnnotationsPageClientProps {
-  initialData: {
-    annotations: UserAnnotation[];
-    totalAnnotations: number;
-    publicAnnotations: number;
-    verifiedAnnotations: number;
-    totalHelpfulVotes: number;
-    totalViews: number;
-    stats: any;
-    topAnnotations: any[];
-    mostAnnotatedWorks: any[];
-  };
-}
 
 const CATEGORY_OPTIONS = [
   { value: 'all', label: 'Todas as categorias' },
@@ -93,7 +85,24 @@ const SCOPE_OPTIONS = [
   { value: 'SPECIFIC_MEASURE', label: 'Compasso específico' },
 ];
 
-const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
+// 🔧 NOVO: Hook customizado para debounce
+const useDebounce = (value: any, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+};
+
+const AnnotationsPageClient = () => {
   // States
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
@@ -111,160 +120,108 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
   const [showFilters, setShowFilters] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const [annotations, setAnnotations] = useState<UserAnnotation[]>(
-    initialData.annotations
-  );
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  console.log('isRefreshing', isRefreshing);
   const { isAuthenticated, user } = useAuth();
+  const {
+    getUserAnnotations,
+    fetchUserAnnotations,
+    loading,
+    filters,
+    setFilters,
+    clearFilters,
+  } = useAnnotationsStore();
 
-  const refreshAnnotations = async () => {
+  // 🔧 NOVO: Buscar anotações do usuário direto do store
+  const userAnnotations = useMemo(() => {
+    if (!user?.id) return [];
+    return getUserAnnotations(user.id);
+  }, [user?.id, getUserAnnotations]);
+
+  const isLoading = loading.fetch.has('user-annotations');
+
+  // 🔧 OTIMIZAÇÃO: Debounced search
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
+  // 🔧 NOVO: Função otimizada para buscar anotações do usuário
+  const fetchUserAnnotationsData = useCallback(async () => {
     if (!user?.id) return;
 
-    setIsRefreshing(true);
-    try {
-      const response = await fetch(`/api/users/${user.id}/annotations`);
-      if (response.ok) {
-        const data = await response.json();
-        setAnnotations(data.annotations || []);
+    const userFilters: AnnotationFilters = {
+      userId: user.id,
+      ...(categoryFilter !== 'all' && { category: categoryFilter }),
+      ...(difficultyFilter !== 'all' && { difficulty: difficultyFilter }),
+      ...(scopeFilter !== 'all' && { scope: scopeFilter }),
+      ...(debouncedSearchQuery && { search: debouncedSearchQuery }),
+      sortBy: 'helpful',
+    };
 
-        console.log('🔄 Anotações atualizadas:', data.annotations?.length);
-      }
-    } catch (error) {
-      console.error('Erro ao recarregar anotações:', error);
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
+    setFilters(userFilters);
+    await fetchUserAnnotations(user.id, userFilters);
+  }, [
+    user?.id,
+    categoryFilter,
+    difficultyFilter,
+    scopeFilter,
+    debouncedSearchQuery,
+    setFilters,
+    fetchUserAnnotations,
+  ]);
 
-  // 🔧 NOVO: Escutar mudanças do store para invalidar dados locais
+  // 🔧 OTIMIZAÇÃO: Carregar dados na montagem e quando filtros mudarem
   useEffect(() => {
-    if (!mounted) return;
+    if (mounted && user?.id) {
+      fetchUserAnnotationsData();
+    }
+  }, [mounted, fetchUserAnnotationsData]);
 
-    // Escutar eventos customizados de mudança de anotações
-    const handleAnnotationChange = () => {
-      console.log('🔄 Detectada mudança em anotações, recarregando...');
-      refreshAnnotations();
-    };
-
-    // Adicionar listeners
-    window.addEventListener('annotationCreated', handleAnnotationChange);
-    window.addEventListener('annotationUpdated', handleAnnotationChange);
-    window.addEventListener('annotationDeleted', handleAnnotationChange);
-
-    return () => {
-      window.removeEventListener('annotationCreated', handleAnnotationChange);
-      window.removeEventListener('annotationUpdated', handleAnnotationChange);
-      window.removeEventListener('annotationDeleted', handleAnnotationChange);
-    };
-  }, [mounted, user?.id]);
-
-  // 🔧 NOVO: Usar dados reativos ao invés dos iniciais
-  const currentAnnotations =
-    annotations.length > 0 ? annotations : initialData.annotations;
-
+  // 🔧 NOVO: Mount effect
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Check if has active filters
-  const hasActiveFilters = useMemo(() => {
-    return (
-      categoryFilter !== 'all' ||
-      difficultyFilter !== 'all' ||
-      scopeFilter !== 'all' ||
-      searchQuery !== ''
-    );
-  }, [categoryFilter, difficultyFilter, scopeFilter, searchQuery]);
-
-  // Clear all filters
-  const clearFilters = () => {
-    setSearchQuery('');
-    setCategoryFilter('all');
-    setDifficultyFilter('all');
-    setScopeFilter('all');
-  };
-
-  // Filter and search logic
+  // 🔧 OTIMIZAÇÃO: Filtered annotations com base no tab ativo
   const filteredAnnotations = useMemo(() => {
-    let filtered = [...currentAnnotations];
+    let filtered = [...userAnnotations];
 
-    // Tab filter
-    if (activeTab === 'public') {
-      filtered = filtered.filter((annotation) => annotation.isPublic);
-    } else if (activeTab === 'private') {
-      filtered = filtered.filter((annotation) => !annotation.isPublic);
-    } else if (activeTab === 'verified') {
-      filtered = filtered.filter((annotation) => annotation.isVerified);
-    }
-
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (annotation) =>
-          annotation.title.toLowerCase().includes(query) ||
-          annotation.content.toLowerCase().includes(query) ||
-          annotation.work.title.toLowerCase().includes(query) ||
-          annotation.work.composer.name.toLowerCase().includes(query) ||
-          annotation.work.composer.fullName.toLowerCase().includes(query) ||
-          annotation.tags.some((tag) => tag.toLowerCase().includes(query))
-      );
-    }
-
-    if (categoryFilter !== 'all') {
-      filtered = filtered.filter(
-        (annotation) => annotation.category === categoryFilter
-      );
-    }
-
-    if (difficultyFilter !== 'all') {
-      filtered = filtered.filter(
-        (annotation) => annotation.difficulty === difficultyFilter
-      );
-    }
-
-    if (scopeFilter !== 'all') {
-      filtered = filtered.filter(
-        (annotation) => annotation.scope === scopeFilter
-      );
+    // Aplicar filtro de tab
+    switch (activeTab) {
+      case 'public':
+        filtered = filtered.filter((annotation) => annotation.isPublic);
+        break;
+      case 'private':
+        filtered = filtered.filter((annotation) => !annotation.isPublic);
+        break;
+      case 'verified':
+        filtered = filtered.filter((annotation) => annotation.isVerified);
+        break;
+      case 'all':
+      default:
+        // Mostrar todas
+        break;
     }
 
     return filtered;
-  }, [
-    currentAnnotations,
-    activeTab,
-    searchQuery,
-    categoryFilter,
-    difficultyFilter,
-    scopeFilter,
-  ]);
+  }, [userAnnotations, activeTab]);
 
-  // Statistics
+  // 🔧 OTIMIZAÇÃO: Estatísticas calculadas
   const stats = useMemo(() => {
-    const totalAnnotations = currentAnnotations.length;
-    const publicAnnotations = currentAnnotations.filter(
-      (a) => a.isPublic
-    ).length;
-    const verifiedAnnotations = currentAnnotations.filter(
+    const totalAnnotations = userAnnotations.length;
+    const publicAnnotations = userAnnotations.filter((a) => a.isPublic).length;
+    const verifiedAnnotations = userAnnotations.filter(
       (a) => a.isVerified
     ).length;
     const privateAnnotations = totalAnnotations - publicAnnotations;
 
-    const totalHelpfulVotes = currentAnnotations.reduce(
+    const totalHelpfulVotes = userAnnotations.reduce(
       (sum, a) => sum + a.helpfulCount,
       0
     );
-    const totalViews = currentAnnotations.reduce(
-      (sum, a) => sum + a.viewCount,
-      0
-    );
+    const totalViews = userAnnotations.reduce((sum, a) => sum + a.viewCount, 0);
 
     const avgHelpfulVotes =
       totalAnnotations > 0 ? totalHelpfulVotes / totalAnnotations : 0;
     const avgViews = totalAnnotations > 0 ? totalViews / totalAnnotations : 0;
 
-    const highPerformingCount = currentAnnotations.filter(
+    const highPerformingCount = userAnnotations.filter(
       (annotation) => annotation.helpfulCount >= 5
     ).length;
 
@@ -279,7 +236,86 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
       avgViews: Math.round(avgViews),
       highPerformingCount,
     };
-  }, [currentAnnotations]);
+  }, [userAnnotations]);
+
+  // 🔧 NOVO: Estatísticas para o widget (simuladas baseadas nos dados atuais)
+  const widgetStats = useMemo(() => {
+    // Distribuição por categoria
+    const categoryDistribution = CATEGORY_OPTIONS.slice(1)
+      .map((option) => {
+        const count = userAnnotations.filter(
+          (a) => a.category === option.value
+        ).length;
+        return {
+          category: option.value,
+          _count: { category: count },
+        };
+      })
+      .filter((item) => item._count.category > 0);
+
+    return {
+      categoryDistribution,
+      difficultyDistribution: [],
+      scopeDistribution: [],
+      recentAnnotations: userAnnotations.filter((a) => {
+        const createdDate = new Date(a.createdAt);
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        return createdDate >= thirtyDaysAgo;
+      }).length,
+    };
+  }, [userAnnotations]);
+
+  // 🔧 NOVO: Top anotações para o widget
+  const topAnnotations = useMemo(() => {
+    return [...userAnnotations]
+      .sort((a, b) => b.helpfulCount - a.helpfulCount)
+      .slice(0, 5);
+  }, [userAnnotations]);
+
+  // 🔧 NOVO: Obras mais anotadas para o widget
+  const mostAnnotatedWorks = useMemo(() => {
+    const worksMap = new Map();
+
+    userAnnotations.forEach((annotation) => {
+      const workId = annotation.workId;
+      if (!worksMap.has(workId)) {
+        worksMap.set(workId, {
+          id: workId,
+          title: annotation.work?.title,
+          composer: annotation.work?.composer,
+          opOrCatalog: annotation.work?.opOrCatalog,
+          annotationsCount: 0,
+        });
+      }
+      worksMap.get(workId).annotationsCount++;
+    });
+
+    return Array.from(worksMap.values())
+      .sort((a, b) => b.annotationsCount - a.annotationsCount)
+      .slice(0, 5);
+  }, [userAnnotations]);
+
+  // 🔧 OTIMIZAÇÃO: Memoized filters check
+  const hasActiveFilters = useMemo(() => {
+    return (
+      categoryFilter !== 'all' ||
+      difficultyFilter !== 'all' ||
+      scopeFilter !== 'all' ||
+      debouncedSearchQuery !== ''
+    );
+  }, [categoryFilter, difficultyFilter, scopeFilter, debouncedSearchQuery]);
+
+  // 🔧 OTIMIZAÇÃO: Clear filters
+  const handleClearFilters = useCallback(() => {
+    setSearchQuery('');
+    setCategoryFilter('all');
+    setDifficultyFilter('all');
+    setScopeFilter('all');
+    clearFilters();
+    if (user?.id) {
+      fetchUserAnnotations(user.id, { userId: user.id, sortBy: 'helpful' });
+    }
+  }, [clearFilters, user?.id, fetchUserAnnotations]);
 
   if (!mounted) {
     return (
@@ -321,7 +357,7 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
         </AnimatedItem>
 
         {/* Statistics Cards */}
-        <AnimatedItem direction="up" springType="gentle">
+        {/* <AnimatedItem direction="up" springType="gentle">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <StatCard
               icon={<FiMessageSquare className="w-6 h-6 text-theme-primary" />}
@@ -350,15 +386,9 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
               color="green"
             />
 
-            <StatCard
-              icon={<FiTarget className="w-6 h-6 text-theme-primary" />}
-              title="Visualizações"
-              value={stats.totalViews}
-              subtitle={`Média: ${stats.avgViews}/anotação`}
-              color="purple"
-            />
+         
           </div>
-        </AnimatedItem>
+        </AnimatedItem> */}
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
@@ -412,7 +442,7 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
                   )}
                 </div>
 
-                {/* Search, Filter Button, Create Button and View Mode */}
+                {/* Search, Filter Button, View Mode */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   {/* Search */}
                   <div className="relative">
@@ -444,7 +474,7 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
                         <span className="ml-1 px-1.5 py-0.5 bg-accent-blue text-white text-xs rounded-full">
                           {
                             [
-                              searchQuery && 'busca',
+                              debouncedSearchQuery && 'busca',
                               categoryFilter !== 'all' && 'categoria',
                               difficultyFilter !== 'all' && 'dificuldade',
                               scopeFilter !== 'all' && 'abrangência',
@@ -475,7 +505,7 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
                       <div className="flex items-center space-x-2">
                         {hasActiveFilters && (
                           <button
-                            onClick={clearFilters}
+                            onClick={handleClearFilters}
                             className="text-xs text-theme-tertiary hover:text-accent-red transition-colors px-2 py-1 rounded border border-theme-tertiary hover:border-accent-red"
                           >
                             Limpar tudo
@@ -553,33 +583,59 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
         <div className="space-y-8 mt-8">
           {/* Main Content */}
           <AnimatedItem direction="up" springType="gentle">
-            {filteredAnnotations.length === 0 ? (
+            {isLoading && filteredAnnotations.length === 0 ? (
+              <div className="flex items-center justify-center py-16">
+                <div className="flex items-center space-x-3">
+                  <div className="relative">
+                    <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
+                    <div
+                      className="absolute inset-0 w-8 h-8 border-4 border-transparent border-r-brand-secondary rounded-full animate-spin"
+                      style={{
+                        animationDirection: 'reverse',
+                        animationDuration: '1.5s',
+                      }}
+                    ></div>
+                  </div>
+                  <span className="text-theme-primary font-medium">
+                    Carregando anotações...
+                  </span>
+                </div>
+              </div>
+            ) : filteredAnnotations.length === 0 ? (
               <div className="text-center py-16">
                 <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <FiMessageSquare className="w-8 h-8 text-theme-tertiary" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-                  {searchQuery || hasActiveFilters
+                  {debouncedSearchQuery || hasActiveFilters
                     ? 'Nenhuma anotação encontrada'
                     : stats.totalAnnotations === 0
                     ? 'Você ainda não fez anotações'
                     : 'Nenhuma anotação nesta categoria'}
                 </h3>
                 <p className="text-theme-secondary max-w-md mx-auto mb-6">
-                  {searchQuery || hasActiveFilters
+                  {debouncedSearchQuery || hasActiveFilters
                     ? 'Tente ajustar os filtros ou termos de busca.'
                     : stats.totalAnnotations === 0
                     ? 'Comece criando sua primeira anotação musical e compartilhe seu conhecimento!'
                     : 'Tente ajustar os filtros aplicados.'}
                 </p>
                 {stats.totalAnnotations === 0 && (
-                  <button
-                    onClick={() => setShowCreateModal(true)}
-                    className="btn-classical-primary flex items-center space-x-2 mx-auto"
+                  <Link
+                    href="/works"
+                    className="btn-classical-primary flex w-max items-center space-x-2 mx-auto"
                   >
+                    <span>Explorar Obras</span>
                     <FiPlus className="w-4 h-4" />
-                    <span>Criar Primeira Anotação</span>
-                  </button>
+                  </Link>
+
+                  // <button
+                  //   onClick={() => setShowCreateModal(true)}
+                  //   className="btn-classical-primary flex items-center space-x-2 mx-auto"
+                  // >
+                  //   <FiPlus className="w-4 h-4" />
+                  //   <span>Criar Primeira Anotação</span>
+                  // </button>
                 )}
               </div>
             ) : (
@@ -601,45 +657,35 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
                     </div>
                   </div>
 
-                  {viewMode === 'cards' ? (
-                    <div className="space-y-4">
-                      {filteredAnnotations.map((annotation) => (
+                  <div
+                    className={viewMode === 'cards' ? 'space-y-4' : 'space-y-4'}
+                  >
+                    {filteredAnnotations.map((annotation, index) => (
+                      <AnimatedItem
+                        key={annotation.id}
+                        direction="left"
+                        hover="lift"
+                        style={{
+                          animationDelay: `${index * 0.1}s`,
+                          animationFillMode: 'backwards',
+                        }}
+                      >
                         <UserAnnotationCard
-                          key={annotation.id}
                           annotation={annotation}
                           viewMode={viewMode}
                         />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {filteredAnnotations.map((annotation, index) => (
-                        <AnimatedItem
-                          key={annotation.id}
-                          direction="left"
-                          hover="lift"
-                          style={{
-                            animationDelay: `${index * 0.1}s`,
-                            animationFillMode: 'backwards',
-                          }}
-                        >
-                          <UserAnnotationCard
-                            annotation={annotation}
-                            viewMode={viewMode}
-                          />
-                        </AnimatedItem>
-                      ))}
-                    </div>
-                  )}
+                      </AnimatedItem>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Sidebar com estatísticas (1/3 da largura) */}
                 <div className="lg:col-span-1">
                   <div className="sticky top-6 space-y-6">
                     <AnnotationsStatsWidget
-                      stats={initialData.stats}
-                      topAnnotations={initialData.topAnnotations}
-                      mostAnnotatedWorks={initialData.mostAnnotatedWorks}
+                      stats={widgetStats}
+                      topAnnotations={topAnnotations}
+                      mostAnnotatedWorks={mostAnnotatedWorks}
                     />
                   </div>
                 </div>
@@ -653,9 +699,6 @@ const AnnotationsPageClient = ({ initialData }: AnnotationsPageClientProps) => {
       <CreateAnnotationModal
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        workId=""
-        workTitle=""
-        composerName=""
       />
     </PageContainer>
   );

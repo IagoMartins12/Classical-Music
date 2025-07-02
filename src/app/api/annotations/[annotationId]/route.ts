@@ -1,11 +1,11 @@
-// app/api/annotations/[annotationId]/route.ts - NOVO ARQUIVO
+// app/api/annotations/[annotationId]/route.ts - ARQUIVO OBRIGATÓRIO
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 
-// 🔧 CORREÇÃO: PATCH movido para arquivo correto
+// 🔧 PATCH - Atualizar anotação
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ annotationId: string }> }
@@ -19,6 +19,9 @@ export async function PATCH(
 
     const { annotationId } = await params;
     const body = await request.json();
+
+    console.log('🔧 PATCH /api/annotations/[annotationId] - ID:', annotationId);
+    console.log('🔧 PATCH Body:', body);
 
     // Verificar se a anotação existe e pertence ao usuário
     const existingAnnotation = await prisma.workAnnotation.findFirst({
@@ -61,13 +64,15 @@ export async function PATCH(
       }
     }
 
-    // 🔧 CORREÇÃO: Trimmar strings antes de salvar
+    // Trimmar strings antes de salvar
     if (updateData.title) updateData.title = updateData.title.trim();
     if (updateData.content) updateData.content = updateData.content.trim();
     if (updateData.movement) updateData.movement = updateData.movement.trim();
     if (updateData.section) updateData.section = updateData.section.trim();
     if (updateData.instrument)
       updateData.instrument = updateData.instrument.trim();
+
+    console.log('🔧 Update data:', updateData);
 
     const updatedAnnotation = await prisma.workAnnotation.update({
       where: { id: annotationId },
@@ -105,7 +110,7 @@ export async function PATCH(
       },
     });
 
-    // 🔧 CORREÇÃO: Buscar voto do usuário atual para esta anotação
+    // Buscar voto do usuário atual para esta anotação
     const userVote = await prisma.annotationHelpfulVote.findUnique({
       where: {
         userId_annotationId: {
@@ -118,8 +123,9 @@ export async function PATCH(
     // Invalidar caches
     revalidateTag(`work-annotations-${updatedAnnotation.workId}`);
     revalidateTag(`user-annotations-${session.user.id}`);
+    revalidateTag('user-annotations');
 
-    // 🔧 CORREÇÃO: Formatar resposta corretamente
+    // Formatar resposta corretamente
     const formattedAnnotation = {
       id: updatedAnnotation.id,
       userId: updatedAnnotation.userId,
@@ -150,6 +156,8 @@ export async function PATCH(
       userVote: userVote ? userVote.isHelpful : null,
     };
 
+    console.log('✅ Anotação atualizada com sucesso:', formattedAnnotation.id);
+
     return NextResponse.json({
       success: true,
       annotation: formattedAnnotation,
@@ -163,7 +171,7 @@ export async function PATCH(
   }
 }
 
-// 🔧 CORREÇÃO: DELETE movido para arquivo correto
+// 🔧 DELETE - Deletar anotação
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ annotationId: string }> }
@@ -176,6 +184,11 @@ export async function DELETE(
     }
 
     const { annotationId } = await params;
+
+    console.log(
+      '🗑️ DELETE /api/annotations/[annotationId] - ID:',
+      annotationId
+    );
 
     // Verificar se a anotação existe e pertence ao usuário
     const existingAnnotation = await prisma.workAnnotation.findFirst({
@@ -216,6 +229,9 @@ export async function DELETE(
     // Invalidar caches
     revalidateTag(`work-annotations-${existingAnnotation.workId}`);
     revalidateTag(`user-annotations-${session.user.id}`);
+    revalidateTag('user-annotations');
+
+    console.log('✅ Anotação deletada com sucesso:', annotationId);
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -227,7 +243,7 @@ export async function DELETE(
   }
 }
 
-// 🔧 BONUS: GET para uma anotação específica
+// 🔧 GET - Buscar anotação específica
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ annotationId: string }> }
@@ -235,6 +251,8 @@ export async function GET(
   try {
     const session = await getServerSession(authOptions);
     const { annotationId } = await params;
+
+    console.log('🔍 GET /api/annotations/[annotationId] - ID:', annotationId);
 
     const annotation = await prisma.workAnnotation.findUnique({
       where: { id: annotationId },

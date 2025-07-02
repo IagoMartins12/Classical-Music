@@ -1,13 +1,13 @@
-// app/api/annotations/[annotationId]/vote/route.ts - CORRIGIDO para Next.js 15
+// app/api/annotations/[annotationId]/vote/route.ts - API PARA VOTOS
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
-import { revalidateTag } from 'next/cache';
 
+// 🔧 POST - Votar em anotação (útil/não útil)
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ annotationId: string }> } // 🔧 CORREÇÃO: Promise
+  { params }: { params: Promise<{ annotationId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -16,26 +16,24 @@ export async function POST(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    const { annotationId } = await params; // 🔧 CORREÇÃO: await params
-    const { isHelpful } = await request.json();
+    const { annotationId } = await params;
+    const body = await request.json();
+    const { isHelpful } = body;
 
-    if (typeof isHelpful !== 'boolean') {
-      return NextResponse.json(
-        { error: 'isHelpful deve ser um boolean' },
-        { status: 400 }
-      );
-    }
+    console.log(
+      '👍 POST /api/annotations/[annotationId]/vote - ID:',
+      annotationId,
+      'isHelpful:',
+      isHelpful
+    );
 
-    // Verificar se a anotação existe e é pública
-    const annotation = await prisma.workAnnotation.findFirst({
-      where: {
-        id: annotationId,
-        isPublic: true,
-      },
+    // Verificar se a anotação existe
+    const annotation = await prisma.workAnnotation.findUnique({
+      where: { id: annotationId },
       select: {
         id: true,
         userId: true,
-        workId: true,
+        isPublic: true,
         helpfulCount: true,
       },
     });
@@ -47,7 +45,7 @@ export async function POST(
       );
     }
 
-    // Não permitir votar na própria anotação
+    // Não permitir voto próprio
     if (annotation.userId === session.user.id) {
       return NextResponse.json(
         { error: 'Não é possível votar na própria anotação' },
@@ -55,7 +53,15 @@ export async function POST(
       );
     }
 
-    // Verificar se já votou
+    // Não permitir voto em anotação privada (exceto do próprio autor)
+    if (!annotation.isPublic) {
+      return NextResponse.json(
+        { error: 'Não é possível votar em anotação privada' },
+        { status: 400 }
+      );
+    }
+
+    // Verificar se o usuário já votou
     const existingVote = await prisma.annotationHelpfulVote.findUnique({
       where: {
         userId_annotationId: {
@@ -65,40 +71,11 @@ export async function POST(
       },
     });
 
-    let voteChange = 0;
+    let newUserVote: boolean | null = null;
+    let helpfulCountChange = 0;
 
-    if (existingVote) {
-      if (existingVote.isHelpful === isHelpful) {
-        // Remover voto (desfazer)
-        await prisma.annotationHelpfulVote.delete({
-          where: {
-            id: existingVote.id,
-          },
-        });
-        // 🔧 CORREÇÃO: Só afetar helpfulCount se for voto útil
-        voteChange = existingVote.isHelpful ? -1 : 0;
-      } else {
-        // Alterar voto
-        await prisma.annotationHelpfulVote.update({
-          where: {
-            id: existingVote.id,
-          },
-          data: {
-            isHelpful,
-          },
-        });
-        // 🔧 CORREÇÃO: Lógica corrigida para troca de votos
-        if (existingVote.isHelpful && !isHelpful) {
-          // Era útil, agora não é
-          voteChange = -1;
-        } else if (!existingVote.isHelpful && isHelpful) {
-          // Era "não útil", agora é útil
-          voteChange = 1;
-        }
-        // Se era e continua "não útil", não muda nada
-      }
-    } else {
-      // Criar novo voto
+    if (!existingVote) {
+      // Primeiro voto
       await prisma.annotationHelpfulVote.create({
         data: {
           userId: session.user.id,
@@ -106,97 +83,73 @@ export async function POST(
           isHelpful,
         },
       });
-      // 🔧 CORREÇÃO: Só incrementar se for voto útil
-      voteChange = isHelpful ? 1 : 0;
+
+      newUserVote = isHelpful;
+      if (isHelpful) {
+        helpfulCountChange = 1;
+      }
+    } else if (existingVote.isHelpful === isHelpful) {
+      // Remover voto (desfazer)
+      await prisma.annotationHelpfulVote.delete({
+        where: {
+          userId_annotationId: {
+            userId: session.user.id,
+            annotationId,
+          },
+        },
+      });
+
+      newUserVote = null;
+      if (existingVote.isHelpful) {
+        helpfulCountChange = -1; // Remover voto útil
+      }
+    } else {
+      // Mudar voto
+      await prisma.annotationHelpfulVote.update({
+        where: {
+          userId_annotationId: {
+            userId: session.user.id,
+            annotationId,
+          },
+        },
+        data: { isHelpful },
+      });
+
+      newUserVote = isHelpful;
+      if (existingVote.isHelpful && !isHelpful) {
+        helpfulCountChange = -1; // Era útil, agora não é
+      } else if (!existingVote.isHelpful && isHelpful) {
+        helpfulCountChange = 1; // Não era útil, agora é
+      }
     }
 
     // Atualizar contador na anotação
     const updatedAnnotation = await prisma.workAnnotation.update({
       where: { id: annotationId },
       data: {
-        helpfulCount: { increment: voteChange },
+        helpfulCount: {
+          increment: helpfulCountChange,
+        },
       },
       select: {
         helpfulCount: true,
       },
     });
 
-    // Se a anotação atingiu um threshold de votos úteis, atualizar estatísticas do usuário
-    if (updatedAnnotation.helpfulCount >= 5) {
-      await prisma.user.update({
-        where: { id: annotation.userId },
-        data: {
-          helpfulAnnotationsCount: { increment: 1 },
-        },
-      });
-    }
-
-    // Verificar o voto atual do usuário
-    const currentVote = await prisma.annotationHelpfulVote.findUnique({
-      where: {
-        userId_annotationId: {
-          userId: session.user.id,
-          annotationId,
-        },
-      },
+    console.log('✅ Voto processado:', {
+      annotationId,
+      newUserVote,
+      newHelpfulCount: updatedAnnotation.helpfulCount,
+      change: helpfulCountChange,
     });
-
-    // Invalidar caches
-    revalidateTag(`work-annotations-${annotation.workId}`);
-    revalidateTag('annotations-popular');
 
     return NextResponse.json({
       success: true,
+      userVote: newUserVote,
       helpfulCount: updatedAnnotation.helpfulCount,
-      userVote: currentVote ? currentVote.isHelpful : null,
     });
   } catch (error) {
-    console.error('Erro ao votar em anotação:', error);
-    return NextResponse.json(
-      { error: 'Erro interno do servidor' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ annotationId: string }> } // 🔧 CORREÇÃO: Promise
-) {
-  try {
-    const session = await getServerSession(authOptions);
-    const { annotationId } = await params; // 🔧 CORREÇÃO: await params
-
-    // Buscar estatísticas de votos
-    const [totalVotes, helpfulVotes, userVote] = await Promise.all([
-      prisma.annotationHelpfulVote.count({
-        where: { annotationId },
-      }),
-      prisma.annotationHelpfulVote.count({
-        where: { annotationId, isHelpful: true },
-      }),
-      session?.user?.id
-        ? prisma.annotationHelpfulVote.findUnique({
-            where: {
-              userId_annotationId: {
-                userId: session.user.id,
-                annotationId,
-              },
-            },
-          })
-        : null,
-    ]);
-
-    return NextResponse.json({
-      totalVotes,
-      helpfulVotes,
-      unhelpfulVotes: totalVotes - helpfulVotes,
-      userVote: userVote ? userVote.isHelpful : null,
-      helpfulPercentage:
-        totalVotes > 0 ? Math.round((helpfulVotes / totalVotes) * 100) : 0,
-    });
-  } catch (error) {
-    console.error('Erro ao buscar votos da anotação:', error);
+    console.error('Erro ao processar voto:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

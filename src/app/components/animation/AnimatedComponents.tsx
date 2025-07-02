@@ -66,7 +66,6 @@ interface AnimatedItemProps extends BaseAnimationProps {
 
 export const AnimatedItem: React.FC<AnimatedItemProps> = ({
   children,
-  speed,
   direction = 'up',
   springType = 'smooth',
   hover = 'none',
@@ -76,7 +75,6 @@ export const AnimatedItem: React.FC<AnimatedItemProps> = ({
 }) => {
   const variants = createItemVariants(direction, springType);
 
-  console.log('speed', speed);
   // Configuração do hover segura
   const hoverConfig =
     hover !== 'none' && hoverVariants[hover] ? hoverVariants[hover] : {};

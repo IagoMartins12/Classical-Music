@@ -105,7 +105,7 @@ export default function MostFavoritedBadge({
   // Posicionamento
   const positions = {
     corner: 'absolute -top-2 -right-2 z-10',
-    inline: 'inline-flex',
+    inline: 'flex w-fit self-end mt-4 mx-2 mb-0',
     floating: 'absolute top-2 right-2 z-10',
   };
 
@@ -122,7 +122,7 @@ export default function MostFavoritedBadge({
     animate-pulse
     hover:animate-none
     transition-all duration-300
-    hover:scale-110
+    hover:scale-101
   `;
 
   // Diferentes layouts baseados na variante
@@ -136,7 +136,7 @@ export default function MostFavoritedBadge({
           <span className={sizeConfig.emoji}>{config.emoji}</span>
           {showText && (
             <span className={`${sizeConfig.text} font-bold hidden sm:inline`}>
-              Favorita
+              Favorita da comunidade
             </span>
           )}
         </div>

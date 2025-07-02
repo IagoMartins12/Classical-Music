@@ -1,14 +1,13 @@
-// app/annotations/components/UserAnnotationCard.tsx
+// app/annotations/components/UserAnnotationCard.tsx - VERSÃO CORRIGIDA
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import {
   FiThumbsUp,
-  FiEye,
+  FiMessageCircle,
   FiEdit3,
   FiTrash2,
-  FiExternalLink,
+  FiEye,
   FiMapPin,
   FiTarget,
   FiLayers,
@@ -17,31 +16,34 @@ import {
   FiAward,
   FiMessageSquare,
   FiClock,
-  FiLock,
-  FiGlobe,
+  FiUser,
+  FiMoreHorizontal,
+  FiLoader,
+  FiExternalLink,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { toast } from 'react-hot-toast';
-import { UserAnnotation } from '@/app/requests/user-annotations';
-import { useAnnotationsStore } from '@/app/stores/useAnnotationsStore';
-import CreateAnnotationModal from '@/app/components/Annotations/CreateAnnotationModal';
-
-// Importar componentes de animação
-import {
-  AnimatedCard,
-  AnimatedItem,
-} from '@/app/components/animation/AnimatedComponents';
+import Link from 'next/link';
 import { MdVerified } from 'react-icons/md';
-import ConfirmDeleteModal from '../DeleteAnnotationModal2';
+
+import { ViewMode } from '@/app/components/ViewModeToggle';
+import { useAuth } from '@/app/hooks/useAuth';
+import {
+  useAnnotationsStore,
+  WorkAnnotation,
+  AnnotationCategory,
+} from '@/app/stores/useAnnotationsStore';
+import CreateAnnotationModal from '@/app/components/Annotations/CreateAnnotationModal';
+import ConfirmDeleteModal from '@/app/components/Annotations/DeleteAnnotationModal2';
+import Image from 'next/image';
 
 interface UserAnnotationCardProps {
-  annotation: UserAnnotation;
-  viewMode: 'cards' | 'list';
+  annotation: WorkAnnotation;
+  viewMode: ViewMode;
+  onUpdate?: () => void;
 }
-
-// Componente do Modal de Confirmação
 
 const CATEGORY_CONFIG = {
   TECHNIQUE: {
@@ -88,13 +90,6 @@ const CATEGORY_CONFIG = {
   },
 };
 
-const DIFFICULTY_LABELS = {
-  BEGINNER: 'Iniciante',
-  INTERMEDIATE: 'Intermediário',
-  ADVANCED: 'Avançado',
-  ALL_LEVELS: 'Todos os níveis',
-};
-
 const DIFFICULTY_COLORS = {
   BEGINNER: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
   INTERMEDIATE: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
@@ -102,403 +97,560 @@ const DIFFICULTY_COLORS = {
   ALL_LEVELS: 'bg-theme-primary/10 border-theme-primary/30 text-theme-primary',
 };
 
+const DIFFICULTY_LABELS = {
+  BEGINNER: 'Iniciante',
+  INTERMEDIATE: 'Intermediário',
+  ADVANCED: 'Avançado',
+  ALL_LEVELS: 'Todos os níveis',
+};
+
 export default function UserAnnotationCard({
   annotation,
   viewMode,
+  onUpdate,
 }: UserAnnotationCardProps) {
-  const { deleteAnnotation } = useAnnotationsStore();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { user } = useAuth();
   const [showEditModal, setShowEditModal] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [showFullContent, setShowFullContent] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+  const [showActions, setShowActions] = useState(false);
+
+  // 🔧 NOVO: Usar o store para operações de CRUD
+  const { deleteAnnotation, loading, getAnnotationById } =
+    useAnnotationsStore();
+
+  // 🔧 NOVO: Verificar se há uma versão mais recente no store
+  const storeAnnotation = getAnnotationById(annotation.id);
+  const currentAnnotation = storeAnnotation || annotation;
+
+  const isOwner = user?.id === currentAnnotation.userId;
+  const isUpdating =
+    loading.update.has(currentAnnotation.id) || storeAnnotation?.isUpdating;
+  const isDeleting = loading.update.has(currentAnnotation.id);
+
+  // 🔧 CORRIGIDO: Verificar se work existe antes de usar
+  const workInfo = currentAnnotation.work || annotation.work;
+  if (!workInfo) {
+    console.warn('Anotação sem informações da obra:', currentAnnotation.id);
+    return null; // ou um placeholder
+  }
 
   const categoryConfig =
-    CATEGORY_CONFIG[annotation.category as keyof typeof CATEGORY_CONFIG];
+    CATEGORY_CONFIG[currentAnnotation.category as keyof typeof CATEGORY_CONFIG];
   const CategoryIcon = categoryConfig?.icon || FiMessageSquare;
 
-  const handleDelete = async () => {
-    setIsDeleting(true);
+  const handleDeleteConfirm = async () => {
+    console.log('🗑️ Iniciando deleção da anotação:', annotation.id);
+
     try {
       const success = await deleteAnnotation(annotation.id);
+
       if (success) {
         toast.success('Anotação deletada com sucesso!', {
           icon: '🗑️',
-          duration: 3000,
         });
         setShowDeleteModal(false);
-        // Recarregar a página para atualizar a lista
-        window.location.reload();
+        console.log('✅ Anotação deletada com sucesso:', annotation.id);
       } else {
-        toast.error('Erro ao deletar anotação');
+        toast.error('Erro ao deletar anotação. Tente novamente.');
+        console.log('❌ Falha ao deletar anotação:', annotation.id);
       }
     } catch (error) {
-      console.error('Erro ao deletar:', error);
-      toast.error('Erro ao deletar anotação');
-    } finally {
-      setIsDeleting(false);
+      console.error('Erro inesperado ao deletar anotação:', error);
+      toast.error('Erro inesperado. Tente novamente.');
     }
   };
 
+  // const handleDeleteConfirm = async () => {
+  //   try {
+  //     const success = await deleteAnnotation(currentAnnotation.id);
+  //     if (success) {
+  //       toast.success('Anotação deletada com sucesso!', {
+  //         icon: '🗑️',
+  //       });
+  //       setShowDeleteModal(false);
+  //       onUpdate?.();
+  //     } else {
+  //       toast.error('Erro ao deletar anotação');
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao deletar anotação:', error);
+  //     toast.error('Erro ao deletar anotação');
+  //   }
+  // };
+
   const formatMeasureRange = () => {
-    if (annotation.scope === 'SPECIFIC_MEASURE') {
+    if (currentAnnotation.scope === 'SPECIFIC_MEASURE') {
       if (
-        annotation.measureStart &&
-        annotation.measureEnd &&
-        annotation.measureStart !== annotation.measureEnd
+        currentAnnotation.measureStart &&
+        currentAnnotation.measureEnd &&
+        currentAnnotation.measureStart !== currentAnnotation.measureEnd
       ) {
-        return `Compassos ${annotation.measureStart}-${annotation.measureEnd}`;
-      } else if (annotation.measureStart) {
-        return `Compasso ${annotation.measureStart}`;
+        return `Compassos ${currentAnnotation.measureStart}-${currentAnnotation.measureEnd}`;
+      } else if (currentAnnotation.measureStart) {
+        return `Compasso ${currentAnnotation.measureStart}`;
       }
-    } else if (annotation.scope === 'SECTION' && annotation.section) {
-      return annotation.section;
-    } else if (annotation.scope === 'MOVEMENT' && annotation.movement) {
-      return annotation.movement;
+    } else if (
+      currentAnnotation.scope === 'SECTION' &&
+      currentAnnotation.section
+    ) {
+      return currentAnnotation.section;
+    } else if (
+      currentAnnotation.scope === 'MOVEMENT' &&
+      currentAnnotation.movement
+    ) {
+      return currentAnnotation.movement;
     }
     return null;
   };
 
+  // 🔧 CORRIGIDO: Função para converter UserAnnotation para WorkAnnotation
+  const convertToWorkAnnotation = (): WorkAnnotation => {
+    return {
+      id: currentAnnotation.id,
+      userId: currentAnnotation.userId,
+      workId: currentAnnotation.workId,
+      title: currentAnnotation.title,
+      content: currentAnnotation.content,
+      category: currentAnnotation.category as AnnotationCategory,
+      scope: currentAnnotation.scope as any,
+      measureStart: currentAnnotation.measureStart,
+      measureEnd: currentAnnotation.measureEnd,
+      movement: currentAnnotation.movement,
+      section: currentAnnotation.section,
+      pageNumber: currentAnnotation.pageNumber,
+      hand: currentAnnotation.hand,
+      voice: currentAnnotation.voice,
+      instrument: currentAnnotation.instrument,
+      difficulty: currentAnnotation.difficulty as any,
+      tags: currentAnnotation.tags,
+      isPublic: currentAnnotation.isPublic,
+      isVerified: currentAnnotation.isVerified,
+      helpfulCount: currentAnnotation.helpfulCount,
+      viewCount: currentAnnotation.viewCount,
+      createdAt: currentAnnotation.createdAt,
+      updatedAt: currentAnnotation.updatedAt,
+      user: {
+        id: currentAnnotation.userId,
+        firstName: 'Você',
+        lastName: '',
+      },
+      work: workInfo,
+      _count: currentAnnotation._count,
+      userVote: null,
+    };
+  };
+
   const measureInfo = formatMeasureRange();
-  const shouldTruncate = annotation.content.length > 200;
+  const shouldTruncate = currentAnnotation.content.length > 300;
   const displayContent =
-    showFullContent || !shouldTruncate
-      ? annotation.content
-      : annotation.content.substring(0, 200) + '...';
+    showMore || !shouldTruncate
+      ? currentAnnotation.content
+      : currentAnnotation.content.substring(0, 300) + '...';
 
-  if (viewMode === 'list') {
+  // 🔧 NOVO: Indicador visual para anotações otimísticas
+  const isOptimistic = storeAnnotation?.isOptimistic;
+
+  // 🔧 CORRIGIDO: Verificar se viewMode é table (como string literal)
+  if (viewMode === ('table' as ViewMode)) {
     return (
-      <>
-        <AnimatedCard
-          hover="lift"
-          className="classical-card p-6 group hover:shadow-theme-glow transition-all"
-        >
-          <div className="flex items-center space-x-6">
-            <div className="flex-1">
-              <div className="flex items-center space-x-4">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-3 mb-2">
-                    <h3 className="font-bold text-theme-primary group-hover:text-brand-primary transition-colors">
-                      {annotation.title}
-                    </h3>
-                    {annotation.isVerified && (
-                      <MdVerified
-                        className="w-4 h-4 text-accent-green"
-                        title="Verificado"
-                      />
-                    )}
-                    {annotation.isPublic ? (
-                      <FiGlobe
-                        className="w-4 h-4 text-accent-blue"
-                        title="Público"
-                      />
-                    ) : (
-                      <FiLock
-                        className="w-4 h-4 text-theme-tertiary"
-                        title="Privado"
-                      />
-                    )}
-                  </div>
-                  <p className="text-theme-secondary text-sm">
-                    {annotation.work.title} -{' '}
-                    {annotation.work.composer.fullName}
-                  </p>
-                  {annotation.work.opOrCatalog && (
-                    <p className="text-xs text-theme-tertiary">
-                      {annotation.work.opOrCatalog}
-                    </p>
-                  )}
-                </div>
-
-                {/* Compact info */}
-                <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
-                  {/* Category */}
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs border ${
-                      categoryConfig?.bgColor ||
-                      'bg-theme-primary/10 border-theme-primary/30 text-theme-primary'
-                    }`}
-                  >
-                    {categoryConfig?.label || annotation.category}
-                  </span>
-
-                  {/* Stats */}
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-1">
-                      <FiThumbsUp className="w-3 h-3" />
-                      <span>{annotation.helpfulCount}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <FiEye className="w-3 h-3" />
-                      <span>{annotation.viewCount}</span>
-                    </div>
-                  </div>
-
-                  {/* Date */}
-                  <span className="text-xs">
-                    {formatDistanceToNow(new Date(annotation.createdAt), {
-                      addSuffix: true,
-                      locale: ptBR,
-                    })}
-                  </span>
-                </div>
-
-                {/* Action buttons */}
-                <div className="flex items-center space-x-2">
-                  <AnimatedItem hover="scale">
-                    <button
-                      onClick={() => setShowEditModal(true)}
-                      className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-                      title="Editar"
-                    >
-                      <FiEdit3 className="w-4 h-4" />
-                    </button>
-                  </AnimatedItem>
-                  <AnimatedItem hover="scale">
-                    <button
-                      onClick={() => setShowDeleteModal(true)}
-                      className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
-                      title="Deletar"
-                    >
-                      <FiTrash2 className="w-4 h-4" />
-                    </button>
-                  </AnimatedItem>
-                  <AnimatedItem hover="scale">
-                    <Link
-                      href={`/works/${annotation.workId}`}
-                      className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-                      title="Ver obra"
-                    >
-                      <FiExternalLink className="w-4 h-4" />
-                    </Link>
-                  </AnimatedItem>
-                </div>
-              </div>
-            </div>
-          </div>
-        </AnimatedCard>
-
-        <ConfirmDeleteModal
-          isOpen={showDeleteModal}
-          onClose={() => setShowDeleteModal(false)}
-          onConfirm={handleDelete}
-          isLoading={isDeleting}
-          annotationTitle={annotation.title}
-        />
-
-        <CreateAnnotationModal
-          isOpen={showEditModal}
-          onClose={() => setShowEditModal(false)}
-          workId={annotation.workId}
-          workTitle={annotation.work.title}
-          composerName={annotation.work.composer.fullName}
-          editingAnnotation={annotation as any}
-        />
-      </>
-    );
-  }
-
-  // Card view
-  return (
-    <>
-      <AnimatedCard
-        hover="lift"
-        className="classical-card p-6 group hover:shadow-theme-glow transition-all"
+      <div
+        className={`classical-card-2 overflow-hidden group relative ${
+          isOptimistic ? 'opacity-70' : ''
+        } ${isUpdating ? 'pointer-events-none' : ''}`}
       >
-        {/* Header */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex-1">
-            <div className="flex items-center space-x-3 mb-2">
-              <h3 className="font-bold text-theme-primary group-hover:text-brand-primary transition-colors classical-title">
-                {annotation.title}
-              </h3>
-              {annotation.isVerified && (
-                <MdVerified
-                  className="w-5 h-5 text-accent-green"
-                  title="Verificado pela comunidade"
-                />
-              )}
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-theme-secondary">
-              <Link
-                href={`/works/${annotation.workId}`}
-                className="hover:text-brand-primary transition-colors font-medium"
-              >
-                {annotation.work.title}
-              </Link>
-              <span>por {annotation.work.composer.fullName}</span>
-            </div>
-            {annotation.work.opOrCatalog && (
-              <p className="text-sm text-theme-tertiary mt-1">
-                {annotation.work.opOrCatalog}
-              </p>
-            )}
-          </div>
-          <div className="flex items-center space-x-2 ml-4">
-            <AnimatedItem hover="scale">
-              <button
-                onClick={() => setShowEditModal(true)}
-                className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
-                title="Editar"
-              >
-                <FiEdit3 className="w-4 h-4" />
-              </button>
-            </AnimatedItem>
-            <AnimatedItem hover="scale">
-              <button
-                onClick={() => setShowDeleteModal(true)}
-                className="w-8 h-8 bg-theme-secondary hover:bg-accent-red/10 rounded-lg flex items-center justify-center text-theme-tertiary hover:text-accent-red transition-all"
-                title="Deletar"
-              >
-                <FiTrash2 className="w-4 h-4" />
-              </button>
-            </AnimatedItem>
-          </div>
-        </div>
-
-        {/* Badges */}
-        <div className="flex flex-wrap gap-2 mb-4">
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-medium border ${
-              categoryConfig?.bgColor ||
-              'bg-theme-primary/10 border-theme-primary/30 text-theme-primary'
-            } flex items-center space-x-1`}
-          >
-            <CategoryIcon className="w-3 h-3" />
-            <span>{categoryConfig?.label || annotation.category}</span>
-          </span>
-
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-medium border ${
-              DIFFICULTY_COLORS[
-                annotation.difficulty as keyof typeof DIFFICULTY_COLORS
-              ] ||
-              'bg-theme-primary/10 border-theme-primary/30 text-theme-primary'
-            }`}
-          >
-            {DIFFICULTY_LABELS[
-              annotation.difficulty as keyof typeof DIFFICULTY_LABELS
-            ] || annotation.difficulty}
-          </span>
-
-          {measureInfo && (
-            <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary flex items-center space-x-1">
-              <FiMapPin className="w-3 h-3" />
-              <span>{measureInfo}</span>
-            </span>
-          )}
-
-          {annotation.hand && (
-            <span className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-blue/10 border-accent-blue/30 text-accent-blue">
-              {annotation.hand === 'left'
-                ? 'Mão Esquerda'
-                : annotation.hand === 'right'
-                ? 'Mão Direita'
-                : 'Ambas as Mãos'}
-            </span>
-          )}
-
-          {annotation.pageNumber && (
-            <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary">
-              Página {annotation.pageNumber}
-            </span>
-          )}
-
-          {annotation.isPublic ? (
-            <span className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-blue/10 border-accent-blue/30 text-accent-blue flex items-center space-x-1">
-              <FiGlobe className="w-3 h-3" />
-              <span>Público</span>
-            </span>
-          ) : (
-            <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-tertiary/10 border-theme-tertiary/30 text-theme-tertiary flex items-center space-x-1">
-              <FiLock className="w-3 h-3" />
-              <span>Privado</span>
-            </span>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="mb-4">
-          <p className="text-theme-primary leading-relaxed whitespace-pre-line">
-            {displayContent}
-          </p>
-
-          {shouldTruncate && (
-            <button
-              onClick={() => setShowFullContent(!showFullContent)}
-              className="mt-2 text-sm text-brand-primary hover:text-brand-secondary font-medium transition-colors"
-            >
-              {showFullContent ? 'Ver menos' : 'Ver mais'}
-            </button>
-          )}
-        </div>
-
-        {/* Tags */}
-        {annotation.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-4">
-            {annotation.tags.map((tag, index) => (
-              <span
-                key={index}
-                className="px-2 py-1 bg-theme-elevated border border-theme-primary/20 rounded-lg text-xs text-theme-secondary"
-              >
-                #{tag}
+        {/* Loading overlay para updates */}
+        {isUpdating && (
+          <div className="absolute inset-0 bg-theme-primary/5 backdrop-blur-sm z-20 flex items-center justify-center">
+            <div className="flex items-center space-x-3 bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30">
+              <FiLoader className="w-4 h-4 animate-spin text-brand-primary" />
+              <span className="text-sm font-medium text-theme-primary">
+                {isOptimistic ? 'Salvando...' : 'Atualizando...'}
               </span>
-            ))}
+            </div>
           </div>
         )}
 
-        {/* Footer */}
-        <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
-          {/* Stats */}
-          <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
-            <div className="flex items-center space-x-1">
-              <FiThumbsUp className="w-4 h-4" />
-              <span>{annotation.helpfulCount} úteis</span>
+        <div className="p-4">
+          <div className="grid grid-cols-12 gap-4 items-center">
+            {/* Título e Obra */}
+            <div className="col-span-5">
+              <h3 className="font-semibold text-theme-primary text-sm mb-1 truncate">
+                {currentAnnotation.title}
+                {currentAnnotation.isVerified && (
+                  <MdVerified className="w-4 h-4 text-accent-green inline ml-2" />
+                )}
+                {isOptimistic && (
+                  <FiLoader className="w-3 h-3 animate-spin text-accent-blue inline ml-2" />
+                )}
+              </h3>
+              <div className="text-xs text-theme-secondary">
+                <Link
+                  href={`/works/${workInfo.id}`}
+                  className="hover:text-brand-primary transition-colors"
+                >
+                  {workInfo.title}
+                </Link>
+                <span className="text-theme-tertiary">
+                  {' '}
+                  - {workInfo.composer.name}
+                </span>
+              </div>
             </div>
-            <div className="flex items-center space-x-1">
-              <FiEye className="w-4 h-4" />
-              <span>{annotation.viewCount} visualizações</span>
+
+            {/* Categoria */}
+            <div className="col-span-2">
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium border ${
+                  categoryConfig?.bgColor ||
+                  'bg-theme-primary/10 border-theme-primary/30 text-theme-primary'
+                } flex items-center space-x-1`}
+              >
+                <CategoryIcon className="w-3 h-3" />
+                <span className="hidden sm:inline">
+                  {categoryConfig?.label || currentAnnotation.category}
+                </span>
+              </span>
             </div>
-            <div className="flex items-center space-x-1">
-              <FiClock className="w-4 h-4" />
-              <span>
-                {formatDistanceToNow(new Date(annotation.createdAt), {
-                  addSuffix: true,
-                  locale: ptBR,
-                })}
+
+            {/* Dificuldade */}
+            <div className="col-span-2">
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium border ${
+                  DIFFICULTY_COLORS[
+                    currentAnnotation.difficulty as keyof typeof DIFFICULTY_COLORS
+                  ] ||
+                  'bg-theme-primary/10 border-theme-primary/30 text-theme-primary'
+                }`}
+              >
+                {DIFFICULTY_LABELS[
+                  currentAnnotation.difficulty as keyof typeof DIFFICULTY_LABELS
+                ] || currentAnnotation.difficulty}
+              </span>
+            </div>
+
+            {/* Stats */}
+            <div className="col-span-2 text-xs text-theme-tertiary space-y-1">
+              <div className="flex items-center space-x-1">
+                <FiThumbsUp className="w-3 h-3" />
+                <span>{currentAnnotation.helpfulCount}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <FiEye className="w-3 h-3" />
+                <span>{currentAnnotation.viewCount}</span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="col-span-1 flex justify-end">
+              {isOwner && !isOptimistic && (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowActions(!showActions)}
+                    disabled={isUpdating}
+                    className={`w-6 h-6 rounded-lg bg-theme-elevated border border-theme-primary/30 flex items-center justify-center text-theme-tertiary hover:text-theme-primary hover:border-brand-primary/50 transition-all opacity-0 group-hover:opacity-100 ${
+                      isUpdating ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    <FiMoreHorizontal className="w-3 h-3" />
+                  </button>
+
+                  {showActions && !isUpdating && (
+                    <div className="absolute right-0 top-7 bg-theme-elevated border border-theme-primary/30 rounded-xl shadow-theme-glow z-10 py-2 min-w-[100px]">
+                      <button
+                        onClick={() => {
+                          setShowEditModal(true);
+                          setShowActions(false);
+                        }}
+                        className="w-full px-3 py-1 text-left text-xs text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
+                      >
+                        <FiEdit3 className="w-3 h-3" />
+                        <span>Editar</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowDeleteModal(true);
+                          setShowActions(false);
+                        }}
+                        className="w-full px-3 py-1 text-left text-xs text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
+                      >
+                        <FiTrash2 className="w-3 h-3" />
+                        <span>Deletar</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+              <Link
+                href={`/works/${workInfo.id}`}
+                className="w-6 h-6 rounded-lg bg-theme-elevated border border-theme-primary/30 flex items-center justify-center text-theme-tertiary hover:text-brand-primary hover:border-brand-primary/50 transition-all ml-2"
+              >
+                <FiExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Card mode (padrão)
+  return (
+    <>
+      <div
+        className={`classical-card-2 overflow-hidden group relative ${
+          isOptimistic ? 'opacity-70' : ''
+        } ${isUpdating ? 'pointer-events-none' : ''}`}
+      >
+        {/* Loading overlay para updates */}
+        {isUpdating && (
+          <div className="absolute inset-0 bg-theme-primary/5 backdrop-blur-sm z-20 flex items-center justify-center">
+            <div className="flex items-center space-x-3 bg-theme-elevated/90 rounded-xl px-4 py-2 border border-theme-primary/30">
+              <FiLoader className="w-4 h-4 animate-spin text-brand-primary" />
+              <span className="text-sm font-medium text-theme-primary">
+                {isOptimistic ? 'Salvando...' : 'Atualizando...'}
               </span>
             </div>
           </div>
+        )}
 
-          {/* Actions */}
-          <div className="flex items-center space-x-3">
-            <AnimatedItem hover="scale">
-              <Link
-                href={`/works/${annotation.workId}`}
-                className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start space-x-3 flex-1">
+              {/* Avatar/Icon */}
+              <div className="flex-shrink-0">
+                {annotation.user.image ? (
+                  <Image
+                    width={25}
+                    height={25}
+                    src={annotation.user.image}
+                    alt={
+                      annotation.user.firstName ||
+                      annotation.user.username ||
+                      'Usuário'
+                    }
+                    className="w-10 h-10 rounded-xl object-cover border-2 border-theme-primary/20"
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-gradient-to-br from-theme-primary to-theme-secondary rounded-xl flex items-center justify-center">
+                    <FiUser className="w-5 h-5 text-theme-primary" />
+                  </div>
+                )}
+              </div>
+
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-2 mb-1">
+                  <h3 className="text-lg font-semibold text-theme-primary classical-title truncate">
+                    {currentAnnotation.title}
+                  </h3>
+                  {currentAnnotation.isVerified && (
+                    <div className="flex items-center space-x-1 text-accent-green">
+                      <MdVerified className="w-4 h-4" />
+                      <span className="text-xs font-medium">Verificado</span>
+                    </div>
+                  )}
+                  {isOptimistic && (
+                    <div className="flex items-center space-x-1 text-accent-blue">
+                      <FiLoader className="w-3 h-3 animate-spin" />
+                      <span className="text-xs font-medium">Salvando</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center space-x-4 text-sm text-theme-secondary mb-2">
+                  <Link
+                    href={`/works/${workInfo.id}`}
+                    className="font-medium hover:text-brand-primary transition-colors"
+                  >
+                    {workInfo.title}
+                  </Link>
+                  <span className="text-theme-tertiary">
+                    {workInfo.composer.fullName}
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-2 text-xs text-theme-tertiary">
+                  <FiClock className="w-3 h-3" />
+                  <span>
+                    {formatDistanceToNow(
+                      new Date(currentAnnotation.createdAt),
+                      {
+                        addSuffix: true,
+                        locale: ptBR,
+                      }
+                    )}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Actions menu */}
+            {isOwner && !isOptimistic && (
+              <div className="relative">
+                <button
+                  onClick={() => setShowActions(!showActions)}
+                  disabled={isUpdating}
+                  className={`w-8 h-8 rounded-lg bg-theme-elevated border border-theme-primary/30 flex items-center justify-center text-theme-tertiary hover:text-theme-primary hover:border-brand-primary/50 transition-all opacity-0 group-hover:opacity-100 ${
+                    isUpdating ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                >
+                  <FiMoreHorizontal className="w-4 h-4" />
+                </button>
+
+                {showActions && !isUpdating && (
+                  <div className="absolute right-0 top-9 bg-theme-elevated border border-theme-primary/30 rounded-xl shadow-theme-glow z-10 py-2 min-w-[120px]">
+                    <button
+                      onClick={() => {
+                        setShowEditModal(true);
+                        setShowActions(false);
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm text-theme-primary hover:bg-interactive-hover flex items-center space-x-2 transition-colors"
+                    >
+                      <FiEdit3 className="w-3 h-3" />
+                      <span>Editar</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowDeleteModal(true);
+                        setShowActions(false);
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm text-accent-red hover:bg-accent-red/10 flex items-center space-x-2 transition-colors"
+                    >
+                      <FiTrash2 className="w-3 h-3" />
+                      <span>Deletar</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Badges */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                categoryConfig?.bgColor ||
+                'bg-theme-primary/10 border-theme-primary/30 text-theme-primary'
+              } flex items-center space-x-1`}
+            >
+              <CategoryIcon className="w-3 h-3" />
+              <span>{categoryConfig?.label || currentAnnotation.category}</span>
+            </span>
+
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                DIFFICULTY_COLORS[
+                  currentAnnotation.difficulty as keyof typeof DIFFICULTY_COLORS
+                ] ||
+                'bg-theme-primary/10 border-theme-primary/30 text-theme-primary'
+              }`}
+            >
+              {DIFFICULTY_LABELS[
+                currentAnnotation.difficulty as keyof typeof DIFFICULTY_LABELS
+              ] || currentAnnotation.difficulty}
+            </span>
+
+            {!currentAnnotation.isPublic && (
+              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-red/10 border-accent-red/30 text-accent-red flex items-center space-x-1">
+                <FiEye className="w-3 h-3" />
+                <span>Privada</span>
+              </span>
+            )}
+
+            {measureInfo && (
+              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary flex items-center space-x-1">
+                <FiMapPin className="w-3 h-3" />
+                <span>{measureInfo}</span>
+              </span>
+            )}
+
+            {currentAnnotation.pageNumber && (
+              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-theme-primary/10 border-theme-primary/30 text-theme-primary">
+                Página {currentAnnotation.pageNumber}
+              </span>
+            )}
+          </div>
+
+          {/* Content */}
+          <div className="mb-4">
+            <p className="text-theme-primary leading-relaxed whitespace-pre-line">
+              {displayContent}
+            </p>
+
+            {shouldTruncate && (
+              <button
+                onClick={() => setShowMore(!showMore)}
+                className="mt-2 text-sm text-brand-primary hover:text-brand-secondary font-medium transition-colors"
               >
-                <span>Ver Obra</span>
-                <FiExternalLink className="w-3 h-3" />
-              </Link>
-            </AnimatedItem>
+                {showMore ? 'Ver menos' : 'Ver mais'}
+              </button>
+            )}
+          </div>
+
+          {/* Tags */}
+          {currentAnnotation.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {currentAnnotation.tags.map((tag, index) => (
+                <span
+                  key={index}
+                  className="px-2 py-1 bg-theme-elevated border border-theme-primary/20 rounded-lg text-xs text-theme-secondary"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Footer */}
+          <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
+            {/* Stats */}
+            <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
+              <div className="flex items-center space-x-1">
+                <FiThumbsUp className="w-4 h-4" />
+                <span>{currentAnnotation.helpfulCount}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <FiEye className="w-4 h-4" />
+                <span>{currentAnnotation.viewCount}</span>
+              </div>
+              {currentAnnotation._count.replies > 0 && (
+                <div className="flex items-center space-x-1">
+                  <FiMessageCircle className="w-4 h-4" />
+                  <span>{currentAnnotation._count.replies}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Link para a obra */}
+            <Link
+              href={`/works/${workInfo.id}`}
+              className="btn-classical-secondary flex items-center space-x-2 text-sm"
+            >
+              <FiExternalLink className="w-4 h-4" />
+              <span>Ver Obra</span>
+            </Link>
           </div>
         </div>
-      </AnimatedCard>
+      </div>
+
+      {/* 🔧 CORRIGIDO: Modals com conversão de tipos */}
+      <CreateAnnotationModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        workId={currentAnnotation.workId}
+        workTitle={workInfo.title}
+        composerName={workInfo.composer.fullName}
+        editingAnnotation={convertToWorkAnnotation()}
+      />
 
       <ConfirmDeleteModal
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
-        onConfirm={handleDelete}
+        onConfirm={handleDeleteConfirm}
         isLoading={isDeleting}
-        annotationTitle={annotation.title}
-      />
-
-      <CreateAnnotationModal
-        isOpen={showEditModal}
-        onClose={() => setShowEditModal(false)}
-        workId={annotation.workId}
-        workTitle={annotation.work.title}
-        composerName={annotation.work.composer.fullName}
-        editingAnnotation={annotation as any}
+        annotationTitle={currentAnnotation.title}
       />
     </>
   );

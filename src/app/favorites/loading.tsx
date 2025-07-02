@@ -73,7 +73,7 @@ export default function FavoritesLoading() {
         </div>
 
         {/* Statistics Cards Skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {[
             { icon: <FiHeart className="w-6 h-6 text-theme-inverse/20" /> },
             { icon: <FiUser className="w-6 h-6 text-theme-inverse/20" /> },
@@ -90,7 +90,7 @@ export default function FavoritesLoading() {
               <div className="h-4 bg-theme-elevated rounded"></div>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* Controls Skeleton */}
         <div className="classical-card p-6">

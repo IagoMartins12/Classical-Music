@@ -1,4 +1,4 @@
-// stores/useAnnotationsStore.ts - VERSÃO COM FILTROS AVANÇADOS CORRIGIDOS
+// stores/useAnnotationsStore.ts - VERSÃO COM MÉTODOS DE USUÁRIO
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
@@ -59,6 +59,7 @@ export interface WorkAnnotation {
   work?: {
     id: string;
     title: string;
+    opOrCatalog?: string;
     composer: {
       name: string;
       fullName: string;
@@ -93,11 +94,13 @@ export interface AnnotationPagination {
 interface AnnotationsStore {
   annotations: Record<string, WorkAnnotation[]>; // workId -> todas as anotações
   filteredAnnotations: Record<string, WorkAnnotation[]>; // workId -> anotações filtradas
+  userAnnotations: Record<string, WorkAnnotation[]>; // 🔧 NOVO: userId -> anotações do usuário
   loading: {
-    fetch: Set<string>; // workIds being fetched
+    fetch: Set<string>; // workIds/userIds being fetched
     create: boolean;
     update: Set<string>; // annotationIds being updated
     vote: Set<string>; // annotationIds being voted on
+    delete: Set<string>; // 🔧 NOVO: annotationIds being deleted
   };
   filters: AnnotationFilters;
   pagination: Record<string, AnnotationPagination>; // workId -> pagination
@@ -108,6 +111,14 @@ interface AnnotationsStore {
     filters?: AnnotationFilters,
     page?: number
   ) => Promise<void>;
+
+  // 🔧 NOVO: Actions para anotações do usuário
+  fetchUserAnnotations: (
+    userId: string,
+    filters?: AnnotationFilters,
+    page?: number
+  ) => Promise<void>;
+  getUserAnnotations: (userId: string) => WorkAnnotation[];
 
   // Actions para CRUD
   createAnnotation: (
@@ -129,9 +140,9 @@ interface AnnotationsStore {
   setFilters: (filters: AnnotationFilters) => void;
   clearFilters: () => void;
 
-  // Getters - 🔧 NOVO: Separar anotações totais das filtradas
-  getAllWorkAnnotations: (workId: string) => WorkAnnotation[]; // TODAS as anotações
-  getWorkAnnotations: (workId: string) => WorkAnnotation[]; // Anotações filtradas (se houver filtros)
+  // Getters
+  getAllWorkAnnotations: (workId: string) => WorkAnnotation[];
+  getWorkAnnotations: (workId: string) => WorkAnnotation[];
   getAnnotationById: (annotationId: string) => WorkAnnotation | undefined;
   getAnnotationsByCategory: (
     workId: string,
@@ -148,10 +159,11 @@ interface AnnotationsStore {
   };
 
   // Loading states
-  setFetchLoading: (workId: string, loading: boolean) => void;
+  setFetchLoading: (key: string, loading: boolean) => void;
   setCreateLoading: (loading: boolean) => void;
   setUpdateLoading: (annotationId: string, loading: boolean) => void;
   setVoteLoading: (annotationId: string, loading: boolean) => void;
+  setDeleteLoading: (annotationId: string, loading: boolean) => void; // 🔧 NOVO
 
   // Utilities
   addAnnotationToWork: (workId: string, annotation: WorkAnnotation) => void;
@@ -163,6 +175,11 @@ interface AnnotationsStore {
     helpfulCount: number
   ) => void;
 
+  // 🔧 NOVO: Utilities para anotações do usuário
+  addUserAnnotation: (userId: string, annotation: WorkAnnotation) => void;
+  updateUserAnnotation: (userId: string, annotation: WorkAnnotation) => void;
+  removeUserAnnotation: (userId: string, annotationId: string) => void;
+
   // Optimistic updates
   addOptimisticAnnotation: (workId: string, annotation: WorkAnnotation) => void;
   removeOptimisticAnnotation: (workId: string, annotationId: string) => void;
@@ -171,59 +188,85 @@ interface AnnotationsStore {
   // Reset
   reset: () => void;
   clearWorkAnnotations: (workId: string) => void;
+
+  // Eventos customizados
+  dispatchAnnotationEvent: (
+    type: 'created' | 'updated' | 'deleted',
+    annotation?: WorkAnnotation
+  ) => void;
 }
 
+// Funções para invalidar cache e disparar eventos
 const invalidateNextJSCache = async (userId?: string) => {
-  try {
-    // Invalidar cache via API route
-    await fetch('/api/revalidate-annotations', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userId }),
-    });
-  } catch (error) {
-    console.error('Erro ao invalidar cache:', error);
-  }
+  // try {
+  //   await fetch('/api/revalidate-annotations', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ userId }),
+  //   });
+  // } catch (error) {
+  //   console.error('Erro ao invalidar cache:', error);
+  // }
+};
+
+const dispatchCustomEvent = (
+  type: 'created' | 'updated' | 'deleted',
+  annotation?: WorkAnnotation
+) => {
+  if (typeof window === 'undefined') return;
+
+  const eventName = `annotation${type.charAt(0).toUpperCase() + type.slice(1)}`;
+  const event = new CustomEvent(eventName, {
+    detail: annotation
+      ? {
+          id: annotation.id,
+          workId: annotation.workId,
+          userId: annotation.userId,
+          title: annotation.title,
+        }
+      : {},
+  });
+
+  console.log('🔥 Disparando evento:', eventName, event.detail);
+  window.dispatchEvent(event);
 };
 
 export const useAnnotationsStore = create<AnnotationsStore>()(
   persist(
     (set, get) => ({
-      annotations: {}, // Todas as anotações
-      filteredAnnotations: {}, // Anotações filtradas
+      annotations: {},
+      filteredAnnotations: {},
+      userAnnotations: {}, // 🔧 NOVO: Cache de anotações por usuário
       loading: {
         fetch: new Set(),
         create: false,
         update: new Set(),
         vote: new Set(),
+        delete: new Set(), // 🔧 NOVO
       },
       filters: {},
       pagination: {},
 
-      // 🔧 CORREÇÃO PRINCIPAL: Manter separação entre anotações totais e filtradas
       fetchWorkAnnotations: async (workId: string, filters = {}, page = 1) => {
         const { setFetchLoading } = get();
 
         setFetchLoading(workId, true);
 
         try {
-          // 🔧 CORREÇÃO: Construir searchParams com TODOS os filtros
           const searchParams = new URLSearchParams({
             workId,
             page: page.toString(),
             limit: '20',
           });
 
-          // Verificar se há filtros aplicados
           const hasFilters = Object.keys(filters).some(
             (key) =>
               filters[key as keyof typeof filters] !== undefined &&
               filters[key as keyof typeof filters] !== ''
           );
 
-          // 🔧 NOVO: Adicionar todos os filtros disponíveis
           if (filters.category) {
             searchParams.append('category', filters.category);
           }
@@ -248,13 +291,6 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             searchParams.append('sortBy', filters.sortBy);
           }
 
-          console.log('🔍 Buscando anotações:', {
-            workId,
-            filters,
-            hasFilters,
-            searchParams: searchParams.toString(),
-          });
-
           const response = await fetch(`/api/annotations?${searchParams}`);
 
           if (!response.ok) {
@@ -263,28 +299,19 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
 
           const data = await response.json();
 
-          console.log('🔍 Dados recebidos:', {
-            total: data.annotations?.length,
-            pagination: data.pagination,
-            filters: filters,
-          });
-
           set((state) => {
             const newAnnotations = { ...state.annotations };
             const newFilteredAnnotations = { ...state.filteredAnnotations };
             const newPagination = { ...state.pagination };
 
             if (page === 1) {
-              // Primeira página
               const existing = newAnnotations[workId] || [];
               const optimisticAnnotations = existing.filter(
                 (a) => a.isOptimistic
               );
 
               if (hasFilters) {
-                // Com filtros: manter annotations originais, atualizar filteredAnnotations
                 if (!newAnnotations[workId]) {
-                  // Se não temos as anotações originais ainda, estas são as originais
                   newAnnotations[workId] = [
                     ...optimisticAnnotations,
                     ...data.annotations,
@@ -295,7 +322,6 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
                   ...data.annotations,
                 ];
               } else {
-                // Sem filtros: estas são TODAS as anotações da obra
                 newAnnotations[workId] = [
                   ...optimisticAnnotations,
                   ...data.annotations,
@@ -306,7 +332,6 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
                 ];
               }
             } else {
-              // Páginas adicionais - concatenar nas filtered
               const existingFiltered = newFilteredAnnotations[workId] || [];
               newFilteredAnnotations[workId] = [
                 ...existingFiltered,
@@ -314,7 +339,6 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
               ];
 
               if (!hasFilters) {
-                // Se não há filtros, também atualizar as annotations principais
                 const existingAll = newAnnotations[workId] || [];
                 newAnnotations[workId] = [...existingAll, ...data.annotations];
               }
@@ -336,12 +360,101 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         }
       },
 
-      // Criar anotação com update otimista (mantido igual)
+      // 🔧 NOVO: Buscar anotações do usuário
+      fetchUserAnnotations: async (userId: string, filters = {}, page = 1) => {
+        const { setFetchLoading } = get();
+
+        setFetchLoading('user-annotations', true);
+
+        try {
+          console.log('🔍 Buscando anotações do usuário:', userId, filters);
+
+          const searchParams = new URLSearchParams({
+            userId,
+            page: page.toString(),
+            limit: '50', // Mais itens para usuário próprio
+          });
+
+          // Incluir o userId nos filtros sempre
+          const userFilters = { ...filters, userId };
+
+          if (userFilters.category) {
+            searchParams.append('category', userFilters.category);
+          }
+
+          if (userFilters.difficulty) {
+            searchParams.append('difficulty', userFilters.difficulty);
+          }
+
+          if (userFilters.scope) {
+            searchParams.append('scope', userFilters.scope);
+          }
+
+          if (userFilters.search) {
+            searchParams.append('search', userFilters.search);
+          }
+
+          if (userFilters.sortBy) {
+            searchParams.append('sortBy', userFilters.sortBy);
+          }
+
+          const response = await fetch(`/api/annotations?${searchParams}`);
+
+          if (!response.ok) {
+            throw new Error('Erro ao buscar anotações do usuário');
+          }
+
+          const data = await response.json();
+
+          set((state) => {
+            const newUserAnnotations = { ...state.userAnnotations };
+            const newPagination = { ...state.pagination };
+
+            if (page === 1) {
+              // Primeira página - substituir
+              newUserAnnotations[userId] = data.annotations || [];
+            } else {
+              // Páginas subsequentes - adicionar
+              const existing = newUserAnnotations[userId] || [];
+              newUserAnnotations[userId] = [
+                ...existing,
+                ...(data.annotations || []),
+              ];
+            }
+
+            newPagination[`user-${userId}`] = data.pagination;
+
+            console.log(
+              '✅ Anotações do usuário carregadas:',
+              newUserAnnotations[userId]?.length
+            );
+
+            return {
+              userAnnotations: newUserAnnotations,
+              pagination: newPagination,
+              filters: { ...state.filters, ...userFilters },
+            };
+          });
+        } catch (error) {
+          console.error('Erro ao buscar anotações do usuário:', error);
+        } finally {
+          setFetchLoading('user-annotations', false);
+        }
+      },
+
+      // 🔧 NOVO: Getter para anotações do usuário
+      getUserAnnotations: (userId: string) => {
+        const { userAnnotations } = get();
+        return userAnnotations[userId] || [];
+      },
+
       createAnnotation: async (data) => {
         const {
           setCreateLoading,
           addOptimisticAnnotation,
           removeOptimisticAnnotation,
+          addUserAnnotation,
+          dispatchAnnotationEvent,
         } = get();
 
         if (!data.workId || !data.title || !data.content) {
@@ -350,7 +463,6 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
 
         setCreateLoading(true);
 
-        // Criar anotação otimística temporária
         const optimisticId = `optimistic_${Date.now()}_${Math.random()}`;
         const optimisticAnnotation: WorkAnnotation = {
           id: optimisticId,
@@ -390,7 +502,11 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           isOptimistic: true,
         };
 
+        // Adicionar otimisticamente em ambos os caches
         addOptimisticAnnotation(data.workId, optimisticAnnotation);
+        if (data.userId) {
+          addUserAnnotation(data.userId, optimisticAnnotation);
+        }
 
         try {
           const response = await fetch('/api/annotations', {
@@ -406,12 +522,15 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           const result = await response.json();
 
           if (result.success && result.annotation) {
+            // Remover otimística e adicionar real
             removeOptimisticAnnotation(data.workId, optimisticId);
 
             set((state) => {
               const newAnnotations = { ...state.annotations };
               const newFilteredAnnotations = { ...state.filteredAnnotations };
+              const newUserAnnotations = { ...state.userAnnotations };
 
+              // Atualizar cache de obra
               const existingAll = newAnnotations[data.workId || 0] || [];
               const existingFiltered =
                 newFilteredAnnotations[data.workId || 0] || [];
@@ -425,13 +544,27 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
                 ...existingFiltered,
               ];
 
+              // 🔧 NOVO: Atualizar cache do usuário
+              if (data.userId) {
+                const userAnnotations = newUserAnnotations[data.userId] || [];
+                // Remover otimística se existir
+                const withoutOptimistic = userAnnotations.filter(
+                  (a) => a.id !== optimisticId
+                );
+                newUserAnnotations[data.userId] = [
+                  result.annotation,
+                  ...withoutOptimistic,
+                ];
+              }
+
               return {
                 annotations: newAnnotations,
                 filteredAnnotations: newFilteredAnnotations,
+                userAnnotations: newUserAnnotations,
               };
             });
 
-            // 🔧 NOVO: Invalidar cache do Next.js após criação
+            dispatchAnnotationEvent('created', result.annotation);
             await invalidateNextJSCache(data.userId);
 
             return result.annotation;
@@ -441,18 +574,34 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         } catch (error) {
           console.error('Erro ao criar anotação:', error);
           removeOptimisticAnnotation(data.workId, optimisticId);
+
+          // 🔧 NOVO: Remover do cache do usuário também
+          if (data.userId) {
+            set((state) => {
+              const newUserAnnotations = { ...state.userAnnotations };
+
+              if (!data.userId) return { userAnnotations: newUserAnnotations };
+              if (newUserAnnotations[data.userId]) {
+                newUserAnnotations[data.userId] = newUserAnnotations[
+                  data.userId
+                ].filter((a) => a.id !== optimisticId);
+              }
+              return { userAnnotations: newUserAnnotations };
+            });
+          }
+
           return null;
         } finally {
           setCreateLoading(false);
         }
       },
 
-      // 🔧 CORREÇÃO: Atualizar anotação com invalidação de cache
       updateAnnotation: async (annotationId, data) => {
         const {
           setUpdateLoading,
           getAnnotationById,
           markAnnotationAsUpdating,
+          dispatchAnnotationEvent,
         } = get();
 
         const annotation = getAnnotationById(annotationId);
@@ -467,7 +616,9 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         set((state) => {
           const newAnnotations = { ...state.annotations };
           const newFilteredAnnotations = { ...state.filteredAnnotations };
+          const newUserAnnotations = { ...state.userAnnotations };
 
+          // Atualizar em todos os caches de obras
           for (const [workId, annotations] of Object.entries(newAnnotations)) {
             const updated = annotations.map((a) =>
               a.id === annotationId ? optimisticUpdate : a
@@ -484,9 +635,20 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             newFilteredAnnotations[workId] = updated;
           }
 
+          // 🔧 NOVO: Atualizar em todos os caches de usuários
+          for (const [userId, annotations] of Object.entries(
+            newUserAnnotations
+          )) {
+            const updated = annotations.map((a) =>
+              a.id === annotationId ? optimisticUpdate : a
+            );
+            newUserAnnotations[userId] = updated;
+          }
+
           return {
             annotations: newAnnotations,
             filteredAnnotations: newFilteredAnnotations,
+            userAnnotations: newUserAnnotations,
           };
         });
 
@@ -502,6 +664,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             set((state) => {
               const newAnnotations = { ...state.annotations };
               const newFilteredAnnotations = { ...state.filteredAnnotations };
+              const newUserAnnotations = { ...state.userAnnotations };
 
               for (const [workId, annotations] of Object.entries(
                 newAnnotations
@@ -525,9 +688,21 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
                 newFilteredAnnotations[workId] = reverted;
               }
 
+              for (const [userId, annotations] of Object.entries(
+                newUserAnnotations
+              )) {
+                const reverted = annotations.map((a) =>
+                  a.id === annotationId
+                    ? { ...annotation, isUpdating: false }
+                    : a
+                );
+                newUserAnnotations[userId] = reverted;
+              }
+
               return {
                 annotations: newAnnotations,
                 filteredAnnotations: newFilteredAnnotations,
+                userAnnotations: newUserAnnotations,
               };
             });
 
@@ -540,14 +715,18 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             set((state) => {
               const newAnnotations = { ...state.annotations };
               const newFilteredAnnotations = { ...state.filteredAnnotations };
+              const newUserAnnotations = { ...state.userAnnotations };
+
+              const finalAnnotation = {
+                ...result.annotation,
+                isUpdating: false,
+              };
 
               for (const [workId, annotations] of Object.entries(
                 newAnnotations
               )) {
                 const updated = annotations.map((a) =>
-                  a.id === annotationId
-                    ? { ...result.annotation, isUpdating: false }
-                    : a
+                  a.id === annotationId ? finalAnnotation : a
                 );
                 newAnnotations[workId] = updated;
               }
@@ -556,20 +735,28 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
                 newFilteredAnnotations
               )) {
                 const updated = annotations.map((a) =>
-                  a.id === annotationId
-                    ? { ...result.annotation, isUpdating: false }
-                    : a
+                  a.id === annotationId ? finalAnnotation : a
                 );
                 newFilteredAnnotations[workId] = updated;
+              }
+
+              for (const [userId, annotations] of Object.entries(
+                newUserAnnotations
+              )) {
+                const updated = annotations.map((a) =>
+                  a.id === annotationId ? finalAnnotation : a
+                );
+                newUserAnnotations[userId] = updated;
               }
 
               return {
                 annotations: newAnnotations,
                 filteredAnnotations: newFilteredAnnotations,
+                userAnnotations: newUserAnnotations,
               };
             });
 
-            // 🔧 NOVO: Invalidar cache do Next.js após atualização
+            dispatchAnnotationEvent('updated', result.annotation);
             await invalidateNextJSCache(annotation.userId);
 
             return result.annotation;
@@ -585,12 +772,28 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         }
       },
 
-      // 🔧 CORREÇÃO: Deletar anotação com invalidação de cache
       deleteAnnotation: async (annotationId) => {
-        const { getAnnotationById, removeAnnotationFromWork } = get();
+        const {
+          getAnnotationById,
+          removeAnnotationFromWork,
+          removeUserAnnotation,
+          addAnnotationToWork,
+          addUserAnnotation,
+          setDeleteLoading,
+          dispatchAnnotationEvent,
+        } = get();
 
         const annotation = getAnnotationById(annotationId);
         if (!annotation) return false;
+
+        // 🔧 NOVO: Mostrar loading
+        setDeleteLoading(annotationId, true);
+
+        // 🔧 OTIMIZAÇÃO: Remoção otimista - remove imediatamente da UI
+        removeAnnotationFromWork(annotation.workId, annotationId);
+        removeUserAnnotation(annotation.userId, annotationId);
+
+        console.log('🗑️ [Otimista] Anotação removida da UI:', annotationId);
 
         try {
           const response = await fetch(`/api/annotations/${annotationId}`, {
@@ -598,22 +801,35 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           });
 
           if (!response.ok) {
+            // 🔧 REVERTER: Se deu erro, adicionar de volta
+            addAnnotationToWork(annotation.workId, annotation);
+            addUserAnnotation(annotation.userId, annotation);
+
+            console.log(
+              '❌ [Revertido] Erro na API, anotação restaurada:',
+              annotationId
+            );
             throw new Error('Erro ao deletar anotação');
           }
 
-          removeAnnotationFromWork(annotation.workId, annotationId);
-
-          // 🔧 NOVO: Invalidar cache do Next.js após deleção
+          // ✅ Sucesso - disparar eventos
+          dispatchAnnotationEvent('deleted', annotation);
           await invalidateNextJSCache(annotation.userId);
 
+          console.log(
+            '✅ [Confirmado] Anotação deletada com sucesso:',
+            annotationId
+          );
           return true;
         } catch (error) {
+          // A reversão já foi feita acima
           console.error('Erro ao deletar anotação:', error);
           return false;
+        } finally {
+          setDeleteLoading(annotationId, false);
         }
       },
 
-      // Votar em anotação (mantido igual)
       voteAnnotation: async (annotationId, isHelpful) => {
         const { setVoteLoading, updateAnnotationVote, getAnnotationById } =
           get();
@@ -687,22 +903,19 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         }
       },
 
-      // 🔧 CORREÇÃO: Melhorar setFilters para resetar paginação quando filtros mudam
       setFilters: (filters) => {
         set((state) => {
-          // Se os filtros mudaram, resetar paginação para forçar nova busca
           const filtersChanged =
             JSON.stringify(state.filters) !== JSON.stringify(filters);
 
           return {
             filters: { ...state.filters, ...filters },
-            // Resetar paginação se filtros mudaram
             ...(filtersChanged && {
               pagination: Object.keys(state.pagination).reduce(
-                (acc, workId) => ({
+                (acc, key) => ({
                   ...acc,
-                  [workId]: {
-                    ...state.pagination[workId],
+                  [key]: {
+                    ...state.pagination[key],
                     page: 1,
                     hasMore: true,
                   },
@@ -717,12 +930,11 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
       clearFilters: () => {
         set((state) => ({
           filters: {},
-          // Resetar paginação ao limpar filtros
           pagination: Object.keys(state.pagination).reduce(
-            (acc, workId) => ({
+            (acc, key) => ({
               ...acc,
-              [workId]: {
-                ...state.pagination[workId],
+              [key]: {
+                ...state.pagination[key],
                 page: 1,
                 hasMore: true,
               },
@@ -732,14 +944,11 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         }));
       },
 
-      // 🔧 NOVO: Getters separados para anotações totais e filtradas
       getAllWorkAnnotations: (workId) => {
-        // Sempre retorna TODAS as anotações da obra (para estatísticas)
         return get().annotations[workId] || [];
       },
 
       getWorkAnnotations: (workId) => {
-        // Retorna anotações filtradas se houver filtros, senão todas
         const { filteredAnnotations, annotations, filters } = get();
         const hasFilters = Object.keys(filters).some(
           (key) =>
@@ -755,17 +964,25 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
       },
 
       getAnnotationById: (annotationId) => {
-        const { annotations, filteredAnnotations } = get();
+        const { annotations, filteredAnnotations, userAnnotations } = get();
 
-        // Buscar primeiro nas anotações principais
+        // Buscar em annotations de obras
         for (const workAnnotations of Object.values(annotations)) {
           const annotation = workAnnotations.find((a) => a.id === annotationId);
           if (annotation) return annotation;
         }
 
-        // Se não encontrou, buscar nas filtradas
+        // Buscar em filteredAnnotations
         for (const workAnnotations of Object.values(filteredAnnotations)) {
           const annotation = workAnnotations.find((a) => a.id === annotationId);
+          if (annotation) return annotation;
+        }
+
+        // 🔧 NOVO: Buscar em userAnnotations
+        for (const userAnnotationsList of Object.values(userAnnotations)) {
+          const annotation = userAnnotationsList.find(
+            (a) => a.id === annotationId
+          );
           if (annotation) return annotation;
         }
 
@@ -784,17 +1001,10 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         return getAllWorkAnnotations(workId).filter((a) => a.userId === userId);
       },
 
-      // 🔧 CORREÇÃO: Estatísticas sempre baseadas em TODAS as anotações da obra (independente de filtros)
       getAnnotationStats: (workId) => {
         const { getAllWorkAnnotations } = get();
-
-        // 🔧 IMPORTANTE: Sempre calcular sobre TODAS as anotações da obra, independente dos filtros aplicados
-        // Isso garante que as estatísticas sejam consistentes e que o botão "Todas" sempre mostre o total correto
         const allAnnotations = getAllWorkAnnotations(workId);
-
-        // Separar otimísticas das reais para o total
         const realAnnotations = allAnnotations.filter((a) => !a.isOptimistic);
-
 
         const byCategory: Record<AnnotationCategory, number> = {
           TECHNIQUE: 0,
@@ -813,33 +1023,31 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           ALL_LEVELS: 0,
         };
 
-        // 🔧 CORREÇÃO: Contar todas as anotações (reais + otimísticas) para estatísticas
         allAnnotations.forEach((annotation) => {
           byCategory[annotation.category]++;
           byDifficulty[annotation.difficulty]++;
         });
 
-        // Para "mais úteis", usar apenas as reais (otimísticas ainda não têm votos)
         const mostHelpful = [...realAnnotations]
           .sort((a, b) => b.helpfulCount - a.helpfulCount)
           .slice(0, 5);
 
         return {
-          total: allAnnotations.length, // Total inclui otimísticas
+          total: allAnnotations.length,
           byCategory,
           byDifficulty,
           mostHelpful,
         };
       },
 
-      // Loading states (mantidos iguais)
-      setFetchLoading: (workId, loading) => {
+      // Loading states
+      setFetchLoading: (key, loading) => {
         set((state) => {
           const newLoading = new Set(state.loading.fetch);
           if (loading) {
-            newLoading.add(workId);
+            newLoading.add(key);
           } else {
-            newLoading.delete(workId);
+            newLoading.delete(key);
           }
           return {
             loading: {
@@ -893,7 +1101,24 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         });
       },
 
-      // Utilities - 🔧 ATUALIZADO: Trabalhar com ambas as estruturas
+      setDeleteLoading: (annotationId, loading) => {
+        set((state) => {
+          const newLoading = new Set(state.loading.delete);
+          if (loading) {
+            newLoading.add(annotationId);
+          } else {
+            newLoading.delete(annotationId);
+          }
+          return {
+            loading: {
+              ...state.loading,
+              delete: newLoading,
+            },
+          };
+        });
+      },
+
+      // Utilities
       addAnnotationToWork: (workId, annotation) => {
         set((state) => {
           const newAnnotations = { ...state.annotations };
@@ -964,8 +1189,9 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         set((state) => {
           const newAnnotations = { ...state.annotations };
           const newFilteredAnnotations = { ...state.filteredAnnotations };
+          const newUserAnnotations = { ...state.userAnnotations };
 
-          // Atualizar em ambas as estruturas
+          // Atualizar em todos os caches
           for (const [workId, annotations] of Object.entries(newAnnotations)) {
             const updated = annotations.map((annotation) =>
               annotation.id === annotationId
@@ -986,14 +1212,70 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             newFilteredAnnotations[workId] = updated;
           }
 
+          for (const [userId, annotations] of Object.entries(
+            newUserAnnotations
+          )) {
+            const updated = annotations.map((annotation) =>
+              annotation.id === annotationId
+                ? { ...annotation, userVote, helpfulCount }
+                : annotation
+            );
+            newUserAnnotations[userId] = updated;
+          }
+
           return {
             annotations: newAnnotations,
             filteredAnnotations: newFilteredAnnotations,
+            userAnnotations: newUserAnnotations,
           };
         });
       },
 
-      // Métodos para updates otimistas - 🔧 ATUALIZADO
+      // 🔧 NOVO: Utilities para anotações do usuário
+      addUserAnnotation: (userId, annotation) => {
+        set((state) => {
+          const newUserAnnotations = { ...state.userAnnotations };
+          const existing = newUserAnnotations[userId] || [];
+          newUserAnnotations[userId] = [annotation, ...existing];
+
+          return {
+            userAnnotations: newUserAnnotations,
+          };
+        });
+      },
+
+      updateUserAnnotation: (userId, updatedAnnotation) => {
+        set((state) => {
+          const newUserAnnotations = { ...state.userAnnotations };
+          const existing = newUserAnnotations[userId] || [];
+
+          const updated = existing.map((a) =>
+            a.id === updatedAnnotation.id ? updatedAnnotation : a
+          );
+
+          newUserAnnotations[userId] = updated;
+
+          return {
+            userAnnotations: newUserAnnotations,
+          };
+        });
+      },
+
+      removeUserAnnotation: (userId, annotationId) => {
+        set((state) => {
+          const newUserAnnotations = { ...state.userAnnotations };
+          const existing = newUserAnnotations[userId] || [];
+
+          const filtered = existing.filter((a) => a.id !== annotationId);
+          newUserAnnotations[userId] = filtered;
+
+          return {
+            userAnnotations: newUserAnnotations,
+          };
+        });
+      },
+
+      // Métodos para updates otimistas (continuam iguais)
       addOptimisticAnnotation: (workId, annotation) => {
         set((state) => {
           const newAnnotations = { ...state.annotations };
@@ -1039,8 +1321,8 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
         set((state) => {
           const newAnnotations = { ...state.annotations };
           const newFilteredAnnotations = { ...state.filteredAnnotations };
+          const newUserAnnotations = { ...state.userAnnotations };
 
-          // Atualizar em ambas as estruturas
           for (const [workId, annotations] of Object.entries(newAnnotations)) {
             const updated = annotations.map((annotation) =>
               annotation.id === annotationId
@@ -1061,23 +1343,41 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             newFilteredAnnotations[workId] = updated;
           }
 
+          for (const [userId, annotations] of Object.entries(
+            newUserAnnotations
+          )) {
+            const updated = annotations.map((annotation) =>
+              annotation.id === annotationId
+                ? { ...annotation, isUpdating: updating }
+                : annotation
+            );
+            newUserAnnotations[userId] = updated;
+          }
+
           return {
             annotations: newAnnotations,
             filteredAnnotations: newFilteredAnnotations,
+            userAnnotations: newUserAnnotations,
           };
         });
       },
 
-      // Reset - 🔧 ATUALIZADO
+      dispatchAnnotationEvent: (type, annotation) => {
+        dispatchCustomEvent(type, annotation);
+      },
+
+      // Reset
       reset: () => {
         set({
           annotations: {},
           filteredAnnotations: {},
+          userAnnotations: {},
           loading: {
             fetch: new Set(),
             create: false,
             update: new Set(),
             vote: new Set(),
+            delete: new Set(), // 🔧 NOVO
           },
           filters: {},
           pagination: {},
@@ -1108,6 +1408,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
       partialize: (state) => ({
         annotations: state.annotations,
         filteredAnnotations: state.filteredAnnotations,
+        userAnnotations: state.userAnnotations, // 🔧 NOVO: Persistir cache do usuário
         filters: state.filters,
         pagination: state.pagination,
       }),
@@ -1118,6 +1419,7 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             create: false,
             update: new Set(),
             vote: new Set(),
+            delete: new Set(), // 🔧 NOVO
           };
 
           if (!state.annotations || typeof state.annotations !== 'object') {
@@ -1128,6 +1430,12 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             typeof state.filteredAnnotations !== 'object'
           ) {
             state.filteredAnnotations = {};
+          }
+          if (
+            !state.userAnnotations ||
+            typeof state.userAnnotations !== 'object'
+          ) {
+            state.userAnnotations = {};
           }
           if (!state.pagination || typeof state.pagination !== 'object') {
             state.pagination = {};

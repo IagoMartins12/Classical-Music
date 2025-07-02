@@ -45,6 +45,8 @@ export function useMostFavoritedScore(workId: string) {
           }
         );
 
+        console.log('RESPONSE', response);
+
         if (response.ok) {
           const data = await response.json();
 
