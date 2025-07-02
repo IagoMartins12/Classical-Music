@@ -7,9 +7,9 @@ const HeroMainPage = () => {
       {/* Seção Principal - História da Música */}
       <Link
         href="/music-history"
-        className="w-full lg:w-8/12 relative rounded-2xl classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500"
+        className="relative w-full lg:w-8/12 rounded-2xl  !p-0 classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500 flex"
       >
-        <div className="relative h-full ">
+        <div className="relative flex-1 h-96 md:h-80 lg:h-auto">
           <Image
             alt="Período clássico da música - Instrumentos históricos e partituras antigas"
             src="/classical-period-2.jpg"
@@ -31,7 +31,7 @@ const HeroMainPage = () => {
             <h2 className="text-2xl lg:text-3xl font-bold mb-3 leading-tight">
               História da Música Clássica
             </h2>
-            <p className="text-gray-200 text-base lg:text-lg mb-4 leading-relaxed">
+            <p className="text-gray-200 text-base lg:text-lg mb-4 leading-relaxed line-clamp-3 md:line-clamp-none">
               Embarque em uma jornada fascinante através dos séculos, desde o
               canto gregoriano medieval até as inovações contemporâneas.
               Descubra como cada período histórico moldou a música que
@@ -62,7 +62,7 @@ const HeroMainPage = () => {
         {/* Card Instrumentação */}
         <Link
           href="/instruments"
-          className="relative rounded-2xl bg-white shadow-lg classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500"
+          className="relative rounded-2xl bg-white shadow-lg  !p-0 classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500"
         >
           <div className="relative h-64">
             <Image
@@ -74,7 +74,6 @@ const HeroMainPage = () => {
               quality={85}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-
             <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
               <div className="mb-2">
                 <span className="inline-block px-2 py-1 bg-purple-600/90 rounded-full text-xs font-medium mb-2">
@@ -112,7 +111,7 @@ const HeroMainPage = () => {
         {/* Card Sobre o Projeto */}
         <Link
           href="/sobre"
-          className="relative rounded-2xl bg-white shadow-lg  classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500"
+          className="relative rounded-2xl bg-white shadow-lg !p-0 classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500"
         >
           <div className="relative h-64">
             <Image
@@ -124,7 +123,6 @@ const HeroMainPage = () => {
               quality={85}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-
             <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
               <div className="mb-2">
                 <span className="inline-block px-2 py-1 bg-green-600/90 rounded-full text-xs font-medium mb-2">
