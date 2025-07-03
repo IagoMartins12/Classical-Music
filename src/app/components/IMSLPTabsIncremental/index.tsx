@@ -1,4 +1,4 @@
-// components/IMSLPTabsIncremental.tsx - Versão Corrigida com Botões Dinâmicos
+// components/IMSLPTabsIncremental.tsx - Versão Corrigida com Imports
 'use client';
 
 import { useState, useRef } from 'react';
@@ -16,6 +16,7 @@ import {
   FiDownload,
   FiZap,
   FiActivity,
+  FiTarget,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import ScoreCard from '../WorkDetailsClient/ScoreCard';
@@ -33,6 +34,11 @@ import {
 import { useScoreFavorites } from '@/app/hooks/useScoreFavorites';
 import ScorePreview from '../WorkDetailsClient/ScorePreview';
 import StudyModeButton from '../StudyMode/StudyModeButton';
+import {
+  getTabLabel,
+  getTabStatistics,
+  TabStatistics,
+} from '@/app/utils/type-utils'; // 🆕 Import corrigido
 
 interface IMSLPTabsIncrementalProps {
   imslpData: IMSLPWorkScoresIncremental;
@@ -40,7 +46,8 @@ interface IMSLPTabsIncrementalProps {
   loadingMore?: boolean;
   error?: string;
   onRefetch?: () => void;
-  onLoadMore?: (amount?: number) => void;
+  onLoadMore?: (amount?: number, specificType?: string) => void;
+  onLoadMoreForTab?: (tabType: string, amount?: number) => void;
   onLoadAll?: () => void;
   onScoreSelect?: (score: IMSLPScore) => void;
   workId?: string;
@@ -53,6 +60,9 @@ interface IMSLPTabsIncrementalProps {
   currentLoaded?: number;
   backgroundCaching?: boolean;
   cacheProgress?: number;
+
+  // 🆕 Função para obter estatísticas de tab corrigida
+  getTabStats?: (tabType: string) => TabStatistics;
 
   // Props de favoritos (mantidas)
   mostFavoritedScoreId?: string | null;
@@ -122,6 +132,7 @@ export default function IMSLPTabsIncremental({
   error,
   onRefetch,
   onLoadMore,
+  onLoadMoreForTab,
   onLoadAll,
   onScoreSelect,
   workId,
@@ -132,6 +143,7 @@ export default function IMSLPTabsIncremental({
   currentLoaded = 0,
   backgroundCaching = false,
   cacheProgress = 0,
+  getTabStats,
   mostFavoritedScoreId,
   mostFavoritedSource = 'IMSLP',
   hasMostFavorited = false,
@@ -168,24 +180,45 @@ export default function IMSLPTabsIncremental({
     }
   };
 
-  // 🆕 Calcular partituras restantes
-  const remainingScores = Math.max(0, totalAvailable - currentLoaded);
+  // 🆕 Obter estatísticas da tab ativa corrigido
+  const activeTabStats: TabStatistics = getTabStats
+    ? getTabStats(activeTab)
+    : getTabStatistics(
+        activeTab,
+        imslpData?.loadedCounts || {},
+        imslpData?.totalCounts || {}
+      );
 
-  // 🆕 Função para renderizar botões dinâmicos
-  const renderLoadMoreButtons = () => {
-    // Se não há mais partituras, não mostrar botões
-    if (!hasMore || remainingScores <= 0) {
-      return null;
+  // 🆕 Função para renderizar botões dinâmicos específicos da tab
+  const renderTabSpecificButtons = () => {
+    if (!activeTabStats.hasMore) {
+      return (
+        <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <FiTarget className="w-8 h-8 text-theme-primary" />
+            </div>
+            <h3 className="text-lg font-semibold text-theme-primary mb-2">
+              Todas as {getTabLabel(activeTab).toLowerCase()} carregadas!
+            </h3>
+            <p className="text-theme-secondary text-sm">
+              Você visualizou todas as {activeTabStats.total}{' '}
+              {getTabLabel(activeTab).toLowerCase()} disponíveis.
+            </p>
+          </div>
+        </div>
+      );
     }
 
     const buttons = [];
 
-    // Botão "Carregar Mais (20)" - só se tiver pelo menos 20 restantes
-    if (remainingScores >= 20) {
+    // 🆕 Botão "Carregar Mais" específico da tab - sempre disponível se há mais
+    if (activeTabStats.remaining >= 1) {
+      const loadAmount = Math.min(20, activeTabStats.remaining);
       buttons.push(
         <button
-          key="load-20"
-          onClick={() => onLoadMore?.(20)}
+          key="load-more-tab"
+          onClick={() => onLoadMoreForTab?.(activeTab, loadAmount)}
           disabled={loadingMore}
           className="btn-classical-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -197,40 +230,53 @@ export default function IMSLPTabsIncremental({
           ) : (
             <>
               <FiMoreHorizontal className="w-4 h-4" />
-              <span>Carregar Mais (20)</span>
+              <span>
+                Carregar Mais {getTabLabel(activeTab)} (
+                {Math.min(20, activeTabStats.remaining)})
+              </span>
             </>
           )}
         </button>
       );
     }
 
-    // Botão "Carregar 50" - só se tiver pelo menos 50 restantes
-    if (remainingScores >= 50) {
+    // 🆕 Botão "Carregar Todas desta Tab" - se há mais de 20 restantes
+    if (activeTabStats.remaining > 20) {
       buttons.push(
         <button
-          key="load-50"
-          onClick={() => onLoadMore?.(50)}
+          key="load-all-tab"
+          onClick={() =>
+            onLoadMoreForTab?.(activeTab, activeTabStats.remaining)
+          }
           disabled={loadingMore}
           className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <FiDownload className="w-4 h-4" />
-          <span>Carregar 50</span>
+          <span>
+            Carregar Todas as {getTabLabel(activeTab)} (
+            {activeTabStats.remaining} restantes)
+          </span>
         </button>
       );
     }
 
-    // Botão "Carregar Todas" - sempre mostrar se há restantes
-    buttons.push(
-      <button
-        key="load-all"
-        onClick={onLoadAll}
-        disabled={loadingMore}
-        className="btn-classical-accent flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <FiLayers className="w-4 h-4" />
-        <span>Carregar Todas ({remainingScores} restantes)</span>
-      </button>
-    );
+    // 🆕 Botão "Carregar Todas as Partituras" - apenas se há outras tabs com partituras
+    const globalRemaining = totalAvailable - currentLoaded;
+    if (globalRemaining > activeTabStats.remaining && globalRemaining > 0) {
+      buttons.push(
+        <button
+          key="load-all-global"
+          onClick={onLoadAll}
+          disabled={loadingMore}
+          className="btn-classical-accent flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <FiLayers className="w-4 h-4" />
+          <span>
+            Carregar Todas as Partituras ({globalRemaining} restantes)
+          </span>
+        </button>
+      );
+    }
 
     return buttons;
   };
@@ -279,18 +325,27 @@ export default function IMSLPTabsIncremental({
                           : 'Selecione uma partitura para estudo'}
                       </p>
 
-                      {/* 🆕 Status de carregamento incremental melhorado */}
+                      {/* 🆕 Status de carregamento incremental com estatísticas da tab ativa */}
                       <div className="flex items-center space-x-4 text-sm">
                         <div className="flex items-center space-x-1 text-accent-blue">
                           <FiActivity className="w-3 h-3" />
                           <span className="font-medium">
-                            {currentLoaded} de {totalAvailable} carregadas
+                            Tab ativa: {activeTabStats.loaded}/
+                            {activeTabStats.total}{' '}
+                            {getTabLabel(activeTab).toLowerCase()}
                           </span>
-                          {remainingScores > 0 && (
+                          {activeTabStats.remaining > 0 && (
                             <span className="text-theme-tertiary">
-                              ({remainingScores} restantes)
+                              ({activeTabStats.remaining} restantes)
                             </span>
                           )}
+                        </div>
+
+                        <div className="flex items-center space-x-1 text-accent-purple">
+                          <FiLayers className="w-3 h-3" />
+                          <span className="font-medium">
+                            Total: {currentLoaded}/{totalAvailable}
+                          </span>
                         </div>
 
                         {/* Indicador de cache em background */}
@@ -343,11 +398,34 @@ export default function IMSLPTabsIncremental({
                 )}
               </div>
 
-              {/* 🆕 Barra de progresso do carregamento melhorada */}
-              {totalAvailable > 0 && (
+              {/* 🆕 Barra de progresso da tab ativa */}
+              {activeTabStats.total > 0 && (
                 <div className="mt-4">
                   <div className="flex items-center justify-between text-sm text-theme-tertiary mb-2">
-                    <span>Progresso do carregamento</span>
+                    <span>
+                      Progresso da tab ativa: {getTabLabel(activeTab)}
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span>{activeTabStats.progress}%</span>
+                      <span className="text-xs">
+                        ({activeTabStats.loaded}/{activeTabStats.total})
+                      </span>
+                    </div>
+                  </div>
+                  <div className="w-full bg-theme-elevated border border-theme-primary/20 rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-accent-blue to-accent-purple h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${activeTabStats.progress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+
+              {/* Barra de progresso geral */}
+              {totalAvailable > 0 && (
+                <div className="mt-3">
+                  <div className="flex items-center justify-between text-sm text-theme-tertiary mb-2">
+                    <span>Progresso geral</span>
                     <div className="flex items-center space-x-2">
                       <span>{progressPercentage}%</span>
                       <span className="text-xs">
@@ -380,7 +458,7 @@ export default function IMSLPTabsIncremental({
                 </div>
               )}
 
-              {/* 🆕 Estatísticas de favoritos destacadas */}
+              {/* Estatísticas de favoritos destacadas */}
               {!loadingFavorites && favoriteStats.length > 0 && (
                 <div className="mt-4 p-4 bg-gradient-to-r from-accent-red/5 to-accent-gold/5 border border-accent-red/20 rounded-xl">
                   <div className="flex items-center justify-between">
@@ -434,6 +512,13 @@ export default function IMSLPTabsIncremental({
                 const totalCount = imslpData.totalCounts[tab.type];
                 const loadedCount = imslpData.loadedCounts[tab.type];
                 const isActive = activeTab === tab.id;
+                const tabStats: TabStatistics = getTabStats
+                  ? getTabStats(tab.id)
+                  : getTabStatistics(
+                      tab.id,
+                      imslpData.loadedCounts,
+                      imslpData.totalCounts
+                    );
 
                 return (
                   <AnimatedItem key={tab.id} hover="scale" springType="bouncy">
@@ -460,7 +545,7 @@ export default function IMSLPTabsIncremental({
                       </div>
                       <span className="font-semibold">{tab.label}</span>
 
-                      {/* 🆕 Contador com progresso melhorado */}
+                      {/* 🆕 Contador com progresso melhorado e indicadores visuais */}
                       <div className="flex items-center space-x-1">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
@@ -472,9 +557,18 @@ export default function IMSLPTabsIncremental({
                           {loadedCount}/{totalCount}
                         </span>
 
-                        {/* Indicador de progresso */}
-                        {loadedCount < totalCount && (
-                          <div className="w-1 h-1 bg-accent-blue rounded-full animate-pulse"></div>
+                        {/* Indicador de progresso e status */}
+                        {tabStats.hasMore ? (
+                          <div className="flex items-center space-x-1">
+                            <div className="w-1 h-1 bg-accent-blue rounded-full animate-pulse"></div>
+                            {isActive && (
+                              <span className="text-xs text-accent-blue font-medium">
+                                +{tabStats.remaining}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="w-1 h-1 bg-accent-green rounded-full"></div>
                         )}
                       </div>
                     </button>
@@ -554,33 +648,38 @@ export default function IMSLPTabsIncremental({
                     </div>
                   ))}
 
-                  {/* 🆕 Botões de carregamento incremental dinâmicos e corrigidos */}
-                  {hasMore && remainingScores > 0 && (
+                  {/* 🆕 Botões de carregamento específicos da tab */}
+                  {activeTabStats.hasMore && (
                     <div className="flex flex-col items-center space-y-6 py-8 border-t border-theme-secondary">
                       <div className="text-center">
                         <h3 className="text-lg font-semibold text-theme-primary mb-2">
-                          Mais partituras disponíveis
+                          Mais {getTabLabel(activeTab).toLowerCase()}{' '}
+                          disponíveis
                         </h3>
                         <p className="text-theme-secondary text-sm mb-4">
                           {loadingMore
-                            ? 'Carregando mais partituras...'
-                            : `Mostrando ${currentLoaded} de ${totalAvailable} partituras disponíveis`}
+                            ? `Carregando mais ${getTabLabel(
+                                activeTab
+                              ).toLowerCase()}...`
+                            : `Mostrando ${activeTabStats.loaded} de ${
+                                activeTabStats.total
+                              } ${getTabLabel(
+                                activeTab
+                              ).toLowerCase()} disponíveis`}
                         </p>
 
-                        {/* Barra de progresso específica */}
-                        {totalAvailable > 0 && (
-                          <div className="w-80 bg-theme-elevated border border-theme-primary/20 rounded-full h-2 mx-auto mb-4">
-                            <div
-                              className="bg-gradient-to-r from-accent-blue to-accent-purple h-2 rounded-full transition-all duration-500"
-                              style={{ width: `${progressPercentage}%` }}
-                            ></div>
-                          </div>
-                        )}
+                        {/* Barra de progresso específica da tab */}
+                        <div className="w-80 bg-theme-elevated border border-theme-primary/20 rounded-full h-2 mx-auto mb-4">
+                          <div
+                            className="bg-gradient-to-r from-accent-blue to-accent-purple h-2 rounded-full transition-all duration-500"
+                            style={{ width: `${activeTabStats.progress}%` }}
+                          ></div>
+                        </div>
                       </div>
 
-                      {/* 🆕 Botões dinâmicos corrigidos */}
+                      {/* 🆕 Botões dinâmicos específicos da tab */}
                       <div className="flex flex-wrap gap-4 justify-center">
-                        {renderLoadMoreButtons()}
+                        {renderTabSpecificButtons()}
                       </div>
 
                       {/* Aviso sobre cache em background */}
@@ -601,25 +700,42 @@ export default function IMSLPTabsIncremental({
                     </div>
                   )}
 
-                  {/* 🆕 Mensagem quando todas as partituras foram carregadas */}
-                  {!hasMore &&
-                    totalAvailable > 0 &&
-                    currentLoaded >= totalAvailable && (
-                      <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
-                        <div className="text-center">
-                          <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
-                            <FiLayers className="w-8 h-8 text-theme-primary" />
-                          </div>
-                          <h3 className="text-lg font-semibold text-theme-primary mb-2">
-                            Todas as partituras carregadas!
-                          </h3>
-                          <p className="text-theme-secondary text-sm">
-                            Você visualizou todas as {totalAvailable} partituras
-                            disponíveis para esta obra.
-                          </p>
+                  {/* 🆕 Mensagem quando todas as partituras da tab foram carregadas */}
+                  {!activeTabStats.hasMore && activeTabStats.total > 0 && (
+                    <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
+                          <FiTarget className="w-8 h-8 text-theme-primary" />
                         </div>
+                        <h3 className="text-lg font-semibold text-theme-primary mb-2">
+                          Todas as {getTabLabel(activeTab).toLowerCase()}{' '}
+                          carregadas!
+                        </h3>
+                        <p className="text-theme-secondary text-sm">
+                          Você visualizou todas as {activeTabStats.total}{' '}
+                          {getTabLabel(activeTab).toLowerCase()} disponíveis
+                          para esta obra.
+                        </p>
+
+                        {/* Botão para carregar todas as outras tabs se ainda há partituras globais */}
+                        {totalAvailable > currentLoaded && (
+                          <div className="mt-4">
+                            <button
+                              onClick={onLoadAll}
+                              disabled={loadingMore}
+                              className="btn-classical-accent flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <FiLayers className="w-4 h-4" />
+                              <span>
+                                Carregar Todas as Outras Partituras (
+                                {totalAvailable - currentLoaded} restantes)
+                              </span>
+                            </button>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Preview Panel */}

@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - VERSÃO FINAL CORRIGIDA
+// app/work/[workId]/WorkDetailsClient.tsx - VERSÃO FINAL com Carregamento por Tab
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -76,7 +76,7 @@ export default function WorkDetailsClient({
     refetch: refetchMostFavorited,
   } = useMostFavoritedForWork(mounted ? work.id : '');
 
-  // 🆕 Hook para carregamento incremental de partituras
+  // 🆕 Hook para carregamento incremental de partituras com novas funcionalidades
   const {
     scores: imslpScores,
     loading: loadingScores,
@@ -87,12 +87,14 @@ export default function WorkDetailsClient({
     currentLoaded,
     refetch: refetchScores,
     loadMore,
+    loadMoreForTab,
     loadAll,
     fromCache,
     backgroundCaching,
     cacheProgress,
     selectedScore,
     setSelectedScore,
+    getTabStats,
   } = useIMSLPScoresIncremental(mounted ? work.imslpPermlink : '', {
     workId: work.id,
     enabled: mounted,
@@ -770,7 +772,7 @@ export default function WorkDetailsClient({
             </div>
           </AnimatedCard>
 
-          {/* 🆕 Seção de Partituras IMSLP - Totalmente incremental */}
+          {/* 🆕 Seção de Partituras IMSLP - Totalmente incremental com carregamento por tab */}
           {work.imslpPermlink && (
             <AnimatedCard hover="none" className="">
               <IMSLPTabsIncremental
@@ -780,6 +782,7 @@ export default function WorkDetailsClient({
                 error={scoresError}
                 onRefetch={refetchScores}
                 onLoadMore={loadMore}
+                onLoadMoreForTab={loadMoreForTab}
                 onLoadAll={loadAll}
                 onScoreSelect={handleScoreSelect}
                 workId={work.id}
@@ -790,6 +793,7 @@ export default function WorkDetailsClient({
                 currentLoaded={currentLoaded}
                 backgroundCaching={backgroundCaching}
                 cacheProgress={cacheProgress}
+                getTabStats={getTabStats}
                 // Props de favoritos
                 mostFavoritedScoreId={mostFavoritedScoreId}
                 mostFavoritedSource={mostFavoritedSource}
@@ -860,7 +864,7 @@ export default function WorkDetailsClient({
         <div className="fixed bottom-4 left-4 bg-theme-inverse/90 backdrop-blur-md rounded-lg p-3 text-xs text-theme-primary border border-theme-primary/20 z-50 max-w-sm">
           <div className="space-y-1">
             <div className="font-bold text-accent-blue mb-2">
-              🚀 Debug Incremental v2.0
+              🚀 Debug Incremental v3.0 - Tab Specific
             </div>
             <div>
               📊 Partituras: {currentLoaded}
@@ -894,11 +898,20 @@ export default function WorkDetailsClient({
               </button>
               {hasMore && (
                 <button
-                  onClick={() => loadMore(10)}
+                  onClick={() => loadMoreForTab('scores', 10)}
                   className="px-2 py-1 bg-accent-blue/20 rounded text-accent-blue hover:bg-accent-blue/30 transition-colors text-xs"
                   disabled={loadingMore}
                 >
-                  +10
+                  +10 Scores
+                </button>
+              )}
+              {hasMore && (
+                <button
+                  onClick={() => loadAll()}
+                  className="px-2 py-1 bg-accent-green/20 rounded text-accent-green hover:bg-accent-green/30 transition-colors text-xs"
+                  disabled={loadingMore}
+                >
+                  All
                 </button>
               )}
             </div>

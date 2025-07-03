@@ -1,4 +1,4 @@
-// app/libs/imslp-score-scraper-incremental.ts - Versão com Carregamento Incremental
+// app/libs/imslp-score-scraper-incremental.ts - Versão com Carregamento por Tab Específica
 import * as cheerio from 'cheerio';
 import { AnyNode, Element } from 'domhandler';
 import { IMSLPBatchProcessorOptimized } from './imslp-batch-processor-optimized';
@@ -78,6 +78,7 @@ export interface PaginationOptions {
   offset?: number; // Offset por tipo (padrão: 0)
   loadInBackground?: boolean; // Se deve cachear o resto (padrão: true)
   specificTypes?: string[]; // Tipos específicos para carregar
+  targetTabType?: string; // 🆕 Tab específica para carregar (prioridade sobre specificTypes)
 }
 
 export class IMSLPScraperIncremental {
@@ -94,7 +95,7 @@ export class IMSLPScraperIncremental {
   private static readonly DEFAULT_MORE_LIMIT = 20;
 
   /**
-   * 🚀 Extração INCREMENTAL de partituras com paginação
+   * 🚀 Extração INCREMENTAL de partituras com paginação e suporte a tab específica
    */
   static async extractScoresIncremental(
     html: string,
@@ -105,6 +106,7 @@ export class IMSLPScraperIncremental {
       offset = 0,
       loadInBackground = true,
       specificTypes,
+      targetTabType, // 🆕 Tab específica para priorizar
     } = options;
 
     const $ = cheerio.load(html);
@@ -120,12 +122,14 @@ export class IMSLPScraperIncremental {
     }
 
     console.log(
-      `🎼 [SCRAPER-INC] Carregamento incremental: limite=${limit}, offset=${offset}`
+      `🎼 [SCRAPER-TAB] Carregamento incremental: limite=${limit}, offset=${offset}, tab=${
+        targetTabType || 'todas'
+      }`
     );
 
     // 1️⃣ PRIMEIRA FASE: Extrair contadores totais das abas
     const totalCounts = this.extractTabCounts($);
-    console.log(`📊 [SCRAPER-INC] Contadores totais:`, totalCounts);
+    console.log(`📊 [SCRAPER-TAB] Contadores totais:`, totalCounts);
 
     // 2️⃣ SEGUNDA FASE: Preparar estrutura de dados
     const scoresByType: IMSLPScoresByType = {
@@ -146,9 +150,26 @@ export class IMSLPScraperIncremental {
       sources: 0,
     };
 
-    // 3️⃣ TERCEIRA FASE: Processar cada tipo com paginação
-    const typesToProcess = specificTypes || Object.values(this.TAB_TYPE_MAP);
+    // 3️⃣ TERCEIRA FASE: Determinar tipos a processar baseado na estratégia
+    let typesToProcess: string[];
 
+    if (targetTabType) {
+      // 🆕 MODO TAB ESPECÍFICA: processar apenas a tab solicitada
+      typesToProcess = [targetTabType];
+      console.log(
+        `🎯 [SCRAPER-TAB] Modo tab específica: processando apenas "${targetTabType}"`
+      );
+    } else if (specificTypes) {
+      // MODO TIPOS ESPECÍFICOS: processar apenas os tipos solicitados
+      typesToProcess = specificTypes;
+      console.log(`🔍 [SCRAPER-TAB] Modo tipos específicos:`, specificTypes);
+    } else {
+      // MODO PADRÃO: processar todos os tipos disponíveis
+      typesToProcess = Object.values(this.TAB_TYPE_MAP);
+      console.log(`📂 [SCRAPER-TAB] Modo padrão: processando todos os tipos`);
+    }
+
+    // 4️⃣ QUARTA FASE: Processar cada tipo com paginação otimizada
     for (const [tabId, type] of Object.entries(this.TAB_TYPE_MAP)) {
       if (!typesToProcess.includes(type)) continue;
 
@@ -157,26 +178,43 @@ export class IMSLPScraperIncremental {
 
       if ($tabContent.length > 0 && totalCounts[type] > 0) {
         console.log(
-          `🔄 [SCRAPER-INC] Processando tipo "${type}" (${totalCounts[type]} total)`
+          `🔄 [SCRAPER-TAB] Processando tipo "${type}" (${totalCounts[type]} total)`
         );
+
+        // 🆕 Ajustar limite dinamicamente para tab específica
+        let effectiveLimit = limit;
+        let effectiveOffset = offset;
+
+        if (targetTabType === type) {
+          // Para tab específica, usar limite completo
+          effectiveLimit = limit;
+          effectiveOffset = offset;
+          console.log(
+            `🎯 [SCRAPER-TAB] Tab específica "${type}": limit=${effectiveLimit}, offset=${effectiveOffset}`
+          );
+        } else if (!targetTabType) {
+          // Para modo geral, usar limite distribuído
+          effectiveLimit = limit;
+          effectiveOffset = offset;
+        }
 
         const scoresInTab = await this.extractScoresFromTabPaginated(
           $,
           $tabContent,
           type,
-          { limit, offset }
+          { limit: effectiveLimit, offset: effectiveOffset }
         );
 
         scoresByType[type] = scoresInTab;
         loadedCounts[type] = this.countScoresInGroups(scoresInTab);
 
         console.log(
-          `✅ [SCRAPER-INC] Tipo "${type}": ${loadedCounts[type]}/${totalCounts[type]} carregadas`
+          `✅ [SCRAPER-TAB] Tipo "${type}": ${loadedCounts[type]}/${totalCounts[type]} carregadas`
         );
       }
     }
 
-    // 4️⃣ QUARTA FASE: Calcular paginação
+    // 5️⃣ QUINTA FASE: Calcular paginação e estado final
     const totalLoaded = Object.values(loadedCounts).reduce(
       (sum, count) => sum + count,
       0
@@ -185,7 +223,20 @@ export class IMSLPScraperIncremental {
       (sum, count) => sum + count,
       0
     );
-    const hasMore = totalLoaded < totalAvailable;
+
+    // 🆕 Calcular hasMore baseado na estratégia
+    let hasMore = false;
+    if (targetTabType) {
+      // Para tab específica, verificar apenas essa tab
+      const tabLoaded =
+        loadedCounts[targetTabType as keyof typeof loadedCounts] || 0;
+      const tabTotal =
+        totalCounts[targetTabType as keyof typeof totalCounts] || 0;
+      hasMore = tabLoaded < tabTotal;
+    } else {
+      // Para modo geral, verificar total
+      hasMore = totalLoaded < totalAvailable;
+    }
 
     const workTitle = this.extractWorkTitle($);
 
@@ -203,7 +254,9 @@ export class IMSLPScraperIncremental {
     };
 
     console.log(
-      `🎯 [SCRAPER-INC] Resultado: ${totalLoaded}/${totalAvailable} partituras, hasMore: ${hasMore}`
+      `🎯 [SCRAPER-TAB] Resultado: ${totalLoaded}/${totalAvailable} partituras, hasMore: ${hasMore}, modo: ${
+        targetTabType || 'geral'
+      }`
     );
 
     return result;
@@ -226,7 +279,27 @@ export class IMSLPScraperIncremental {
   }
 
   /**
-   * 🚀 Extração de partituras de uma aba com paginação
+   * 🆕 Extração específica para uma tab com otimizações
+   */
+  static async extractScoresForSpecificTab(
+    html: string,
+    tabType: string,
+    options: { limit?: number; offset?: number } = {}
+  ): Promise<IMSLPWorkScoresIncremental> {
+    const { limit = this.DEFAULT_MORE_LIMIT, offset = 0 } = options;
+
+    console.log(`🎯 [SCRAPER-TAB] Extração específica para tab "${tabType}"`);
+
+    return this.extractScoresIncremental(html, {
+      limit,
+      offset,
+      targetTabType: tabType,
+      loadInBackground: false, // Carregamento específico não precisa de background
+    });
+  }
+
+  /**
+   * 🚀 Extração de partituras de uma aba com paginação otimizada
    */
   private static async extractScoresFromTabPaginated(
     $: cheerio.CheerioAPI,
@@ -244,10 +317,10 @@ export class IMSLPScraperIncremental {
     });
 
     console.log(
-      `📦 [SCRAPER-INC] Encontrados ${groups.length} grupos para tipo "${type}"`
+      `📦 [SCRAPER-TAB] Encontrados ${groups.length} grupos para tipo "${type}"`
     );
 
-    // 🚀 ESTRATÉGIA DE PAGINAÇÃO: Processar partituras de forma linear
+    // 🚀 ESTRATÉGIA DE PAGINAÇÃO OTIMIZADA: Processar partituras de forma linear
     let scoresProcessed = 0;
     let scoresCollected = 0;
     const scoreMetadataList: Array<{
@@ -303,7 +376,7 @@ export class IMSLPScraperIncremental {
     }
 
     console.log(
-      `📋 [SCRAPER-INC] Coletadas ${scoresCollected} partituras para processamento`
+      `📋 [SCRAPER-TAB] Coletadas ${scoresCollected} partituras para processamento`
     );
 
     // 🚀 PROCESSAR URLs em lote
@@ -369,7 +442,12 @@ export class IMSLPScraperIncremental {
     options: PaginationOptions = {}
   ): Promise<IMSLPWorkScoresIncremental> {
     try {
-      console.log(`🌐 [SCRAPER-INC] Buscando página IMSLP: ${imslpUrl}`);
+      const { targetTabType } = options;
+      console.log(
+        `🌐 [SCRAPER-TAB] Buscando página IMSLP: ${imslpUrl} (tab: ${
+          targetTabType || 'todas'
+        })`
+      );
       const startTime = Date.now();
 
       const response = await fetch(imslpUrl, {
@@ -390,18 +468,38 @@ export class IMSLPScraperIncremental {
 
       const html = await response.text();
       const fetchTime = Date.now() - startTime;
-      console.log(`✅ [SCRAPER-INC] Página carregada em ${fetchTime}ms`);
+      console.log(`✅ [SCRAPER-TAB] Página carregada em ${fetchTime}ms`);
 
       const result = await this.extractScoresIncremental(html, options);
 
       const totalTime = Date.now() - startTime;
-      console.log(`🎯 [SCRAPER-INC] Processamento completo em ${totalTime}ms`);
+      console.log(
+        `🎯 [SCRAPER-TAB] Processamento completo em ${totalTime}ms (tab: ${
+          targetTabType || 'todas'
+        })`
+      );
 
       return result;
     } catch (error) {
-      console.error(`❌ [SCRAPER-INC] Erro:`, error);
+      console.error(`❌ [SCRAPER-TAB] Erro:`, error);
       throw error;
     }
+  }
+
+  /**
+   * 🆕 Busca específica para uma tab
+   */
+  static async fetchScoresForTab(
+    imslpUrl: string,
+    tabType: string,
+    options: { limit?: number; offset?: number } = {}
+  ): Promise<IMSLPWorkScoresIncremental> {
+    console.log(`🎯 [SCRAPER-TAB] Busca específica para tab "${tabType}"`);
+
+    return this.fetchAndExtractScoresIncremental(imslpUrl, {
+      ...options,
+      targetTabType: tabType,
+    });
   }
 
   // === MÉTODOS AUXILIARES ===
@@ -504,5 +602,42 @@ export class IMSLPScraperIncremental {
       sources: 'Arquivo Fonte',
     };
     return titles[type];
+  }
+
+  /**
+   * 🆕 Obter estatísticas de uma tab específica
+   */
+  static getTabStatistics(
+    html: string,
+    tabType: string
+  ): { total: number; available: boolean } {
+    try {
+      const $ = cheerio.load(html);
+      const totalCounts = this.extractTabCounts($);
+
+      return {
+        total: totalCounts[tabType as keyof typeof totalCounts] || 0,
+        available: (totalCounts[tabType as keyof typeof totalCounts] || 0) > 0,
+      };
+    } catch (error) {
+      console.error(
+        `❌ [SCRAPER-TAB] Erro ao obter estatísticas da tab "${tabType}":`,
+        error
+      );
+      return { total: 0, available: false };
+    }
+  }
+
+  /**
+   * 🆕 Verificar se uma tab tem mais partituras para carregar
+   */
+  static hasMoreScoresForTab(
+    totalCounts: Record<string, number>,
+    loadedCounts: Record<string, number>,
+    tabType: string
+  ): boolean {
+    const total = totalCounts[tabType] || 0;
+    const loaded = loadedCounts[tabType] || 0;
+    return loaded < total;
   }
 }

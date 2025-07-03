@@ -3,6 +3,13 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { IMSLPWorkScoresIncremental } from '@/app/libs/imslp-score-scraper-incremental';
+import {
+  sumLoadedCounts,
+  sumTotalCounts,
+  hasMoreScores,
+  TabStatistics,
+  getTabStatistics,
+} from '@/app/utils/type-utils';
 
 export interface UseIMSLPScoresIncrementalResult {
   scores: IMSLPWorkScoresIncremental | null;
@@ -15,7 +22,8 @@ export interface UseIMSLPScoresIncrementalResult {
 
   // Funções de carregamento
   refetch: () => Promise<void>;
-  loadMore: (amount?: number) => Promise<void>;
+  loadMore: (amount?: number, specificType?: string) => Promise<void>;
+  loadMoreForTab: (tabType: string, amount?: number) => Promise<void>;
   loadAll: () => Promise<void>;
 
   // Estados de cache
@@ -26,6 +34,9 @@ export interface UseIMSLPScoresIncrementalResult {
   // Seleção de partitura
   selectedScore: string | null;
   setSelectedScore: (scoreId: string | null) => void;
+
+  // 🆕 Estatísticas por tab corrigidas
+  getTabStats: (tabType: string) => TabStatistics;
 }
 
 export interface UseIMSLPScoresIncrementalOptions {
@@ -65,9 +76,6 @@ export function useIMSLPScoresIncremental(
     priorityScoreId || null
   );
 
-  // Estados de paginação
-  const [hasMore, setHasMore] = useState(true);
-
   // Refs para controle
   const abortControllerRef = useRef<AbortController | null>(null);
   const lastUrlRef = useRef<string>('');
@@ -78,7 +86,7 @@ export function useIMSLPScoresIncremental(
    * 🚀 Função principal de carregamento
    */
   const fetchScores = useCallback(
-    async (isLoadMore = false, customLimit?: number) => {
+    async (isLoadMore = false, customLimit?: number, specificType?: string) => {
       if (!imslpUrl || !enabled || loadingRef.current) {
         return;
       }
@@ -101,11 +109,13 @@ export function useIMSLPScoresIncremental(
       setError(null);
       loadingRef.current = true;
 
-      console.log(
-        `🎼 [HOOK-INC] ${
-          isLoadMore ? 'Carregando mais' : 'Carregamento inicial'
-        }: limit=${limit}`
-      );
+      const loadType = specificType
+        ? `específico (${specificType})`
+        : isLoadMore
+        ? 'mais partituras'
+        : 'carregamento inicial';
+
+      console.log(`🎼 [HOOK-INC] ${loadType}: limit=${limit}`);
 
       try {
         const response = await fetch('/api/imslp-scores', {
@@ -118,8 +128,10 @@ export function useIMSLPScoresIncremental(
             forceRefresh: isInitialLoad ? forceRefresh : false,
             pagination: {
               limit,
-              offset: 0, // 🆕 API agora calcula offset automaticamente
+              offset: 0, // API calcula offset automaticamente
               loadMore: isLoadMore,
+              specificTypes: specificType ? [specificType] : undefined,
+              targetTabType: specificType, // 🆕 Usar tab específica
             },
           }),
         });
@@ -142,17 +154,10 @@ export function useIMSLPScoresIncremental(
           const combinedData = combineScoresData(scores, data);
           setScores(combinedData);
 
-          const newTotalLoaded = Object.values(
-            combinedData.loadedCounts
-          ).reduce((sum: number, count: number) => sum + count, 0);
+          const newTotalLoaded = sumLoadedCounts(combinedData.loadedCounts);
+          const totalAvailable = sumTotalCounts(combinedData.totalCounts);
 
-          onLoadMoreComplete?.(
-            newTotalLoaded,
-            Object.values(combinedData.totalCounts).reduce(
-              (sum: number, count: number) => sum + count,
-              0
-            )
-          );
+          onLoadMoreComplete?.(newTotalLoaded, totalAvailable);
         } else {
           // Primeira carga ou cache hit completo
           setScores(data);
@@ -162,17 +167,9 @@ export function useIMSLPScoresIncremental(
         setFromCache(data.fromCache || false);
 
         // 🆕 Calcular hasMore baseado nos dados reais
-        const realTotalAvailable = Object.values(data.totalCounts).reduce(
-          (sum: number, count: number) => sum + count,
-          0
-        );
-        const realCurrentLoaded = Object.values(data.loadedCounts).reduce(
-          (sum: number, count: number) => sum + count,
-          0
-        );
-
-        const realHasMore = realCurrentLoaded < realTotalAvailable;
-        setHasMore(realHasMore);
+        const realTotalAvailable = sumTotalCounts(data.totalCounts);
+        const realCurrentLoaded = sumLoadedCounts(data.loadedCounts);
+        const realHasMore = hasMoreScores(data.loadedCounts, data.totalCounts);
 
         setError(null);
 
@@ -225,57 +222,111 @@ export function useIMSLPScoresIncremental(
   );
 
   /**
-   * 🚀 Carregar mais partituras
+   * 🚀 Carregar mais partituras gerais
    */
   const loadMore = useCallback(
-    async (amount = moreLimit) => {
-      if (!hasMore || loadingMore || loading) {
+    async (amount = moreLimit, specificType?: string) => {
+      if (!scores || loadingMore || loading) {
         console.log(
-          `⚠️ [HOOK-INC] LoadMore cancelado: hasMore=${hasMore}, loading=${
-            loading || loadingMore
-          }`
+          `⚠️ [HOOK-INC] LoadMore cancelado: sem dados ou já carregando`
         );
         return;
       }
 
-      await fetchScores(true, amount);
+      const hasMoreToLoad = hasMoreScores(
+        scores.loadedCounts,
+        scores.totalCounts
+      );
+      if (!hasMoreToLoad) {
+        console.log(`⚠️ [HOOK-INC] LoadMore cancelado: sem mais partituras`);
+        return;
+      }
+
+      await fetchScores(true, amount, specificType);
     },
-    [hasMore, loadingMore, loading, fetchScores, moreLimit]
+    [scores, loadingMore, loading, fetchScores, moreLimit]
+  );
+
+  /**
+   * 🆕 Carregar mais partituras para uma tab específica
+   */
+  const loadMoreForTab = useCallback(
+    async (tabType: string, amount = moreLimit) => {
+      if (!scores || loadingMore || loading) {
+        console.log(`⚠️ [HOOK-INC] LoadMoreForTab cancelado: ${tabType}`);
+        return;
+      }
+
+      const tabStats = getTabStats(tabType);
+      if (!tabStats.hasMore) {
+        console.log(`⚠️ [HOOK-INC] Tab ${tabType} não tem mais partituras`);
+        return;
+      }
+
+      console.log(
+        `🎯 [HOOK-INC] Carregando mais partituras para tab: ${tabType}`
+      );
+      await fetchScores(true, amount, tabType);
+    },
+    [scores, loadingMore, loading, fetchScores, moreLimit]
   );
 
   /**
    * 🚀 Carregar todas as partituras
    */
   const loadAll = useCallback(async () => {
-    if (!hasMore || loadingMore || loading) return;
+    if (!scores || loadingMore || loading) {
+      console.log(`⚠️ [HOOK-INC] LoadAll cancelado`);
+      return;
+    }
+
+    const hasMoreToLoad = hasMoreScores(
+      scores.loadedCounts,
+      scores.totalCounts
+    );
+    if (!hasMoreToLoad) {
+      console.log(`⚠️ [HOOK-INC] LoadAll cancelado: sem mais partituras`);
+      return;
+    }
 
     console.log(`🚀 [HOOK-INC] Carregando todas as partituras restantes`);
 
     // Calcular quantas partituras restam
-    if (scores) {
-      const currentLoaded = Object.values(scores.loadedCounts).reduce(
-        (sum: number, count: number) => sum + count,
-        0
-      );
-      const totalAvailable = Object.values(scores.totalCounts).reduce(
-        (sum: number, count: number) => sum + count,
-        0
-      );
-      const remaining = totalAvailable - currentLoaded;
+    const currentLoaded = sumLoadedCounts(scores.loadedCounts);
+    const totalAvailable = sumTotalCounts(scores.totalCounts);
+    const remaining = totalAvailable - currentLoaded;
 
-      if (remaining > 0) {
-        await fetchScores(true, remaining);
-      }
+    if (remaining > 0) {
+      await fetchScores(true, remaining); // Sem specificType = carrega todas
     }
-  }, [hasMore, loadingMore, loading, scores, fetchScores]);
+  }, [scores, loadingMore, loading, fetchScores]);
 
   /**
    * 🚀 Refetch completo
    */
   const refetch = useCallback(async () => {
-    setHasMore(true);
     await fetchScores(false);
   }, [fetchScores]);
+
+  /**
+   * 🆕 Obter estatísticas de uma tab específica
+   */
+  const getTabStats = useCallback(
+    (tabType: string): TabStatistics => {
+      if (!scores) {
+        return {
+          loaded: 0,
+          total: 0,
+          remaining: 0,
+          hasMore: false,
+          progress: 0,
+        };
+      }
+
+      return getTabStatistics(tabType, scores.loadedCounts, scores.totalCounts);
+    },
+    [scores]
+  );
 
   /**
    * 🚀 Monitorar progresso do cache em background
@@ -319,7 +370,6 @@ export function useIMSLPScoresIncremental(
   useEffect(() => {
     if (imslpUrl && enabled && imslpUrl !== lastUrlRef.current) {
       lastUrlRef.current = imslpUrl;
-      setHasMore(true);
       fetchScores(false);
     }
 
@@ -346,20 +396,12 @@ export function useIMSLPScoresIncremental(
     };
   }, []);
 
-  // Calcular estatísticas
-  const currentLoaded = scores
-    ? Object.values(scores.loadedCounts).reduce(
-        (sum: number, count: number) => sum + count,
-        0
-      )
-    : 0;
-
-  const totalAvailable = scores
-    ? Object.values(scores.totalCounts).reduce(
-        (sum: number, count: number) => sum + count,
-        0
-      )
-    : 0;
+  // Calcular estatísticas gerais
+  const currentLoaded = scores ? sumLoadedCounts(scores.loadedCounts) : 0;
+  const totalAvailable = scores ? sumTotalCounts(scores.totalCounts) : 0;
+  const hasMore = scores
+    ? hasMoreScores(scores.loadedCounts, scores.totalCounts)
+    : false;
 
   return {
     scores,
@@ -371,12 +413,14 @@ export function useIMSLPScoresIncremental(
     currentLoaded,
     refetch,
     loadMore,
+    loadMoreForTab,
     loadAll,
     fromCache,
     backgroundCaching,
     cacheProgress,
     selectedScore,
     setSelectedScore,
+    getTabStats,
   };
 }
 
@@ -437,16 +481,10 @@ function combineScoresData(
   // combined.totalCounts já está correto
 
   // Atualizar hasMore
-  const totalLoaded = Object.values(combined.loadedCounts).reduce(
-    (sum: number, count: number) => sum + count,
-    0
-  );
-  const totalAvailable = Object.values(combined.totalCounts).reduce(
-    (sum: number, count: number) => sum + count,
-    0
-  );
+  combined.hasMore = hasMoreScores(combined.loadedCounts, combined.totalCounts);
 
-  combined.hasMore = totalLoaded < totalAvailable;
+  const totalLoaded = sumLoadedCounts(combined.loadedCounts);
+  const totalAvailable = sumTotalCounts(combined.totalCounts);
 
   console.log(
     `🔄 [HOOK-INC] Dados combinados: ${totalLoaded}/${totalAvailable} partituras`
