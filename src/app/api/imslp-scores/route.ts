@@ -1,4 +1,4 @@
-// app/api/imslp-scores/route.ts - API com Carregamento Incremental
+// app/api/imslp-scores/route.ts - API Corrigida com Melhor Lógica de Cache
 import { NextRequest, NextResponse } from 'next/server';
 import {
   IMSLPScraperIncremental,
@@ -13,12 +13,11 @@ interface RequestBody {
   workId?: string;
   priorityScoreId?: string;
   forceRefresh?: boolean;
-  // 🆕 Parâmetros de paginação
   pagination?: {
     limit?: number;
     offset?: number;
-    loadMore?: boolean; // Se é carregamento de "mais" partituras
-    specificTypes?: string[]; // Tipos específicos para carregar
+    loadMore?: boolean;
+    specificTypes?: string[];
   };
 }
 
@@ -64,47 +63,106 @@ export async function POST(request: NextRequest) {
     let cacheStats = null;
     let backgroundCachingStarted = false;
 
-    // 1️⃣ PRIMEIRA FASE: Verificar cache (apenas se não for forceRefresh)
+    // 1️⃣ PRIMEIRA FASE: Verificar cache (sempre, exceto se forceRefresh)
     if (workId && !forceRefresh) {
       console.log(`💾 [API-INC] Verificando cache para workId: ${workId}`);
 
       const cacheResult =
         await ScoresCacheServiceIncremental.getWorkScoresIncremental(workId, {
-          limit,
-          offset,
           priorityScore: priorityScoreId,
           specificTypes,
         });
 
-      if (cacheResult.scores && cacheResult.hasEnoughData) {
+      // 🔧 CORREÇÃO: SEMPRE usar cache se tiver partituras, mesmo que seja 1
+      if (cacheResult.scores && cacheResult.loadedCount > 0) {
         console.log(
-          `✅ [API-INC] Cache HIT! Retornando ${cacheResult.loadedCount} partituras do cache`
+          `✅ [API-INC] Cache HIT! Usando ${cacheResult.loadedCount} partituras do cache`
+        );
+        console.log(
+          `📊 [API-INC] Totais: ${cacheResult.loadedCount} cached / ${cacheResult.totalAvailable} disponíveis`
         );
 
         scoresData = cacheResult.scores;
         fromCache = true;
         cacheStats = cacheResult.cacheStats;
-      } else if (cacheResult.scores && offset > 0) {
-        // Cache parcial para carregamento incremental
-        console.log(
-          `🔄 [API-INC] Cache parcial encontrado para offset ${offset}`
-        );
-        scoresData = cacheResult.scores;
-        fromCache = true;
-        cacheStats = cacheResult.cacheStats;
+
+        // 🔧 CORREÇÃO: Para loadMore, verificar se precisa buscar mais
+        if (loadMore && cacheResult.totalAvailable > cacheResult.loadedCount) {
+          console.log(
+            `🔄 [API-INC] LoadMore solicitado - verificando se precisa scraping adicional`
+          );
+
+          // Calcular quantas partituras o usuário quer no total
+          const requestedTotal = cacheResult.loadedCount + limit;
+
+          // Se já temos o suficiente no cache, não fazer scraping
+          if (requestedTotal <= cacheResult.loadedCount) {
+            console.log(`✅ [API-INC] Cache suficiente - não precisa scraping`);
+          } else {
+            // Só fazer scraping se realmente precisar de mais
+            const needToFetch = Math.min(
+              limit,
+              cacheResult.totalAvailable - cacheResult.loadedCount
+            );
+
+            if (needToFetch > 0) {
+              console.log(
+                `🔄 [API-INC] Fazendo scraping de ${needToFetch} partituras adicionais`
+              );
+
+              const additionalScores = await scrapeAdditionalScores(
+                imslpUrl,
+                workId,
+                cacheResult,
+                needToFetch,
+                priorityScoreId
+              );
+
+              if (additionalScores) {
+                // Combinar dados do cache com novos dados
+                scoresData = combineScoresData(scoresData, additionalScores);
+                fromCache = false; // Mudou para false porque fez scraping adicional
+              }
+            }
+          }
+        }
+
+        // 🆕 Iniciar cache em background apenas se ainda há muito para carregar
+        const remainingPercentage =
+          cacheResult.totalAvailable > 0
+            ? (cacheResult.totalAvailable - cacheResult.loadedCount) /
+              cacheResult.totalAvailable
+            : 0;
+
+        if (!loadMore && remainingPercentage > 0.5) {
+          // Só se restam mais de 50%
+          console.log(
+            `🔄 [API-INC] Iniciando cache em background das restantes (${Math.round(
+              remainingPercentage * 100
+            )}% restantes)`
+          );
+          backgroundCachingStarted = true;
+          startBackgroundCaching(imslpUrl, workId, priorityScoreId).catch(
+            (error) => {
+              console.error(`❌ [API-INC] Erro no cache background:`, error);
+            }
+          );
+        }
       } else {
-        console.log(`❌ [API-INC] Cache MISS - será necessário fazer scraping`);
+        console.log(
+          `❌ [API-INC] Cache MISS ou vazio - será necessário fazer scraping`
+        );
       }
     }
 
-    // 2️⃣ SEGUNDA FASE: Scraping IMSLP (se não temos cache suficiente)
+    // 2️⃣ SEGUNDA FASE: Scraping IMSLP (se não temos cache ou é força refresh)
     if (!scoresData) {
       console.log(`🕷️ [API-INC] Iniciando scraping incremental...`);
 
       const paginationOptions: PaginationOptions = {
         limit,
         offset,
-        loadInBackground: !loadMore, // Se não é "carregar mais", fazer cache em background
+        loadInBackground: !loadMore, // Cache em background apenas se não é "carregar mais"
         specificTypes,
       };
 
@@ -152,10 +210,7 @@ export async function POST(request: NextRequest) {
         // 4️⃣ QUARTA FASE: Cache em background (se é carregamento inicial)
         if (!loadMore && offset === 0) {
           console.log(`🔄 [API-INC] Iniciando cache em background...`);
-
           backgroundCachingStarted = true;
-
-          // Cache completo em background (não bloqueia resposta)
           startBackgroundCaching(imslpUrl, workId, priorityScoreId).catch(
             (error) => {
               console.error(`❌ [API-INC] Erro no cache background:`, error);
@@ -209,7 +264,7 @@ export async function POST(request: NextRequest) {
               },
             }
           : undefined,
-        version: '4.0-INCREMENTAL',
+        version: '4.0-INCREMENTAL-FIXED',
         optimized: true,
         cached: fromCache,
         timestamp: new Date().toISOString(),
@@ -233,6 +288,61 @@ export async function POST(request: NextRequest) {
       },
       { status: 500 }
     );
+  }
+
+  /**
+   * 🆕 Fazer scraping adicional para loadMore
+   */
+  async function scrapeAdditionalScores(
+    imslpUrl: string,
+    workId: string,
+    cacheResult: any,
+    limit: number,
+    priorityScoreId?: string
+  ) {
+    try {
+      console.log(`🔄 [API-INC] Fazendo scraping adicional...`);
+
+      // Calcular quantas partituras já temos e quantas buscar
+      const currentLoaded = cacheResult.loadedCount;
+      const totalAvailable = cacheResult.totalAvailable;
+      const toFetch = Math.min(limit, totalAvailable - currentLoaded);
+
+      if (toFetch <= 0) {
+        console.log(`⚠️ [API-INC] Nenhuma partitura adicional para buscar`);
+        return null;
+      }
+
+      console.log(
+        `📈 [API-INC] Buscando ${toFetch} partituras adicionais (offset: ${currentLoaded})`
+      );
+
+      // Fazer scraping com offset baseado no que já temos
+      const additionalData =
+        await IMSLPScraperIncremental.fetchAndExtractScoresIncremental(
+          imslpUrl,
+          {
+            limit: toFetch,
+            offset: currentLoaded,
+            loadInBackground: false,
+          }
+        );
+
+      // Salvar no cache
+      if (additionalData) {
+        await ScoresCacheServiceIncremental.cacheScoresFromIMSLPIncremental(
+          workId,
+          additionalData,
+          priorityScoreId,
+          { immediate: true }
+        );
+      }
+
+      return additionalData;
+    } catch (error) {
+      console.error(`❌ [API-INC] Erro no scraping adicional:`, error);
+      return null;
+    }
   }
 
   /**
@@ -268,9 +378,52 @@ export async function POST(request: NextRequest) {
       console.error(`❌ [BACKGROUND] Erro no cache completo:`, error);
     }
   }
+
+  /**
+   * 🆕 Combinar dados do cache com novos dados de scraping
+   */
+  function combineScoresData(cacheData: any, newData: any) {
+    const combined = { ...cacheData };
+
+    // Combinar scoresByType
+    Object.keys(newData.scoresByType).forEach((type) => {
+      const existingGroups = combined.scoresByType[type] || [];
+      const newGroups = newData.scoresByType[type] || [];
+
+      // Adicionar novos grupos aos existentes
+      combined.scoresByType[type] = [...existingGroups, ...newGroups];
+    });
+
+    // Atualizar contadores carregados
+    Object.keys(newData.loadedCounts).forEach((type) => {
+      combined.loadedCounts[type] =
+        (combined.loadedCounts[type] || 0) + (newData.loadedCounts[type] || 0);
+    });
+
+    // Manter totais do cache (que são os reais)
+    // combined.totalCounts já está correto do cache
+
+    // Atualizar hasMore
+    const totalLoaded = Object.values(combined.loadedCounts).reduce(
+      (sum: number, count: number) => sum + count,
+      0
+    );
+    const totalAvailable = Object.values(combined.totalCounts).reduce(
+      (sum: number, count: number) => sum + count,
+      0
+    );
+
+    combined.hasMore = totalLoaded < totalAvailable;
+
+    console.log(
+      `🔄 [API-INC] Dados combinados: ${totalLoaded}/${totalAvailable} partituras`
+    );
+
+    return combined;
+  }
 }
 
-// 🆕 Endpoint GET atualizado com suporte a verificação de cache incremental
+// 🆕 Endpoint GET atualizado
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -300,6 +453,7 @@ export async function GET(request: NextRequest) {
           fromCache: cacheResult.fromCache,
           loadedCount: cacheResult.loadedCount,
           totalAvailable: cacheResult.totalAvailable,
+          totalCached: cacheResult.totalCached, // 🆕 Adicionar total salvo no banco
           stats: cacheResult.cacheStats,
           timestamp: new Date().toISOString(),
         });
@@ -321,7 +475,6 @@ export async function GET(request: NextRequest) {
         });
 
       default:
-        // Fallback para endpoints existentes
         return NextResponse.json(
           { error: 'Tipo não suportado na versão incremental' },
           { status: 400 }

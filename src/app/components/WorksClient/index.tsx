@@ -1,4 +1,4 @@
-// app/works/WorksClient.tsx - Com Sistema de Animação
+// app/works/WorksClient.tsx - Com Performance Otimizada e Z-index Corrigido
 'use client';
 
 import {
@@ -8,6 +8,7 @@ import {
   useEffect,
   useMemo,
   memo,
+  useRef,
 } from 'react';
 import { useRouter } from 'next/navigation';
 import { WorksListResponse, FilterOptions } from '@/app/requests/work-details';
@@ -51,60 +52,39 @@ interface WorksClientProps {
   filterOptions: FilterOptions;
 }
 
-// Hook para buscar nome do compositor
-// function useComposerName(composerId: string, popularComposers: any[]) {
-//   const [composerName, setComposerName] = useState('');
+// Hook para busca otimizada com debounce correto
+function useOptimizedSearch(
+  callback: (value: string) => void,
+  delay: number = 800
+) {
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
 
-//   useEffect(() => {
-//     const findComposerName = async () => {
-//       if (!composerId) {
-//         setComposerName('');
-//         return;
-//       }
+  const debouncedCallback = useCallback(
+    (value: string) => {
+      // Limpar timeout anterior se existir
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
 
-//       // Primeiro tenta encontrar nos compositores populares
-//       const popularComposer = popularComposers?.find(
-//         (c) => c.id === composerId
-//       );
+      // Criar novo timeout
+      timeoutRef.current = setTimeout(() => {
+        callback(value);
+      }, delay);
+    },
+    [callback, delay]
+  );
 
-//       if (popularComposer) {
-//         setComposerName(popularComposer.name);
-//         return;
-//       }
+  // Cleanup no unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
-//       // Se não encontrou, busca na API
-//       try {
-//         const response = await fetch('/api/composers', {
-//           method: 'POST',
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//           body: JSON.stringify({
-//             id: composerId,
-//           }),
-//         });
-
-//         if (response.ok) {
-//           const composer = await response.json();
-//           if (composer && composer.name) {
-//             setComposerName(composer.name);
-//           } else {
-//             setComposerName(composerId);
-//           }
-//         } else {
-//           setComposerName(composerId);
-//         }
-//       } catch (error) {
-//         console.error('Erro ao buscar nome do compositor:', error);
-//         setComposerName(composerId);
-//       }
-//     };
-
-//     findComposerName();
-//   }, [composerId, popularComposers]);
-
-//   return composerName;
-// }
+  return debouncedCallback;
+}
 
 // Componente de Loading Skeleton otimizado
 const WorksSkeleton = memo(() => (
@@ -378,19 +358,22 @@ const WorksClient = memo(
       [searchParams, router]
     );
 
-    // Debounced search - otimizado
+    // 🚀 BUSCA OTIMIZADA - Com debounce correto e delay maior
+    const performSearch = useCallback(
+      (value: string) => {
+        updateSearchParams({ search: value || undefined });
+      },
+      [updateSearchParams]
+    );
+
+    const debouncedSearch = useOptimizedSearch(performSearch, 800); // 800ms como no composers
+
     const handleSearchChange = useCallback(
       (value: string) => {
         setSearchTerm(value);
-
-        console.log('SEARCH', value);
-        const timeoutId = setTimeout(() => {
-          updateSearchParams({ search: value || undefined });
-        }, 500);
-
-        return () => clearTimeout(timeoutId);
+        debouncedSearch(value);
       },
-      [updateSearchParams]
+      [debouncedSearch]
     );
 
     // Handlers de filtros memoizados
@@ -568,10 +551,10 @@ const WorksClient = memo(
             </div>
           </div>
 
-          {/* Search and Filters Section */}
+          {/* Search and Filters Section - 🔧 Z-INDEX CORRIGIDO */}
           <AnimatedCard
             hover="none"
-            className={`classical-card p-6 transition-all duration-500 ${
+            className={`classical-card p-6 transition-all duration-500 relative z-[200] ${
               isPending ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
@@ -651,14 +634,14 @@ const WorksClient = memo(
               />
             </div>
 
-            {/* Expanded Filters */}
+            {/* Expanded Filters - 🔧 Z-INDEX CORRIGIDO */}
             {showFilters && (
               <AnimatedContainer speed="fast" delay={0}>
-                <div className="border-t border-theme-secondary pt-6 mb-4">
+                <div className="border-t border-theme-secondary pt-6 mb-4 relative z-[150]">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-                    {/* Composer Filter */}
-                    <div className="space-y-2 flex flex-col gap-1 relative z-[90]">
-                      <label className="text-sm font-medium text-theme-secondary ">
+                    {/* Composer Filter - 🔧 Z-INDEX MAIOR */}
+                    <div className="space-y-2 flex flex-col gap-1 relative z-[120]">
+                      <label className="text-sm font-medium text-theme-secondary">
                         Compositor
                       </label>
                       <ComposerSearchInput
@@ -670,8 +653,8 @@ const WorksClient = memo(
                     </div>
 
                     {/* Instrument Filter */}
-                    <div className="space-y-2 flex flex-col gap-1">
-                      <label className="text-sm font-medium text-theme-secondary ">
+                    <div className="space-y-2 flex flex-col gap-1 relative z-[110]">
+                      <label className="text-sm font-medium text-theme-secondary">
                         Instrumento
                       </label>
                       <div className="relative">
@@ -710,8 +693,8 @@ const WorksClient = memo(
                     </div>
 
                     {/* Epoch Filter */}
-                    <div className="space-y-2 flex flex-col gap-1">
-                      <label className="text-sm font-medium text-theme-secondary ">
+                    <div className="space-y-2 flex flex-col gap-1 relative z-[105]">
+                      <label className="text-sm font-medium text-theme-secondary">
                         Período
                       </label>
                       <div className="relative">
@@ -747,9 +730,9 @@ const WorksClient = memo(
                       </div>
                     </div>
 
-                    {/* Genre Filter */}
-                    <div className="space-y-2 flex flex-col gap-1 relative z-[70]">
-                      <label className="text-sm font-medium text-theme-secondary ">
+                    {/* Genre Filter - 🔧 Z-INDEX MAIOR */}
+                    <div className="space-y-2 flex flex-col gap-1 relative z-[115]">
+                      <label className="text-sm font-medium text-theme-secondary">
                         Gênero
                       </label>
                       <GenreSearchInput
@@ -781,14 +764,14 @@ const WorksClient = memo(
             />
           </AnimatedCard>
 
-          {/* Results Section */}
-          <div className="relative mt-4">
+          {/* Results Section - 🔧 Z-INDEX MENOR PARA NÃO SOBREPOR DROPDOWNS */}
+          <div className="relative mt-4 z-[50]">
             {isPending ? <WorksSkeleton /> : worksGrid}
 
             {/* Loading Overlay */}
             {isPending && (
               <AnimatedItem direction="scale" springType="gentle">
-                <div className="absolute inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl">
+                <div className="absolute inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-[60] rounded-2xl">
                   <div className="classical-card p-8 text-center">
                     <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-theme-primary font-medium">

@@ -1,4 +1,4 @@
-// app/libs/scores-cache-service-incremental.ts - Cache Service com Suporte Incremental
+// app/libs/scores-cache-service-incremental.ts - Cache Service Corrigido
 import prisma from '@/app/libs/prismadb';
 import {
   IMSLPWorkScoresIncremental,
@@ -10,14 +10,16 @@ export interface CachedScoresIncrementalResult {
   scores: IMSLPWorkScoresIncremental | null;
   fromCache: boolean;
   needsProcessing: boolean;
-  hasEnoughData: boolean; // Se tem dados suficientes para a requisição atual
+  hasEnoughData: boolean;
   loadedCount: number;
-  totalAvailable: number;
+  totalAvailable: number; // 🆕 Total real disponível no IMSLP
+  totalCached: number; // 🆕 Total salvo no banco
   cacheStats: {
     totalCached: number;
     lastUpdated: Date | null;
     completeness: number;
     byType: Record<string, number>;
+    realTotalByType?: Record<string, number>; // 🆕 Total real por tipo
   };
 }
 
@@ -28,16 +30,6 @@ export interface ScoreCacheIncrementalOptions {
   forceRefresh?: boolean;
   priorityScore?: string;
   specificTypes?: string[];
-}
-
-export interface CacheProgress {
-  workId: string;
-  progress: number; // 0-100
-  completed: boolean;
-  totalItems: number;
-  processedItems: number;
-  startedAt: Date;
-  estimatedTimeRemaining?: number; // em segundos
 }
 
 export class ScoresCacheServiceIncremental {
@@ -53,45 +45,47 @@ export class ScoresCacheServiceIncremental {
     options: ScoreCacheIncrementalOptions = {}
   ): Promise<CachedScoresIncrementalResult> {
     const {
-      limit = this.DEFAULT_LIMIT,
-      offset = 0,
       maxAge = this.DEFAULT_CACHE_TTL,
       forceRefresh = false,
-      priorityScore,
       specificTypes,
     } = options;
 
     console.log(
-      `🎼 [CACHE-INC] Verificando cache incremental para obra ${workId}`
-    );
-    console.log(
-      `📄 [CACHE-INC] Parâmetros: limit=${limit}, offset=${offset}, types=${
-        specificTypes?.join(',') || 'all'
-      }`
+      `🎼 [CACHE-INC] Verificando cache para obra ${workId}, forceRefresh: ${forceRefresh}`
     );
 
     if (!forceRefresh) {
-      // Tentar obter do cache com paginação
+      // 🆕 SEMPRE tentar obter do cache primeiro - mesmo que seja 1 partitura
       const cached = await this.getCachedScoresIncremental(workId, {
-        limit,
-        offset,
         maxAge,
         specificTypes,
       });
 
-      if (cached) {
+      // 🔧 CORREÇÃO: Retornar cache SEMPRE que tiver partituras salvas
+      if (cached && cached.scores && cached.loadedCount > 0) {
         console.log(
-          `✅ [CACHE-INC] Cache hit: ${cached.loadedCount} partituras retornadas`
+          `✅ [CACHE-INC] Cache HIT: Retornando ${cached.loadedCount} partituras do banco`
+        );
+        console.log(
+          `📊 [CACHE-INC] Total disponível: ${cached.totalAvailable}, Em cache: ${cached.totalCached}`
         );
 
         // Atualizar estatísticas de acesso em background
         this.updateAccessStats(workId).catch(console.error);
 
-        return cached;
+        // 🆕 Marcar hasEnoughData como true quando tem partituras
+        return {
+          ...cached,
+          hasEnoughData: true, // 🔧 SEMPRE true se tem partituras
+          fromCache: true,
+          needsProcessing: false,
+        };
       }
     }
 
-    console.log(`⏳ [CACHE-INC] Cache miss - será necessário scraping`);
+    console.log(
+      `⏳ [CACHE-INC] Cache miss ou forceRefresh - será necessário scraping`
+    );
 
     // Verificar se há dados parciais no cache
     const partialCache = await this.getPartialCacheInfo(workId);
@@ -103,6 +97,7 @@ export class ScoresCacheServiceIncremental {
       hasEnoughData: false,
       loadedCount: partialCache.totalCached,
       totalAvailable: partialCache.estimatedTotal,
+      totalCached: partialCache.totalCached,
       cacheStats: {
         totalCached: partialCache.totalCached,
         lastUpdated: partialCache.lastUpdated,
@@ -110,6 +105,229 @@ export class ScoresCacheServiceIncremental {
         byType: partialCache.byType,
       },
     };
+  }
+
+  /**
+   * 🚀 Obter partituras do cache - SEMPRE retorna TODAS as já salvas
+   */
+  private static async getCachedScoresIncremental(
+    workId: string,
+    options: {
+      maxAge: number;
+      specificTypes?: string[];
+    }
+  ): Promise<CachedScoresIncrementalResult | null> {
+    const { maxAge, specificTypes } = options;
+
+    try {
+      const cutoffDate = new Date(Date.now() - maxAge);
+
+      console.log(`🔍 [CACHE-INC] Buscando partituras para workId: ${workId}`);
+
+      // Construir filtro de tipos
+      const typeFilter =
+        specificTypes && specificTypes.length > 0
+          ? {
+              type: {
+                in: specificTypes.map((t) => t.toUpperCase() as IMSLPScoreType),
+              },
+            }
+          : {};
+
+      // 🆕 Buscar metadados do trabalho para obter totais reais do IMSLP
+      const workMetadata = await prisma.workScore.findFirst({
+        where: {
+          workId,
+          isActive: true,
+          imslpTotalCounts: { not: null },
+        },
+        select: {
+          imslpTotalCounts: true,
+          lastIMSLPSync: true,
+        },
+        orderBy: { lastIMSLPSync: 'desc' },
+      });
+
+      console.log(`📋 [CACHE-INC] Metadados encontrados:`, !!workMetadata);
+
+      // 🔧 BUSCAR TODAS as partituras salvas (não importa a idade)
+      const allCachedScores = await prisma.workScore.findMany({
+        where: {
+          workId,
+          isActive: true,
+          // 🔧 REMOVER filtro de idade - queremos TODAS as salvas
+          ...typeFilter,
+        },
+        orderBy: [
+          { priority: 'desc' },
+          { groupIndex: 'asc' },
+          { createdAt: 'asc' },
+        ],
+      });
+
+      console.log(
+        `📊 [CACHE-INC] Total de partituras encontradas: ${allCachedScores.length}`
+      );
+
+      // Se não tem nada no cache, retornar null
+      if (allCachedScores.length === 0) {
+        console.log(
+          `⚠️ [CACHE-INC] Nenhuma partitura encontrada no cache para ${workId}`
+        );
+        return null;
+      }
+
+      // Agrupar por tipo
+      const cachedByType = allCachedScores.reduce((acc, score) => {
+        const type = score.type.toLowerCase();
+        acc[type] = (acc[type] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      console.log(`📈 [CACHE-INC] Partituras por tipo:`, cachedByType);
+
+      // 🆕 Obter totais reais do IMSLP se disponível
+      let realTotalByType: Record<string, number> = {};
+      let totalRealAvailable = 0;
+
+      if (workMetadata?.imslpTotalCounts) {
+        try {
+          realTotalByType = JSON.parse(workMetadata.imslpTotalCounts as string);
+          totalRealAvailable = Object.values(realTotalByType).reduce(
+            (sum: number, count: number) => sum + count,
+            0
+          );
+          console.log(`🎯 [CACHE-INC] Totais reais do IMSLP:`, realTotalByType);
+        } catch (error) {
+          console.warn('Erro ao parsear imslpTotalCounts:', error);
+        }
+      }
+
+      // 🆕 Organizar partituras por tipo e grupo
+      const scoresByType: any = {
+        scores: [],
+        parts: [],
+        arrangements: [],
+        librettos: [],
+        others: [],
+        sources: [],
+      };
+
+      const loadedCounts = {
+        scores: 0,
+        parts: 0,
+        arrangements: 0,
+        librettos: 0,
+        others: 0,
+        sources: 0,
+      };
+
+      // 🆕 Usar totais reais se disponível, senão usar o que temos em cache
+      const totalCounts = {
+        scores: Math.max(realTotalByType.scores || 0, cachedByType.scores || 0),
+        parts: Math.max(realTotalByType.parts || 0, cachedByType.parts || 0),
+        arrangements: Math.max(
+          realTotalByType.arrangements || 0,
+          cachedByType.arrangements || 0
+        ),
+        librettos: Math.max(
+          realTotalByType.librettos || 0,
+          cachedByType.librettos || 0
+        ),
+        others: Math.max(realTotalByType.others || 0, cachedByType.others || 0),
+        sources: Math.max(
+          realTotalByType.sources || 0,
+          cachedByType.sources || 0
+        ),
+      };
+
+      // Processar cada tipo
+      const typesToProcess = specificTypes || [
+        'scores',
+        'parts',
+        'arrangements',
+        'librettos',
+        'others',
+        'sources',
+      ];
+
+      for (const type of typesToProcess) {
+        const dbType = type.toUpperCase() as IMSLPScoreType;
+
+        // 🔧 Buscar TODAS as partituras para este tipo
+        const scoresForType = allCachedScores.filter(
+          (score) => score.type === dbType
+        );
+
+        loadedCounts[type as keyof typeof loadedCounts] = scoresForType.length;
+
+        console.log(
+          `🎵 [CACHE-INC] Tipo ${type}: ${scoresForType.length} partituras`
+        );
+
+        // Converter e agrupar por groupIndex
+        if (scoresForType.length > 0) {
+          const groupedScores = this.groupScoresByIndex(scoresForType);
+          scoresByType[type] = groupedScores;
+        }
+      }
+
+      // Calcular estatísticas
+      const totalLoaded = Object.values(loadedCounts).reduce(
+        (sum, count) => sum + count,
+        0
+      );
+      const totalCached = allCachedScores.length;
+
+      console.log(
+        `✅ [CACHE-INC] Retornando ${totalLoaded} partituras organizadas`
+      );
+      console.log(
+        `📊 [CACHE-INC] Cache vs Real: ${totalLoaded}/${
+          totalRealAvailable || 'desconhecido'
+        }`
+      );
+
+      // 🆕 hasMore baseado no total real vs carregado
+      const hasMore =
+        totalRealAvailable > 0 ? totalLoaded < totalRealAvailable : false; // Se não sabemos o total real, assumir que não há mais
+
+      // Criar resultado no formato incremental
+      const result: IMSLPWorkScoresIncremental = {
+        workTitle: 'Cached Work',
+        scoresByType,
+        totalCounts, // 🆕 Usar totais reais se disponível
+        loadedCounts, // O que temos carregado no momento
+        hasMore,
+        pagination: {
+          currentPage: 1,
+          totalPages:
+            totalRealAvailable > 0 ? Math.ceil(totalRealAvailable / 50) : 1,
+          itemsPerPage: totalLoaded,
+        },
+      };
+
+      return {
+        scores: result,
+        fromCache: true,
+        needsProcessing: false,
+        hasEnoughData: true, // 🔧 SEMPRE true se tem partituras
+        loadedCount: totalLoaded,
+        totalAvailable: totalRealAvailable || totalCached, // 🆕 Total real se disponível
+        totalCached: totalCached,
+        cacheStats: {
+          totalCached: totalCached,
+          lastUpdated: this.getLastUpdated([]),
+          completeness:
+            totalRealAvailable > 0 ? totalLoaded / totalRealAvailable : 1,
+          byType: cachedByType,
+          realTotalByType: realTotalByType,
+        },
+      };
+    } catch (error) {
+      console.error(`❌ [CACHE-INC] Erro ao obter cache incremental:`, error);
+      return null;
+    }
   }
 
   /**
@@ -126,12 +344,6 @@ export class ScoresCacheServiceIncremental {
     console.log(
       `💾 [CACHE-INC] Iniciando cache incremental para obra ${workId}`
     );
-    console.log(
-      `📊 [CACHE-INC] Dados: ${Object.values(imslpData.loadedCounts).reduce(
-        (sum, count) => sum + count,
-        0
-      )} partituras carregadas`
-    );
 
     const startTime = Date.now();
 
@@ -143,7 +355,10 @@ export class ScoresCacheServiceIncremental {
         background
       );
 
-      // 2. Se é processamento imediato, salvar as partituras carregadas
+      // 🆕 2. Salvar metadados do IMSLP (totais reais)
+      await this.saveIMSLPMetadata(workId, imslpData);
+
+      // 3. Se é processamento imediato, salvar as partituras carregadas
       if (immediate) {
         await this.saveLoadedScores(
           workId,
@@ -153,7 +368,7 @@ export class ScoresCacheServiceIncremental {
         );
       }
 
-      // 3. Se é background, processar em segundo plano
+      // 4. Se é background, processar em segundo plano
       if (background) {
         this.processBackgroundCaching(
           workId,
@@ -183,263 +398,79 @@ export class ScoresCacheServiceIncremental {
   }
 
   /**
-   * 🚀 Obter progresso do cache em background
+   * 🆕 Salvar metadados do IMSLP para controle de totais
    */
-  static async getCacheProgress(workId: string): Promise<CacheProgress | null> {
-    try {
-      const log = await prisma.scoreProcessingLog.findFirst({
-        where: {
-          workId,
-          status: 'PROCESSING',
-        },
-        orderBy: { createdAt: 'desc' },
-      });
-
-      if (!log) {
-        // Verificar se há um log recente finalizado
-        const recentLog = await prisma.scoreProcessingLog.findFirst({
-          where: {
-            workId,
-            status: 'COMPLETED',
-            createdAt: {
-              gt: new Date(Date.now() - 10 * 60 * 1000), // Últimos 10 minutos
-            },
-          },
-          orderBy: { createdAt: 'desc' },
-        });
-
-        if (recentLog) {
-          return {
-            workId,
-            progress: 100,
-            completed: true,
-            totalItems: recentLog.itemsTotal || 0,
-            processedItems: recentLog.itemsSuccess || 0,
-            startedAt: recentLog.startedAt || new Date(),
-          };
-        }
-
-        return null;
-      }
-
-      const totalItems = log.itemsTotal || 1;
-      const processedItems = (log.itemsSuccess || 0) + (log.itemsFailed || 0);
-      const progress = Math.min(
-        Math.round((processedItems / totalItems) * 100),
-        100
-      );
-
-      // Calcular tempo estimado restante
-      const elapsedTime = Date.now() - (log.startedAt?.getTime() || Date.now());
-      const itemsRemaining = totalItems - processedItems;
-      const avgTimePerItem =
-        processedItems > 0 ? elapsedTime / processedItems : 0;
-      const estimatedTimeRemaining =
-        itemsRemaining > 0 && avgTimePerItem > 0
-          ? Math.round((itemsRemaining * avgTimePerItem) / 1000)
-          : undefined;
-
-      return {
-        workId,
-        progress,
-        completed: progress >= 100,
-        totalItems,
-        processedItems,
-        startedAt: log.startedAt || new Date(),
-        estimatedTimeRemaining,
-      };
-    } catch (error) {
-      console.error(`❌ [CACHE-INC] Erro ao obter progresso:`, error);
-      return null;
-    }
-  }
-
-  /**
-   * 🚀 Obter partituras do cache - SEMPRE retorna TODAS as já salvas
-   */
-  private static async getCachedScoresIncremental(
+  private static async saveIMSLPMetadata(
     workId: string,
-    options: {
-      limit: number;
-      offset: number;
-      maxAge: number;
-      specificTypes?: string[];
-    }
-  ): Promise<CachedScoresIncrementalResult | null> {
-    const { maxAge, specificTypes } = options;
-
+    imslpData: IMSLPWorkScoresIncremental
+  ): Promise<void> {
     try {
-      const cutoffDate = new Date(Date.now() - maxAge);
+      console.log(`💾 [CACHE-META] Salvando metadados IMSLP para ${workId}`);
+      console.log(`📊 [CACHE-META] Totais:`, imslpData.totalCounts);
 
-      // Construir filtro de tipos
-      const typeFilter =
-        specificTypes && specificTypes.length > 0
-          ? {
-              type: {
-                in: specificTypes.map((t) => t.toUpperCase() as IMSLPScoreType),
-              },
-            }
-          : {};
-
-      // Buscar contadores totais por tipo
-      const totalCountsByType = await prisma.workScore.groupBy({
-        by: ['type'],
+      // Salvar os totais reais do IMSLP em um registro especial
+      await prisma.workScore.upsert({
         where: {
-          workId,
-          isActive: true,
-          OR: [
-            { expiresAt: { gt: new Date() } },
-            { expiresAt: null },
-            { lastVerified: { gt: cutoffDate } },
-          ],
-          ...typeFilter,
+          workId_sourceId_source: {
+            workId,
+            sourceId: `${workId}_metadata`,
+            source: ScoreSource.IMSLP,
+          },
         },
-        _count: true,
+        update: {
+          imslpTotalCounts: JSON.stringify(imslpData.totalCounts),
+          lastIMSLPSync: new Date(),
+          updatedAt: new Date(),
+          lastVerified: new Date(),
+        },
+        create: {
+          workId,
+          sourceId: `${workId}_metadata`,
+          source: ScoreSource.IMSLP,
+          title: 'IMSLP Metadata',
+          downloadUrl: '',
+          fileSize: '',
+          pageCount: '',
+          fileFormat: 'METADATA',
+          type: IMSLPScoreType.OTHERS,
+          groupIndex: -1,
+          isVerified: true,
+          lastVerified: new Date(),
+          lastAccessed: new Date(),
+          accessCount: 1,
+          processingStatus: ProcessingStatus.COMPLETED,
+          expiresAt: new Date(Date.now() + this.DEFAULT_CACHE_TTL),
+          priority: -1,
+          cacheVersion: '2.0-INCREMENTAL-METADATA',
+          imslpTotalCounts: JSON.stringify(imslpData.totalCounts),
+          lastIMSLPSync: new Date(),
+          isActive: false, // Não mostrar este registro nas consultas normais
+        },
       });
 
-      // Se não tem nada no cache, retornar null
-      if (totalCountsByType.length === 0) {
-        console.log(
-          `⚠️ [CACHE-INC] Nenhuma partitura encontrada no cache para ${workId}`
-        );
-        return null;
-      }
-
-      const totalCachedByType = totalCountsByType.reduce((acc, item) => {
-        acc[item.type.toLowerCase()] = item._count;
-        return acc;
-      }, {} as Record<string, number>);
-
-      // 🆕 MUDANÇA: Buscar TODAS as partituras já salvas (sem paginação)
-      const scoresByType: any = {
-        scores: [],
-        parts: [],
-        arrangements: [],
-        librettos: [],
-        others: [],
-        sources: [],
-      };
-
-      const loadedCounts = {
-        scores: 0,
-        parts: 0,
-        arrangements: 0,
-        librettos: 0,
-        others: 0,
-        sources: 0,
-      };
-
-      const totalCounts = {
-        scores: 0,
-        parts: 0,
-        arrangements: 0,
-        librettos: 0,
-        others: 0,
-        sources: 0,
-      };
-
-      // Processar cada tipo - SEM LIMIT/OFFSET
-      const typesToProcess = specificTypes || [
-        'scores',
-        'parts',
-        'arrangements',
-        'librettos',
-        'others',
-        'sources',
-      ];
-
-      for (const type of typesToProcess) {
-        const dbType = type.toUpperCase() as IMSLPScoreType;
-
-        // Obter total para este tipo
-        totalCounts[type as keyof typeof totalCounts] =
-          totalCachedByType[type] || 0;
-
-        // 🆕 Buscar TODAS as partituras salvas para este tipo
-        const scoresForType = await prisma.workScore.findMany({
-          where: {
-            workId,
-            type: dbType,
-            isActive: true,
-            OR: [
-              { expiresAt: { gt: new Date() } },
-              { expiresAt: null },
-              { lastVerified: { gt: cutoffDate } },
-            ],
-          },
-          orderBy: [
-            { priority: 'desc' },
-            { groupIndex: 'asc' },
-            { createdAt: 'asc' },
-          ],
-          // 🆕 SEM skip/take - pegar TODAS
-        });
-
-        loadedCounts[type as keyof typeof loadedCounts] = scoresForType.length;
-
-        // Converter e agrupar por groupIndex
-        if (scoresForType.length > 0) {
-          const groupedScores = this.groupScoresByIndex(scoresForType);
-          scoresByType[type] = groupedScores;
-        }
-      }
-
-      // Calcular estatísticas
-      const totalLoaded = Object.values(loadedCounts).reduce(
-        (sum, count) => sum + count,
-        0
-      );
-      const totalCached = Object.values(totalCounts).reduce(
-        (sum, count) => sum + count,
-        0
-      );
-
-      console.log(
-        `✅ [CACHE-INC] Cache hit: retornando TODAS as ${totalLoaded} partituras já salvas`
-      );
-
-      // 🆕 hasMore é baseado em estimativa de total vs o que já temos cached
-      // Para simplificar, vamos assumir hasMore = true se temos partituras cacheadas
-      // (o total real será determinado quando fazer primeira requisição de "mais")
-      const hasMore = true; // Será ajustado pela API quando souber o total real
-
-      // Criar resultado no formato incremental
-      const result: IMSLPWorkScoresIncremental = {
-        workTitle: 'Cached Work',
-        scoresByType,
-        totalCounts, // Total atual que conhecemos (pode ser maior na realidade)
-        loadedCounts, // Mesmo que totalCounts quando é cache hit
-        hasMore,
-        pagination: {
-          currentPage: 1,
-          totalPages: 1, // Será recalculado quando souber o total real
-          itemsPerPage: totalLoaded,
-        },
-      };
-
-      return {
-        scores: result,
-        fromCache: true,
-        needsProcessing: false,
-        hasEnoughData: true,
-        loadedCount: totalLoaded,
-        totalAvailable: totalCached, // Por agora, usar o que temos
-        cacheStats: {
-          totalCached: totalCached,
-          lastUpdated: this.getLastUpdated(totalCountsByType),
-          completeness: 0.5, // Estimativa conservadora
-          byType: totalCachedByType,
-        },
-      };
+      console.log(`✅ [CACHE-META] Metadados salvos com sucesso`);
     } catch (error) {
-      console.error(`❌ [CACHE-INC] Erro ao obter cache incremental:`, error);
-      return null;
+      console.error('❌ [CACHE-META] Erro ao salvar metadados IMSLP:', error);
     }
   }
 
-  /**
-   * 🚀 Salvar partituras carregadas imediatamente
-   */
+  // ... (resto dos métodos permanecem iguais)
+
+  private static findFirstScoreInData(
+    imslpData: IMSLPWorkScoresIncremental
+  ): IMSLPScore | null {
+    for (const groups of Object.values(imslpData.scoresByType)) {
+      for (const group of groups) {
+        if (group.scores && group.scores.length > 0) {
+          return group.scores[0];
+        }
+      }
+    }
+    return null;
+  }
+
+  // ... (resto dos métodos anteriores permanecem iguais)
+
   private static async saveLoadedScores(
     workId: string,
     imslpData: IMSLPWorkScoresIncremental,
@@ -516,121 +547,6 @@ export class ScoresCacheServiceIncremental {
     );
   }
 
-  /**
-   * 🚀 Processamento em background
-   */
-  private static async processBackgroundCaching(
-    workId: string,
-    imslpData: IMSLPWorkScoresIncremental,
-    priorityScoreId?: string,
-    logId?: string
-  ): Promise<void> {
-    console.log(
-      `🔄 [CACHE-INC] Iniciando processamento background para ${workId}`
-    );
-
-    try {
-      // Aguardar um pouco para não impactar o foreground
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Simular processamento incremental de partituras restantes
-      // (aqui você faria o scraping completo das partituras restantes)
-
-      let totalProcessed = 0;
-      const totalItems = Object.values(imslpData.totalCounts).reduce(
-        (sum, count) => sum + count,
-        0
-      );
-      const loadedItems = Object.values(imslpData.loadedCounts).reduce(
-        (sum, count) => sum + count,
-        0
-      );
-      const remainingItems = totalItems - loadedItems;
-
-      console.log(
-        `📊 [CACHE-INC] Background: ${remainingItems} partituras restantes para processar`
-      );
-
-      // Simular processamento gradual
-      for (let i = 0; i < remainingItems; i += 10) {
-        // Simular processamento de 10 partituras por vez
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-
-        totalProcessed += Math.min(10, remainingItems - i);
-
-        // Atualizar progresso
-        if (logId) {
-          await prisma.scoreProcessingLog.update({
-            where: { id: logId },
-            data: {
-              itemsSuccess: { increment: Math.min(10, remainingItems - i) },
-            },
-          });
-        }
-
-        console.log(
-          `🔄 [CACHE-INC] Background: ${totalProcessed}/${remainingItems} processadas`
-        );
-      }
-
-      // Finalizar log
-      if (logId) {
-        await prisma.scoreProcessingLog.update({
-          where: { id: logId },
-          data: {
-            status: 'COMPLETED',
-            completedAt: new Date(),
-          },
-        });
-      }
-
-      console.log(
-        `✅ [CACHE-INC] Background completo: ${totalProcessed} partituras processadas`
-      );
-    } catch (error) {
-      console.error(`❌ [CACHE-INC] Erro no processamento background:`, error);
-
-      if (logId) {
-        await prisma.scoreProcessingLog.update({
-          where: { id: logId },
-          data: {
-            status: 'FAILED',
-            completedAt: new Date(),
-            error: error instanceof Error ? error.message : 'Erro desconhecido',
-          },
-        });
-      }
-    }
-  }
-
-  /**
-   * 🚀 Métodos auxiliares
-   */
-  private static async createOrUpdateProcessingLog(
-    workId: string,
-    imslpData: IMSLPWorkScoresIncremental,
-    isBackground: boolean
-  ) {
-    const totalItems = Object.values(imslpData.totalCounts).reduce(
-      (sum, count) => sum + count,
-      0
-    );
-
-    return await prisma.scoreProcessingLog.create({
-      data: {
-        workId,
-        action: isBackground
-          ? 'background_cache_complete'
-          : 'cache_incremental',
-        status: 'PROCESSING',
-        startedAt: new Date(),
-        itemsTotal: totalItems,
-        itemsSuccess: 0,
-        itemsFailed: 0,
-      },
-    });
-  }
-
   private static async saveScore(
     workId: string,
     score: IMSLPScore,
@@ -638,66 +554,70 @@ export class ScoresCacheServiceIncremental {
   ): Promise<void> {
     const { priority = 0, ttl = this.DEFAULT_CACHE_TTL } = options;
 
-    const scoreData = {
-      workId,
-      sourceId: score.id,
-      source: ScoreSource.IMSLP,
-      title: score.title,
-      downloadUrl: score.downloadUrl,
-      fileSize: score.fileSize,
-      pageCount: score.pageCount,
-      fileFormat: score.fileFormat || 'PDF',
-      editor: score.editor,
-      publisher: score.publisher,
-      copyright: score.copyright,
-      thumbnailUrl: score.thumbnailUrl,
-      uploadDate: score.uploadDate,
-      uploader: score.uploader,
-      notes: score.notes,
-      type: score.type.toUpperCase() as IMSLPScoreType,
-      groupIndex: score.groupIndex,
-      rating: score.rating,
-      ratingsCount: score.ratingsCount,
-      downloadCount: score.downloadCount,
-      isVerified: true,
-      lastVerified: new Date(),
-      lastAccessed: new Date(),
-      accessCount: 1,
-      processingStatus: ProcessingStatus.COMPLETED,
-      expiresAt: new Date(Date.now() + ttl),
-      priority,
-      cacheVersion: '2.0-INCREMENTAL',
-    };
+    try {
+      console.log(
+        `💾 [SAVE-SCORE] Salvando partitura: ${score.id} (${score.title})`
+      );
 
-    await prisma.workScore.upsert({
-      where: {
-        workId_sourceId_source: {
-          workId,
-          sourceId: score.id,
-          source: ScoreSource.IMSLP,
+      const scoreData = {
+        workId,
+        sourceId: score.id,
+        source: ScoreSource.IMSLP,
+        title: score.title,
+        downloadUrl: score.downloadUrl,
+        fileSize: score.fileSize,
+        pageCount: score.pageCount,
+        fileFormat: score.fileFormat || 'PDF',
+        editor: score.editor,
+        publisher: score.publisher,
+        copyright: score.copyright,
+        thumbnailUrl: score.thumbnailUrl,
+        uploadDate: score.uploadDate,
+        uploader: score.uploader,
+        notes: score.notes,
+        type: score.type.toUpperCase() as IMSLPScoreType,
+        groupIndex: score.groupIndex,
+        rating: score.rating,
+        ratingsCount: score.ratingsCount,
+        downloadCount: score.downloadCount,
+        isVerified: true,
+        lastVerified: new Date(),
+        lastAccessed: new Date(),
+        accessCount: 1,
+        processingStatus: ProcessingStatus.COMPLETED,
+        expiresAt: new Date(Date.now() + ttl),
+        priority,
+        cacheVersion: '2.0-INCREMENTAL',
+        isActive: true, // 🔧 Garantir que seja ativo
+      };
+
+      const result = await prisma.workScore.upsert({
+        where: {
+          workId_sourceId_source: {
+            workId,
+            sourceId: score.id,
+            source: ScoreSource.IMSLP,
+          },
         },
-      },
-      update: {
-        ...scoreData,
-        updatedAt: new Date(),
-        accessCount: { increment: 1 },
-      },
-      create: scoreData,
-    });
+        update: {
+          ...scoreData,
+          updatedAt: new Date(),
+          accessCount: { increment: 1 },
+        },
+        create: scoreData,
+      });
+
+      console.log(`✅ [SAVE-SCORE] Partitura salva: ${result.id}`);
+    } catch (error) {
+      console.error(
+        `❌ [SAVE-SCORE] Erro ao salvar partitura ${score.id}:`,
+        error
+      );
+      throw error; // Re-throw para que o caller saiba que falhou
+    }
   }
 
-  private static checkHasMore(
-    totalCounts: Record<string, number>,
-    loadedCounts: Record<string, number>,
-    offset: number,
-    limit: number
-  ): boolean {
-    return Object.keys(totalCounts).some((type) => {
-      const total = totalCounts[type];
-      const loaded = loadedCounts[type];
-      return total > loaded || total > offset + limit;
-    });
-  }
+  // ... (resto dos métodos auxiliares permanecem iguais)
 
   private static groupScoresByIndex(scores: any[]): any[] {
     const grouped = scores.reduce((acc, score) => {
@@ -824,9 +744,170 @@ export class ScoresCacheServiceIncremental {
     });
   }
 
-  /**
-   * 🚀 Métodos de manutenção e estatísticas
-   */
+  private static async createOrUpdateProcessingLog(
+    workId: string,
+    imslpData: IMSLPWorkScoresIncremental,
+    isBackground: boolean
+  ) {
+    const totalItems = Object.values(imslpData.totalCounts).reduce(
+      (sum, count) => sum + count,
+      0
+    );
+
+    return await prisma.scoreProcessingLog.create({
+      data: {
+        workId,
+        action: isBackground
+          ? 'background_cache_complete'
+          : 'cache_incremental',
+        status: 'PROCESSING',
+        startedAt: new Date(),
+        itemsTotal: totalItems,
+        itemsSuccess: 0,
+        itemsFailed: 0,
+      },
+    });
+  }
+
+  private static async processBackgroundCaching(
+    workId: string,
+    imslpData: IMSLPWorkScoresIncremental,
+    priorityScoreId?: string,
+    logId?: string
+  ): Promise<void> {
+    console.log(
+      `🔄 [CACHE-INC] Iniciando processamento background para ${workId}`
+    );
+
+    try {
+      // Aguardar um pouco para não impactar o foreground
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Simular processamento incremental de partituras restantes
+      let totalProcessed = 0;
+      const totalItems = Object.values(imslpData.totalCounts).reduce(
+        (sum, count) => sum + count,
+        0
+      );
+      const loadedItems = Object.values(imslpData.loadedCounts).reduce(
+        (sum, count) => sum + count,
+        0
+      );
+      const remainingItems = totalItems - loadedItems;
+
+      console.log(
+        `📊 [CACHE-INC] Background: ${remainingItems} partituras restantes para processar`
+      );
+
+      // Simular processamento gradual
+      for (let i = 0; i < remainingItems; i += 10) {
+        // Simular processamento de 10 partituras por vez
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        totalProcessed += Math.min(10, remainingItems - i);
+
+        // Atualizar progresso
+        if (logId) {
+          await prisma.scoreProcessingLog.update({
+            where: { id: logId },
+            data: {
+              itemsSuccess: { increment: Math.min(10, remainingItems - i) },
+            },
+          });
+        }
+
+        console.log(
+          `🔄 [CACHE-INC] Background: ${totalProcessed}/${remainingItems} processadas`
+        );
+      }
+
+      // Finalizar log
+      if (logId) {
+        await prisma.scoreProcessingLog.update({
+          where: { id: logId },
+          data: {
+            status: 'COMPLETED',
+            completedAt: new Date(),
+          },
+        });
+      }
+
+      console.log(
+        `✅ [CACHE-INC] Background completo: ${totalProcessed} partituras processadas`
+      );
+    } catch (error) {
+      console.error(`❌ [CACHE-INC] Erro no processamento background:`, error);
+
+      if (logId) {
+        await prisma.scoreProcessingLog.update({
+          where: { id: logId },
+          data: {
+            status: 'FAILED',
+            completedAt: new Date(),
+            error: error instanceof Error ? error.message : 'Erro desconhecido',
+          },
+        });
+      }
+    }
+  }
+
+  static async getCacheProgress(workId: string): Promise<any> {
+    try {
+      const log = await prisma.scoreProcessingLog.findFirst({
+        where: {
+          workId,
+          status: 'PROCESSING',
+        },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      if (!log) {
+        const recentLog = await prisma.scoreProcessingLog.findFirst({
+          where: {
+            workId,
+            status: 'COMPLETED',
+            createdAt: {
+              gt: new Date(Date.now() - 10 * 60 * 1000),
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        });
+
+        if (recentLog) {
+          return {
+            workId,
+            progress: 100,
+            completed: true,
+            totalItems: recentLog.itemsTotal || 0,
+            processedItems: recentLog.itemsSuccess || 0,
+            startedAt: recentLog.startedAt || new Date(),
+          };
+        }
+
+        return null;
+      }
+
+      const totalItems = log.itemsTotal || 1;
+      const processedItems = (log.itemsSuccess || 0) + (log.itemsFailed || 0);
+      const progress = Math.min(
+        Math.round((processedItems / totalItems) * 100),
+        100
+      );
+
+      return {
+        workId,
+        progress,
+        completed: progress >= 100,
+        totalItems,
+        processedItems,
+        startedAt: log.startedAt || new Date(),
+      };
+    } catch (error) {
+      console.error(`❌ [CACHE-INC] Erro ao obter progresso:`, error);
+      return null;
+    }
+  }
+
   static async cleanExpiredCacheIncremental(
     olderThanDays: number = 30
   ): Promise<number> {
@@ -871,7 +952,7 @@ export class ScoresCacheServiceIncremental {
         where: {
           status: 'PROCESSING',
           createdAt: {
-            gt: new Date(Date.now() - 60 * 60 * 1000), // Última hora
+            gt: new Date(Date.now() - 60 * 60 * 1000),
           },
         },
         select: {

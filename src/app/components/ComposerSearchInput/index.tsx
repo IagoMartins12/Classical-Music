@@ -1,4 +1,4 @@
-// components/ComposerSearchInput.tsx - Versão com POST
+// components/ComposerSearchInput.tsx - Com Z-index Corrigido
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -216,7 +216,9 @@ export default function ComposerSearchInput({
     !searchTerm && popularComposers && popularComposers.length > 0;
 
   return (
-    <div className="relative">
+    <div className="relative z-[120]">
+      {' '}
+      {/* Z-index corrigido */}
       <div className="relative">
         <FiUser className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary z-10" />
 
@@ -247,12 +249,11 @@ export default function ComposerSearchInput({
           <FiSearch className="absolute right-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
         )}
       </div>
-
       {/* Dropdown */}
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[80] max-h-80 overflow-hidden"
+          className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[500] max-h-80 overflow-hidden" // Z-index muito alto
         >
           {/* Header com label */}
           {showPopularLabel && (

@@ -119,7 +119,7 @@ export default function ComposersClient({
 
       const timeoutId = setTimeout(() => {
         updateUrl({ search: value, page: 1 });
-      }, 500);
+      }, 800);
 
       return () => clearTimeout(timeoutId);
     },

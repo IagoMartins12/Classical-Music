@@ -1,4 +1,4 @@
-// app/components/GenreSearchInput.tsx
+// app/components/GenreSearchInput.tsx - Com Z-index Corrigido
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -106,7 +106,9 @@ export default function GenreSearchInput({
   };
 
   return (
-    <div className="relative z-[60]">
+    <div className="relative z-[115]">
+      {' '}
+      {/* Z-index corrigido */}
       {/* Input Field */}
       <div className="relative">
         <FiTag className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
@@ -145,23 +147,21 @@ export default function GenreSearchInput({
           </button>
         </div>
       </div>
-
       {/* Backdrop (para garantir que cliques fora fechem o dropdown) */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[90]"
+          className="fixed inset-0 z-[300]" // Z-index alto para backdrop
           onClick={() => {
             setIsOpen(false);
             setSearchTerm('');
           }}
         />
       )}
-
       {/* Dropdown */}
       {isOpen && (
         <div
           ref={dropdownRef}
-          className="absolute classical-card-simple top-full left-0 right-0 mt-2 bg-theme-surface border border-theme-primary rounded-lg shadow-theme-glow z-[100] max-h-80 overflow-hidden"
+          className="absolute classical-card-simple top-full left-0 right-0 mt-2 bg-theme-surface border border-theme-primary rounded-lg shadow-theme-glow z-[400] max-h-80 overflow-hidden" // Z-index muito alto
           style={{
             boxShadow:
               '0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05)',

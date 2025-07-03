@@ -1,4 +1,4 @@
-// components/IMSLPTabsIncremental.tsx - Versão com Carregamento Incremental
+// components/IMSLPTabsIncremental.tsx - Versão Corrigida com Botões Dinâmicos
 'use client';
 
 import { useState, useRef } from 'react';
@@ -168,6 +168,73 @@ export default function IMSLPTabsIncremental({
     }
   };
 
+  // 🆕 Calcular partituras restantes
+  const remainingScores = Math.max(0, totalAvailable - currentLoaded);
+
+  // 🆕 Função para renderizar botões dinâmicos
+  const renderLoadMoreButtons = () => {
+    // Se não há mais partituras, não mostrar botões
+    if (!hasMore || remainingScores <= 0) {
+      return null;
+    }
+
+    const buttons = [];
+
+    // Botão "Carregar Mais (20)" - só se tiver pelo menos 20 restantes
+    if (remainingScores >= 20) {
+      buttons.push(
+        <button
+          key="load-20"
+          onClick={() => onLoadMore?.(20)}
+          disabled={loadingMore}
+          className="btn-classical-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loadingMore ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+              <span>Carregando...</span>
+            </>
+          ) : (
+            <>
+              <FiMoreHorizontal className="w-4 h-4" />
+              <span>Carregar Mais (20)</span>
+            </>
+          )}
+        </button>
+      );
+    }
+
+    // Botão "Carregar 50" - só se tiver pelo menos 50 restantes
+    if (remainingScores >= 50) {
+      buttons.push(
+        <button
+          key="load-50"
+          onClick={() => onLoadMore?.(50)}
+          disabled={loadingMore}
+          className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <FiDownload className="w-4 h-4" />
+          <span>Carregar 50</span>
+        </button>
+      );
+    }
+
+    // Botão "Carregar Todas" - sempre mostrar se há restantes
+    buttons.push(
+      <button
+        key="load-all"
+        onClick={onLoadAll}
+        disabled={loadingMore}
+        className="btn-classical-accent flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <FiLayers className="w-4 h-4" />
+        <span>Carregar Todas ({remainingScores} restantes)</span>
+      </button>
+    );
+
+    return buttons;
+  };
+
   // Estados de carregamento
   if (loading) {
     return <LoadingState />;
@@ -212,13 +279,18 @@ export default function IMSLPTabsIncremental({
                           : 'Selecione uma partitura para estudo'}
                       </p>
 
-                      {/* 🆕 Status de carregamento incremental */}
+                      {/* 🆕 Status de carregamento incremental melhorado */}
                       <div className="flex items-center space-x-4 text-sm">
                         <div className="flex items-center space-x-1 text-accent-blue">
                           <FiActivity className="w-3 h-3" />
                           <span className="font-medium">
                             {currentLoaded} de {totalAvailable} carregadas
                           </span>
+                          {remainingScores > 0 && (
+                            <span className="text-theme-tertiary">
+                              ({remainingScores} restantes)
+                            </span>
+                          )}
                         </div>
 
                         {/* Indicador de cache em background */}
@@ -271,13 +343,16 @@ export default function IMSLPTabsIncremental({
                 )}
               </div>
 
-              {/* 🆕 Barra de progresso do carregamento */}
+              {/* 🆕 Barra de progresso do carregamento melhorada */}
               {totalAvailable > 0 && (
                 <div className="mt-4">
                   <div className="flex items-center justify-between text-sm text-theme-tertiary mb-2">
                     <span>Progresso do carregamento</span>
                     <div className="flex items-center space-x-2">
                       <span>{progressPercentage}%</span>
+                      <span className="text-xs">
+                        ({currentLoaded}/{totalAvailable})
+                      </span>
                       {backgroundCaching && (
                         <div className="flex items-center space-x-1 text-accent-green">
                           <FiZap className="w-3 h-3" />
@@ -385,7 +460,7 @@ export default function IMSLPTabsIncremental({
                       </div>
                       <span className="font-semibold">{tab.label}</span>
 
-                      {/* 🆕 Contador com progresso */}
+                      {/* 🆕 Contador com progresso melhorado */}
                       <div className="flex items-center space-x-1">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
@@ -479,8 +554,8 @@ export default function IMSLPTabsIncremental({
                     </div>
                   ))}
 
-                  {/* 🆕 Botões de carregamento incremental dinâmicos e inteligentes */}
-                  {hasMore && totalAvailable > currentLoaded && (
+                  {/* 🆕 Botões de carregamento incremental dinâmicos e corrigidos */}
+                  {hasMore && remainingScores > 0 && (
                     <div className="flex flex-col items-center space-y-6 py-8 border-t border-theme-secondary">
                       <div className="text-center">
                         <h3 className="text-lg font-semibold text-theme-primary mb-2">
@@ -503,63 +578,10 @@ export default function IMSLPTabsIncremental({
                         )}
                       </div>
 
-                      {/* 🆕 Botões dinâmicos baseados no que resta */}
-                      {(() => {
-                        const remaining = totalAvailable - currentLoaded;
-
-                        if (remaining <= 0) {
-                          return null; // Não mostrar botões se não há mais nada
-                        }
-
-                        return (
-                          <div className="flex flex-wrap gap-4 justify-center">
-                            {/* Carregar Mais (20) - só se tiver pelo menos 20 restantes */}
-                            {remaining >= 20 && (
-                              <button
-                                onClick={() => onLoadMore?.(20)}
-                                disabled={loadingMore}
-                                className="btn-classical-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                              >
-                                {loadingMore ? (
-                                  <>
-                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                    <span>Carregando...</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <FiMoreHorizontal className="w-4 h-4" />
-                                    <span>Carregar Mais (20)</span>
-                                  </>
-                                )}
-                              </button>
-                            )}
-
-                            {/* Carregar 50 - só se tiver pelo menos 50 restantes */}
-                            {remaining >= 50 && (
-                              <button
-                                onClick={() => onLoadMore?.(50)}
-                                disabled={loadingMore}
-                                className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                              >
-                                <FiDownload className="w-4 h-4" />
-                                <span>Carregar 50</span>
-                              </button>
-                            )}
-
-                            {/* Carregar Todas - sempre mostrar se há restantes */}
-                            <button
-                              onClick={onLoadAll}
-                              disabled={loadingMore}
-                              className="btn-classical-accent flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              <FiLayers className="w-4 h-4" />
-                              <span>
-                                Carregar Todas ({remaining} restantes)
-                              </span>
-                            </button>
-                          </div>
-                        );
-                      })()}
+                      {/* 🆕 Botões dinâmicos corrigidos */}
+                      <div className="flex flex-wrap gap-4 justify-center">
+                        {renderLoadMoreButtons()}
+                      </div>
 
                       {/* Aviso sobre cache em background */}
                       {backgroundCaching && (
@@ -578,6 +600,26 @@ export default function IMSLPTabsIncremental({
                       )}
                     </div>
                   )}
+
+                  {/* 🆕 Mensagem quando todas as partituras foram carregadas */}
+                  {!hasMore &&
+                    totalAvailable > 0 &&
+                    currentLoaded >= totalAvailable && (
+                      <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
+                        <div className="text-center">
+                          <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <FiLayers className="w-8 h-8 text-theme-primary" />
+                          </div>
+                          <h3 className="text-lg font-semibold text-theme-primary mb-2">
+                            Todas as partituras carregadas!
+                          </h3>
+                          <p className="text-theme-secondary text-sm">
+                            Você visualizou todas as {totalAvailable} partituras
+                            disponíveis para esta obra.
+                          </p>
+                        </div>
+                      </div>
+                    )}
                 </div>
 
                 {/* Preview Panel */}
@@ -639,7 +681,7 @@ export default function IMSLPTabsIncremental({
   );
 }
 
-// === COMPONENTES AUXILIARES ===
+// === COMPONENTES AUXILIARES (permanecem iguais) ===
 
 function LoadingState() {
   return (

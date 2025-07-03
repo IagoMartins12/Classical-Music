@@ -1,4 +1,4 @@
-// app/hooks/useIMSLPScoresIncremental.ts - Hook com Carregamento Incremental
+// app/hooks/useIMSLPScoresIncremental.ts - Hook Corrigido
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -66,7 +66,6 @@ export function useIMSLPScoresIncremental(
   );
 
   // Estados de paginação
-  const [currentOffset, setCurrentOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
   // Refs para controle
@@ -90,8 +89,7 @@ export function useIMSLPScoresIncremental(
       }
       abortControllerRef.current = new AbortController();
 
-      const isInitialLoad = !isLoadMore && currentOffset === 0;
-      const offset = isLoadMore ? currentOffset : 0;
+      const isInitialLoad = !isLoadMore;
       const limit = customLimit || (isLoadMore ? moreLimit : initialLimit);
 
       if (isLoadMore) {
@@ -106,7 +104,7 @@ export function useIMSLPScoresIncremental(
       console.log(
         `🎼 [HOOK-INC] ${
           isLoadMore ? 'Carregando mais' : 'Carregamento inicial'
-        }: offset=${offset}, limit=${limit}`
+        }: limit=${limit}`
       );
 
       try {
@@ -120,7 +118,7 @@ export function useIMSLPScoresIncremental(
             forceRefresh: isInitialLoad ? forceRefresh : false,
             pagination: {
               limit,
-              offset,
+              offset: 0, // 🆕 API agora calcula offset automaticamente
               loadMore: isLoadMore,
             },
           }),
@@ -138,9 +136,9 @@ export function useIMSLPScoresIncremental(
           throw new Error(data.details || data.error);
         }
 
-        // Atualizar estados
-        if (isLoadMore && scores) {
-          // Combinar com dados existentes
+        // 🆕 Lógica atualizada para lidar com cache e loadMore
+        if (isLoadMore && scores && !data.fromCache) {
+          // LoadMore com scraping adicional - combinar dados
           const combinedData = combineScoresData(scores, data);
           setScores(combinedData);
 
@@ -156,14 +154,14 @@ export function useIMSLPScoresIncremental(
             )
           );
         } else {
-          // Primeira carga ou cache hit
+          // Primeira carga ou cache hit completo
           setScores(data);
           onScoresCached?.(data.fromCache || false);
         }
 
         setFromCache(data.fromCache || false);
 
-        // 🆕 Calcular hasMore baseado nos totais reais vs carregados
+        // 🆕 Calcular hasMore baseado nos dados reais
         const realTotalAvailable = Object.values(data.totalCounts).reduce(
           (sum: number, count: number) => sum + count,
           0
@@ -175,13 +173,6 @@ export function useIMSLPScoresIncremental(
 
         const realHasMore = realCurrentLoaded < realTotalAvailable;
         setHasMore(realHasMore);
-
-        // Atualizar offset para próximo carregamento
-        if (isLoadMore) {
-          setCurrentOffset(currentOffset + limit);
-        } else {
-          setCurrentOffset(realCurrentLoaded); // Para cache hit, offset = total já carregado
-        }
 
         setError(null);
 
@@ -223,7 +214,6 @@ export function useIMSLPScoresIncremental(
       enabled,
       priorityScoreId,
       forceRefresh,
-      currentOffset,
       initialLimit,
       moreLimit,
       onScoresCached,
@@ -283,7 +273,6 @@ export function useIMSLPScoresIncremental(
    * 🚀 Refetch completo
    */
   const refetch = useCallback(async () => {
-    setCurrentOffset(0);
     setHasMore(true);
     await fetchScores(false);
   }, [fetchScores]);
@@ -330,7 +319,6 @@ export function useIMSLPScoresIncremental(
   useEffect(() => {
     if (imslpUrl && enabled && imslpUrl !== lastUrlRef.current) {
       lastUrlRef.current = imslpUrl;
-      setCurrentOffset(0);
       setHasMore(true);
       fetchScores(false);
     }
@@ -408,23 +396,61 @@ function combineScoresData(
     const newGroups =
       newData.scoresByType[type as keyof typeof newData.scoresByType] || [];
 
-    // Combinar grupos (assumindo que os novos grupos vêm depois)
-    combined.scoresByType[type as keyof typeof combined.scoresByType] = [
-      ...existingGroups,
-      ...newGroups,
-    ];
+    // 🆕 Evitar duplicatas - apenas adicionar grupos que não existem
+    const combinedGroups = [...existingGroups];
+
+    for (const newGroup of newGroups) {
+      const existingGroup = combinedGroups.find(
+        (g) => g.groupIndex === newGroup.groupIndex
+      );
+
+      if (!existingGroup) {
+        combinedGroups.push(newGroup);
+      } else {
+        // Combinar scores dentro do grupo, evitando duplicatas
+        const existingScoreIds = new Set(existingGroup.scores.map((s) => s.id));
+        const newScores = newGroup.scores.filter(
+          (s) => !existingScoreIds.has(s.id)
+        );
+        existingGroup.scores.push(...newScores);
+      }
+    }
+
+    combined.scoresByType[type as keyof typeof combined.scoresByType] =
+      combinedGroups;
   });
 
-  // Atualizar contadores
+  // 🆕 Atualizar contadores corretamente
   Object.keys(newData.loadedCounts).forEach((type) => {
+    // Contar partituras reais ao invés de somar contadores
+    const typeGroups =
+      combined.scoresByType[type as keyof typeof combined.scoresByType] || [];
+    const realCount = typeGroups.reduce(
+      (sum, group) => sum + group.scores.length,
+      0
+    );
     combined.loadedCounts[type as keyof typeof combined.loadedCounts] =
-      (existing.loadedCounts[type as keyof typeof existing.loadedCounts] || 0) +
-      (newData.loadedCounts[type as keyof typeof newData.loadedCounts] || 0);
+      realCount;
   });
 
-  // Atualizar hasMore e pagination
-  combined.hasMore = newData.hasMore;
-  combined.pagination = newData.pagination;
+  // Manter totais do existente (que são os corretos)
+  // combined.totalCounts já está correto
+
+  // Atualizar hasMore
+  const totalLoaded = Object.values(combined.loadedCounts).reduce(
+    (sum: number, count: number) => sum + count,
+    0
+  );
+  const totalAvailable = Object.values(combined.totalCounts).reduce(
+    (sum: number, count: number) => sum + count,
+    0
+  );
+
+  combined.hasMore = totalLoaded < totalAvailable;
+
+  console.log(
+    `🔄 [HOOK-INC] Dados combinados: ${totalLoaded}/${totalAvailable} partituras`
+  );
 
   return combined;
 }

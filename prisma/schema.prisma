@@ -1,4 +1,4 @@
-// schema.prisma - Schema otimizado com sistema de cache de partituras
+// schema.prisma - Schema atualizado com sistema incremental de cache
 
 generator client {
   provider = "prisma-client-js"
@@ -70,7 +70,7 @@ enum IMSLPScoreType {
   SOURCES
 }
 
-// 🆕 Novos enums para sistema de cache
+// Enums para sistema de cache
 enum ScoreSource {
   IMSLP    // Do IMSLP
   CUSTOM   // Adicionado manualmente
@@ -85,7 +85,7 @@ enum ProcessingStatus {
   CANCELLED
 }
 
-// 🆕 Novos enums para anotações musicais
+// Enums para anotações musicais
 enum AnnotationCategory {
   TECHNIQUE        // Técnica (dedilhado, articulação, etc.)
   INTERPRETATION   // Interpretação (dinâmica, fraseado, etc.)
@@ -153,15 +153,15 @@ model User {
 
   studyModeSettings Json?
 
-  // 🆕 Anotações relacionadas
+  // Anotações relacionadas
   workAnnotations     WorkAnnotation[]
   annotationVotes     AnnotationHelpfulVote[]
   annotationReplies   AnnotationReply[]
   
-  // 🆕 Configurações de anotações
+  // Configurações de anotações
   annotationPreferences Json? // Preferências de exibição, notificações, etc.
   
-  // 🆕 Estatísticas de contribuição
+  // Estatísticas de contribuição
   helpfulAnnotationsCount Int @default(0) // Cache de anotações úteis
   totalAnnotationsCount   Int @default(0) // Cache total de anotações
   expertInstruments       String[] @default([]) // Instrumentos que o usuário é expert
@@ -192,7 +192,7 @@ model User {
   @@index([onboardingCompleted])
 }
 
-// 🆕 Model principal para cache de partituras
+// 🆕 Model para cache de partituras com sistema incremental
 model WorkScore {
   id       String      @id @default(auto()) @map("_id") @db.ObjectId
   workId   String      @db.ObjectId
@@ -240,6 +240,10 @@ model WorkScore {
   expiresAt      DateTime?         // TTL do cache
   cacheVersion   String            @default("1.0")
   
+  // 🆕 Campos para sistema incremental
+  imslpTotalCounts String?   // JSON com totais reais do IMSLP por tipo
+  lastIMSLPSync    DateTime? // Última sincronização completa com IMSLP
+  
   // Status de processamento
   processingStatus ProcessingStatus @default(PENDING)
   
@@ -258,14 +262,16 @@ model WorkScore {
   @@index([isActive, expiresAt])
   @@index([lastAccessed, isActive])
   @@index([priority, createdAt])
+  @@index([lastIMSLPSync]) // 🆕 Índice para sincronização
+  @@index([imslpTotalCounts]) // 🆕 Índice para metadados
   @@map("work_scores")
 }
 
-// 🆕 Model para logs de processamento em background
+// Model para logs de processamento em background
 model ScoreProcessingLog {
   id       String           @id @default(auto()) @map("_id") @db.ObjectId
   workId   String           @db.ObjectId
-  action   String           // Tipo de ação: 'cache_scores', 'cache_scores_background', 'maintenance', etc.
+  action   String           // Tipo de ação: 'cache_incremental', 'background_cache_complete', etc.
   status   ProcessingStatus @default(PENDING)
   
   // Dados de execução
@@ -348,10 +354,10 @@ model Composer {
   fullName      String
   otherName     String?  // Nome alternativo (contentSub)
   
-  // 🆕 Nomes alternativos da página IMSLP
-  alternativeNames    String?  // 🆕 Nomes alternativos/Transliterações
-  namesInOtherLangs   String?  // 🆕 Nome em outras línguas  
-  pseudonyms          String?  // 🆕 Pseudônimos
+  // Nomes alternativos da página IMSLP
+  alternativeNames    String?  // Nomes alternativos/Transliterações
+  namesInOtherLangs   String?  // Nome em outras línguas  
+  pseudonyms          String?  // Pseudônimos
   
   // Datas melhoradas - podem conter dia/mês/ano
   birthDate     String?  // Ex: "31 de janeiro de 1797", "1797", "January 31, 1797"
@@ -362,28 +368,28 @@ model Composer {
   epochName     String?
   bio           String?
   
-  // 🆕 Informações detalhadas da página IMSLP
-  diverseInfo         String?  // 🆕 Informação diversa (biografia detalhada)
-  externalLinks       String?  // 🆕 Links externos úteis
+  // Informações detalhadas da página IMSLP
+  diverseInfo         String?  // Informação diversa (biografia detalhada)
+  externalLinks       String?  // Links externos úteis
   
   // Dados IMSLP
   permLinkImslp String?
   imslpId       String?
   wikipediaLink String?
   
-  // 🆕 Dados estatísticos e geográficos (mantidos)
+  // Dados estatísticos e geográficos
   nationality          String?  // País/nacionalidade (ex: "German", "Austrian", "Brazilian")
   instruments          String?  // Instrumentos associados (ex: "Piano, Violin, Orchestra")
   
-  // 🆕 Categorias e classificações IMSLP
-  imslpCategories      String?  // 🔄 VOLTOU - Categorias do IMSLP (ex: "Romantic composers, German composers, Pianists")
+  // Categorias e classificações IMSLP
+  imslpCategories      String?  // Categorias do IMSLP (ex: "Romantic composers, German composers, Pianists")
   
-  // 🆕 Metadados da página IMSLP
+  // Metadados da página IMSLP
   lastModifiedImslp    String?  // Data da última modificação no IMSLP
   pageStatus           String?  // Status da página: "complete", "stub", "needs_work"
   pageQuality          String?  // Qualidade da página: "high", "medium", "low"
   
-  // 🆕 Dados de cache e verificação
+  // Dados de cache e verificação
   lastVerified         DateTime @default(now())
   dataCompleteness     Float?   // Porcentagem de completude dos dados (0-100)
   hasValidImage        Boolean  @default(false) // Se tem imagem válida (não placeholder)
@@ -400,24 +406,25 @@ model Composer {
   favoritedBy FavoriteComposer[]
   favoriteByUsers User[] @relation("FavoriteComposer")
 
-  // 🆕 Índices otimizados
+  // Índices otimizados
   @@index([name])
   @@index([epochId])
   @@index([fullName])
-  @@index([otherName])             // Índice para nome alternativo
-  @@index([alternativeNames])      // 🆕 Índice para nomes alternativos
-  @@index([imslpCategories])       // 🔄 VOLTOU - Índice para categorias IMSLP
+  @@index([otherName])             
+  @@index([alternativeNames])      
+  @@index([imslpCategories])       
   @@index([primaryRoleId])
   @@index([imslpId])
   @@index([nationality])
-  @@index([birthDate])             // Para filtros por período
-  @@index([deathDate])             // Para filtros por período
+  @@index([birthDate])             
+  @@index([deathDate])             
   @@index([hasValidImage])
   @@index([name, epochId])
   @@index([epochId, primaryRoleId])
   @@index([name, fullName])
   @@index([nationality, epochId])
 }
+
 model Epoch {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
@@ -515,15 +522,15 @@ model Work {
   pdfAnnotations PdfAnnotation[]
   scoreBookmarks ScoreBookmark[]
   
-  // 🆕 Anotações relacionadas
+  // Anotações relacionadas
   workAnnotations WorkAnnotation[]
   
-  // 🆕 Estatísticas de anotações (cache para performance)
+  // Estatísticas de anotações (cache para performance)
   annotationsCount        Int @default(0)
   helpfulAnnotationsCount Int @default(0)
   lastAnnotationAt        DateTime?
 
-  // 🆕 Relações com sistema de cache
+  // 🆕 Relações com sistema de cache incremental
   cachedScores       WorkScore[]
   processingLogs     ScoreProcessingLog[]
 
@@ -542,8 +549,6 @@ model Work {
   @@index([categoryNames])
   @@index([workGenresArr])
 }
-
-// Outros models permanecem iguais...
 
 model UserInstrument {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
@@ -907,7 +912,6 @@ model WorkAnnotation {
   @@map("work_annotations")
 }
 
-// 🆕 Model para votos de utilidade
 model AnnotationHelpfulVote {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   userId       String @db.ObjectId
@@ -923,7 +927,6 @@ model AnnotationHelpfulVote {
   @@map("annotation_helpful_votes")
 }
 
-// 🆕 Model para respostas às anotações
 model AnnotationReply {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   userId       String @db.ObjectId
@@ -1011,7 +1014,6 @@ model FavoriteScore {
   @@map("favorite_scores")
 }
 
-// 🆕 Modelo para estatísticas de favoritos de partituras (cache)
 model ScoreFavoriteStats {
   id              String         @id @default(auto()) @map("_id") @db.ObjectId
   workId          String         @db.ObjectId
