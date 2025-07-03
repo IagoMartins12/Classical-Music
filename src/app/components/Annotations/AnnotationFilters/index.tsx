@@ -1,4 +1,4 @@
-// components/Annotations/AnnotationFilters.tsx - VERSÃO LIMPA E CORRIGIDA
+// components/Annotations/AnnotationFilters.tsx - VERSÃO CORRIGIDA SEM USERID
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -11,7 +11,6 @@ import {
   FiBookOpen,
   FiTrendingUp,
   FiClock,
-  FiUser,
   FiMapPin,
   FiSearch,
   FiRefreshCw,
@@ -50,7 +49,7 @@ const SORT_OPTIONS = [
   { value: 'oldest', label: 'Mais antigas', icon: FiClock },
 ];
 
-export default function AnnotationFilters({
+export default function AnnotationFiltersComponent({
   filters,
   onFiltersChange,
   onClose,
@@ -58,13 +57,20 @@ export default function AnnotationFilters({
 }: AnnotationFiltersProps) {
   const [localFilters, setLocalFilters] = useState<Filters>(filters);
 
-  // Sincronizar com filtros externos
+  // Sincronizar com filtros externos, mas sempre removendo userId
   useEffect(() => {
-    setLocalFilters(filters);
+    const cleanFilters = { ...filters };
+    // 🔧 GARANTIR que userId seja sempre removido
+    delete (cleanFilters as any).userId;
+    setLocalFilters(cleanFilters);
   }, [filters]);
 
   const handleFilterChange = (key: keyof Filters, value: any) => {
     const newFilters = { ...localFilters, [key]: value };
+
+    // 🔧 GARANTIR que userId nunca seja incluído
+    delete (newFilters as any).userId;
+
     setLocalFilters(newFilters);
 
     // Aplicar filtros imediatamente
@@ -79,9 +85,10 @@ export default function AnnotationFilters({
     onFiltersChange(clearedFilters);
   };
 
-  // Verificar filtros ativos (excluindo sortBy padrão)
+  // 🔧 CORREÇÃO: Verificar filtros ativos (excluindo sortBy padrão e userId)
   const hasActiveFilters = Object.entries(localFilters).some(([key, value]) => {
     if (key === 'sortBy') return value !== 'helpful' && value !== undefined;
+    if (key === 'userId') return false; // Sempre ignorar userId
     return value !== undefined && value !== '';
   });
 
@@ -99,9 +106,12 @@ export default function AnnotationFilters({
             {hasActiveFilters && (
               <span className="bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium">
                 {
-                  Object.values(localFilters).filter(
-                    (v) => v !== undefined && v !== '' && v !== 'helpful'
-                  ).length
+                  Object.entries(localFilters).filter(([key, value]) => {
+                    if (key === 'sortBy')
+                      return value !== 'helpful' && value !== undefined;
+                    if (key === 'userId') return false; // Sempre ignorar userId
+                    return value !== undefined && value !== '';
+                  }).length
                 }{' '}
                 ativos
               </span>
@@ -118,7 +128,7 @@ export default function AnnotationFilters({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Dificuldade */}
           <div>
-            <label className=" text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+            <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
               <FiTarget className="w-4 h-4" />
               <span>Nível de Dificuldade</span>
             </label>
@@ -160,7 +170,7 @@ export default function AnnotationFilters({
 
           {/* Abrangência */}
           <div>
-            <label className=" text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+            <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
               <FiLayers className="w-4 h-4" />
               <span>Abrangência</span>
             </label>
@@ -202,7 +212,7 @@ export default function AnnotationFilters({
 
           {/* Ordenação */}
           <div>
-            <label className=" text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+            <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
               <FiTrendingUp className="w-4 h-4" />
               <span>Ordenar por</span>
             </label>
@@ -238,13 +248,13 @@ export default function AnnotationFilters({
 
         {/* Filtros de busca avançada */}
         <div className="mt-6 pt-6 border-t border-theme-secondary">
-          <label className=" text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+          <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
             <FiSearch className="w-4 h-4" />
             <span>Busca Avançada</span>
           </label>
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className=" text-xs text-theme-tertiary mb-2 flex items-center space-x-1">
+              <label className="text-xs text-theme-tertiary mb-2 flex items-center space-x-1">
                 <span>Buscar em títulos, conteúdo e tags</span>
               </label>
               <div className="relative">
@@ -273,7 +283,7 @@ export default function AnnotationFilters({
         {/* Resumo de filtros ativos */}
         {hasActiveFilters && (
           <div className="mt-6 pt-6 border-t border-theme-secondary">
-            <label className=" text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
+            <label className="text-sm font-medium text-theme-primary mb-3 flex items-center space-x-2">
               <FiFilter className="w-4 h-4" />
               <span>Filtros Ativos</span>
             </label>
@@ -344,18 +354,6 @@ export default function AnnotationFilters({
                   </button>
                 </span>
               )}
-
-              {localFilters.userId && (
-                <span className="px-3 py-1 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-full text-sm font-medium flex items-center space-x-2">
-                  <span>Usuário: {localFilters.userId}</span>
-                  <button
-                    onClick={() => handleFilterChange('userId', undefined)}
-                    className="text-accent-red hover:text-accent-red/80 transition-colors"
-                  >
-                    <FiX className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
             </div>
           </div>
         )}
@@ -371,6 +369,7 @@ export default function AnnotationFilters({
                     Object.entries(localFilters).filter(([key, value]) => {
                       if (key === 'sortBy')
                         return value !== 'helpful' && value !== undefined;
+                      if (key === 'userId') return false; // Sempre ignorar userId
                       return value !== undefined && value !== '';
                     }).length
                   }{' '}
@@ -412,7 +411,7 @@ export default function AnnotationFilters({
             <span>
               <strong>Dica:</strong> Os filtros avançados buscam no servidor e
               são mais precisos. Use-os para encontrar anotações específicas por
-              nível de dificuldade, abrangência ou conteúdo.
+              nível de dificuldade, abrangência ou conteúdo da comunidade.
             </span>
           </div>
         </div>

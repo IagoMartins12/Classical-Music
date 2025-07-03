@@ -1,4 +1,4 @@
-// app/annotations/AnnotationsPageClient.tsx - VERSÃO STORE ONLY
+// app/annotations/AnnotationsPageClient.tsx - VERSÃO CORRIGIDA
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
@@ -7,11 +7,7 @@ import {
   FiSearch,
   FiFilter,
   FiX,
-  FiTarget,
-  FiEye,
-  FiThumbsUp,
   FiPlus,
-  FiRefreshCw,
 } from 'react-icons/fi';
 
 import { useAuth } from '@/app/hooks/useAuth';
@@ -23,7 +19,6 @@ import {
   PageContainer,
 } from '../animation/AnimatedComponents';
 import AuthCheck from '../AuthCheck';
-import { StatCard } from '../LearningPageClient/StatCard';
 import Select from '../Common/Select';
 import UserAnnotationCard from './UserAnnotationCard';
 import AnnotationsStatsWidget from './AnnotationsStatsWidget';
@@ -32,7 +27,6 @@ import {
   useAnnotationsStore,
   AnnotationFilters,
 } from '@/app/stores/useAnnotationsStore';
-import { toast } from 'react-hot-toast';
 import Link from 'next/link';
 
 type AnnotationCategory =
@@ -85,7 +79,7 @@ const SCOPE_OPTIONS = [
   { value: 'SPECIFIC_MEASURE', label: 'Compasso específico' },
 ];
 
-// 🔧 NOVO: Hook customizado para debounce
+// Hook customizado para debounce
 const useDebounce = (value: any, delay: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -121,8 +115,10 @@ const AnnotationsPageClient = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   const { isAuthenticated, user } = useAuth();
+
+  // 🔧 CORREÇÃO PRINCIPAL: Acessar o estado diretamente da store
   const {
-    getUserAnnotations,
+    userAnnotations: allUserAnnotations, // Estado direto da store
     fetchUserAnnotations,
     loading,
     filters,
@@ -130,18 +126,18 @@ const AnnotationsPageClient = () => {
     clearFilters,
   } = useAnnotationsStore();
 
-  // 🔧 NOVO: Buscar anotações do usuário direto do store
+  // 🔧 CORREÇÃO: Buscar anotações do usuário diretamente do estado
   const userAnnotations = useMemo(() => {
     if (!user?.id) return [];
-    return getUserAnnotations(user.id);
-  }, [user?.id, getUserAnnotations]);
+    return allUserAnnotations[user.id] || [];
+  }, [user?.id, allUserAnnotations]);
 
   const isLoading = loading.fetch.has('user-annotations');
 
-  // 🔧 OTIMIZAÇÃO: Debounced search
+  // Debounced search
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  // 🔧 NOVO: Função otimizada para buscar anotações do usuário
+  // Função para buscar anotações do usuário
   const fetchUserAnnotationsData = useCallback(async () => {
     if (!user?.id) return;
 
@@ -166,19 +162,62 @@ const AnnotationsPageClient = () => {
     fetchUserAnnotations,
   ]);
 
-  // 🔧 OTIMIZAÇÃO: Carregar dados na montagem e quando filtros mudarem
+  // Carregar dados na montagem e quando filtros mudarem
   useEffect(() => {
     if (mounted && user?.id) {
       fetchUserAnnotationsData();
     }
   }, [mounted, fetchUserAnnotationsData]);
 
-  // 🔧 NOVO: Mount effect
+  // Mount effect
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // 🔧 OTIMIZAÇÃO: Filtered annotations com base no tab ativo
+  // 🔧 MELHORIA: Escutar eventos personalizados de anotações
+  useEffect(() => {
+    if (!mounted || !user?.id) return;
+
+    const handleAnnotationDeleted = (event: CustomEvent) => {
+      console.log('🔄 Evento de anotação deletada detectado:', event.detail);
+      // A store já foi atualizada, mas força uma verificação
+      if (event.detail.userId === user.id) {
+        // Opcional: re-fetch se necessário
+        console.log(
+          '🔄 Anotação do usuário atual deletada, UI deve ser atualizada automaticamente'
+        );
+      }
+    };
+
+    const handleAnnotationUpdated = (event: CustomEvent) => {
+      console.log('🔄 Evento de anotação atualizada detectado:', event.detail);
+      if (event.detail.userId === user.id) {
+        console.log('🔄 Anotação do usuário atual atualizada');
+      }
+    };
+
+    window.addEventListener(
+      'annotationDeleted',
+      handleAnnotationDeleted as EventListener
+    );
+    window.addEventListener(
+      'annotationUpdated',
+      handleAnnotationUpdated as EventListener
+    );
+
+    return () => {
+      window.removeEventListener(
+        'annotationDeleted',
+        handleAnnotationDeleted as EventListener
+      );
+      window.removeEventListener(
+        'annotationUpdated',
+        handleAnnotationUpdated as EventListener
+      );
+    };
+  }, [mounted, user?.id]);
+
+  // Filtered annotations com base no tab ativo
   const filteredAnnotations = useMemo(() => {
     let filtered = [...userAnnotations];
 
@@ -202,7 +241,7 @@ const AnnotationsPageClient = () => {
     return filtered;
   }, [userAnnotations, activeTab]);
 
-  // 🔧 OTIMIZAÇÃO: Estatísticas calculadas
+  // Estatísticas calculadas
   const stats = useMemo(() => {
     const totalAnnotations = userAnnotations.length;
     const publicAnnotations = userAnnotations.filter((a) => a.isPublic).length;
@@ -238,9 +277,8 @@ const AnnotationsPageClient = () => {
     };
   }, [userAnnotations]);
 
-  // 🔧 NOVO: Estatísticas para o widget (simuladas baseadas nos dados atuais)
+  // Estatísticas para o widget
   const widgetStats = useMemo(() => {
-    // Distribuição por categoria
     const categoryDistribution = CATEGORY_OPTIONS.slice(1)
       .map((option) => {
         const count = userAnnotations.filter(
@@ -265,14 +303,14 @@ const AnnotationsPageClient = () => {
     };
   }, [userAnnotations]);
 
-  // 🔧 NOVO: Top anotações para o widget
+  // Top anotações para o widget
   const topAnnotations = useMemo(() => {
     return [...userAnnotations]
       .sort((a, b) => b.helpfulCount - a.helpfulCount)
       .slice(0, 5);
   }, [userAnnotations]);
 
-  // 🔧 NOVO: Obras mais anotadas para o widget
+  // Obras mais anotadas para o widget
   const mostAnnotatedWorks = useMemo(() => {
     const worksMap = new Map();
 
@@ -295,7 +333,7 @@ const AnnotationsPageClient = () => {
       .slice(0, 5);
   }, [userAnnotations]);
 
-  // 🔧 OTIMIZAÇÃO: Memoized filters check
+  // Filters check
   const hasActiveFilters = useMemo(() => {
     return (
       categoryFilter !== 'all' ||
@@ -305,7 +343,7 @@ const AnnotationsPageClient = () => {
     );
   }, [categoryFilter, difficultyFilter, scopeFilter, debouncedSearchQuery]);
 
-  // 🔧 OTIMIZAÇÃO: Clear filters
+  // Clear filters
   const handleClearFilters = useCallback(() => {
     setSearchQuery('');
     setCategoryFilter('all');
@@ -355,40 +393,6 @@ const AnnotationsPageClient = () => {
             </p>
           </div>
         </AnimatedItem>
-
-        {/* Statistics Cards */}
-        {/* <AnimatedItem direction="up" springType="gentle">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatCard
-              icon={<FiMessageSquare className="w-6 h-6 text-theme-primary" />}
-              title="Total de Anotações"
-              value={stats.totalAnnotations}
-              color="brand"
-            />
-
-            <StatCard
-              icon={<FiEye className="w-6 h-6 text-theme-primary" />}
-              title="Anotações Públicas"
-              value={stats.publicAnnotations}
-              subtitle={
-                stats.verifiedAnnotations > 0
-                  ? `${stats.verifiedAnnotations} verificadas`
-                  : undefined
-              }
-              color="blue"
-            />
-
-            <StatCard
-              icon={<FiThumbsUp className="w-6 h-6 text-theme-primary" />}
-              title="Votos Úteis"
-              value={stats.totalHelpfulVotes}
-              subtitle={`Média: ${stats.avgHelpfulVotes}/anotação`}
-              color="green"
-            />
-
-         
-          </div>
-        </AnimatedItem> */}
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
@@ -628,14 +632,6 @@ const AnnotationsPageClient = () => {
                     <span>Explorar Obras</span>
                     <FiPlus className="w-4 h-4" />
                   </Link>
-
-                  // <button
-                  //   onClick={() => setShowCreateModal(true)}
-                  //   className="btn-classical-primary flex items-center space-x-2 mx-auto"
-                  // >
-                  //   <FiPlus className="w-4 h-4" />
-                  //   <span>Criar Primeira Anotação</span>
-                  // </button>
                 )}
               </div>
             ) : (

@@ -383,9 +383,10 @@ const WorksClient = memo(
       (value: string) => {
         setSearchTerm(value);
 
+        console.log('SEARCH', value);
         const timeoutId = setTimeout(() => {
           updateSearchParams({ search: value || undefined });
-        }, 300);
+        }, 500);
 
         return () => clearTimeout(timeoutId);
       },

@@ -1,4 +1,4 @@
-// components/MostFavoritedBadge.tsx - Badge para partitura mais favoritada
+// components/MostFavoritedBadge.tsx - VERSÃO OTIMIZADA com props opcionais
 'use client';
 
 import { FiAward, FiStar, FiTrendingUp } from 'react-icons/fi';
@@ -13,6 +13,9 @@ interface MostFavoritedBadgeProps {
   size?: 'sm' | 'md' | 'lg';
   position?: 'corner' | 'inline' | 'floating';
   showText?: boolean;
+  // 🆕 Props opcionais para evitar hook quando já temos a informação
+  isMostFavorited?: boolean;
+  skipHook?: boolean;
 }
 
 export default function MostFavoritedBadge({
@@ -23,12 +26,23 @@ export default function MostFavoritedBadge({
   size = 'md',
   position = 'corner',
   showText = true,
+  // 🆕 Novos parâmetros
+  isMostFavorited: propIsMostFavorited,
+  skipHook = false,
 }: MostFavoritedBadgeProps) {
-  const { isMostFavorited, loading } = useIsMostFavorited(
-    workId,
-    scoreId,
-    scoreSource
+  // 🆕 Usar hook apenas se não recebemos via props
+  const hookResult = useIsMostFavorited(
+    skipHook ? '' : workId, // Não fazer requisição se skipHook for true
+    skipHook ? '' : scoreId,
+    skipHook ? 'IMSLP' : scoreSource
   );
+
+  // Determinar se é mais favoritada: usar prop se disponível, senão usar hook
+  const isMostFavorited = skipHook
+    ? propIsMostFavorited || false
+    : hookResult.isMostFavorited;
+
+  const loading = skipHook ? false : hookResult.loading;
 
   // Não mostrar se não é a mais favoritada ou está carregando
   if (loading || !isMostFavorited) {
@@ -122,7 +136,7 @@ export default function MostFavoritedBadge({
     animate-pulse
     hover:animate-none
     transition-all duration-300
-    hover:scale-101
+    hover:scale-105
   `;
 
   // Diferentes layouts baseados na variante
@@ -166,10 +180,12 @@ export function CompactMostFavoritedBadge({
   workId,
   scoreId,
   scoreSource = 'IMSLP',
+  isMostFavorited,
 }: {
   workId: string;
   scoreId: string;
   scoreSource?: string;
+  isMostFavorited?: boolean;
 }) {
   return (
     <MostFavoritedBadge
@@ -180,6 +196,9 @@ export function CompactMostFavoritedBadge({
       size="sm"
       position="inline"
       showText={false}
+      // 🆕 Se recebemos via props, não usar hook
+      isMostFavorited={isMostFavorited}
+      skipHook={isMostFavorited !== undefined}
     />
   );
 }
@@ -189,18 +208,35 @@ export function MostFavoritedEmoji({
   workId,
   scoreId,
   scoreSource = 'IMSLP',
+  isMostFavorited,
 }: {
   workId: string;
   scoreId: string;
   scoreSource?: string;
+  isMostFavorited?: boolean;
 }) {
-  const { isMostFavorited, loading } = useIsMostFavorited(
+  // Se recebemos via props, usar diretamente
+  if (isMostFavorited !== undefined) {
+    if (!isMostFavorited) return null;
+
+    return (
+      <span
+        className="text-lg animate-bounce"
+        title="Partitura mais favoritada"
+      >
+        👑
+      </span>
+    );
+  }
+
+  // Caso contrário, usar hook
+  const { isMostFavorited: hookIsMostFavorited, loading } = useIsMostFavorited(
     workId,
     scoreId,
     scoreSource
   );
 
-  if (loading || !isMostFavorited) {
+  if (loading || !hookIsMostFavorited) {
     return null;
   }
 

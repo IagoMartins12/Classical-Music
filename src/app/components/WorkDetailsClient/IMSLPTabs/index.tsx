@@ -1,4 +1,4 @@
-// components/IMSLPTabs.tsx - VERSÃO ATUALIZADA com favoritos
+// components/IMSLPTabs.tsx - VERSÃO OTIMIZADA com única requisição
 'use client';
 
 import { useState, useRef } from 'react';
@@ -44,6 +44,12 @@ interface IMSLPTabsProps {
   onLoadMore?: () => void;
   onLoadAll?: () => void;
   canLoadMore?: boolean;
+  // 🆕 Props otimizadas para evitar múltiplas requisições
+  mostFavoritedScoreId?: string | null;
+  mostFavoritedSource?: string;
+  hasMostFavorited?: boolean;
+  loadingMostFavorited?: boolean;
+  isScoreMostFavorited?: (scoreId: string, scoreSource?: string) => boolean;
 }
 
 interface TabInfo {
@@ -114,6 +120,12 @@ export default function IMSLPTabs({
   onLoadMore,
   onLoadAll,
   canLoadMore = false,
+  // 🆕 Props otimizadas
+  mostFavoritedScoreId,
+  mostFavoritedSource = 'IMSLP',
+  hasMostFavorited = false,
+  loadingMostFavorited = false,
+  isScoreMostFavorited,
 }: IMSLPTabsProps) {
   const [activeTab, setActiveTab] = useState<string>(() => {
     const firstTabWithContent = TABS.find(
@@ -125,7 +137,7 @@ export default function IMSLPTabs({
   const [selectedScore, setSelectedScore] = useState<IMSLPScore | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // 🆕 Hook para estatísticas de favoritos
+  // Hook para estatísticas de favoritos (mantido)
   const {
     stats: favoriteStats,
     loading: loadingFavorites,
@@ -261,7 +273,7 @@ export default function IMSLPTabs({
                           : 'Selecione uma partitura para estudo'}
                       </p>
 
-                      {/* 🆕 Estatísticas de favoritos */}
+                      {/* Estatísticas de favoritos */}
                       {!loadingFavorites && favoriteStats.length > 0 && (
                         <div className="flex items-center space-x-4 text-sm">
                           <div className="flex items-center space-x-1 text-accent-red">
@@ -275,7 +287,8 @@ export default function IMSLPTabs({
                             </span>
                           </div>
 
-                          {mostFavorited && (
+                          {/* 🆕 Mostrar partitura mais favoritada se existir */}
+                          {hasMostFavorited && mostFavorited && (
                             <div className="flex items-center space-x-1 text-accent-gold">
                               <FiStar className="w-3 h-3" />
                               <span className="font-medium">
@@ -331,7 +344,7 @@ export default function IMSLPTabs({
                 )}
               </div>
 
-              {/* 🆕 Seção de estatísticas destacadas */}
+              {/* Seção de estatísticas destacadas */}
               {!loadingFavorites && favoriteStats.length > 0 && (
                 <div className="mt-4 p-4 bg-gradient-to-r from-accent-red/5 to-accent-gold/5 border border-accent-red/20 rounded-xl">
                   <div className="flex items-center justify-between">
@@ -409,7 +422,7 @@ export default function IMSLPTabs({
                 const count = imslpData.totalCounts[tab.type];
                 const isActive = activeTab === tab.id;
 
-                // 🆕 Calcular favoritos para esta aba
+                // Calcular favoritos para esta aba
                 const tabFavorites = favoriteStats.filter(
                   (stat) =>
                     stat.scoreType?.toLowerCase() === tab.type.toLowerCase()
@@ -454,7 +467,7 @@ export default function IMSLPTabs({
                         {count}
                       </span>
 
-                      {/* 🆕 Badge de favoritos da aba */}
+                      {/* Badge de favoritos da aba */}
                       {tabFavoritesCount > 0 && (
                         <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-accent-red to-accent-pink rounded-full flex items-center justify-center">
                           <span className="text-xs font-bold text-theme-primary">
@@ -496,8 +509,13 @@ export default function IMSLPTabs({
 
                       <div className="space-y-2">
                         {scoreGroup.scores.map((score, index) => {
-                          // 🆕 Obter estatísticas de favoritos para esta partitura
+                          // Obter estatísticas de favoritos para esta partitura
                           const scoreStats = getScoreStats(score.id, 'IMSLP');
+
+                          // 🆕 Verificar se é a mais favoritada usando dados já carregados
+                          const isMostFavorited = isScoreMostFavorited
+                            ? isScoreMostFavorited(score.id, 'IMSLP')
+                            : false;
 
                           return (
                             <SequentialGrid
@@ -517,14 +535,16 @@ export default function IMSLPTabs({
                                 }
                                 groupSize={scoreGroup.scores.length}
                                 showFavoriteStats={true}
+                                showMostFavoritedBadge={true}
+                                // 🆕 Passar diretamente se é a mais favoritada
+                                isMostFavorited={isMostFavorited}
                                 favoriteStats={
                                   scoreStats
                                     ? {
                                         totalFavorites:
                                           scoreStats.totalFavorites,
                                         avgRating: scoreStats.avgRating,
-                                        isMostFavorited:
-                                          scoreStats.isMostFavorited,
+                                        isMostFavorited: isMostFavorited,
                                       }
                                     : undefined
                                 }

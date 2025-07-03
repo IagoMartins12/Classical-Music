@@ -1,4 +1,4 @@
-// components/Annotations/AnnotationsSection.tsx - VERSÃO COM FILTROS INTEGRADOS CORRIGIDOS
+// components/Annotations/AnnotationsSection.tsx - VERSÃO CORRIGIDA SEM VAZAMENTO DE USERID
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -20,6 +20,7 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import {
   useAnnotationsStore,
   AnnotationCategory,
+  AnnotationFilters,
 } from '@/app/stores/useAnnotationsStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import AnnotationCard from '../AnnotationCard';
@@ -27,7 +28,7 @@ import CreateAnnotationModal, {
   DIFFICULTY_OPTIONS,
   SCOPE_OPTIONS,
 } from '../CreateAnnotationModal';
-import AnnotationFilters from '../AnnotationFilters';
+import AnnotationFiltersComponent from '../AnnotationFilters';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -98,14 +99,16 @@ export default function AnnotationsSection({
   const [showFilters, setShowFilters] = useState(false);
   const [localSearchTerm, setLocalSearchTerm] = useState('');
 
+  // 🔧 NOVO: Estado local para filtros da comunidade - separado da store global
+  const [communityFilters, setCommunityFilters] = useState<AnnotationFilters>({
+    sortBy: 'helpful',
+  });
+
   const { open } = useLoginModal();
   const {
-    getWorkAnnotations, // Para anotações filtradas
+    getWorkAnnotations,
     getAnnotationStats,
     fetchWorkAnnotations,
-    setFilters,
-    clearFilters,
-    filters,
     loading,
     pagination,
   } = useAnnotationsStore();
@@ -113,30 +116,52 @@ export default function AnnotationsSection({
   const isLoading = loading.fetch.has(workId);
   const workPagination = pagination[workId];
 
-  // 🔧 CORREÇÃO FINAL: Usar a store corretamente separada
   const allAnnotations = getWorkAnnotations(workId);
-  const filteredAnnotationsFromServer = getWorkAnnotations(workId); // Para exibição
-  const totalStats = getAnnotationStats(workId); // Já usa getAllWorkAnnotations internamente
+  const totalStats = getAnnotationStats(workId);
 
-  // 🔧 NOVO: Aplicar filtros locais APENAS se não há filtros avançados ativos
+  // 🔧 CORREÇÃO: Verificar filtros avançados sem incluir userId
   const hasAdvancedFilters =
-    filters.difficulty || filters.scope || filters.userId || filters.search;
+    communityFilters.difficulty ||
+    communityFilters.scope ||
+    communityFilters.search;
 
-  // Se há filtros avançados, mostrar as anotações como estão (já filtradas pelo servidor)
-  // Se não há filtros avançados, aplicar filtros locais de categoria e busca
+  // 🔧 CORREÇÃO: Inicialização limpa - sempre sem userId
+  useEffect(() => {
+    console.log(
+      '🧹 [AnnotationsSection] Montando componente para workId:',
+      workId
+    );
+
+    // Fazer fetch inicial sempre sem userId para mostrar anotações da comunidade
+    const initialFilters: AnnotationFilters = {
+      sortBy: 'helpful',
+    };
+
+    setCommunityFilters(initialFilters);
+    fetchWorkAnnotations(workId, initialFilters);
+
+    console.log(
+      '✅ [AnnotationsSection] Fetch inicial executado com filtros da comunidade'
+    );
+  }, [workId, fetchWorkAnnotations]);
+
+  // 🔧 CORREÇÃO: Filtrar anotações localmente apenas se não há filtros avançados
   const displayedAnnotations = hasAdvancedFilters
     ? allAnnotations
     : allAnnotations.filter((annotation) => {
         // Filtro de categoria local
-        if (filters.category && annotation.category !== filters.category) {
+        if (
+          communityFilters.category &&
+          annotation.category !== communityFilters.category
+        ) {
           return false;
         }
 
-        if (!annotation.isPublic) {
-          if (annotation.userId !== user?.id) {
-            return false;
-          }
+        // Mostrar apenas anotações públicas ou do próprio usuário
+        if (!annotation.isPublic && annotation.userId !== user?.id) {
+          return false;
         }
+
         // Filtro de busca local
         if (localSearchTerm) {
           const search = localSearchTerm.toLowerCase();
@@ -150,75 +175,95 @@ export default function AnnotationsSection({
         return true;
       });
 
-  // Carregar anotações ao montar
-  useEffect(() => {
-    fetchWorkAnnotations(workId);
-  }, [workId]);
-
-  // 🔧 CORREÇÃO: Filtro de categoria agora integrado com os filtros do store
+  // 🔧 CORREÇÃO: Handler para filtro de categoria - sem userId
   const handleCategoryFilter = (category: AnnotationCategory | 'ALL') => {
-    if (category === 'ALL') {
-      // Limpar apenas o filtro de categoria, manter outros filtros avançados
-      const newFilters = { ...filters };
-      delete newFilters.category;
-      setFilters(newFilters);
+    let newFilters: AnnotationFilters;
 
-      // Se não há outros filtros avançados, não fazer nova busca
-      // if (!hasAdvancedFilters) {
-      //   return;
-      // }
+    if (category === 'ALL') {
+      // Limpar apenas o filtro de categoria, manter outros filtros (exceto userId)
+      newFilters = {
+        ...communityFilters,
+        category: undefined,
+      };
     } else {
-      // Setar filtro de categoria
-      const newFilters = { ...filters, category };
-      setFilters(newFilters);
+      // Setar filtro de categoria (sem userId)
+      newFilters = {
+        ...communityFilters,
+        category,
+      };
     }
 
-    // Fazer nova busca no servidor
-    fetchWorkAnnotations(workId, {
-      ...filters,
-      category: category === 'ALL' ? undefined : category,
-    });
+    // NUNCA incluir userId nos filtros da comunidade
+    delete (newFilters as any).userId;
+
+    setCommunityFilters(newFilters);
+    fetchWorkAnnotations(workId, newFilters);
+
+    console.log(
+      '🔧 [AnnotationsSection] Filtro de categoria aplicado:',
+      newFilters
+    );
   };
 
-  // 🔧 CORREÇÃO: Busca local (não vai para servidor a menos que seja via filtros avançados)
+  // Busca local (não vai para servidor a menos que seja via filtros avançados)
   const handleLocalSearch = (term: string) => {
     setLocalSearchTerm(term);
-    // Busca local não faz nova requisição
   };
 
-  // 🔧 NOVO: Handler para filtros avançados
-  const handleAdvancedFiltersChange = (newFilters: any) => {
-    console.log('🔧 Aplicando filtros avançados:', newFilters);
+  // 🔧 CORREÇÃO: Handler para filtros avançados - garantir que não há userId
+  const handleAdvancedFiltersChange = (newFilters: AnnotationFilters) => {
+    console.log(
+      '🔧 [AnnotationsSection] Aplicando filtros avançados:',
+      newFilters
+    );
+
+    // GARANTIR que userId seja removido dos filtros da comunidade
+    const cleanFilters = { ...newFilters };
+    delete (cleanFilters as any).userId;
 
     // Limpar busca local quando filtros avançados são aplicados
-    if (newFilters.search) {
+    if (cleanFilters.search) {
       setLocalSearchTerm('');
     }
 
-    setFilters(newFilters);
-    fetchWorkAnnotations(workId, newFilters);
+    setCommunityFilters(cleanFilters);
+    fetchWorkAnnotations(workId, cleanFilters);
+
+    console.log(
+      '✅ [AnnotationsSection] Filtros limpos aplicados:',
+      cleanFilters
+    );
   };
 
-  // 🔧 NOVO: Limpar todos os filtros
+  // 🔧 CORREÇÃO: Limpar todos os filtros da comunidade
   const handleClearAllFilters = () => {
+    console.log('🧹 [AnnotationsSection] Limpando todos os filtros');
+
     setLocalSearchTerm('');
-    clearFilters();
-    fetchWorkAnnotations(workId, {});
+
+    const cleanFilters: AnnotationFilters = {
+      sortBy: 'helpful',
+    };
+
+    setCommunityFilters(cleanFilters);
+    fetchWorkAnnotations(workId, cleanFilters);
+
+    console.log('✅ [AnnotationsSection] Filtros limpos e fetch executado');
   };
 
   const loadMoreAnnotations = () => {
     if (workPagination?.hasMore) {
-      fetchWorkAnnotations(workId, filters, workPagination.page + 1);
+      // Usar filtros da comunidade (sem userId)
+      fetchWorkAnnotations(workId, communityFilters, workPagination.page + 1);
     }
   };
 
-  // 🔧 NOVO: Verificar se há filtros ativos
+  // 🔧 CORREÇÃO: Verificar se há filtros ativos (sem contar userId)
   const hasAnyFilters =
-    filters.category ||
-    filters.difficulty ||
-    filters.scope ||
-    filters.userId ||
-    filters.search ||
+    communityFilters.category ||
+    communityFilters.difficulty ||
+    communityFilters.scope ||
+    communityFilters.search ||
     localSearchTerm;
 
   return (
@@ -298,8 +343,12 @@ export default function AnnotationsSection({
                   {hasAdvancedFilters && (
                     <span className="bg-brand-primary text-theme-primary rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                       {
-                        Object.values(filters).filter(
-                          (v) => v !== undefined && v !== ''
+                        Object.entries(communityFilters).filter(
+                          ([key, value]) =>
+                            key !== 'sortBy' && // Não contar sortBy padrão
+                            typeof value === 'string' &&
+                            value !== '' &&
+                            value !== 'helpful'
                         ).length
                       }
                     </span>
@@ -309,11 +358,11 @@ export default function AnnotationsSection({
 
               {/* Filtros de categoria sempre visíveis */}
               <div className="flex flex-wrap gap-2">
-                {/* Botão "Todas" - sempre mostra o total geral */}
+                {/* Botão "Todas" */}
                 <button
                   onClick={() => handleCategoryFilter('ALL')}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                    !filters.category
+                    !communityFilters.category
                       ? 'bg-gradient-to-r from-brand-primary to-brand-secondary text-theme-primary shadow-theme-glow'
                       : 'bg-theme-elevated border border-theme-primary/30 text-theme-secondary hover:border-brand-primary/50'
                   }`}
@@ -322,15 +371,14 @@ export default function AnnotationsSection({
                   {hasAnyFilters ? totalStats.total : allAnnotations.length})
                 </button>
 
-                {/* 🔧 CORREÇÃO: Mostrar TODAS as categorias sempre, baseado no totalStats */}
+                {/* Categorias baseadas no totalStats */}
                 {Object.entries(CATEGORY_CONFIG).map(([key, config]) => {
                   const category = key as AnnotationCategory;
-                  const count = totalStats.byCategory[category]; // Sempre baseado no total geral
+                  const count = totalStats.byCategory[category];
                   const Icon = config.icon;
 
-                  if (count === 0) return;
+                  if (count === 0) return null;
 
-                  // 🔧 CORREÇÃO: Sempre mostrar a categoria, mesmo com count 0
                   return (
                     <AnimatedItem
                       key={category}
@@ -339,9 +387,9 @@ export default function AnnotationsSection({
                     >
                       <button
                         onClick={() => handleCategoryFilter(category)}
-                        disabled={count === 0} // Apenas desabilitar se não houver anotações
+                        disabled={count === 0}
                         className={`px-4 py-2 rounded-xl text-sm font-medium transition-all flex items-center space-x-2 ${
-                          filters.category === category && count > 0
+                          communityFilters.category === category && count > 0
                             ? `bg-gradient-to-r ${config.color} text-theme-primary shadow-theme-glow`
                             : count === 0
                             ? 'bg-theme-elevated border border-theme-primary/20 text-theme-tertiary opacity-50 cursor-not-allowed'
@@ -358,41 +406,36 @@ export default function AnnotationsSection({
                 })}
               </div>
 
-              {/* 🔧 NOVO: Status de filtros */}
+              {/* Status de filtros */}
               {hasAnyFilters && (
                 <div className="flex items-center justify-between bg-theme-elevated/50 classical-card-simple rounded-xl px-4 py-3">
                   <div className="flex items-center space-x-2 text-sm">
                     <FiFilter className="w-4 h-4 text-theme-tertiary" />
                     <span className="text-theme-primary">Filtros ativos:</span>
 
-                    {/* Mostrar filtros ativos */}
                     <div className="flex items-center space-x-1">
-                      {filters.category && (
+                      {communityFilters.category && (
                         <span className="bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs">
-                          {CATEGORY_CONFIG[filters.category].label}
+                          {CATEGORY_CONFIG[communityFilters.category].label}
                         </span>
                       )}
-                      {filters.difficulty && (
+                      {communityFilters.difficulty && (
                         <span className="bg-accent-blue/10 text-accent-blue px-2 py-1 rounded-lg text-xs">
-                          {
-                            DIFFICULTY_OPTIONS.find(
-                              (opt) => opt.value === filters.difficulty
-                            )?.label || filters.difficulty // Caso não ache, mostra o valor original
-                          }{' '}
+                          {DIFFICULTY_OPTIONS.find(
+                            (opt) => opt.value === communityFilters.difficulty
+                          )?.label || communityFilters.difficulty}
                         </span>
                       )}
-                      {filters.scope && (
+                      {communityFilters.scope && (
                         <span className="bg-accent-green/10 text-accent-green px-2 py-1 rounded-lg text-xs">
-                          {
-                            SCOPE_OPTIONS.find(
-                              (opt) => opt.value === filters.scope
-                            )?.label || filters.scope // Caso não ache, mostra o valor original
-                          }{' '}
+                          {SCOPE_OPTIONS.find(
+                            (opt) => opt.value === communityFilters.scope
+                          )?.label || communityFilters.scope}
                         </span>
                       )}
-                      {filters.search && (
+                      {communityFilters.search && (
                         <span className="bg-accent-purple/10 text-accent-purple px-2 py-1 rounded-lg text-xs">
-                          &quot;{filters.search}&quot;
+                          &quot;{communityFilters.search}&quot;
                         </span>
                       )}
                       {localSearchTerm && (
@@ -419,8 +462,8 @@ export default function AnnotationsSection({
         {/* Filtros avançados (expansível) */}
         {showFilters && (
           <AnimatedItem direction="down" springType="gentle">
-            <AnnotationFilters
-              filters={filters}
+            <AnnotationFiltersComponent
+              filters={communityFilters}
               onFiltersChange={handleAdvancedFiltersChange}
               onClose={() => setShowFilters(false)}
               clearFilters={handleClearAllFilters}
@@ -430,7 +473,7 @@ export default function AnnotationsSection({
 
         {/* Conteúdo */}
         <div className="p-6">
-          {isLoading && filteredAnnotationsFromServer.length === 0 ? (
+          {isLoading && displayedAnnotations.length === 0 ? (
             <div className="flex items-center justify-center py-12">
               <div className="flex items-center space-x-3">
                 <div className="relative">
@@ -450,7 +493,7 @@ export default function AnnotationsSection({
             </div>
           ) : displayedAnnotations.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Lista de anotações (2/3 da largura) */}
+              {/* Lista de anotações (3/3 da largura) */}
               <div className="lg:col-span-3 space-y-6">
                 {displayedAnnotations.map((annotation) => (
                   <AnnotationCard
@@ -461,7 +504,7 @@ export default function AnnotationsSection({
                   />
                 ))}
 
-                {/* Load more button - só mostra se não há filtros locais ativos */}
+                {/* Load more button */}
                 {workPagination?.hasMore && !localSearchTerm && (
                   <div className="flex justify-center pt-6">
                     <button
@@ -483,37 +526,6 @@ export default function AnnotationsSection({
                     </button>
                   </div>
                 )}
-              </div>
-
-              {/* Sidebar com estatísticas (1/3 da largura) */}
-              <div className="lg:col-span-1">
-                <div className="sticky top-6 space-y-6">
-                  {/* Widget adicional: Top contribuidores ou dicas */}
-                  {totalStats.total > 5 && (
-                    <AnimatedCard hover="lift" className="classical-card-2">
-                      <div className="p-6">
-                        <h4 className="text-sm font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                          <FiUsers className="w-4 h-4" />
-                          <span>Dica para Estudantes</span>
-                        </h4>
-                        <div className="space-y-3 text-sm text-theme-secondary">
-                          <p>
-                            💡 <strong>Use os filtros avançados</strong> para
-                            encontrar anotações específicas por dificuldade.
-                          </p>
-                          <p>
-                            🎵 <strong>Combine diferentes categorias</strong> -
-                            técnica e interpretação se complementam.
-                          </p>
-                          <p>
-                            👍 <strong>Vote nas anotações úteis</strong> - ajude
-                            outros estudantes a encontrar o melhor conteúdo.
-                          </p>
-                        </div>
-                      </div>
-                    </AnimatedCard>
-                  )}
-                </div>
               </div>
             </div>
           ) : (

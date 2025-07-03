@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - VERSÃO CORRIGIDA (SSR Safe)
+// app/work/[workId]/WorkDetailsClient.tsx - VERSÃO COMPLETA OTIMIZADA
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -39,6 +39,8 @@ import {
 } from '../animation/AnimatedComponents';
 import ShareButton from '../ShareButton';
 import AnnotationsSection from '../Annotations/AnnotationsSection';
+// 🆕 Importar o hook otimizado
+import { useMostFavoritedForWork } from '@/app/stores/useMostFavoritedStore';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -55,16 +57,26 @@ export default function WorkDetailsClient({
   relatedWorks = [],
   learningData = { wantToLearn: [], learned: [] },
 }: WorkDetailsClientProps) {
-  // 🔧 CORREÇÃO: Estados seguros para SSR
+  // Estados seguros para SSR
   const [mounted, setMounted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedScoreForStudy, setSelectedScoreForStudy] =
     useState<IMSLPScore | null>(null);
 
-  // 🔧 CORREÇÃO: Verificar se está montado (hidratado)
+  // Verificar se está montado (hidratado)
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // 🆕 Hook otimizado para partitura mais favoritada - UMA SÓ REQUISIÇÃO
+  const {
+    mostFavoritedScoreId,
+    mostFavoritedSource,
+    hasFavorites: hasMostFavorited,
+    loading: loadingMostFavorited,
+    isScoreMostFavorited,
+    refetch: refetchMostFavorited,
+  } = useMostFavoritedForWork(mounted ? work.id : '');
 
   // Hook para cache de partituras com workId - só inicializar após mounted
   const {
@@ -91,7 +103,7 @@ export default function WorkDetailsClient({
 
   const { navigateToUrl } = useNavigate();
 
-  // 🔧 CORREÇÃO: Não renderizar até estar montado
+  // Não renderizar até estar montado
   if (!mounted) {
     return (
       <div className="bg-gradient-primary">
@@ -109,7 +121,7 @@ export default function WorkDetailsClient({
     );
   }
 
-  // Funções utilitárias (mantidas iguais)
+  // Funções utilitárias
   const formatDuration = (duration?: string) => {
     if (!duration) return null;
     return duration;
@@ -812,6 +824,7 @@ export default function WorkDetailsClient({
                           </span>
                         </div>
                       )}
+
                       <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
                         <span className="font-medium text-theme-tertiary">
                           Catalogado em:
@@ -821,22 +834,37 @@ export default function WorkDetailsClient({
                         </span>
                       </div>
 
-                      {/* Cache Status (só para dev/debug) */}
+                      {/* 🆕 Mostrar informações de cache da partitura mais favoritada */}
                       {process.env.NODE_ENV === 'development' && (
-                        <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
-                          <span className="font-medium text-theme-tertiary">
-                            Cache Status:
-                          </span>
-                          <span
-                            className={`text-xs font-semibold ${
-                              fromCache
-                                ? 'text-accent-green'
-                                : 'text-accent-blue'
-                            }`}
-                          >
-                            {fromCache ? '💾 Cache' : '🕷️ Scraping'}
-                          </span>
-                        </div>
+                        <>
+                          <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
+                            <span className="font-medium text-theme-tertiary">
+                              Cache Status:
+                            </span>
+                            <span
+                              className={`text-xs font-semibold ${
+                                fromCache
+                                  ? 'text-accent-green'
+                                  : 'text-accent-blue'
+                              }`}
+                            >
+                              {fromCache ? '💾 Cache' : '🕷️ Scraping'}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-theme-tertiary">
+                              Most Favorited:
+                            </span>
+                            <span className="text-xs text-theme-primary">
+                              {loadingMostFavorited
+                                ? '⏳ Loading...'
+                                : mostFavoritedScoreId
+                                ? `✅ ${mostFavoritedScoreId.slice(0, 8)}`
+                                : '❌ None'}
+                            </span>
+                          </div>
+                        </>
                       )}
                     </div>
                   </div>
@@ -845,7 +873,7 @@ export default function WorkDetailsClient({
             </div>
           </AnimatedCard>
 
-          {/* Seção de Partituras IMSLP */}
+          {/* 🆕 Seção de Partituras IMSLP - Agora totalmente otimizada */}
           {work.imslpPermlink && (
             <AnimatedCard hover="none" className="">
               {loadingScores && (
@@ -892,6 +920,12 @@ export default function WorkDetailsClient({
                     composerName={work.composer.fullName}
                     workId={work.id}
                     workTitle={work.title}
+                    // 🆕 Props otimizadas - passando dados já carregados
+                    mostFavoritedScoreId={mostFavoritedScoreId}
+                    mostFavoritedSource={mostFavoritedSource}
+                    hasMostFavorited={hasMostFavorited}
+                    loadingMostFavorited={loadingMostFavorited}
+                    isScoreMostFavorited={isScoreMostFavorited}
                   />
                 </>
               )}
@@ -952,6 +986,29 @@ export default function WorkDetailsClient({
           />
         </AnimatedContainer>
       </div>
+
+      {/* 🆕 Debug info (apenas em desenvolvimento) */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 left-4 bg-theme-inverse/90 backdrop-blur-md rounded-lg p-3 text-xs text-theme-primary border border-theme-primary/20 z-50">
+          <div className="space-y-1">
+            <div className="font-bold text-accent-blue mb-2">
+              🚀 Performance Debug
+            </div>
+            <div>
+              Most Favorited: {mostFavoritedScoreId?.slice(0, 12) || 'None'}
+            </div>
+            <div>Loading: {loadingMostFavorited ? '🔄 Yes' : '✅ No'}</div>
+            <div>Has Favorites: {hasMostFavorited ? '❤️ Yes' : '💔 No'}</div>
+            <div>Scores Cache: {fromCache ? '💾 Cache' : '🕷️ Fresh'}</div>
+            <button
+              onClick={refetchMostFavorited}
+              className="mt-2 px-2 py-1 bg-brand-primary/20 rounded text-brand-primary hover:bg-brand-primary/30 transition-colors text-xs"
+            >
+              Refetch Favorites
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

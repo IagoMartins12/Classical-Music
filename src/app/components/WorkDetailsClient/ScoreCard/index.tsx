@@ -1,9 +1,10 @@
-// ScoreCard.tsx - VERSÃO ATUALIZADA com sistema de favoritos
+// ScoreCard.tsx - VERSÃO OTIMIZADA sem múltiplas requisições
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import { FiClock, FiDownload, FiFileText, FiUser } from 'react-icons/fi';
 import { useState } from 'react';
 import Image from 'next/image';
 import FavoriteScoreButton from '../../FavoriteScoreButton';
+// 🆕 Importar apenas o componente de badge, não o hook
 import MostFavoritedBadge from '../../MostFavoritedBadge';
 
 interface ScoreCardProps {
@@ -13,10 +14,12 @@ interface ScoreCardProps {
   onSelect: () => void;
   isLastInGroup?: boolean;
   groupSize?: number;
-  // 🆕 Props para favoritos
+  // Props para favoritos
   showFavoriteStats?: boolean;
   showFavor?: boolean;
   showMostFavoritedBadge?: boolean;
+  // 🆕 Receber diretamente se é a mais favoritada (evita hook interno)
+  isMostFavorited?: boolean;
   favoriteStats?: {
     totalFavorites: number;
     avgRating?: number;
@@ -32,6 +35,7 @@ const ScoreCard = ({
   isLastInGroup = false,
   groupSize = 1,
   showMostFavoritedBadge = true,
+  isMostFavorited = false, // 🆕 Recebido via props
   favoriteStats,
 }: ScoreCardProps) => {
   const [showMagnified, setShowMagnified] = useState(false);
@@ -58,7 +62,7 @@ const ScoreCard = ({
           }
           ${shouldShowThumbnail ? '' : 'mb-0 border-b-0 rounded-b-none'}
           ${
-            favoriteStats?.isMostFavorited
+            isMostFavorited
               ? 'ring-2 ring-accent-gold/50 shadow-accent-gold/20'
               : ''
           }
@@ -139,35 +143,11 @@ const ScoreCard = ({
               <h4 className="font-semibold text-theme-primary text-base leading-tight classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300">
                 {score.title}
               </h4>
-
-              {/* 🆕 Estatísticas de favoritos */}
-              {/* {showFavoriteStats &&
-                favoriteStats &&
-                favoriteStats.totalFavorites > 0 && (
-                  <div className="flex items-center space-x-4 mb-2">
-                    <div className="flex items-center space-x-1">
-                      <FiUsers className="w-3 h-3 text-accent-red" />
-                      <span className="text-sm font-medium text-accent-red">
-                        {formatFavoriteCount(favoriteStats.totalFavorites)}{' '}
-                        favoritos
-                      </span>
-                    </div>
-
-                    {favoriteStats.avgRating && favoriteStats.avgRating > 0 && (
-                      <div className="flex items-center space-x-1">
-                        <FiStar className="w-3 h-3 text-accent-gold fill-current" />
-                        <span className="text-sm font-medium text-accent-gold">
-                          {favoriteStats.avgRating.toFixed(1)} média
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                )} */}
             </div>
 
             {/* Action buttons */}
             <div className="flex items-center space-x-2 flex-shrink-0">
-              {/* 🆕 Botão de favoritar */}
+              {/* Botão de favoritar */}
               <FavoriteScoreButton
                 workId={workId}
                 score={score}
@@ -302,18 +282,22 @@ const ScoreCard = ({
       {/* Hover glow effect */}
       <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-xl pointer-events-none"></div>
 
-      {showMostFavoritedBadge && (
-        <MostFavoritedBadge
-          workId={workId}
-          scoreId={score.id}
-          scoreSource="IMSLP"
-          variant="crown"
-          size="md"
-          position="inline"
-        />
+      {/* 🆕 Badge de mais favoritada - apenas se for verdadeiro */}
+      {showMostFavoritedBadge && isMostFavorited && (
+        <div className="absolute -top-2 -right-2 z-10">
+          <div className="px-3 py-1.5 bg-gradient-to-r from-yellow-400/20 to-yellow-600/20 border border-yellow-500/40 text-yellow-600 rounded-full font-medium shadow-lg backdrop-blur-sm animate-pulse hover:animate-none transition-all duration-300 hover:scale-105">
+            <div className="flex items-center space-x-1">
+              <span className="text-base">👑</span>
+              <span className="text-sm font-bold hidden sm:inline">
+                Favorita da comunidade
+              </span>
+            </div>
+          </div>
+        </div>
       )}
-      {/* 🆕 Efeito especial para a mais favoritada */}
-      {showMostFavoritedBadge && (
+
+      {/* Efeito especial para a mais favoritada */}
+      {isMostFavorited && (
         <div className="absolute inset-0 bg-gradient-to-r from-accent-gold/5 to-accent-orange/5 rounded-xl pointer-events-none"></div>
       )}
     </div>
