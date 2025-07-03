@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - VERSÃO COMPLETA OTIMIZADA
+// app/work/[workId]/WorkDetailsClient.tsx - VERSÃO COM CARREGAMENTO INCREMENTAL
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -23,13 +23,13 @@ import {
   FiZap,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiMetronome } from 'react-icons/gi';
-import { useIMSLPScores } from '@/app/hooks/useIMSLPScores';
-import IMSLPTabs from './IMSLPTabs';
+import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
+import IMSLPTabsIncremental from '../IMSLPTabsIncremental';
 import { useNavigate } from '@/app/hooks/useNavigate';
 import FavoriteButton from '../FavoriteButton';
 import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
-import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
+import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
 import StudyModeModal from '../StudyMode/StudyModeModal';
 import {
   AnimatedContainer,
@@ -39,13 +39,11 @@ import {
 } from '../animation/AnimatedComponents';
 import ShareButton from '../ShareButton';
 import AnnotationsSection from '../Annotations/AnnotationsSection';
-// 🆕 Importar o hook otimizado
 import { useMostFavoritedForWork } from '@/app/stores/useMostFavoritedStore';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
   relatedWorks?: any[];
-  // Dados de aprendizado iniciais do SSR
   learningData?: {
     wantToLearn: any[];
     learned: any[];
@@ -68,7 +66,7 @@ export default function WorkDetailsClient({
     setMounted(true);
   }, []);
 
-  // 🆕 Hook otimizado para partitura mais favoritada - UMA SÓ REQUISIÇÃO
+  // Hook otimizado para partitura mais favoritada
   const {
     mostFavoritedScoreId,
     mostFavoritedSource,
@@ -78,15 +76,28 @@ export default function WorkDetailsClient({
     refetch: refetchMostFavorited,
   } = useMostFavoritedForWork(mounted ? work.id : '');
 
-  // Hook para cache de partituras com workId - só inicializar após mounted
+  // 🆕 Hook para carregamento incremental de partituras
   const {
     scores: imslpScores,
     loading: loadingScores,
+    loadingMore,
     error: scoresError,
+    hasMore,
+    totalAvailable,
+    currentLoaded,
     refetch: refetchScores,
+    loadMore,
+    loadAll,
     fromCache,
-  } = useIMSLPScores(mounted ? work.imslpPermlink : '', {
+    backgroundCaching,
+    cacheProgress,
+    selectedScore,
+    setSelectedScore,
+  } = useIMSLPScoresIncremental(mounted ? work.imslpPermlink : '', {
     workId: work.id,
+    enabled: mounted,
+    initialLimit: 5, // Carregar 5 partituras por tipo inicialmente
+    moreLimit: 20, // Carregar 20 por vez no "carregar mais"
     priorityScoreId: selectedScoreForStudy?.id,
     onScoresCached: (fromCache) => {
       if (fromCache) {
@@ -98,6 +109,11 @@ export default function WorkDetailsClient({
           `🕷️ Partituras obtidas via scraping para obra ${work.title}`
         );
       }
+    },
+    onLoadMoreComplete: (newCount, totalCount) => {
+      console.log(
+        `📈 Carregamento incremental: ${newCount}/${totalCount} partituras`
+      );
     },
   });
 
@@ -121,7 +137,7 @@ export default function WorkDetailsClient({
     );
   }
 
-  // Funções utilitárias
+  // Funções utilitárias (mantidas)
   const formatDuration = (duration?: string) => {
     if (!duration) return null;
     return duration;
@@ -234,6 +250,7 @@ export default function WorkDetailsClient({
 
   const handleScoreSelect = (score: IMSLPScore) => {
     setSelectedScoreForStudy(score);
+    setSelectedScore(score?.id || null);
   };
 
   return (
@@ -292,7 +309,7 @@ export default function WorkDetailsClient({
           staggerSpeed="normal"
           className="flex flex-col gap-4"
         >
-          {/* Header Principal */}
+          {/* Header Principal - Mantido igual */}
           <AnimatedCard
             hover="lift"
             className="classical-card overflow-hidden relative"
@@ -319,7 +336,6 @@ export default function WorkDetailsClient({
                           {work.title}
                         </h1>
 
-                        {/* Subtitle */}
                         {work.subtitle && (
                           <h2 className="text-2xl md:text-3xl text-theme-secondary mt-2 classical-subtitle font-medium">
                             {work.subtitle}
@@ -398,9 +414,8 @@ export default function WorkDetailsClient({
                     </div>
                   </div>
 
-                  {/* Grid de Informações Detalhadas */}
+                  {/* Grid de Informações Detalhadas - Mantido igual */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Ano de Composição */}
                     {work.compositionYear && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -417,7 +432,6 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {/* Duração */}
                     {work.mediaDuration && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -434,7 +448,6 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {/* Tom */}
                     {work.tone && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -451,7 +464,6 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {/* Time Signature */}
                     {work.timeSignature && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -468,7 +480,6 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {/* Tempo Marking */}
                     {work.tempoMarking && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -485,7 +496,6 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {/* Instrumento */}
                     {work.instrument && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -502,7 +512,6 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {/* Época */}
                     {work.epoch && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -520,7 +529,7 @@ export default function WorkDetailsClient({
                     )}
                   </div>
 
-                  {/* Movements Detailed Section */}
+                  {/* Movements Detailed Section - Mantido */}
                   {work.movementsDetailed && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
@@ -531,7 +540,7 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
-                  {/* Informações Adicionais */}
+                  {/* Informações Adicionais - Mantido */}
                   {(work.firstPublishDate ||
                     work.dedicateTo ||
                     work.workStyle) && (
@@ -561,7 +570,6 @@ export default function WorkDetailsClient({
                             </span>
                           </div>
                         )}
-
                         {work.workStyle && (
                           <div className="flex items-center space-x-2">
                             <span className="font-medium text-theme-tertiary">
@@ -582,7 +590,6 @@ export default function WorkDetailsClient({
                             </span>
                           </div>
                         )}
-
                         {work.moviment && (
                           <div className="md:col-span-2 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
                             <span className="font-medium text-theme-tertiary block mb-1">
@@ -597,7 +604,7 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
-                  {/* IMSLP Tags Section */}
+                  {/* Tags sections mantidas... */}
                   {work.imslpTags && work.imslpTags.length > 0 && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
@@ -620,7 +627,6 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
-                  {/* Tags de Categorias e Gêneros */}
                   {work.workGenresArr &&
                     (work.categoryNames?.length > 0 ||
                       work.workGenresArr?.length > 0) && (
@@ -695,9 +701,8 @@ export default function WorkDetailsClient({
                     )}
                 </div>
 
-                {/* Sidebar com Player e Links */}
+                {/* Sidebar com Player e Links - Mantido */}
                 <div className="space-y-6">
-                  {/* Player de Áudio/Vídeo */}
                   {work.videoUrl && (
                     <div className="classical-card-simple p-6">
                       <div className="flex items-center space-x-3 mb-4">
@@ -746,7 +751,6 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
-                  {/* Links Externos */}
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
@@ -782,7 +786,7 @@ export default function WorkDetailsClient({
                     </div>
                   </div>
 
-                  {/* Informações Técnicas */}
+                  {/* 🆕 Informações técnicas atualizadas com dados incrementais */}
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
@@ -802,7 +806,6 @@ export default function WorkDetailsClient({
                         </span>
                       </div>
 
-                      {/* Difficulty Level in Technical Details */}
                       {work.difficultyLevel && (
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-theme-tertiary">
@@ -834,37 +837,83 @@ export default function WorkDetailsClient({
                         </span>
                       </div>
 
-                      {/* 🆕 Mostrar informações de cache da partitura mais favoritada */}
-                      {process.env.NODE_ENV === 'development' && (
-                        <>
-                          <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
+                      {/* 🆕 Informações do carregamento incremental */}
+                      <div className="pt-2 border-t border-theme-secondary space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-theme-tertiary">
+                            Partituras:
+                          </span>
+                          <span
+                            className={`text-xs font-semibold ${
+                              fromCache
+                                ? 'text-accent-green'
+                                : 'text-accent-blue'
+                            }`}
+                          >
+                            {currentLoaded}/{totalAvailable}{' '}
+                            {fromCache ? '💾' : '🕷️'}
+                          </span>
+                        </div>
+
+                        {backgroundCaching && (
+                          <div className="flex items-center justify-between">
                             <span className="font-medium text-theme-tertiary">
-                              Cache Status:
+                              Cache:
+                            </span>
+                            <span className="text-xs text-accent-green font-semibold">
+                              {cacheProgress}% ⚡
+                            </span>
+                          </div>
+                        )}
+
+                        {hasMore && (
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-theme-tertiary">
+                              Mais disponíveis:
+                            </span>
+                            <span className="text-xs text-accent-blue font-semibold">
+                              {totalAvailable - currentLoaded} restantes
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Debug info para desenvolvimento */}
+                      {process.env.NODE_ENV === 'development' && (
+                        <div className="pt-2 border-t border-theme-secondary space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-theme-tertiary">
+                              Status:
                             </span>
                             <span
                               className={`text-xs font-semibold ${
-                                fromCache
-                                  ? 'text-accent-green'
-                                  : 'text-accent-blue'
+                                loadingScores
+                                  ? 'text-accent-orange'
+                                  : loadingMore
+                                  ? 'text-accent-blue'
+                                  : 'text-accent-green'
                               }`}
                             >
-                              {fromCache ? '💾 Cache' : '🕷️ Scraping'}
+                              {loadingScores
+                                ? '⏳ Loading'
+                                : loadingMore
+                                ? '📄 Loading More'
+                                : '✅ Ready'}
                             </span>
                           </div>
-
                           <div className="flex items-center justify-between">
                             <span className="font-medium text-theme-tertiary">
                               Most Favorited:
                             </span>
                             <span className="text-xs text-theme-primary">
                               {loadingMostFavorited
-                                ? '⏳ Loading...'
+                                ? '⏳'
                                 : mostFavoritedScoreId
                                 ? `✅ ${mostFavoritedScoreId.slice(0, 8)}`
-                                : '❌ None'}
+                                : '❌'}
                             </span>
                           </div>
-                        </>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -873,62 +922,33 @@ export default function WorkDetailsClient({
             </div>
           </AnimatedCard>
 
-          {/* 🆕 Seção de Partituras IMSLP - Agora totalmente otimizada */}
+          {/* 🆕 Seção de Partituras IMSLP - Agora totalmente incremental */}
           {work.imslpPermlink && (
             <AnimatedCard hover="none" className="">
-              {loadingScores && (
-                <div className="classical-card p-8">
-                  <div className="flex items-center justify-center space-x-3">
-                    <div className="relative">
-                      <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
-                      <div
-                        className="absolute inset-0 w-8 h-8 border-4 border-transparent border-r-brand-secondary rounded-full animate-spin"
-                        style={{
-                          animationDirection: 'reverse',
-                          animationDuration: '1.5s',
-                        }}
-                      ></div>
-                    </div>
-                    <span className="text-theme-primary font-medium">
-                      {fromCache
-                        ? 'Carregando do cache...'
-                        : 'Carregando partituras...'}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {scoresError && (
-                <div className="classical-card p-6">
-                  <div className="bg-gradient-to-r from-accent-red/10 to-accent-red/5 border border-accent-red/30 rounded-2xl p-4">
-                    <p className="text-accent-red font-medium">{scoresError}</p>
-                    <button
-                      onClick={refetchScores}
-                      className="mt-3 btn-classical-secondary text-sm"
-                    >
-                      Tentar novamente
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {imslpScores && !loadingScores && (
-                <>
-                  <IMSLPTabs
-                    imslpData={imslpScores}
-                    onScoreSelect={handleScoreSelect}
-                    composerName={work.composer.fullName}
-                    workId={work.id}
-                    workTitle={work.title}
-                    // 🆕 Props otimizadas - passando dados já carregados
-                    mostFavoritedScoreId={mostFavoritedScoreId}
-                    mostFavoritedSource={mostFavoritedSource}
-                    hasMostFavorited={hasMostFavorited}
-                    loadingMostFavorited={loadingMostFavorited}
-                    isScoreMostFavorited={isScoreMostFavorited}
-                  />
-                </>
-              )}
+              <IMSLPTabsIncremental
+                imslpData={imslpScores}
+                loading={loadingScores}
+                loadingMore={loadingMore}
+                error={scoresError}
+                onRefetch={refetchScores}
+                onLoadMore={loadMore}
+                onLoadAll={loadAll}
+                onScoreSelect={handleScoreSelect}
+                workId={work.id}
+                workTitle={work.title}
+                composerName={work.composer.fullName}
+                hasMore={hasMore}
+                totalAvailable={totalAvailable}
+                currentLoaded={currentLoaded}
+                backgroundCaching={backgroundCaching}
+                cacheProgress={cacheProgress}
+                // Props de favoritos
+                mostFavoritedScoreId={mostFavoritedScoreId}
+                mostFavoritedSource={mostFavoritedSource}
+                hasMostFavorited={hasMostFavorited}
+                loadingMostFavorited={loadingMostFavorited}
+                isScoreMostFavorited={isScoreMostFavorited}
+              />
             </AnimatedCard>
           )}
 
@@ -938,7 +958,7 @@ export default function WorkDetailsClient({
             composerName={work.composer.fullName}
           />
 
-          {/* Obras Relacionadas */}
+          {/* Obras Relacionadas - Mantido */}
           {relatedWorks.length > 0 && (
             <AnimatedCard hover="none" className="classical-card p-8">
               <div className="flex items-center space-x-3 mb-6">
@@ -987,25 +1007,55 @@ export default function WorkDetailsClient({
         </AnimatedContainer>
       </div>
 
-      {/* 🆕 Debug info (apenas em desenvolvimento) */}
+      {/* 🆕 Debug panel melhorado para desenvolvimento */}
       {process.env.NODE_ENV === 'development' && (
         <div className="fixed bottom-4 left-4 bg-theme-inverse/90 backdrop-blur-md rounded-lg p-3 text-xs text-theme-primary border border-theme-primary/20 z-50">
           <div className="space-y-1">
             <div className="font-bold text-accent-blue mb-2">
-              🚀 Performance Debug
+              🚀 Performance Debug (Incremental)
+            </div>
+            <div>
+              Loaded: {currentLoaded}/{totalAvailable} partituras
+            </div>
+            <div>
+              Remaining: {Math.max(0, totalAvailable - currentLoaded)} restantes
+            </div>
+            <div>Has More: {hasMore ? '✅ Yes' : '❌ No'}</div>
+            <div>
+              Loading:{' '}
+              {loadingScores
+                ? '🔄 Initial'
+                : loadingMore
+                ? '📄 More'
+                : '✅ Ready'}
+            </div>
+            <div>
+              Cache: {fromCache ? '💾 Hit (todas já salvas)' : '🕷️ Miss'}
+            </div>
+            <div>
+              Background:{' '}
+              {backgroundCaching ? `⚡ ${cacheProgress}%` : '💤 Idle'}
             </div>
             <div>
               Most Favorited: {mostFavoritedScoreId?.slice(0, 12) || 'None'}
             </div>
-            <div>Loading: {loadingMostFavorited ? '🔄 Yes' : '✅ No'}</div>
-            <div>Has Favorites: {hasMostFavorited ? '❤️ Yes' : '💔 No'}</div>
-            <div>Scores Cache: {fromCache ? '💾 Cache' : '🕷️ Fresh'}</div>
-            <button
-              onClick={refetchMostFavorited}
-              className="mt-2 px-2 py-1 bg-brand-primary/20 rounded text-brand-primary hover:bg-brand-primary/30 transition-colors text-xs"
-            >
-              Refetch Favorites
-            </button>
+            <div className="flex space-x-1 mt-2">
+              <button
+                onClick={refetchMostFavorited}
+                className="px-2 py-1 bg-brand-primary/20 rounded text-brand-primary hover:bg-brand-primary/30 transition-colors text-xs"
+              >
+                Refetch
+              </button>
+              {hasMore && (
+                <button
+                  onClick={() => loadMore(10)}
+                  className="px-2 py-1 bg-accent-blue/20 rounded text-accent-blue hover:bg-accent-blue/30 transition-colors text-xs"
+                  disabled={loadingMore}
+                >
+                  +10
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
