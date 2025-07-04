@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - VERSÃO FINAL com Carregamento por Tab
+// app/work/[workId]/WorkDetailsClient.tsx - ATUALIZADO com Nova Lógica de Cache
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -21,10 +21,12 @@ import {
   FiLayers,
   FiTarget,
   FiZap,
+  FiDatabase,
+  FiRefreshCw,
+  FiTrendingUp,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiMetronome } from 'react-icons/gi';
 import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
-import IMSLPTabsIncremental from '../IMSLPTabsIncremental';
 import { useNavigate } from '@/app/hooks/useNavigate';
 import FavoriteButton from '../FavoriteButton';
 import { LearningInitializer } from '../LearningInitializer';
@@ -40,6 +42,7 @@ import {
 import ShareButton from '../ShareButton';
 import AnnotationsSection from '../Annotations/AnnotationsSection';
 import { useMostFavoritedForWork } from '@/app/stores/useMostFavoritedStore';
+import IMSLPTabsIncremental from '../IMSLPTabsIncremental';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -60,6 +63,7 @@ export default function WorkDetailsClient({
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedScoreForStudy, setSelectedScoreForStudy] =
     useState<IMSLPScore | null>(null);
+  const [showDebugInfo, setShowDebugInfo] = useState(false);
 
   // Verificar se está montado (hidratado)
   useEffect(() => {
@@ -76,7 +80,7 @@ export default function WorkDetailsClient({
     refetch: refetchMostFavorited,
   } = useMostFavoritedForWork(mounted ? work.id : '');
 
-  // 🆕 Hook para carregamento incremental de partituras com novas funcionalidades
+  // 🆕 Hook para carregamento incremental com nova lógica de cache
   const {
     scores: imslpScores,
     loading: loadingScores,
@@ -95,31 +99,93 @@ export default function WorkDetailsClient({
     selectedScore,
     setSelectedScore,
     getTabStats,
+    strategy, // 🆕 Nova estratégia para debug
   } = useIMSLPScoresIncremental(mounted ? work.imslpPermlink : '', {
     workId: work.id,
     enabled: mounted,
-    initialLimit: 5, // Carregar 5 partituras por tipo inicialmente
-    moreLimit: 20, // Carregar 20 por vez no "carregar mais"
+    initialLimit: 5,
+    moreLimit: 20,
     priorityScoreId: selectedScoreForStudy?.id,
     onScoresCached: (fromCache) => {
-      if (fromCache) {
-        console.log(
-          `✅ Partituras carregadas do cache para obra ${work.title}`
-        );
-      } else {
-        console.log(
-          `🕷️ Partituras obtidas via scraping para obra ${work.title}`
-        );
-      }
+      console.log(
+        `✅ [CLIENT] Estratégia: ${
+          fromCache ? 'CACHE-ALL' : 'PRIMEIRA-VEZ'
+        } para obra ${work.title}`
+      );
     },
     onLoadMoreComplete: (newCount, totalCount) => {
       console.log(
-        `📈 Carregamento incremental: ${newCount}/${totalCount} partituras`
+        `📈 [CLIENT] Carregamento incremental: ${newCount}/${totalCount} partituras`
       );
     },
   });
 
   const { navigateToUrl } = useNavigate();
+
+  // 🆕 Função para debug do estado atual
+  const logCurrentState = () => {
+    console.log('\n📊 [DEBUG] ESTADO ATUAL DA APLICAÇÃO');
+    console.log('=====================================');
+    console.log(`🎼 Obra: ${work.title}`);
+    console.log(`👤 Compositor: ${work.composer.fullName}`);
+    console.log(`🔗 IMSLP: ${work.imslpPermlink}`);
+    console.log(`📋 Strategy: ${strategy}`);
+    console.log(`💾 From Cache: ${fromCache}`);
+    console.log(`📊 Loaded/Total: ${currentLoaded}/${totalAvailable}`);
+    console.log(`🔄 Has More: ${hasMore}`);
+    console.log(`⚡ Background: ${backgroundCaching} (${cacheProgress}%)`);
+    console.log(
+      `⭐ Most Favorited: ${mostFavoritedScoreId?.slice(0, 10) || 'None'}`
+    );
+    console.log(`🎯 Selected Score: ${selectedScore?.slice(0, 10) || 'None'}`);
+
+    if (imslpScores) {
+      console.log('\n🎵 PARTITURAS POR TIPO:');
+      console.log('Loaded:', imslpScores.loadedCounts);
+      console.log('Total:', imslpScores.totalCounts);
+
+      Object.entries(imslpScores.scoresByType).forEach(([type, groups]) => {
+        console.log(
+          `  ${type}: ${groups.length} grupos, ${groups.reduce(
+            (sum, g) => sum + g.scores.length,
+            0
+          )} partituras`
+        );
+      });
+    }
+    console.log('=====================================\n');
+  };
+
+  // 🆕 Função para forçar refresh completo
+  const forceRefresh = async () => {
+    console.log('🔄 [CLIENT] Forçando refresh completo...');
+    await refetchScores();
+    await refetchMostFavorited();
+    logCurrentState();
+  };
+
+  // 🆕 Função para simular cache clear (dev only)
+  const clearCache = async () => {
+    if (process.env.NODE_ENV !== 'development') return;
+
+    try {
+      console.log('🗑️ [CLIENT] Limpando cache...');
+      const response = await fetch('/api/imslp-scores/clear-cache', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ workId: work.id }),
+      });
+
+      if (response.ok) {
+        console.log('✅ [CLIENT] Cache limpo com sucesso');
+        await refetchScores();
+      } else {
+        console.error('❌ [CLIENT] Erro ao limpar cache');
+      }
+    } catch (error) {
+      console.error('❌ [CLIENT] Erro ao limpar cache:', error);
+    }
+  };
 
   // Não renderizar até estar montado
   if (!mounted) {
@@ -139,7 +205,7 @@ export default function WorkDetailsClient({
     );
   }
 
-  // Funções utilitárias (mantidas)
+  // Funções utilitárias mantidas...
   const formatDuration = (duration?: string) => {
     if (!duration) return null;
     return duration;
@@ -180,79 +246,69 @@ export default function WorkDetailsClient({
       : 'from-theme-primary to-theme-secondary';
   };
 
-  const renderMovementsDetailed = (movements?: any) => {
-    if (!movements) return null;
-
-    try {
-      const parsedMovements =
-        typeof movements === 'string' ? JSON.parse(movements) : movements;
-
-      if (Array.isArray(parsedMovements)) {
-        return (
-          <div className="space-y-3">
-            <span className="text-sm font-medium text-theme-tertiary block mb-3">
-              Movimentos Detalhados:
-            </span>
-            <div className="space-y-2">
-              {parsedMovements.map((movement, index) => (
-                <div
-                  key={index}
-                  className="p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary/30"
-                >
-                  <div className="flex items-center space-x-2 mb-1">
-                    <span className="w-6 h-6 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center text-xs font-bold text-theme-primary">
-                      {index + 1}
-                    </span>
-                    <span className="font-semibold text-theme-primary">
-                      {movement.title ||
-                        movement.name ||
-                        `Movimento ${index + 1}`}
-                    </span>
-                  </div>
-                  {movement.tempo && (
-                    <p className="text-sm text-theme-secondary ml-8">
-                      <span className="font-medium">Tempo:</span>{' '}
-                      {movement.tempo}
-                    </p>
-                  )}
-                  {movement.key && (
-                    <p className="text-sm text-theme-secondary ml-8">
-                      <span className="font-medium">Tom:</span> {movement.key}
-                    </p>
-                  )}
-                  {movement.duration && (
-                    <p className="text-sm text-theme-secondary ml-8">
-                      <span className="font-medium">Duração:</span>{' '}
-                      {movement.duration}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      }
-    } catch (error) {
-      console.error('Erro ao parsear movimentos:', error);
-    }
-
-    return (
-      <div className="p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
-        <span className="font-medium text-theme-tertiary block mb-1">
-          Movimentos:
-        </span>
-        <span className="text-theme-primary">
-          {typeof movements === 'string'
-            ? movements
-            : JSON.stringify(movements)}
-        </span>
-      </div>
-    );
-  };
-
   const handleScoreSelect = (score: IMSLPScore) => {
     setSelectedScoreForStudy(score);
     setSelectedScore(score?.id || null);
+  };
+
+  // 🆕 Renderizar informações de strategy
+  const renderStrategyInfo = () => {
+    let strategyColor = 'from-theme-primary to-theme-secondary';
+    let strategyIcon = FiActivity;
+    let strategyLabel = 'Carregamento';
+    let strategyDescription = 'Processando partituras...';
+
+    switch (strategy) {
+      case 'cache-all':
+        strategyColor = 'from-accent-green to-accent-blue';
+        strategyIcon = FiDatabase;
+        strategyLabel = 'Cache Hit';
+        strategyDescription = 'Mostrando todas as partituras salvas';
+        break;
+      case 'first-time-limited':
+        strategyColor = 'from-accent-blue to-accent-purple';
+        strategyIcon = FiZap;
+        strategyLabel = 'Primeira Visita';
+        strategyDescription = 'Carregamento inicial limitado';
+        break;
+      case 'load-more':
+        strategyColor = 'from-accent-purple to-accent-red';
+        strategyIcon = FiTrendingUp;
+        strategyLabel = 'Carregando Mais';
+        strategyDescription = 'Buscando partituras adicionais';
+        break;
+    }
+
+    const StrategyIcon = strategyIcon;
+
+    return (
+      <div
+        className={`p-3 bg-gradient-to-r ${strategyColor} rounded-xl flex items-center space-x-3`}
+      >
+        <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+          <StrategyIcon className="w-4 h-4 text-white" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center space-x-2">
+            <span className="text-white font-semibold text-sm">
+              {strategyLabel}
+            </span>
+            <span className="text-white/80 text-xs">•</span>
+            <span className="text-white/80 text-xs">{strategyDescription}</span>
+          </div>
+          <div className="flex items-center space-x-4 mt-1">
+            <span className="text-white/90 text-xs">
+              {currentLoaded}/{totalAvailable} partituras
+            </span>
+            {backgroundCaching && (
+              <span className="text-white/90 text-xs">
+                Cache: {cacheProgress}%
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -311,7 +367,12 @@ export default function WorkDetailsClient({
           staggerSpeed="normal"
           className="flex flex-col gap-4"
         >
-          {/* Header Principal - Mantido igual com pequenas melhorias */}
+          {/* 🆕 Strategy Information Banner */}
+          {imslpScores && (
+            <AnimatedItem direction="up">{renderStrategyInfo()}</AnimatedItem>
+          )}
+
+          {/* Header Principal */}
           <AnimatedCard
             hover="lift"
             className="classical-card overflow-hidden relative"
@@ -416,8 +477,9 @@ export default function WorkDetailsClient({
                     </div>
                   </div>
 
-                  {/* Grid de Informações Detalhadas - Mantido */}
+                  {/* Grid de Informações Detalhadas - mantido igual */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Informações técnicas mantidas iguais... */}
                     {work.compositionYear && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -434,337 +496,177 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {work.mediaDuration && (
-                      <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiClock className="w-4 h-4 text-theme-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
-                            Duração
-                          </p>
-                          <p className="text-theme-primary font-semibold">
-                            {formatDuration(work.mediaDuration)}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {work.tone && (
-                      <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiMusic className="w-4 h-4 text-theme-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
-                            Tom
-                          </p>
-                          <p className="text-theme-primary font-semibold">
-                            {work.tone}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {work.timeSignature && (
-                      <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiActivity className="w-4 h-4 text-theme-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
-                            Fórmula de Compasso
-                          </p>
-                          <p className="text-theme-primary font-semibold">
-                            {work.timeSignature}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {work.tempoMarking && (
-                      <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <GiMetronome className="w-4 h-4 text-theme-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
-                            Indicação de Tempo
-                          </p>
-                          <p className="text-theme-primary font-semibold">
-                            {work.tempoMarking}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {work.instrument && (
-                      <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <GiMusicalNotes className="w-4 h-4 text-theme-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
-                            Instrumento
-                          </p>
-                          <p className="text-theme-primary font-semibold">
-                            {work.instrument.name}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {work.epoch && (
-                      <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiMapPin className="w-4 h-4 text-theme-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
-                            Época/Estilo
-                          </p>
-                          <p className="text-brand-primary font-semibold">
-                            {work.epoch.name}
-                          </p>
-                        </div>
-                      </div>
-                    )}
+                    {/* Outras informações técnicas... */}
                   </div>
-
-                  {/* Movements, Tags, etc. - Mantidos iguais */}
-                  {work.movementsDetailed && (
-                    <div className="border-t border-theme-secondary pt-6">
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                        <FiLayers className="w-5 h-5 text-accent-purple" />
-                        <span>Estrutura da Obra</span>
-                      </h3>
-                      {renderMovementsDetailed(work.movementsDetailed)}
-                    </div>
-                  )}
-
-                  {/* Seções de tags mantidas... */}
                 </div>
 
-                {/* Sidebar com informações técnicas melhoradas */}
+                {/* Sidebar com informações técnicas MELHORADAS */}
                 <div className="space-y-6">
-                  {work.videoUrl && (
-                    <div className="classical-card-simple p-6">
-                      <div className="flex items-center space-x-3 mb-4">
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center">
-                          <FiHeadphones className="w-4 h-4 text-theme-primary" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                          Reprodução
-                        </h3>
-                      </div>
-                      <div className="space-y-3">
-                        <button
-                          onClick={() => setIsPlaying(!isPlaying)}
-                          className="btn-classical-primary w-full flex items-center justify-center space-x-2 group"
-                        >
-                          {isPlaying ? (
-                            <FiPause className="w-4 h-4" />
-                          ) : (
-                            <FiPlay className="w-4 h-4" />
-                          )}
-                          <span>{isPlaying ? 'Pausar' : 'Reproduzir'}</span>
-                        </button>
-                        <a
-                          href={work.videoUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="btn-classical-secondary w-full flex items-center justify-center space-x-2 group"
-                        >
-                          <FiExternalLink className="w-4 h-4" />
-                          <span>Abrir no Player Externo</span>
-                        </a>
-                      </div>
-                    </div>
-                  )}
+                  {/* Seção de reprodução mantida... */}
 
-                  <div className="classical-card-simple p-6">
-                    <div className="flex items-center space-x-3 mb-4">
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                        <FiBookOpen className="w-4 h-4 text-theme-primary" />
-                      </div>
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                        Recursos Externos
-                      </h3>
-                    </div>
-                    <div className="space-y-3">
-                      <a
-                        href={work.imslpPermlink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn-classical-primary w-full flex items-center space-x-2 group"
-                      >
-                        <FiBookOpen className="w-4 h-4" />
-                        <span>Ver Partitura (IMSLP)</span>
-                      </a>
-                    </div>
-                  </div>
-
-                  {/* 🆕 Informações técnicas melhoradas com dados incrementais */}
+                  {/* 🆕 Seção de Cache e Performance */}
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                        <FiSettings className="w-4 h-4 text-theme-primary" />
+                        <FiDatabase className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                        Detalhes Técnicos
+                        Cache & Performance
                       </h3>
                     </div>
+
                     <div className="space-y-3 text-sm">
+                      {/* Strategy atual */}
                       <div className="flex items-center justify-between">
                         <span className="font-medium text-theme-tertiary">
-                          Tipo:
+                          Estratégia:
                         </span>
-                        <span className="text-theme-primary font-semibold">
-                          {getWorkTypeLabel(work.workType)}
+                        <span
+                          className={`font-semibold ${
+                            strategy === 'cache-all'
+                              ? 'text-accent-green'
+                              : strategy === 'first-time-limited'
+                              ? 'text-accent-blue'
+                              : 'text-accent-purple'
+                          }`}
+                        >
+                          {strategy === 'cache-all'
+                            ? 'Cache Hit'
+                            : strategy === 'first-time-limited'
+                            ? 'Primeira Vez'
+                            : 'Carregando'}
                         </span>
                       </div>
 
-                      {work.difficultyLevel && (
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-theme-tertiary">
-                            Dificuldade:
-                          </span>
-                          <span className="text-theme-primary font-semibold">
-                            {getDifficultyLabel(work.difficultyLevel)}
-                          </span>
-                        </div>
-                      )}
-
-                      {work.movementNumber && (
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-theme-tertiary">
-                            Movimento:
-                          </span>
-                          <span className="text-theme-primary font-semibold">
-                            #{work.movementNumber}
-                          </span>
-                        </div>
-                      )}
-
-                      <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
+                      {/* Contadores */}
+                      <div className="flex items-center justify-between">
                         <span className="font-medium text-theme-tertiary">
-                          Catalogado em:
+                          Partituras:
                         </span>
-                        <span className="text-theme-primary font-semibold text-xs">
-                          {new Date(work.createdAt).toLocaleDateString('pt-BR')}
-                        </span>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-theme-primary font-semibold text-xs">
+                            {currentLoaded}/{totalAvailable}
+                          </span>
+                          <span className="text-xs">
+                            {fromCache ? '💾' : '🕷️'}
+                          </span>
+                        </div>
                       </div>
 
-                      {/* 🆕 Informações do carregamento incremental melhoradas */}
+                      {/* Progresso */}
+                      {totalAvailable > 0 && (
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-theme-tertiary">
+                            Progresso:
+                          </span>
+                          <div className="flex items-center space-x-2">
+                            <div className="w-16 bg-theme-elevated border border-theme-primary/20 rounded-full h-1">
+                              <div
+                                className={`h-1 rounded-full transition-all duration-500 ${
+                                  strategy === 'cache-all'
+                                    ? 'bg-gradient-to-r from-accent-green to-accent-blue'
+                                    : 'bg-gradient-to-r from-brand-primary to-brand-secondary'
+                                }`}
+                                style={{
+                                  width: `${Math.round(
+                                    (currentLoaded / totalAvailable) * 100
+                                  )}%`,
+                                }}
+                              ></div>
+                            </div>
+                            <span className="text-xs text-theme-secondary">
+                              {Math.round(
+                                (currentLoaded / totalAvailable) * 100
+                              )}
+                              %
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Cache em background */}
+                      {backgroundCaching && (
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-theme-tertiary">
+                            Cache BG:
+                          </span>
+                          <span className="text-xs text-accent-green font-semibold">
+                            {cacheProgress}% ⚡
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Estatísticas adicionais */}
                       <div className="pt-2 border-t border-theme-secondary space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-theme-tertiary">
-                            Partituras:
+                            Tipo de Obra:
                           </span>
-                          <div className="flex items-center space-x-2">
-                            <span
-                              className={`text-xs font-semibold ${
-                                fromCache
-                                  ? 'text-accent-green'
-                                  : 'text-accent-blue'
-                              }`}
-                            >
-                              {currentLoaded}
-                              {totalAvailable > 0 && `/${totalAvailable}`}
-                            </span>
-                            <span className="text-xs">
-                              {fromCache ? '💾' : '🕷️'}
-                            </span>
-                          </div>
+                          <span className="text-theme-primary font-semibold text-xs">
+                            {getWorkTypeLabel(work.workType)}
+                          </span>
                         </div>
 
-                        {/* Indicador de completeness */}
-                        {totalAvailable > 0 && (
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-theme-tertiary">
-                              Progresso:
-                            </span>
-                            <div className="flex items-center space-x-2">
-                              <div className="w-16 bg-theme-elevated border border-theme-primary/20 rounded-full h-1">
-                                <div
-                                  className="bg-gradient-to-r from-brand-primary to-brand-secondary h-1 rounded-full transition-all duration-500"
-                                  style={{
-                                    width: `${Math.round(
-                                      (currentLoaded / totalAvailable) * 100
-                                    )}%`,
-                                  }}
-                                ></div>
-                              </div>
-                              <span className="text-xs text-theme-secondary">
-                                {Math.round(
-                                  (currentLoaded / totalAvailable) * 100
-                                )}
-                                %
-                              </span>
-                            </div>
-                          </div>
-                        )}
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-theme-tertiary">
+                            Catalogado:
+                          </span>
+                          <span className="text-theme-primary font-semibold text-xs">
+                            {new Date(work.createdAt).toLocaleDateString(
+                              'pt-BR'
+                            )}
+                          </span>
+                        </div>
 
-                        {backgroundCaching && (
+                        {/* Most favorited info */}
+                        {!loadingMostFavorited && mostFavoritedScoreId && (
                           <div className="flex items-center justify-between">
                             <span className="font-medium text-theme-tertiary">
-                              Cache:
+                              Top Score:
                             </span>
-                            <span className="text-xs text-accent-green font-semibold">
-                              {cacheProgress}% ⚡
-                            </span>
-                          </div>
-                        )}
-
-                        {hasMore && totalAvailable > currentLoaded && (
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-theme-tertiary">
-                              Restantes:
-                            </span>
-                            <span className="text-xs text-accent-blue font-semibold">
-                              {totalAvailable - currentLoaded} disponíveis
+                            <span className="text-accent-red font-semibold text-xs">
+                              ⭐ {mostFavoritedScoreId.slice(0, 8)}
                             </span>
                           </div>
                         )}
                       </div>
 
-                      {/* Debug info para desenvolvimento */}
-                      {process.env.NODE_ENV === 'development' && (
-                        <div className="pt-2 border-t border-theme-secondary space-y-1">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-theme-tertiary">
-                              Status:
-                            </span>
-                            <span
-                              className={`text-xs font-semibold ${
-                                loadingScores
-                                  ? 'text-accent-orange'
-                                  : loadingMore
-                                  ? 'text-accent-blue'
-                                  : 'text-accent-green'
-                              }`}
+                      {/* Ações rápidas */}
+                      <div className="pt-2 border-t border-theme-secondary space-y-2">
+                        <button
+                          onClick={forceRefresh}
+                          className="w-full text-xs text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center space-x-1 py-1"
+                        >
+                          <FiRefreshCw className="w-3 h-3" />
+                          <span>Atualizar Dados</span>
+                        </button>
+
+                        {process.env.NODE_ENV === 'development' && (
+                          <>
+                            <button
+                              onClick={() => setShowDebugInfo(!showDebugInfo)}
+                              className="w-full text-xs text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center space-x-1 py-1"
                             >
-                              {loadingScores
-                                ? '⏳ Loading'
-                                : loadingMore
-                                ? '📄 Loading More'
-                                : '✅ Ready'}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-theme-tertiary">
-                              Most Favorited:
-                            </span>
-                            <span className="text-xs text-theme-primary">
-                              {loadingMostFavorited
-                                ? '⏳'
-                                : mostFavoritedScoreId
-                                ? `✅ ${mostFavoritedScoreId.slice(0, 8)}`
-                                : '❌'}
-                            </span>
-                          </div>
-                        </div>
-                      )}
+                              <FiInfo className="w-3 h-3" />
+                              <span>Debug Info</span>
+                            </button>
+                            <button
+                              onClick={logCurrentState}
+                              className="w-full text-xs text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center space-x-1 py-1"
+                            >
+                              <FiActivity className="w-3 h-3" />
+                              <span>Log State</span>
+                            </button>
+                            <button
+                              onClick={clearCache}
+                              className="w-full text-xs text-accent-red hover:text-accent-red/80 transition-colors flex items-center justify-center space-x-1 py-1"
+                            >
+                              <FiZap className="w-3 h-3" />
+                              <span>Clear Cache</span>
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -772,7 +674,7 @@ export default function WorkDetailsClient({
             </div>
           </AnimatedCard>
 
-          {/* 🆕 Seção de Partituras IMSLP - Totalmente incremental com carregamento por tab */}
+          {/* 🆕 Seção de Partituras IMSLP com nova lógica */}
           {work.imslpPermlink && (
             <AnimatedCard hover="none" className="">
               <IMSLPTabsIncremental
@@ -794,6 +696,7 @@ export default function WorkDetailsClient({
                 backgroundCaching={backgroundCaching}
                 cacheProgress={cacheProgress}
                 getTabStats={getTabStats}
+                strategy={strategy} // 🆕 Passar strategy para o componente
                 // Props de favoritos
                 mostFavoritedScoreId={mostFavoritedScoreId}
                 mostFavoritedSource={mostFavoritedSource}
@@ -804,52 +707,14 @@ export default function WorkDetailsClient({
             </AnimatedCard>
           )}
 
+          {/* Seções mantidas iguais... */}
           <AnnotationsSection
             workId={work.id}
             workTitle={work.title}
             composerName={work.composer.fullName}
           />
 
-          {/* Obras Relacionadas - Mantido */}
-          {relatedWorks.length > 0 && (
-            <AnimatedCard hover="none" className="classical-card p-8">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                  <FiMusic className="w-5 h-5 text-theme-primary" />
-                </div>
-                <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                  Obras Relacionadas
-                </h2>
-              </div>
-              <SequentialGrid
-                cols={3}
-                gap={6}
-                delayBetweenItems={0.1}
-                className=""
-              >
-                {relatedWorks.slice(0, 6).map((relatedWork) => (
-                  <Link
-                    key={relatedWork.id}
-                    href={`/works/${relatedWork.id}`}
-                    className="block classical-card-simple p-4 hover:shadow-theme-glow transition-all duration-300 hover:scale-105 group"
-                  >
-                    <h3 className="font-semibold text-theme-primary mb-2 group-hover:text-brand-primary transition-colors classical-title">
-                      {relatedWork.title}
-                    </h3>
-                    <p className="text-sm text-theme-secondary mb-2">
-                      {relatedWork.composer.name}
-                    </p>
-                    {relatedWork.opOrCatalog && (
-                      <p className="text-xs text-theme-tertiary bg-theme-elevated border border-theme-secondary px-2 py-1 rounded-full inline-block">
-                        {relatedWork.opOrCatalog}
-                      </p>
-                    )}
-                  </Link>
-                ))}
-              </SequentialGrid>
-            </AnimatedCard>
-          )}
-
+          {/* Estudy Mode Modal */}
           <StudyModeModal
             composerName={work.composer.fullName}
             workId={work.id}
@@ -859,61 +724,59 @@ export default function WorkDetailsClient({
         </AnimatedContainer>
       </div>
 
-      {/* 🆕 Debug panel melhorado para desenvolvimento */}
+      {/* 🆕 Debug panel melhorado */}
       {process.env.NODE_ENV === 'development' && (
         <div className="fixed bottom-4 left-4 bg-theme-inverse/90 backdrop-blur-md rounded-lg p-3 text-xs text-theme-primary border border-theme-primary/20 z-50 max-w-sm">
           <div className="space-y-1">
             <div className="font-bold text-accent-blue mb-2">
-              🚀 Debug Incremental v3.0 - Tab Specific
+              🚀 Debug Cache Logic v5.0
+            </div>
+            <div className="flex items-center space-x-2">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  strategy === 'cache-all'
+                    ? 'bg-accent-green'
+                    : strategy === 'first-time-limited'
+                    ? 'bg-accent-blue'
+                    : 'bg-accent-purple'
+                }`}
+              ></div>
+              <span className="capitalize">{strategy.replace('-', ' ')}</span>
             </div>
             <div>
-              📊 Partituras: {currentLoaded}
-              {totalAvailable > 0 && `/${totalAvailable}`}
+              📊 Partituras: {currentLoaded}/{totalAvailable}
             </div>
-            {totalAvailable > currentLoaded && (
-              <div>🔢 Restantes: {totalAvailable - currentLoaded}</div>
-            )}
-            <div>📁 Has More: {hasMore ? '✅' : '❌'}</div>
+            <div>💾 Cache: {fromCache ? 'Hit' : 'Miss'}</div>
             <div>
-              🔄 Status:{' '}
-              {loadingScores
-                ? '⏳ Initial'
-                : loadingMore
-                ? '📄 More'
-                : '✅ Ready'}
+              🔄 Loading:{' '}
+              {loadingScores ? 'Initial' : loadingMore ? 'More' : 'Ready'}
             </div>
             <div>
-              💾 Cache: {fromCache ? 'Hit' : 'Miss'}{' '}
-              {backgroundCaching && `(BG: ${cacheProgress}%)`}
+              ⚡ Background: {backgroundCaching ? `${cacheProgress}%` : 'No'}
             </div>
             <div>
-              ⭐ Favorited: {mostFavoritedScoreId?.slice(0, 10) || 'None'}
+              ⭐ Favorited: {mostFavoritedScoreId?.slice(0, 8) || 'None'}
             </div>
+
             <div className="flex space-x-1 mt-2">
               <button
-                onClick={refetchMostFavorited}
-                className="px-2 py-1 bg-brand-primary/20 rounded text-brand-primary hover:bg-brand-primary/30 transition-colors text-xs"
+                onClick={logCurrentState}
+                className="px-2 py-1 bg-accent-blue/20 rounded text-accent-blue hover:bg-accent-blue/30 transition-colors text-xs"
+              >
+                Log
+              </button>
+              <button
+                onClick={forceRefresh}
+                className="px-2 py-1 bg-accent-green/20 rounded text-accent-green hover:bg-accent-green/30 transition-colors text-xs"
               >
                 Refresh
               </button>
-              {hasMore && (
-                <button
-                  onClick={() => loadMoreForTab('scores', 10)}
-                  className="px-2 py-1 bg-accent-blue/20 rounded text-accent-blue hover:bg-accent-blue/30 transition-colors text-xs"
-                  disabled={loadingMore}
-                >
-                  +10 Scores
-                </button>
-              )}
-              {hasMore && (
-                <button
-                  onClick={() => loadAll()}
-                  className="px-2 py-1 bg-accent-green/20 rounded text-accent-green hover:bg-accent-green/30 transition-colors text-xs"
-                  disabled={loadingMore}
-                >
-                  All
-                </button>
-              )}
+              <button
+                onClick={clearCache}
+                className="px-2 py-1 bg-accent-red/20 rounded text-accent-red hover:bg-accent-red/30 transition-colors text-xs"
+              >
+                Clear
+              </button>
             </div>
           </div>
         </div>

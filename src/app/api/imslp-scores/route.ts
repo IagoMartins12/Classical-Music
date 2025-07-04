@@ -1,4 +1,4 @@
-// app/api/imslp-scores/route.ts - API com Carregamento por Tab Específica
+// app/api/imslp-scores/route.ts - API CORRIGIDA com Lógica de Cache vs Primeira Vez
 import { NextRequest, NextResponse } from 'next/server';
 import {
   IMSLPScraperIncremental,
@@ -17,7 +17,7 @@ interface RequestBody {
     offset?: number;
     loadMore?: boolean;
     specificTypes?: string[];
-    targetTabType?: string; // 🆕 Tipo específico de tab para carregar
+    targetTabType?: string;
   };
 }
 
@@ -46,28 +46,24 @@ export async function POST(request: NextRequest) {
       offset = 0,
       loadMore = false,
       specificTypes,
-      targetTabType, // 🆕 Tab específica para carregamento
+      targetTabType,
     } = pagination;
 
-    console.log(`\n🚀 [API-TAB-SPECIFIC] === BUSCA INCREMENTAL POR TAB ===`);
+    console.log(`\n🚀 [API-CACHE-LOGIC] === NOVA LÓGICA DE CACHE ===`);
     console.log(`🌐 URL: ${imslpUrl}`);
     console.log(`🎼 WorkID: ${workId || 'não informado'}`);
-    console.log(
-      `📄 Paginação: limit=${limit}, offset=${offset}, loadMore=${loadMore}`
-    );
     console.log(`🎯 Tab alvo: ${targetTabType || 'todas'}`);
-    console.log(`⭐ Partitura prioritária: ${priorityScoreId || 'nenhuma'}`);
-    console.log(`🔄 Force refresh: ${forceRefresh}`);
-    console.log(`🕐 Timestamp: ${new Date().toISOString()}\n`);
+    console.log(`🔄 Load more: ${loadMore}`);
+    console.log(`⭐ Force refresh: ${forceRefresh}`);
 
     let scoresData: any = null;
     let fromCache = false;
     let cacheStats = null;
     let backgroundCachingStarted = false;
 
-    // 1️⃣ PRIMEIRA FASE: Verificar cache (sempre, exceto se forceRefresh)
+    // 🆕 1️⃣ FASE DECISIVA: Verificar se temos cache e decidir estratégia
     if (workId && !forceRefresh) {
-      console.log(`💾 [API-TAB] Verificando cache para workId: ${workId}`);
+      console.log(`💾 [API] Verificando cache para workId: ${workId}`);
 
       const cacheResult =
         await ScoresCacheServiceIncremental.getWorkScoresIncremental(workId, {
@@ -75,73 +71,70 @@ export async function POST(request: NextRequest) {
           specificTypes: targetTabType ? [targetTabType] : specificTypes,
         });
 
-      // 🆕 LÓGICA CORRIGIDA: Sempre usar cache se houver partituras salvas
-      if (cacheResult.scores) {
+      // 🆕 LÓGICA PRINCIPAL: Se temos partituras no cache, SEMPRE usar todas elas
+      if (cacheResult.scores && cacheResult.totalCached > 0) {
         console.log(
-          `✅ [API-TAB] Cache HIT! Usando ${cacheResult.loadedCount} partituras do cache`
+          `✅ [API] Cache HIT! ${cacheResult.totalCached} partituras em cache`
         );
         console.log(
-          `📊 [API-TAB] Totais: ${cacheResult.loadedCount} cached / ${cacheResult.totalAvailable} disponíveis`
+          `📊 [API] Estratégia: MOSTRAR TODAS AS PARTITURAS DO CACHE`
         );
 
         scoresData = cacheResult.scores;
         fromCache = true;
         cacheStats = cacheResult.cacheStats;
 
-        // 🆕 Se é loadMore e não temos partituras suficientes no cache, fazer scraping adicional
-        if (loadMore && cacheResult.totalAvailable > cacheResult.loadedCount) {
+        // 🆕 Para loadMore quando já temos cache, só fazer scraping se realmente há mais
+        if (loadMore && cacheResult.totalAvailable > cacheResult.totalCached) {
           console.log(
-            `🔄 [API-TAB] LoadMore solicitado - fazendo scraping adicional para tab: ${
+            `🔄 [API] LoadMore: fazendo scraping das restantes para tab: ${
               targetTabType || 'geral'
             }`
           );
 
-          // Fazer scraping só das partituras que faltam
+          // Fazer scraping adicional apenas das que faltam
           const additionalScores = await scrapeAdditionalScoresForTab(
             imslpUrl,
             workId,
             cacheResult,
-            limit,
-            targetTabType, // 🆕 Passar a tab específica
+            targetTabType,
             priorityScoreId
           );
 
           if (additionalScores) {
-            // Combinar dados do cache com novos dados
             scoresData = combineScoresData(scoresData, additionalScores);
-            fromCache = false; // Mudou para false porque fez scraping adicional
+            fromCache = false; // Mudou porque fez scraping adicional
           }
         }
 
-        // 🆕 Iniciar cache em background se ainda há partituras não carregadas
-        if (!loadMore && cacheResult.totalAvailable > cacheResult.loadedCount) {
-          console.log(
-            `🔄 [API-TAB] Iniciando cache em background das restantes`
-          );
+        // Iniciar cache em background se ainda há partituras não carregadas
+        if (!loadMore && cacheResult.totalAvailable > cacheResult.totalCached) {
+          console.log(`🔄 [API] Iniciando cache em background das restantes`);
           backgroundCachingStarted = true;
           startBackgroundCaching(imslpUrl, workId, priorityScoreId).catch(
-            (error) => {
-              console.error(`❌ [API-TAB] Erro no cache background:`, error);
-            }
+            console.error
           );
         }
       } else {
-        console.log(`❌ [API-TAB] Cache MISS - será necessário fazer scraping`);
+        console.log(
+          `❌ [API] Cache MISS - primeira vez, limitando a ${limit} por tipo`
+        );
       }
     }
 
-    // 2️⃣ SEGUNDA FASE: Scraping IMSLP (se não temos cache ou é força refresh)
+    // 🆕 2️⃣ SCRAPING: Apenas se não temos cache OU é loadMore sem cache suficiente
     if (!scoresData) {
-      console.log(`🕷️ [API-TAB] Iniciando scraping incremental...`);
+      console.log(
+        `🕷️ [API] Fazendo scraping - estratégia: PRIMEIRA VEZ (${limit} por tipo)`
+      );
 
       const paginationOptions: PaginationOptions = {
         limit,
         offset,
-        loadInBackground: !loadMore, // Cache em background apenas se não é "carregar mais"
-        specificTypes: targetTabType ? [targetTabType] : specificTypes, // 🆕 Usar tab específica
+        loadInBackground: !loadMore,
+        specificTypes: targetTabType ? [targetTabType] : specificTypes,
       };
 
-      // Usar o scraper incremental
       scoresData =
         await IMSLPScraperIncremental.fetchAndExtractScoresIncremental(
           imslpUrl,
@@ -150,7 +143,7 @@ export async function POST(request: NextRequest) {
 
       fromCache = false;
 
-      console.log(`✅ [API-TAB] Scraping incremental concluído:`, {
+      console.log(`✅ [API] Scraping concluído:`, {
         loadedScores: Object.values(scoresData.loadedCounts).reduce(
           (sum: number, count: number) => sum + count,
           0
@@ -160,14 +153,13 @@ export async function POST(request: NextRequest) {
           0
         ),
         hasMore: scoresData.hasMore,
-        targetTab: targetTabType || 'todas',
+        strategy: 'primeira-vez',
       });
 
-      // 3️⃣ TERCEIRA FASE: Salvar no cache (se workId foi fornecido)
+      // 3️⃣ Salvar no cache
       if (workId) {
-        console.log(`💾 [API-TAB] Salvando partituras no cache...`);
+        console.log(`💾 [API] Salvando partituras no cache...`);
 
-        // Salvar partituras carregadas imediatamente
         ScoresCacheServiceIncremental.cacheScoresFromIMSLPIncremental(
           workId,
           scoresData,
@@ -175,22 +167,16 @@ export async function POST(request: NextRequest) {
           { immediate: true }
         )
           .then(() => {
-            console.log(
-              `✅ [API-TAB] Cache imediato salvo para workId: ${workId}`
-            );
+            console.log(`✅ [API] Cache salvo para workId: ${workId}`);
           })
-          .catch((error) => {
-            console.error(`❌ [API-TAB] Erro ao salvar cache imediato:`, error);
-          });
+          .catch(console.error);
 
-        // 4️⃣ QUARTA FASE: Cache em background (se é carregamento inicial)
+        // Cache em background para carregar o resto
         if (!loadMore && offset === 0) {
-          console.log(`🔄 [API-TAB] Iniciando cache em background...`);
+          console.log(`🔄 [API] Iniciando cache em background...`);
           backgroundCachingStarted = true;
           startBackgroundCaching(imslpUrl, workId, priorityScoreId).catch(
-            (error) => {
-              console.error(`❌ [API-TAB] Erro no cache background:`, error);
-            }
+            console.error
           );
         }
       }
@@ -198,17 +184,18 @@ export async function POST(request: NextRequest) {
 
     const processingTime = Date.now() - startTime;
 
-    console.log(`\n✅ [API-TAB] === BUSCA CONCLUÍDA ===`);
-    console.log(`⏱️ Tempo total: ${processingTime}ms`);
-    console.log(`📊 Fonte: ${fromCache ? 'CACHE' : 'SCRAPING'}`);
-    console.log(`📈 Partituras carregadas:`, scoresData.loadedCounts);
+    console.log(`\n✅ [API] === OPERAÇÃO CONCLUÍDA ===`);
+    console.log(`⏱️ Tempo: ${processingTime}ms`);
+    console.log(
+      `📊 Fonte: ${fromCache ? 'CACHE (TODAS)' : 'SCRAPING (LIMITADO)'}`
+    );
+    console.log(`📈 Partituras: ${JSON.stringify(scoresData.loadedCounts)}`);
     console.log(`🎯 Tab alvo: ${targetTabType || 'todas'}`);
     console.log(
-      `🔄 Cache em background: ${backgroundCachingStarted ? 'INICIADO' : 'NÃO'}`
+      `🔄 Background: ${backgroundCachingStarted ? 'INICIADO' : 'NÃO'}`
     );
     console.log(`${'='.repeat(60)}\n`);
 
-    // Preparar resposta com metadados incrementais
     const responseData = {
       ...scoresData,
       fromCache,
@@ -216,10 +203,11 @@ export async function POST(request: NextRequest) {
       backgroundCachingStarted,
       _metadata: {
         processingTime,
-        source: fromCache ? 'cache' : 'scraping',
+        source: fromCache ? 'cache-all' : 'scraping-limited',
+        strategy: fromCache ? 'show-all-cached' : 'first-time-limited',
         workId,
         priorityScoreId,
-        targetTabType, // 🆕 Incluir tab alvo na resposta
+        targetTabType,
         pagination: {
           limit,
           offset,
@@ -227,24 +215,7 @@ export async function POST(request: NextRequest) {
           currentPage: Math.floor(offset / limit) + 1,
           hasMore: scoresData.hasMore,
         },
-        performance: !fromCache
-          ? {
-              cache: {
-                entries:
-                  IMSLPDirectUrlResolverOptimized.getCacheStats().totalEntries,
-                avgConfidence:
-                  IMSLPDirectUrlResolverOptimized.getCacheStats().avgConfidence,
-              },
-              ai: {
-                learnedPatterns:
-                  IMSLPDirectUrlResolverOptimized.getPredictionModel().patterns
-                    .size,
-              },
-            }
-          : undefined,
-        version: '4.1-TAB-SPECIFIC',
-        optimized: true,
-        cached: fromCache,
+        version: '5.0-CACHE-LOGIC',
         timestamp: new Date().toISOString(),
       },
     };
@@ -252,8 +223,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(responseData);
   } catch (error) {
     const processingTime = Date.now() - startTime;
-
-    console.error(`\n❌ [API-TAB] === ERRO APÓS ${processingTime}ms ===`);
+    console.error(`\n❌ [API] === ERRO APÓS ${processingTime}ms ===`);
     console.error(`🔥 Erro:`, error);
     console.error(`${'='.repeat(60)}\n`);
 
@@ -269,63 +239,54 @@ export async function POST(request: NextRequest) {
   }
 
   /**
-   * 🆕 Fazer scraping adicional para loadMore específico de tab
+   * 🆕 Scraping adicional para loadMore específico de tab
    */
   async function scrapeAdditionalScoresForTab(
     imslpUrl: string,
     workId: string,
     cacheResult: any,
-    limit: number,
     targetTabType?: string,
     priorityScoreId?: string
   ) {
     try {
       console.log(
-        `🔄 [API-TAB] Fazendo scraping adicional para tab: ${
+        `🔄 [API] Fazendo scraping adicional para tab: ${
           targetTabType || 'geral'
         }`
       );
 
-      // 🆕 Calcular quantas partituras já temos para a tab específica ou geral
-      let currentLoaded: number;
+      // Calcular quantas partituras já temos em cache
+      let currentCached: number;
       let totalAvailable: number;
 
       if (targetTabType) {
-        // Para tab específica
-        currentLoaded = cacheResult.scores?.loadedCounts[targetTabType] || 0;
+        currentCached = cacheResult.scores?.loadedCounts[targetTabType] || 0;
         totalAvailable = cacheResult.scores?.totalCounts[targetTabType] || 0;
       } else {
-        // Para carregamento geral
-        currentLoaded = cacheResult.loadedCount;
+        currentCached = cacheResult.totalCached;
         totalAvailable = cacheResult.totalAvailable;
       }
 
-      const toFetch = Math.min(limit, totalAvailable - currentLoaded);
-
+      const toFetch = totalAvailable - currentCached;
       if (toFetch <= 0) {
         console.log(
-          `⚠️ [API-TAB] Nenhuma partitura adicional para buscar na tab: ${
-            targetTabType || 'geral'
-          }`
+          `⚠️ [API] Nada para buscar na tab: ${targetTabType || 'geral'}`
         );
         return null;
       }
 
       console.log(
-        `📈 [API-TAB] Buscando ${toFetch} partituras adicionais para tab "${
-          targetTabType || 'geral'
-        }" (offset: ${currentLoaded})`
+        `📈 [API] Buscando ${toFetch} partituras restantes (offset: ${currentCached})`
       );
 
-      // Fazer scraping com offset baseado no que já temos
       const additionalData =
         await IMSLPScraperIncremental.fetchAndExtractScoresIncremental(
           imslpUrl,
           {
             limit: toFetch,
-            offset: currentLoaded,
+            offset: currentCached,
             loadInBackground: false,
-            specificTypes: targetTabType ? [targetTabType] : undefined, // 🆕 Filtrar por tab específica
+            specificTypes: targetTabType ? [targetTabType] : undefined,
           }
         );
 
@@ -341,13 +302,13 @@ export async function POST(request: NextRequest) {
 
       return additionalData;
     } catch (error) {
-      console.error(`❌ [API-TAB] Erro no scraping adicional:`, error);
+      console.error(`❌ [API] Erro no scraping adicional:`, error);
       return null;
     }
   }
 
   /**
-   * 🚀 Cache em background - executa de forma assíncrona
+   * 🚀 Cache em background
    */
   async function startBackgroundCaching(
     imslpUrl: string,
@@ -357,16 +318,13 @@ export async function POST(request: NextRequest) {
     console.log(`🔄 [BACKGROUND] Iniciando cache completo para ${workId}`);
 
     try {
-      // Aguardar um pouco para não impactar a resposta principal
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      // Fazer scraping completo
       const completeData =
         await IMSLPScraperIncremental.extractAllScoresForCache(
           await fetch(imslpUrl).then((res) => res.text())
         );
 
-      // Salvar no cache
       await ScoresCacheServiceIncremental.cacheScoresFromIMSLPIncremental(
         workId,
         completeData,
@@ -381,30 +339,22 @@ export async function POST(request: NextRequest) {
   }
 
   /**
-   * 🆕 Combinar dados do cache com novos dados de scraping
+   * 🆕 Combinar dados do cache com novos dados
    */
   function combineScoresData(cacheData: any, newData: any) {
     const combined = { ...cacheData };
 
-    // Combinar scoresByType
     Object.keys(newData.scoresByType).forEach((type) => {
       const existingGroups = combined.scoresByType[type] || [];
       const newGroups = newData.scoresByType[type] || [];
-
-      // Adicionar novos grupos aos existentes
       combined.scoresByType[type] = [...existingGroups, ...newGroups];
     });
 
-    // Atualizar contadores carregados
     Object.keys(newData.loadedCounts).forEach((type) => {
       combined.loadedCounts[type] =
         (combined.loadedCounts[type] || 0) + (newData.loadedCounts[type] || 0);
     });
 
-    // Manter totais do cache (que são os reais)
-    // combined.totalCounts já está correto do cache
-
-    // Atualizar hasMore
     const totalLoaded = Object.values(combined.loadedCounts).reduce(
       (sum: number, count: number) => sum + count,
       0
@@ -417,14 +367,12 @@ export async function POST(request: NextRequest) {
     combined.hasMore = totalLoaded < totalAvailable;
 
     console.log(
-      `🔄 [API-TAB] Dados combinados: ${totalLoaded}/${totalAvailable} partituras`
+      `🔄 [API] Dados combinados: ${totalLoaded}/${totalAvailable} partituras`
     );
-
     return combined;
   }
 }
 
-// 🆕 Endpoint GET atualizado
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -432,7 +380,7 @@ export async function GET(request: NextRequest) {
     const workId = searchParams.get('workId');
     const limit = parseInt(searchParams.get('limit') || '5');
     const offset = parseInt(searchParams.get('offset') || '0');
-    const tabType = searchParams.get('tabType'); // 🆕 Suporte para verificar tab específica
+    const tabType = searchParams.get('tabType');
 
     switch (type) {
       case 'cache-check-incremental':
@@ -447,7 +395,7 @@ export async function GET(request: NextRequest) {
           await ScoresCacheServiceIncremental.getWorkScoresIncremental(workId, {
             limit,
             offset,
-            specificTypes: tabType ? [tabType] : undefined, // 🆕 Filtrar por tab
+            specificTypes: tabType ? [tabType] : undefined,
           });
 
         return NextResponse.json({
@@ -457,7 +405,7 @@ export async function GET(request: NextRequest) {
           loadedCount: cacheResult.loadedCount,
           totalAvailable: cacheResult.totalAvailable,
           totalCached: cacheResult.totalCached,
-          tabType, // 🆕 Incluir tab na resposta
+          tabType,
           stats: cacheResult.cacheStats,
           timestamp: new Date().toISOString(),
         });
@@ -472,13 +420,12 @@ export async function GET(request: NextRequest) {
 
         const progressResult =
           await ScoresCacheServiceIncremental.getCacheProgress(workId);
-
         return NextResponse.json({
           ...progressResult,
           timestamp: new Date().toISOString(),
         });
 
-      case 'tab-stats': // 🆕 Endpoint para estatísticas de tab específica
+      case 'tab-stats':
         if (!workId) {
           return NextResponse.json(
             { error: 'workId é obrigatório' },
@@ -501,12 +448,12 @@ export async function GET(request: NextRequest) {
 
       default:
         return NextResponse.json(
-          { error: 'Tipo não suportado na versão incremental' },
+          { error: 'Tipo não suportado' },
           { status: 400 }
         );
     }
   } catch (error) {
-    console.error('❌ [API-TAB] Erro ao obter dados:', error);
+    console.error('❌ [API] Erro ao obter dados:', error);
     return NextResponse.json({ error: 'Erro ao obter dados' }, { status: 500 });
   }
 }

@@ -16,7 +16,6 @@ import {
   LearnedItem,
 } from '@/app/stores/useLearningStore';
 import LearningModal from '@/app/components/LearningModal';
-import { StatCard } from './StatCard';
 import { EmptyState } from './EmptyState';
 import { LearningCard } from './LearningCard';
 import Select from '../Common/Select';
