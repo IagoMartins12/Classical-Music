@@ -382,12 +382,21 @@ export default function ComposerDetailsClient({
                           <div className="w-8 h-8 pl-2 pr-2 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
                             <FiUser className="w-4 h-4 text-theme-primary" />
                           </div>
-                          <div>
+                          <div className="flex flex-col ">
                             <p className="text-sm font-medium text-theme-tertiary">
                               Compôs para:
                             </p>
-                            <p className="text-theme-primary font-semibold">
-                              {translateInstruments(composer.instruments)}
+                            <p className="text-theme-primary font-semibold break-all">
+                              {translateInstruments(composer.instruments)}.
+                              {/* {filterOptions.instruments
+                                .map(
+                                  (instrument, index) =>
+                                    index ===
+                                    filterOptions.instruments.length - 1
+                                      ? `${instrument.name}.` // Último item = ponto final
+                                      : `${instrument.name}, ` // Demais itens = vírgula + espaço
+                                )
+                                .join('')} */}
                             </p>
                           </div>
                         </div>
