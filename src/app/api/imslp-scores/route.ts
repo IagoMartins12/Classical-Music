@@ -4,7 +4,6 @@ import {
   IMSLPScraperIncremental,
   PaginationOptions,
 } from '@/app/libs/imslp-score-scraper-incremental';
-import { IMSLPDirectUrlResolverOptimized } from '@/app/libs/imslp-url-resolver';
 import { ScoresCacheServiceIncremental } from '@/app/libs/scores-cache-service-incremental';
 
 interface RequestBody {

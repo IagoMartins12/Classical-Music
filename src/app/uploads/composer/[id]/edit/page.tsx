@@ -1,0 +1,74 @@
+// app/uploads/composer/[id]/edit/page.tsx
+import { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/libs/auth';
+import { notFound, redirect } from 'next/navigation';
+import prisma from '@/app/libs/prismadb';
+import { getFormData } from '@/app/requests/upload';
+import EditComposerClient from '@/app/components/UploadsPage/EditComposerClient/page';
+
+interface EditComposerPageProps {
+  params: { id: string };
+}
+
+export async function generateMetadata({
+  params,
+}: EditComposerPageProps): Promise<Metadata> {
+  const composer = await prisma.composer.findUnique({
+    where: { id: params.id },
+    select: { name: true, fullName: true },
+  });
+
+  return {
+    title: `Editar ${
+      composer?.fullName || composer?.name || 'Compositor'
+    } | Classical Music App`,
+    description: `Editar informações do compositor ${
+      composer?.fullName || composer?.name || ''
+    }`,
+  };
+}
+
+export default async function EditComposerPage({
+  params,
+}: EditComposerPageProps) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+    redirect('/login');
+  }
+
+  // Buscar compositor
+  const composer = await prisma.composer.findUnique({
+    where: { id: params.id },
+    include: {
+      epoch: { select: { id: true, name: true } },
+      primaryRole: { select: { id: true, name: true } },
+    },
+  });
+
+  if (!composer) {
+    notFound();
+  }
+
+  // Verificar permissões
+  const isAdmin = session.user.role === 2;
+  const isOwner = composer.createdBy === session.user.id;
+
+  if (!isAdmin && !isOwner) {
+    redirect('/uploads?error=unauthorized');
+  }
+
+  // Buscar dados para formulário
+  const formData = await getFormData();
+
+  return (
+    <EditComposerClient
+      composer={composer}
+      epochs={formData.epochs}
+      roles={formData.roles}
+      isAdmin={isAdmin}
+      userId={session.user.id}
+    />
+  );
+}

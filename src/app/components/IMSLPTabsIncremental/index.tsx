@@ -10,7 +10,6 @@ import {
   FiBookOpen,
   FiMoreHorizontal,
   FiLayers,
-  FiStar,
   FiHeart,
   FiTrendingUp,
   FiDownload,
@@ -24,7 +23,6 @@ import {
   IMSLPScore,
   IMSLPWorkScoresIncremental,
 } from '@/app/libs/imslp-score-scraper-incremental';
-import Link from 'next/link';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -41,10 +39,10 @@ import {
 } from '@/app/utils/type-utils'; // 🆕 Import corrigido
 
 interface IMSLPTabsIncrementalProps {
-  imslpData: IMSLPWorkScoresIncremental;
+  imslpData: IMSLPWorkScoresIncremental | null;
   loading?: boolean;
   loadingMore?: boolean;
-  error?: string;
+  error?: string | null;
   onRefetch?: () => void;
   onLoadMore?: (amount?: number, specificType?: string) => void;
   onLoadMoreForTab?: (tabType: string, amount?: number) => void;
@@ -422,7 +420,7 @@ export default function IMSLPTabsIncremental({
               )}
 
               {/* Barra de progresso geral */}
-              {totalAvailable > 0 && (
+              {/* {totalAvailable > 0 && (
                 <div className="mt-3">
                   <div className="flex items-center justify-between text-sm text-theme-tertiary mb-2">
                     <span>Progresso geral</span>
@@ -447,16 +445,16 @@ export default function IMSLPTabsIncremental({
                   </div>
 
                   {/* Barra de cache em background */}
-                  {backgroundCaching && (
+              {/* {backgroundCaching && (
                     <div className="w-full bg-accent-green/20 border border-accent-green/30 rounded-full h-1 mt-1">
                       <div
                         className="bg-gradient-to-r from-accent-green to-accent-blue h-1 rounded-full transition-all duration-500"
                         style={{ width: `${cacheProgress}%` }}
                       ></div>
                     </div>
-                  )}
-                </div>
-              )}
+                  )} */}
+              {/* </div> */}
+              {/* )} */}
 
               {/* Estatísticas de favoritos destacadas */}
               {!loadingFavorites && favoriteStats.length > 0 && (

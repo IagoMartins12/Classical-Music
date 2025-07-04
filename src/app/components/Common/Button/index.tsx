@@ -34,7 +34,11 @@ const Button: React.FC<ButtonProps> = ({
   const variants = {
     primary: 'btn-classical-primary',
     secondary: 'btn-classical-secondary',
-    delete: 'btn-classical-delete',
+    delete: `
+      bg-gradient-to-r from-accent-red to-red-600 text-white
+      hover:from-red-600 hover:to-red-700 hover:shadow-lg
+      border border-accent-red hover:border-red-600
+    `,
     outline: `
       bg-transparent border-2 border-theme-accent text-brand-primary
       hover:bg-brand-primary hover:text-theme-inverse hover:border-brand-primary

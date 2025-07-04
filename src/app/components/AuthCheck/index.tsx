@@ -9,7 +9,8 @@ interface AuthCheckProps {
     | 'Seus favoritos'
     | 'Seu perfil'
     | 'Suas lições'
-    | 'Suas anotações musicais';
+    | 'Suas anotações musicais'
+    | 'Meus Uploads';
 }
 
 export default function AuthCheck({ title }: AuthCheckProps) {

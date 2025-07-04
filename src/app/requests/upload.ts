@@ -1,0 +1,506 @@
+// app/requests/uploads.ts
+import prisma from '@/app/libs/prismadb';
+import { unstable_cache } from 'next/cache';
+
+export interface UserUpload {
+  id: string;
+  title: string;
+  type: 'composer' | 'work' | 'score';
+  createdAt: string;
+  updatedAt: string;
+  isIMSLP: boolean;
+  imslpId?: string;
+  epochName?: string;
+  composerName?: string;
+  instrumentName?: string;
+  workGenres?: string[];
+  categoryNames?: string[];
+}
+
+// Buscar uploads do usuário
+export const getUserUploads = unstable_cache(
+  async ({
+    userId,
+    page = 1,
+    limit = 24,
+    search = '',
+    type = 'all',
+    epochId = '',
+  }: {
+    userId: string;
+    page?: number;
+    limit?: number;
+    search?: string;
+    type?: string;
+    epochId?: string;
+  }) => {
+    try {
+      const offset = (page - 1) * limit;
+
+      // Buscar compositores do usuário
+      const composerWhere = {
+        // Assumindo que há um campo para indicar criador customizado
+        ...(search && {
+          OR: [
+            { name: { contains: search, mode: 'insensitive' } },
+            { fullName: { contains: search, mode: 'insensitive' } },
+          ],
+        }),
+        ...(epochId && { epochId }),
+        // Filtrar apenas compositores criados pelo usuário ou customizados
+        OR: [
+          { createdBy: userId }, // Assumindo que você adicionará este campo
+          { isCustom: true }, // Assumindo que você adicionará este campo
+        ],
+      };
+
+      const workWhere = {
+        ...(search && {
+          OR: [
+            { title: { contains: search, mode: 'insensitive' } },
+            { composer: { name: { contains: search, mode: 'insensitive' } } },
+          ],
+        }),
+        ...(epochId && { epochId }),
+        // Filtrar apenas obras criadas pelo usuário ou customizadas
+        OR: [
+          { createdBy: userId }, // Assumindo que você adicionará este campo
+          { isCustom: true }, // Assumindo que você adicionará este campo
+        ],
+      };
+
+      const scoreWhere = {
+        ...(search && {
+          OR: [
+            { title: { contains: search, mode: 'insensitive' } },
+            { work: { title: { contains: search, mode: 'insensitive' } } },
+          ],
+        }),
+        source: { in: ['CUSTOM', 'UPLOAD'] }, // Apenas partituras não-IMSLP
+        ...(userId && { uploadedBy: userId }),
+      };
+
+      const [composers, works, scores] = await Promise.all([
+        type === 'all' || type === 'composer'
+          ? prisma.composer.findMany({
+              where: composerWhere,
+              select: {
+                id: true,
+                name: true,
+                fullName: true,
+                portraitUrl: true,
+                createdAt: true,
+                imslpId: true,
+                epoch: { select: { name: true } },
+              },
+              take: type === 'composer' ? limit : undefined,
+              skip: type === 'composer' ? offset : undefined,
+              orderBy: { createdAt: 'desc' },
+            })
+          : [],
+
+        type === 'all' || type === 'work'
+          ? prisma.work.findMany({
+              where: workWhere,
+              select: {
+                id: true,
+                title: true,
+                opOrCatalog: true,
+                createdAt: true,
+                updatedAt: true,
+                imslpId: true,
+                composer: { select: { name: true, fullName: true } },
+                epoch: { select: { name: true } },
+                instrument: { select: { name: true } },
+                workGenresArr: true,
+                categoryNames: true,
+              },
+              take: type === 'work' ? limit : undefined,
+              skip: type === 'work' ? offset : undefined,
+              orderBy: { createdAt: 'desc' },
+            })
+          : [],
+
+        type === 'all' || type === 'score'
+          ? prisma.workScore.findMany({
+              where: scoreWhere,
+              select: {
+                id: true,
+                title: true,
+                source: true,
+                fileSize: true,
+                pageCount: true,
+                createdAt: true,
+                updatedAt: true,
+                work: {
+                  select: {
+                    title: true,
+                    composer: { select: { name: true } },
+                  },
+                },
+              },
+              take: type === 'score' ? limit : undefined,
+              skip: type === 'score' ? offset : undefined,
+              orderBy: { createdAt: 'desc' },
+            })
+          : [],
+      ]);
+
+      // Contar totais
+      const [composerCount, workCount, scoreCount] = await Promise.all([
+        type === 'all' || type === 'composer'
+          ? prisma.composer.count({ where: composerWhere })
+          : 0,
+        type === 'all' || type === 'work'
+          ? prisma.work.count({ where: workWhere })
+          : 0,
+        type === 'all' || type === 'score'
+          ? prisma.workScore.count({ where: scoreWhere })
+          : 0,
+      ]);
+
+      const totalCount = composerCount + workCount + scoreCount;
+
+      // Combinar e formatar dados
+      const items: UserUpload[] = [
+        ...composers.map((composer) => ({
+          id: composer.id,
+          title: composer.fullName || composer.name,
+          type: 'composer' as const,
+          createdAt: composer.createdAt.toISOString(),
+          updatedAt: composer.updatedAt.toISOString(),
+          isIMSLP: !!composer.imslpId,
+          imslpId: composer.imslpId || undefined,
+          epochName: composer.epoch.name,
+        })),
+        ...works.map((work) => ({
+          id: work.id,
+          title: work.title,
+          type: 'work' as const,
+          createdAt: work.createdAt.toISOString(),
+          updatedAt: work.updatedAt.toISOString(),
+          isIMSLP: !!work.imslpId,
+          imslpId: work.imslpId || undefined,
+          epochName: work.epoch.name,
+          composerName: work.composer.fullName || work.composer.name,
+          instrumentName: work.instrument.name,
+          workGenres: work.workGenresArr,
+          categoryNames: work.categoryNames,
+        })),
+        ...scores.map((score) => ({
+          id: score.id,
+          title: score.title,
+          type: 'score' as const,
+          createdAt: score.createdAt.toISOString(),
+          updatedAt: score.updatedAt.toISOString(),
+          isIMSLP: score.source === 'IMSLP',
+          composerName: score.work.composer.name,
+        })),
+      ];
+
+      // Ordenar por data de criação
+      items.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      return {
+        items: type === 'all' ? items.slice(offset, offset + limit) : items,
+        composers,
+        works,
+        scores,
+        totalCount,
+        composerCount,
+        workCount,
+        scoreCount,
+      };
+    } catch (error) {
+      console.error('Erro ao buscar uploads do usuário:', error);
+      return {
+        items: [],
+        composers: [],
+        works: [],
+        scores: [],
+        totalCount: 0,
+        composerCount: 0,
+        workCount: 0,
+        scoreCount: 0,
+      };
+    }
+  },
+  ['user-uploads'],
+  {
+    revalidate: 300, // 5 minutos
+    tags: ['user-uploads'],
+  }
+);
+
+// Buscar todos os uploads (para admin)
+export const getAllUploads = unstable_cache(
+  async ({
+    page = 1,
+    limit = 24,
+    search = '',
+    type = 'all',
+    epochId = '',
+  }: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    type?: string;
+    epochId?: string;
+  }) => {
+    try {
+      const offset = (page - 1) * limit;
+
+      // Buscar todos os compositores
+      const composerWhere = {
+        ...(search && {
+          OR: [
+            { name: { contains: search, mode: 'insensitive' } },
+            { fullName: { contains: search, mode: 'insensitive' } },
+          ],
+        }),
+        ...(epochId && { epochId }),
+      };
+
+      const workWhere = {
+        ...(search && {
+          OR: [
+            { title: { contains: search, mode: 'insensitive' } },
+            { composer: { name: { contains: search, mode: 'insensitive' } } },
+          ],
+        }),
+        ...(epochId && { epochId }),
+      };
+
+      const scoreWhere = {
+        ...(search && {
+          OR: [
+            { title: { contains: search, mode: 'insensitive' } },
+            { work: { title: { contains: search, mode: 'insensitive' } } },
+          ],
+        }),
+      };
+
+      const [composers, works, scores] = await Promise.all([
+        type === 'all' || type === 'composer'
+          ? prisma.composer.findMany({
+              where: composerWhere,
+              select: {
+                id: true,
+                name: true,
+                fullName: true,
+                portraitUrl: true,
+                createdAt: true,
+                updatedAt: true,
+                imslpId: true,
+                epoch: { select: { name: true } },
+              },
+              take: type === 'composer' ? limit : undefined,
+              skip: type === 'composer' ? offset : undefined,
+              orderBy: { createdAt: 'desc' },
+            })
+          : [],
+
+        type === 'all' || type === 'work'
+          ? prisma.work.findMany({
+              where: workWhere,
+              select: {
+                id: true,
+                title: true,
+                opOrCatalog: true,
+                createdAt: true,
+                updatedAt: true,
+                imslpId: true,
+                composer: { select: { name: true, fullName: true } },
+                epoch: { select: { name: true } },
+                instrument: { select: { name: true } },
+                workGenresArr: true,
+                categoryNames: true,
+              },
+              take: type === 'work' ? limit : undefined,
+              skip: type === 'work' ? offset : undefined,
+              orderBy: { createdAt: 'desc' },
+            })
+          : [],
+
+        type === 'all' || type === 'score'
+          ? prisma.workScore.findMany({
+              where: scoreWhere,
+              select: {
+                id: true,
+                title: true,
+                source: true,
+                fileSize: true,
+                pageCount: true,
+                createdAt: true,
+                updatedAt: true,
+                work: {
+                  select: {
+                    title: true,
+                    composer: { select: { name: true } },
+                  },
+                },
+              },
+              take: type === 'score' ? limit : undefined,
+              skip: type === 'score' ? offset : undefined,
+              orderBy: { createdAt: 'desc' },
+            })
+          : [],
+      ]);
+
+      // Contar totais
+      const [composerCount, workCount, scoreCount] = await Promise.all([
+        type === 'all' || type === 'composer'
+          ? prisma.composer.count({ where: composerWhere })
+          : 0,
+        type === 'all' || type === 'work'
+          ? prisma.work.count({ where: workWhere })
+          : 0,
+        type === 'all' || type === 'score'
+          ? prisma.workScore.count({ where: scoreWhere })
+          : 0,
+      ]);
+
+      const totalCount = composerCount + workCount + scoreCount;
+
+      // Combinar e formatar dados
+      const items: UserUpload[] = [
+        ...composers.map((composer) => ({
+          id: composer.id,
+          title: composer.fullName || composer.name,
+          type: 'composer' as const,
+          createdAt: composer.createdAt.toISOString(),
+          updatedAt: composer.updatedAt.toISOString(),
+          isIMSLP: !!composer.imslpId,
+          imslpId: composer.imslpId || undefined,
+          epochName: composer.epoch.name,
+        })),
+        ...works.map((work) => ({
+          id: work.id,
+          title: work.title,
+          type: 'work' as const,
+          createdAt: work.createdAt.toISOString(),
+          updatedAt: work.updatedAt.toISOString(),
+          isIMSLP: !!work.imslpId,
+          imslpId: work.imslpId || undefined,
+          epochName: work.epoch.name,
+          composerName: work.composer.fullName || work.composer.name,
+          instrumentName: work.instrument.name,
+          workGenres: work.workGenresArr,
+          categoryNames: work.categoryNames,
+        })),
+        ...scores.map((score) => ({
+          id: score.id,
+          title: score.title,
+          type: 'score' as const,
+          createdAt: score.createdAt.toISOString(),
+          updatedAt: score.updatedAt.toISOString(),
+          isIMSLP: score.source === 'IMSLP',
+          composerName: score.work.composer.name,
+        })),
+      ];
+
+      // Ordenar por data de criação
+      items.sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+
+      return {
+        items: type === 'all' ? items.slice(offset, offset + limit) : items,
+        composers,
+        works,
+        scores,
+        totalCount,
+        composerCount,
+        workCount,
+        scoreCount,
+      };
+    } catch (error) {
+      console.error('Erro ao buscar todos os uploads:', error);
+      return {
+        items: [],
+        composers: [],
+        works: [],
+        scores: [],
+        totalCount: 0,
+        composerCount: 0,
+        workCount: 0,
+        scoreCount: 0,
+      };
+    }
+  },
+  ['all-uploads'],
+  {
+    revalidate: 300, // 5 minutos
+    tags: ['all-uploads'],
+  }
+);
+
+// Buscar dados para formulários
+export const getFormData = unstable_cache(
+  async () => {
+    try {
+      const [epochs, instruments, roles] = await Promise.all([
+        prisma.epoch.findMany({
+          select: { id: true, name: true },
+          orderBy: { name: 'asc' },
+        }),
+        prisma.instrument.findMany({
+          select: { id: true, name: true, category: true },
+          orderBy: { name: 'asc' },
+        }),
+        prisma.role.findMany({
+          select: { id: true, name: true },
+          orderBy: { name: 'asc' },
+        }),
+      ]);
+
+      return { epochs, instruments, roles };
+    } catch (error) {
+      console.error('Erro ao buscar dados para formulários:', error);
+      return { epochs: [], instruments: [], roles: [] };
+    }
+  },
+  ['form-data'],
+  {
+    revalidate: 3600, // 1 hora
+    tags: ['form-data'],
+  }
+);
+
+// Cache de épocas (reutilizar da página de compositores)
+export const getEpochsCache = unstable_cache(
+  async () => {
+    try {
+      return await prisma.epoch.findMany({
+        select: { id: true, name: true },
+        orderBy: { name: 'asc' },
+      });
+    } catch (error) {
+      console.error('Erro ao buscar épocas:', error);
+      return [];
+    }
+  },
+  ['epochs-cache'],
+  {
+    revalidate: 3600, // 1 hora
+    tags: ['epochs'],
+  }
+);
+
+// Função para invalidar caches
+export async function revalidateUploadsCache(userId?: string) {
+  const { revalidateTag } = await import('next/cache');
+
+  revalidateTag('user-uploads');
+  revalidateTag('all-uploads');
+  revalidateTag('form-data');
+  revalidateTag('epochs');
+
+  if (userId) {
+    revalidateTag(`user-uploads-${userId}`);
+  }
+}

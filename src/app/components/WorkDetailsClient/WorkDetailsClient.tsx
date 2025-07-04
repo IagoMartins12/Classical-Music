@@ -7,25 +7,14 @@ import { WorkDetails } from '@/app/requests/work-details';
 import {
   FiCalendar,
   FiMusic,
-  FiExternalLink,
-  FiClock,
-  FiMapPin,
-  FiBookOpen,
-  FiPlay,
-  FiPause,
-  FiSettings,
-  FiTag,
   FiInfo,
-  FiHeadphones,
   FiActivity,
-  FiLayers,
   FiTarget,
   FiZap,
   FiDatabase,
   FiRefreshCw,
   FiTrendingUp,
 } from 'react-icons/fi';
-import { GiMusicalNotes, GiMetronome } from 'react-icons/gi';
 import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
 import { useNavigate } from '@/app/hooks/useNavigate';
 import FavoriteButton from '../FavoriteButton';
@@ -147,7 +136,7 @@ export default function WorkDetailsClient({
       Object.entries(imslpScores.scoresByType).forEach(([type, groups]) => {
         console.log(
           `  ${type}: ${groups.length} grupos, ${groups.reduce(
-            (sum, g) => sum + g.scores.length,
+            (sum: any, g: any) => sum + g.scores.length,
             0
           )} partituras`
         );
@@ -696,7 +685,6 @@ export default function WorkDetailsClient({
                 backgroundCaching={backgroundCaching}
                 cacheProgress={cacheProgress}
                 getTabStats={getTabStats}
-                strategy={strategy} // 🆕 Passar strategy para o componente
                 // Props de favoritos
                 mostFavoritedScoreId={mostFavoritedScoreId}
                 mostFavoritedSource={mostFavoritedSource}
