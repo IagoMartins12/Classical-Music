@@ -18,7 +18,7 @@ import {
   FiTarget,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
-import ScoreCard from '../WorkDetailsClient/ScoreCard';
+import ScoreCard from '../ScoreCard';
 import {
   IMSLPScore,
   IMSLPWorkScoresIncremental,
@@ -28,10 +28,10 @@ import {
   AnimatedContainer,
   AnimatedItem,
   SequentialGrid,
-} from '../animation/AnimatedComponents';
+} from '../../animation/AnimatedComponents';
 import { useScoreFavorites } from '@/app/hooks/useScoreFavorites';
-import ScorePreview from '../WorkDetailsClient/ScorePreview';
-import StudyModeButton from '../StudyMode/StudyModeButton';
+import ScorePreview from '../ScorePreview';
+import StudyModeButton from '../../StudyMode/StudyModeButton';
 import {
   getTabLabel,
   getTabStatistics,
@@ -322,54 +322,6 @@ export default function IMSLPTabsIncremental({
                           ? `Partitura selecionada: ${selectedScore.title}`
                           : 'Selecione uma partitura para estudo'}
                       </p>
-
-                      {/* 🆕 Status de carregamento incremental com estatísticas da tab ativa */}
-                      <div className="flex items-center space-x-4 text-sm">
-                        <div className="flex items-center space-x-1 text-accent-blue">
-                          <FiActivity className="w-3 h-3" />
-                          <span className="font-medium">
-                            Tab ativa: {activeTabStats.loaded}/
-                            {activeTabStats.total}{' '}
-                            {getTabLabel(activeTab).toLowerCase()}
-                          </span>
-                          {activeTabStats.remaining > 0 && (
-                            <span className="text-theme-tertiary">
-                              ({activeTabStats.remaining} restantes)
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="flex items-center space-x-1 text-accent-purple">
-                          <FiLayers className="w-3 h-3" />
-                          <span className="font-medium">
-                            Total: {currentLoaded}/{totalAvailable}
-                          </span>
-                        </div>
-
-                        {/* Indicador de cache em background */}
-                        {backgroundCaching && (
-                          <div className="flex items-center space-x-1 text-accent-green">
-                            <div className="w-3 h-3 border-2 border-accent-green/30 border-t-accent-green rounded-full animate-spin"></div>
-                            <span className="font-medium">
-                              Cache: {cacheProgress}%
-                            </span>
-                          </div>
-                        )}
-
-                        {/* Estatísticas de favoritos */}
-                        {!loadingFavorites && favoriteStats.length > 0 && (
-                          <div className="flex items-center space-x-1 text-accent-red">
-                            <FiHeart className="w-3 h-3" />
-                            <span className="font-medium">
-                              {favoriteStats.reduce(
-                                (sum, stat) => sum + stat.totalFavorites,
-                                0
-                              )}{' '}
-                              favoritos
-                            </span>
-                          </div>
-                        )}
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -397,7 +349,7 @@ export default function IMSLPTabsIncremental({
               </div>
 
               {/* 🆕 Barra de progresso da tab ativa */}
-              {activeTabStats.total > 0 && (
+              {/* {activeTabStats.total > 0 && (
                 <div className="mt-4">
                   <div className="flex items-center justify-between text-sm text-theme-tertiary mb-2">
                     <span>
@@ -417,7 +369,7 @@ export default function IMSLPTabsIncremental({
                     ></div>
                   </div>
                 </div>
-              )}
+              )} */}
 
               {/* Barra de progresso geral */}
               {/* {totalAvailable > 0 && (
@@ -700,9 +652,15 @@ export default function IMSLPTabsIncremental({
 
                   {/* 🆕 Mensagem quando todas as partituras da tab foram carregadas */}
                   {!activeTabStats.hasMore && activeTabStats.total > 0 && (
-                    <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
+                    <div
+                      className={` ${
+                        totalAvailable > currentLoaded
+                          ? 'space-y-4 flex flex-col items-center py-8 border-t border-theme-secondary'
+                          : ''
+                      }  `}
+                    >
                       <div className="text-center">
-                        <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        {/* <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-4">
                           <FiTarget className="w-8 h-8 text-theme-primary" />
                         </div>
                         <h3 className="text-lg font-semibold text-theme-primary mb-2">
@@ -713,7 +671,7 @@ export default function IMSLPTabsIncremental({
                           Você visualizou todas as {activeTabStats.total}{' '}
                           {getTabLabel(activeTab).toLowerCase()} disponíveis
                           para esta obra.
-                        </p>
+                        </p> */}
 
                         {/* Botão para carregar todas as outras tabs se ainda há partituras globais */}
                         {totalAvailable > currentLoaded && (

@@ -1,4 +1,4 @@
-// app/libs/scores-cache-service-incremental.ts - CORRIGIDO para Retornar Todas as Partituras Salvas
+// app/libs/scores-cache-service-incremental.ts - CORRIGIDO para Tipos e Contadores
 import prisma from '@/app/libs/prismadb';
 import { IMSLPWorkScoresIncremental } from './imslp-score-scraper-incremental';
 import {
@@ -32,9 +32,29 @@ export class ScoresCacheServiceIncremental {
   private static readonly CACHE_VERSION = '2.0-RETURN-ALL-CACHED';
   private static readonly DEFAULT_CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 dias
 
+  // 🆕 Mapeamento de tipos (minúsculas -> maiúsculas) para corrigir erro
+  private static readonly TYPE_MAPPING = {
+    scores: 'SCORES',
+    parts: 'PARTS',
+    arrangements: 'ARRANGEMENTS',
+    librettos: 'LIBRETTOS',
+    others: 'OTHERS',
+    sources: 'SOURCES',
+  } as const;
+
+  // 🆕 Mapeamento reverso (maiúsculas -> minúsculas)
+  private static readonly REVERSE_TYPE_MAPPING = {
+    SCORES: 'scores',
+    PARTS: 'parts',
+    ARRANGEMENTS: 'arrangements',
+    LIBRETTOS: 'librettos',
+    OTHERS: 'others',
+    SOURCES: 'sources',
+  } as const;
+
   /**
    * 🆕 LÓGICA PRINCIPAL: Retornar TODAS as partituras salvas no cache
-   * 📋 Não aplicar limit/offset quando há cache - mostrar tudo que temos
+   * 📋 Mantém contadores corretos por tab (ex: 20/37 partituras, 5/13 arranjos)
    */
   static async getWorkScoresIncremental(
     workId: string,
@@ -61,7 +81,18 @@ export class ScoresCacheServiceIncremental {
           workId,
           isActive: true,
           ...(specificTypes && specificTypes.length > 0
-            ? { type: { in: specificTypes as any[] } }
+            ? {
+                type: {
+                  in: specificTypes
+                    .map(
+                      (type) =>
+                        this.TYPE_MAPPING[
+                          type as keyof typeof this.TYPE_MAPPING
+                        ]
+                    )
+                    .filter(Boolean) as any[],
+                },
+              }
             : {}),
         },
         orderBy: [
@@ -106,27 +137,34 @@ export class ScoresCacheServiceIncremental {
         };
       }
 
-      // 🆕 Organizar TODAS as partituras por tipo e grupo
-      const scoresByType = this.organizeScoresByType(cachedScores);
-
-      // 🆕 Calcular contadores das partituras que REALMENTE temos em cache
-      const loadedCounts = this.calculateLoadedCounts(scoresByType);
-
-      // 🆕 Obter contadores totais dos metadados ou calcular
+      // 🆕 Obter contadores totais dos metadados (REAL do IMSLP)
       const scoreWithTotals = cachedScores.find((s) => s.imslpTotalCounts);
       let totalCounts: ScoreCounts;
 
       if (scoreWithTotals?.imslpTotalCounts) {
         try {
           totalCounts = JSON.parse(scoreWithTotals.imslpTotalCounts);
+          console.log(`📊 [CACHE-ALL] Totais reais do IMSLP:`, totalCounts);
         } catch {
           // Se falhar ao parsear, usar como base as partituras que temos
           totalCounts = this.calculateTotalCountsFromScores(cachedScores);
+          console.log(
+            `⚠️ [CACHE-ALL] Usando contadores das partituras em cache`
+          );
         }
       } else {
         // Se não temos metadados, usar as partituras existentes como base mínima
         totalCounts = this.calculateTotalCountsFromScores(cachedScores);
+        console.log(
+          `⚠️ [CACHE-ALL] Nenhum metadado encontrado, usando cache atual`
+        );
       }
+
+      // 🆕 Organizar TODAS as partituras por tipo e grupo
+      const scoresByType = this.organizeScoresByType(cachedScores);
+
+      // 🆕 Calcular contadores das partituras que REALMENTE temos em cache
+      const loadedCounts = this.calculateLoadedCounts(scoresByType);
 
       // 🆕 Aplicar filtros específicos aos totais se necessário
       let filteredTotalCounts = totalCounts;
@@ -173,13 +211,32 @@ export class ScoresCacheServiceIncremental {
       const totalAvailable = sumScoreCounts(filteredTotalCounts);
       const totalCached = cachedScores.length;
 
+      // 🆕 Log detalhado dos contadores por tab
       console.log(
         `✅ [CACHE-ALL] Cache hit: RETORNANDO TODAS as ${totalCached} partituras em cache`
       );
+      console.log(`📊 [CACHE-ALL] Contadores por tab:`);
       console.log(
-        `📊 [CACHE-ALL] Loaded/Available: ${totalLoaded}/${totalAvailable}`
+        `   🎼 Partituras Completas: ${loadedCounts.scores}/${filteredTotalCounts.scores}`
       );
-      console.log(`🎯 [CACHE-ALL] Por tipo:`, loadedCounts);
+      console.log(
+        `   📄 Partes: ${loadedCounts.parts}/${filteredTotalCounts.parts}`
+      );
+      console.log(
+        `   🎵 Arranjos: ${loadedCounts.arrangements}/${filteredTotalCounts.arrangements}`
+      );
+      console.log(
+        `   📚 Libretos: ${loadedCounts.librettos}/${filteredTotalCounts.librettos}`
+      );
+      console.log(
+        `   📎 Outros: ${loadedCounts.others}/${filteredTotalCounts.others}`
+      );
+      console.log(
+        `   🗃️ Fontes: ${loadedCounts.sources}/${filteredTotalCounts.sources}`
+      );
+      console.log(
+        `📈 [CACHE-ALL] TOTAL: ${totalLoaded}/${totalAvailable} partituras`
+      );
 
       return {
         scores: workScores,
@@ -208,7 +265,122 @@ export class ScoresCacheServiceIncremental {
   }
 
   /**
-   * 🆕 Obter estatísticas de uma tab específica
+   * 🚀 Salvar partituras no cache usando WorkScore - CORRIGIDO para tipos
+   */
+  static async cacheScoresFromIMSLPIncremental(
+    workId: string,
+    scores: IMSLPWorkScoresIncremental,
+    priorityScoreId?: string,
+    options: CacheOptions = {}
+  ): Promise<void> {
+    const { immediate = true, background = false } = options;
+
+    try {
+      console.log(
+        `💾 [CACHE-ALL] Salvando partituras para obra ${workId} (modo: ${
+          background ? 'background' : 'imediato'
+        })`
+      );
+
+      // Preparar dados das partituras para WorkScore
+      const scoresData = [];
+      let priority = 1000;
+
+      for (const [type, groups] of Object.entries(scores.scoresByType)) {
+        for (const group of groups) {
+          for (const score of group.scores) {
+            // 🆕 Converter tipo para enum válido (minúsculas -> maiúsculas)
+            const validType =
+              this.TYPE_MAPPING[type as keyof typeof this.TYPE_MAPPING];
+
+            if (!validType) {
+              console.warn(`⚠️ [CACHE-ALL] Tipo inválido ignorado: ${type}`);
+              continue;
+            }
+
+            scoresData.push({
+              workId,
+              sourceId: score.id,
+              source: 'IMSLP' as const,
+              title: score.title,
+              downloadUrl: score.downloadUrl,
+              fileSize: score.fileSize,
+              pageCount: score.pageCount,
+              fileFormat: score.fileFormat || 'PDF',
+              type: validType, // 🆕 Usando tipo válido do enum
+              groupIndex: group.groupIndex,
+              groupTitle: group.groupTitle || '',
+              editor: score.editor,
+              publisher: score.publisher,
+              copyright: score.copyright,
+              thumbnailUrl: score.thumbnailUrl,
+              uploadDate: score.uploadDate,
+              uploader: score.uploader,
+              notes: score.notes,
+              rating: score.rating,
+              ratingsCount: score.ratingsCount,
+              downloadCount: score.downloadCount,
+              priority: score.id === priorityScoreId ? 2000 : priority--,
+              isActive: true,
+              lastVerified: new Date(),
+              cacheVersion: this.CACHE_VERSION,
+              imslpTotalCounts: JSON.stringify(scores.totalCounts),
+            });
+          }
+        }
+      }
+
+      console.log(
+        `💾 [CACHE-ALL] Preparando para salvar ${scoresData.length} partituras`
+      );
+
+      // 🆕 Salvar partituras uma por uma com melhor tratamento de erros
+      let savedCount = 0;
+      let errorCount = 0;
+
+      for (const scoreData of scoresData) {
+        try {
+          await prisma.workScore.upsert({
+            where: {
+              workId_sourceId_source: {
+                workId: scoreData.workId,
+                sourceId: scoreData.sourceId,
+                source: scoreData.source,
+              },
+            },
+            create: scoreData,
+            update: {
+              ...scoreData,
+              lastVerified: new Date(),
+            },
+          });
+          savedCount++;
+        } catch (error) {
+          console.error(
+            `❌ [CACHE-ALL] Erro ao salvar partitura ${scoreData.sourceId}:`,
+            error
+          );
+          errorCount++;
+        }
+      }
+
+      console.log(
+        `✅ [CACHE-ALL] Salvamento concluído: ${savedCount} sucessos, ${errorCount} erros`
+      );
+
+      if (errorCount > 0) {
+        console.warn(
+          `⚠️ [CACHE-ALL] ${errorCount} partituras falharam ao salvar para obra ${workId}`
+        );
+      }
+    } catch (error) {
+      console.error(`❌ [CACHE-ALL] Erro ao salvar cache:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * 🆕 Obter estatísticas de uma tab específica - CORRIGIDO para tipos
    */
   static async getTabStatistics(
     workId: string,
@@ -219,11 +391,25 @@ export class ScoresCacheServiceIncremental {
         `📊 [CACHE-ALL] Obtendo estatísticas da tab "${tabType}" para obra ${workId}`
       );
 
+      // 🆕 Converter tipo para enum válido
+      const validType =
+        this.TYPE_MAPPING[tabType as keyof typeof this.TYPE_MAPPING];
+      if (!validType) {
+        console.warn(`⚠️ [CACHE-ALL] Tipo de tab inválido: ${tabType}`);
+        return {
+          loaded: 0,
+          total: 0,
+          remaining: 0,
+          hasMore: false,
+          progress: 0,
+        };
+      }
+
       const [cachedScores, totalMetadata] = await Promise.all([
         prisma.workScore.findMany({
           where: {
             workId,
-            type: tabType as any,
+            type: validType,
             isActive: true,
           },
         }),
@@ -258,7 +444,7 @@ export class ScoresCacheServiceIncremental {
         totalForTab > 0 ? Math.round((loadedForTab / totalForTab) * 100) : 100;
 
       console.log(
-        `📈 [CACHE-ALL] Tab "${tabType}": ${loadedForTab}/${totalForTab} (${progress}%)`
+        `📈 [CACHE-ALL] Tab "${tabType}": ${loadedForTab}/${totalForTab} (${progress}%) - ${remaining} restantes`
       );
 
       return {
@@ -280,9 +466,131 @@ export class ScoresCacheServiceIncremental {
     }
   }
 
-  /**
-   * 🆕 Obter estatísticas de todas as tabs
-   */
+  // === MÉTODOS AUXILIARES CORRIGIDOS ===
+
+  private static organizeScoresByType(scores: any[]) {
+    const scoresByType = {
+      scores: [],
+      parts: [],
+      arrangements: [],
+      librettos: [],
+      others: [],
+      sources: [],
+    };
+
+    // Agrupar por tipo e depois por groupIndex
+    const groupedByType = scores.reduce((acc, score) => {
+      // 🆕 Converter tipo do banco (maiúsculas) para tipo do frontend (minúsculas)
+      const frontendType =
+        this.REVERSE_TYPE_MAPPING[
+          score.type as keyof typeof this.REVERSE_TYPE_MAPPING
+        ];
+
+      if (!frontendType) {
+        console.warn(
+          `⚠️ [CACHE-ALL] Tipo de partitura inválido ignorado: ${score.type}`
+        );
+        return acc;
+      }
+
+      if (!acc[frontendType]) acc[frontendType] = [];
+      acc[frontendType].push(score);
+      return acc;
+    }, {});
+
+    // Organizar cada tipo em grupos
+    for (const [type, typeScores] of Object.entries(groupedByType)) {
+      const groups = (typeScores as any[]).reduce((acc, score) => {
+        const groupKey = score.groupIndex || 0;
+        if (!acc[groupKey]) {
+          acc[groupKey] = {
+            groupIndex: groupKey,
+            scores: [],
+            groupTitle: score.groupTitle,
+          };
+        }
+        acc[groupKey].scores.push({
+          id: score.sourceId,
+          title: score.title,
+          downloadUrl: score.downloadUrl,
+          fileSize: score.fileSize,
+          pageCount: score.pageCount,
+          fileFormat: score.fileFormat,
+          type:
+            this.REVERSE_TYPE_MAPPING[
+              score.type as keyof typeof this.REVERSE_TYPE_MAPPING
+            ] || score.type,
+          groupIndex: score.groupIndex,
+          editor: score.editor,
+          publisher: score.publisher,
+          copyright: score.copyright,
+          thumbnailUrl: score.thumbnailUrl,
+          uploadDate: score.uploadDate,
+          uploader: score.uploader,
+          notes: score.notes,
+          rating: score.rating,
+          ratingsCount: score.ratingsCount,
+          downloadCount: score.downloadCount,
+        });
+        return acc;
+      }, {});
+
+      (scoresByType as any)[type] = Object.values(groups).sort(
+        (a: any, b: any) => a.groupIndex - b.groupIndex
+      );
+    }
+
+    return scoresByType;
+  }
+
+  private static calculateTotalCountsFromScores(scores: any[]): ScoreCounts {
+    return scores.reduce(
+      (acc, score) => {
+        // 🆕 Converter tipo do banco para tipo do frontend
+        const frontendType =
+          this.REVERSE_TYPE_MAPPING[
+            score.type as keyof typeof this.REVERSE_TYPE_MAPPING
+          ];
+        if (frontendType) {
+          const type = frontendType as keyof ScoreCounts;
+          acc[type] = (acc[type] || 0) + 1;
+        }
+        return acc;
+      },
+      {
+        scores: 0,
+        parts: 0,
+        arrangements: 0,
+        librettos: 0,
+        others: 0,
+        sources: 0,
+      } as ScoreCounts
+    );
+  }
+
+  private static calculateLoadedCounts(scoresByType: any): ScoreCounts {
+    const loadedCounts: ScoreCounts = {
+      scores: 0,
+      parts: 0,
+      arrangements: 0,
+      librettos: 0,
+      others: 0,
+      sources: 0,
+    };
+
+    for (const [type, groups] of Object.entries(scoresByType)) {
+      const typedKey = type as keyof ScoreCounts;
+      loadedCounts[typedKey] = (groups as any[]).reduce(
+        (sum, group) => sum + group.scores.length,
+        0
+      );
+    }
+
+    return loadedCounts;
+  }
+
+  // === OUTROS MÉTODOS (mantidos iguais) ===
+
   static async getAllTabsStatistics(workId: string): Promise<TabStatistics[]> {
     try {
       console.log(
@@ -319,8 +627,11 @@ export class ScoresCacheServiceIncremental {
 
       // Agrupar partituras por tipo
       const scoresByType = cachedScores.reduce((acc, score) => {
-        if (!acc[score.type]) acc[score.type] = [];
-        acc[score.type].push(score);
+        const frontendType = this.REVERSE_TYPE_MAPPING[score.type];
+        if (frontendType) {
+          if (!acc[frontendType]) acc[frontendType] = [];
+          acc[frontendType].push(score);
+        }
         return acc;
       }, {} as Record<string, any[]>);
 
@@ -364,93 +675,6 @@ export class ScoresCacheServiceIncremental {
     }
   }
 
-  /**
-   * 🚀 Salvar partituras no cache usando WorkScore
-   */
-  static async cacheScoresFromIMSLPIncremental(
-    workId: string,
-    scores: IMSLPWorkScoresIncremental,
-    priorityScoreId?: string,
-    options: CacheOptions = {}
-  ): Promise<void> {
-    const { immediate = true, background = false } = options;
-
-    try {
-      console.log(
-        `💾 [CACHE-ALL] Salvando partituras para obra ${workId} (modo: ${
-          background ? 'background' : 'imediato'
-        })`
-      );
-
-      // Preparar dados das partituras para WorkScore
-      const scoresData = [];
-      let priority = 1000;
-
-      for (const [type, groups] of Object.entries(scores.scoresByType)) {
-        for (const group of groups) {
-          for (const score of group.scores) {
-            scoresData.push({
-              workId,
-              sourceId: score.id,
-              source: 'IMSLP' as const,
-              title: score.title,
-              downloadUrl: score.downloadUrl,
-              fileSize: score.fileSize,
-              pageCount: score.pageCount,
-              fileFormat: score.fileFormat || 'PDF',
-              type: score.type as any,
-              groupIndex: group.groupIndex,
-              groupTitle: group.groupTitle || '',
-              editor: score.editor,
-              publisher: score.publisher,
-              copyright: score.copyright,
-              thumbnailUrl: score.thumbnailUrl,
-              uploadDate: score.uploadDate,
-              uploader: score.uploader,
-              notes: score.notes,
-              rating: score.rating,
-              ratingsCount: score.ratingsCount,
-              downloadCount: score.downloadCount,
-              priority: score.id === priorityScoreId ? 2000 : priority--,
-              isActive: true,
-              lastVerified: new Date(),
-              cacheVersion: this.CACHE_VERSION,
-              imslpTotalCounts: JSON.stringify(scores.totalCounts),
-            });
-          }
-        }
-      }
-
-      // Usar upsert para evitar duplicatas
-      for (const scoreData of scoresData) {
-        await prisma.workScore.upsert({
-          where: {
-            workId_sourceId_source: {
-              workId: scoreData.workId,
-              sourceId: scoreData.sourceId,
-              source: scoreData.source,
-            },
-          },
-          create: scoreData,
-          update: {
-            ...scoreData,
-            lastVerified: new Date(),
-          },
-        });
-      }
-
-      console.log(
-        `✅ [CACHE-ALL] ${scoresData.length} partituras salvas no cache para obra ${workId}`
-      );
-    } catch (error) {
-      console.error(`❌ [CACHE-ALL] Erro ao salvar cache:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * 🚀 Obter progresso do cache
-   */
   static async getCacheProgress(workId: string): Promise<{
     workId: string;
     progress: number;
@@ -521,9 +745,6 @@ export class ScoresCacheServiceIncremental {
     }
   }
 
-  /**
-   * 🆕 Invalidar cache de uma obra
-   */
   static async invalidateWorkCache(workId: string): Promise<void> {
     try {
       console.log(`🗑️ [CACHE-ALL] Invalidando cache para obra ${workId}`);
@@ -538,105 +759,5 @@ export class ScoresCacheServiceIncremental {
       console.error(`❌ [CACHE-ALL] Erro ao invalidar cache:`, error);
       throw error;
     }
-  }
-
-  // === MÉTODOS AUXILIARES ===
-
-  private static organizeScoresByType(scores: any[]) {
-    const scoresByType = {
-      scores: [],
-      parts: [],
-      arrangements: [],
-      librettos: [],
-      others: [],
-      sources: [],
-    };
-
-    // Agrupar por tipo e depois por groupIndex
-    const groupedByType = scores.reduce((acc, score) => {
-      if (!acc[score.type]) acc[score.type] = [];
-      acc[score.type].push(score);
-      return acc;
-    }, {});
-
-    // Organizar cada tipo em grupos
-    for (const [type, typeScores] of Object.entries(groupedByType)) {
-      const groups = (typeScores as any[]).reduce((acc, score) => {
-        const groupKey = score.groupIndex || 0;
-        if (!acc[groupKey]) {
-          acc[groupKey] = {
-            groupIndex: groupKey,
-            scores: [],
-            groupTitle: score.groupTitle,
-          };
-        }
-        acc[groupKey].scores.push({
-          id: score.sourceId,
-          title: score.title,
-          downloadUrl: score.downloadUrl,
-          fileSize: score.fileSize,
-          pageCount: score.pageCount,
-          fileFormat: score.fileFormat,
-          type: score.type,
-          groupIndex: score.groupIndex,
-          editor: score.editor,
-          publisher: score.publisher,
-          copyright: score.copyright,
-          thumbnailUrl: score.thumbnailUrl,
-          uploadDate: score.uploadDate,
-          uploader: score.uploader,
-          notes: score.notes,
-          rating: score.rating,
-          ratingsCount: score.ratingsCount,
-          downloadCount: score.downloadCount,
-        });
-        return acc;
-      }, {});
-
-      (scoresByType as any)[type] = Object.values(groups).sort(
-        (a: any, b: any) => a.groupIndex - b.groupIndex
-      );
-    }
-
-    return scoresByType;
-  }
-
-  private static calculateTotalCountsFromScores(scores: any[]): ScoreCounts {
-    return scores.reduce(
-      (acc, score) => {
-        const type = score.type as keyof ScoreCounts;
-        acc[type] = (acc[type] || 0) + 1;
-        return acc;
-      },
-      {
-        scores: 0,
-        parts: 0,
-        arrangements: 0,
-        librettos: 0,
-        others: 0,
-        sources: 0,
-      } as ScoreCounts
-    );
-  }
-
-  private static calculateLoadedCounts(scoresByType: any): ScoreCounts {
-    const loadedCounts: ScoreCounts = {
-      scores: 0,
-      parts: 0,
-      arrangements: 0,
-      librettos: 0,
-      others: 0,
-      sources: 0,
-    };
-
-    for (const [type, groups] of Object.entries(scoresByType)) {
-      const typedKey = type as keyof ScoreCounts;
-      loadedCounts[typedKey] = (groups as any[]).reduce(
-        (sum, group) => sum + group.scores.length,
-        0
-      );
-    }
-
-    return loadedCounts;
   }
 }

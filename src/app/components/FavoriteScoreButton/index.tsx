@@ -1,7 +1,7 @@
 // components/FavoriteScoreButton.tsx
 'use client';
 
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
@@ -243,7 +243,10 @@ export default function FavoriteScoreButton({
   const isLoading = loading.scores.has(scoreKey) || isProcessing;
 
   const { isAuthenticated } = useAuth();
-  const handleToggleFavorite = async () => {
+  const handleToggleFavorite = async (
+    e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+  ) => {
+    e.stopPropagation();
     if (!isAuthenticated) {
       toast.error('Faça login para favoritar partituras');
       open();
@@ -365,7 +368,7 @@ export default function FavoriteScoreButton({
     <>
       <div className="relative group">
         <button
-          onClick={handleToggleFavorite}
+          onClick={(e) => handleToggleFavorite(e)}
           disabled={isLoading}
           className={getButtonClasses()}
         >

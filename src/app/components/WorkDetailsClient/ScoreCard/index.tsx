@@ -5,7 +5,6 @@ import { useState } from 'react';
 import Image from 'next/image';
 import FavoriteScoreButton from '../../FavoriteScoreButton';
 // 🆕 Importar apenas o componente de badge, não o hook
-import MostFavoritedBadge from '../../MostFavoritedBadge';
 
 interface ScoreCardProps {
   score: IMSLPScore;
@@ -284,7 +283,7 @@ const ScoreCard = ({
 
       {/* 🆕 Badge de mais favoritada - apenas se for verdadeiro */}
       {showMostFavoritedBadge && isMostFavorited && (
-        <div className="absolute -top-2 -right-2 z-10">
+        <div className="flex w-fit self-end mt-4 mx-2 mb-0">
           <div className="px-3 py-1.5 bg-gradient-to-r from-yellow-400/20 to-yellow-600/20 border border-yellow-500/40 text-yellow-600 rounded-full font-medium shadow-lg backdrop-blur-sm animate-pulse hover:animate-none transition-all duration-300 hover:scale-105">
             <div className="flex items-center space-x-1">
               <span className="text-base">👑</span>

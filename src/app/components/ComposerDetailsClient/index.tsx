@@ -33,6 +33,7 @@ import {
   AnimatedItem,
 } from '../animation/AnimatedComponents';
 import { getComposerNationalityDisplay } from '../Utils/nationalityFlags';
+import { INSTRUMENT_MAPPING } from '../../../../scripts/imslp-works-scraper-util';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
@@ -51,99 +52,101 @@ export default function ComposerDetailsClient({
   const nationalityDisplay = composer.nationality
     ? getComposerNationalityDisplay(composer.nationality)
     : null;
-  // 🆕 Função para formatar datas (pode conter dia/mês/ano)
-  // const formatDate = (dateString?: string) => {
-  //   if (!dateString) return null;
 
-  //   // Tentar diversos formatos de data
-  //   const formats = [
-  //     // Formato ISO
-  //     /^\d{4}-\d{2}-\d{2}$/,
-  //     // Formato brasileiro
-  //     /^\d{1,2}\/\d{1,2}\/\d{4}$/,
-  //     // Formato com mês por extenso
-  //     /^\d{1,2} de \w+ de \d{4}$/,
-  //     // Apenas ano
-  //     /^\d{4}$/,
-  //   ];
+  // 🆕 Função para traduzir instrumentos para português
+  const translateInstruments = (instrumentsString?: string) => {
+    if (!instrumentsString) return '';
 
-  //   // Se é apenas o ano, retornar como está
-  //   if (/^\d{4}$/.test(dateString)) {
-  //     return dateString;
-  //   }
+    return instrumentsString
+      .split(',')
+      .map((instrument) => {
+        const trimmed = instrument.trim().toLowerCase();
+        return INSTRUMENT_MAPPING[trimmed] || instrument.trim();
+      })
+      .join(', ');
+  };
 
-  //   // Se contém informações mais detalhadas, retornar como está
-  //   return dateString;
-  // };
+  // 🆕 Função para formatar datas no formato brasileiro
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return null;
 
-  // 🆕 Função para calcular idade aproximada
-  // const calculateAge = (birthDate?: string, deathDate?: string) => {
-  //   if (!birthDate) return null;
+    // Remove espaços extras e normaliza
+    const cleanDate = dateString.trim();
 
-  //   try {
-  //     // Extrair o ano da data de nascimento
-  //     const birthYear = parseInt(birthDate.match(/\d{4}/)?.[0] || '');
-  //     if (!birthYear) return null;
+    // Se é apenas o ano (formato: "1841")
+    if (/^\d{4}$/.test(cleanDate)) {
+      return cleanDate;
+    }
 
-  //     let endYear;
-  //     if (deathDate) {
-  //       endYear = parseInt(deathDate.match(/\d{4}/)?.[0] || '');
-  //     } else {
-  //       endYear = new Date().getFullYear();
-  //     }
+    // Mapeamento de meses em inglês para números
+    const monthMap: Record<string, string> = {
+      january: '01',
+      february: '02',
+      march: '03',
+      april: '04',
+      may: '05',
+      june: '06',
+      july: '07',
+      august: '08',
+      september: '09',
+      october: '10',
+      november: '11',
+      december: '12',
+      jan: '01',
+      feb: '02',
+      mar: '03',
+      apr: '04',
+      jun: '06',
+      jul: '07',
+      aug: '08',
+      sep: '09',
+      oct: '10',
+      nov: '11',
+      dec: '12',
+    };
 
-  //     if (!endYear) return null;
+    // Formato: "8 September 1841" ou "September 1841"
+    const datePattern = /^(\d{1,2})?\s*([a-zA-Z]+)\s+(\d{4})$/;
+    const match = cleanDate.match(datePattern);
 
-  //     const age = endYear - birthYear;
-  //     return age > 0 ? age : null;
-  //   } catch {
-  //     return null;
-  //   }
-  // };
+    if (match) {
+      const [, day, month, year] = match;
+      const monthNumber = monthMap[month.toLowerCase()];
 
-  // 🆕 Função para processar categorias IMSLP
-  // const processIMSLPCategories = (categories?: string) => {
-  //   if (!categories) return [];
-  //   return categories
-  //     .split(',')
-  //     .map((cat) => cat.trim())
-  //     .filter((cat) => cat.length > 0);
-  // };
+      if (monthNumber) {
+        if (day) {
+          // Formato completo: DD/MM/YYYY
+          const formattedDay = day.padStart(2, '0');
+          return `${formattedDay}/${monthNumber}/${year}`;
+        } else {
+          // Apenas mês e ano: MM/YYYY
+          return `${monthNumber}/${year}`;
+        }
+      }
+    }
 
-  // 🆕 Função para processar instrumentos
-  // const processInstruments = (instruments?: string) => {
-  //   if (!instruments) return [];
-  //   return instruments
-  //     .split(',')
-  //     .map((inst) => inst.trim())
-  //     .filter((inst) => inst.length > 0);
-  // };
+    // Formato ISO: "1841-09-08"
+    const isoPattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+    const isoMatch = cleanDate.match(isoPattern);
+    if (isoMatch) {
+      const [, year, month, day] = isoMatch;
+      return `${day}/${month}/${year}`;
+    }
 
-  // // 🆕 Função para processar links externos
-  // const processExternalLinks = (links?: string) => {
-  //   if (!links) return [];
+    // Formato: "September 1841" (sem dia)
+    const monthYearPattern = /^([a-zA-Z]+)\s+(\d{4})$/;
+    const monthYearMatch = cleanDate.match(monthYearPattern);
+    if (monthYearMatch) {
+      const [, month, year] = monthYearMatch;
+      const monthNumber = monthMap[month.toLowerCase()];
+      if (monthNumber) {
+        return `${monthNumber}/${year}`;
+      }
+    }
 
-  //   try {
-  //     // Tentar parsear como JSON primeiro
-  //     const parsed = JSON.parse(links);
-  //     if (Array.isArray(parsed)) {
-  //       return parsed;
-  //     }
-  //   } catch {
-  //     // Se não é JSON, tratar como string separada por vírgulas ou quebras de linha
-  //     return links
-  //       .split(/[,\n]/)
-  //       .map((link) => link.trim())
-  //       .filter((link) => link.length > 0);
-  //   }
-
-  //   return [];
-  // };
-
-  // const age = calculateAge(composer.birthDate, composer.deathDate);
-  // const imslpCategories = processIMSLPCategories(composer.imslpCategories);
-  // const composerInstruments = processInstruments(composer.instruments);
-  // const externalLinks = processExternalLinks(composer.externalLinks);
+    // Se não conseguiu formatar, retorna como está
+    return cleanDate;
+  };
 
   // Calcular idade e anos de vida
   const calculateLifeSpan = () => {
@@ -279,7 +282,7 @@ export default function ComposerDetailsClient({
                               Nascimento
                             </p>
                             <p className="text-theme-primary font-semibold">
-                              {new Date(composer.birthDate).getFullYear() + 1}
+                              {formatDate(composer.birthDate)}
                             </p>
                           </div>
                         </div>
@@ -296,7 +299,7 @@ export default function ComposerDetailsClient({
                               Falecimento
                             </p>
                             <p className="text-theme-primary font-semibold">
-                              {new Date(composer.deathDate).getFullYear() + 1}
+                              {formatDate(composer.deathDate)}
                               {lifeSpan && (
                                 <span className="text-theme-secondary ml-2 text-sm">
                                   ({lifeSpan} anos)
@@ -384,7 +387,7 @@ export default function ComposerDetailsClient({
                               Compôs para:
                             </p>
                             <p className="text-theme-primary font-semibold">
-                              {composer.instruments}
+                              {translateInstruments(composer.instruments)}
                             </p>
                           </div>
                         </div>
