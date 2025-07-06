@@ -17,10 +17,14 @@
     "work-scraper:stop": "tsx scripts/imslp-works-scraper.ts stop",
     "work-scraper:reset": "tsx scripts/imslp-works-scraper.ts reset",
     "work-scraper:status": "tsx scripts/imslp-works-scraper.ts status",
-    "update-works": "tsx scripts/workstyle-epoch-fixer.ts",
-    "update-nacionality": "tsx scripts/composers-nacionality.ts",
-    "update-composers-epoch": "tsx scripts/composers-epoch.ts",
-    "fix-genre": "tsx scripts/fix-genre.ts",
+    "backup": "tsx scripts/backup/backup.ts backup",
+    "backup:restore": "tsx scripts/backup/backup.ts restore",
+    "backup:list": "tsx scripts/backup/backup.ts list",
+    "backup:scheduled": "tsx scripts/backup/scheduled-backup.ts",
+    "backup:setup": "tsx scripts/backup/setup-backup.ts",
+    "backup:monitor": "tsx scripts/backup/backup-monitor.ts",
+    "backup:health": "tsx scripts/backup/backup-monitor.ts",
+    "backup:utils": "tsx scripts/backup/backup-utils.ts",
     "vercel-build": "prisma generate && next build"
   },
   "dependencies": {
@@ -50,13 +54,15 @@
     "@tailwindcss/postcss": "^4",
     "@types/lodash": "^4.17.17",
     "@types/node": "^20.17.52",
+    "@types/node-cron": "^3.0.11",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
+    "node-cron": "^4.2.0",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
-    "tsx": "^4.19.4",
+    "tsx": "^4.20.3",
     "typescript": "^5.8.3"
   }
 }

@@ -1,4 +1,4 @@
-// app/requests/uploads.ts
+// app/requests/uploads.ts - ATUALIZADO COM BUSCA DE COMPOSITORES
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 
@@ -440,11 +440,11 @@ export const getAllUploads = unstable_cache(
   }
 );
 
-// Buscar dados para formulários
+// Buscar dados para formulários - ATUALIZADO
 export const getFormData = unstable_cache(
   async () => {
     try {
-      const [epochs, instruments, roles] = await Promise.all([
+      const [epochs, instruments, roles, composers, works] = await Promise.all([
         prisma.epoch.findMany({
           select: { id: true, name: true },
           orderBy: { name: 'asc' },
@@ -457,12 +457,69 @@ export const getFormData = unstable_cache(
           select: { id: true, name: true },
           orderBy: { name: 'asc' },
         }),
+        // Buscar compositores populares (top 50 por número de obras)
+        prisma.composer.findMany({
+          select: {
+            id: true,
+            name: true,
+            fullName: true,
+            _count: {
+              select: {
+                works: true,
+              },
+            },
+          },
+          orderBy: [{ _count: { works: 'desc' } }, { name: 'asc' }],
+          take: 50,
+        }),
+        // Buscar obras recentes
+        prisma.work.findMany({
+          select: {
+            id: true,
+            title: true,
+            composer: {
+              select: {
+                name: true,
+                fullName: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 100,
+        }),
       ]);
 
-      return { epochs, instruments, roles };
+      // Formatar compositores
+      const formattedComposers = composers.map((composer) => ({
+        id: composer.id,
+        name: composer.name,
+        fullName: composer.fullName,
+        worksCount: composer._count.works,
+      }));
+
+      // Formatar obras
+      const formattedWorks = works.map((work) => ({
+        id: work.id,
+        title: work.title,
+        composerName: work.composer.fullName || work.composer.name,
+      }));
+
+      return {
+        epochs,
+        instruments,
+        roles,
+        composers: formattedComposers,
+        works: formattedWorks,
+      };
     } catch (error) {
       console.error('Erro ao buscar dados para formulários:', error);
-      return { epochs: [], instruments: [], roles: [] };
+      return {
+        epochs: [],
+        instruments: [],
+        roles: [],
+        composers: [],
+        works: [],
+      };
     }
   },
   ['form-data'],

@@ -1,4 +1,4 @@
-// app/api/composers/route.ts
+// app/api/composers/route.ts - VERSÃO MELHORADA
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
 
@@ -33,6 +33,12 @@ export async function GET(request: NextRequest) {
     const composerId = searchParams.get('id') || '';
     const limit = parseInt(searchParams.get('limit') || '20');
 
+    console.log('GET - Parâmetros recebidos:', {
+      searchTerm,
+      composerId,
+      limit,
+    });
+
     // Se tem ID, busca compositor específico
     if (composerId) {
       const composer = await getComposerById(composerId);
@@ -51,13 +57,13 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Método POST (nova implementação)
+// Método POST (implementação melhorada)
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { q: searchTerm = '', id: composerId = '', limit = 20 } = body;
 
-    console.log('POST - Buscando compositores:', {
+    console.log('POST - Parâmetros recebidos:', {
       searchTerm,
       composerId,
       limit,
@@ -66,14 +72,20 @@ export async function POST(request: NextRequest) {
     // Se tem ID, busca compositor específico
     if (composerId) {
       const composer = await getComposerById(composerId);
+      console.log('✅ Compositor encontrado por ID:', composer?.name || 'null');
       return NextResponse.json(composer);
     }
 
     // Senão, faz busca normal
     const composers = await searchComposers(searchTerm, limit);
+    console.log(
+      '📊 Busca concluída:',
+      composers.length,
+      'compositores encontrados'
+    );
     return NextResponse.json(composers);
   } catch (error) {
-    console.error('Erro ao buscar compositores (POST):', error);
+    console.error('❌ Erro ao buscar compositores (POST):', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -87,6 +99,7 @@ async function searchComposers(searchTerm: string, limit: number) {
 
   if (!searchTerm.trim()) {
     // Se não há busca, retorna compositores populares
+    console.log('🔍 Buscando compositores populares...');
     composers = await prisma.composer.findMany({
       where: {
         OR: FAMOUS_COMPOSERS.map((name) => ({
@@ -115,6 +128,7 @@ async function searchComposers(searchTerm: string, limit: number) {
     });
   } else {
     // Busca por termo específico
+    console.log('🔍 Buscando compositores por termo:', searchTerm);
     composers = await prisma.composer.findMany({
       where: {
         OR: [
@@ -126,6 +140,12 @@ async function searchComposers(searchTerm: string, limit: number) {
           },
           {
             fullName: {
+              contains: searchTerm,
+              mode: 'insensitive',
+            },
+          },
+          {
+            alternativeNames: {
               contains: searchTerm,
               mode: 'insensitive',
             },
@@ -164,9 +184,11 @@ async function searchComposers(searchTerm: string, limit: number) {
   }));
 }
 
-// Função auxiliar para buscar compositor por ID
+// Função auxiliar para buscar compositor por ID - MELHORADA
 async function getComposerById(composerId: string) {
   try {
+    console.log('🔍 Buscando compositor por ID:', composerId);
+
     const composer = await prisma.composer.findUnique({
       where: {
         id: composerId,
@@ -175,6 +197,13 @@ async function getComposerById(composerId: string) {
         id: true,
         name: true,
         fullName: true,
+        alternativeNames: true,
+        epoch: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         _count: {
           select: {
             works: true,
@@ -184,17 +213,21 @@ async function getComposerById(composerId: string) {
     });
 
     if (!composer) {
+      console.log('⚠️ Compositor não encontrado para ID:', composerId);
       return null;
     }
 
+    console.log('✅ Compositor encontrado:', composer.name);
     return {
       id: composer.id,
       name: composer.name,
       fullName: composer.fullName || undefined,
+      alternativeNames: composer.alternativeNames || undefined,
       worksCount: composer._count.works,
+      epoch: composer.epoch || undefined,
     };
   } catch (error) {
-    console.error('Erro ao buscar compositor por ID:', error);
+    console.error('❌ Erro ao buscar compositor por ID:', error);
     return null;
   }
 }

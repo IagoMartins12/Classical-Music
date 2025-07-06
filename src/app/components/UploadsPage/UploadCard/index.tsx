@@ -120,7 +120,7 @@ const UploadCard = ({
   };
 
   return (
-    <AnimatedCard className="classical-card p-6 group hover:shadow-theme-glow transition-all duration-300">
+    <div className="classical-card p-6 group hover:shadow-theme-glow transition-all duration-300">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div
@@ -321,7 +321,7 @@ const UploadCard = ({
           </div>
         )}
       </div>
-    </AnimatedCard>
+    </div>
   );
 };
 
