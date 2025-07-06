@@ -52,7 +52,6 @@ import CreateWorkModal from './modals/CreateWorkModal';
 import CreateComposerModal from './modals/CreateComposerModal';
 import UploadListItem from './UploadListItem';
 import UploadCard from './UploadCard';
-import UploadStats from './UploadStats';
 import NotificationSystem from '../Notifications/NotificationSystem';
 
 interface Epoch {
@@ -151,6 +150,7 @@ const UploadsClient = ({
     setLoadingFormData(true);
     try {
       const response = await fetch('/api/uploads/form-data');
+      console.log('RESPONSE', response);
       if (response.ok) {
         const data = await response.json();
         setFormData((prev) => ({

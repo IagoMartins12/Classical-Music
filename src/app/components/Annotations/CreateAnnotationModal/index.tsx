@@ -553,6 +553,8 @@ export default function CreateAnnotationModal({
         result = await createAnnotation(submitData);
       }
 
+      console.log('RESULT', isEditing);
+
       if (result) {
         toast.success(
           isEditing

@@ -469,6 +469,7 @@ model Composer {
   verificationStatus String? // "verified", "pending", "disputed"
   verifiedBy       String? @db.ObjectId
   verifiedAt       DateTime?
+  dataSource        String?  @default("none") // 'none', 'imslp', 'wikipedia'
 
   
    // Metadados de edição

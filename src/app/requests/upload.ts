@@ -90,6 +90,7 @@ export const getUserUploads = unstable_cache(
                 fullName: true,
                 portraitUrl: true,
                 createdAt: true,
+                updatedAt: true,
                 imslpId: true,
                 epoch: { select: { name: true } },
               },

@@ -22,6 +22,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Checkbox from '@/app/components/Common/Checkbox';
+import Modal from '@/app/components/Modal';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -224,13 +225,14 @@ const CreateWorkModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-theme-overlay backdrop-blur-sm">
-      <AnimatedItem
-        direction="scale"
-        springType="bouncy"
-        className="w-full max-w-4xl max-h-[90vh] overflow-hidden"
-      >
-        <div className="classical-card">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      maxWidth="4xl"
+      showCloseButton={true}
+    >
+      <AnimatedItem direction="scale" springType="bouncy" className="w-full">
+        <div className="">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
             <div className="flex items-center space-x-3">
@@ -248,19 +250,13 @@ const CreateWorkModal = ({
                 </p>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-theme-tertiary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
-            >
-              <FiX className="w-4 h-4" />
-            </button>
           </div>
 
           {/* Content */}
-          <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+          <div className="mt-4">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Basic Information */}
-              <AnimatedCard className="classical-card-2 p-4">
+              <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiInfo className="w-5 h-5" />
                   <span>Informações Básicas</span>
@@ -364,7 +360,7 @@ const CreateWorkModal = ({
               </AnimatedCard>
 
               {/* Catalog Information */}
-              <AnimatedCard className="classical-card-2 p-4">
+              <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiTag className="w-5 h-5" />
                   <span>Informações de Catálogo</span>
@@ -430,7 +426,7 @@ const CreateWorkModal = ({
               </AnimatedCard>
 
               {/* Musical Details */}
-              <AnimatedCard className="classical-card-2 p-4">
+              <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiMusic className="w-5 h-5" />
                   <span>Detalhes Musicais</span>
@@ -494,7 +490,7 @@ const CreateWorkModal = ({
               </AnimatedCard>
 
               {/* Categories and Tags */}
-              <AnimatedCard className="classical-card-2 p-4">
+              <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiTag className="w-5 h-5" />
                   <span>Categorias e Tags</span>
@@ -531,7 +527,7 @@ const CreateWorkModal = ({
               </AnimatedCard>
 
               {/* External Links */}
-              <AnimatedCard className="classical-card-2 p-4">
+              <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiExternalLink className="w-5 h-5" />
                   <span>Links Externos</span>
@@ -561,7 +557,7 @@ const CreateWorkModal = ({
               </AnimatedCard>
 
               {/* Collection Settings */}
-              <AnimatedCard className="classical-card-2 p-4">
+              {/* <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiInfo className="w-5 h-5" />
                   <span>Configurações de Coleção</span>
@@ -599,7 +595,7 @@ const CreateWorkModal = ({
                     </div>
                   )}
                 </div>
-              </AnimatedCard>
+              </AnimatedCard> */}
 
               {/* Actions */}
               <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary">
@@ -635,7 +631,7 @@ const CreateWorkModal = ({
           </div>
         </div>
       </AnimatedItem>
-    </div>
+    </Modal>
   );
 };
 

@@ -25,6 +25,7 @@ import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
+import Modal from '@/app/components/Modal';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -260,13 +261,14 @@ const CreateScoreModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-theme-overlay backdrop-blur-sm">
-      <AnimatedItem
-        direction="scale"
-        springType="bouncy"
-        className="w-full max-w-4xl max-h-[90vh] overflow-hidden"
-      >
-        <div className="classical-card">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      maxWidth="4xl"
+      showCloseButton={true}
+    >
+      <AnimatedItem direction="scale" springType="bouncy" className="w-full">
+        <div>
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
             <div className="flex items-center space-x-3">
@@ -284,12 +286,6 @@ const CreateScoreModal = ({
                 </p>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-theme-tertiary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
-            >
-              <FiX className="w-4 h-4" />
-            </button>
           </div>
 
           {/* Content */}
@@ -525,7 +521,7 @@ const CreateScoreModal = ({
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiTag className="w-5 h-5" />
-                  <span>Agrupamento e Avaliação</span>
+                  <span>Agrupamento </span>
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -546,39 +542,6 @@ const CreateScoreModal = ({
                       handleInputChange('groupTitle', e.target.value)
                     }
                     placeholder="Nome do grupo"
-                  />
-
-                  <Input
-                    label="Avaliação"
-                    value={formData.rating}
-                    onChange={(e) =>
-                      handleInputChange('rating', e.target.value)
-                    }
-                    placeholder="4.5"
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    max="5"
-                  />
-
-                  <Input
-                    label="Número de Avaliações"
-                    value={formData.ratingsCount}
-                    onChange={(e) =>
-                      handleInputChange('ratingsCount', e.target.value)
-                    }
-                    placeholder="120"
-                    type="number"
-                  />
-
-                  <Input
-                    label="Contagem de Downloads"
-                    value={formData.downloadCount}
-                    onChange={(e) =>
-                      handleInputChange('downloadCount', e.target.value)
-                    }
-                    placeholder="1500"
-                    type="number"
                   />
                 </div>
               </AnimatedCard>
@@ -665,7 +628,7 @@ const CreateScoreModal = ({
           </div>
         </div>
       </AnimatedItem>
-    </div>
+    </Modal>
   );
 };
 

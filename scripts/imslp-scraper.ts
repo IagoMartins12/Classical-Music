@@ -37,7 +37,6 @@ interface ComposerData {
   // 🆕 Nomes alternativos
   otherName: string | null; // Nome alternativo (contentSub)
   alternativeNames: string | null; // 🆕 Nomes alternativos/Transliterações
-  namesInOtherLangs: string | null; // 🆕 Nome em outras línguas
   pseudonyms: string | null; // 🆕 Pseudônimos
 
   // 🆕 Informações detalhadas
@@ -535,18 +534,16 @@ class IMSLPScraper {
   // 🆕 Método para extrair nomes alternativos da div cp_mainlinks
   extractAlternativeNames($: cheerio.CheerioAPI): {
     alternativeNames: string | null;
-    namesInOtherLangs: string | null;
     pseudonyms: string | null;
   } {
     try {
       const mainLinksDiv = $('.cp_mainlinks');
       let alternativeNames: string | null = null;
-      let namesInOtherLangs: string | null = null;
       let pseudonyms: string | null = null;
 
       console.log('MAIN LINK DIVS', mainLinksDiv.length);
       if (mainLinksDiv.length === 0) {
-        return { alternativeNames, namesInOtherLangs, pseudonyms };
+        return { alternativeNames, pseudonyms };
       }
 
       // Buscar por spans com diferentes tipos de nomes
@@ -559,11 +556,6 @@ class IMSLPScraper {
           const alternativeNamesLabels = [
             'Nomes alternativos/Transliterações:',
             'Alternative Names/Transliterations:',
-          ];
-
-          const namesInOtherLangsLabels = [
-            'Nome em outras línguas:',
-            'Names in other languages:',
           ];
 
           const pseudonymsLabels = ['Pseudônimos:', 'Pseudonyms:'];
@@ -581,19 +573,6 @@ class IMSLPScraper {
             );
           }
 
-          if (
-            namesInOtherLangsLabels.some((label) => spanText.includes(label))
-          ) {
-            namesInOtherLangs = spanText;
-            namesInOtherLangsLabels.forEach((label) => {
-              namesInOtherLangs = (namesInOtherLangs || '').replace(label, '');
-            });
-            namesInOtherLangs = namesInOtherLangs.trim();
-            console.log(
-              `🌐 Nomes em outras línguas encontrados: "${namesInOtherLangs}"`
-            );
-          }
-
           if (pseudonymsLabels.some((label) => spanText.includes(label))) {
             pseudonyms = spanText;
             pseudonymsLabels.forEach((label) => {
@@ -605,14 +584,12 @@ class IMSLPScraper {
         });
       return {
         alternativeNames,
-        namesInOtherLangs,
         pseudonyms,
       };
     } catch (error) {
       console.error('❌ Erro ao extrair nomes alternativos:', error);
       return {
         alternativeNames: null,
-        namesInOtherLangs: null,
         pseudonyms: null,
       };
     }
@@ -1368,11 +1345,7 @@ class IMSLPScraper {
           alternativeNamesInfo.alternativeNames || 'Não encontrados'
         }`
       );
-      console.log(
-        `   - Nomes outras línguas: ${
-          alternativeNamesInfo.namesInOtherLangs || 'Não encontrados'
-        }`
-      );
+
       console.log(
         `   - Pseudônimos: ${
           alternativeNamesInfo.pseudonyms || 'Não encontrados'
@@ -1416,7 +1389,6 @@ class IMSLPScraper {
         // 🆕 Nomes alternativos
         otherName: otherName,
         alternativeNames: alternativeNamesInfo.alternativeNames,
-        namesInOtherLangs: alternativeNamesInfo.namesInOtherLangs,
         pseudonyms: alternativeNamesInfo.pseudonyms,
 
         // 🆕 Informações detalhadas
@@ -1568,7 +1540,6 @@ class IMSLPScraper {
           // 🆕 NOMES ALTERNATIVOS
           otherName: composerData.otherName,
           alternativeNames: composerData.alternativeNames,
-          namesInOtherLangs: composerData.namesInOtherLangs,
           pseudonyms: composerData.pseudonyms,
 
           // 🆕 DATAS MELHORADAS
@@ -1713,7 +1684,6 @@ class IMSLPScraper {
     withValidImage: number;
     withOtherName: number;
     withAlternativeNames: number; // 🆕 Adicionado
-    withNamesInOtherLangs: number; // 🆕 Adicionado
     withPseudonyms: number; // 🆕 Adicionado
     withDiverseInfo: number; // 🆕 Adicionado
     withExternalLinks: number; // 🆕 Adicionado
@@ -1754,9 +1724,7 @@ class IMSLPScraper {
       const withImslpCategories = await prisma.composer.count({
         where: { imslpCategories: { not: null } },
       });
-      const withNamesInOtherLangs = await prisma.composer.count({
-        where: { namesInOtherLangs: { not: null } },
-      });
+
       const withPseudonyms = await prisma.composer.count({
         where: { pseudonyms: { not: null } },
       });
@@ -1811,7 +1779,6 @@ class IMSLPScraper {
         withDiverseInfo,
         withExternalLinks,
         withImslpCategories,
-        withNamesInOtherLangs,
         withPseudonyms,
       };
     } catch (error) {
@@ -1824,7 +1791,6 @@ class IMSLPScraper {
         withDiverseInfo: 0,
         withExternalLinks: 0,
         withImslpCategories: 0,
-        withNamesInOtherLangs: 0,
         withPseudonyms: 0,
         withOtherName: 0, // 🆕
         withNationality: 0,
@@ -2042,12 +2008,7 @@ class IMSLPScraper {
           100
         ).toFixed(1)}%)`
       );
-      console.log(
-        `   - Com nomes outras línguas: ${dbStats.withNamesInOtherLangs} (${(
-          (dbStats.withNamesInOtherLangs / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
+
       console.log(
         `   - Com pseudônimos: ${dbStats.withPseudonyms} (${(
           (dbStats.withPseudonyms / dbStats.totalComposers) *

@@ -10,7 +10,6 @@ export interface ComposerDetails {
 
   // 🆕 New name properties
   alternativeNames?: string;
-  namesInOtherLangs?: string;
   pseudonyms?: string;
 
   // Enhanced date properties (can contain full dates now)
@@ -381,7 +380,6 @@ const getCachedComposerData = unstable_cache(
 
           // 🆕 New name properties
           alternativeNames: true,
-          namesInOtherLangs: true,
           pseudonyms: true,
 
           // Enhanced date properties
@@ -461,7 +459,6 @@ const getCachedComposerData = unstable_cache(
 
         // 🆕 New name properties
         alternativeNames: composer.alternativeNames || undefined,
-        namesInOtherLangs: composer.namesInOtherLangs || undefined,
         pseudonyms: composer.pseudonyms || undefined,
 
         // Enhanced date properties

@@ -3,8 +3,12 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
-      new URL('https://imslp.org/images/**'),
-      new URL('https://**.imslp.org/images/**'),
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+      // new URL('https://imslp.org/images/**'),
+      // new URL('https://**.imslp.org/images/**'),
     ],
   },
 
