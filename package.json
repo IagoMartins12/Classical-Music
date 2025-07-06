@@ -17,14 +17,15 @@
     "work-scraper:stop": "tsx scripts/imslp-works-scraper.ts stop",
     "work-scraper:reset": "tsx scripts/imslp-works-scraper.ts reset",
     "work-scraper:status": "tsx scripts/imslp-works-scraper.ts status",
-    "backup": "tsx scripts/backup/backup.ts backup",
-    "backup:restore": "tsx scripts/backup/backup.ts restore",
+    "backup": "node --max-old-space-size=4096 -r tsx/cjs scripts/backup/backup.ts backup",
+    "backup:restore": "node --max-old-space-size=4096 -r tsx/cjs scripts/backup/backup.ts restore",
     "backup:list": "tsx scripts/backup/backup.ts list",
     "backup:scheduled": "tsx scripts/backup/scheduled-backup.ts",
     "backup:setup": "tsx scripts/backup/setup-backup.ts",
     "backup:monitor": "tsx scripts/backup/backup-monitor.ts",
     "backup:health": "tsx scripts/backup/backup-monitor.ts",
     "backup:utils": "tsx scripts/backup/backup-utils.ts",
+    "backup:diagnose": "npx tsx scripts/backup/diagnose-backup.ts",
     "vercel-build": "prisma generate && next build"
   },
   "dependencies": {

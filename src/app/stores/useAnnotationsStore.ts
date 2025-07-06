@@ -483,13 +483,250 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
 
       // ... resto dos métodos mantidos iguais, incluindo:
       createAnnotation: async (data) => {
-        // implementação mantida
-        return null;
+        const {
+          setCreateLoading,
+          addOptimisticAnnotation,
+          removeOptimisticAnnotation,
+        } = get();
+
+        if (!data.workId || !data.title || !data.content) {
+          throw new Error('Dados incompletos para criar anotação');
+        }
+
+        setCreateLoading(true);
+
+        // Criar anotação otimística temporária
+        const optimisticId = `optimistic_${Date.now()}_${Math.random()}`;
+        const optimisticAnnotation: WorkAnnotation = {
+          id: optimisticId,
+          userId: data.userId || '',
+          workId: data.workId,
+          title: data.title,
+          content: data.content,
+          category: data.category || 'GENERAL',
+          scope: data.scope || 'ENTIRE_WORK',
+          measureStart: data.measureStart,
+          measureEnd: data.measureEnd,
+          movement: data.movement,
+          section: data.section,
+          pageNumber: data.pageNumber,
+          hand: data.hand,
+          voice: data.voice,
+          instrument: data.instrument,
+          difficulty: data.difficulty || 'ALL_LEVELS',
+          tags: data.tags || [],
+          isPublic: data.isPublic !== undefined ? data.isPublic : true,
+          isVerified: false,
+          helpfulCount: 0,
+          viewCount: 0,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          user: {
+            id: data.userId || '',
+            firstName: 'Você',
+            lastName: '',
+          },
+          work: data.work,
+          _count: {
+            helpfulVotes: 0,
+            replies: 0,
+          },
+          userVote: null,
+          isOptimistic: true,
+        };
+
+        addOptimisticAnnotation(data.workId, optimisticAnnotation);
+
+        try {
+          const response = await fetch('/api/annotations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          });
+
+          if (!response.ok) {
+            throw new Error('Erro ao criar anotação');
+          }
+
+          const result = await response.json();
+
+          if (result.success && result.annotation) {
+            removeOptimisticAnnotation(data.workId, optimisticId);
+
+            set((state) => {
+              const newAnnotations = { ...state.annotations };
+              const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+              const existingAll = newAnnotations[data.workId || 0] || [];
+              const existingFiltered =
+                newFilteredAnnotations[data.workId || 0] || [];
+
+              newAnnotations[data.workId || 0] = [
+                result.annotation,
+                ...existingAll,
+              ];
+              newFilteredAnnotations[data.workId || 0] = [
+                result.annotation,
+                ...existingFiltered,
+              ];
+
+              return {
+                annotations: newAnnotations,
+                filteredAnnotations: newFilteredAnnotations,
+              };
+            });
+
+            // 🔧 NOVO: Invalidar cache do Next.js após criação
+            await invalidateNextJSCache(data.userId);
+
+            return result.annotation;
+          }
+
+          throw new Error('Resposta inválida do servidor');
+        } catch (error) {
+          console.error('Erro ao criar anotação:', error);
+          removeOptimisticAnnotation(data.workId, optimisticId);
+          return null;
+        } finally {
+          setCreateLoading(false);
+        }
       },
 
       updateAnnotation: async (annotationId, data) => {
-        // implementação mantida
-        return null;
+        const {
+          setUpdateLoading,
+          getAnnotationById,
+          markAnnotationAsUpdating,
+        } = get();
+
+        const annotation = getAnnotationById(annotationId);
+        if (!annotation) return null;
+
+        setUpdateLoading(annotationId, true);
+        markAnnotationAsUpdating(annotationId, true);
+
+        const optimisticUpdate = { ...annotation, ...data, isUpdating: true };
+
+        // Update otimista
+        set((state) => {
+          const newAnnotations = { ...state.annotations };
+          const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+          for (const [workId, annotations] of Object.entries(newAnnotations)) {
+            const updated = annotations.map((a) =>
+              a.id === annotationId ? optimisticUpdate : a
+            );
+            newAnnotations[workId] = updated;
+          }
+
+          for (const [workId, annotations] of Object.entries(
+            newFilteredAnnotations
+          )) {
+            const updated = annotations.map((a) =>
+              a.id === annotationId ? optimisticUpdate : a
+            );
+            newFilteredAnnotations[workId] = updated;
+          }
+
+          return {
+            annotations: newAnnotations,
+            filteredAnnotations: newFilteredAnnotations,
+          };
+        });
+
+        try {
+          const response = await fetch(`/api/annotations/${annotationId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          });
+
+          if (!response.ok) {
+            // Reverter se deu erro
+            set((state) => {
+              const newAnnotations = { ...state.annotations };
+              const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+              for (const [workId, annotations] of Object.entries(
+                newAnnotations
+              )) {
+                const reverted = annotations.map((a) =>
+                  a.id === annotationId
+                    ? { ...annotation, isUpdating: false }
+                    : a
+                );
+                newAnnotations[workId] = reverted;
+              }
+
+              for (const [workId, annotations] of Object.entries(
+                newFilteredAnnotations
+              )) {
+                const reverted = annotations.map((a) =>
+                  a.id === annotationId
+                    ? { ...annotation, isUpdating: false }
+                    : a
+                );
+                newFilteredAnnotations[workId] = reverted;
+              }
+
+              return {
+                annotations: newAnnotations,
+                filteredAnnotations: newFilteredAnnotations,
+              };
+            });
+
+            throw new Error('Erro ao atualizar anotação');
+          }
+
+          const result = await response.json();
+
+          if (result.success && result.annotation) {
+            set((state) => {
+              const newAnnotations = { ...state.annotations };
+              const newFilteredAnnotations = { ...state.filteredAnnotations };
+
+              for (const [workId, annotations] of Object.entries(
+                newAnnotations
+              )) {
+                const updated = annotations.map((a) =>
+                  a.id === annotationId
+                    ? { ...result.annotation, isUpdating: false }
+                    : a
+                );
+                newAnnotations[workId] = updated;
+              }
+
+              for (const [workId, annotations] of Object.entries(
+                newFilteredAnnotations
+              )) {
+                const updated = annotations.map((a) =>
+                  a.id === annotationId
+                    ? { ...result.annotation, isUpdating: false }
+                    : a
+                );
+                newFilteredAnnotations[workId] = updated;
+              }
+
+              return {
+                annotations: newAnnotations,
+                filteredAnnotations: newFilteredAnnotations,
+              };
+            });
+
+            // 🔧 NOVO: Invalidar cache do Next.js após atualização
+            await invalidateNextJSCache(annotation.userId);
+
+            return result.annotation;
+          }
+
+          return null;
+        } catch (error) {
+          console.error('Erro ao atualizar anotação:', error);
+          return null;
+        } finally {
+          setUpdateLoading(annotationId, false);
+          markAnnotationAsUpdating(annotationId, false);
+        }
       },
 
       deleteAnnotation: async (annotationId) => {
@@ -549,10 +786,77 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
       },
 
       voteAnnotation: async (annotationId, isHelpful) => {
-        // implementação mantida
-        return false;
-      },
+        const { setVoteLoading, updateAnnotationVote, getAnnotationById } =
+          get();
 
+        const annotation = getAnnotationById(annotationId);
+        if (!annotation) return false;
+
+        setVoteLoading(annotationId, true);
+
+        const currentVote = annotation.userVote;
+        let newHelpfulCount = annotation.helpfulCount;
+        let newUserVote: boolean | null = null;
+
+        if (currentVote === null) {
+          newUserVote = isHelpful;
+          if (isHelpful) {
+            newHelpfulCount += 1;
+          }
+        } else if (currentVote === isHelpful) {
+          newUserVote = null;
+          if (currentVote) {
+            newHelpfulCount -= 1;
+          }
+        } else {
+          newUserVote = isHelpful;
+          if (currentVote && !isHelpful) {
+            newHelpfulCount -= 1;
+          } else if (!currentVote && isHelpful) {
+            newHelpfulCount += 1;
+          }
+        }
+
+        updateAnnotationVote(annotationId, newUserVote, newHelpfulCount);
+
+        try {
+          const response = await fetch(
+            `/api/annotations/${annotationId}/vote`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ isHelpful }),
+            }
+          );
+
+          if (!response.ok) {
+            updateAnnotationVote(
+              annotationId,
+              currentVote,
+              annotation.helpfulCount
+            );
+            throw new Error('Erro ao votar');
+          }
+
+          const result = await response.json();
+
+          if (result.success) {
+            updateAnnotationVote(
+              annotationId,
+              result.userVote,
+              result.helpfulCount
+            );
+            return true;
+          }
+
+          return false;
+        } catch (error) {
+          console.error('Erro ao votar:', error);
+          return false;
+        } finally {
+          setVoteLoading(annotationId, false);
+        }
+      },
       setFilters: (filters) => {
         set((state) => {
           const filtersChanged =

@@ -18,16 +18,8 @@ import {
   FiFile,
   FiDatabase,
   FiUpload,
-  FiEdit,
-  FiTrash2,
-  FiExternalLink,
-  FiCalendar,
-  FiTag,
-  FiClock,
-  FiDownload,
-  FiLayers,
-  FiBarChart,
   FiSettings,
+  FiFileText,
 } from 'react-icons/fi';
 import { MdUpload } from 'react-icons/md';
 
@@ -50,9 +42,12 @@ import BulkUploadModal from './modals/BulkUploadModal';
 import CreateScoreModal from './modals/CreateScoreModal';
 import CreateWorkModal from './modals/CreateWorkModal';
 import CreateComposerModal from './modals/CreateComposerModal';
-import UploadListItem from './UploadListItem';
-import UploadCard from './UploadCard';
 import NotificationSystem from '../Notifications/NotificationSystem';
+
+// Importar as novas cards
+import UploadComposerCard from './UploadComposerCard';
+import UploadWorkCard from './UploadWorkCard';
+import UploadScoreCard from './UploadScoreCard';
 
 interface Epoch {
   id: string;
@@ -75,7 +70,7 @@ interface UploadsClientProps {
   userId: string;
 }
 
-type FilterType = 'all' | 'composer' | 'work' | 'score';
+type FilterTab = 'all' | 'composers' | 'works' | 'scores';
 
 const typeOptions = [
   { value: 'all', label: 'Todos os tipos' },
@@ -106,15 +101,21 @@ const UploadsClient = ({
 
   const [isPending, startTransition] = useTransition();
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
-  const [selectedType, setSelectedType] = useState<FilterType>(
-    initialSelectedType as FilterType
+  const [selectedType, setSelectedType] = useState<FilterTab>(
+    initialSelectedType === 'composer'
+      ? 'composers'
+      : initialSelectedType === 'work'
+      ? 'works'
+      : initialSelectedType === 'score'
+      ? 'scores'
+      : 'all'
   );
   const [selectedEpoch, setSelectedEpoch] = useState(initialSelectedEpoch);
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [showFilters, setShowFilters] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showBulkModal, setShowBulkModal] = useState(false);
-  const [showStats, setShowStats] = useState(false);
+  const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
   const [createModalType, setCreateModalType] = useState<
     'composer' | 'work' | 'score'
   >('composer');
@@ -150,7 +151,6 @@ const UploadsClient = ({
     setLoadingFormData(true);
     try {
       const response = await fetch('/api/uploads/form-data');
-      console.log('RESPONSE', response);
       if (response.ok) {
         const data = await response.json();
         setFormData((prev) => ({
@@ -222,6 +222,57 @@ const UploadsClient = ({
     [router, searchParams]
   );
 
+  // Separar uploads por tipo
+  const uploadsByType = useMemo(() => {
+    const composerUploads = uploads.filter(
+      (upload) => upload.type === 'composer'
+    );
+    const workUploads = uploads.filter((upload) => upload.type === 'work');
+    const scoreUploads = uploads.filter((upload) => upload.type === 'score');
+
+    return {
+      composers: composerUploads,
+      works: workUploads,
+      scores: scoreUploads,
+    };
+  }, [uploads]);
+
+  // Filtrar dados baseado na busca
+  const filteredData = useMemo(() => {
+    let composersFiltered = [...uploadsByType.composers];
+    let worksFiltered = [...uploadsByType.works];
+    let scoresFiltered = [...uploadsByType.scores];
+
+    // Search filter
+    if (searchTerm) {
+      const query = searchTerm.toLowerCase();
+
+      composersFiltered = composersFiltered.filter(
+        (item) =>
+          item.title.toLowerCase().includes(query) ||
+          item.composerName?.toLowerCase().includes(query)
+      );
+
+      worksFiltered = worksFiltered.filter(
+        (item) =>
+          item.title.toLowerCase().includes(query) ||
+          item.composerName?.toLowerCase().includes(query)
+      );
+
+      scoresFiltered = scoresFiltered.filter(
+        (item) =>
+          item.title.toLowerCase().includes(query) ||
+          item.composerName?.toLowerCase().includes(query)
+      );
+    }
+
+    return {
+      composers: composersFiltered,
+      works: worksFiltered,
+      scores: scoresFiltered,
+    };
+  }, [uploadsByType, searchTerm]);
+
   // Handlers para filtros
   const handleSearchChange = useCallback(
     (value: string) => {
@@ -234,10 +285,18 @@ const UploadsClient = ({
     [updateUrl]
   );
 
-  const handleTypeChange = useCallback(
-    (value: FilterType) => {
-      setSelectedType(value);
-      updateUrl({ type: value, page: 1 });
+  const handleTabChange = useCallback(
+    (tab: FilterTab) => {
+      setSelectedType(tab);
+      const typeParam =
+        tab === 'composers'
+          ? 'composer'
+          : tab === 'works'
+          ? 'work'
+          : tab === 'scores'
+          ? 'score'
+          : 'all';
+      updateUrl({ type: typeParam, page: 1 });
     },
     [updateUrl]
   );
@@ -273,9 +332,9 @@ const UploadsClient = ({
 
   // Statistics
   const stats = useMemo(() => {
-    const composerCount = composers.length;
-    const workCount = works.length;
-    const scoreCount = scores.length;
+    const composerCount = uploadsByType.composers.length;
+    const workCount = uploadsByType.works.length;
+    const scoreCount = uploadsByType.scores.length;
     const imslpCount = uploads.filter((item) => item.isIMSLP).length;
     const customCount = uploads.filter((item) => !item.isIMSLP).length;
 
@@ -287,7 +346,7 @@ const UploadsClient = ({
       imslpCount,
       customCount,
     };
-  }, [composers, works, scores, uploads]);
+  }, [uploadsByType, uploads]);
 
   // Handlers para ações
   const handleCreateNew = (type: 'composer' | 'work' | 'score') => {
@@ -305,9 +364,7 @@ const UploadsClient = ({
   };
 
   const handleDelete = async (item: UserUpload) => {
-    if (!confirm(`Tem certeza que deseja excluir "${item.title}"?`)) {
-      return;
-    }
+    setDeletingItemId(item.id);
 
     try {
       const response = await fetch(`/api/uploads/${item.type}/${item.id}`, {
@@ -327,6 +384,8 @@ const UploadsClient = ({
         'Erro',
         error instanceof Error ? error.message : 'Erro ao excluir item'
       );
+    } finally {
+      setDeletingItemId(null);
     }
   };
 
@@ -351,13 +410,6 @@ const UploadsClient = ({
             </p>
           </div>
         </AnimatedItem>
-
-        {/* Stats */}
-        {/* {showStats && (
-          <AnimatedItem direction="up" springType="gentle">
-            <UploadStats userId={userId} isAdmin={isAdmin} />
-          </AnimatedItem>
-        )} */}
 
         {/* Quick Stats Cards */}
         <AnimatedItem direction="up" springType="gentle">
@@ -401,7 +453,7 @@ const UploadsClient = ({
             <AnimatedCard className="classical-card p-4 text-center">
               <div className="flex items-center justify-center mb-2">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-amber rounded-xl flex items-center justify-center">
-                  <FiFile className="w-5 h-5 text-theme-primary" />
+                  <FiFileText className="w-5 h-5 text-theme-primary" />
                 </div>
               </div>
               <div className="text-2xl font-bold text-theme-primary">
@@ -413,7 +465,7 @@ const UploadsClient = ({
             <AnimatedCard className="classical-card p-4 text-center">
               <div className="flex items-center justify-center mb-2">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center">
-                  <FiExternalLink className="w-5 h-5 text-theme-primary" />
+                  <FiFile className="w-5 h-5 text-theme-primary" />
                 </div>
               </div>
               <div className="text-2xl font-bold text-theme-primary">
@@ -438,169 +490,181 @@ const UploadsClient = ({
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
-          <AnimatedCard className="classical-card p-6 mb-8">
-            <div className="space-y-4">
-              {/* Main Controls Row */}
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                {/* Create Buttons */}
-                <div className="flex flex-wrap gap-2">
-                  <div className="flex items-center space-x-2">
-                    <Button
-                      variant="primary"
-                      size="md"
-                      leftIcon={<FiPlus />}
-                      onClick={() => handleCreateNew('composer')}
-                    >
-                      Novo Compositor
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      size="md"
-                      leftIcon={<FiPlus />}
-                      onClick={() => handleCreateNew('work')}
-                    >
-                      Nova Obra
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      size="md"
-                      leftIcon={<FiPlus />}
-                      onClick={() => handleCreateNew('score')}
-                    >
-                      Nova Partitura
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Right Controls */}
-                <div className="flex flex-col sm:flex-row gap-3">
-                  {/* Search */}
-                  <div className="relative">
-                    <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                    <input
-                      type="text"
-                      placeholder="Buscar uploads..."
-                      value={searchTerm}
-                      onChange={(e) => handleSearchChange(e.target.value)}
-                      className="input-classical w-full sm:w-80"
-                    />
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex items-center space-x-2">
-                    {/* <button
-                      onClick={() => setShowStats(!showStats)}
-                      className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
-                        showStats
-                          ? 'bg-accent-blue text-theme-primary border-accent-blue'
-                          : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary'
-                      }`}
-                    >
-                      <FiBarChart className="w-4 h-4" />
-                      <span className="text-sm">Stats</span>
-                    </button> */}
-
-                    <button
-                      onClick={() => setShowFilters(!showFilters)}
-                      className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
-                        showFilters
-                          ? 'bg-brand-primary text-theme-primary border-brand-primary shadow-md'
-                          : hasActiveFilters
-                          ? 'bg-accent-blue/10 text-accent-blue border-accent-blue/30 shadow-sm'
-                          : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
-                      }`}
-                    >
-                      <FiFilter className="w-4 h-4" />
-                      <span className="text-sm">
-                        Filtros
-                        {hasActiveFilters && (
-                          <span className="ml-1 px-1.5 py-0.5 bg-accent-blue text-white text-xs rounded-full">
-                            {
-                              [
-                                searchTerm && 'busca',
-                                selectedType !== 'all' && 'tipo',
-                                selectedEpoch && 'época',
-                              ].filter(Boolean).length
-                            }
-                          </span>
-                        )}
-                      </span>
-                    </button>
-
-                    <ViewModeToggle
-                      viewMode={viewMode}
-                      onViewModeChange={setViewMode}
-                    />
-                  </div>
-                </div>
+          <AnimatedCard hover="none" className="classical-card p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Create Buttons */}
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  variant="primary"
+                  size="md"
+                  leftIcon={<FiPlus />}
+                  onClick={() => handleCreateNew('composer')}
+                >
+                  Novo Compositor
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="md"
+                  leftIcon={<FiPlus />}
+                  onClick={() => handleCreateNew('work')}
+                >
+                  Nova Obra
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="md"
+                  leftIcon={<FiPlus />}
+                  onClick={() => handleCreateNew('score')}
+                >
+                  Nova Partitura
+                </Button>
               </div>
 
-              {/* Expanded Filters */}
-              {showFilters && (
-                <AnimatedItem direction="scale" springType="gentle">
-                  <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
-                        <FiFilter className="w-4 h-4" />
-                        <span>Filtros Avançados</span>
-                      </h3>
-                      <div className="flex items-center space-x-2">
-                        {hasActiveFilters && (
-                          <button
-                            onClick={clearFilters}
-                            className="text-xs text-theme-tertiary hover:text-accent-red transition-colors px-2 py-1 rounded border border-theme-tertiary hover:border-accent-red"
-                          >
-                            Limpar tudo
-                          </button>
-                        )}
-                        <button
-                          onClick={() => setShowFilters(false)}
-                          className="w-6 h-6 rounded-full bg-theme-primary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
-                        >
-                          <FiX className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
+              {/* Right Controls */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                {/* Search */}
+                <div className="relative">
+                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                  <input
+                    type="text"
+                    placeholder="Buscar uploads..."
+                    value={searchTerm}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    className="input-classical w-full sm:w-80"
+                  />
+                </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Type Filter */}
-                      <div>
-                        <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                          Tipo de Item
-                        </label>
-                        <Select
-                          options={typeOptions}
-                          value={selectedType}
-                          onChange={(e) =>
-                            handleTypeChange(e.target.value as FilterType)
+                {/* Action Buttons */}
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
+                      showFilters
+                        ? 'bg-brand-primary text-theme-primary border-brand-primary shadow-md'
+                        : hasActiveFilters
+                        ? 'bg-accent-blue/10 text-accent-blue border-accent-blue/30 shadow-sm'
+                        : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
+                    }`}
+                  >
+                    <FiFilter className="w-4 h-4" />
+                    <span className="text-sm">
+                      Filtros
+                      {hasActiveFilters && (
+                        <span className="ml-1 px-1.5 py-0.5 bg-accent-blue text-white text-xs rounded-full">
+                          {
+                            [
+                              searchTerm && 'busca',
+                              selectedType !== 'all' && 'tipo',
+                              selectedEpoch && 'época',
+                            ].filter(Boolean).length
                           }
-                          className="input-classical-2 w-full"
-                        />
-                      </div>
+                        </span>
+                      )}
+                    </span>
+                  </button>
 
-                      {/* Epoch Filter */}
-                      <div>
-                        <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                          Época
-                        </label>
-                        <Select
-                          options={[
-                            { value: '', label: 'Todas as épocas' },
-                            ...epochs.map((epoch) => ({
-                              value: epoch.id,
-                              label: epoch.name,
-                            })),
-                          ]}
-                          value={selectedEpoch}
-                          onChange={(e) => handleEpochChange(e.target.value)}
-                          className="input-classical-2 w-full"
-                        />
-                      </div>
+                  <ViewModeToggle
+                    viewMode={viewMode}
+                    onViewModeChange={setViewMode}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex bg-theme-secondary rounded-xl p-1 overflow-x-auto mt-4">
+              <button
+                onClick={() => handleTabChange('all')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedType === 'all'
+                    ? 'bg-brand-primary bg-theme-tertiary text-theme-primary shadow-md'
+                    : 'text-theme-tertiary hover:text-theme-primary'
+                }`}
+              >
+                Todos ({stats.totalCount})
+              </button>
+              <button
+                onClick={() => handleTabChange('composers')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedType === 'composers'
+                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                    : 'text-theme-tertiary hover:text-theme-primary'
+                }`}
+              >
+                Compositores ({stats.composerCount})
+              </button>
+              <button
+                onClick={() => handleTabChange('works')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedType === 'works'
+                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                    : 'text-theme-tertiary hover:text-theme-primary'
+                }`}
+              >
+                Obras ({stats.workCount})
+              </button>
+              <button
+                onClick={() => handleTabChange('scores')}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                  selectedType === 'scores'
+                    ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                    : 'text-theme-tertiary hover:text-theme-primary'
+                }`}
+              >
+                Partituras ({stats.scoreCount})
+              </button>
+            </div>
+
+            {/* Expanded Filters */}
+            {showFilters && (
+              <AnimatedItem direction="scale" springType="gentle">
+                <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary mt-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
+                      <FiFilter className="w-4 h-4" />
+                      <span>Filtros Avançados</span>
+                    </h3>
+                    <div className="flex items-center space-x-2">
+                      {hasActiveFilters && (
+                        <button
+                          onClick={clearFilters}
+                          className="text-xs text-theme-tertiary hover:text-accent-red transition-colors px-2 py-1 rounded border border-theme-tertiary hover:border-accent-red"
+                        >
+                          Limpar tudo
+                        </button>
+                      )}
+                      <button
+                        onClick={() => setShowFilters(false)}
+                        className="w-6 h-6 rounded-full bg-theme-primary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
+                      >
+                        <FiX className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
-                </AnimatedItem>
-              )}
-            </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Epoch Filter */}
+                    <div>
+                      <label className="block text-xs font-medium text-theme-tertiary mb-2">
+                        Época
+                      </label>
+                      <Select
+                        options={[
+                          { value: '', label: 'Todas as épocas' },
+                          ...epochs.map((epoch) => ({
+                            value: epoch.id,
+                            label: epoch.name,
+                          })),
+                        ]}
+                        value={selectedEpoch}
+                        onChange={(e) => handleEpochChange(e.target.value)}
+                        className="input-classical-2 w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </AnimatedItem>
+            )}
           </AnimatedCard>
         </AnimatedItem>
 
@@ -659,84 +723,345 @@ const UploadsClient = ({
         </AnimatedItem>
 
         {/* Content */}
-        <div className="relative">
-          {uploads.length > 0 ? (
-            viewMode === 'cards' ? (
-              <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
-                {uploads.map((item) => (
-                  <UploadCard
-                    key={item.id}
-                    item={item}
-                    onEdit={() => handleEdit(item)}
-                    onDelete={() => handleDelete(item)}
-                    isAdmin={isAdmin}
-                  />
-                ))}
-              </SequentialGrid>
-            ) : (
-              <div className="space-y-4">
-                {uploads.map((item, index) => (
-                  <AnimatedItem
-                    key={item.id}
-                    direction="left"
-                    hover="lift"
-                    style={{
-                      animationDelay: `${index * 0.1}s`,
-                      animationFillMode: 'backwards',
-                    }}
-                  >
-                    <UploadListItem
-                      item={item}
-                      onEdit={() => handleEdit(item)}
-                      onDelete={() => handleDelete(item)}
-                      isAdmin={isAdmin}
-                    />
+        <div className="space-y-8">
+          {/* Composers Section */}
+          {(selectedType === 'all' || selectedType === 'composers') && (
+            <>
+              {filteredData.composers.length > 0 ? (
+                <AnimatedItem
+                  direction="up"
+                  className="mt-4"
+                  springType="gentle"
+                >
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                      <FiUser className="w-5 h-5 text-theme-primary" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                        Compositores
+                      </h2>
+                      <p className="text-theme-tertiary">
+                        {filteredData.composers.length} de{' '}
+                        {uploadsByType.composers.length} compositores
+                      </p>
+                    </div>
+                  </div>
+
+                  {viewMode === 'cards' ? (
+                    <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
+                      {filteredData.composers.map((item) => (
+                        <UploadComposerCard
+                          key={item.id}
+                          item={item}
+                          onEdit={() => handleEdit(item)}
+                          onDelete={() => handleDelete(item)}
+                          isAdmin={isAdmin}
+                          viewMode={viewMode}
+                          isDeleting={deletingItemId === item.id}
+                        />
+                      ))}
+                    </SequentialGrid>
+                  ) : (
+                    <div className="space-y-4">
+                      {filteredData.composers.map((item, index) => (
+                        <AnimatedItem
+                          key={item.id}
+                          direction="left"
+                          hover="lift"
+                          style={{
+                            animationDelay: `${index * 0.1}s`,
+                            animationFillMode: 'backwards',
+                          }}
+                        >
+                          <UploadComposerCard
+                            item={item}
+                            onEdit={() => handleEdit(item)}
+                            onDelete={() => handleDelete(item)}
+                            isAdmin={isAdmin}
+                            viewMode={viewMode}
+                          />
+                        </AnimatedItem>
+                      ))}
+                    </div>
+                  )}
+                </AnimatedItem>
+              ) : (
+                selectedType === 'composers' && (
+                  <AnimatedItem direction="scale" springType="bouncy">
+                    <div className="classical-card p-12 text-center">
+                      <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <FiUser className="w-8 h-8 text-theme-tertiary" />
+                      </div>
+                      <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
+                        Nenhum compositor encontrado
+                      </h3>
+                      <p className="text-theme-secondary mb-6">
+                        {hasActiveFilters
+                          ? 'Tente ajustar seus filtros para encontrar compositores.'
+                          : 'Você ainda não adicionou nenhum compositor.'}
+                      </p>
+                      <Button
+                        variant="primary"
+                        leftIcon={<FiPlus />}
+                        onClick={() => handleCreateNew('composer')}
+                      >
+                        Novo Compositor
+                      </Button>
+                    </div>
                   </AnimatedItem>
-                ))}
-              </div>
-            )
-          ) : (
-            <AnimatedItem direction="scale" springType="bouncy">
-              <div className="classical-card p-12 text-center">
-                <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <FiSearch className="w-8 h-8 text-theme-tertiary" />
-                </div>
+                )
+              )}
+            </>
+          )}
 
-                <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
-                  Nenhum upload encontrado
-                </h3>
+          {/* Works Section */}
+          {(selectedType === 'all' || selectedType === 'works') && (
+            <>
+              {filteredData.works.length > 0 ? (
+                <AnimatedItem
+                  direction="up"
+                  className="mt-4"
+                  springType="gentle"
+                >
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                      <FiMusic className="w-5 h-5 text-theme-primary" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                        Obras
+                      </h2>
+                      <p className="text-theme-tertiary">
+                        {filteredData.works.length} de{' '}
+                        {uploadsByType.works.length} obras
+                      </p>
+                    </div>
+                  </div>
 
-                <p className="text-theme-secondary mb-6">
-                  {hasActiveFilters
-                    ? 'Tente ajustar seus filtros para encontrar uploads.'
-                    : 'Você ainda não fez nenhum upload. Comece adicionando compositores, obras ou partituras.'}
-                </p>
+                  {viewMode === 'cards' ? (
+                    <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
+                      {filteredData.works.map((item) => (
+                        <UploadWorkCard
+                          key={item.id}
+                          item={item}
+                          onEdit={() => handleEdit(item)}
+                          onDelete={() => handleDelete(item)}
+                          isAdmin={isAdmin}
+                          viewMode={viewMode}
+                          isDeleting={deletingItemId === item.id}
+                        />
+                      ))}
+                    </SequentialGrid>
+                  ) : (
+                    <div className="space-y-4">
+                      {filteredData.works.map((item, index) => (
+                        <AnimatedItem
+                          key={item.id}
+                          direction="left"
+                          hover="lift"
+                          style={{
+                            animationDelay: `${index * 0.1}s`,
+                            animationFillMode: 'backwards',
+                          }}
+                        >
+                          <UploadWorkCard
+                            item={item}
+                            onEdit={() => handleEdit(item)}
+                            onDelete={() => handleDelete(item)}
+                            isAdmin={isAdmin}
+                            viewMode={viewMode}
+                            isDeleting={deletingItemId === item.id}
+                          />
+                        </AnimatedItem>
+                      ))}
+                    </div>
+                  )}
+                </AnimatedItem>
+              ) : (
+                selectedType === 'works' && (
+                  <AnimatedItem direction="scale" springType="bouncy">
+                    <div className="classical-card p-12 text-center">
+                      <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <FiMusic className="w-8 h-8 text-theme-tertiary" />
+                      </div>
+                      <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
+                        Nenhuma obra encontrada
+                      </h3>
+                      <p className="text-theme-secondary mb-6">
+                        {hasActiveFilters
+                          ? 'Tente ajustar seus filtros para encontrar obras.'
+                          : 'Você ainda não adicionou nenhuma obra.'}
+                      </p>
+                      <Button
+                        variant="primary"
+                        leftIcon={<FiPlus />}
+                        onClick={() => handleCreateNew('work')}
+                      >
+                        Nova Obra
+                      </Button>
+                    </div>
+                  </AnimatedItem>
+                )
+              )}
+            </>
+          )}
 
-                {hasActiveFilters ? (
+          {/* Scores Section */}
+          {(selectedType === 'all' || selectedType === 'scores') && (
+            <>
+              {filteredData.scores.length > 0 ? (
+                <AnimatedItem
+                  direction="up"
+                  className="mt-4"
+                  springType="gentle"
+                >
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                      <FiFileText className="w-5 h-5 text-theme-primary" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                        Partituras
+                      </h2>
+                      <p className="text-theme-tertiary">
+                        {filteredData.scores.length} de{' '}
+                        {uploadsByType.scores.length} partituras
+                      </p>
+                    </div>
+                  </div>
+
+                  {viewMode === 'cards' ? (
+                    <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
+                      {filteredData.scores.map((item) => (
+                        <UploadScoreCard
+                          key={item.id}
+                          item={item}
+                          onEdit={() => handleEdit(item)}
+                          onDelete={() => handleDelete(item)}
+                          isAdmin={isAdmin}
+                          viewMode={viewMode}
+                          isDeleting={deletingItemId === item.id}
+                        />
+                      ))}
+                    </SequentialGrid>
+                  ) : (
+                    <div className="space-y-4">
+                      {filteredData.scores.map((item, index) => (
+                        <AnimatedItem
+                          key={item.id}
+                          direction="left"
+                          hover="lift"
+                          style={{
+                            animationDelay: `${index * 0.1}s`,
+                            animationFillMode: 'backwards',
+                          }}
+                        >
+                          <UploadScoreCard
+                            item={item}
+                            onEdit={() => handleEdit(item)}
+                            onDelete={() => handleDelete(item)}
+                            isAdmin={isAdmin}
+                            viewMode={viewMode}
+                            isDeleting={deletingItemId === item.id}
+                          />
+                        </AnimatedItem>
+                      ))}
+                    </div>
+                  )}
+                </AnimatedItem>
+              ) : (
+                selectedType === 'scores' && (
+                  <AnimatedItem direction="scale" springType="bouncy">
+                    <div className="classical-card p-12 text-center">
+                      <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <FiFileText className="w-8 h-8 text-theme-tertiary" />
+                      </div>
+                      <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
+                        Nenhuma partitura encontrada
+                      </h3>
+                      <p className="text-theme-secondary mb-6">
+                        {hasActiveFilters
+                          ? 'Tente ajustar seus filtros para encontrar partituras.'
+                          : 'Você ainda não adicionou nenhuma partitura.'}
+                      </p>
+                      <Button
+                        variant="primary"
+                        leftIcon={<FiPlus />}
+                        onClick={() => handleCreateNew('score')}
+                      >
+                        Nova Partitura
+                      </Button>
+                    </div>
+                  </AnimatedItem>
+                )
+              )}
+            </>
+          )}
+
+          {/* Estado vazio quando há uploads mas nenhum passa nos filtros da aba "Todos" */}
+          {selectedType === 'all' &&
+            filteredData.composers.length === 0 &&
+            filteredData.works.length === 0 &&
+            filteredData.scores.length === 0 &&
+            (uploadsByType.composers.length > 0 ||
+              uploadsByType.works.length > 0 ||
+              uploadsByType.scores.length > 0) && (
+              <AnimatedItem
+                direction="scale"
+                className="mt-4"
+                springType="bouncy"
+              >
+                <div className="classical-card p-12 text-center">
+                  <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <FiSearch className="w-8 h-8 text-theme-tertiary" />
+                  </div>
+                  <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
+                    Nenhum resultado encontrado
+                  </h3>
+                  <p className="text-theme-secondary mb-6">
+                    Tente ajustar seus filtros para encontrar uploads.
+                  </p>
                   <button
                     onClick={clearFilters}
                     className="btn-classical-primary"
                   >
                     Limpar Filtros
                   </button>
-                ) : (
-                  <div className="flex justify-center space-x-2">
-                    <Button
-                      variant="primary"
-                      leftIcon={<FiPlus />}
-                      onClick={() => handleCreateNew('composer')}
-                    >
-                      Novo Compositor
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      leftIcon={<FiPlus />}
-                      onClick={() => handleCreateNew('work')}
-                    >
-                      Nova Obra
-                    </Button>
-                  </div>
-                )}
+                </div>
+              </AnimatedItem>
+            )}
+
+          {/* Estado completamente vazio */}
+          {stats.totalCount === 0 && (
+            <AnimatedItem direction="scale" springType="bouncy">
+              <div className="classical-card p-12 text-center">
+                <div className="w-16 h-16 bg-theme-tertiary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <FiUpload className="w-8 h-8 text-theme-tertiary" />
+                </div>
+                <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
+                  Nenhum upload encontrado
+                </h3>
+                <p className="text-theme-secondary mb-6">
+                  Você ainda não fez nenhum upload. Comece adicionando
+                  compositores, obras ou partituras.
+                </p>
+                <div className="flex justify-center space-x-2">
+                  <Button
+                    variant="primary"
+                    leftIcon={<FiPlus />}
+                    onClick={() => handleCreateNew('composer')}
+                  >
+                    Novo Compositor
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    leftIcon={<FiPlus />}
+                    onClick={() => handleCreateNew('work')}
+                  >
+                    Nova Obra
+                  </Button>
+                </div>
               </div>
             </AnimatedItem>
           )}

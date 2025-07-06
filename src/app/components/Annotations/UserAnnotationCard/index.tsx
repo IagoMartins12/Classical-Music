@@ -36,8 +36,8 @@ import {
   AnnotationCategory,
 } from '@/app/stores/useAnnotationsStore';
 import CreateAnnotationModal from '@/app/components/Annotations/CreateAnnotationModal';
-import ConfirmDeleteModal from '@/app/components/Annotations/DeleteAnnotationModal2';
 import Image from 'next/image';
+import ConfirmDeleteModal from '../DeleteAnnotationModal';
 
 interface UserAnnotationCardProps {
   annotation: WorkAnnotation;

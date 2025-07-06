@@ -32,8 +32,8 @@ import {
 import { useAuth } from '@/app/hooks/useAuth';
 import CreateAnnotationModal from '../CreateAnnotationModal';
 import { MdVerified } from 'react-icons/md';
-import ConfirmDeleteModal from '../DeleteAnnotationModal2';
 import Image from 'next/image';
+import ConfirmDeleteModal from '../DeleteAnnotationModal';
 
 interface AnnotationCardProps {
   annotation: WorkAnnotation;

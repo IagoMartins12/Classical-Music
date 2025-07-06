@@ -15,6 +15,10 @@ export interface UserUpload {
   instrumentName?: string;
   workGenres?: string[];
   categoryNames?: string[];
+  verificationStatus?: string;
+  pageCount?: string;
+  fileSize?: string;
+  dataQuality?: string;
 }
 
 // Buscar uploads do usuário
