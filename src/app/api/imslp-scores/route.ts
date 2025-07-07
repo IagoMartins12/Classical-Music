@@ -1,4 +1,4 @@
-// app/api/imslp-scores/route.ts - API CORRIGIDA com Lógica de Cache vs Primeira Vez
+// app/api/imslp-scores/route.ts - API CORRIGIDA com Scraping Consistente
 import { NextRequest, NextResponse } from 'next/server';
 import {
   IMSLPScraperIncremental,
@@ -48,11 +48,11 @@ export async function POST(request: NextRequest) {
       targetTabType,
     } = pagination;
 
-    console.log(`\n🚀 [API-CACHE-LOGIC] === NOVA LÓGICA DE CACHE ===`);
+    console.log(`\n🚀 [API-FIXED] === NOVA LÓGICA DE CACHE CORRIGIDA ===`);
     console.log(`🌐 URL: ${imslpUrl}`);
     console.log(`🎼 WorkID: ${workId || 'não informado'}`);
     console.log(`🎯 Tab alvo: ${targetTabType || 'todas'}`);
-    console.log(`🔄 Load more: ${loadMore}`);
+    console.log(`🔄 Load more: ${loadMore}, Limit: ${limit}`);
     console.log(`⭐ Force refresh: ${forceRefresh}`);
 
     let scoresData: any = null;
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
 
     // 🆕 1️⃣ FASE DECISIVA: Verificar se temos cache e decidir estratégia
     if (workId && !forceRefresh) {
-      console.log(`💾 [API] Verificando cache para workId: ${workId}`);
+      console.log(`💾 [API-FIXED] Verificando cache para workId: ${workId}`);
 
       const cacheResult =
         await ScoresCacheServiceIncremental.getWorkScoresIncremental(workId, {
@@ -73,30 +73,30 @@ export async function POST(request: NextRequest) {
       // 🆕 LÓGICA PRINCIPAL: Se temos partituras no cache, SEMPRE usar todas elas
       if (cacheResult.scores && cacheResult.totalCached > 0) {
         console.log(
-          `✅ [API] Cache HIT! ${cacheResult.totalCached} partituras em cache`
+          `✅ [API-FIXED] Cache HIT! ${cacheResult.totalCached} partituras em cache`
         );
         console.log(
-          `📊 [API] Estratégia: MOSTRAR TODAS AS PARTITURAS DO CACHE`
+          `📊 [API-FIXED] Estratégia: MOSTRAR TODAS AS PARTITURAS DO CACHE`
         );
 
         scoresData = cacheResult.scores;
         fromCache = true;
         cacheStats = cacheResult.cacheStats;
 
-        // 🆕 Para loadMore quando já temos cache, só fazer scraping se realmente há mais
+        // 🆕 Para loadMore quando já temos cache, usar SEMPRE o scraper consistente
         if (loadMore && cacheResult.totalAvailable > cacheResult.totalCached) {
           console.log(
-            `🔄 [API] LoadMore: fazendo scraping das restantes para tab: ${
+            `🔄 [API-FIXED] LoadMore: fazendo scraping CONSISTENTE das restantes para tab: ${
               targetTabType || 'geral'
             }`
           );
 
-          // Fazer scraping adicional apenas das que faltam
-          const additionalScores = await scrapeAdditionalScoresForTab(
+          // 🚀 USAR SEMPRE O MESMO MÉTODO DE SCRAPING (CONSISTENTE)
+          const additionalScores = await performConsistentScraping(
             imslpUrl,
-            workId,
-            cacheResult,
             targetTabType,
+            limit,
+            workId,
             priorityScoreId
           );
 
@@ -108,41 +108,41 @@ export async function POST(request: NextRequest) {
 
         // Iniciar cache em background se ainda há partituras não carregadas
         if (!loadMore && cacheResult.totalAvailable > cacheResult.totalCached) {
-          console.log(`🔄 [API] Iniciando cache em background das restantes`);
-          backgroundCachingStarted = true;
-          startBackgroundCaching(imslpUrl, workId, priorityScoreId).catch(
-            console.error
+          console.log(
+            `🔄 [API-FIXED] Iniciando cache CONSISTENTE em background das restantes`
           );
+          backgroundCachingStarted = true;
+          startBackgroundCachingConsistent(
+            imslpUrl,
+            workId,
+            priorityScoreId
+          ).catch(console.error);
         }
       } else {
         console.log(
-          `❌ [API] Cache MISS - primeira vez, limitando a ${limit} por tipo`
+          `❌ [API-FIXED] Cache MISS - primeira vez, limitando a ${limit} por tipo`
         );
       }
     }
 
-    // 🆕 2️⃣ SCRAPING: Apenas se não temos cache OU é loadMore sem cache suficiente
+    // 🆕 2️⃣ SCRAPING: Sempre usar método CONSISTENTE
     if (!scoresData) {
       console.log(
-        `🕷️ [API] Fazendo scraping - estratégia: PRIMEIRA VEZ (${limit} por tipo)`
+        `🕷️ [API-FIXED] Fazendo scraping CONSISTENTE - estratégia: PRIMEIRA VEZ (${limit} por tipo)`
       );
 
-      const paginationOptions: PaginationOptions = {
+      // 🚀 USAR SEMPRE O MESMO MÉTODO CONSISTENTE
+      scoresData = await performConsistentScraping(
+        imslpUrl,
+        targetTabType,
         limit,
-        offset,
-        loadInBackground: !loadMore,
-        specificTypes: targetTabType ? [targetTabType] : specificTypes,
-      };
-
-      scoresData =
-        await IMSLPScraperIncremental.fetchAndExtractScoresIncremental(
-          imslpUrl,
-          paginationOptions
-        );
+        workId,
+        priorityScoreId
+      );
 
       fromCache = false;
 
-      console.log(`✅ [API] Scraping concluído:`, {
+      console.log(`✅ [API-FIXED] Scraping consistente concluído:`, {
         loadedScores: (
           Object.values(scoresData.loadedCounts) as number[]
         ).reduce((sum, count) => sum + count, 0),
@@ -151,11 +151,12 @@ export async function POST(request: NextRequest) {
           0
         ),
         hasMore: scoresData.hasMore,
-        strategy: 'primeira-vez',
+        strategy: 'primeira-vez-consistente',
       });
-      // 3️⃣ Salvar no cache
+
+      // 3️⃣ Salvar no cache usando o MESMO método
       if (workId) {
-        console.log(`💾 [API] Salvando partituras no cache...`);
+        console.log(`💾 [API-FIXED] Salvando partituras no cache...`);
 
         ScoresCacheServiceIncremental.cacheScoresFromIMSLPIncremental(
           workId,
@@ -164,27 +165,31 @@ export async function POST(request: NextRequest) {
           { immediate: true }
         )
           .then(() => {
-            console.log(`✅ [API] Cache salvo para workId: ${workId}`);
+            console.log(`✅ [API-FIXED] Cache salvo para workId: ${workId}`);
           })
           .catch(console.error);
 
         // Cache em background para carregar o resto
         if (!loadMore && offset === 0) {
-          console.log(`🔄 [API] Iniciando cache em background...`);
-          backgroundCachingStarted = true;
-          startBackgroundCaching(imslpUrl, workId, priorityScoreId).catch(
-            console.error
+          console.log(
+            `🔄 [API-FIXED] Iniciando cache CONSISTENTE em background...`
           );
+          backgroundCachingStarted = true;
+          startBackgroundCachingConsistent(
+            imslpUrl,
+            workId,
+            priorityScoreId
+          ).catch(console.error);
         }
       }
     }
 
     const processingTime = Date.now() - startTime;
 
-    console.log(`\n✅ [API] === OPERAÇÃO CONCLUÍDA ===`);
+    console.log(`\n✅ [API-FIXED] === OPERAÇÃO CONCLUÍDA ===`);
     console.log(`⏱️ Tempo: ${processingTime}ms`);
     console.log(
-      `📊 Fonte: ${fromCache ? 'CACHE (TODAS)' : 'SCRAPING (LIMITADO)'}`
+      `📊 Fonte: ${fromCache ? 'CACHE (TODAS)' : 'SCRAPING CONSISTENTE'}`
     );
     console.log(`📈 Partituras: ${JSON.stringify(scoresData.loadedCounts)}`);
     console.log(`🎯 Tab alvo: ${targetTabType || 'todas'}`);
@@ -200,8 +205,8 @@ export async function POST(request: NextRequest) {
       backgroundCachingStarted,
       _metadata: {
         processingTime,
-        source: fromCache ? 'cache-all' : 'scraping-limited',
-        strategy: fromCache ? 'show-all-cached' : 'first-time-limited',
+        source: fromCache ? 'cache-all' : 'scraping-consistent',
+        strategy: fromCache ? 'show-all-cached' : 'first-time-consistent',
         workId,
         priorityScoreId,
         targetTabType,
@@ -212,7 +217,7 @@ export async function POST(request: NextRequest) {
           currentPage: Math.floor(offset / limit) + 1,
           hasMore: scoresData.hasMore,
         },
-        version: '5.0-CACHE-LOGIC',
+        version: '6.0-CONSISTENT-SCRAPING',
         timestamp: new Date().toISOString(),
       },
     };
@@ -220,7 +225,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(responseData);
   } catch (error) {
     const processingTime = Date.now() - startTime;
-    console.error(`\n❌ [API] === ERRO APÓS ${processingTime}ms ===`);
+    console.error(`\n❌ [API-FIXED] === ERRO APÓS ${processingTime}ms ===`);
     console.error(`🔥 Erro:`, error);
     console.error(`${'='.repeat(60)}\n`);
 
@@ -236,91 +241,100 @@ export async function POST(request: NextRequest) {
   }
 
   /**
-   * 🆕 Scraping adicional para loadMore específico de tab
+   * 🚀 MÉTODO CONSISTENTE DE SCRAPING - Sempre usa a mesma lógica
    */
-  async function scrapeAdditionalScoresForTab(
+  async function performConsistentScraping(
     imslpUrl: string,
-    workId: string,
-    cacheResult: any,
     targetTabType?: string,
+    limit: number = 1000,
+    workId?: string,
     priorityScoreId?: string
   ) {
+    console.log(
+      `🔧 [API-CONSISTENT] Executando scraping consistente para tab: ${
+        targetTabType || 'todas'
+      }, limit: ${limit}`
+    );
+
     try {
-      console.log(
-        `🔄 [API] Fazendo scraping adicional para tab: ${
-          targetTabType || 'geral'
-        }`
-      );
-
-      // Calcular quantas partituras já temos em cache
-      let currentCached: number;
-      let totalAvailable: number;
-
-      if (targetTabType) {
-        currentCached = cacheResult.scores?.loadedCounts[targetTabType] || 0;
-        totalAvailable = cacheResult.scores?.totalCounts[targetTabType] || 0;
-      } else {
-        currentCached = cacheResult.totalCached;
-        totalAvailable = cacheResult.totalAvailable;
-      }
-
-      const toFetch = totalAvailable - currentCached;
-      if (toFetch <= 0) {
-        console.log(
-          `⚠️ [API] Nada para buscar na tab: ${targetTabType || 'geral'}`
-        );
-        return null;
-      }
+      // 🚀 SEMPRE usar o mesmo método principal que tem toda a lógica de títulos corrigida
+      const paginationOptions: PaginationOptions = {
+        limit,
+        offset: 0, // Sempre começar do 0 e deixar o scraper gerenciar
+        loadInBackground: false,
+        specificTypes: targetTabType ? [targetTabType] : undefined,
+        targetTabType, // 🆕 Passar a tab específica para o scraper
+      };
 
       console.log(
-        `📈 [API] Buscando ${toFetch} partituras restantes (offset: ${currentCached})`
+        `🎯 [API-CONSISTENT] Opções de paginação:`,
+        paginationOptions
       );
 
-      const additionalData =
+      const scrapedData =
         await IMSLPScraperIncremental.fetchAndExtractScoresIncremental(
           imslpUrl,
-          {
-            limit: toFetch,
-            offset: currentCached,
-            loadInBackground: false,
-            specificTypes: targetTabType ? [targetTabType] : undefined,
-          }
+          paginationOptions
         );
 
-      // Salvar no cache
-      if (additionalData) {
-        await ScoresCacheServiceIncremental.cacheScoresFromIMSLPIncremental(
-          workId,
-          additionalData,
-          priorityScoreId,
-          { immediate: true }
-        );
+      console.log(`✅ [API-CONSISTENT] Scraping consistente concluído:`, {
+        workTitle: scrapedData.workTitle,
+        loadedCounts: scrapedData.loadedCounts,
+        totalCounts: scrapedData.totalCounts,
+        hasMore: scrapedData.hasMore,
+        scoresByType: Object.keys(scrapedData.scoresByType).reduce(
+          (acc, type) => {
+            acc[type] = scrapedData.scoresByType[type].length;
+            return acc;
+          },
+          {} as Record<string, number>
+        ),
+      });
+
+      // 🆕 Log detalhado dos títulos para debug
+      if (targetTabType === 'arrangements') {
+        console.log(`🎵 [API-CONSISTENT] Títulos de arranjos extraídos:`);
+        const arrangementsGroups = scrapedData.scoresByType.arrangements || [];
+        arrangementsGroups.forEach((group, groupIndex) => {
+          console.log(`   Grupo ${groupIndex}: ${group.groupTitle}`);
+          group.scores.forEach((score, scoreIndex) => {
+            console.log(
+              `     ${scoreIndex + 1}. "${score.title}" (ID: ${score.id})`
+            );
+          });
+        });
       }
 
-      return additionalData;
+      return scrapedData;
     } catch (error) {
-      console.error(`❌ [API] Erro no scraping adicional:`, error);
-      return null;
+      console.error(`❌ [API-CONSISTENT] Erro no scraping consistente:`, error);
+      throw error;
     }
   }
 
   /**
-   * 🚀 Cache em background
+   * 🚀 Cache em background CONSISTENTE
    */
-  async function startBackgroundCaching(
+  async function startBackgroundCachingConsistent(
     imslpUrl: string,
     workId: string,
     priorityScoreId?: string
   ): Promise<void> {
-    console.log(`🔄 [BACKGROUND] Iniciando cache completo para ${workId}`);
+    console.log(
+      `🔄 [BACKGROUND-CONSISTENT] Iniciando cache completo CONSISTENTE para ${workId}`
+    );
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const completeData =
-        await IMSLPScraperIncremental.extractAllScoresForCache(
-          await fetch(imslpUrl).then((res) => res.text())
-        );
+      // 🚀 USAR O MESMO MÉTODO CONSISTENTE para cache em background
+      const completeData = await performConsistentScraping(
+        imslpUrl,
+        undefined, // Todas as tabs
+        1000, // Limite alto
+        workId,
+        priorityScoreId
+      );
 
       await ScoresCacheServiceIncremental.cacheScoresFromIMSLPIncremental(
         workId,
@@ -329,27 +343,96 @@ export async function POST(request: NextRequest) {
         { immediate: false, background: true }
       );
 
-      console.log(`✅ [BACKGROUND] Cache completo salvo para ${workId}`);
+      console.log(
+        `✅ [BACKGROUND-CONSISTENT] Cache completo CONSISTENTE salvo para ${workId}`
+      );
     } catch (error) {
-      console.error(`❌ [BACKGROUND] Erro no cache completo:`, error);
+      console.error(
+        `❌ [BACKGROUND-CONSISTENT] Erro no cache completo consistente:`,
+        error
+      );
     }
   }
 
   /**
-   * 🆕 Combinar dados do cache com novos dados
+   * 🆕 Combinar dados do cache com novos dados - MELHORADO
    */
   function combineScoresData(cacheData: any, newData: any) {
+    console.log(`🔄 [COMBINE] Combinando dados cache + novos dados`);
+    console.log(
+      `🔄 [COMBINE] Cache possui:`,
+      Object.keys(cacheData.scoresByType).reduce((acc, type) => {
+        acc[type] = cacheData.scoresByType[type].length;
+        return acc;
+      }, {} as Record<string, number>)
+    );
+    console.log(
+      `🔄 [COMBINE] Novos dados possuem:`,
+      Object.keys(newData.scoresByType).reduce((acc, type) => {
+        acc[type] = newData.scoresByType[type].length;
+        return acc;
+      }, {} as Record<string, number>)
+    );
+
     const combined = { ...cacheData };
 
+    // Combinar scoresByType de forma mais inteligente
     Object.keys(newData.scoresByType).forEach((type) => {
       const existingGroups = combined.scoresByType[type] || [];
       const newGroups = newData.scoresByType[type] || [];
-      combined.scoresByType[type] = [...existingGroups, ...newGroups];
+
+      console.log(
+        `🔄 [COMBINE] Tipo ${type}: ${existingGroups.length} grupos existentes + ${newGroups.length} novos grupos`
+      );
+
+      // Adicionar novos grupos evitando duplicatas
+      const combinedGroups = [...existingGroups];
+
+      for (const newGroup of newGroups) {
+        const existingGroup = combinedGroups.find(
+          (g) =>
+            g.groupIndex === newGroup.groupIndex &&
+            g.groupTitle === newGroup.groupTitle
+        );
+
+        if (!existingGroup) {
+          console.log(
+            `🆕 [COMBINE] Adicionando novo grupo: ${newGroup.groupTitle} (${newGroup.scores.length} partituras)`
+          );
+          combinedGroups.push(newGroup);
+        } else {
+          // Combinar scores dentro do grupo, evitando duplicatas
+          const existingScoreIds = new Set(
+            existingGroup.scores.map((s) => s.id)
+          );
+          const newScores = newGroup.scores.filter(
+            (s) => !existingScoreIds.has(s.id)
+          );
+
+          if (newScores.length > 0) {
+            console.log(
+              `📝 [COMBINE] Adicionando ${newScores.length} partituras ao grupo existente: ${existingGroup.groupTitle}`
+            );
+            existingGroup.scores.push(...newScores);
+          }
+        }
+      }
+
+      combined.scoresByType[type] = combinedGroups;
     });
 
+    // Atualizar contadores corretamente
     Object.keys(newData.loadedCounts).forEach((type) => {
-      combined.loadedCounts[type] =
-        (combined.loadedCounts[type] || 0) + (newData.loadedCounts[type] || 0);
+      const typeGroups = combined.scoresByType[type] || [];
+      const realCount = typeGroups.reduce(
+        (sum, group) => sum + group.scores.length,
+        0
+      );
+      combined.loadedCounts[type] = realCount;
+
+      console.log(
+        `📊 [COMBINE] Tipo ${type}: ${realCount} partituras no total após combinação`
+      );
     });
 
     const totalLoaded = (
@@ -363,8 +446,9 @@ export async function POST(request: NextRequest) {
     combined.hasMore = totalLoaded < totalAvailable;
 
     console.log(
-      `🔄 [API] Dados combinados: ${totalLoaded}/${totalAvailable} partituras`
+      `✅ [COMBINE] Dados combinados finais: ${totalLoaded}/${totalAvailable} partituras, hasMore: ${combined.hasMore}`
     );
+
     return combined;
   }
 }

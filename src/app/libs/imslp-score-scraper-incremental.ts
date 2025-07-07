@@ -309,14 +309,64 @@ export class IMSLPScraperIncremental {
     const { limit, offset } = options;
     const scoreGroups: IMSLPScoreGroup[] = [];
 
-    // Coletar todos os grupos primeiro
-    const groups: { element: cheerio.Cheerio<AnyNode>; index: number }[] = [];
+    // 🆕 Coletar todos os grupos COM seus títulos de seção
+    const groups: {
+      element: cheerio.Cheerio<AnyNode>;
+      index: number;
+      sectionTitle: string | null; // 🆕 Título da seção (h5)
+    }[] = [];
+
     $tabContent.find('.we').each((groupIndex, groupElement) => {
-      groups.push({ element: $(groupElement), index: groupIndex });
+      const $groupElement = $(groupElement);
+
+      // 🆕 Buscar o título da seção (h5) que precede este grupo
+      let sectionTitle: string | null = null;
+
+      // Buscar o h5 anterior mais próximo
+      let $prev = $groupElement.prev();
+      while ($prev.length > 0) {
+        if ($prev.is('h5')) {
+          // Encontrou o h5, extrair o título
+          const titleText = $prev.find('span.mw-headline').text().trim();
+          if (titleText) {
+            sectionTitle = titleText;
+            console.log(
+              `🏷️ [SCRAPER-SECTION] Grupo ${groupIndex} - Título: "${titleText}"`
+            );
+          }
+          break;
+        }
+        $prev = $prev.prev();
+      }
+
+      // Se não encontrou h5 anterior, buscar na estrutura pai
+      if (!sectionTitle) {
+        // Buscar h5 antes deste grupo na mesma estrutura
+        const $parent = $groupElement.parent();
+        $parent.children().each((childIndex, childElement) => {
+          const $child = $(childElement);
+          if ($child.is($groupElement)) {
+            // Chegou no nosso elemento, parar
+            return false;
+          }
+          if ($child.is('h5')) {
+            const titleText = $child.find('span.mw-headline').text().trim();
+            if (titleText) {
+              sectionTitle = titleText;
+            }
+          }
+        });
+      }
+
+      groups.push({
+        element: $groupElement,
+        index: groupIndex,
+        sectionTitle,
+      });
     });
 
     console.log(
-      `📦 [SCRAPER-TAB] Encontrados ${groups.length} grupos para tipo "${type}"`
+      `📦 [SCRAPER-SECTION] Encontrados ${groups.length} grupos para tipo "${type}"`
     );
 
     // 🚀 ESTRATÉGIA DE PAGINAÇÃO OTIMIZADA: Processar partituras de forma linear
@@ -328,10 +378,15 @@ export class IMSLPScraperIncremental {
       groupIndex: number;
       scoreIndex: number;
       metadata: any;
+      sectionTitle: string | null; // 🆕 Título da seção
     }> = [];
 
     // Percorrer grupos e partituras em ordem
-    for (const { element: $groupElement, index: groupIndex } of groups) {
+    for (const {
+      element: $groupElement,
+      index: groupIndex,
+      sectionTitle,
+    } of groups) {
       const scoreElements: {
         element: cheerio.Cheerio<AnyNode>;
         index: number;
@@ -361,7 +416,11 @@ export class IMSLPScraperIncremental {
           scoreIndex
         );
         if (scoreData) {
-          scoreMetadataList.push(scoreData);
+          // 🆕 Adicionar título da seção aos metadados
+          scoreMetadataList.push({
+            ...scoreData,
+            sectionTitle,
+          });
           scoresCollected++;
         }
 
@@ -375,7 +434,7 @@ export class IMSLPScraperIncremental {
     }
 
     console.log(
-      `📋 [SCRAPER-TAB] Coletadas ${scoresCollected} partituras para processamento`
+      `📋 [SCRAPER-SECTION] Coletadas ${scoresCollected} partituras para processamento`
     );
 
     // 🚀 PROCESSAR URLs em lote
@@ -383,7 +442,13 @@ export class IMSLPScraperIncremental {
       const urlResults = await this.resolveUrlsBatch(scoreMetadataList);
 
       // Organizar por grupos
-      const scoresByGroup = new Map<number, IMSLPScore[]>();
+      const scoresByGroup = new Map<
+        number,
+        {
+          scores: IMSLPScore[];
+          sectionTitle: string | null;
+        }
+      >();
 
       for (let i = 0; i < scoreMetadataList.length; i++) {
         const metadata = scoreMetadataList[i];
@@ -413,18 +478,29 @@ export class IMSLPScraperIncremental {
         };
 
         if (!scoresByGroup.has(metadata.groupIndex)) {
-          scoresByGroup.set(metadata.groupIndex, []);
+          scoresByGroup.set(metadata.groupIndex, {
+            scores: [],
+            sectionTitle: metadata.sectionTitle,
+          });
         }
-        scoresByGroup.get(metadata.groupIndex)!.push(score);
+        scoresByGroup.get(metadata.groupIndex)!.scores.push(score);
       }
 
-      // Construir grupos finais
-      for (const [groupIndex, scores] of scoresByGroup.entries()) {
-        if (scores.length > 0) {
+      // Construir grupos finais com títulos de seção
+      for (const [groupIndex, groupData] of scoresByGroup.entries()) {
+        if (groupData.scores.length > 0) {
+          // 🆕 Usar o título da seção se disponível, senão usar título da primeira partitura
+          const finalTitle =
+            groupData.sectionTitle || groupData.scores[0].title;
+
+          console.log(
+            `🏷️ [SCRAPER-SECTION] Grupo ${groupIndex}: "${finalTitle}" (${groupData.scores.length} partituras)`
+          );
+
           scoreGroups.push({
             groupIndex,
-            scores,
-            groupTitle: scores[0].title,
+            scores: groupData.scores,
+            groupTitle: finalTitle, // 🆕 Título da seção ou fallback
           });
         }
       }

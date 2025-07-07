@@ -84,8 +84,8 @@ export default function WorkDetailsClient({
     currentLoaded,
     refetch: refetchScores,
     loadMore,
-    loadMoreForTab,
-    loadAll,
+    loadMoreForTab, // ✅ Esta função está correta
+    loadAll, // ✅ Esta função está correta
     fromCache,
     backgroundCaching,
     cacheProgress,
@@ -110,7 +110,6 @@ export default function WorkDetailsClient({
       );
     },
   });
-
   const { navigateToUrl } = useNavigate();
 
   // Não renderizar até estar montado
@@ -876,8 +875,8 @@ export default function WorkDetailsClient({
                 error={scoresError}
                 onRefetch={refetchScores}
                 onLoadMore={loadMore}
-                onLoadMoreForTab={loadMoreForTab}
-                onLoadAll={loadAll}
+                onLoadMoreForTab={loadMoreForTab} // ✅ Passa a função correta
+                onLoadAll={loadAll} // ✅ Passa a função correta
                 onScoreSelect={handleScoreSelect}
                 workId={work.id}
                 workTitle={work.title}
@@ -887,7 +886,7 @@ export default function WorkDetailsClient({
                 currentLoaded={currentLoaded}
                 backgroundCaching={backgroundCaching}
                 cacheProgress={cacheProgress}
-                getTabStats={getTabStats}
+                getTabStats={getTabStats} // ✅ Passa a função correta
                 // Props de favoritos
                 mostFavoritedScoreId={mostFavoritedScoreId}
                 mostFavoritedSource={mostFavoritedSource}
