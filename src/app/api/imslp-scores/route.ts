@@ -403,10 +403,10 @@ export async function POST(request: NextRequest) {
         } else {
           // Combinar scores dentro do grupo, evitando duplicatas
           const existingScoreIds = new Set(
-            existingGroup.scores.map((s) => s.id)
+            existingGroup.scores.map((s: any) => s.id)
           );
           const newScores = newGroup.scores.filter(
-            (s) => !existingScoreIds.has(s.id)
+            (s: any) => !existingScoreIds.has(s.id)
           );
 
           if (newScores.length > 0) {
@@ -425,7 +425,7 @@ export async function POST(request: NextRequest) {
     Object.keys(newData.loadedCounts).forEach((type) => {
       const typeGroups = combined.scoresByType[type] || [];
       const realCount = typeGroups.reduce(
-        (sum, group) => sum + group.scores.length,
+        (sum: any, group: any) => sum + group.scores.length,
         0
       );
       combined.loadedCounts[type] = realCount;

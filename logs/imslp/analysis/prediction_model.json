@@ -235,10 +235,10 @@
       "subdomains": [
         "ks15.imslp.org"
       ],
-      "successRate": 0.7999999999999999,
-      "averageTime": 459.56640625,
-      "lastSeen": "2025-07-07T19:54:07.759Z",
-      "confidence": 0.39999999999999997
+      "successRate": 0.9999999999999999,
+      "averageTime": 592.6416015625,
+      "lastSeen": "2025-07-07T20:02:47.592Z",
+      "confidence": 0.49999999999999994
     },
     "c/cf": {
       "pattern": "c/cf",
@@ -814,8 +814,8 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 453.5801559237816,
-      "lastSeen": "2025-07-07T19:53:11.882Z",
+      "averageTime": 459.2900779618908,
+      "lastSeen": "2025-07-07T20:02:50.319Z",
       "confidence": 1
     },
     "8/83": {
@@ -896,8 +896,8 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 456.55267436385884,
-      "lastSeen": "2025-07-07T19:31:40.921Z",
+      "averageTime": 466.2763371819294,
+      "lastSeen": "2025-07-07T20:02:50.339Z",
       "confidence": 1
     },
     "e/e5": {
@@ -917,8 +917,8 @@
         "imslp.eu"
       ],
       "successRate": 1,
-      "averageTime": 455.706350051477,
-      "lastSeen": "2025-07-07T19:54:07.791Z",
+      "averageTime": 584.6765875128692,
+      "lastSeen": "2025-07-07T20:02:47.591Z",
       "confidence": 1
     },
     "0/09": {
@@ -1041,8 +1041,8 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 534.9542846679688,
-      "lastSeen": "2025-07-03T04:34:36.982Z",
+      "averageTime": 820.184642791748,
+      "lastSeen": "2025-07-07T20:02:48.603Z",
       "confidence": 1
     },
     "e/ef": {
@@ -1122,8 +1122,8 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 456.26211869716644,
-      "lastSeen": "2025-07-03T04:34:37.997Z",
+      "averageTime": 598.5655296742916,
+      "lastSeen": "2025-07-07T20:02:47.590Z",
       "confidence": 1
     },
     "0/05": {
@@ -1133,8 +1133,8 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 694.7296667098999,
-      "lastSeen": "2025-07-03T04:34:39.868Z",
+      "averageTime": 1219.86483335495,
+      "lastSeen": "2025-07-07T20:02:49.353Z",
       "confidence": 1
     },
     "2/25": {
@@ -1144,9 +1144,9 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 686.4390258789062,
-      "lastSeen": "2025-07-03T04:34:30.522Z",
-      "confidence": 0.8000000000000002
+      "averageTime": 966.2195129394531,
+      "lastSeen": "2025-07-07T20:02:51.103Z",
+      "confidence": 0.8500000000000002
     },
     "f/ff": {
       "pattern": "f/ff",
@@ -1256,9 +1256,9 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 449.22394371032715,
-      "lastSeen": "2025-07-07T19:54:06.784Z",
-      "confidence": 0.9500000000000003
+      "averageTime": 628.8059859275818,
+      "lastSeen": "2025-07-07T20:02:48.398Z",
+      "confidence": 1
     },
     "d/da": {
       "pattern": "d/da",
@@ -1479,19 +1479,19 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 452.7993621826172,
-      "lastSeen": "2025-07-07T19:52:44.817Z",
-      "confidence": 0.8000000000000002
+      "averageTime": 625.1998405456543,
+      "lastSeen": "2025-07-07T20:02:48.399Z",
+      "confidence": 0.9000000000000002
     },
     "6/68": {
       "pattern": "6/68",
       "subdomains": [
         "ks15.imslp.org"
       ],
-      "successRate": 0.5,
-      "averageTime": 464.15625,
-      "lastSeen": "2025-07-03T02:14:33.436Z",
-      "confidence": 0.25
+      "successRate": 0.7,
+      "averageTime": 593.5390625,
+      "lastSeen": "2025-07-07T20:02:47.587Z",
+      "confidence": 0.35
     },
     "b/bf": {
       "pattern": "b/bf",
@@ -1888,9 +1888,9 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 559.05712890625,
-      "lastSeen": "2025-07-07T19:54:13.486Z",
-      "confidence": 0.65
+      "averageTime": 608.7642822265625,
+      "lastSeen": "2025-07-07T20:02:47.589Z",
+      "confidence": 0.7500000000000001
     },
     "c/cd": {
       "pattern": "c/cd",
@@ -2121,10 +2121,10 @@
       "subdomains": [
         "ks15.imslp.org"
       ],
-      "successRate": 0.1,
-      "averageTime": 357.5,
-      "lastSeen": "2025-07-01T23:04:17.302Z",
-      "confidence": 0.05
+      "successRate": 0.2,
+      "averageTime": 415.75,
+      "lastSeen": "2025-07-07T20:02:50.336Z",
+      "confidence": 0.1
     },
     "9/9b": {
       "pattern": "9/9b",
@@ -2293,10 +2293,10 @@
       "subdomains": [
         "ks15.imslp.org"
       ],
-      "successRate": 0.1,
-      "averageTime": 358,
-      "lastSeen": "2025-07-02T17:35:41.752Z",
-      "confidence": 0.05
+      "successRate": 0.30000000000000004,
+      "averageTime": 609.5,
+      "lastSeen": "2025-07-07T20:02:48.405Z",
+      "confidence": 0.15000000000000002
     },
     "5/57": {
       "pattern": "5/57",
@@ -2517,10 +2517,10 @@
       "subdomains": [
         "ks15.imslp.org"
       ],
-      "successRate": 0.4,
-      "averageTime": 441.625,
-      "lastSeen": "2025-07-04T15:42:28.356Z",
-      "confidence": 0.2
+      "successRate": 0.5,
+      "averageTime": 460.3125,
+      "lastSeen": "2025-07-07T20:02:50.339Z",
+      "confidence": 0.25
     },
     "a/a2": {
       "pattern": "a/a2",
@@ -2614,14 +2614,14 @@
     }
   },
   "globalStats": {
-    "totalRequests": 5523,
-    "successfulRequests": 5523,
-    "averageResponseTime": 857.9005197247965,
+    "totalRequests": 5549,
+    "successfulRequests": 5549,
+    "averageResponseTime": 887.2727119311768,
     "mostReliableSubdomain": "",
-    "lastUpdated": "2025-07-07T19:54:18.394Z"
+    "lastUpdated": "2025-07-07T20:02:51.103Z"
   },
   "metadata": {
-    "savedAt": "2025-07-07T19:54:23.396Z",
+    "savedAt": "2025-07-07T20:02:56.104Z",
     "sessionId": "session_1751917835935_vs6bh4h",
     "version": "2.0"
   }

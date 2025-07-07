@@ -10,7 +10,6 @@ import {
   FiBookOpen,
   FiMoreHorizontal,
   FiLayers,
-  FiTrendingUp,
   FiDownload,
   FiTarget,
 } from 'react-icons/fi';
