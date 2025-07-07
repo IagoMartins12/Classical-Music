@@ -11,9 +11,6 @@ import {
   FiActivity,
   FiTarget,
   FiZap,
-  FiDatabase,
-  FiRefreshCw,
-  FiTrendingUp,
   FiSettings,
   FiBookOpen,
   FiExternalLink,
@@ -36,7 +33,6 @@ import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
-  SequentialGrid,
 } from '../animation/AnimatedComponents';
 import ShareButton from '../ShareButton';
 import AnnotationsSection from '../Annotations/AnnotationsSection';
@@ -55,7 +51,6 @@ interface WorkDetailsClientProps {
 
 export default function WorkDetailsClient({
   work,
-  relatedWorks = [],
   learningData = { wantToLearn: [], learned: [] },
 }: WorkDetailsClientProps) {
   // Estados seguros para SSR
@@ -63,7 +58,6 @@ export default function WorkDetailsClient({
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedScoreForStudy, setSelectedScoreForStudy] =
     useState<IMSLPScore | null>(null);
-  const [showDebugInfo, setShowDebugInfo] = useState(false);
 
   // Verificar se está montado (hidratado)
   useEffect(() => {
@@ -77,7 +71,6 @@ export default function WorkDetailsClient({
     hasFavorites: hasMostFavorited,
     loading: loadingMostFavorited,
     isScoreMostFavorited,
-    refetch: refetchMostFavorited,
   } = useMostFavoritedForWork(mounted ? work.id : '');
 
   // 🆕 Hook para carregamento incremental com nova lógica de cache
@@ -96,10 +89,8 @@ export default function WorkDetailsClient({
     fromCache,
     backgroundCaching,
     cacheProgress,
-    selectedScore,
     setSelectedScore,
     getTabStats,
-    strategy, // 🆕 Nova estratégia para debug
   } = useIMSLPScoresIncremental(mounted ? work.imslpPermlink : '', {
     workId: work.id,
     enabled: mounted,
@@ -121,71 +112,6 @@ export default function WorkDetailsClient({
   });
 
   const { navigateToUrl } = useNavigate();
-
-  // 🆕 Função para debug do estado atual
-  const logCurrentState = () => {
-    console.log('\n📊 [DEBUG] ESTADO ATUAL DA APLICAÇÃO');
-    console.log('=====================================');
-    console.log(`🎼 Obra: ${work.title}`);
-    console.log(`👤 Compositor: ${work.composer.fullName}`);
-    console.log(`🔗 IMSLP: ${work.imslpPermlink}`);
-    console.log(`📋 Strategy: ${strategy}`);
-    console.log(`💾 From Cache: ${fromCache}`);
-    console.log(`📊 Loaded/Total: ${currentLoaded}/${totalAvailable}`);
-    console.log(`🔄 Has More: ${hasMore}`);
-    console.log(`⚡ Background: ${backgroundCaching} (${cacheProgress}%)`);
-    console.log(
-      `⭐ Most Favorited: ${mostFavoritedScoreId?.slice(0, 10) || 'None'}`
-    );
-    console.log(`🎯 Selected Score: ${selectedScore?.slice(0, 10) || 'None'}`);
-
-    if (imslpScores) {
-      console.log('\n🎵 PARTITURAS POR TIPO:');
-      console.log('Loaded:', imslpScores.loadedCounts);
-      console.log('Total:', imslpScores.totalCounts);
-
-      Object.entries(imslpScores.scoresByType).forEach(([type, groups]) => {
-        console.log(
-          `  ${type}: ${groups.length} grupos, ${groups.reduce(
-            (sum: any, g: any) => sum + g.scores.length,
-            0
-          )} partituras`
-        );
-      });
-    }
-    console.log('=====================================\n');
-  };
-
-  // 🆕 Função para forçar refresh completo
-  const forceRefresh = async () => {
-    console.log('🔄 [CLIENT] Forçando refresh completo...');
-    await refetchScores();
-    await refetchMostFavorited();
-    logCurrentState();
-  };
-
-  // 🆕 Função para simular cache clear (dev only)
-  const clearCache = async () => {
-    if (process.env.NODE_ENV !== 'development') return;
-
-    try {
-      console.log('🗑️ [CLIENT] Limpando cache...');
-      const response = await fetch('/api/imslp-scores/clear-cache', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ workId: work.id }),
-      });
-
-      if (response.ok) {
-        console.log('✅ [CLIENT] Cache limpo com sucesso');
-        await refetchScores();
-      } else {
-        console.error('❌ [CLIENT] Erro ao limpar cache');
-      }
-    } catch (error) {
-      console.error('❌ [CLIENT] Erro ao limpar cache:', error);
-    }
-  };
 
   // Não renderizar até estar montado
   if (!mounted) {

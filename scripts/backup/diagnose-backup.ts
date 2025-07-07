@@ -28,7 +28,7 @@ async function diagnoseBackup(backupPath: string): Promise<void> {
         console.log(`   • ${file}`);
       });
     } catch (error) {
-      console.error('❌ Erro lendo diretório:', error.message);
+      console.error('❌ Erro lendo diretório:', error);
       return;
     }
 
@@ -62,7 +62,7 @@ async function diagnoseBackup(backupPath: string): Promise<void> {
         });
       }
     } catch (error) {
-      console.error('❌ Erro lendo metadados:', error.message);
+      console.error('❌ Erro lendo metadados:', error);
     }
 
     // 3. Verificar backup principal
@@ -89,7 +89,7 @@ async function diagnoseBackup(backupPath: string): Promise<void> {
         }
       }
     } catch (error) {
-      console.error('❌ Erro lendo backup principal:', error.message);
+      console.error('❌ Erro lendo backup principal:', error);
     }
 
     // 4. Verificar collections individuais
@@ -123,7 +123,7 @@ async function diagnoseBackup(backupPath: string): Promise<void> {
             const data = JSON.parse(await fs.readFile(filePath, 'utf8'));
             console.log(`   • ${file}: ${data.length} registros`);
           } catch (error) {
-            console.log(`   • ${file}: erro lendo (${error.message})`);
+            console.log(`   • ${file}: erro lendo (${error})`);
           }
         }
         if (normalFiles.length > 10) {
@@ -164,7 +164,7 @@ async function diagnoseBackup(backupPath: string): Promise<void> {
         }
       }
     } catch (error) {
-      console.error('❌ Erro verificando collections:', error.message);
+      console.error('❌ Erro verificando collections:', error);
     }
 
     // 5. Verificar algumas collections específicas importantes
@@ -231,7 +231,7 @@ async function diagnoseBackup(backupPath: string): Promise<void> {
           }
         }
       } catch (error) {
-        console.log(`   ❌ ${collection}: erro (${error.message})`);
+        console.log(`   ❌ ${collection}: erro (${error})`);
       }
     }
 

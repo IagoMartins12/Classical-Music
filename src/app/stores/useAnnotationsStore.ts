@@ -207,11 +207,6 @@ interface AnnotationsStore {
   ) => void;
 }
 
-// Funções para invalidar cache e disparar eventos (mantidas iguais)
-const invalidateNextJSCache = async (userId?: string) => {
-  // implementação mantida
-};
-
 const dispatchCustomEvent = (
   type: 'created' | 'updated' | 'deleted',
   annotation?: WorkAnnotation
@@ -467,12 +462,14 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
 
       // 🔧 NOVO: Métodos específicos para filtros de comunidade
       setCommunityFilters: (communityFilters) => {
-        set((state) => ({
-          filters: {
-            ...communityFilters,
-            // Garantir que userId nunca seja incluído
-          },
-        }));
+        set(() => {
+          return {
+            filters: {
+              ...communityFilters,
+              // Garantir que userId nunca seja incluído
+            },
+          };
+        });
       },
 
       clearCommunityFilters: () => {
@@ -577,7 +574,6 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             });
 
             // 🔧 NOVO: Invalidar cache do Next.js após criação
-            await invalidateNextJSCache(data.userId);
 
             return result.annotation;
           }
@@ -714,7 +710,6 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
             });
 
             // 🔧 NOVO: Invalidar cache do Next.js após atualização
-            await invalidateNextJSCache(annotation.userId);
 
             return result.annotation;
           }
@@ -770,7 +765,6 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
 
           // Sucesso
           dispatchAnnotationEvent('deleted', annotation);
-          await invalidateNextJSCache(annotation.userId);
 
           console.log(
             '✅ [Confirmado] Anotação deletada com sucesso:',

@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let whereConditions: any[] = [];
+    const whereConditions: any[] = [];
 
     // 1. Verificação por URL baseada na fonte
     if (source === 'imslp') {
@@ -112,7 +112,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Excluir o compositor que está sendo editado
-    let finalWhereClause: any = {
+    const finalWhereClause: any = {
       OR: whereConditions,
     };
 
@@ -221,6 +221,7 @@ function extractImslpId(url: string): string | null {
     }
     return null;
   } catch (error) {
+    console.log('Erro ao extrair imslp id', error);
     return null;
   }
 }

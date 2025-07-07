@@ -35,7 +35,6 @@ const ScoreCard = ({
   groupSize = 1,
   showMostFavoritedBadge = true,
   isMostFavorited = false, // 🆕 Recebido via props
-  favoriteStats,
 }: ScoreCardProps) => {
   const [showMagnified, setShowMagnified] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });

@@ -29,7 +29,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
       : '?';
     const death = composer.deathDate
       ? new Date(composer.deathDate).getFullYear()
-      : 'presente';
+      : composer.deathDate;
 
     return `${birth} - ${death}`;
   };

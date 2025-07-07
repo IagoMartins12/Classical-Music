@@ -12,7 +12,6 @@ import {
   FiMusic,
   FiFile,
   FiCalendar,
-  FiMessageSquare,
   FiShield,
   FiAlertTriangle,
   FiExternalLink,
@@ -33,10 +32,9 @@ import NotificationSystem from '@/app/components/Notifications/NotificationSyste
 interface ModerationClientProps {
   page: number;
   status: string;
-  userId: string;
 }
 
-const ModerationClient = ({ page, status, userId }: ModerationClientProps) => {
+const ModerationClient = ({ page, status }: ModerationClientProps) => {
   const router = useRouter();
   const { notifications, removeNotification, notifySuccess, notifyError } =
     useNotifications();
@@ -44,7 +42,7 @@ const ModerationClient = ({ page, status, userId }: ModerationClientProps) => {
   const [moderations, setModerations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
-  const [totalCount, setTotalCount] = useState(0);
+  // const [totalCount, setTotalCount] = useState(0);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedModeration, setSelectedModeration] = useState<any>(null);
@@ -64,7 +62,7 @@ const ModerationClient = ({ page, status, userId }: ModerationClientProps) => {
         const data = await response.json();
         setModerations(data.moderations);
         setTotalPages(data.pagination.totalPages);
-        setTotalCount(data.pagination.totalCount);
+        // setTotalCount(data.pagination.totalCount);
       }
     } catch (error) {
       console.error('Erro ao carregar moderações:', error);
@@ -265,7 +263,7 @@ const ModerationClient = ({ page, status, userId }: ModerationClientProps) => {
                   Nenhuma moderação encontrada
                 </h3>
                 <p className="text-theme-secondary">
-                  Não há moderações com status "{status}" no momento.
+                  Não há moderações com status &quot;{status}&quot; no momento.
                 </p>
               </div>
             ) : (
@@ -336,7 +334,7 @@ const ModerationClient = ({ page, status, userId }: ModerationClientProps) => {
 
                             {moderation.description && (
                               <p className="text-sm text-theme-secondary italic">
-                                "{moderation.description}"
+                                &quot;{moderation.description}&quot;
                               </p>
                             )}
 
@@ -454,9 +452,9 @@ const ModerationClient = ({ page, status, userId }: ModerationClientProps) => {
                 </h3>
 
                 <p className="text-theme-secondary mb-6">
-                  Tem certeza que deseja deletar "
-                  {getEntityTitle(selectedModeration)}"? Esta ação não pode ser
-                  desfeita.
+                  Tem certeza que deseja deletar &quot;
+                  {getEntityTitle(selectedModeration)}&quot;? Esta ação não pode
+                  ser desfeita.
                 </p>
 
                 <div className="mb-4">

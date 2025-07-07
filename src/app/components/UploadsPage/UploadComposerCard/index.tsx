@@ -28,7 +28,6 @@ const UploadComposerCard = ({
   item,
   onEdit,
   onDelete,
-  isAdmin,
   viewMode,
   isDeleting = false,
 }: UploadComposerCardProps) => {

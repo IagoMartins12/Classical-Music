@@ -858,15 +858,6 @@ function extractWorkGenres($: cheerio.CheerioAPI): string[] {
   return finalGenres;
 }
 
-// Função melhorada para filtrar e validar gêneros
-function filterValidWorkGenres(rawGenres: string[]): string[] {
-  return rawGenres
-    .map((genre) => genre.trim().toLowerCase())
-    .filter((genre) => VALID_WORKGENRES.has(genre))
-    .map((genre) => WORK_GENRE_TRANSLATIONS[genre] || genre)
-    .filter((genre) => genre && genre.length > 0);
-}
-
 function extractIMSLPTags($: cheerio.CheerioAPI): string[] {
   const tags: Set<string> = new Set();
 
@@ -884,22 +875,152 @@ function extractIMSLPTags($: cheerio.CheerioAPI): string[] {
   return Array.from(tags);
 }
 
-function determineWorkType(title: string, $?: cheerio.CheerioAPI): any {
+function determineWorkType(
+  title: string,
+  $?: cheerio.CheerioAPI
+):
+  | 'INDIVIDUAL'
+  | 'COMPLETE_WORK'
+  | 'ARRANGEMENT'
+  | 'COLLECTION'
+  | 'COLLABORATION'
+  | 'COMPOSITION'
+  | 'COLLECTED_WORKS'
+  | 'COLLECTIONS_WITH' {
   const titleLower = title.toLowerCase();
 
-  if (titleLower.includes('complete') || titleLower.includes('collected')) {
-    return 'COLLECTED_WORKS';
-  }
-  if (titleLower.includes('arrangement') || titleLower.includes('arr.')) {
-    return 'ARRANGEMENT';
-  }
-  if (titleLower.includes('collection') || titleLower.includes('set')) {
-    return 'COLLECTION';
-  }
-  if (titleLower.includes('no.') || titleLower.includes('number')) {
-    return 'INDIVIDUAL';
+  // Palavras-chave para identificar cada tipo
+  const WORK_TYPE_KEYWORDS = {
+    COLLABORATION: [
+      'feat.',
+      'featuring',
+      'collaboration',
+      'collaborative',
+      'joint',
+      'together',
+      'co-composed',
+    ],
+    COLLECTED_WORKS: [
+      'complete works',
+      'complete pieces',
+      'complete',
+      'collected works',
+      'collected pieces',
+      'collected',
+      'opere complete',
+      'œuvres complètes',
+      'sämtliche werke',
+      'todo',
+      'todas as',
+      'all',
+      'entire',
+    ],
+    COLLECTIONS_WITH: [
+      'masterpieces',
+      'collection',
+      'selection',
+      'treasury',
+      'best of',
+      'favorites',
+      'favourites',
+      'compilation',
+      'various',
+      'mehrere',
+      'vários',
+      'diversos',
+    ],
+    ARRANGEMENT: [
+      'arr.',
+      'arranged',
+      'arrangement',
+      'transcription',
+      'adaptation',
+      'version',
+      'transcribed',
+      'adapted',
+    ],
+    COLLECTION: [
+      'set',
+      'book',
+      'volume',
+      'cahier',
+      'heft',
+      'collection',
+      'suite',
+      'cycle',
+    ],
+    INDIVIDUAL: ['no.', 'number', 'nr.', '#', 'piece', 'movement'],
+  };
+
+  // 1. Verificar se é uma COLLABORATION
+  for (const keyword of WORK_TYPE_KEYWORDS.COLLABORATION) {
+    if (titleLower.includes(keyword)) {
+      if (titleLower.match(/\b(with|and|&|feat\.)\s+[a-z]/i)) {
+        return 'COLLABORATION';
+      }
+    }
   }
 
+  // 2. Verificar se é COLLECTED WORKS
+  for (const keyword of WORK_TYPE_KEYWORDS.COLLECTED_WORKS) {
+    if (titleLower.includes(keyword)) {
+      return 'COLLECTED_WORKS';
+    }
+  }
+
+  // 3. Verificar se é COLLECTIONS WITH
+  for (const keyword of WORK_TYPE_KEYWORDS.COLLECTIONS_WITH) {
+    if (titleLower.includes(keyword)) {
+      return 'COLLECTIONS_WITH';
+    }
+  }
+
+  // 4. Verificar se é arranjo
+  for (const keyword of WORK_TYPE_KEYWORDS.ARRANGEMENT) {
+    if (titleLower.includes(keyword)) {
+      return 'ARRANGEMENT';
+    }
+  }
+
+  // 5. Verificar se é coleção completa
+  for (const keyword of WORK_TYPE_KEYWORDS.COLLECTION) {
+    if (titleLower.includes(keyword)) {
+      return 'COMPLETE_WORK';
+    }
+  }
+
+  // 6. Verificar se é peça individual (tem numeração)
+  for (const keyword of WORK_TYPE_KEYWORDS.INDIVIDUAL) {
+    if (titleLower.includes(keyword)) {
+      return 'INDIVIDUAL';
+    }
+  }
+
+  // Análise adicional usando o conteúdo da página (se disponível)
+  if ($) {
+    const pageText = $('body').text().toLowerCase();
+
+    // Verificar se a página menciona múltiplos compositores
+    const composerMentions = pageText.match(/composer[s]?:/gi);
+    if (composerMentions && composerMentions.length > 1) {
+      return 'COLLECTIONS_WITH';
+    }
+
+    // Verificar se há seções dedicadas a obras completas
+    if (
+      pageText.includes('complete works') ||
+      pageText.includes('collected works')
+    ) {
+      return 'COLLECTED_WORKS';
+    }
+
+    // Verificar indicadores de colaboração na página
+    if (pageText.includes('collaboration') || pageText.includes('joint work')) {
+      return 'COLLABORATION';
+    }
+  }
+
+  // Default: assumir que é uma composição individual
   return 'INDIVIDUAL';
 }
 
@@ -927,25 +1048,48 @@ function determinePrimaryInstrument(
 
 function determineDifficultyLevel(
   title: string,
-  opOrCatalog?: string,
-  workGenres?: string[]
-): any {
+  opOrCatalog: string | null | undefined,
+  workGenres: string[]
+): 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | null {
   const titleLower = title.toLowerCase();
 
+  // Indicadores de nível iniciante
   const beginnerIndicators = [
     'easy',
     'simple',
     'first',
     'elementary',
     'children',
+    'student',
+    'lesson',
+    'exercise',
+    'étude facile',
+    'fácil',
+    'iniciante',
+    'beginner',
+    'albumblätter',
+    'lyric pieces',
   ];
+
+  // Indicadores de nível avançado
   const advancedIndicators = [
     'concert',
     'concerto',
     'virtuoso',
     'transcendental',
+    'paganini',
+    'liszt',
+    'chopin etude',
+    'ballad',
+    'scherzo',
+    'sonata',
+    'rhapsody',
+    'fantasy',
+    'variations',
+    'toccata',
   ];
 
+  // Verificar indicadores no título
   for (const indicator of beginnerIndicators) {
     if (titleLower.includes(indicator)) {
       return 'BEGINNER';
@@ -958,6 +1102,45 @@ function determineDifficultyLevel(
     }
   }
 
+  // Verificar por opus numbers (geralmente números baixos são mais fáceis)
+  if (opOrCatalog) {
+    const opusMatch = opOrCatalog.match(/op\.?\s*(\d+)/i);
+    if (opusMatch) {
+      const opusNumber = parseInt(opusMatch[1]);
+      if (opusNumber <= 10) {
+        return 'BEGINNER';
+      } else if (opusNumber >= 50) {
+        return 'ADVANCED';
+      }
+    }
+  }
+
+  // Verificar gêneros
+  const beginnerGenres = [
+    'estudos',
+    'exercícios',
+    'minuetos',
+    'danças simples',
+  ];
+  const advancedGenres = [
+    'concertos',
+    'sonatas',
+    'rapsódias',
+    'fantasias',
+    'baladas',
+  ];
+
+  for (const genre of workGenres) {
+    const genreLower = genre.toLowerCase();
+    if (beginnerGenres.some((bg) => genreLower.includes(bg))) {
+      return 'BEGINNER';
+    }
+    if (advancedGenres.some((ag) => genreLower.includes(ag))) {
+      return 'ADVANCED';
+    }
+  }
+
+  // Default para intermediário se não conseguir determinar
   return 'INTERMEDIATE';
 }
 

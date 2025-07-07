@@ -4,7 +4,6 @@
 import {
   FiTarget,
   FiCheckCircle,
-  FiMusic,
   FiGrid,
   FiList,
   FiFilter,

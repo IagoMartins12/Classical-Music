@@ -69,7 +69,7 @@ export default function WorkSearchInput({
     const findSelectedWork = async () => {
       if (selectedWork) {
         // Primeiro tenta encontrar nas listas locais (mais rápido)
-        let work =
+        const work =
           popularWorks?.find((w) => w.id === selectedWork) ||
           works?.find((w) => w.id === selectedWork);
 

@@ -158,7 +158,7 @@ export default function NationalitySelect({
           {/* Nationalities list */}
           <div className="max-h-64 overflow-y-auto">
             {filteredNationalities.length > 0 ? (
-              filteredNationalities.map((nationality, index) => (
+              filteredNationalities.map((nationality) => (
                 <button
                   key={nationality.id}
                   onClick={() => handleNationalitySelect(nationality)}

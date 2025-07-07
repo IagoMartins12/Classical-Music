@@ -70,7 +70,7 @@ export default function ComposerSearchInput({
     const findSelectedComposer = async () => {
       if (selectedComposer) {
         // Primeiro tenta encontrar nas listas locais (mais rápido)
-        let composer =
+        const composer =
           popularComposers?.find((c) => c.id === selectedComposer) ||
           composers?.find((c) => c.id === selectedComposer);
 

@@ -6,7 +6,6 @@ import {
   FiTarget,
   FiCheckCircle,
   FiSearch,
-  FiMusic,
   FiFilter,
   FiX,
 } from 'react-icons/fi';

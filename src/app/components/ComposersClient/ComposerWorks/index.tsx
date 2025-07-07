@@ -606,13 +606,6 @@ export default function ComposerWorks({
               </div>
             </button>
 
-            {loading && (
-              <div className="flex items-center text-brand-primary">
-                <FiLoader className="w-4 h-4 mr-1 animate-spin" />
-                Filtrando...
-              </div>
-            )}
-
             <ViewModeToggle
               viewMode={viewMode}
               onViewModeChange={setViewMode}

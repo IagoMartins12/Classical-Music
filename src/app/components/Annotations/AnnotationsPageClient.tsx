@@ -121,7 +121,6 @@ const AnnotationsPageClient = () => {
     userAnnotations: allUserAnnotations, // Estado direto da store
     fetchUserAnnotations,
     loading,
-    filters,
     setFilters,
     clearFilters,
   } = useAnnotationsStore();

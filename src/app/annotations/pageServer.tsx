@@ -1,10 +1,5 @@
 // app/annotations/pageServer.tsx
-import {
-  getCurrentUserAnnotations,
-  getUserAnnotationStats,
-  getUserTopAnnotations,
-  getUserMostAnnotatedWorks,
-} from '../requests/user-annotations';
+
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../libs/auth';
 import AnnotationsPageClient from '../components/Annotations/AnnotationsPageClient';

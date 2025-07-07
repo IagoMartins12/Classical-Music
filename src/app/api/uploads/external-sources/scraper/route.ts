@@ -318,7 +318,6 @@ function extractBiographyUntilFirstHeading(
     if (mainContent.length === 0) return null;
 
     const elements = mainContent.children();
-    let foundFirstParagraph = false;
 
     elements.each((index, element) => {
       const $element = $(element);
@@ -337,7 +336,6 @@ function extractBiographyUntilFirstHeading(
           return true; // Continue
         }
 
-        foundFirstParagraph = true;
         biographyParagraphs.push(paragraphText);
 
         // Limitar para evitar textos muito longos
@@ -743,7 +741,57 @@ function extractDateFromText(text: string): string | null {
   return null;
 }
 
-// Converter nome do mês para número
+type MonthKeysEn =
+  | 'january'
+  | 'february'
+  | 'march'
+  | 'april'
+  | 'may'
+  | 'june'
+  | 'july'
+  | 'august'
+  | 'september'
+  | 'october'
+  | 'november'
+  | 'december'
+  | 'jan'
+  | 'feb'
+  | 'mar'
+  | 'apr'
+  | 'jun'
+  | 'jul'
+  | 'aug'
+  | 'sep'
+  | 'oct'
+  | 'nov'
+  | 'dec';
+
+type MonthKeysPt =
+  | 'janeiro'
+  | 'fevereiro'
+  | 'março'
+  | 'abril'
+  | 'maio'
+  | 'junho'
+  | 'julho'
+  | 'agosto'
+  | 'setembro'
+  | 'outubro'
+  | 'novembro'
+  | 'dezembro'
+  | 'jan'
+  | 'fev'
+  | 'mar'
+  | 'abr'
+  | 'mai'
+  | 'jun'
+  | 'jul'
+  | 'ago'
+  | 'set'
+  | 'out'
+  | 'nov'
+  | 'dez';
+
 function getMonthNumber(
   monthName: string,
   language: 'en' | 'pt'
@@ -802,7 +850,16 @@ function getMonthNumber(
     },
   };
 
-  return months[language][monthName.toLowerCase()] || null;
+  const key = monthName.toLowerCase();
+
+  if (language === 'en' && key in months.en) {
+    return months.en[key as MonthKeysEn];
+  }
+  if (language === 'pt' && key in months.pt) {
+    return months.pt[key as MonthKeysPt];
+  }
+
+  return null;
 }
 
 // Formatar data para ISO (YYYY-MM-DD)
@@ -817,144 +874,6 @@ function formatDateToISO(dateString: string): string | null {
   // Tentar extrair data do texto
   return extractDateFromText(dateString);
 }
-
-// Mapeamento de nacionalidades para português (baseado no imslp-scraper.ts)
-const NATIONALITY_TRANSLATION: Record<string, string> = {
-  // Inglês → Português
-  german: 'Alemão',
-  germany: 'Alemão',
-  deutschland: 'Alemão',
-  austrian: 'Austríaco',
-  austria: 'Austríaco',
-  österreich: 'Austríaco',
-  french: 'Francês',
-  france: 'Francês',
-  français: 'Francês',
-  italian: 'Italiano',
-  italy: 'Italiano',
-  italia: 'Italiano',
-  russian: 'Russo',
-  russia: 'Russo',
-  english: 'Inglês',
-  england: 'Inglês',
-  british: 'Britânico',
-  american: 'Americano',
-  usa: 'Americano',
-  'united states': 'Americano',
-  polish: 'Polonês',
-  poland: 'Polonês',
-  polska: 'Polonês',
-  spanish: 'Espanhol',
-  spain: 'Espanhol',
-  españa: 'Espanhol',
-  czech: 'Tcheco',
-  bohemian: 'Tcheco',
-  czechoslovak: 'Tcheco',
-  hungarian: 'Húngaro',
-  hungary: 'Húngaro',
-  magyar: 'Húngaro',
-  dutch: 'Holandês',
-  netherlands: 'Holandês',
-  nederland: 'Holandês',
-  belgian: 'Belga',
-  belgium: 'Belga',
-  belgique: 'Belga',
-  swiss: 'Suíço',
-  switzerland: 'Suíço',
-  schweiz: 'Suíço',
-  brazilian: 'Brasileiro',
-  brazil: 'Brasileiro',
-  brasil: 'Brasileiro',
-  finnish: 'Finlandês',
-  finland: 'Finlandês',
-  suomi: 'Finlandês',
-  norwegian: 'Norueguês',
-  norway: 'Norueguês',
-  norge: 'Norueguês',
-  swedish: 'Sueco',
-  sweden: 'Sueco',
-  sverige: 'Sueco',
-  danish: 'Dinamarquês',
-  denmark: 'Dinamarquês',
-  danmark: 'Dinamarquês',
-  portuguese: 'Português',
-  portugal: 'Português',
-  canadian: 'Canadense',
-  canada: 'Canadense',
-  japanese: 'Japonês',
-  japan: 'Japonês',
-  chinese: 'Chinês',
-  china: 'Chinês',
-  korean: 'Coreano',
-  korea: 'Coreano',
-  mexican: 'Mexicano',
-  mexico: 'Mexicano',
-  argentinian: 'Argentino',
-  argentina: 'Argentino',
-  chilean: 'Chileno',
-  chile: 'Chileno',
-  peruvian: 'Peruano',
-  peru: 'Peruano',
-  venezuelan: 'Venezuelano',
-  venezuela: 'Venezuelano',
-  colombian: 'Colombiano',
-  colombia: 'Colômbia',
-  uruguayan: 'Uruguaio',
-  uruguay: 'Uruguai',
-  indian: 'Indiano',
-  india: 'Índia',
-  australian: 'Australiano',
-  australia: 'Austrália',
-  'new zealand': 'Neozelandês',
-  'south african': 'Sul-africano',
-  egyptian: 'Egípcio',
-  turkish: 'Turco',
-  greek: 'Grego',
-  irish: 'Irlandês',
-  scottish: 'Escocês',
-  welsh: 'Galês',
-};
-
-// Função para extrair nacionalidade melhorada (baseada no imslp-scraper.ts)
-// function extractNationalityIMSLP($: cheerio.CheerioAPI): string | null {
-//   try {
-//     // Buscar na div cp_firsth por indicações de nacionalidade
-//     const firsthDiv = $('.cp_firsth');
-//     if (firsthDiv.length === 0) return null;
-
-//     const text = firsthDiv.text().toLowerCase();
-
-//     // Procurar por padrões de nacionalidade e traduzir para português
-//     for (const [englishTerm, portugueseTerm] of Object.entries(
-//       NATIONALITY_TRANSLATION
-//     )) {
-//       if (text.includes(englishTerm)) {
-//         console.log(
-//           `🌍 Nacionalidade encontrada: ${portugueseTerm} (padrão: "${englishTerm}")`
-//         );
-//         return portugueseTerm;
-//       }
-//     }
-
-//     // Tentar extrair de categorias se não encontrou no texto principal
-//     const categoriesText = extractCategoriesIMSLP($)?.toLowerCase();
-//     for (const [englishTerm, portugueseTerm] of Object.entries(
-//       NATIONALITY_TRANSLATION
-//     )) {
-//       if (categoriesText?.includes(englishTerm)) {
-//         console.log(
-//           `🌍 Nacionalidade encontrada nas categorias: ${portugueseTerm}`
-//         );
-//         return portugueseTerm;
-//       }
-//     }
-
-//     return null;
-//   } catch (error) {
-//     console.error('❌ Erro ao extrair nacionalidade:', error);
-//     return null;
-//   }
-// }
 
 function extractNationalityIMSLP($: cheerio.CheerioAPI): string | null {
   console.log('🔍 Iniciando extração de nacionalidade do IMSLP...');
@@ -1709,7 +1628,7 @@ function evaluatePageQualityIMSLP($: cheerio.CheerioAPI): {
 } {
   try {
     let completenessScore = 0;
-    let maxScore = 8;
+    const maxScore = 8;
 
     if ($('.cp_firsth h2').length > 0) completenessScore += 1;
     if (
@@ -1748,328 +1667,4 @@ function evaluatePageQualityIMSLP($: cheerio.CheerioAPI): {
       hasValidImage: false,
     };
   }
-}
-
-function extractFullName($: cheerio.CheerioAPI): string {
-  const firsthDiv = $('.cp_firsth');
-  if (firsthDiv.length > 0) {
-    const h2Element = firsthDiv.find('h2 .mw-headline');
-    if (h2Element.length > 0) {
-      return h2Element.text().trim();
-    }
-  }
-  return '';
-}
-
-function extractOtherName($: cheerio.CheerioAPI): string | null {
-  const contentSubDiv = $('#contentSub');
-  if (contentSubDiv.length === 0) return null;
-
-  const otherName = contentSubDiv.text().trim();
-  if (otherName && otherName.length > 0) {
-    return otherName;
-  }
-  return null;
-}
-
-function extractAlternativeNames($: cheerio.CheerioAPI): {
-  alternativeNames: string | null;
-  pseudonyms: string | null;
-} {
-  const mainLinksDiv = $('.cp_mainlinks');
-  let alternativeNames: string | null = null;
-  let pseudonyms: string | null = null;
-
-  if (mainLinksDiv.length === 0) {
-    return { alternativeNames, pseudonyms };
-  }
-
-  mainLinksDiv.find('span[style="font-weight:normal"]').each((_, element) => {
-    const spanText = $(element).text().trim();
-
-    const alternativeNamesLabels = [
-      'Nomes alternativos/Transliterações:',
-      'Alternative Names/Transliterations:',
-    ];
-
-    const pseudonymsLabels = ['Pseudônimos:', 'Pseudonyms:'];
-
-    if (alternativeNamesLabels.some((label) => spanText.includes(label))) {
-      alternativeNames = spanText;
-      alternativeNamesLabels.forEach((label) => {
-        alternativeNames = (alternativeNames || '').replace(label, '');
-      });
-      alternativeNames = alternativeNames.trim();
-    }
-
-    if (pseudonymsLabels.some((label) => spanText.includes(label))) {
-      pseudonyms = spanText;
-      pseudonymsLabels.forEach((label) => {
-        pseudonyms = (pseudonyms || '').replace(label, '');
-      });
-      pseudonyms = pseudonyms.trim();
-    }
-  });
-
-  return { alternativeNames, pseudonyms };
-}
-
-function extractPortraitUrl($: cheerio.CheerioAPI): string | null {
-  const imageElement = $('.cp_img img');
-  if (imageElement.length > 0) {
-    const imgSrc = imageElement.attr('src');
-    if (imgSrc && !imgSrc.includes('Nocomposerphotoavailable')) {
-      return imgSrc.startsWith('/') ? `https://imslp.org${imgSrc}` : imgSrc;
-    }
-  }
-  return null;
-}
-
-function extractDiverseInfo($: cheerio.CheerioAPI): string | null {
-  const diverseHeader = $('h2')
-    .find('span[id*="Informa"], span[id*="diversa"]')
-    .first();
-  if (diverseHeader.length === 0) return null;
-
-  const diverseSection = diverseHeader.closest('h2').next('.cp_links');
-  if (diverseSection.length === 0) return null;
-
-  const diverseText = diverseSection
-    .find('li')
-    .map((_, el) => $(el).text().trim())
-    .get()
-    .join(' ');
-  return diverseText && diverseText.length > 10 ? diverseText : null;
-}
-
-function extractExternalLinks($: cheerio.CheerioAPI): string | null {
-  const linksHeader = $('h2').find('span[id*="Links_externos"]').first();
-  if (linksHeader.length === 0) return null;
-
-  const linksSection = linksHeader.closest('h2').next('.cp_links');
-  if (linksSection.length === 0) return null;
-
-  const links: string[] = [];
-  linksSection.find('li').each((_, el) => {
-    const linkElement = $(el);
-    const linkText = linkElement.text().trim();
-    const linkUrl = linkElement.find('a').attr('href');
-
-    if (linkText && linkUrl) {
-      links.push(`${linkText} (${linkUrl})`);
-    } else if (linkText) {
-      links.push(linkText);
-    }
-  });
-
-  const externalLinks = links.join('; ');
-  return externalLinks && externalLinks.length > 5 ? externalLinks : null;
-}
-
-function extractNationality($: cheerio.CheerioAPI): string | null {
-  const firsthDiv = $('.cp_firsth');
-  if (firsthDiv.length === 0) return null;
-
-  const text = firsthDiv.text().toLowerCase();
-
-  const nationalityPatterns: Record<string, string[]> = {
-    Alemão: ['german', 'deutschland', 'germany'],
-    Austríaco: ['austrian', 'österreich', 'austria'],
-    Francês: ['french', 'france', 'français'],
-    Italiano: ['italian', 'italy', 'italia'],
-    Russo: ['russian', 'russia', 'русский'],
-    Inglês: ['english', 'england', 'british'],
-    Americano: ['american', 'usa', 'united states'],
-    Polonês: ['polish', 'poland', 'polska'],
-    Espanhol: ['spanish', 'spain', 'españa'],
-    Tcheco: ['czech', 'bohemian', 'czechoslovak'],
-    Húngaro: ['hungarian', 'hungary', 'magyar'],
-    Holandês: ['dutch', 'netherlands', 'nederland'],
-    Belga: ['belgian', 'belgium', 'belgique'],
-    Suíço: ['swiss', 'switzerland', 'schweiz'],
-    Brasileiro: ['brazilian', 'brazil', 'brasil'],
-  };
-
-  for (const [nationality, patterns] of Object.entries(nationalityPatterns)) {
-    for (const pattern of patterns) {
-      if (text.includes(pattern)) {
-        return nationality;
-      }
-    }
-  }
-
-  return null;
-}
-
-function extractInstruments($: cheerio.CheerioAPI): string | null {
-  const instruments: string[] = [];
-  const commonInstruments = [
-    'Piano',
-    'Violino',
-    'Viola',
-    'Violoncelo',
-    'Contrabaixo',
-    'Flauta',
-    'Oboé',
-    'Clarinete',
-    'Fagote',
-    'Trompa',
-    'Trompete',
-    'Trombone',
-    'Tuba',
-    'Harpa',
-    'Violão',
-    'Órgão',
-    'Cravo',
-    'Voz',
-    'Soprano',
-    'Alto',
-    'Tenor',
-    'Baixo',
-    'Coro',
-    'Orquestra',
-  ];
-
-  const pageText = $('body').text().toLowerCase();
-
-  for (const instrument of commonInstruments) {
-    const instrumentLower = instrument.toLowerCase();
-    if (
-      pageText.includes(instrumentLower + ' works') ||
-      pageText.includes('for ' + instrumentLower) ||
-      pageText.includes(instrumentLower + ' compositions')
-    ) {
-      instruments.push(instrument);
-    }
-  }
-
-  return instruments.length > 0
-    ? [...new Set(instruments)].slice(0, 10).join(', ')
-    : null;
-}
-
-function extractCategories($: cheerio.CheerioAPI): string | null {
-  const categories: string[] = [];
-  const categoryLinks = $('a[href*="Category:"]');
-
-  categoryLinks.each((_, element) => {
-    const categoryText = $(element).text().trim();
-    if (
-      categoryText &&
-      !categoryText.includes('IMSLP') &&
-      categoryText.length > 2
-    ) {
-      categories.push(categoryText);
-    }
-  });
-
-  return categories.length > 0 ? [...new Set(categories)].join(', ') : null;
-}
-
-function extractWikipediaLink($: cheerio.CheerioAPI): string | null {
-  const linksDiv = $('.cp_links');
-  if (linksDiv.length === 0) return null;
-
-  const wikipediaLinks = linksDiv.find('a').filter((_, el) => {
-    const href = $(el).attr('href');
-    const text = $(el).text().toLowerCase();
-    return !!(
-      href &&
-      (href.includes('wikipedia.org') ||
-        href.includes('wiki/') ||
-        text.includes('wikipedia'))
-    );
-  });
-
-  if (wikipediaLinks.length === 0) return null;
-
-  let wikipediaUrl = wikipediaLinks.first().attr('href');
-  if (!wikipediaUrl) return null;
-
-  if (wikipediaUrl.startsWith('http://')) {
-    wikipediaUrl = wikipediaUrl.replace('http://', 'https://');
-  }
-
-  return wikipediaUrl;
-}
-
-function determineRole($: cheerio.CheerioAPI): {
-  primaryRole: string | null;
-  roles: string | null;
-} {
-  const mwPagesDiv = $('#mw-pages');
-  if (mwPagesDiv.length === 0) {
-    return { primaryRole: null, roles: null };
-  }
-
-  const validRolesMap: Record<string, string> = {
-    'performances by': 'Cantor',
-    'compositions by': 'Compositor',
-    'works with text by': 'Libretista',
-    'arrangements by': 'Arranjador',
-    'works edited by': 'Editor',
-    'books by': 'Escritor',
-    'works translated by': 'Tradutor',
-  };
-
-  const foundRoles: string[] = [];
-
-  mwPagesDiv.find('h2').each((_, element) => {
-    const text = $(element).text().trim().toLowerCase();
-    const matchingKey = Object.keys(validRolesMap).find((key) =>
-      text.includes(key)
-    );
-
-    if (matchingKey) {
-      const role = validRolesMap[matchingKey];
-      foundRoles.push(role);
-    }
-  });
-
-  const primaryRole = foundRoles.length > 0 ? foundRoles[0] : null;
-  const additionalRoles = foundRoles.slice(1);
-
-  return {
-    primaryRole,
-    roles: additionalRoles.length > 0 ? additionalRoles.join(', ') : null,
-  };
-}
-
-function evaluatePageQuality($: cheerio.CheerioAPI): {
-  pageQuality: string;
-  dataCompleteness: number;
-  hasValidImage: boolean;
-} {
-  let completenessScore = 0;
-  let maxScore = 8;
-
-  if ($('.cp_firsth h2').length > 0) completenessScore += 1;
-  if (
-    $('.cp_firsth').text().includes('(') &&
-    $('.cp_firsth').text().includes(')')
-  )
-    completenessScore += 1;
-
-  const hasValidImage =
-    $('.cp_img img').length > 0 &&
-    !$('.cp_img img').attr('src')?.includes('Nocomposerphotoavailable');
-  if (hasValidImage) completenessScore += 1;
-
-  if ($('.cp_links a').length > 0) completenessScore += 1;
-  if ($('#mw-pages').length > 0) completenessScore += 1;
-  if ($('.cp_firsth').text().length > 100) completenessScore += 1;
-  if ($('a[href*="wikipedia"]').length > 0) completenessScore += 1;
-  if ($('.cp_mainlinks').length > 0) completenessScore += 1;
-
-  const completenessPercentage = (completenessScore / maxScore) * 100;
-
-  let pageQuality = 'low';
-  if (completenessPercentage >= 80) pageQuality = 'high';
-  else if (completenessPercentage >= 60) pageQuality = 'medium';
-
-  return {
-    pageQuality,
-    dataCompleteness: Math.round(completenessPercentage),
-    hasValidImage,
-  };
 }

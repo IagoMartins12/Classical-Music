@@ -1,21 +1,23 @@
-// app/uploads/work/[id]/edit/page.tsx
-import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
+import EditWorkClient from '@/app/components/UploadsPage/EditWorkClient';
 import { authOptions } from '@/app/libs/auth';
-import { notFound, redirect } from 'next/navigation';
 import prisma from '@/app/libs/prismadb';
 import { getFormData } from '@/app/requests/upload';
-import EditWorkClient from '@/app/components/UploadsPage/EditWorkClient/page';
+import { getServerSession } from 'next-auth';
+import { notFound, redirect } from 'next/navigation';
 
-interface EditWorkPageProps {
-  params: { id: string };
+interface EditWorkPageParams {
+  id: string;
 }
 
-export async function generateMetadata({
-  params,
-}: EditWorkPageProps): Promise<Metadata> {
+interface EditWorkPageProps {
+  params: Promise<EditWorkPageParams>;
+}
+
+export async function generateMetadata({ params }: EditWorkPageProps) {
+  const resolvedParams = await params;
+
   const work = await prisma.work.findUnique({
-    where: { id: params.id },
+    where: { id: resolvedParams.id },
     select: { title: true, composer: { select: { name: true } } },
   });
 
@@ -28,15 +30,16 @@ export async function generateMetadata({
 }
 
 export default async function EditWorkPage({ params }: EditWorkPageProps) {
+  const resolvedParams = await params;
+
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
     redirect('/login');
   }
 
-  // Buscar obra
   const work = await prisma.work.findUnique({
-    where: { id: params.id },
+    where: { id: resolvedParams.id },
     include: {
       composer: { select: { id: true, name: true, fullName: true } },
       instrument: { select: { id: true, name: true, category: true } },
@@ -48,15 +51,13 @@ export default async function EditWorkPage({ params }: EditWorkPageProps) {
     notFound();
   }
 
-  // Verificar permissões
   const isAdmin = session.user.role === 2;
   const isOwner = work.createdBy === session.user.id;
 
   if (!isAdmin && !isOwner) {
-    redirect('/uploads?error=unauthorized');
+    redirect('/');
   }
 
-  // Buscar dados para formulário
   const [formData, composers, instruments] = await Promise.all([
     getFormData(),
     prisma.composer.findMany({

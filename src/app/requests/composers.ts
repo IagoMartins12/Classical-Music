@@ -36,36 +36,52 @@ export const getEpochsCache = unstable_cache(
 function buildWhereClause(search?: string, epochId?: string) {
   const where: any = {};
 
-  where.OR = [
+  const roleFilter = [
     {
-      primaryRoleId: '6839e5a5eba93979e36ad88b',
+      primaryRoleId: '685d591c1e3db0c5aaa893e4',
     },
     {
       roles: {
-        contains: '6839e5a5eba93979e36ad88b',
+        contains: '685d591c1e3db0c5aaa893e4',
       },
     },
   ];
 
-  if (search && search.trim()) {
-    where.OR = [
+  // Caso tenha search OU epochId, os filtros de role vão dentro de AND
+  if ((search && search.trim()) || (epochId && epochId.trim())) {
+    where.AND = [
       {
-        name: {
-          contains: search.trim(),
-          mode: 'insensitive',
-        },
-      },
-      {
-        fullName: {
-          contains: search.trim(),
-          mode: 'insensitive',
-        },
+        OR: roleFilter,
       },
     ];
-  }
 
-  if (epochId && epochId.trim()) {
-    where.epochId = epochId.trim();
+    if (search && search.trim()) {
+      where.AND.push({
+        OR: [
+          {
+            name: {
+              contains: search.trim(),
+              mode: 'insensitive',
+            },
+          },
+          {
+            fullName: {
+              contains: search.trim(),
+              mode: 'insensitive',
+            },
+          },
+        ],
+      });
+    }
+
+    if (epochId && epochId.trim()) {
+      where.AND.push({
+        epochId: epochId.trim(),
+      });
+    }
+  } else {
+    // Caso não tenha search nem epochId, o filtro de role fica no OR da raiz
+    where.OR = roleFilter;
   }
 
   return where;

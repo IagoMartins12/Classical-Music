@@ -12,7 +12,6 @@ import {
   FiMusic,
   FiBookOpen,
   FiAward,
-  FiUsers,
   FiEye,
   FiX,
 } from 'react-icons/fi';

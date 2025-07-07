@@ -30,7 +30,6 @@ const UploadWorkCard = ({
   item,
   onEdit,
   onDelete,
-  isAdmin,
   viewMode,
   isDeleting = false,
 }: UploadWorkCardProps) => {

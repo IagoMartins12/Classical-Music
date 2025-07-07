@@ -1,6 +1,6 @@
 // app/libs/imslp-score-scraper-incremental.ts - Versão com Carregamento por Tab Específica
 import * as cheerio from 'cheerio';
-import { AnyNode, Element } from 'domhandler';
+import { AnyNode } from 'domhandler';
 import { IMSLPBatchProcessorOptimized } from './imslp-batch-processor-optimized';
 
 export interface IMSLPWorkScoresIncremental {
@@ -104,7 +104,6 @@ export class IMSLPScraperIncremental {
     const {
       limit = this.DEFAULT_INITIAL_LIMIT,
       offset = 0,
-      loadInBackground = true,
       specificTypes,
       targetTabType, // 🆕 Tab específica para priorizar
     } = options;

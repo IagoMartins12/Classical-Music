@@ -143,18 +143,16 @@ export async function POST(request: NextRequest) {
       fromCache = false;
 
       console.log(`✅ [API] Scraping concluído:`, {
-        loadedScores: Object.values(scoresData.loadedCounts).reduce(
-          (sum: number, count: number) => sum + count,
-          0
-        ),
-        totalScores: Object.values(scoresData.totalCounts).reduce(
-          (sum: number, count: number) => sum + count,
+        loadedScores: (
+          Object.values(scoresData.loadedCounts) as number[]
+        ).reduce((sum, count) => sum + count, 0),
+        totalScores: (Object.values(scoresData.totalCounts) as number[]).reduce(
+          (sum, count) => sum + count,
           0
         ),
         hasMore: scoresData.hasMore,
         strategy: 'primeira-vez',
       });
-
       // 3️⃣ Salvar no cache
       if (workId) {
         console.log(`💾 [API] Salvando partituras no cache...`);
@@ -354,14 +352,13 @@ export async function POST(request: NextRequest) {
         (combined.loadedCounts[type] || 0) + (newData.loadedCounts[type] || 0);
     });
 
-    const totalLoaded = Object.values(combined.loadedCounts).reduce(
-      (sum: number, count: number) => sum + count,
-      0
-    );
-    const totalAvailable = Object.values(combined.totalCounts).reduce(
-      (sum: number, count: number) => sum + count,
-      0
-    );
+    const totalLoaded = (
+      Object.values(combined.loadedCounts) as number[]
+    ).reduce((sum, count) => sum + count, 0);
+
+    const totalAvailable = (
+      Object.values(combined.totalCounts) as number[]
+    ).reduce((sum, count) => sum + count, 0);
 
     combined.hasMore = totalLoaded < totalAvailable;
 

@@ -13,18 +13,18 @@ import { InstrumentsPageClient } from '../components/InstrumentsPageClient';
 // 🎼 CONFIGURAÇÃO DE COMPOSITORES DESTAQUE
 const composerPreferences: ComposerPreferences = {
   Piano: {
-    preferredComposerId: '683bb049320ed96f5ac321a8', // Chopin como destaque para piano
+    preferredComposerId: '685e1087c6bd886c5b495d66', // Chopin como destaque para piano
   },
-  // Violino: {
-  //   preferredComposerId: 'paganini-id', // Paganini como destaque para violino
-  // },
-  // Violoncelo: {
-  // preferredComposerId: 'bach-id', // Bach como destaque para violoncelo
-  // excludedComposerIds: ['composer-menor-id'], // Remove compositores menores
-  // },
-  // Órgão: {
-  // preferredComposerId: 'bach-id', // Bach também para órgão
-  // },
+  Violino: {
+    preferredComposerId: '685f0770c6bd886c5b4982af', // Paganini como destaque para violino
+  },
+  Violoncelo: {
+    preferredComposerId: '685d8f9a8803000f9b61d151', // Bach como destaque para violoncelo
+    // excludedComposerIds: ['composer-menor-id'], // Remove compositores menores
+  },
+  Órgão: {
+    preferredComposerId: '685d8f9a8803000f9b61d151', // Bach também para órgão
+  },
   Orquestra: {
     excludedComposerIds: ['683a7e9af8ced962eff7c0d8'], // Remove compositores menores
   },

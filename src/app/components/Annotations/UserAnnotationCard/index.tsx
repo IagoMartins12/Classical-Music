@@ -107,7 +107,6 @@ const DIFFICULTY_LABELS = {
 export default function UserAnnotationCard({
   annotation,
   viewMode,
-  onUpdate,
 }: UserAnnotationCardProps) {
   const { user } = useAuth();
   const [showEditModal, setShowEditModal] = useState(false);

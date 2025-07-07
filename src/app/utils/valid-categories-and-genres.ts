@@ -51,21 +51,6 @@ export const VALID_PORTUGUESE_CATEGORIES = new Set(
   Object.values(VALID_CATEGORIES)
 );
 
-// Função para verificar se uma categoria é válida
-export function isValidCategory(category: string): boolean {
-  const categoryLower = category.toLowerCase().trim();
-
-  // Verificar se existe nas chaves (inglês)
-  for (const [english, portuguese] of Object.entries(VALID_CATEGORIES)) {
-    if (english.toLowerCase() === categoryLower) {
-      return true;
-    }
-  }
-
-  // Verificar se existe nos valores (português)
-  return VALID_PORTUGUESE_CATEGORIES.has(category.trim());
-}
-
 // Função para traduzir categoria do inglês para português
 export function translateCategory(englishCategory: string): string {
   const categoryLower = englishCategory.toLowerCase().trim();

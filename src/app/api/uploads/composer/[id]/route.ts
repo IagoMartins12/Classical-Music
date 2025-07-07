@@ -5,23 +5,21 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateUploadsCache } from '@/app/requests/upload';
 
-interface RouteParams {
-  params: {
-    id: string;
-  };
-}
-
 // GET - Buscar compositor específico
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions);
+    const { id } = await params;
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
     const composer = await prisma.composer.findUnique({
-      where: { id: params.id },
+      where: { id: id },
       include: {
         epoch: { select: { id: true, name: true } },
         primaryRole: { select: { id: true, name: true } },
@@ -46,13 +44,17 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 // PUT - Atualizar compositor
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
+    const { id } = await params;
 
     const body = await request.json();
     const {
@@ -81,7 +83,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Verificar se o compositor existe
     const existingComposer = await prisma.composer.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!existingComposer) {
@@ -194,7 +196,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const duplicateComposer = await prisma.composer.findFirst({
       where: {
         OR: duplicateConditions,
-        id: { not: params.id }, // Excluir o compositor atual
+        id: { not: id }, // Excluir o compositor atual
       },
     });
 
@@ -230,7 +232,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Atualizar o compositor
     const updatedComposer = await prisma.composer.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         name: name.trim(),
         fullName: fullName.trim(),
@@ -287,17 +289,21 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 }
 
 // DELETE - Excluir compositor
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
+    const { id } = await params;
 
     // Verificar se o compositor existe
     const existingComposer = await prisma.composer.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!existingComposer) {
@@ -325,7 +331,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     // Verificar se há obras associadas
     const worksCount = await prisma.work.count({
-      where: { composerId: params.id },
+      where: { composerId: id },
     });
 
     if (worksCount > 0) {
@@ -339,7 +345,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     // Excluir o compositor
     await prisma.composer.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     // Invalidar cache

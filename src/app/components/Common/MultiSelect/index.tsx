@@ -90,20 +90,6 @@ export default function MultiSelect({
     }
   };
 
-  const displayText = () => {
-    if (selectedValues.length === 0) {
-      return placeholder;
-    }
-
-    if (selectedValues.length <= maxDisplay) {
-      return selectedValues.join(', ');
-    }
-
-    const displayed = selectedValues.slice(0, maxDisplay).join(', ');
-    const remaining = selectedValues.length - maxDisplay;
-    return `${displayed} +${remaining} mais`;
-  };
-
   return (
     <div className="relative">
       {/* Label */}
@@ -131,7 +117,7 @@ export default function MultiSelect({
           {selectedValues.length === 0 ? (
             <span className="text-theme-secondary text-sm">{placeholder}</span>
           ) : selectedValues.length <= maxDisplay ? (
-            selectedValues.map((value, index) => (
+            selectedValues.map((value) => (
               <span
                 key={value}
                 className="inline-flex items-center capitalize gap-1 bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium"
@@ -224,7 +210,7 @@ export default function MultiSelect({
                 </p>
               </div>
             ) : (
-              filteredOptions.map((option, index) => {
+              filteredOptions.map((option) => {
                 const isSelected = selectedValues.includes(option);
                 return (
                   <button

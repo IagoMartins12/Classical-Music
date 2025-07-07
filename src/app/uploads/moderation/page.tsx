@@ -28,7 +28,5 @@ export default async function ModerationPage({
   const page = Number(resolvedSearchParams.page) || 1;
   const status = resolvedSearchParams.status || 'pending';
 
-  return (
-    <ModerationClient page={page} status={status} userId={session.user.id} />
-  );
+  return <ModerationClient page={page} status={status} />;
 }

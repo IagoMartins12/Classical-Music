@@ -26,20 +26,31 @@ export function HistoryComposerCard({ composer }: Props) {
     const birth = composer.birthDate
       ? new Date(composer.birthDate).getFullYear()
       : null;
-    const death = composer.deathDate
-      ? new Date(composer.deathDate).getFullYear()
-      : null;
 
-    if (birth && death) {
+    let death: number | null = null;
+    if (composer.deathDate) {
+      const year = new Date(composer.deathDate).getFullYear();
+      death = Number.isNaN(year) ? NaN : year;
+    } else {
+      death = null;
+    }
+
+    if (birth && death !== null && !Number.isNaN(death)) {
+      // birth e death válidos
       return `${birth} - ${death}`;
-    } else if (birth) {
+    } else if (birth && Number.isNaN(death)) {
+      // death é NaN (data inválida)
+      return `${birth} - Não definido`;
+    } else if (birth && death === null) {
+      // death ausente (null)
       return `${birth} - presente`;
-    } else if (death) {
+    } else if (!birth && death !== null && !Number.isNaN(death)) {
+      // só death válido
       return `? - ${death}`;
     }
+
     return null;
   };
-
   const lifespan = getLifespan();
 
   return (

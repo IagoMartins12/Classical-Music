@@ -83,7 +83,7 @@ export default function ComposerBiography({
     return (
       <div className="space-y-6">
         {/* Header do loading */}
-        <div className="flex items-center justify-center space-x-3 p-6 bg-gradient-to-r from-brand-primary/10 to-brand-secondary/10 border border-brand-primary/30 rounded-2xl">
+        {/* <div className="flex items-center justify-center space-x-3 p-6  rounded-2xl">
           <div className="relative">
             <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
             <div
@@ -103,7 +103,7 @@ export default function ComposerBiography({
             </p>
           </div>
           <FiZap className="w-6 h-6 text-brand-primary animate-pulse" />
-        </div>
+        </div> */}
 
         {/* Skeleton animado da biografia */}
         <div className="space-y-4">
@@ -123,21 +123,7 @@ export default function ComposerBiography({
         <div className="flex items-center justify-center space-x-6 pt-4">
           <div className="flex items-center space-x-2 text-accent-green">
             <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
-            <span className="text-xs">Coletando dados</span>
-          </div>
-          <div className="flex items-center space-x-2 text-accent-blue">
-            <div
-              className="w-2 h-2 bg-accent-blue rounded-full animate-pulse"
-              style={{ animationDelay: '0.5s' }}
-            ></div>
-            <span className="text-xs">Processando IA</span>
-          </div>
-          <div className="flex items-center space-x-2 text-brand-primary">
-            <div
-              className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"
-              style={{ animationDelay: '1s' }}
-            ></div>
-            <span className="text-xs">Finalizando</span>
+            <span className="text-xs">Buscando dados</span>
           </div>
         </div>
       </div>
@@ -145,10 +131,10 @@ export default function ComposerBiography({
   }
 
   // Mostrar erro apenas se não conseguiu gerar E não tem biografia
-  if (error && !displayBio) {
+  if (error) {
     return (
-      <div className="bg-gradient-to-r from-accent-red/10 to-accent-red/5 border border-accent-red/30 rounded-2xl p-6 shadow-theme-medium">
-        <div className="flex items-start space-x-4">
+      <div className=" rounded-2xl p-6 flex justify-center  shadow-theme-medium">
+        <div className="flex flex-col gap-4 items-center space-x-4">
           <div className="w-10 h-10 bg-accent-red/20 border border-accent-red/40 rounded-xl flex items-center justify-center flex-shrink-0">
             <FiAlertCircle className="w-5 h-5 text-accent-red" />
           </div>
@@ -170,56 +156,6 @@ export default function ComposerBiography({
               <span>Tentar novamente</span>
             </button>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!displayBio) {
-    return (
-      <div className="space-y-6">
-        {/* Empty state estilizado */}
-        <div className="text-center py-12 bg-gradient-to-br from-theme-elevated to-interactive-hover border border-theme-secondary rounded-2xl">
-          <div className="flex items-center justify-center mb-6">
-            <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-br from-theme-tertiary/30 to-theme-tertiary/10 rounded-2xl flex items-center justify-center">
-                <FiBookOpen className="w-8 h-8 text-theme-tertiary" />
-              </div>
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-brand-gradient rounded-full flex items-center justify-center">
-                <GiMusicalNotes className="w-3 h-3 text-theme-inverse" />
-              </div>
-            </div>
-          </div>
-
-          <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-            Biografia não disponível
-          </h3>
-          <p className="text-theme-secondary mb-6 max-w-md mx-auto leading-relaxed">
-            Não encontramos informações biográficas para este compositor em
-            nossa base de dados.
-          </p>
-
-          {/* Botão para gerar manualmente */}
-          <button
-            onClick={handleRetry}
-            className="btn-classical-primary flex items-center space-x-2 mx-auto group"
-          >
-            <FiZap className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
-            <span>Gerar biografia com IA</span>
-            <svg
-              className="w-4 h-4 transition-transform group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
         </div>
       </div>
     );

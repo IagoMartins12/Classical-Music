@@ -8,7 +8,6 @@ import {
   validateImageFile,
   cleanOldImages,
   generateFileName,
-  getDirectoryInfo,
 } from '@/app/utils/uploadUtils';
 
 // Função para obter caminho de upload de compositores
@@ -109,7 +108,7 @@ export async function POST(request: NextRequest) {
     const imageUrl = getPublicComposerImageUrl(finalComposerId, fileName);
 
     // 9. Obter informações do diretório
-    const dirInfo = await getDirectoryInfo(composerUploadDir);
+    // const dirInfo = await getDirectoryInfo(composerUploadDir);
     const processingTime = Date.now() - startTime;
 
     console.log(

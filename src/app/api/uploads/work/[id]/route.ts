@@ -11,7 +11,7 @@ import {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -20,8 +20,9 @@ export async function GET(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
+    const { id } = await params;
     const work = await prisma.work.findUnique({
-      where: { id: params.id },
+      where: { id: id },
       include: {
         composer: { select: { name: true, fullName: true } },
         instrument: { select: { name: true } },
@@ -56,7 +57,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -65,14 +66,15 @@ export async function PUT(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
+    const { id } = await params;
     const body = await request.json();
-    console.log('🔄 Atualizando obra:', params.id);
+    console.log('🔄 Atualizando obra:', id);
     console.log('📋 Categorias recebidas:', body.categoryNames);
     console.log('🎵 Gêneros recebidos:', body.workGenresArr);
 
     // Buscar obra existente
     const existingWork = await prisma.work.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!existingWork) {
@@ -155,7 +157,7 @@ export async function PUT(
 
     // Atualizar obra
     const updatedWork = await prisma.work.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         ...body,
         categoryNames: processedCategoryNames,
@@ -207,7 +209,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -216,9 +218,11 @@ export async function DELETE(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
+    const { id } = await params;
+
     // Buscar obra existente
     const existingWork = await prisma.work.findUnique({
-      where: { id: params.id },
+      where: { id: id },
       include: {
         cachedScores: { select: { id: true } },
         annotations: { select: { id: true } },
@@ -263,7 +267,7 @@ export async function DELETE(
 
     // Deletar obra (cascade irá deletar dados relacionados)
     await prisma.work.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     await revalidateUploadsCache(session.user.id);

@@ -4,7 +4,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiX,
   FiUser,
   FiSearch,
   FiExternalLink,
@@ -31,9 +30,8 @@ import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 import ComposerImageUpload from '../ComposerImageUpload';
 import NationalitySelect from '@/app/components/NationalitySelect';
-import { isValidDate, useFormValidation } from '@/app/utils/formUtils';
+import { useFormValidation } from '@/app/utils/formUtils';
 
-// INTERFACE CORRIGIDA PARA O DUPLICATE CHECK
 interface DuplicateCheckState {
   loading: boolean;
   found: boolean;
@@ -465,10 +463,7 @@ const CreateComposerModal = ({
       }
       return null;
     },
-    nationality: (value: string) => {
-      // Adicionar validação se necessário
-      return null;
-    },
+  
   };
 
   // Validar formato de data HTML5

@@ -7,7 +7,7 @@ import { revalidateUploadsCache } from '@/app/requests/upload';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -15,6 +15,7 @@ export async function PUT(
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
+    const { id } = await params;
 
     const body = await request.json();
     const {
@@ -41,7 +42,7 @@ export async function PUT(
 
     // Buscar partitura existente
     const existingScore = await prisma.workScore.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!existingScore) {
@@ -87,7 +88,7 @@ export async function PUT(
 
     // Atualizar partitura (mantendo dados automáticos originais)
     const score = await prisma.workScore.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         workId,
         title,
@@ -146,7 +147,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -154,10 +155,11 @@ export async function DELETE(
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
+    const { id } = await params;
 
     // Buscar partitura existente
     const existingScore = await prisma.workScore.findUnique({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     if (!existingScore) {
@@ -177,7 +179,7 @@ export async function DELETE(
 
     // Deletar partitura
     await prisma.workScore.delete({
-      where: { id: params.id },
+      where: { id: id },
     });
 
     await revalidateUploadsCache(session.user.id);

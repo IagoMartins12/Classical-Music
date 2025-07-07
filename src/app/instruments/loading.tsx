@@ -128,7 +128,7 @@ export default function InstrumentsLoading() {
           <div className="flex items-center space-x-3">
             <div className="w-5 h-5 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
             <span className="text-theme-secondary text-sm classical-caption">
-              Carregando instrumentos históricos...
+              Carregando instrumentos ...
             </span>
           </div>
         </div>

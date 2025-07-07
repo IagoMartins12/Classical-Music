@@ -18,18 +18,13 @@ interface ComposerTimeline {
   epochName: string;
   birthYear: number | null;
   deathYear: number | null;
+  // Campos adicionados durante o processamento
+  extractedBirthYear?: number | null;
+  extractedDeathYear?: number | null;
+  epochKey?: string;
+  gradientClass?: string;
+  dotColorClass?: string;
 }
-
-// interface EpochData {
-//   id: string;
-//   name: string;
-//   period: string;
-//   description: string;
-//   characteristics: string[];
-//   keyDevelopments: string[];
-//   musicalForms: string[];
-//   instruments: string[];
-// }
 
 interface Props {
   composers: ComposerTimeline[];
@@ -65,11 +60,44 @@ const epochMapping: Record<string, keyof typeof epochColors> = {
   Moderno: 'Modern',
 };
 
+// Função para extrair ano de diferentes formatos de data
+const extractYear = (dateStr: string | null): number | null => {
+  if (!dateStr) return null;
+
+  // Remove "ca." e outros prefixos
+  const cleanDate = dateStr.replace(/^(ca\.|c\.|around|about)\s*/i, '');
+
+  // Extrai o primeiro número de 4 dígitos encontrado
+  const yearMatch = cleanDate.match(/\d{4}/);
+  if (yearMatch) {
+    return parseInt(yearMatch[0], 10);
+  }
+
+  // Para casos como "1515 or 1516", pega o primeiro ano
+  const rangeMatch = cleanDate.match(/(\d{4})\s*(or|to|-)\s*\d{4}/);
+  if (rangeMatch) {
+    return parseInt(rangeMatch[1], 10);
+  }
+
+  return null;
+};
+
 export function ComposersTimeline({ composers }: Props) {
   const timelineData = useMemo(() => {
-    const sortedComposers = [...composers].sort((a, b) => {
-      const aYear = a.birthYear || 0;
-      const bYear = b.birthYear || 0;
+    const composersWithYears = composers.map((composer) => {
+      const birthYear = extractYear(composer.birthDate);
+      const deathYear = extractYear(composer.deathDate);
+
+      return {
+        ...composer,
+        extractedBirthYear: birthYear,
+        extractedDeathYear: deathYear,
+      };
+    });
+
+    const sortedComposers = [...composersWithYears].sort((a, b) => {
+      const aYear = a.extractedBirthYear || 0;
+      const bYear = b.extractedBirthYear || 0;
       return aYear - bYear;
     });
 
@@ -86,15 +114,17 @@ export function ComposersTimeline({ composers }: Props) {
     });
   }, [composers]);
 
-  const getLifespan = (composer: ComposerTimeline) => {
-    if (!composer.birthYear) return 'Período desconhecido';
-    if (!composer.deathYear) return `${composer.birthYear} - presente`;
-    return `${composer.birthYear} - ${composer.deathYear}`;
+  const getLifespan = (composer: any) => {
+    if (!composer.extractedBirthYear) return 'Período desconhecido';
+    if (!composer.extractedDeathYear)
+      return `${composer.extractedBirthYear} - presente`;
+    return `${composer.extractedBirthYear} - ${composer.extractedDeathYear}`;
   };
 
-  const getLifespanDuration = (composer: ComposerTimeline) => {
-    if (!composer.birthYear || !composer.deathYear) return null;
-    return composer.deathYear - composer.birthYear;
+  const getLifespanDuration = (composer: any) => {
+    if (!composer.extractedBirthYear || !composer.extractedDeathYear)
+      return null;
+    return composer.extractedDeathYear - composer.extractedBirthYear;
   };
 
   return (

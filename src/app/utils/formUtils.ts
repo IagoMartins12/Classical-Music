@@ -1,5 +1,4 @@
 // app/utils/formUtils.ts - ATUALIZADO
-import { RefObject } from 'react';
 
 export interface FormFieldRef {
   current: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;

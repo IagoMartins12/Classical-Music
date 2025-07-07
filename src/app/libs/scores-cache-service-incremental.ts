@@ -65,7 +65,7 @@ export class ScoresCacheServiceIncremental {
       specificTypes?: string[];
     } = {}
   ): Promise<CacheResult> {
-    const { limit = 5, offset = 0, priorityScore, specificTypes } = options;
+    const { specificTypes } = options;
 
     try {
       console.log(
@@ -273,7 +273,7 @@ export class ScoresCacheServiceIncremental {
     priorityScoreId?: string,
     options: CacheOptions = {}
   ): Promise<void> {
-    const { immediate = true, background = false } = options;
+    const { background = false } = options;
 
     try {
       console.log(

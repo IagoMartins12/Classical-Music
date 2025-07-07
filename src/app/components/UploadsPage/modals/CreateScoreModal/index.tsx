@@ -5,10 +5,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiX,
   FiFile,
   FiUpload,
-  FiExternalLink,
   FiSave,
   FiLoader,
   FiInfo,
@@ -181,6 +179,7 @@ const CreateScoreModal = ({
           });
         }
       } catch (error) {
+        console.log('error', error);
         setPdfValidation({
           isValidating: false,
           isValid: false,

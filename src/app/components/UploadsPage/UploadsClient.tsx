@@ -72,18 +72,9 @@ interface UploadsClientProps {
 
 type FilterTab = 'all' | 'composers' | 'works' | 'scores';
 
-const typeOptions = [
-  { value: 'all', label: 'Todos os tipos' },
-  { value: 'composer', label: 'Compositores' },
-  { value: 'work', label: 'Obras' },
-  { value: 'score', label: 'Partituras' },
-];
-
 const UploadsClient = ({
   uploads,
-  composers,
-  works,
-  scores,
+
   epochs,
   currentPage,
   totalPages,
@@ -92,7 +83,6 @@ const UploadsClient = ({
   selectedType: initialSelectedType,
   selectedEpoch: initialSelectedEpoch,
   isAdmin,
-  userId,
 }: UploadsClientProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -117,9 +107,6 @@ const UploadsClient = ({
   const [showBulkModal, setShowBulkModal] = useState(false);
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
   const [createModalType, setCreateModalType] = useState<
-    'composer' | 'work' | 'score'
-  >('composer');
-  const [bulkModalType, setBulkModalType] = useState<
     'composer' | 'work' | 'score'
   >('composer');
 
@@ -352,11 +339,6 @@ const UploadsClient = ({
   const handleCreateNew = (type: 'composer' | 'work' | 'score') => {
     setCreateModalType(type);
     setShowCreateModal(true);
-  };
-
-  const handleBulkUpload = (type: 'composer' | 'work' | 'score') => {
-    setBulkModalType(type);
-    setShowBulkModal(true);
   };
 
   const handleEdit = (item: UserUpload) => {
@@ -1125,7 +1107,7 @@ const UploadsClient = ({
         <BulkUploadModal
           isOpen={showBulkModal}
           onClose={() => setShowBulkModal(false)}
-          type={bulkModalType}
+          type={'score'}
         />
       )}
 

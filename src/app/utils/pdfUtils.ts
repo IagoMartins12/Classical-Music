@@ -119,6 +119,7 @@ function extractTitleFromUrl(url: string): string {
 
     return capitalized.trim();
   } catch (error) {
+    console.log('error', error);
     return '';
   }
 }
@@ -195,7 +196,8 @@ export function isValidUrl(string: string): boolean {
   try {
     new URL(string);
     return true;
-  } catch (_) {
+  } catch (error) {
+    console.log('error', error)
     return false;
   }
 }

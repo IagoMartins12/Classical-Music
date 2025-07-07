@@ -168,7 +168,7 @@ async function processLargeCollection(
           }
         }
       } catch (chunkError) {
-        console.error(`   ❌ Erro no chunk ${chunkIndex}:`, chunkError.message);
+        console.error(`   ❌ Erro no chunk ${chunkIndex}:`, chunkError);
       }
     }
 
@@ -372,7 +372,7 @@ async function performBackup(): Promise<void> {
       await fs.writeFile(mainBackupPath, JSON.stringify(lightBackup, null, 2));
       console.log('✅ Backup principal salvo');
     } catch (error) {
-      console.warn('⚠️  Erro salvando backup principal:', error.message);
+      console.warn('⚠️  Erro salvando backup principal:', error);
     }
 
     // Atualizar metadados finais
@@ -434,24 +434,6 @@ async function performBackup(): Promise<void> {
     );
   } catch (error) {
     console.error('\n❌ Erro durante o backup:', error);
-
-    // Tentar salvar metadados de erro
-    if (backupDir) {
-      try {
-        const errorMetadata = {
-          timestamp: new Date().toISOString(),
-          status: 'failed',
-          error: error.message,
-          models: MODELS_ORDER,
-          phase: error.message.includes('heap') ? 'memory_overflow' : 'unknown',
-        };
-        await fs.writeFile(
-          path.join(backupDir, 'error.json'),
-          JSON.stringify(errorMetadata, null, 2)
-        );
-      } catch {}
-    }
-
     throw error;
   } finally {
     await prisma.$disconnect();
@@ -609,10 +591,7 @@ async function performRestore(
                 `   ✓ Chunk ${chunkFile}: ${chunkData.length} registros processados`
               );
             } catch (chunkError) {
-              console.warn(
-                `   ⚠️  Erro no chunk ${chunkFile}:`,
-                chunkError.message
-              );
+              console.warn(`   ⚠️  Erro no chunk ${chunkFile}:`, chunkError);
             }
           }
         } catch {
@@ -700,7 +679,7 @@ async function performRestore(
         totalRestored += recordsInModel;
         restoredCount++;
       } catch (error) {
-        console.error(`✗ Erro restaurando ${modelName}:`, error.message);
+        console.error(`✗ Erro restaurando ${modelName}:`, error);
         errorCount++;
       }
     }
@@ -961,10 +940,7 @@ async function verifyBackup(backupPath: string): Promise<boolean> {
 
         return isValid;
       } catch (metaError) {
-        console.error(
-          '❌ Não foi possível verificar backup:',
-          metaError.message
-        );
+        console.error('❌ Não foi possível verificar backup:', metaError);
         return false;
       }
     }

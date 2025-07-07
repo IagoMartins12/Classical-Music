@@ -1,11 +1,12 @@
 // app/uploads/composer/[id]/edit/page.tsx - CORRIGIDO
-import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { notFound, redirect } from 'next/navigation';
 import prisma from '@/app/libs/prismadb';
-import { getComposerFormData, getFormData } from '@/app/requests/upload';
-import EditComposerClient from '@/app/components/UploadsPage/EditComposerClient/page';
+import { getComposerFormData } from '@/app/requests/upload';
+import EditComposerClient from '@/app/components/UploadsPage/EditComposerClient';
+import { Metadata } from 'next';
+import { getComposerById } from '@/app/requests/composer-details';
 
 interface EditComposerPageProps {
   params: Promise<{ id: string }>; // Mudança para Promise
@@ -17,19 +18,36 @@ export async function generateMetadata({
   // Await params antes de usar
   const resolvedParams = await params;
 
-  const composer = await prisma.composer.findUnique({
-    where: { id: resolvedParams.id },
-    select: { name: true, fullName: true },
-  });
+  try {
+    const composer = await getComposerById(resolvedParams.id);
 
-  return {
-    title: `Editar ${
-      composer?.fullName || composer?.name || 'Compositor'
-    } | Classical Music App`,
-    description: `Editar informações do compositor ${
-      composer?.fullName || composer?.name || ''
-    }`,
-  };
+    if (!composer) {
+      return {
+        title: 'Compositor não encontrado',
+        description: 'O compositor solicitado não foi encontrado.',
+      };
+    }
+
+    return {
+      title: `Editar ${
+        composer?.fullName || composer?.name || 'Compositor'
+      } | Classical Music App`,
+      description: `Editar informações do compositor ${
+        composer?.fullName || composer?.name || ''
+      }`,
+      openGraph: {
+        title: `${composer.name} - Compositor Clássico`,
+        description: `Editar informações do compositor ${composer.fullName}`,
+        images: composer.portraitUrl ? [composer.portraitUrl] : [],
+      },
+    };
+  } catch (error) {
+    console.log('Error', error);
+    return {
+      title: 'Compositor não encontrado',
+      description: 'O compositor solicitado não foi encontrado.',
+    };
+  }
 }
 
 export default async function EditComposerPage({

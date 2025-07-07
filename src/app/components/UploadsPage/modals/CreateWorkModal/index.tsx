@@ -5,7 +5,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  FiX,
   FiMusic,
   FiExternalLink,
   FiSave,
@@ -161,7 +160,6 @@ const CreateWorkModal = ({
   const validWorkGenreOptions = Array.from(VALID_PORTUGUESE_WORKGENRES).sort();
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [loadingFormData, setLoadingFormData] = useState(false);
 
   // Populate form when editing
   useEffect(() => {
@@ -205,7 +203,6 @@ const CreateWorkModal = ({
 
   // Carregar dados adicionais quando necessário
   const loadFormData = async () => {
-    setLoadingFormData(true);
     try {
       const response = await fetch('/api/uploads/form-data');
       if (response.ok) {
@@ -219,8 +216,6 @@ const CreateWorkModal = ({
       }
     } catch (error) {
       console.error('Erro ao carregar dados do formulário:', error);
-    } finally {
-      setLoadingFormData(false);
     }
   };
 

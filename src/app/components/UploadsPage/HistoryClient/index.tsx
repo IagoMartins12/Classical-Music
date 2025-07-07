@@ -14,8 +14,6 @@ import {
   FiFilter,
   FiCalendar,
   FiActivity,
-  FiX,
-  FiInfo,
 } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -177,10 +175,9 @@ const HistoryClient = ({
 
   const formatChanges = (changes: any) => {
     if (!changes || typeof changes !== 'object') return null;
-
     const changesList = Object.entries(changes)
-      .filter(([key, value]) => value !== undefined && value !== null)
-      .slice(0, 3); // Mostrar apenas os 3 primeiros
+      .filter(([, value]) => value !== undefined && value !== null)
+      .slice(0, 3);
 
     if (changesList.length === 0) return null;
 

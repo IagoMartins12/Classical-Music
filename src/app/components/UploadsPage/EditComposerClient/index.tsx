@@ -12,6 +12,7 @@ import {
 } from '../../animation/AnimatedComponents';
 import Button from '../../Common/Button';
 import CreateComposerModal from '../modals/CreateComposerModal';
+import Image from 'next/image';
 
 interface EditComposerClientProps {
   composer: any;
@@ -126,7 +127,9 @@ const EditComposerClient = ({
               {/* Image */}
               <div className="flex justify-center">
                 {composer.portraitUrl ? (
-                  <img
+                  <Image
+                    width={50}
+                    height={50}
                     src={composer.portraitUrl}
                     alt={composer.fullName || composer.name}
                     className="w-64 h-64 object-cover rounded-xl border-2 border-theme-secondary"

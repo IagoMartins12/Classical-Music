@@ -10,11 +10,8 @@ import {
   FiBookOpen,
   FiMoreHorizontal,
   FiLayers,
-  FiHeart,
   FiTrendingUp,
   FiDownload,
-  FiZap,
-  FiActivity,
   FiTarget,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
@@ -129,23 +126,16 @@ export default function IMSLPTabsIncremental({
   loadingMore,
   error,
   onRefetch,
-  onLoadMore,
   onLoadMoreForTab,
   onLoadAll,
   onScoreSelect,
   workId,
   workTitle,
   composerName,
-  hasMore = false,
   totalAvailable = 0,
   currentLoaded = 0,
-  backgroundCaching = false,
-  cacheProgress = 0,
+
   getTabStats,
-  mostFavoritedScoreId,
-  mostFavoritedSource = 'IMSLP',
-  hasMostFavorited = false,
-  loadingMostFavorited = false,
   isScoreMostFavorited,
 }: IMSLPTabsIncrementalProps) {
   const [activeTab, setActiveTab] = useState<string>(() => {
@@ -296,9 +286,6 @@ export default function IMSLPTabsIncremental({
   const activeTabData =
     imslpData.scoresByType[activeTab as keyof typeof imslpData.scoresByType] ||
     [];
-
-  const progressPercentage =
-    totalAvailable > 0 ? Math.round((currentLoaded / totalAvailable) * 100) : 0;
 
   return (
     <AnimatedCard hover="none" className="classical-card overflow-hidden">
@@ -631,22 +618,6 @@ export default function IMSLPTabsIncremental({
                       <div className="flex flex-wrap gap-4 justify-center">
                         {renderTabSpecificButtons()}
                       </div>
-
-                      {/* Aviso sobre cache em background */}
-                      {backgroundCaching && (
-                        <div className="bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-xl p-4 max-w-md">
-                          <div className="flex items-center space-x-2 text-sm">
-                            <FiZap className="w-4 h-4 text-accent-green animate-pulse" />
-                            <span className="text-theme-primary font-medium">
-                              Cache em background ativo ({cacheProgress}%)
-                            </span>
-                          </div>
-                          <p className="text-xs text-theme-secondary mt-1">
-                            As partituras estão sendo pré-carregadas para
-                            acelerar futuras navegações.
-                          </p>
-                        </div>
-                      )}
                     </div>
                   )}
 

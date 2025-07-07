@@ -31,7 +31,6 @@ const UploadScoreCard = ({
   item,
   onEdit,
   onDelete,
-  isAdmin,
   viewMode,
   isDeleting = false,
 }: UploadScoreCardProps) => {
