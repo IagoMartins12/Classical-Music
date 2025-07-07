@@ -1,4 +1,4 @@
-// CreateComposerModal.tsx - CORRIGIDO COM TIPAGEM ADEQUADA
+// CreateComposerModal.tsx - CORRIGIDO
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -19,6 +19,7 @@ import {
   FiCheck,
   FiAlertCircle,
   FiDatabase,
+  FiLock,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -81,6 +82,7 @@ const CreateComposerModal = ({
   const [dataSource, setDataSource] = useState<DataSource>('none');
   const [scrapingResult, setScrapingResult] = useState<any>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isEditingExternalSource, setIsEditingExternalSource] = useState(false);
 
   // ESTADO COM TIPAGEM CORRIGIDA
   const [duplicateCheck, setDuplicateCheck] = useState<DuplicateCheckState>({
@@ -129,6 +131,25 @@ const CreateComposerModal = ({
   // Populate form when editing
   useEffect(() => {
     if (editingComposer) {
+      // Determinar fonte de dados baseado nos campos existentes
+      let detectedSource: DataSource = 'none';
+      let detectedUrl = '';
+
+      if (editingComposer.imslpId) {
+        detectedSource = 'imslp';
+        detectedUrl =
+          editingComposer.permLinkImslp ||
+          `https://imslp.org/wiki/${editingComposer.imslpId}`;
+        setIsEditingExternalSource(true);
+      } else if (editingComposer.wikipediaLink) {
+        detectedSource = 'wikipedia';
+        detectedUrl = editingComposer.wikipediaLink;
+        setIsEditingExternalSource(true);
+      }
+
+      setDataSource(detectedSource);
+      setUrlToScrape(detectedUrl);
+
       setFormData({
         name: editingComposer.name || '',
         fullName: editingComposer.fullName || '',
@@ -149,20 +170,10 @@ const CreateComposerModal = ({
         imslpCategories: editingComposer.imslpCategories || '',
         primaryRoleId: editingComposer.primaryRoleId || '',
         secondaryRoles: editingComposer.roles
-          ? editingComposer.roles.split(', ')
+          ? editingComposer.roles.split(', ').filter(Boolean)
           : [],
-        dataSource: editingComposer.imslpId
-          ? 'imslp'
-          : editingComposer.wikipediaLink
-          ? 'wikipedia'
-          : 'none',
+        dataSource: detectedSource,
       });
-
-      if (editingComposer.imslpId) {
-        setDataSource('imslp');
-      } else if (editingComposer.wikipediaLink) {
-        setDataSource('wikipedia');
-      }
     }
   }, [editingComposer]);
 
@@ -486,21 +497,23 @@ const CreateComposerModal = ({
       return;
     }
 
-    // Verificar duplicatas antes de salvar
-    if (
-      formData.imslpId &&
-      (await checkDuplicateByLink(formData.imslpId, 'imslp'))
-    ) {
-      alert('Já existe um compositor com este link do IMSLP.');
-      return;
-    }
+    // Verificar duplicatas antes de salvar (apenas se não estiver editando fonte externa)
+    if (!isEditingExternalSource) {
+      if (
+        formData.imslpId &&
+        (await checkDuplicateByLink(formData.imslpId, 'imslp'))
+      ) {
+        alert('Já existe um compositor com este link do IMSLP.');
+        return;
+      }
 
-    if (
-      formData.wikipediaLink &&
-      (await checkDuplicateByLink(formData.wikipediaLink, 'wikipedia'))
-    ) {
-      alert('Já existe um compositor com este link da Wikipedia.');
-      return;
+      if (
+        formData.wikipediaLink &&
+        (await checkDuplicateByLink(formData.wikipediaLink, 'wikipedia'))
+      ) {
+        alert('Já existe um compositor com este link da Wikipedia.');
+        return;
+      }
     }
 
     setIsSubmitting(true);
@@ -738,6 +751,12 @@ const CreateComposerModal = ({
                     <span className="text-sm font-medium text-theme-primary">
                       Extrair Dados de Fonte Externa
                     </span>
+                    {isEditingExternalSource && (
+                      <div className="flex items-center space-x-1 text-xs text-blue-600">
+                        <FiLock className="w-3 h-3" />
+                        <span>Fonte detectada automaticamente</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -761,7 +780,7 @@ const CreateComposerModal = ({
                         setDataSource(e.target.value as DataSource)
                       }
                       className="w-full"
-                      disabled={editingComposer}
+                      disabled={isEditingExternalSource}
                     />
                   </div>
 
@@ -780,6 +799,7 @@ const CreateComposerModal = ({
                             : 'https://en.wikipedia.org/wiki/Wolfgang_Amadeus_Mozart'
                         }
                         leftIcon={<FiLink />}
+                        disabled={isEditingExternalSource}
                       />
 
                       {/* Verificação de Duplicata MELHORADA */}
@@ -834,24 +854,28 @@ const CreateComposerModal = ({
                       )}
 
                       {/* Botão de Scraping */}
-                      <div className="mt-3">
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          leftIcon={
-                            scrapingUrl ? (
-                              <FiLoader className="animate-spin" />
-                            ) : (
-                              <FiSearch />
-                            )
-                          }
-                          onClick={handleScrapeUrl}
-                          disabled={scrapingUrl || duplicateCheck.found}
-                        >
-                          {scrapingUrl ? 'Extraindo Dados...' : 'Extrair Dados'}
-                        </Button>
-                      </div>
+                      {!isEditingExternalSource && (
+                        <div className="mt-3">
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            leftIcon={
+                              scrapingUrl ? (
+                                <FiLoader className="animate-spin" />
+                              ) : (
+                                <FiSearch />
+                              )
+                            }
+                            onClick={handleScrapeUrl}
+                            disabled={scrapingUrl || duplicateCheck.found}
+                          >
+                            {scrapingUrl
+                              ? 'Extraindo Dados...'
+                              : 'Extrair Dados'}
+                          </Button>
+                        </div>
+                      )}
 
                       {/* Resultado do Scraping */}
                       {scrapingResult && (
@@ -866,6 +890,22 @@ const CreateComposerModal = ({
                             Fonte: {scrapingResult.source} | Qualidade:{' '}
                             {scrapingResult.data.pageQuality} | Completude:{' '}
                             {scrapingResult.data.dataCompleteness}%
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Aviso para fontes externas sendo editadas */}
+                      {isEditingExternalSource && (
+                        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <div className="flex items-center space-x-2">
+                            <FiInfo className="w-4 h-4 text-blue-600" />
+                            <span className="text-sm text-blue-800">
+                              Este compositor foi originalmente criado a partir
+                              de uma fonte externa (
+                              {dataSource === 'imslp' ? 'IMSLP' : 'Wikipedia'}).
+                              Você pode editar os dados diretamente nos campos
+                              abaixo.
+                            </span>
                           </div>
                         </div>
                       )}
@@ -1028,13 +1068,13 @@ const CreateComposerModal = ({
               </AnimatedCard>
 
               {/* Classification */}
-              <AnimatedCard className="classical-card-simple p-4" hover="none">
+              <AnimatedCard className="classical-card-simple p-4 " hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiTag className="w-5 h-5" />
                   <span>Classificação</span>
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 space-y-4 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
                       Época *
@@ -1070,7 +1110,6 @@ const CreateComposerModal = ({
                         })),
                       ]}
                       value={formData.primaryRoleId}
-                      defaultValue={'Compositor'}
                       onChange={(e) =>
                         handleInputChange('primaryRoleId', e.target.value)
                       }
@@ -1111,23 +1150,26 @@ const CreateComposerModal = ({
                     </div>
                   </div>
 
-                  <Input
-                    label="Instrumentos"
-                    value={formData.instruments}
-                    onChange={(e) =>
-                      handleInputChange('instruments', e.target.value)
-                    }
-                    placeholder="Piano, Violino, Orquestra"
-                  />
+                  <div className="col-span-2">
+                    <Input
+                      label="Instrumentos que compôs:"
+                      value={formData.instruments}
+                      onChange={(e) =>
+                        handleInputChange('instruments', e.target.value)
+                      }
+                      placeholder="Piano, Violino, Orquestra"
+                    />
 
-                  <Input
-                    label="Categorias IMSLP"
-                    value={formData.imslpCategories}
-                    onChange={(e) =>
-                      handleInputChange('imslpCategories', e.target.value)
-                    }
-                    placeholder="Romantic composers, German composers"
-                  />
+                    <Input
+                      // label="Categorias IMSLP"
+                      value={formData.imslpCategories}
+                      onChange={(e) =>
+                        handleInputChange('imslpCategories', e.target.value)
+                      }
+                      placeholder="Romantic composers, German composers"
+                      className="hidden"
+                    />
+                  </div>
                 </div>
               </AnimatedCard>
 
@@ -1138,7 +1180,7 @@ const CreateComposerModal = ({
                   <span>Links Externos</span>
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1  gap-4">
                   <Input
                     label="Link da Wikipedia"
                     value={formData.wikipediaLink}

@@ -237,7 +237,7 @@ const EditComposerClient = ({
                 </div>
 
                 {composer.bio && (
-                  <div>
+                  <div className="whitespace-pre-line text-theme-secondary leading-relaxed text-base classical-body">
                     <h3 className="text-lg font-semibold text-theme-primary mb-2">
                       Biografia
                     </h3>

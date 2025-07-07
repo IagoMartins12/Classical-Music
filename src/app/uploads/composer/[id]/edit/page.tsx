@@ -1,21 +1,24 @@
-// app/uploads/composer/[id]/edit/page.tsx
+// app/uploads/composer/[id]/edit/page.tsx - CORRIGIDO
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { notFound, redirect } from 'next/navigation';
 import prisma from '@/app/libs/prismadb';
-import { getFormData } from '@/app/requests/upload';
+import { getComposerFormData, getFormData } from '@/app/requests/upload';
 import EditComposerClient from '@/app/components/UploadsPage/EditComposerClient/page';
 
 interface EditComposerPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>; // Mudança para Promise
 }
 
 export async function generateMetadata({
   params,
 }: EditComposerPageProps): Promise<Metadata> {
+  // Await params antes de usar
+  const resolvedParams = await params;
+
   const composer = await prisma.composer.findUnique({
-    where: { id: params.id },
+    where: { id: resolvedParams.id },
     select: { name: true, fullName: true },
   });
 
@@ -32,6 +35,9 @@ export async function generateMetadata({
 export default async function EditComposerPage({
   params,
 }: EditComposerPageProps) {
+  // Await params antes de usar
+  const resolvedParams = await params;
+
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
@@ -40,7 +46,7 @@ export default async function EditComposerPage({
 
   // Buscar compositor
   const composer = await prisma.composer.findUnique({
-    where: { id: params.id },
+    where: { id: resolvedParams.id },
     include: {
       epoch: { select: { id: true, name: true } },
       primaryRole: { select: { id: true, name: true } },
@@ -60,7 +66,7 @@ export default async function EditComposerPage({
   }
 
   // Buscar dados para formulário
-  const formData = await getFormData();
+  const formData = await getComposerFormData();
 
   return (
     <EditComposerClient

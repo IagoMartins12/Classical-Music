@@ -542,23 +542,15 @@ export const getFormData = unstable_cache(
           select: { id: true, name: true },
           orderBy: { name: 'asc' },
         }),
-        // Buscar compositores populares (top 50 por número de obras)
+        // CORREÇÃO: Buscar compositores sem ordenação por contagem
         prisma.composer.findMany({
           select: {
             id: true,
             name: true,
             fullName: true,
-            _count: {
-              select: {
-                works: true,
-              },
-            },
           },
-          orderBy: [
-            { works: { _count: 'desc' } }, // Sintaxe correta para contar relações
-            { name: 'asc' },
-          ],
-          take: 50,
+          orderBy: { name: 'asc' }, // Ordenação simples por nome
+          take: 100, // Reduzir quantidade para melhor performance
         }),
         // Buscar obras recentes
         prisma.work.findMany({
@@ -577,12 +569,12 @@ export const getFormData = unstable_cache(
         }),
       ]);
 
-      // Formatar compositores
+      // Formatar compositores (sem contagem de obras)
       const formattedComposers = composers.map((composer) => ({
         id: composer.id,
         name: composer.name,
         fullName: composer.fullName,
-        worksCount: composer._count.works,
+        worksCount: 0, // Removendo contagem por performance
       }));
 
       // Formatar obras
@@ -616,7 +608,6 @@ export const getFormData = unstable_cache(
     tags: ['form-data'],
   }
 );
-
 // Cache de épocas (reutilizar da página de compositores)
 export const getEpochsCache = unstable_cache(
   async () => {
@@ -636,14 +627,51 @@ export const getEpochsCache = unstable_cache(
     tags: ['epochs'],
   }
 );
+export const getComposerFormData = unstable_cache(
+  async () => {
+    try {
+      // Buscar apenas os dados essenciais para o formulário
+      const [epochs, roles] = await Promise.all([
+        prisma.epoch.findMany({
+          select: { id: true, name: true },
+          orderBy: { name: 'asc' },
+        }),
+        prisma.role.findMany({
+          select: { id: true, name: true },
+          orderBy: { name: 'asc' },
+        }),
+      ]);
 
-// Função para invalidar caches
+      return {
+        epochs,
+        roles,
+      };
+    } catch (error) {
+      console.error(
+        'Erro ao buscar dados para formulário do compositor:',
+        error
+      );
+      return {
+        epochs: [],
+        roles: [],
+      };
+    }
+  },
+  ['composer-form-data'],
+  {
+    revalidate: 3600, // 1 hora
+    tags: ['composer-form-data'],
+  }
+);
+
+// Função para invalidar caches - ATUALIZADA
 export async function revalidateUploadsCache(userId?: string) {
   const { revalidateTag } = await import('next/cache');
 
   revalidateTag('user-uploads');
   revalidateTag('all-uploads');
   revalidateTag('form-data');
+  revalidateTag('composer-form-data'); // Adicionar novo cache
   revalidateTag('epochs');
 
   if (userId) {
