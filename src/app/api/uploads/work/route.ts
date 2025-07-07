@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
       epochId,
       videoUrl,
       imslpId,
+      imslpPermlink,
       opOrCatalog,
       compositionYear,
       firstPublishDate,
@@ -86,9 +87,7 @@ export async function POST(request: NextRequest) {
     // Verificar se já existe uma obra com esse título para este compositor
     const existingWork = await prisma.work.findFirst({
       where: {
-        title,
-        composerId,
-        ...(imslpId ? { imslpId } : {}),
+        OR: [{ imslpId: imslpId }, { imslpPermlink: imslpPermlink }],
       },
     });
 
@@ -171,7 +170,7 @@ export async function POST(request: NextRequest) {
         instrumentId,
         epochId,
         videoUrl,
-        imslpPermlink: imslpId ? `https://imslp.org/wiki/${imslpId}` : '',
+        imslpPermlink: imslpPermlink,
         imslpId: imslpId || '',
         opOrCatalog,
         compositionYear,

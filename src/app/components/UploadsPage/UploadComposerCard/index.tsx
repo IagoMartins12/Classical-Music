@@ -97,7 +97,7 @@ const UploadComposerCard = ({
             {/* Main info */}
             <div className="flex-1 min-w-0">
               <Link
-                href={`/compositores/${item.id}`}
+                href={`/composer/${item.id}`}
                 className="block group/link"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -184,7 +184,7 @@ const UploadComposerCard = ({
         {/* Portrait Section */}
         <div className="relative p-6 pb-4">
           <Link
-            href={`/compositores/${item.id}`}
+            href={`/composer/${item.id}`}
             className="block"
             onClick={(e) => e.stopPropagation()}
           >
@@ -253,7 +253,7 @@ const UploadComposerCard = ({
             {/* Name */}
             <div className="text-center">
               <Link
-                href={`/compositores/${item.id}`}
+                href={`/composer/${item.id}`}
                 className="block group/link"
                 onClick={(e) => e.stopPropagation()}
               >

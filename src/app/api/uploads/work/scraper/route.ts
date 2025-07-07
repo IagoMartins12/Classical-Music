@@ -1,4 +1,4 @@
-// app/api/uploads/work/scraper/route.ts - ATUALIZADO COM CATEGORIAS E GÊNEROS VÁLIDOS
+// app/api/uploads/work/scraper/route.ts - ATUALIZADO COM CAPTURA DE COMPOSITOR POR permLinkImslp
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -13,7 +13,6 @@ import {
   WORK_GENRE_TRANSLATIONS,
 } from '../../../../../../scripts/imslp-works-scraper-util';
 import {
-  extractComposerFromIMSLPId,
   filterValidCategories,
   mapStyleToEpoch,
   VALID_CATEGORIES,
@@ -24,6 +23,7 @@ interface ScrapedWorkData {
   subtitle: string | null;
   composerName: string | null;
   composerId: string | null;
+  composerPermLink: string | null;
   imslpPermlink: string;
   imslpId: string;
   opOrCatalog: string | null;
@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log('🌐 Iniciando scraping da URL:', url);
     const scrapedData = await scrapeIMSLPWork(url);
 
     return NextResponse.json({
@@ -90,11 +91,199 @@ export async function POST(request: NextRequest) {
       source: 'IMSLP',
     });
   } catch (error) {
-    console.error('Erro no scraping:', error);
+    console.error('❌ Erro no scraping:', error);
     return NextResponse.json(
       { error: 'Erro ao fazer scraping da página' },
       { status: 500 }
     );
+  }
+}
+
+// 🆕 FUNÇÃO PARA LIMPAR URL DO IMSLP
+function cleanImslpUrl(url: string): string {
+  try {
+    // Decodificar caracteres URL (ex: %C3%A9 -> é)
+    const decodedUrl = decodeURIComponent(url);
+
+    // Remover fragmentos e parâmetros de query
+    const cleanedUrl = decodedUrl.split('#')[0].split('?')[0];
+
+    console.log(`🧹 URL limpa: ${url} -> ${cleanedUrl}`);
+    return cleanedUrl;
+  } catch (error) {
+    console.error('❌ Erro ao limpar URL:', error);
+    return url;
+  }
+}
+
+// 🆕 FUNÇÃO PARA EXTRAIR ID CORRETO DO IMSLP
+function extractImslpWorkId(
+  $: cheerio.CheerioAPI,
+  url: string
+): {
+  urlId: string;
+  pageId: string | null;
+  cleanedUrl: string;
+} {
+  // Extrair ID da URL (nome da página)
+  const urlParts = url.split('/wiki/');
+  const urlId = urlParts.length > 1 ? urlParts[1] : '';
+
+  // Limpar URL
+  const cleanedUrl = cleanImslpUrl(url);
+
+  // Tentar extrair ID numérico da página
+  let pageId: string | null = null;
+
+  // Estratégia 1: Procurar por ID na URL canônica
+  const canonicalLink = $('link[rel="canonical"]').attr('href');
+  if (canonicalLink) {
+    const canonicalMatch = canonicalLink.match(/curid=(\d+)/);
+    if (canonicalMatch) {
+      pageId = canonicalMatch[1];
+    }
+  }
+
+  // Estratégia 2: Procurar por ID em elementos data-* ou id
+  if (!pageId) {
+    $('[data-mw-pageid], [data-pageid]').each((_, element) => {
+      const id =
+        $(element).attr('data-mw-pageid') || $(element).attr('data-pageid');
+      if (id && /^\d+$/.test(id)) {
+        pageId = id;
+        return false; // Sair do loop
+      }
+    });
+  }
+
+  // Estratégia 3: Procurar por ID em scripts ou comentários
+  if (!pageId) {
+    $('script').each((_, script) => {
+      const content = $(script).html();
+      if (content) {
+        const idMatch =
+          content.match(/pageId["\']?\s*:\s*["\']?(\d+)["\']?/i) ||
+          content.match(/wgArticleId["\']?\s*:\s*["\']?(\d+)["\']?/i) ||
+          content.match(
+            /mw\.config\.set\([^}]*["\']wgArticleId["\'][^}]*?(\d+)/i
+          );
+        if (idMatch) {
+          pageId = idMatch[1];
+          return false; // Sair do loop
+        }
+      }
+    });
+  }
+
+  console.log(`📋 IDs extraídos:`, {
+    urlId,
+    pageId,
+    cleanedUrl,
+  });
+
+  return {
+    urlId,
+    pageId,
+    cleanedUrl,
+  };
+}
+
+/**
+ * Limpa o nome do compositor removendo caracteres especiais
+ * @param name - Nome do compositor
+ * @returns Nome limpo
+ */
+function cleanComposerName(name: string): string {
+  if (!name) return '';
+
+  return name
+    .trim()
+    .replace(/\s+/g, ' ') // Remover espaços múltiplos
+    .replace(/[""]/g, '"') // Normalizar aspas
+    .replace(/['']/g, "'") // Normalizar apostrofes
+    .replace(/…/g, '...') // Normalizar reticências
+    .replace(/–/g, '-') // Normalizar hífens
+    .replace(/—/g, '-'); // Normalizar hífens longos
+}
+
+/**
+ * Gera variações do composerPermLink para busca mais flexível
+ * @param permLink - PermLink original
+ * @returns Array de variações possíveis
+ */
+function generatePermLinkVariations(permLink: string): string[] {
+  const variations = [permLink];
+
+  // Versão sem acentos (substitui caracteres especiais)
+  const withoutAccents = permLink
+    .replace(/é/g, 'e')
+    .replace(/è/g, 'e')
+    .replace(/ê/g, 'e')
+    .replace(/ë/g, 'e')
+    .replace(/á/g, 'a')
+    .replace(/à/g, 'a')
+    .replace(/â/g, 'a')
+    .replace(/ã/g, 'a')
+    .replace(/ä/g, 'a')
+    .replace(/ó/g, 'o')
+    .replace(/ò/g, 'o')
+    .replace(/ô/g, 'o')
+    .replace(/õ/g, 'o')
+    .replace(/ö/g, 'o')
+    .replace(/ú/g, 'u')
+    .replace(/ù/g, 'u')
+    .replace(/û/g, 'u')
+    .replace(/ü/g, 'u')
+    .replace(/í/g, 'i')
+    .replace(/ì/g, 'i')
+    .replace(/î/g, 'i')
+    .replace(/ï/g, 'i')
+    .replace(/ç/g, 'c')
+    .replace(/ñ/g, 'n');
+
+  if (withoutAccents !== permLink) {
+    variations.push(withoutAccents);
+  }
+
+  // Versão com underscores em vez de espaços
+  const withUnderscores = permLink.replace(/\s+/g, '_');
+  if (withUnderscores !== permLink) {
+    variations.push(withUnderscores);
+  }
+
+  return [...new Set(variations)]; // Remove duplicatas
+}
+
+/**
+ * Limpa e normaliza o composerPermLink
+ * @param permLink - PermLink bruto extraído da URL
+ * @returns PermLink limpo e normalizado
+ */
+function cleanComposerPermLink(permLink: string): string {
+  if (!permLink) return '';
+
+  try {
+    // Decodificar caracteres URL (ex: %C3%A9 -> é)
+    let cleaned = decodeURIComponent(permLink);
+
+    // Remover espaços extras
+    cleaned = cleaned.trim();
+
+    // Garantir que tenha o formato correto
+    if (!cleaned.startsWith('Category:')) {
+      cleaned = `Category:${cleaned}`;
+    }
+
+    console.log(`🧹 PermLink limpo: ${permLink} -> ${cleaned}`);
+    return cleaned;
+  } catch (error) {
+    console.error('❌ Erro ao limpar permLink:', error);
+    // Se der erro na decodificação, tentar uma limpeza básica
+    let cleaned = permLink.trim();
+    if (!cleaned.startsWith('Category:')) {
+      cleaned = `Category:${cleaned}`;
+    }
+    return cleaned;
   }
 }
 
@@ -110,37 +299,151 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
 
     const $ = cheerio.load(response.data);
 
-    // Extrair ID do IMSLP da URL
-    const urlParts = url.split('/wiki/');
-    const imslpId = urlParts.length > 1 ? urlParts[1] : '';
+    // 🆕 USAR NOVA FUNÇÃO: Extrair IDs e limpar URL
+    const { urlId, pageId, cleanedUrl } = extractImslpWorkId($, url);
+
+    // Usar pageId se disponível, senão usar urlId
+    const imslpId = pageId || urlId;
 
     // Extrair título da página
     const pageTitle = $('#firstHeading').text().trim();
     const title = cleanTitle(pageTitle);
 
-    // Extrair informações do compositor do imslpId
-    const composerInfo = extractComposerFromIMSLPId(imslpId);
-    let composerName = '';
+    // 🆕 MESMO CÓDIGO: Extrair composerPermLink do compositor da tabela de detalhes
+    let composerPermLink: string | null = null;
+    let composerName: string | null = null;
     let composerId: string | null = null;
 
-    if (composerInfo) {
-      composerName = composerInfo.fullName;
+    // Buscar na tabela de detalhes da obra
+    $('.wi_body table tr, .wp_header table tr').each((index, element) => {
+      const $row = $(element);
+      const headerCell = $row.find('th').first();
+      const valueCell = $row.find('td').first();
 
-      // Buscar compositor no banco de dados
-      const composer = await findComposerByName(
-        composerInfo.fullName,
-        composerInfo.lastName
-      );
-      if (composer) {
-        composerId = composer.id;
-        console.log(
-          `✅ Compositor encontrado no banco: ${
-            composer.fullName || composer.name
-          }`
-        );
-      } else {
-        console.log(`⚠️ Compositor não encontrado no banco: ${composerName}`);
+      if (!headerCell.length || !valueCell.length) return;
+
+      const header = headerCell.text().trim().toLowerCase();
+
+      // Verificar se é a linha do compositor
+      if (header.includes('compositor') || header.includes('composer')) {
+        const composerLink = valueCell
+          .find('a[href*="/wiki/Category:"]')
+          .first();
+        if (composerLink.length) {
+          const href = composerLink.attr('href');
+          if (href) {
+            // Extrair o composerPermLink do href
+            const categoryMatch = href.match(/\/wiki\/(Category:[^?#]*)/);
+            if (categoryMatch) {
+              const rawPermLink = categoryMatch[1];
+              composerPermLink = cleanComposerPermLink(rawPermLink); // 🧹 LIMPEZA ADICIONADA
+              composerName = cleanComposerName(composerLink.text().trim()); // 🧹 LIMPEZA DO NOME ADICIONADA
+              console.log(`🎼 Compositor encontrado: ${composerName}`);
+              console.log(`🔗 ComposerPermLink: ${composerPermLink}`);
+            }
+          }
+        }
+        return false; // Sair do loop
       }
+    });
+
+    // 🆕 MESMO CÓDIGO: Buscar compositor no banco de dados usando imslpId
+    if (composerPermLink) {
+      try {
+        console.log(`🔍 Buscando compositor por imslpId: ${composerPermLink}`);
+
+        // Gerar variações do permLink para busca mais flexível
+        const permLinkVariations = generatePermLinkVariations(composerPermLink);
+        console.log(`🔄 Variações do permLink:`, permLinkVariations);
+
+        let composer = null;
+
+        // Tentar buscar com cada variação (busca exata)
+        for (const variation of permLinkVariations) {
+          composer = await prisma.composer.findFirst({
+            where: {
+              imslpId: variation,
+            },
+            select: {
+              id: true,
+              name: true,
+              fullName: true,
+              imslpId: true,
+            },
+          });
+
+          if (composer) {
+            console.log(`✅ Compositor encontrado com variação: ${variation}`);
+            break;
+          }
+        }
+
+        // Se não encontrou com busca exata, tentar busca parcial
+        if (!composer) {
+          console.log(`🔍 Tentando busca parcial por imslpId...`);
+
+          // Extrair apenas o nome do compositor do permLink para busca parcial
+          const composerPartName = composerPermLink
+            .replace('Category:', '')
+            .split(',')[0] // Pegar apenas o sobrenome
+            .trim();
+
+          if (composerPartName) {
+            composer = await prisma.composer.findFirst({
+              where: {
+                imslpId: {
+                  contains: composerPartName,
+                  mode: 'insensitive',
+                },
+              },
+              select: {
+                id: true,
+                name: true,
+                fullName: true,
+                imslpId: true,
+              },
+            });
+
+            if (composer) {
+              console.log(
+                `✅ Compositor encontrado com busca parcial: ${composerPartName}`
+              );
+            }
+          }
+        }
+
+        if (composer) {
+          composerId = composer.id;
+          composerName = composer.fullName || composer.name;
+          console.log(
+            `✅ Compositor encontrado no banco por imslpId: ${composerName}`
+          );
+        } else {
+          console.log(
+            `⚠️ Compositor não encontrado no banco por imslpId: ${composerPermLink}`
+          );
+
+          // Fallback: buscar por nome se não encontrou por imslpId
+          if (composerName) {
+            const composerByName = await findComposerByName(composerName);
+            if (composerByName) {
+              composerId = composerByName.id;
+              composerName = composerByName.fullName || composerByName.name;
+              console.log(
+                `✅ Compositor encontrado no banco por nome: ${composerName}`
+              );
+            }
+          }
+        }
+      } catch (error) {
+        console.error('❌ Erro ao buscar compositor no banco:', error);
+      }
+    }
+
+    // Fallback: se não encontrou compositor na tabela, tentar buscar por nome do título
+    if (!composerId && !composerName) {
+      console.log('⚠️ Compositor não encontrado na tabela');
+      // Ainda não há compositor definido, continuará sem
     }
 
     // Extrair informações da tabela de detalhes
@@ -153,9 +456,8 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
     const rawCategories = extractCategories($);
     const validCategories = filterValidCategories(rawCategories);
 
-    // Extrair gêneros válidos
-    const rawWorkGenres = extractWorkGenres($);
-    const validWorkGenres = filterValidWorkGenres(rawWorkGenres);
+    // 🆕 USAR NOVA FUNÇÃO: Extrair gêneros válidos sem duplicatas
+    const validWorkGenres = extractWorkGenres($);
 
     // Extrair tags do IMSLP
     const imslpTags = extractIMSLPTags($);
@@ -202,6 +504,7 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
     const dataCompleteness = calculateDataCompleteness([
       title,
       composerId,
+      composerPermLink,
       workDetails.opOrCatalog,
       workDetails.compositionYear,
       workDetails.tone,
@@ -212,12 +515,47 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
       validWorkGenres.length > 0 ? 'has_genres' : null,
     ]);
 
+    console.log('📊 Dados extraídos:');
+    console.log(`   - Título: ${title}`);
+    console.log(`   - Compositor: ${composerName} (ID: ${composerId})`);
+    console.log(`   - ComposerPermLink: ${composerPermLink}`);
+    console.log(`   - IMSLP ID: ${imslpId} (URL: ${urlId}, Page: ${pageId})`);
+    console.log(`   - URL Limpa: ${cleanedUrl}`);
+    console.log(
+      `   - Gêneros (${validWorkGenres.length}): ${validWorkGenres.join(', ')}`
+    );
+    console.log(`   - Completude: ${dataCompleteness}%`);
+
+    // Exemplo de limpeza para debug
+    if (composerPermLink) {
+      console.log('🧹 Exemplos de limpeza:');
+      console.log(
+        `   - "Category:Chopin,_Fr%C3%A9d%C3%A9ric" -> "${cleanComposerPermLink(
+          'Category:Chopin,_Fr%C3%A9d%C3%A9ric'
+        )}"`
+      );
+      console.log(
+        `   - "Category:Satie,_Erik" -> "${cleanComposerPermLink(
+          'Category:Satie,_Erik'
+        )}"`
+      );
+      console.log(
+        `   - "Category:Bach,_Johann_Sebastian" -> "${cleanComposerPermLink(
+          'Category:Bach,_Johann_Sebastian'
+        )}"`
+      );
+
+      const variations = generatePermLinkVariations(composerPermLink);
+      console.log(`   - Variações geradas: ${variations.join(', ')}`);
+    }
+
     return {
       title,
       subtitle,
       composerName,
       composerId,
-      imslpPermlink: url,
+      composerPermLink,
+      imslpPermlink: cleanedUrl, // 🆕 USAR URL LIMPA
       imslpId,
       opOrCatalog: workDetails.opOrCatalog,
       compositionYear: workDetails.compositionYear,
@@ -232,7 +570,7 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
       dedicateTo: workDetails.dedicateTo,
       dedicationComposerLink: workDetails.dedicationComposerLink,
       categoryNames: validCategories,
-      workGenresArr: validWorkGenres,
+      workGenresArr: validWorkGenres, // 🆕 USAR GÊNEROS SEM DUPLICATAS
       imslpTags,
       difficultyLevel,
       workType,
@@ -261,37 +599,50 @@ function cleanTitle(title: string): string {
   return title.replace(/\([^)]*\)$/, '').trim();
 }
 
-async function findComposerByName(fullName: string, lastName: string) {
+async function findComposerByName(fullName: string, lastName?: string) {
   try {
+    // Limpar o nome antes de buscar
+    const cleanedFullName = cleanComposerName(fullName);
+    const cleanedLastName = lastName ? cleanComposerName(lastName) : undefined;
+
+    console.log(`🔍 Buscando compositor por nome: ${cleanedFullName}`);
+
     // Primeiro tenta buscar pelo nome completo
     let composer = await prisma.composer.findFirst({
       where: {
         OR: [
-          { name: { contains: fullName, mode: 'insensitive' } },
-          { fullName: { contains: fullName, mode: 'insensitive' } },
-          { alternativeNames: { contains: fullName, mode: 'insensitive' } },
+          { name: { contains: cleanedFullName, mode: 'insensitive' } },
+          { fullName: { contains: cleanedFullName, mode: 'insensitive' } },
+          {
+            alternativeNames: {
+              contains: cleanedFullName,
+              mode: 'insensitive',
+            },
+          },
         ],
       },
       select: {
         id: true,
         name: true,
         fullName: true,
+        imslpId: true,
       },
     });
 
-    // Se não encontrou, tenta buscar pelo sobrenome
-    if (!composer) {
+    // Se não encontrou e tem sobrenome, tenta buscar pelo sobrenome
+    if (!composer && cleanedLastName) {
       composer = await prisma.composer.findFirst({
         where: {
           OR: [
-            { name: { contains: lastName, mode: 'insensitive' } },
-            { fullName: { contains: lastName, mode: 'insensitive' } },
+            { name: { contains: cleanedLastName, mode: 'insensitive' } },
+            { fullName: { contains: cleanedLastName, mode: 'insensitive' } },
           ],
         },
         select: {
           id: true,
           name: true,
           fullName: true,
+          imslpId: true,
         },
       });
     }
@@ -422,17 +773,11 @@ function extractCategories($: cheerio.CheerioAPI): string[] {
   return Array.from(categories);
 }
 
-// Função melhorada para extrair apenas gêneros válidos
-function filterValidWorkGenres(rawGenres: string[]): string[] {
-  return rawGenres
-    .map((genre) => genre.trim().toLowerCase())
-    .filter((genre) => VALID_WORKGENRES.has(genre))
-    .map((genre) => WORK_GENRE_TRANSLATIONS[genre] || genre)
-    .filter((genre) => genre && genre.length > 0);
-}
-
+// 🆕 FUNÇÃO MELHORADA PARA EXTRAIR GÊNEROS VÁLIDOS SEM DUPLICATAS
 function extractWorkGenres($: cheerio.CheerioAPI): string[] {
-  const workGenres: Set<string> = new Set();
+  const workGenres = new Set<string>();
+
+  console.log('🔍 Iniciando extração de gêneros...');
 
   // Buscar gêneros nas categorias da página
   $('.wp_header table tr').each((index, element) => {
@@ -448,10 +793,8 @@ function extractWorkGenres($: cheerio.CheerioAPI): string[] {
             WORK_GENRE_TRANSLATIONS[genreName] || genreName;
           workGenres.add(portugueseGenre);
           console.log(
-            `✅ Gênero válido encontrado: ${genreName} -> ${portugueseGenre}`
+            `✅ Gênero válido encontrado na tabela: ${genreName} -> ${portugueseGenre}`
           );
-        } else {
-          console.log(`⚠️ Gênero inválido ignorado: ${genreName}`);
         }
       });
     }
@@ -463,20 +806,21 @@ function extractWorkGenres($: cheerio.CheerioAPI): string[] {
     if (href) {
       const categoryMatch = href.match(/Category:(.+)/);
       if (categoryMatch) {
-        const category = decodeURIComponent(categoryMatch[1]).replace(
-          /_/g,
-          ' '
-        );
-        const categoryLower = category.toLowerCase();
+        const category = decodeURIComponent(categoryMatch[1])
+          .replace(/_/g, ' ')
+          .replace(/&transclude=.*$/, '') // 🆕 Remover parâmetros de transclusão
+          .toLowerCase()
+          .trim();
 
         // Verificar se é um gênero válido
-        if (VALID_WORKGENRES.has(categoryLower)) {
-          const portugueseGenre =
-            WORK_GENRE_TRANSLATIONS[categoryLower] || categoryLower;
+        if (VALID_WORKGENRES.has(category)) {
+          const portugueseGenre = WORK_GENRE_TRANSLATIONS[category] || category;
           workGenres.add(portugueseGenre);
           console.log(
             `✅ Gênero válido encontrado em categoria: ${category} -> ${portugueseGenre}`
           );
+        } else {
+          console.log(`⚠️ Gênero inválido ignorado: ${category}`);
         }
       }
     }
@@ -485,6 +829,8 @@ function extractWorkGenres($: cheerio.CheerioAPI): string[] {
   // Se não encontrou gêneros específicos, tentar extrair do título
   if (workGenres.size === 0) {
     const pageTitle = $('#firstHeading').text().toLowerCase();
+    console.log(`🔍 Tentando extrair gêneros do título: ${pageTitle}`);
+
     for (const [english, portuguese] of Object.entries(
       WORK_GENRE_TRANSLATIONS
     )) {
@@ -497,12 +843,28 @@ function extractWorkGenres($: cheerio.CheerioAPI): string[] {
     }
   }
 
+  // Converter Set para Array e remover duplicatas
+  const finalGenres = Array.from(workGenres).filter(
+    (genre) => genre && genre.length > 0
+  );
+
   // Se ainda não tem gêneros, usar "não definido" como padrão
-  if (workGenres.size === 0) {
-    workGenres.add('não definido');
+  if (finalGenres.length === 0) {
+    finalGenres.push('não definido');
+    console.log('⚠️ Nenhum gênero encontrado, usando "não definido"');
   }
 
-  return Array.from(workGenres);
+  console.log(`✅ Gêneros finais (${finalGenres.length}):`, finalGenres);
+  return finalGenres;
+}
+
+// Função melhorada para filtrar e validar gêneros
+function filterValidWorkGenres(rawGenres: string[]): string[] {
+  return rawGenres
+    .map((genre) => genre.trim().toLowerCase())
+    .filter((genre) => VALID_WORKGENRES.has(genre))
+    .map((genre) => WORK_GENRE_TRANSLATIONS[genre] || genre)
+    .filter((genre) => genre && genre.length > 0);
 }
 
 function extractIMSLPTags($: cheerio.CheerioAPI): string[] {

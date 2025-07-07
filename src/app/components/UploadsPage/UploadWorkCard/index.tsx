@@ -265,7 +265,7 @@ const UploadWorkCard = ({
 
               {item.imslpId && (
                 <a
-                  href={`https://imslp.org/wiki/${item.imslpId}`}
+                  href={`${item.imslpPermlink}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-accent-green hover:text-accent-blue text-sm font-medium transition-colors flex items-center space-x-1"

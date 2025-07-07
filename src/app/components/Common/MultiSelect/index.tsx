@@ -134,7 +134,7 @@ export default function MultiSelect({
             selectedValues.map((value, index) => (
               <span
                 key={value}
-                className="inline-flex items-center gap-1 bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium"
+                className="inline-flex items-center capitalize gap-1 bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium"
               >
                 {value}
                 <button
@@ -151,7 +151,7 @@ export default function MultiSelect({
               {selectedValues.slice(0, maxDisplay).map((value) => (
                 <span
                   key={value}
-                  className="inline-flex items-center gap-1 bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium"
+                  className="inline-flex capitalize items-center gap-1 bg-brand-primary/10 text-brand-primary px-2 py-1 rounded-lg text-xs font-medium"
                 >
                   {value}
                   <button
@@ -214,10 +214,10 @@ export default function MultiSelect({
           </div>
 
           {/* Options List */}
-          <div className="max-h-64 overflow-y-auto">
+          <div className="max-h-48 overflow-y-auto">
             {filteredOptions.length === 0 ? (
               <div className="px-4 py-8 text-center">
-                <p className="text-sm text-theme-secondary">
+                <p className="text-sm  capitalizetext-theme-secondary">
                   {searchTerm
                     ? `Nenhuma opção encontrada para "${searchTerm}"`
                     : 'Nenhuma opção disponível'}
@@ -240,7 +240,7 @@ export default function MultiSelect({
                       }
                     `}
                   >
-                    <span className="text-sm">{option}</span>
+                    <span className="text-sm capitalize">{option}</span>
                     {isSelected && (
                       <FiCheck className="w-4 h-4 text-brand-primary" />
                     )}

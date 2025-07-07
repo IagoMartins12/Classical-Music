@@ -20,21 +20,18 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('🔍 Verificando duplicata para URL:', url);
+    const cleanedUrl = cleanImslpUrl(url);
 
     // Extrair ID do IMSLP da URL de forma mais robusta
     let imslpId = '';
-    if (url.includes('imslp.org')) {
-      // Extrair da URL: https://imslp.org/wiki/Symphony_No.40_(Mozart,_Wolfgang_Amadeus)
-      const urlParts = url.split('/wiki/');
+    if (cleanedUrl.includes('imslp.org')) {
+      const urlParts = cleanedUrl.split('/wiki/');
       if (urlParts.length > 1) {
         imslpId = urlParts[1];
-        // Decodificar URL se necessário
-        imslpId = decodeURIComponent(imslpId);
       }
     } else {
-      imslpId = url;
+      imslpId = cleanedUrl;
     }
-
     console.log('📋 ID extraído:', imslpId);
 
     // Construir cláusula WHERE para buscar duplicatas
@@ -108,5 +105,17 @@ export async function POST(request: NextRequest) {
       { error: 'Erro interno do servidor' },
       { status: 500 }
     );
+  }
+}
+
+function cleanImslpUrl(url: string): string {
+  try {
+    const decodedUrl = decodeURIComponent(url);
+    const cleanedUrl = decodedUrl.split('#')[0].split('?')[0];
+    console.log(`🧹 URL limpa: ${url} -> ${cleanedUrl}`);
+    return cleanedUrl;
+  } catch (error) {
+    console.error('❌ Erro ao limpar URL:', error);
+    return url;
   }
 }

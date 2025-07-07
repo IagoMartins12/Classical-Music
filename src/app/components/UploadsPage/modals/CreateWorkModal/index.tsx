@@ -1,6 +1,6 @@
 'use client';
 
-// app/components/modals/CreateWorkModal.tsx - MELHORADO COM CATEGORIAS E GÊNEROS VÁLIDOS
+// app/components/modals/CreateWorkModal.tsx - CORRIGIDO PARA EVITAR VALORES NULL
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -31,7 +31,6 @@ import Modal from '@/app/components/Modal';
 import ComposerSearchInput from '@/app/components/ComposerSearchInput';
 import { useFormValidation } from '@/app/utils/formUtils';
 import {
-  extractComposerFromIMSLPId,
   filterValidCategories,
   getAllValidCategories,
   mapStyleToEpoch,
@@ -65,6 +64,23 @@ const difficultyOptions = [
   { value: 'ADVANCED', label: 'Avançado' },
 ];
 
+// 🆕 FUNÇÃO PARA LIMPAR URL DO IMSLP
+function cleanImslpUrl(url: string): string {
+  try {
+    // Decodificar caracteres URL (ex: %C3%A9 -> é)
+    const decodedUrl = decodeURIComponent(url);
+
+    // Remover fragmentos e parâmetros de query
+    const cleanedUrl = decodedUrl.split('#')[0].split('?')[0];
+
+    console.log(`🧹 URL limpa: ${url} -> ${cleanedUrl}`);
+    return cleanedUrl;
+  } catch (error) {
+    console.error('❌ Erro ao limpar URL:', error);
+    return url;
+  }
+}
+
 const CreateWorkModal = ({
   isOpen,
   onClose,
@@ -84,15 +100,15 @@ const CreateWorkModal = ({
     work?: any;
   }>({ loading: false, found: false });
 
-  // Refs para scroll automático
+  // 🔧 CORRIGIDO: Refs para scroll automático com tipos corretos
   const fieldRefs = {
     title: useRef<HTMLInputElement>(null),
-    composerId: useRef<HTMLDivElement>(null),
+    composerId: useRef<HTMLInputElement>(null), // 🔧 CORRIGIDO: HTMLInputElement em vez de HTMLDivElement
     instrumentId: useRef<HTMLSelectElement>(null),
     epochId: useRef<HTMLSelectElement>(null),
   };
 
-  // Form state para os dados da obra
+  // 🔧 CORRIGIDO: Inicializando com strings vazias ao invés de null
   const [formData, setFormData] = useState({
     title: '',
     composerId: '',
@@ -100,6 +116,7 @@ const CreateWorkModal = ({
     epochId: '',
     videoUrl: '',
     imslpId: '',
+    imslpPermlink: '',
     opOrCatalog: '',
     compositionYear: '',
     firstPublishDate: '',
@@ -107,8 +124,8 @@ const CreateWorkModal = ({
     mediaDuration: '',
     workStyle: '',
     moviment: '',
-    categoryNames: [] as string[], // Agora é array
-    workGenresArr: [] as string[], // Agora é array
+    categoryNames: [] as string[],
+    workGenresArr: [] as string[],
     dedicateTo: '',
     dedicationComposerLink: '',
     instrumentation: '',
@@ -121,7 +138,7 @@ const CreateWorkModal = ({
     tempoMarking: '',
     movementsDetailed: '',
     imslpTags: '',
-    difficultyLevel: null,
+    difficultyLevel: '', // 🔧 CORRIGIDO: string vazia ao invés de null
   });
 
   // Support data para listas de apoio
@@ -157,6 +174,7 @@ const CreateWorkModal = ({
         epochId: editingWork.epochId || '',
         videoUrl: editingWork.videoUrl || '',
         imslpId: editingWork.imslpId || '',
+        imslpPermlink: editingWork.imslpPermlink || '',
         opOrCatalog: editingWork.opOrCatalog || '',
         compositionYear: editingWork.compositionYear || '',
         firstPublishDate: editingWork.firstPublishDate || '',
@@ -180,7 +198,7 @@ const CreateWorkModal = ({
           ? JSON.stringify(editingWork.movementsDetailed)
           : '',
         imslpTags: editingWork.imslpTags?.join(', ') || '',
-        difficultyLevel: editingWork.difficultyLevel || '',
+        difficultyLevel: editingWork.difficultyLevel || '', // 🔧 CORRIGIDO: string vazia
       });
     }
   }, [editingWork]);
@@ -254,10 +272,16 @@ const CreateWorkModal = ({
     }
   };
 
+  // 🆕 CORRIGIDO: handleInputChange com limpeza de URL
   const handleInputChange = (
     field: string,
     value: string | boolean | string[]
   ) => {
+    // 🆕 NOVO: Se for o campo imslpId, limpar a URL
+    if (field === 'imslpId' && typeof value === 'string') {
+      value = cleanImslpUrl(value);
+    }
+
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: '' }));
@@ -306,6 +330,8 @@ const CreateWorkModal = ({
         movementsDetailed: formData.movementsDetailed
           ? JSON.parse(formData.movementsDetailed)
           : null,
+        // 🔧 CORRIGIDO: Certificar que difficultyLevel é null quando vazio
+        difficultyLevel: formData.difficultyLevel || null,
       };
 
       const url = editingWork
@@ -339,6 +365,7 @@ const CreateWorkModal = ({
     }
   };
 
+  // 🆕 CORRIGIDO: handleScrapeUrl com URL limpa
   const handleScrapeUrl = async () => {
     if (!urlToScrape.trim()) {
       alert('Digite uma URL para fazer scraping');
@@ -353,8 +380,11 @@ const CreateWorkModal = ({
       return;
     }
 
+    // 🆕 LIMPAR URL ANTES DE VERIFICAR DUPLICATAS
+    const cleanedUrl = cleanImslpUrl(urlToScrape);
+
     // Verificar duplicatas antes de fazer scraping
-    const isDuplicate = await checkDuplicateByLink(urlToScrape);
+    const isDuplicate = await checkDuplicateByLink(cleanedUrl);
     if (isDuplicate) {
       alert('Já existe uma obra com este link do IMSLP.');
       return;
@@ -364,7 +394,7 @@ const CreateWorkModal = ({
     setScrapingResult(null);
 
     try {
-      console.log('🚀 Iniciando scraping da URL:', urlToScrape);
+      console.log('🚀 Iniciando scraping da URL:', cleanedUrl);
 
       const response = await fetch('/api/uploads/work/scraper', {
         method: 'POST',
@@ -372,7 +402,7 @@ const CreateWorkModal = ({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          url: urlToScrape,
+          url: cleanedUrl, // 🆕 USAR URL LIMPA
         }),
       });
 
@@ -400,6 +430,7 @@ const CreateWorkModal = ({
       title: data.title || prev.title,
       subtitle: data.subtitle || prev.subtitle,
       imslpId: data.imslpId || prev.imslpId,
+      imslpPermlink: data.imslpPermlink || prev.imslpPermlink,
       opOrCatalog: data.opOrCatalog || prev.opOrCatalog,
       compositionYear: data.compositionYear || prev.compositionYear,
       firstPublishDate: data.firstPublishDate || prev.firstPublishDate,
@@ -413,11 +444,9 @@ const CreateWorkModal = ({
       dedicateTo: data.dedicateTo || prev.dedicateTo,
       dedicationComposerLink:
         data.dedicationComposerLink || prev.dedicationComposerLink,
-      // Filtrar categorias válidas
       categoryNames: data.categoryNames
         ? filterValidCategories(data.categoryNames)
         : prev.categoryNames,
-      // Filtrar gêneros válidos
       workGenresArr: data.workGenresArr
         ? data.workGenresArr.filter((genre: string) =>
             VALID_PORTUGUESE_WORKGENRES.has(genre.toLowerCase().trim())
@@ -427,6 +456,8 @@ const CreateWorkModal = ({
       workType: data.workType || prev.workType,
       isPartOfCollection: data.isPartOfCollection || prev.isPartOfCollection,
       movementNumber: data.movementNumber?.toString() || prev.movementNumber,
+      // 🔧 CORRIGIDO: Garantir que sempre temos um ID de compositor válido
+      composerId: data.composerId || prev.composerId,
     }));
 
     // Buscar época automaticamente usando o mapeamento
@@ -464,93 +495,13 @@ const CreateWorkModal = ({
       }
     }
 
-    // Buscar compositor pelo link IMSLP
-    if (data.imslpId) {
-      const composerInfo = extractComposerFromIMSLPId(data.imslpId);
-
-      if (composerInfo) {
-        try {
-          console.log(`🔍 Buscando compositor: ${composerInfo.fullName}`);
-
-          // Buscar compositor no banco de dados
-          const response = await fetch('/api/composers', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              q: composerInfo.fullName,
-              limit: 5,
-            }),
-          });
-
-          if (response.ok) {
-            const composers = await response.json();
-
-            // Encontrar o compositor que melhor combina
-            const matchingComposer = composers.find(
-              (c: any) =>
-                c.fullName
-                  ?.toLowerCase()
-                  .includes(composerInfo.lastName.toLowerCase()) ||
-                c.name
-                  ?.toLowerCase()
-                  .includes(composerInfo.lastName.toLowerCase())
-            );
-
-            if (matchingComposer) {
-              setFormData((prev) => ({
-                ...prev,
-                composerId: matchingComposer.id,
-              }));
-
-              // Adicionar à lista se não estiver presente
-              setSupportData((prevSupportData) => ({
-                ...prevSupportData,
-                composers: prevSupportData.composers.some(
-                  (c) => c.id === matchingComposer.id
-                )
-                  ? prevSupportData.composers
-                  : [...prevSupportData.composers, matchingComposer],
-              }));
-
-              console.log(
-                `🎼 Compositor vinculado automaticamente: ${
-                  matchingComposer.fullName || matchingComposer.name
-                }`
-              );
-            } else {
-              console.log(
-                `⚠️ Compositor não encontrado no banco: ${composerInfo.fullName}`
-              );
-            }
-          }
-        } catch (error) {
-          console.error('❌ Erro ao buscar compositor:', error);
-        }
-      }
+    // 🔧 CORRIGIDO: Definir o compositor apenas se foi encontrado
+    if (data.composerId) {
+      setFormData((prev) => ({ ...prev, composerId: data.composerId }));
+      console.log(
+        `🎼 Compositor vinculado automaticamente: ${data.composerId}`
+      );
     }
-
-    // Log de completude dos dados
-    console.log('📊 Dados extraídos e preenchidos:');
-    console.log(`   - Título: ${data.title}`);
-    console.log(
-      `   - Categorias válidas: ${
-        data.categoryNames
-          ? filterValidCategories(data.categoryNames).length
-          : 0
-      }`
-    );
-    console.log(
-      `   - Gêneros válidos: ${
-        data.workGenresArr
-          ? data.workGenresArr.filter((g: string) =>
-              VALID_PORTUGUESE_WORKGENRES.has(g.toLowerCase())
-            ).length
-          : 0
-      }`
-    );
-    console.log(`   - Completude: ${data.dataCompleteness}%`);
   };
 
   if (!isOpen) return null;
@@ -584,7 +535,7 @@ const CreateWorkModal = ({
           </div>
 
           {/* Content */}
-          <div className="mt-4 max-h-[80vh] overflow-y-auto">
+          <div className="mt-4 ">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* URL Scraping */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
@@ -647,7 +598,7 @@ const CreateWorkModal = ({
                         )
                       }
                       onClick={handleScrapeUrl}
-                      disabled={scrapingUrl || duplicateCheck.found}
+                      disabled={scrapingUrl}
                     >
                       {scrapingUrl ? 'Extraindo Dados...' : 'Extrair Dados'}
                     </Button>
@@ -904,7 +855,7 @@ const CreateWorkModal = ({
                 </div>
               </AnimatedCard>
 
-              {/* Categories and Genres - NOVO COM MULTISELECT */}
+              {/* Categories and Genres */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiTag className="w-5 h-5" />
@@ -946,7 +897,7 @@ const CreateWorkModal = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
                     label="ID IMSLP"
-                    value={formData.imslpId}
+                    value={formData.imslpPermlink}
                     onChange={(e) =>
                       handleInputChange('imslpId', e.target.value)
                     }

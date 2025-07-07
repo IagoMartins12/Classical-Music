@@ -11,6 +11,7 @@ export interface UserUpload {
   updatedAt: string;
   isIMSLP: boolean;
   imslpId?: string;
+  imslpPermlink?: string;
   epochName?: string;
   composerName?: string;
   composerId?: string; // Novo campo para link
@@ -123,6 +124,7 @@ export const getUserUploads = unstable_cache(
                 createdAt: true,
                 updatedAt: true,
                 imslpId: true,
+                imslpPermlink: true,
                 // dataQuality não existe no modelo Work - removido
                 // verificationStatus não existe no modelo Work - removido
                 composer: {
@@ -216,6 +218,7 @@ export const getUserUploads = unstable_cache(
           updatedAt: work.updatedAt.toISOString(),
           isIMSLP: !!work.imslpId,
           imslpId: work.imslpId || undefined,
+          imslpPermlink: work.imslpPermlink,
           epochName: work.epoch.name,
           composerName: work.composer.fullName || work.composer.name,
           composerId: work.composer.id, // Novo campo para link
@@ -368,6 +371,7 @@ export const getAllUploads = unstable_cache(
                 createdAt: true,
                 updatedAt: true,
                 imslpId: true,
+                imslpPermlink: true,
                 // dataQuality não existe no modelo Work - removido
                 // verificationStatus não existe no modelo Work - removido
                 composer: {
@@ -460,6 +464,7 @@ export const getAllUploads = unstable_cache(
           updatedAt: work.updatedAt.toISOString(),
           isIMSLP: !!work.imslpId,
           imslpId: work.imslpId || undefined,
+          imslpPermlink: work.imslpPermlink,
           epochName: work.epoch.name,
           composerName: work.composer.fullName || work.composer.name,
           composerId: work.composer.id, // Novo campo para link

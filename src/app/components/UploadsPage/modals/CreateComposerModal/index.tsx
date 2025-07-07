@@ -1219,7 +1219,7 @@ const CreateComposerModal = ({
                     <textarea
                       value={formData.bio}
                       onChange={(e) => handleInputChange('bio', e.target.value)}
-                      rows={4}
+                      rows={7}
                       className="input-classical-2 w-full resize-none"
                       placeholder="Breve biografia do compositor..."
                     />
@@ -1234,7 +1234,7 @@ const CreateComposerModal = ({
                       onChange={(e) =>
                         handleInputChange('diverseInfo', e.target.value)
                       }
-                      rows={4}
+                      rows={3}
                       className="input-classical-2 w-full resize-none"
                       placeholder="Informações detalhadas e diversas..."
                     />
