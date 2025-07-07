@@ -1,9 +1,13 @@
-// app/api/uploads/work/route.ts - VERSÃO MELHORADA
+// app/api/uploads/work/route.ts - VERSÃO MELHORADA COM VALIDAÇÃO DE CATEGORIAS E GÊNEROS
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateUploadsCache } from '@/app/requests/upload';
+import {
+  filterValidCategories,
+  VALID_PORTUGUESE_WORKGENRES,
+} from '@/app/utils/valid-categories-and-genres';
 
 export async function POST(request: NextRequest) {
   try {
@@ -45,6 +49,8 @@ export async function POST(request: NextRequest) {
     } = body;
 
     console.log('🎼 Criando nova obra:', title);
+    console.log('📋 Categorias recebidas:', categoryNames);
+    console.log('🎵 Gêneros recebidos:', workGenresArr);
 
     // Validação básica
     if (!title || !composerId || !instrumentId || !epochId) {
@@ -96,25 +102,57 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Processar arrays de strings
-    const processedCategoryNames = Array.isArray(categoryNames)
-      ? categoryNames
-      : typeof categoryNames === 'string'
-      ? categoryNames
-          .split(',')
-          .map((s) => s.trim())
-          .filter((s) => s.length > 0)
-      : [];
+    // Processar e validar categorias
+    let processedCategoryNames: string[] = [];
+    if (Array.isArray(categoryNames)) {
+      processedCategoryNames = filterValidCategories(categoryNames);
+    } else if (typeof categoryNames === 'string') {
+      const categoryArray = categoryNames
+        .split(',')
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+      processedCategoryNames = filterValidCategories(categoryArray);
+    }
 
-    const processedWorkGenres = Array.isArray(workGenresArr)
-      ? workGenresArr
-      : typeof workGenresArr === 'string'
-      ? workGenresArr
-          .split(',')
-          .map((s) => s.trim())
-          .filter((s) => s.length > 0)
-      : [];
+    console.log('✅ Categorias válidas processadas:', processedCategoryNames);
 
+    // Processar e validar gêneros
+    let processedWorkGenres: string[] = [];
+    if (Array.isArray(workGenresArr)) {
+      processedWorkGenres = workGenresArr.filter((genre: string) => {
+        const isValid = VALID_PORTUGUESE_WORKGENRES.has(
+          genre.toLowerCase().trim()
+        );
+        if (!isValid) {
+          console.log(`⚠️ Gênero inválido ignorado: ${genre}`);
+        }
+        return isValid;
+      });
+    } else if (typeof workGenresArr === 'string') {
+      const genreArray = workGenresArr
+        .split(',')
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+
+      processedWorkGenres = genreArray.filter((genre: string) => {
+        const isValid = VALID_PORTUGUESE_WORKGENRES.has(
+          genre.toLowerCase().trim()
+        );
+        if (!isValid) {
+          console.log(`⚠️ Gênero inválido ignorado: ${genre}`);
+        }
+        return isValid;
+      });
+    }
+
+    // Se não há gêneros válidos, adicionar "não definido"
+    if (processedWorkGenres.length === 0) {
+      processedWorkGenres = ['não definido'];
+    }
+
+    console.log('✅ Gêneros válidos processados:', processedWorkGenres);
+
+    // Processar tags do IMSLP
     const processedImslpTags = Array.isArray(imslpTags)
       ? imslpTags
       : typeof imslpTags === 'string'
@@ -128,6 +166,7 @@ export async function POST(request: NextRequest) {
     const work = await prisma.work.create({
       data: {
         title,
+        subtitle,
         composerId,
         instrumentId,
         epochId,
@@ -138,6 +177,8 @@ export async function POST(request: NextRequest) {
         compositionYear,
         firstPublishDate,
         tone,
+        timeSignature,
+        tempoMarking,
         mediaDuration,
         workStyle,
         moviment,
@@ -149,9 +190,6 @@ export async function POST(request: NextRequest) {
         workType: workType || 'INDIVIDUAL',
         isPartOfCollection: isPartOfCollection || false,
         movementNumber,
-        subtitle,
-        timeSignature,
-        tempoMarking,
         movementsDetailed,
         imslpTags: processedImslpTags,
         difficultyLevel,
@@ -167,6 +205,10 @@ export async function POST(request: NextRequest) {
     });
 
     console.log('✅ Obra criada com sucesso:', work.title);
+    console.log('📊 Estatísticas da obra:');
+    console.log(`   - Categorias: ${work.categoryNames.length}`);
+    console.log(`   - Gêneros: ${work.workGenresArr.length}`);
+    console.log(`   - Tags IMSLP: ${work.imslpTags.length}`);
 
     await revalidateUploadsCache(session.user.id);
 
@@ -174,6 +216,11 @@ export async function POST(request: NextRequest) {
       success: true,
       work,
       message: 'Obra criada com sucesso',
+      stats: {
+        categoriesCount: work.categoryNames.length,
+        genresCount: work.workGenresArr.length,
+        tagsCount: work.imslpTags.length,
+      },
     });
   } catch (error) {
     console.error('❌ Erro ao criar obra:', error);

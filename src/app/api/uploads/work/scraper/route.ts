@@ -1,4 +1,4 @@
-// app/api/uploads/work/scraper/route.ts
+// app/api/uploads/work/scraper/route.ts - ATUALIZADO COM CATEGORIAS E GÊNEROS VÁLIDOS
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -8,11 +8,16 @@ import prisma from '@/app/libs/prismadb';
 import {
   INSTRUMENT_MAPPING,
   MODE_TRANSLATIONS,
-  NORMALIZED_CATEGORIES,
   NOTE_TRANSLATIONS,
   VALID_WORKGENRES,
   WORK_GENRE_TRANSLATIONS,
 } from '../../../../../../scripts/imslp-works-scraper-util';
+import {
+  extractComposerFromIMSLPId,
+  filterValidCategories,
+  mapStyleToEpoch,
+  VALID_CATEGORIES,
+} from '@/app/utils/valid-categories-and-genres';
 
 interface ScrapedWorkData {
   title: string;
@@ -113,11 +118,30 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
     const pageTitle = $('#firstHeading').text().trim();
     const title = cleanTitle(pageTitle);
 
-    // Extrair nome do compositor da URL ou título
-    const composerName = extractComposerName(imslpId, title);
+    // Extrair informações do compositor do imslpId
+    const composerInfo = extractComposerFromIMSLPId(imslpId);
+    let composerName = '';
+    let composerId: string | null = null;
 
-    // Buscar compositor no banco de dados
-    const composer = await findComposerByName(composerName);
+    if (composerInfo) {
+      composerName = composerInfo.fullName;
+
+      // Buscar compositor no banco de dados
+      const composer = await findComposerByName(
+        composerInfo.fullName,
+        composerInfo.lastName
+      );
+      if (composer) {
+        composerId = composer.id;
+        console.log(
+          `✅ Compositor encontrado no banco: ${
+            composer.fullName || composer.name
+          }`
+        );
+      } else {
+        console.log(`⚠️ Compositor não encontrado no banco: ${composerName}`);
+      }
+    }
 
     // Extrair informações da tabela de detalhes
     const workDetails = extractWorkDetails($);
@@ -125,9 +149,13 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
     // Extrair subtítulo
     const subtitle = extractSubtitle(title, $);
 
-    // Extrair categorias e gêneros com as funções melhoradas
-    const categories = extractCategories($);
-    const workGenres = extractWorkGenres($);
+    // Extrair categorias válidas
+    const rawCategories = extractCategories($);
+    const validCategories = filterValidCategories(rawCategories);
+
+    // Extrair gêneros válidos
+    const rawWorkGenres = extractWorkGenres($);
+    const validWorkGenres = filterValidWorkGenres(rawWorkGenres);
 
     // Extrair tags do IMSLP
     const imslpTags = extractIMSLPTags($);
@@ -139,39 +167,56 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
     const primaryInstrument = determinePrimaryInstrument(
       title,
       workDetails.instrumentation,
-      categories
+      validCategories
     );
 
     // Determinar nível de dificuldade
     const difficultyLevel = determineDifficultyLevel(
       title,
       workDetails.opOrCatalog,
-      workGenres
+      validWorkGenres
     );
 
-    // Determinar época - primeiro pelo compositor, depois pelo estilo
-    let epochName = await determineEpochFromComposer(composerName);
-    if (!epochName) {
-      epochName = determineEpochFromStyle(workDetails.workStyle);
+    // Determinar época usando o mapeamento melhorado
+    let epochName: string | null = null;
+    if (workDetails.workStyle) {
+      epochName = mapStyleToEpoch(workDetails.workStyle);
+    }
+
+    // Se não conseguiu mapear pelo estilo, tentar pelo compositor
+    if (!epochName && composerId) {
+      try {
+        const composerWithEpoch = await prisma.composer.findUnique({
+          where: { id: composerId },
+          include: { epoch: true },
+        });
+        if (composerWithEpoch?.epoch) {
+          epochName = composerWithEpoch.epoch.name;
+        }
+      } catch (error) {
+        console.log('⚠️ Erro ao buscar época do compositor:', error);
+      }
     }
 
     // Calcular completude dos dados
     const dataCompleteness = calculateDataCompleteness([
       title,
-      composer?.id,
+      composerId,
       workDetails.opOrCatalog,
       workDetails.compositionYear,
       workDetails.tone,
       workDetails.instrumentation,
       subtitle,
       epochName,
+      validCategories.length > 0 ? 'has_categories' : null,
+      validWorkGenres.length > 0 ? 'has_genres' : null,
     ]);
 
     return {
       title,
       subtitle,
-      composerName: composer?.fullName || composer?.name || composerName,
-      composerId: composer?.id || null,
+      composerName,
+      composerId,
       imslpPermlink: url,
       imslpId,
       opOrCatalog: workDetails.opOrCatalog,
@@ -186,8 +231,8 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
       instrumentation: translateInstrumentation(workDetails.instrumentation),
       dedicateTo: workDetails.dedicateTo,
       dedicationComposerLink: workDetails.dedicationComposerLink,
-      categoryNames: categories,
-      workGenresArr: workGenres,
+      categoryNames: validCategories,
+      workGenresArr: validWorkGenres,
       imslpTags,
       difficultyLevel,
       workType,
@@ -195,7 +240,7 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
         workType === 'INDIVIDUAL' &&
         (workDetails.opOrCatalog?.includes('No.') || title.includes('No.')),
       movementNumber: extractMovementNumber(title, workDetails.opOrCatalog),
-      epochName: epochName || composer?.epoch?.name || null,
+      epochName,
       primaryInstrument,
       dataCompleteness,
       pageQuality:
@@ -216,41 +261,40 @@ function cleanTitle(title: string): string {
   return title.replace(/\([^)]*\)$/, '').trim();
 }
 
-function extractComposerName(imslpId: string, title: string): string {
-  // Extrair compositor do ID IMSLP ou título
-  const match = imslpId.match(/\(([^,]+),\s*([^)]+)\)$/);
-  if (match) {
-    const lastName = match[1];
-    const firstName = match[2];
-    return `${firstName} ${lastName}`;
-  }
-  return '';
-}
-
-async function findComposerByName(composerName: string) {
-  if (!composerName) return null;
-
+async function findComposerByName(fullName: string, lastName: string) {
   try {
-    const composer = await prisma.composer.findFirst({
+    // Primeiro tenta buscar pelo nome completo
+    let composer = await prisma.composer.findFirst({
       where: {
         OR: [
-          { name: { contains: composerName, mode: 'insensitive' } },
-          { fullName: { contains: composerName, mode: 'insensitive' } },
-          { imslpId: { contains: composerName } },
-          { permLinkImslp: { contains: composerName } },
+          { name: { contains: fullName, mode: 'insensitive' } },
+          { fullName: { contains: fullName, mode: 'insensitive' } },
+          { alternativeNames: { contains: fullName, mode: 'insensitive' } },
         ],
       },
       select: {
         id: true,
         name: true,
         fullName: true,
-        epoch: {
-          select: {
-            name: true,
-          },
-        },
       },
     });
+
+    // Se não encontrou, tenta buscar pelo sobrenome
+    if (!composer) {
+      composer = await prisma.composer.findFirst({
+        where: {
+          OR: [
+            { name: { contains: lastName, mode: 'insensitive' } },
+            { fullName: { contains: lastName, mode: 'insensitive' } },
+          ],
+        },
+        select: {
+          id: true,
+          name: true,
+          fullName: true,
+        },
+      });
+    }
 
     return composer;
   } catch (error) {
@@ -344,6 +388,7 @@ function extractSubtitle(title: string, $: cheerio.CheerioAPI): string | null {
   return subtitle && subtitle.length > 0 ? subtitle : null;
 }
 
+// Função melhorada para extrair apenas categorias válidas
 function extractCategories($: cheerio.CheerioAPI): string[] {
   const categories: Set<string> = new Set();
 
@@ -357,20 +402,33 @@ function extractCategories($: cheerio.CheerioAPI): string[] {
           /_/g,
           ' '
         );
-
-        // Filtrar apenas categorias que indicam instrumentação/arranjo
         const categoryLower = category.toLowerCase();
-        if (categoryLower.includes('for ') || categoryLower.includes('arr')) {
-          const translatedCategory = getCategoryNameInPortuguese(categoryLower);
-          if (translatedCategory) {
-            categories.add(translatedCategory);
-          }
+
+        // Verificar se é uma categoria válida (em inglês)
+        if (VALID_CATEGORIES[category] || VALID_CATEGORIES[categoryLower]) {
+          const translatedCategory =
+            VALID_CATEGORIES[category] || VALID_CATEGORIES[categoryLower];
+          categories.add(translatedCategory);
+          console.log(
+            `✅ Categoria válida encontrada: ${category} -> ${translatedCategory}`
+          );
+        } else {
+          console.log(`⚠️ Categoria inválida ignorada: ${category}`);
         }
       }
     }
   });
 
   return Array.from(categories);
+}
+
+// Função melhorada para extrair apenas gêneros válidos
+function filterValidWorkGenres(rawGenres: string[]): string[] {
+  return rawGenres
+    .map((genre) => genre.trim().toLowerCase())
+    .filter((genre) => VALID_WORKGENRES.has(genre))
+    .map((genre) => WORK_GENRE_TRANSLATIONS[genre] || genre)
+    .filter((genre) => genre && genre.length > 0);
 }
 
 function extractWorkGenres($: cheerio.CheerioAPI): string[] {
@@ -386,8 +444,14 @@ function extractWorkGenres($: cheerio.CheerioAPI): string[] {
         const genreName = $(link).text().trim().toLowerCase();
 
         if (genreName && VALID_WORKGENRES.has(genreName)) {
-          const portugueseGenre = translateWorkGenre(genreName);
+          const portugueseGenre =
+            WORK_GENRE_TRANSLATIONS[genreName] || genreName;
           workGenres.add(portugueseGenre);
+          console.log(
+            `✅ Gênero válido encontrado: ${genreName} -> ${portugueseGenre}`
+          );
+        } else {
+          console.log(`⚠️ Gênero inválido ignorado: ${genreName}`);
         }
       });
     }
@@ -407,8 +471,12 @@ function extractWorkGenres($: cheerio.CheerioAPI): string[] {
 
         // Verificar se é um gênero válido
         if (VALID_WORKGENRES.has(categoryLower)) {
-          const portugueseGenre = translateWorkGenre(categoryLower);
+          const portugueseGenre =
+            WORK_GENRE_TRANSLATIONS[categoryLower] || categoryLower;
           workGenres.add(portugueseGenre);
+          console.log(
+            `✅ Gênero válido encontrado em categoria: ${category} -> ${portugueseGenre}`
+          );
         }
       }
     }
@@ -422,52 +490,19 @@ function extractWorkGenres($: cheerio.CheerioAPI): string[] {
     )) {
       if (pageTitle.includes(english)) {
         workGenres.add(portuguese);
+        console.log(
+          `✅ Gênero encontrado no título: ${english} -> ${portuguese}`
+        );
       }
     }
   }
 
-  // Se ainda não tem gêneros, usar "peças" como padrão
+  // Se ainda não tem gêneros, usar "não definido" como padrão
   if (workGenres.size === 0) {
-    workGenres.add('peças');
+    workGenres.add('não definido');
   }
 
   return Array.from(workGenres);
-}
-
-function translateWorkGenre(englishGenre: string): string {
-  const normalizedGenre = englishGenre.toLowerCase().trim();
-  return WORK_GENRE_TRANSLATIONS[normalizedGenre] || normalizedGenre;
-}
-
-function getCategoryNameInPortuguese(categoryName: string): string | null {
-  const normalizedCategory = categoryName.toLowerCase().trim();
-  return NORMALIZED_CATEGORIES[normalizedCategory] || null;
-}
-
-async function determineEpochFromComposer(
-  composerName: string
-): Promise<string | null> {
-  if (!composerName) return null;
-
-  try {
-    // Buscar compositor no banco para pegar a época
-    const composer = await prisma.composer.findFirst({
-      where: {
-        OR: [
-          { name: { contains: composerName, mode: 'insensitive' } },
-          { fullName: { contains: composerName, mode: 'insensitive' } },
-        ],
-      },
-      include: {
-        epoch: true,
-      },
-    });
-
-    return composer?.epoch?.name || null;
-  } catch (error) {
-    console.error('Erro ao buscar época do compositor:', error);
-    return null;
-  }
 }
 
 function extractIMSLPTags($: cheerio.CheerioAPI): string[] {
@@ -562,28 +597,6 @@ function determineDifficultyLevel(
   }
 
   return 'INTERMEDIATE';
-}
-
-function determineEpochFromStyle(workStyle?: string): string | null {
-  if (!workStyle) return null;
-
-  const styleLower = workStyle.toLowerCase();
-  const epochMapping: Record<string, string> = {
-    baroque: 'Barroco',
-    classical: 'Clássico',
-    romantic: 'Romântico',
-    modern: 'Contemporâneo',
-    renaissance: 'Renascentista',
-    medieval: 'Medieval',
-  };
-
-  for (const [style, epoch] of Object.entries(epochMapping)) {
-    if (styleLower.includes(style)) {
-      return epoch;
-    }
-  }
-
-  return null;
 }
 
 function translateMusicKey(key?: string): string | null {

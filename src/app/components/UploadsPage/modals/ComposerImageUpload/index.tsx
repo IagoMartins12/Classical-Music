@@ -177,7 +177,12 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
       {/* Mode Selection */}
       <div className="flex items-center space-x-2 bg-theme-secondary rounded-lg p-1">
         <button
-          onClick={() => handleModeChange('upload')}
+          onClick={() => {
+            if (inputMode === 'upload') {
+              fileInputRef.current?.click();
+            }
+            handleModeChange('upload');
+          }}
           className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
             inputMode === 'upload'
               ? 'bg-brand-primary text-white shadow-sm'

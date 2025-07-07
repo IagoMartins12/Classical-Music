@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   FiUser,
   FiCalendar,
@@ -52,6 +53,9 @@ const UploadComposerCard = ({
 
   const hasExternalLinks = item.imslpId;
 
+  // Assumindo que a imagem está em item.portraitUrl ou similar
+  const portraitUrl = (item as any).portraitUrl;
+
   if (viewMode === 'list') {
     return (
       <div className="classical-card group relative p-4 hover:shadow-theme-glow transition-all duration-300">
@@ -60,21 +64,47 @@ const UploadComposerCard = ({
           <div className="flex items-center space-x-4 flex-1 min-w-0">
             {/* Portrait */}
             <div className="relative w-12 h-12 flex-shrink-0">
-              {!imageLoaded && !imageError && (
+              {!imageLoaded && !imageError && portraitUrl && (
                 <div className="absolute inset-0 loading-skeleton rounded-full"></div>
               )}
 
-              {/* Use item.imageUrl or similar field */}
-              <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-300">
-                <FiUser className="w-5 h-5 text-theme-inverse" />
-              </div>
+              {portraitUrl && !imageError ? (
+                <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-300">
+                  <Image
+                    src={portraitUrl}
+                    alt={item.title}
+                    fill
+                    className={`object-cover transition-opacity duration-300 ${
+                      imageLoaded ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    onLoad={() => setImageLoaded(true)}
+                    onError={() => setImageError(true)}
+                    sizes="48px"
+                  />
+                  {!imageLoaded && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                      <FiUser className="w-5 h-5 text-theme-inverse" />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-300">
+                  <FiUser className="w-5 h-5 text-theme-inverse" />
+                </div>
+              )}
             </div>
 
             {/* Main info */}
             <div className="flex-1 min-w-0">
-              <h3 className="text-base font-bold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 truncate">
-                {item.title}
-              </h3>
+              <Link
+                href={`/compositores/${item.id}`}
+                className="block group/link"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h3 className="text-base font-bold text-theme-primary classical-title group-hover/link:text-brand-primary transition-colors duration-300 truncate hover:underline">
+                  {item.title}
+                </h3>
+              </Link>
 
               <div className="flex items-center space-x-4 mt-1">
                 {/* Period */}
@@ -153,19 +183,45 @@ const UploadComposerCard = ({
       <div className="classical-card h-full overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow">
         {/* Portrait Section */}
         <div className="relative p-6 pb-4">
-          <div className="flex justify-center mb-4">
-            <div className="relative w-24 h-24 md:w-28 md:h-28">
-              {/* Loading skeleton */}
-              {!imageLoaded && !imageError && (
-                <div className="absolute inset-0 loading-skeleton rounded-full"></div>
-              )}
+          <Link
+            href={`/compositores/${item.id}`}
+            className="block"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-center mb-4 group/portrait">
+              <div className="relative w-24 h-24 md:w-28 md:h-28">
+                {/* Loading skeleton */}
+                {!imageLoaded && !imageError && portraitUrl && (
+                  <div className="absolute inset-0 loading-skeleton rounded-full"></div>
+                )}
 
-              {/* Portrait fallback */}
-              <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-3 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all duration-500 group-hover:scale-110">
-                <FiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
+                {portraitUrl && !imageError ? (
+                  <div className="relative w-full h-full rounded-full overflow-hidden border-3 border-brand-primary/20 group-hover/portrait:border-brand-primary/50 transition-all duration-500 group-hover/portrait:scale-110">
+                    <Image
+                      src={portraitUrl}
+                      alt={item.title}
+                      fill
+                      className={`object-cover transition-all duration-500 group-hover/portrait:scale-110 ${
+                        imageLoaded ? 'opacity-100' : 'opacity-0'
+                      }`}
+                      onLoad={() => setImageLoaded(true)}
+                      onError={() => setImageError(true)}
+                      sizes="(max-width: 768px) 96px, 112px"
+                    />
+                    {!imageLoaded && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                        <FiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-3 border-brand-primary/20 group-hover/portrait:border-brand-primary/50 transition-all duration-500 group-hover/portrait:scale-110">
+                    <FiUser className="w-8 h-8 md:w-10 md:h-10 text-theme-inverse" />
+                  </div>
+                )}
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Floating action buttons */}
           <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
@@ -196,9 +252,15 @@ const UploadComposerCard = ({
           <div className="relative z-10 space-y-3">
             {/* Name */}
             <div className="text-center">
-              <h3 className="text-lg font-bold text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 line-clamp-2">
-                {item.title}
-              </h3>
+              <Link
+                href={`/compositores/${item.id}`}
+                className="block group/link"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <h3 className="text-lg font-bold text-theme-primary classical-title group-hover/link:text-brand-primary transition-colors duration-300 line-clamp-2 hover:underline">
+                  {item.title}
+                </h3>
+              </Link>
             </div>
 
             {/* Status badges */}
@@ -213,6 +275,24 @@ const UploadComposerCard = ({
               {item.verificationStatus === 'verified' && (
                 <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full">
                   Verificado
+                </span>
+              )}
+
+              {item.dataQuality && (
+                <span
+                  className={`text-xs font-medium px-2 py-1 rounded-full ${
+                    item.dataQuality === 'high'
+                      ? 'text-accent-green bg-accent-green/10'
+                      : item.dataQuality === 'medium'
+                      ? 'text-accent-amber bg-accent-amber/10'
+                      : 'text-accent-red bg-accent-red/10'
+                  }`}
+                >
+                  {item.dataQuality === 'high'
+                    ? 'Alta qualidade'
+                    : item.dataQuality === 'medium'
+                    ? 'Qualidade média'
+                    : 'Baixa qualidade'}
                 </span>
               )}
             </div>

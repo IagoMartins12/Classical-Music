@@ -1,6 +1,6 @@
 'use client';
 
-// app/components/modals/CreateWorkModal.tsx - MELHORADO COM SCRAPING IMSLP
+// app/components/modals/CreateWorkModal.tsx - MELHORADO COM CATEGORIAS E GÊNEROS VÁLIDOS
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -21,15 +21,22 @@ import {
 } from 'react-icons/fi';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
+import MultiSelect from '@/app/components/Common/MultiSelect';
 import {
   AnimatedCard,
   AnimatedItem,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
-import Checkbox from '@/app/components/Common/Checkbox';
 import Modal from '@/app/components/Modal';
 import ComposerSearchInput from '@/app/components/ComposerSearchInput';
 import { useFormValidation } from '@/app/utils/formUtils';
+import {
+  extractComposerFromIMSLPId,
+  filterValidCategories,
+  getAllValidCategories,
+  mapStyleToEpoch,
+  VALID_PORTUGUESE_WORKGENRES,
+} from '@/app/utils/valid-categories-and-genres';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -100,8 +107,8 @@ const CreateWorkModal = ({
     mediaDuration: '',
     workStyle: '',
     moviment: '',
-    categoryNames: '',
-    workGenresArr: '',
+    categoryNames: [] as string[], // Agora é array
+    workGenresArr: [] as string[], // Agora é array
     dedicateTo: '',
     dedicationComposerLink: '',
     instrumentation: '',
@@ -114,10 +121,10 @@ const CreateWorkModal = ({
     tempoMarking: '',
     movementsDetailed: '',
     imslpTags: '',
-    difficultyLevel: '',
+    difficultyLevel: null,
   });
 
-  // Support data para listas de apoio (renomeado para evitar conflito)
+  // Support data para listas de apoio
   const [supportData, setSupportData] = useState<{
     epochs: any[];
     instruments: any[];
@@ -132,11 +139,16 @@ const CreateWorkModal = ({
     works: [],
   });
 
+  // Opções para MultiSelect
+  const validCategoryOptions = getAllValidCategories();
+  const validWorkGenreOptions = Array.from(VALID_PORTUGUESE_WORKGENRES).sort();
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loadingFormData, setLoadingFormData] = useState(false);
 
   // Populate form when editing
   useEffect(() => {
+    loadFormData();
     if (editingWork) {
       setFormData({
         title: editingWork.title || '',
@@ -152,8 +164,8 @@ const CreateWorkModal = ({
         mediaDuration: editingWork.mediaDuration || '',
         workStyle: editingWork.workStyle || '',
         moviment: editingWork.moviment || '',
-        categoryNames: editingWork.categoryNames?.join(', ') || '',
-        workGenresArr: editingWork.workGenresArr?.join(', ') || '',
+        categoryNames: editingWork.categoryNames || [],
+        workGenresArr: editingWork.workGenresArr || [],
         dedicateTo: editingWork.dedicateTo || '',
         dedicationComposerLink: editingWork.dedicationComposerLink || '',
         instrumentation: editingWork.instrumentation || '',
@@ -184,7 +196,6 @@ const CreateWorkModal = ({
           ...prev,
           roles: data.roles || [],
           instruments: data.instruments || prev.instruments,
-          composers: data.composers || prev.composers,
           works: data.works || [],
         }));
       }
@@ -243,7 +254,10 @@ const CreateWorkModal = ({
     }
   };
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (
+    field: string,
+    value: string | boolean | string[]
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: '' }));
@@ -280,15 +294,9 @@ const CreateWorkModal = ({
     setIsSubmitting(true);
 
     try {
-      // Convert string arrays back to arrays
       const submitData = {
         ...formData,
-        categoryNames: formData.categoryNames
-          ? formData.categoryNames.split(',').map((s) => s.trim())
-          : [],
-        workGenresArr: formData.workGenresArr
-          ? formData.workGenresArr.split(',').map((s) => s.trim())
-          : [],
+        // categoryNames e workGenresArr já são arrays
         imslpTags: formData.imslpTags
           ? formData.imslpTags.split(',').map((s) => s.trim())
           : [],
@@ -405,25 +413,37 @@ const CreateWorkModal = ({
       dedicateTo: data.dedicateTo || prev.dedicateTo,
       dedicationComposerLink:
         data.dedicationComposerLink || prev.dedicationComposerLink,
-      categoryNames: data.categoryNames?.join(', ') || prev.categoryNames,
-      workGenresArr: data.workGenresArr?.join(', ') || prev.workGenresArr,
-      imslpTags: data.imslpTags?.join(', ') || prev.imslpTags,
+      // Filtrar categorias válidas
+      categoryNames: data.categoryNames
+        ? filterValidCategories(data.categoryNames)
+        : prev.categoryNames,
+      // Filtrar gêneros válidos
+      workGenresArr: data.workGenresArr
+        ? data.workGenresArr.filter((genre: string) =>
+            VALID_PORTUGUESE_WORKGENRES.has(genre.toLowerCase().trim())
+          )
+        : prev.workGenresArr,
       difficultyLevel: data.difficultyLevel || prev.difficultyLevel,
       workType: data.workType || prev.workType,
       isPartOfCollection: data.isPartOfCollection || prev.isPartOfCollection,
       movementNumber: data.movementNumber?.toString() || prev.movementNumber,
     }));
 
-    // Buscar época automaticamente baseada no epochName retornado pelo scraper
-    if (data.epochName) {
-      const epoch = epochs.find((e) =>
-        e.name.toLowerCase().includes(data.epochName.toLowerCase())
-      );
-      if (epoch) {
-        setFormData((prev) => ({ ...prev, epochId: epoch.id }));
-        console.log(`🏛️ Época vinculada automaticamente: ${epoch.name}`);
-      } else {
-        console.log(`⚠️ Época não encontrada no banco: ${data.epochName}`);
+    // Buscar época automaticamente usando o mapeamento
+    if (data.workStyle || data.epochName) {
+      const styleToMap = data.workStyle || data.epochName;
+      const mappedEpoch = mapStyleToEpoch(styleToMap);
+
+      if (mappedEpoch) {
+        const epoch = epochs.find((e) =>
+          e.name.toLowerCase().includes(mappedEpoch.toLowerCase())
+        );
+        if (epoch) {
+          setFormData((prev) => ({ ...prev, epochId: epoch.id }));
+          console.log(`🏛️ Época vinculada automaticamente: ${epoch.name}`);
+        } else {
+          console.log(`⚠️ Época não encontrada no banco: ${mappedEpoch}`);
+        }
       }
     }
 
@@ -444,110 +464,93 @@ const CreateWorkModal = ({
       }
     }
 
-    // Buscar e definir compositor automaticamente
-    if (data.composerId) {
-      try {
-        console.log(
-          `🔍 Buscando dados completos do compositor: ${data.composerId}`
-        );
+    // Buscar compositor pelo link IMSLP
+    if (data.imslpId) {
+      const composerInfo = extractComposerFromIMSLPId(data.imslpId);
 
-        // Fazer nova requisição para buscar dados completos do compositor
-        const response = await fetch('/api/composers', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: data.composerId,
-          }),
-        });
+      if (composerInfo) {
+        try {
+          console.log(`🔍 Buscando compositor: ${composerInfo.fullName}`);
 
-        if (response.ok) {
-          const composerData = await response.json();
-          if (composerData && composerData.id) {
-            // Definir o ID do compositor encontrado
-            setFormData((prev) => ({ ...prev, composerId: data.composerId }));
+          // Buscar compositor no banco de dados
+          const response = await fetch('/api/composers', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              q: composerInfo.fullName,
+              limit: 5,
+            }),
+          });
 
-            // Verificar se o compositor está na lista de compositores do supportData
-            const existingComposer = supportData.composers.find(
-              (c) => c.id === data.composerId
+          if (response.ok) {
+            const composers = await response.json();
+
+            // Encontrar o compositor que melhor combina
+            const matchingComposer = composers.find(
+              (c: any) =>
+                c.fullName
+                  ?.toLowerCase()
+                  .includes(composerInfo.lastName.toLowerCase()) ||
+                c.name
+                  ?.toLowerCase()
+                  .includes(composerInfo.lastName.toLowerCase())
             );
-            if (!existingComposer && composerData) {
-              // Adicionar o compositor à lista se não estiver presente
+
+            if (matchingComposer) {
+              setFormData((prev) => ({
+                ...prev,
+                composerId: matchingComposer.id,
+              }));
+
+              // Adicionar à lista se não estiver presente
               setSupportData((prevSupportData) => ({
                 ...prevSupportData,
-                composers: [
-                  ...prevSupportData.composers,
-                  {
-                    id: composerData.id,
-                    name: composerData.name,
-                    fullName: composerData.fullName,
-                    worksCount: composerData.worksCount || 0,
-                  },
-                ],
+                composers: prevSupportData.composers.some(
+                  (c) => c.id === matchingComposer.id
+                )
+                  ? prevSupportData.composers
+                  : [...prevSupportData.composers, matchingComposer],
               }));
+
+              console.log(
+                `🎼 Compositor vinculado automaticamente: ${
+                  matchingComposer.fullName || matchingComposer.name
+                }`
+              );
+            } else {
+              console.log(
+                `⚠️ Compositor não encontrado no banco: ${composerInfo.fullName}`
+              );
             }
-
-            console.log(
-              `🎼 Compositor vinculado automaticamente: ${
-                composerData.fullName || composerData.name
-              }`
-            );
-          } else {
-            console.log(
-              `⚠️ Dados do compositor não encontrados para ID: ${data.composerId}`
-            );
           }
-        } else {
-          console.log(
-            `❌ Erro na requisição do compositor: ${response.status}`
-          );
-          // Se falhar, apenas definir o ID diretamente (fallback)
-          setFormData((prev) => ({ ...prev, composerId: data.composerId }));
+        } catch (error) {
+          console.error('❌ Erro ao buscar compositor:', error);
         }
-      } catch (error) {
-        console.error('❌ Erro ao buscar dados do compositor:', error);
-        // Se falhar, apenas definir o ID diretamente (fallback)
-        setFormData((prev) => ({ ...prev, composerId: data.composerId }));
-      }
-    } else if (data.composerName) {
-      // Se não tem composerId mas tem composerName, tentar buscar por nome
-      console.log(`🔍 Buscando compositor por nome: ${data.composerName}`);
-      const composer = supportData.composers.find(
-        (c) =>
-          c.name.toLowerCase().includes(data.composerName.toLowerCase()) ||
-          (c.fullName &&
-            c.fullName.toLowerCase().includes(data.composerName.toLowerCase()))
-      );
-
-      if (composer) {
-        setFormData((prev) => ({ ...prev, composerId: composer.id }));
-        console.log(
-          `🎼 Compositor encontrado por nome: ${
-            composer.fullName || composer.name
-          }`
-        );
-      } else {
-        console.log(
-          `⚠️ Compositor não encontrado por nome: ${data.composerName}`
-        );
       }
     }
 
     // Log de completude dos dados
     console.log('📊 Dados extraídos e preenchidos:');
     console.log(`   - Título: ${data.title}`);
-    console.log(`   - Compositor: ${data.composerName || 'Não encontrado'}`);
-    console.log(`   - Época: ${data.epochName || 'Não determinada'}`);
     console.log(
-      `   - Instrumento: ${data.primaryInstrument || 'Não determinado'}`
+      `   - Categorias válidas: ${
+        data.categoryNames
+          ? filterValidCategories(data.categoryNames).length
+          : 0
+      }`
     );
-    console.log(`   - Gêneros: ${data.workGenresArr?.length || 0} encontrados`);
     console.log(
-      `   - Categorias: ${data.categoryNames?.length || 0} encontradas`
+      `   - Gêneros válidos: ${
+        data.workGenresArr
+          ? data.workGenresArr.filter((g: string) =>
+              VALID_PORTUGUESE_WORKGENRES.has(g.toLowerCase())
+            ).length
+          : 0
+      }`
     );
     console.log(`   - Completude: ${data.dataCompleteness}%`);
-    console.log(`   - Qualidade da página: ${data.pageQuality}`);
   };
 
   if (!isOpen) return null;
@@ -722,7 +725,7 @@ const CreateWorkModal = ({
                         { value: '', label: 'Selecione um instrumento' },
                         ...supportData.instruments.map((instrument) => ({
                           value: instrument.id,
-                          label: `${instrument.name} (${instrument.category})`,
+                          label: `${instrument.name}`,
                         })),
                       ]}
                       value={formData.instrumentId}
@@ -901,39 +904,34 @@ const CreateWorkModal = ({
                 </div>
               </AnimatedCard>
 
-              {/* Categories and Tags */}
+              {/* Categories and Genres - NOVO COM MULTISELECT */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiTag className="w-5 h-5" />
-                  <span>Categorias e Tags</span>
+                  <span>Categorias e Gêneros</span>
                 </h3>
 
                 <div className="space-y-4">
-                  <Input
+                  <MultiSelect
                     label="Categorias"
-                    value={formData.categoryNames}
-                    onChange={(e) =>
-                      handleInputChange('categoryNames', e.target.value)
+                    options={validCategoryOptions}
+                    selectedValues={formData.categoryNames}
+                    onChange={(values) =>
+                      handleInputChange('categoryNames', values)
                     }
-                    placeholder="Para piano, Para piano 4 mãos (separadas por vírgula)"
+                    placeholder="Selecione categorias válidas..."
+                    maxDisplay={2}
                   />
 
-                  <Input
+                  <MultiSelect
                     label="Gêneros"
-                    value={formData.workGenresArr}
-                    onChange={(e) =>
-                      handleInputChange('workGenresArr', e.target.value)
+                    options={validWorkGenreOptions}
+                    selectedValues={formData.workGenresArr}
+                    onChange={(values) =>
+                      handleInputChange('workGenresArr', values)
                     }
-                    placeholder="noturnos, valsas, estudos (separados por vírgula)"
-                  />
-
-                  <Input
-                    label="Tags IMSLP"
-                    value={formData.imslpTags}
-                    onChange={(e) =>
-                      handleInputChange('imslpTags', e.target.value)
-                    }
-                    placeholder="Symphonies, Orchestral works (separadas por vírgula)"
+                    placeholder="Selecione gêneros válidos..."
+                    maxDisplay={2}
                   />
                 </div>
               </AnimatedCard>

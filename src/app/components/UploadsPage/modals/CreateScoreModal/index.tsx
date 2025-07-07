@@ -1,6 +1,6 @@
 'use client';
 
-// app/components/modals/CreateScoreModal.tsx
+// app/components/modals/CreateScoreModal.tsx - ATUALIZADO COM MELHORIAS
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -16,6 +16,8 @@ import {
   FiDownload,
   FiFileText,
   FiTag,
+  FiCheck,
+  FiAlertCircle,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -26,6 +28,13 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Checkbox from '@/app/components/Common/Checkbox';
 import Modal from '@/app/components/Modal';
+import WorkSearchInput from '@/app/components/WorkSearchInput';
+import {
+  validateAndExtractPDFInfo,
+  validateUploadedFile,
+  isProbablyPDF,
+  isValidUrl,
+} from '@/app/utils/pdfUtils';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -66,6 +75,7 @@ const CreateScoreModal = ({
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
+  const [validatingPDF, setValidatingPDF] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -79,8 +89,6 @@ const CreateScoreModal = ({
     publisher: '',
     copyright: '',
     thumbnailUrl: '',
-    uploadDate: '',
-    uploader: '',
     notes: '',
     type: 'SCORES',
     groupIndex: '0',
@@ -94,6 +102,11 @@ const CreateScoreModal = ({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [pdfValidation, setPdfValidation] = useState<{
+    isValidating: boolean;
+    isValid: boolean;
+    error?: string;
+  }>({ isValidating: false, isValid: false });
 
   // Populate form when editing
   useEffect(() => {
@@ -109,8 +122,6 @@ const CreateScoreModal = ({
         publisher: editingScore.publisher || '',
         copyright: editingScore.copyright || '',
         thumbnailUrl: editingScore.thumbnailUrl || '',
-        uploadDate: editingScore.uploadDate || '',
-        uploader: editingScore.uploader || '',
         notes: editingScore.notes || '',
         type: editingScore.type || 'SCORES',
         groupIndex: editingScore.groupIndex?.toString() || '0',
@@ -133,10 +144,68 @@ const CreateScoreModal = ({
     }
   };
 
+  const handleWorkSelect = (workId: string) => {
+    setFormData((prev) => ({ ...prev, workId }));
+    if (errors.workId) {
+      setErrors((prev) => ({ ...prev, workId: '' }));
+    }
+  };
+
+  // Validar PDF quando URL for inserida
+  const handleUrlChange = async (url: string) => {
+    handleInputChange('downloadUrl', url);
+
+    if (url && isValidUrl(url) && isProbablyPDF(url)) {
+      setValidatingPDF(true);
+      setPdfValidation({ isValidating: true, isValid: false });
+
+      try {
+        const pdfInfo = await validateAndExtractPDFInfo(url);
+
+        if (pdfInfo.isValid) {
+          // Atualizar formulário com informações extraídas
+          setFormData((prev) => ({
+            ...prev,
+            downloadUrl: url,
+            fileSize: pdfInfo.fileSize || prev.fileSize,
+            pageCount: pdfInfo.pageCount?.toString() || prev.pageCount,
+            title: prev.title || pdfInfo.title || prev.title,
+          }));
+
+          setPdfValidation({ isValidating: false, isValid: true });
+        } else {
+          setPdfValidation({
+            isValidating: false,
+            isValid: false,
+            error: pdfInfo.error,
+          });
+        }
+      } catch (error) {
+        setPdfValidation({
+          isValidating: false,
+          isValid: false,
+          error: 'Erro ao validar PDF',
+        });
+      } finally {
+        setValidatingPDF(false);
+      }
+    } else {
+      setPdfValidation({ isValidating: false, isValid: false });
+    }
+  };
+
   const handleFileUpload = async (file: File) => {
     setUploadingFile(true);
 
     try {
+      // Validar arquivo primeiro
+      const validation = await validateUploadedFile(file);
+
+      if (!validation.isValid) {
+        alert(validation.error || 'Arquivo inválido');
+        return;
+      }
+
       // Criar FormData para upload
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
@@ -158,16 +227,23 @@ const CreateScoreModal = ({
       setFormData((prev) => ({
         ...prev,
         downloadUrl: data.url,
-        fileSize: formatFileSize(file.size),
-        title: prev.title || file.name.replace(/\.[^/.]+$/, ''), // Remove extensão se título vazio
+        fileSize: validation.fileSize || '',
+        pageCount: validation.pageCount?.toString() || '',
+        title:
+          prev.title || validation.title || file.name.replace(/\.[^/.]+$/, ''),
         fileFormat: getFileExtension(file.name).toUpperCase(),
-        uploadDate: new Date().toISOString().split('T')[0],
       }));
 
       setSelectedFile(file);
+      setPdfValidation({ isValidating: false, isValid: true });
     } catch (error) {
       console.error('Erro no upload:', error);
       alert('Erro ao fazer upload do arquivo');
+      setPdfValidation({
+        isValidating: false,
+        isValid: false,
+        error: 'Erro no upload',
+      });
     } finally {
       setUploadingFile(false);
     }
@@ -181,6 +257,9 @@ const CreateScoreModal = ({
     }
     if (!formData.title.trim()) {
       newErrors.title = 'Título é obrigatório';
+    }
+    if (!formData.downloadUrl.trim()) {
+      newErrors.downloadUrl = 'URL do arquivo é obrigatória';
     }
 
     setErrors(newErrors);
@@ -211,6 +290,9 @@ const CreateScoreModal = ({
         customData: formData.customData
           ? JSON.parse(formData.customData)
           : null,
+        // Remover campos que agora são automáticos
+        uploadDate: undefined,
+        uploader: undefined,
       };
 
       const url = editingScore
@@ -244,14 +326,6 @@ const CreateScoreModal = ({
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   const getFileExtension = (filename: string): string => {
@@ -332,7 +406,7 @@ const CreateScoreModal = ({
                           {selectedFile.name}
                         </span>
                         <span className="text-theme-tertiary">
-                          ({formatFileSize(selectedFile.size)})
+                          ({formData.fileSize})
                         </span>
                       </div>
                     ) : (
@@ -353,15 +427,44 @@ const CreateScoreModal = ({
                     <span className="text-theme-tertiary text-sm">ou</span>
                   </div>
 
-                  <Input
-                    label="URL do Arquivo"
-                    value={formData.downloadUrl}
-                    onChange={(e) =>
-                      handleInputChange('downloadUrl', e.target.value)
-                    }
-                    placeholder="https://exemplo.com/partitura.pdf"
-                    leftIcon={<FiDownload />}
-                  />
+                  <div className="space-y-2">
+                    <Input
+                      label="URL do Arquivo"
+                      value={formData.downloadUrl}
+                      onChange={(e) => handleUrlChange(e.target.value)}
+                      placeholder="https://exemplo.com/partitura.pdf"
+                      leftIcon={<FiDownload />}
+                      error={errors.downloadUrl}
+                    />
+
+                    {/* Indicador de validação de PDF */}
+                    {validatingPDF && (
+                      <div className="flex items-center space-x-2 text-sm text-brand-primary">
+                        <FiLoader className="w-4 h-4 animate-spin" />
+                        <span>Validando PDF...</span>
+                      </div>
+                    )}
+
+                    {formData.downloadUrl &&
+                      !validatingPDF &&
+                      pdfValidation.isValid && (
+                        <div className="flex items-center space-x-2 text-sm text-accent-green">
+                          <FiCheck className="w-4 h-4" />
+                          <span>
+                            PDF válido - informações extraídas automaticamente
+                          </span>
+                        </div>
+                      )}
+
+                    {formData.downloadUrl &&
+                      !validatingPDF &&
+                      pdfValidation.error && (
+                        <div className="flex items-center space-x-2 text-sm text-accent-red">
+                          <FiAlertCircle className="w-4 h-4" />
+                          <span>{pdfValidation.error}</span>
+                        </div>
+                      )}
+                  </div>
                 </div>
               </AnimatedCard>
 
@@ -373,27 +476,24 @@ const CreateScoreModal = ({
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
+                  <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
                       Obra *
                     </label>
-                    <Select
-                      options={[
-                        { value: '', label: 'Selecione uma obra' },
-                        ...works.map((work) => ({
-                          value: work.id,
-                          label: `${work.title} - ${
-                            work.composer.fullName || work.composer.name
-                          }`,
-                        })),
-                      ]}
-                      value={formData.workId}
-                      onChange={(e) =>
-                        handleInputChange('workId', e.target.value)
-                      }
-                      error={errors.workId}
-                      required
+                    <WorkSearchInput
+                      selectedWork={formData.workId}
+                      onWorkSelect={handleWorkSelect}
+                      popularWorks={works.map((work) => ({
+                        id: work.id,
+                        title: work.title,
+                        composer: work.composer,
+                      }))}
                     />
+                    {errors.workId && (
+                      <p className="text-red-500 text-xs mt-1">
+                        {errors.workId}
+                      </p>
+                    )}
                   </div>
 
                   <Input
@@ -431,23 +531,23 @@ const CreateScoreModal = ({
                     />
                   </div>
 
+                  {/* Campos automáticos - agora desabilitados */}
                   <Input
                     label="Tamanho do Arquivo"
                     value={formData.fileSize}
-                    onChange={(e) =>
-                      handleInputChange('fileSize', e.target.value)
-                    }
-                    placeholder="2.5 MB"
+                    onChange={() => {}} // Não permite edição
+                    placeholder="Detectado automaticamente"
+                    disabled
+                    className="bg-theme-secondary/20"
                   />
 
                   <Input
                     label="Número de Páginas"
                     value={formData.pageCount}
-                    onChange={(e) =>
-                      handleInputChange('pageCount', e.target.value)
-                    }
-                    placeholder="24"
-                    type="number"
+                    onChange={() => {}} // Não permite edição
+                    placeholder="Detectado automaticamente"
+                    disabled
+                    className="bg-theme-secondary/20"
                   />
                 </div>
               </AnimatedCard>
@@ -485,24 +585,6 @@ const CreateScoreModal = ({
                       handleInputChange('copyright', e.target.value)
                     }
                     placeholder="Informações de copyright"
-                  />
-
-                  <Input
-                    label="Data de Upload"
-                    value={formData.uploadDate}
-                    onChange={(e) =>
-                      handleInputChange('uploadDate', e.target.value)
-                    }
-                    type="date"
-                  />
-
-                  <Input
-                    label="Uploader"
-                    value={formData.uploader}
-                    onChange={(e) =>
-                      handleInputChange('uploader', e.target.value)
-                    }
-                    placeholder="Nome de quem fez o upload"
                   />
 
                   <Input

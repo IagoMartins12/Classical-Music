@@ -1,4 +1,4 @@
-// CreateComposerModal.tsx - MELHORADO COM INPUTS DE DATA
+// CreateComposerModal.tsx - CORRIGIDO COM TIPAGEM ADEQUADA
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -29,7 +29,33 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 import ComposerImageUpload from '../ComposerImageUpload';
+import NationalitySelect from '@/app/components/NationalitySelect';
 import { isValidDate, useFormValidation } from '@/app/utils/formUtils';
+
+// INTERFACE CORRIGIDA PARA O DUPLICATE CHECK
+interface DuplicateCheckState {
+  loading: boolean;
+  found: boolean;
+  composer?: {
+    id: string;
+    name: string;
+    fullName: string;
+    otherName?: string;
+    alternativeNames?: string;
+    portraitUrl?: string;
+    imslpId?: string;
+    wikipediaLink?: string;
+    epochName?: string;
+    nationality?: string;
+    birthDate?: string;
+    deathDate?: string;
+    epoch?: {
+      name: string;
+    };
+  };
+  reason?: string;
+  matchDetails?: string;
+}
 
 interface CreateComposerModalProps {
   isOpen: boolean;
@@ -55,11 +81,12 @@ const CreateComposerModal = ({
   const [dataSource, setDataSource] = useState<DataSource>('none');
   const [scrapingResult, setScrapingResult] = useState<any>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
-  const [duplicateCheck, setDuplicateCheck] = useState<{
-    loading: boolean;
-    found: boolean;
-    composer?: any;
-  }>({ loading: false, found: false });
+
+  // ESTADO COM TIPAGEM CORRIGIDA
+  const [duplicateCheck, setDuplicateCheck] = useState<DuplicateCheckState>({
+    loading: false,
+    found: false,
+  });
 
   // Refs para scroll automático
   const fieldRefs = {
@@ -69,8 +96,9 @@ const CreateComposerModal = ({
     primaryRoleId: useRef<HTMLSelectElement>(null),
     birthDate: useRef<HTMLInputElement>(null),
     deathDate: useRef<HTMLInputElement>(null),
-    nationality: useRef<HTMLInputElement>(null),
   };
+
+  const nationalityRef = useRef<HTMLDivElement>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -79,8 +107,8 @@ const CreateComposerModal = ({
     otherName: '',
     alternativeNames: '',
     pseudonyms: '',
-    birthDate: '', // Formato YYYY-MM-DD para input date
-    deathDate: '', // Formato YYYY-MM-DD para input date
+    birthDate: '',
+    deathDate: '',
     portraitUrl: '',
     epochId: '',
     bio: '',
@@ -281,13 +309,23 @@ const CreateComposerModal = ({
       .trim();
   };
 
-  // Verificar duplicatas por link
-  const checkDuplicateByLink = async (url: string, source: DataSource) => {
+  // Verificar duplicatas por link MELHORADO
+  const checkDuplicateByLink = async (
+    url: string,
+    source: DataSource,
+    composerFullName?: string // Parâmetro opcional
+  ) => {
     if (!url.trim()) return;
 
     setDuplicateCheck({ loading: true, found: false });
 
     try {
+      console.log('🔍 Verificando duplicatas para:', {
+        url,
+        source,
+        fullName: composerFullName || formData.fullName || '',
+      });
+
       const response = await fetch('/api/uploads/composer/check-duplicate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -295,25 +333,30 @@ const CreateComposerModal = ({
           url: url.trim(),
           source,
           excludeId: editingComposer?.id,
-          fulllname: cleanName(formData.fullName),
+          fullName: cleanName(composerFullName || formData.fullName || ''),
         }),
       });
 
       const data = await response.json();
 
       if (data.found) {
+        console.log('❌ Duplicata encontrada:', data);
+
         setDuplicateCheck({
           loading: false,
           found: true,
           composer: data.composer,
+          reason: data.reason,
+          matchDetails: data.matchDetails,
         });
         return true;
       } else {
+        console.log('✅ Nenhuma duplicata encontrada');
         setDuplicateCheck({ loading: false, found: false });
         return false;
       }
     } catch (error) {
-      console.error('Erro ao verificar duplicata:', error);
+      console.error('❌ Erro ao verificar duplicata:', error);
       setDuplicateCheck({ loading: false, found: false });
       return false;
     }
@@ -324,13 +367,21 @@ const CreateComposerModal = ({
     value: string | boolean | string[]
   ) => {
     // Limpar nomes automaticamente
-    if (field === 'name' || field === 'fullName') {
+    if (dataSource !== 'none' && (field === 'name' || field === 'fullName')) {
       value = cleanName(value as string);
     }
 
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  // Função para lidar com mudança de nacionalidade
+  const handleNationalityChange = (nationality: string) => {
+    setFormData((prev) => ({ ...prev, nationality }));
+    if (errors.nationality) {
+      setErrors((prev) => ({ ...prev, nationality: '' }));
     }
   };
 
@@ -401,6 +452,10 @@ const CreateComposerModal = ({
       if (value && !isValidHTMLDate(value)) {
         return 'Data inválida';
       }
+      return null;
+    },
+    nationality: (value: string) => {
+      // Adicionar validação se necessário
       return null;
     },
   };
@@ -507,10 +562,15 @@ const CreateComposerModal = ({
     // Verificar duplicatas antes de fazer scraping
     const isDuplicate = await checkDuplicateByLink(urlToScrape, dataSource);
     if (isDuplicate) {
+      const reasonText =
+        duplicateCheck.reason === 'nome'
+          ? 'nome'
+          : duplicateCheck.reason === 'link do IMSLP'
+          ? 'link do IMSLP'
+          : 'link da Wikipedia';
+
       alert(
-        `Já existe um compositor com este link ${
-          dataSource === 'imslp' ? 'do IMSLP' : 'da Wikipedia'
-        }.`
+        `Já existe um compositor com esse ${reasonText}: ${duplicateCheck.composer?.fullName}`
       );
       return;
     }
@@ -563,7 +623,7 @@ const CreateComposerModal = ({
       externalLinks: data.externalLinks || prev.externalLinks,
       imslpId: data.imslpId || prev.imslpId,
       wikipediaLink: data.wikipediaLink || prev.wikipediaLink,
-      nationality: data.nationality || prev.nationality, // Já traduzida para português
+      nationality: data.nationality || prev.nationality,
       instruments: data.instruments || prev.instruments,
       imslpCategories: data.imslpCategories || prev.imslpCategories,
       dataSource: dataSource,
@@ -668,7 +728,7 @@ const CreateComposerModal = ({
           </div>
 
           {/* Content */}
-          <div className="mt-4 max-h-[80vh] overflow-y-auto">
+          <div className="mt-4 ">
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* URL Scraping */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
@@ -701,6 +761,7 @@ const CreateComposerModal = ({
                         setDataSource(e.target.value as DataSource)
                       }
                       className="w-full"
+                      disabled={editingComposer}
                     />
                   </div>
 
@@ -721,7 +782,7 @@ const CreateComposerModal = ({
                         leftIcon={<FiLink />}
                       />
 
-                      {/* Verificação de Duplicata */}
+                      {/* Verificação de Duplicata MELHORADA */}
                       {duplicateCheck.loading && (
                         <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
                           <div className="flex items-center space-x-2">
@@ -741,10 +802,34 @@ const CreateComposerModal = ({
                               Compositor já existe!
                             </span>
                           </div>
-                          <p className="text-sm text-red-700">
-                            Já existe um compositor com este link:{' '}
-                            <strong>{duplicateCheck.composer?.fullName}</strong>
-                          </p>
+                          <div className="text-sm text-red-700">
+                            <p className="mb-1">
+                              <strong>Motivo:</strong>{' '}
+                              {duplicateCheck.reason === 'nome'
+                                ? 'Nome idêntico'
+                                : duplicateCheck.reason === 'link do IMSLP'
+                                ? 'Link do IMSLP'
+                                : 'Link da Wikipedia'}
+                            </p>
+                            <p className="mb-1">
+                              <strong>Compositor:</strong>{' '}
+                              {duplicateCheck.composer?.fullName}
+                            </p>
+                            {duplicateCheck.composer?.nationality && (
+                              <p className="mb-1">
+                                <strong>Nacionalidade:</strong>{' '}
+                                {duplicateCheck.composer.nationality}
+                              </p>
+                            )}
+                            {(duplicateCheck.composer?.birthDate ||
+                              duplicateCheck.composer?.deathDate) && (
+                              <p>
+                                <strong>Período:</strong>{' '}
+                                {duplicateCheck.composer.birthDate || '?'} -{' '}
+                                {duplicateCheck.composer.deathDate || '?'}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       )}
 
@@ -826,15 +911,18 @@ const CreateComposerModal = ({
                     placeholder="Outro nome conhecido"
                   />
 
-                  <Input
-                    label="Nacionalidade"
-                    ref={fieldRefs.nationality}
-                    value={formData.nationality}
-                    onChange={(e) =>
-                      handleInputChange('nationality', e.target.value)
-                    }
-                    placeholder="Austríaco"
-                  />
+                  {/* COMPONENTE DE NACIONALIDADE CORRIGIDO */}
+                  <div ref={nationalityRef}>
+                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                      Nacionalidade
+                    </label>
+                    <NationalitySelect
+                      value={formData.nationality}
+                      onChange={handleNationalityChange}
+                      error={errors.nationality}
+                      placeholder="Selecione a nacionalidade..."
+                    />
+                  </div>
 
                   <Input
                     label="Nomes Alternativos"
@@ -982,6 +1070,7 @@ const CreateComposerModal = ({
                         })),
                       ]}
                       value={formData.primaryRoleId}
+                      defaultValue={'Compositor'}
                       onChange={(e) =>
                         handleInputChange('primaryRoleId', e.target.value)
                       }

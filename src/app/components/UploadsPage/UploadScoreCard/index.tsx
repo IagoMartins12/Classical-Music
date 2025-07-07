@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   FiFileText,
   FiMusic,
@@ -44,6 +45,7 @@ const UploadScoreCard = ({
     onDelete();
     setShowDeleteModal(false);
   };
+
   if (viewMode === 'list') {
     return (
       <div className="classical-card group relative p-4 hover:shadow-theme-glow transition-all duration-300">
@@ -64,13 +66,38 @@ const UploadScoreCard = ({
               <div className="space-y-1 mt-1">
                 {/* Work and Composer */}
                 <div className="flex items-center space-x-4 flex-wrap">
-                  <span className="inline-flex items-center text-sm text-accent-blue font-medium">
-                    <FiMusic className="w-3 h-3 mr-1" />
-                    Obra: Título da obra{' '}
-                    {/* You'll need to get this from your data */}
-                  </span>
+                  {item.workId && item.workTitle && (
+                    <Link
+                      href={`/works/${item.workId}`}
+                      className="inline-flex items-center text-sm text-accent-blue font-medium hover:text-brand-primary transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <FiMusic className="w-3 h-3 mr-1" />
+                      <span className="hover:underline">{item.workTitle}</span>
+                    </Link>
+                  )}
 
-                  {item.composerName && (
+                  {!item.workId && (
+                    <span className="inline-flex items-center text-sm text-theme-tertiary">
+                      <FiMusic className="w-3 h-3 mr-1" />
+                      Obra não vinculada
+                    </span>
+                  )}
+
+                  {item.composerId && item.composerName && (
+                    <Link
+                      href={`/composer/${item.composerId}`}
+                      className="inline-flex items-center text-xs text-theme-tertiary hover:text-accent-blue transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <FiUser className="w-3 h-3 mr-1" />
+                      <span className="hover:underline">
+                        {item.composerName}
+                      </span>
+                    </Link>
+                  )}
+
+                  {!item.composerId && item.composerName && (
                     <span className="inline-flex items-center text-xs text-theme-tertiary">
                       <FiUser className="w-3 h-3 mr-1" />
                       {item.composerName}
@@ -190,21 +217,45 @@ const UploadScoreCard = ({
           <div className="space-y-3 mb-4 flex-1">
             {/* Work info */}
             <div className="text-center space-y-2">
-              <div className="flex items-center justify-center">
-                <FiMusic className="w-4 h-4 text-accent-blue mr-2" />
-                <span className="text-sm text-accent-blue font-medium">
-                  Obra associada {/* You'll need to get the work title */}
-                </span>
-              </div>
+              {item.workId && item.workTitle ? (
+                <Link
+                  href={`/works/${item.workId}`}
+                  className="flex items-center justify-center group/link hover:scale-105 transition-transform"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <FiMusic className="w-4 h-4 text-accent-blue mr-2" />
+                  <span className="text-sm text-accent-blue font-medium hover:text-brand-primary transition-colors hover:underline">
+                    {item.workTitle}
+                  </span>
+                </Link>
+              ) : (
+                <div className="flex items-center justify-center">
+                  <FiMusic className="w-4 h-4 text-theme-tertiary mr-2" />
+                  <span className="text-sm text-theme-tertiary">
+                    Obra não vinculada
+                  </span>
+                </div>
+              )}
 
-              {item.composerName && (
+              {item.composerId && item.composerName ? (
+                <Link
+                  href={`/composer/${item.composerId}`}
+                  className="flex items-center justify-center group/link hover:scale-105 transition-transform"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <FiUser className="w-4 h-4 text-theme-tertiary mr-2 group-hover/link:text-accent-blue transition-colors" />
+                  <span className="text-sm text-theme-tertiary group-hover/link:text-accent-blue transition-colors hover:underline">
+                    {item.composerName}
+                  </span>
+                </Link>
+              ) : item.composerName ? (
                 <div className="flex items-center justify-center">
                   <FiUser className="w-4 h-4 text-theme-tertiary mr-2" />
                   <span className="text-sm text-theme-tertiary">
                     {item.composerName}
                   </span>
                 </div>
-              )}
+              ) : null}
             </div>
 
             {/* File info */}
@@ -273,18 +324,36 @@ const UploadScoreCard = ({
                 </span>
               </div>
 
-              {item.imslpId && (
-                <a
-                  href={`https://imslp.org/wiki/${item.imslpId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent-green hover:text-accent-blue text-sm font-medium transition-colors flex items-center space-x-1"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <span>IMSLP</span>
-                  <FiExternalLink className="w-3 h-3" />
-                </a>
-              )}
+              <div className="flex items-center space-x-2">
+                {/* Download link */}
+                {item.downloadUrl && (
+                  <a
+                    href={item.downloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-primary hover:text-accent-blue text-sm font-medium transition-colors flex items-center space-x-1"
+                    onClick={(e) => e.stopPropagation()}
+                    title="Download da partitura"
+                  >
+                    <FiDownload className="w-3 h-3" />
+                    <span>Download</span>
+                  </a>
+                )}
+
+                {/* IMSLP link */}
+                {item.imslpId && (
+                  <a
+                    href={`https://imslp.org/wiki/${item.imslpId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent-green hover:text-accent-blue text-sm font-medium transition-colors flex items-center space-x-1"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <span>IMSLP</span>
+                    <FiExternalLink className="w-3 h-3" />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
 

@@ -1,6 +1,7 @@
-// app/requests/uploads.ts - ATUALIZADO COM BUSCA DE COMPOSITORES
+// app/requests/uploads.ts - CORRIGIDO COM TIPOS PRISMA CORRETOS
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
+import { Prisma } from '@prisma/client';
 
 export interface UserUpload {
   id: string;
@@ -12,6 +13,7 @@ export interface UserUpload {
   imslpId?: string;
   epochName?: string;
   composerName?: string;
+  composerId?: string; // Novo campo para link
   instrumentName?: string;
   workGenres?: string[];
   categoryNames?: string[];
@@ -19,6 +21,11 @@ export interface UserUpload {
   pageCount?: string;
   fileSize?: string;
   dataQuality?: string;
+  portraitUrl?: string; // Adicionar portraitUrl para compositores
+  // Campos específicos para partituras
+  workTitle?: string; // Novo campo para link da obra
+  workId?: string; // Novo campo para link da obra
+  downloadUrl?: string; // URL de download da partitura
 }
 
 // Buscar uploads do usuário
@@ -42,8 +49,7 @@ export const getUserUploads = unstable_cache(
       const offset = (page - 1) * limit;
 
       // Buscar compositores do usuário
-      const composerWhere = {
-        // Assumindo que há um campo para indicar criador customizado
+      const composerWhere: Prisma.ComposerWhereInput = {
         ...(search && {
           OR: [
             { name: { contains: search, mode: 'insensitive' } },
@@ -52,28 +58,29 @@ export const getUserUploads = unstable_cache(
         }),
         ...(epochId && { epochId }),
         // Filtrar apenas compositores criados pelo usuário ou customizados
-        OR: [
-          { createdBy: userId }, // Assumindo que você adicionará este campo
-          { isCustom: true }, // Assumindo que você adicionará este campo
-        ],
+        OR: [{ createdBy: userId }, { isCustom: true }],
       };
 
-      const workWhere = {
+      const workWhere: Prisma.WorkWhereInput = {
         ...(search && {
           OR: [
             { title: { contains: search, mode: 'insensitive' } },
-            { composer: { name: { contains: search, mode: 'insensitive' } } },
+            {
+              composer: {
+                OR: [
+                  { name: { contains: search, mode: 'insensitive' } },
+                  { fullName: { contains: search, mode: 'insensitive' } },
+                ],
+              },
+            },
           ],
         }),
         ...(epochId && { epochId }),
         // Filtrar apenas obras criadas pelo usuário ou customizadas
-        OR: [
-          { createdBy: userId }, // Assumindo que você adicionará este campo
-          { isCustom: true }, // Assumindo que você adicionará este campo
-        ],
+        OR: [{ createdBy: userId }, { isCustom: true }],
       };
 
-      const scoreWhere = {
+      const scoreWhere: Prisma.WorkScoreWhereInput = {
         ...(search && {
           OR: [
             { title: { contains: search, mode: 'insensitive' } },
@@ -96,6 +103,8 @@ export const getUserUploads = unstable_cache(
                 createdAt: true,
                 updatedAt: true,
                 imslpId: true,
+                dataQuality: true,
+                verificationStatus: true,
                 epoch: { select: { name: true } },
               },
               take: type === 'composer' ? limit : undefined,
@@ -114,7 +123,15 @@ export const getUserUploads = unstable_cache(
                 createdAt: true,
                 updatedAt: true,
                 imslpId: true,
-                composer: { select: { name: true, fullName: true } },
+                // dataQuality não existe no modelo Work - removido
+                // verificationStatus não existe no modelo Work - removido
+                composer: {
+                  select: {
+                    id: true,
+                    name: true,
+                    fullName: true,
+                  },
+                },
                 epoch: { select: { name: true } },
                 instrument: { select: { name: true } },
                 workGenresArr: true,
@@ -135,12 +152,22 @@ export const getUserUploads = unstable_cache(
                 source: true,
                 fileSize: true,
                 pageCount: true,
+                downloadUrl: true,
+                dataQuality: true,
+                verificationStatus: true,
                 createdAt: true,
                 updatedAt: true,
                 work: {
                   select: {
+                    id: true,
                     title: true,
-                    composer: { select: { name: true } },
+                    composer: {
+                      select: {
+                        id: true,
+                        name: true,
+                        fullName: true,
+                      },
+                    },
                   },
                 },
               },
@@ -177,6 +204,9 @@ export const getUserUploads = unstable_cache(
           isIMSLP: !!composer.imslpId,
           imslpId: composer.imslpId || undefined,
           epochName: composer.epoch.name,
+          dataQuality: composer.dataQuality || undefined,
+          verificationStatus: composer.verificationStatus || undefined,
+          portraitUrl: composer.portraitUrl || undefined, // Adicionar portraitUrl
         })),
         ...works.map((work) => ({
           id: work.id,
@@ -188,9 +218,11 @@ export const getUserUploads = unstable_cache(
           imslpId: work.imslpId || undefined,
           epochName: work.epoch.name,
           composerName: work.composer.fullName || work.composer.name,
+          composerId: work.composer.id, // Novo campo para link
           instrumentName: work.instrument.name,
           workGenres: work.workGenresArr,
           categoryNames: work.categoryNames,
+          // dataQuality e verificationStatus não existem no modelo Work
         })),
         ...scores.map((score) => ({
           id: score.id,
@@ -199,7 +231,16 @@ export const getUserUploads = unstable_cache(
           createdAt: score.createdAt.toISOString(),
           updatedAt: score.updatedAt.toISOString(),
           isIMSLP: score.source === 'IMSLP',
-          composerName: score.work.composer.name,
+          composerName:
+            score.work.composer.fullName || score.work.composer.name,
+          composerId: score.work.composer.id, // Novo campo para link
+          workTitle: score.work.title, // Novo campo para link da obra
+          workId: score.work.id, // Novo campo para link da obra
+          fileSize: score.fileSize || undefined,
+          pageCount: score.pageCount || undefined,
+          downloadUrl: score.downloadUrl || undefined,
+          dataQuality: score.dataQuality || undefined,
+          verificationStatus: score.verificationStatus || undefined,
         })),
       ];
 
@@ -259,7 +300,7 @@ export const getAllUploads = unstable_cache(
       const offset = (page - 1) * limit;
 
       // Buscar todos os compositores
-      const composerWhere = {
+      const composerWhere: Prisma.ComposerWhereInput = {
         ...(search && {
           OR: [
             { name: { contains: search, mode: 'insensitive' } },
@@ -269,17 +310,24 @@ export const getAllUploads = unstable_cache(
         ...(epochId && { epochId }),
       };
 
-      const workWhere = {
+      const workWhere: Prisma.WorkWhereInput = {
         ...(search && {
           OR: [
             { title: { contains: search, mode: 'insensitive' } },
-            { composer: { name: { contains: search, mode: 'insensitive' } } },
+            {
+              composer: {
+                OR: [
+                  { name: { contains: search, mode: 'insensitive' } },
+                  { fullName: { contains: search, mode: 'insensitive' } },
+                ],
+              },
+            },
           ],
         }),
         ...(epochId && { epochId }),
       };
 
-      const scoreWhere = {
+      const scoreWhere: Prisma.WorkScoreWhereInput = {
         ...(search && {
           OR: [
             { title: { contains: search, mode: 'insensitive' } },
@@ -300,6 +348,8 @@ export const getAllUploads = unstable_cache(
                 createdAt: true,
                 updatedAt: true,
                 imslpId: true,
+                dataQuality: true,
+                verificationStatus: true,
                 epoch: { select: { name: true } },
               },
               take: type === 'composer' ? limit : undefined,
@@ -318,7 +368,15 @@ export const getAllUploads = unstable_cache(
                 createdAt: true,
                 updatedAt: true,
                 imslpId: true,
-                composer: { select: { name: true, fullName: true } },
+                // dataQuality não existe no modelo Work - removido
+                // verificationStatus não existe no modelo Work - removido
+                composer: {
+                  select: {
+                    id: true,
+                    name: true,
+                    fullName: true,
+                  },
+                },
                 epoch: { select: { name: true } },
                 instrument: { select: { name: true } },
                 workGenresArr: true,
@@ -339,12 +397,22 @@ export const getAllUploads = unstable_cache(
                 source: true,
                 fileSize: true,
                 pageCount: true,
+                downloadUrl: true,
+                dataQuality: true,
+                verificationStatus: true,
                 createdAt: true,
                 updatedAt: true,
                 work: {
                   select: {
+                    id: true,
                     title: true,
-                    composer: { select: { name: true } },
+                    composer: {
+                      select: {
+                        id: true,
+                        name: true,
+                        fullName: true,
+                      },
+                    },
                   },
                 },
               },
@@ -381,6 +449,8 @@ export const getAllUploads = unstable_cache(
           isIMSLP: !!composer.imslpId,
           imslpId: composer.imslpId || undefined,
           epochName: composer.epoch.name,
+          dataQuality: composer.dataQuality || undefined,
+          verificationStatus: composer.verificationStatus || undefined,
         })),
         ...works.map((work) => ({
           id: work.id,
@@ -392,9 +462,11 @@ export const getAllUploads = unstable_cache(
           imslpId: work.imslpId || undefined,
           epochName: work.epoch.name,
           composerName: work.composer.fullName || work.composer.name,
+          composerId: work.composer.id, // Novo campo para link
           instrumentName: work.instrument.name,
           workGenres: work.workGenresArr,
           categoryNames: work.categoryNames,
+          // dataQuality e verificationStatus não existem no modelo Work
         })),
         ...scores.map((score) => ({
           id: score.id,
@@ -403,7 +475,16 @@ export const getAllUploads = unstable_cache(
           createdAt: score.createdAt.toISOString(),
           updatedAt: score.updatedAt.toISOString(),
           isIMSLP: score.source === 'IMSLP',
-          composerName: score.work.composer.name,
+          composerName:
+            score.work.composer.fullName || score.work.composer.name,
+          composerId: score.work.composer.id, // Novo campo para link
+          workTitle: score.work.title, // Novo campo para link da obra
+          workId: score.work.id, // Novo campo para link da obra
+          fileSize: score.fileSize || undefined,
+          pageCount: score.pageCount || undefined,
+          downloadUrl: score.downloadUrl || undefined,
+          dataQuality: score.dataQuality || undefined,
+          verificationStatus: score.verificationStatus || undefined,
         })),
       ];
 
@@ -473,7 +554,10 @@ export const getFormData = unstable_cache(
               },
             },
           },
-          orderBy: [{ _count: { works: 'desc' } }, { name: 'asc' }],
+          orderBy: [
+            { works: { _count: 'desc' } }, // Sintaxe correta para contar relações
+            { name: 'asc' },
+          ],
           take: 50,
         }),
         // Buscar obras recentes

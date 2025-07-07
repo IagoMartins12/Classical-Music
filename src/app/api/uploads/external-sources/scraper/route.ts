@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
+import { findNationalityByText } from '@/app/data/nationalities';
 
 interface ScrapedComposerData {
   name: string;
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
     const isIMSLP = url.includes('imslp.org');
     const isWikipedia = url.includes('wikipedia.org');
 
-    // ✅ VALIDAÇÃO MELHORADA - Verificar se URL corresponde à fonte selecionada
+    // Validação melhorada
     if (source === 'imslp' && !isIMSLP) {
       return NextResponse.json(
         {
@@ -112,11 +113,20 @@ async function scrapeWikipedia(url: string): Promise<ScrapedComposerData> {
     const dateInfo = extractWikipediaDates($);
 
     // Extrair nacionalidade traduzida para português
-    const nationality = extractWikipediaNationalityTranslated($);
+    let nationality = extractWikipediaNationalityTranslated($);
+
+    // Se não encontrou nacionalidade, tentar extrair do local de nascimento
+    if (!nationality) {
+      const firstParagraph = $('.mw-parser-output > p').first().text();
+      nationality = extractNationalityFromBirthPlace(firstParagraph);
+    }
 
     // Extrair primeiro parágrafo como bio
-    const bio = $('.mw-parser-output > p').first().text().trim();
-
+    const bio =
+      extractBiographyIntelligent($) ||
+      extractFullBiography($) ||
+      extractBiographyUntilFirstHeading($) ||
+      $('.mw-parser-output > p').first().text().trim(); // Fallback
     // Extrair imagem
     const portraitUrl = extractWikipediaImage($);
 
@@ -159,26 +169,287 @@ async function scrapeWikipedia(url: string): Promise<ScrapedComposerData> {
   }
 }
 
+function extractFullBiography($: cheerio.CheerioAPI): string | null {
+  try {
+    const biographyParagraphs: string[] = [];
+
+    // Selecionar todos os parágrafos do conteúdo principal
+    const paragraphs = $('.mw-parser-output > p');
+
+    if (paragraphs.length === 0) return null;
+
+    // Iterar pelos parágrafos até encontrar uma seção ou limite
+    paragraphs.each((index, element) => {
+      const paragraphText = $(element).text().trim();
+
+      // Pular parágrafos muito curtos (menos de 20 caracteres)
+      if (paragraphText.length < 20) {
+        return true; // Continue para o próximo parágrafo
+      }
+
+      // Verificar se chegamos a uma seção que não é parte da biografia
+      // Geralmente parágrafos de biografia não começam com estes padrões
+      const skipPatterns = [
+        /^See also/i,
+        /^References/i,
+        /^External links/i,
+        /^Further reading/i,
+        /^Bibliography/i,
+        /^Discography/i,
+        /^Filmography/i,
+        /^Awards/i,
+        /^Honours/i,
+        /^Legacy/i,
+        /^Influence/i,
+        /^Reception/i,
+        /^Critical reception/i,
+        /^Commercial performance/i,
+        /^Track listing/i,
+        /^Personnel/i,
+        /^Chart performance/i,
+        /^Certifications/i,
+        /^Ver também/i,
+        /^Referências/i,
+        /^Ligações externas/i,
+        /^Bibliografia/i,
+        /^Discografia/i,
+        /^Filmografia/i,
+        /^Prêmios/i,
+        /^Reconhecimentos/i,
+        /^Legado/i,
+        /^Influência/i,
+        /^Recepção/i,
+      ];
+
+      const shouldSkip = skipPatterns.some((pattern) =>
+        pattern.test(paragraphText)
+      );
+      if (shouldSkip) {
+        return false; // Para a iteração
+      }
+
+      // Verificar se o parágrafo anterior ao atual é um heading (h2, h3, etc.)
+      const prevElement = $(element).prev();
+      if (prevElement.length > 0 && prevElement.is('h2, h3, h4, h5, h6')) {
+        const headingText = prevElement.text().trim().toLowerCase();
+
+        // Se o heading não é relacionado à biografia, parar
+        const nonBiographyHeadings = [
+          'career',
+          'works',
+          'compositions',
+          'discography',
+          'filmography',
+          'personal life',
+          'awards',
+          'honors',
+          'legacy',
+          'influence',
+          'reception',
+          'criticism',
+          'controversy',
+          'death',
+          'later life',
+          'carreira',
+          'obras',
+          'composições',
+          'discografia',
+          'filmografia',
+          'vida pessoal',
+          'prêmios',
+          'reconhecimentos',
+          'legado',
+          'influência',
+          'recepção',
+          'críticas',
+          'controvérsia',
+          'morte',
+          'vida posterior',
+        ];
+
+        const isNonBiography = nonBiographyHeadings.some((heading) =>
+          headingText.includes(heading)
+        );
+
+        if (isNonBiography && biographyParagraphs.length > 0) {
+          return false; // Para a iteração se já temos parágrafos de biografia
+        }
+      }
+
+      // Adicionar o parágrafo à biografia
+      biographyParagraphs.push(paragraphText);
+
+      // Limitar a 8-10 parágrafos para evitar capturar seções irrelevantes
+      if (biographyParagraphs.length >= 8) {
+        return false; // Para a iteração
+      }
+
+      return true; // Continue para o próximo parágrafo
+    });
+
+    if (biographyParagraphs.length === 0) return null;
+
+    // Juntar os parágrafos com quebras de linha duplas
+    const fullBiography = biographyParagraphs.join('\n\n');
+
+    // Verificar se a biografia tem um tamanho mínimo razoável
+    if (fullBiography.length < 100) return null;
+
+    console.log(
+      `📖 Biografia completa extraída com ${biographyParagraphs.length} parágrafos (${fullBiography.length} caracteres)`
+    );
+
+    return fullBiography;
+  } catch (error) {
+    console.error('❌ Erro ao extrair biografia completa:', error);
+    return null;
+  }
+}
+
+// Função alternativa mais simples (captura até o primeiro heading)
+function extractBiographyUntilFirstHeading(
+  $: cheerio.CheerioAPI
+): string | null {
+  try {
+    const biographyParagraphs: string[] = [];
+
+    // Buscar todos os elementos após o primeiro parágrafo principal
+    const mainContent = $('.mw-parser-output');
+    if (mainContent.length === 0) return null;
+
+    const elements = mainContent.children();
+    let foundFirstParagraph = false;
+
+    elements.each((index, element) => {
+      const $element = $(element);
+
+      // Se encontramos um heading (h2, h3, etc.), parar
+      if ($element.is('h2, h3, h4, h5, h6')) {
+        return false; // Para a iteração
+      }
+
+      // Se é um parágrafo
+      if ($element.is('p')) {
+        const paragraphText = $element.text().trim();
+
+        // Pular parágrafos muito curtos
+        if (paragraphText.length < 20) {
+          return true; // Continue
+        }
+
+        foundFirstParagraph = true;
+        biographyParagraphs.push(paragraphText);
+
+        // Limitar para evitar textos muito longos
+        if (biographyParagraphs.length >= 10) {
+          return false; // Para a iteração
+        }
+      }
+
+      return true; // Continue
+    });
+
+    if (biographyParagraphs.length === 0) return null;
+
+    const fullBiography = biographyParagraphs.join('\n\n');
+
+    console.log(
+      `📖 Biografia extraída até primeiro heading: ${biographyParagraphs.length} parágrafos`
+    );
+
+    return fullBiography;
+  } catch (error) {
+    console.error('❌ Erro ao extrair biografia até heading:', error);
+    return null;
+  }
+}
+
+// Função com detecção inteligente de seções
+function extractBiographyIntelligent($: cheerio.CheerioAPI): string | null {
+  try {
+    const biographyParagraphs: string[] = [];
+
+    // Primeiro, tentar encontrar uma seção específica de biografia
+    const biographySections = $('h2, h3').filter((_, element) => {
+      const headingText = $(element).text().toLowerCase();
+      return (
+        headingText.includes('early life') ||
+        headingText.includes('biography') ||
+        headingText.includes('life') ||
+        headingText.includes('background') ||
+        headingText.includes('juventude') ||
+        headingText.includes('biografia') ||
+        headingText.includes('vida') ||
+        headingText.includes('início')
+      );
+    });
+
+    if (biographySections.length > 0) {
+      // Se encontrou seção específica de biografia, extrair dali
+      const biographySection = biographySections.first();
+      let currentElement = biographySection.next();
+
+      while (currentElement.length > 0 && !currentElement.is('h2, h3')) {
+        if (currentElement.is('p')) {
+          const paragraphText = currentElement.text().trim();
+          if (paragraphText.length >= 20) {
+            biographyParagraphs.push(paragraphText);
+          }
+        }
+        currentElement = currentElement.next();
+      }
+    }
+
+    // Se não encontrou seção específica, usar método padrão
+    if (biographyParagraphs.length === 0) {
+      return extractFullBiography($);
+    }
+
+    const fullBiography = biographyParagraphs.join('\n\n');
+
+    console.log(
+      `📖 Biografia inteligente extraída: ${biographyParagraphs.length} parágrafos`
+    );
+
+    return fullBiography;
+  } catch (error) {
+    console.error('❌ Erro na extração inteligente de biografia:', error);
+    return extractFullBiography($); // Fallback para método padrão
+  }
+}
+
 // Função para extrair nacionalidade da Wikipedia traduzida para português
 function extractWikipediaNationalityTranslated(
   $: cheerio.CheerioAPI
 ): string | null {
-  // Tentar na infobox primeiro
+  console.log('🔍 Iniciando extração de nacionalidade...');
+
+  // 1. Tentar na infobox primeiro
   let nationality: string | null = null;
 
   $('.infobox tr, .infobox-vcard tr').each((_, row) => {
     const $row = $(row);
     const header = $row.find('th').text().trim().toLowerCase();
-    const cellText = $row.find('td').text().trim().toLowerCase();
+    const cellText = $row.find('td').text().trim();
 
     if (
-      (header.includes('nationality') || header.includes('nacionalidade')) &&
+      (header.includes('nationality') ||
+        header.includes('nacionalidade') ||
+        header.includes('born') ||
+        header.includes('birth') ||
+        header.includes('citizenship') ||
+        header.includes('country')) &&
       cellText
     ) {
-      // Tentar traduzir a nacionalidade encontrada
-      const translatedNationality = translateNationality(cellText);
-      if (translatedNationality) {
-        nationality = translatedNationality;
+      console.log(`📊 Infobox - Header: "${header}", Texto: "${cellText}"`);
+
+      // Usar o novo sistema de nacionalidades
+      const foundNationality = findNationalityByText(cellText);
+      if (foundNationality) {
+        nationality = foundNationality;
+        console.log(
+          `✅ Nacionalidade encontrada na infobox: ${foundNationality}`
+        );
         return false; // break
       }
     }
@@ -186,39 +457,71 @@ function extractWikipediaNationalityTranslated(
 
   if (nationality) return nationality;
 
-  // Tentar no primeiro parágrafo
-  const firstParagraph = $('.mw-parser-output > p')
-    .first()
-    .text()
-    .toLowerCase();
+  // 2. Tentar no primeiro parágrafo - MELHORADO
+  const firstParagraphs = $('.mw-parser-output > p').slice(0, 3); // Verificar os 3 primeiros parágrafos
 
-  // Procurar por padrões de nacionalidade e traduzir
-  for (const [englishTerm, portugueseTerm] of Object.entries(
-    NATIONALITY_TRANSLATION
-  )) {
-    if (firstParagraph.includes(englishTerm)) {
+  firstParagraphs.each((index, paragraph) => {
+    const paragraphText = $(paragraph).text();
+    console.log(
+      `📝 Analisando parágrafo ${index + 1}: "${paragraphText.substring(
+        0,
+        200
+      )}..."`
+    );
+
+    const foundNationality = findNationalityByText(paragraphText);
+    if (foundNationality) {
+      nationality = foundNationality;
       console.log(
-        `🌍 Nacionalidade encontrada: ${portugueseTerm} (padrão: "${englishTerm}")`
+        `✅ Nacionalidade encontrada no parágrafo ${
+          index + 1
+        }: ${foundNationality}`
       );
-      return portugueseTerm;
+      return false; // break
+    }
+  });
+
+  if (nationality) return nationality;
+
+  // 3. Buscar em categorias da página
+  const categories: string[] = [];
+  $('a[href*="Category:"]').each((_, element) => {
+    const categoryText = $(element).text().trim();
+    if (
+      categoryText &&
+      !categoryText.includes('IMSLP') &&
+      categoryText.length > 2
+    ) {
+      categories.push(categoryText);
+    }
+  });
+
+  const categoriesText = categories.join(' ');
+  console.log(`🏷️ Categorias encontradas: ${categoriesText}`);
+
+  if (categoriesText) {
+    const foundNationality = findNationalityByText(categoriesText);
+    if (foundNationality) {
+      nationality = foundNationality;
+      console.log(
+        `✅ Nacionalidade encontrada nas categorias: ${foundNationality}`
+      );
+      return nationality;
     }
   }
 
-  return null;
-}
+  // 4. Buscar no título da página como último recurso
+  const pageTitle = $('#firstHeading').text().trim();
+  console.log(`📰 Título da página: "${pageTitle}"`);
 
-// Função auxiliar para traduzir nacionalidade
-function translateNationality(nationalityText: string): string | null {
-  const lowerText = nationalityText.toLowerCase();
-
-  for (const [englishTerm, portugueseTerm] of Object.entries(
-    NATIONALITY_TRANSLATION
-  )) {
-    if (lowerText.includes(englishTerm)) {
-      return portugueseTerm;
-    }
+  const foundNationality = findNationalityByText(pageTitle);
+  if (foundNationality) {
+    nationality = foundNationality;
+    console.log(`✅ Nacionalidade encontrada no título: ${foundNationality}`);
+    return nationality;
   }
 
+  console.log('❌ Nacionalidade não encontrada');
   return null;
 }
 
@@ -613,44 +916,150 @@ const NATIONALITY_TRANSLATION: Record<string, string> = {
 };
 
 // Função para extrair nacionalidade melhorada (baseada no imslp-scraper.ts)
+// function extractNationalityIMSLP($: cheerio.CheerioAPI): string | null {
+//   try {
+//     // Buscar na div cp_firsth por indicações de nacionalidade
+//     const firsthDiv = $('.cp_firsth');
+//     if (firsthDiv.length === 0) return null;
+
+//     const text = firsthDiv.text().toLowerCase();
+
+//     // Procurar por padrões de nacionalidade e traduzir para português
+//     for (const [englishTerm, portugueseTerm] of Object.entries(
+//       NATIONALITY_TRANSLATION
+//     )) {
+//       if (text.includes(englishTerm)) {
+//         console.log(
+//           `🌍 Nacionalidade encontrada: ${portugueseTerm} (padrão: "${englishTerm}")`
+//         );
+//         return portugueseTerm;
+//       }
+//     }
+
+//     // Tentar extrair de categorias se não encontrou no texto principal
+//     const categoriesText = extractCategoriesIMSLP($)?.toLowerCase();
+//     for (const [englishTerm, portugueseTerm] of Object.entries(
+//       NATIONALITY_TRANSLATION
+//     )) {
+//       if (categoriesText?.includes(englishTerm)) {
+//         console.log(
+//           `🌍 Nacionalidade encontrada nas categorias: ${portugueseTerm}`
+//         );
+//         return portugueseTerm;
+//       }
+//     }
+
+//     return null;
+//   } catch (error) {
+//     console.error('❌ Erro ao extrair nacionalidade:', error);
+//     return null;
+//   }
+// }
+
 function extractNationalityIMSLP($: cheerio.CheerioAPI): string | null {
+  console.log('🔍 Iniciando extração de nacionalidade do IMSLP...');
+
   try {
-    // Buscar na div cp_firsth por indicações de nacionalidade
+    // 1. Buscar na div cp_firsth por indicações de nacionalidade
     const firsthDiv = $('.cp_firsth');
-    if (firsthDiv.length === 0) return null;
+    if (firsthDiv.length > 0) {
+      const text = firsthDiv.text();
+      console.log(`📊 Texto da seção principal: "${text}"`);
 
-    const text = firsthDiv.text().toLowerCase();
-
-    // Procurar por padrões de nacionalidade e traduzir para português
-    for (const [englishTerm, portugueseTerm] of Object.entries(
-      NATIONALITY_TRANSLATION
-    )) {
-      if (text.includes(englishTerm)) {
+      const foundNationality = findNationalityByText(text);
+      if (foundNationality) {
         console.log(
-          `🌍 Nacionalidade encontrada: ${portugueseTerm} (padrão: "${englishTerm}")`
+          `✅ Nacionalidade encontrada na seção principal: ${foundNationality}`
         );
-        return portugueseTerm;
+        return foundNationality;
       }
     }
 
-    // Tentar extrair de categorias se não encontrou no texto principal
-    const categoriesText = extractCategoriesIMSLP($)?.toLowerCase();
-    for (const [englishTerm, portugueseTerm] of Object.entries(
-      NATIONALITY_TRANSLATION
-    )) {
-      if (categoriesText?.includes(englishTerm)) {
+    // 2. Buscar nas categorias IMSLP
+    const categoriesText = extractCategoriesIMSLP($);
+    if (categoriesText) {
+      console.log(`🏷️ Categorias IMSLP: "${categoriesText}"`);
+
+      const foundNationality = findNationalityByText(categoriesText);
+      if (foundNationality) {
         console.log(
-          `🌍 Nacionalidade encontrada nas categorias: ${portugueseTerm}`
+          `✅ Nacionalidade encontrada nas categorias IMSLP: ${foundNationality}`
         );
-        return portugueseTerm;
+        return foundNationality;
       }
     }
 
+    // 3. Buscar em informações diversas
+    const diverseInfo = extractDiverseInfoIMSLP($);
+    if (diverseInfo) {
+      console.log(`📋 Informações diversas: "${diverseInfo}"`);
+
+      const foundNationality = findNationalityByText(diverseInfo);
+      if (foundNationality) {
+        console.log(
+          `✅ Nacionalidade encontrada nas informações diversas: ${foundNationality}`
+        );
+        return foundNationality;
+      }
+    }
+
+    // 4. Buscar em links externos
+    const externalLinks = extractExternalLinksIMSLP($);
+    if (externalLinks) {
+      console.log(`🔗 Links externos: "${externalLinks}"`);
+
+      const foundNationality = findNationalityByText(externalLinks);
+      if (foundNationality) {
+        console.log(
+          `✅ Nacionalidade encontrada nos links externos: ${foundNationality}`
+        );
+        return foundNationality;
+      }
+    }
+
+    console.log('❌ Nacionalidade não encontrada no IMSLP');
     return null;
   } catch (error) {
-    console.error('❌ Erro ao extrair nacionalidade:', error);
+    console.error('❌ Erro ao extrair nacionalidade do IMSLP:', error);
     return null;
   }
+}
+
+// Função para tentar extrair nacionalidade de local de nascimento
+function extractNationalityFromBirthPlace(text: string): string | null {
+  if (!text) return null;
+
+  console.log(`🏠 Analisando local de nascimento: "${text}"`);
+
+  // Padrões comuns para lugares de nascimento
+  const birthPlacePatterns = [
+    // "born in Paris, France"
+    /born\s+in\s+([^,]+),\s*([^,\)]+)/i,
+    // "nasceu em Paris, França"
+    /nasceu\s+em\s+([^,]+),\s*([^,\)]+)/i,
+    // "(Paris, France, 1756)"
+    /\(([^,]+),\s*([^,\)]+),?\s*\d{4}/i,
+    // "Paris, France – Vienna, Austria"
+    /([^,]+),\s*([^–—-]+)\s*[–—-]/i,
+  ];
+
+  for (const pattern of birthPlacePatterns) {
+    const match = text.match(pattern);
+    if (match) {
+      const place = match[2] || match[1]; // Priorizar país (segunda captura)
+      console.log(`🏠 Local extraído: "${place}"`);
+
+      const foundNationality = findNationalityByText(place);
+      if (foundNationality) {
+        console.log(
+          `✅ Nacionalidade encontrada por local de nascimento: ${foundNationality}`
+        );
+        return foundNationality;
+      }
+    }
+  }
+
+  return null;
 }
 
 // Função auxiliar para extrair categorias IMSLP

@@ -1,4 +1,4 @@
-// app/api/uploads/score/route.ts
+// app/api/uploads/score/route.ts - ATUALIZADO
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -25,8 +25,6 @@ export async function POST(request: NextRequest) {
       publisher,
       copyright,
       thumbnailUrl,
-      uploadDate,
-      uploader,
       notes,
       type,
       groupIndex,
@@ -39,10 +37,10 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // Validação básica
-    if (!workId || !title) {
+    if (!workId || !title || !downloadUrl) {
       return NextResponse.json(
         {
-          error: 'Campos obrigatórios: obra e título',
+          error: 'Campos obrigatórios: obra, título e URL do arquivo',
         },
         { status: 400 }
       );
@@ -67,6 +65,9 @@ export async function POST(request: NextRequest) {
       .toString(36)
       .substr(2, 9)}`;
 
+    // Data atual no formato ISO
+    const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
     // Criar a partitura
     const score = await prisma.workScore.create({
       data: {
@@ -75,28 +76,32 @@ export async function POST(request: NextRequest) {
         source: isCustom ? 'CUSTOM' : 'UPLOAD',
         title,
         downloadUrl,
-        fileSize,
-        pageCount,
+        fileSize: fileSize || null,
+        pageCount: pageCount || null,
         fileFormat: fileFormat || 'PDF',
-        editor,
-        publisher,
-        copyright,
-        thumbnailUrl,
-        uploadDate,
-        uploader,
-        notes,
+        editor: editor || null,
+        publisher: publisher || null,
+        copyright: copyright || null,
+        thumbnailUrl: thumbnailUrl || null,
+        // Campos automáticos
+        uploadDate: currentDate,
+        uploader: session.user.email || session.user.name || 'Usuário',
+        uploadedBy: session.user.id,
+        notes: notes || null,
         type: type || 'SCORES',
         groupIndex: groupIndex || 0,
-        groupTitle,
-        rating,
-        ratingsCount,
-        downloadCount,
-        isCustom: isCustom || true,
-        uploadedBy: session.user.id,
+        groupTitle: groupTitle || null,
+        rating: rating || null,
+        ratingsCount: ratingsCount || null,
+        downloadCount: downloadCount || null,
+        isCustom: isCustom !== undefined ? isCustom : true,
         customData,
         isActive: true,
         processingStatus: 'COMPLETED',
         cacheVersion: '1.0',
+        // Dados de qualidade baseados na completude
+        dataQuality: fileSize && pageCount ? 'high' : 'medium',
+        verificationStatus: 'pending',
       },
       include: {
         work: {
