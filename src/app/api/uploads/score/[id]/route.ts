@@ -1,9 +1,10 @@
-// app/api/uploads/score/[id]/route.ts - ATUALIZADO
+// app/api/uploads/score/[id]/route.ts - VERSÃO ATUALIZADA COM DELEÇÃO DE ARQUIVOS
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidateUploadsCache } from '@/app/requests/upload';
+import { deleteMultipleFiles } from '@/app/utils/fileUtils'; // 🆕 Import da função de deleção
 
 export async function PUT(
   request: NextRequest,
@@ -157,9 +158,16 @@ export async function DELETE(
     }
     const { id } = await params;
 
-    // Buscar partitura existente
+    // 🆕 Buscar partitura existente COM arquivos associados
     const existingScore = await prisma.workScore.findUnique({
       where: { id: id },
+      select: {
+        id: true,
+        title: true,
+        uploadedBy: true,
+        downloadUrl: true, // 🆕 URL do arquivo principal
+        thumbnailUrl: true, // 🆕 URL do thumbnail
+      },
     });
 
     if (!existingScore) {
@@ -177,19 +185,56 @@ export async function DELETE(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
     }
 
-    // Deletar partitura
+    console.log(`🗑️ [DELETE-SCORE] Iniciando deleção da partitura:`, {
+      id: existingScore.id,
+      title: existingScore.title,
+      downloadUrl: existingScore.downloadUrl,
+      thumbnailUrl: existingScore.thumbnailUrl,
+      user: session.user.name || session.user.email,
+    });
+
+    // 🆕 1. Deletar arquivos físicos ANTES de deletar do banco
+    try {
+      const filesToDelete = [
+        existingScore.downloadUrl,
+        existingScore.thumbnailUrl,
+      ];
+
+      console.log('🗂️ Arquivos para deletar:', filesToDelete.filter(Boolean));
+
+      await deleteMultipleFiles(filesToDelete);
+
+      console.log('✅ Arquivos físicos deletados com sucesso');
+    } catch (fileError) {
+      console.error('⚠️ Erro ao deletar arquivos físicos:', fileError);
+      // Continuar com a deleção do banco mesmo se houver erro nos arquivos
+      // Os arquivos órfãos podem ser limpos posteriormente
+    }
+
+    // 🆕 2. Deletar partitura do banco de dados
     await prisma.workScore.delete({
       where: { id: id },
     });
 
+    console.log('✅ Partitura deletada do banco de dados');
+
+    // 🆕 3. Invalidar cache
     await revalidateUploadsCache(session.user.id);
+
+    console.log(
+      `✅ [DELETE-SCORE] Partitura "${existingScore.title}" deletada completamente`
+    );
 
     return NextResponse.json({
       success: true,
-      message: 'Partitura excluída com sucesso',
+      message: 'Partitura e arquivos associados excluídos com sucesso',
+      deletedFiles: {
+        scoreFile: existingScore.downloadUrl,
+        thumbnail: existingScore.thumbnailUrl,
+      },
     });
   } catch (error) {
-    console.error('Erro ao excluir partitura:', error);
+    console.error('❌ [DELETE-SCORE] Erro ao excluir partitura:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
