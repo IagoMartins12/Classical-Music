@@ -1,6 +1,6 @@
 'use client';
 
-// app/components/modals/CreateScoreModal.tsx - ATUALIZADO COM MELHORIAS
+// app/components/modals/CreateScoreModal.tsx - ATUALIZADO COM UPLOAD/URL EXCLUSIVO
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -16,6 +16,10 @@ import {
   FiTag,
   FiCheck,
   FiAlertCircle,
+  FiLink,
+  FiX,
+  FiEye,
+  FiEyeOff,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -64,6 +68,8 @@ const fileFormatOptions = [
   { value: 'Other', label: 'Outro' },
 ];
 
+type UploadMode = 'url' | 'file' | null;
+
 const CreateScoreModal = ({
   isOpen,
   onClose,
@@ -74,6 +80,10 @@ const CreateScoreModal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
   const [validatingPDF, setValidatingPDF] = useState(false);
+
+  // 🆕 Estado para modo de upload (URL ou arquivo)
+  const [uploadMode, setUploadMode] = useState<UploadMode>('file');
+  const [showFilePath, setShowFilePath] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -106,6 +116,9 @@ const CreateScoreModal = ({
     error?: string;
   }>({ isValidating: false, isValid: false });
 
+  // 🆕 Estado para controle de upload
+  const [uploadedFilePath, setUploadedFilePath] = useState<string>('');
+
   // Populate form when editing
   useEffect(() => {
     if (editingScore) {
@@ -132,6 +145,16 @@ const CreateScoreModal = ({
           ? JSON.stringify(editingScore.customData)
           : '',
       });
+
+      // 🆕 Determinar modo de upload baseado na URL
+      if (editingScore.downloadUrl) {
+        if (editingScore.downloadUrl.startsWith('/uploads/')) {
+          setUploadMode('file');
+          setUploadedFilePath(editingScore.downloadUrl);
+        } else {
+          setUploadMode('url');
+        }
+      }
     }
   }, [editingScore]);
 
@@ -147,6 +170,23 @@ const CreateScoreModal = ({
     if (errors.workId) {
       setErrors((prev) => ({ ...prev, workId: '' }));
     }
+  };
+
+  // 🆕 Função para resetar modo de upload
+  const resetUploadMode = () => {
+    setUploadMode(null);
+    setSelectedFile(null);
+    setUploadedFilePath('');
+    setPdfValidation({ isValidating: false, isValid: false });
+    setFormData((prev) => ({ ...prev, downloadUrl: '' }));
+  };
+
+  // 🆕 Função para selecionar modo de upload
+  const selectUploadMode = (mode: UploadMode) => {
+    if (uploadMode && uploadMode !== mode) {
+      resetUploadMode();
+    }
+    setUploadMode(mode);
   };
 
   // Validar PDF quando URL for inserida
@@ -222,10 +262,13 @@ const CreateScoreModal = ({
 
       const data = await response.json();
 
+      // 🆕 Salvar caminho do arquivo sem mostrar no formulário
+      setUploadedFilePath(data.url);
+
       // Atualizar form com dados do arquivo
       setFormData((prev) => ({
         ...prev,
-        downloadUrl: data.url,
+        downloadUrl: data.url, // Usar internamente
         fileSize: validation.fileSize || '',
         pageCount: validation.pageCount?.toString() || '',
         title:
@@ -258,7 +301,10 @@ const CreateScoreModal = ({
       newErrors.title = 'Título é obrigatório';
     }
     if (!formData.downloadUrl.trim()) {
-      newErrors.downloadUrl = 'URL do arquivo é obrigatória';
+      newErrors.downloadUrl = 'URL do arquivo ou upload é obrigatório';
+    }
+    if (!uploadMode) {
+      newErrors.uploadMode = 'Escolha entre URL ou upload de arquivo';
     }
 
     setErrors(newErrors);
@@ -289,9 +335,10 @@ const CreateScoreModal = ({
         customData: formData.customData
           ? JSON.parse(formData.customData)
           : null,
-        // Remover campos que agora são automáticos
-        uploadDate: undefined,
-        uploader: undefined,
+        // 🆕 Definir source baseado no modo de upload
+        source: uploadMode === 'file' ? 'UPLOAD' : 'CUSTOM',
+        // Garantir que é sempre customizado
+        isCustom: true,
       };
 
       const url = editingScore
@@ -345,90 +392,116 @@ const CreateScoreModal = ({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-amber rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                 <FiFile className="w-5 h-5 text-theme-primary" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary classical-title">
-                  {editingScore ? 'Editar Partitura' : 'Nova Partitura'}
+                  {editingScore
+                    ? 'Editar Partitura'
+                    : 'Nova Partitura Personalizada'}
                 </h2>
                 <p className="text-theme-secondary text-sm">
                   {editingScore
                     ? 'Atualize as informações da partitura'
-                    : 'Adicione uma nova partitura à obra'}
+                    : 'Adicione uma nova partitura personalizada à obra'}
                 </p>
               </div>
+            </div>
+            {/* 🆕 Badge indicativo */}
+            <div className="px-3 py-1 bg-accent-purple/20 text-accent-purple rounded-full text-xs font-medium">
+              PERSONALIZADA
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+          <div className="p-6 ">
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* File Upload */}
+              {/* 🆕 Upload Mode Selection */}
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiUpload className="w-5 h-5" />
-                  <span>Upload de Arquivo</span>
+                  <span>Modo de Upload</span>
                 </h3>
 
                 <div className="space-y-4">
-                  <div
-                    className="border-2 border-dashed border-theme-secondary rounded-lg p-8 text-center hover:border-brand-primary transition-colors cursor-pointer"
-                    onClick={() =>
-                      document.getElementById('file-upload')?.click()
-                    }
-                  >
-                    <input
-                      id="file-upload"
-                      type="file"
-                      accept=".pdf,.mid,.midi,.xml,.musicxml,.svg,.png,.jpg,.jpeg"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          handleFileUpload(file);
-                        }
-                      }}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* URL Option */}
+                    <button
+                      type="button"
+                      onClick={() => selectUploadMode('url')}
+                      className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                        uploadMode === 'url'
+                          ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
+                          : 'border-theme-secondary bg-theme-elevated hover:border-theme-primary text-theme-secondary'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                            uploadMode === 'url'
+                              ? 'bg-brand-primary text-theme-primary'
+                              : 'bg-theme-secondary text-theme-tertiary'
+                          }`}
+                        >
+                          <FiLink className="w-4 h-4" />
+                        </div>
+                        <div className="text-left">
+                          <h4 className="font-medium">URL do Arquivo</h4>
+                          <p className="text-xs opacity-75">
+                            Link direto para o arquivo
+                          </p>
+                        </div>
+                      </div>
+                    </button>
 
-                    {uploadingFile ? (
-                      <div className="flex items-center justify-center space-x-2">
-                        <FiLoader className="w-6 h-6 animate-spin text-brand-primary" />
-                        <span className="text-theme-secondary">
-                          Fazendo upload...
-                        </span>
+                    {/* File Upload Option */}
+                    <button
+                      type="button"
+                      onClick={() => selectUploadMode('file')}
+                      className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                        uploadMode === 'file'
+                          ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
+                          : 'border-theme-secondary bg-theme-elevated hover:border-theme-primary text-theme-secondary'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                            uploadMode === 'file'
+                              ? 'bg-brand-primary text-theme-primary'
+                              : 'bg-theme-secondary text-theme-tertiary'
+                          }`}
+                        >
+                          <FiUpload className="w-4 h-4" />
+                        </div>
+                        <div className="text-left">
+                          <h4 className="font-medium">Upload de Arquivo</h4>
+                          <p className="text-xs opacity-75">
+                            Enviar arquivo do computador
+                          </p>
+                        </div>
                       </div>
-                    ) : selectedFile ? (
-                      <div className="flex items-center justify-center space-x-2">
-                        <FiFile className="w-6 h-6 text-accent-green" />
-                        <span className="text-theme-primary font-medium">
-                          {selectedFile.name}
-                        </span>
-                        <span className="text-theme-tertiary">
-                          ({formData.fileSize})
-                        </span>
-                      </div>
-                    ) : (
-                      <div>
-                        <FiUpload className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
-                        <p className="text-theme-secondary">
-                          Clique aqui ou arraste um arquivo para fazer upload
-                        </p>
-                        <p className="text-theme-tertiary text-sm mt-2">
-                          Formatos suportados: PDF, MIDI, MusicXML, SVG, PNG,
-                          JPG
-                        </p>
-                      </div>
-                    )}
+                    </button>
                   </div>
 
-                  <div className="text-center">
-                    <span className="text-theme-tertiary text-sm">ou</span>
-                  </div>
+                  {errors.uploadMode && (
+                    <p className="text-red-500 text-sm">{errors.uploadMode}</p>
+                  )}
+                </div>
+              </AnimatedCard>
 
-                  <div className="space-y-2">
+              {/* 🆕 URL Input (apenas se modo URL selecionado) */}
+              {uploadMode === 'url' && (
+                <AnimatedCard className="classical-card-2 p-4">
+                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                    <FiLink className="w-5 h-5" />
+                    <span>URL do Arquivo</span>
+                  </h3>
+
+                  <div className="space-y-4">
                     <Input
-                      label="URL do Arquivo"
+                      label="URL do Arquivo *"
                       value={formData.downloadUrl}
                       onChange={(e) => handleUrlChange(e.target.value)}
                       placeholder="https://exemplo.com/partitura.pdf"
@@ -464,8 +537,121 @@ const CreateScoreModal = ({
                         </div>
                       )}
                   </div>
-                </div>
-              </AnimatedCard>
+                </AnimatedCard>
+              )}
+
+              {/* 🆕 File Upload (apenas se modo upload selecionado) */}
+              {uploadMode === 'file' && (
+                <AnimatedCard className="classical-card-2 p-4">
+                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+                    <FiUpload className="w-5 h-5" />
+                    <span>Upload de Arquivo</span>
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div
+                      className="border-2 border-dashed border-theme-secondary rounded-lg p-8 text-center hover:border-brand-primary transition-colors cursor-pointer"
+                      onClick={() =>
+                        document.getElementById('file-upload')?.click()
+                      }
+                    >
+                      <input
+                        id="file-upload"
+                        type="file"
+                        accept=".pdf,.mid,.midi,.xml,.musicxml,.svg,.png,.jpg,.jpeg"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            handleFileUpload(file);
+                          }
+                        }}
+                      />
+
+                      {uploadingFile ? (
+                        <div className="flex items-center justify-center space-x-2">
+                          <FiLoader className="w-6 h-6 animate-spin text-brand-primary" />
+                          <span className="text-theme-secondary">
+                            Fazendo upload...
+                          </span>
+                        </div>
+                      ) : selectedFile ? (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-center space-x-2">
+                            <FiFile className="w-6 h-6 text-accent-green" />
+                            <span className="text-theme-primary font-medium">
+                              {selectedFile.name}
+                            </span>
+                            <span className="text-theme-tertiary">
+                              ({formData.fileSize})
+                            </span>
+                          </div>
+
+                          {/* 🆕 Mostrar/ocultar caminho do arquivo */}
+                          {/* {uploadedFilePath && (
+                            <div className="mt-2 p-3 bg-theme-secondary/20 rounded-lg">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs text-theme-tertiary">
+                                  Caminho do arquivo:
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => setShowFilePath(!showFilePath)}
+                                  className="text-xs text-brand-primary hover:text-brand-secondary transition-colors flex items-center space-x-1"
+                                >
+                                  {showFilePath ? (
+                                    <>
+                                      <FiEyeOff className="w-3 h-3" />
+                                      <span>Ocultar</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <FiEye className="w-3 h-3" />
+                                      <span>Mostrar</span>
+                                    </>
+                                  )}
+                                </button>
+                              </div>
+                              {showFilePath && (
+                                <div className="mt-2 text-xs text-theme-secondary font-mono bg-theme-primary/5 p-2 rounded">
+                                  {uploadedFilePath}
+                                </div>
+                              )}
+                            </div>
+                          )} */}
+                        </div>
+                      ) : (
+                        <div>
+                          <FiUpload className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                          <p className="text-theme-secondary">
+                            Clique aqui ou arraste um arquivo para fazer upload
+                          </p>
+                          <p className="text-theme-tertiary text-sm mt-2">
+                            Formatos suportados: PDF, MIDI, MusicXML, SVG, PNG,
+                            JPG
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Resetar upload */}
+                    {selectedFile && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedFile(null);
+                          setUploadedFilePath('');
+                          setFormData((prev) => ({ ...prev, downloadUrl: '' }));
+                        }}
+                        className="flex items-center space-x-2 mx-auto text-sm text-theme-tertiary hover:text-accent-red transition-colors"
+                      >
+                        <FiX className="w-4 h-4" />
+                        <span>Remover arquivo</span>
+                      </button>
+                    )}
+                  </div>
+                </AnimatedCard>
+              )}
 
               {/* Basic Information */}
               <AnimatedCard className="classical-card-2 p-4">
@@ -530,23 +716,24 @@ const CreateScoreModal = ({
                     />
                   </div>
 
-                  {/* Campos automáticos - agora desabilitados */}
+                  {/* Campos automáticos */}
                   <Input
                     label="Tamanho do Arquivo"
                     value={formData.fileSize}
-                    onChange={() => {}} // Não permite edição
-                    placeholder="Detectado automaticamente"
-                    disabled
-                    className="bg-theme-secondary/20"
+                    onChange={(e) =>
+                      handleInputChange('fileSize', e.target.value)
+                    }
+                    placeholder="Ex: 2.5 MB"
                   />
 
                   <Input
                     label="Número de Páginas"
                     value={formData.pageCount}
-                    onChange={() => {}} // Não permite edição
-                    placeholder="Detectado automaticamente"
-                    disabled
-                    className="bg-theme-secondary/20"
+                    onChange={(e) =>
+                      handleInputChange('pageCount', e.target.value)
+                    }
+                    placeholder="Ex: 12"
+                    type="number"
                   />
                 </div>
               </AnimatedCard>
@@ -598,32 +785,47 @@ const CreateScoreModal = ({
                 </div>
               </AnimatedCard>
 
-              {/* Grouping and Rating */}
+              {/* 🆕 Grouping - Seção melhorada */}
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiTag className="w-5 h-5" />
-                  <span>Agrupamento </span>
+                  <span>Agrupamento de Partituras</span>
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label="Índice do Grupo"
-                    value={formData.groupIndex}
-                    onChange={(e) =>
-                      handleInputChange('groupIndex', e.target.value)
-                    }
-                    placeholder="0"
-                    type="number"
-                  />
+                <div className="space-y-4">
+                  <div className="p-4 bg-theme-secondary/10 rounded-lg">
+                    <h4 className="font-medium text-theme-primary mb-2">
+                      Como funciona o agrupamento?
+                    </h4>
+                    <p className="text-sm text-theme-secondary">
+                      Partituras do mesmo grupo são exibidas juntas. Use o{' '}
+                      <strong>Índice do Grupo</strong> para organizar a ordem e
+                      o <strong>Título do Grupo</strong> para dar nome ao
+                      conjunto de partituras.
+                    </p>
+                  </div>
 
-                  <Input
-                    label="Título do Grupo"
-                    value={formData.groupTitle}
-                    onChange={(e) =>
-                      handleInputChange('groupTitle', e.target.value)
-                    }
-                    placeholder="Nome do grupo"
-                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input
+                      label="Índice do Grupo"
+                      value={formData.groupIndex}
+                      onChange={(e) =>
+                        handleInputChange('groupIndex', e.target.value)
+                      }
+                      placeholder="0"
+                      type="number"
+                      min="0"
+                    />
+
+                    <Input
+                      label="Título do Grupo"
+                      value={formData.groupTitle}
+                      onChange={(e) =>
+                        handleInputChange('groupTitle', e.target.value)
+                      }
+                      placeholder="Ex: Partitura Completa, Versão Simplificada"
+                    />
+                  </div>
                 </div>
               </AnimatedCard>
 
@@ -631,7 +833,7 @@ const CreateScoreModal = ({
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiInfo className="w-5 h-5" />
-                  <span>Notas e Dados Customizados</span>
+                  <span>Notas e Informações Adicionais</span>
                 </h3>
 
                 <div className="space-y-4">
@@ -646,7 +848,7 @@ const CreateScoreModal = ({
                       }
                       rows={3}
                       className="input-classical-2 w-full resize-none"
-                      placeholder="Notas sobre a partitura..."
+                      placeholder="Notas sobre a partitura, origem, qualidade, etc..."
                     />
                   </div>
 
@@ -661,17 +863,9 @@ const CreateScoreModal = ({
                       }
                       rows={3}
                       className="input-classical-2 w-full resize-none font-mono text-sm"
-                      placeholder='{"qualidade": "alta", "fonte": "digitalização própria"}'
+                      placeholder='{"qualidade": "alta", "fonte": "digitalização própria", "instrumento": "piano"}'
                     />
                   </div>
-
-                  <Checkbox
-                    label="Partitura customizada (não-IMSLP)"
-                    checked={formData.isCustom}
-                    onChange={(e) =>
-                      handleInputChange('isCustom', e.target.checked)
-                    }
-                  />
                 </div>
               </AnimatedCard>
 
@@ -696,7 +890,7 @@ const CreateScoreModal = ({
                       <FiSave />
                     )
                   }
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !uploadMode}
                 >
                   {isSubmitting
                     ? 'Salvando...'

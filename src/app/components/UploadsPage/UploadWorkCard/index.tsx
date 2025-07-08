@@ -16,6 +16,7 @@ import {
 import { GiMusicalNotes } from 'react-icons/gi';
 import { UserUpload } from '@/app/requests/upload';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
+import Link from 'next/link';
 
 interface UploadWorkCardProps {
   item: UserUpload;
@@ -46,7 +47,10 @@ const UploadWorkCard = ({
   if (viewMode === 'list') {
     return (
       <div className="classical-card group relative p-4 hover:shadow-theme-glow transition-all duration-300">
-        <div className="flex items-center justify-between w-full">
+        <div
+          // href={`/works/${item.id}`}
+          className="flex items-center justify-between w-full"
+        >
           {/* Left section - Work info */}
           <div className="flex items-center space-x-4 flex-1 min-w-0">
             {/* Icon */}
@@ -105,16 +109,14 @@ const UploadWorkCard = ({
           {/* Right section - Actions */}
           <div className="flex items-center space-x-2 flex-shrink-0">
             {item.imslpId && (
-              <a
-                href={`https://imslp.org/wiki/${item.imslpId}`}
-                target="_blank"
+              <div
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/20 text-accent-green rounded-md text-xs font-medium hover:bg-accent-green/20 hover:scale-105 transition-all duration-300"
                 onClick={(e) => e.stopPropagation()}
               >
                 IMSLP
                 <FiExternalLink className="w-2.5 h-2.5 ml-1" />
-              </a>
+              </div>
             )}
 
             <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -143,7 +145,10 @@ const UploadWorkCard = ({
 
   return (
     <div className="group cursor-pointer select-none h-full">
-      <div className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow">
+      <div
+        // href={`/works/${item.id}`}
+        className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow"
+      >
         {/* Header Section */}
         <div className="relative p-6 pb-4 border-b border-theme-secondary">
           {/* Background pattern */}
@@ -263,16 +268,13 @@ const UploadWorkCard = ({
               </div>
 
               {item.imslpId && (
-                <a
-                  href={`${item.imslpPermlink}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <div
                   className="text-accent-green hover:text-accent-blue text-sm font-medium transition-colors flex items-center space-x-1"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <span>IMSLP</span>
                   <FiExternalLink className="w-3 h-3" />
-                </a>
+                </div>
               )}
             </div>
           </div>
