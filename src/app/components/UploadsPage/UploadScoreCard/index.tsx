@@ -372,6 +372,7 @@ const UploadScoreCard = ({
         isLoading={isDeleting}
         itemTitle={item.title}
         itemType="score"
+        itemId={item.id} // ✅ Adicionar esta linha
       />
     </div>
   );

@@ -37,9 +37,9 @@ export async function POST(request: NextRequest) {
     // Construir cláusula WHERE para buscar duplicatas
     const whereClause: any = {
       OR: [
-        { imslpId: imslpId },
+        // { imslpId: imslpId },
         { imslpPermlink: url },
-        { imslpId: { contains: imslpId } },
+        // { imslpId: { contains: imslpId } },
         // Adicionar busca por URL normalizada
         { imslpPermlink: { contains: imslpId } },
       ],

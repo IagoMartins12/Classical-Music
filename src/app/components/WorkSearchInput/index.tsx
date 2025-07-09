@@ -33,88 +33,115 @@ export default function WorkSearchInput({
   const [works, setWorks] = useState<Work[]>(popularWorks);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedWorkName, setSelectedWorkName] = useState('');
+  const [fetchedWorksCache, setFetchedWorksCache] = useState<Map<string, Work>>(
+    new Map()
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Função para buscar dados da obra por ID
-  const fetchWorkById = useCallback(async (workId: string) => {
-    try {
-      console.log('🔍 Buscando obra por ID:', workId);
-
-      const response = await fetch(
-        `/api/works/search?q=${encodeURIComponent(workId)}&limit=1`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.works && data.works.length > 0) {
-          const work = data.works[0];
-          console.log('✅ Obra encontrada:', work.title);
-          return work;
-        }
+  // ✅ Função para buscar dados da obra por ID - OTIMIZADA
+  const fetchWorkById = useCallback(
+    async (workId: string): Promise<Work | null> => {
+      // Verificar cache primeiro
+      if (fetchedWorksCache.has(workId)) {
+        return fetchedWorksCache.get(workId)!;
       }
 
-      console.log('⚠️ Obra não encontrada para ID:', workId);
-      return null;
-    } catch (error) {
-      console.error('❌ Erro ao buscar obra por ID:', error);
-      return null;
-    }
-  }, []);
+      try {
+        console.log('🔍 Buscando obra por ID:', workId);
 
-  // Encontrar nome da obra selecionada
-  useEffect(() => {
-    const findSelectedWork = async () => {
-      if (selectedWork) {
-        // Primeiro tenta encontrar nas listas locais (mais rápido)
-        const work =
-          popularWorks?.find((w) => w.id === selectedWork) ||
-          works?.find((w) => w.id === selectedWork);
+        // Cancelar requisição anterior se existir
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
 
-        if (work) {
-          const workName = formatWorkName(work);
-          setSelectedWorkName(workName);
-          console.log('✅ Obra encontrada na lista local:', work.title);
-        } else {
-          // Se não encontrou nas listas locais, busca na API
-          console.log('🔍 Obra não encontrada localmente, buscando na API...');
-          const fetchedWork = await fetchWorkById(selectedWork);
+        abortControllerRef.current = new AbortController();
 
-          if (fetchedWork) {
-            const workName = formatWorkName(fetchedWork);
-            setSelectedWorkName(workName);
+        const response = await fetch(
+          `/api/works/search?q=${encodeURIComponent(workId)}&limit=1`,
+          { signal: abortControllerRef.current.signal }
+        );
 
-            // Adicionar a obra às listas locais para futuras buscas
-            setWorks((prev) => {
-              const exists = prev.some((w) => w.id === fetchedWork.id);
-              if (!exists) {
-                return [...prev, fetchedWork];
-              }
-              return prev;
-            });
-          } else {
-            setSelectedWorkName('');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.works && data.works.length > 0) {
+            const work = data.works[0];
+            console.log('✅ Obra encontrada:', work.title);
+
+            // Adicionar ao cache
+            setFetchedWorksCache((prev) => new Map(prev).set(workId, work));
+
+            return work;
           }
         }
-      } else {
+
+        console.log('⚠️ Obra não encontrada para ID:', workId);
+        return null;
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          console.log('⏹️ Requisição cancelada');
+          return null;
+        }
+        console.error('❌ Erro ao buscar obra por ID:', error);
+        return null;
+      }
+    },
+    []
+  ); // ✅ Sem dependências desnecessárias
+
+  // ✅ Buscar nome da obra selecionada - OTIMIZADO
+  useEffect(() => {
+    const findSelectedWork = async () => {
+      if (!selectedWork) {
         setSelectedWorkName('');
+        return;
+      }
+
+      // Primeiro verificar cache
+      if (fetchedWorksCache.has(selectedWork)) {
+        const work = fetchedWorksCache.get(selectedWork)!;
+        const workName = formatWorkName(work);
+        setSelectedWorkName(workName);
+        return;
+      }
+
+      // Verificar nas listas locais
+      const work =
+        popularWorks?.find((w) => w.id === selectedWork) ||
+        works?.find((w) => w.id === selectedWork);
+
+      if (work) {
+        const workName = formatWorkName(work);
+        setSelectedWorkName(workName);
+        console.log('✅ Obra encontrada na lista local:', work.title);
+        return;
+      }
+
+      // Buscar na API como último recurso
+      console.log('🔍 Obra não encontrada localmente, buscando na API...');
+      const fetchedWork = await fetchWorkById(selectedWork);
+
+      if (fetchedWork) {
+        const workName = formatWorkName(fetchedWork);
+        setSelectedWorkName(workName);
       }
     };
 
     findSelectedWork();
-  }, [selectedWork, popularWorks, works, fetchWorkById]);
+  }, [selectedWork, fetchWorkById]); // ✅ Removidas dependências problemáticas
 
-  // Função para formatar nome da obra
-  const formatWorkName = (work: Work) => {
+  // ✅ Função para formatar nome da obra
+  const formatWorkName = useCallback((work: Work) => {
     const composerName = work.composer.fullName || work.composer.name;
     return `${work.title}${
       work.opOrCatalog ? ` (${work.opOrCatalog})` : ''
     } - ${composerName}`;
-  };
+  }, []);
 
-  // Busca de obras com debounce
+  // ✅ Busca de obras com debounce - OTIMIZADA
   const searchWorksDebounced = useCallback(
     async (term: string) => {
       if (debounceRef.current) {
@@ -123,11 +150,20 @@ export default function WorkSearchInput({
 
       debounceRef.current = setTimeout(async () => {
         setIsLoading(true);
+
         try {
           console.log('🔍 Fazendo busca para:', term);
 
+          // Cancelar requisição anterior
+          if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
+          }
+
+          abortControllerRef.current = new AbortController();
+
           const response = await fetch(
-            `/api/works/search?q=${encodeURIComponent(term)}&limit=20`
+            `/api/works/search?q=${encodeURIComponent(term)}&limit=20`,
+            { signal: abortControllerRef.current.signal }
           );
 
           if (!response.ok) {
@@ -138,6 +174,10 @@ export default function WorkSearchInput({
           console.log('📊 Resultados recebidos:', data.works.length, 'obras');
           setWorks(data.works);
         } catch (error) {
+          if (error instanceof Error && error.name === 'AbortError') {
+            console.log('⏹️ Busca cancelada');
+            return;
+          }
           console.error('❌ Erro ao buscar obras:', error);
           setWorks(popularWorks || []); // Fallback para obras populares
         } finally {
@@ -148,17 +188,24 @@ export default function WorkSearchInput({
     [popularWorks]
   );
 
-  // Effect para busca
+  // ✅ Effect para busca - OTIMIZADO
   useEffect(() => {
     if (searchTerm.trim()) {
       searchWorksDebounced(searchTerm);
     } else {
+      // Cancelar busca se não há termo
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
       setWorks(popularWorks || []);
       setIsLoading(false);
     }
   }, [searchTerm, searchWorksDebounced, popularWorks]);
 
-  // Fechar dropdown ao clicar fora
+  // ✅ Fechar dropdown ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -178,11 +225,14 @@ export default function WorkSearchInput({
     }
   }, [isOpen]);
 
-  // Limpar timeout no unmount
+  // ✅ Limpar recursos no unmount
   useEffect(() => {
     return () => {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
+      }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
       }
     };
   }, []);
@@ -193,7 +243,16 @@ export default function WorkSearchInput({
       // Carregar obras populares se não tiver dados
       setIsLoading(true);
       try {
-        const response = await fetch('/api/works/search?q=&limit=20');
+        // Cancelar requisição anterior
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort();
+        }
+
+        abortControllerRef.current = new AbortController();
+
+        const response = await fetch('/api/works/search?q=&limit=20', {
+          signal: abortControllerRef.current.signal,
+        });
 
         if (response.ok) {
           const data = await response.json();
@@ -201,6 +260,9 @@ export default function WorkSearchInput({
           console.log('📊 Obras populares carregadas:', data.works.length);
         }
       } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          return;
+        }
         console.error('❌ Erro ao carregar obras populares:', error);
       } finally {
         setIsLoading(false);
@@ -258,6 +320,7 @@ export default function WorkSearchInput({
 
         {(selectedWork || searchTerm) && (
           <button
+            type="button" // ✅ CORREÇÃO: Adicionar type="button"
             onClick={handleClear}
             className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors z-10"
             disabled={isDisabled}
@@ -303,6 +366,7 @@ export default function WorkSearchInput({
               {displayWorks.map((work, index) => (
                 <button
                   key={work.id}
+                  type="button" // ✅ CORREÇÃO: Adicionar type="button"
                   onClick={() => handleWorkSelect(work)}
                   className={`
                     w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 border-b last:border-b-0 border-theme-secondary

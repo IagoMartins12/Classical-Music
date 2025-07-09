@@ -295,6 +295,7 @@ const UploadWorkCard = ({
         isLoading={isDeleting}
         itemTitle={item.title}
         itemType="work"
+        itemId={item.id} // ✅ Adicionar esta linha
       />
     </div>
   );

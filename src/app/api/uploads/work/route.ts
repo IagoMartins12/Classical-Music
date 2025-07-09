@@ -1,13 +1,10 @@
-// app/api/uploads/work/route.ts - VERSÃO MELHORADA COM VALIDAÇÃO DE CATEGORIAS E GÊNEROS
+// app/api/uploads/work/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateUploadsCache } from '@/app/requests/upload';
-import {
-  filterValidCategories,
-  VALID_PORTUGUESE_WORKGENRES,
-} from '@/app/utils/valid-categories-and-genres';
+import { logWorkCreate } from '@/app/utils/historyUtils';
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,212 +14,159 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
+    const userId = session.user.id;
     const body = await request.json();
-    const {
-      title,
-      composerId,
-      instrumentId,
-      epochId,
-      videoUrl,
-      imslpId,
-      imslpPermlink,
-      opOrCatalog,
-      compositionYear,
-      firstPublishDate,
-      tone,
-      mediaDuration,
-      workStyle,
-      moviment,
-      categoryNames,
-      workGenresArr,
-      dedicateTo,
-      dedicationComposerLink,
-      instrumentation,
-      workType,
-      isPartOfCollection,
-      movementNumber,
-      subtitle,
-      timeSignature,
-      tempoMarking,
-      movementsDetailed,
-      imslpTags,
-      difficultyLevel,
-    } = body;
 
-    console.log('🎼 Criando nova obra:', title);
-    console.log('📋 Categorias recebidas:', categoryNames);
-    console.log('🎵 Gêneros recebidos:', workGenresArr);
-
-    // Validação básica
-    if (!title || !composerId || !instrumentId || !epochId) {
+    // Validações básicas
+    if (
+      !body.title ||
+      !body.composerId ||
+      !body.instrumentId ||
+      !body.epochId
+    ) {
       return NextResponse.json(
-        {
-          error: 'Campos obrigatórios: título, compositor, instrumento e época',
-        },
+        { error: 'Campos obrigatórios não preenchidos' },
         { status: 400 }
       );
     }
 
-    // Verificar se composer, instrument e epoch existem
+    // Verificar se compositor, instrumento e época existem
     const [composer, instrument, epoch] = await Promise.all([
-      prisma.composer.findUnique({ where: { id: composerId } }),
-      prisma.instrument.findUnique({ where: { id: instrumentId } }),
-      prisma.epoch.findUnique({ where: { id: epochId } }),
+      prisma.composer.findUnique({
+        where: { id: body.composerId },
+        select: { id: true, name: true, fullName: true },
+      }),
+      prisma.instrument.findUnique({
+        where: { id: body.instrumentId },
+        select: { id: true, name: true },
+      }),
+      prisma.epoch.findUnique({
+        where: { id: body.epochId },
+        select: { id: true, name: true },
+      }),
     ]);
 
-    if (!composer || !instrument || !epoch) {
-      console.log('❌ Entidades não encontradas:', {
-        composer: !!composer,
-        instrument: !!instrument,
-        epoch: !!epoch,
-      });
+    if (!composer) {
       return NextResponse.json(
-        {
-          error: 'Compositor, instrumento ou época não encontrado',
-        },
+        { error: 'Compositor não encontrado' },
         { status: 400 }
       );
     }
 
-    // Verificar se já existe uma obra com esse título para este compositor
-    const existingWork = await prisma.work.findFirst({
-      where: {
-        OR: [{ imslpId: imslpId }, { imslpPermlink: imslpPermlink }],
-      },
-    });
-
-    if (existingWork) {
-      console.log('⚠️ Obra duplicada:', existingWork.title);
+    if (!instrument) {
       return NextResponse.json(
-        {
-          error: 'Já existe uma obra com esse título para este compositor',
-        },
-        { status: 409 }
+        { error: 'Instrumento não encontrado' },
+        { status: 400 }
       );
     }
 
-    // Processar e validar categorias
-    let processedCategoryNames: string[] = [];
-    if (Array.isArray(categoryNames)) {
-      processedCategoryNames = filterValidCategories(categoryNames);
-    } else if (typeof categoryNames === 'string') {
-      const categoryArray = categoryNames
-        .split(',')
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
-      processedCategoryNames = filterValidCategories(categoryArray);
+    if (!epoch) {
+      return NextResponse.json(
+        { error: 'Época não encontrada' },
+        { status: 400 }
+      );
     }
 
-    console.log('✅ Categorias válidas processadas:', processedCategoryNames);
+    // Verificar se já existe obra com mesmo imslpId
+    // if (body.imslpId) {
+    //   const existingWork = await prisma.work.findFirst({
+    //     where: {
+    //       imslpId: body.imslpId,
+    //       id: { not: body.excludeId || null }, // Para permitir edição
+    //     },
+    //   });
 
-    // Processar e validar gêneros
-    let processedWorkGenres: string[] = [];
-    if (Array.isArray(workGenresArr)) {
-      processedWorkGenres = workGenresArr.filter((genre: string) => {
-        const isValid = VALID_PORTUGUESE_WORKGENRES.has(
-          genre.toLowerCase().trim()
-        );
-        if (!isValid) {
-          console.log(`⚠️ Gênero inválido ignorado: ${genre}`);
-        }
-        return isValid;
-      });
-    } else if (typeof workGenresArr === 'string') {
-      const genreArray = workGenresArr
-        .split(',')
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
+    //   if (existingWork) {
+    //     return NextResponse.json(
+    //       {
+    //         error: 'Já existe uma obra com este ID do IMSLP',
+    //         existingWork: {
+    //           id: existingWork.id,
+    //           title: existingWork.title,
+    //         },
+    //       },
+    //       { status: 400 }
+    //     );
+    //   }
+    // }
 
-      processedWorkGenres = genreArray.filter((genre: string) => {
-        const isValid = VALID_PORTUGUESE_WORKGENRES.has(
-          genre.toLowerCase().trim()
-        );
-        if (!isValid) {
-          console.log(`⚠️ Gênero inválido ignorado: ${genre}`);
-        }
-        return isValid;
-      });
-    }
-
-    // Se não há gêneros válidos, adicionar "não definido"
-    if (processedWorkGenres.length === 0) {
-      processedWorkGenres = ['não definido'];
-    }
-
-    console.log('✅ Gêneros válidos processados:', processedWorkGenres);
-
-    // Processar tags do IMSLP
-    const processedImslpTags = Array.isArray(imslpTags)
-      ? imslpTags
-      : typeof imslpTags === 'string'
-      ? imslpTags
-          .split(',')
-          .map((s) => s.trim())
-          .filter((s) => s.length > 0)
-      : [];
-
-    // Criar a obra
+    // Criar obra
     const work = await prisma.work.create({
       data: {
-        title,
-        subtitle,
-        composerId,
-        instrumentId,
-        epochId,
-        videoUrl,
-        imslpPermlink: imslpPermlink,
-        imslpId: imslpId || '',
-        opOrCatalog,
-        compositionYear,
-        firstPublishDate,
-        tone,
-        timeSignature,
-        tempoMarking,
-        mediaDuration,
-        workStyle,
-        moviment,
-        categoryNames: processedCategoryNames,
-        workGenresArr: processedWorkGenres,
-        dedicateTo,
-        dedicationComposerLink,
-        instrumentation,
-        workType: workType || 'INDIVIDUAL',
-        isPartOfCollection: isPartOfCollection || false,
-        movementNumber,
-        movementsDetailed,
-        imslpTags: processedImslpTags,
-        difficultyLevel,
-        // Campos para rastreamento
-        createdBy: session.user.id,
-        isCustom: !imslpId,
+        ...body,
+        createdBy: userId,
+        isCustom: true,
+        // Converter arrays de string para formato correto
+        categoryNames: Array.isArray(body.categoryNames)
+          ? body.categoryNames
+          : [],
+        workGenresArr: Array.isArray(body.workGenresArr)
+          ? body.workGenresArr
+          : [],
+        imslpTags: Array.isArray(body.imslpTags) ? body.imslpTags : [],
+        // Converter números
+        movementNumber: body.movementNumber
+          ? parseInt(body.movementNumber)
+          : null,
+        // Converter JSON
+        movementsDetailed: body.movementsDetailed
+          ? typeof body.movementsDetailed === 'string'
+            ? JSON.parse(body.movementsDetailed)
+            : body.movementsDetailed
+          : null,
       },
       include: {
         composer: { select: { name: true, fullName: true } },
-        instrument: { select: { name: true } },
         epoch: { select: { name: true } },
+        instrument: { select: { name: true } },
       },
     });
 
-    console.log('✅ Obra criada com sucesso:', work.title);
-    console.log('📊 Estatísticas da obra:');
-    console.log(`   - Categorias: ${work.categoryNames.length}`);
-    console.log(`   - Gêneros: ${work.workGenresArr.length}`);
-    console.log(`   - Tags IMSLP: ${work.imslpTags.length}`);
+    // 🆕 Registrar no histórico
+    await logWorkCreate(
+      userId,
+      work.id,
+      {
+        title: work.title,
+        subtitle: work.subtitle,
+        composerName: work.composer.fullName || work.composer.name,
+        epochName: work.epoch.name,
+        instrumentName: work.instrument.name,
+        opOrCatalog: work.opOrCatalog,
+        compositionYear: work.compositionYear,
+        firstPublishDate: work.firstPublishDate,
+        tone: work.tone,
+        workStyle: work.workStyle,
+        workType: work.workType,
+        categoryNames: work.categoryNames,
+        workGenresArr: work.workGenresArr,
+        difficultyLevel: work.difficultyLevel,
+        isIMSLP: !!work.imslpId,
+        dataSource: body.dataSource || 'manual',
+      },
+      request
+    );
 
-    await revalidateUploadsCache(session.user.id);
+    // Invalidar cache
+    await revalidateUploadsCache(userId);
 
     return NextResponse.json({
-      success: true,
+      message: 'Obra criada com sucesso!',
       work,
-      message: 'Obra criada com sucesso',
-      stats: {
-        categoriesCount: work.categoryNames.length,
-        genresCount: work.workGenresArr.length,
-        tagsCount: work.imslpTags.length,
-      },
     });
   } catch (error) {
-    console.error('❌ Erro ao criar obra:', error);
+    console.error('Erro ao criar obra:', error);
+
+    // Tratamento de erros específicos
+    if (error instanceof Error) {
+      if (error.message.includes('Duplicate')) {
+        return NextResponse.json(
+          { error: 'Já existe uma obra com estes dados' },
+          { status: 400 }
+        );
+      }
+    }
+
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

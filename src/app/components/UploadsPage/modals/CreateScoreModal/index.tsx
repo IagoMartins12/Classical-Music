@@ -33,7 +33,6 @@ import {
   validateUploadedFile,
   isProbablyPDF,
   isValidUrl,
-  generatePDFThumbnail,
   generateAndUploadPDFThumbnail,
 } from '@/app/utils/pdfUtils';
 

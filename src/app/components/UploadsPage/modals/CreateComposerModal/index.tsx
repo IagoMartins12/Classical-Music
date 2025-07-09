@@ -120,7 +120,7 @@ const CreateComposerModal = ({
     instruments: '',
     imslpCategories: '',
     primaryRoleId: '',
-    secondaryRoles: [] as string[],
+    roles: [] as string[],
     dataSource: 'none' as DataSource,
   });
 
@@ -167,7 +167,7 @@ const CreateComposerModal = ({
         instruments: editingComposer.instruments || '',
         imslpCategories: editingComposer.imslpCategories || '',
         primaryRoleId: editingComposer.primaryRoleId || '',
-        secondaryRoles: editingComposer.roles
+        roles: editingComposer.roles
           ? editingComposer.roles.split(', ').filter(Boolean)
           : [],
         dataSource: detectedSource,
@@ -397,9 +397,9 @@ const CreateComposerModal = ({
   const handleSecondaryRolesChange = (roleId: string, checked: boolean) => {
     setFormData((prev) => ({
       ...prev,
-      secondaryRoles: checked
-        ? [...prev.secondaryRoles, roleId]
-        : prev.secondaryRoles.filter((id) => id !== roleId),
+      roles: checked
+        ? [...prev.roles, roleId]
+        : prev.roles.filter((id) => id !== roleId),
     }));
   };
 
@@ -463,7 +463,6 @@ const CreateComposerModal = ({
       }
       return null;
     },
-  
   };
 
   // Validar formato de data HTML5
@@ -525,9 +524,11 @@ const CreateComposerModal = ({
         // Converter datas para formato dd/mm/yyyy para salvar no banco
         birthDate: formatDateForSave(formData.birthDate),
         deathDate: formatDateForSave(formData.deathDate),
-        roles: formData.secondaryRoles.join(', '),
+        roles: formData.roles.join(', '),
         dataSource: formData.dataSource,
       };
+
+      console.log('data to send', dataToSend);
 
       const response = await fetch(url, {
         method,
@@ -1125,7 +1126,7 @@ const CreateComposerModal = ({
                           <input
                             type="checkbox"
                             id={`role-${role.id}`}
-                            checked={formData.secondaryRoles.includes(role.id)}
+                            checked={formData.roles.includes(role.id)}
                             onChange={(e) =>
                               handleSecondaryRolesChange(
                                 role.id,

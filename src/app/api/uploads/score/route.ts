@@ -1,9 +1,10 @@
-// app/api/uploads/score/route.ts - ATUALIZADO COM LÓGICA PERSONALIZADA
+// app/api/uploads/score/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateUploadsCache } from '@/app/requests/upload';
+import { logScoreCreate } from '@/app/utils/historyUtils';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,150 +14,171 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
+    const userId = session.user.id;
     const body = await request.json();
-    const {
-      workId,
-      title,
-      downloadUrl,
-      fileSize,
-      pageCount,
-      fileFormat,
-      editor,
-      publisher,
-      copyright,
-      thumbnailUrl,
-      notes,
-      type,
-      groupIndex,
-      groupTitle,
-      rating,
-      ratingsCount,
-      downloadCount,
-      isCustom,
-      customData,
-      source, // 🆕 Adicionar source para diferenciar CUSTOM vs UPLOAD
-    } = body;
 
-    // Validação básica
-    if (!workId || !title || !downloadUrl) {
+    // Validações básicas
+    if (!body.workId || !body.title) {
       return NextResponse.json(
-        {
-          error: 'Campos obrigatórios: obra, título e URL do arquivo',
-        },
+        { error: 'Obra e título são obrigatórios' },
+        { status: 400 }
+      );
+    }
+
+    if (!body.downloadUrl) {
+      return NextResponse.json(
+        { error: 'URL do arquivo ou upload é obrigatório' },
         { status: 400 }
       );
     }
 
     // Verificar se a obra existe
     const work = await prisma.work.findUnique({
-      where: { id: workId },
-      select: {
-        id: true,
-        title: true,
+      where: { id: body.workId },
+      include: {
         composer: { select: { name: true, fullName: true } },
       },
     });
 
     if (!work) {
       return NextResponse.json(
+        { error: 'Obra não encontrada' },
+        { status: 400 }
+      );
+    }
+
+    // Gerar sourceId único para partituras customizadas
+    const sourceId = body.sourceId || generateSourceId(body.source || 'CUSTOM');
+
+    // Verificar se já existe partitura com mesmo sourceId para esta obra
+    const existingScore = await prisma.workScore.findFirst({
+      where: {
+        workId: body.workId,
+        sourceId: sourceId,
+        source: body.source || 'CUSTOM',
+      },
+    });
+
+    if (existingScore) {
+      return NextResponse.json(
         {
-          error: 'Obra não encontrada',
+          error:
+            'Já existe uma partitura com este identificador para esta obra',
+          existingScore: {
+            id: existingScore.id,
+            title: existingScore.title,
+          },
         },
         { status: 400 }
       );
     }
 
-    // 🆕 Determinar source baseado no tipo de upload
-    let scoreSource: 'CUSTOM' | 'UPLOAD' = 'CUSTOM';
-    if (downloadUrl.startsWith('/uploads/')) {
-      scoreSource = 'UPLOAD';
-    } else if (source === 'UPLOAD') {
-      scoreSource = 'UPLOAD';
-    }
+    // Preparar dados para criação
+    const scoreData = {
+      workId: body.workId,
+      sourceId: sourceId,
+      source: body.source || 'CUSTOM',
+      title: body.title,
+      downloadUrl: body.downloadUrl,
+      fileSize: body.fileSize || null,
+      pageCount: body.pageCount || null,
+      fileFormat: body.fileFormat || 'PDF',
+      editor: body.editor || null,
+      publisher: body.publisher || null,
+      copyright: body.copyright || null,
+      thumbnailUrl: body.thumbnailUrl || null,
+      notes: body.notes || null,
+      type: body.type || 'SCORES',
+      groupIndex: body.groupIndex ? parseInt(body.groupIndex) : 0,
+      groupTitle: body.groupTitle || null,
+      rating: body.rating ? parseFloat(body.rating) : null,
+      ratingsCount: body.ratingsCount ? parseInt(body.ratingsCount) : null,
+      downloadCount: body.downloadCount ? parseInt(body.downloadCount) : null,
+      isCustom: body.isCustom !== false, // Default true para uploads customizados
+      uploadedBy: userId,
+      customData: body.customData
+        ? typeof body.customData === 'string'
+          ? JSON.parse(body.customData)
+          : body.customData
+        : null,
+      processingStatus: 'COMPLETED',
+      isActive: true,
+      isVerified: false,
+      lastVerified: new Date(),
+      lastAccessed: new Date(),
+      accessCount: 0,
+      priority: body.priority || 0,
+      cacheVersion: '1.0',
+    };
 
-    // Gerar sourceId único para partituras personalizadas
-    const sourceId = `${scoreSource.toLowerCase()}-${Date.now()}-${Math.random()
-      .toString(36)
-      .substr(2, 9)}`;
-
-    // Data atual no formato ISO
-    const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-    const userName = session.user.name || session.user.email || 'Usuário';
-
-    // Criar a partitura
+    // Criar partitura
     const score = await prisma.workScore.create({
-      data: {
-        workId,
-        sourceId,
-        source: scoreSource,
-        title,
-        downloadUrl,
-        fileSize: fileSize || null,
-        pageCount: pageCount || null,
-        fileFormat: fileFormat || 'PDF',
-        editor: editor || null,
-        publisher: publisher || null,
-        copyright: copyright || null,
-        thumbnailUrl: thumbnailUrl || null,
-        // 🆕 Campos específicos para partituras personalizadas
-        uploadDate: currentDate,
-        uploader: userName,
-        uploadedBy: session.user.id,
-        notes: notes || null,
-        type: type || 'SCORES',
-        groupIndex: groupIndex || 0,
-        groupTitle: groupTitle || null,
-        rating: rating || null,
-        ratingsCount: ratingsCount || null,
-        downloadCount: downloadCount || null,
-        isCustom: true, // 🆕 Sempre true para partituras personalizadas
-        customData,
-        // Estados de controle
-        isActive: true,
-        processingStatus: 'COMPLETED',
-        cacheVersion: '2.0-CUSTOM',
-        // 🆕 Qualidade baseada na completude dos dados
-        dataQuality: calculateDataQuality(
-          fileSize,
-          pageCount,
-          editor,
-          publisher
-        ),
-        verificationStatus: 'pending',
-        // 🆕 Metadados para identificação
-        lastVerified: new Date(),
-        // 🆕 Priority baseado na completude
-        priority: calculatePriority(fileSize, pageCount, editor, publisher),
-      },
+      data: scoreData,
       include: {
         work: {
           select: {
+            id: true,
             title: true,
-            composer: { select: { name: true, fullName: true } },
+            composer: {
+              select: {
+                name: true,
+                fullName: true,
+              },
+            },
           },
         },
       },
     });
 
-    // Invalidar cache do usuário
-    await revalidateUploadsCache(session.user.id);
+    // 🆕 Registrar no histórico
+    await logScoreCreate(
+      userId,
+      score.id,
+      {
+        title: score.title,
+        workTitle: score.work.title,
+        composerName: score.work.composer.fullName || score.work.composer.name,
+        fileFormat: score.fileFormat,
+        fileSize: score.fileSize,
+        pageCount: score.pageCount,
+        type: score.type,
+        source: score.source,
+        groupIndex: score.groupIndex,
+        groupTitle: score.groupTitle,
+        editor: score.editor,
+        publisher: score.publisher,
+        isCustom: score.isCustom,
+        uploadMethod: body.source === 'UPLOAD' ? 'file_upload' : 'url_link',
+      },
+      request
+    );
 
-    // 🆕 Log para debug
-    console.log(`✅ [CUSTOM-SCORE] Nova partitura personalizada criada:`, {
-      id: score.id,
-      title: score.title,
-      work: work.title,
-      source: scoreSource,
-      user: userName,
-    });
+    // Invalidar cache
+    await revalidateUploadsCache(userId);
 
     return NextResponse.json({
-      success: true,
+      message: 'Partitura criada com sucesso!',
       score,
-      message: `Partitura personalizada criada com sucesso`,
     });
   } catch (error) {
-    console.error('❌ [CUSTOM-SCORE] Erro ao criar partitura:', error);
+    console.error('Erro ao criar partitura:', error);
+
+    // Tratamento de erros específicos
+    if (error instanceof Error) {
+      if (error.message.includes('Duplicate')) {
+        return NextResponse.json(
+          { error: 'Já existe uma partitura com estes dados' },
+          { status: 400 }
+        );
+      }
+      if (error.message.includes('JSON')) {
+        return NextResponse.json(
+          { error: 'Dados customizados devem estar em formato JSON válido' },
+          { status: 400 }
+        );
+      }
+    }
+
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -164,38 +186,9 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 🆕 Função para calcular qualidade dos dados
-function calculateDataQuality(
-  fileSize?: string,
-  pageCount?: string,
-  editor?: string,
-  publisher?: string
-): 'high' | 'medium' | 'low' {
-  let score = 0;
-
-  if (fileSize) score += 1;
-  if (pageCount) score += 1;
-  if (editor) score += 1;
-  if (publisher) score += 1;
-
-  if (score >= 3) return 'high';
-  if (score >= 2) return 'medium';
-  return 'low';
-}
-
-// 🆕 Função para calcular prioridade
-function calculatePriority(
-  fileSize?: string,
-  pageCount?: string,
-  editor?: string,
-  publisher?: string
-): number {
-  let priority = 100; // Base priority
-
-  if (fileSize) priority += 50;
-  if (pageCount) priority += 30;
-  if (editor) priority += 20;
-  if (publisher) priority += 20;
-
-  return priority;
+// Função para gerar sourceId único
+function generateSourceId(source: string): string {
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substr(2, 9);
+  return `${source.toLowerCase()}_${timestamp}_${random}`;
 }

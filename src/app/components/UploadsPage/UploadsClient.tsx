@@ -44,7 +44,7 @@ import CreateWorkModal from './modals/CreateWorkModal';
 import CreateComposerModal from './modals/CreateComposerModal';
 import NotificationSystem from '../Notifications/NotificationSystem';
 
-// Importar as novas cards
+// Importar as novas cardapi/s
 import UploadComposerCard from './UploadComposerCard';
 import UploadWorkCard from './UploadWorkCard';
 import UploadScoreCard from './UploadScoreCard';
@@ -344,7 +344,6 @@ const UploadsClient = ({
   const handleEdit = (item: UserUpload) => {
     router.push(`/uploads/${item.type}/${item.id}/edit`);
   };
-
   const handleDelete = async (item: UserUpload) => {
     setDeletingItemId(item.id);
 
@@ -354,7 +353,55 @@ const UploadsClient = ({
       });
 
       if (response.ok) {
-        notifySuccess('Sucesso', 'Item excluído com sucesso');
+        const result = await response.json();
+
+        // Mostrar mensagem específica baseada no tipo e se houve exclusão em cascata
+        if (result.details) {
+          // Mensagem para compositor com exclusão em cascata
+          if (item.type === 'composer' && result.details.deletedWorks > 0) {
+            notifySuccess(
+              'Compositor Excluído',
+              `${result.details.composerName} foi excluído junto com ${result.details.deletedWorks} obra(s) e ${result.details.deletedScores} partitura(s).`
+            );
+          }
+          // Mensagem para obra com exclusão em cascata
+          else if (
+            item.type === 'work' &&
+            result.details.totalDeletedScores > 0
+          ) {
+            notifySuccess(
+              'Obra Excluída',
+              `${result.details.workTitle} foi excluída junto com ${
+                result.details.totalDeletedScores
+              } partitura(s)${
+                result.details.deletedChildWorks > 0
+                  ? ` e ${result.details.deletedChildWorks} obra(s) filha(s)`
+                  : ''
+              }.`
+            );
+          }
+          // Mensagem para partitura simples
+          else if (item.type === 'score') {
+            notifySuccess(
+              'Partitura Excluída',
+              `A partitura "${result.details.scoreTitle}" da obra "${result.details.workTitle}" foi excluída com sucesso.`
+            );
+          }
+          // Mensagem padrão se não houver cascata
+          else {
+            notifySuccess(
+              'Sucesso',
+              result.message || 'Item excluído com sucesso'
+            );
+          }
+        } else {
+          // Fallback para mensagem padrão
+          notifySuccess(
+            'Sucesso',
+            result.message || 'Item excluído com sucesso'
+          );
+        }
+
         router.refresh();
       } else {
         const error = await response.json();

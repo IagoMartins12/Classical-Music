@@ -349,6 +349,7 @@ const UploadComposerCard = ({
         onConfirm={handleDeleteConfirm}
         isLoading={isDeleting}
         itemTitle={item.title}
+        itemId={item.id} // ✅ Adicionar esta linha
         itemType="composer"
       />
     </div>

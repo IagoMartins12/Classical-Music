@@ -13,6 +13,7 @@ interface MultiSelectProps {
   maxDisplay?: number;
   isDisabled?: boolean;
   error?: string;
+  excludeValues?: string[]; // ✅ NOVO: Para excluir valores (ex: primaryRole)
 }
 
 export default function MultiSelect({
@@ -24,6 +25,7 @@ export default function MultiSelect({
   maxDisplay = 3,
   isDisabled = false,
   error,
+  excludeValues = [], // ✅ NOVO
 }: MultiSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,17 +34,25 @@ export default function MultiSelect({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Filtrar opções baseado no termo de busca
+  // ✅ Filtrar opções baseado no termo de busca E valores excluídos
   useEffect(() => {
+    let filtered = options;
+
+    // Excluir valores especificados (ex: primaryRole)
+    if (excludeValues.length > 0) {
+      filtered = filtered.filter((option) => !excludeValues.includes(option));
+    }
+
+    // Aplicar filtro de busca
     if (!searchTerm.trim()) {
-      setFilteredOptions(options);
+      setFilteredOptions(filtered);
     } else {
-      const filtered = options.filter((option) =>
+      const searchFiltered = filtered.filter((option) =>
         option.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredOptions(filtered);
+      setFilteredOptions(searchFiltered);
     }
-  }, [searchTerm, options]);
+  }, [searchTerm, options, excludeValues]);
 
   // Fechar dropdown ao clicar fora
   useEffect(() => {
@@ -73,21 +83,33 @@ export default function MultiSelect({
 
   const handleRemoveSelected = (option: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault(); // ✅ CORREÇÃO: Prevenir submissão do form
     onChange(selectedValues.filter((val) => val !== option));
   };
 
   const handleClearAll = (e: React.MouseEvent) => {
     e.stopPropagation();
+    e.preventDefault(); // ✅ CORREÇÃO: Prevenir submissão do form
     onChange([]);
   };
 
-  const handleToggleDropdown = () => {
+  const handleToggleDropdown = (e?: React.MouseEvent) => {
+    if (e) {
+      e.preventDefault(); // ✅ CORREÇÃO: Prevenir submissão do form
+      e.stopPropagation();
+    }
     if (!isDisabled) {
       setIsOpen(!isOpen);
       if (!isOpen) {
         setTimeout(() => inputRef.current?.focus(), 100);
       }
     }
+  };
+
+  const handleOptionClick = (option: string, e: React.MouseEvent) => {
+    e.preventDefault(); // ✅ CORREÇÃO: Prevenir submissão do form
+    e.stopPropagation();
+    handleToggleOption(option);
   };
 
   return (
@@ -124,6 +146,7 @@ export default function MultiSelect({
               >
                 {value}
                 <button
+                  type="button" // ✅ CORREÇÃO: Adicionar type="button"
                   onClick={(e) => handleRemoveSelected(value, e)}
                   className="hover:bg-brand-primary/20 rounded p-0.5 transition-colors"
                   disabled={isDisabled}
@@ -141,6 +164,7 @@ export default function MultiSelect({
                 >
                   {value}
                   <button
+                    type="button" // ✅ CORREÇÃO: Adicionar type="button"
                     onClick={(e) => handleRemoveSelected(value, e)}
                     className="hover:bg-brand-primary/20 rounded p-0.5 transition-colors"
                     disabled={isDisabled}
@@ -160,6 +184,7 @@ export default function MultiSelect({
         <div className="flex items-center gap-1">
           {selectedValues.length > 0 && (
             <button
+              type="button" // ✅ CORREÇÃO: Adicionar type="button"
               onClick={handleClearAll}
               className="p-1 hover:bg-theme-secondary/20 rounded transition-colors"
               disabled={isDisabled}
@@ -194,6 +219,12 @@ export default function MultiSelect({
                 placeholder="Buscar opções..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => {
+                  // ✅ CORREÇÃO: Prevenir submissão do form ao pressionar Enter
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                  }
+                }}
                 className="w-full pl-10 pr-4 py-2 bg-theme-primary border border-theme-secondary rounded-lg text-sm focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
               />
             </div>
@@ -203,9 +234,11 @@ export default function MultiSelect({
           <div className="max-h-48 overflow-y-auto">
             {filteredOptions.length === 0 ? (
               <div className="px-4 py-8 text-center">
-                <p className="text-sm  capitalizetext-theme-secondary">
+                <p className="text-sm capitalize text-theme-secondary">
                   {searchTerm
                     ? `Nenhuma opção encontrada para "${searchTerm}"`
+                    : excludeValues.length > 0
+                    ? 'Todas as opções disponíveis já foram selecionadas ou excluídas'
                     : 'Nenhuma opção disponível'}
                 </p>
               </div>
@@ -215,7 +248,8 @@ export default function MultiSelect({
                 return (
                   <button
                     key={option}
-                    onClick={() => handleToggleOption(option)}
+                    type="button" // ✅ CORREÇÃO: Adicionar type="button"
+                    onClick={(e) => handleOptionClick(option, e)}
                     className={`
                       w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 
                       flex items-center justify-between border-b last:border-b-0 border-theme-secondary/50

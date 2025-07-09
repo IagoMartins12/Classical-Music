@@ -1,4 +1,4 @@
-// app/components/HistoryClient.tsx
+// app/components/UploadsPage/HistoryClient.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -14,6 +14,12 @@ import {
   FiFilter,
   FiCalendar,
   FiActivity,
+  FiChevronDown,
+  FiChevronUp,
+  FiEye,
+  FiMapPin,
+  FiMonitor,
+  FiRefreshCw,
 } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -25,6 +31,25 @@ import {
   LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Select from '@/app/components/Common/Select';
+import { formatChangesForDisplay } from '@/app/utils/historyUtils';
+
+interface HistoryRecord {
+  id: string;
+  entityType: string;
+  entityId: string;
+  action: string;
+  changes: any;
+  reason?: string;
+  ipAddress?: string;
+  userAgent?: string;
+  createdAt: string;
+  user?: {
+    id: string;
+    firstName?: string;
+    lastName?: string;
+    email: string;
+  };
+}
 
 interface HistoryClientProps {
   page: number;
@@ -43,13 +68,15 @@ const HistoryClient = ({
 }: HistoryClientProps) => {
   const router = useRouter();
 
-  const [history, setHistory] = useState<any[]>([]);
+  const [history, setHistory] = useState<HistoryRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedType, setSelectedType] = useState(type);
   const [selectedAction, setSelectedAction] = useState(action);
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
+  const [stats, setStats] = useState<any>(null);
 
   const typeOptions = [
     { value: 'all', label: 'Todos os tipos' },
@@ -67,6 +94,7 @@ const HistoryClient = ({
 
   useEffect(() => {
     fetchHistory();
+    fetchStats();
   }, [page, type, action, userId]);
 
   const fetchHistory = async () => {
@@ -93,6 +121,20 @@ const HistoryClient = ({
     }
   };
 
+  const fetchStats = async () => {
+    try {
+      const response = await fetch(
+        `/api/uploads/history/stats?userId=${userId}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setStats(data);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar estatísticas:', error);
+    }
+  };
+
   const updateFilters = () => {
     const params = new URLSearchParams();
     if (selectedType !== 'all') params.set('type', selectedType);
@@ -106,6 +148,16 @@ const HistoryClient = ({
     setSelectedType('all');
     setSelectedAction('all');
     router.push('/uploads/history');
+  };
+
+  const toggleExpanded = (id: string) => {
+    const newExpanded = new Set(expandedItems);
+    if (newExpanded.has(id)) {
+      newExpanded.delete(id);
+    } else {
+      newExpanded.add(id);
+    }
+    setExpandedItems(newExpanded);
   };
 
   const getEntityIcon = (entityType: string) => {
@@ -124,11 +176,11 @@ const HistoryClient = ({
   const getActionIcon = (action: string) => {
     switch (action) {
       case 'create':
-        return <FiPlus className="w-4 h-4 text-accent-green" />;
+        return <FiPlus className="w-4 h-4 text-green-600" />;
       case 'update':
-        return <FiEdit className="w-4 h-4 text-accent-blue" />;
+        return <FiEdit className="w-4 h-4 text-blue-600" />;
       case 'delete':
-        return <FiTrash2 className="w-4 h-4 text-accent-red" />;
+        return <FiTrash2 className="w-4 h-4 text-red-600" />;
       default:
         return <FiActivity className="w-4 h-4 text-theme-tertiary" />;
     }
@@ -163,40 +215,182 @@ const HistoryClient = ({
   const getActionColor = (action: string) => {
     switch (action) {
       case 'create':
-        return 'bg-accent-green/10 text-accent-green';
+        return 'bg-green-50 text-green-700 border-green-200';
       case 'update':
-        return 'bg-accent-blue/10 text-accent-blue';
+        return 'bg-blue-50 text-blue-700 border-blue-200';
       case 'delete':
-        return 'bg-accent-red/10 text-accent-red';
+        return 'bg-red-50 text-red-700 border-red-200';
       default:
-        return 'bg-theme-secondary text-theme-tertiary';
+        return 'bg-theme-secondary text-theme-tertiary border-theme-tertiary/30';
     }
   };
 
-  const formatChanges = (changes: any) => {
+  const getTimelineDotColor = (action: string) => {
+    switch (action) {
+      case 'create':
+        return 'from-green-400 to-green-600';
+      case 'update':
+        return 'from-blue-400 to-blue-600';
+      case 'delete':
+        return 'from-red-400 to-red-600';
+      default:
+        return 'from-accent-blue to-accent-purple';
+    }
+  };
+
+  const getCardBorderColor = (action: string) => {
+    switch (action) {
+      case 'create':
+        return 'border-l-4 border-l-green-500';
+      case 'update':
+        return 'border-l-4 border-l-blue-500';
+      case 'delete':
+        return 'border-l-4 border-l-red-500';
+      default:
+        return 'border-l-4 border-l-gray-300';
+    }
+  };
+
+  const formatChanges = (changes: any, action: string) => {
     if (!changes || typeof changes !== 'object') return null;
-    const changesList = Object.entries(changes)
-      .filter(([, value]) => value !== undefined && value !== null)
-      .slice(0, 3);
 
-    if (changesList.length === 0) return null;
+    if (action === 'create' && changes.created) {
+      return (
+        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+          <h5 className="text-sm font-medium text-green-700 mb-2 flex items-center">
+            <FiPlus className="w-4 h-4 mr-1" />
+            Item criado com:
+          </h5>
+          <div className="space-y-1">
+            {Object.entries(changes.created)
+              .slice(0, 5)
+              .map(([key, value]) => (
+                <div key={key} className="text-xs text-green-600">
+                  <span className="font-medium">{formatFieldName(key)}:</span>{' '}
+                  {formatValue(value)}
+                </div>
+              ))}
+          </div>
+        </div>
+      );
+    }
 
-    return (
-      <div className="mt-2 space-y-1">
-        {changesList.map(([key, value]) => (
-          <div key={key} className="text-xs text-theme-tertiary">
-            <span className="font-medium">{key}:</span>{' '}
-            {String(value).substring(0, 50)}
-            {String(value).length > 50 && '...'}
+    if (action === 'delete' && changes.deleted) {
+      return (
+        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <h5 className="text-sm font-medium text-red-700 mb-2 flex items-center">
+            <FiTrash2 className="w-4 h-4 mr-1" />
+            Item excluído:
+          </h5>
+          <div className="space-y-1">
+            {Object.entries(changes.deleted)
+              .slice(0, 5)
+              .map(([key, value]) => (
+                <div key={key} className="text-xs text-red-600">
+                  <span className="font-medium">{formatFieldName(key)}:</span>{' '}
+                  {formatValue(value)}
+                </div>
+              ))}
           </div>
-        ))}
-        {Object.keys(changes).length > 3 && (
-          <div className="text-xs text-theme-tertiary">
-            +{Object.keys(changes).length - 3} alterações
+        </div>
+      );
+    }
+
+    if (action === 'update') {
+      const changesList = Object.entries(changes).filter(
+        ([, change]) =>
+          typeof change === 'object' &&
+          change !== null &&
+          'from' in change &&
+          'to' in change
+      );
+
+      if (changesList.length === 0) return null;
+
+      return (
+        <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <h5 className="text-sm font-medium text-blue-700 mb-2 flex items-center">
+            <FiEdit className="w-4 h-4 mr-1" />
+            Alterações:
+          </h5>
+          <div className="space-y-2">
+            {changesList.slice(0, 5).map(([key, change]: [string, any]) => (
+              <div key={key} className="text-xs">
+                <div className="font-medium text-blue-700 mb-1">
+                  {formatFieldName(key)}:
+                </div>
+                <div className="pl-2 border-l-2 border-blue-300">
+                  <div className="text-red-600 flex items-center">
+                    <span className="w-8 text-xs">De:</span>
+                    <span>{formatValue(change.from)}</span>
+                  </div>
+                  <div className="text-green-600 flex items-center">
+                    <span className="w-8 text-xs">Para:</span>
+                    <span>{formatValue(change.to)}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {changesList.length > 5 && (
+              <div className="text-xs text-blue-600">
+                +{changesList.length - 5} alterações adicionais
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    );
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const formatFieldName = (field: string): string => {
+    const fieldMap: Record<string, string> = {
+      title: 'Título',
+      name: 'Nome',
+      fullName: 'Nome Completo',
+      bio: 'Biografia',
+      portraitUrl: 'Foto',
+      birthDate: 'Data de Nascimento',
+      deathDate: 'Data de Morte',
+      nationality: 'Nacionalidade',
+      epochName: 'Época',
+      instrumentName: 'Instrumento',
+      composerName: 'Compositor',
+      opOrCatalog: 'Op./Catálogo',
+      compositionYear: 'Ano de Composição',
+      tone: 'Tonalidade',
+      workStyle: 'Estilo',
+      categoryNames: 'Categorias',
+      workGenresArr: 'Gêneros',
+      fileSize: 'Tamanho do Arquivo',
+      pageCount: 'Número de Páginas',
+      downloadUrl: 'URL de Download',
+      fileFormat: 'Formato',
+      type: 'Tipo',
+      notes: 'Notas',
+      editor: 'Editor',
+      publisher: 'Editora',
+      copyright: 'Copyright',
+    };
+
+    return fieldMap[field] || field.charAt(0).toUpperCase() + field.slice(1);
+  };
+
+  const formatValue = (value: any): string => {
+    if (value === null || value === undefined) {
+      return 'vazio';
+    }
+
+    if (Array.isArray(value)) {
+      return value.length > 0 ? value.join(', ') : 'vazio';
+    }
+
+    if (typeof value === 'string' && value.length > 50) {
+      return value.substring(0, 47) + '...';
+    }
+
+    return String(value);
   };
 
   if (loading) {
@@ -229,6 +423,47 @@ const HistoryClient = ({
           </div>
         </AnimatedItem>
 
+        {/* Stats Cards */}
+        {/* {stats && (
+          <AnimatedItem direction="up" springType="gentle">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <AnimatedCard className="classical-card p-6 text-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <FiActivity className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary">
+                  {stats.totalActions}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  Total de Ações
+                </div>
+              </AnimatedCard>
+
+              <AnimatedCard className="classical-card p-6 text-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <FiCalendar className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary">
+                  {stats.actionsToday}
+                </div>
+                <div className="text-sm text-theme-tertiary">Hoje</div>
+              </AnimatedCard>
+
+              <AnimatedCard className="classical-card p-6 text-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-amber rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <FiRefreshCw className="w-6 h-6 text-theme-primary" />
+                </div>
+                <div className="text-2xl font-bold text-theme-primary">
+                  {stats.recentActions?.length || 0}
+                </div>
+                <div className="text-sm text-theme-tertiary">
+                  Ações Recentes
+                </div>
+              </AnimatedCard>
+            </div>
+          </AnimatedItem>
+        )} */}
+
         {/* Filters */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard className="classical-card p-6 mb-8">
@@ -249,6 +484,11 @@ const HistoryClient = ({
                 >
                   <FiFilter className="w-4 h-4" />
                   <span>Filtros</span>
+                  {showFilters ? (
+                    <FiChevronUp className="w-4 h-4" />
+                  ) : (
+                    <FiChevronDown className="w-4 h-4" />
+                  )}
                 </button>
               </div>
 
@@ -329,15 +569,23 @@ const HistoryClient = ({
                     }}
                   >
                     <div className="relative flex items-start space-x-4 pb-6">
-                      {/* Timeline Dot */}
-                      <div className="relative z-10 w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center shadow-theme-glow">
+                      {/* Timeline Dot with Action-specific Colors */}
+                      <div
+                        className={`relative z-10 w-12 h-12 bg-gradient-to-br ${getTimelineDotColor(
+                          record.action
+                        )} rounded-full flex items-center justify-center shadow-lg`}
+                      >
                         {getEntityIcon(record.entityType)}
                       </div>
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <AnimatedCard className="classical-card-2 p-4">
-                          <div className="flex items-start justify-between mb-2">
+                        <AnimatedCard
+                          className={`classical-card-2 p-4 ${getCardBorderColor(
+                            record.action
+                          )}`}
+                        >
+                          <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center space-x-2">
                               {getActionIcon(record.action)}
                               <span className="text-sm font-medium text-theme-primary">
@@ -345,7 +593,7 @@ const HistoryClient = ({
                                 {getEntityLabel(record.entityType)}
                               </span>
                               <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium ${getActionColor(
+                                className={`px-2 py-1 rounded-full text-xs font-medium border ${getActionColor(
                                   record.action
                                 )}`}
                               >
@@ -354,17 +602,32 @@ const HistoryClient = ({
                               </span>
                             </div>
 
-                            <div className="flex items-center space-x-2 text-xs text-theme-tertiary">
-                              <FiCalendar className="w-3 h-3" />
-                              <span>
-                                {formatDistanceToNow(
-                                  new Date(record.createdAt),
-                                  {
-                                    addSuffix: true,
-                                    locale: ptBR,
-                                  }
-                                )}
-                              </span>
+                            <div className="flex items-center space-x-2">
+                              <div className="flex items-center space-x-2 text-xs text-theme-tertiary">
+                                <FiCalendar className="w-3 h-3" />
+                                <span>
+                                  {formatDistanceToNow(
+                                    new Date(record.createdAt),
+                                    {
+                                      addSuffix: true,
+                                      locale: ptBR,
+                                    }
+                                  )}
+                                </span>
+                              </div>
+
+                              {record.changes && (
+                                <button
+                                  onClick={() => toggleExpanded(record.id)}
+                                  className="w-6 h-6 rounded-full bg-theme-secondary hover:bg-theme-tertiary text-theme-tertiary hover:text-theme-primary transition-colors flex items-center justify-center"
+                                >
+                                  {expandedItems.has(record.id) ? (
+                                    <FiChevronUp className="w-3 h-3" />
+                                  ) : (
+                                    <FiEye className="w-3 h-3" />
+                                  )}
+                                </button>
+                              )}
                             </div>
                           </div>
 
@@ -388,16 +651,44 @@ const HistoryClient = ({
                               </div>
                             )}
 
-                            {record.ipAddress && isAdmin && (
-                              <div className="text-sm text-theme-tertiary">
-                                <span className="font-medium">IP:</span>{' '}
-                                {record.ipAddress}
+                            {/* Basic changes summary */}
+                            {record.changes &&
+                              !expandedItems.has(record.id) && (
+                                <div className="text-xs text-theme-tertiary">
+                                  {formatChangesForDisplay(record.changes)}
+                                </div>
+                              )}
+
+                            {/* Technical details for admins */}
+                            {isAdmin && expandedItems.has(record.id) && (
+                              <div className="mt-3 pt-3 border-t border-theme-secondary">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-theme-tertiary">
+                                  {record.ipAddress && (
+                                    <div className="flex items-center space-x-2">
+                                      <FiMapPin className="w-3 h-3" />
+                                      <span>IP: {record.ipAddress}</span>
+                                    </div>
+                                  )}
+
+                                  {record.userAgent && (
+                                    <div className="flex items-center space-x-2">
+                                      <FiMonitor className="w-3 h-3" />
+                                      <span title={record.userAgent}>
+                                        {record.userAgent.length > 30
+                                          ? record.userAgent.substring(0, 30) +
+                                            '...'
+                                          : record.userAgent}
+                                      </span>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             )}
                           </div>
 
-                          {/* Changes Details */}
-                          {formatChanges(record.changes)}
+                          {/* Detailed Changes */}
+                          {expandedItems.has(record.id) &&
+                            formatChanges(record.changes, record.action)}
                         </AnimatedCard>
                       </div>
                     </div>
@@ -423,7 +714,7 @@ const HistoryClient = ({
                       if (action !== 'all') params.set('action', action);
                       router.push(`/uploads/history?${params.toString()}`);
                     }}
-                    className={`px-4 py-2 rounded-lg ${
+                    className={`px-4 py-2 rounded-lg transition-colors ${
                       page === i + 1
                         ? 'bg-brand-primary text-theme-primary'
                         : 'bg-theme-secondary text-theme-tertiary hover:bg-theme-tertiary'
