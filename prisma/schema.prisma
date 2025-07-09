@@ -645,22 +645,33 @@ model Work {
   helpfulAnnotationsCount Int @default(0)
   lastAnnotationAt        DateTime?
 
-  // 🆕 Relações com sistema de cache incremental
+  // Relações com sistema de cache incremental
   cachedScores       WorkScore[]
   processingLogs     ScoreProcessingLog[]
 
-  @@index([title])
-  @@index([composerId])
+  // 🆕 ÍNDICES OTIMIZADOS PARA BUSCA DE OBRAS - SUBSTITUA OS ÍNDICES EXISTENTES
+  @@index([title]) // Busca simples por título
+  @@index([opOrCatalog]) // Busca por catálogo/opus
+  @@index([composerId]) // Join com compositor
   @@index([imslpId])
-  @@index([title, composerId])
+  
+  // 🆕 ÍNDICES COMPOSTOS PARA BUSCA OTIMIZADA
+  @@index([title, composerId]) // Busca por título + compositor
+  @@index([composerId, title]) // Ordem reversa para diferentes queries
+  @@index([opOrCatalog, composerId]) // Busca por opus + compositor
+  
+  // 🆕 ÍNDICES PARA ORDENAÇÃO E FILTROS
+  @@index([title, createdAt]) // Ordenação por título e data
+  @@index([composerId, createdAt]) // Obras recentes de um compositor
   @@index([workType])
   @@index([parentWorkId])
   @@index([isPartOfCollection])
+  
+  // Índices existentes mantidos (não remover)
   @@index([composerId, instrumentId])
   @@index([composerId, epochId])
   @@index([instrumentId, epochId])
   @@index([composerId, instrumentId, epochId])
-  @@index([opOrCatalog, composerId])
   @@index([categoryNames])
   @@index([workGenresArr])
   @@index([createdBy])

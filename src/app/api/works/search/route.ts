@@ -1,6 +1,189 @@
-// app/api/works/search/route.ts - API PARA BUSCA DE OBRAS
+// app/api/works/search/route.ts - VERSÃO OTIMIZADA E CORRIGIDA
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
+import { unstable_cache } from 'next/cache';
+
+// Cache para termos de busca comuns (5 minutos)
+const getCachedWorksSearch = unstable_cache(
+  async (query: string, limit: number) => {
+    console.log('🔍 Executando busca não-cacheada:', { query, limit });
+
+    // Para queries curtas, usar busca direta
+    if (query.length < 3) {
+      return {
+        works: [],
+        total: 0,
+      };
+    }
+
+    try {
+      // 🆕 OTIMIZAÇÃO 1: Query mais eficiente usando regex string para MongoDB
+      const searchPattern = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      // 🆕 OTIMIZAÇÃO 2: Pipeline de agregação otimizado com tipos corretos
+      const result = await prisma.work.aggregateRaw({
+        pipeline: [
+          // Match stage - mais eficiente que where do Prisma
+          {
+            $match: {
+              $or: [
+                { title: { $regex: searchPattern, $options: 'i' } },
+                { opOrCatalog: { $regex: searchPattern, $options: 'i' } },
+              ],
+            },
+          },
+          // Lookup para compositor (mais eficiente que join do Prisma)
+          {
+            $lookup: {
+              from: 'Composer',
+              localField: 'composerId',
+              foreignField: '_id',
+              as: 'composer',
+              pipeline: [
+                {
+                  $project: {
+                    name: 1,
+                    fullName: 1,
+                  },
+                },
+              ],
+            },
+          },
+          // Unwind para simplificar o composer
+          {
+            $unwind: '$composer',
+          },
+          // Match adicional para buscar no nome do compositor
+          {
+            $match: {
+              $or: [
+                { title: { $regex: searchPattern, $options: 'i' } },
+                { opOrCatalog: { $regex: searchPattern, $options: 'i' } },
+                { 'composer.name': { $regex: searchPattern, $options: 'i' } },
+                {
+                  'composer.fullName': { $regex: searchPattern, $options: 'i' },
+                },
+              ],
+            },
+          },
+          // Project para selecionar apenas campos necessários
+          {
+            $project: {
+              _id: 1,
+              title: 1,
+              opOrCatalog: 1,
+              composer: 1,
+              createdAt: 1,
+            },
+          },
+          // Sort - mais simples, apenas por título
+          {
+            $sort: {
+              title: 1,
+            },
+          },
+          // Limit
+          {
+            $limit: limit,
+          },
+        ],
+      });
+
+      // Converter resultado com cast correto
+      const works = Array.isArray(result) ? result : [];
+
+      // Converter ObjectId para string
+      const formattedWorks = works.map((work: any) => ({
+        id: work._id.toString(),
+        title: work.title,
+        opOrCatalog: work.opOrCatalog || null,
+        composer: work.composer,
+        annotationsCount: 0, // Removido para performance - pode ser adicionado depois se necessário
+      }));
+
+      console.log('✅ Obras encontradas (otimizado):', formattedWorks.length);
+
+      return {
+        works: formattedWorks,
+        total: formattedWorks.length,
+      };
+    } catch (error) {
+      console.error(
+        '❌ Erro na busca agregada, fallback para busca simples:',
+        error
+      );
+
+      // 🆕 FALLBACK: Busca simples se a agregação falhar
+      const works = await prisma.work.findMany({
+        where: {
+          OR: [
+            {
+              title: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              opOrCatalog: {
+                contains: query,
+                mode: 'insensitive',
+              },
+            },
+            {
+              composer: {
+                OR: [
+                  {
+                    name: {
+                      contains: query,
+                      mode: 'insensitive',
+                    },
+                  },
+                  {
+                    fullName: {
+                      contains: query,
+                      mode: 'insensitive',
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+        select: {
+          id: true,
+          title: true,
+          opOrCatalog: true,
+          composer: {
+            select: {
+              name: true,
+              fullName: true,
+            },
+          },
+        },
+        orderBy: {
+          title: 'asc', // Ordenação mais simples
+        },
+        take: limit,
+      });
+
+      return {
+        works: works.map((work) => ({
+          id: work.id,
+          title: work.title,
+          opOrCatalog: work.opOrCatalog,
+          composer: work.composer,
+          annotationsCount: 0,
+        })),
+        total: works.length,
+      };
+    }
+  },
+  ['works-search'],
+  {
+    revalidate: 300, // 5 minutos
+    tags: ['works-search'],
+  }
+);
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,89 +198,12 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    console.log('🔍 Buscando obras:', { query, limit });
+    // 🆕 CACHE INTELIGENTE: Para queries comuns, usar cache
+    const result = await getCachedWorksSearch(query, limit);
 
-    // Buscar obras que correspondem ao termo
-    const works = await prisma.work.findMany({
-      where: {
-        OR: [
-          {
-            title: {
-              contains: query,
-              mode: 'insensitive',
-            },
-          },
-          {
-            composer: {
-              OR: [
-                {
-                  name: {
-                    contains: query,
-                    mode: 'insensitive',
-                  },
-                },
-                {
-                  fullName: {
-                    contains: query,
-                    mode: 'insensitive',
-                  },
-                },
-              ],
-            },
-          },
-          {
-            opOrCatalog: {
-              contains: query,
-              mode: 'insensitive',
-            },
-          },
-        ],
-      },
-      select: {
-        id: true,
-        title: true,
-        opOrCatalog: true,
-        composer: {
-          select: {
-            name: true,
-            fullName: true,
-          },
-        },
-        _count: {
-          select: {
-            workAnnotations: true,
-          },
-        },
-      },
-      orderBy: [
-        // Priorizar obras com mais anotações
-        {
-          workAnnotations: {
-            _count: 'desc',
-          },
-        },
-        // Depois por título
-        {
-          title: 'asc',
-        },
-      ],
-      take: limit,
-    });
-
-    console.log('✅ Obras encontradas:', works.length);
-
-    return NextResponse.json({
-      works: works.map((work) => ({
-        id: work.id,
-        title: work.title,
-        opOrCatalog: work.opOrCatalog,
-        composer: work.composer,
-        annotationsCount: work._count.workAnnotations,
-      })),
-      total: works.length,
-    });
+    return NextResponse.json(result);
   } catch (error) {
-    console.error('Erro ao buscar obras:', error);
+    console.error('❌ Erro geral na API de busca:', error);
     return NextResponse.json(
       {
         error: 'Erro interno do servidor',
@@ -107,4 +213,11 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+// 🆕 FUNÇÃO PARA INVALIDAR CACHE
+export async function invalidateWorksSearchCache() {
+  const { revalidateTag } = await import('next/cache');
+  revalidateTag('works-search');
+  console.log('🔄 Cache de busca de obras invalidado');
 }

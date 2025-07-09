@@ -1,7 +1,7 @@
 // app/components/UploadsPage/modals/CreateScoreModal/index.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
@@ -28,6 +28,7 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 import WorkSearchInput from '@/app/components/WorkSearchInput';
+import { useFormValidation } from '@/app/utils/formUtils';
 import {
   validateAndExtractPDFInfo,
   validateUploadedFile,
@@ -79,6 +80,14 @@ const CreateScoreModal = ({
   const [uploadingFile, setUploadingFile] = useState(false);
   const [validatingPDF, setValidatingPDF] = useState(false);
 
+  // 🆕 REFS PARA SCROLL DE VALIDAÇÃO
+  const fieldRefs = {
+    workId: useRef<HTMLDivElement>(null),
+    title: useRef<HTMLInputElement>(null),
+    downloadUrl: useRef<HTMLInputElement>(null),
+    uploadMode: useRef<HTMLDivElement>(null),
+  };
+
   // Estados para modo de upload
   const [uploadMode, setUploadMode] = useState<UploadMode>('file');
 
@@ -120,11 +129,41 @@ const CreateScoreModal = ({
   );
   const [generatingThumbnail, setGeneratingThumbnail] = useState(false);
 
+  // 🆕 ESTADO PARA DADOS DA OBRA (quando editando)
+  const [workData, setWorkData] = useState<{
+    id: string;
+    title: string;
+    composer: { name: string; fullName: string };
+  } | null>(null);
+
+  // 🆕 CONFIGURAÇÃO DE VALIDAÇÃO
+  const requiredFields = ['workId', 'title', 'downloadUrl'];
+  const customValidations = {
+    uploadMode: (value: any) => {
+      if (!editingScore && !uploadMode) {
+        return 'Escolha entre URL ou upload de arquivo';
+      }
+      return null;
+    },
+  };
+
+  const { validateForm } = useFormValidation(
+    fieldRefs,
+    requiredFields,
+    customValidations
+  );
+
   // Populate form when editing
   useEffect(() => {
     if (editingScore) {
+      // 🆕 BUSCAR DADOS DA OBRA
+      const work = works.find((w) => w.id === editingScore.workId);
+      if (work) {
+        setWorkData(work);
+      }
+
       setFormData({
-        workId: editingScore.workId || '',
+        workId: editingScore.workId || '', // 🆕 SETAR workId
         title: editingScore.title || '',
         downloadUrl: editingScore.downloadUrl || '',
         fileSize: editingScore.fileSize || '',
@@ -157,7 +196,7 @@ const CreateScoreModal = ({
         }
       }
     }
-  }, [editingScore]);
+  }, [editingScore, works]);
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -190,6 +229,11 @@ const CreateScoreModal = ({
       resetUploadMode();
     }
     setUploadMode(mode);
+
+    // Limpar erro de uploadMode quando selecionado
+    if (errors.uploadMode) {
+      setErrors((prev) => ({ ...prev, uploadMode: '' }));
+    }
   };
 
   // Validar PDF quando URL for inserida
@@ -239,7 +283,6 @@ const CreateScoreModal = ({
     setUploadingFile(true);
 
     try {
-      // Validar arquivo primeiro
       const validation = await validateUploadedFile(file);
 
       if (!validation.isValid) {
@@ -247,7 +290,6 @@ const CreateScoreModal = ({
         return;
       }
 
-      // 1. Fazer upload do arquivo principal
       console.log('📤 Iniciando upload do arquivo principal...');
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
@@ -265,18 +307,14 @@ const CreateScoreModal = ({
       const data = await response.json();
       console.log('✅ Arquivo principal enviado:', data.url);
 
-      // Salvar caminho do arquivo principal
       setUploadedFilePath(data.url);
 
-      // 2. Gerar e fazer upload do thumbnail se for PDF
       let thumbnailUrl = null;
       if (file.type === 'application/pdf') {
         setGeneratingThumbnail(true);
 
         try {
           console.log('🖼️ Iniciando geração de thumbnail...');
-
-          // Usar nova função que gera E faz upload do thumbnail
           const thumbnailResult = await generateAndUploadPDFThumbnail(file);
 
           if (thumbnailResult.success && thumbnailResult.thumbnailUrl) {
@@ -288,17 +326,14 @@ const CreateScoreModal = ({
               '⚠️ Não foi possível gerar thumbnail:',
               thumbnailResult.error
             );
-            // Não é um erro crítico, continuar sem thumbnail
           }
         } catch (error) {
           console.warn('⚠️ Erro ao gerar thumbnail:', error);
-          // Não é um erro crítico, continuar sem thumbnail
         } finally {
           setGeneratingThumbnail(false);
         }
       }
 
-      // 3. Atualizar form com dados do arquivo
       setFormData((prev) => ({
         ...prev,
         downloadUrl: data.url,
@@ -332,39 +367,24 @@ const CreateScoreModal = ({
     }
   };
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.workId) {
-      newErrors.workId = 'Obra é obrigatória';
-    }
-    if (!formData.title.trim()) {
-      newErrors.title = 'Título é obrigatório';
-    }
-    if (!formData.downloadUrl.trim()) {
-      newErrors.downloadUrl = 'URL do arquivo ou upload é obrigatório';
-    }
-
-    // Só validar uploadMode se não estiver editando
-    if (!editingScore && !uploadMode) {
-      newErrors.uploadMode = 'Escolha entre URL ou upload de arquivo';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  // 🆕 VALIDAÇÃO MELHORADA COM SCROLL
+  const handleValidation = () => {
+    const { isValid, errors: validationErrors } = validateForm(formData);
+    setErrors(validationErrors);
+    return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {
+    // 🆕 USAR VALIDAÇÃO COM SCROLL
+    if (!handleValidation()) {
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      // Convert string numbers back to numbers
       const submitData = {
         ...formData,
         groupIndex: formData.groupIndex ? parseInt(formData.groupIndex) : 0,
@@ -465,7 +485,7 @@ const CreateScoreModal = ({
                     <span>Modo de Upload</span>
                   </h3>
 
-                  <div className="space-y-4">
+                  <div className="space-y-4" ref={fieldRefs.uploadMode}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* URL Option */}
                       <button
@@ -526,9 +546,11 @@ const CreateScoreModal = ({
                       </button>
                     </div>
 
+                    {/* 🆕 MENSAGEM DE ERRO PARA uploadMode */}
                     {errors.uploadMode && (
-                      <p className="text-red-500 text-sm">
-                        {errors.uploadMode}
+                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1">
+                        <FiAlertCircle className="w-4 h-4" />
+                        <span>Campo obrigatório: {errors.uploadMode}</span>
                       </p>
                     )}
                   </div>
@@ -578,7 +600,6 @@ const CreateScoreModal = ({
                         )}
                       </div>
 
-                      {/* Mostrar thumbnail se disponível */}
                       {editingScore.thumbnailUrl && (
                         <div className="mt-4 pt-4 border-t border-theme-primary/20">
                           <p className="text-sm font-medium text-theme-tertiary mb-2">
@@ -626,6 +647,7 @@ const CreateScoreModal = ({
                   <div className="space-y-4">
                     <Input
                       label="URL do Arquivo *"
+                      ref={fieldRefs.downloadUrl}
                       value={formData.downloadUrl}
                       onChange={(e) => handleUrlChange(e.target.value)}
                       placeholder="https://exemplo.com/partitura.pdf"
@@ -633,7 +655,6 @@ const CreateScoreModal = ({
                       error={errors.downloadUrl}
                     />
 
-                    {/* Indicador de validação de PDF */}
                     {validatingPDF && (
                       <div className="flex items-center space-x-2 text-sm text-brand-primary">
                         <FiLoader className="w-4 h-4 animate-spin" />
@@ -711,7 +732,6 @@ const CreateScoreModal = ({
                             </span>
                           </div>
 
-                          {/* Mostrar thumbnail se foi gerado */}
                           {generatedThumbnail && (
                             <div className="mt-4 text-center">
                               <p className="text-sm text-theme-tertiary mb-2">
@@ -729,7 +749,6 @@ const CreateScoreModal = ({
                             </div>
                           )}
 
-                          {/* Indicador de geração de thumbnail */}
                           {generatingThumbnail && (
                             <div className="mt-4 text-center">
                               <div className="flex items-center justify-center space-x-2 text-sm text-brand-primary">
@@ -753,7 +772,6 @@ const CreateScoreModal = ({
                       )}
                     </div>
 
-                    {/* Resetar upload */}
                     {selectedFile && (
                       <button
                         type="button"
@@ -786,28 +804,53 @@ const CreateScoreModal = ({
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-2" ref={fieldRefs.workId}>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
                       Obra *
                     </label>
-                    <WorkSearchInput
-                      selectedWork={formData.workId}
-                      onWorkSelect={handleWorkSelect}
-                      popularWorks={works.map((work) => ({
-                        id: work.id,
-                        title: work.title,
-                        composer: work.composer,
-                      }))}
-                    />
+
+                    {/* 🆕 CONDICIONAL PARA EDIÇÃO - CAMPO DESABILITADO */}
+                    {editingScore && workData ? (
+                      <div className="w-full p-3 bg-theme-secondary/20 border border-theme-secondary rounded-lg text-theme-primary">
+                        <div className="flex items-center space-x-2">
+                          <FiInfo className="w-4 h-4 text-theme-tertiary" />
+                          <span className="font-medium">{workData.title}</span>
+                          <span className="text-theme-tertiary">
+                            por{' '}
+                            {workData.composer.fullName ||
+                              workData.composer.name}
+                          </span>
+                        </div>
+                        <p className="text-xs text-theme-tertiary mt-1">
+                          A obra não pode ser alterada durante a edição
+                        </p>
+                      </div>
+                    ) : (
+                      <WorkSearchInput
+                        selectedWork={formData.workId}
+                        onWorkSelect={handleWorkSelect}
+                        popularWorks={works.map((work) => ({
+                          id: work.id,
+                          title: work.title,
+                          composer: work.composer,
+                        }))}
+                      />
+                    )}
+
+                    {/* 🆕 MENSAGEM DE ERRO */}
                     {errors.workId && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.workId}
+                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+                        <FiAlertCircle className="w-4 h-4" />
+                        <span>
+                          Campo obrigatório: Obra deve ser selecionada
+                        </span>
                       </p>
                     )}
                   </div>
 
                   <Input
                     label="Título *"
+                    ref={fieldRefs.title}
                     value={formData.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
                     error={errors.title}
@@ -841,7 +884,6 @@ const CreateScoreModal = ({
                     />
                   </div>
 
-                  {/* Campos automáticos */}
                   <Input
                     label="Tamanho do Arquivo"
                     value={formData.fileSize}

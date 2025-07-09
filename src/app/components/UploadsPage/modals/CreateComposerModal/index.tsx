@@ -1,4 +1,4 @@
-// CreateComposerModal.tsx - CORRIGIDO
+// CreateComposerModal.tsx - CORRIGIDO COM SCROLL SUAVE
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -30,7 +30,10 @@ import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 import ComposerImageUpload from '../ComposerImageUpload';
 import NationalitySelect from '@/app/components/NationalitySelect';
-import { useFormValidation } from '@/app/utils/formUtils';
+import {
+  useFormValidation,
+  composerModalValidations,
+} from '@/app/utils/formUtils';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -88,7 +91,7 @@ const CreateComposerModal = ({
     found: false,
   });
 
-  // Refs para scroll automático
+  // 🆕 REFS PARA SCROLL AUTOMÁTICO
   const fieldRefs = {
     name: useRef<HTMLInputElement>(null),
     fullName: useRef<HTMLInputElement>(null),
@@ -96,9 +99,8 @@ const CreateComposerModal = ({
     primaryRoleId: useRef<HTMLSelectElement>(null),
     birthDate: useRef<HTMLInputElement>(null),
     deathDate: useRef<HTMLInputElement>(null),
+    nationality: useRef<HTMLDivElement>(null),
   };
-
-  const nationalityRef = useRef<HTMLDivElement>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -125,6 +127,16 @@ const CreateComposerModal = ({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // 🆕 CONFIGURAR VALIDAÇÃO DE FORMULÁRIO
+  const requiredFields = ['name', 'fullName', 'epochId', 'primaryRoleId'];
+  const customValidations = composerModalValidations;
+
+  const { validateForm } = useFormValidation(
+    fieldRefs,
+    requiredFields,
+    customValidations
+  );
 
   // Populate form when editing
   useEffect(() => {
@@ -448,36 +460,7 @@ const CreateComposerModal = ({
     }));
   };
 
-  // Configurar validação de formulário
-  const requiredFields = ['name', 'fullName', 'epochId', 'primaryRoleId'];
-  const customValidations = {
-    birthDate: (value: string) => {
-      if (value && !isValidHTMLDate(value)) {
-        return 'Data inválida';
-      }
-      return null;
-    },
-    deathDate: (value: string) => {
-      if (value && !isValidHTMLDate(value)) {
-        return 'Data inválida';
-      }
-      return null;
-    },
-  };
-
-  // Validar formato de data HTML5
-  const isValidHTMLDate = (dateString: string): boolean => {
-    if (!dateString) return true;
-    return /^\d{4}-\d{2}-\d{2}$/.test(dateString);
-  };
-
-  const { validateForm } = useFormValidation(
-    fieldRefs,
-    requiredFields,
-    customValidations
-  );
-
-  // Função de validação
+  // 🆕 FUNÇÃO DE VALIDAÇÃO MELHORADA
   const handleValidation = () => {
     const { isValid, errors: validationErrors } = validateForm(formData);
     setErrors(validationErrors);
@@ -487,6 +470,7 @@ const CreateComposerModal = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 🆕 USAR VALIDAÇÃO COM SCROLL
     if (!handleValidation()) {
       return;
     }
@@ -948,7 +932,7 @@ const CreateComposerModal = ({
                   />
 
                   {/* COMPONENTE DE NACIONALIDADE CORRIGIDO */}
-                  <div ref={nationalityRef}>
+                  <div ref={fieldRefs.nationality}>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
                       Nacionalidade
                     </label>
@@ -958,6 +942,13 @@ const CreateComposerModal = ({
                       error={errors.nationality}
                       placeholder="Selecione a nacionalidade..."
                     />
+                    {/* 🆕 MENSAGEM DE ERRO PARA NACIONALIDADE */}
+                    {errors.nationality && (
+                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+                        <FiAlertCircle className="w-4 h-4" />
+                        <span>Campo obrigatório: {errors.nationality}</span>
+                      </p>
+                    )}
                   </div>
 
                   <Input
@@ -1003,9 +994,11 @@ const CreateComposerModal = ({
                         errors.birthDate ? 'border-red-500' : ''
                       }`}
                     />
+                    {/* 🆕 MENSAGEM DE ERRO */}
                     {errors.birthDate && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.birthDate}
+                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+                        <FiAlertCircle className="w-4 h-4" />
+                        <span>Campo obrigatório: {errors.birthDate}</span>
                       </p>
                     )}
                   </div>
@@ -1025,9 +1018,11 @@ const CreateComposerModal = ({
                         errors.deathDate ? 'border-red-500' : ''
                       }`}
                     />
+                    {/* 🆕 MENSAGEM DE ERRO */}
                     {errors.deathDate && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.deathDate}
+                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+                        <FiAlertCircle className="w-4 h-4" />
+                        <span>Campo obrigatório: {errors.deathDate}</span>
                       </p>
                     )}
                     <p className="text-xs text-theme-tertiary mt-1">
@@ -1090,6 +1085,15 @@ const CreateComposerModal = ({
                       }
                       error={errors.epochId}
                     />
+                    {/* 🆕 MENSAGEM DE ERRO */}
+                    {errors.epochId && (
+                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+                        <FiAlertCircle className="w-4 h-4" />
+                        <span>
+                          Campo obrigatório: Época deve ser selecionada
+                        </span>
+                      </p>
+                    )}
                   </div>
 
                   <div>
@@ -1111,6 +1115,16 @@ const CreateComposerModal = ({
                       }
                       error={errors.primaryRoleId}
                     />
+                    {/* 🆕 MENSAGEM DE ERRO */}
+                    {errors.primaryRoleId && (
+                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+                        <FiAlertCircle className="w-4 h-4" />
+                        <span>
+                          Campo obrigatório: Papel principal deve ser
+                          selecionado
+                        </span>
+                      </p>
+                    )}
                   </div>
 
                   <div className="md:col-span-2">

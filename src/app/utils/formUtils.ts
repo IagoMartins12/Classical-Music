@@ -1,7 +1,12 @@
-// app/utils/formUtils.ts - ATUALIZADO
+// app/utils/formUtils.ts - VERSÃO MELHORADA
 
 export interface FormFieldRef {
-  current: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
+  current:
+    | HTMLInputElement
+    | HTMLTextAreaElement
+    | HTMLSelectElement
+    | HTMLDivElement
+    | null;
 }
 
 export interface FormFieldRefs {
@@ -9,15 +14,15 @@ export interface FormFieldRefs {
 }
 
 /**
- * Função para fazer scroll suave até o primeiro campo com erro
+ * Função para fazer scroll suave até o primeiro campo com erro - MELHORADA
  * @param errorFields - Array com os nomes dos campos que têm erro
  * @param fieldRefs - Objeto com as referências dos campos
- * @param offset - Offset adicional para o scroll (default: 0)
+ * @param offset - Offset adicional para o scroll (default: -100)
  */
 export const scrollToFirstError = (
   errorFields: string[],
   fieldRefs: FormFieldRefs,
-  offset: number = 0
+  offset: number = -100 // 🆕 Offset negativo para mostrar mais contexto
 ): void => {
   if (errorFields.length === 0) return;
 
@@ -28,20 +33,29 @@ export const scrollToFirstError = (
     const element = fieldRef.current;
     const elementRect = element.getBoundingClientRect();
     const absoluteElementTop = elementRect.top + window.pageYOffset;
-    const middle = absoluteElementTop - window.innerHeight / 2 + offset;
+    const targetPosition = absoluteElementTop + offset;
 
-    // Scroll suave até o elemento
+    // 🆕 SCROLL SUAVE MELHORADO
     window.scrollTo({
-      top: middle,
+      top: Math.max(0, targetPosition), // Garantir que não seja negativo
       behavior: 'smooth',
     });
 
-    // Focar no campo após um pequeno delay
+    // 🆕 HIGHLIGHT DO CAMPO COM ERRO
     setTimeout(() => {
       element.focus();
 
+      // Adicionar classe visual de erro temporária
+      element.classList.add('field-error-highlight');
+      setTimeout(() => {
+        element.classList.remove('field-error-highlight');
+      }, 2000);
+
       // Para inputs de texto, selecionar o texto
-      if (element instanceof HTMLInputElement && element.type === 'text') {
+      if (
+        element instanceof HTMLInputElement &&
+        ['text', 'email', 'password', 'search'].includes(element.type)
+      ) {
         element.select();
       }
     }, 500);
@@ -116,6 +130,8 @@ export const getFieldLabel = (fieldName: string): string => {
     email: 'E-mail',
     password: 'Senha',
     confirmPassword: 'Confirmar senha',
+    downloadUrl: 'URL do arquivo',
+    uploadMode: 'Modo de upload',
   };
 
   return labels[fieldName] || fieldName;
@@ -351,7 +367,7 @@ export const isValidUrl = (url: string): boolean => {
 };
 
 /**
- * Hook personalizado para gerenciar validação de formulário
+ * Hook personalizado para gerenciar validação de formulário - MELHORADO
  * @param fieldRefs - Referências dos campos
  * @param requiredFields - Campos obrigatórios
  * @param customValidations - Validações customizadas
@@ -513,4 +529,108 @@ export const isValidDateRange = (
     : new Date(deathDate);
 
   return death > birth;
+};
+
+// 🆕 VALIDAÇÕES CUSTOMIZADAS PARA MODALS
+
+/**
+ * Validações customizadas para Score ModalisValidDateR
+ */
+export const scoreModalValidations = {
+  workId: (value: any) => {
+    if (!value || !value.trim()) {
+      return 'Obra é obrigatória';
+    }
+    return null;
+  },
+  title: (value: any) => {
+    if (!value || !value.trim()) {
+      return 'Título é obrigatório';
+    }
+    if (value.length < 3) {
+      return 'Título deve ter pelo menos 3 caracteres';
+    }
+    return null;
+  },
+  downloadUrl: (value: any) => {
+    if (!value || !value.trim()) {
+      return 'URL do arquivo ou upload é obrigatório';
+    }
+    return null;
+  },
+  uploadMode: (value: any, formData?: any) => {
+    if (!value && !formData?.editingScore) {
+      return 'Escolha entre URL ou upload de arquivo';
+    }
+    return null;
+  },
+};
+
+/**
+ * Validações customizadas para Composer Modal
+ */
+export const composerModalValidations = {
+  name: (value: any) => {
+    if (!value || !value.trim()) {
+      return 'Nome é obrigatório';
+    }
+    if (value.length < 2) {
+      return 'Nome deve ter pelo menos 2 caracteres';
+    }
+    return null;
+  },
+  fullName: (value: any) => {
+    if (!value || !value.trim()) {
+      return 'Nome completo é obrigatório';
+    }
+    if (value.length < 3) {
+      return 'Nome completo deve ter pelo menos 3 caracteres';
+    }
+    return null;
+  },
+  epochId: (value: any) => {
+    if (!value || !value.trim()) {
+      return 'Época é obrigatória';
+    }
+    return null;
+  },
+  primaryRoleId: (value: any) => {
+    if (!value || !value.trim()) {
+      return 'Papel principal é obrigatório';
+    }
+    return null;
+  },
+};
+
+/**
+ * Validações customizadas para Work Modal
+ */
+export const workModalValidations = {
+  title: (value: any) => {
+    if (!value || !value.trim()) {
+      return 'Título é obrigatório';
+    }
+    if (value.length < 3) {
+      return 'Título deve ter pelo menos 3 caracteres';
+    }
+    return null;
+  },
+  composerId: (value: any) => {
+    if (!value || !value.trim()) {
+      return 'Compositor é obrigatório';
+    }
+    return null;
+  },
+  instrumentId: (value: any) => {
+    if (!value || !value.trim()) {
+      return 'Instrumento é obrigatório';
+    }
+    return null;
+  },
+  epochId: (value: any) => {
+    if (!value || !value.trim()) {
+      return 'Época é obrigatória';
+    }
+    return null;
+  },
 };
