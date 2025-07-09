@@ -430,12 +430,10 @@ const UploadsClient = ({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              {isAdmin ? 'Gerenciar Uploads' : 'Meus Uploads'}
+              Meus Uploads
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              {isAdmin
-                ? 'Visualize e gerencie todos os compositores, obras e partituras do sistema'
-                : 'Gerencie seus compositores, obras e partituras adicionadas'}
+              Gerencie seus compositores, obras e partituras adicionadas
             </p>
           </div>
         </AnimatedItem>

@@ -1,8 +1,8 @@
 'use client';
 
-// app/components/modals/CreateWorkModal.tsx - CORRIGIDO PARA EVITAR VALORES NULL
+// app/components/modals/CreateWorkModal.tsx - CORRIGIDO COM DETECÇÃO DE FONTE EXTERNA IMSLP
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiMusic,
@@ -17,6 +17,7 @@ import {
   FiCheck,
   FiAlertCircle,
   FiSearch,
+  FiLock,
 } from 'react-icons/fi';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
@@ -99,6 +100,16 @@ const CreateWorkModal = ({
     work?: any;
   }>({ loading: false, found: false });
 
+  // 🆕 ESTADO PARA DETECTAR EDIÇÃO DE FONTE EXTERNA
+  const [isEditingExternalSource, setIsEditingExternalSource] = useState(false);
+
+  // 🔧 CORRIGIDO: Memoizar as opções para evitar recriação a cada render
+  const validCategoryOptions = useMemo(() => getAllValidCategories(), []);
+  const validWorkGenreOptions = useMemo(
+    () => Array.from(VALID_PORTUGUESE_WORKGENRES).sort(),
+    []
+  );
+
   // 🔧 CORRIGIDO: Refs para scroll automático com tipos corretos
   const fieldRefs = {
     title: useRef<HTMLInputElement>(null),
@@ -154,16 +165,27 @@ const CreateWorkModal = ({
     works: [],
   });
 
-  // Opções para MultiSelect
-  const validCategoryOptions = getAllValidCategories();
-  const validWorkGenreOptions = Array.from(VALID_PORTUGUESE_WORKGENRES).sort();
-
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Populate form when editing
   useEffect(() => {
     loadFormData();
     if (editingWork) {
+      // 🆕 DETECTAR SE É EDIÇÃO DE FONTE EXTERNA (IMSLP)
+      let detectedUrl = '';
+
+      if (editingWork.imslpId || editingWork.imslpPermlink) {
+        setIsEditingExternalSource(true);
+        // Construir URL do IMSLP baseado no ID ou permlink
+        detectedUrl =
+          editingWork.imslpPermlink ||
+          (editingWork.imslpId
+            ? `https://imslp.org/wiki/${editingWork.imslpId}`
+            : '');
+      }
+
+      setUrlToScrape(detectedUrl);
+
       setFormData({
         title: editingWork.title || '',
         composerId: editingWork.composerId || '',
@@ -302,8 +324,12 @@ const CreateWorkModal = ({
       return;
     }
 
-    // Verificar duplicatas antes de salvar
-    if (formData.imslpId && (await checkDuplicateByLink(formData.imslpId))) {
+    // Verificar duplicatas antes de salvar (apenas se não estiver editando fonte externa)
+    if (
+      !isEditingExternalSource &&
+      formData.imslpId &&
+      (await checkDuplicateByLink(formData.imslpId))
+    ) {
       alert('Já existe uma obra com este link do IMSLP.');
       return;
     }
@@ -538,6 +564,13 @@ const CreateWorkModal = ({
                     <span className="text-sm font-medium text-theme-primary">
                       Extrair Dados do IMSLP
                     </span>
+                    {/* 🆕 INDICADOR DE FONTE EXTERNA DETECTADA */}
+                    {isEditingExternalSource && (
+                      <div className="flex items-center space-x-1 text-xs text-blue-600">
+                        <FiLock className="w-3 h-3" />
+                        <span>Fonte IMSLP detectada automaticamente</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -548,6 +581,7 @@ const CreateWorkModal = ({
                     onChange={(e) => setUrlToScrape(e.target.value)}
                     placeholder="https://imslp.org/wiki/Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
                     leftIcon={<FiLink />}
+                    disabled={isEditingExternalSource} // 🆕 DESABILITAR QUANDO EDITANDO FONTE EXTERNA
                   />
 
                   {/* Verificação de Duplicata */}
@@ -578,24 +612,26 @@ const CreateWorkModal = ({
                   )}
 
                   {/* Botão de Scraping */}
-                  <div className="mt-3">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      leftIcon={
-                        scrapingUrl ? (
-                          <FiLoader className="animate-spin" />
-                        ) : (
-                          <FiSearch />
-                        )
-                      }
-                      onClick={handleScrapeUrl}
-                      disabled={scrapingUrl}
-                    >
-                      {scrapingUrl ? 'Extraindo Dados...' : 'Extrair Dados'}
-                    </Button>
-                  </div>
+                  {!isEditingExternalSource && (
+                    <div className="mt-3">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        leftIcon={
+                          scrapingUrl ? (
+                            <FiLoader className="animate-spin" />
+                          ) : (
+                            <FiSearch />
+                          )
+                        }
+                        onClick={handleScrapeUrl}
+                        disabled={scrapingUrl || duplicateCheck.found}
+                      >
+                        {scrapingUrl ? 'Extraindo Dados...' : 'Extrair Dados'}
+                      </Button>
+                    </div>
+                  )}
 
                   {/* Resultado do Scraping */}
                   {scrapingResult && (
@@ -610,6 +646,20 @@ const CreateWorkModal = ({
                         Fonte: {scrapingResult.source} | Qualidade:{' '}
                         {scrapingResult.data.pageQuality} | Completude:{' '}
                         {scrapingResult.data.dataCompleteness}%
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 🆕 AVISO PARA FONTE EXTERNA SENDO EDITADA */}
+                  {isEditingExternalSource && (
+                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <FiInfo className="w-4 h-4 text-blue-600" />
+                        <span className="text-sm text-blue-800">
+                          Esta obra foi originalmente criada a partir do IMSLP.
+                          Você pode editar os dados diretamente nos campos
+                          abaixo.
+                        </span>
                       </div>
                     </div>
                   )}
@@ -888,16 +938,16 @@ const CreateWorkModal = ({
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* ID IMSLP */}
                   <Input
-                    label="ID IMSLP"
-                    value={formData.imslpPermlink}
+                  className='hiddem'
+                    value={formData.imslpId}
                     onChange={(e) =>
                       handleInputChange('imslpId', e.target.value)
                     }
                     placeholder="Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
                     leftIcon={<FiExternalLink />}
                   />
-
                   <Input
                     label="URL do Vídeo"
                     value={formData.videoUrl}

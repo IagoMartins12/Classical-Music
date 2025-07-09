@@ -27,16 +27,14 @@ export default async function UploadsPageServer({
   const isAdmin = userRole === 2;
 
   const [uploadsData, epochs] = await Promise.all([
-    isAdmin
-      ? getAllUploads({ page, limit: ITEMS_PER_PAGE, search, type, epochId })
-      : getUserUploads({
-          userId,
-          page,
-          limit: ITEMS_PER_PAGE,
-          search,
-          type,
-          epochId,
-        }),
+    getUserUploads({
+      userId,
+      page,
+      limit: ITEMS_PER_PAGE,
+      search,
+      type,
+      epochId,
+    }),
     getEpochsCache(),
   ]);
 

@@ -1,10 +1,10 @@
 {
-  "currentStart": 182000,
-  "totalProcessed": 194382,
-  "totalAdded": 151089,
+  "currentStart": 192000,
+  "totalProcessed": 205042,
+  "totalAdded": 159637,
   "totalSkipped": 0,
   "totalErrors": 0,
-  "lastUpdate": "2025-07-09T04:40:43.506Z",
+  "lastUpdate": "2025-07-09T17:19:08.740Z",
   "isRunning": true,
-  "lastSuccessfulBatch": 182000
+  "lastSuccessfulBatch": 192000
 }

@@ -12,6 +12,7 @@ import { useLoginModal } from '@/app/stores/authStore';
 import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
+import { useRouter } from 'next/navigation';
 
 const LoginModal: React.FC = () => {
   const { isOpen, close, switchToRegister } = useLoginModal();
@@ -23,6 +24,7 @@ const LoginModal: React.FC = () => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  const { refresh } = useRouter();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -73,7 +75,7 @@ const LoginModal: React.FC = () => {
         // Check if user needs onboarding
         // This will be handled by the session callback
         close();
-
+        refresh();
         // The onboarding check will be handled by the AuthProvider
         // based on the session data
       }

@@ -77,6 +77,7 @@ export default async function EditComposerPage({
 
   // Verificar permissões
   const isAdmin = session.user.role === 2;
+  console.log('SESSION', session.user);
   const isOwner = composer.createdBy === session.user.id;
 
   if (!isAdmin && !isOwner) {

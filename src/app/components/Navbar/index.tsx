@@ -28,6 +28,7 @@ import Button from '../Common/Button';
 import Image from 'next/image';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
+import { useRouter } from 'next/navigation';
 
 interface NavItem {
   label: string;
@@ -54,6 +55,8 @@ const Navbar: React.FC = () => {
     setIsProfileOpen((prev) => !prev);
   };
 
+  const { refresh } = useRouter();
+
   const handleLogout = async () => {
     try {
       resetFavorite();
@@ -63,6 +66,7 @@ const Navbar: React.FC = () => {
       await signOut({ redirect: false });
       toast.success('Logout realizado com sucesso!');
       setIsProfileOpen(false);
+      refresh();
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('Erro ao fazer logout');
