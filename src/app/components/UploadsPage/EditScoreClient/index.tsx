@@ -103,7 +103,7 @@ const EditScoreClient = ({
       });
 
       if (response.ok) {
-        router.push('/uploads?success=score-deleted');
+        router.push('/uploads');
       } else {
         const data = await response.json();
         throw new Error(data.error || 'Erro ao excluir partitura');
@@ -201,9 +201,6 @@ const EditScoreClient = ({
                             <h1 className="text-3xl md:text-4xl font-bold text-gradient-brand classical-title leading-tight">
                               Editar Partitura
                             </h1>
-                            <p className="text-theme-secondary text-lg">
-                              {score.title}
-                            </p>
                           </div>
                         </div>
 
@@ -212,9 +209,9 @@ const EditScoreClient = ({
                         </h1>
 
                         <div className="flex items-center space-x-2 text-xl text-theme-secondary mt-3">
-                          <span>da obra</span>
+                          <span>Da obra</span>
                           <Link
-                            href={`/work/${score.work.id}`}
+                            href={`/works/${score.work.id}`}
                             className="text-brand-primary hover:text-brand-secondary font-semibold transition-colors duration-300 classical-subtitle"
                           >
                             {score.work.title}

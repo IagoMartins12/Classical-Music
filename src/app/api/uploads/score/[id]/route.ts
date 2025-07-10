@@ -5,6 +5,10 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateUploadsCache } from '@/app/requests/upload';
 import { logScoreDelete } from '@/app/utils/historyUtils';
+import {
+  cleanupScoreFiles,
+  logCleanupResult,
+} from '@/app/utils/fileCleanupUtils';
 
 interface Params {
   id: string;
@@ -186,6 +190,35 @@ export async function DELETE(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
     }
 
+    // 🆕 Limpar arquivos da partitura ANTES de excluir o registro
+    let cleanupResult = {
+      removedFiles: [] as string[],
+      removedDirectories: [] as string[],
+      errors: [] as string[],
+      totalSize: 0,
+    };
+
+    try {
+      console.log(`🧹 Limpando arquivos da partitura: ${score.title}`);
+      console.log(`📄 Download URL: ${score.downloadUrl}`);
+      console.log(`🖼️ Thumbnail URL: ${score.thumbnailUrl}`);
+
+      cleanupResult = await cleanupScoreFiles(
+        score.downloadUrl,
+        score.thumbnailUrl
+      );
+
+      logCleanupResult(cleanupResult, `Partitura ${score.title}`);
+    } catch (cleanupError) {
+      console.error(
+        '⚠️ Erro na limpeza de arquivos da partitura:',
+        cleanupError
+      );
+      cleanupResult.errors.push(
+        `Erro na limpeza da partitura: ${cleanupError}`
+      );
+    }
+
     // 🆕 Salvar dados para histórico antes de excluir
     const deletedData = {
       title: score.title,
@@ -199,12 +232,18 @@ export async function DELETE(
       pageCount: score.pageCount,
       fileFormat: score.fileFormat,
       downloadUrl: score.downloadUrl,
+      thumbnailUrl: score.thumbnailUrl,
       type: score.type,
       editor: score.editor,
       publisher: score.publisher,
       copyright: score.copyright,
       isIMSLP: score.source === 'IMSLP',
       deletedBy: 'USER_INTERFACE',
+      cleanupResult: {
+        filesRemoved: cleanupResult.removedFiles.length,
+        spaceCleaned: `${(cleanupResult.totalSize / 1024 / 1024).toFixed(2)}MB`,
+        errors: cleanupResult.errors.length,
+      },
     };
 
     // Excluir partitura
@@ -218,7 +257,11 @@ export async function DELETE(
         userId,
         id,
         deletedData,
-        'Partitura excluída via interface',
+        `Partitura excluída via interface. ${
+          cleanupResult.removedFiles.length
+        } arquivos removidos (${(cleanupResult.totalSize / 1024 / 1024).toFixed(
+          2
+        )}MB)`,
         request
       );
     } catch (logError) {
@@ -232,13 +275,23 @@ export async function DELETE(
     await revalidateUploadsCache(userId);
 
     return NextResponse.json({
-      message: 'Partitura excluída com sucesso!',
+      message: `Partitura excluída com sucesso! ${cleanupResult.removedFiles.length} arquivos foram removidos.`,
       details: {
         scoreTitle: score.title,
         workTitle: score.work.title,
         composerName: score.work.composer.fullName || score.work.composer.name,
         sourceId: score.sourceId,
         source: score.source,
+        cleanup: {
+          filesRemoved: cleanupResult.removedFiles.length,
+          spaceCleaned: `${(cleanupResult.totalSize / 1024 / 1024).toFixed(
+            2
+          )}MB`,
+          errors: cleanupResult.errors.length,
+          removedFiles: cleanupResult.removedFiles.map((file) =>
+            file.replace(process.cwd(), '.')
+          ),
+        },
       },
     });
   } catch (error) {

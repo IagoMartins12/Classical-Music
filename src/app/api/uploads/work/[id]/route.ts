@@ -9,6 +9,10 @@ import {
   logWorkDelete,
   logScoreDelete,
 } from '@/app/utils/historyUtils';
+import {
+  cleanupScoreFiles,
+  logCleanupResult,
+} from '@/app/utils/fileCleanupUtils';
 
 interface Params {
   id: string;
@@ -294,6 +298,8 @@ export async function DELETE(
             id: true,
             title: true,
             sourceId: true,
+            downloadUrl: true,
+            thumbnailUrl: true,
             fileSize: true,
             pageCount: true,
             source: true,
@@ -308,6 +314,8 @@ export async function DELETE(
                 id: true,
                 title: true,
                 sourceId: true,
+                downloadUrl: true,
+                thumbnailUrl: true,
               },
             },
           },
@@ -333,15 +341,37 @@ export async function DELETE(
     // Contadores para relatório
     let deletedScoresCount = 0;
     let deletedChildWorksCount = 0;
+    let totalCleanupResult = {
+      removedFiles: [] as string[],
+      removedDirectories: [] as string[],
+      errors: [] as string[],
+      totalSize: 0,
+    };
 
-    // 🆕 EXCLUSÃO EM CASCATA - Usar transação para garantir consistência
+    // 🆕 EXCLUSÃO EM CASCATA COM LIMPEZA DE ARQUIVOS
     await prisma.$transaction(async (tx) => {
-      // 1. Primeiro, excluir partituras das obras filhas (se houver)
+      // 1. Primeiro, excluir partituras das obras filhas E seus arquivos
       for (const childWork of work.childWorks) {
         if (childWork.cachedScores.length > 0) {
-          // Registrar cada partitura da obra filha no histórico
+          // Registrar e limpar arquivos de cada partitura da obra filha
           for (const score of childWork.cachedScores) {
             try {
+              // 🆕 Limpar arquivos da partitura
+              const scoreCleanup = await cleanupScoreFiles(
+                score.downloadUrl,
+                score.thumbnailUrl
+              );
+
+              // Acumular resultados da limpeza
+              totalCleanupResult.removedFiles.push(
+                ...scoreCleanup.removedFiles
+              );
+              totalCleanupResult.removedDirectories.push(
+                ...scoreCleanup.removedDirectories
+              );
+              totalCleanupResult.errors.push(...scoreCleanup.errors);
+              totalCleanupResult.totalSize += scoreCleanup.totalSize;
+
               await logScoreDelete(
                 userId,
                 score.id,
@@ -405,11 +435,25 @@ export async function DELETE(
         });
       }
 
-      // 3. Excluir partituras da obra principal
+      // 3. Excluir partituras da obra principal E seus arquivos
       if (work.cachedScores.length > 0) {
-        // Registrar cada partitura no histórico antes de excluir
+        // Registrar e limpar arquivos de cada partitura
         for (const score of work.cachedScores) {
           try {
+            // 🆕 Limpar arquivos da partitura
+            const scoreCleanup = await cleanupScoreFiles(
+              score.downloadUrl,
+              score.thumbnailUrl
+            );
+
+            // Acumular resultados da limpeza
+            totalCleanupResult.removedFiles.push(...scoreCleanup.removedFiles);
+            totalCleanupResult.removedDirectories.push(
+              ...scoreCleanup.removedDirectories
+            );
+            totalCleanupResult.errors.push(...scoreCleanup.errors);
+            totalCleanupResult.totalSize += scoreCleanup.totalSize;
+
             await logScoreDelete(
               userId,
               score.id,
@@ -466,6 +510,14 @@ export async function DELETE(
       cascadeDelete: true,
       totalDeletedScores: deletedScoresCount,
       totalDeletedChildWorks: deletedChildWorksCount,
+      cleanupResult: {
+        filesRemoved: totalCleanupResult.removedFiles.length,
+        directoriesRemoved: totalCleanupResult.removedDirectories.length,
+        spaceCleaned: `${(totalCleanupResult.totalSize / 1024 / 1024).toFixed(
+          2
+        )}MB`,
+        errors: totalCleanupResult.errors.length,
+      },
     };
 
     // 🆕 Registrar exclusão da obra no histórico
@@ -474,7 +526,7 @@ export async function DELETE(
         userId,
         id,
         deletedData,
-        `Obra excluída via interface com exclusão em cascata: ${deletedChildWorksCount} obras filhas e ${deletedScoresCount} partituras removidas`,
+        `Obra excluída via interface com exclusão em cascata: ${deletedChildWorksCount} obras filhas, ${deletedScoresCount} partituras e ${totalCleanupResult.removedFiles.length} arquivos removidos`,
         request
       );
     } catch (logError) {
@@ -487,13 +539,25 @@ export async function DELETE(
     // Invalidar cache
     await revalidateUploadsCache(userId);
 
+    // 🆕 Log final da limpeza total
+    console.log(`📊 Limpeza total da exclusão da obra ${work.title}:`);
+    logCleanupResult(totalCleanupResult, 'Exclusão completa da obra');
+
     return NextResponse.json({
-      message: `Obra excluída com sucesso! ${deletedChildWorksCount} obras filhas e ${deletedScoresCount} partituras foram removidas automaticamente.`,
+      message: `Obra excluída com sucesso! ${deletedChildWorksCount} obras filhas, ${deletedScoresCount} partituras e ${totalCleanupResult.removedFiles.length} arquivos foram removidos automaticamente.`,
       details: {
         workTitle: work.title,
         deletedScores: work.cachedScores.length,
         deletedChildWorks: deletedChildWorksCount,
         totalDeletedScores: deletedScoresCount,
+        cleanup: {
+          filesRemoved: totalCleanupResult.removedFiles.length,
+          directoriesRemoved: totalCleanupResult.removedDirectories.length,
+          spaceCleaned: `${(totalCleanupResult.totalSize / 1024 / 1024).toFixed(
+            2
+          )}MB`,
+          errors: totalCleanupResult.errors.length,
+        },
         childWorks: work.childWorks.map((cw) => ({
           title: cw.title,
           scoresCount: cw.cachedScores.length,

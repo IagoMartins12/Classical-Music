@@ -145,7 +145,7 @@ const EditComposerClient = ({
       });
 
       if (response.ok) {
-        router.push('/uploads?success=composer-deleted');
+        router.push('/uploads');
       } else {
         const data = await response.json();
         throw new Error(data.error || 'Erro ao excluir compositor');

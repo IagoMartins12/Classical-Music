@@ -11,6 +11,11 @@ import {
   logScoreDelete,
   calculateChanges,
 } from '@/app/utils/historyUtils';
+import {
+  cleanupComposerFiles,
+  cleanupScoreFiles,
+  logCleanupResult,
+} from '@/app/utils/fileCleanupUtils';
 
 interface Params {
   id: string;
@@ -190,7 +195,7 @@ export async function PUT(
     );
   }
 }
-
+// app/api/uploads/composer/[id]/route.ts - DELETE method (atualizado)
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<Params> }
@@ -213,7 +218,15 @@ export async function DELETE(
         primaryRole: { select: { name: true } },
         works: {
           include: {
-            cachedScores: { select: { id: true, title: true, sourceId: true } },
+            cachedScores: {
+              select: {
+                id: true,
+                title: true,
+                sourceId: true,
+                downloadUrl: true,
+                thumbnailUrl: true,
+              },
+            },
             instrument: { select: { name: true } },
             epoch: { select: { name: true } },
           },
@@ -239,15 +252,37 @@ export async function DELETE(
     // Contadores para relatório
     let deletedScoresCount = 0;
     let deletedWorksCount = 0;
+    let totalCleanupResult = {
+      removedFiles: [] as string[],
+      removedDirectories: [] as string[],
+      errors: [] as string[],
+      totalSize: 0,
+    };
 
-    // 🆕 EXCLUSÃO EM CASCATA - Usar transação para garantir consistência
+    // 🆕 EXCLUSÃO EM CASCATA COM LIMPEZA DE ARQUIVOS
     await prisma.$transaction(async (tx) => {
-      // 1. Primeiro, excluir todas as partituras de todas as obras
+      // 1. Primeiro, excluir todas as partituras de todas as obras E seus arquivos
       for (const work of composer.works) {
         if (work.cachedScores.length > 0) {
-          // Registrar cada partitura no histórico antes de excluir
+          // Registrar e limpar arquivos de cada partitura
           for (const score of work.cachedScores) {
             try {
+              // 🆕 Limpar arquivos da partitura (PDF + thumbnail)
+              const scoreCleanup = await cleanupScoreFiles(
+                score.downloadUrl,
+                score.thumbnailUrl
+              );
+
+              // Acumular resultados da limpeza
+              totalCleanupResult.removedFiles.push(
+                ...scoreCleanup.removedFiles
+              );
+              totalCleanupResult.removedDirectories.push(
+                ...scoreCleanup.removedDirectories
+              );
+              totalCleanupResult.errors.push(...scoreCleanup.errors);
+              totalCleanupResult.totalSize += scoreCleanup.totalSize;
+
               await logScoreDelete(
                 userId,
                 score.id,
@@ -318,7 +353,36 @@ export async function DELETE(
         });
       }
 
-      // 4. Finalmente, excluir o compositor
+      // 4. 🆕 Limpar imagens do compositor ANTES de excluir o registro
+
+      if (composer.portraitUrl) {
+        try {
+          const composerCleanup = await cleanupComposerFiles(
+            composer.portraitUrl
+          );
+
+          // Acumular resultados da limpeza
+          totalCleanupResult.removedFiles.push(...composerCleanup.removedFiles);
+          totalCleanupResult.removedDirectories.push(
+            ...composerCleanup.removedDirectories
+          );
+          totalCleanupResult.errors.push(...composerCleanup.errors);
+          totalCleanupResult.totalSize += composerCleanup.totalSize;
+
+          console.log(`🧹 Limpeza de arquivos do compositor ${composer.name}:`);
+          logCleanupResult(composerCleanup, `Compositor ${composer.name}`);
+        } catch (cleanupError) {
+          console.error(
+            '⚠️ Erro na limpeza de arquivos do compositor:',
+            cleanupError
+          );
+          totalCleanupResult.errors.push(
+            `Erro na limpeza do compositor: ${cleanupError}`
+          );
+        }
+      }
+
+      // 5. Finalmente, excluir o compositor
       await tx.composer.delete({
         where: { id },
       });
@@ -336,6 +400,14 @@ export async function DELETE(
       worksCount: composer.works.length,
       totalScoresCount: deletedScoresCount,
       cascadeDelete: true,
+      cleanupResult: {
+        filesRemoved: totalCleanupResult.removedFiles.length,
+        directoriesRemoved: totalCleanupResult.removedDirectories.length,
+        spaceCleaned: `${(totalCleanupResult.totalSize / 1024 / 1024).toFixed(
+          2
+        )}MB`,
+        errors: totalCleanupResult.errors.length,
+      },
     };
 
     // 🆕 Registrar exclusão do compositor no histórico
@@ -344,7 +416,7 @@ export async function DELETE(
         userId,
         id,
         deletedData,
-        `Compositor excluído via interface com exclusão em cascata: ${deletedWorksCount} obras e ${deletedScoresCount} partituras removidas`,
+        `Compositor excluído via interface com exclusão em cascata: ${deletedWorksCount} obras, ${deletedScoresCount} partituras e ${totalCleanupResult.removedFiles.length} arquivos removidos`,
         request
       );
     } catch (logError) {
@@ -357,12 +429,24 @@ export async function DELETE(
     // Invalidar cache
     await revalidateUploadsCache(userId);
 
+    // 🆕 Log final da limpeza total
+    console.log(`📊 Limpeza total da exclusão do compositor ${composer.name}:`);
+    logCleanupResult(totalCleanupResult, 'Exclusão completa do compositor');
+
     return NextResponse.json({
-      message: `Compositor excluído com sucesso! ${deletedWorksCount} obras e ${deletedScoresCount} partituras foram removidas automaticamente.`,
+      message: `Compositor excluído com sucesso! ${deletedWorksCount} obras, ${deletedScoresCount} partituras e ${totalCleanupResult.removedFiles.length} arquivos foram removidos automaticamente.`,
       details: {
         composerName: composer.name,
         deletedWorks: deletedWorksCount,
         deletedScores: deletedScoresCount,
+        cleanup: {
+          filesRemoved: totalCleanupResult.removedFiles.length,
+          directoriesRemoved: totalCleanupResult.removedDirectories.length,
+          spaceCleaned: `${(totalCleanupResult.totalSize / 1024 / 1024).toFixed(
+            2
+          )}MB`,
+          errors: totalCleanupResult.errors.length,
+        },
         works: composer.works.map((w) => ({
           title: w.title,
           scoresCount: w.cachedScores.length,
@@ -377,7 +461,6 @@ export async function DELETE(
     );
   }
 }
-
 // Função helper para calcular completude dos dados
 function calculateDataCompleteness(data: any): number {
   const fields = [

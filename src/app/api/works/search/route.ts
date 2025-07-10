@@ -1,4 +1,4 @@
-// app/api/works/search/route.ts - VERSÃO OTIMIZADA E CORRIGIDA
+// app/api/works/search/route.ts - VERSÃO CORRIGIDA PARA OBJECTID
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
@@ -20,7 +20,7 @@ const getCachedWorksSearch = unstable_cache(
       // 🆕 OTIMIZAÇÃO 1: Query mais eficiente usando regex string para MongoDB
       const searchPattern = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-      // 🆕 OTIMIZAÇÃO 2: Pipeline de agregação otimizado com tipos corretos
+      // 🆕 OTIMIZAÇÃO 2: Pipeline de agregação otimizado com conversão correta de ObjectId
       const result = await prisma.work.aggregateRaw({
         pipeline: [
           // Match stage - mais eficiente que where do Prisma
@@ -42,6 +42,7 @@ const getCachedWorksSearch = unstable_cache(
               pipeline: [
                 {
                   $project: {
+                    _id: { $toString: '$_id' }, // 🔧 CONVERSÃO CORRETA DO OBJECTID
                     name: 1,
                     fullName: 1,
                   },
@@ -66,13 +67,17 @@ const getCachedWorksSearch = unstable_cache(
               ],
             },
           },
-          // Project para selecionar apenas campos necessários
+          // Project para selecionar campos e converter ObjectIds
           {
             $project: {
-              _id: 1,
+              _id: { $toString: '$_id' }, // 🔧 CONVERSÃO CORRETA DO OBJECTID DA WORK
               title: 1,
               opOrCatalog: 1,
-              composer: 1,
+              composer: {
+                id: '$composer._id', // Já convertido acima
+                name: '$composer.name',
+                fullName: '$composer.fullName',
+              },
               createdAt: 1,
             },
           },
@@ -92,12 +97,12 @@ const getCachedWorksSearch = unstable_cache(
       // Converter resultado com cast correto
       const works = Array.isArray(result) ? result : [];
 
-      // Converter ObjectId para string
+      // 🔧 FORMATAÇÃO CORRIGIDA - ObjectId já convertido no pipeline
       const formattedWorks = works.map((work: any) => ({
-        id: work._id.toString(),
+        id: work._id, // Já é string graças ao $toString no pipeline
         title: work.title,
         opOrCatalog: work.opOrCatalog || null,
-        composer: work.composer,
+        composer: work.composer, // Já tem a estrutura correta
         annotationsCount: 0, // Removido para performance - pode ser adicionado depois se necessário
       }));
 
@@ -113,7 +118,7 @@ const getCachedWorksSearch = unstable_cache(
         error
       );
 
-      // 🆕 FALLBACK: Busca simples se a agregação falhar
+      // 🆕 FALLBACK: Busca simples se a agregação falhar (Prisma já trata ObjectIds corretamente)
       const works = await prisma.work.findMany({
         where: {
           OR: [
@@ -155,6 +160,7 @@ const getCachedWorksSearch = unstable_cache(
           opOrCatalog: true,
           composer: {
             select: {
+              id: true, // 🔧 USAR id EM VEZ DE _id NO PRISMA
               name: true,
               fullName: true,
             },
@@ -171,7 +177,11 @@ const getCachedWorksSearch = unstable_cache(
           id: work.id,
           title: work.title,
           opOrCatalog: work.opOrCatalog,
-          composer: work.composer,
+          composer: {
+            id: work.composer.id, // 🔧 ESTRUTURA CONSISTENTE
+            name: work.composer.name,
+            fullName: work.composer.fullName,
+          },
           annotationsCount: 0,
         })),
         total: works.length,

@@ -91,7 +91,7 @@ const UploadsClient = ({
 
   // 🆕 HOOKS PARA TOASTS E MODAIS
   const toast = useToast();
-  const { confirm, ConfirmModalComponent } = useConfirmModal();
+  const { confirm } = useConfirmModal();
 
   const [isPending, startTransition] = useTransition();
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
@@ -360,26 +360,26 @@ const UploadsClient = ({
         ? 'obra'
         : 'partitura';
 
-    const confirmed = await confirm({
-      title: `Deletar ${itemType}`,
-      message: `Tem certeza que deseja deletar ${
-        item.type === 'work' ? 'a' : 'o'
-      } ${itemType} "${item.title}"?`,
-      type: 'danger',
-      confirmText: 'Deletar',
-      onConfirm: async () => {
-        // A lógica de delete será executada aqui
-        await performDelete(item);
-      },
-    });
-
-    if (!confirmed) return;
+    await performDelete(item);
+    // const confirmed = await confirm({
+    //   title: `Deletar ${itemType}`,
+    //   message: `Tem certeza que deseja deletar ${
+    //     item.type === 'work' ? 'a' : 'o'
+    //   } ${itemType} "${item.title}"?`,
+    //   type: 'danger',
+    //   confirmText: 'Deletar',
+    //   onConfirm: async () => {
+    //     // A lógica de delete será executada aqui
+    //     await performDelete(item);
+    //   },
+    // });
   };
 
   // 🆕 FUNÇÃO SEPARADA PARA EXECUTAR O DELETE
   const performDelete = async (item: UserUpload) => {
     setDeletingItemId(item.id);
 
+    console.log('item', item);
     try {
       const response = await fetch(`/api/uploads/${item.type}/${item.id}`, {
         method: 'DELETE',

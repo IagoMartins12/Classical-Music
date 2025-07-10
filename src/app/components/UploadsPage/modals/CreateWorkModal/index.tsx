@@ -940,8 +940,9 @@ const CreateWorkModal = ({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* ID IMSLP */}
                   <Input
-                  className='hiddem'
-                    value={formData.imslpId}
+                    label="Link IMSLP"
+                    className="hiddem"
+                    value={formData.imslpPermlink}
                     onChange={(e) =>
                       handleInputChange('imslpId', e.target.value)
                     }

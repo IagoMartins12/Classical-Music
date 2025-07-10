@@ -73,6 +73,8 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
 
         if (response.ok) {
           const data = await response.json();
+          console.log('RESPONSE', data);
+
           setWorks(data.works || []);
         } else {
           console.error('Erro na busca:', response.status);
@@ -128,6 +130,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   }, []);
 
   const handleWorkSelect = (work: Work) => {
+    console.log('TESTE', work);
     onWorkSelect(work.id);
     setSelectedWorkData(work);
     setQuery('');
