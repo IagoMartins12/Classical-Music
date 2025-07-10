@@ -1,3 +1,4 @@
+// UploadsClient.tsx - ATUALIZADO COM TOASTS E MODAIS
 'use client';
 
 import {
@@ -33,7 +34,6 @@ import {
   LoadingSpinner,
 } from '../animation/AnimatedComponents';
 import { UserUpload } from '@/app/requests/upload';
-import { useNotifications } from '@/app/hooks/useNotifications';
 import Button from '../Common/Button';
 import Select from '../Common/Select';
 import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
@@ -42,12 +42,15 @@ import BulkUploadModal from './modals/BulkUploadModal';
 import CreateScoreModal from './modals/CreateScoreModal';
 import CreateWorkModal from './modals/CreateWorkModal';
 import CreateComposerModal from './modals/CreateComposerModal';
-import NotificationSystem from '../Notifications/NotificationSystem';
 
-// Importar as novas cardapi/s
+// 🆕 IMPORTAR NOVOS HOOKS
+import { useToast } from '@/app/hooks/useToast';
+
+// Importar as novas cards
 import UploadComposerCard from './UploadComposerCard';
 import UploadWorkCard from './UploadWorkCard';
 import UploadScoreCard from './UploadScoreCard';
+import { useConfirmModal } from '../ConfirmModal';
 
 interface Epoch {
   id: string;
@@ -74,7 +77,6 @@ type FilterTab = 'all' | 'composers' | 'works' | 'scores';
 
 const UploadsClient = ({
   uploads,
-
   epochs,
   currentPage,
   totalPages,
@@ -86,8 +88,10 @@ const UploadsClient = ({
 }: UploadsClientProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { notifications, removeNotification, notifySuccess, notifyError } =
-    useNotifications();
+
+  // 🆕 HOOKS PARA TOASTS E MODAIS
+  const toast = useToast();
+  const { confirm, ConfirmModalComponent } = useConfirmModal();
 
   const [isPending, startTransition] = useTransition();
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
@@ -150,7 +154,8 @@ const UploadsClient = ({
       }
     } catch (error) {
       console.error('Erro ao carregar dados do formulário:', error);
-      notifyError('Erro', 'Não foi possível carregar os dados do formulário');
+      // 🆕 SUBSTITUIR alert POR toast
+      toast.error('Erro', 'Não foi possível carregar os dados do formulário');
     } finally {
       setLoadingFormData(false);
     }
@@ -344,7 +349,35 @@ const UploadsClient = ({
   const handleEdit = (item: UserUpload) => {
     router.push(`/uploads/${item.type}/${item.id}/edit`);
   };
+
+  // 🆕 FUNÇÃO DE DELETE ATUALIZADA COM MODAL DE CONFIRMAÇÃO
   const handleDelete = async (item: UserUpload) => {
+    // Determinar tipo de item para mensagem personalizada
+    const itemType =
+      item.type === 'composer'
+        ? 'compositor'
+        : item.type === 'work'
+        ? 'obra'
+        : 'partitura';
+
+    const confirmed = await confirm({
+      title: `Deletar ${itemType}`,
+      message: `Tem certeza que deseja deletar ${
+        item.type === 'work' ? 'a' : 'o'
+      } ${itemType} "${item.title}"?`,
+      type: 'danger',
+      confirmText: 'Deletar',
+      onConfirm: async () => {
+        // A lógica de delete será executada aqui
+        await performDelete(item);
+      },
+    });
+
+    if (!confirmed) return;
+  };
+
+  // 🆕 FUNÇÃO SEPARADA PARA EXECUTAR O DELETE
+  const performDelete = async (item: UserUpload) => {
     setDeletingItemId(item.id);
 
     try {
@@ -355,11 +388,11 @@ const UploadsClient = ({
       if (response.ok) {
         const result = await response.json();
 
-        // Mostrar mensagem específica baseada no tipo e se houve exclusão em cascata
+        // 🆕 SUBSTITUIR alert POR toast PERSONALIZADO
         if (result.details) {
           // Mensagem para compositor com exclusão em cascata
           if (item.type === 'composer' && result.details.deletedWorks > 0) {
-            notifySuccess(
+            toast.success(
               'Compositor Excluído',
               `${result.details.composerName} foi excluído junto com ${result.details.deletedWorks} obra(s) e ${result.details.deletedScores} partitura(s).`
             );
@@ -369,7 +402,7 @@ const UploadsClient = ({
             item.type === 'work' &&
             result.details.totalDeletedScores > 0
           ) {
-            notifySuccess(
+            toast.success(
               'Obra Excluída',
               `${result.details.workTitle} foi excluída junto com ${
                 result.details.totalDeletedScores
@@ -382,21 +415,21 @@ const UploadsClient = ({
           }
           // Mensagem para partitura simples
           else if (item.type === 'score') {
-            notifySuccess(
+            toast.success(
               'Partitura Excluída',
               `A partitura "${result.details.scoreTitle}" da obra "${result.details.workTitle}" foi excluída com sucesso.`
             );
           }
           // Mensagem padrão se não houver cascata
           else {
-            notifySuccess(
+            toast.success(
               'Sucesso',
               result.message || 'Item excluído com sucesso'
             );
           }
         } else {
           // Fallback para mensagem padrão
-          notifySuccess(
+          toast.success(
             'Sucesso',
             result.message || 'Item excluído com sucesso'
           );
@@ -409,7 +442,8 @@ const UploadsClient = ({
       }
     } catch (error) {
       console.error('Erro ao excluir:', error);
-      notifyError(
+      // 🆕 SUBSTITUIR alert POR toast
+      toast.error(
         'Erro',
         error instanceof Error ? error.message : 'Erro ao excluir item'
       );
@@ -1167,12 +1201,7 @@ const UploadsClient = ({
           </div>
         </div>
       )}
-
-      {/* Notification System */}
-      <NotificationSystem
-        notifications={notifications}
-        onRemove={removeNotification}
-      />
+      {/* 🆕 MODAL DE CONFIRMAÇÃO */}
     </PageContainer>
   );
 };

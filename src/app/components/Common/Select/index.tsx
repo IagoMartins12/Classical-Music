@@ -1,8 +1,8 @@
 // components/ui/Select.tsx
 'use client';
 
-import React, { forwardRef } from 'react';
-import { FiChevronDown } from 'react-icons/fi';
+import React, { forwardRef, useMemo } from 'react';
+import { FiAlertCircle, FiChevronDown } from 'react-icons/fi';
 
 interface SelectOption {
   value: string;
@@ -11,12 +11,14 @@ interface SelectOption {
   disabled?: boolean;
 }
 
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectProps
+  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'defaultValue'> {
   label?: string;
   error?: string;
   options: SelectOption[];
   placeholder?: string;
   containerClassName?: string;
+  defaultValue?: string; // Pode ser o label ou value da opção
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
@@ -29,11 +31,49 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       className = '',
       containerClassName = '',
       id,
+      value,
+      defaultValue,
       ...props
     },
     ref
   ) => {
     const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
+
+    // Encontrar o value correto baseado no defaultValue
+    const resolvedDefaultValue = useMemo(() => {
+      if (!defaultValue || (value && value !== '')) {
+        return undefined; // Se já tem value controlado, não usar defaultValue
+      }
+
+      // Primeiro, tentar encontrar por value exato
+      const optionByValue = options.find(
+        (option) => option.value === defaultValue
+      );
+      if (optionByValue) {
+        return optionByValue.value;
+      }
+
+      // Depois, tentar encontrar por label (case-insensitive)
+      const optionByLabel = options.find(
+        (option) => option.label.toLowerCase() === defaultValue.toLowerCase()
+      );
+      if (optionByLabel) {
+        return optionByLabel.value;
+      }
+
+      // Tentar encontrar por label que contenha o defaultValue
+      const optionByPartialLabel = options.find((option) =>
+        option.label.toLowerCase().includes(defaultValue.toLowerCase())
+      );
+      if (optionByPartialLabel) {
+        return optionByPartialLabel.value;
+      }
+
+      return undefined;
+    }, [defaultValue, options, value]);
+
+    // Determinar o value final a ser usado
+    const finalValue = value !== undefined ? value : resolvedDefaultValue;
 
     return (
       <div className={`relative ${containerClassName}`}>
@@ -45,11 +85,11 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             {label}
           </label>
         )}
-
         <div className="relative">
           <select
             ref={ref}
             id={selectId}
+            value={finalValue || ''}
             className={`
               input-classical w-full !pr-10 !pl-6 appearance-none cursor-pointer
               ${error ? 'border-accent-red focus:border-accent-red' : ''}
@@ -78,7 +118,22 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </div>
         </div>
 
-        {error && <p className="mt-1 text-sm text-accent-red">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1 gap-2">
+            <FiAlertCircle className="w-4 h-4" />
+            {error}
+          </p>
+        )}
+
+        {/* Debug info em desenvolvimento */}
+        {process.env.NODE_ENV === 'development' && defaultValue && (
+          <div className="mt-1 text-xs text-gray-500">
+            Default: "{defaultValue}" →{' '}
+            {resolvedDefaultValue
+              ? `"${resolvedDefaultValue}"`
+              : 'não encontrado'}
+          </div>
+        )}
       </div>
     );
   }

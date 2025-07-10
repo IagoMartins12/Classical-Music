@@ -1,4 +1,4 @@
-// CreateComposerModal.tsx - CORRIGIDO COM SCROLL SUAVE
+// CreateComposerModal.tsx - ATUALIZADO COM TOASTS
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -34,6 +34,9 @@ import {
   useFormValidation,
   composerModalValidations,
 } from '@/app/utils/formUtils';
+
+// 🆕 IMPORTAR O HOOK DE TOAST
+import { useToast } from '@/app/hooks/useToast';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -77,6 +80,9 @@ const CreateComposerModal = ({
   editingComposer,
 }: CreateComposerModalProps) => {
   const router = useRouter();
+  // 🆕 HOOK DE TOAST
+  const toast = useToast();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [scrapingUrl, setScrapingUrl] = useState(false);
   const [urlToScrape, setUrlToScrape] = useState('');
@@ -121,7 +127,7 @@ const CreateComposerModal = ({
     nationality: '',
     instruments: '',
     imslpCategories: '',
-    primaryRoleId: '',
+    primaryRoleId: '685d591c1e3db0c5aaa893e4',
     roles: [] as string[],
     dataSource: 'none' as DataSource,
   });
@@ -437,13 +443,16 @@ const CreateComposerModal = ({
           ...prev,
           portraitUrl: result.imageUrl,
         }));
-        alert('Imagem carregada com sucesso!');
+        // 🆕 SUBSTITUIR alert POR toast
+        toast.success('Sucesso', 'Imagem carregada com sucesso!');
       } else {
         throw new Error(result.message || 'Erro ao fazer upload');
       }
     } catch (error) {
       console.error('Erro no upload:', error);
-      alert(
+      // 🆕 SUBSTITUIR alert POR toast
+      toast.error(
+        'Erro no Upload',
         error instanceof Error
           ? error.message
           : 'Erro ao fazer upload da imagem'
@@ -481,7 +490,11 @@ const CreateComposerModal = ({
         formData.imslpId &&
         (await checkDuplicateByLink(formData.imslpId, 'imslp'))
       ) {
-        alert('Já existe um compositor com este link do IMSLP.');
+        // 🆕 SUBSTITUIR alert POR toast
+        toast.error(
+          'Duplicata Encontrada',
+          'Já existe um compositor com este link do IMSLP.'
+        );
         return;
       }
 
@@ -489,7 +502,11 @@ const CreateComposerModal = ({
         formData.wikipediaLink &&
         (await checkDuplicateByLink(formData.wikipediaLink, 'wikipedia'))
       ) {
-        alert('Já existe um compositor com este link da Wikipedia.');
+        // 🆕 SUBSTITUIR alert POR toast
+        toast.error(
+          'Duplicata Encontrada',
+          'Já existe um compositor com este link da Wikipedia.'
+        );
         return;
       }
     }
@@ -527,13 +544,19 @@ const CreateComposerModal = ({
       if (response.ok) {
         router.refresh();
         onClose();
-        alert(data.message || 'Compositor salvo com sucesso!');
+        // 🆕 SUBSTITUIR alert POR toast
+        toast.success(
+          editingComposer ? 'Compositor Atualizado' : 'Compositor Criado',
+          data.message || 'Compositor salvo com sucesso!'
+        );
       } else {
         throw new Error(data.error || 'Erro ao salvar compositor');
       }
     } catch (error) {
       console.error('Erro ao salvar compositor:', error);
-      alert(
+      // 🆕 SUBSTITUIR alert POR toast
+      toast.error(
+        'Erro ao Salvar',
         error instanceof Error ? error.message : 'Erro ao salvar compositor'
       );
     } finally {
@@ -543,12 +566,17 @@ const CreateComposerModal = ({
 
   const handleScrapeUrl = async () => {
     if (!urlToScrape.trim()) {
-      alert('Digite uma URL para fazer scraping');
+      // 🆕 SUBSTITUIR alert POR toast
+      toast.warning('URL Necessária', 'Digite uma URL para fazer scraping');
       return;
     }
 
     if (dataSource === 'none') {
-      alert('Selecione o tipo de fonte (IMSLP ou Wikipedia)');
+      // 🆕 SUBSTITUIR alert POR toast
+      toast.warning(
+        'Tipo de Fonte',
+        'Selecione o tipo de fonte (IMSLP ou Wikipedia)'
+      );
       return;
     }
 
@@ -562,7 +590,9 @@ const CreateComposerModal = ({
           ? 'link do IMSLP'
           : 'link da Wikipedia';
 
-      alert(
+      // 🆕 SUBSTITUIR alert POR toast
+      toast.error(
+        'Compositor Já Existe',
         `Já existe um compositor com esse ${reasonText}: ${duplicateCheck.composer?.fullName}`
       );
       return;
@@ -588,12 +618,21 @@ const CreateComposerModal = ({
       if (response.ok) {
         setScrapingResult(data);
         fillFromScrapingResult(data.data);
+        // 🆕 TOAST DE SUCESSO
+        toast.success(
+          'Dados Extraídos',
+          `Informações extraídas com ${data.data.dataCompleteness}% de completude`
+        );
       } else {
         throw new Error(data.error || 'Erro ao fazer scraping');
       }
     } catch (error) {
       console.error('Erro ao fazer scraping:', error);
-      alert(error instanceof Error ? error.message : 'Erro ao fazer scraping');
+      // 🆕 SUBSTITUIR alert POR toast
+      toast.error(
+        'Erro no Scraping',
+        error instanceof Error ? error.message : 'Erro ao fazer scraping'
+      );
     } finally {
       setScrapingUrl(false);
     }
@@ -942,13 +981,6 @@ const CreateComposerModal = ({
                       error={errors.nationality}
                       placeholder="Selecione a nacionalidade..."
                     />
-                    {/* 🆕 MENSAGEM DE ERRO PARA NACIONALIDADE */}
-                    {errors.nationality && (
-                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
-                        <FiAlertCircle className="w-4 h-4" />
-                        <span>Campo obrigatório: {errors.nationality}</span>
-                      </p>
-                    )}
                   </div>
 
                   <Input
@@ -994,13 +1026,6 @@ const CreateComposerModal = ({
                         errors.birthDate ? 'border-red-500' : ''
                       }`}
                     />
-                    {/* 🆕 MENSAGEM DE ERRO */}
-                    {errors.birthDate && (
-                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
-                        <FiAlertCircle className="w-4 h-4" />
-                        <span>Campo obrigatório: {errors.birthDate}</span>
-                      </p>
-                    )}
                   </div>
 
                   <div>
@@ -1018,13 +1043,7 @@ const CreateComposerModal = ({
                         errors.deathDate ? 'border-red-500' : ''
                       }`}
                     />
-                    {/* 🆕 MENSAGEM DE ERRO */}
-                    {errors.deathDate && (
-                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
-                        <FiAlertCircle className="w-4 h-4" />
-                        <span>Campo obrigatório: {errors.deathDate}</span>
-                      </p>
-                    )}
+
                     <p className="text-xs text-theme-tertiary mt-1">
                       Deixe vazio se ainda vivo
                     </p>
@@ -1085,15 +1104,6 @@ const CreateComposerModal = ({
                       }
                       error={errors.epochId}
                     />
-                    {/* 🆕 MENSAGEM DE ERRO */}
-                    {errors.epochId && (
-                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
-                        <FiAlertCircle className="w-4 h-4" />
-                        <span>
-                          Campo obrigatório: Época deve ser selecionada
-                        </span>
-                      </p>
-                    )}
                   </div>
 
                   <div>
@@ -1113,18 +1123,9 @@ const CreateComposerModal = ({
                       onChange={(e) =>
                         handleInputChange('primaryRoleId', e.target.value)
                       }
+                      defaultValue={'Compositor'}
                       error={errors.primaryRoleId}
                     />
-                    {/* 🆕 MENSAGEM DE ERRO */}
-                    {errors.primaryRoleId && (
-                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
-                        <FiAlertCircle className="w-4 h-4" />
-                        <span>
-                          Campo obrigatório: Papel principal deve ser
-                          selecionado
-                        </span>
-                      </p>
-                    )}
                   </div>
 
                   <div className="md:col-span-2">

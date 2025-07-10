@@ -2,7 +2,7 @@
 'use client';
 
 import React, { forwardRef } from 'react';
-import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiAlertCircle, FiEye, FiEyeOff } from 'react-icons/fi';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -88,7 +88,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        {error && <p className="mt-1 text-sm text-accent-red">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1 gap-2">
+            <FiAlertCircle className="w-4 h-4" />
+
+            {error}
+          </p>
+        )}
       </div>
     );
   }

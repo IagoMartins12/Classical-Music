@@ -128,19 +128,15 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
     }
 
     // Validar se é uma URL de imagem
-    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
-    const isImageUrl = imageExtensions.some((ext) =>
-      urlInput.toLowerCase().includes(ext)
-    );
+    // const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+    // const isImageUrl = imageExtensions.some((ext) =>
+    //   urlInput.toLowerCase().includes(ext)
+    // );
 
-    if (
-      !isImageUrl &&
-      !urlInput.includes('imslp.org') &&
-      !urlInput.includes('wikipedia.org')
-    ) {
-      toast.error('URL deve ser de uma imagem válida');
-      return;
-    }
+    // if (!isImageUrl) {
+    //   toast.error('URL deve ser de uma imagem válida');
+    //   return;
+    // }
 
     onImageChange?.(urlInput);
     onImageUrlChange?.(urlInput);
@@ -168,7 +164,8 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
       {/* Mode Selection */}
       <div className="flex items-center space-x-2 bg-theme-secondary rounded-lg p-1">
         <button
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             if (inputMode === 'upload') {
               fileInputRef.current?.click();
             }
@@ -184,7 +181,10 @@ const ComposerImageUpload: React.FC<ComposerImageUploadProps> = ({
           <span className="text-sm font-medium">Upload</span>
         </button>
         <button
-          onClick={() => handleModeChange('url')}
+          onClick={(e) => {
+            e.preventDefault();
+            handleModeChange('url');
+          }}
           className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
             inputMode === 'url'
               ? 'bg-brand-primary text-white shadow-sm'
