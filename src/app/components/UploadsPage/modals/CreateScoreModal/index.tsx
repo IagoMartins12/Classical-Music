@@ -1,4 +1,4 @@
-// app/components/UploadsPage/modals/CreateScoreModal/index.tsx
+// app/components/UploadsPage/modals/CreateScoreModal/index.tsx - CORRIGIDO
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -28,7 +28,10 @@ import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 import WorkSearchInput from '@/app/components/WorkSearchInput';
-import { useFormValidation } from '@/app/utils/formUtils';
+import {
+  useFormValidation,
+  scoreModalValidations,
+} from '@/app/utils/formUtils';
 import {
   validateAndExtractPDFInfo,
   validateUploadedFile,
@@ -136,12 +139,27 @@ const CreateScoreModal = ({
     composer: { name: string; fullName: string };
   } | null>(null);
 
-  // 🆕 CONFIGURAÇÃO DE VALIDAÇÃO
+  // 🆕 VALIDAÇÕES CUSTOMIZADAS CORRIGIDAS
   const requiredFields = ['workId', 'title', 'downloadUrl'];
   const customValidations = {
+    ...scoreModalValidations,
     uploadMode: (value: any) => {
       if (!editingScore && !uploadMode) {
         return 'Escolha entre URL ou upload de arquivo';
+      }
+      return null;
+    },
+    downloadUrl: (value: any) => {
+      if (!editingScore && !value?.trim()) {
+        if (!uploadMode) {
+          return 'Escolha um modo de upload primeiro';
+        }
+        if (uploadMode === 'url') {
+          return 'URL do arquivo é obrigatória';
+        }
+        if (uploadMode === 'file' && !selectedFile) {
+          return 'Faça upload de um arquivo';
+        }
       }
       return null;
     },
@@ -163,7 +181,7 @@ const CreateScoreModal = ({
       }
 
       setFormData({
-        workId: editingScore.workId || '', // 🆕 SETAR workId
+        workId: editingScore.workId || '',
         title: editingScore.title || '',
         downloadUrl: editingScore.downloadUrl || '',
         fileSize: editingScore.fileSize || '',
@@ -349,6 +367,11 @@ const CreateScoreModal = ({
       setSelectedFile(file);
       setPdfValidation({ isValidating: false, isValid: true });
 
+      // 🆕 LIMPAR ERRO DE DOWNLOAD URL QUANDO ARQUIVO FOR CARREGADO
+      if (errors.downloadUrl) {
+        setErrors((prev) => ({ ...prev, downloadUrl: '' }));
+      }
+
       console.log('✅ Upload completo:', {
         mainFile: data.url,
         thumbnail: thumbnailUrl,
@@ -378,7 +401,7 @@ const CreateScoreModal = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 🆕 USAR VALIDAÇÃO COM SCROLL
+    // 🆕 USAR VALIDAÇÃO CUSTOMIZADA (SEM required DO HTML)
     if (!handleValidation()) {
       return;
     }
@@ -478,7 +501,7 @@ const CreateScoreModal = ({
 
           {/* Content */}
           <div className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               {/* Upload Mode Selection - Apenas para criação nova */}
               {!editingScore && (
                 <AnimatedCard className="classical-card-2 p-4">
@@ -547,6 +570,18 @@ const CreateScoreModal = ({
                         </div>
                       </button>
                     </div>
+
+                    {/* 🆕 ERRO DE MODO DE UPLOAD */}
+                    {errors.uploadMode && (
+                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <div className="flex items-center space-x-2">
+                          <FiAlertCircle className="w-4 h-4 text-red-600" />
+                          <span className="text-sm font-medium text-red-800">
+                            {errors.uploadMode}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </AnimatedCard>
               )}
@@ -689,7 +724,11 @@ const CreateScoreModal = ({
 
                   <div className="space-y-4">
                     <div
-                      className="border-2 border-dashed border-theme-secondary rounded-lg p-8 text-center hover:border-brand-primary transition-colors cursor-pointer"
+                      className={`border-2 border-dashed rounded-lg p-8 text-center hover:border-brand-primary transition-colors cursor-pointer ${
+                        errors.downloadUrl
+                          ? 'border-red-500'
+                          : 'border-theme-secondary'
+                      }`}
                       onClick={() =>
                         document.getElementById('file-upload')?.click()
                       }
@@ -766,6 +805,18 @@ const CreateScoreModal = ({
                       )}
                     </div>
 
+                    {/* 🆕 ERRO DE UPLOAD DE ARQUIVO */}
+                    {errors.downloadUrl && uploadMode === 'file' && (
+                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <div className="flex items-center space-x-2">
+                          <FiAlertCircle className="w-4 h-4 text-red-600" />
+                          <span className="text-sm font-medium text-red-800">
+                            {errors.downloadUrl}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
                     {selectedFile && (
                       <button
                         type="button"
@@ -835,9 +886,7 @@ const CreateScoreModal = ({
                     {errors.workId && (
                       <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
                         <FiAlertCircle className="w-4 h-4" />
-                        <span>
-                          Campo obrigatório: Obra deve ser selecionada
-                        </span>
+                        <span>{errors.workId}</span>
                       </p>
                     )}
                   </div>
@@ -849,7 +898,6 @@ const CreateScoreModal = ({
                     onChange={(e) => handleInputChange('title', e.target.value)}
                     error={errors.title}
                     placeholder="Título da partitura"
-                    required
                   />
 
                   <div>

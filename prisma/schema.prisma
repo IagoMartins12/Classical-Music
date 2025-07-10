@@ -157,7 +157,8 @@ model User {
   workAnnotations     WorkAnnotation[]
   annotationVotes     AnnotationHelpfulVote[]
   annotationReplies   AnnotationReply[]
-  
+    verifiedComposers Composer[] @relation("VerifiedComposers")
+
   // Configurações de anotações
   annotationPreferences Json? // Preferências de exibição, notificações, etc.
   
@@ -470,8 +471,10 @@ model Composer {
   verifiedBy       String? @db.ObjectId
   verifiedAt       DateTime?
   dataSource        String?  @default("none") // 'none', 'imslp', 'wikipedia'
-
+  isVerified        Boolean @default(false) // Status de verificação
+  verificationNotes String? // Notas da verificação
   
+
    // Metadados de edição
   lastEditedBy     String? @db.ObjectId
   lastEditedAt     DateTime?
@@ -495,11 +498,15 @@ model Composer {
   favoritedBy FavoriteComposer[]
   favoriteByUsers User[] @relation("FavoriteComposer")
 
+  verifier User? @relation("VerifiedComposers", fields: [verifiedBy], references: [id])
+
   // Índices otimizados
   @@index([name])
   @@index([epochId])
   @@index([fullName])
-  @@index([otherName])             
+  @@index([otherName])    
+  @@index([verifiedBy]) // Novo índice para verificador
+  @@index([isVerified]) // Novo índice para verificação
   @@index([alternativeNames])      
   @@index([imslpCategories])       
   @@index([primaryRoleId])
@@ -1196,7 +1203,7 @@ model UploadHistory {
   @@map("upload_history")
 }
 
-// Novo modelo para moderação de uploads
+// Atualizar modelo UploadModeration para incluir novos campos
 model UploadModeration {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
   entityType  String   // "composer", "work", "score"
@@ -1204,12 +1211,20 @@ model UploadModeration {
   reportedBy  String   @db.ObjectId
   moderatedBy String?  @db.ObjectId
   
-  reason      String   // Razão do report
+  reason      String   // Motivo do report
   description String?  // Descrição detalhada
   status      String   @default("pending") // "pending", "approved", "rejected"
   
+  // Novos campos para melhor rastreamento
+  priority    String   @default("normal") // "low", "normal", "high", "urgent"
+  category    String?  // Categoria adicional se necessário
+  
   moderationNotes String? // Notas do moderador
   resolution  String?     // Resolução tomada
+  
+  // Campos de auditoria
+  ipAddress   String?  // IP do usuário que reportou
+  userAgent   String?  // User agent do navegador
   
   createdAt   DateTime @default(now())
   resolvedAt  DateTime?
@@ -1217,9 +1232,46 @@ model UploadModeration {
   reporter  User @relation("ReportedUploads", fields: [reportedBy], references: [id])
   moderator User? @relation("ModeratedUploads", fields: [moderatedBy], references: [id])
   
+  // Índices otimizados
   @@index([entityType, entityId])
-  @@index([status])
+  @@index([status, priority]) // Novo índice para prioridade
   @@index([reportedBy])
   @@index([moderatedBy])
+  @@index([createdAt])
+  @@index([reason]) // Novo índice para motivos
+  @@index([category]) // Novo índice para categorias
   @@map("upload_moderation")
+}
+
+// Novo modelo para estatísticas de reports (cache)
+model ReportStats {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  
+  // Período das estatísticas
+  period    String   // "daily", "weekly", "monthly"
+  date      DateTime
+  
+  // Estatísticas gerais
+  totalReports      Int @default(0)
+  pendingReports    Int @default(0)
+  approvedReports   Int @default(0)
+  rejectedReports   Int @default(0)
+  
+  // Reports por tipo
+  composerReports   Int @default(0)
+  workReports       Int @default(0)
+  scoreReports      Int @default(0)
+  
+  // Reports por motivo (JSON para flexibilidade)
+  reasonBreakdown   Json?
+  
+  // Tempo médio de resolução
+  avgResolutionTime Int? // em minutos
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([period, date])
+  @@index([period])
+  @@index([date])
+  @@map("report_stats")
 }

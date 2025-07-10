@@ -1,4 +1,4 @@
-// app/components/ModerationClient.tsx
+// app/components/ModerationClient.tsx - VERSÃO ATUALIZADA com seleção múltipla
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -15,6 +15,8 @@ import {
   FiShield,
   FiAlertTriangle,
   FiExternalLink,
+  FiMoreHorizontal,
+  FiEye,
 } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -29,6 +31,12 @@ import {
 import Button from '@/app/components/Common/Button';
 import NotificationSystem from '@/app/components/Notifications/NotificationSystem';
 
+import ReportHistoryModal from '@/app/components/Report/ReportHistoryModal';
+import VerificationBadge from '@/app/components/Verification/VerificationBadge';
+import { REPORT_REASONS } from '@/app/utils/reportHelpers';
+import BulkReportActions from '../../Report/BulkReportActions';
+import ReportPriorityBadge from '../../Report/ReportPriorityBadge';
+
 interface ModerationClientProps {
   page: number;
   status: string;
@@ -42,15 +50,29 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
   const [moderations, setModerations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
-  // const [totalCount, setTotalCount] = useState(0);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedModeration, setSelectedModeration] = useState<any>(null);
   const [moderationNotes, setModerationNotes] = useState('');
 
+  // Estados para seleção múltipla
+  const [selectedReports, setSelectedReports] = useState<string[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
+
+  // Estados para histórico
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [historyEntity, setHistoryEntity] = useState<any>(null);
+
   useEffect(() => {
     fetchModerations();
   }, [page, status]);
+
+  useEffect(() => {
+    // Atualizar selectAll baseado na seleção atual
+    if (moderations.length > 0) {
+      setSelectAll(selectedReports.length === moderations.length);
+    }
+  }, [selectedReports, moderations]);
 
   const fetchModerations = async () => {
     setLoading(true);
@@ -62,7 +84,9 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
         const data = await response.json();
         setModerations(data.moderations);
         setTotalPages(data.pagination.totalPages);
-        // setTotalCount(data.pagination.totalCount);
+        // Limpar seleção ao carregar nova página
+        setSelectedReports([]);
+        setSelectAll(false);
       }
     } catch (error) {
       console.error('Erro ao carregar moderações:', error);
@@ -107,6 +131,42 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
     }
   };
 
+  // Funções de seleção múltipla
+  const handleSelectReport = (reportId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedReports((prev) => [...prev, reportId]);
+    } else {
+      setSelectedReports((prev) => prev.filter((id) => id !== reportId));
+    }
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedReports(moderations.map((m) => m.id));
+    } else {
+      setSelectedReports([]);
+    }
+    setSelectAll(checked);
+  };
+
+  const handleBulkActionComplete = () => {
+    fetchModerations();
+  };
+
+  const handleClearSelection = () => {
+    setSelectedReports([]);
+    setSelectAll(false);
+  };
+
+  const showHistory = (moderation: any) => {
+    setHistoryEntity({
+      type: moderation.entityType,
+      id: moderation.entityId,
+      name: getEntityTitle(moderation),
+    });
+    setShowHistoryModal(true);
+  };
+
   const getEntityIcon = (type: string) => {
     switch (type) {
       case 'composer':
@@ -123,18 +183,22 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
   const getEntityTitle = (moderation: any) => {
     if (!moderation.entityDetails) return 'Item não encontrado';
 
-    switch (moderation.entityType) {
-      case 'composer':
-        return (
-          moderation.entityDetails.fullName || moderation.entityDetails.name
-        );
-      case 'work':
-        return moderation.entityDetails.title;
-      case 'score':
-        return moderation.entityDetails.title;
-      default:
-        return 'Item desconhecido';
-    }
+    const title = (() => {
+      switch (moderation.entityType) {
+        case 'composer':
+          return (
+            moderation.entityDetails.fullName || moderation.entityDetails.name
+          );
+        case 'work':
+          return moderation.entityDetails.title;
+        case 'score':
+          return moderation.entityDetails.title;
+        default:
+          return 'Item desconhecido';
+      }
+    })();
+
+    return title;
   };
 
   const getEntitySubtitle = (moderation: any) => {
@@ -156,36 +220,9 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
     }
   };
 
-  const getReason = (reason: string) => {
-    const reasons: Record<string, string> = {
-      inappropriate_content: 'Conteúdo inadequado',
-      copyright_violation: 'Violação de direitos autorais',
-      spam: 'Spam',
-      fake_information: 'Informações falsas',
-      other: 'Outros',
-    };
-    return reasons[reason] || reason;
-  };
-
-  const getUrgencyLevel = (createdAt: string) => {
-    const days = Math.floor(
-      (new Date().getTime() - new Date(createdAt).getTime()) /
-        (1000 * 60 * 60 * 24)
-    );
-    if (days > 7) return 'urgent';
-    if (days > 3) return 'high';
-    return 'normal';
-  };
-
-  const getUrgencyColor = (urgency: string) => {
-    switch (urgency) {
-      case 'urgent':
-        return 'text-accent-red bg-accent-red/10';
-      case 'high':
-        return 'text-accent-amber bg-accent-amber/10';
-      default:
-        return 'text-theme-tertiary bg-theme-secondary';
-    }
+  const getReasonLabel = (reason: string) => {
+    const reasonConfig = REPORT_REASONS[reason as keyof typeof REPORT_REASONS];
+    return reasonConfig?.label || reason;
   };
 
   const openModerationModal = (moderation: any) => {
@@ -215,7 +252,7 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Moderação de Uploads
+              Moderação de Reports
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
               Gerencie reports e mantenha a qualidade do conteúdo
@@ -253,6 +290,46 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
           </div>
         </AnimatedItem>
 
+        {/* Bulk Selection Header */}
+        {moderations.length > 0 && status === 'pending' && (
+          <AnimatedItem direction="up" springType="gentle">
+            <div className="classical-card p-4 mb-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectAll}
+                      onChange={(e) => handleSelectAll(e.target.checked)}
+                      className="rounded border-theme-primary"
+                    />
+                    <span className="text-sm font-medium text-theme-primary">
+                      Selecionar todos ({moderations.length})
+                    </span>
+                  </label>
+
+                  {selectedReports.length > 0 && (
+                    <span className="text-sm text-theme-secondary">
+                      {selectedReports.length} selecionado(s)
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<FiEye />}
+                    onClick={() => router.push('/admin/reports')}
+                  >
+                    Dashboard
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </AnimatedItem>
+        )}
+
         {/* Moderations List */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="space-y-4">
@@ -267,144 +344,175 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
                 </p>
               </div>
             ) : (
-              moderations.map((moderation, index) => {
-                const urgency = getUrgencyLevel(moderation.createdAt);
-                return (
-                  <AnimatedItem
-                    key={moderation.id}
-                    direction="left"
-                    style={{
-                      animationDelay: `${index * 0.1}s`,
-                      animationFillMode: 'backwards',
-                    }}
-                  >
-                    <AnimatedCard className="classical-card p-6 hover:shadow-theme-glow transition-all">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-4 flex-1">
-                          <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-amber rounded-xl flex items-center justify-center">
-                            {getEntityIcon(moderation.entityType)}
+              moderations.map((moderation, index) => (
+                <AnimatedItem
+                  key={moderation.id}
+                  direction="left"
+                  style={{
+                    animationDelay: `${index * 0.1}s`,
+                    animationFillMode: 'backwards',
+                  }}
+                >
+                  <AnimatedCard className="classical-card p-6 hover:shadow-theme-glow transition-all">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-start space-x-4 flex-1">
+                        {/* Checkbox para seleção múltipla */}
+                        {status === 'pending' && (
+                          <div className="pt-1">
+                            <input
+                              type="checkbox"
+                              checked={selectedReports.includes(moderation.id)}
+                              onChange={(e) =>
+                                handleSelectReport(
+                                  moderation.id,
+                                  e.target.checked
+                                )
+                              }
+                              className="rounded border-theme-primary"
+                            />
                           </div>
+                        )}
 
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
-                              <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium ${getUrgencyColor(
-                                  urgency
-                                )}`}
-                              >
-                                {urgency === 'urgent' && 'Urgente'}
-                                {urgency === 'high' && 'Alta'}
-                                {urgency === 'normal' && 'Normal'}
-                              </span>
-                              <span className="text-xs text-theme-tertiary">
-                                {moderation.entityType.charAt(0).toUpperCase() +
-                                  moderation.entityType.slice(1)}
-                              </span>
-                            </div>
-
-                            <h3 className="text-lg font-bold text-theme-primary mb-1">
-                              {getEntityTitle(moderation)}
-                            </h3>
-                            <p className="text-sm text-theme-secondary mb-2">
-                              {getEntitySubtitle(moderation)}
-                            </p>
-
-                            <div className="flex items-center space-x-4 text-sm text-theme-tertiary mb-2">
-                              <span className="flex items-center space-x-1">
-                                <FiFlag className="w-4 h-4" />
-                                <span>{getReason(moderation.reason)}</span>
-                              </span>
-                              <span className="flex items-center space-x-1">
-                                <FiCalendar className="w-4 h-4" />
-                                <span>
-                                  {formatDistanceToNow(
-                                    new Date(moderation.createdAt),
-                                    { addSuffix: true, locale: ptBR }
-                                  )}
-                                </span>
-                              </span>
-                              <span className="flex items-center space-x-1">
-                                <FiUser className="w-4 h-4" />
-                                <span>
-                                  {moderation.reporter.firstName ||
-                                    moderation.reporter.email}
-                                </span>
-                              </span>
-                            </div>
-
-                            {moderation.description && (
-                              <p className="text-sm text-theme-secondary italic">
-                                &quot;{moderation.description}&quot;
-                              </p>
-                            )}
-
-                            {moderation.moderationNotes && (
-                              <div className="mt-2 p-2 bg-theme-secondary rounded-lg">
-                                <p className="text-sm text-theme-primary">
-                                  <strong>Notas da moderação:</strong>{' '}
-                                  {moderation.moderationNotes}
-                                </p>
-                              </div>
-                            )}
-                          </div>
+                        <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-amber rounded-xl flex items-center justify-center">
+                          {getEntityIcon(moderation.entityType)}
                         </div>
 
-                        <div className="flex items-center space-x-2">
-                          {moderation.status === 'pending' && (
-                            <>
-                              <Button
-                                variant="secondary"
-                                size="sm"
-                                leftIcon={<FiCheck />}
-                                onClick={() =>
-                                  handleModeration(moderation.id, 'approve')
-                                }
-                                disabled={processingId === moderation.id}
-                              >
-                                Aprovar
-                              </Button>
-                              <Button
-                                variant="secondary"
-                                size="sm"
-                                leftIcon={<FiX />}
-                                onClick={() =>
-                                  handleModeration(moderation.id, 'reject')
-                                }
-                                disabled={processingId === moderation.id}
-                              >
-                                Rejeitar
-                              </Button>
-                              <Button
-                                variant="delete"
-                                size="sm"
-                                leftIcon={<FiTrash2 />}
-                                onClick={() => openModerationModal(moderation)}
-                                disabled={processingId === moderation.id}
-                              >
-                                Deletar
-                              </Button>
-                            </>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <ReportPriorityBadge
+                              priority={moderation.priority || 'normal'}
+                              createdAt={moderation.createdAt}
+                            />
+                            <span className="text-xs text-theme-tertiary">
+                              {moderation.entityType.charAt(0).toUpperCase() +
+                                moderation.entityType.slice(1)}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center space-x-2 mb-1">
+                            <h3 className="text-lg font-bold text-theme-primary">
+                              {getEntityTitle(moderation)}
+                            </h3>
+                            {moderation.entityType === 'composer' &&
+                              moderation.entityDetails?.isVerified && (
+                                <VerificationBadge
+                                  verified={true}
+                                  size="sm"
+                                  variant="icon"
+                                />
+                              )}
+                          </div>
+
+                          <p className="text-sm text-theme-secondary mb-2">
+                            {getEntitySubtitle(moderation)}
+                          </p>
+
+                          <div className="flex items-center space-x-4 text-sm text-theme-tertiary mb-2">
+                            <span className="flex items-center space-x-1">
+                              <FiFlag className="w-4 h-4" />
+                              <span>{getReasonLabel(moderation.reason)}</span>
+                            </span>
+                            <span className="flex items-center space-x-1">
+                              <FiCalendar className="w-4 h-4" />
+                              <span>
+                                {formatDistanceToNow(
+                                  new Date(moderation.createdAt),
+                                  { addSuffix: true, locale: ptBR }
+                                )}
+                              </span>
+                            </span>
+                            <span className="flex items-center space-x-1">
+                              <FiUser className="w-4 h-4" />
+                              <span>
+                                {moderation.reporter.firstName ||
+                                  moderation.reporter.email}
+                              </span>
+                            </span>
+                          </div>
+
+                          {moderation.description && (
+                            <p className="text-sm text-theme-secondary italic">
+                              &quot;{moderation.description}&quot;
+                            </p>
                           )}
 
-                          {moderation.entityDetails && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              leftIcon={<FiExternalLink />}
-                              onClick={() => {
-                                const url = `/uploads/${moderation.entityType}/${moderation.entityId}`;
-                                window.open(url, '_blank');
-                              }}
-                            >
-                              Ver Item
-                            </Button>
+                          {moderation.moderationNotes && (
+                            <div className="mt-2 p-2 bg-theme-secondary rounded-lg">
+                              <p className="text-sm text-theme-primary">
+                                <strong>Notas da moderação:</strong>{' '}
+                                {moderation.moderationNotes}
+                              </p>
+                            </div>
                           )}
                         </div>
                       </div>
-                    </AnimatedCard>
-                  </AnimatedItem>
-                );
-              })
+
+                      <div className="flex items-center space-x-2">
+                        {/* Botão de histórico */}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          leftIcon={<FiEye />}
+                          onClick={() => showHistory(moderation)}
+                          title="Ver histórico"
+                        >
+                          Ver histórico
+                        </Button>
+
+                        {moderation.status === 'pending' && (
+                          <>
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              leftIcon={<FiCheck />}
+                              onClick={() =>
+                                handleModeration(moderation.id, 'approve')
+                              }
+                              disabled={processingId === moderation.id}
+                            >
+                              Aprovar
+                            </Button>
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              leftIcon={<FiX />}
+                              onClick={() =>
+                                handleModeration(moderation.id, 'reject')
+                              }
+                              disabled={processingId === moderation.id}
+                            >
+                              Rejeitar
+                            </Button>
+                            <Button
+                              variant="delete"
+                              size="sm"
+                              leftIcon={<FiTrash2 />}
+                              onClick={() => openModerationModal(moderation)}
+                              disabled={processingId === moderation.id}
+                            >
+                              Deletar
+                            </Button>
+                          </>
+                        )}
+
+                        {moderation.entityDetails && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            leftIcon={<FiExternalLink />}
+                            onClick={() => {
+                              const url = getViewUrl(moderation);
+                              if (url) window.open(url, '_blank');
+                            }}
+                          >
+                            Ver Item
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </AnimatedCard>
+                </AnimatedItem>
+              ))
             )}
           </div>
         </AnimatedItem>
@@ -436,6 +544,13 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
           </AnimatedItem>
         )}
       </AnimatedContainer>
+
+      {/* Bulk Actions */}
+      <BulkReportActions
+        selectedReports={selectedReports}
+        onActionComplete={handleBulkActionComplete}
+        onClearSelection={handleClearSelection}
+      />
 
       {/* Delete Confirmation Modal */}
       {showModal && selectedModeration && (
@@ -498,6 +613,17 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
         </div>
       )}
 
+      {/* History Modal */}
+      {showHistoryModal && historyEntity && (
+        <ReportHistoryModal
+          isOpen={showHistoryModal}
+          onClose={() => setShowHistoryModal(false)}
+          entityType={historyEntity.type}
+          entityId={historyEntity.id}
+          entityName={historyEntity.name}
+        />
+      )}
+
       {/* Notification System */}
       <NotificationSystem
         notifications={notifications}
@@ -505,6 +631,19 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
       />
     </PageContainer>
   );
+
+  function getViewUrl(moderation: any): string | null {
+    switch (moderation.entityType) {
+      case 'composer':
+        return `/composer/${moderation.entityId}`;
+      case 'work':
+        return `/work/${moderation.entityId}`;
+      case 'score':
+        return `/work/${moderation.entityDetails?.work?.id}`;
+      default:
+        return null;
+    }
+  }
 };
 
 export default ModerationClient;

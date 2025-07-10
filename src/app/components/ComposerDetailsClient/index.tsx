@@ -19,6 +19,7 @@ import {
   FiMusic,
   FiHeart,
   FiInfo,
+  FiShield,
 } from 'react-icons/fi';
 
 import ComposerBiography from '../ComposerBiography';
@@ -34,19 +35,32 @@ import {
 } from '../animation/AnimatedComponents';
 import { getComposerNationalityDisplay } from '../Utils/nationalityFlags';
 import { INSTRUMENT_MAPPING } from '../../../../scripts/imslp-works-scraper-util';
+import VerificationBadge from '../Verification/VerificationBadge';
+import Button from '../Common/Button';
+import ReportButton from '../Report/ReportButton';
+import VerificationModal from '../Verification/VerificationModal';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
   initialWorksData: ComposerWorksResponse;
   filterOptions: ComposerFilterOptions;
+  isAdmin: boolean;
 }
 
 export default function ComposerDetailsClient({
   composer,
   initialWorksData,
   filterOptions,
+  isAdmin,
 }: ComposerDetailsClientProps) {
   const [imageError, setImageError] = useState(false);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [isVerified, setIsVerified] = useState(composer.isVerified || false);
+
+  const handleVerificationChange = (verified: boolean) => {
+    setIsVerified(verified);
+    // Atualizar no contexto global se necessário
+  };
 
   // 🆕 Hook para informações da bandeira
   const nationalityDisplay = composer.nationality
@@ -226,9 +240,18 @@ export default function ComposerDetailsClient({
                             {composer.name}
                           </h1>
                           {composer.fullName !== composer.name && (
-                            <p className="space-x-2 text-xl text-theme-secondary mt-3">
-                              {composer.fullName}
-                            </p>
+                            <div className="flex items-center space-x-2">
+                              <p className="text-xl text-theme-secondary">
+                                {composer.fullName}
+                              </p>
+                              {isVerified && (
+                                <VerificationBadge
+                                  verified={isVerified}
+                                  size="md"
+                                  variant="text"
+                                />
+                              )}
+                            </div>
                           )}
                         </div>
                         {/* Ações */}
@@ -248,6 +271,26 @@ export default function ComposerDetailsClient({
                             variant="default"
                             size="lg"
                           />
+                          <ReportButton
+                            entityType="composer"
+                            entityId={composer.id}
+                            entityName={composer.fullName}
+                            variant="ghost"
+                            size="lg"
+                            showLabel={false}
+                          />
+                          {/* Admin verification button */}
+                          {isAdmin && (
+                            <Button
+                              variant="ghost"
+                              size="lg"
+                              leftIcon={<FiShield />}
+                              onClick={() => setShowVerificationModal(true)}
+                              title="Gerenciar verificação"
+                            >
+                              Gerenciar Verificação
+                            </Button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -598,6 +641,16 @@ export default function ComposerDetailsClient({
           </AnimatedCard>
         </AnimatedContainer>
       </div>
+      {isAdmin && (
+        <VerificationModal
+          isOpen={showVerificationModal}
+          onClose={() => setShowVerificationModal(false)}
+          composerId={composer.id}
+          composerName={composer.fullName}
+          currentVerificationStatus={isVerified}
+          onVerificationChange={handleVerificationChange}
+        />
+      )}
     </div>
   );
 }

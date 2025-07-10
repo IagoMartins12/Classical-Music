@@ -39,6 +39,7 @@ import AnnotationsSection from '../Annotations/AnnotationsSection';
 import { useMostFavoritedForWork } from '@/app/stores/useMostFavoritedStore';
 import IMSLPTabsIncremental from './IMSLPTabsIncremental';
 import { GiMetronome, GiMusicalNotes } from 'react-icons/gi';
+import ReportButton from '../Report/ReportButton';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -365,6 +366,14 @@ export default function WorkDetailsClient({
                           description={`Veja partituras dessa maravilhosa peça.`}
                           variant="default"
                           size="lg"
+                        />
+                        <ReportButton
+                          entityType="work"
+                          entityId={work.id}
+                          entityName={work.title}
+                          variant="ghost"
+                          size="lg"
+                          showLabel={false}
                         />
                       </div>
                     </div>

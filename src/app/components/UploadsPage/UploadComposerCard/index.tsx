@@ -14,6 +14,7 @@ import {
 import { GiMusicalNotes } from 'react-icons/gi';
 import { UserUpload } from '@/app/requests/upload';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
+import VerificationBadge from '../../Verification/VerificationBadge';
 
 interface UploadComposerCardProps {
   item: UserUpload;
@@ -103,6 +104,9 @@ const UploadComposerCard = ({
                 <h3 className="text-base font-bold text-theme-primary classical-title group-hover/link:text-brand-primary transition-colors duration-300 truncate hover:underline">
                   {item.title}
                 </h3>
+                {item.isVerified && (
+                  <VerificationBadge verified={true} size="sm" variant="icon" />
+                )}
               </Link>
 
               <div className="flex items-center space-x-4 mt-1">

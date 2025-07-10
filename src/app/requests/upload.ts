@@ -27,6 +27,7 @@ export interface UserUpload {
   workTitle?: string; // Novo campo para link da obra
   workId?: string; // Novo campo para link da obra
   downloadUrl?: string; // URL de download da partitura
+  isVerified?: boolean;
 }
 
 // Buscar uploads do usuário

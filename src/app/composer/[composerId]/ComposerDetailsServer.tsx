@@ -6,6 +6,8 @@ import {
   getComposerFilterOptions,
 } from '@/app/requests/composer-details';
 import ComposerDetailsClient from '@/app/components/ComposerDetailsClient';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/libs/auth';
 
 interface ComposerDetailsServerProps {
   composerId: string;
@@ -14,6 +16,8 @@ interface ComposerDetailsServerProps {
 export default async function ComposerDetailsServer({
   composerId,
 }: ComposerDetailsServerProps) {
+  const session = await getServerSession(authOptions);
+
   try {
     // OTIMIZAÇÃO: Carregar dados do compositor, obras iniciais e opções de filtro em paralelo
     const [composer, initialWorksData, filterOptions] = await Promise.all([
@@ -25,12 +29,14 @@ export default async function ComposerDetailsServer({
     if (!composer) {
       notFound();
     }
+    const isAdmin = session?.user.role === 2;
 
     return (
       <ComposerDetailsClient
         composer={composer}
         initialWorksData={initialWorksData}
         filterOptions={filterOptions}
+        isAdmin={isAdmin}
       />
     );
   } catch (error) {

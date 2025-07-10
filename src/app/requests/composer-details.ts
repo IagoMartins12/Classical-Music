@@ -28,6 +28,12 @@ export interface ComposerDetails {
   createdAt: Date;
   roleNames?: string[];
 
+  isVerified?: boolean;
+  verificationStatus?: string;
+  verifiedBy?: string;
+  verifiedAt?: Date;
+  verificationNotes?: string;
+
   // 🆕 New detailed information properties
   diverseInfo?: string;
   externalLinks?: string;
@@ -402,6 +408,12 @@ const getCachedComposerData = unstable_cache(
           instruments: true,
           imslpCategories: true,
 
+          isVerified: true,
+          verificationStatus: true,
+          verifiedBy: true,
+          verifiedAt: true,
+          verificationNotes: true,
+
           // 🆕 New metadata properties
           lastModifiedImslp: true,
           pageStatus: true,
@@ -476,6 +488,13 @@ const getCachedComposerData = unstable_cache(
         createdAt: composer.createdAt,
         roles: composer.roles, // IDs originais
         roleNames: roleNames, // Nomes dos roles
+
+        // Novos campos de verificação
+        isVerified: composer.isVerified || false,
+        verificationStatus: composer.verificationStatus || 'pending',
+        verifiedBy: composer.verifiedBy || undefined,
+        verifiedAt: composer.verifiedAt || undefined,
+        verificationNotes: composer.verificationNotes || undefined,
 
         // 🆕 New detailed information properties
         diverseInfo: composer.diverseInfo || undefined,
