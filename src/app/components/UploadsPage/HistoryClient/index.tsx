@@ -1,4 +1,4 @@
-// app/components/UploadsPage/HistoryClient.tsx
+// app/components/UploadsPage/HistoryClient.tsx - MELHORADO PARA BULK IMPORT
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -20,6 +20,10 @@ import {
   FiMapPin,
   FiMonitor,
   FiRefreshCw,
+  FiDatabase,
+  FiCheck,
+  FiX,
+  FiAlertCircle,
 } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -173,7 +177,12 @@ const HistoryClient = ({
     }
   };
 
-  const getActionIcon = (action: string) => {
+  const getActionIcon = (action: string, changes?: any) => {
+    // 🆕 Ícone especial para bulk import
+    if (changes?.bulkImport) {
+      return <FiDatabase className="w-4 h-4 text-purple-600" />;
+    }
+
     switch (action) {
       case 'create':
         return <FiPlus className="w-4 h-4 text-green-600" />;
@@ -186,7 +195,12 @@ const HistoryClient = ({
     }
   };
 
-  const getActionLabel = (action: string) => {
+  const getActionLabel = (action: string, changes?: any) => {
+    // 🆕 Label especial para bulk import
+    if (changes?.bulkImport) {
+      return 'Importou em lote';
+    }
+
     switch (action) {
       case 'create':
         return 'Criou';
@@ -199,7 +213,13 @@ const HistoryClient = ({
     }
   };
 
-  const getEntityLabel = (entityType: string) => {
+  const getEntityLabel = (entityType: string, changes?: any) => {
+    // 🆕 Label especial para bulk import
+    if (changes?.bulkImport) {
+      const count = changes.bulkImport.successfulWorks;
+      return `${count} obra${count !== 1 ? 's' : ''}`;
+    }
+
     switch (entityType) {
       case 'composer':
         return 'compositor';
@@ -212,7 +232,12 @@ const HistoryClient = ({
     }
   };
 
-  const getActionColor = (action: string) => {
+  const getActionColor = (action: string, changes?: any) => {
+    // 🆕 Cor especial para bulk import
+    if (changes?.bulkImport) {
+      return 'bg-purple-50 text-purple-700 border-purple-200';
+    }
+
     switch (action) {
       case 'create':
         return 'bg-green-50 text-green-700 border-green-200';
@@ -225,7 +250,12 @@ const HistoryClient = ({
     }
   };
 
-  const getTimelineDotColor = (action: string) => {
+  const getTimelineDotColor = (action: string, changes?: any) => {
+    // 🆕 Cor especial para bulk import
+    if (changes?.bulkImport) {
+      return 'from-purple-400 to-purple-600';
+    }
+
     switch (action) {
       case 'create':
         return 'from-green-400 to-green-600';
@@ -238,7 +268,12 @@ const HistoryClient = ({
     }
   };
 
-  const getCardBorderColor = (action: string) => {
+  const getCardBorderColor = (action: string, changes?: any) => {
+    // 🆕 Cor especial para bulk import
+    if (changes?.bulkImport) {
+      return 'border-l-4 border-l-purple-500';
+    }
+
     switch (action) {
       case 'create':
         return 'border-l-4 border-l-green-500';
@@ -253,6 +288,79 @@ const HistoryClient = ({
 
   const formatChanges = (changes: any, action: string) => {
     if (!changes || typeof changes !== 'object') return null;
+
+    // 🆕 FORMATAÇÃO ESPECIAL PARA BULK IMPORT
+    if (changes.bulkImport) {
+      const bulk = changes.bulkImport;
+      return (
+        <div className="mt-3 p-3 bg-purple-50 border border-purple-200 rounded-lg">
+          <h5 className="text-sm font-medium text-purple-700 mb-3 flex items-center">
+            <FiDatabase className="w-4 h-4 mr-1" />
+            Importação em Lote do IMSLP
+          </h5>
+
+          {/* Estatísticas */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+            <div className="text-center p-2 bg-white rounded">
+              <div className="text-lg font-bold text-green-600">
+                {bulk.successfulWorks}
+              </div>
+              <div className="text-xs text-green-700">Sucesso</div>
+            </div>
+            <div className="text-center p-2 bg-white rounded">
+              <div className="text-lg font-bold text-red-600">
+                {bulk.failedWorks}
+              </div>
+              <div className="text-xs text-red-700">Erros</div>
+            </div>
+            <div className="text-center p-2 bg-white rounded">
+              <div className="text-lg font-bold text-yellow-600">
+                {bulk.duplicateWorks}
+              </div>
+              <div className="text-xs text-yellow-700">Duplicatas</div>
+            </div>
+            <div className="text-center p-2 bg-white rounded">
+              <div className="text-lg font-bold text-purple-600">
+                {bulk.totalWorks}
+              </div>
+              <div className="text-xs text-purple-700">Total</div>
+            </div>
+          </div>
+
+          {/* Compositor */}
+          <div className="text-sm text-purple-700 mb-2">
+            <span className="font-medium">Compositor:</span> {bulk.composerName}
+          </div>
+
+          {/* Lista de obras criadas (primeiras 5) */}
+          {bulk.worksCreated && bulk.worksCreated.length > 0 && (
+            <div>
+              <div className="text-xs font-medium text-purple-700 mb-1">
+                Obras importadas com sucesso:
+              </div>
+              <div className="space-y-1">
+                {bulk.worksCreated
+                  .slice(0, 5)
+                  .map((work: any, index: number) => (
+                    <div
+                      key={index}
+                      className="text-xs text-purple-600 flex items-center"
+                    >
+                      <FiCheck className="w-3 h-3 mr-1 text-green-500" />
+                      {work.title}
+                    </div>
+                  ))}
+                {bulk.worksCreated.length > 5 && (
+                  <div className="text-xs text-purple-600">
+                    +{bulk.worksCreated.length - 5} obras adicionais
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
 
     if (action === 'create' && changes.created) {
       return (
@@ -423,47 +531,6 @@ const HistoryClient = ({
           </div>
         </AnimatedItem>
 
-        {/* Stats Cards */}
-        {/* {stats && (
-          <AnimatedItem direction="up" springType="gentle">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <AnimatedCard className="classical-card p-6 text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <FiActivity className="w-6 h-6 text-theme-primary" />
-                </div>
-                <div className="text-2xl font-bold text-theme-primary">
-                  {stats.totalActions}
-                </div>
-                <div className="text-sm text-theme-tertiary">
-                  Total de Ações
-                </div>
-              </AnimatedCard>
-
-              <AnimatedCard className="classical-card p-6 text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <FiCalendar className="w-6 h-6 text-theme-primary" />
-                </div>
-                <div className="text-2xl font-bold text-theme-primary">
-                  {stats.actionsToday}
-                </div>
-                <div className="text-sm text-theme-tertiary">Hoje</div>
-              </AnimatedCard>
-
-              <AnimatedCard className="classical-card p-6 text-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-amber rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <FiRefreshCw className="w-6 h-6 text-theme-primary" />
-                </div>
-                <div className="text-2xl font-bold text-theme-primary">
-                  {stats.recentActions?.length || 0}
-                </div>
-                <div className="text-sm text-theme-tertiary">
-                  Ações Recentes
-                </div>
-              </AnimatedCard>
-            </div>
-          </AnimatedItem>
-        )} */}
-
         {/* Filters */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard className="classical-card p-6 mb-8">
@@ -572,7 +639,8 @@ const HistoryClient = ({
                       {/* Timeline Dot with Action-specific Colors */}
                       <div
                         className={`relative z-10 w-12 h-12 bg-gradient-to-br ${getTimelineDotColor(
-                          record.action
+                          record.action,
+                          record.changes
                         )} rounded-full flex items-center justify-center shadow-lg`}
                       >
                         {getEntityIcon(record.entityType)}
@@ -582,23 +650,30 @@ const HistoryClient = ({
                       <div className="flex-1 min-w-0">
                         <AnimatedCard
                           className={`classical-card-2 p-4 ${getCardBorderColor(
-                            record.action
+                            record.action,
+                            record.changes
                           )}`}
                         >
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center space-x-2">
-                              {getActionIcon(record.action)}
+                              {getActionIcon(record.action, record.changes)}
                               <span className="text-sm font-medium text-theme-primary">
-                                {getActionLabel(record.action)}{' '}
-                                {getEntityLabel(record.entityType)}
+                                {getActionLabel(record.action, record.changes)}{' '}
+                                {getEntityLabel(
+                                  record.entityType,
+                                  record.changes
+                                )}
                               </span>
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium border ${getActionColor(
-                                  record.action
+                                  record.action,
+                                  record.changes
                                 )}`}
                               >
-                                {record.action.charAt(0).toUpperCase() +
-                                  record.action.slice(1)}
+                                {record.changes?.bulkImport
+                                  ? 'Bulk Import'
+                                  : record.action.charAt(0).toUpperCase() +
+                                    record.action.slice(1)}
                               </span>
                             </div>
 
@@ -632,10 +707,13 @@ const HistoryClient = ({
                           </div>
 
                           <div className="space-y-2">
-                            <div className="text-sm text-theme-secondary">
-                              <span className="font-medium">ID:</span>{' '}
-                              {record.entityId}
-                            </div>
+                            {/* ID apenas para não bulk imports */}
+                            {!record.changes?.bulkImport && (
+                              <div className="text-sm text-theme-secondary">
+                                <span className="font-medium">ID:</span>{' '}
+                                {record.entityId}
+                              </div>
+                            )}
 
                             {isAdmin && record.user && (
                               <div className="text-sm text-theme-secondary">

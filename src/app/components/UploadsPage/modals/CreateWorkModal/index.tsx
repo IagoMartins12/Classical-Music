@@ -1,6 +1,5 @@
+// app/components/modals/CreateWorkModal.tsx - CORRIGIDO COM VALIDAÇÃO CUSTOMIZADA
 'use client';
-
-// app/components/modals/CreateWorkModal.tsx - CORRIGIDO COM DETECÇÃO DE FONTE EXTERNA IMSLP
 
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
@@ -29,7 +28,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import ComposerSearchInput from '@/app/components/ComposerSearchInput';
-import { useFormValidation } from '@/app/utils/formUtils';
+import { useFormValidation, workModalValidations } from '@/app/utils/formUtils';
 import {
   filterValidCategories,
   getAllValidCategories,
@@ -113,7 +112,7 @@ const CreateWorkModal = ({
   // 🔧 CORRIGIDO: Refs para scroll automático com tipos corretos
   const fieldRefs = {
     title: useRef<HTMLInputElement>(null),
-    composerId: useRef<HTMLInputElement>(null), // 🔧 CORRIGIDO: HTMLInputElement em vez de HTMLDivElement
+    composerId: useRef<HTMLDivElement>(null), // 🆕 CORRIGIDO PARA DIV (ComposerSearchInput)
     instrumentId: useRef<HTMLSelectElement>(null),
     epochId: useRef<HTMLSelectElement>(null),
   };
@@ -166,6 +165,16 @@ const CreateWorkModal = ({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // 🆕 CONFIGURAR VALIDAÇÃO DE FORMULÁRIO
+  const requiredFields = ['title', 'composerId', 'instrumentId', 'epochId'];
+  const customValidations = workModalValidations;
+
+  const { validateForm } = useFormValidation(
+    fieldRefs,
+    requiredFields,
+    customValidations
+  );
 
   // Populate form when editing
   useEffect(() => {
@@ -239,16 +248,6 @@ const CreateWorkModal = ({
     }
   };
 
-  // Configurar validação de formulário
-  const requiredFields = ['title', 'composerId', 'instrumentId', 'epochId'];
-  const customValidations = {};
-
-  const { validateForm } = useFormValidation(
-    fieldRefs,
-    requiredFields,
-    customValidations
-  );
-
   // Verificar duplicatas por link IMSLP
   const checkDuplicateByLink = async (url: string) => {
     if (!url.trim()) return;
@@ -310,7 +309,7 @@ const CreateWorkModal = ({
     }
   };
 
-  // Função de validação com scroll suave
+  // 🆕 FUNÇÃO DE VALIDAÇÃO MELHORADA
   const handleValidation = () => {
     const { isValid, errors: validationErrors } = validateForm(formData);
     setErrors(validationErrors);
@@ -320,6 +319,7 @@ const CreateWorkModal = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // 🆕 USAR VALIDAÇÃO CUSTOMIZADA (SEM required DO HTML)
     if (!handleValidation()) {
       return;
     }
@@ -555,7 +555,7 @@ const CreateWorkModal = ({
 
           {/* Content */}
           <div className="mt-4 ">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
               {/* URL Scraping */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <div className="flex items-center justify-between mb-4">
@@ -681,7 +681,6 @@ const CreateWorkModal = ({
                     onChange={(e) => handleInputChange('title', e.target.value)}
                     error={errors.title}
                     placeholder="Sinfonia No. 40 em Sol menor"
-                    required
                   />
 
                   <Input
@@ -703,8 +702,9 @@ const CreateWorkModal = ({
                       popularComposers={supportData.composers}
                     />
                     {errors.composerId && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.composerId}
+                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+                        <FiAlertCircle className="w-4 h-4" />
+                        <span>{errors.composerId}</span>
                       </p>
                     )}
                   </div>
@@ -727,7 +727,6 @@ const CreateWorkModal = ({
                         handleInputChange('instrumentId', e.target.value)
                       }
                       error={errors.instrumentId}
-                      required
                     />
                   </div>
 
@@ -749,7 +748,6 @@ const CreateWorkModal = ({
                         handleInputChange('epochId', e.target.value)
                       }
                       error={errors.epochId}
-                      required
                     />
                   </div>
 

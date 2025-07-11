@@ -1,4 +1,4 @@
-// UploadsClient.tsx - ATUALIZADO COM TOASTS E MODAIS
+// UploadsClient.tsx - ATUALIZADO COM BULK INSERT DE OBRAS
 'use client';
 
 import {
@@ -42,6 +42,7 @@ import BulkUploadModal from './modals/BulkUploadModal';
 import CreateScoreModal from './modals/CreateScoreModal';
 import CreateWorkModal from './modals/CreateWorkModal';
 import CreateComposerModal from './modals/CreateComposerModal';
+import BulkInsertWorksModal from './modals/BulkInsertWorksModal'; // 🆕 NOVO MODAL
 
 // 🆕 IMPORTAR NOVOS HOOKS
 import { useToast } from '@/app/hooks/useToast';
@@ -114,6 +115,10 @@ const UploadsClient = ({
     'composer' | 'work' | 'score'
   >('composer');
 
+  // 🆕 Estados para bulk insert de obras
+  const [showBulkInsertModal, setShowBulkInsertModal] = useState(false);
+  const [bulkInsertComposer, setBulkInsertComposer] = useState<any>(null);
+
   // Estados para dados dinâmicos
   const [formData, setFormData] = useState<{
     epochs: any[];
@@ -133,10 +138,13 @@ const UploadsClient = ({
 
   // Carregar dados do formulário quando necessário
   useEffect(() => {
-    if ((showCreateModal || showBulkModal) && formData.roles.length === 0) {
+    if (
+      (showCreateModal || showBulkModal || showBulkInsertModal) &&
+      formData.roles.length === 0
+    ) {
       loadFormData();
     }
-  }, [showCreateModal, showBulkModal]);
+  }, [showCreateModal, showBulkModal, showBulkInsertModal]);
 
   const loadFormData = async () => {
     setLoadingFormData(true);
@@ -350,6 +358,12 @@ const UploadsClient = ({
     router.push(`/uploads/${item.type}/${item.id}/edit`);
   };
 
+  // 🆕 Handler para bulk insert de obras
+  const handleBulkInsertWorks = (composer: UserUpload) => {
+    setBulkInsertComposer(composer);
+    setShowBulkInsertModal(true);
+  };
+
   // 🆕 FUNÇÃO DE DELETE ATUALIZADA COM MODAL DE CONFIRMAÇÃO
   const handleDelete = async (item: UserUpload) => {
     // Determinar tipo de item para mensagem personalizada
@@ -361,18 +375,6 @@ const UploadsClient = ({
         : 'partitura';
 
     await performDelete(item);
-    // const confirmed = await confirm({
-    //   title: `Deletar ${itemType}`,
-    //   message: `Tem certeza que deseja deletar ${
-    //     item.type === 'work' ? 'a' : 'o'
-    //   } ${itemType} "${item.title}"?`,
-    //   type: 'danger',
-    //   confirmText: 'Deletar',
-    //   onConfirm: async () => {
-    //     // A lógica de delete será executada aqui
-    //     await performDelete(item);
-    //   },
-    // });
   };
 
   // 🆕 FUNÇÃO SEPARADA PARA EXECUTAR O DELETE
@@ -817,6 +819,7 @@ const UploadsClient = ({
                           item={item}
                           onEdit={() => handleEdit(item)}
                           onDelete={() => handleDelete(item)}
+                          onBulkInsertWorks={() => handleBulkInsertWorks(item)} // 🆕 NOVA PROP
                           isAdmin={isAdmin}
                           viewMode={viewMode}
                           isDeleting={deletingItemId === item.id}
@@ -839,6 +842,9 @@ const UploadsClient = ({
                             item={item}
                             onEdit={() => handleEdit(item)}
                             onDelete={() => handleDelete(item)}
+                            onBulkInsertWorks={() =>
+                              handleBulkInsertWorks(item)
+                            } // 🆕 NOVA PROP
                             isAdmin={isAdmin}
                             viewMode={viewMode}
                           />
@@ -1190,6 +1196,29 @@ const UploadsClient = ({
         />
       )}
 
+      {/* 🆕 Modal de Bulk Insert de Obras */}
+      {showBulkInsertModal && bulkInsertComposer && (
+        <BulkInsertWorksModal
+          isOpen={showBulkInsertModal}
+          onClose={() => {
+            setShowBulkInsertModal(false);
+            setBulkInsertComposer(null);
+          }}
+          composer={{
+            id: bulkInsertComposer.id,
+            name: bulkInsertComposer.composerName || bulkInsertComposer.title,
+            fullName:
+              bulkInsertComposer.composerName || bulkInsertComposer.title,
+            imslpId: bulkInsertComposer.imslpId,
+            permLinkImslp:
+              bulkInsertComposer.imslpPermlink ||
+              bulkInsertComposer.permLinkImslp,
+          }}
+          instruments={formData.instruments}
+          epochs={formData.epochs}
+        />
+      )}
+
       {/* Loading Modal Overlay */}
       {loadingFormData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-theme-overlay backdrop-blur-sm">
@@ -1201,7 +1230,6 @@ const UploadsClient = ({
           </div>
         </div>
       )}
-      {/* 🆕 MODAL DE CONFIRMAÇÃO */}
     </PageContainer>
   );
 };

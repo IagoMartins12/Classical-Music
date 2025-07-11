@@ -1,4 +1,4 @@
-// app/components/uploads/UploadComposerCard.tsx
+// app/components/uploads/UploadComposerCard.tsx - ATUALIZADO COM BULK INSERT
 'use client';
 
 import { useState } from 'react';
@@ -10,6 +10,7 @@ import {
   FiExternalLink,
   FiEdit,
   FiTrash2,
+  FiMusic,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { UserUpload } from '@/app/requests/upload';
@@ -20,6 +21,7 @@ interface UploadComposerCardProps {
   item: UserUpload;
   onEdit: () => void;
   onDelete: () => void;
+  onBulkInsertWorks?: () => void; // 🆕 Nova prop para bulk insert
   isAdmin: boolean;
   viewMode: 'cards' | 'list';
   isDeleting?: boolean;
@@ -29,6 +31,7 @@ const UploadComposerCard = ({
   item,
   onEdit,
   onDelete,
+  onBulkInsertWorks, // 🆕 Nova prop
   viewMode,
   isDeleting = false,
 }: UploadComposerCardProps) => {
@@ -52,6 +55,10 @@ const UploadComposerCard = ({
   };
 
   const hasExternalLinks = item.imslpId;
+
+  // 🆕 Verificar se é compositor do IMSLP para mostrar bulk insert
+
+  console.log('isImslp', item);
 
   // Assumindo que a imagem está em item.portraitUrl ou similar
   const portraitUrl = (item as any).portraitUrl;
@@ -133,6 +140,14 @@ const UploadComposerCard = ({
                   </span>
                 )}
 
+                {/* 🆕 Badge para compositor com obras importáveis */}
+                {item.isIMSLP && (
+                  <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
+                    <FiMusic className="w-3 h-3" />
+                    <span>Obras</span>
+                  </span>
+                )}
+
                 {item.verificationStatus === 'verified' && (
                   <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full">
                     Verificado
@@ -158,6 +173,17 @@ const UploadComposerCard = ({
             )}
 
             <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              {/* 🆕 Botão de Bulk Insert de Obras */}
+              {item.isIMSLP && onBulkInsertWorks && (
+                <button
+                  onClick={onBulkInsertWorks}
+                  className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-green/10 text-theme-tertiary hover:text-accent-green transition-colors flex items-center justify-center"
+                  title="Importar todas as obras do IMSLP"
+                >
+                  <FiMusic className="w-4 h-4" />
+                </button>
+              )}
+
               <button
                 onClick={onEdit}
                 className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center"
@@ -228,6 +254,17 @@ const UploadComposerCard = ({
 
           {/* Floating action buttons */}
           <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+            {/* 🆕 Botão de Bulk Insert de Obras */}
+            {item.isIMSLP && onBulkInsertWorks && (
+              <button
+                onClick={onBulkInsertWorks}
+                className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-green/10 text-theme-tertiary hover:text-accent-green transition-colors flex items-center justify-center shadow-theme-medium"
+                title="Importar todas as obras do IMSLP"
+              >
+                <FiMusic className="w-4 h-4" />
+              </button>
+            )}
+
             <button
               onClick={onEdit}
               className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-blue/10 text-theme-tertiary hover:text-accent-blue transition-colors flex items-center justify-center shadow-theme-medium"
@@ -272,6 +309,14 @@ const UploadComposerCard = ({
                 <span className="text-xs font-medium text-accent-blue px-2 py-1 bg-accent-blue/10 rounded-full flex items-center space-x-1">
                   <FiExternalLink className="w-3 h-3" />
                   <span>IMSLP</span>
+                </span>
+              )}
+
+              {/* 🆕 Badge para compositor com obras importáveis */}
+              {item.isIMSLP && (
+                <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
+                  <FiMusic className="w-3 h-3" />
+                  <span>Obras</span>
                 </span>
               )}
 

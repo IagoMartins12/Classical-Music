@@ -1,4 +1,4 @@
-// app/utils/historyUtils.ts
+// app/utils/historyUtils.ts - ATUALIZADO COM BULK IMPORT
 import prisma from '@/app/libs/prismadb';
 import { NextRequest } from 'next/server';
 
@@ -155,6 +155,20 @@ export function formatChangesForDisplay(changes: Record<string, any>): string {
     return 'Nenhuma alteração registrada';
   }
 
+  // 🆕 TRATAMENTO ESPECIAL PARA BULK IMPORT
+  if (changes.bulkImport) {
+    const bulk = changes.bulkImport;
+    return `Importou ${bulk.successfulWorks} obra(s) do IMSLP para ${
+      bulk.composerName
+    }${bulk.failedWorks > 0 ? ` (${bulk.failedWorks} com erro)` : ''}${
+      bulk.duplicateWorks > 0
+        ? ` (${bulk.duplicateWorks} duplicata${
+            bulk.duplicateWorks > 1 ? 's' : ''
+          })`
+        : ''
+    }`;
+  }
+
   const formattedChanges = Object.entries(changes)
     .map(([field, change]) => {
       const fieldName = formatFieldName(field);
@@ -222,6 +236,10 @@ function formatFieldName(field: string): string {
     editor: 'Editor',
     publisher: 'Editora',
     copyright: 'Copyright',
+    // 🆕 NOVOS CAMPOS PARA BULK IMPORT
+    bulkImport: 'Importação em Lote',
+    created: 'Criado',
+    deleted: 'Excluído',
   };
 
   return fieldMap[field] || field.charAt(0).toUpperCase() + field.slice(1);
@@ -333,6 +351,36 @@ export async function logWorkCreate(
     action: 'create',
     changes: { created: data },
     reason: 'Obra criada',
+    request,
+  });
+}
+
+/**
+ * 🆕 Helper para registrar bulk import de obras
+ */
+export async function logWorksBulkImport(
+  userId: string,
+  composerId: string,
+  bulkData: {
+    composerName: string;
+    totalWorks: number;
+    successfulWorks: number;
+    failedWorks: number;
+    duplicateWorks: number;
+    skippedWorks: number;
+    worksCreated: Array<{ title: string; id: string }>;
+  },
+  request?: NextRequest
+) {
+  await logHistoryAction({
+    userId,
+    entityType: 'work',
+    entityId: composerId, // Usar ID do compositor como referência
+    action: 'create',
+    changes: {
+      bulkImport: bulkData,
+    },
+    reason: `Importação em lote de ${bulkData.successfulWorks} obras do IMSLP para o compositor ${bulkData.composerName}`,
     request,
   });
 }
