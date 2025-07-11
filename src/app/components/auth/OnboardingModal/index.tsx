@@ -16,6 +16,7 @@ import PreferencesStep from '../onboarding/PreferencesStep';
 import ProfileStep from '../onboarding/ProfileStep';
 import CompletionStep from '../onboarding/CompletionStep';
 import { useUserStore } from '@/app/hooks/userStore';
+import { useRouter } from 'next/navigation';
 
 interface OnboardingOptions {
   instruments: Array<{ id: string; name: string; category: string | null }>;
@@ -44,6 +45,7 @@ const OnboardingModal: React.FC = () => {
     setLoading,
     complete,
   } = useOnboardingModal();
+  const router = useRouter();
 
   const [options, setOptions] = useState<OnboardingOptions | null>(null);
   const [isLoadingOptions, setIsLoadingOptions] = useState(false);
@@ -96,7 +98,7 @@ const OnboardingModal: React.FC = () => {
       if (result.success) {
         toast.success(result.message);
         complete();
-        window.location.reload();
+        router.refresh();
       } else {
         toast.error(result.message);
       }

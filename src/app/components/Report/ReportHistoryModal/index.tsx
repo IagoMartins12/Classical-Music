@@ -8,6 +8,7 @@ import { ptBR } from 'date-fns/locale';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import ReportPriorityBadge from '../ReportPriorityBadge';
+import Modal from '../../Modal';
 
 interface ReportHistoryModalProps {
   isOpen: boolean;
@@ -112,9 +113,9 @@ export default function ReportHistoryModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-theme-overlay backdrop-blur-sm">
+    <Modal isOpen={isOpen} onClose={onClose}>
       <AnimatedItem direction="scale" springType="bouncy">
-        <div className="classical-card p-6 max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className=" p-6 ">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
@@ -128,12 +129,6 @@ export default function ReportHistoryModal({
                 <p className="text-sm text-theme-secondary">{entityName}</p>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-full bg-theme-tertiary hover:bg-theme-secondary transition-colors flex items-center justify-center"
-            >
-              <FiX className="w-4 h-4 text-theme-primary" />
-            </button>
           </div>
 
           {/* Content */}
@@ -220,6 +215,6 @@ export default function ReportHistoryModal({
           </div>
         </div>
       </AnimatedItem>
-    </div>
+    </Modal>
   );
 }

@@ -6,6 +6,7 @@ import { FiX, FiCheck, FiShield } from 'react-icons/fi';
 import { useNotifications } from '@/app/hooks/useNotifications';
 import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
+import Modal from '../../Modal';
 
 interface VerificationModalProps {
   isOpen: boolean;
@@ -71,9 +72,9 @@ export default function VerificationModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-theme-overlay backdrop-blur-sm">
+    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick>
       <AnimatedItem direction="scale" springType="bouncy">
-        <div className="classical-card p-6 max-w-md w-full">
+        <div className="">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
@@ -87,13 +88,6 @@ export default function VerificationModal({
                 <p className="text-sm text-theme-secondary">{composerName}</p>
               </div>
             </div>
-            <button
-              onClick={handleClose}
-              disabled={isSubmitting}
-              className="w-8 h-8 rounded-full bg-theme-tertiary hover:bg-theme-secondary transition-colors flex items-center justify-center"
-            >
-              <FiX className="w-4 h-4 text-theme-primary" />
-            </button>
           </div>
 
           {/* Current Status */}
@@ -168,6 +162,6 @@ export default function VerificationModal({
           </div>
         </div>
       </AnimatedItem>
-    </div>
+    </Modal>
   );
 }

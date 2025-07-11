@@ -6,6 +6,7 @@ import { FiFlag, FiX, FiAlertTriangle } from 'react-icons/fi';
 import { useNotifications } from '@/app/hooks/useNotifications';
 import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
+import Modal from '../../Modal';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -129,9 +130,9 @@ export default function ReportModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-theme-overlay backdrop-blur-sm">
+    <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick maxWidth="3xl">
       <AnimatedItem direction="scale" springType="bouncy">
-        <div className="classical-card p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div className="  w-full ">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
@@ -145,13 +146,6 @@ export default function ReportModal({
                 <p className="text-sm text-theme-secondary">"{entityName}"</p>
               </div>
             </div>
-            <button
-              onClick={handleClose}
-              disabled={isSubmitting}
-              className="w-8 h-8 rounded-full bg-theme-tertiary hover:bg-theme-secondary transition-colors flex items-center justify-center"
-            >
-              <FiX className="w-4 h-4 text-theme-primary" />
-            </button>
           </div>
 
           {/* Form */}
@@ -247,6 +241,6 @@ export default function ReportModal({
           </form>
         </div>
       </AnimatedItem>
-    </div>
+    </Modal>
   );
 }

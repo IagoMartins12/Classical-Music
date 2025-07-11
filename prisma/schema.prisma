@@ -171,7 +171,8 @@ model User {
   reportedUploads   UploadModeration[] @relation("ReportedUploads")
   moderatedUploads  UploadModeration[] @relation("ModeratedUploads")
   uploadHistory     UploadHistory[]
-  
+  generatedReports GeneratedReport[] @relation("GeneratedReports")
+
   // Estatísticas de upload
   totalUploads      Int @default(0)
   approvedUploads   Int @default(0)
@@ -1274,4 +1275,43 @@ model ReportStats {
   @@index([period])
   @@index([date])
   @@map("report_stats")
+}
+
+model GeneratedReport {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  type        String   // 'users-overview', 'content-analysis', etc.
+  format      String   // 'pdf', 'excel', 'csv'
+  period      String   // '7d', '30d', '90d', '1y'
+  
+  // Metadados do arquivo
+  filename    String
+  filePath    String?  // Caminho no sistema de arquivos ou URL
+  fileSize    String?  // Tamanho formatado (ex: "1.2 MB")
+  fileSizeBytes Int?   // Tamanho em bytes
+  
+  // Status e dados
+  status      String   @default("generating") // 'generating', 'ready', 'failed'
+  error       String?  // Mensagem de erro se falhou
+  
+  // Dados estatísticos do período (cache)
+  reportData  Json?    // Dados estatísticos utilizados no relatório
+  
+  // Metadados de geração
+  generatedBy String   @db.ObjectId
+  generatedAt DateTime @default(now())
+  
+  // Controle de acesso e limpeza
+  downloadCount Int     @default(0)
+  lastDownload  DateTime?
+  expiresAt     DateTime? // Para limpeza automática
+  
+  // Relações
+  user User @relation("GeneratedReports", fields: [generatedBy], references: [id], onDelete: Cascade)
+  
+  // Índices
+  @@index([type, status])
+  @@index([status, expiresAt])
+  @@index([generatedAt])
+  @@map("generated_reports")
 }

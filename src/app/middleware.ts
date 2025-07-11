@@ -4,10 +4,24 @@ import { NextResponse } from 'next/server';
 import { PROTECTED_ROUTES, PUBLIC_ROUTES } from './utils/auth';
 
 export default withAuth(
-  function middleware() {
-    // Add any custom middleware logic here
+  function middleware(req) {
+    const { pathname } = req.nextUrl;
+    const token = req.nextauth.token;
+
+    // Verificar se é admin para rotas administrativas
+    if (pathname.startsWith('/admin') || pathname.includes('/moderation')) {
+      if (!token || token.role !== 2) {
+        return NextResponse.redirect(new URL('/', req.url));
+      }
+    }
+
+    // Permitir acesso a outras rotas autenticadas
     return NextResponse.next();
   },
+  // function middleware() {
+  //   // Add any custom middleware logic here
+  //   return NextResponse.next();
+  // },
   {
     callbacks: {
       authorized: ({ token, req }) => {
