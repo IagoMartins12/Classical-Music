@@ -1,4 +1,4 @@
-// app/uploads/page.tsx
+// app/uploads/page.tsx - ATUALIZADO COM NOVOS FILTROS
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../libs/auth';
@@ -18,6 +18,8 @@ export default async function UploadsPage({
     search?: string;
     type?: string;
     epoch?: string;
+    composer?: string; // 🆕 Novo parâmetro
+    work?: string; // 🆕 Novo parâmetro
   }>;
 }) {
   const session = await getServerSession(authOptions);
@@ -31,6 +33,8 @@ export default async function UploadsPage({
   const search = resolvedSearchParams.search || '';
   const type = resolvedSearchParams.type || 'all';
   const epochId = resolvedSearchParams.epoch || '';
+  const composerId = resolvedSearchParams.composer || ''; // 🆕
+  const workId = resolvedSearchParams.work || ''; // 🆕
 
   return (
     <UploadsPageServer
@@ -38,6 +42,8 @@ export default async function UploadsPage({
       search={search}
       type={type}
       epochId={epochId}
+      composerId={composerId} // 🆕 Passar novo parâmetro
+      workId={workId} // 🆕 Passar novo parâmetro
       userId={session.user.id}
       userRole={session.user.role || 0}
     />

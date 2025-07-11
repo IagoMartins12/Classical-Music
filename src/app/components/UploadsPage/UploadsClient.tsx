@@ -1,4 +1,4 @@
-// UploadsClient.tsx - ATUALIZADO COM BULK INSERT DE OBRAS
+// UploadsClient.tsx - CORRIGIDO - LOOP INFINITO RESOLVIDO
 'use client';
 
 import {
@@ -21,6 +21,7 @@ import {
   FiUpload,
   FiSettings,
   FiFileText,
+  FiArrowRight,
 } from 'react-icons/fi';
 import { MdUpload } from 'react-icons/md';
 
@@ -42,7 +43,7 @@ import BulkUploadModal from './modals/BulkUploadModal';
 import CreateScoreModal from './modals/CreateScoreModal';
 import CreateWorkModal from './modals/CreateWorkModal';
 import CreateComposerModal from './modals/CreateComposerModal';
-import BulkInsertWorksModal from './modals/BulkInsertWorksModal'; // 🆕 NOVO MODAL
+import BulkInsertWorksModal from './modals/BulkInsertWorksModal';
 
 // 🆕 IMPORTAR NOVOS HOOKS
 import { useToast } from '@/app/hooks/useToast';
@@ -53,9 +54,26 @@ import UploadWorkCard from './UploadWorkCard';
 import UploadScoreCard from './UploadScoreCard';
 import { useConfirmModal } from '../ConfirmModal';
 
+// 🆕 IMPORTAR COMPONENTES FLEXÍVEIS
+import WorkSearchInput from '../WorkSearchInput';
+import ComposerSearchInput from '../ComposerSearchInput';
+
 interface Epoch {
   id: string;
   name: string;
+}
+
+// 🆕 Interface para dados de filtro
+interface FilterComposer {
+  id: string;
+  name: string;
+  fullName: string;
+}
+
+interface FilterWork {
+  id: string;
+  title: string;
+  composerName: string;
 }
 
 interface UploadsClientProps {
@@ -64,12 +82,22 @@ interface UploadsClientProps {
   works: any[];
   scores: any[];
   epochs: Epoch[];
+  filterComposers: FilterComposer[]; // 🆕 Dados para filtros
+  filterWorks: FilterWork[]; // 🆕 Dados para filtros
   currentPage: number;
   totalPages: number;
   totalCount: number;
+  composerCount: number; // 🆕 Contadores específicos
+  workCount: number; // 🆕
+  scoreCount: number; // 🆕
+  hasMoreComposers: boolean; // 🆕 Indicadores "ver mais"
+  hasMoreWorks: boolean; // 🆕
+  hasMoreScores: boolean; // 🆕
   searchTerm: string;
   selectedType: string;
   selectedEpoch: string;
+  selectedComposer: string; // 🆕 Estado do filtro
+  selectedWork: string; // 🆕 Estado do filtro
   isAdmin: boolean;
   userId: string;
 }
@@ -79,12 +107,22 @@ type FilterTab = 'all' | 'composers' | 'works' | 'scores';
 const UploadsClient = ({
   uploads,
   epochs,
+  filterComposers, // 🆕
+  filterWorks, // 🆕
   currentPage,
   totalPages,
   totalCount,
+  composerCount, // 🆕
+  workCount, // 🆕
+  scoreCount, // 🆕
+  hasMoreComposers, // 🆕
+  hasMoreWorks, // 🆕
+  hasMoreScores, // 🆕
   searchTerm: initialSearchTerm,
   selectedType: initialSelectedType,
   selectedEpoch: initialSelectedEpoch,
+  selectedComposer: initialSelectedComposer, // 🆕
+  selectedWork: initialSelectedWork, // 🆕
   isAdmin,
 }: UploadsClientProps) => {
   const router = useRouter();
@@ -106,6 +144,10 @@ const UploadsClient = ({
       : 'all'
   );
   const [selectedEpoch, setSelectedEpoch] = useState(initialSelectedEpoch);
+  const [selectedComposer, setSelectedComposer] = useState(
+    initialSelectedComposer
+  ); // 🆕
+  const [selectedWork, setSelectedWork] = useState(initialSelectedWork); // 🆕
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [showFilters, setShowFilters] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -118,6 +160,10 @@ const UploadsClient = ({
   // 🆕 Estados para bulk insert de obras
   const [showBulkInsertModal, setShowBulkInsertModal] = useState(false);
   const [bulkInsertComposer, setBulkInsertComposer] = useState<any>(null);
+
+  // 🆕 Estados para épocas dinâmicas
+  const [availableEpochs, setAvailableEpochs] = useState(epochs);
+  const [loadingEpochs, setLoadingEpochs] = useState(false);
 
   // Estados para dados dinâmicos
   const [formData, setFormData] = useState<{
@@ -135,6 +181,24 @@ const UploadsClient = ({
   });
 
   const [loadingFormData, setLoadingFormData] = useState(false);
+
+  // 🔧 MEMOIZAR ARRAYS PARA EVITAR LOOP INFINITO
+  const memoizedLocalWorks = useMemo(() => {
+    return filterWorks.map((work) => ({
+      id: work.id,
+      title: work.title,
+      composer: {
+        name: work.composerName,
+        fullName: work.composerName,
+      },
+    }));
+  }, [filterWorks]);
+
+  const memoizedLocalComposers = useMemo(() => {
+    return filterComposers;
+  }, [filterComposers]);
+
+  const memoizedEmptyArray = useMemo(() => [], []);
 
   // Carregar dados do formulário quando necessário
   useEffect(() => {
@@ -162,20 +226,49 @@ const UploadsClient = ({
       }
     } catch (error) {
       console.error('Erro ao carregar dados do formulário:', error);
-      // 🆕 SUBSTITUIR alert POR toast
       toast.error('Erro', 'Não foi possível carregar os dados do formulário');
     } finally {
       setLoadingFormData(false);
     }
   };
 
-  // Função para atualizar URL
+  // 🆕 Função para carregar épocas disponíveis por tipo
+  const loadAvailableEpochs = async (type: string) => {
+    setLoadingEpochs(true);
+    try {
+      const typeParam =
+        type === 'composers'
+          ? 'composer'
+          : type === 'works'
+          ? 'work'
+          : type === 'scores'
+          ? 'score'
+          : 'all';
+
+      const response = await fetch(
+        `/api/uploads/available-epochs?type=${typeParam}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setAvailableEpochs(data.epochs || []);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar épocas disponíveis:', error);
+      // Em caso de erro, manter épocas atuais
+    } finally {
+      setLoadingEpochs(false);
+    }
+  };
+
+  // Função para atualizar URL - 🆕 ATUALIZADA COM NOVOS FILTROS
   const updateUrl = useCallback(
     (params: {
       page?: number;
       search?: string;
       type?: string;
       epoch?: string;
+      composer?: string; // 🆕
+      work?: string; // 🆕
     }) => {
       const newParams = new URLSearchParams(searchParams.toString());
 
@@ -208,6 +301,23 @@ const UploadsClient = ({
           newParams.delete('epoch');
         } else {
           newParams.set('epoch', params.epoch);
+        }
+      }
+
+      // 🆕 Novos filtros
+      if (params.composer !== undefined) {
+        if (params.composer === '') {
+          newParams.delete('composer');
+        } else {
+          newParams.set('composer', params.composer);
+        }
+      }
+
+      if (params.work !== undefined) {
+        if (params.work === '') {
+          newParams.delete('work');
+        } else {
+          newParams.set('work', params.work);
         }
       }
 
@@ -296,15 +406,51 @@ const UploadsClient = ({
           : tab === 'scores'
           ? 'score'
           : 'all';
-      updateUrl({ type: typeParam, page: 1 });
+
+      // 🆕 Carregar épocas disponíveis para o novo tipo
+      loadAvailableEpochs(tab);
+
+      // 🆕 Limpar filtros específicos quando mudar de aba (SEM SCROLL)
+      updateUrl({
+        type: typeParam,
+        page: 1,
+        composer: '',
+        work: '',
+        epoch: tab === 'composers' ? selectedEpoch : '', // Manter época só para compositores
+      });
+
+      // Resetar estados locais
+      if (tab !== 'composers') setSelectedEpoch('');
+      setSelectedComposer('');
+      setSelectedWork('');
     },
-    [updateUrl]
+    [updateUrl, selectedEpoch, loadAvailableEpochs]
   );
 
   const handleEpochChange = useCallback(
     (value: string) => {
       setSelectedEpoch(value);
+      // 🆕 REMOVER SCROLL - manter posição atual
       updateUrl({ epoch: value, page: 1 });
+    },
+    [updateUrl]
+  );
+
+  // 🆕 Handlers para novos filtros (SEM SCROLL)
+  const handleComposerChange = useCallback(
+    (value: string) => {
+      setSelectedComposer(value);
+      // 🆕 REMOVER SCROLL - manter posição atual
+      updateUrl({ composer: value, page: 1 });
+    },
+    [updateUrl]
+  );
+
+  const handleWorkChange = useCallback(
+    (value: string) => {
+      setSelectedWork(value);
+      // 🆕 REMOVER SCROLL - manter posição atual
+      updateUrl({ work: value, page: 1 });
     },
     [updateUrl]
   );
@@ -312,41 +458,54 @@ const UploadsClient = ({
   const handlePageChange = useCallback(
     (page: number) => {
       updateUrl({ page });
+      // 🆕 MANTER SCROLL APENAS NO CHANGE DE PÁGINA
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     [updateUrl]
   );
 
-  // Clear filters
+  // Clear filters - 🆕 ATUALIZADO
   const clearFilters = useCallback(() => {
     setSearchTerm('');
     setSelectedType('all');
     setSelectedEpoch('');
-    updateUrl({ search: '', type: 'all', epoch: '', page: 1 });
+    setSelectedComposer('');
+    setSelectedWork('');
+    updateUrl({
+      search: '',
+      type: 'all',
+      epoch: '',
+      composer: '',
+      work: '',
+      page: 1,
+    });
   }, [updateUrl]);
 
-  // Check active filters
+  // Check active filters - 🆕 ATUALIZADO
   const hasActiveFilters = useMemo(() => {
-    return searchTerm || selectedType !== 'all' || selectedEpoch;
-  }, [searchTerm, selectedType, selectedEpoch]);
+    return (
+      searchTerm ||
+      selectedType !== 'all' ||
+      selectedEpoch ||
+      selectedComposer ||
+      selectedWork
+    );
+  }, [searchTerm, selectedType, selectedEpoch, selectedComposer, selectedWork]);
 
-  // Statistics
+  // Statistics - 🆕 USAR CONTADORES CORRETOS
   const stats = useMemo(() => {
-    const composerCount = uploadsByType.composers.length;
-    const workCount = uploadsByType.works.length;
-    const scoreCount = uploadsByType.scores.length;
     const imslpCount = uploads.filter((item) => item.isIMSLP).length;
     const customCount = uploads.filter((item) => !item.isIMSLP).length;
 
     return {
-      totalCount: composerCount + workCount + scoreCount,
+      totalCount: totalCount,
       composerCount,
       workCount,
       scoreCount,
       imslpCount,
       customCount,
     };
-  }, [uploadsByType, uploads]);
+  }, [uploads, totalCount, composerCount, workCount, scoreCount]);
 
   // Handlers para ações
   const handleCreateNew = (type: 'composer' | 'work' | 'score') => {
@@ -358,15 +517,19 @@ const UploadsClient = ({
     router.push(`/uploads/${item.type}/${item.id}/edit`);
   };
 
-  // 🆕 Handler para bulk insert de obras
+  // 🆕 Handler para "Ver mais"
+  const handleSeeMore = (type: 'composers' | 'works' | 'scores') => {
+    handleTabChange(type);
+  };
+
+  // Handler para bulk insert de obras
   const handleBulkInsertWorks = (composer: UserUpload) => {
     setBulkInsertComposer(composer);
     setShowBulkInsertModal(true);
   };
 
-  // 🆕 FUNÇÃO DE DELETE ATUALIZADA COM MODAL DE CONFIRMAÇÃO
+  // FUNÇÃO DE DELETE ATUALIZADA COM MODAL DE CONFIRMAÇÃO
   const handleDelete = async (item: UserUpload) => {
-    // Determinar tipo de item para mensagem personalizada
     const itemType =
       item.type === 'composer'
         ? 'compositor'
@@ -377,11 +540,10 @@ const UploadsClient = ({
     await performDelete(item);
   };
 
-  // 🆕 FUNÇÃO SEPARADA PARA EXECUTAR O DELETE
+  // FUNÇÃO SEPARADA PARA EXECUTAR O DELETE
   const performDelete = async (item: UserUpload) => {
     setDeletingItemId(item.id);
 
-    console.log('item', item);
     try {
       const response = await fetch(`/api/uploads/${item.type}/${item.id}`, {
         method: 'DELETE',
@@ -390,17 +552,13 @@ const UploadsClient = ({
       if (response.ok) {
         const result = await response.json();
 
-        // 🆕 SUBSTITUIR alert POR toast PERSONALIZADO
         if (result.details) {
-          // Mensagem para compositor com exclusão em cascata
           if (item.type === 'composer' && result.details.deletedWorks > 0) {
             toast.success(
               'Compositor Excluído',
               `${result.details.composerName} foi excluído junto com ${result.details.deletedWorks} obra(s) e ${result.details.deletedScores} partitura(s).`
             );
-          }
-          // Mensagem para obra com exclusão em cascata
-          else if (
+          } else if (
             item.type === 'work' &&
             result.details.totalDeletedScores > 0
           ) {
@@ -414,23 +572,18 @@ const UploadsClient = ({
                   : ''
               }.`
             );
-          }
-          // Mensagem para partitura simples
-          else if (item.type === 'score') {
+          } else if (item.type === 'score') {
             toast.success(
               'Partitura Excluída',
               `A partitura "${result.details.scoreTitle}" da obra "${result.details.workTitle}" foi excluída com sucesso.`
             );
-          }
-          // Mensagem padrão se não houver cascata
-          else {
+          } else {
             toast.success(
               'Sucesso',
               result.message || 'Item excluído com sucesso'
             );
           }
         } else {
-          // Fallback para mensagem padrão
           toast.success(
             'Sucesso',
             result.message || 'Item excluído com sucesso'
@@ -444,7 +597,6 @@ const UploadsClient = ({
       }
     } catch (error) {
       console.error('Erro ao excluir:', error);
-      // 🆕 SUBSTITUIR alert POR toast
       toast.error(
         'Erro',
         error instanceof Error ? error.message : 'Erro ao excluir item'
@@ -452,6 +604,145 @@ const UploadsClient = ({
     } finally {
       setDeletingItemId(null);
     }
+  };
+
+  // 🆕 Função para renderizar filtros específicos por aba
+  const renderTabSpecificFilters = () => {
+    if (selectedType === 'composers') {
+      return (
+        <div>
+          <label className="block text-xs font-medium text-theme-tertiary mb-2">
+            Época{' '}
+            {loadingEpochs && <span className="text-xs">(carregando...)</span>}
+          </label>
+          <Select
+            options={[
+              { value: '', label: 'Todas as épocas' },
+              ...availableEpochs.map((epoch) => ({
+                value: epoch.id,
+                label: epoch.name,
+              })),
+            ]}
+            value={selectedEpoch}
+            onChange={(e) => handleEpochChange(e.target.value)}
+            className="input-classical-2 w-full"
+            disabled={loadingEpochs}
+          />
+        </div>
+      );
+    }
+
+    if (selectedType === 'works') {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-theme-tertiary mb-2">
+              Compositor
+            </label>
+            <ComposerSearchInput
+              selectedComposer={selectedComposer}
+              onComposerSelect={handleComposerChange}
+              popularComposers={memoizedEmptyArray}
+              isDisabled={false}
+              placeholder="Filtrar por compositor..."
+              mode="local"
+              localComposers={memoizedLocalComposers}
+              showPopularLabel={false}
+              showWorksCount={false}
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-theme-tertiary mb-2">
+              Época{' '}
+              {loadingEpochs && (
+                <span className="text-xs">(carregando...)</span>
+              )}
+            </label>
+            <Select
+              options={[
+                { value: '', label: 'Todas as épocas' },
+                ...availableEpochs.map((epoch) => ({
+                  value: epoch.id,
+                  label: epoch.name,
+                })),
+              ]}
+              value={selectedEpoch}
+              onChange={(e) => handleEpochChange(e.target.value)}
+              className="input-classical-2 w-full"
+              disabled={loadingEpochs}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    if (selectedType === 'scores') {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-theme-tertiary mb-2">
+              Obra
+            </label>
+            <Select
+              options={[
+                { value: '', label: 'Todas as obras' },
+                ...filterWorks.map((work) => ({
+                  value: work.id,
+                  label: `${work.title} - ${work.composerName}`,
+                })),
+              ]}
+              value={selectedWork}
+              onChange={(e) => handleWorkChange(e.target.value)}
+              className="input-classical-2 w-full"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-theme-tertiary mb-2">
+              Época{' '}
+              {loadingEpochs && (
+                <span className="text-xs">(carregando...)</span>
+              )}
+            </label>
+            <Select
+              options={[
+                { value: '', label: 'Todas as épocas' },
+                ...availableEpochs.map((epoch) => ({
+                  value: epoch.id,
+                  label: epoch.name,
+                })),
+              ]}
+              value={selectedEpoch}
+              onChange={(e) => handleEpochChange(e.target.value)}
+              className="input-classical-2 w-full"
+              disabled={loadingEpochs}
+            />
+          </div>
+        </div>
+      );
+    }
+
+    // Para "all", mostrar filtros gerais
+    return (
+      <div>
+        <label className="block text-xs font-medium text-theme-tertiary mb-2">
+          Época{' '}
+          {loadingEpochs && <span className="text-xs">(carregando...)</span>}
+        </label>
+        <Select
+          options={[
+            { value: '', label: 'Todas as épocas' },
+            ...availableEpochs.map((epoch) => ({
+              value: epoch.id,
+              label: epoch.name,
+            })),
+          ]}
+          value={selectedEpoch}
+          onChange={(e) => handleEpochChange(e.target.value)}
+          className="input-classical-2 w-full"
+          disabled={loadingEpochs}
+        />
+      </div>
+    );
   };
 
   return (
@@ -619,6 +910,8 @@ const UploadsClient = ({
                               searchTerm && 'busca',
                               selectedType !== 'all' && 'tipo',
                               selectedEpoch && 'época',
+                              selectedComposer && 'compositor',
+                              selectedWork && 'obra',
                             ].filter(Boolean).length
                           }
                         </span>
@@ -678,14 +971,25 @@ const UploadsClient = ({
               </button>
             </div>
 
-            {/* Expanded Filters */}
+            {/* Expanded Filters - 🆕 FILTROS ESPECÍFICOS POR ABA */}
             {showFilters && (
               <AnimatedItem direction="scale" springType="gentle">
                 <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary mt-4">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
                       <FiFilter className="w-4 h-4" />
-                      <span>Filtros Avançados</span>
+                      <span>
+                        Filtros{' '}
+                        {selectedType !== 'all'
+                          ? `- ${
+                              selectedType === 'composers'
+                                ? 'Compositores'
+                                : selectedType === 'works'
+                                ? 'Obras'
+                                : 'Partituras'
+                            }`
+                          : 'Gerais'}
+                      </span>
                     </h3>
                     <div className="flex items-center space-x-2">
                       {hasActiveFilters && (
@@ -705,26 +1009,8 @@ const UploadsClient = ({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Epoch Filter */}
-                    <div>
-                      <label className="block text-xs font-medium text-theme-tertiary mb-2">
-                        Época
-                      </label>
-                      <Select
-                        options={[
-                          { value: '', label: 'Todas as épocas' },
-                          ...epochs.map((epoch) => ({
-                            value: epoch.id,
-                            label: epoch.name,
-                          })),
-                        ]}
-                        value={selectedEpoch}
-                        onChange={(e) => handleEpochChange(e.target.value)}
-                        className="input-classical-2 w-full"
-                      />
-                    </div>
-                  </div>
+                  {/* 🆕 Renderizar filtros específicos por aba */}
+                  {renderTabSpecificFilters()}
                 </div>
               </AnimatedItem>
             )}
@@ -739,11 +1025,13 @@ const UploadsClient = ({
                 <span className="font-medium text-theme-primary">
                   {uploads.length}
                 </span>{' '}
-                de{' '}
-                <span className="font-medium text-theme-primary">
-                  {totalCount}
-                </span>{' '}
-                itens
+                {selectedType === 'all'
+                  ? 'itens'
+                  : selectedType === 'composers'
+                  ? 'compositores'
+                  : selectedType === 'works'
+                  ? 'obras'
+                  : 'partituras'}
                 {searchTerm && (
                   <span className="text-brand-primary">
                     {' '}
@@ -796,30 +1084,51 @@ const UploadsClient = ({
                   className="mt-4"
                   springType="gentle"
                 >
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                      <FiUser className="w-5 h-5 text-theme-primary" />
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                        <FiUser className="w-5 h-5 text-theme-primary" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                          Compositores
+                        </h2>
+                        <p className="text-theme-tertiary">
+                          {selectedType === 'all'
+                            ? `${Math.min(
+                                filteredData.composers.length,
+                                16
+                              )} de ${stats.composerCount} compositores`
+                            : `${filteredData.composers.length} de ${stats.composerCount} compositores`}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                        Compositores
-                      </h2>
-                      <p className="text-theme-tertiary">
-                        {filteredData.composers.length} de{' '}
-                        {uploadsByType.composers.length} compositores
-                      </p>
-                    </div>
+
+                    {/* 🆕 Botão "Ver mais" para aba "all" */}
+                    {selectedType === 'all' && hasMoreComposers && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        rightIcon={<FiArrowRight />}
+                        onClick={() => handleSeeMore('composers')}
+                      >
+                        Ver mais compositores
+                      </Button>
+                    )}
                   </div>
 
                   {viewMode === 'cards' ? (
                     <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
-                      {filteredData.composers.map((item) => (
+                      {(selectedType === 'all'
+                        ? filteredData.composers.slice(0, 16)
+                        : filteredData.composers
+                      ).map((item) => (
                         <UploadComposerCard
                           key={item.id}
                           item={item}
                           onEdit={() => handleEdit(item)}
                           onDelete={() => handleDelete(item)}
-                          onBulkInsertWorks={() => handleBulkInsertWorks(item)} // 🆕 NOVA PROP
+                          onBulkInsertWorks={() => handleBulkInsertWorks(item)}
                           isAdmin={isAdmin}
                           viewMode={viewMode}
                           isDeleting={deletingItemId === item.id}
@@ -828,7 +1137,10 @@ const UploadsClient = ({
                     </SequentialGrid>
                   ) : (
                     <div className="space-y-4">
-                      {filteredData.composers.map((item, index) => (
+                      {(selectedType === 'all'
+                        ? filteredData.composers.slice(0, 16)
+                        : filteredData.composers
+                      ).map((item, index) => (
                         <AnimatedItem
                           key={item.id}
                           direction="left"
@@ -844,7 +1156,7 @@ const UploadsClient = ({
                             onDelete={() => handleDelete(item)}
                             onBulkInsertWorks={() =>
                               handleBulkInsertWorks(item)
-                            } // 🆕 NOVA PROP
+                            }
                             isAdmin={isAdmin}
                             viewMode={viewMode}
                           />
@@ -891,24 +1203,44 @@ const UploadsClient = ({
                   className="mt-4"
                   springType="gentle"
                 >
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                      <FiMusic className="w-5 h-5 text-theme-primary" />
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                        <FiMusic className="w-5 h-5 text-theme-primary" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                          Obras
+                        </h2>
+                        <p className="text-theme-tertiary">
+                          {selectedType === 'all'
+                            ? `${Math.min(filteredData.works.length, 16)} de ${
+                                stats.workCount
+                              } obras`
+                            : `${filteredData.works.length} de ${stats.workCount} obras`}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                        Obras
-                      </h2>
-                      <p className="text-theme-tertiary">
-                        {filteredData.works.length} de{' '}
-                        {uploadsByType.works.length} obras
-                      </p>
-                    </div>
+
+                    {/* 🆕 Botão "Ver mais" para aba "all" */}
+                    {selectedType === 'all' && hasMoreWorks && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        rightIcon={<FiArrowRight />}
+                        onClick={() => handleSeeMore('works')}
+                      >
+                        Ver mais obras
+                      </Button>
+                    )}
                   </div>
 
                   {viewMode === 'cards' ? (
                     <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
-                      {filteredData.works.map((item) => (
+                      {(selectedType === 'all'
+                        ? filteredData.works.slice(0, 16)
+                        : filteredData.works
+                      ).map((item) => (
                         <UploadWorkCard
                           key={item.id}
                           item={item}
@@ -922,7 +1254,10 @@ const UploadsClient = ({
                     </SequentialGrid>
                   ) : (
                     <div className="space-y-4">
-                      {filteredData.works.map((item, index) => (
+                      {(selectedType === 'all'
+                        ? filteredData.works.slice(0, 16)
+                        : filteredData.works
+                      ).map((item, index) => (
                         <AnimatedItem
                           key={item.id}
                           direction="left"
@@ -983,24 +1318,44 @@ const UploadsClient = ({
                   className="mt-4"
                   springType="gentle"
                 >
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                      <FiFileText className="w-5 h-5 text-theme-primary" />
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                        <FiFileText className="w-5 h-5 text-theme-primary" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                          Partituras
+                        </h2>
+                        <p className="text-theme-tertiary">
+                          {selectedType === 'all'
+                            ? `${Math.min(filteredData.scores.length, 16)} de ${
+                                stats.scoreCount
+                              } partituras`
+                            : `${filteredData.scores.length} de ${stats.scoreCount} partituras`}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                        Partituras
-                      </h2>
-                      <p className="text-theme-tertiary">
-                        {filteredData.scores.length} de{' '}
-                        {uploadsByType.scores.length} partituras
-                      </p>
-                    </div>
+
+                    {/* 🆕 Botão "Ver mais" para aba "all" */}
+                    {selectedType === 'all' && hasMoreScores && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        rightIcon={<FiArrowRight />}
+                        onClick={() => handleSeeMore('scores')}
+                      >
+                        Ver mais partituras
+                      </Button>
+                    )}
                   </div>
 
                   {viewMode === 'cards' ? (
                     <SequentialGrid cols={3} gap={6} delayBetweenItems={0.1}>
-                      {filteredData.scores.map((item) => (
+                      {(selectedType === 'all'
+                        ? filteredData.scores.slice(0, 16)
+                        : filteredData.scores
+                      ).map((item) => (
                         <UploadScoreCard
                           key={item.id}
                           item={item}
@@ -1014,7 +1369,10 @@ const UploadsClient = ({
                     </SequentialGrid>
                   ) : (
                     <div className="space-y-4">
-                      {filteredData.scores.map((item, index) => (
+                      {(selectedType === 'all'
+                        ? filteredData.scores.slice(0, 16)
+                        : filteredData.scores
+                      ).map((item, index) => (
                         <AnimatedItem
                           key={item.id}
                           direction="left"
@@ -1149,8 +1507,8 @@ const UploadsClient = ({
           )}
         </div>
 
-        {/* Pagination */}
-        {totalPages > 1 && (
+        {/* Pagination - 🆕 APENAS PARA ABAS ESPECÍFICAS */}
+        {totalPages > 1 && selectedType !== 'all' && (
           <AnimatedItem direction="up" className="mt-8">
             <PaginationControls
               currentPage={currentPage}
@@ -1196,7 +1554,7 @@ const UploadsClient = ({
         />
       )}
 
-      {/* 🆕 Modal de Bulk Insert de Obras */}
+      {/* Modal de Bulk Insert de Obras */}
       {showBulkInsertModal && bulkInsertComposer && (
         <BulkInsertWorksModal
           isOpen={showBulkInsertModal}

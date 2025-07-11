@@ -1,4 +1,4 @@
-// app/requests/uploads.ts - CORRIGIDO COM TIPOS PRISMA CORRETOS
+// app/requests/uploads.ts - ATUALIZADO COM LIMITAÇÃO POR CATEGORIA
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 import { Prisma } from '@prisma/client';
@@ -14,7 +14,7 @@ export interface UserUpload {
   imslpPermlink?: string;
   epochName?: string;
   composerName?: string;
-  composerId?: string; // Novo campo para link
+  composerId?: string;
   instrumentName?: string;
   workGenres?: string[];
   categoryNames?: string[];
@@ -22,15 +22,14 @@ export interface UserUpload {
   pageCount?: string;
   fileSize?: string;
   dataQuality?: string;
-  portraitUrl?: string; // Adicionar portraitUrl para compositores
-  // Campos específicos para partituras
-  workTitle?: string; // Novo campo para link da obra
-  workId?: string; // Novo campo para link da obra
-  downloadUrl?: string; // URL de download da partitura
+  portraitUrl?: string;
+  workTitle?: string;
+  workId?: string;
+  downloadUrl?: string;
   isVerified?: boolean;
 }
 
-// Buscar uploads do usuário
+// Buscar uploads do usuário - ATUALIZADO COM LIMITAÇÃO POR CATEGORIA
 export const getUserUploads = unstable_cache(
   async ({
     userId,
@@ -39,6 +38,9 @@ export const getUserUploads = unstable_cache(
     search = '',
     type = 'all',
     epochId = '',
+    composerId = '', // 🆕 Novo filtro por compositor
+    workId = '', // 🆕 Novo filtro por obra
+    limitPerType = false, // 🆕 Quando true, limita a 16 itens por categoria na aba "all"
   }: {
     userId: string;
     page?: number;
@@ -46,9 +48,13 @@ export const getUserUploads = unstable_cache(
     search?: string;
     type?: string;
     epochId?: string;
+    composerId?: string; // 🆕
+    workId?: string; // 🆕
+    limitPerType?: boolean; // 🆕
   }) => {
     try {
       const offset = (page - 1) * limit;
+      const itemsPerTypeLimit = 16; // Limite para cada categoria na aba "all"
 
       // Buscar compositores do usuário
       const composerWhere: Prisma.ComposerWhereInput = {
@@ -59,7 +65,6 @@ export const getUserUploads = unstable_cache(
           ],
         }),
         ...(epochId && { epochId }),
-        // Filtrar apenas compositores criados pelo usuário ou customizados
         OR: [{ createdBy: userId }, { isCustom: true }],
       };
 
@@ -78,7 +83,7 @@ export const getUserUploads = unstable_cache(
           ],
         }),
         ...(epochId && { epochId }),
-        // Filtrar apenas obras criadas pelo usuário ou customizadas
+        ...(composerId && { composerId }), // 🆕 Filtro por compositor
         OR: [{ createdBy: userId }, { isCustom: true }],
       };
 
@@ -89,8 +94,32 @@ export const getUserUploads = unstable_cache(
             { work: { title: { contains: search, mode: 'insensitive' } } },
           ],
         }),
-        source: { in: ['CUSTOM', 'UPLOAD'] }, // Apenas partituras não-IMSLP
+        ...(workId && { workId }), // 🆕 Filtro por obra
+        ...(epochId && {
+          work: { epochId },
+        }),
+        source: { in: ['CUSTOM', 'UPLOAD'] },
         ...(userId && { uploadedBy: userId }),
+      };
+
+      // Determinar limites baseado no tipo e configuração
+      const getTypeLimit = (requestedType: string) => {
+        if (type !== 'all') {
+          // Se não é "all", usar paginação normal
+          return type === requestedType ? limit : undefined;
+        } else {
+          // Se é "all" e limitPerType está ativo, limitar a 16
+          return limitPerType ? itemsPerTypeLimit : undefined;
+        }
+      };
+
+      const getTypeSkip = (requestedType: string) => {
+        if (type !== 'all') {
+          return type === requestedType ? offset : undefined;
+        } else {
+          // Na aba "all", não usar skip quando limitando por tipo
+          return limitPerType ? undefined : undefined;
+        }
       };
 
       const [composers, works, scores] = await Promise.all([
@@ -109,8 +138,8 @@ export const getUserUploads = unstable_cache(
                 verificationStatus: true,
                 epoch: { select: { name: true } },
               },
-              take: type === 'composer' ? limit : undefined,
-              skip: type === 'composer' ? offset : undefined,
+              take: getTypeLimit('composer'),
+              skip: getTypeSkip('composer'),
               orderBy: { createdAt: 'desc' },
             })
           : [],
@@ -126,8 +155,6 @@ export const getUserUploads = unstable_cache(
                 updatedAt: true,
                 imslpId: true,
                 imslpPermlink: true,
-                // dataQuality não existe no modelo Work - removido
-                // verificationStatus não existe no modelo Work - removido
                 composer: {
                   select: {
                     id: true,
@@ -140,8 +167,8 @@ export const getUserUploads = unstable_cache(
                 workGenresArr: true,
                 categoryNames: true,
               },
-              take: type === 'work' ? limit : undefined,
-              skip: type === 'work' ? offset : undefined,
+              take: getTypeLimit('work'),
+              skip: getTypeSkip('work'),
               orderBy: { createdAt: 'desc' },
             })
           : [],
@@ -174,24 +201,18 @@ export const getUserUploads = unstable_cache(
                   },
                 },
               },
-              take: type === 'score' ? limit : undefined,
-              skip: type === 'score' ? offset : undefined,
+              take: getTypeLimit('score'),
+              skip: getTypeSkip('score'),
               orderBy: { createdAt: 'desc' },
             })
           : [],
       ]);
 
-      // Contar totais
+      // Contar totais - SEMPRE buscar totais completos
       const [composerCount, workCount, scoreCount] = await Promise.all([
-        type === 'all' || type === 'composer'
-          ? prisma.composer.count({ where: composerWhere })
-          : 0,
-        type === 'all' || type === 'work'
-          ? prisma.work.count({ where: workWhere })
-          : 0,
-        type === 'all' || type === 'score'
-          ? prisma.workScore.count({ where: scoreWhere })
-          : 0,
+        prisma.composer.count({ where: composerWhere }),
+        prisma.work.count({ where: workWhere }),
+        prisma.workScore.count({ where: scoreWhere }),
       ]);
 
       const totalCount = composerCount + workCount + scoreCount;
@@ -209,7 +230,7 @@ export const getUserUploads = unstable_cache(
           epochName: composer.epoch.name,
           dataQuality: composer.dataQuality || undefined,
           verificationStatus: composer.verificationStatus || undefined,
-          portraitUrl: composer.portraitUrl || undefined, // Adicionar portraitUrl
+          portraitUrl: composer.portraitUrl || undefined,
         })),
         ...works.map((work) => ({
           id: work.id,
@@ -222,11 +243,10 @@ export const getUserUploads = unstable_cache(
           imslpPermlink: work.imslpPermlink,
           epochName: work.epoch.name,
           composerName: work.composer.fullName || work.composer.name,
-          composerId: work.composer.id, // Novo campo para link
+          composerId: work.composer.id,
           instrumentName: work.instrument.name,
           workGenres: work.workGenresArr,
           categoryNames: work.categoryNames,
-          // dataQuality e verificationStatus não existem no modelo Work
         })),
         ...scores.map((score) => ({
           id: score.id,
@@ -237,9 +257,9 @@ export const getUserUploads = unstable_cache(
           isIMSLP: score.source === 'IMSLP',
           composerName:
             score.work.composer.fullName || score.work.composer.name,
-          composerId: score.work.composer.id, // Novo campo para link
-          workTitle: score.work.title, // Novo campo para link da obra
-          workId: score.work.id, // Novo campo para link da obra
+          composerId: score.work.composer.id,
+          workTitle: score.work.title,
+          workId: score.work.id,
           fileSize: score.fileSize || undefined,
           pageCount: score.pageCount || undefined,
           downloadUrl: score.downloadUrl || undefined,
@@ -254,8 +274,14 @@ export const getUserUploads = unstable_cache(
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
 
+      // Para a aba "all", aplicar limit após ordenação se não estiver limitando por tipo
+      const finalItems =
+        type === 'all' && !limitPerType
+          ? items.slice(offset, offset + limit)
+          : items;
+
       return {
-        items: type === 'all' ? items.slice(offset, offset + limit) : items,
+        items: finalItems,
         composers,
         works,
         scores,
@@ -263,6 +289,10 @@ export const getUserUploads = unstable_cache(
         composerCount,
         workCount,
         scoreCount,
+        // 🆕 Indicadores se há mais itens de cada tipo
+        hasMoreComposers: composerCount > itemsPerTypeLimit,
+        hasMoreWorks: workCount > itemsPerTypeLimit,
+        hasMoreScores: scoreCount > itemsPerTypeLimit,
       };
     } catch (error) {
       console.error('Erro ao buscar uploads do usuário:', error);
@@ -275,17 +305,149 @@ export const getUserUploads = unstable_cache(
         composerCount: 0,
         workCount: 0,
         scoreCount: 0,
+        hasMoreComposers: false,
+        hasMoreWorks: false,
+        hasMoreScores: false,
       };
     }
   },
   ['user-uploads'],
   {
-    revalidate: 300, // 5 minutos
+    revalidate: 300,
     tags: ['user-uploads'],
   }
 );
 
-// Buscar todos os uploads (para admin)
+// 🆕 Função para buscar dados específicos para filtros
+export const getFilterData = unstable_cache(
+  async (userId: string) => {
+    try {
+      // Buscar apenas compositores e obras do usuário para filtros
+      const [userComposers, userWorks] = await Promise.all([
+        prisma.composer.findMany({
+          where: {
+            OR: [{ createdBy: userId }, { isCustom: true }],
+          },
+          select: {
+            id: true,
+            name: true,
+            fullName: true,
+          },
+          orderBy: { name: 'asc' },
+          take: 100, // Limitar para performance
+        }),
+        prisma.work.findMany({
+          where: {
+            OR: [{ createdBy: userId }, { isCustom: true }],
+          },
+          select: {
+            id: true,
+            title: true,
+            composer: {
+              select: {
+                name: true,
+                fullName: true,
+              },
+            },
+          },
+          orderBy: { title: 'asc' },
+          take: 100, // Limitar para performance
+        }),
+      ]);
+
+      return {
+        composers: userComposers,
+        works: userWorks.map((work) => ({
+          id: work.id,
+          title: work.title,
+          composerName: work.composer.fullName || work.composer.name,
+        })),
+      };
+    } catch (error) {
+      console.error('Erro ao buscar dados para filtros:', error);
+      return {
+        composers: [],
+        works: [],
+      };
+    }
+  },
+  ['filter-data'],
+  {
+    revalidate: 600, // 10 minutos
+    tags: ['filter-data'],
+  }
+);
+
+// 🆕 Função para buscar épocas disponíveis por tipo de upload do usuário
+export const getAvailableEpochs = unstable_cache(
+  async (userId: string, type: string = 'all') => {
+    try {
+      let epochIds: string[] = [];
+
+      if (type === 'all' || type === 'composer') {
+        const composerEpochs = await prisma.composer.findMany({
+          where: {
+            OR: [{ createdBy: userId }, { isCustom: true }],
+          },
+          select: { epochId: true },
+          distinct: ['epochId'],
+        });
+        epochIds.push(...composerEpochs.map((c) => c.epochId));
+      }
+
+      if (type === 'all' || type === 'work') {
+        const workEpochs = await prisma.work.findMany({
+          where: {
+            OR: [{ createdBy: userId }, { isCustom: true }],
+          },
+          select: { epochId: true },
+          distinct: ['epochId'],
+        });
+        epochIds.push(...workEpochs.map((w) => w.epochId));
+      }
+
+      if (type === 'all' || type === 'score') {
+        const scoreEpochs = await prisma.workScore.findMany({
+          where: {
+            source: { in: ['CUSTOM', 'UPLOAD'] },
+            ...(userId && { uploadedBy: userId }),
+          },
+          select: {
+            work: {
+              select: { epochId: true },
+            },
+          },
+          distinct: ['workId'],
+        });
+        epochIds.push(...scoreEpochs.map((s) => s.work.epochId));
+      }
+
+      // Remover duplicatas
+      const uniqueEpochIds = [...new Set(epochIds)];
+
+      // Buscar os dados completos das épocas
+      const epochs = await prisma.epoch.findMany({
+        where: {
+          id: { in: uniqueEpochIds },
+        },
+        select: { id: true, name: true },
+        orderBy: { name: 'asc' },
+      });
+
+      return epochs;
+    } catch (error) {
+      console.error('Erro ao buscar épocas disponíveis:', error);
+      return [];
+    }
+  },
+  ['available-epochs'],
+  {
+    revalidate: 600, // 10 minutos
+    tags: ['available-epochs'],
+  }
+);
+
+// Manter outras funções existentes...
 export const getAllUploads = unstable_cache(
   async ({
     page = 1,
@@ -303,7 +465,6 @@ export const getAllUploads = unstable_cache(
     try {
       const offset = (page - 1) * limit;
 
-      // Buscar todos os compositores
       const composerWhere: Prisma.ComposerWhereInput = {
         ...(search && {
           OR: [
@@ -373,8 +534,6 @@ export const getAllUploads = unstable_cache(
                 updatedAt: true,
                 imslpId: true,
                 imslpPermlink: true,
-                // dataQuality não existe no modelo Work - removido
-                // verificationStatus não existe no modelo Work - removido
                 composer: {
                   select: {
                     id: true,
@@ -428,7 +587,6 @@ export const getAllUploads = unstable_cache(
           : [],
       ]);
 
-      // Contar totais
       const [composerCount, workCount, scoreCount] = await Promise.all([
         type === 'all' || type === 'composer'
           ? prisma.composer.count({ where: composerWhere })
@@ -443,7 +601,6 @@ export const getAllUploads = unstable_cache(
 
       const totalCount = composerCount + workCount + scoreCount;
 
-      // Combinar e formatar dados
       const items: UserUpload[] = [
         ...composers.map((composer) => ({
           id: composer.id,
@@ -468,11 +625,10 @@ export const getAllUploads = unstable_cache(
           imslpPermlink: work.imslpPermlink,
           epochName: work.epoch.name,
           composerName: work.composer.fullName || work.composer.name,
-          composerId: work.composer.id, // Novo campo para link
+          composerId: work.composer.id,
           instrumentName: work.instrument.name,
           workGenres: work.workGenresArr,
           categoryNames: work.categoryNames,
-          // dataQuality e verificationStatus não existem no modelo Work
         })),
         ...scores.map((score) => ({
           id: score.id,
@@ -483,9 +639,9 @@ export const getAllUploads = unstable_cache(
           isIMSLP: score.source === 'IMSLP',
           composerName:
             score.work.composer.fullName || score.work.composer.name,
-          composerId: score.work.composer.id, // Novo campo para link
-          workTitle: score.work.title, // Novo campo para link da obra
-          workId: score.work.id, // Novo campo para link da obra
+          composerId: score.work.composer.id,
+          workTitle: score.work.title,
+          workId: score.work.id,
           fileSize: score.fileSize || undefined,
           pageCount: score.pageCount || undefined,
           downloadUrl: score.downloadUrl || undefined,
@@ -494,7 +650,6 @@ export const getAllUploads = unstable_cache(
         })),
       ];
 
-      // Ordenar por data de criação
       items.sort(
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -526,12 +681,12 @@ export const getAllUploads = unstable_cache(
   },
   ['all-uploads'],
   {
-    revalidate: 300, // 5 minutos
+    revalidate: 300,
     tags: ['all-uploads'],
   }
 );
 
-// Buscar dados para formulários - ATUALIZADO
+// Manter outras funções existentes (getFormData, getEpochsCache, etc.)...
 export const getFormData = unstable_cache(
   async () => {
     try {
@@ -548,17 +703,15 @@ export const getFormData = unstable_cache(
           select: { id: true, name: true },
           orderBy: { name: 'asc' },
         }),
-        // CORREÇÃO: Buscar compositores sem ordenação por contagem
         prisma.composer.findMany({
           select: {
             id: true,
             name: true,
             fullName: true,
           },
-          orderBy: { name: 'asc' }, // Ordenação simples por nome
-          take: 100, // Reduzir quantidade para melhor performance
+          orderBy: { name: 'asc' },
+          take: 100,
         }),
-        // Buscar obras recentes
         prisma.work.findMany({
           select: {
             id: true,
@@ -575,15 +728,13 @@ export const getFormData = unstable_cache(
         }),
       ]);
 
-      // Formatar compositores (sem contagem de obras)
       const formattedComposers = composers.map((composer) => ({
         id: composer.id,
         name: composer.name,
         fullName: composer.fullName,
-        worksCount: 0, // Removendo contagem por performance
+        worksCount: 0,
       }));
 
-      // Formatar obras
       const formattedWorks = works.map((work) => ({
         id: work.id,
         title: work.title,
@@ -610,11 +761,11 @@ export const getFormData = unstable_cache(
   },
   ['form-data'],
   {
-    revalidate: 3600, // 1 hora
+    revalidate: 3600,
     tags: ['form-data'],
   }
 );
-// Cache de épocas (reutilizar da página de compositores)
+
 export const getEpochsCache = unstable_cache(
   async () => {
     try {
@@ -629,14 +780,14 @@ export const getEpochsCache = unstable_cache(
   },
   ['epochs-cache'],
   {
-    revalidate: 3600, // 1 hora
+    revalidate: 3600,
     tags: ['epochs'],
   }
 );
+
 export const getComposerFormData = unstable_cache(
   async () => {
     try {
-      // Buscar apenas os dados essenciais para o formulário
       const [epochs, roles] = await Promise.all([
         prisma.epoch.findMany({
           select: { id: true, name: true },
@@ -665,19 +816,20 @@ export const getComposerFormData = unstable_cache(
   },
   ['composer-form-data'],
   {
-    revalidate: 3600, // 1 hora
+    revalidate: 3600,
     tags: ['composer-form-data'],
   }
 );
 
-// Função para invalidar caches - ATUALIZADA
 export async function revalidateUploadsCache(userId?: string) {
   const { revalidateTag } = await import('next/cache');
 
   revalidateTag('user-uploads');
   revalidateTag('all-uploads');
   revalidateTag('form-data');
-  revalidateTag('composer-form-data'); // Adicionar novo cache
+  revalidateTag('composer-form-data');
+  revalidateTag('filter-data'); // 🆕
+  revalidateTag('available-epochs'); // 🆕 Novo cache de épocas
   revalidateTag('epochs');
 
   if (userId) {
