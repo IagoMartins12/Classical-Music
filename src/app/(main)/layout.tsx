@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
-import './globals.css';
-import { ClientThemeWrapper } from './components/ClientThemeWrapper';
-import Navbar from './components/Navbar';
-import AuthProvider from './providers/AuthProvider';
-import { FavoritesProvider } from './providers/FavoritesProvider';
+import '../globals.css';
+import { ClientThemeWrapper } from '../components/ClientThemeWrapper';
+import Navbar from '../components/Navbar';
+import AuthProvider from '../providers/AuthProvider';
+import { FavoritesProvider } from '../providers/FavoritesProvider';
 
 const inter = Inter({
   subsets: ['latin'],

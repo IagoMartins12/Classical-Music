@@ -2,10 +2,10 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import ProfileSkeleton from './loading';
-import ProfilePageClient from '../components/profile/ProfilePageClient';
+import ProfilePageClient from '../../components/profile/ProfilePageClient';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../libs/auth';
-import AuthCheck from '../components/AuthCheck';
+import { authOptions } from '../../libs/auth';
+import AuthCheck from '../../components/AuthCheck';
 
 export const metadata: Metadata = {
   title: 'Meu Perfil | Classical Hub',

@@ -43,7 +43,6 @@ export default function AdminHeader({
   loading,
 }: AdminHeaderProps) {
   const { data: session } = useSession();
-  const router = useRouter();
   const pathname = usePathname();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);

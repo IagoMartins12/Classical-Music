@@ -1,9 +1,9 @@
 // app/uploads/error.tsx
 'use client';
 
+import Button from '@/app/components/Common/Button';
 import { useEffect } from 'react';
 import { FiAlertCircle, FiRefreshCw } from 'react-icons/fi';
-import Button from '../components/Common/Button';
 
 export default function UploadsError({
   error,

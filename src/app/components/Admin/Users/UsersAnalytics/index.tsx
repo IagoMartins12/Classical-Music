@@ -415,7 +415,7 @@ export default function UsersAnalytics() {
                       </div>
                       <div className="w-full bg-theme-primary h-2 rounded-full overflow-hidden mb-2">
                         <div
-                          className="h-full bg-gradient-to-r from-accent-blue to-accent-purple rounded-full transition-all duration-1000"
+                          className="h-full bg-gradient-to-r from-accent-blue bg-theme-elevated to-accent-purple rounded-full transition-all duration-1000"
                           style={{ width: `${type.percentage}%` }}
                         />
                       </div>

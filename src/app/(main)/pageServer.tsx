@@ -1,25 +1,25 @@
 // app/page.tsx - Enhanced Home Page
-import HeroMainPage from './components/HeroMainPage';
-import PopularComposers from './components/PopularComposers';
-import EssentialComposers from './components/EssentialComposers';
+import HeroMainPage from '../components/HeroMainPage';
+import PopularComposers from '../components/PopularComposers';
+import EssentialComposers from '../components/EssentialComposers';
 
 import {
   getEpochsCache,
   getRecomendadedComposers,
   getTop20FamousComposers,
-} from './requests/composers';
+} from '../requests/composers';
 
 import {
   getFeaturedComposer,
   getRandomDiscoveries,
   getRecentAdditions,
   getMusicalFacts,
-} from './requests/home-request';
-import FeaturedComposer from './components/FeaturedComposer';
-import ComposersByEpoch from './components/ComposersByEpoch';
-import RandomDiscoveries from './components/RandomDiscoveries';
-import RecentAdditions from './components/RecentAdditions';
-import MusicalFacts from './components/MusicalFacts';
+} from '../requests/home-request';
+import FeaturedComposer from '../components/FeaturedComposer';
+import ComposersByEpoch from '../components/ComposersByEpoch';
+import RandomDiscoveries from '../components/RandomDiscoveries';
+import RecentAdditions from '../components/RecentAdditions';
+import MusicalFacts from '../components/MusicalFacts';
 
 export default async function EnhancedHomePage() {
   // Buscar todos os dados em paralelo para melhor performance

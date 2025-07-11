@@ -13,6 +13,7 @@ import {
   FiBookOpen,
   FiFile,
   FiUpload,
+  FiSettings,
 } from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
 import { ThemeToggle } from '../ThemeToggle';
@@ -283,6 +284,17 @@ const Navbar: React.FC = () => {
                         <FiUpload className="w-4 h-4" />
                         <span>Uploads</span>
                       </Link>
+
+                      {user.role === 2 && (
+                        <Link
+                          href="/admin"
+                          className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FiSettings className="w-4 h-4" />
+                          <span>Admin</span>
+                        </Link>
+                      )}
                       <hr className="my-2 border-theme-secondary" />
 
                       <button
