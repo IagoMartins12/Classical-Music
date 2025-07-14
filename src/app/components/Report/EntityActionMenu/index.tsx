@@ -149,16 +149,18 @@ export default function EntityActionMenu({
       </div>
 
       {/* Modal de verificação */}
-      {isAdmin && entityType === 'composer' && (
-        <VerificationModal
-          isOpen={showVerificationModal}
-          onClose={() => setShowVerificationModal(false)}
-          composerId={entityId}
-          composerName={entityName}
-          currentVerificationStatus={currentVerificationStatus}
-          onVerificationChange={handleVerificationChange}
-        />
-      )}
+      {(isAdmin && entityType === 'composer') ||
+        (entityType === 'work' && (
+          <VerificationModal
+            isOpen={showVerificationModal}
+            onClose={() => setShowVerificationModal(false)}
+            currentItem={entityType}
+            itemId={entityId}
+            composerName={entityName}
+            currentVerificationStatus={currentVerificationStatus}
+            onVerificationChange={handleVerificationChange}
+          />
+        ))}
     </>
   );
 }

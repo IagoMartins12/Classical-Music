@@ -81,7 +81,6 @@ const getCachedWorksFiltered = unstable_cache(
 export default async function WorksServer({ searchParams }: WorksServerProps) {
   try {
     const page = parseInt(searchParams.page || '1');
-    const limit = 32;
 
     // 🚀 ESTRATÉGIA 1: Detectar tipo de query
     const hasFilters = hasComplexFilters(searchParams);

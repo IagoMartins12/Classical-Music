@@ -39,6 +39,7 @@ import VerificationBadge from '../Verification/VerificationBadge';
 import Button from '../Common/Button';
 import ReportButton from '../Report/ReportButton';
 import VerificationModal from '../Verification/VerificationModal';
+import VerificationButton from '../Verification/VerificationButton';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
@@ -281,15 +282,12 @@ export default function ComposerDetailsClient({
                           />
                           {/* Admin verification button */}
                           {isAdmin && (
-                            <Button
+                            <VerificationButton
+                              entityType="composer"
                               variant="ghost"
                               size="lg"
-                              leftIcon={<FiShield />}
                               onClick={() => setShowVerificationModal(true)}
-                              title="Gerenciar verificação"
-                            >
-                              Gerenciar Verificação
-                            </Button>
+                            />
                           )}
                         </div>
                       </div>
@@ -645,7 +643,8 @@ export default function ComposerDetailsClient({
         <VerificationModal
           isOpen={showVerificationModal}
           onClose={() => setShowVerificationModal(false)}
-          composerId={composer.id}
+          currentItem="composer"
+          itemId={composer.id}
           composerName={composer.fullName}
           currentVerificationStatus={isVerified}
           onVerificationChange={handleVerificationChange}

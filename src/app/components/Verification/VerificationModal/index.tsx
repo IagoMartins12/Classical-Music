@@ -11,7 +11,8 @@ import Modal from '../../Modal';
 interface VerificationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  composerId: string;
+  currentItem: 'work' | 'composer';
+  itemId: string;
   composerName: string;
   currentVerificationStatus: boolean;
   onVerificationChange: (verified: boolean) => void;
@@ -19,8 +20,9 @@ interface VerificationModalProps {
 
 export default function VerificationModal({
   isOpen,
+  currentItem,
   onClose,
-  composerId,
+  itemId,
   composerName,
   currentVerificationStatus,
   onVerificationChange,
@@ -33,16 +35,30 @@ export default function VerificationModal({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/composers/${composerId}/verify`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          verified,
-          notes: notes.trim(),
-        }),
-      });
+      let response: Response;
+      if (currentItem === 'composer') {
+        response = await fetch(`/api/composers/${itemId}/verify`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            verified,
+            notes: notes.trim(),
+          }),
+        });
+      } else {
+        response = await fetch(`/api/works/${itemId}/verify`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            verified,
+            notes: notes.trim(),
+          }),
+        });
+      }
 
       if (response.ok) {
         const data = await response.json();

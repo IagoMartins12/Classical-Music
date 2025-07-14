@@ -307,6 +307,9 @@ const WorksClient = memo(
     );
     const [viewMode, setViewMode] = useState<'list' | 'cards'>('cards');
 
+    const goToWorkPage = (workId: string) => {
+      router.push(`works/${workId}`);
+    };
     // Memoizar cálculos pesados
     const { totalPages, startItem, endItem, hasActiveFilters } = useMemo(() => {
       const totalPages = Math.ceil(worksData.totalCount / 32);
@@ -496,7 +499,7 @@ const WorksClient = memo(
             className=""
           >
             {worksData.works.map((work) => (
-              <WorkCard key={work.id} work={work} />
+              <WorkCard key={work.id} work={work} goToWorkPage={goToWorkPage} />
             ))}
           </SequentialGrid>
         );
@@ -505,7 +508,7 @@ const WorksClient = memo(
       return (
         <AnimatedCard
           hover="none"
-          className="bg-theme-secundary rounded-2xl overflow-hidden"
+          className="bg-theme-secundary px-4  rounded-2xl overflow-hidden"
         >
           <div className="divide-y divide-theme-secondary flex flex-col gap-4 py-4">
             {worksData.works.map((work, index) => (

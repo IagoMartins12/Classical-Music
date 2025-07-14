@@ -30,6 +30,7 @@ export interface WorkDetails {
   movementsDetailed?: any;
   imslpTags?: string[];
   difficultyLevel?: string;
+  isVerified: boolean;
   composer: {
     id: string;
     name: string;
@@ -59,6 +60,7 @@ export interface WorkListItem {
   workType: string;
   isPartOfCollection: boolean;
   difficultyLevel?: string;
+  isVerified: boolean;
   composer: {
     id: string;
     name: string;
@@ -160,6 +162,7 @@ async function getWorksWithoutFilters(
         composerId: true,
         instrumentId: true,
         epochId: true,
+        isVerified: true,
       },
       // 🔥 ORDENAÇÃO SIMPLES (evita joins complexos)
       orderBy: [
@@ -245,6 +248,7 @@ async function getWorksWithoutFilters(
         workType: work.workType,
         isPartOfCollection: work.isPartOfCollection,
         difficultyLevel: work.difficultyLevel || undefined,
+        isVerified: work.isVerified,
         composer: composer || {
           id: '',
           name: 'Desconhecido',
@@ -368,6 +372,7 @@ async function getWorksWithFilters(
         workType: true,
         isPartOfCollection: true,
         difficultyLevel: true,
+        isVerified: true,
         composer: {
           select: {
             id: true,
@@ -421,6 +426,7 @@ function formatWorkItem(work: any): WorkListItem {
     composer: work.composer,
     instrument: work.instrument,
     epoch: work.epoch,
+    isVerified: work.isVerified,
   };
 }
 
@@ -619,6 +625,7 @@ export const getWorkById = unstable_cache(
           movementsDetailed: true,
           imslpTags: true,
           difficultyLevel: true,
+          isVerified: true,
           composer: {
             select: {
               id: true,
@@ -676,6 +683,7 @@ export const getWorkById = unstable_cache(
         composer: work.composer,
         instrument: work.instrument,
         epoch: work.epoch,
+        isVerified: work.isVerified,
       };
     } catch (error) {
       console.error('❌ Erro ao buscar obra por ID:', error);

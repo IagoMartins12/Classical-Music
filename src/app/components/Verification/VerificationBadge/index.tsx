@@ -1,11 +1,11 @@
 // app/components/Verification/VerificationBadge.tsx
 'use client';
 
-import { FiCheck } from 'react-icons/fi';
 import { MdVerified } from 'react-icons/md';
 
 interface VerificationBadgeProps {
   verified: boolean;
+  title?: 'Compositor' | 'Peça';
   size?: 'sm' | 'md' | 'lg';
   variant?: 'icon' | 'badge' | 'text';
   className?: string;
@@ -13,6 +13,7 @@ interface VerificationBadgeProps {
 
 export default function VerificationBadge({
   verified,
+  title = 'Compositor',
   size = 'md',
   variant = 'icon',
   className = '',
@@ -56,7 +57,7 @@ export default function VerificationBadge({
         className={`inline-flex items-center space-x-1 text-accent-blue ${className}`}
       >
         <MdVerified className={iconSizeClasses[size]} />
-        <span className="text-sm font-medium">Verificado</span>
+        <span className="text-sm font-medium">{title} verificado</span>
       </div>
     );
   }

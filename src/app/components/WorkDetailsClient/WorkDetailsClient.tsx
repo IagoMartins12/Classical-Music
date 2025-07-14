@@ -21,6 +21,7 @@ import {
   FiClock,
   FiLayers,
   FiTag,
+  FiShield,
 } from 'react-icons/fi';
 import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
 import { useNavigate } from '@/app/hooks/useNavigate';
@@ -40,6 +41,9 @@ import { useMostFavoritedForWork } from '@/app/stores/useMostFavoritedStore';
 import IMSLPTabsIncremental from './IMSLPTabsIncremental';
 import { GiMetronome, GiMusicalNotes } from 'react-icons/gi';
 import ReportButton from '../Report/ReportButton';
+import VerificationModal from '../Verification/VerificationModal';
+import VerificationBadge from '../Verification/VerificationBadge';
+import VerificationButton from '../Verification/VerificationButton';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -48,10 +52,12 @@ interface WorkDetailsClientProps {
     wantToLearn: any[];
     learned: any[];
   };
+  isAdmin: boolean;
 }
 
 export default function WorkDetailsClient({
   work,
+  isAdmin,
   learningData = { wantToLearn: [], learned: [] },
 }: WorkDetailsClientProps) {
   // Estados seguros para SSR
@@ -59,7 +65,13 @@ export default function WorkDetailsClient({
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedScoreForStudy, setSelectedScoreForStudy] =
     useState<IMSLPScore | null>(null);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [isVerified, setIsVerified] = useState(work.isVerified || false);
 
+  const handleVerificationChange = (verified: boolean) => {
+    setIsVerified(verified);
+    // Atualizar no contexto global se necessário
+  };
   // Verificar se está montado (hidratado)
   useEffect(() => {
     setMounted(true);
@@ -324,10 +336,19 @@ export default function WorkDetailsClient({
                   <div className="space-y-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
-                          {work.title}
-                        </h1>
-
+                        <div className="flex items-center  gap-4">
+                          <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title leading-tight">
+                            {work.title}
+                          </h1>
+                          {isVerified && (
+                            <VerificationBadge
+                              verified={isVerified}
+                              size="lg"
+                              variant="icon"
+                              title="Peça"
+                            />
+                          )}
+                        </div>
                         {/* 🆕 Subtitle */}
                         {work.subtitle && (
                           <h2 className="text-2xl md:text-3xl text-theme-secondary mt-2 classical-subtitle font-medium">
@@ -375,6 +396,15 @@ export default function WorkDetailsClient({
                           size="lg"
                           showLabel={false}
                         />
+                        {/* Admin verification button */}
+                        {/* {isAdmin && ( */}
+                        <VerificationButton
+                          entityType="work"
+                          variant="ghost"
+                          size="lg"
+                          onClick={() => setShowVerificationModal(true)}
+                        />
+                        {/* )} */}
                       </div>
                     </div>
 
@@ -920,6 +950,18 @@ export default function WorkDetailsClient({
             workTitle={work.title}
             selectedScore={selectedScoreForStudy}
           />
+
+          {/* {isAdmin && ( */}
+          <VerificationModal
+            isOpen={showVerificationModal}
+            onClose={() => setShowVerificationModal(false)}
+            currentItem="work"
+            itemId={work.id}
+            composerName={work.title}
+            currentVerificationStatus={isVerified}
+            onVerificationChange={handleVerificationChange}
+          />
+          {/* )} */}
         </AnimatedContainer>
       </div>
     </div>

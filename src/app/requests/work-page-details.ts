@@ -23,6 +23,7 @@ export interface WorkDetails {
   parentWorkId?: string;
   movementNumber?: number;
   createdAt: Date;
+  isVerified: boolean;
   composer: {
     id: string;
     name: string;
@@ -103,6 +104,7 @@ const getCachedWorkData = unstable_cache(
           epochId: true,
           categoryNames: true,
           workGenresArr: true,
+          isVerified: true,
           composer: {
             select: {
               id: true,
@@ -186,6 +188,7 @@ export const getWorkById = async (
       epoch: work.epoch,
       categoryNames: work.categoryNames,
       workGenresArr: work.workGenresArr,
+      isVerified: work.isVerified,
     };
   } catch (error) {
     console.error('Erro ao buscar obra:', error);

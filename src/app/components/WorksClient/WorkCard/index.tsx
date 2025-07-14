@@ -13,12 +13,14 @@ import {
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../../FavoriteButton';
+import VerificationBadge from '../../Verification/VerificationBadge';
 
 interface workCardProps {
   work: WorkListItem;
+  goToWorkPage: (composerId: string) => void;
 }
 
-const WorkCard: React.FC<workCardProps> = ({ work }) => {
+const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
   const formatDuration = (duration: string | null) => {
     if (!duration) return null;
     // Se já está formatado, retorna como está
@@ -31,7 +33,13 @@ const WorkCard: React.FC<workCardProps> = ({ work }) => {
 
   return (
     <div className="group cursor-pointer select-none h-full">
-      <div className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow">
+      <div
+        onClick={(ev) => {
+          ev.preventDefault();
+          goToWorkPage(work.id);
+        }}
+        className="classical-card h-full flex flex-col overflow-hidden transition-all duration-700 ease-out group-hover:scale-105 group-hover:-translate-y-2 hover:shadow-theme-glow"
+      >
         {/* Header Section */}
         <div className="relative p-6 pb-4 border-b border-theme-secondary">
           {/* Background pattern */}
@@ -51,13 +59,14 @@ const WorkCard: React.FC<workCardProps> = ({ work }) => {
 
           <div className="relative z-10">
             {/* Title */}
-            <h3 className="text-lg font-bold text-theme-primary classical-title mb-3 line-clamp-2 group-hover:text-brand-primary transition-colors duration-300 leading-tight">
+            <h3 className="text-lg flex items-center gap-2 font-bold text-theme-primary classical-title mb-3 line-clamp-2 group-hover:text-brand-primary transition-colors duration-300 leading-tight">
               <Link
                 href={`/works/${work.id}`}
                 className="hover:text-brand-primary transition-colors"
               >
                 {work.title}
               </Link>
+              <VerificationBadge verified={work.isVerified} variant="icon" />
             </h3>
 
             {/* Opus/Catalog */}

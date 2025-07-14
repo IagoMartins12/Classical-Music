@@ -31,20 +31,13 @@ export default async function WorkDetailsServer({
 
     const loadTime = Date.now() - startTime;
     console.log(`✅ [SERVER] Dados da obra carregados em ${loadTime}ms`);
-    console.log(`📊 [SERVER] Obra: ${work.title} (${work.composer.fullName})`);
-    console.log(`🔗 [SERVER] IMSLP: ${work.imslpPermlink}`);
-    console.log(`📝 [SERVER] Obras relacionadas: ${relatedWorks.length}`);
 
-    // 🆕 O sistema incremental será gerenciado pelo cliente
-    // Não fazemos pré-carregamento de partituras no servidor para manter SSR rápido
-    console.log(
-      `🚀 [SERVER] Sistema incremental ativo - partituras serão carregadas no cliente`
-    );
     const isAdmin = session?.user.role === 2;
 
     return (
       <WorkDetailsClient
         work={work}
+        isAdmin={isAdmin}
         relatedWorks={relatedWorks}
         learningData={{ wantToLearn: [], learned: [] }}
       />

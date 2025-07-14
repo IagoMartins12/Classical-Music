@@ -604,6 +604,12 @@ model Work {
   imslpTags            String[] @default([])
   difficultyLevel      DifficultyLevel?
 
+  //Verificação
+  verificationStatus String? // "verified", "pending", "disputed"
+  verifiedBy       String? @db.ObjectId
+  verifiedAt       DateTime?
+  isVerified        Boolean @default(false) // Status de verificação
+
   // Campos para rastreamento de uploads
   createdBy     String? @db.ObjectId
   createdByUser User?   @relation("UserCreatedWorks", fields: [createdBy], references: [id])
