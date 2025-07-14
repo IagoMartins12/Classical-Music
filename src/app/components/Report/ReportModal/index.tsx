@@ -7,6 +7,7 @@ import { useNotifications } from '@/app/hooks/useNotifications';
 import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';
+import { useToast } from '@/app/hooks/useToast';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -59,13 +60,13 @@ export default function ReportModal({
   const [selectedReason, setSelectedReason] = useState('');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { notifySuccess, notifyError } = useNotifications();
 
+  const toaster = useToast();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!selectedReason) {
-      notifyError('Erro', 'Por favor, selecione um motivo');
+      toaster.error('Erro', 'Por favor, selecione um motivo');
       return;
     }
 
@@ -87,16 +88,15 @@ export default function ReportModal({
 
       if (response.ok) {
         const data = await response.json();
-        notifySuccess('Sucesso', data.message);
+        toaster.success(data.message);
         onClose();
         resetForm();
       } else {
         const error = await response.json();
-        notifyError('Erro', error.error || 'Erro ao enviar report');
+        toaster.error(error.error || 'Erro ao enviar report');
       }
     } catch (error) {
-      console.error('Erro ao enviar report:', error);
-      notifyError('Erro', 'Erro ao enviar report');
+      toaster.error('Erro ao enviar report');
     } finally {
       setIsSubmitting(false);
     }

@@ -14,6 +14,7 @@ export interface composerHomeProps {
   };
   fullName: string;
   portraitUrl: string | null;
+  isVerified: boolean;
 }
 
 export interface pageComposersInterface {

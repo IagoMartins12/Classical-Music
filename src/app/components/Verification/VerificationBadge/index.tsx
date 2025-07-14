@@ -33,11 +33,8 @@ export default function VerificationBadge({
 
   if (variant === 'icon') {
     return (
-      <div
-        className={`${sizeClasses[size]} bg-accent-blue text-white rounded-full flex items-center justify-center ${className}`}
-        title="Verificado"
-      >
-        <FiCheck className={iconSizeClasses[size]} />
+      <div className={`${sizeClasses[size]}${className}`} title="Verificado">
+        <MdVerified className={iconSizeClasses[size]} />
       </div>
     );
   }

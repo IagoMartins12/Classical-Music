@@ -34,8 +34,7 @@ import {
   formatDuration,
   formatPercentage,
   formatGrowthRate,
-  getQualityColor,
-  getQualityLabel,
+
 } from '@/app/hooks/admin/useAdminStats';
 import {
   AnimatedCard,

@@ -79,12 +79,6 @@ export default function AdminSidebar() {
           icon: FiBarChart2,
           isActive: pathname === '/admin',
         },
-        {
-          href: '/admin/overview',
-          label: 'Visão Geral',
-          icon: FiTrendingUp,
-          isActive: pathname === '/admin/overview',
-        },
       ],
     },
     {
@@ -314,7 +308,7 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="hidden lg:block w-72 xl:w-80 bg-theme-elevated border-r border-theme-primary h-[calc(100vh-80px)] overflow-y-auto">
+    <aside className="hidden lg:block w-64 bg-theme-elevated border-r border-theme-primary h-[calc(100vh-80px)] overflow-y-auto">
       <div className="p-4 lg:p-6">
         {/* Sidebar Header */}
         <div className="mb-6 lg:mb-8">
@@ -324,50 +318,6 @@ export default function AdminSidebar() {
           <p className="text-sm text-theme-tertiary">
             Gerencie toda a plataforma
           </p>
-        </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-2 gap-2 lg:gap-3 mb-6 lg:mb-8">
-          <div className="p-2 lg:p-3 bg-theme-secondary rounded-xl text-center">
-            <div className="text-base lg:text-lg font-bold text-accent-blue">
-              {loading
-                ? '--'
-                : mounted && stats
-                ? stats.engagement.dailyActiveUsers
-                : 0}
-            </div>
-            <div className="text-xs text-theme-tertiary">Ativos Hoje</div>
-          </div>
-          <div className="p-2 lg:p-3 bg-theme-secondary rounded-xl text-center">
-            <div className="text-base lg:text-lg font-bold text-accent-green">
-              {loading
-                ? '--'
-                : mounted && stats
-                ? stats.trends.last7Days.newUploads
-                : 0}
-            </div>
-            <div className="text-xs text-theme-tertiary">Novos Uploads</div>
-          </div>
-          <div className="p-2 lg:p-3 bg-theme-secondary rounded-xl text-center">
-            <div className="text-base lg:text-lg font-bold text-accent-amber">
-              {loading
-                ? '--'
-                : mounted && stats?.moderation
-                ? stats.moderation.totalReports
-                : 0}
-            </div>
-            <div className="text-xs text-theme-tertiary">Reports</div>
-          </div>
-          <div className="p-2 lg:p-3 bg-theme-secondary rounded-xl text-center">
-            <div className="text-base lg:text-lg font-bold text-accent-purple">
-              {loading
-                ? '--'
-                : mounted && stats
-                ? stats.trends.last7Days.newAnnotations
-                : 0}
-            </div>
-            <div className="text-xs text-theme-tertiary">Anotações</div>
-          </div>
         </div>
 
         {/* Navigation Sections */}

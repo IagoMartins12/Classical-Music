@@ -1,9 +1,9 @@
 // app/work/[workId]/WorkDetailsServer.tsx - Versão Atualizada com Sistema Incremental
 import { notFound } from 'next/navigation';
-import WorkDetailsClient from '../../components/WorkDetailsClient/WorkDetailsClient';
 import { getRelatedWorks, getWorkById } from '@/app/requests/work-page-details';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
+import WorkDetailsClient from '@/app/components/WorkDetailsClient/WorkDetailsClient';
 
 interface WorkDetailsServerProps {
   workId: string;
@@ -46,8 +46,6 @@ export default async function WorkDetailsServer({
       <WorkDetailsClient
         work={work}
         relatedWorks={relatedWorks}
-        // Dados de aprendizado podem ser pré-carregados se necessário
-
         learningData={{ wantToLearn: [], learned: [] }}
       />
     );

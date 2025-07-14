@@ -7,6 +7,7 @@ import { FiUser, FiCalendar, FiExternalLink } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { ComposerImslp } from '..';
 import FavoriteButton from '../../FavoriteButton';
+import VerificationBadge from '../../Verification/VerificationBadge';
 
 interface composerCardProps {
   composer: ComposerImslp;
@@ -98,11 +99,13 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
               </h3>
 
               {/* Full name if different */}
-              {composer.fullName !== composer.name && (
-                <p className="text-sm text-theme-secondary mt-1 line-clamp-2">
-                  {composer.fullName}
-                </p>
-              )}
+              <span className="text-sm flex items-center justify-center gap-2 text-theme-secondary mt-1 line-clamp-2">
+                {composer.fullName}
+                <VerificationBadge
+                  verified={composer.isVerified}
+                  variant="icon"
+                />
+              </span>
             </div>
 
             {/* Dates */}

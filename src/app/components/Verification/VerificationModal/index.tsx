@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiX, FiCheck, FiShield } from 'react-icons/fi';
+import { FiCheck, FiShield } from 'react-icons/fi';
 import { useNotifications } from '@/app/hooks/useNotifications';
 import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';

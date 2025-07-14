@@ -37,6 +37,7 @@ export const getFeaturedComposer = unstable_cache(
           permLinkImslp: true,
           wikipediaLink: true,
           epochName: true,
+          isVerified: true,
           works: {
             select: {
               id: true,

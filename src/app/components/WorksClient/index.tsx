@@ -765,7 +765,7 @@ const WorksClient = memo(
           </AnimatedCard>
 
           {/* Results Section - 🔧 Z-INDEX MENOR PARA NÃO SOBREPOR DROPDOWNS */}
-          <div className="relative mt-4 z-[50]">
+          <div className="relative mt-4 pt-4 z-[50]">
             {isPending ? <WorksSkeleton /> : worksGrid}
 
             {/* Loading Overlay */}

@@ -6,7 +6,7 @@ import prisma from '@/app/libs/prismadb';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { composerId: string } }
+  { params }: { params: Promise<{ composerId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -15,8 +15,9 @@ export async function POST(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
+    const { composerId } = await params;
+
     const { verified, notes } = await request.json();
-    const composerId = params.composerId;
 
     // Verificar se o compositor existe
     const composer = await prisma.composer.findUnique({
@@ -37,6 +38,7 @@ export async function POST(
         verificationStatus: verified ? 'verified' : 'pending',
         verifiedBy: verified ? session.user.id : null,
         verifiedAt: verified ? new Date() : null,
+        isVerified: verified ? true : false,
         // Adicionar notas ao histórico de edição
         editHistory: {
           action: verified ? 'verified' : 'unverified',

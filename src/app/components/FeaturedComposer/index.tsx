@@ -12,11 +12,13 @@ import {
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../FavoriteButton';
+import VerificationBadge from '../Verification/VerificationBadge';
 
 interface FeaturedComposerProps {
   composer: {
     id: string;
     name: string;
+    isVerified: boolean;
     fullName: string;
     birthDate?: string | null;
     deathDate?: string | null;
@@ -131,11 +133,13 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                   {composer.name}
                 </h3>
 
-                {composer.fullName !== composer.name && (
-                  <p className="text-lg text-theme-secondary font-medium">
-                    {composer.fullName}
-                  </p>
-                )}
+                <span className="text-lg flex items-center text-theme-secondary font-medium">
+                  {composer.fullName}
+                  <VerificationBadge
+                    verified={composer.isVerified}
+                    variant="icon"
+                  />
+                </span>
 
                 {formatDates() && (
                   <p className="text-theme-tertiary font-medium">

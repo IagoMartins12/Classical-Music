@@ -37,6 +37,7 @@ export interface ComposerImslp {
   permLinkImslp: string | null;
   wikipediaLink: string | null;
   imslpId: string | null;
+  isVerified: boolean;
 }
 
 interface Epoch {
@@ -330,7 +331,7 @@ export default function ComposersClient({
         </AnimatedItem>
 
         {/* Results Section - AQUI ESTÁ A ANIMAÇÃO SEQUENCIAL! */}
-        <div className="relative mt-6">
+        <div className="relative mt-6 pt-4">
           {composers.length > 0 ? (
             viewMode === 'cards' ? (
               // 🎬 ANIMAÇÃO SEQUENCIAL - Cards aparecem um por vez!
@@ -426,64 +427,3 @@ export default function ComposersClient({
     </PageContainer>
   );
 }
-
-// 🎨 OPÇÕES ALTERNATIVAS DE ANIMAÇÃO SEQUENCIAL:
-
-/*
-// OPÇÃO 1: TypewriterGrid (Mais suave, estilo máquina de escrever)
-<TypewriterGrid 
-  cols={4} 
-  gap={6} 
-  delayBetweenItems={0.12}
-  animationType="typewriter"
-  className="px-4"
->
-  {composers.map((composer) => (
-    <div
-      key={composer.id}
-      className="cursor-pointer"
-      onClick={() => navigateToUrl('composer', composer.id)}
-    >
-      <ComposerCard composer={composer} />
-    </div>
-  ))}
-</TypewriterGrid>
-
-// OPÇÃO 2: WaveAnimation (Por linhas, efeito onda)
-<WaveAnimation 
-  cols={4} 
-  gap={6} 
-  delayBetweenRows={0.3}
-  delayBetweenCols={0.05}
-  className="px-4"
->
-  {composers.map((composer) => (
-    <div
-      key={composer.id}
-      className="cursor-pointer"
-      onClick={() => navigateToUrl('composer', composer.id)}
-    >
-      <ComposerCard composer={composer} />
-    </div>
-  ))}
-</WaveAnimation>
-
-// OPÇÃO 3: Cascata (Diagonal)
-<TypewriterGrid 
-  cols={4} 
-  gap={6} 
-  delayBetweenItems={0.1}
-  animationType="cascade"
-  className="px-4"
->
-  {composers.map((composer) => (
-    <div
-      key={composer.id}
-      className="cursor-pointer"
-      onClick={() => navigateToUrl('composer', composer.id)}
-    >
-      <ComposerCard composer={composer} />
-    </div>
-  ))}
-</TypewriterGrid>
-*/

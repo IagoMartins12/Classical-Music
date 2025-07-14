@@ -1,9 +1,9 @@
+import { MusicHistoryPageClient } from '@/app/components/MusicHistoryPageClient';
 import {
   getComposersByEpoch,
   getEpochsHistoricalData,
   getComposersTimeline,
 } from '@/app/requests/music-history';
-import { MusicHistoryPageClient } from '../components/MusicHistoryPageClient';
 
 export async function MusicHistoryPageServer() {
   try {

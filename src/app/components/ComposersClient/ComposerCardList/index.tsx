@@ -12,6 +12,7 @@ import {
 import { GiMusicalNotes } from 'react-icons/gi';
 import { ComposerImslp } from '..';
 import FavoriteButton from '../../FavoriteButton';
+import VerificationBadge from '../../Verification/VerificationBadge';
 
 interface composerCardListProps {
   composer: ComposerImslp;
@@ -72,11 +73,10 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
             {composer.name}
           </h3>
 
-          {composer.fullName !== composer.name && (
-            <p className="text-sm text-theme-secondary truncate mt-0.5">
-              {composer.fullName}
-            </p>
-          )}
+          <span className="text-sm flex items-center gap-2 text-theme-secondary truncate mt-0.5">
+            {composer.fullName}
+            <VerificationBadge verified={composer.isVerified} variant="icon" />
+          </span>
 
           <div className="flex items-center space-x-4 mt-1">
             {/* Period */}

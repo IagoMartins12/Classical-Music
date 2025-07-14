@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '@/app/components/FavoriteButton';
+import VerificationBadge from '@/app/components/Verification/VerificationBadge';
 
 interface listComposersCardsProps {
   composer: composerHomeProps;
@@ -92,8 +93,12 @@ const ListComposersCards: React.FC<listComposersCardsProps> = ({
 
             {/* Name and Info */}
             <div className="relative z-10">
-              <h3 className="font-bold text-theme-primary mb-3 text-sm classical-title group-hover:text-brand-primary transition-colors duration-300 line-clamp-2 leading-tight">
+              <h3 className="font-bold flex items-center gap-2 text-theme-primary mb-3 text-sm classical-title group-hover:text-brand-primary transition-colors duration-300 line-clamp-2 leading-tight">
                 {composer.fullName || composer.name}
+                <VerificationBadge
+                  verified={composer.isVerified}
+                  variant="icon"
+                />
               </h3>
 
               {/* Action Bar */}

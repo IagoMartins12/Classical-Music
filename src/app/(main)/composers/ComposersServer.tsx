@@ -1,9 +1,9 @@
+import ComposersClient from '@/app/components/ComposersClient';
 import {
   getComposersCount,
   getComposersWithPagination,
   getEpochsCache,
-} from '../requests/composers';
-import ComposersClient from '../components/ComposersClient';
+} from '@/app/requests/composers';
 
 const ITEMS_PER_PAGE = 30;
 

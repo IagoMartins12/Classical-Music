@@ -1,8 +1,7 @@
 // app/works/WorksServer.tsx - VERSÃO ULTRA OTIMIZADA
 import { unstable_cache } from 'next/cache';
 import { getWorks, getFilterOptions } from '@/app/requests/work-details';
-import WorksClient from '../components/WorksClient';
-import { Suspense } from 'react';
+import WorksClient from '@/app/components/WorksClient';
 
 interface WorksServerProps {
   searchParams: {
@@ -18,19 +17,6 @@ interface WorksServerProps {
   };
 }
 
-// 🚀 CACHE OTIMIZADO PARA OBRAS - Cache inteligente baseado nos filtros
-const getCachedWorks = unstable_cache(
-  async (page: number, limit: number, filters?: any) => {
-    console.log('🔍 Cache miss - Buscando obras:', { page, filters });
-    return await getWorks(page, limit, filters);
-  },
-  ['works-optimized'],
-  {
-    revalidate: 1800, // 30 minutos
-    tags: ['works-optimized', 'works-list'],
-  }
-);
-
 // 🚀 CACHE SEPARADO PARA FILTROS - Permite updates independentes
 const getCachedFilters = unstable_cache(
   async () => {
@@ -41,20 +27,6 @@ const getCachedFilters = unstable_cache(
   {
     revalidate: 3600, // 1 hora - filtros mudam menos
     tags: ['filters-optimized', 'filter-options'],
-  }
-);
-
-// 🚀 CACHE PARA CONTAGEM RÁPIDA (sem dados completos)
-const getCachedCount = unstable_cache(
-  async (filters?: any) => {
-    // Busca apenas 1 item para pegar o totalCount rapidamente
-    const result = await getWorks(1, 1, filters);
-    return { totalCount: result.totalCount, hasMore: result.hasMore };
-  },
-  ['works-count'],
-  {
-    revalidate: 900, // 15 minutos
-    tags: ['works-count'],
   }
 );
 

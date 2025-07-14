@@ -107,6 +107,7 @@ export const getComposersWithPagination = unstable_cache(
         permLinkImslp: true,
         wikipediaLink: true,
         imslpId: true,
+        isVerified: true,
         epoch: {
           select: {
             name: true,
@@ -170,6 +171,7 @@ export const getTop20FamousComposers = unstable_cache(
         name: true,
         fullName: true,
         portraitUrl: true,
+        isVerified: true,
         epoch: {
           select: {
             name: true,
@@ -286,6 +288,7 @@ export const getRecomendadedComposers = unstable_cache(
         name: true,
         fullName: true,
         portraitUrl: true,
+        isVerified: true,
         epoch: {
           select: {
             name: true,

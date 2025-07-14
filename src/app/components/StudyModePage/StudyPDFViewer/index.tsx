@@ -162,13 +162,6 @@ const StudyPDFViewer: React.FC<StudyPDFViewerProps> = ({
     if (!selectedScore?.id) return;
 
     try {
-      // Carregar do backend - implementar APIs
-      // const [annotationsRes, bookmarksRes] = await Promise.all([
-      //   fetch(`/api/pdf-annotations?workId=${work.id}&scoreId=${selectedScore.id}`),
-      //   fetch(`/api/score-bookmarks?workId=${work.id}&scoreId=${selectedScore.id}`)
-      // ]);
-
-      // Por enquanto, usar dados locais/mock
       setAnnotations([]);
       setBookmarks([]);
     } catch (error) {
@@ -341,7 +334,7 @@ const StudyPDFViewer: React.FC<StudyPDFViewerProps> = ({
 
   // Salvar anotação no backend
   const saveAnnotation = async (annotation: Annotation) => {
-    console.log(annotation)
+    console.log(annotation);
     try {
       // Implementar API call
       // await fetch('/api/pdf-annotations', {
