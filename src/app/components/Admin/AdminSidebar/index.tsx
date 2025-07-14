@@ -1,4 +1,4 @@
-// app/components/Admin/AdminSidebar.tsx
+// app/components/Admin/AdminSidebar.tsx - SEÇÃO ATUALIZADA
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -22,6 +22,8 @@ import {
   FiAward,
   FiChevronDown,
   FiChevronRight,
+  FiHardDrive, // Nova importação para backup
+  FiArchive, // Nova importação para backup
 } from 'react-icons/fi';
 import { useAdminStats } from '@/app/hooks/admin/useAdminStats';
 
@@ -186,6 +188,30 @@ export default function AdminSidebar() {
         },
       ],
     },
+    // 🆕 NOVA SEÇÃO DE BACKUP
+    {
+      title: 'Sistema & Backup',
+      items: [
+        {
+          href: '/admin/backup',
+          label: 'Gerenciar Backup',
+          icon: FiHardDrive,
+          isActive: pathname.startsWith('/admin/backup'),
+        },
+        {
+          href: '/admin/system',
+          label: 'Sistema',
+          icon: FiDatabase,
+          isActive: pathname.startsWith('/admin/system'),
+        },
+        {
+          href: '/admin/settings',
+          label: 'Configurações',
+          icon: FiSettings,
+          isActive: pathname.startsWith('/admin/settings'),
+        },
+      ],
+    },
     {
       title: 'Analytics',
       items: [
@@ -220,23 +246,6 @@ export default function AdminSidebar() {
           label: 'Insights',
           icon: FiTrendingUp,
           isActive: pathname.startsWith('/admin/insights'),
-        },
-      ],
-    },
-    {
-      title: 'Sistema',
-      items: [
-        {
-          href: '/admin/settings',
-          label: 'Configurações',
-          icon: FiSettings,
-          isActive: pathname.startsWith('/admin/settings'),
-        },
-        {
-          href: '/admin/system',
-          label: 'Sistema',
-          icon: FiDatabase,
-          isActive: pathname.startsWith('/admin/system'),
         },
       ],
     },
@@ -358,6 +367,10 @@ export default function AdminSidebar() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs text-theme-tertiary">Database</span>
+              <div className="w-2 h-2 bg-accent-green rounded-full"></div>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-theme-tertiary">Backup</span>
               <div className="w-2 h-2 bg-accent-green rounded-full"></div>
             </div>
             <div className="flex items-center justify-between">

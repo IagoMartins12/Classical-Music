@@ -1,4 +1,4 @@
-// app/components/Admin/AdminDashboardClient.tsx
+// app/admin/AdminDashboardClient.tsx - SEÇÃO ATUALIZADA
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -31,6 +31,7 @@ import {
 } from '../components/Admin/Charts/AdminCharts';
 import QuickActions from '../components/Admin/QuickActions';
 import RecentActivity from '../components/Admin/Activity/RecentActivity';
+import BackupDashboardCard from '../components/Admin/Backup/BackupDashboardCard';
 
 export default function AdminDashboardClient() {
   const { stats, loading, error, refreshStats } = useAdminStats();
@@ -237,7 +238,7 @@ export default function AdminDashboardClient() {
             </AnimatedCard>
           </div>
 
-          {/* Engagement and Quick Stats */}
+          {/* 🆕 SEÇÃO EXPANDIDA COM BACKUP */}
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
             {/* Engagement Chart */}
             <div className="xl:col-span-2">
@@ -321,79 +322,93 @@ export default function AdminDashboardClient() {
             </AnimatedCard>
           </div>
 
-          {/* System Status */}
-          <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard className="classical-card p-4 lg:p-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-                <h3 className="text-xl font-bold text-theme-primary">
-                  Status do Sistema
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  leftIcon={
-                    <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
-                  }
-                  onClick={handleRefresh}
-                  disabled={refreshing}
-                >
-                  Atualizar
-                </Button>
-              </div>
+          {/* 🆕 SEÇÃO DE BACKUP ADICIONADA */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+            {/* Backup Management Card */}
+            <AnimatedItem direction="up" springType="gentle">
+              <BackupDashboardCard />
+            </AnimatedItem>
 
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center justify-center mb-2">
-                    <div className="w-3 h-3 bg-accent-green rounded-full animate-pulse mr-2"></div>
-                    <span className="font-medium text-theme-primary">API</span>
-                  </div>
-                  <div className="text-2xl font-bold text-accent-green">
-                    99.9%
-                  </div>
-                  <div className="text-xs text-theme-tertiary">Uptime</div>
+            {/* System Status */}
+            <AnimatedItem direction="up" springType="gentle">
+              <AnimatedCard className="classical-card p-4 lg:p-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                  <h3 className="text-xl font-bold text-theme-primary">
+                    Status do Sistema
+                  </h3>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={
+                      <FiRefreshCw
+                        className={refreshing ? 'animate-spin' : ''}
+                      />
+                    }
+                    onClick={handleRefresh}
+                    disabled={refreshing}
+                  >
+                    Atualizar
+                  </Button>
                 </div>
 
-                <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center justify-center mb-2">
-                    <div className="w-3 h-3 bg-accent-blue rounded-full mr-2"></div>
-                    <span className="font-medium text-theme-primary">
-                      Database
-                    </span>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                  <div className="text-center p-4 bg-theme-secondary rounded-xl">
+                    <div className="flex items-center justify-center mb-2">
+                      <div className="w-3 h-3 bg-accent-green rounded-full animate-pulse mr-2"></div>
+                      <span className="font-medium text-theme-primary">
+                        API
+                      </span>
+                    </div>
+                    <div className="text-2xl font-bold text-accent-green">
+                      99.9%
+                    </div>
+                    <div className="text-xs text-theme-tertiary">Uptime</div>
                   </div>
-                  <div className="text-2xl font-bold text-accent-blue">
-                    45ms
-                  </div>
-                  <div className="text-xs text-theme-tertiary">Latência</div>
-                </div>
 
-                <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center justify-center mb-2">
-                    <div className="w-3 h-3 bg-accent-amber rounded-full mr-2"></div>
-                    <span className="font-medium text-theme-primary">
-                      Storage
-                    </span>
+                  <div className="text-center p-4 bg-theme-secondary rounded-xl">
+                    <div className="flex items-center justify-center mb-2">
+                      <div className="w-3 h-3 bg-accent-blue rounded-full mr-2"></div>
+                      <span className="font-medium text-theme-primary">
+                        Database
+                      </span>
+                    </div>
+                    <div className="text-2xl font-bold text-accent-blue">
+                      45ms
+                    </div>
+                    <div className="text-xs text-theme-tertiary">Latência</div>
                   </div>
-                  <div className="text-2xl font-bold text-accent-amber">
-                    73%
-                  </div>
-                  <div className="text-xs text-theme-tertiary">Utilização</div>
-                </div>
 
-                <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center justify-center mb-2">
-                    <div className="w-3 h-3 bg-accent-purple rounded-full mr-2"></div>
-                    <span className="font-medium text-theme-primary">
-                      Cache
-                    </span>
+                  <div className="text-center p-4 bg-theme-secondary rounded-xl">
+                    <div className="flex items-center justify-center mb-2">
+                      <div className="w-3 h-3 bg-accent-amber rounded-full mr-2"></div>
+                      <span className="font-medium text-theme-primary">
+                        Storage
+                      </span>
+                    </div>
+                    <div className="text-2xl font-bold text-accent-amber">
+                      73%
+                    </div>
+                    <div className="text-xs text-theme-tertiary">
+                      Utilização
+                    </div>
                   </div>
-                  <div className="text-2xl font-bold text-accent-purple">
-                    94%
+
+                  <div className="text-center p-4 bg-theme-secondary rounded-xl">
+                    <div className="flex items-center justify-center mb-2">
+                      <div className="w-3 h-3 bg-accent-purple rounded-full mr-2"></div>
+                      <span className="font-medium text-theme-primary">
+                        Cache
+                      </span>
+                    </div>
+                    <div className="text-2xl font-bold text-accent-purple">
+                      94%
+                    </div>
+                    <div className="text-xs text-theme-tertiary">Hit Rate</div>
                   </div>
-                  <div className="text-xs text-theme-tertiary">Hit Rate</div>
                 </div>
-              </div>
-            </AnimatedCard>
-          </AnimatedItem>
+              </AnimatedCard>
+            </AnimatedItem>
+          </div>
 
           {/* Actions and Activity Grid */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
