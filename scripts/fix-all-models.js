@@ -20,7 +20,6 @@ async function fixUpdatedAtFields() {
       { name: 'PdfAnnotation', collection: 'PdfAnnotation' },
       { name: 'ScoreBookmark', collection: 'ScoreBookmark' },
       { name: 'WorkAnnotation', collection: 'work_annotations' },
-      { name: 'AnnotationReply', collection: 'annotation_replies' },
       { name: 'FavoriteScore', collection: 'favorite_scores' },
       { name: 'WorkScore', collection: 'work_scores' },
       { name: 'ScoreProcessingLog', collection: 'score_processing_logs' },

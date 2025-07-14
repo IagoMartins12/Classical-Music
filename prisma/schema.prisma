@@ -44,12 +44,6 @@ enum UserType {
   TEACHER
 }
 
-enum AccountProvider {
-  GOOGLE
-  EMAIL
-  FACEBOOK
-}
-
 enum AnnotationType {
   TEXT_NOTE
   HIGHLIGHT
@@ -72,9 +66,9 @@ enum IMSLPScoreType {
 
 // Enums para sistema de cache
 enum ScoreSource {
-  IMSLP    // Do IMSLP
-  CUSTOM   // Adicionado manualmente
-  UPLOAD   // Upload do usuário
+  IMSLP // Do IMSLP
+  CUSTOM // Adicionado manualmente
+  UPLOAD // Upload do usuário
 }
 
 enum ProcessingStatus {
@@ -87,27 +81,73 @@ enum ProcessingStatus {
 
 // Enums para anotações musicais
 enum AnnotationCategory {
-  TECHNIQUE        // Técnica (dedilhado, articulação, etc.)
-  INTERPRETATION   // Interpretação (dinâmica, fraseado, etc.)
-  THEORY          // Teoria (harmonia, forma, análise)
-  PRACTICE_TIP    // Dicas de estudo
-  PERFORMANCE     // Performance e palco
-  HISTORICAL      // Contexto histórico
-  GENERAL         // Anotação geral
+  TECHNIQUE // Técnica (dedilhado, articulação, etc.)
+  INTERPRETATION // Interpretação (dinâmica, fraseado, etc.)
+  THEORY // Teoria (harmonia, forma, análise)
+  PRACTICE_TIP // Dicas de estudo
+  PERFORMANCE // Performance e palco
+  HISTORICAL // Contexto histórico
+  GENERAL // Anotação geral
 }
 
 enum AnnotationDifficulty {
-  BEGINNER         // Para iniciantes
-  INTERMEDIATE     // Para nível intermediário  
-  ADVANCED         // Para avançados
-  ALL_LEVELS       // Para todos os níveis
+  BEGINNER // Para iniciantes
+  INTERMEDIATE // Para nível intermediário  
+  ADVANCED // Para avançados
+  ALL_LEVELS // Para todos os níveis
 }
 
 enum AnnotationScope {
-  SPECIFIC_MEASURE    // Compasso específico
-  SECTION            // Seção da obra
-  MOVEMENT           // Movimento inteiro
-  ENTIRE_WORK        // Obra inteira
+  SPECIFIC_MEASURE // Compasso específico
+  SECTION // Seção da obra
+  MOVEMENT // Movimento inteiro
+  ENTIRE_WORK // Obra inteira
+}
+
+// Enums para sistema de publicidades
+enum AdType {
+  BANNER // Banner tradicional
+  VIDEO // Vídeo publicitário
+  CARD // Card promocional
+  SIDEBAR // Sidebar ad
+  NATIVE // Publicidade nativa
+  POPUP // Modal/popup
+}
+
+enum AdPlacement {
+  HEADER // Header da página
+  SIDEBAR_LEFT // Sidebar esquerda
+  SIDEBAR_RIGHT // Sidebar direita
+  CONTENT_TOP // Acima do conteúdo
+  CONTENT_BOTTOM // Abaixo do conteúdo
+  BETWEEN_CONTENT // Entre conteúdos
+  FOOTER // Footer da página
+  MODAL // Modal/overlay
+}
+
+enum AdStatus {
+  DRAFT // Rascunho
+  ACTIVE // Ativo
+  PAUSED // Pausado
+  SCHEDULED // Agendado
+  EXPIRED // Expirado
+  REJECTED // Rejeitado
+}
+
+enum AdTargetType {
+  GENERAL // Publicidade geral
+  INSTRUMENT // Por instrumento específico
+  COMPOSER // Por compositor
+  EPOCH // Por época musical
+  USER_LEVEL // Por nível do usuário
+  GEOGRAPHIC // Por localização
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
 }
 
 model User {
@@ -123,7 +163,7 @@ model User {
   gender         String?
   birthday       DateTime?
   createdAt      DateTime  @default(now())
-  updatedAt       DateTime @updatedAt
+  updatedAt      DateTime  @updatedAt
 
   role Int @default(0) //0 = usuario comum 2, 1 = admin 2 = super admin
 
@@ -147,65 +187,75 @@ model User {
   progressTracking  Boolean @default(true)
   publicProgress    Boolean @default(false)
 
-  totalStudyTime    Int     @default(0)
-  currentStreak     Int     @default(0)
-  longestStreak     Int     @default(0)
+  totalStudyTime Int @default(0)
+  currentStreak  Int @default(0)
+  longestStreak  Int @default(0)
 
   studyModeSettings Json?
 
+  // Relações de publicidade
+  createdAds       Advertisement[] @relation("AdCreator")
+  approvedAds      Advertisement[] @relation("AdApprover")
+  editedAds        Advertisement[] @relation("AdEditor")
+  uploadedAdMedia  AdMedia[]       @relation("AdMediaUploader")
+  adStats          AdStats[]       @relation("AdStatsUser")
+  createdTemplates AdTemplate[]    @relation("AdTemplateCreator")
+
+  // Configurações de publicidade
+  showAds       Boolean @default(true) // Usuário quer ver ads?
+  adPreferences Json? // Preferências de ads
+
   // Anotações relacionadas
-  workAnnotations     WorkAnnotation[]
-  annotationVotes     AnnotationHelpfulVote[]
-  annotationReplies   AnnotationReply[]
-    verifiedComposers Composer[] @relation("VerifiedComposers")
+  workAnnotations   WorkAnnotation[]
+  annotationVotes   AnnotationHelpfulVote[]
+  verifiedComposers Composer[]              @relation("VerifiedComposers")
 
   // Configurações de anotações
   annotationPreferences Json? // Preferências de exibição, notificações, etc.
-  
+
   // Estatísticas de contribuição
-  helpfulAnnotationsCount Int @default(0) // Cache de anotações úteis
-  totalAnnotationsCount   Int @default(0) // Cache total de anotações
+  helpfulAnnotationsCount Int      @default(0) // Cache de anotações úteis
+  totalAnnotationsCount   Int      @default(0) // Cache total de anotações
   expertInstruments       String[] @default([]) // Instrumentos que o usuário é expert
 
   // Relações de moderação
-  reportedUploads   UploadModeration[] @relation("ReportedUploads")
-  moderatedUploads  UploadModeration[] @relation("ModeratedUploads")
-  uploadHistory     UploadHistory[]
-  generatedReports GeneratedReport[] @relation("GeneratedReports")
+  reportedUploads  UploadModeration[] @relation("ReportedUploads")
+  moderatedUploads UploadModeration[] @relation("ModeratedUploads")
+  uploadHistory    UploadHistory[]
+  generatedReports GeneratedReport[]  @relation("GeneratedReports")
 
   // Estatísticas de upload
-  totalUploads      Int @default(0)
-  approvedUploads   Int @default(0)
-  rejectedUploads   Int @default(0)
-  uploadScore       Int @default(0) // Score baseado na qualidade dos uploads
-  
+  totalUploads    Int @default(0)
+  approvedUploads Int @default(0)
+  rejectedUploads Int @default(0)
+  uploadScore     Int @default(0) // Score baseado na qualidade dos uploads
+
   // Permissões de upload
   canUploadComposers Boolean @default(true)
   canUploadWorks     Boolean @default(true)
   canUploadScores    Boolean @default(true)
   canModerateUploads Boolean @default(false)
-  
+
   // Limites de upload
-  uploadLimitDaily   Int @default(50)
-  uploadLimitMonthly Int @default(1000)
-  currentDailyUploads Int @default(0)
-  currentMonthlyUploads Int @default(0)
-  lastUploadReset    DateTime @default(now())
-  
+  uploadLimitDaily      Int      @default(50)
+  uploadLimitMonthly    Int      @default(1000)
+  currentDailyUploads   Int      @default(0)
+  currentMonthlyUploads Int      @default(0)
+  lastUploadReset       DateTime @default(now())
 
   // Relations
-  accounts Account[]
-  sessions Session[]
+  accounts       Account[]
+  sessions       Session[]
   selectedScores UserSelectedScore[]
 
-  createdWorks      Work[]      @relation("UserCreatedWorks")
-  createdComposers  Composer[]  @relation("UserCreatedComposers")
-  createdScores     WorkScore[] @relation("UserCreatedScores")
+  createdWorks     Work[]      @relation("UserCreatedWorks")
+  createdComposers Composer[]  @relation("UserCreatedComposers")
+  createdScores    WorkScore[] @relation("UserCreatedScores")
 
   favoriteComposer Composer? @relation("FavoriteComposer", fields: [favoriteComposerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   favoriteEpoch    Epoch?    @relation("FavoriteEpoch", fields: [favoriteEpochId], references: [id])
 
-  favoriteScores    FavoriteScore[]
+  favoriteScores FavoriteScore[]
 
   instruments       UserInstrument[]
   annotations       Annotation[]
@@ -215,13 +265,13 @@ model User {
   learned           Learned[]
   studySessions     StudySession[]
   learningGoals     LearningGoal[]
-  
-  pdfAnnotations    PdfAnnotation[]
-  scoreBookmarks    ScoreBookmark[]
+
+  pdfAnnotations PdfAnnotation[]
+  scoreBookmarks ScoreBookmark[]
 
   @@index([userType])
   @@index([onboardingCompleted])
-    @@index([uploadScore])
+  @@index([uploadScore])
   @@index([canModerateUploads])
 }
 
@@ -229,16 +279,16 @@ model User {
 model WorkScore {
   id       String      @id @default(auto()) @map("_id") @db.ObjectId
   workId   String      @db.ObjectId
-  sourceId String      // ID da partitura na fonte (IMSLP ID, custom ID, etc.)
+  sourceId String // ID da partitura na fonte (IMSLP ID, custom ID, etc.)
   source   ScoreSource @default(IMSLP)
-  
+
   // Dados básicos da partitura
   title       String
   downloadUrl String?
   fileSize    String?
   pageCount   String?
-  fileFormat  String   @default("PDF")
-  
+  fileFormat  String  @default("PDF")
+
   // Metadados IMSLP
   editor       String?
   publisher    String?
@@ -247,12 +297,12 @@ model WorkScore {
   uploadDate   String?
   uploader     String?
   notes        String?
-  
+
   // Classificação e organização
-  type        IMSLPScoreType @default(SCORES)
-  groupIndex  Int?           @default(0)
-  groupTitle  String?
-  
+  type       IMSLPScoreType @default(SCORES)
+  groupIndex Int?           @default(0)
+  groupTitle String?
+
   // Métricas do IMSLP
   rating        Float?
   ratingsCount  Int?
@@ -260,61 +310,61 @@ model WorkScore {
 
   // Relação com usuário criador
   createdByUser User? @relation("UserCreatedScores", fields: [uploadedBy], references: [id])
-  
-  // Campos de qualidade e verificação
-  dataQuality      String? // "high", "medium", "low"
-  verificationStatus String? // "verified", "pending", "disputed"
-  verifiedBy       String? @db.ObjectId
-  verifiedAt       DateTime?
-  
-    // Metadados de edição
-  lastEditedBy     String? @db.ObjectId
-  lastEditedAt     DateTime?
-  editHistory      Json? // Histórico de edições
-  
-  // Campos técnicos melhorados
-  fileMD5          String? // Hash MD5 do arquivo
-  compressionType  String? // Tipo de compressão
-  qualityScore     Int? // Score de qualidade (1-100)
-  
-  // Dados customizados (para partituras não-IMSLP)
-  isCustom     Boolean @default(false)
-  uploadedBy   String? // ID do usuário que fez upload
-  customData   Json?   // Dados extras específicos
-  
-    // Metadados de processamento
-  ocrProcessed     Boolean @default(false)
-  ocrText          String? // Texto extraído por OCR
-  ocrAccuracy      Float? // Precisão do OCR (0-1)
 
-    // Tags e categorização
-  qualityTags      String[] @default([]) // Tags de qualidade
-  sourceTags       String[] @default([]) // Tags de fonte
-  
+  // Campos de qualidade e verificação
+  dataQuality        String? // "high", "medium", "low"
+  verificationStatus String? // "verified", "pending", "disputed"
+  verifiedBy         String?   @db.ObjectId
+  verifiedAt         DateTime?
+
+  // Metadados de edição
+  lastEditedBy String?   @db.ObjectId
+  lastEditedAt DateTime?
+  editHistory  Json? // Histórico de edições
+
+  // Campos técnicos melhorados
+  fileMD5         String? // Hash MD5 do arquivo
+  compressionType String? // Tipo de compressão
+  qualityScore    Int? // Score de qualidade (1-100)
+
+  // Dados customizados (para partituras não-IMSLP)
+  isCustom   Boolean @default(false)
+  uploadedBy String? // ID do usuário que fez upload
+  customData Json? // Dados extras específicos
+
+  // Metadados de processamento
+  ocrProcessed Boolean @default(false)
+  ocrText      String? // Texto extraído por OCR
+  ocrAccuracy  Float? // Precisão do OCR (0-1)
+
+  // Tags e categorização
+  qualityTags String[] @default([]) // Tags de qualidade
+  sourceTags  String[] @default([]) // Tags de fonte
+
   // Cache e controle
-  isActive       Boolean           @default(true)
-  isVerified     Boolean           @default(false)
-  lastVerified   DateTime          @default(now())
-  lastAccessed   DateTime          @default(now())
-  accessCount    Int               @default(0)
-  priority       Int               @default(0) // Para ordenação
-  expiresAt      DateTime?         // TTL do cache
-  cacheVersion   String            @default("1.0")
-  
+  isActive     Boolean   @default(true)
+  isVerified   Boolean   @default(false)
+  lastVerified DateTime  @default(now())
+  lastAccessed DateTime  @default(now())
+  accessCount  Int       @default(0)
+  priority     Int       @default(0) // Para ordenação
+  expiresAt    DateTime? // TTL do cache
+  cacheVersion String    @default("1.0")
+
   // 🆕 Campos para sistema incremental
-  imslpTotalCounts String?   // JSON com totais reais do IMSLP por tipo
+  imslpTotalCounts String? // JSON com totais reais do IMSLP por tipo
   lastIMSLPSync    DateTime? // Última sincronização completa com IMSLP
-  
+
   // Status de processamento
   processingStatus ProcessingStatus @default(PENDING)
-  
+
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relações
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-  
+
   // Índices otimizados para performance
   @@unique([workId, sourceId, source], name: "workId_sourceId_source")
   @@index([workId, isActive, priority])
@@ -336,39 +386,39 @@ model WorkScore {
 
 // Model para logs de processamento em background
 model ScoreProcessingLog {
-  id       String           @id @default(auto()) @map("_id") @db.ObjectId
-  workId   String           @db.ObjectId
-  action   String           // Tipo de ação: 'cache_incremental', 'background_cache_complete', etc.
-  status   ProcessingStatus @default(PENDING)
-  
+  id     String           @id @default(auto()) @map("_id") @db.ObjectId
+  workId String           @db.ObjectId
+  action String // Tipo de ação: 'cache_incremental', 'background_cache_complete', etc.
+  status ProcessingStatus @default(PENDING)
+
   // Dados de execução
-  startedAt    DateTime?
-  completedAt  DateTime?
-  duration     Int?      // Duração em milissegundos
-  
+  startedAt   DateTime?
+  completedAt DateTime?
+  duration    Int? // Duração em milissegundos
+
   // Dados da fila
   priority     Int       @default(5) // 1-10 (10 = máxima prioridade)
   scheduledFor DateTime? // Para agendamento
   retryCount   Int       @default(0)
   maxRetries   Int       @default(3)
-  
+
   // Estatísticas de processamento
   itemsTotal   Int? // Total de itens a processar
   itemsSuccess Int? // Itens processados com sucesso
   itemsFailed  Int? // Itens que falharam
   itemsSkipped Int? // Itens que foram pulados
-  
+
   // Dados adicionais
   details Json? // Dados específicos do job
   error   String? // Mensagem de erro se falhou
-  
+
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relação
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-  
+
   // Índices para performance
   @@index([status, priority, scheduledFor])
   @@index([workId, action, status])
@@ -406,115 +456,107 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model VerificationToken {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-}
-
 model Composer {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  name          String
-  fullName      String
-  otherName     String?  // Nome alternativo (contentSub)
-  
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  fullName  String
+  otherName String? // Nome alternativo (contentSub)
+
   // Nomes alternativos da página IMSLP
-  alternativeNames    String?  // Nomes alternativos/Transliterações
-  namesInOtherLangs   String?  // Nome em outras línguas  
-  pseudonyms          String?  // Pseudônimos
-  
+  alternativeNames  String? // Nomes alternativos/Transliterações
+  namesInOtherLangs String? // Nome em outras línguas  
+  pseudonyms        String? // Pseudônimos
+
   // Datas melhoradas - podem conter dia/mês/ano
-  birthDate     String?  // Ex: "31 de janeiro de 1797", "1797", "January 31, 1797"
-  deathDate     String?  // Ex: "28 de novembro de 1828", "1828", "November 28, 1828"
-  
-  portraitUrl   String?
-  epochId       String   @db.ObjectId
-  epochName     String?
-  bio           String?
-  
+  birthDate String? // Ex: "31 de janeiro de 1797", "1797", "January 31, 1797"
+  deathDate String? // Ex: "28 de novembro de 1828", "1828", "November 28, 1828"
+
+  portraitUrl String?
+  epochId     String  @db.ObjectId
+  epochName   String?
+  bio         String?
+
   // Informações detalhadas da página IMSLP
-  diverseInfo         String?  // Informação diversa (biografia detalhada)
-  externalLinks       String?  // Links externos úteis
-  
+  diverseInfo   String? // Informação diversa (biografia detalhada)
+  externalLinks String? // Links externos úteis
+
   // Dados IMSLP
   permLinkImslp String?
   imslpId       String?
   wikipediaLink String?
-  
+
   // Dados estatísticos e geográficos
-  nationality          String?  // País/nacionalidade (ex: "German", "Austrian", "Brazilian")
-  instruments          String?  // Instrumentos associados (ex: "Piano, Violin, Orchestra")
-  
+  nationality String? // País/nacionalidade (ex: "German", "Austrian", "Brazilian")
+  instruments String? // Instrumentos associados (ex: "Piano, Violin, Orchestra")
+
   // Categorias e classificações IMSLP
-  imslpCategories      String?  // Categorias do IMSLP (ex: "Romantic composers, German composers, Pianists")
-  
+  imslpCategories String? // Categorias do IMSLP (ex: "Romantic composers, German composers, Pianists")
+
   // Metadados da página IMSLP
-  lastModifiedImslp    String?  // Data da última modificação no IMSLP
-  pageStatus           String?  // Status da página: "complete", "stub", "needs_work"
-  pageQuality          String?  // Qualidade da página: "high", "medium", "low"
-  
+  lastModifiedImslp String? // Data da última modificação no IMSLP
+  pageStatus        String? // Status da página: "complete", "stub", "needs_work"
+  pageQuality       String? // Qualidade da página: "high", "medium", "low"
+
   // Dados de cache e verificação
-  lastVerified         DateTime @default(now())
-  dataCompleteness     Float?   // Porcentagem de completude dos dados (0-100)
-  hasValidImage        Boolean  @default(false) // Se tem imagem válida (não placeholder)
+  lastVerified     DateTime @default(now())
+  dataCompleteness Float? // Porcentagem de completude dos dados (0-100)
+  hasValidImage    Boolean  @default(false) // Se tem imagem válida (não placeholder)
 
-   // Campos para rastreamento de uploads
-  createdBy  String? @db.ObjectId
-  createdByUser User? @relation("UserCreatedComposers", fields: [createdBy], references: [id])
-  isCustom   Boolean @default(false)
+  // Campos para rastreamento de uploads
+  createdBy     String? @db.ObjectId
+  createdByUser User?   @relation("UserCreatedComposers", fields: [createdBy], references: [id])
+  isCustom      Boolean @default(false)
 
-   // Campos de qualidade e verificação
-  dataQuality      String? // "high", "medium", "low"
+  // Campos de qualidade e verificação
+  dataQuality        String? // "high", "medium", "low"
   verificationStatus String? // "verified", "pending", "disputed"
-  verifiedBy       String? @db.ObjectId
-  verifiedAt       DateTime?
-  dataSource        String?  @default("none") // 'none', 'imslp', 'wikipedia'
-  isVerified        Boolean @default(false) // Status de verificação
-  verificationNotes String? // Notas da verificação
-  
+  verifiedBy         String?   @db.ObjectId
+  verifiedAt         DateTime?
+  dataSource         String?   @default("none") // 'none', 'imslp', 'wikipedia'
+  isVerified         Boolean   @default(false) // Status de verificação
+  verificationNotes  String? // Notas da verificação
 
-   // Metadados de edição
-  lastEditedBy     String? @db.ObjectId
-  lastEditedAt     DateTime?
-  editHistory      Json? // Histórico de edições
-  
+  // Metadados de edição
+  lastEditedBy String?   @db.ObjectId
+  lastEditedAt DateTime?
+  editHistory  Json? // Histórico de edições
+
   // Campos específicos do IMSLP melhorados
-  imslpScore       Int? // Score/ranking no IMSLP
-  imslpWorkCount   Int? // Número de obras no IMSLP
-  imslpPopularity  Int? // Popularidade no IMSLP
+  imslpScore      Int? // Score/ranking no IMSLP
+  imslpWorkCount  Int? // Número de obras no IMSLP
+  imslpPopularity Int? // Popularidade no IMSLP
 
   // Campos existentes
-  primaryRoleId String @db.ObjectId
-  primaryRole   Role   @relation("PrimaryRole", fields: [primaryRoleId], references: [id])
+  primaryRoleId String   @db.ObjectId
+  primaryRole   Role     @relation("PrimaryRole", fields: [primaryRoleId], references: [id])
   roles         String?
   createdAt     DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt     DateTime @updatedAt
 
   // Relações existentes
-  epoch       Epoch              @relation(fields: [epochId], references: [id])
-  works       Work[]
-  favoritedBy FavoriteComposer[]
-  favoriteByUsers User[] @relation("FavoriteComposer")
+  epoch           Epoch              @relation(fields: [epochId], references: [id])
+  works           Work[]
+  favoritedBy     FavoriteComposer[]
+  favoriteByUsers User[]             @relation("FavoriteComposer")
 
   verifier User? @relation("VerifiedComposers", fields: [verifiedBy], references: [id])
+
+  adTargets AdComposerTarget[] @relation("AdTargeting")
 
   // Índices otimizados
   @@index([name])
   @@index([epochId])
   @@index([fullName])
-  @@index([otherName])    
+  @@index([otherName])
   @@index([verifiedBy]) // Novo índice para verificador
   @@index([isVerified]) // Novo índice para verificação
-  @@index([alternativeNames])      
-  @@index([imslpCategories])       
+  @@index([alternativeNames])
+  @@index([imslpCategories])
   @@index([primaryRoleId])
   @@index([imslpId])
   @@index([nationality])
-  @@index([birthDate])             
-  @@index([deathDate])             
+  @@index([birthDate])
+  @@index([deathDate])
   @@index([hasValidImage])
   @@index([name, epochId])
   @@index([epochId, primaryRoleId])
@@ -533,6 +575,8 @@ model Epoch {
   composers       Composer[]
   works           Work[]
   favoriteByUsers User[]     @relation("FavoriteEpoch")
+
+  adTargets AdEpochTarget[] @relation("AdTargeting")
 
   @@index([name])
 }
@@ -554,6 +598,8 @@ model Instrument {
   createdAt  DateTime         @default(now())
   users      UserInstrument[]
   works      Work[]
+
+  adTargets AdInstrumentTarget[] @relation("AdTargeting")
 
   @@index([category])
 }
@@ -597,18 +643,18 @@ model Work {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  subtitle             String?
-  timeSignature        String?
-  tempoMarking         String?
-  movementsDetailed    Json?
-  imslpTags            String[] @default([])
-  difficultyLevel      DifficultyLevel?
+  subtitle          String?
+  timeSignature     String?
+  tempoMarking      String?
+  movementsDetailed Json?
+  imslpTags         String[]         @default([])
+  difficultyLevel   DifficultyLevel?
 
   //Verificação
   verificationStatus String? // "verified", "pending", "disputed"
-  verifiedBy       String? @db.ObjectId
-  verifiedAt       DateTime?
-  isVerified        Boolean @default(false) // Status de verificação
+  verifiedBy         String?   @db.ObjectId
+  verifiedAt         DateTime?
+  isVerified         Boolean   @default(false) // Status de verificação
 
   // Campos para rastreamento de uploads
   createdBy     String? @db.ObjectId
@@ -616,20 +662,20 @@ model Work {
   isCustom      Boolean @default(false)
 
   // Metadados de edição
-  lastEditedBy     String? @db.ObjectId
-  lastEditedAt     DateTime?
-  editHistory      Json? // Histórico de edições
-  
+  lastEditedBy String?   @db.ObjectId
+  lastEditedAt DateTime?
+  editHistory  Json? // Histórico de edições
+
   // Campos específicos do IMSLP melhorados
-  imslpScore       Int? // Score/ranking no IMSLP
-  imslpDownloads   Int? // Downloads no IMSLP
-  imslpRating      Float? // Rating no IMSLP
-  
+  imslpScore     Int? // Score/ranking no IMSLP
+  imslpDownloads Int? // Downloads no IMSLP
+  imslpRating    Float? // Rating no IMSLP
+
   // Campos técnicos melhorados
-  keySignature     String? // Armadura de clave
-  moodTags         String[] @default([]) // Tags de humor/atmosfera
-  technicalTags    String[] @default([]) // Tags técnicas
-  performanceTags  String[] @default([]) // Tags de performance
+  keySignature    String? // Armadura de clave
+  moodTags        String[] @default([]) // Tags de humor/atmosfera
+  technicalTags   String[] @default([]) // Tags técnicas
+  performanceTags String[] @default([]) // Tags de performance
 
   composer   Composer   @relation(fields: [composerId], references: [id])
   epoch      Epoch      @relation(fields: [epochId], references: [id])
@@ -650,37 +696,34 @@ model Work {
 
   pdfAnnotations PdfAnnotation[]
   scoreBookmarks ScoreBookmark[]
-  
+
   // Anotações relacionadas
   workAnnotations WorkAnnotation[]
-  
+
   // Estatísticas de anotações (cache para performance)
-  annotationsCount        Int @default(0)
-  helpfulAnnotationsCount Int @default(0)
+  annotationsCount        Int       @default(0)
+  helpfulAnnotationsCount Int       @default(0)
   lastAnnotationAt        DateTime?
 
   // Relações com sistema de cache incremental
-  cachedScores       WorkScore[]
-  processingLogs     ScoreProcessingLog[]
+  cachedScores   WorkScore[]
+  processingLogs ScoreProcessingLog[]
 
   // 🆕 ÍNDICES OTIMIZADOS PARA BUSCA DE OBRAS - SUBSTITUA OS ÍNDICES EXISTENTES
   @@index([title]) // Busca simples por título
   @@index([opOrCatalog]) // Busca por catálogo/opus
   @@index([composerId]) // Join com compositor
   @@index([imslpId])
-  
   // 🆕 ÍNDICES COMPOSTOS PARA BUSCA OTIMIZADA
   @@index([title, composerId]) // Busca por título + compositor
   @@index([composerId, title]) // Ordem reversa para diferentes queries
   @@index([opOrCatalog, composerId]) // Busca por opus + compositor
-  
   // 🆕 ÍNDICES PARA ORDENAÇÃO E FILTROS
   @@index([title, createdAt]) // Ordenação por título e data
   @@index([composerId, createdAt]) // Obras recentes de um compositor
   @@index([workType])
   @@index([parentWorkId])
   @@index([isPartOfCollection])
-  
   // Índices existentes mantidos (não remover)
   @@index([composerId, instrumentId])
   @@index([composerId, epochId])
@@ -724,123 +767,123 @@ model Annotation {
 }
 
 model PdfAnnotation {
-  id       String         @id @default(auto()) @map("_id") @db.ObjectId
-  userId   String         @db.ObjectId
-  workId   String         @db.ObjectId
-  scoreId  String
-  
-  type     AnnotationType
-  content  String?
-  
-  page     Int
-  x        Float
-  y        Float
-  width    Float?
-  height   Float?
-  
-  color    String?
-  fontSize Int?
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @db.ObjectId
+  workId  String @db.ObjectId
+  scoreId String
+
+  type    AnnotationType
+  content String?
+
+  page   Int
+  x      Float
+  y      Float
+  width  Float?
+  height Float?
+
+  color       String?
+  fontSize    Int?
   strokeWidth Float?
-  drawing  Json?
-  
-  measure  Int?
-  beat     Float?
-  voice    Int?
-  
-  isPublic Boolean       @default(false)
-  tags     String[]      @default([])
-  
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  
+  drawing     Json?
+
+  measure Int?
+  beat    Float?
+  voice   Int?
+
+  isPublic Boolean  @default(false)
+  tags     String[] @default([])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-  
+
   @@index([userId, workId, scoreId])
   @@index([workId, scoreId, page])
   @@index([type])
 }
 
 model ScoreBookmark {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @db.ObjectId
-  workId      String   @db.ObjectId
-  scoreId     String
-  
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String @db.ObjectId
+  workId  String @db.ObjectId
+  scoreId String
+
   title       String
   description String?
-  color       String   @default("#3B82F6")
-  
-  page        Int
-  measure     Int?
-  system      Int?
-  
-  x           Float?
-  y           Float?
-  
-  sortOrder   Int      @default(0)
-  
-  isPublic    Boolean  @default(false)
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
+  color       String  @default("#3B82F6")
+
+  page    Int
+  measure Int?
+  system  Int?
+
+  x Float?
+  y Float?
+
+  sortOrder Int @default(0)
+
+  isPublic Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-  
+
   @@index([userId, workId, scoreId])
   @@index([workId, scoreId])
   @@index([sortOrder])
 }
 
 model StudySession {
-  id            String        @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String        @db.ObjectId
-  workId        String        @db.ObjectId
-  scoreId       String?
-  
-  date          DateTime      @default(now())
-  durationMin   Int
-  
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String  @db.ObjectId
+  workId  String  @db.ObjectId
+  scoreId String?
+
+  date        DateTime @default(now())
+  durationMin Int
+
   metronomeUsed Boolean       @default(false)
   tempoMarking  String?
   focus         PracticeFocus
   notes         String?
   rating        Int?
-  
-  sectionsWorked String[]     @default([])
+
+  sectionsWorked String[] @default([])
   challenges     String?
   breakthroughs  String?
-  
-  instrument     String?
-  location       String?
-  mood           Int?
-  energy         Int?
+
+  instrument String?
+  location   String?
+  mood       Int?
+  energy     Int?
 
   metronomeSettings Json?
   selectedScore     Json?
   studyNotes        String?
-  practiceGoals     String[]  @default([])
-  technicalFocus    String[]  @default([])
-  expressiveFocus   String[]  @default([])
-  precisionFocus    String[]  @default([])
-  
+  practiceGoals     String[] @default([])
+  technicalFocus    String[] @default([])
+  expressiveFocus   String[] @default([])
+  precisionFocus    String[] @default([])
+
   postPracticeRating Int?
   postPracticeNotes  String?
   nextSessionGoals   String[] @default([])
-  
-  pauseCount        Int       @default(0)
-  restartCount      Int       @default(0)
-  sectionsRepeated  Json?
-  
-  pagesViewed       Int[]     @default([])
-  annotationsCreated Int      @default(0)
-  bookmarksCreated   Int      @default(0)
-  pdfZoomChanges     Int      @default(0)
-  
-  pdfSettings       Json?
-  windowLayout      Json?
-  
+
+  pauseCount       Int   @default(0)
+  restartCount     Int   @default(0)
+  sectionsRepeated Json?
+
+  pagesViewed        Int[] @default([])
+  annotationsCreated Int   @default(0)
+  bookmarksCreated   Int   @default(0)
+  pdfZoomChanges     Int   @default(0)
+
+  pdfSettings  Json?
+  windowLayout Json?
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
 
@@ -857,16 +900,16 @@ model WantToLearn {
   priority Int      @default(0)
   addedAt  DateTime @default(now())
 
-  notes            String?        
-  targetDate       DateTime?      
-  estimatedStudyTime Int?         
-  difficulty       DifficultyLevel? 
-  reminder         Boolean        @default(false) 
-  reminderFrequency String?       
-  
-  motivation       String?        
-  context          String?        
-  
+  notes              String?
+  targetDate         DateTime?
+  estimatedStudyTime Int?
+  difficulty         DifficultyLevel?
+  reminder           Boolean          @default(false)
+  reminderFrequency  String?
+
+  motivation String?
+  context    String?
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
 
@@ -882,21 +925,21 @@ model Learned {
   learnedAt DateTime @default(now())
   mastery   Int      @default(0)
 
-  studyStartDate    DateTime?     
-  studyDuration     Int?          
-  notes             String?       
-  wouldRecommend    Boolean       @default(true) 
-  publicPerformance Boolean       @default(false) 
-  lastPracticed     DateTime?     
-  
-  difficulty        DifficultyLevel? 
-  enjoyment         Int?          
-  technicalChallenges String?     
-  musicalInsights   String?       
-  
-  performanceCount  Int           @default(0) 
-  bestPerformance   String?       
-  
+  studyStartDate    DateTime?
+  studyDuration     Int?
+  notes             String?
+  wouldRecommend    Boolean   @default(true)
+  publicPerformance Boolean   @default(false)
+  lastPracticed     DateTime?
+
+  difficulty          DifficultyLevel?
+  enjoyment           Int?
+  technicalChallenges String?
+  musicalInsights     String?
+
+  performanceCount Int     @default(0)
+  bestPerformance  String?
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
 
@@ -907,64 +950,64 @@ model Learned {
 }
 
 model UserSelectedScore {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String
-  workId    String
-  
-  imslpScoreId   String
-  title          String
-  downloadUrl    String
-  fileSize       String?
-  pageCount      String?
-  fileFormat     String   @default("PDF")
-  
-  editor         String?
-  publisher      String?
-  copyright      String?
-  thumbnailUrl   String?
-  uploadDate     String?
-  uploader       String?
-  notes          String?
-  
-  type           IMSLPScoreType  @default(SCORES)
-  groupIndex     Int?
-  groupTitle     String?
-  
-  rating         Float?
-  ratingsCount   Int?
-  downloadCount  Int?
-  
-  lastVerified   DateTime @default(now())
-  isActive       Boolean  @default(true)
-  
-  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work           Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
-  
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String
+  workId String
+
+  imslpScoreId String
+  title        String
+  downloadUrl  String
+  fileSize     String?
+  pageCount    String?
+  fileFormat   String  @default("PDF")
+
+  editor       String?
+  publisher    String?
+  copyright    String?
+  thumbnailUrl String?
+  uploadDate   String?
+  uploader     String?
+  notes        String?
+
+  type       IMSLPScoreType @default(SCORES)
+  groupIndex Int?
+  groupTitle String?
+
+  rating        Float?
+  ratingsCount  Int?
+  downloadCount Int?
+
+  lastVerified DateTime @default(now())
+  isActive     Boolean  @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   @@unique([userId, workId, imslpScoreId])
   @@index([userId, workId])
   @@index([workId])
   @@map("user_selected_scores")
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model LearningGoal {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @db.ObjectId
-  title       String   
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String    @db.ObjectId
+  title       String
   description String?
   targetDate  DateTime?
-  isCompleted Boolean  @default(false)
+  isCompleted Boolean   @default(false)
   completedAt DateTime?
-  
-  workIds     String[] @db.ObjectId @default([])
-  
+
+  workIds String[] @default([]) @db.ObjectId
+
   progressNotes String?
-  milestones    String[] @default([]) 
-  
+  milestones    String[] @default([])
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -976,7 +1019,7 @@ model FavoriteWork {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
   userId String @db.ObjectId
   workId String @db.ObjectId
-  
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
 
@@ -995,56 +1038,55 @@ model FavoriteComposer {
 }
 
 model WorkAnnotation {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String   @db.ObjectId
-  workId    String   @db.ObjectId
-  
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  workId String @db.ObjectId
+
   // Conteúdo da anotação
-  title       String              // Título/resumo da anotação
-  content     String              // Conteúdo principal
-  category    AnnotationCategory  @default(GENERAL)
-  
+  title    String // Título/resumo da anotação
+  content  String // Conteúdo principal
+  category AnnotationCategory @default(GENERAL)
+
   // Localização na obra
-  scope           AnnotationScope  @default(ENTIRE_WORK)
-  measureStart    Int?             // Compasso inicial (se específico)
-  measureEnd      Int?             // Compasso final (se range)
-  movement        String?          // Nome do movimento
-  section         String?          // Nome da seção (ex: "Exposição", "Desenvolvimento")
-  pageNumber      Int?             // Página da partitura (se aplicável)
-  
+  scope        AnnotationScope @default(ENTIRE_WORK)
+  measureStart Int? // Compasso inicial (se específico)
+  measureEnd   Int? // Compasso final (se range)
+  movement     String? // Nome do movimento
+  section      String? // Nome da seção (ex: "Exposição", "Desenvolvimento")
+  pageNumber   Int? // Página da partitura (se aplicável)
+
   // Metadata musical
-  hand            String?          // "left", "right", "both"
-  voice           String?          // "soprano", "alto", "tenor", "bass"
-  instrument      String?          // Instrumento específico (para obras de conjunto)
-  
+  hand       String? // "left", "right", "both"
+  voice      String? // "soprano", "alto", "tenor", "bass"
+  instrument String? // Instrumento específico (para obras de conjunto)
+
   // Classificação e utilidade
-  difficulty      AnnotationDifficulty @default(ALL_LEVELS)
-  tags            String[]         @default([])
-  
+  difficulty AnnotationDifficulty @default(ALL_LEVELS)
+  tags       String[]             @default([])
+
   // Interação social
-  isPublic        Boolean          @default(true)
-  isVerified      Boolean          @default(false)  // Verificado por moderador/expert
-  helpfulCount    Int              @default(0)      // Quantos acharam útil
-  viewCount       Int              @default(0)      // Visualizações
-  
+  isPublic     Boolean @default(true)
+  isVerified   Boolean @default(false) // Verificado por moderador/expert
+  helpfulCount Int     @default(0) // Quantos acharam útil
+  viewCount    Int     @default(0) // Visualizações
+
   // Moderação
-  isFlagged       Boolean          @default(false)
-  flagReason      String?
-  moderatedBy     String?          @db.ObjectId
-  moderatedAt     DateTime?
-  
+  isFlagged   Boolean   @default(false)
+  flagReason  String?
+  moderatedBy String?   @db.ObjectId
+  moderatedAt DateTime?
+
   // Timestamps
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   // Relações
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-  
+
   // Relações de interação
-  helpfulVotes    AnnotationHelpfulVote[]
-  replies         AnnotationReply[]
-  
+  helpfulVotes AnnotationHelpfulVote[]
+
   // Índices otimizados
   @@index([workId, isPublic, category])
   @@index([workId, scope, measureStart])
@@ -1057,97 +1099,51 @@ model WorkAnnotation {
 }
 
 model AnnotationHelpfulVote {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  userId       String @db.ObjectId
-  annotationId String @db.ObjectId
-  isHelpful    Boolean @default(true)
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @db.ObjectId
+  annotationId String   @db.ObjectId
+  isHelpful    Boolean  @default(true)
   createdAt    DateTime @default(now())
-  
+
   user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   annotation WorkAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
-  
+
   @@unique([userId, annotationId])
   @@index([annotationId, isHelpful])
   @@map("annotation_helpful_votes")
 }
 
-model AnnotationReply {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
-  userId       String @db.ObjectId
-  annotationId String @db.ObjectId
-  
-  content      String
-  isPublic     Boolean @default(true)
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
-  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  annotation WorkAnnotation @relation(fields: [annotationId], references: [id], onDelete: Cascade)
-  
-  @@index([annotationId, createdAt])
-  @@index([userId, createdAt])
-  @@map("annotation_replies")
-}
-
-model AnnotationStats {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  
-  // Período das estatísticas
-  period    String   // "daily", "weekly", "monthly"
-  date      DateTime
-  
-  // Estatísticas gerais
-  totalAnnotations      Int @default(0)
-  newAnnotations        Int @default(0)
-  totalHelpfulVotes     Int @default(0)
-  activeUsers           Int @default(0)
-  
-  // Top anotações por categoria
-  topByTechnique        Json? // IDs das top anotações
-  topByInterpretation   Json?
-  topByPracticeTip      Json?
-  
-  // Top obras com mais anotações
-  topWorksAnnotated     Json?
-  
-  createdAt DateTime @default(now())
-  
-  @@unique([period, date])
-  @@map("annotation_stats")
-}
-
 model FavoriteScore {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @db.ObjectId
-  workId      String   @db.ObjectId
-  scoreId     String   // ID da partitura no cache (WorkScore.sourceId)
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String      @db.ObjectId
+  workId      String      @db.ObjectId
+  scoreId     String // ID da partitura no cache (WorkScore.sourceId)
   scoreSource ScoreSource @default(IMSLP) // IMSLP, CUSTOM, etc.
-  
+
   // Dados da partitura no momento do favoritamento (para histórico)
-  scoreTitle     String
-  scoreType      IMSLPScoreType
-  downloadUrl    String?
-  fileSize       String?
-  pageCount      String?
-  
+  scoreTitle  String
+  scoreType   IMSLPScoreType
+  downloadUrl String?
+  fileSize    String?
+  pageCount   String?
+
   // Metadados do favorito
-  notes          String?  // Notas pessoais do usuário sobre a partitura
-  tags           String[] @default([]) // Tags pessoais
-  addedAt        DateTime @default(now())
-  lastAccessed   DateTime @default(now())
-  accessCount    Int      @default(0)
-  
+  notes        String? // Notas pessoais do usuário sobre a partitura
+  tags         String[] @default([]) // Tags pessoais
+  addedAt      DateTime @default(now())
+  lastAccessed DateTime @default(now())
+  accessCount  Int      @default(0)
+
   // Avaliação pessoal (opcional)
-  personalRating Int?     // 1-5 estrelas
-  
+  personalRating Int? // 1-5 estrelas
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   // Relações
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-  
+
   // Índices otimizados
   @@unique([userId, workId, scoreId, scoreSource], name: "user_work_score_unique")
   @@index([userId, workId])
@@ -1159,27 +1155,27 @@ model FavoriteScore {
 }
 
 model ScoreFavoriteStats {
-  id              String         @id @default(auto()) @map("_id") @db.ObjectId
-  workId          String         @db.ObjectId
-  scoreId         String
-  scoreSource     ScoreSource    @default(IMSLP)
-  
+  id          String      @id @default(auto()) @map("_id") @db.ObjectId
+  workId      String      @db.ObjectId
+  scoreId     String
+  scoreSource ScoreSource @default(IMSLP)
+
   // Estatísticas
-  totalFavorites  Int            @default(0)
-  avgRating       Float?         // Média das avaliações pessoais
-  lastFavorited   DateTime?      // Última vez que foi favoritado
-  
+  totalFavorites Int       @default(0)
+  avgRating      Float? // Média das avaliações pessoais
+  lastFavorited  DateTime? // Última vez que foi favoritado
+
   // Cache das informações da partitura
-  scoreTitle      String
-  scoreType       IMSLPScoreType
-  downloadUrl     String?
-  
+  scoreTitle  String
+  scoreType   IMSLPScoreType
+  downloadUrl String?
+
   // Metadados do cache
-  lastUpdated     DateTime       @default(now())
-  
+  lastUpdated DateTime @default(now())
+
   // Relação
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-  
+
   // Índices
   @@unique([workId, scoreId, scoreSource], name: "work_score_stats_unique")
   @@index([workId, totalFavorites]) // Para buscar mais favoritadas por obra
@@ -1190,20 +1186,20 @@ model ScoreFavoriteStats {
 
 // Novo modelo para histórico de uploads
 model UploadHistory {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String   @db.ObjectId
-  entityType  String   // "composer", "work", "score"
-  entityId    String   @db.ObjectId
-  action      String   // "create", "update", "delete"
-  changes     Json?    // Detalhes das mudanças
-  reason      String?  // Razão para a mudança
-  ipAddress   String?
-  userAgent   String?
-  
-  createdAt   DateTime @default(now())
-  
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String  @db.ObjectId
+  entityType String // "composer", "work", "score"
+  entityId   String  @db.ObjectId
+  action     String // "create", "update", "delete"
+  changes    Json? // Detalhes das mudanças
+  reason     String? // Razão para a mudança
+  ipAddress  String?
+  userAgent  String?
+
+  createdAt DateTime @default(now())
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+
   @@index([userId, createdAt])
   @@index([entityType, entityId])
   @@index([action])
@@ -1212,33 +1208,33 @@ model UploadHistory {
 
 // Atualizar modelo UploadModeration para incluir novos campos
 model UploadModeration {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  entityType  String   // "composer", "work", "score"
-  entityId    String   @db.ObjectId
-  reportedBy  String   @db.ObjectId
-  moderatedBy String?  @db.ObjectId
-  
-  reason      String   // Motivo do report
-  description String?  // Descrição detalhada
-  status      String   @default("pending") // "pending", "approved", "rejected"
-  
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  entityType  String // "composer", "work", "score"
+  entityId    String  @db.ObjectId
+  reportedBy  String  @db.ObjectId
+  moderatedBy String? @db.ObjectId
+
+  reason      String // Motivo do report
+  description String? // Descrição detalhada
+  status      String  @default("pending") // "pending", "approved", "rejected"
+
   // Novos campos para melhor rastreamento
-  priority    String   @default("normal") // "low", "normal", "high", "urgent"
-  category    String?  // Categoria adicional se necessário
-  
+  priority String  @default("normal") // "low", "normal", "high", "urgent"
+  category String? // Categoria adicional se necessário
+
   moderationNotes String? // Notas do moderador
-  resolution  String?     // Resolução tomada
-  
+  resolution      String? // Resolução tomada
+
   // Campos de auditoria
-  ipAddress   String?  // IP do usuário que reportou
-  userAgent   String?  // User agent do navegador
-  
-  createdAt   DateTime @default(now())
-  resolvedAt  DateTime?
-  
-  reporter  User @relation("ReportedUploads", fields: [reportedBy], references: [id])
+  ipAddress String? // IP do usuário que reportou
+  userAgent String? // User agent do navegador
+
+  createdAt  DateTime  @default(now())
+  resolvedAt DateTime?
+
+  reporter  User  @relation("ReportedUploads", fields: [reportedBy], references: [id])
   moderator User? @relation("ModeratedUploads", fields: [moderatedBy], references: [id])
-  
+
   // Índices otimizados
   @@index([entityType, entityId])
   @@index([status, priority]) // Novo índice para prioridade
@@ -1252,31 +1248,31 @@ model UploadModeration {
 
 // Novo modelo para estatísticas de reports (cache)
 model ReportStats {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
   // Período das estatísticas
-  period    String   // "daily", "weekly", "monthly"
-  date      DateTime
-  
+  period String // "daily", "weekly", "monthly"
+  date   DateTime
+
   // Estatísticas gerais
-  totalReports      Int @default(0)
-  pendingReports    Int @default(0)
-  approvedReports   Int @default(0)
-  rejectedReports   Int @default(0)
-  
+  totalReports    Int @default(0)
+  pendingReports  Int @default(0)
+  approvedReports Int @default(0)
+  rejectedReports Int @default(0)
+
   // Reports por tipo
-  composerReports   Int @default(0)
-  workReports       Int @default(0)
-  scoreReports      Int @default(0)
-  
+  composerReports Int @default(0)
+  workReports     Int @default(0)
+  scoreReports    Int @default(0)
+
   // Reports por motivo (JSON para flexibilidade)
-  reasonBreakdown   Json?
-  
+  reasonBreakdown Json?
+
   // Tempo médio de resolução
   avgResolutionTime Int? // em minutos
-  
+
   createdAt DateTime @default(now())
-  
+
   @@unique([period, date])
   @@index([period])
   @@index([date])
@@ -1284,40 +1280,384 @@ model ReportStats {
 }
 
 model GeneratedReport {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  type        String   // 'users-overview', 'content-analysis', etc.
-  format      String   // 'pdf', 'excel', 'csv'
-  period      String   // '7d', '30d', '90d', '1y'
-  
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  type   String // 'users-overview', 'content-analysis', etc.
+  format String // 'pdf', 'excel', 'csv'
+  period String // '7d', '30d', '90d', '1y'
+
   // Metadados do arquivo
-  filename    String
-  filePath    String?  // Caminho no sistema de arquivos ou URL
-  fileSize    String?  // Tamanho formatado (ex: "1.2 MB")
-  fileSizeBytes Int?   // Tamanho em bytes
-  
+  filename      String
+  filePath      String? // Caminho no sistema de arquivos ou URL
+  fileSize      String? // Tamanho formatado (ex: "1.2 MB")
+  fileSizeBytes Int? // Tamanho em bytes
+
   // Status e dados
-  status      String   @default("generating") // 'generating', 'ready', 'failed'
-  error       String?  // Mensagem de erro se falhou
-  
+  status String  @default("generating") // 'generating', 'ready', 'failed'
+  error  String? // Mensagem de erro se falhou
+
   // Dados estatísticos do período (cache)
-  reportData  Json?    // Dados estatísticos utilizados no relatório
-  
+  reportData Json? // Dados estatísticos utilizados no relatório
+
   // Metadados de geração
   generatedBy String   @db.ObjectId
   generatedAt DateTime @default(now())
-  
+
   // Controle de acesso e limpeza
-  downloadCount Int     @default(0)
+  downloadCount Int       @default(0)
   lastDownload  DateTime?
   expiresAt     DateTime? // Para limpeza automática
-  
+
   // Relações
   user User @relation("GeneratedReports", fields: [generatedBy], references: [id], onDelete: Cascade)
-  
+
   // Índices
   @@index([type, status])
   @@index([status, expiresAt])
   @@index([generatedAt])
   @@map("generated_reports")
+}
+
+// Model principal para publicidades
+model Advertisement {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Informações básicas
+  title       String
+  description String?
+  tagline     String? // Frase de chamada
+
+  // Conteúdo e mídia
+  content      String? // HTML/texto da publicidade
+  imageUrl     String? // URL da imagem principal
+  videoUrl     String? // URL do vídeo
+  thumbnailUrl String? // Thumbnail do vídeo
+
+  // Links e ações
+  ctaText    String? // Texto do call-to-action
+  targetUrl  String? // URL de destino
+  isExternal Boolean @default(true) // Link externo?
+
+  // Configurações de exibição
+  type      AdType      @default(BANNER)
+  placement AdPlacement @default(SIDEBAR_RIGHT)
+  status    AdStatus    @default(DRAFT)
+
+  // Targeting e segmentação
+  targetType AdTargetType @default(GENERAL)
+
+  // Dados do anunciante
+  advertiserName    String
+  advertiserEmail   String?
+  advertiserPhone   String?
+  advertiserWebsite String?
+  advertiserLogo    String?
+
+  // Configurações de exibição
+  priority  Int  @default(0) // Prioridade (maior = mais prioridade)
+  weight    Int  @default(1) // Peso para rotação
+  maxViews  Int? // Limite de visualizações
+  maxClicks Int? // Limite de cliques
+
+  // Agendamento
+  startDate DateTime?
+  endDate   DateTime?
+
+  // Configurações de responsividade
+  showOnMobile  Boolean @default(true)
+  showOnTablet  Boolean @default(true)
+  showOnDesktop Boolean @default(true)
+
+  // Configurações avançadas
+  customCSS String? // CSS customizado
+  customJS  String? // JavaScript customizado
+
+  // Dados de moderação
+  isApproved      Boolean   @default(false)
+  approvedBy      String?   @db.ObjectId
+  approvedAt      DateTime?
+  rejectionReason String?
+
+  // Controle de acesso
+  createdBy    String    @db.ObjectId
+  lastEditedBy String?   @db.ObjectId
+  lastEditedAt DateTime?
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relações
+  creator  User  @relation("AdCreator", fields: [createdBy], references: [id])
+  approver User? @relation("AdApprover", fields: [approvedBy], references: [id])
+  editor   User? @relation("AdEditor", fields: [lastEditedBy], references: [id])
+
+  // Targeting específico
+  instrumentTargets AdInstrumentTarget[]
+  composerTargets   AdComposerTarget[]
+  epochTargets      AdEpochTarget[]
+  userLevelTargets  AdUserLevelTarget[]
+  geoTargets        AdGeoTarget[]
+
+  // Mídia associada
+  mediaFiles AdMedia[]
+
+  // Estatísticas
+  stats AdStats[]
+
+  // Índices otimizados
+  @@index([status, placement, priority])
+  @@index([targetType, status])
+  @@index([startDate, endDate, status])
+  @@index([placement, status, priority])
+  @@index([createdBy])
+  @@index([isApproved, status])
+  @@map("advertisements")
+}
+
+// Targeting por instrumento
+model AdInstrumentTarget {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  advertisementId String @db.ObjectId
+  instrumentId    String @db.ObjectId
+
+  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+  instrument    Instrument    @relation("AdTargeting", fields: [instrumentId], references: [id])
+
+  @@unique([advertisementId, instrumentId])
+  @@index([instrumentId])
+  @@map("ad_instrument_targets")
+}
+
+// Targeting por compositor
+model AdComposerTarget {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  advertisementId String @db.ObjectId
+  composerId      String @db.ObjectId
+
+  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+  composer      Composer      @relation("AdTargeting", fields: [composerId], references: [id])
+
+  @@unique([advertisementId, composerId])
+  @@index([composerId])
+  @@map("ad_composer_targets")
+}
+
+// Targeting por época
+model AdEpochTarget {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  advertisementId String @db.ObjectId
+  epochId         String @db.ObjectId
+
+  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+  epoch         Epoch         @relation("AdTargeting", fields: [epochId], references: [id])
+
+  @@unique([advertisementId, epochId])
+  @@index([epochId])
+  @@map("ad_epoch_targets")
+}
+
+// Targeting por nível do usuário
+model AdUserLevelTarget {
+  id              String          @id @default(auto()) @map("_id") @db.ObjectId
+  advertisementId String          @db.ObjectId
+  userLevel       DifficultyLevel
+
+  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+
+  @@unique([advertisementId, userLevel])
+  @@index([userLevel])
+  @@map("ad_user_level_targets")
+}
+
+// Targeting geográfico
+model AdGeoTarget {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  advertisementId String  @db.ObjectId
+  country         String
+  state           String?
+  city            String?
+
+  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+
+  @@index([country, state, city])
+  @@index([advertisementId])
+  @@map("ad_geo_targets")
+}
+
+// Mídia das publicidades
+model AdMedia {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  advertisementId String @db.ObjectId
+
+  // Informações do arquivo
+  fileName     String
+  originalName String
+  mimeType     String
+  fileSize     Int // Tamanho em bytes
+
+  // URLs
+  url          String // URL principal
+  thumbnailUrl String? // Thumbnail (para vídeos)
+  previewUrl   String? // Preview/versão menor
+
+  // Metadados
+  type     MediaType
+  width    Int? // Largura (imagens/vídeos)
+  height   Int? // Altura (imagens/vídeos)
+  duration Int? // Duração (vídeos/áudios) em segundos
+
+  // Configurações
+  isMain  Boolean @default(false) // Mídia principal?
+  altText String? // Texto alternativo
+  caption String? // Legenda
+
+  // SEO e acessibilidade
+  title       String?
+  description String?
+
+  // Otimização
+  isOptimized      Boolean @default(false)
+  compressionRatio Float? // Taxa de compressão
+
+  // Upload info
+  uploadedBy String   @db.ObjectId
+  uploadedAt DateTime @default(now())
+
+  // Storage info
+  storageProvider String  @default("local") // local, s3, cloudinary, etc.
+  storagePath     String
+  publicId        String? // ID público (Cloudinary, etc.)
+
+  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+  uploader      User          @relation("AdMediaUploader", fields: [uploadedBy], references: [id])
+
+  @@index([advertisementId, type])
+  @@index([uploadedBy])
+  @@index([isMain])
+  @@map("ad_media")
+}
+
+// Estatísticas das publicidades
+model AdStats {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  advertisementId String @db.ObjectId
+
+  // Data das estatísticas
+  date DateTime @default(now())
+
+  // Métricas de exibição
+  impressions Int @default(0) // Visualizações
+  clicks      Int @default(0) // Cliques
+  conversions Int @default(0) // Conversões (se trackeable)
+
+  // Métricas de engajamento
+  hoverTime   Int   @default(0) // Tempo de hover (milissegundos)
+  scrollDepth Float @default(0) // Profundidade do scroll (%)
+
+  // Dados contextuais
+  userAgent String? // User agent
+  referrer  String? // Página de origem
+  country   String? // País do usuário
+  device    String? // Tipo de dispositivo
+
+  // Dados da página
+  pageUrl   String? // URL da página onde foi exibido
+  pageTitle String? // Título da página
+  placement AdPlacement? // Onde foi exibido
+
+  // Dados do usuário (se logado)
+  userId          String?          @db.ObjectId
+  userLevel       DifficultyLevel?
+  userInstruments String[]         @default([]) // IDs dos instrumentos do usuário
+
+  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+  user          User?         @relation("AdStatsUser", fields: [userId], references: [id])
+
+  @@index([advertisementId, date])
+  @@index([date])
+  @@index([userId])
+  @@index([country])
+  @@index([device])
+  @@map("ad_stats")
+}
+
+// Cache de estatísticas agregadas
+model AdStatsAggregate {
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  advertisementId String @db.ObjectId
+
+  // Período
+  period    String // 'daily', 'weekly', 'monthly'
+  startDate DateTime
+  endDate   DateTime
+
+  // Métricas agregadas
+  totalImpressions Int   @default(0)
+  totalClicks      Int   @default(0)
+  totalConversions Int   @default(0)
+  avgCTR           Float @default(0) // Click-through rate
+  avgCPC           Float @default(0) // Cost per click
+
+  // Breakdown por dispositivo
+  mobileImpressions  Int @default(0)
+  tabletImpressions  Int @default(0)
+  desktopImpressions Int @default(0)
+
+  mobileClicks  Int @default(0)
+  tabletClicks  Int @default(0)
+  desktopClicks Int @default(0)
+
+  // Top países
+  topCountries Json? // {country: count}
+  topPages     Json? // {page: impressions}
+
+  // Performance por horário
+  hourlyStats Json? // {hour: {impressions, clicks}}
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // advertisement  Advertisement @relation("AdAggregateStats", fields: [advertisementId], references: [id], onDelete: Cascade)
+
+  @@unique([advertisementId, period, startDate])
+  @@index([period, startDate])
+  @@map("ad_stats_aggregate")
+}
+
+// Templates de publicidade
+model AdTemplate {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+
+  name        String
+  description String?
+  category    String // 'music-school', 'teacher', 'instrument-shop', etc.
+
+  // Template structure
+  type         AdType
+  placement    AdPlacement
+  htmlTemplate String // Template HTML
+  cssTemplate  String? // Template CSS
+  jsTemplate   String? // Template JavaScript
+
+  // Template variables
+  variables Json // Schema das variáveis: {name, type, required, default}
+
+  // Preview
+  previewImage String?
+
+  // Usage
+  isPublic   Boolean @default(true)
+  usageCount Int     @default(0)
+
+  // Creator
+  createdBy String   @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  creator User @relation("AdTemplateCreator", fields: [createdBy], references: [id])
+
+  @@index([category, isPublic])
+  @@index([type, placement])
+  @@map("ad_templates")
 }

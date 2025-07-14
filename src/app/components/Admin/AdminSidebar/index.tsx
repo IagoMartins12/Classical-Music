@@ -23,7 +23,9 @@ import {
   FiChevronDown,
   FiChevronRight,
   FiHardDrive, // Nova importação para backup
-  FiArchive, // Nova importação para backup
+  FiArchive,
+  FiLayout,
+  FiPlus, // Nova importação para backup
 } from 'react-icons/fi';
 import { useAdminStats } from '@/app/hooks/admin/useAdminStats';
 
@@ -209,6 +211,45 @@ export default function AdminSidebar() {
           label: 'Configurações',
           icon: FiSettings,
           isActive: pathname.startsWith('/admin/settings'),
+        },
+      ],
+    },
+    {
+      title: 'Publicidades',
+      items: [
+        {
+          href: '/admin/ads',
+          label: 'Gerenciar Ads',
+          icon: FiTarget, // Adicionar ao imports: FiTarget
+          badge: mounted && stats ? stats.ads?.totalActive : undefined,
+          isActive: pathname.startsWith('/admin/ads'),
+          children: [
+            {
+              href: '/admin/ads/create',
+              label: 'Criar Publicidade',
+              icon: FiPlus,
+              isActive: pathname === '/admin/ads/create',
+            },
+            {
+              href: '/admin/ads/analytics',
+              label: 'Analytics',
+              icon: FiBarChart2,
+              isActive: pathname === '/admin/ads/analytics',
+            },
+            {
+              href: '/admin/ads/templates',
+              label: 'Templates',
+              icon: FiLayout, // Adicionar ao imports: FiLayout
+              isActive: pathname === '/admin/ads/templates',
+            },
+          ],
+        },
+        {
+          href: '/admin/advertisers',
+          label: 'Anunciantes',
+          icon: FiUsers,
+          badge: mounted && stats ? stats.ads?.totalAdvertisers : undefined,
+          isActive: pathname.startsWith('/admin/advertisers'),
         },
       ],
     },

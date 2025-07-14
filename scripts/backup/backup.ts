@@ -8,12 +8,10 @@ const prisma = new PrismaClient();
 // Lista de todos os models do seu schema na ordem correta para backup
 const MODELS_ORDER = [
   // Tabelas independentes primeiro
-  'verificationToken',
   'epoch',
   'role',
   'instrument',
   'workGenre',
-  'annotationStats',
 
   // Usuários
   'user',
@@ -48,7 +46,6 @@ const MODELS_ORDER = [
   // Anotações (dependem de user e work)
   'workAnnotation',
   'annotationHelpfulVote',
-  'annotationReply',
 
   // Histórico e moderação
   'uploadHistory',

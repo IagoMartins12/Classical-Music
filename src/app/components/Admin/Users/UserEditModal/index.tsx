@@ -1,5 +1,5 @@
 // app/components/Admin/Users/UserEditModal.tsx
-('use client');
+'use client';
 
 import { useState } from 'react';
 import { FiX, FiSave, FiUser } from 'react-icons/fi';

@@ -41,6 +41,7 @@ import {
   SequentialGrid,
   SkeletonCard,
 } from '../../animation/AnimatedComponents';
+import VerificationBadge from '../../Verification/VerificationBadge';
 
 interface ComposerWorksProps {
   composerId: string;
@@ -895,9 +896,13 @@ export default function ComposerWorks({
                                 </div>
                               )}
 
-                              <div className="flex-1 flex flex-col gap-2">
-                                <span className="text-lg font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
+                              <div className="flex-1 flex-wrap flex flex-col gap-2">
+                                <span className="text-lg flex items-center gap-2 font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
                                   {work.title}
+                                  <VerificationBadge
+                                    verified={work.isVerified}
+                                    variant="icon"
+                                  />
                                 </span>
 
                                 {work.opOrCatalog && (
@@ -1004,9 +1009,13 @@ export default function ComposerWorks({
                                   </div>
                                 )}
 
-                                <div className="flex-1">
-                                  <span className="text-lg font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
+                                <div className="flex-1 flex">
+                                  <span className="text-lg flex items-center gap-2 font-semibold text-brand-primary group-hover:text-brand-secondary transition-colors duration-300 classical-title">
                                     {work.title}
+                                    <VerificationBadge
+                                      verified={work.isVerified}
+                                      variant="icon"
+                                    />
                                   </span>
 
                                   {work.opOrCatalog && (

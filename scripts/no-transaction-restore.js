@@ -45,7 +45,6 @@ async function directMongoRestore(backupPath) {
       'favoriteScore',
       'workAnnotation',
       'annotationHelpfulVote',
-      'annotationReply',
     ];
 
     const results = {};

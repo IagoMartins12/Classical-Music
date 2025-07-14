@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { FiUser, FiCalendar } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../../FavoriteButton';
-import VerificationIndicator from '../../Verification/VerificationIndicator';
 import VerificationBadge from '../../Verification/VerificationBadge';
 
 const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
@@ -84,7 +83,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, isActive }) => {
 
             {/* Name and Info */}
             <div className="relative z-10">
-              <h3 className="font-bold flex items-center gap-2 text-theme-primary text-lg classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300 line-clamp-2">
+              <h3 className="font-bold !flex items-center gap-2 text-theme-primary text-lg classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300 line-clamp-2">
                 {item.fullName || item.name}
 
                 <VerificationBadge verified={item.isVerified} variant="icon" />

@@ -70,6 +70,7 @@ export interface ComposerWork {
   parentWorkId?: string;
   workGenresArr?: string[];
   categoryNames?: string[];
+  isVerified: boolean;
 
   // 🆕 New work properties
   timeSignature?: string;
@@ -190,7 +191,7 @@ export const getComposerWorksWithFilters = async (
           parentWorkId: true,
           workGenresArr: true,
           categoryNames: true,
-
+          isVerified: true,
           // 🆕 New properties
           timeSignature: true,
           tempoMarking: true,
@@ -236,7 +237,7 @@ export const getComposerWorksWithFilters = async (
         parentWorkId: work.parentWorkId || undefined,
         workGenresArr: work.workGenresArr,
         categoryNames: work.categoryNames,
-
+        isVerified: work.isVerified,
         // 🆕 New properties
         timeSignature: work.timeSignature || undefined,
         tempoMarking: work.tempoMarking || undefined,

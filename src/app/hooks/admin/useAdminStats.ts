@@ -175,15 +175,8 @@ export const useAdminStats = (): UseAdminStatsReturn => {
 
       try {
         // Buscar estatísticas principais e de moderação em paralelo
-        const [statsResponse, moderationResponse] = await Promise.all([
+        const [statsResponse] = await Promise.all([
           fetch(`/api/admin/stats?section=${section}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            cache: 'no-store',
-          }),
-          fetch('/api/admin/moderation?action=stats', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -204,25 +197,10 @@ export const useAdminStats = (): UseAdminStatsReturn => {
           );
         }
 
-        const [statsData, moderationData] = await Promise.all([
-          statsResponse.json(),
-          moderationResponse.ok
-            ? moderationResponse.json()
-            : { success: false },
-        ]);
+        const [statsData] = await Promise.all([statsResponse.json()]);
 
         if (statsData.success && statsData.stats) {
           if (section === 'all') {
-            // Buscar dados de moderação reais
-            const moderationStats = moderationData.success
-              ? moderationData.stats
-              : {
-                  pendingItems: 0,
-                  totalReports: 0,
-                  resolvedReports: 0,
-                  avgResolutionTime: 0,
-                };
-
             // Garantir que não há dados mockados ou undefined
             const cleanStats: AdminStats = {
               overview: {
@@ -319,7 +297,6 @@ export const useAdminStats = (): UseAdminStatsReturn => {
                   day30: statsData.stats.trends?.userRetention?.day30 || 0,
                 },
               },
-              moderation: moderationStats,
             };
 
             setStats(cleanStats);
