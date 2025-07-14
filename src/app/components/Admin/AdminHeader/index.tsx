@@ -135,7 +135,7 @@ export default function AdminHeader({
   return (
     <>
       <div className="bg-theme-elevated border-b border-theme-primary sticky top-0 z-50 backdrop-blur-lg bg-opacity-95">
-        <div className="p-6">
+        <div className="px-6 py-3">
           <div className="flex items-center justify-between py-3 lg:py-4">
             {/* Logo/Title + Mobile Menu Button */}
             <div className="flex items-center space-x-4 lg:space-x-8">

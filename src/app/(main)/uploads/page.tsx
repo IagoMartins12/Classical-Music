@@ -1,9 +1,10 @@
 // app/uploads/page.tsx - ATUALIZADO COM NOVOS FILTROS
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../libs/auth';
-import AuthCheck from '../components/AuthCheck';
+
 import UploadsPageServer from './pageServer';
+import AuthCheck from '@/app/components/AuthCheck';
+import { authOptions } from '@/app/libs/auth';
 
 export const metadata: Metadata = {
   title: 'Meus Uploads | Classical Music App',

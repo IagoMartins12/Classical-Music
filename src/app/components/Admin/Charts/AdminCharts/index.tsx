@@ -274,6 +274,7 @@ export const MetricCard = ({
   data,
   icon: Icon,
   color = CHART_COLORS.primary,
+  subtitle,
 }: {
   title: string;
   value: string | number;
@@ -281,6 +282,7 @@ export const MetricCard = ({
   data?: ChartData[];
   icon?: React.ComponentType<any>;
   color?: string;
+  subtitle?: string;
 }) => (
   <div className="classical-card p-6 relative overflow-hidden">
     <div className="flex items-start justify-between mb-4">

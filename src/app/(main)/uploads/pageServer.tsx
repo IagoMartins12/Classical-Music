@@ -1,10 +1,12 @@
 // app/uploads/pageServer.tsx - ATUALIZADO COM NOVOS FILTROS E LIMITAÇÃO
-import UploadsClient from '../components/UploadsPage/UploadsClient';
+
+import UploadsClient from '@/app/components/UploadsPage/UploadsClient';
 import {
+  getAvailableEpochs,
+  getEpochsCache,
+  getFilterData,
   getUserUploads,
-  getFilterData, // 🆕 Importar nova função
-  getAvailableEpochs, // 🆕 Importar função de épocas filtradas
-} from '../requests/upload';
+} from '@/app/requests/upload';
 
 const ITEMS_PER_PAGE = 24;
 
@@ -42,21 +44,23 @@ export default async function UploadsPageServer({
       ? 'score'
       : 'all';
 
-  const [uploadsData, availableEpochs, filterData] = await Promise.all([
-    getUserUploads({
-      userId,
-      page,
-      limit: ITEMS_PER_PAGE,
-      search,
-      type,
-      epochId,
-      composerId, // 🆕 Passar novo filtro
-      workId, // 🆕 Passar novo filtro
-      limitPerType, // 🆕 Passar flag de limitação
-    }),
-    getAvailableEpochs(userId, internalType), // 🆕 Buscar épocas filtradas por tipo
-    getFilterData(userId), // 🆕 Buscar dados para filtros
-  ]);
+  const [uploadsData, availableEpochs, filterData, epochsData] =
+    await Promise.all([
+      getUserUploads({
+        userId,
+        page,
+        limit: ITEMS_PER_PAGE,
+        search,
+        type,
+        epochId,
+        composerId, // 🆕 Passar novo filtro
+        workId, // 🆕 Passar novo filtro
+        limitPerType, // 🆕 Passar flag de limitação
+      }),
+      getAvailableEpochs(userId, internalType), // 🆕 Buscar épocas filtradas por tipo
+      getFilterData(userId), // 🆕 Buscar dados para filtros
+      getEpochsCache(),
+    ]);
 
   // Calcular totalPages baseado no tipo selecionado
   let totalPages = 1;
@@ -76,7 +80,7 @@ export default async function UploadsPageServer({
       composers={uploadsData.composers}
       works={uploadsData.works}
       scores={uploadsData.scores}
-      epochs={availableEpochs} // 🆕 Usar épocas filtradas
+      epochs={epochsData} // 🆕 Usar épocas filtradas
       filterComposers={filterData.composers} // 🆕 Dados para filtros
       filterWorks={filterData.works} // 🆕 Dados para filtros
       currentPage={page}
