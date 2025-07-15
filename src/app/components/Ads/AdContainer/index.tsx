@@ -25,16 +25,6 @@ export default function AdContainer({
   const { data: session } = useSession();
   const pathname = usePathname();
 
-  // Não mostrar ads para usuários admin
-  if (session?.user?.role === 2) {
-    return null;
-  }
-
-  // Não mostrar ads se usuário configurou para não ver
-  if (session?.user) {
-    return null;
-  }
-
   // Determinar targeting baseado na página atual e props
   let targetType = 'GENERAL';
   let instrumentIds: string[] = [];
@@ -71,7 +61,6 @@ export default function AdContainer({
       case 'SIDEBAR_RIGHT':
       case 'SIDEBAR_LEFT':
         return {
-          maxAds: 2,
           showTitle: true,
           showAdvertiserName: true,
           className: 'w-full space-y-4',

@@ -45,7 +45,7 @@ export default function AdminLayoutClient({
   }, [sidebarOpen]);
 
   return (
-    <div className="min-h-screen bg-theme-primary">
+    <div className="bg-theme-primary">
       {/* Header */}
       <AdminHeader
         onMenuClick={() => setSidebarOpen(true)}
@@ -82,7 +82,7 @@ export default function AdminLayoutClient({
         )}
 
         {/* Main Content */}
-        <main className="flex-1 lg:ml-0 min-h-[calc(100vh-80px)]">
+        <main className="flex-1 lg:ml-0">
           <div className="w-full">{children}</div>
         </main>
       </div>

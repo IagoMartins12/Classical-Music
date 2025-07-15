@@ -16,13 +16,13 @@ const getCachedAds = unstable_cache(
   ) => {
     const where: any = {
       status: 'ACTIVE',
-      isApproved: true,
-      OR: [{ startDate: null }, { startDate: { lte: new Date() } }],
-      AND: [
-        {
-          OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
-        },
-      ],
+      // isApproved: true,
+      // OR: [{ startDate: null }, { startDate: { lte: new Date() } }],
+      // AND: [
+      //   {
+      //     OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
+      //   },
+      // ],
     };
 
     if (placement) {
@@ -149,6 +149,12 @@ export async function GET(request: NextRequest) {
     const epochIds = searchParams.get('epochs')?.split(',').filter(Boolean);
     const userAgent = request.headers.get('user-agent') || '';
 
+    console.log('search ', {
+      searchParams,
+      placement,
+      instrumentIds,
+      targetType,
+    });
     // Detectar tipo de dispositivo
     const isMobile = /mobile|android|iphone/i.test(userAgent);
     const isTablet = /tablet|ipad/i.test(userAgent);
@@ -162,6 +168,8 @@ export async function GET(request: NextRequest) {
       composerIds,
       epochIds
     );
+
+    console.log('ADS', { ads, placement, targetType });
 
     // Filtrar por dispositivo
     const filteredAds = ads.filter((ad) => {

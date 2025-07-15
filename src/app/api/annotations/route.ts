@@ -116,7 +116,6 @@ export async function POST(request: NextRequest) {
         _count: {
           select: {
             helpfulVotes: true,
-            replies: true,
           },
         },
       },
@@ -265,7 +264,6 @@ export async function GET(request: NextRequest) {
           _count: {
             select: {
               helpfulVotes: true,
-              replies: true,
             },
           },
         },

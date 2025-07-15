@@ -77,6 +77,7 @@ export const useFrontAds = (params: UseAdsParams = {}): UseAdsReturn => {
         searchParams.append('composers', composerIds.join(','));
       if (epochIds?.length) searchParams.append('epochs', epochIds.join(','));
 
+      console.log('search', searchParams);
       const response = await fetch(`/api/ads?${searchParams}`, {
         method: 'GET',
         cache: 'no-store',

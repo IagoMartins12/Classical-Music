@@ -44,6 +44,7 @@ import ReportButton from '../Report/ReportButton';
 import VerificationModal from '../Verification/VerificationModal';
 import VerificationBadge from '../Verification/VerificationBadge';
 import VerificationButton from '../Verification/VerificationButton';
+import AdContainer from '../Ads/AdContainer';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -903,6 +904,8 @@ export default function WorkDetailsClient({
               </div>
             </div>
           </AnimatedCard>
+
+          <AdContainer placement="HEADER" className="space-y-4" />
 
           {/* 🆕 Seção de Partituras IMSLP com nova lógica */}
           {work.imslpPermlink && (

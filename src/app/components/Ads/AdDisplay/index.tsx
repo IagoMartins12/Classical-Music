@@ -36,6 +36,7 @@ export default function AdDisplay({
     epochIds,
   });
 
+  console.log('ads', ads);
   const [visibleAds, setVisibleAds] = useState<string[]>([]);
   const [hoveredAd, setHoveredAd] = useState<string | null>(null);
   const [hoverStartTime, setHoverStartTime] = useState<number | null>(null);
@@ -180,9 +181,6 @@ const AdItem = React.forwardRef<
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
-        style={{
-          ...(ad.customCSS ? { style: ad.customCSS } : {}),
-        }}
       >
         {/* Dismiss Button */}
         {ad.placement !== 'MODAL' && (
