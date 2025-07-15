@@ -16,7 +16,7 @@ import {
   GiScrollQuill,
   GiMetronome,
 } from 'react-icons/gi';
-import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
+import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
 import Button from './Button';
 import Link from 'next/link';
 
@@ -28,7 +28,7 @@ import {
   AnimatedCard,
   SequentialGrid,
   FloatingElement,
-} from '../components/animation/AnimatedComponents';
+} from '../../components/animation/AnimatedComponents';
 
 export default function AboutPage() {
   const features = [

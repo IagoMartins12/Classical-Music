@@ -70,7 +70,7 @@ export default async function StudyPage({
     notFound();
   }
 
-  const scoreId = resolvedParams.scoreId?.[0];
+  const scoreId = resolvedParams.scoreId;
 
   console.log('SCOREID', scoreId);
   return (

@@ -21,7 +21,6 @@ import {
   FiClock,
   FiLayers,
   FiTag,
-  FiShield,
 } from 'react-icons/fi';
 import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
 import { useNavigate } from '@/app/hooks/useNavigate';
@@ -944,14 +943,6 @@ export default function WorkDetailsClient({
             workId={work.id}
             workTitle={work.title}
             composerName={work.composer.fullName}
-          />
-
-          {/* Estudy Mode Modal */}
-          <StudyModeModal
-            composerName={work.composer.fullName}
-            workId={work.id}
-            workTitle={work.title}
-            selectedScore={selectedScoreForStudy}
           />
 
           {/* {isAdmin && ( */}

@@ -87,7 +87,7 @@ const getCachedScoreStats = unstable_cache(
     ]);
 
     // Calcular tamanho total (simulado)
-    const totalSizeGB = total * 2.5; // Estimativa de 2.5MB por partitura
+    const totalSizeGB = total * 1; // Estimativa de 2.5MB por partitura
     const totalSize =
       totalSizeGB > 1000
         ? `${(totalSizeGB / 1000).toFixed(1)} TB`

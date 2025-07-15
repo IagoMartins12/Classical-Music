@@ -36,7 +36,6 @@ export default function AdDisplay({
     epochIds,
   });
 
-  console.log('ads', ads);
   const [visibleAds, setVisibleAds] = useState<string[]>([]);
   const [hoveredAd, setHoveredAd] = useState<string | null>(null);
   const [hoverStartTime, setHoverStartTime] = useState<number | null>(null);

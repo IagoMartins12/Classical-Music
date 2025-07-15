@@ -133,7 +133,6 @@ export default function IMSLPTabsIncremental({
   composerName,
   totalAvailable = 0,
   currentLoaded = 0,
-
   getTabStats,
   isScoreMostFavorited,
 }: IMSLPTabsIncrementalProps) {
@@ -158,6 +157,7 @@ export default function IMSLPTabsIncremental({
   } = useScoreFavorites(workId || '');
 
   const handleScoreSelect = (score: IMSLPScore) => {
+    console.log('score', score);
     if (selectedScore?.id === score.id) {
       setSelectedScore(null);
       onScoreSelect?.(null as any);

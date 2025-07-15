@@ -4,6 +4,7 @@ import { useStudyModeStore } from '@/app/stores/useStudyModeStore';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import { useAuth } from '@/app/hooks/useAuth';
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 interface StudyModeButtonProps {
   workId: string;
@@ -23,16 +24,20 @@ const StudyModeButton: React.FC<StudyModeButtonProps> = ({
   className = '',
 }) => {
   const { isAuthenticated } = useAuth();
-  const { openStudyMode, startStudySession } = useStudyModeStore();
+  const { startStudySession } = useStudyModeStore();
 
+  const router = useRouter();
   const handleOpenStudyMode = () => {
     if (!isAuthenticated) {
       toast.error('Faça login para usar o modo estudo');
       return;
     }
 
-    openStudyMode();
+    console.log('SELECTED SCCORE', selectedScore);
     startStudySession(workId, workTitle, composerName, selectedScore);
+    if (selectedScore) {
+      router.push(`${workId}/${selectedScore.id}`);
+    }
   };
 
   if (variant === 'compact') {

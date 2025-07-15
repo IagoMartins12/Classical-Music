@@ -1,4 +1,4 @@
-// app/components/StudyMode/StudyModeClientOptimized.tsx
+// app/components/StudyMode/StudyModeClient.tsx
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -17,6 +17,7 @@ import {
   FiMinimize2,
   FiAlertCircle,
   FiSave,
+  FiTarget,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { WorkDetails } from '@/app/requests/work-details';
@@ -24,18 +25,16 @@ import {
   UserStudySettings,
   ActiveStudySession,
 } from '@/app/requests/study-requests';
-import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
-import { useIMSLPScoresOptimized } from '@/app/hooks/useIMSLPScoresOptimized';
-
-// Componentes do modo estudo
+import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
+import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
+import StudyPDFViewer from '../StudyPDFViewer';
 import StudyTimer from '../StudyTimer';
 import StudyMetronome from '../StudyMetronome';
 import StudyNotes from '../StudyNotes';
-import StudyPDFViewer from '../StudyPDFViewer';
 import StudyControls from '../StudyControls';
 import StudySessionSummary from '../StudySessionSummary';
 
-interface StudyModeClientOptimizedProps {
+interface StudyModeClientProps {
   work: WorkDetails;
   scoreId?: string;
   userId: string;
@@ -87,7 +86,7 @@ export interface StudySession {
 type StudyLayout = 'focus' | 'split' | 'full-pdf';
 type ActivePanel = 'timer' | 'metronome' | 'notes' | 'settings';
 
-const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
+const StudyModeClient: React.FC<StudyModeClientProps> = ({
   work,
   scoreId,
   userId,
@@ -97,7 +96,13 @@ const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
 }) => {
   const router = useRouter();
 
-  console.log('props', { userId, searchParams });
+  console.log('🎼 [STUDY-CLIENT] Props recebidas:', {
+    workId: work.id,
+    scoreId,
+    userId,
+    searchParams,
+  });
+
   // Estados principais
   const [currentSession, setCurrentSession] = useState<StudySession | null>(
     null
@@ -109,114 +114,106 @@ const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
   const [currentScore, setCurrentScore] = useState<IMSLPScore | undefined>(
     undefined
   );
+  const [mounted, setMounted] = useState(false);
 
   // Refs para controle
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const metronomeIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const autoSaveIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Hook para partituras otimizado
+  // 🆕 Hook incremental corrigido
   const {
     scores: imslpScores,
-    selectedScores,
     loading: loadingScores,
     error: scoresError,
-  } = useIMSLPScoresOptimized(work.imslpPermlink, work.id);
+    selectedScore,
+    setSelectedScore,
+    getTabStats,
+  } = useIMSLPScoresIncremental(work.imslpPermlink, {
+    workId: work.id,
+    enabled: mounted,
+    initialLimit: 5,
+    priorityScoreId: scoreId,
+  });
 
+  // Verificar se está montado (hidratado)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  // Carregar partitura específica
+  // 🆕 Carregar partitura específica com nova lógica
   const loadSelectedScore = useCallback(async () => {
-    if (!scoreId) {
-      // Se não há scoreId, tentar usar a primeira partitura selecionada
-      if (selectedScores.length > 0) {
-        setCurrentScore(selectedScores[0]);
-        console.log(
-          '📖 [STUDY] Usando primeira partitura selecionada:',
-          selectedScores[0].title
-        );
-      } else if (imslpScores?.scoresByType.scores?.[0]?.scores?.[0]) {
-        // Fallback para primeira partitura disponível
-        setCurrentScore(imslpScores.scoresByType.scores[0].scores[0]);
-        console.log('📖 [STUDY] Usando primeira partitura disponível');
+    if (!scoreId || !imslpScores) {
+      console.log('🔍 [STUDY-CLIENT] Usando primeira partitura disponível');
+      const firstScore = findFirstAvailableScore(imslpScores?.scoresByType);
+      if (firstScore) {
+        setCurrentScore(firstScore);
+        setSelectedScore(firstScore.id);
       }
       return;
     }
 
+    console.log(`🔍 [STUDY-CLIENT] Procurando partitura com ID: ${scoreId}`);
+
     try {
-      // Primeiro, tentar buscar nas partituras selecionadas (cache local)
-      const savedScore = selectedScores.find((score) => score.id === scoreId);
-      if (savedScore) {
-        setCurrentScore(savedScore);
+      // Buscar a partitura nos dados carregados
+      const foundScore = findScoreById(imslpScores.scoresByType, scoreId);
+
+      if (foundScore) {
+        setCurrentScore(foundScore);
+        setSelectedScore(foundScore.id);
         console.log(
-          '⚡ [STUDY] Partitura carregada do cache local:',
-          savedScore.title
+          `✅ [STUDY-CLIENT] Partitura encontrada: ${foundScore.title}`
         );
         return;
       }
 
-      // Se não está no cache local, buscar nas partituras do IMSLP
-      if (imslpScores) {
-        const allScores = [
-          ...imslpScores.scoresByType.scores.flatMap((group) => group.scores),
-          ...imslpScores.scoresByType.parts.flatMap((group) => group.scores),
-          ...imslpScores.scoresByType.arrangements.flatMap(
-            (group) => group.scores
-          ),
-          ...imslpScores.scoresByType.librettos.flatMap(
-            (group) => group.scores
-          ),
-          ...imslpScores.scoresByType.others.flatMap((group) => group.scores),
-          ...imslpScores.scoresByType.sources.flatMap((group) => group.scores),
-        ];
-
-        const foundScore = allScores.find((score) => score.id === scoreId);
-        if (foundScore) {
-          setCurrentScore(foundScore);
-          console.log(
-            '🌐 [STUDY] Partitura encontrada no scraping:',
-            foundScore.title
-          );
-          return;
-        }
-      }
-
-      // Se ainda não encontrou, tentar buscar nas partituras salvas do usuário via API
+      // Se não encontrou, tentar buscar nos dados salvos do usuário
+      console.log('🔄 [STUDY-CLIENT] Buscando partitura nos dados salvos...');
+      console.log('WORK', { work: work.id, scoreId });
       const response = await fetch(
         `/api/user/selected-scores?workId=${work.id}&scoreId=${scoreId}`
       );
       const result = await response.json();
 
       if (result.success && result.selectedScores.length > 0) {
-        const apiScore = result.selectedScores[0];
-        setCurrentScore(apiScore);
-        console.log('💾 [STUDY] Partitura carregada da API:', apiScore.title);
+        const savedScore = result.selectedScores[0];
+        setCurrentScore(savedScore);
+        setSelectedScore(savedScore.id);
+        console.log(
+          `💾 [STUDY-CLIENT] Partitura carregada dos dados salvos: ${savedScore.title}`
+        );
         return;
       }
 
-      console.warn('⚠️ [STUDY] Partitura não encontrada:', scoreId);
-      toast.error('Partitura não encontrada. Redirecionando...');
+      console.warn(`⚠️ [STUDY-CLIENT] Partitura não encontrada: ${scoreId}`);
+      toast.error('Partitura não encontrada. Usando partitura padrão...');
 
-      // Redirecionar para a página da obra se partitura não foi encontrada
-      setTimeout(() => {
-        router.push(`/works/${work.id}`);
-      }, 2000);
+      // Fallback para primeira partitura disponível
+      const firstScore = findFirstAvailableScore(imslpScores.scoresByType);
+      if (firstScore) {
+        setCurrentScore(firstScore);
+        setSelectedScore(firstScore.id);
+      }
     } catch (error) {
-      console.error('❌ [STUDY] Erro ao carregar partitura:', error);
+      console.error('❌ [STUDY-CLIENT] Erro ao carregar partitura:', error);
       toast.error('Erro ao carregar partitura');
     }
-  }, [scoreId, selectedScores, imslpScores, work.id, router]);
-
-  // Inicializar sessão quando componente monta
-  useEffect(() => {
-    initializeStudySession();
-  }, [work, scoreId, userSettings, activeSession]);
+  }, [scoreId, imslpScores, work.id, setSelectedScore]);
 
   // Carregar partitura quando dados estão disponíveis
   useEffect(() => {
-    if (!loadingScores && (selectedScores.length > 0 || imslpScores)) {
+    if (!loadingScores && imslpScores) {
       loadSelectedScore();
     }
-  }, [loadingScores, selectedScores, imslpScores, loadSelectedScore]);
+  }, [loadingScores, imslpScores, loadSelectedScore]);
+
+  // Inicializar sessão quando componente monta
+  useEffect(() => {
+    if (mounted && currentScore) {
+      initializeStudySession();
+    }
+  }, [mounted, currentScore, work, userSettings, activeSession]);
 
   // Cleanup quando componente desmonta
   useEffect(() => {
@@ -246,6 +243,8 @@ const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
 
   // Inicializar sessão de estudo
   const initializeStudySession = useCallback(() => {
+    console.log('🎯 [STUDY-CLIENT] Inicializando sessão de estudo...');
+
     const defaultSettings = userSettings?.studyModeSettings || {
       defaultMetronome: {
         bpm: 120,
@@ -258,10 +257,11 @@ const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
 
     // Se há sessão ativa, recuperar; senão, criar nova
     if (activeSession) {
+      console.log('🔄 [STUDY-CLIENT] Recuperando sessão ativa existente');
       setCurrentSession({
         id: activeSession.id,
         workId: work.id,
-        scoreId: scoreId || currentScore?.id,
+        scoreId: currentScore?.id,
         workTitle: work.title,
         composerName: work.composer.fullName,
         startTime: activeSession.startTime,
@@ -299,10 +299,11 @@ const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
         },
       });
     } else {
+      console.log('🆕 [STUDY-CLIENT] Criando nova sessão de estudo');
       // Criar nova sessão
       const newSession: StudySession = {
         workId: work.id,
-        scoreId: scoreId || currentScore?.id,
+        scoreId: currentScore?.id,
         workTitle: work.title,
         composerName: work.composer.fullName,
         startTime: new Date().toISOString(),
@@ -337,10 +338,7 @@ const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
     }
 
     startTimer();
-  }, [work, scoreId, currentScore, userSettings, activeSession]);
-
-  // ... (resto dos métodos permanecem iguais: startTimer, togglePause, resetTimer, etc.)
-  // [Incluir todos os métodos do componente original aqui]
+  }, [work, currentScore, userSettings, activeSession]);
 
   const startTimer = useCallback(() => {
     if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
@@ -488,22 +486,87 @@ const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
     }
   }, []);
 
-  // Loading state
-  if (!currentSession) {
+  // 🆕 Funções auxiliares para buscar partituras
+  const findFirstAvailableScore = (scoresByType: any): IMSLPScore | null => {
+    if (!scoresByType) return null;
+
+    const typeOrder = [
+      'scores',
+      'parts',
+      'arrangements',
+      'librettos',
+      'others',
+      'sources',
+    ];
+
+    for (const type of typeOrder) {
+      const groups = scoresByType[type];
+      if (groups && groups.length > 0) {
+        const firstGroup = groups[0];
+        if (firstGroup.scores && firstGroup.scores.length > 0) {
+          return firstGroup.scores[0];
+        }
+      }
+    }
+
+    return null;
+  };
+
+  const findScoreById = (
+    scoresByType: any,
+    searchId: string
+  ): IMSLPScore | null => {
+    if (!scoresByType || !searchId) return null;
+
+    const allTypes = [
+      'scores',
+      'parts',
+      'arrangements',
+      'librettos',
+      'others',
+      'sources',
+    ];
+
+    for (const type of allTypes) {
+      const groups = scoresByType[type] || [];
+      for (const group of groups) {
+        const foundScore = group.scores?.find(
+          (score: IMSLPScore) => score.id === searchId
+        );
+        if (foundScore) {
+          return foundScore;
+        }
+      }
+    }
+
+    return null;
+  };
+
+  // Estados de carregamento
+  if (!mounted) {
     return (
       <div className="min-h-screen bg-theme-primary flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse">
             <FiMusic className="w-8 h-8 text-theme-primary" />
           </div>
-          <p className="text-theme-secondary">
-            Inicializando sessão de estudo...
-          </p>
-          {loadingScores && (
-            <p className="text-theme-tertiary text-sm mt-2">
-              Carregando partituras...
-            </p>
-          )}
+          <p className="text-theme-secondary">Inicializando modo estudo...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loadingScores) {
+    return (
+      <div className="min-h-screen bg-theme-primary flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <FiMusic className="w-8 h-8 text-theme-primary" />
+          </div>
+          <p className="text-theme-secondary">Carregando partituras...</p>
+          <div className="mt-4">
+            <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin mx-auto"></div>
+          </div>
         </div>
       </div>
     );
@@ -537,6 +600,19 @@ const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
               Voltar à obra
             </button>
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentSession) {
+    return (
+      <div className="min-h-screen bg-theme-primary flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <FiMusic className="w-8 h-8 text-theme-primary" />
+          </div>
+          <p className="text-theme-secondary">Preparando sessão de estudo...</p>
         </div>
       </div>
     );
@@ -763,4 +839,4 @@ const StudyModeClientOptimized: React.FC<StudyModeClientOptimizedProps> = ({
   );
 };
 
-export default StudyModeClientOptimized;
+export default StudyModeClient;

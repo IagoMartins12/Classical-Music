@@ -56,7 +56,7 @@ export default function AdContainer({
           maxAds: 1,
           showTitle: false,
           showAdvertiserName: false,
-          className: 'w-full h-20',
+          className: 'w-full ',
         };
       case 'SIDEBAR_RIGHT':
       case 'SIDEBAR_LEFT':
