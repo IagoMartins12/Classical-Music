@@ -108,7 +108,6 @@ export default function LogsAudit() {
     search: '',
     userId: '',
   });
-  const [loading, setLoading] = useState(false);
   const [selectedLogs, setSelectedLogs] = useState<Set<string>>(new Set());
   const [showDetails, setShowDetails] = useState<string | null>(null);
 

@@ -1,13 +1,12 @@
 // app/components/Admin/Works/WorksManagement.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiMusic,
   FiSearch,
   FiFilter,
-  FiPlus,
   FiEdit,
   FiTrash2,
   FiEye,
@@ -58,11 +57,9 @@ export default function WorksManagement() {
     works,
     stats,
     loading,
-    error,
     pagination,
     fetchWorks,
     refreshStats,
-    updateWork,
     deleteWork,
   } = useAdminWorks();
 
@@ -199,13 +196,6 @@ export default function WorksManagement() {
     }
   };
 
-  const formatFileSize = (bytes?: string) => {
-    if (!bytes) return 'N/A';
-    const size = parseInt(bytes);
-    if (size < 1024) return `${size} B`;
-    if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-    return `${(size / (1024 * 1024)).toFixed(1)} MB`;
-  };
 
   if (loading && !works.length) {
     return (

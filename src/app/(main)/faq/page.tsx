@@ -250,7 +250,7 @@ export default function FAQPage() {
                   </p>
                 </AnimatedCard>
               ) : (
-                filteredFAQs.map((item, index) => (
+                filteredFAQs.map((item) => (
                   <AnimatedItem
                     key={item.id}
                     direction="up"

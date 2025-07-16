@@ -2,14 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  FiX,
-  FiSave,
-  FiPlus,
-  FiTarget,
-  FiImage,
-  FiMapPin,
-} from 'react-icons/fi';
+import { FiSave, FiPlus, FiTarget, FiImage, FiMapPin } from 'react-icons/fi';
 
 import toast from 'react-hot-toast';
 import { useAds } from '@/app/hooks/admin/useAds';
@@ -205,6 +198,7 @@ export default function CreateAdModal({
       toast.success('Publicidade criada com sucesso!');
       onSuccess();
     } catch (error) {
+      console.log('error', error);
       toast.error('Erro ao criar publicidade');
     }
   };

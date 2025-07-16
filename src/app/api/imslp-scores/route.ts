@@ -95,9 +95,7 @@ export async function POST(request: NextRequest) {
           const additionalScores = await performConsistentScraping(
             imslpUrl,
             targetTabType,
-            limit,
-            workId,
-            priorityScoreId
+            limit
           );
 
           if (additionalScores) {
@@ -135,9 +133,7 @@ export async function POST(request: NextRequest) {
       scoresData = await performConsistentScraping(
         imslpUrl,
         targetTabType,
-        limit,
-        workId,
-        priorityScoreId
+        limit
       );
 
       fromCache = false;
@@ -246,9 +242,7 @@ export async function POST(request: NextRequest) {
   async function performConsistentScraping(
     imslpUrl: string,
     targetTabType?: string,
-    limit: number = 1000,
-    workId?: string,
-    priorityScoreId?: string
+    limit: number = 1000
   ) {
     console.log(
       `🔧 [API-CONSISTENT] Executando scraping consistente para tab: ${
@@ -331,9 +325,7 @@ export async function POST(request: NextRequest) {
       const completeData = await performConsistentScraping(
         imslpUrl,
         undefined, // Todas as tabs
-        1000, // Limite alto
-        workId,
-        priorityScoreId
+        1000 // Limite alto
       );
 
       await ScoresCacheServiceIncremental.cacheScoresFromIMSLPIncremental(

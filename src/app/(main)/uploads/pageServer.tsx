@@ -44,23 +44,21 @@ export default async function UploadsPageServer({
       ? 'score'
       : 'all';
 
-  const [uploadsData, availableEpochs, filterData, epochsData] =
-    await Promise.all([
-      getUserUploads({
-        userId,
-        page,
-        limit: ITEMS_PER_PAGE,
-        search,
-        type,
-        epochId,
-        composerId, // 🆕 Passar novo filtro
-        workId, // 🆕 Passar novo filtro
-        limitPerType, // 🆕 Passar flag de limitação
-      }),
-      getAvailableEpochs(userId, internalType), // 🆕 Buscar épocas filtradas por tipo
-      getFilterData(userId), // 🆕 Buscar dados para filtros
-      getEpochsCache(),
-    ]);
+  const [uploadsData, filterData, epochsData] = await Promise.all([
+    getUserUploads({
+      userId,
+      page,
+      limit: ITEMS_PER_PAGE,
+      search,
+      type,
+      epochId,
+      composerId, // 🆕 Passar novo filtro
+      workId, // 🆕 Passar novo filtro
+      limitPerType, // 🆕 Passar flag de limitação
+    }),
+    getFilterData(userId), // 🆕 Buscar dados para filtros
+    getEpochsCache(),
+  ]);
 
   // Calcular totalPages baseado no tipo selecionado
   let totalPages = 1;

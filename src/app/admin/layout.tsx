@@ -1,11 +1,9 @@
 // app/admin/layout.tsx
-import type { Metadata, Viewport } from 'next';
+import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '../globals.css';
 import { ClientThemeWrapper } from '../components/ClientThemeWrapper';
-import Navbar from '../components/Navbar';
 import AuthProvider from '../providers/AuthProvider';
-import { FavoritesProvider } from '../providers/FavoritesProvider';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../libs/auth';
 import AdminLayoutClient from './AdminLayoutClient';

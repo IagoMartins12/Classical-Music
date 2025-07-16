@@ -10,7 +10,6 @@ import {
   FiGlobe,
   FiUsers,
   FiBook,
-  FiDownload,
   FiEye,
   FiLock,
 } from 'react-icons/fi';
@@ -24,7 +23,6 @@ import {
   AnimatedContainer,
   AnimatedItem,
   AnimatedCard,
-  SequentialGrid,
   FloatingElement,
 } from '../../components/animation/AnimatedComponents';
 import { FaBalanceScale } from 'react-icons/fa';

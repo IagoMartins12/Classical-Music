@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
-import { revalidateUploadsCache } from '@/app/requests/upload';
 import { logWorkCreate } from '@/app/utils/historyUtils';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
@@ -206,7 +205,6 @@ export async function POST(
       workType: scrapedData.workType || 'INDIVIDUAL',
       isPartOfCollection: scrapedData.isPartOfCollection || false,
       movementNumber: scrapedData.movementNumber,
-      movementsDetailed: scrapedData.movementsDetailed,
       difficultyLevel: scrapedData.difficultyLevel,
 
       // Controle
@@ -302,7 +300,7 @@ async function scrapeIMSLPWorkDirect(url: string, composer: any) {
   const imslpTags = extractIMSLPTags($);
 
   // Determinar tipo de trabalho
-  const workType = determineWorkType(title, $);
+  const workType = determineWorkType(title);
 
   // Determinar instrumento principal
   const primaryInstrument = determinePrimaryInstrument(
@@ -314,8 +312,7 @@ async function scrapeIMSLPWorkDirect(url: string, composer: any) {
   // Determinar nível de dificuldade
   const difficultyLevel = determineDifficultyLevel(
     title,
-    workDetails.opOrCatalog,
-    validWorkGenres
+    workDetails.opOrCatalog
   );
 
   // Determinar época usando o mapeamento melhorado
@@ -408,6 +405,7 @@ function cleanImslpUrl(url: string): string {
     const cleanedUrl = decodedUrl.split('#')[0].split('?')[0];
     return cleanedUrl;
   } catch (error) {
+    console.log('error', error);
     return url;
   }
 }
@@ -605,8 +603,7 @@ function extractIMSLPTags($: cheerio.CheerioAPI): string[] {
 }
 
 function determineWorkType(
-  title: string,
-  $?: cheerio.CheerioAPI
+  title: string
 ):
   | 'INDIVIDUAL'
   | 'COMPLETE_WORK'
@@ -745,8 +742,7 @@ function determinePrimaryInstrument(
 
 function determineDifficultyLevel(
   title: string,
-  opOrCatalog: string | null | undefined,
-  workGenres: string[]
+  opOrCatalog: string | null | undefined
 ): 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | null {
   const titleLower = title.toLowerCase();
 

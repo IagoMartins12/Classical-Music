@@ -98,7 +98,7 @@ export default function AdminDashboardClient() {
 
   // Preparar dados para gráficos baseados em dados reais
   const userGrowthData =
-    stats.engagement?.annotationsTrends?.slice(-7).map((trend, index) => ({
+    stats.engagement?.annotationsTrends?.slice(-7).map((trend) => ({
       name: new Date(trend.date).toLocaleDateString('pt-BR', {
         weekday: 'short',
       }),

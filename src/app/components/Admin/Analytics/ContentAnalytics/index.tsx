@@ -85,7 +85,7 @@ interface ContentMetrics {
 
 export default function ContentAnalytics() {
   const router = useRouter();
-  const { stats, loading, refreshStats } = useAdminStats();
+  const { refreshStats } = useAdminStats();
   const [contentMetrics, setContentMetrics] = useState<ContentMetrics | null>(
     null
   );
@@ -93,7 +93,6 @@ export default function ContentAnalytics() {
   const [contentType, setContentType] = useState('all');
   const [epochFilter, setEpochFilter] = useState('all');
   const [refreshing, setRefreshing] = useState(false);
-  const [loadingContent, setLoadingContent] = useState(false);
 
   // Dados mockados (em produção, vir da API)
   const mockContentMetrics: ContentMetrics = {
@@ -627,7 +626,7 @@ export default function ContentAnalytics() {
               <span>Conteúdo Recente</span>
             </h3>
             <div className="space-y-3">
-              {contentMetrics?.recentContent.map((content, index) => {
+              {contentMetrics?.recentContent.map((content) => {
                 const IconComponent = getTypeIcon(content.type);
                 return (
                   <div
@@ -689,7 +688,7 @@ export default function ContentAnalytics() {
             </h3>
 
             <div className="space-y-4">
-              {contentMetrics?.contentByEpoch.map((epoch, index) => (
+              {contentMetrics?.contentByEpoch.map((epoch) => (
                 <div
                   key={epoch.epoch}
                   className="p-3 bg-theme-secondary rounded-xl"

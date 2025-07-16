@@ -1,7 +1,7 @@
 // app/components/Admin/Composers/ComposersManagement.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiUsers,
@@ -38,6 +38,7 @@ import {
 import { formatNumber } from '@/app/hooks/admin/useAdminStats';
 import { toast } from 'react-hot-toast';
 import { useAdminComposers } from '@/app/hooks/admin/useAdminComposers';
+import Image from 'next/image';
 
 interface ComposerFilters {
   search: string;
@@ -46,6 +47,7 @@ interface ComposerFilters {
   dataQuality: string;
   sortBy: string;
   sortOrder: string;
+  page?: string;
 }
 
 export default function ComposersManagement() {
@@ -54,7 +56,6 @@ export default function ComposersManagement() {
     composers,
     stats,
     loading,
-    error,
     pagination,
     fetchComposers,
     refreshStats,
@@ -491,7 +492,9 @@ export default function ComposersManagement() {
                     />
 
                     {composer.portraitUrl && (
-                      <img
+                      <Image
+                        width={25}
+                        height={25}
                         src={composer.portraitUrl}
                         alt={composer.name}
                         className="w-16 h-16 rounded-xl object-cover flex-shrink-0"

@@ -161,7 +161,7 @@ export default function ReportsDashboard() {
               <Button
                 variant="secondary"
                 leftIcon={<FiFilter />}
-                onClick={() => router.push('/uploads/moderation')}
+                onClick={() => router.push('moderation/moderate')}
               >
                 Moderação
               </Button>
@@ -348,9 +348,7 @@ export default function ReportsDashboard() {
               <Button
                 variant="primary"
                 size="sm"
-                onClick={() =>
-                  router.push('/uploads/moderation?status=pending')
-                }
+                onClick={() => router.push('moderation/moderate')}
               >
                 Moderar Agora
               </Button>
@@ -388,7 +386,7 @@ export default function ReportsDashboard() {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => router.push('/admin/reports/analytics')}
+                onClick={() => router.push('/admin/analytics')}
               >
                 Ver Relatórios
               </Button>

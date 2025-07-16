@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
-import ReportsDashboard from '../components/Report/ReportsDashboard';
+import ReportsDashboard from '../../components/Admin/Reports/ReportsDashboard';
 
 export const metadata: Metadata = {
   title: 'Dashboard de Reports | Classical Music App',

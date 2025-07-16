@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateUploadsCache } from '@/app/requests/upload';
-import { logComposerCreate, calculateChanges } from '@/app/utils/historyUtils';
+import { logComposerCreate } from '@/app/utils/historyUtils';
 
 export async function POST(request: NextRequest) {
   try {
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
         createdBy: userId,
         isCustom: true,
         dataSource: body.dataSource || 'none',
-     
+
         hasValidImage: !!body.portraitUrl,
         lastVerified: new Date(),
         dataCompleteness: calculateDataCompleteness(body),

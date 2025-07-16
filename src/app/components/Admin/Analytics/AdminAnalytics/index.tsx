@@ -31,7 +31,6 @@ import {
   AdminBarChart,
   AdminPieChart,
   MetricCard,
-  HorizontalBarChart,
 } from '@/app/components/Admin/Charts/AdminCharts';
 import { useAdminAnalytics } from '@/app/hooks/admin/useAdminAnalytics';
 import { formatNumber, formatDuration } from '@/app/hooks/admin/useAdminStats';

@@ -341,7 +341,7 @@ export async function DELETE(
     // Contadores para relatório
     let deletedScoresCount = 0;
     let deletedChildWorksCount = 0;
-    let totalCleanupResult = {
+    const totalCleanupResult = {
       removedFiles: [] as string[],
       removedDirectories: [] as string[],
       errors: [] as string[],

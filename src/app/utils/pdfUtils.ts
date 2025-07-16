@@ -333,6 +333,7 @@ function extractTitleFromUrl(url: string): string {
 
     return capitalized.trim();
   } catch (error) {
+    console.log('error', error);
     return '';
   }
 }

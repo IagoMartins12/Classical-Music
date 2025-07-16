@@ -379,7 +379,7 @@ async function getSystemMetrics(): Promise<SystemMetrics> {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Verificar autenticação
     const session = await getServerSession(authOptions);
@@ -453,7 +453,6 @@ export async function POST(request: NextRequest) {
 
     if (action === 'clear_cache') {
       // Limpar cache de monitoramento
-      systemMonitor.clearCache?.();
       databaseMonitor.clearCache();
       applicationMonitor.clearCache();
 

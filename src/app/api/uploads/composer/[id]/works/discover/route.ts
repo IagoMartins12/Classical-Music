@@ -218,7 +218,6 @@ async function scrapeComposerWorks(
     });
 
     const $ = cheerio.load(response.data);
-    const works: DiscoveredWork[] = [];
 
     console.log('🔍 Procurando seção de composições...');
 
@@ -405,7 +404,7 @@ function parseWorkTitle(title: string): {
   for (const pattern of instrumentPatterns) {
     const match = title.match(pattern);
     if (match) {
-      let foundInstrument = match[1].toLowerCase();
+      const foundInstrument = match[1].toLowerCase();
 
       // Normalizar nomes de instrumentos para português
       const instrumentTranslations: Record<string, string> = {
@@ -483,7 +482,7 @@ async function checkExistingWorks(
     // 🔧 CORREÇÃO: Buscar por imslpId primeiro (busca exata, mais rápida)
     const imslpIds = works.map((work) => work.imslpId).filter(Boolean);
 
-    let existingWorks: any[] = [];
+    const existingWorks: any[] = [];
 
     if (imslpIds.length > 0) {
       const existingByImslpId = await prisma.work.findMany({

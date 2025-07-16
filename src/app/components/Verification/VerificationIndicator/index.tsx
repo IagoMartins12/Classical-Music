@@ -1,7 +1,7 @@
 // app/components/Common/VerificationIndicator.tsx - Indicador compacto para listas
 'use client';
 
-import { FiShield, FiCheck } from 'react-icons/fi';
+import { FiCheck } from 'react-icons/fi';
 
 interface VerificationIndicatorProps {
   verified: boolean;

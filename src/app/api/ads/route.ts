@@ -245,10 +245,6 @@ export async function POST(request: NextRequest) {
     // Obter dados da requisição
     const userAgent = request.headers.get('user-agent') || '';
     const referrer = request.headers.get('referer') || '';
-    const ip =
-      request.headers.get('x-forwarded-for') ||
-      request.headers.get('x-real-ip') ||
-      'unknown';
 
     // Determinar tipo de dispositivo
     const isMobile = /mobile|android|iphone|ipad/i.test(userAgent);
@@ -274,7 +270,7 @@ export async function POST(request: NextRequest) {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    let existingStats = await prisma.adStats.findFirst({
+    const existingStats = await prisma.adStats.findFirst({
       where: {
         advertisementId: adId,
         date: {

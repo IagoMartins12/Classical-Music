@@ -1,8 +1,8 @@
-// components/ComposerSearchInput.tsx - VERSÃO FLEXÍVEL (API + Local)
+// components/ComposerSearchInput.tsx - Versão Melhorada
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { FiSearch, FiUser, FiX, FiTrendingUp, FiLoader } from 'react-icons/fi';
+import { FiSearch, FiUser, FiX, FiTrendingUp } from 'react-icons/fi';
 
 interface Composer {
   id: string;
@@ -16,15 +16,6 @@ interface ComposerSearchInputProps {
   onComposerSelect: (composerId: string) => void;
   popularComposers?: Composer[];
   isDisabled?: boolean;
-  placeholder?: string;
-  error?: string;
-  // 🆕 NOVAS PROPS PARA FLEXIBILIDADE
-  mode?: 'api' | 'local'; // Define se usa API ou filtragem local
-  localComposers?: Composer[]; // Lista de compositores para filtragem local
-  apiEndpoint?: string; // Endpoint customizado para API
-  showPopularLabel?: boolean; // Mostrar label "Compositores Populares"
-  allowClear?: boolean; // Permitir limpar seleção
-  showWorksCount?: boolean; // Mostrar contagem de obras
 }
 
 export default function ComposerSearchInput({
@@ -32,15 +23,6 @@ export default function ComposerSearchInput({
   onComposerSelect,
   popularComposers = [],
   isDisabled = false,
-  placeholder,
-  error,
-  // 🆕 PROPS FLEXÍVEIS COM DEFAULTS
-  mode = 'api',
-  localComposers = [],
-  apiEndpoint = '/api/composers',
-  showPopularLabel = true,
-  allowClear = true,
-  showWorksCount = true,
 }: ComposerSearchInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -52,60 +34,45 @@ export default function ComposerSearchInput({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout>(null);
 
-  // 🆕 FUNÇÃO PARA BUSCAR DADOS DO COMPOSITOR POR ID (FLEXÍVEL)
-  const fetchComposerById = useCallback(
-    async (composerId: string) => {
-      try {
-        console.log('🔍 Buscando compositor por ID:', composerId);
+  // Função para buscar dados do compositor por ID
+  const fetchComposerById = useCallback(async (composerId: string) => {
+    try {
+      console.log('🔍 Buscando compositor por ID:', composerId);
 
-        if (mode === 'local') {
-          // Buscar na lista local
-          const composer =
-            localComposers.find((c) => c.id === composerId) ||
-            popularComposers.find((c) => c.id === composerId);
-          return composer || null;
-        } else {
-          // Buscar via API
-          const response = await fetch(apiEndpoint, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              id: composerId,
-            }),
-          });
+      const response = await fetch('/api/composers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: composerId,
+        }),
+      });
 
-          if (response.ok) {
-            const composer = await response.json();
-            if (composer && composer.name) {
-              console.log('✅ Compositor encontrado via API:', composer.name);
-              return composer;
-            }
-          }
+      if (response.ok) {
+        const composer = await response.json();
+        if (composer && composer.name) {
+          console.log('✅ Compositor encontrado:', composer.name);
+          return composer;
         }
-
-        console.log('⚠️ Compositor não encontrado para ID:', composerId);
-        return null;
-      } catch (error) {
-        console.error('❌ Erro ao buscar compositor por ID:', error);
-        return null;
       }
-    },
-    [mode, localComposers, popularComposers, apiEndpoint]
-  );
 
-  // Encontrar nome do compositor selecionado
+      console.log('⚠️ Compositor não encontrado para ID:', composerId);
+      return null;
+    } catch (error) {
+      console.error('❌ Erro ao buscar compositor por ID:', error);
+      return null;
+    }
+  }, []);
+
+  // Encontrar nome do compositor selecionado - VERSÃO MELHORADA
   useEffect(() => {
     const findSelectedComposer = async () => {
       if (selectedComposer) {
-        // Buscar nas listas locais primeiro
-        const allComposers = [
-          ...popularComposers,
-          ...composers,
-          ...localComposers,
-        ];
-        const composer = allComposers.find((c) => c.id === selectedComposer);
+        // Primeiro tenta encontrar nas listas locais (mais rápido)
+        const composer =
+          popularComposers?.find((c) => c.id === selectedComposer) ||
+          composers?.find((c) => c.id === selectedComposer);
 
         if (composer) {
           setSelectedComposerName(composer.fullName || composer.name);
@@ -114,8 +81,10 @@ export default function ComposerSearchInput({
             composer.name
           );
         } else {
-          // Se não encontrou nas listas locais, buscar via função
-          console.log('🔍 Compositor não encontrado localmente, buscando...');
+          // Se não encontrou nas listas locais, busca na API
+          console.log(
+            '🔍 Compositor não encontrado localmente, buscando na API...'
+          );
           const fetchedComposer = await fetchComposerById(selectedComposer);
 
           if (fetchedComposer) {
@@ -123,11 +92,19 @@ export default function ComposerSearchInput({
               fetchedComposer.fullName || fetchedComposer.name
             );
 
-            // Adicionar à lista local para futuras buscas
+            // Adicionar o compositor às listas locais para futuras buscas
             setComposers((prev) => {
               const exists = prev.some((c) => c.id === fetchedComposer.id);
               if (!exists) {
-                return [...prev, fetchedComposer];
+                return [
+                  ...prev,
+                  {
+                    id: fetchedComposer.id,
+                    name: fetchedComposer.name,
+                    fullName: fetchedComposer.fullName,
+                    worksCount: fetchedComposer.worksCount || 0,
+                  },
+                ];
               }
               return prev;
             });
@@ -141,75 +118,51 @@ export default function ComposerSearchInput({
     };
 
     findSelectedComposer();
-  }, [
-    selectedComposer,
-    popularComposers,
-    composers,
-    localComposers,
-    fetchComposerById,
-  ]);
+  }, [selectedComposer, popularComposers, composers, fetchComposerById]);
 
-  // 🆕 BUSCA DE COMPOSITORES FLEXÍVEL (API OU LOCAL)
+  // Busca de compositores com debounce usando POST
   const searchComposersDebounced = useCallback(
     async (term: string) => {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
       }
 
-      debounceRef.current = setTimeout(
-        async () => {
-          setIsLoading(true);
-          try {
-            console.log('🔍 Fazendo busca para:', term);
+      debounceRef.current = setTimeout(async () => {
+        setIsLoading(true);
+        try {
+          console.log('🔍 Fazendo busca para:', term);
 
-            if (mode === 'local') {
-              // 🆕 BUSCA LOCAL
-              const filtered = localComposers.filter((composer) => {
-                const name = (composer.name || '').toLowerCase();
-                const fullName = (composer.fullName || '').toLowerCase();
-                const search = term.toLowerCase();
+          const response = await fetch('/api/composers', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              q: term,
+              limit: 20,
+            }),
+          });
 
-                return name.includes(search) || fullName.includes(search);
-              });
-
-              console.log(
-                '📊 Resultados locais:',
-                filtered.length,
-                'compositores'
-              );
-              setComposers(filtered.slice(0, 20)); // Limitar resultados
-            } else {
-              // BUSCA VIA API (comportamento original)
-              const response = await fetch(apiEndpoint, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  q: term,
-                  limit: 20,
-                }),
-              });
-
-              if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-              }
-
-              const results = await response.json();
-              console.log('📊 Resultados API:', results.length, 'compositores');
-              setComposers(results);
-            }
-          } catch (error) {
-            console.error('❌ Erro ao buscar compositores:', error);
-            setComposers(popularComposers || []); // Fallback
-          } finally {
-            setIsLoading(false);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
-        },
-        mode === 'local' ? 200 : 300
-      ); // Delay menor para busca local
+
+          const results = await response.json();
+          console.log(
+            '📊 Resultados recebidos:',
+            results.length,
+            'compositores'
+          );
+          setComposers(results);
+        } catch (error) {
+          console.error('❌ Erro ao buscar compositores:', error);
+          setComposers(popularComposers || []); // Fallback para compositores populares
+        } finally {
+          setIsLoading(false);
+        }
+      }, 300);
     },
-    [mode, localComposers, popularComposers, apiEndpoint]
+    [popularComposers]
   );
 
   // Effect para busca
@@ -217,20 +170,10 @@ export default function ComposerSearchInput({
     if (searchTerm.trim()) {
       searchComposersDebounced(searchTerm);
     } else {
-      if (mode === 'local') {
-        setComposers(localComposers.slice(0, 20));
-      } else {
-        setComposers(popularComposers || []);
-      }
+      setComposers(popularComposers || []);
       setIsLoading(false);
     }
-  }, [
-    searchTerm,
-    searchComposersDebounced,
-    mode,
-    localComposers,
-    popularComposers,
-  ]);
+  }, [searchTerm, searchComposersDebounced, popularComposers]);
 
   // Fechar dropdown ao clicar fora
   useEffect(() => {
@@ -264,37 +207,29 @@ export default function ComposerSearchInput({
   const handleInputFocus = async () => {
     setIsOpen(true);
     if (!searchTerm && (!composers || composers.length === 0)) {
-      if (mode === 'local') {
-        // Carregar lista local
-        setComposers(localComposers.slice(0, 20));
-      } else {
-        // Carregar compositores populares via API
-        setIsLoading(true);
-        try {
-          const response = await fetch(apiEndpoint, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              q: '',
-              limit: 20,
-            }),
-          });
+      // Carregar compositores populares se não tiver dados
+      setIsLoading(true);
+      try {
+        const response = await fetch('/api/composers', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            q: '',
+            limit: 20,
+          }),
+        });
 
-          if (response.ok) {
-            const results = await response.json();
-            setComposers(results);
-            console.log(
-              '📊 Compositores populares carregados:',
-              results.length
-            );
-          }
-        } catch (error) {
-          console.error('❌ Erro ao carregar compositores populares:', error);
-        } finally {
-          setIsLoading(false);
+        if (response.ok) {
+          const results = await response.json();
+          setComposers(results);
+          console.log('📊 Compositores populares carregados:', results.length);
         }
+      } catch (error) {
+        console.error('❌ Erro ao carregar compositores populares:', error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -325,17 +260,8 @@ export default function ComposerSearchInput({
   };
 
   const displayComposers = composers;
-  const showPopular =
-    showPopularLabel &&
-    !searchTerm &&
-    popularComposers &&
-    popularComposers.length > 0;
-
-  // 🆕 PLACEHOLDER DINÂMICO
-  const dynamicPlaceholder =
-    placeholder ||
-    selectedComposerName ||
-    (mode === 'local' ? 'Filtrar compositor...' : 'Buscar compositor...');
+  const showPopularLabel =
+    !searchTerm && popularComposers && popularComposers.length > 0;
 
   return (
     <div className="relative z-[120]">
@@ -345,19 +271,17 @@ export default function ComposerSearchInput({
         <input
           ref={inputRef}
           type="text"
-          placeholder={dynamicPlaceholder}
+          placeholder={selectedComposerName || 'Buscar compositor...'}
           value={searchTerm}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
           className={`input-classical pl-11 pr-12 w-full ${
             isDisabled ? 'cursor-not-allowed opacity-50' : ''
-          } ${selectedComposer ? 'text-theme-primary font-medium' : ''} ${
-            error ? 'border-red-500' : ''
-          }`}
+          } ${selectedComposer ? 'text-theme-primary font-medium' : ''}`}
           disabled={isDisabled}
         />
 
-        {(selectedComposer || searchTerm) && allowClear && (
+        {(selectedComposer || searchTerm) && (
           <button
             onClick={handleClear}
             className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors z-10"
@@ -379,7 +303,7 @@ export default function ComposerSearchInput({
           className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-xl shadow-xl z-[500] max-h-80 overflow-hidden"
         >
           {/* Header com label */}
-          {showPopular && (
+          {showPopularLabel && (
             <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
               <FiTrendingUp className="w-4 h-4 text-brand-primary" />
               <span className="text-sm font-medium text-theme-secondary">
@@ -392,35 +316,10 @@ export default function ComposerSearchInput({
           {isLoading && (
             <div className="flex items-center justify-center py-8">
               <div className="flex items-center space-x-2 text-theme-secondary">
-                <FiLoader className="w-4 h-4 animate-spin text-brand-primary" />
-                <span className="text-sm">
-                  {mode === 'local'
-                    ? 'Filtrando compositores...'
-                    : 'Buscando compositores...'}
-                </span>
+                <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
+                <span className="text-sm">Buscando compositores...</span>
               </div>
             </div>
-          )}
-
-          {/* 🆕 OPÇÃO "TODOS OS COMPOSITORES" PARA MODO LOCAL */}
-          {!isLoading && mode === 'local' && searchTerm.length >= 2 && (
-            <button
-              onClick={() => {
-                onComposerSelect('');
-                setIsOpen(false);
-                setSearchTerm('');
-              }}
-              className="w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors border-b border-theme-secondary"
-            >
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-theme-secondary/20 rounded-lg flex items-center justify-center">
-                  <FiUser className="w-4 h-4 text-theme-tertiary" />
-                </div>
-                <span className="text-sm font-medium text-theme-primary">
-                  Todos os compositores
-                </span>
-              </div>
-            </button>
           )}
 
           {/* Results */}
@@ -437,7 +336,7 @@ export default function ComposerSearchInput({
                         ? 'bg-brand-primary/10 text-brand-primary font-medium'
                         : ''
                     }
-                    ${index === 0 && !showPopular ? 'border-t-0' : ''}
+                    ${index === 0 && !showPopularLabel ? 'border-t-0' : ''}
                   `}
                 >
                   <div className="flex items-center justify-between">
@@ -453,16 +352,14 @@ export default function ComposerSearchInput({
                         )}
                     </div>
 
-                    {showWorksCount &&
-                      composer.worksCount &&
-                      composer.worksCount > 0 && (
-                        <div className="ml-3 flex-shrink-0">
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-theme-secondary/20 text-theme-secondary">
-                            {composer.worksCount} obra
-                            {composer.worksCount !== 1 ? 's' : ''}
-                          </span>
-                        </div>
-                      )}
+                    {composer.worksCount && composer.worksCount > 0 && (
+                      <div className="ml-3 flex-shrink-0">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-theme-secondary/20 text-theme-secondary">
+                          {composer.worksCount} obra
+                          {composer.worksCount !== 1 ? 's' : ''}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </button>
               ))}
@@ -481,18 +378,13 @@ export default function ComposerSearchInput({
                 </p>
                 {searchTerm && (
                   <p className="text-xs text-theme-tertiary mt-1">
-                    {mode === 'local'
-                      ? 'Tente termos diferentes'
-                      : 'Tente uma busca mais geral'}
+                    Tente uma busca mais geral
                   </p>
                 )}
               </div>
             )}
         </div>
       )}
-
-      {/* Mensagem de erro */}
-      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </div>
   );
 }

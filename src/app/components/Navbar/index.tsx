@@ -97,7 +97,7 @@ const Navbar: React.FC = () => {
         },
         {
           label: 'Categorias',
-          href: '/genre',
+          href: '/genres',
           description: 'Navegue por gêneros musicais',
         },
       ],

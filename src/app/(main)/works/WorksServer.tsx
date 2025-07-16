@@ -67,7 +67,7 @@ const getCachedWorksDefault = unstable_cache(
 );
 
 const getCachedWorksFiltered = unstable_cache(
-  async (page: number, filters: any, cacheKey: string) => {
+  async (page: number, filters: any) => {
     return await getWorks(page, 32, filters);
   },
   ['works-filtered'],
@@ -123,7 +123,7 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
         }),
       };
 
-      worksPromise = getCachedWorksFiltered(page, filters, cacheKey);
+      worksPromise = getCachedWorksFiltered(page, filters);
       filtersPromise = getCachedFilters();
     }
 

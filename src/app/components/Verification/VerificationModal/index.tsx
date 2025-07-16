@@ -3,10 +3,10 @@
 
 import { useState } from 'react';
 import { FiCheck, FiShield } from 'react-icons/fi';
-import { useNotifications } from '@/app/hooks/useNotifications';
 import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';
+import { useToast } from '@/app/hooks/useToast';
 
 interface VerificationModalProps {
   isOpen: boolean;
@@ -29,7 +29,8 @@ export default function VerificationModal({
 }: VerificationModalProps) {
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { notifySuccess, notifyError } = useNotifications();
+
+  const toast = useToast();
 
   const handleSubmit = async (verified: boolean) => {
     setIsSubmitting(true);
@@ -62,17 +63,17 @@ export default function VerificationModal({
 
       if (response.ok) {
         const data = await response.json();
-        notifySuccess('Sucesso', data.message);
+        toast.success('Sucesso', data.message);
         onVerificationChange(verified);
         onClose();
         setNotes('');
       } else {
         const error = await response.json();
-        notifyError('Erro', error.error || 'Erro ao alterar verificação');
+        toast.error('Erro', error.error || 'Erro ao alterar verificação');
       }
     } catch (error) {
       console.error('Erro ao alterar verificação:', error);
-      notifyError('Erro', 'Erro ao alterar verificação');
+      toast.error('Erro', 'Erro ao alterar verificação');
     } finally {
       setIsSubmitting(false);
     }

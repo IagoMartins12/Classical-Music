@@ -3,7 +3,6 @@
 
 import { useState } from 'react';
 import { FiFlag, FiX, FiAlertTriangle } from 'react-icons/fi';
-import { useNotifications } from '@/app/hooks/useNotifications';
 import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';

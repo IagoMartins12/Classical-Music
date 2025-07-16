@@ -476,7 +476,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
                   </div>
                 </div>
 
-                {item.reports.map((report: any, index: number) => (
+                {item.reports.map((report: any) => (
                   <div key={report.id} className="flex items-start space-x-3">
                     <div className="w-2 h-2 bg-accent-amber rounded-full mt-2"></div>
                     <div>

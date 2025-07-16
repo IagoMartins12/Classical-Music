@@ -1,4 +1,4 @@
-import IMSLPAnalyticsDashboard from '../components/IMSLPAnalyticsDashboard';
+import IMSLPAnalyticsDashboard from '../../components/IMSLPAnalyticsDashboard';
 
 export default function AnalyticPage() {
   return (

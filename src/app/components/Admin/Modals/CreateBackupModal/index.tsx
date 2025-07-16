@@ -6,11 +6,8 @@ import {
   FiX,
   FiSave,
   FiDownload,
-  FiShield,
   FiDatabase,
   FiHardDrive,
-  FiClock,
-  FiSettings,
 } from 'react-icons/fi';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';

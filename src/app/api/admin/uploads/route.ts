@@ -49,7 +49,6 @@ interface UploadStats {
 
 const getCachedUploadStats = unstable_cache(
   async (): Promise<UploadStats> => {
-    const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const lastMonth = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
     const [
@@ -185,7 +184,6 @@ const getUploadsList = async (filters: UploadFilters) => {
   const {
     search,
     entityType,
-    status,
     userId,
     dateFrom,
     dateTo,

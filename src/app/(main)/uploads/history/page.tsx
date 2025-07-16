@@ -4,7 +4,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
 import HistoryClient from '@/app/components/UploadsPage/HistoryClient';
-import HistoryLoading from './loading';
 
 export const metadata: Metadata = {
   title: 'Histórico de Uploads | Classical Music App',

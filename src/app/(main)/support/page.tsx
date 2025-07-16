@@ -478,7 +478,7 @@ export default function SupportPage() {
               </div>
 
               <SequentialGrid cols={3} gap={8} delayBetweenItems={0.1}>
-                {supportCategories.map((category, index) => (
+                {supportCategories.map((category) => (
                   <AnimatedCard
                     key={category.id}
                     hover="lift"

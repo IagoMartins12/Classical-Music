@@ -1,16 +1,14 @@
 // app/components/Admin/AdminDashboard.tsx
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiUsers,
   FiMusic,
   FiFileText,
-  FiTrendingUp,
-  FiTrendingDown,
+
   FiClock,
-  FiStar,
   FiHeart,
   FiMessageSquare,
   FiUpload,
@@ -19,10 +17,8 @@ import {
   FiActivity,
   FiTarget,
   FiAward,
-  FiCalendar,
   FiPieChart,
   FiSettings,
-  FiEye,
   FiArrowUp,
   FiArrowDown,
   FiDatabase,

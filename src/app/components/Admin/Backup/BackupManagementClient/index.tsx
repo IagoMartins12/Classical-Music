@@ -15,8 +15,6 @@ import {
   FiCalendar,
   FiActivity,
   FiSettings,
-  FiPlay,
-  FiPause,
   FiInfo,
   FiBarChart2,
 } from 'react-icons/fi';

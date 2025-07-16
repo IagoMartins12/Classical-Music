@@ -9,7 +9,6 @@ import {
   logComposerDelete,
   logWorkDelete,
   logScoreDelete,
-  calculateChanges,
 } from '@/app/utils/historyUtils';
 import {
   cleanupComposerFiles,
@@ -252,7 +251,7 @@ export async function DELETE(
     // Contadores para relatório
     let deletedScoresCount = 0;
     let deletedWorksCount = 0;
-    let totalCleanupResult = {
+    const totalCleanupResult = {
       removedFiles: [] as string[],
       removedDirectories: [] as string[],
       errors: [] as string[],

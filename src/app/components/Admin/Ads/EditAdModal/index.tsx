@@ -2,14 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  FiX,
-  FiSave,
-  FiEdit,
-  FiTarget,
-  FiImage,
-  FiMapPin,
-} from 'react-icons/fi';
+import { FiSave, FiEdit, FiTarget, FiImage, FiMapPin } from 'react-icons/fi';
 
 import toast from 'react-hot-toast';
 import { useAds } from '@/app/hooks/admin/useAds';

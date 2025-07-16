@@ -5,26 +5,18 @@ import { useState, useEffect } from 'react';
 import {
   FiSettings,
   FiShield,
-  FiUsers,
   FiDatabase,
-  FiMail,
   FiBell,
   FiLock,
-  FiGlobe,
   FiSave,
-  FiRefreshCw,
   FiToggleLeft,
   FiToggleRight,
   FiAlertTriangle,
-  FiCheckCircle,
   FiInfo,
   FiEdit,
   FiTrash2,
   FiPlus,
-  FiX,
-  FiClock,
   FiTarget,
-  FiActivity,
   FiZap,
 } from 'react-icons/fi';
 import {
@@ -34,7 +26,6 @@ import {
   PageContainer,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
-import Select from '@/app/components/Common/Select';
 
 interface SystemConfig {
   general: {
@@ -112,104 +103,11 @@ export default function SystemSettings() {
   const [activeTab, setActiveTab] = useState('general');
   const [config, setConfig] = useState<SystemConfig | null>(null);
   const [qualityRules, setQualityRules] = useState<QualityRule[]>([]);
-  const [notifications, setNotifications] = useState<NotificationTemplate[]>(
-    []
-  );
+
   const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
   const [showRuleModal, setShowRuleModal] = useState(false);
   const [editingRule, setEditingRule] = useState<QualityRule | null>(null);
-
-  // Mock data inicial
-  const mockConfig: SystemConfig = {
-    general: {
-      platformName: 'Classical Music Platform',
-      allowRegistrations: true,
-      requireEmailVerification: true,
-      maintenanceMode: false,
-      defaultUserRole: 'CASUAL_USER',
-      maxUploadSize: 50, // MB
-      sessionTimeout: 8, // hours
-    },
-    moderation: {
-      autoModeration: true,
-      qualityThreshold: 7.0,
-      reportThreshold: 3,
-      autoApproveFromTrustedUsers: true,
-      trustedUserMinScore: 4.5,
-      bulkActionLimit: 50,
-    },
-    content: {
-      allowUserUploads: true,
-      requireModerationForNewUsers: true,
-      maxDailyUploads: 50,
-      maxMonthlyUploads: 1000,
-      enableVersioning: true,
-      autoBackup: true,
-    },
-    notifications: {
-      emailNotifications: true,
-      pushNotifications: false,
-      moderationAlerts: true,
-      systemAlerts: true,
-      reportNotifications: true,
-      weeklyDigest: true,
-    },
-    security: {
-      twoFactorAuth: false,
-      passwordMinLength: 8,
-      sessionSecurity: 'normal',
-      ipWhitelist: [],
-      rateLimiting: true,
-      bruteForceProtection: true,
-    },
-    performance: {
-      cacheTimeout: 3600, // seconds
-      enableCDN: true,
-      compressionLevel: 6,
-      maxConcurrentUsers: 10000,
-      databaseOptimization: true,
-    },
-  };
-
-  const mockQualityRules: QualityRule[] = [
-    {
-      id: '1',
-      name: 'Biografia Mínima',
-      description:
-        'Compositores devem ter pelo menos 100 caracteres de biografia',
-      category: 'content',
-      severity: 'warning',
-      isActive: true,
-      autoAction: 'flag',
-      parameters: { minLength: 100 },
-    },
-    {
-      id: '2',
-      name: 'Datas Obrigatórias',
-      description: 'Compositores devem ter data de nascimento',
-      category: 'metadata',
-      severity: 'error',
-      isActive: true,
-      autoAction: 'reject',
-      parameters: { requiredFields: ['birthDate'] },
-    },
-    {
-      id: '3',
-      name: 'Usuário Confiável',
-      description: 'Usuários com score alto podem ter aprovação automática',
-      category: 'user',
-      severity: 'info',
-      isActive: true,
-      autoAction: 'approve',
-      parameters: { minScore: 4.5 },
-    },
-  ];
-
-  useEffect(() => {
-    setConfig(mockConfig);
-    setQualityRules(mockQualityRules);
-  }, []);
 
   const tabs = [
     { id: 'general', label: 'Geral', icon: FiSettings },

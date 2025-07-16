@@ -55,7 +55,6 @@ async function getBackupInfo(backupDir: string): Promise<BackupInfo | null> {
 
     // Ler metadados
     const metadata = JSON.parse(await fs.readFile(metadataPath, 'utf8'));
-    const stats = await fs.stat(backupDir);
 
     // Calcular tamanho do diretório
     const size = await getDirSize(backupDir);

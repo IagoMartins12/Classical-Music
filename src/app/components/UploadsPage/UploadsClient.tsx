@@ -45,18 +45,12 @@ import CreateWorkModal from './modals/CreateWorkModal';
 import CreateComposerModal from './modals/CreateComposerModal';
 import BulkInsertWorksModal from './modals/BulkInsertWorksModal';
 
-// 🆕 IMPORTAR NOVOS HOOKS
 import { useToast } from '@/app/hooks/useToast';
 
-// Importar as novas cards
 import UploadComposerCard from './UploadComposerCard';
 import UploadWorkCard from './UploadWorkCard';
 import UploadScoreCard from './UploadScoreCard';
 import { useConfirmModal } from '../ConfirmModal';
-
-// 🆕 IMPORTAR COMPONENTES FLEXÍVEIS
-import WorkSearchInput from '../WorkSearchInput';
-import ComposerSearchInput from '../ComposerSearchInput';
 
 interface Epoch {
   id: string;
@@ -639,16 +633,18 @@ const UploadsClient = ({
             <label className="block text-xs font-medium text-theme-tertiary mb-2">
               Compositor
             </label>
-            <ComposerSearchInput
-              selectedComposer={selectedComposer}
-              onComposerSelect={handleComposerChange}
-              popularComposers={memoizedEmptyArray}
-              isDisabled={false}
-              placeholder="Filtrar por compositor..."
-              mode="local"
-              localComposers={memoizedLocalComposers}
-              showPopularLabel={false}
-              showWorksCount={false}
+            <Select
+              options={[
+                { value: '', label: 'Todos os compositores' },
+                ...memoizedLocalComposers.map((composer) => ({
+                  value: composer.id,
+                  label: composer.fullName,
+                })),
+              ]}
+              value={selectedComposer}
+              onChange={(e) => handleComposerChange(e.target.value)}
+              className="input-classical-2 w-full"
+              disabled={loadingEpochs}
             />
           </div>
           <div>

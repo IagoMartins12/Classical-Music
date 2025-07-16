@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   FiTrendingUp,
   FiTrendingDown,
@@ -93,8 +92,7 @@ interface AdvancedAnalytics {
 }
 
 export default function InsightsAnalytics() {
-  const router = useRouter();
-  const { stats, loading, refreshStats } = useAdminStats();
+  const { refreshStats } = useAdminStats();
   const [analytics, setAnalytics] = useState<AdvancedAnalytics | null>(null);
   const [selectedInsight, setSelectedInsight] = useState('predictions');
   const [timeframe, setTimeframe] = useState('30d');

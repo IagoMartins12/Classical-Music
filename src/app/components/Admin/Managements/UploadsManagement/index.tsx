@@ -1,7 +1,7 @@
 // app/components/Admin/Uploads/UploadsManagement.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiUpload,
@@ -19,7 +19,6 @@ import {
   FiUsers,
   FiActivity,
   FiTrendingUp,
-  FiAlertTriangle,
   FiTarget,
   FiMessageSquare,
 } from 'react-icons/fi';
@@ -59,7 +58,6 @@ export default function UploadsManagement() {
     uploads,
     stats,
     loading,
-    error,
     pagination,
     fetchUploads,
     refreshStats,

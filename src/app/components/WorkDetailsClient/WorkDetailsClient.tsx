@@ -28,7 +28,6 @@ import FavoriteButton from '../FavoriteButton';
 import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
-import StudyModeModal from '../StudyMode/StudyModeModal';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -398,23 +397,23 @@ export default function WorkDetailsClient({
                           showLabel={false}
                         />
                         {/* Admin verification button */}
-                        {/* {isAdmin && ( */}
-                        <EditButton
-                          entityId={work.id}
-                          variant="minimal"
-                          entityType="work"
-                          size="lg"
-                          showLabel={false}
-                        />
-                        {/* )} */}
-                        {/* {isAdmin && ( */}
-                        <VerificationButton
-                          entityType="work"
-                          variant="ghost"
-                          size="lg"
-                          onClick={() => setShowVerificationModal(true)}
-                        />
-                        {/* )} */}
+                        {isAdmin && (
+                          <EditButton
+                            entityId={work.id}
+                            variant="minimal"
+                            entityType="work"
+                            size="lg"
+                            showLabel={false}
+                          />
+                        )}
+                        {isAdmin && (
+                          <VerificationButton
+                            entityType="work"
+                            variant="ghost"
+                            size="lg"
+                            onClick={() => setShowVerificationModal(true)}
+                          />
+                        )}
                       </div>
                     </div>
 
@@ -955,17 +954,17 @@ export default function WorkDetailsClient({
             composerName={work.composer.fullName}
           />
 
-          {/* {isAdmin && ( */}
-          <VerificationModal
-            isOpen={showVerificationModal}
-            onClose={() => setShowVerificationModal(false)}
-            currentItem="work"
-            itemId={work.id}
-            composerName={work.title}
-            currentVerificationStatus={isVerified}
-            onVerificationChange={handleVerificationChange}
-          />
-          {/* )} */}
+          {isAdmin && (
+            <VerificationModal
+              isOpen={showVerificationModal}
+              onClose={() => setShowVerificationModal(false)}
+              currentItem="work"
+              itemId={work.id}
+              composerName={work.title}
+              currentVerificationStatus={isVerified}
+              onVerificationChange={handleVerificationChange}
+            />
+          )}
         </AnimatedContainer>
       </div>
     </div>

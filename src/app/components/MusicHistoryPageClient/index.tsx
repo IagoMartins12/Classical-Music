@@ -6,8 +6,8 @@ import { HeroSection } from '../HeroSection';
 import { NavigationTabs } from '../NavigationTabs';
 import { EpochSection } from '../EpochSection';
 import { ComposersTimeline } from '../ComposerTimeline';
-import ErrorFallback from '@/app/music-history/error';
 import { DetailedMusicHistory } from '../DetailedMusicHistory';
+import ErrorFallback from '@/app/(main)/music-history/error';
 
 interface Composer {
   id: string;

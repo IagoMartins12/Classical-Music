@@ -14,10 +14,7 @@ import {
   FiDownload,
   FiRefreshCw,
 } from 'react-icons/fi';
-import {
-  AnimatedCard,
-  AnimatedItem,
-} from '@/app/components/animation/AnimatedComponents';
+import { AnimatedCard } from '@/app/components/animation/AnimatedComponents';
 import {
   useBackupManagement,
   formatBackupDate,

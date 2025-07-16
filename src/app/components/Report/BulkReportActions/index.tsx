@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { FiCheck, FiX, FiTrash2, FiMoreHorizontal } from 'react-icons/fi';
 import Button from '@/app/components/Common/Button';
-import { useNotifications } from '@/app/hooks/useNotifications';
+import { useToast } from '@/app/hooks/useToast';
 
 interface BulkReportActionsProps {
   selectedReports: string[];
@@ -18,8 +18,8 @@ export default function BulkReportActions({
   onClearSelection,
 }: BulkReportActionsProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const { notifySuccess, notifyError } = useNotifications();
 
+  const toast = useToast();
   const handleBulkAction = async (action: 'approve' | 'reject' | 'delete') => {
     if (selectedReports.length === 0) return;
 
@@ -38,16 +38,16 @@ export default function BulkReportActions({
 
       if (response.ok) {
         const data = await response.json();
-        notifySuccess('Sucesso', `${data.processedCount} reports processados`);
+        toast.success('Sucesso', `${data.processedCount} reports processados`);
         onActionComplete();
         onClearSelection();
       } else {
         const error = await response.json();
-        notifyError('Erro', error.error || 'Erro ao processar reports');
+        toast.error('Erro', error.error || 'Erro ao processar reports');
       }
     } catch (error) {
       console.error('Erro ao processar reports:', error);
-      notifyError('Erro', 'Erro ao processar reports');
+      toast.error('Erro', 'Erro ao processar reports');
     } finally {
       setIsProcessing(false);
     }

@@ -288,6 +288,9 @@ export const MetricCard = ({
     <div className="flex items-start justify-between mb-4">
       <div>
         <p className="text-sm text-theme-tertiary mb-1">{title}</p>
+        {subtitle && (
+          <p className="text-xs text-theme-tertiary mb-1">{subtitle}</p>
+        )}
         <p className="text-3xl font-bold text-theme-primary">
           {typeof value === 'number' ? value.toLocaleString() : value}
         </p>
@@ -348,7 +351,6 @@ export const MetricCard = ({
 // Gráfico de comparação de barras horizontais
 export const HorizontalBarChart = ({
   data,
-  height = 300,
   color = CHART_COLORS.primary,
   title,
   subtitle,

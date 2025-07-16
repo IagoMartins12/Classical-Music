@@ -1,13 +1,12 @@
 // app/components/uploads/modals/BulkInsertWorksModal.tsx - ATUALIZADO COM PROGRESSO INDIVIDUAL
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiMusic,
   FiSearch,
   FiPlay,
-  FiPause,
   FiCheck,
   FiX,
   FiAlertCircle,
@@ -16,12 +15,10 @@ import {
   FiInfo,
   FiLoader,
   FiTrash2,
-  FiRefreshCw,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
   AnimatedItem,
-  LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';

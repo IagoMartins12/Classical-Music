@@ -97,7 +97,6 @@ const getCachedAnalytics = unstable_cache(
     const now = new Date();
     const lastMonth = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     const lastWeek = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
     // Buscar dados básicos em paralelo
     const [
@@ -423,7 +422,7 @@ const getCachedAnalytics = unstable_cache(
   { revalidate: 600 } // 10 minutos
 );
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 

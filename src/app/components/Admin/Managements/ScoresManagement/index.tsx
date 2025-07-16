@@ -1,7 +1,7 @@
 // app/components/Admin/Scores/ScoresManagement.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiFileText,
@@ -9,7 +9,6 @@ import {
   FiFilter,
   FiPlus,
   FiEdit,
-  FiTrash2,
   FiEye,
   FiRefreshCw,
   FiDownload,
@@ -23,7 +22,6 @@ import {
   FiHardDrive,
   FiTrendingUp,
   FiTarget,
-  FiActivity,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -42,6 +40,7 @@ import {
 import { formatNumber } from '@/app/hooks/admin/useAdminStats';
 import { toast } from 'react-hot-toast';
 import { useAdminScores } from '@/app/hooks/admin/useAdminScores';
+import Image from 'next/image';
 
 interface ScoreFilters {
   search: string;
@@ -60,7 +59,6 @@ export default function ScoresManagement() {
     scores,
     stats,
     loading,
-    error,
     pagination,
     fetchScores,
     refreshStats,
@@ -578,7 +576,9 @@ export default function ScoresManagement() {
                     />
 
                     {score.thumbnailUrl && (
-                      <img
+                      <Image
+                        width={25}
+                        height={25}
                         src={score.thumbnailUrl}
                         alt={score.title}
                         className="w-16 h-20 rounded object-cover flex-shrink-0"

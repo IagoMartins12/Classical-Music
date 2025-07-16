@@ -1,6 +1,5 @@
 // app/utils/monitoring/systemMetrics.ts
 import os from 'os';
-import { promises as fs } from 'fs';
 import si from 'systeminformation';
 
 export interface SystemMetrics {

@@ -16,12 +16,7 @@ import {
   FiBookOpen,
   FiHelpCircle,
 } from 'react-icons/fi';
-import {
-  GiMusicalNotes,
-  GiGrandPiano,
-  GiScrollQuill,
-  GiMetronome,
-} from 'react-icons/gi';
+import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
 import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
 import Link from 'next/link';
 
@@ -398,7 +393,7 @@ export default function HelpPage() {
               </div>
 
               <SequentialGrid cols={3} gap={8} delayBetweenItems={0.1}>
-                {helpCategories.map((category, index) => (
+                {helpCategories.map((category) => (
                   <AnimatedCard
                     key={category.id}
                     hover="lift"

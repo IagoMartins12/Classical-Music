@@ -1,25 +1,22 @@
 // app/components/Admin/AdminHeader.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   FiShield,
   FiSettings,
   FiLogOut,
-  FiBell,
   FiUsers,
   FiBarChart2,
   FiFlag,
   FiChevronDown,
   FiActivity,
   FiDatabase,
-  FiEye,
   FiHome,
   FiMenu,
-  FiX,
 } from 'react-icons/fi';
 import { AdminStats } from '@/app/hooks/admin/useAdminStats';
 
@@ -45,13 +42,6 @@ export default function AdminHeader({
   const { data: session } = useSession();
   const pathname = usePathname();
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
-  const [notifications] = useState(0);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Verificar se é admin
   if (!session?.user || session.user.role !== 2) return null;
@@ -70,7 +60,7 @@ export default function AdminHeader({
       value: stats?.moderation?.totalReports || 0,
       icon: FiFlag,
       color: 'text-accent-red',
-      href: '/uploads/moderation',
+      href: '/admin/moderation',
     },
     {
       label: 'Novos Uploads',
@@ -96,16 +86,16 @@ export default function AdminHeader({
       isActive: pathname.startsWith('/admin/users'),
     },
     {
-      href: '/uploads/moderation',
+      href: '/admin/moderation',
       label: 'Moderação',
       icon: FiShield,
-      isActive: pathname.startsWith('/uploads/moderation'),
+      isActive: pathname.startsWith('/admin/moderation'),
     },
     {
-      href: '/admin/reports',
-      label: 'Reports',
+      href: '/admin/reports-metric',
+      label: 'Relatórios',
       icon: FiFlag,
-      isActive: pathname.startsWith('/admin/reports'),
+      isActive: pathname.startsWith('/admin/reports-metric'),
     },
     {
       href: '/admin/analytics',
@@ -216,29 +206,7 @@ export default function AdminHeader({
 
             {/* Actions */}
             <div className="flex items-center space-x-2 lg:space-x-4">
-              {/* Notifications */}
-              <button
-                className="relative p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
-                title="Notificações"
-              >
-                <FiBell className="w-4 h-4 lg:w-5 lg:h-5" />
-                {notifications > 0 && (
-                  <span className="absolute -top-1 -right-1 w-4 h-4 lg:w-5 lg:h-5 bg-accent-red text-theme-primary text-xs font-bold rounded-full flex items-center justify-center">
-                    {notifications > 9 ? '9+' : notifications}
-                  </span>
-                )}
-              </button>
-
-              {/* Quick Actions */}
               <div className="hidden md:flex items-center space-x-1">
-                <Link
-                  href="/"
-                  className="p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"
-                  title="Ver Site"
-                >
-                  <FiEye className="w-4 h-4 lg:w-5 lg:h-5" />
-                </Link>
-
                 <Link
                   href="/admin/settings"
                   className="p-2 rounded-lg text-theme-tertiary hover:text-theme-primary hover:bg-theme-secondary transition-all"

@@ -3,20 +3,15 @@
 
 import {
   FiClock,
-  FiUser,
-  FiMusic,
-  FiFile,
   FiPlus,
   FiEdit,
   FiTrash2,
   FiFilter,
   FiCalendar,
-  FiActivity,
   FiChevronDown,
   FiEye,
   FiMapPin,
   FiMonitor,
-  FiRefreshCw,
 } from 'react-icons/fi';
 
 export default function HistoryLoading() {

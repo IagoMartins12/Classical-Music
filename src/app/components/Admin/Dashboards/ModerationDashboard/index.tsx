@@ -75,14 +75,7 @@ interface ModerationStats {
   }>;
 }
 
-interface QualityRule {
-  id: string;
-  name: string;
-  description: string;
-  severity: 'warning' | 'error' | 'info';
-  isActive: boolean;
-  autoAction: 'none' | 'flag' | 'reject';
-}
+
 
 export default function ModerationDashboard() {
   const router = useRouter();
@@ -92,7 +85,6 @@ export default function ModerationDashboard() {
   const [selectedType, setSelectedType] = useState('all');
   const [selectedPriority, setSelectedPriority] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 

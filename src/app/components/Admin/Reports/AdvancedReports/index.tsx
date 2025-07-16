@@ -6,7 +6,6 @@ import {
   FiFileText,
   FiDownload,
   FiPlay,
-  FiCopy,
   FiEdit,
   FiTrash2,
   FiPlus,
@@ -16,12 +15,9 @@ import {
   FiMusic,
   FiActivity,
   FiRefreshCw,
-  FiEye,
   FiShare2,
   FiClock,
   FiX,
-  FiCalendar,
-  FiFilter,
   FiCheck,
   FiAlertTriangle,
   FiLoader,
@@ -61,11 +57,6 @@ export default function AdvancedReports() {
   const [deletingReports, setDeletingReports] = useState<Set<string>>(
     new Set()
   );
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleGenerateReport = async (type: string) => {
     setGeneratingReports((prev) => new Set(prev).add(type));
@@ -589,8 +580,8 @@ export default function AdvancedReports() {
             Nenhum relatório gerado ainda
           </h3>
           <p className="text-theme-secondary mb-4">
-            Gere seu primeiro relatório na aba "Visão Geral" para ver dados
-            reais da plataforma.
+            Gere seu primeiro relatório na aba &quot;Visão Geral&quot; para ver
+            dados reais da plataforma.
           </p>
           <Button
             variant="primary"

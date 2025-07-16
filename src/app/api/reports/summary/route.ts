@@ -41,7 +41,6 @@ export async function GET(request: NextRequest) {
       totalReports,
       pendingReports,
       resolvedReports,
-      averageResolutionTime,
       topReasons,
       topTypes,
       recentActivity,

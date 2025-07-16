@@ -20,7 +20,6 @@ import {
 } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useNotifications } from '@/app/hooks/useNotifications';
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -29,23 +28,26 @@ import {
   PageContainer,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
-import NotificationSystem from '@/app/components/Notifications/NotificationSystem';
 
 import ReportHistoryModal from '@/app/components/Report/ReportHistoryModal';
 import VerificationBadge from '@/app/components/Verification/VerificationBadge';
 import { REPORT_REASONS } from '@/app/utils/reportHelpers';
 import BulkReportActions from '../../Report/BulkReportActions';
 import ReportPriorityBadge from '../../Report/ReportPriorityBadge';
+import { useToast } from '@/app/hooks/useToast';
 
 interface ModerationClientProps {
   page: number;
   status: string;
+  isAdmin?: boolean;
 }
 
-const ModerationClient = ({ page, status }: ModerationClientProps) => {
+const ModerationClient = ({
+  page,
+  status,
+  isAdmin = false,
+}: ModerationClientProps) => {
   const router = useRouter();
-  const { notifications, removeNotification, notifySuccess, notifyError } =
-    useNotifications();
 
   const [moderations, setModerations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,6 +64,8 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
   // Estados para histórico
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [historyEntity, setHistoryEntity] = useState<any>(null);
+
+  const toast = useToast();
 
   useEffect(() => {
     fetchModerations();
@@ -90,7 +94,7 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
       }
     } catch (error) {
       console.error('Erro ao carregar moderações:', error);
-      notifyError('Erro', 'Não foi possível carregar as moderações');
+      toast.error('Erro', 'Não foi possível carregar as moderações');
     } finally {
       setLoading(false);
     }
@@ -111,7 +115,7 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
 
       if (response.ok) {
         const data = await response.json();
-        notifySuccess('Sucesso', data.message);
+        toast.success('Sucesso', data.message);
         await fetchModerations();
         setShowModal(false);
         setModerationNotes('');
@@ -122,7 +126,7 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
       }
     } catch (error) {
       console.error('Erro ao processar moderação:', error);
-      notifyError(
+      toast.error(
         'Erro',
         error instanceof Error ? error.message : 'Erro ao processar moderação'
       );
@@ -267,9 +271,12 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
               {['pending', 'approved', 'rejected'].map((statusOption) => (
                 <button
                   key={statusOption}
-                  onClick={() =>
-                    router.push(`/uploads/moderation?status=${statusOption}`)
-                  }
+                  onClick={() => {
+                    const url = isAdmin
+                      ? `/admin/moderation/moderate?status=${statusOption}`
+                      : `/uploads/moderation?status=${statusOption}`;
+                    router.push(url);
+                  }}
                   className={`px-6 py-3 rounded-lg text-sm font-medium transition-all capitalize ${
                     status === statusOption
                       ? 'bg-theme-tertiary text-theme-primary shadow-md'
@@ -525,11 +532,17 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
                 {[...Array(totalPages)].map((_, i) => (
                   <button
                     key={i}
-                    onClick={() =>
+                    onClick={() => {
+                      const url = isAdmin
+                        ? `/admin/moderation/moderate?page=${
+                            i + 1
+                          }&status=${status}`
+                        : `/uploads/moderation?page=${i + 1}&status=${status}`;
+
                       router.push(
                         `/uploads/moderation?page=${i + 1}&status=${status}`
-                      )
-                    }
+                      );
+                    }}
                     className={`px-4 py-2 rounded-lg ${
                       page === i + 1
                         ? 'bg-brand-primary text-theme-primary'
@@ -623,12 +636,6 @@ const ModerationClient = ({ page, status }: ModerationClientProps) => {
           entityName={historyEntity.name}
         />
       )}
-
-      {/* Notification System */}
-      <NotificationSystem
-        notifications={notifications}
-        onRemove={removeNotification}
-      />
     </PageContainer>
   );
 

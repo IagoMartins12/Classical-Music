@@ -12,14 +12,8 @@ import {
   FiSend,
   FiClock,
   FiCheckCircle,
-  FiAlertCircle,
 } from 'react-icons/fi';
-import {
-  GiMusicalNotes,
-  GiGrandPiano,
-  GiScrollQuill,
-  GiMetronome,
-} from 'react-icons/gi';
+import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
 import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
 import Link from 'next/link';
 

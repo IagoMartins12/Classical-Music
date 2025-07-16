@@ -34,6 +34,7 @@ import EditAdModal from '../EditAdModal';
 import CreateAdModal from '../CreateAdModal';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
+import Image from 'next/image';
 
 interface FilterState {
   status: string;
@@ -74,7 +75,6 @@ export default function AdsManagementClient() {
   const {
     ads,
     loading,
-    error,
     pagination,
     fetchAds,
     updateAdStatus,
@@ -112,6 +112,7 @@ export default function AdsManagementClient() {
       await updateAdStatus(adId, newStatus);
       toast.success('Status atualizado com sucesso');
     } catch (error) {
+      console.log('error', error);
       toast.error('Erro ao atualizar status');
     }
   };
@@ -122,6 +123,8 @@ export default function AdsManagementClient() {
         await deleteAd(adId);
         toast.success('Publicidade deletada com sucesso');
       } catch (error) {
+        console.log('error', error);
+
         toast.error('Erro ao deletar publicidade');
       }
     }
@@ -147,6 +150,8 @@ export default function AdsManagementClient() {
         setSelectedAds([]);
         toast.success(`Ação executada em ${selectedAds.length} publicidade(s)`);
       } catch (error) {
+        console.log('error', error);
+
         toast.error('Erro ao executar ação em lote');
       }
     }
@@ -481,7 +486,9 @@ export default function AdsManagementClient() {
                         <td className="py-3 px-2">
                           <div className="flex items-center space-x-3">
                             {ad.imageUrl ? (
-                              <img
+                              <Image
+                                width={25}
+                                height={25}
                                 src={ad.imageUrl}
                                 alt={ad.title}
                                 className="w-12 h-12 rounded-lg object-cover"

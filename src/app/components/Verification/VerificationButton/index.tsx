@@ -18,7 +18,6 @@ export default function VerificationButton({
   variant = 'ghost',
   size = 'md',
   showLabel = true,
-  className = '',
   onClick,
 }: VerificationButtonProps) {
   return (

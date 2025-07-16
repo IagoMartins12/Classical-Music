@@ -16,6 +16,7 @@ import toast from 'react-hot-toast';
 import { useAds } from '@/app/hooks/admin/useAds';
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
+import Image from 'next/image';
 
 interface MediaUploadModalProps {
   ad: any;
@@ -69,6 +70,7 @@ export default function MediaUploadModal({
       toast.success(`${files.length} arquivo(s) enviado(s) com sucesso!`);
       await fetchMediaFiles();
     } catch (error) {
+      console.log('error', error);
       toast.error('Erro ao fazer upload dos arquivos');
     } finally {
       setUploading(false);
@@ -108,6 +110,8 @@ export default function MediaUploadModal({
         await fetchMediaFiles();
       }
     } catch (error) {
+      console.log('error', error);
+
       toast.error('Erro ao atualizar mídia principal');
     }
   };
@@ -127,6 +131,8 @@ export default function MediaUploadModal({
           await fetchMediaFiles();
         }
       } catch (error) {
+        console.log('error', error);
+
         toast.error('Erro ao deletar arquivo');
       }
     }
@@ -245,7 +251,9 @@ export default function MediaUploadModal({
                       {/* Media Preview */}
                       <div className="aspect-video bg-theme-primary flex items-center justify-center relative">
                         {media.type === 'IMAGE' ? (
-                          <img
+                          <Image
+                            width={100}
+                            height={100}
                             src={media.url}
                             alt={media.altText || media.fileName}
                             className="w-full h-full object-cover"

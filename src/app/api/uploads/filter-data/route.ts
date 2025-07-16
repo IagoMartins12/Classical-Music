@@ -1,10 +1,10 @@
 // app/api/uploads/filter-data/route.ts - API PARA DADOS DE FILTROS
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { getFilterData } from '@/app/requests/upload';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 

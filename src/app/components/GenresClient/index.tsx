@@ -8,7 +8,6 @@ import {
   FiSearch,
   FiX,
   FiArrowLeft,
-
   FiMusic,
   FiChevronDown,
   FiChevronUp,
@@ -281,12 +280,12 @@ export default function GenresClient({ genres }: GenresClientProps) {
                               animationFillMode: 'backwards',
                             }}
                           >
-                            <div className="flex items-center">
+                            <div className="flex cursor-pointer items-center">
                               <div className="w-10 h-10 bg-accent-purple/20 rounded-lg flex items-center justify-center mr-3 group-hover:bg-accent-purple/30 transition-colors">
                                 <FiMusic className="w-5 h-5 text-accent-purple" />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <h3 className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors truncate">
+                                <h3 className="font-medium capitalize text-theme-primary group-hover:text-brand-primary transition-colors truncate">
                                   {genre.name}
                                 </h3>
                               </div>

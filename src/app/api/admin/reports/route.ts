@@ -567,7 +567,7 @@ const generateCSVFile = async (
   filename: string
 ): Promise<{ path: string; size: number }> => {
   // Para CSV, vamos usar os dados mais importantes do relatório
-  let csvData: any[] = [];
+  const csvData: any[] = [];
 
   if (data.summary) {
     csvData.push({ Tipo: 'Resumo', ...data.summary });
@@ -680,7 +680,7 @@ const generatePDFFile = async (
   };
 };
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 

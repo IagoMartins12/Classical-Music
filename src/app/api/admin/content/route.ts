@@ -273,7 +273,7 @@ const getCachedContentMetrics = unstable_cache(
   { revalidate: 600 } // 10 minutos
 );
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 

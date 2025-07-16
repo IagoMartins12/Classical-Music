@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
-import ModerationDashboard from '@/app/components/Admin/Dashboards/ModerationDashboard';
+import ReportsDashboard from '@/app/components/Admin/Reports/ReportsDashboard';
 
 export const metadata: Metadata = {
   title: 'Centro de Moderação | Admin Panel',
@@ -18,5 +18,5 @@ export default async function ModerationPage() {
     redirect('/');
   }
 
-  return <ModerationDashboard />;
+  return <ReportsDashboard />;
 }

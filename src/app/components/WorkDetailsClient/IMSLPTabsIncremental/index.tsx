@@ -27,12 +27,12 @@ import {
 } from '../../animation/AnimatedComponents';
 import { useScoreFavorites } from '@/app/hooks/useScoreFavorites';
 import ScorePreview from '../ScorePreview';
-import StudyModeButton from '../../StudyMode/StudyModeButton';
 import {
   getTabLabel,
   getTabStatistics,
   TabStatistics,
 } from '@/app/utils/type-utils'; // 🆕 Import corrigido
+import StudyModeButton from '../../StudyModePage/StudyModeButton';
 
 interface IMSLPTabsIncrementalProps {
   imslpData: IMSLPWorkScoresIncremental | null;
@@ -148,13 +148,7 @@ export default function IMSLPTabsIncremental({
   const previewRef = useRef<HTMLDivElement>(null);
 
   // Hook para estatísticas de favoritos
-  const {
-    stats: favoriteStats,
-    loading: loadingFavorites,
-    mostFavorited,
-    refetch: refetchFavorites,
-    getScoreStats,
-  } = useScoreFavorites(workId || '');
+  const { getScoreStats } = useScoreFavorites(workId || '');
 
   const handleScoreSelect = (score: IMSLPScore) => {
     console.log('score', score);
