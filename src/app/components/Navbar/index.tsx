@@ -15,6 +15,8 @@ import {
   FiUpload,
   FiSettings,
   FiChevronDown,
+  FiHelpCircle,
+  FiInfo,
 } from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
 import { ThemeToggle } from '../ThemeToggle';
@@ -104,7 +106,56 @@ const Navbar: React.FC = () => {
     },
     { label: 'Compositores', href: '/composers' },
     { label: 'Instrumentos', href: '/instruments' },
-    { label: 'Quem somos', href: '/about-us' },
+    {
+      label: 'Ajuda & Suporte',
+      submenu: [
+        {
+          label: 'Central de Ajuda',
+          href: '/help',
+          description: 'Guias e tutoriais completos',
+        },
+        {
+          label: 'Perguntas Frequentes',
+          href: '/faq',
+          description: 'Respostas para dúvidas comuns',
+        },
+        {
+          label: 'Suporte Técnico',
+          href: '/support',
+          description: 'Problemas técnicos e bugs',
+        },
+        {
+          label: 'Entre em Contato',
+          href: '/contact',
+          description: 'Fale com nossa equipe',
+        },
+      ],
+    },
+    {
+      label: 'Sobre & Legal',
+      submenu: [
+        {
+          label: 'Sobre Nós',
+          href: '/about-us',
+          description: 'Conheça nossa missão',
+        },
+        {
+          label: 'Termos de Uso',
+          href: '/terms',
+          description: 'Regras da plataforma',
+        },
+        {
+          label: 'Política de Privacidade',
+          href: '/privacy',
+          description: 'Como protegemos seus dados',
+        },
+        {
+          label: 'Direitos Autorais',
+          href: '/copyright',
+          description: 'Políticas de copyright',
+        },
+      ],
+    },
   ];
 
   const getUserDisplayName = () => {
@@ -195,7 +246,7 @@ const Navbar: React.FC = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6">
             {optionsArr.map(({ label, href, active, submenu }) => (
               <div
                 key={label}
@@ -205,8 +256,7 @@ const Navbar: React.FC = () => {
               >
                 {submenu ? (
                   <div className="flex items-center">
-                    <Link
-                      href={href || '#'}
+                    <button
                       className={`
                         relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-1
                         ${
@@ -225,11 +275,11 @@ const Navbar: React.FC = () => {
                           activeSubmenu === label ? 'rotate-180' : ''
                         }`}
                       />
-                    </Link>
+                    </button>
 
                     {/* Submenu */}
                     {activeSubmenu === label && (
-                      <div className="absolute top-full left-0 mt-2 w-64 bg-theme-tertiary rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
+                      <div className="absolute top-full left-0 mt-2 w-72 bg-theme-tertiary rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
                         <div className="p-2">
                           {submenu.map((item) => (
                             <Link
@@ -445,7 +495,11 @@ const Navbar: React.FC = () => {
         <div
           className={`
             lg:hidden overflow-hidden transition-all duration-500 ease-in-out
-            ${isMenuOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'}
+            ${
+              isMenuOpen
+                ? 'max-h-[600px] opacity-100 mt-4'
+                : 'max-h-0 opacity-0'
+            }
           `}
           id="mobile-menu"
         >
@@ -455,10 +509,9 @@ const Navbar: React.FC = () => {
                 <li key={label}>
                   {submenu ? (
                     <div className="space-y-2">
-                      <Link
-                        href={href || '#'}
+                      <div
                         className={`
-                          block px-4 py-3 rounded-lg font-medium transition-all duration-300
+                          block px-4 py-3 rounded-lg font-medium transition-all duration-300 cursor-pointer
                           ${
                             active
                               ? 'text-brand-primary bg-interactive-active'
@@ -472,10 +525,12 @@ const Navbar: React.FC = () => {
                               }s backwards`
                             : 'none',
                         }}
-                        onClick={() => setIsMenuOpen(false)}
                       >
-                        {label}
-                      </Link>
+                        <div className="flex items-center justify-between">
+                          <span>{label}</span>
+                          <FiChevronDown className="w-4 h-4" />
+                        </div>
+                      </div>
                       <div className="ml-4 space-y-1">
                         {submenu.map((item) => (
                           <Link
