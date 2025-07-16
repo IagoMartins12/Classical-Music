@@ -104,10 +104,11 @@ export default function CreateAdModal({
       try {
         const [instrumentsRes] = await Promise.all([fetch('/api/instruments')]);
 
-        const [instruments] = await Promise.all([instrumentsRes.json()]);
+        const instruments = await instrumentsRes.json();
+        console.log('res,', instruments);
 
         setAvailableOptions({
-          instruments: instruments.instruments || [],
+          instruments: instruments || [],
         });
       } catch (error) {
         console.error('Erro ao buscar opções:', error);
@@ -412,7 +413,7 @@ export default function CreateAdModal({
                 <label className="block text-sm font-medium text-theme-primary mb-2">
                   Instrumentos
                 </label>
-                <div className="max-h-40 overflow-y-auto border border-theme-primary rounded-lg p-3 space-y-2">
+                <div className="max-h-40 flex flex-wrap gap-y-2 gap-x-6 overflow-y-auto border border-theme-primary rounded-lg p-3 space-y-2">
                   {availableOptions.instruments.map((instrument) => (
                     <label
                       key={instrument.id}
