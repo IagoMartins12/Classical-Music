@@ -21,6 +21,7 @@ import {
 } from 'react-icons/fi';
 import { StudySession } from '../StudyModeClient';
 import { WorkDetails } from '@/app/requests/work-details';
+import { useToast } from '@/app/hooks/useToast';
 
 interface StudySessionSummaryProps {
   session: StudySession;
@@ -190,6 +191,7 @@ const StudySessionSummary: React.FC<StudySessionSummaryProps> = ({
     }));
   };
 
+  const toast = useToast();
   // Toggle foco
   // const toggleFocus = (
   //   category: 'technicalFocus' | 'expressiveFocus' | 'precisionFocus',
@@ -229,7 +231,7 @@ const StudySessionSummary: React.FC<StudySessionSummaryProps> = ({
       }
     } catch (error) {
       console.error('Erro ao salvar avaliação:', error);
-      alert('Erro ao salvar avaliação. Tente novamente.');
+      toast.error('Erro ao salvar avaliação. Tente novamente.');
     } finally {
       setIsSaving(false);
     }

@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 
 import FavoritesPageServer from './pageServer';
-import AuthCheck from '../components/AuthCheck';
+import AuthCheck from '../../components/AuthCheck';
 
 export const metadata = {
   title: 'Seus Favoritos | Enciclopédia Musical',

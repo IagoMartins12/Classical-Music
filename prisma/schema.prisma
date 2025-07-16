@@ -674,8 +674,6 @@ model Work {
   // Campos técnicos melhorados
   keySignature    String? // Armadura de clave
   moodTags        String[] @default([]) // Tags de humor/atmosfera
-  technicalTags   String[] @default([]) // Tags técnicas
-  performanceTags String[] @default([]) // Tags de performance
 
   composer   Composer   @relation(fields: [composerId], references: [id])
   epoch      Epoch      @relation(fields: [epochId], references: [id])
@@ -734,7 +732,6 @@ model Work {
   @@index([createdBy])
   @@index([isCustom])
   @@index([moodTags])
-  @@index([technicalTags])
 }
 
 model UserInstrument {

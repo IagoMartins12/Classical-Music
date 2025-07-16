@@ -39,7 +39,6 @@ export interface UserAnnotation {
   };
   _count: {
     helpfulVotes: number;
-    replies: number;
   };
 }
 
@@ -91,7 +90,6 @@ export const getUserAnnotations = unstable_cache(
           _count: {
             select: {
               helpfulVotes: true,
-              replies: true,
             },
           },
         },

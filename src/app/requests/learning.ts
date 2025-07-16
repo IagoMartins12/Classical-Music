@@ -3,6 +3,7 @@ import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { WantToLearnItem, LearnedItem } from '../stores/useLearningStore';
+import { authOptions } from '../libs/auth';
 
 // Buscar dados de aprendizado do usuário (SSR otimizado)
 export const getUserLearningData = unstable_cache(
@@ -102,7 +103,7 @@ export const getUserLearningData = unstable_cache(
 // Buscar dados de aprendizado do usuário logado (SSR)
 export const getCurrentUserLearningData = async () => {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
       return {

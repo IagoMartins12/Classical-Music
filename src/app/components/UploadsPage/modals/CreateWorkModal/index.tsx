@@ -1,7 +1,7 @@
 // app/components/modals/CreateWorkModal.tsx - CORRIGIDO COM VALIDAÇÃO CUSTOMIZADA
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiMusic,
@@ -35,6 +35,7 @@ import {
   mapStyleToEpoch,
   VALID_PORTUGUESE_WORKGENRES,
 } from '@/app/utils/valid-categories-and-genres';
+import { useToast } from '@/app/hooks/useToast';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -176,6 +177,32 @@ const CreateWorkModal = ({
     customValidations
   );
 
+  // 🔧 CORRIGIDO: Usar useCallback para estabilizar funções
+  const handleInputChange = useCallback(
+    (field: string, value: string | boolean | string[]) => {
+      // 🆕 NOVO: Se for o campo imslpId, limpar a URL
+      if (field === 'imslpId' && typeof value === 'string') {
+        value = cleanImslpUrl(value);
+      }
+
+      setFormData((prev) => ({ ...prev, [field]: value }));
+      if (errors[field]) {
+        setErrors((prev) => ({ ...prev, [field]: '' }));
+      }
+    },
+    [errors]
+  );
+
+  const handleComposerSelect = useCallback(
+    (composerId: string) => {
+      setFormData((prev) => ({ ...prev, composerId }));
+      if (errors.composerId) {
+        setErrors((prev) => ({ ...prev, composerId: '' }));
+      }
+    },
+    [errors.composerId]
+  );
+
   // Populate form when editing
   useEffect(() => {
     loadFormData();
@@ -286,35 +313,14 @@ const CreateWorkModal = ({
     }
   };
 
-  // 🆕 CORRIGIDO: handleInputChange com limpeza de URL
-  const handleInputChange = (
-    field: string,
-    value: string | boolean | string[]
-  ) => {
-    // 🆕 NOVO: Se for o campo imslpId, limpar a URL
-    if (field === 'imslpId' && typeof value === 'string') {
-      value = cleanImslpUrl(value);
-    }
-
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }));
-    }
-  };
-
-  const handleComposerSelect = (composerId: string) => {
-    setFormData((prev) => ({ ...prev, composerId }));
-    if (errors.composerId) {
-      setErrors((prev) => ({ ...prev, composerId: '' }));
-    }
-  };
-
   // 🆕 FUNÇÃO DE VALIDAÇÃO MELHORADA
   const handleValidation = () => {
     const { isValid, errors: validationErrors } = validateForm(formData);
     setErrors(validationErrors);
     return isValid;
   };
+
+  const toast = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -330,7 +336,7 @@ const CreateWorkModal = ({
       formData.imslpId &&
       (await checkDuplicateByLink(formData.imslpId))
     ) {
-      alert('Já existe uma obra com este link do IMSLP.');
+      toast.error('Já existe uma obra com este link do IMSLP.');
       return;
     }
 
@@ -372,13 +378,15 @@ const CreateWorkModal = ({
       if (response.ok) {
         router.refresh();
         onClose();
-        alert(data.message || 'Obra salva com sucesso!');
+        toast.success(data.message || 'Obra salva com sucesso!');
       } else {
         throw new Error(data.error || 'Erro ao salvar obra');
       }
     } catch (error) {
       console.error('Erro ao salvar obra:', error);
-      alert(error instanceof Error ? error.message : 'Erro ao salvar obra');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao salvar obra'
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -387,13 +395,13 @@ const CreateWorkModal = ({
   // 🆕 CORRIGIDO: handleScrapeUrl com URL limpa
   const handleScrapeUrl = async () => {
     if (!urlToScrape.trim()) {
-      alert('Digite uma URL para fazer scraping');
+      toast.error('Digite uma URL para fazer scraping');
       return;
     }
 
     // Verificar se é uma URL válida do IMSLP
     if (!urlToScrape.includes('imslp.org/wiki/')) {
-      alert(
+      toast.error(
         'Por favor, insira um link válido do IMSLP (deve conter "imslp.org/wiki/")'
       );
       return;
@@ -405,7 +413,7 @@ const CreateWorkModal = ({
     // Verificar duplicatas antes de fazer scraping
     const isDuplicate = await checkDuplicateByLink(cleanedUrl);
     if (isDuplicate) {
-      alert('Já existe uma obra com este link do IMSLP.');
+      toast.error('Já existe uma obra com este link do IMSLP.');
       return;
     }
 
@@ -436,7 +444,9 @@ const CreateWorkModal = ({
       }
     } catch (error) {
       console.error('❌ Erro ao fazer scraping:', error);
-      alert(error instanceof Error ? error.message : 'Erro ao fazer scraping');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao fazer scraping'
+      );
     } finally {
       setScrapingUrl(false);
     }
@@ -522,6 +532,10 @@ const CreateWorkModal = ({
       );
     }
   };
+
+  // 🔧 CORRIGIDO: Memoizar excludeValues para evitar recriação
+  const categoryExcludeValues = useMemo(() => [], []);
+  const workGenresExcludeValues = useMemo(() => [], []);
 
   if (!isOpen) return null;
 
@@ -912,7 +926,7 @@ const CreateWorkModal = ({
                       handleInputChange('categoryNames', values)
                     }
                     placeholder="Selecione categorias válidas..."
-                    maxDisplay={2}
+                    excludeValues={categoryExcludeValues}
                   />
 
                   <MultiSelect
@@ -923,7 +937,7 @@ const CreateWorkModal = ({
                       handleInputChange('workGenresArr', values)
                     }
                     placeholder="Selecione gêneros válidos..."
-                    maxDisplay={2}
+                    excludeValues={workGenresExcludeValues}
                   />
                 </div>
               </AnimatedCard>

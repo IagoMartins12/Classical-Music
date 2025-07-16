@@ -20,6 +20,7 @@ import {
   FiHeart,
   FiInfo,
   FiShield,
+  FiEdit,
 } from 'react-icons/fi';
 
 import ComposerBiography from '../ComposerBiography';
@@ -40,6 +41,8 @@ import Button from '../Common/Button';
 import ReportButton from '../Report/ReportButton';
 import VerificationModal from '../Verification/VerificationModal';
 import VerificationButton from '../Verification/VerificationButton';
+import { useRouter } from 'next/navigation';
+import EditButton from '../Common/EditButton';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
@@ -58,6 +61,7 @@ export default function ComposerDetailsClient({
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [isVerified, setIsVerified] = useState(composer.isVerified || false);
 
+  const router = useRouter();
   const handleVerificationChange = (verified: boolean) => {
     setIsVerified(verified);
     // Atualizar no contexto global se necessário
@@ -280,6 +284,16 @@ export default function ComposerDetailsClient({
                             size="lg"
                             showLabel={false}
                           />
+                          {isAdmin && (
+                            <EditButton
+                              entityId={composer.id}
+                              variant="minimal"
+                              entityType="composer"
+                              size="lg"
+                              showLabel={false}
+                            />
+                          )}
+
                           {/* Admin verification button */}
                           {isAdmin && (
                             <VerificationButton

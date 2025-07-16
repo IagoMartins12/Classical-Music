@@ -18,12 +18,7 @@ import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import Image from 'next/image';
 import FavoriteButton from '../FavoriteButton';
 import EmptyStateFavorites from './EmptyStateFavorites';
-import FavoritesLoading from '@/app/favorites/loading';
-import { useAuth } from '@/app/hooks/useAuth';
-import AuthCheck from '../AuthCheck';
 import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
-
-// 🆕 Importar componente de favoritar partituras
 import FavoriteScoreButton from '../FavoriteScoreButton';
 import MostFavoritedBadge from '../MostFavoritedBadge';
 
@@ -43,17 +38,11 @@ export default function FavoritesClient() {
   // 🆕 Incluir favoriteScores do store
   const { favoriteComposers, favoriteWorks, favoriteScores } =
     useFavoritesStore();
-  const { isAuthenticated } = useAuth();
 
   // States
-  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Filter control functions
   const clearFilters = () => {
@@ -118,14 +107,6 @@ export default function FavoritesClient() {
           : 0,
     };
   }, [favoriteComposers, favoriteWorks, favoriteScores]);
-
-  if (!mounted) {
-    return <FavoritesLoading />;
-  }
-
-  if (!isAuthenticated) {
-    return <AuthCheck title="Seus favoritos" />;
-  }
 
   return (
     <PageContainer showBackground={true}>

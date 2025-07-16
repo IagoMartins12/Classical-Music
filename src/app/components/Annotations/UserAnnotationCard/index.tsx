@@ -614,12 +614,6 @@ export default function UserAnnotationCard({
                 <FiEye className="w-4 h-4" />
                 <span>{currentAnnotation.viewCount}</span>
               </div>
-              {currentAnnotation._count.replies > 0 && (
-                <div className="flex items-center space-x-1">
-                  <FiMessageCircle className="w-4 h-4" />
-                  <span>{currentAnnotation._count.replies}</span>
-                </div>
-              )}
             </div>
 
             {/* Link para a obra */}

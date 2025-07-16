@@ -1,8 +1,8 @@
 // app/annotations/pageServer.tsx
 
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../libs/auth';
-import AnnotationsPageClient from '../components/Annotations/AnnotationsPageClient';
+import { authOptions } from '../../libs/auth';
+import AnnotationsPageClient from '../../components/Annotations/AnnotationsPageClient';
 
 export default async function AnnotationsPageServer() {
   const session = await getServerSession(authOptions);

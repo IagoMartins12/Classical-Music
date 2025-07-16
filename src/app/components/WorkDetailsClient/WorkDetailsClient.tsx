@@ -44,6 +44,7 @@ import VerificationModal from '../Verification/VerificationModal';
 import VerificationBadge from '../Verification/VerificationBadge';
 import VerificationButton from '../Verification/VerificationButton';
 import AdContainer from '../Ads/AdContainer';
+import EditButton from '../Common/EditButton';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -397,6 +398,15 @@ export default function WorkDetailsClient({
                           showLabel={false}
                         />
                         {/* Admin verification button */}
+                        {/* {isAdmin && ( */}
+                        <EditButton
+                          entityId={work.id}
+                          variant="minimal"
+                          entityType="work"
+                          size="lg"
+                          showLabel={false}
+                        />
+                        {/* )} */}
                         {/* {isAdmin && ( */}
                         <VerificationButton
                           entityType="work"

@@ -1,7 +1,7 @@
 // app/components/Common/MultiSelect.tsx
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { FiX, FiChevronDown, FiSearch, FiCheck } from 'react-icons/fi';
 
 interface MultiSelectProps {
@@ -22,7 +22,7 @@ export default function MultiSelect({
   selectedValues,
   onChange,
   placeholder = 'Selecione opções...',
-  maxDisplay = 3,
+  maxDisplay = 10,
   isDisabled = false,
   error,
   excludeValues = [], // ✅ NOVO
@@ -34,25 +34,37 @@ export default function MultiSelect({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // ✅ Filtrar opções baseado no termo de busca E valores excluídos
-  useEffect(() => {
+  // ✅ CORREÇÃO: Usar useMemo para estabilizar excludeValues
+  const stableExcludeValues = useMemo(
+    () => excludeValues,
+    [excludeValues.join(',')]
+  );
+
+  // ✅ CORREÇÃO: Usar useMemo para computar as opções filtradas
+  const computedFilteredOptions = useMemo(() => {
     let filtered = options;
 
     // Excluir valores especificados (ex: primaryRole)
-    if (excludeValues.length > 0) {
-      filtered = filtered.filter((option) => !excludeValues.includes(option));
+    if (stableExcludeValues.length > 0) {
+      filtered = filtered.filter(
+        (option) => !stableExcludeValues.includes(option)
+      );
     }
 
     // Aplicar filtro de busca
     if (!searchTerm.trim()) {
-      setFilteredOptions(filtered);
+      return filtered;
     } else {
-      const searchFiltered = filtered.filter((option) =>
+      return filtered.filter((option) =>
         option.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setFilteredOptions(searchFiltered);
     }
-  }, [searchTerm, options, excludeValues]);
+  }, [options, searchTerm, stableExcludeValues]);
+
+  // ✅ CORREÇÃO: Usar useEffect apenas para sincronizar o estado
+  useEffect(() => {
+    setFilteredOptions(computedFilteredOptions);
+  }, [computedFilteredOptions]);
 
   // Fechar dropdown ao clicar fora
   useEffect(() => {
@@ -237,7 +249,7 @@ export default function MultiSelect({
                 <p className="text-sm capitalize text-theme-secondary">
                   {searchTerm
                     ? `Nenhuma opção encontrada para "${searchTerm}"`
-                    : excludeValues.length > 0
+                    : stableExcludeValues.length > 0
                     ? 'Todas as opções disponíveis já foram selecionadas ou excluídas'
                     : 'Nenhuma opção disponível'}
                 </p>

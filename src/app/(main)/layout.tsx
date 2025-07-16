@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 import AuthProvider from '../providers/AuthProvider';
 import { FavoritesProvider } from '../providers/FavoritesProvider';
 import { Toaster } from 'react-hot-toast';
+import Footer from '../components/Footer';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -79,6 +80,7 @@ export default function RootLayout({
               <Navbar />
               <main>{children}</main>
 
+              <Footer />
               {/* Notificações toast otimizadas */}
               <Toaster
                 position="top-center"

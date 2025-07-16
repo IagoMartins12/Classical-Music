@@ -56,10 +56,6 @@ const UploadComposerCard = ({
 
   const hasExternalLinks = item.imslpId;
 
-  // 🆕 Verificar se é compositor do IMSLP para mostrar bulk insert
-
-  console.log('isImslp', item);
-
   // Assumindo que a imagem está em item.portraitUrl ou similar
   const portraitUrl = (item as any).portraitUrl;
 

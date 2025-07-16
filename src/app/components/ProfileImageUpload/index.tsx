@@ -1,6 +1,7 @@
 // app/Common/ProfileImageUpload.tsx (versão atualizada)
 'use client';
 
+import { useToast } from '@/app/hooks/useToast';
 import { useOnboardingModal } from '@/app/stores/authStore';
 import Image from 'next/image';
 import React, { useRef, useState, useEffect } from 'react';
@@ -51,6 +52,8 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
     lg: 'w-8 h-8',
   };
 
+  const toast = useToast();
+
   // Sincronizar com a prop currentImage
   useEffect(() => {
     setImagePreview(currentImage || null);
@@ -65,13 +68,13 @@ const ProfileImageUpload: React.FC<ProfileImageUploadProps> = ({
 
     // Validar tamanho (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('Imagem deve ter no máximo 5MB');
+      toast.error('Imagem deve ter no máximo 5MB');
       return;
     }
 
     // Validar tipo
     if (!file.type.startsWith('image/')) {
-      alert('Arquivo deve ser uma imagem');
+      toast.error('Arquivo deve ser uma imagem');
       return;
     }
 

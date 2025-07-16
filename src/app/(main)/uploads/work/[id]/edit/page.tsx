@@ -40,8 +40,11 @@ export default async function EditWorkPage({ params }: EditWorkPageProps) {
 
   const work = await prisma.work.findUnique({
     where: { id: resolvedParams.id },
+
     include: {
-      composer: { select: { id: true, name: true, fullName: true } },
+      composer: {
+        select: { id: true, name: true, fullName: true, portraitUrl: true },
+      },
       instrument: { select: { id: true, name: true, category: true } },
       epoch: { select: { id: true, name: true } },
     },
@@ -63,6 +66,7 @@ export default async function EditWorkPage({ params }: EditWorkPageProps) {
     prisma.composer.findMany({
       select: { id: true, name: true, fullName: true },
       orderBy: { name: 'asc' },
+      take: 50,
     }),
     prisma.instrument.findMany({
       select: { id: true, name: true, category: true },

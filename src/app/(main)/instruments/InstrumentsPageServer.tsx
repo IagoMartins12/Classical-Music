@@ -8,7 +8,7 @@ import {
   ComposerPreferences,
   WorksPreferences,
 } from '@/app/requests/instruments-history';
-import { InstrumentsPageClient } from '../components/InstrumentsPageClient';
+import { InstrumentsPageClient } from '../../components/InstrumentsPageClient';
 
 // 🎼 CONFIGURAÇÃO DE COMPOSITORES DESTAQUE
 const composerPreferences: ComposerPreferences = {

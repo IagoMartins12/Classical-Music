@@ -31,6 +31,7 @@ import {
 } from '../../animation/AnimatedComponents';
 import Button from '../../Common/Button';
 import CreateScoreModal from '../modals/CreateScoreModal';
+import { useToast } from '@/app/hooks/useToast';
 
 interface EditScoreClientProps {
   score: any;
@@ -50,6 +51,7 @@ const EditScoreClient = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  const toast = useToast();
   const formatFileSize = (size?: string) => {
     if (!size) return 'Não informado';
     return size;
@@ -110,7 +112,7 @@ const EditScoreClient = ({
       }
     } catch (error) {
       console.error('Erro ao excluir partitura:', error);
-      alert(
+      toast.error(
         error instanceof Error ? error.message : 'Erro ao excluir partitura'
       );
     } finally {

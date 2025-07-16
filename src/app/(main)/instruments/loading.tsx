@@ -1,6 +1,6 @@
 'use client';
 
-import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
+import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
 
 export default function InstrumentsLoading() {
   return (

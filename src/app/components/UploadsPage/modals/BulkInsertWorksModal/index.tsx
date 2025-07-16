@@ -26,6 +26,7 @@ import {
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import CreateWorkModal from '../CreateWorkModal';
+import { useToast } from '@/app/hooks/useToast';
 
 interface DiscoveredWork {
   id: string;
@@ -89,6 +90,7 @@ const BulkInsertWorksModal = ({
   epochs,
 }: BulkInsertWorksModalProps) => {
   const router = useRouter();
+  const toast = useToast();
 
   // Estados principais
   const [currentStep, setCurrentStep] = useState<
@@ -142,7 +144,9 @@ const BulkInsertWorksModal = ({
       console.log(`✅ Descobertas ${data.works?.length || 0} obras`);
     } catch (error) {
       console.error('❌ Erro ao descobrir obras:', error);
-      alert(error instanceof Error ? error.message : 'Erro ao descobrir obras');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao descobrir obras'
+      );
     } finally {
       setIsDiscovering(false);
     }
@@ -192,7 +196,7 @@ const BulkInsertWorksModal = ({
     );
 
     if (selectedWorks.length === 0) {
-      alert('Nenhuma obra nova foi selecionada para processamento.');
+      toast.error('Nenhuma obra nova foi selecionada para processamento.');
       return;
     }
 
@@ -359,7 +363,9 @@ const BulkInsertWorksModal = ({
       }
     } catch (error) {
       console.error('❌ Erro no processamento:', error);
-      alert(error instanceof Error ? error.message : 'Erro no processamento');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro no processamento'
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -418,7 +424,7 @@ const BulkInsertWorksModal = ({
                       key={step}
                       className={`w-3 h-3 rounded-full transition-colors ${
                         currentStep === step
-                          ? 'bg-brand-primary'
+                          ? 'bg-gray-400'
                           : index <
                             [
                               'discover',
@@ -426,7 +432,7 @@ const BulkInsertWorksModal = ({
                               'process',
                               'results',
                             ].indexOf(currentStep)
-                          ? 'bg-accent-green'
+                          ? 'bg-green-400'
                           : 'bg-theme-secondary'
                       }`}
                     />
@@ -582,7 +588,7 @@ const BulkInsertWorksModal = ({
                             <div className="flex items-center space-x-3 flex-1 min-w-0">
                               {/* Checkbox */}
                               <input
-                                type="checkbox"
+                                type={work.alreadyExists ? 'text' : 'checkbox'}
                                 checked={work.selected}
                                 disabled={work.alreadyExists}
                                 onChange={() => toggleWorkSelection(work.id)}

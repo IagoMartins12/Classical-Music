@@ -104,7 +104,6 @@ export async function PATCH(
         _count: {
           select: {
             helpfulVotes: true,
-            replies: true,
           },
         },
       },
@@ -283,7 +282,6 @@ export async function GET(
         _count: {
           select: {
             helpfulVotes: true,
-            replies: true,
           },
         },
       },

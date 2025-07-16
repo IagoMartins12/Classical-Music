@@ -329,11 +329,7 @@ const CreateComposerModal = ({
 
   // Função para limpar nome
   const cleanName = (name: string): string => {
-    return name
-      .replace(/[(),]/g, '')
-      .replace(/_/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
+    return name.replace(/[(),]/g, '').replace(/_/g, ' ').replace(/\s+/g, ' ');
   };
 
   // Verificar duplicatas por link MELHORADO

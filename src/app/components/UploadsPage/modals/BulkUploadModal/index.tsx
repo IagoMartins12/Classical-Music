@@ -3,6 +3,7 @@
 
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
+import { useToast } from '@/app/hooks/useToast';
 import { useState } from 'react';
 import { FiUpload, FiX, FiFile, FiCheck, FiAlertCircle } from 'react-icons/fi';
 
@@ -18,6 +19,7 @@ const BulkUploadModal = ({ isOpen, onClose, type }: BulkUploadModalProps) => {
   const [results, setResults] = useState<any[]>([]);
   const [showResults, setShowResults] = useState(false);
 
+  const toast = useToast();
   const handleFileUpload = (file: File) => {
     setSelectedFile(file);
     setShowResults(false);
@@ -48,7 +50,7 @@ const BulkUploadModal = ({ isOpen, onClose, type }: BulkUploadModalProps) => {
       }
     } catch (error) {
       console.error('Erro no upload em lote:', error);
-      alert('Erro ao processar upload em lote');
+      toast.error('Erro ao processar upload em lote');
     } finally {
       setUploading(false);
     }

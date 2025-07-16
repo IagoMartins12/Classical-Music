@@ -2,8 +2,8 @@
 import { Metadata } from 'next';
 
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../libs/auth';
-import AuthCheck from '../components/AuthCheck';
+import { authOptions } from '../../libs/auth';
+import AuthCheck from '../../components/AuthCheck';
 import LearningPageServer from './pageServer';
 
 export const metadata: Metadata = {

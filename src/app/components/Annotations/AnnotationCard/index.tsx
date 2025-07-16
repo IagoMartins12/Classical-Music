@@ -487,12 +487,6 @@ export default function AnnotationCard({
                 <FiEye className="w-4 h-4" />
                 <span>{annotation.viewCount}</span>
               </div>
-              {annotation._count.replies > 0 && (
-                <div className="flex items-center space-x-1">
-                  <FiMessageCircle className="w-4 h-4" />
-                  <span>{annotation._count.replies}</span>
-                </div>
-              )}
             </div>
           </div>
         </div>

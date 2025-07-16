@@ -211,10 +211,7 @@ export const LearningCard = ({
   if (viewMode === 'list') {
     return (
       <>
-        <AnimatedCard
-          hover="lift"
-          className="classical-card p-6 group hover:shadow-theme-glow transition-all"
-        >
+        <div className="classical-card p-6 group hover:shadow-theme-glow transition-all">
           <div className="flex items-center space-x-6">
             <div className="flex-1">
               <div className="flex items-center space-x-4">
@@ -352,7 +349,7 @@ export const LearningCard = ({
               </div>
             </div>
           </div>
-        </AnimatedCard>
+        </div>
 
         <ConfirmDeleteModal
           isOpen={showDeleteModal}
@@ -368,10 +365,7 @@ export const LearningCard = ({
 
   return (
     <>
-      <AnimatedCard
-        hover="lift"
-        className="classical-card p-6 group hover:shadow-theme-glow transition-all"
-      >
+      <div className="classical-card p-6 group hover:shadow-theme-glow transition-all">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
@@ -600,7 +594,7 @@ export const LearningCard = ({
             </AnimatedItem>
           </div>
         </div>
-      </AnimatedCard>
+      </div>
 
       <ConfirmDeleteModal
         isOpen={showDeleteModal}

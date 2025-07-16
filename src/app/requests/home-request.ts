@@ -248,12 +248,6 @@ export const getRandomDiscoveries = unstable_cache(
 export const getRecentAdditions = unstable_cache(
   async () => {
     const recentComposers = await prisma.composer.findMany({
-      where: {
-        OR: [
-          { primaryRoleId: '6839e5a5eba93979e36ad88b' },
-          { roles: { contains: '6839e5a5eba93979e36ad88b' } },
-        ],
-      },
       select: {
         id: true,
         name: true,

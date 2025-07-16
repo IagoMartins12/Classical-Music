@@ -2,7 +2,7 @@
 'use client';
 
 import DetailedMusicHistorySkeleton from './DetailedMusicHistorySkeleton';
-import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
+import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
 
 const LoadingMusicHistorySkeleton = () => {
   return (

@@ -39,6 +39,7 @@ import {
   isValidUrl,
   generateAndUploadPDFThumbnail,
 } from '@/app/utils/pdfUtils';
+import { useToast } from '@/app/hooks/useToast';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -298,6 +299,7 @@ const CreateScoreModal = ({
     }
   };
 
+  const toast = useToast();
   const handleFileUpload = async (file: File) => {
     setUploadingFile(true);
 
@@ -305,7 +307,7 @@ const CreateScoreModal = ({
       const validation = await validateUploadedFile(file);
 
       if (!validation.isValid) {
-        alert(validation.error || 'Arquivo inválido');
+        toast.error(validation.error || 'Arquivo inválido');
         return;
       }
 
@@ -380,7 +382,7 @@ const CreateScoreModal = ({
       });
     } catch (error) {
       console.error('❌ Erro no upload:', error);
-      alert('Erro ao fazer upload do arquivo');
+      toast.error('Erro ao fazer upload do arquivo');
       setPdfValidation({
         isValidating: false,
         isValid: false,
@@ -446,13 +448,13 @@ const CreateScoreModal = ({
       if (response.ok) {
         router.refresh();
         onClose();
-        alert(data.message || 'Partitura salva com sucesso!');
+        toast.success(data.message || 'Partitura salva com sucesso!');
       } else {
         throw new Error(data.error || 'Erro ao salvar partitura');
       }
     } catch (error) {
       console.error('Erro ao salvar partitura:', error);
-      alert(
+      toast.error(
         error instanceof Error ? error.message : 'Erro ao salvar partitura'
       );
     } finally {

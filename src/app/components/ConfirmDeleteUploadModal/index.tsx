@@ -110,7 +110,8 @@ export default function ConfirmDeleteUploadModal({
 
   // Corrigido para garantir que sempre retorna boolean
   const hasCascadeItems = Boolean(
-    cascadeInfo && (cascadeInfo.totalWorks > 0 || cascadeInfo.totalScores > 0)
+    cascadeInfo &&
+      ((cascadeInfo.totalWorks ?? 0) > 0 || (cascadeInfo.totalScores ?? 0) > 0)
   );
 
   const modalContent = (
@@ -122,7 +123,7 @@ export default function ConfirmDeleteUploadModal({
 
       <AnimatedCard
         hover="none"
-        className="relative bg-theme-primary rounded-xl shadow-xl max-w-lg w-full p-6 border border-theme-secondary max-h-[90vh] overflow-y-auto"
+        className="relative bg-theme-primary rounded-xl shadow-xl max-w-lg w-full p-6 border border-theme-secondary overflow-y-auto"
       >
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-12 h-12 bg-accent-red/10 rounded-xl flex items-center justify-center relative">
@@ -185,7 +186,7 @@ export default function ConfirmDeleteUploadModal({
                     <p className="font-medium text-theme-primary mb-2 flex items-center">
                       🎼 {cascadeInfo.works.length} obra(s):
                     </p>
-                    <div className="space-y-1 max-h-24 overflow-y-auto bg-theme-secondary/30 rounded p-2">
+                    <div className="space-y-1  overflow-y-auto bg-theme-secondary/30 rounded p-2">
                       {cascadeInfo.works.slice(0, 4).map((work) => (
                         <div
                           key={work.id}

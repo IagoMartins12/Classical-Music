@@ -27,6 +27,7 @@ import {
 import Button from '../../Common/Button';
 import CreateComposerModal from '../modals/CreateComposerModal';
 import { getComposerNationalityDisplay } from '../../Utils/nationalityFlags';
+import { useToast } from '@/app/hooks/useToast';
 
 interface EditComposerClientProps {
   composer: any;
@@ -126,6 +127,8 @@ const EditComposerClient = ({
     return cleanDate;
   };
 
+  const toast = useToast();
+
   const handleDelete = async () => {
     if (
       !confirm(
@@ -152,7 +155,7 @@ const EditComposerClient = ({
       }
     } catch (error) {
       console.error('Erro ao excluir compositor:', error);
-      alert(
+      toast.error(
         error instanceof Error ? error.message : 'Erro ao excluir compositor'
       );
     } finally {

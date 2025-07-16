@@ -67,7 +67,6 @@ export interface WorkAnnotation {
   };
   _count: {
     helpfulVotes: number;
-    replies: number;
   };
   userVote: boolean | null;
   isOptimistic?: boolean;
@@ -526,7 +525,6 @@ export const useAnnotationsStore = create<AnnotationsStore>()(
           work: data.work,
           _count: {
             helpfulVotes: 0,
-            replies: 0,
           },
           userVote: null,
           isOptimistic: true,

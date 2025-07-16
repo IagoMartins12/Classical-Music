@@ -14,6 +14,7 @@ import {
   FiFile,
   FiUpload,
   FiSettings,
+  FiChevronDown,
 } from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
 import { ThemeToggle } from '../ThemeToggle';
@@ -33,13 +34,19 @@ import { useRouter } from 'next/navigation';
 
 interface NavItem {
   label: string;
-  href: string;
+  href?: string;
   active?: boolean;
+  submenu?: Array<{
+    label: string;
+    href: string;
+    description?: string;
+  }>;
 }
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const { logout: authLogout } = useAuthStore();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
   const { reset } = useLearningStore();
@@ -73,11 +80,28 @@ const Navbar: React.FC = () => {
       toast.error('Erro ao fazer logout');
     }
   };
+
   const profileRef = useRef<HTMLDivElement>(null);
+  const submenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const optionsArr: NavItem[] = [
     { label: 'História da Música', href: '/music-history' },
-    { label: 'Obras', href: '/works' },
+    {
+      label: 'Obras',
+      href: '/works',
+      submenu: [
+        {
+          label: 'Todas as Obras',
+          href: '/works',
+          description: 'Explore nossa coleção completa',
+        },
+        {
+          label: 'Categorias',
+          href: '/genre',
+          description: 'Navegue por gêneros musicais',
+        },
+      ],
+    },
     { label: 'Compositores', href: '/composers' },
     { label: 'Instrumentos', href: '/instruments' },
     { label: 'Quem somos', href: '/about-us' },
@@ -119,6 +143,19 @@ const Navbar: React.FC = () => {
     return 'U';
   };
 
+  const handleMouseEnter = (label: string) => {
+    if (submenuTimeoutRef.current) {
+      clearTimeout(submenuTimeoutRef.current);
+    }
+    setActiveSubmenu(label);
+  };
+
+  const handleMouseLeave = () => {
+    submenuTimeoutRef.current = setTimeout(() => {
+      setActiveSubmenu(null);
+    }, 150);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -137,8 +174,12 @@ const Navbar: React.FC = () => {
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      if (submenuTimeoutRef.current) {
+        clearTimeout(submenuTimeoutRef.current);
+      }
     };
   }, [isProfileOpen]);
+
   return (
     <nav className="navbar-classical sticky top-0 z-50">
       <div className="section-wrap-nav pt-1 pb-2">
@@ -155,24 +196,81 @@ const Navbar: React.FC = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
-            {optionsArr.map(({ label, href, active }) => (
-              <Link
+            {optionsArr.map(({ label, href, active, submenu }) => (
+              <div
                 key={label}
-                href={href}
-                className={`
-                  relative px-3 py-2 rounded-lg font-medium transition-all duration-300
-                  ${
-                    active
-                      ? 'text-brand-primary bg-interactive-active'
-                      : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                  }
-                  after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 
-                  after:bg-brand-gradient after:transition-all after:duration-300
-                  hover:after:w-full hover:after:left-0
-                `}
+                className="relative"
+                onMouseEnter={() => submenu && handleMouseEnter(label)}
+                onMouseLeave={() => submenu && handleMouseLeave()}
               >
-                {label}
-              </Link>
+                {submenu ? (
+                  <div className="flex items-center">
+                    <Link
+                      href={href || '#'}
+                      className={`
+                        relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-1
+                        ${
+                          active
+                            ? 'text-brand-primary bg-interactive-active'
+                            : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                        }
+                        after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 
+                        after:bg-brand-gradient after:transition-all after:duration-300
+                        hover:after:w-full hover:after:left-0
+                      `}
+                    >
+                      <span>{label}</span>
+                      <FiChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          activeSubmenu === label ? 'rotate-180' : ''
+                        }`}
+                      />
+                    </Link>
+
+                    {/* Submenu */}
+                    {activeSubmenu === label && (
+                      <div className="absolute top-full left-0 mt-2 w-64 bg-theme-tertiary rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
+                        <div className="p-2">
+                          {submenu.map((item) => (
+                            <Link
+                              key={item.label}
+                              href={item.href}
+                              className="block p-3 rounded-lg hover:bg-interactive-hover transition-colors group"
+                              onClick={() => setActiveSubmenu(null)}
+                            >
+                              <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors">
+                                {item.label}
+                              </div>
+                              {item.description && (
+                                <div className="text-xs text-theme-tertiary mt-1">
+                                  {item.description}
+                                </div>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    href={href || '#'}
+                    className={`
+                      relative px-3 py-2 rounded-lg font-medium transition-all duration-300
+                      ${
+                        active
+                          ? 'text-brand-primary bg-interactive-active'
+                          : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                      }
+                      after:absolute after:bottom-0 after:left-1/2 after:w-0 after:h-0.5 
+                      after:bg-brand-gradient after:transition-all after:duration-300
+                      hover:after:w-full hover:after:left-0
+                    `}
+                  >
+                    {label}
+                  </Link>
+                )}
+              </div>
             ))}
           </div>
 
@@ -353,27 +451,65 @@ const Navbar: React.FC = () => {
         >
           <div className="classical-card p-4">
             <ul className="space-y-2">
-              {optionsArr.map(({ label, href, active }, index) => (
+              {optionsArr.map(({ label, href, active, submenu }, index) => (
                 <li key={label}>
-                  <Link
-                    href={href}
-                    className={`
-                      block px-4 py-3 rounded-lg font-medium transition-all duration-300
-                      ${
-                        active
-                          ? 'text-brand-primary bg-interactive-active'
-                          : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
-                      }
-                    `}
-                    style={{
-                      animation: isMenuOpen
-                        ? `fadeInUp 0.3s ease-out ${index * 0.05}s backwards`
-                        : 'none',
-                    }}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {label}
-                  </Link>
+                  {submenu ? (
+                    <div className="space-y-2">
+                      <Link
+                        href={href || '#'}
+                        className={`
+                          block px-4 py-3 rounded-lg font-medium transition-all duration-300
+                          ${
+                            active
+                              ? 'text-brand-primary bg-interactive-active'
+                              : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                          }
+                        `}
+                        style={{
+                          animation: isMenuOpen
+                            ? `fadeInUp 0.3s ease-out ${
+                                index * 0.05
+                              }s backwards`
+                            : 'none',
+                        }}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {label}
+                      </Link>
+                      <div className="ml-4 space-y-1">
+                        {submenu.map((item) => (
+                          <Link
+                            key={item.label}
+                            href={item.href}
+                            className="block px-4 py-2 text-sm rounded-lg text-theme-tertiary hover:text-brand-primary hover:bg-interactive-hover transition-all"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <Link
+                      href={href || '#'}
+                      className={`
+                        block px-4 py-3 rounded-lg font-medium transition-all duration-300
+                        ${
+                          active
+                            ? 'text-brand-primary bg-interactive-active'
+                            : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
+                        }
+                      `}
+                      style={{
+                        animation: isMenuOpen
+                          ? `fadeInUp 0.3s ease-out ${index * 0.05}s backwards`
+                          : 'none',
+                      }}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {label}
+                    </Link>
+                  )}
                 </li>
               ))}
 

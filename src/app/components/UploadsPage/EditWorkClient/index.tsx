@@ -32,6 +32,7 @@ import {
 } from '../../animation/AnimatedComponents';
 import Button from '../../Common/Button';
 import CreateWorkModal from '../modals/CreateWorkModal';
+import { useToast } from '@/app/hooks/useToast';
 
 interface EditWorkClientProps {
   work: any;
@@ -55,10 +56,13 @@ const EditWorkClient = ({
   const [isDeleting, setIsDeleting] = useState(false);
   const [imageError, setImageError] = useState(false);
 
+  console.log('teste', { work, composers });
   const formatDuration = (duration?: string) => {
     if (!duration) return null;
     return duration;
   };
+
+  const toast = useToast();
 
   const getWorkTypeLabel = (type: string) => {
     const labels = {
@@ -115,7 +119,9 @@ const EditWorkClient = ({
       }
     } catch (error) {
       console.error('Erro ao excluir obra:', error);
-      alert(error instanceof Error ? error.message : 'Erro ao excluir obra');
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao excluir obra'
+      );
     } finally {
       setIsDeleting(false);
     }
@@ -204,9 +210,6 @@ const EditWorkClient = ({
                             <h1 className="text-3xl md:text-4xl font-bold text-gradient-brand classical-title leading-tight">
                               Editar Obra
                             </h1>
-                            <p className="text-theme-secondary text-lg">
-                              {work.title}
-                            </p>
                           </div>
                         </div>
 

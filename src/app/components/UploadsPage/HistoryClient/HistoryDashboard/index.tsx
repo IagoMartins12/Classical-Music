@@ -42,6 +42,7 @@ import {
   LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Select from '@/app/components/Common/Select';
+import { useToast } from '@/app/hooks/useToast';
 
 interface HistoryDashboardProps {
   userId?: string;
@@ -90,6 +91,7 @@ const HistoryDashboard = ({
   const [selectedPeriod, setSelectedPeriod] = useState('30');
   const [selectedMetric, setSelectedMetric] = useState('total');
 
+  const toast = useToast();
   useEffect(() => {
     fetchStats();
   }, [userId, selectedPeriod]);
@@ -157,7 +159,7 @@ const HistoryDashboard = ({
       }
     } catch (error) {
       console.error('Erro ao exportar dados:', error);
-      alert('Erro ao exportar dados');
+      toast.error('Erro ao exportar dados');
     }
   };
 

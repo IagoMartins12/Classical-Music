@@ -884,42 +884,6 @@ export function InstrumentsPageClient({
         style={{ animationDelay: '0.5s' }}
       ></div>
 
-      {/* CSS for animations */}
-      <style jsx>{`
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          25% {
-            transform: translateY(-10px) rotate(2deg);
-          }
-          50% {
-            transform: translateY(-5px) rotate(-1deg);
-          }
-          75% {
-            transform: translateY(-15px) rotate(1deg);
-          }
-        }
-
-        .animate-float {
-          animation: float 6s ease-in-out infinite;
-        }
-
-        .line-clamp-1 {
-          overflow: hidden;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 1;
-        }
-
-        .line-clamp-2 {
-          overflow: hidden;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2;
-        }
-      `}</style>
     </div>
   );
 }

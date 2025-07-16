@@ -18,8 +18,6 @@ import LearningModal from '@/app/components/LearningModal';
 import { EmptyState } from './EmptyState';
 import { LearningCard } from './LearningCard';
 import Select from '../Common/Select';
-import LearningLoading from '@/app/learning/loading';
-import AuthCheck from '../AuthCheck';
 import { useAuth } from '@/app/hooks/useAuth';
 import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
 import { PiTarget } from 'react-icons/pi';
@@ -32,6 +30,7 @@ import {
   AnimatedCard,
   SequentialGrid,
 } from '../animation/AnimatedComponents';
+import LearningPageLoading from '@/app/(main)/learning/loading';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 type FilterTab = 'all' | 'want-to-learn' | 'learned';
@@ -192,14 +191,6 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
     });
     setShowModal(true);
   };
-
-  if (!mounted) {
-    return <LearningLoading />;
-  }
-
-  if (!isAuthenticated) {
-    return <AuthCheck title="Suas lições" />;
-  }
 
   return (
     <PageContainer showBackground={true}>
@@ -450,12 +441,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
               ) : (
                 <>
                   {viewMode === 'cards' ? (
-                    <SequentialGrid
-                      cols={3}
-                      gap={6}
-                      delayBetweenItems={0.1}
-                      className=""
-                    >
+                    <SequentialGrid cols={3} gap={6} className="">
                       {filteredData.wantToLearn.map((item) => (
                         <LearningCard
                           key={item.id}

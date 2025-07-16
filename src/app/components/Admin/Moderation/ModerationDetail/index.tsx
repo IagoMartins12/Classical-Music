@@ -27,6 +27,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import { useAdminModeration } from '@/app/hooks/admin/useAdminModeration';
+import { useToast } from '@/app/hooks/useToast';
 
 interface ModerationDetailProps {
   itemId: string;
@@ -41,6 +42,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
   const [notes, setNotes] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
 
+  const toast = useToast();
   // Mock data para demonstração
   useEffect(() => {
     // Simular carregamento do item
@@ -105,7 +107,7 @@ export default function ModerationDetail({ itemId }: ModerationDetailProps) {
 
   const handleReject = async () => {
     if (!rejectionReason.trim()) {
-      alert('Por favor, forneça uma razão para a rejeição.');
+      toast.error('Por favor, forneça uma razão para a rejeição.');
       return;
     }
 
