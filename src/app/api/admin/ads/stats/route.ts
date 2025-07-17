@@ -1,4 +1,4 @@
-// app/api/admin/ads/stats/route.ts
+// app/api/admin/ads/stats/route.ts - SEGUINDO O SCHEMA ATUAL
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -22,7 +22,6 @@ export async function POST(request: NextRequest) {
       where: {
         id: adId,
         status: 'ACTIVE',
-        isApproved: true,
       },
     });
 
@@ -55,8 +54,7 @@ export async function POST(request: NextRequest) {
       userId,
       pageUrl: data.pageUrl,
       pageTitle: data.pageTitle,
-      placement: data.placement,
-      country: data.country, // Obtido do frontend via geolocalização
+      country: data.country,
     };
 
     // Buscar estatística do dia atual para este ad
@@ -78,7 +76,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingStats) {
-      // Atualizar estatística existente
+      // Atualizar estatística existente - APENAS CAMPOS EXISTENTES
       const updateData: any = {};
 
       switch (event) {
@@ -87,9 +85,6 @@ export async function POST(request: NextRequest) {
           break;
         case 'click':
           updateData.clicks = { increment: 1 };
-          break;
-        case 'conversion':
-          updateData.conversions = { increment: 1 };
           break;
         case 'hover':
           updateData.hoverTime = { increment: data.duration || 0 };
@@ -101,12 +96,11 @@ export async function POST(request: NextRequest) {
         data: updateData,
       });
     } else {
-      // Criar nova estatística
+      // Criar nova estatística - APENAS CAMPOS EXISTENTES
       const initialStats: any = {
         ...statsData,
         impressions: 0,
         clicks: 0,
-        conversions: 0,
         hoverTime: 0,
       };
 
@@ -117,9 +111,6 @@ export async function POST(request: NextRequest) {
         case 'click':
           initialStats.clicks = 1;
           break;
-        case 'conversion':
-          initialStats.conversions = 1;
-          break;
         case 'hover':
           initialStats.hoverTime = data.duration || 0;
           break;
@@ -128,32 +119,6 @@ export async function POST(request: NextRequest) {
       await prisma.adStats.create({
         data: initialStats,
       });
-    }
-
-    // Verificar se atingiu limites máximos
-    if (ad.maxViews || ad.maxClicks) {
-      const totalStats = await prisma.adStats.aggregate({
-        where: { advertisementId: adId },
-        _sum: {
-          impressions: true,
-          clicks: true,
-        },
-      });
-
-      const shouldPause =
-        (ad.maxViews &&
-          totalStats._sum.impressions &&
-          totalStats._sum.impressions >= ad.maxViews) ||
-        (ad.maxClicks &&
-          totalStats._sum.clicks &&
-          totalStats._sum.clicks >= ad.maxClicks);
-
-      if (shouldPause) {
-        await prisma.advertisement.update({
-          where: { id: adId },
-          data: { status: 'PAUSED' },
-        });
-      }
     }
 
     return NextResponse.json({
@@ -169,19 +134,19 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// GET - Obter estatísticas de uma publicidade
+// GET - Obter estatísticas de uma publicidade - SEGUINDO O SCHEMA ATUAL
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.id || session.user.role !== 2) {
+    if (!session?.user?.id || session.user.role < 1) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
     const adId = searchParams.get('adId');
-    const period = searchParams.get('period') || 'week'; // week, month, year
-    const groupBy = searchParams.get('groupBy') || 'day'; // day, week, month
+    const period = searchParams.get('period') || 'week';
+    const groupBy = searchParams.get('groupBy') || 'day';
 
     if (!adId) {
       return NextResponse.json(
@@ -249,20 +214,18 @@ export async function GET(request: NextRequest) {
           date: key,
           impressions: 0,
           clicks: 0,
-          conversions: 0,
           hoverTime: 0,
           devices: { mobile: 0, tablet: 0, desktop: 0 },
         };
       }
 
-      acc[key].impressions += stat.impressions;
-      acc[key].clicks += stat.clicks;
-      acc[key].conversions += stat.conversions;
-      acc[key].hoverTime += stat.hoverTime;
+      acc[key].impressions += stat.impressions || 0;
+      acc[key].clicks += stat.clicks || 0;
+      acc[key].hoverTime += stat.hoverTime || 0;
 
       if (stat.device) {
         acc[key].devices[stat.device as 'mobile' | 'tablet' | 'desktop'] +=
-          stat.impressions;
+          stat.impressions || 0;
       }
 
       return acc;
@@ -271,22 +234,19 @@ export async function GET(request: NextRequest) {
     // Converter para array
     const chartData = Object.values(aggregatedStats);
 
-    // Calcular totais
+    // Calcular totais - APENAS CAMPOS EXISTENTES
     const totals = stats.reduce(
       (acc, stat) => ({
-        impressions: acc.impressions + stat.impressions,
-        clicks: acc.clicks + stat.clicks,
-        conversions: acc.conversions + stat.conversions,
-        hoverTime: acc.hoverTime + stat.hoverTime,
+        impressions: acc.impressions + (stat.impressions || 0),
+        clicks: acc.clicks + (stat.clicks || 0),
+        hoverTime: acc.hoverTime + (stat.hoverTime || 0),
       }),
-      { impressions: 0, clicks: 0, conversions: 0, hoverTime: 0 }
+      { impressions: 0, clicks: 0, hoverTime: 0 }
     );
 
-    // Calcular CTR e outras métricas
+    // Calcular CTR - APENAS COM CAMPOS EXISTENTES
     const ctr =
       totals.impressions > 0 ? (totals.clicks / totals.impressions) * 100 : 0;
-    const conversionRate =
-      totals.clicks > 0 ? (totals.conversions / totals.clicks) * 100 : 0;
     const avgHoverTime = stats.length > 0 ? totals.hoverTime / stats.length : 0;
 
     // Top países
@@ -336,11 +296,10 @@ export async function GET(request: NextRequest) {
         totals: {
           ...totals,
           ctr: Math.round(ctr * 100) / 100,
-          conversionRate: Math.round(conversionRate * 100) / 100,
           avgHoverTime: Math.round(avgHoverTime),
         },
-        topCountries: countriesData,
-        topPages: pagesData,
+        topCountries: countriesData || [],
+        topPages: pagesData || [],
         period,
         groupBy,
       },

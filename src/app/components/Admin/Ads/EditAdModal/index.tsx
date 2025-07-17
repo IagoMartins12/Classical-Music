@@ -1,9 +1,14 @@
 // app/admin/ads/components/EditAdModal.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
-import { FiSave, FiEdit, FiTarget, FiImage, FiMapPin } from 'react-icons/fi';
-
+import { useState, useEffect, useRef } from 'react';
+import {
+  FiSave,
+  FiEdit,
+  FiTarget,
+  FiMessageCircle,
+  FiInfo,
+} from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { useAds } from '@/app/hooks/admin/useAds';
 import Button from '@/app/components/Common/Button';
@@ -46,18 +51,20 @@ const placementOptions = [
 ];
 
 const targetTypeOptions = [
-  { value: 'GENERAL', label: 'Geral' },
-  { value: 'INSTRUMENT', label: 'Por Instrumento' },
-  { value: 'COMPOSER', label: 'Por Compositor' },
-  { value: 'EPOCH', label: 'Por Época' },
-  { value: 'USER_LEVEL', label: 'Por Nível do Usuário' },
-  { value: 'GEOGRAPHIC', label: 'Por Localização' },
+  { value: 'GENERAL', label: 'Geral (Todos os usuários)' },
+  { value: 'INSTRUMENT', label: 'Por Instrumento Específico' },
+  { value: 'USER_LEVEL', label: 'Por Tipo de Usuário' },
 ];
 
 const userLevelOptions = [
-  { value: 'BEGINNER', label: 'Iniciante' },
-  { value: 'INTERMEDIATE', label: 'Intermediário' },
-  { value: 'ADVANCED', label: 'Avançado' },
+  { value: 'ALL', label: 'Todos os Usuários' },
+  { value: 'STUDENT', label: 'Apenas Estudantes' },
+  { value: 'TEACHER', label: 'Apenas Professores' },
+];
+
+const linkTypeOptions = [
+  { value: 'url', label: 'Site/URL' },
+  { value: 'whatsapp', label: 'WhatsApp' },
 ];
 
 export default function EditAdModal({
@@ -65,72 +72,72 @@ export default function EditAdModal({
   onClose,
   onSuccess,
 }: EditAdModalProps) {
-  const { updateAd, loading } = useAds();
+  const { updateAd, loading, checkConflict } = useAds();
+
+  // 🆕 Refs para scroll automático
+  const fieldRefs = {
+    title: useRef<HTMLInputElement>(null),
+    advertiserName: useRef<HTMLInputElement>(null),
+    description: useRef<HTMLTextAreaElement>(null),
+    type: useRef<HTMLSelectElement>(null),
+    placement: useRef<HTMLSelectElement>(null),
+    targetType: useRef<HTMLSelectElement>(null),
+    instrumentId: useRef<HTMLSelectElement>(null),
+    ctaText: useRef<HTMLInputElement>(null),
+    targetUrl: useRef<HTMLInputElement>(null),
+  };
+
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    tagline: '',
     content: '',
-    imageUrl: '',
-    videoUrl: '',
     ctaText: '',
     targetUrl: '',
+    linkType: 'url',
     isExternal: true,
     type: 'BANNER',
     placement: 'SIDEBAR_RIGHT',
     status: 'DRAFT',
     targetType: 'GENERAL',
+    targetUserLevel: 'ALL',
+    instrumentId: '',
     advertiserName: '',
     advertiserEmail: '',
     advertiserPhone: '',
     advertiserWebsite: '',
-    priority: 0,
-    weight: 1,
-    maxViews: '',
-    maxClicks: '',
     startDate: '',
     endDate: '',
     showOnMobile: true,
     showOnTablet: true,
     showOnDesktop: true,
-
-    // Targeting
-    instrumentTargets: [] as string[],
-    composerTargets: [] as string[],
-    epochTargets: [] as string[],
-    userLevelTargets: [] as string[],
-    geoTargets: [] as any[],
   });
 
-  const [availableOptions, setAvailableOptions] = useState({
-    instruments: [] as any[],
-  });
+  const [availableInstruments, setAvailableInstruments] = useState<any[]>([]);
+  const [conflictInfo, setConflictInfo] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [hasMedia, setHasMedia] = useState(false);
 
-  // Carregar dados do ad
+  // Carregar dados do anúncio
   useEffect(() => {
     if (ad) {
       setFormData({
         title: ad.title || '',
         description: ad.description || '',
-        tagline: ad.tagline || '',
         content: ad.content || '',
-        imageUrl: ad.imageUrl || '',
-        videoUrl: ad.videoUrl || '',
         ctaText: ad.ctaText || '',
         targetUrl: ad.targetUrl || '',
+        linkType: ad.linkType || 'url',
         isExternal: ad.isExternal ?? true,
         type: ad.type || 'BANNER',
         placement: ad.placement || 'SIDEBAR_RIGHT',
         status: ad.status || 'DRAFT',
         targetType: ad.targetType || 'GENERAL',
+        targetUserLevel: ad.targetUserLevel || 'ALL',
+        instrumentId: ad.instrumentId || '',
         advertiserName: ad.advertiserName || '',
         advertiserEmail: ad.advertiserEmail || '',
         advertiserPhone: ad.advertiserPhone || '',
         advertiserWebsite: ad.advertiserWebsite || '',
-        priority: ad.priority || 0,
-        weight: ad.weight || 1,
-        maxViews: ad.maxViews?.toString() || '',
-        maxClicks: ad.maxClicks?.toString() || '',
         startDate: ad.startDate
           ? new Date(ad.startDate).toISOString().slice(0, 16)
           : '',
@@ -140,147 +147,186 @@ export default function EditAdModal({
         showOnMobile: ad.showOnMobile ?? true,
         showOnTablet: ad.showOnTablet ?? true,
         showOnDesktop: ad.showOnDesktop ?? true,
-
-        instrumentTargets:
-          ad.instrumentTargets?.map((t: any) => t.instrumentId) || [],
-        composerTargets:
-          ad.composerTargets?.map((t: any) => t.composerId) || [],
-        epochTargets: ad.epochTargets?.map((t: any) => t.epochId) || [],
-        userLevelTargets:
-          ad.userLevelTargets?.map((t: any) => t.userLevel) || [],
-        geoTargets: ad.geoTargets || [],
       });
+
+      // Verificar se o anúncio tem mídia
+      setHasMedia(!!(ad.imageUrl || ad.videoUrl));
     }
   }, [ad]);
 
-  // Buscar opções para targeting
+  // Buscar instrumentos disponíveis
   useEffect(() => {
-    const fetchOptions = async () => {
+    const fetchInstruments = async () => {
       try {
-        const [instrumentsRes] = await Promise.all([fetch('/api/instruments')]);
-
-        const [instruments] = await Promise.all([instrumentsRes.json()]);
-
-        setAvailableOptions({
-          instruments: instruments.instruments || [],
-        });
+        const response = await fetch('/api/instruments');
+        const data = await response.json();
+        setAvailableInstruments(data.instruments || []);
       } catch (error) {
-        console.error('Erro ao buscar opções:', error);
+        console.error('Erro ao buscar instrumentos:', error);
       }
     };
 
-    fetchOptions();
+    fetchInstruments();
   }, []);
+
+  // Verificar conflitos quando dados relevantes mudarem
+  useEffect(() => {
+    const checkConflicts = async () => {
+      if (!formData.placement || !formData.targetType) return;
+
+      try {
+        const result = await checkConflict(
+          formData.placement,
+          formData.targetType,
+          formData.targetType === 'INSTRUMENT'
+            ? formData.instrumentId
+            : undefined
+        );
+
+        if (result.hasConflict) {
+          setConflictInfo(result.message);
+        } else {
+          setConflictInfo(null);
+        }
+      } catch (error) {
+        console.error('Erro ao verificar conflitos:', error);
+      }
+    };
+
+    checkConflicts();
+  }, [
+    formData.placement,
+    formData.targetType,
+    formData.instrumentId,
+    checkConflict,
+    ad?.id,
+  ]);
+
+  // 🆕 Função para scroll automático para o primeiro erro
+  const scrollToFirstError = (errorFields: string[]) => {
+    if (errorFields.length > 0) {
+      const firstErrorField = errorFields[0] as keyof typeof fieldRefs;
+      const fieldRef = fieldRefs[firstErrorField];
+
+      if (fieldRef?.current) {
+        fieldRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+
+        setTimeout(() => {
+          fieldRef.current?.focus();
+        }, 500);
+      }
+    }
+  };
+
+  // 🆕 Função de validação com scroll automático
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    // Validações obrigatórias
+    if (!formData.title.trim()) {
+      newErrors.title = 'Título é obrigatório';
+    }
+
+    if (!formData.advertiserName.trim()) {
+      newErrors.advertiserName = 'Nome do anunciante é obrigatório';
+    }
+
+    if (formData.targetType === 'INSTRUMENT' && !formData.instrumentId) {
+      newErrors.instrumentId =
+        'Instrumento é obrigatório para este tipo de segmentação';
+    }
+
+    if (formData.linkType === 'whatsapp' && formData.targetUrl) {
+      const whatsappNumber = formData.targetUrl.replace(/\D/g, '');
+      if (whatsappNumber.length < 10) {
+        newErrors.targetUrl =
+          'Número do WhatsApp inválido. Use formato: 5511999999999';
+      }
+    }
+
+    setErrors(newErrors);
+
+    // Scroll para o primeiro erro
+    const errorFields = Object.keys(newErrors);
+    if (errorFields.length > 0) {
+      setTimeout(() => {
+        scrollToFirstError(errorFields);
+      }, 100);
+    }
+
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
-  };
 
-  const handleArrayChange = (
-    field: string,
-    value: string,
-    checked: boolean
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: checked
-        ? [...(prev[field as keyof typeof prev] as string[]), value]
-        : (prev[field as keyof typeof prev] as string[]).filter(
-            (item) => item !== value
-          ),
-    }));
+    // Limpar erro do campo quando usuário começar a digitar
+    if (errors[field]) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: '',
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!validateForm()) {
+      return;
+    }
+
+    if (conflictInfo) {
+      toast.error('Resolva o conflito antes de continuar');
+      return;
+    }
+
     try {
-      // Validação básica
-      if (!formData.title.trim()) {
-        toast.error('Título é obrigatório');
-        return;
-      }
-
-      if (!formData.advertiserName.trim()) {
-        toast.error('Nome do anunciante é obrigatório');
-        return;
-      }
-
-      // Função helper para converter strings vazias em undefined
-      const cleanUrlField = (value: string) =>
-        value.trim() === '' ? undefined : value;
-      const cleanEmailField = (value: string) =>
-        value.trim() === '' ? undefined : value;
-      const cleanStringField = (value: string) =>
-        value.trim() === '' ? undefined : value;
-
       // Preparar dados para envio
       const submitData = {
         title: formData.title.trim(),
-        description: cleanStringField(formData.description),
-        tagline: cleanStringField(formData.tagline),
-        content: cleanStringField(formData.content),
-        imageUrl: cleanUrlField(formData.imageUrl),
-        videoUrl: cleanUrlField(formData.videoUrl),
-        ctaText: cleanStringField(formData.ctaText),
-        targetUrl: cleanUrlField(formData.targetUrl),
+        description: formData.description.trim() || undefined,
+        content: formData.content.trim() || undefined,
+        ctaText: formData.ctaText.trim() || undefined,
+        targetUrl: formData.targetUrl.trim() || undefined,
+        linkType: formData.linkType,
         isExternal: formData.isExternal,
         type: formData.type,
         placement: formData.placement,
         status: formData.status,
         targetType: formData.targetType,
+        targetUserLevel: formData.targetUserLevel,
+        instrumentId:
+          formData.targetType === 'INSTRUMENT'
+            ? formData.instrumentId
+            : undefined,
         advertiserName: formData.advertiserName.trim(),
-        advertiserEmail: cleanEmailField(formData.advertiserEmail),
-        advertiserPhone: cleanStringField(formData.advertiserPhone),
-        advertiserWebsite: cleanUrlField(formData.advertiserWebsite),
-        priority: formData.priority,
-        weight: formData.weight,
-        maxViews: formData.maxViews ? parseInt(formData.maxViews) : undefined,
-        maxClicks: formData.maxClicks
-          ? parseInt(formData.maxClicks)
-          : undefined,
-        startDate: cleanStringField(formData.startDate),
-        endDate: cleanStringField(formData.endDate),
+        advertiserEmail: formData.advertiserEmail.trim() || undefined,
+        advertiserPhone: formData.advertiserPhone.trim() || undefined,
+        advertiserWebsite: formData.advertiserWebsite.trim() || undefined,
+        startDate: formData.startDate || undefined,
+        endDate: formData.endDate || undefined,
         showOnMobile: formData.showOnMobile,
         showOnTablet: formData.showOnTablet,
         showOnDesktop: formData.showOnDesktop,
-        instrumentTargets:
-          formData.instrumentTargets.length > 0
-            ? formData.instrumentTargets
-            : undefined,
-        composerTargets:
-          formData.composerTargets.length > 0
-            ? formData.composerTargets
-            : undefined,
-        epochTargets:
-          formData.epochTargets.length > 0 ? formData.epochTargets : undefined,
-        userLevelTargets:
-          formData.userLevelTargets.length > 0
-            ? formData.userLevelTargets
-            : undefined,
-        geoTargets:
-          formData.geoTargets.length > 0 ? formData.geoTargets : undefined,
       };
 
-      // Remover campos undefined do objeto (opcional, mas limpa o payload)
-      const cleanSubmitData = Object.fromEntries(
-        Object.entries(submitData).filter(([_, value]) => value !== undefined)
-      );
-
-      await updateAd(ad.id, cleanSubmitData);
-      toast.success('Publicidade atualizada com sucesso!');
+      await updateAd(ad.id, submitData);
+      toast.success('Anúncio atualizado com sucesso!');
       onSuccess();
-    } catch (error) {
-      console.error('Erro ao atualizar publicidade:', error);
-      toast.error('Erro ao atualizar publicidade');
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao atualizar anúncio');
     }
   };
 
   return (
-    <Modal isOpen={ad} onClose={onClose} maxWidth="4xl">
+    <Modal maxWidth="4xl" isOpen={!!ad} onClose={onClose}>
       <div className="w-full">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
@@ -290,141 +336,59 @@ export default function EditAdModal({
             </div>
             <div>
               <h2 className="text-xl font-bold text-theme-primary">
-                Editar Publicidade
+                Editar Anúncio
               </h2>
-              <p className="text-sm text-theme-tertiary">{ad.title}</p>
+              <p className="text-sm text-theme-tertiary">{ad?.title}</p>
             </div>
           </div>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Informações Básicas */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-              <FiTarget className="w-5 h-5" />
-              <span>Informações Básicas</span>
-            </h3>
+        {/* Info sobre mídia */}
+        <div className="p-4 bg-accent-blue/10 border-l-4 border-accent-blue mx-6 mt-4 rounded">
+          <div className="flex items-start space-x-3">
+            <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+            <div>
+              <h4 className="font-medium text-theme-primary">Sobre a mídia</h4>
+              <p className="text-sm text-theme-secondary mt-1">
+                {hasMedia ? (
+                  <>
+                    ✅ Este anúncio possui mídia (imagem/vídeo). Use a opção
+                    "Gerenciar mídia" para alterá-la.
+                  </>
+                ) : (
+                  <>
+                    ⚠️ Este anúncio não possui mídia. Adicione uma imagem ou
+                    vídeo para ativá-lo.
+                  </>
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Conflict Warning */}
+        {conflictInfo && (
+          <div className="p-4 bg-accent-red/10 border-l-4 border-accent-red mx-6 mt-4 rounded">
+            <div className="flex items-start space-x-3">
+              <FiTarget className="w-5 h-5 text-accent-red mt-0.5" />
               <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Título *
-                </label>
-                <Input
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => handleInputChange('title', e.target.value)}
-                  placeholder="Título da publicidade"
-                />
-              </div>
-
-              <div>
-                <Select
-                  label="Status"
-                  options={statusOptions}
-                  value={formData.status}
-                  onChange={(e) => handleInputChange('status', e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Anunciante *
-                </label>
-                <Input
-                  type="text"
-                  value={formData.advertiserName}
-                  onChange={(e) =>
-                    handleInputChange('advertiserName', e.target.value)
-                  }
-                  placeholder="Nome do anunciante"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Email do Anunciante
-                </label>
-                <Input
-                  type="email"
-                  value={formData.advertiserEmail}
-                  onChange={(e) =>
-                    handleInputChange('advertiserEmail', e.target.value)
-                  }
-                  placeholder="email@exemplo.com"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Número do telefone
-                </label>
-                <Input
-                  type="text"
-                  value={formData.advertiserPhone}
-                  onChange={(e) =>
-                    handleInputChange('advertiserPhone', e.target.value)
-                  }
-                  placeholder="Número do telefone"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Site do Anunciante
-                </label>
-                <Input
-                  type="text"
-                  value={formData.advertiserWebsite}
-                  onChange={(e) =>
-                    handleInputChange('advertiserWebsite', e.target.value)
-                  }
-                  placeholder="Site do Anunciante"
-                />
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Descrição
-                </label>
-                <textarea
-                  value={formData.description}
-                  onChange={(e) =>
-                    handleInputChange('description', e.target.value)
-                  }
-                  rows={4}
-                  placeholder="Descrição da publicidade"
-                  className="input-classical-2 w-full h-24 resize-none"
-                />
-              </div>
-
-              <div>
-                <Select
-                  label="Tipo"
-                  options={typeOptions}
-                  value={formData.type}
-                  onChange={(e) => handleInputChange('type', e.target.value)}
-                />
-              </div>
-
-              <div>
-                <Select
-                  label="Posicionamento"
-                  options={placementOptions}
-                  value={formData.placement}
-                  onChange={(e) =>
-                    handleInputChange('placement', e.target.value)
-                  }
-                />
+                <h4 className="font-medium text-accent-red">
+                  Conflito Detectado
+                </h4>
+                <p className="text-sm text-theme-secondary mt-1">
+                  {conflictInfo}
+                </p>
               </div>
             </div>
           </div>
+        )}
 
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Performance Atual */}
-          {ad.totalImpressions !== undefined && (
-            <div className="p-4 bg-theme-secondary rounded-lg">
-              <h4 className="font-medium text-theme-primary mb-2">
+          {ad?.totalImpressions !== undefined && (
+            <div className="p-4 bg-theme-secondary/50 rounded-lg">
+              <h4 className="font-medium text-theme-primary mb-3">
                 Performance Atual
               </h4>
               <div className="grid grid-cols-3 gap-4 text-center">
@@ -450,40 +414,218 @@ export default function EditAdModal({
             </div>
           )}
 
-          {/* Mídia */}
+          {/* Informações Básicas */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-              <FiImage className="w-5 h-5" />
-              <span>Mídia</span>
+              <FiTarget className="w-5 h-5" />
+              <span>Informações Básicas</span>
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-theme-primary mb-2">
-                  URL da Imagem
+                  Título *
                 </label>
                 <Input
-                  type="url"
-                  value={formData.imageUrl}
+                  ref={fieldRefs.title}
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => handleInputChange('title', e.target.value)}
+                  placeholder="Título do anúncio"
+                  maxLength={100}
+                  className={errors.title ? 'border-accent-red' : ''}
+                />
+                {errors.title && (
+                  <p className="text-accent-red text-sm mt-1">{errors.title}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-theme-primary mb-2">
+                  Anunciante *
+                </label>
+                <Input
+                  ref={fieldRefs.advertiserName}
+                  type="text"
+                  value={formData.advertiserName}
                   onChange={(e) =>
-                    handleInputChange('imageUrl', e.target.value)
+                    handleInputChange('advertiserName', e.target.value)
                   }
-                  placeholder="https://exemplo.com/imagem.jpg"
+                  placeholder="Nome do anunciante"
+                  maxLength={100}
+                  className={errors.advertiserName ? 'border-accent-red' : ''}
+                />
+                {errors.advertiserName && (
+                  <p className="text-accent-red text-sm mt-1">
+                    {errors.advertiserName}
+                  </p>
+                )}
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-theme-primary mb-2">
+                  Descrição
+                </label>
+                <textarea
+                  ref={fieldRefs.description}
+                  value={formData.description}
+                  onChange={(e) =>
+                    handleInputChange('description', e.target.value)
+                  }
+                  rows={3}
+                  placeholder="Descrição do anúncio"
+                  className="input-classical-2 w-full resize-none"
+                  maxLength={300}
+                />
+              </div>
+
+              <div>
+                <Select
+                  ref={fieldRefs.type}
+                  label="Tipo"
+                  options={typeOptions}
+                  value={formData.type}
+                  onChange={(e) => handleInputChange('type', e.target.value)}
+                />
+              </div>
+
+              <div>
+                <Select
+                  ref={fieldRefs.placement}
+                  label="Posicionamento"
+                  options={placementOptions}
+                  value={formData.placement}
+                  onChange={(e) =>
+                    handleInputChange('placement', e.target.value)
+                  }
+                />
+              </div>
+
+              <div>
+                <Select
+                  label="Status"
+                  options={statusOptions}
+                  value={formData.status}
+                  onChange={(e) => handleInputChange('status', e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Segmentação */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+              <FiTarget className="w-5 h-5" />
+              <span>Segmentação</span>
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Select
+                  ref={fieldRefs.targetType}
+                  label="Tipo de Segmentação"
+                  options={targetTypeOptions}
+                  value={formData.targetType}
+                  onChange={(e) =>
+                    handleInputChange('targetType', e.target.value)
+                  }
+                />
+              </div>
+
+              {formData.targetType === 'USER_LEVEL' && (
+                <div>
+                  <Select
+                    label="Tipo de Usuário"
+                    options={userLevelOptions}
+                    value={formData.targetUserLevel}
+                    onChange={(e) =>
+                      handleInputChange('targetUserLevel', e.target.value)
+                    }
+                  />
+                </div>
+              )}
+
+              {formData.targetType === 'INSTRUMENT' && (
+                <div>
+                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                    Instrumento *
+                  </label>
+                  <select
+                    ref={fieldRefs.instrumentId}
+                    value={formData.instrumentId}
+                    onChange={(e) =>
+                      handleInputChange('instrumentId', e.target.value)
+                    }
+                    className={`input-classical-2 w-full ${
+                      errors.instrumentId ? 'border-accent-red' : ''
+                    }`}
+                  >
+                    <option value="">Selecione um instrumento</option>
+                    {availableInstruments.map((instrument) => (
+                      <option key={instrument.id} value={instrument.id}>
+                        {instrument.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.instrumentId && (
+                    <p className="text-accent-red text-sm mt-1">
+                      {errors.instrumentId}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Link e Call-to-Action */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+              <FiMessageCircle className="w-5 h-5" />
+              <span>Call-to-Action</span>
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <Select
+                  label="Tipo de Link"
+                  options={linkTypeOptions}
+                  value={formData.linkType}
+                  onChange={(e) =>
+                    handleInputChange('linkType', e.target.value)
+                  }
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-theme-primary mb-2">
-                  URL do Vídeo
+                  {formData.linkType === 'whatsapp'
+                    ? 'Número do WhatsApp'
+                    : 'URL de Destino'}
                 </label>
                 <Input
-                  type="url"
-                  value={formData.videoUrl}
+                  ref={fieldRefs.targetUrl}
+                  type={formData.linkType === 'whatsapp' ? 'tel' : 'url'}
+                  value={formData.targetUrl}
                   onChange={(e) =>
-                    handleInputChange('videoUrl', e.target.value)
+                    handleInputChange('targetUrl', e.target.value)
                   }
-                  placeholder="https://exemplo.com/video.mp4"
+                  placeholder={
+                    formData.linkType === 'whatsapp'
+                      ? '5511999999999'
+                      : 'https://exemplo.com'
+                  }
+                  className={errors.targetUrl ? 'border-accent-red' : ''}
                 />
+                {formData.linkType === 'whatsapp' && (
+                  <p className="text-xs text-theme-tertiary mt-1">
+                    Formato: código do país + DDD + número (ex: 5511999999999)
+                  </p>
+                )}
+                {errors.targetUrl && (
+                  <p className="text-accent-red text-sm mt-1">
+                    {errors.targetUrl}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -491,116 +633,70 @@ export default function EditAdModal({
                   Texto do Botão
                 </label>
                 <Input
+                  ref={fieldRefs.ctaText}
                   type="text"
                   value={formData.ctaText}
                   onChange={(e) => handleInputChange('ctaText', e.target.value)}
-                  placeholder="Saiba Mais, Inscreva-se, etc."
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  URL de Destino
-                </label>
-                <Input
-                  type="url"
-                  value={formData.targetUrl}
-                  onChange={(e) =>
-                    handleInputChange('targetUrl', e.target.value)
+                  placeholder={
+                    formData.linkType === 'whatsapp'
+                      ? 'Falar no WhatsApp'
+                      : 'Saiba Mais'
                   }
-                  placeholder="https://exemplo.com"
+                  maxLength={50}
                 />
               </div>
             </div>
           </div>
 
-          {/* Targeting */}
+          {/* Dados do Anunciante */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
-              <FiMapPin className="w-5 h-5" />
-              <span>Segmentação</span>
+            <h3 className="text-lg font-semibold text-theme-primary">
+              Contato do Anunciante
             </h3>
 
-            <div>
-              <Select
-                label="Tipo de Segmentação"
-                options={targetTypeOptions}
-                value={formData.targetType}
-                onChange={(e) =>
-                  handleInputChange('targetType', e.target.value)
-                }
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-theme-primary mb-2">
+                  Email
+                </label>
+                <Input
+                  type="email"
+                  value={formData.advertiserEmail}
+                  onChange={(e) =>
+                    handleInputChange('advertiserEmail', e.target.value)
+                  }
+                  placeholder="email@exemplo.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-theme-primary mb-2">
+                  Telefone
+                </label>
+                <Input
+                  type="tel"
+                  value={formData.advertiserPhone}
+                  onChange={(e) =>
+                    handleInputChange('advertiserPhone', e.target.value)
+                  }
+                  placeholder="(11) 99999-9999"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-theme-primary mb-2">
+                  Site
+                </label>
+                <Input
+                  type="url"
+                  value={formData.advertiserWebsite}
+                  onChange={(e) =>
+                    handleInputChange('advertiserWebsite', e.target.value)
+                  }
+                  placeholder="https://exemplo.com"
+                />
+              </div>
             </div>
-
-            {/* Targeting por Instrumento */}
-            {formData.targetType === 'INSTRUMENT' && (
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Instrumentos
-                </label>
-                <div className="max-h-40 overflow-y-auto border border-theme-primary rounded-lg p-3 space-y-2">
-                  {availableOptions.instruments.map((instrument) => (
-                    <label
-                      key={instrument.id}
-                      className="flex items-center space-x-2"
-                    >
-                      <Input
-                        type="checkbox"
-                        checked={formData.instrumentTargets.includes(
-                          instrument.id
-                        )}
-                        onChange={(e) =>
-                          handleArrayChange(
-                            'instrumentTargets',
-                            instrument.id,
-                            e.target.checked
-                          )
-                        }
-                        className="rounded border-theme-primary"
-                      />
-                      <span className="text-sm text-theme-primary">
-                        {instrument.name}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Targeting por Nível */}
-            {formData.targetType === 'USER_LEVEL' && (
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Níveis de Usuário
-                </label>
-                <div className="space-y-2">
-                  {userLevelOptions.map((level) => (
-                    <label
-                      key={level.value}
-                      className="flex items-center space-x-2"
-                    >
-                      <Input
-                        type="checkbox"
-                        checked={formData.userLevelTargets.includes(
-                          level.value
-                        )}
-                        onChange={(e) =>
-                          handleArrayChange(
-                            'userLevelTargets',
-                            level.value,
-                            e.target.checked
-                          )
-                        }
-                        className="rounded border-theme-primary"
-                      />
-                      <span className="text-sm text-theme-primary">
-                        {level.label}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Configurações */}
@@ -609,52 +705,7 @@ export default function EditAdModal({
               Configurações
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Prioridade (0-10)
-                </label>
-                <Input
-                  type="number"
-                  min="0"
-                  max="10"
-                  value={formData.priority}
-                  onChange={(e) =>
-                    handleInputChange('priority', parseInt(e.target.value))
-                  }
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Máx. Visualizações
-                </label>
-                <Input
-                  type="number"
-                  value={formData.maxViews}
-                  onChange={(e) =>
-                    handleInputChange('maxViews', e.target.value)
-                  }
-                  placeholder="Opcional"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Máx. Cliques
-                </label>
-                <Input
-                  type="number"
-                  value={formData.maxClicks}
-                  onChange={(e) =>
-                    handleInputChange('maxClicks', e.target.value)
-                  }
-                  placeholder="Opcional"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-theme-primary mb-2">
                   Data de Início
@@ -732,7 +783,7 @@ export default function EditAdModal({
               type="submit"
               variant="primary"
               leftIcon={<FiSave />}
-              disabled={loading}
+              disabled={loading || !!conflictInfo}
               loading={loading}
             >
               Salvar Alterações

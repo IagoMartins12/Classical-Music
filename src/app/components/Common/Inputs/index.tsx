@@ -1,16 +1,17 @@
-// components/ui/Input.tsx
+// app/components/Common/Inputs/index.tsx - VERSÃO CORRIGIDA
 'use client';
 
-import React, { forwardRef } from 'react';
-import { FiAlertCircle, FiEye, FiEyeOff } from 'react-icons/fi';
+import React, { forwardRef, useId, useState, useEffect } from 'react';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  helperText?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  isPassword?: boolean;
-  containerClassName?: string;
+  variant?: 'default' | 'outlined' | 'filled';
+  inputType?: string;
+  customId?: string; // 🆕 Prop para ID customizado
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -18,28 +19,59 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     {
       label,
       error,
+      helperText,
       leftIcon,
       rightIcon,
-      isPassword = false,
-      type = 'text',
+      variant = 'default',
       className = '',
-      containerClassName = '',
-      id,
+      inputType,
+      customId, // 🆕 ID customizado
       ...props
     },
     ref
   ) => {
-    const [showPassword, setShowPassword] = React.useState(false);
-    const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`;
+    // 🆕 Estado para controlar se o componente foi hidratado
+    const [isHydrated, setIsHydrated] = useState(false);
 
-    const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
+    // 🆕 Use o ID customizado se fornecido, senão gere um
+    const generatedId = useId();
+    const inputId = customId || generatedId;
+
+    // 🆕 Marcar como hidratado após o primeiro render
+    useEffect(() => {
+      setIsHydrated(true);
+    }, []);
+
+    // 🆕 Evitar problemas de hydration usando o estado
+    const finalInputId = isHydrated ? inputId : undefined;
+
+    const baseClasses = `
+      input-classical w-full
+      pl-4
+      ${leftIcon ? 'pl-10' : 'pl-4'}
+      ${rightIcon ? 'pr-10' : 'pr-4'}
+      py-3
+      bg-theme-background
+      border border-theme-primary
+      rounded-lg
+      text-theme-primary
+      placeholder-theme-tertiary
+      focus:outline-none
+      focus:ring-2
+      focus:ring-brand-primary
+      focus:border-brand-primary
+      transition-all duration-200
+      ${error ? 'border-accent-red focus:ring-accent-red' : ''}
+      ${variant === 'filled' ? 'bg-theme-secondary' : ''}
+      ${variant === 'outlined' ? 'border-2' : ''}
+    `;
 
     return (
-      <div className={`relative ${containerClassName}`}>
+      <div className="relative">
         {label && (
           <label
-            htmlFor={inputId}
-            className="block text-sm font-medium text-theme-secondary mb-2"
+            htmlFor={finalInputId}
+            className="block text-sm font-medium text-theme-primary mb-2"
           >
             {label}
           </label>
@@ -54,46 +86,23 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
           <input
             ref={ref}
-            id={inputId}
-            type={inputType}
-            className={`
-              input-classical w-full
-              ${leftIcon ? 'pl-10' : 'pl-4'}
-              ${rightIcon || isPassword ? 'pr-10' : 'pr-4'}
-              ${error ? 'border-accent-red focus:border-accent-red' : ''}
-              ${className}
-            `}
+            id={finalInputId} // 🆕 Usar ID controlado por estado
+            type={inputType || props.type || 'text'}
+            className={`${baseClasses} ${className}`}
             {...props}
           />
 
-          {(rightIcon || isPassword) && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-              {isPassword ? (
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="text-theme-tertiary hover:text-brand-primary transition-colors"
-                  tabIndex={-1}
-                >
-                  {showPassword ? (
-                    <FiEyeOff className="w-4 h-4" />
-                  ) : (
-                    <FiEye className="w-4 h-4" />
-                  )}
-                </button>
-              ) : (
-                rightIcon
-              )}
+          {rightIcon && (
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary">
+              {rightIcon}
             </div>
           )}
         </div>
 
-        {error && (
-          <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1 gap-2">
-            <FiAlertCircle className="w-4 h-4" />
+        {error && <p className="mt-1 text-sm text-accent-red">{error}</p>}
 
-            {error}
-          </p>
+        {helperText && !error && (
+          <p className="mt-1 text-sm text-theme-tertiary">{helperText}</p>
         )}
       </div>
     );

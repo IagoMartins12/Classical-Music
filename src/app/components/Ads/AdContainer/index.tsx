@@ -1,4 +1,4 @@
-// app/components/Ads/AdContainer.tsx - Container para diferentes posicionamentos
+// app/components/Ads/AdContainer.tsx - Container atualizado para diferentes posicionamentos
 'use client';
 
 import { usePathname } from 'next/navigation';
@@ -6,11 +6,19 @@ import { useSession } from 'next-auth/react';
 import AdDisplay from '../AdDisplay';
 
 interface AdContainerProps {
-  placement: string;
+  placement:
+    | 'HEADER'
+    | 'SIDEBAR_LEFT'
+    | 'SIDEBAR_RIGHT'
+    | 'CONTENT_TOP'
+    | 'CONTENT_BOTTOM'
+    | 'BETWEEN_CONTENT'
+    | 'FOOTER'
+    | 'MODAL';
   className?: string;
   workId?: string;
-  composerId?: string;
-  instrumentId?: string;
+  composerId?: string | null;
+  instrumentId?: string | null;
   epochId?: string;
 }
 
@@ -25,27 +33,40 @@ export default function AdContainer({
   const { data: session } = useSession();
   const pathname = usePathname();
 
+  // Não mostrar ads para super admins
+  if (session?.user?.role === 2) {
+    return null;
+  }
+
   // Determinar targeting baseado na página atual e props
   let targetType = 'GENERAL';
-  let instrumentIds: string[] = [];
-  let composerIds: string[] = [];
-  let epochIds: string[] = [];
+  let selectedInstrumentId: string | undefined;
+  let userLevel = 'ALL';
 
-  // Targeting inteligente baseado na página
+  // Determinar nível do usuário
+  if (session?.user?.role === 1) {
+    userLevel = 'TEACHER';
+  } else if (session?.user?.role === 0) {
+    userLevel = 'STUDENT';
+  }
+
+  // Targeting inteligente baseado na página e props
   if (instrumentId) {
     targetType = 'INSTRUMENT';
-    instrumentIds = [instrumentId];
-  } else if (composerId) {
-    targetType = 'COMPOSER';
-    composerIds = [composerId];
-  } else if (epochId) {
-    targetType = 'EPOCH';
-    epochIds = [epochId];
+    selectedInstrumentId = instrumentId;
   } else if (pathname.includes('/works/') && workId) {
-    // Para páginas de obras, buscar o instrumento principal da obra
-    targetType = 'INSTRUMENT';
-    // Aqui você pode fazer uma consulta para obter o instrumento da obra
-    // instrumentIds = [instrumentIdDaObra];
+    // Para páginas de obras, pode tentar buscar o instrumento da obra
+    // Isso requereria uma consulta adicional ou passagem via props
+    targetType = 'GENERAL';
+  } else if (pathname.includes('/instruments/')) {
+    // Se estiver numa página de instrumento específico
+    const instrumentFromPath = pathname
+      .split('/instruments/')[1]
+      ?.split('/')[0];
+    if (instrumentFromPath) {
+      targetType = 'INSTRUMENT';
+      selectedInstrumentId = instrumentFromPath;
+    }
   }
 
   // Configurações específicas por posicionamento
@@ -56,11 +77,12 @@ export default function AdContainer({
           maxAds: 1,
           showTitle: false,
           showAdvertiserName: false,
-          className: 'w-full ',
+          className: 'w-full',
         };
       case 'SIDEBAR_RIGHT':
       case 'SIDEBAR_LEFT':
         return {
+          maxAds: 1, // Apenas 1 ad por sidebar
           showTitle: true,
           showAdvertiserName: true,
           className: 'w-full space-y-4',
@@ -82,10 +104,10 @@ export default function AdContainer({
         };
       case 'FOOTER':
         return {
-          maxAds: 3,
+          maxAds: 1, // Simplificado para apenas 1 ad
           showTitle: true,
           showAdvertiserName: true,
-          className: 'w-full grid grid-cols-1 md:grid-cols-3 gap-4',
+          className: 'w-full',
         };
       default:
         return {
@@ -104,9 +126,8 @@ export default function AdContainer({
       <AdDisplay
         placement={placement}
         targetType={targetType}
-        instrumentIds={instrumentIds}
-        composerIds={composerIds}
-        epochIds={epochIds}
+        instrumentId={selectedInstrumentId}
+        userLevel={userLevel}
         maxAds={config.maxAds}
         showTitle={config.showTitle}
         showAdvertiserName={config.showAdvertiserName}

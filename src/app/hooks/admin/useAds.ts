@@ -1,56 +1,44 @@
-// app/hooks/admin/useAds.ts
+// app/hooks/admin/useAds.ts - Hook admin corrigido para schema atual
 import { useState, useCallback } from 'react';
 
 export interface Advertisement {
   id: string;
   title: string;
   description?: string;
-  tagline?: string;
   content?: string;
   imageUrl?: string;
+  thumbnailUrl?: string;
   videoUrl?: string;
   ctaText?: string;
   targetUrl?: string;
+  linkType: 'url' | 'whatsapp';
   isExternal: boolean;
   type: string;
   placement: string;
   status: string;
   targetType: string;
+  targetUserLevel: string;
+  instrumentId?: string;
   advertiserName: string;
   advertiserEmail?: string;
   advertiserPhone?: string;
   advertiserWebsite?: string;
-  priority: number;
-  weight: number;
-  maxViews?: number;
-  maxClicks?: number;
   startDate?: Date;
   endDate?: Date;
   showOnMobile: boolean;
   showOnTablet: boolean;
   showOnDesktop: boolean;
-  customCSS?: string;
-  customJS?: string;
-  isApproved: boolean;
   createdAt: Date;
   updatedAt: Date;
 
-  // Targeting
-  instrumentTargets?: any[];
-  composerTargets?: any[];
-  epochTargets?: any[];
-  userLevelTargets?: any[];
-  geoTargets?: any[];
+  // Relations
+  creator?: any;
+  instrument?: any;
 
-  // Stats
+  // Stats - APENAS CAMPOS EXISTENTES
   totalImpressions?: number;
   totalClicks?: number;
   ctr?: number;
-
-  // Relations
-  creator?: any;
-  approver?: any;
-  mediaFiles?: any[];
 }
 
 export interface AdsStats {
@@ -61,7 +49,6 @@ export interface AdsStats {
   impressions30d: number;
   clicks30d: number;
   avgCTR: number;
-  topPerformers: Advertisement[];
 }
 
 interface Pagination {
@@ -90,9 +77,20 @@ interface UseAdsReturn {
   updateAd: (id: string, adData: any) => Promise<Advertisement>;
   updateAdStatus: (id: string, status: string) => Promise<void>;
   deleteAd: (id: string) => Promise<void>;
+  cloneAd: (id: string, modifications?: any) => Promise<Advertisement>;
   getAdStats: (id: string, period?: string) => Promise<any>;
-  uploadMedia: (adId: string, file: File, options?: any) => Promise<any>;
+  uploadMedia: (
+    adId: string,
+    file: File,
+    type: 'image' | 'video'
+  ) => Promise<any>;
+  deleteMedia: (adId: string, type: 'image' | 'video') => Promise<void>;
   refreshStats: () => Promise<void>;
+  checkConflict: (
+    placement: string,
+    targetType: string,
+    instrumentId?: string
+  ) => Promise<any>;
 }
 
 export const useAds = (): UseAdsReturn => {
@@ -139,7 +137,7 @@ export const useAds = (): UseAdsReturn => {
       const errorMessage =
         err instanceof Error ? err.message : 'Erro desconhecido';
       setError(errorMessage);
-      console.error('Erro ao buscar publicidades:', err);
+      console.error('Erro ao buscar anúncios:', err);
     } finally {
       setLoading(false);
     }
@@ -149,7 +147,6 @@ export const useAds = (): UseAdsReturn => {
     setLoading(true);
     setError(null);
 
-    console.log('ad', adData);
     try {
       const response = await fetch('/api/admin/ads', {
         method: 'POST',
@@ -159,7 +156,7 @@ export const useAds = (): UseAdsReturn => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Erro ao criar publicidade');
+        throw new Error(errorData.error || 'Erro ao criar anúncio');
       }
 
       const data = await response.json();
@@ -167,7 +164,7 @@ export const useAds = (): UseAdsReturn => {
       if (data.success) {
         return data.ad;
       } else {
-        throw new Error('Erro ao criar publicidade');
+        throw new Error('Erro ao criar anúncio');
       }
     } catch (err) {
       const errorMessage =
@@ -193,7 +190,7 @@ export const useAds = (): UseAdsReturn => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Erro ao atualizar publicidade');
+          throw new Error(errorData.error || 'Erro ao atualizar anúncio');
         }
 
         const data = await response.json();
@@ -203,7 +200,7 @@ export const useAds = (): UseAdsReturn => {
           setAds((prev) => prev.map((ad) => (ad.id === id ? data.ad : ad)));
           return data.ad;
         } else {
-          throw new Error('Erro ao atualizar publicidade');
+          throw new Error('Erro ao atualizar anúncio');
         }
       } catch (err) {
         const errorMessage =
@@ -239,7 +236,7 @@ export const useAds = (): UseAdsReturn => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Erro ao deletar publicidade');
+        throw new Error(errorData.error || 'Erro ao deletar anúncio');
       }
 
       // Remover da lista local
@@ -254,6 +251,45 @@ export const useAds = (): UseAdsReturn => {
     }
   }, []);
 
+  const cloneAd = useCallback(
+    async (id: string, modifications: any = {}): Promise<Advertisement> => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch(`/api/admin/ads/${id}/clone`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(modifications),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Erro ao clonar anúncio');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Adicionar à lista local
+          setAds((prev) => [data.ad, ...prev]);
+          return data.ad;
+        } else {
+          throw new Error('Erro ao clonar anúncio');
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Erro desconhecido';
+        setError(errorMessage);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
+  // Função getAdStats corrigida para o schema atual
   const getAdStats = useCallback(
     async (id: string, period = 'week'): Promise<any> => {
       try {
@@ -271,7 +307,12 @@ export const useAds = (): UseAdsReturn => {
         }
 
         const data = await response.json();
-        return data.success ? data.data : null;
+
+        if (data.success) {
+          return data.data;
+        } else {
+          throw new Error('Erro ao buscar estatísticas');
+        }
       } catch (err) {
         console.error('Erro ao buscar estatísticas:', err);
         throw err;
@@ -281,17 +322,13 @@ export const useAds = (): UseAdsReturn => {
   );
 
   const uploadMedia = useCallback(
-    async (adId: string, file: File, options: any = {}): Promise<any> => {
+    async (adId: string, file: File, type: 'image' | 'video'): Promise<any> => {
       try {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('adId', adId);
+        formData.append('type', type);
 
-        if (options.isMain) formData.append('isMain', 'true');
-        if (options.altText) formData.append('altText', options.altText);
-        if (options.caption) formData.append('caption', options.caption);
-
-        const response = await fetch('/api/admin/ads/media', {
+        const response = await fetch(`/api/admin/ads/${adId}/media`, {
           method: 'POST',
           body: formData,
         });
@@ -302,7 +339,7 @@ export const useAds = (): UseAdsReturn => {
         }
 
         const data = await response.json();
-        return data.success ? data.media : null;
+        return data.success ? data : null;
       } catch (err) {
         console.error('Erro no upload:', err);
         throw err;
@@ -311,10 +348,31 @@ export const useAds = (): UseAdsReturn => {
     []
   );
 
+  const deleteMedia = useCallback(
+    async (adId: string, type: 'image' | 'video'): Promise<void> => {
+      try {
+        const response = await fetch(
+          `/api/admin/ads/${adId}/media?type=${type}`,
+          {
+            method: 'DELETE',
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Erro ao deletar mídia');
+        }
+      } catch (err) {
+        console.error('Erro ao deletar mídia:', err);
+        throw err;
+      }
+    },
+    []
+  );
+
   const refreshStats = useCallback(async (): Promise<void> => {
     try {
-      // Buscar estatísticas gerais
-      const response = await fetch('/api/admin/ads/stats?overview=true', {
+      const response = await fetch('/api/admin/ads?overview=true', {
         cache: 'no-store',
       });
 
@@ -329,6 +387,34 @@ export const useAds = (): UseAdsReturn => {
     }
   }, []);
 
+  const checkConflict = useCallback(
+    async (
+      placement: string,
+      targetType: string,
+      instrumentId?: string
+    ): Promise<any> => {
+      try {
+        const params = new URLSearchParams({
+          placement,
+          targetType,
+        });
+
+        if (instrumentId) {
+          params.append('instrumentId', instrumentId);
+        }
+
+        const response = await fetch(`/api/admin/ads/check-conflict?${params}`);
+        const data = await response.json();
+
+        return data;
+      } catch (err) {
+        console.error('Erro ao verificar conflito:', err);
+        return { hasConflict: false };
+      }
+    },
+    []
+  );
+
   return {
     ads,
     loading,
@@ -340,8 +426,11 @@ export const useAds = (): UseAdsReturn => {
     updateAd,
     updateAdStatus,
     deleteAd,
+    cloneAd,
     getAdStats,
     uploadMedia,
+    deleteMedia,
     refreshStats,
+    checkConflict,
   };
 };

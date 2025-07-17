@@ -1,4 +1,4 @@
-// app/components/Ads/AdsProvider.tsx - Provider para gerenciar ads globalmente
+// app/components/Ads/AdsProvider.tsx - Provider atualizado para gerenciar ads globalmente
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
@@ -9,6 +9,8 @@ import AdModal from '../AdModal';
 interface AdsContextType {
   showModalAd: (ad: any) => void;
   trackEvent: (adId: string, event: string, data?: any) => Promise<void>;
+  dismissAd: (adId: string) => void;
+  isDismissed: (adId: string) => boolean;
 }
 
 const AdsContext = createContext<AdsContextType | null>(null);
@@ -28,19 +30,34 @@ interface AdsProviderProps {
 export default function AdsProvider({ children }: AdsProviderProps) {
   const [modalAd, setModalAd] = useState<any>(null);
   const [modalShown, setModalShown] = useState(new Set<string>());
+  const [dismissedAds, setDismissedAds] = useState(new Set<string>());
   const { data: session } = useSession();
   const pathname = usePathname();
+
+  // Carregar ads dismissados do localStorage
+  useEffect(() => {
+    try {
+      const dismissed = localStorage.getItem('dismissedAds');
+      if (dismissed) {
+        setDismissedAds(new Set(JSON.parse(dismissed)));
+      }
+    } catch (error) {
+      console.error('Erro ao carregar ads dismissados:', error);
+    }
+  }, []);
 
   // Função para mostrar modal ad
   const showModalAd = (ad: any) => {
     // Não mostrar se já foi mostrado nesta sessão
     if (modalShown.has(ad.id)) return;
 
-    // Não mostrar para admins
+    // Não mostrar para super admins
     if (session?.user?.role === 2) return;
 
     // Não mostrar se usuário desabilitou ads
-    if (session?.user) return;
+
+    // Não mostrar se foi dismissado
+    if (dismissedAds.has(ad.id)) return;
 
     setModalAd(ad);
     setModalShown((prev) => new Set([...prev, ad.id]));
@@ -70,6 +87,23 @@ export default function AdsProvider({ children }: AdsProviderProps) {
     }
   };
 
+  // Função para dismissar ad
+  const dismissAd = (adId: string) => {
+    const newDismissed = new Set([...dismissedAds, adId]);
+    setDismissedAds(newDismissed);
+
+    try {
+      localStorage.setItem('dismissedAds', JSON.stringify([...newDismissed]));
+    } catch (error) {
+      console.error('Erro ao salvar ad dismissado:', error);
+    }
+  };
+
+  // Função para verificar se ad foi dismissado
+  const isDismissed = (adId: string) => {
+    return dismissedAds.has(adId);
+  };
+
   // Fechar modal quando rota mudar
   useEffect(() => {
     setModalAd(null);
@@ -80,7 +114,6 @@ export default function AdsProvider({ children }: AdsProviderProps) {
     const checkForModalAds = async () => {
       // Só verificar em certas páginas e com throttling
       if (session?.user?.role === 2) return;
-      if (session?.user) return;
 
       try {
         const response = await fetch(
@@ -90,8 +123,9 @@ export default function AdsProvider({ children }: AdsProviderProps) {
 
         if (data.success && data.ads.length > 0) {
           const availableAds = data.ads.filter(
-            (ad: any) => !modalShown.has(ad.id)
+            (ad: any) => !modalShown.has(ad.id) && !dismissedAds.has(ad.id)
           );
+
           if (availableAds.length > 0) {
             // Mostrar com delay para não interferir na experiência
             setTimeout(() => {
@@ -104,18 +138,32 @@ export default function AdsProvider({ children }: AdsProviderProps) {
       }
     };
 
-    // Só executar em certas páginas
+    // Só executar em páginas específicas e não muito frequentemente
     if (
       pathname === '/' ||
       pathname.startsWith('/works/') ||
-      pathname.startsWith('/composers/')
+      pathname.startsWith('/composers/') ||
+      pathname.startsWith('/instruments/')
     ) {
-      checkForModalAds();
+      // Delay maior para não incomodar o usuário
+      const timer = setTimeout(checkForModalAds, 5000);
+      return () => clearTimeout(timer);
     }
-  }, [pathname, session, modalShown]);
+  }, [pathname, session, modalShown, dismissedAds]);
+
+  // Limpar sessão de modals mostrados periodicamente
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setModalShown(new Set());
+    }, 30 * 60 * 1000); // Limpar a cada 30 minutos
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <AdsContext.Provider value={{ showModalAd, trackEvent }}>
+    <AdsContext.Provider
+      value={{ showModalAd, trackEvent, dismissAd, isDismissed }}
+    >
       {children}
 
       {/* Modal Ad */}

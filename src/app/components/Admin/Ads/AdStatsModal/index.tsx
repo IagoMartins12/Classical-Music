@@ -1,4 +1,4 @@
-// app/admin/ads/components/AdStatsModal.tsx
+// app/admin/ads/components/AdStatsModal.tsx - SEGUINDO O SCHEMA ATUAL
 'use client';
 
 import Button from '@/app/components/Common/Button';
@@ -10,7 +10,7 @@ import {
   FiTrendingUp,
   FiEye,
   FiMousePointer,
-  FiCalendar,
+  FiClock,
   FiDownload,
 } from 'react-icons/fi';
 import { AdminPieChart, TrendAreaChart } from '../../Charts/AdminCharts';
@@ -66,14 +66,16 @@ export default function AdStatsModal({
     if (!stats) return;
 
     const csv = [
-      ['Data', 'Impressões', 'Cliques', 'CTR'],
+      ['Data', 'Impressões', 'Cliques', 'CTR', 'Tempo Hover (ms)'],
       ...stats.chartData.map((item: any) => [
         item.date,
-        item.impressions,
-        item.clicks,
-        item.impressions > 0
-          ? ((item.clicks / item.impressions) * 100).toFixed(2) + '%'
+        item.impressions || 0,
+        item.clicks || 0,
+        (item.impressions || 0) > 0
+          ? (((item.clicks || 0) / (item.impressions || 0)) * 100).toFixed(2) +
+            '%'
           : '0%',
+        item.hoverTime || 0,
       ]),
     ]
       .map((row) => row.join(','))
@@ -90,9 +92,34 @@ export default function AdStatsModal({
     URL.revokeObjectURL(url);
   };
 
+  // Função auxiliar para formatar números com segurança
+  const safeNumber = (value: any): number => {
+    return typeof value === 'number' ? value : 0;
+  };
+
+  // Função auxiliar para formatar números com localização
+  const formatNumber = (value: any): string => {
+    return safeNumber(value).toLocaleString();
+  };
+
+  // Função auxiliar para formatar percentuais
+  const formatPercentage = (value: any): string => {
+    const num = safeNumber(value);
+    return num.toFixed(2);
+  };
+
+  // Função para formatar tempo de hover em formato legível
+  const formatHoverTime = (ms: number): string => {
+    if (ms < 1000) return `${ms}ms`;
+    const seconds = ms / 1000;
+    if (seconds < 60) return `${seconds.toFixed(1)}s`;
+    const minutes = seconds / 60;
+    return `${minutes.toFixed(1)}min`;
+  };
+
   return (
     <Modal isOpen={statsAd} maxWidth="4xl" onClose={onClose}>
-      <div className="  w-full ">
+      <div className="w-full">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
           <div className="flex items-center space-x-3">
@@ -155,8 +182,8 @@ export default function AdStatsModal({
             </div>
           ) : stats ? (
             <div className="space-y-6">
-              {/* Métricas Principais */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Métricas Principais - APENAS CAMPOS EXISTENTES */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="bg-theme-secondary rounded-xl p-4">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-theme-tertiary">
@@ -165,7 +192,7 @@ export default function AdStatsModal({
                     <FiEye className="w-4 h-4 text-accent-blue" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary">
-                    {stats.totals.impressions.toLocaleString()}
+                    {formatNumber(stats.totals?.impressions)}
                   </div>
                 </div>
 
@@ -175,7 +202,7 @@ export default function AdStatsModal({
                     <FiMousePointer className="w-4 h-4 text-accent-green" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary">
-                    {stats.totals.clicks.toLocaleString()}
+                    {formatNumber(stats.totals?.clicks)}
                   </div>
                 </div>
 
@@ -185,32 +212,35 @@ export default function AdStatsModal({
                     <FiTrendingUp className="w-4 h-4 text-accent-purple" />
                   </div>
                   <div className="text-2xl font-bold text-theme-primary">
-                    {stats.totals.ctr}%
-                  </div>
-                </div>
-
-                <div className="bg-theme-secondary rounded-xl p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-theme-tertiary">
-                      Conversões
-                    </span>
-                    <FiCalendar className="w-4 h-4 text-accent-amber" />
-                  </div>
-                  <div className="text-2xl font-bold text-theme-primary">
-                    {stats.totals.conversions.toLocaleString()}
+                    {formatPercentage(stats.totals?.ctr)}%
                   </div>
                 </div>
               </div>
 
+              {/* Métrica de Hover Time (se relevante) */}
+              {stats.totals?.avgHoverTime > 0 && (
+                <div className="bg-theme-secondary rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-theme-tertiary">
+                      Tempo Médio de Hover
+                    </span>
+                    <FiClock className="w-4 h-4 text-accent-amber" />
+                  </div>
+                  <div className="text-2xl font-bold text-theme-primary">
+                    {formatHoverTime(stats.totals.avgHoverTime)}
+                  </div>
+                </div>
+              )}
+
               {/* Gráfico de Tendência */}
               <div className="bg-theme-secondary rounded-xl p-6">
                 <TrendAreaChart
-                  data={stats.chartData.map((item: any) => ({
+                  data={(stats.chartData || []).map((item: any) => ({
                     name: new Date(item.date).toLocaleDateString('pt-BR', {
                       day: '2-digit',
                       month: '2-digit',
                     }),
-                    value: item.impressions,
+                    value: safeNumber(item.impressions),
                   }))}
                   title="Impressões ao Longo do Tempo"
                   subtitle={`Período: ${
@@ -233,25 +263,25 @@ export default function AdStatsModal({
                     data={[
                       {
                         name: 'Desktop',
-                        value: stats.chartData.reduce(
+                        value: (stats.chartData || []).reduce(
                           (sum: number, item: any) =>
-                            sum + (item.devices?.desktop || 0),
+                            sum + safeNumber(item.devices?.desktop),
                           0
                         ),
                       },
                       {
                         name: 'Mobile',
-                        value: stats.chartData.reduce(
+                        value: (stats.chartData || []).reduce(
                           (sum: number, item: any) =>
-                            sum + (item.devices?.mobile || 0),
+                            sum + safeNumber(item.devices?.mobile),
                           0
                         ),
                       },
                       {
                         name: 'Tablet',
-                        value: stats.chartData.reduce(
+                        value: (stats.chartData || []).reduce(
                           (sum: number, item: any) =>
-                            sum + (item.devices?.tablet || 0),
+                            sum + safeNumber(item.devices?.tablet),
                           0
                         ),
                       },
@@ -268,7 +298,7 @@ export default function AdStatsModal({
                     Top Países
                   </h3>
                   <div className="space-y-3">
-                    {stats.topCountries
+                    {(stats.topCountries || [])
                       .slice(0, 5)
                       .map((country: any, index: number) => (
                         <div
@@ -283,16 +313,20 @@ export default function AdStatsModal({
                               <div
                                 className="h-full bg-accent-blue rounded-full transition-all duration-1000"
                                 style={{
-                                  width: `${
-                                    (country._sum.impressions /
-                                      stats.totals.impressions) *
-                                    100
-                                  }%`,
+                                  width: `${Math.min(
+                                    100,
+                                    (safeNumber(country._sum?.impressions) /
+                                      Math.max(
+                                        1,
+                                        safeNumber(stats.totals?.impressions)
+                                      )) *
+                                      100
+                                  )}%`,
                                 }}
                               />
                             </div>
                             <span className="text-sm text-theme-tertiary w-12 text-right">
-                              {country._sum.impressions}
+                              {formatNumber(country._sum?.impressions)}
                             </span>
                           </div>
                         </div>
@@ -302,7 +336,7 @@ export default function AdStatsModal({
               </div>
 
               {/* Top Páginas */}
-              {stats.topPages.length > 0 && (
+              {stats.topPages && stats.topPages.length > 0 && (
                 <div className="bg-theme-secondary rounded-xl p-6">
                   <h3 className="text-lg font-bold text-theme-primary mb-4">
                     Páginas com Mais Impressões
@@ -328,34 +362,41 @@ export default function AdStatsModal({
                       <tbody>
                         {stats.topPages
                           .slice(0, 5)
-                          .map((page: any, index: number) => (
-                            <tr
-                              key={index}
-                              className="border-b border-theme-secondary"
-                            >
-                              <td className="py-2 text-theme-primary max-w-xs truncate">
-                                {page.pageUrl?.replace(
-                                  window.location.origin,
-                                  ''
-                                ) || '/'}
-                              </td>
-                              <td className="py-2 text-theme-secondary text-right">
-                                {page._sum.impressions.toLocaleString()}
-                              </td>
-                              <td className="py-2 text-theme-secondary text-right">
-                                {page._sum.clicks.toLocaleString()}
-                              </td>
-                              <td className="py-2 text-theme-secondary text-right">
-                                {page._sum.impressions > 0
-                                  ? (
-                                      (page._sum.clicks /
-                                        page._sum.impressions) *
-                                      100
-                                    ).toFixed(2) + '%'
-                                  : '0%'}
-                              </td>
-                            </tr>
-                          ))}
+                          .map((page: any, index: number) => {
+                            const impressions = safeNumber(
+                              page._sum?.impressions
+                            );
+                            const clicks = safeNumber(page._sum?.clicks);
+                            const ctr =
+                              impressions > 0
+                                ? (clicks / impressions) * 100
+                                : 0;
+
+                            return (
+                              <tr
+                                key={index}
+                                className="border-b border-theme-secondary"
+                              >
+                                <td className="py-2 text-theme-primary max-w-xs truncate">
+                                  {page.pageUrl?.replace(
+                                    typeof window !== 'undefined'
+                                      ? window.location.origin
+                                      : '',
+                                    ''
+                                  ) || '/'}
+                                </td>
+                                <td className="py-2 text-theme-secondary text-right">
+                                  {formatNumber(impressions)}
+                                </td>
+                                <td className="py-2 text-theme-secondary text-right">
+                                  {formatNumber(clicks)}
+                                </td>
+                                <td className="py-2 text-theme-secondary text-right">
+                                  {formatPercentage(ctr)}%
+                                </td>
+                              </tr>
+                            );
+                          })}
                       </tbody>
                     </table>
                   </div>

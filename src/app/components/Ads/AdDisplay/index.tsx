@@ -1,16 +1,15 @@
-// app/components/Ads/AdDisplay.tsx - Componente para exibir publicidades
+// app/components/Ads/AdDisplay.tsx - Componente atualizado para exibir publicidades
 'use client';
 
 import { useFrontAds } from '@/app/hooks/useFrontAds';
 import React, { useEffect, useRef, useState } from 'react';
-import { FiExternalLink, FiX } from 'react-icons/fi';
+import { FiExternalLink, FiX, FiMessageCircle, FiEye } from 'react-icons/fi';
 
 interface AdDisplayProps {
   placement: string;
   targetType?: string;
-  instrumentIds?: string[];
-  composerIds?: string[];
-  epochIds?: string[];
+  instrumentId?: string;
+  userLevel?: string;
   className?: string;
   maxAds?: number;
   showTitle?: boolean;
@@ -19,10 +18,9 @@ interface AdDisplayProps {
 
 export default function AdDisplay({
   placement,
-  targetType,
-  instrumentIds,
-  composerIds,
-  epochIds,
+  targetType = 'GENERAL',
+  instrumentId,
+  userLevel = 'ALL',
   className = '',
   maxAds = 1,
   showTitle = true,
@@ -31,9 +29,8 @@ export default function AdDisplay({
   const { ads, loading, trackEvent } = useFrontAds({
     placement,
     targetType,
-    instrumentIds,
-    composerIds,
-    epochIds,
+    instrumentId,
+    userLevel,
   });
 
   const [visibleAds, setVisibleAds] = useState<string[]>([]);
@@ -54,7 +51,7 @@ export default function AdDisplay({
           }
         });
       },
-      { threshold: 0.5 } // Ad deve estar 50% visível
+      { threshold: 0.5 }
     );
 
     return () => {
@@ -67,10 +64,7 @@ export default function AdDisplay({
     const observer = observerRef.current;
     if (!observer) return;
 
-    // Limpar observações anteriores
     observer.disconnect();
-
-    // Observar novos ads
     adRefs.current.forEach((element) => {
       observer.observe(element);
     });
@@ -79,7 +73,14 @@ export default function AdDisplay({
   const handleAdClick = async (ad: any) => {
     await trackEvent(ad.id, 'click');
 
-    if (ad.targetUrl) {
+    if (ad.linkType === 'whatsapp' && ad.targetUrl) {
+      // Formato WhatsApp: https://wa.me/5511999999999?text=Olá, vi seu anúncio
+      const whatsappUrl = `https://wa.me/${ad.targetUrl.replace(
+        /\D/g,
+        ''
+      )}?text=Olá, vi seu anúncio sobre ${encodeURIComponent(ad.title)}`;
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    } else if (ad.targetUrl) {
       if (ad.isExternal) {
         window.open(ad.targetUrl, '_blank', 'noopener,noreferrer');
       } else {
@@ -97,7 +98,6 @@ export default function AdDisplay({
     if (hoverStartTime) {
       const duration = Date.now() - hoverStartTime;
       if (duration > 1000) {
-        // Só trackear se hover durou mais de 1 segundo
         await trackEvent(adId, 'hover', { duration });
       }
     }
@@ -117,6 +117,7 @@ export default function AdDisplay({
         <AdItem
           key={ad.id}
           ad={ad}
+          placement={placement}
           showTitle={showTitle}
           showAdvertiserName={showAdvertiserName}
           isHovered={hoveredAd === ad.id}
@@ -141,6 +142,7 @@ const AdItem = React.forwardRef<
   HTMLDivElement,
   {
     ad: any;
+    placement: string;
     showTitle: boolean;
     showAdvertiserName: boolean;
     isHovered: boolean;
@@ -152,6 +154,7 @@ const AdItem = React.forwardRef<
   (
     {
       ad,
+      placement,
       showTitle,
       showAdvertiserName,
       isHovered,
@@ -165,24 +168,53 @@ const AdItem = React.forwardRef<
 
     if (dismissed) return null;
 
-    const mainMedia = ad.mediaFiles?.find((media: any) => media.isMain) || null;
+    // Renderização específica por placement
+    if (placement === 'HEADER') {
+      return (
+        <HeaderAdItem
+          ref={ref}
+          ad={ad}
+          onClick={onClick}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          onDismiss={() => setDismissed(true)}
+        />
+      );
+    }
 
+    if (placement === 'MODAL') {
+      return null; // Modal é tratado separadamente
+    }
+
+    // Layout padrão para sidebar e outros
     return (
       <div
         ref={ref}
         data-ad-id={ad.id}
+        data-target={ad.targetType}
         className={`
-        ad-item relative bg-theme-elevated border border-theme-primary rounded-xl overflow-hidden
-        transition-all duration-300 cursor-pointer group
-        ${isHovered ? 'transform scale-[1.02] shadow-xl' : 'hover:shadow-lg'}
-        ${ad.type === 'BANNER' ? 'aspect-[3/1]' : 'aspect-video'}
-      `}
+          ad-item classical-card group cursor-pointer
+          ${
+            isHovered
+              ? 'transform scale-[1.02] shadow-theme-glow'
+              : 'hover:shadow-theme-medium'
+          }
+          ${
+            placement === 'SIDEBAR_RIGHT' || placement === 'SIDEBAR_LEFT'
+              ? 'max-w-[300px]'
+              : 'w-full'
+          }
+          ${placement === 'BETWEEN_CONTENT' ? 'my-8' : ''}
+        `}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        role="button"
+        tabIndex={0}
+        aria-label={`Anúncio: ${ad.title}`}
       >
         {/* Dismiss Button */}
-        {ad.placement !== 'MODAL' && (
+        {placement !== 'MODAL' && (
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -195,62 +227,81 @@ const AdItem = React.forwardRef<
           </button>
         )}
 
-        {/* Media Content */}
-        <div className="relative w-full h-full">
-          {ad.type === 'VIDEO' && ad.videoUrl ? (
-            <video
-              src={ad.videoUrl}
-              className="w-full h-full object-cover"
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
-          ) : mainMedia?.type === 'IMAGE' || ad.imageUrl ? (
+        {/* Image */}
+        {ad.imageUrl && (
+          <div className="relative overflow-hidden">
             <img
-              src={mainMedia?.url || ad.imageUrl}
-              alt={mainMedia?.altText || ad.title}
-              className="w-full h-full object-cover"
+              src={ad.imageUrl}
+              alt={ad.title}
+              className={`
+                w-full object-cover transition-transform duration-300 group-hover:scale-105
+                ${
+                  placement === 'SIDEBAR_RIGHT' || placement === 'SIDEBAR_LEFT'
+                    ? 'aspect-video rounded-t-xl'
+                    : 'aspect-[2/1] rounded-t-xl'
+                }
+              `}
+              loading="lazy"
             />
-          ) : (
-            <div className="w-full h-full bg-gradient-to-br from-accent-blue to-accent-purple flex items-center justify-center">
-              <div className="text-center text-white">
-                <h3 className="text-xl font-bold mb-2">{ad.title}</h3>
-                {ad.tagline && (
-                  <p className="text-sm opacity-90">{ad.tagline}</p>
+
+            {/* Overlay com conteúdo */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4">
+              {placement !== 'SIDEBAR_RIGHT' &&
+                placement !== 'SIDEBAR_LEFT' && (
+                  <>
+                    {showTitle && (
+                      <h3 className="text-white font-bold text-lg mb-1 line-clamp-2">
+                        {ad.title}
+                      </h3>
+                    )}
+                    {ad.description && (
+                      <p className="text-white/90 text-sm mb-2 line-clamp-2">
+                        {ad.description}
+                      </p>
+                    )}
+                  </>
                 )}
-              </div>
             </div>
+          </div>
+        )}
+
+        {/* Content */}
+        <div className="p-4">
+          {(placement === 'SIDEBAR_RIGHT' ||
+            placement === 'SIDEBAR_LEFT' ||
+            !ad.imageUrl) && (
+            <>
+              {showTitle && (
+                <h3 className="font-semibold text-theme-primary mb-2 group-hover:text-brand-primary transition-colors line-clamp-2">
+                  {ad.title}
+                </h3>
+              )}
+
+              {ad.description && (
+                <p className="text-sm text-theme-secondary mb-3 line-clamp-3">
+                  {ad.description}
+                </p>
+              )}
+            </>
           )}
 
-          {/* Overlay Content */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4">
-            {showTitle && (
-              <h3 className="text-white font-bold text-lg mb-1 line-clamp-2">
-                {ad.title}
-              </h3>
+          <div className="flex items-center justify-between">
+            {showAdvertiserName && (
+              <span className="text-xs text-theme-tertiary">
+                {ad.advertiserName}
+              </span>
             )}
 
-            {ad.description && (
-              <p className="text-white/90 text-sm mb-2 line-clamp-2">
-                {ad.description}
-              </p>
+            {ad.ctaText && (
+              <div className="flex items-center space-x-1 text-brand-primary text-sm font-medium">
+                <span>{ad.ctaText}</span>
+                {ad.linkType === 'whatsapp' ? (
+                  <FiMessageCircle className="w-3 h-3" />
+                ) : ad.isExternal ? (
+                  <FiExternalLink className="w-3 h-3" />
+                ) : null}
+              </div>
             )}
-
-            <div className="flex items-center justify-between">
-              {showAdvertiserName && (
-                <span className="text-white/80 text-xs">
-                  {ad.advertiserName}
-                </span>
-              )}
-
-              {ad.ctaText && (
-                <div className="flex items-center space-x-1 text-white bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
-                  <span>{ad.ctaText}</span>
-                  {ad.isExternal && <FiExternalLink className="w-3 h-3" />}
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </div>
@@ -258,4 +309,71 @@ const AdItem = React.forwardRef<
   }
 );
 
+// Componente específico para Header
+const HeaderAdItem = React.forwardRef<
+  HTMLDivElement,
+  {
+    ad: any;
+    onClick: () => void;
+    onMouseEnter: () => void;
+    onMouseLeave: () => void;
+    onDismiss: () => void;
+  }
+>(({ ad, onClick, onMouseEnter, onMouseLeave, onDismiss }, ref) => {
+  return (
+    <div
+      ref={ref}
+      data-ad-id={ad.id}
+      className="ad-container-header group"
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      role="button"
+      tabIndex={0}
+      aria-label={`Anúncio: ${ad.title}`}
+    >
+      {/* Dismiss Button */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onDismiss();
+        }}
+        className="absolute top-2 right-2 w-6 h-6 bg-white/20 text-white rounded-full flex items-center justify-center hover:bg-white/30 transition-colors z-10"
+        title="Fechar"
+      >
+        <FiX className="w-3 h-3" />
+      </button>
+
+      {/* Header Content */}
+      <div className="ad-content">
+        <div className="flex items-center space-x-4">
+          {ad.imageUrl && (
+            <img
+              src={ad.imageUrl}
+              alt={ad.title}
+              className="w-12 h-12 rounded-lg object-cover"
+            />
+          )}
+
+          <div>
+            <h3 className="ad-title group-hover:underline">{ad.title}</h3>
+            {ad.description && <p className="ad-tagline">{ad.description}</p>}
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-3">
+          {ad.ctaText && <span className="ad-cta">{ad.ctaText}</span>}
+
+          {ad.linkType === 'whatsapp' ? (
+            <FiMessageCircle className="w-4 h-4 text-white/80" />
+          ) : ad.isExternal ? (
+            <FiExternalLink className="w-4 h-4 text-white/80" />
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+});
+
 AdItem.displayName = 'AdItem';
+HeaderAdItem.displayName = 'HeaderAdItem';

@@ -104,43 +104,45 @@ enum AnnotationScope {
   ENTIRE_WORK // Obra inteira
 }
 
-// Enums para sistema de publicidades
+
 enum AdType {
-  BANNER // Banner tradicional
-  VIDEO // Vídeo publicitário
-  CARD // Card promocional
-  SIDEBAR // Sidebar ad
-  NATIVE // Publicidade nativa
-  POPUP // Modal/popup
+  BANNER
+  VIDEO
+  CARD
+  SIDEBAR
+  NATIVE
+  POPUP
 }
 
 enum AdPlacement {
-  HEADER // Header da página
-  SIDEBAR_LEFT // Sidebar esquerda
-  SIDEBAR_RIGHT // Sidebar direita
-  CONTENT_TOP // Acima do conteúdo
-  CONTENT_BOTTOM // Abaixo do conteúdo
-  BETWEEN_CONTENT // Entre conteúdos
-  FOOTER // Footer da página
-  MODAL // Modal/overlay
+  HEADER
+  SIDEBAR_LEFT
+  SIDEBAR_RIGHT
+  CONTENT_TOP
+  CONTENT_BOTTOM
+  BETWEEN_CONTENT
+  FOOTER
+  MODAL
 }
 
 enum AdStatus {
-  DRAFT // Rascunho
-  ACTIVE // Ativo
-  PAUSED // Pausado
-  SCHEDULED // Agendado
-  EXPIRED // Expirado
-  REJECTED // Rejeitado
+  DRAFT
+  ACTIVE
+  PAUSED
+  SCHEDULED
+  EXPIRED
 }
 
 enum AdTargetType {
   GENERAL // Publicidade geral
   INSTRUMENT // Por instrumento específico
-  COMPOSER // Por compositor
-  EPOCH // Por época musical
-  USER_LEVEL // Por nível do usuário
-  GEOGRAPHIC // Por localização
+  USER_LEVEL // Por nível do usuário (geral, professor, estudante)
+}
+
+enum AdUserLevel {
+  ALL // Todos os usuários
+  STUDENT // Apenas estudantes (role 0)
+  TEACHER // Apenas professores (role 1)
 }
 
 enum MediaType {
@@ -194,12 +196,7 @@ model User {
   studyModeSettings Json?
 
   // Relações de publicidade
-  createdAds       Advertisement[] @relation("AdCreator")
-  approvedAds      Advertisement[] @relation("AdApprover")
-  editedAds        Advertisement[] @relation("AdEditor")
-  uploadedAdMedia  AdMedia[]       @relation("AdMediaUploader")
-  adStats          AdStats[]       @relation("AdStatsUser")
-  createdTemplates AdTemplate[]    @relation("AdTemplateCreator")
+  // uploadedAdMedia  AdMedia[]       @relation("AdMediaUploader")
 
   // Configurações de publicidade
   showAds       Boolean @default(true) // Usuário quer ver ads?
@@ -255,6 +252,10 @@ model User {
   favoriteComposer Composer? @relation("FavoriteComposer", fields: [favoriteComposerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   favoriteEpoch    Epoch?    @relation("FavoriteEpoch", fields: [favoriteEpochId], references: [id])
 
+  createdAds Advertisement[] @relation("AdCreator")
+  editedAds  Advertisement[] @relation("AdEditor")
+  adStats    AdStats[]       @relation("AdStatsUser")
+  
   favoriteScores FavoriteScore[]
 
   instruments       UserInstrument[]
@@ -541,7 +542,6 @@ model Composer {
 
   verifier User? @relation("VerifiedComposers", fields: [verifiedBy], references: [id])
 
-  adTargets AdComposerTarget[] @relation("AdTargeting")
 
   // Índices otimizados
   @@index([name])
@@ -576,7 +576,6 @@ model Epoch {
   works           Work[]
   favoriteByUsers User[]     @relation("FavoriteEpoch")
 
-  adTargets AdEpochTarget[] @relation("AdTargeting")
 
   @@index([name])
 }
@@ -599,7 +598,8 @@ model Instrument {
   users      UserInstrument[]
   works      Work[]
 
-  adTargets AdInstrumentTarget[] @relation("AdTargeting")
+  advertisements Advertisement[]
+
 
   @@index([category])
 }
@@ -1315,46 +1315,43 @@ model GeneratedReport {
   @@map("generated_reports")
 }
 
-// Model principal para publicidades
+// Model principal para publicidades - SIMPLIFICADO
 model Advertisement {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
   // Informações básicas
   title       String
   description String?
-  tagline     String? // Frase de chamada
+  content     String? // Conteúdo HTML/texto adicional
 
-  // Conteúdo e mídia
-  content      String? // HTML/texto da publicidade
-  imageUrl     String? // URL da imagem principal
-  videoUrl     String? // URL do vídeo
-  thumbnailUrl String? // Thumbnail do vídeo
+  // Mídia - APENAS UPLOAD, NÃO URL
+  imageUrl     String? // URL do arquivo uploadado
+  thumbnailUrl String? // Thumbnail gerada automaticamente
+  videoUrl     String? // URL do vídeo uploadado (opcional)
 
   // Links e ações
-  ctaText    String? // Texto do call-to-action
-  targetUrl  String? // URL de destino
-  isExternal Boolean @default(true) // Link externo?
+  ctaText     String? // Texto do call-to-action
+  targetUrl   String? // URL de destino OU número WhatsApp
+  linkType    String  @default("url") // "url" ou "whatsapp"
+  isExternal  Boolean @default(true)
 
   // Configurações de exibição
   type      AdType      @default(BANNER)
   placement AdPlacement @default(SIDEBAR_RIGHT)
   status    AdStatus    @default(DRAFT)
 
-  // Targeting e segmentação
-  targetType AdTargetType @default(GENERAL)
+  // Targeting simplificado
+  targetType     AdTargetType @default(GENERAL)
+  targetUserLevel AdUserLevel  @default(ALL)
+  
+  // Apenas para targeting por instrumento
+  instrumentId String? @db.ObjectId // Apenas UM instrumento por ad
 
   // Dados do anunciante
   advertiserName    String
   advertiserEmail   String?
   advertiserPhone   String?
   advertiserWebsite String?
-  advertiserLogo    String?
-
-  // Configurações de exibição
-  priority  Int  @default(0) // Prioridade (maior = mais prioridade)
-  weight    Int  @default(1) // Peso para rotação
-  maxViews  Int? // Limite de visualizações
-  maxClicks Int? // Limite de cliques
 
   // Agendamento
   startDate DateTime?
@@ -1364,16 +1361,6 @@ model Advertisement {
   showOnMobile  Boolean @default(true)
   showOnTablet  Boolean @default(true)
   showOnDesktop Boolean @default(true)
-
-  // Configurações avançadas
-  customCSS String? // CSS customizado
-  customJS  String? // JavaScript customizado
-
-  // Dados de moderação
-  isApproved      Boolean   @default(false)
-  approvedBy      String?   @db.ObjectId
-  approvedAt      DateTime?
-  rejectionReason String?
 
   // Controle de acesso
   createdBy    String    @db.ObjectId
@@ -1385,276 +1372,107 @@ model Advertisement {
   updatedAt DateTime @updatedAt
 
   // Relações
-  creator  User  @relation("AdCreator", fields: [createdBy], references: [id])
-  approver User? @relation("AdApprover", fields: [approvedBy], references: [id])
-  editor   User? @relation("AdEditor", fields: [lastEditedBy], references: [id])
-
-  // Targeting específico
-  instrumentTargets AdInstrumentTarget[]
-  composerTargets   AdComposerTarget[]
-  epochTargets      AdEpochTarget[]
-  userLevelTargets  AdUserLevelTarget[]
-  geoTargets        AdGeoTarget[]
-
-  // Mídia associada
-  mediaFiles AdMedia[]
+  creator     User        @relation("AdCreator", fields: [createdBy], references: [id])
+  editor      User?       @relation("AdEditor", fields: [lastEditedBy], references: [id])
+  instrument  Instrument? @relation(fields: [instrumentId], references: [id])
 
   // Estatísticas
   stats AdStats[]
 
-  // Índices otimizados
-  @@index([status, placement, priority])
-  @@index([targetType, status])
-  @@index([startDate, endDate, status])
-  @@index([placement, status, priority])
+  // Índices otimizados para busca única por tipo
+  @@unique([placement, targetType, instrumentId], name: "unique_ad_per_type")
+  @@index([status, placement])
+  @@index([targetType, instrumentId])
   @@index([createdBy])
-  @@index([isApproved, status])
   @@map("advertisements")
 }
 
-// Targeting por instrumento
-model AdInstrumentTarget {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
-  advertisementId String @db.ObjectId
-  instrumentId    String @db.ObjectId
-
-  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
-  instrument    Instrument    @relation("AdTargeting", fields: [instrumentId], references: [id])
-
-  @@unique([advertisementId, instrumentId])
-  @@index([instrumentId])
-  @@map("ad_instrument_targets")
-}
-
-// Targeting por compositor
-model AdComposerTarget {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
-  advertisementId String @db.ObjectId
-  composerId      String @db.ObjectId
-
-  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
-  composer      Composer      @relation("AdTargeting", fields: [composerId], references: [id])
-
-  @@unique([advertisementId, composerId])
-  @@index([composerId])
-  @@map("ad_composer_targets")
-}
-
-// Targeting por época
-model AdEpochTarget {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
-  advertisementId String @db.ObjectId
-  epochId         String @db.ObjectId
-
-  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
-  epoch         Epoch         @relation("AdTargeting", fields: [epochId], references: [id])
-
-  @@unique([advertisementId, epochId])
-  @@index([epochId])
-  @@map("ad_epoch_targets")
-}
-
-// Targeting por nível do usuário
-model AdUserLevelTarget {
-  id              String          @id @default(auto()) @map("_id") @db.ObjectId
-  advertisementId String          @db.ObjectId
-  userLevel       DifficultyLevel
-
-  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
-
-  @@unique([advertisementId, userLevel])
-  @@index([userLevel])
-  @@map("ad_user_level_targets")
-}
-
-// Targeting geográfico
-model AdGeoTarget {
-  id              String  @id @default(auto()) @map("_id") @db.ObjectId
-  advertisementId String  @db.ObjectId
-  country         String
-  state           String?
-  city            String?
-
-  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
-
-  @@index([country, state, city])
-  @@index([advertisementId])
-  @@map("ad_geo_targets")
-}
-
 // Mídia das publicidades
-model AdMedia {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
-  advertisementId String @db.ObjectId
+// model AdMedia {
+//   id              String @id @default(auto()) @map("_id") @db.ObjectId
+//   advertisementId String @db.ObjectId
 
-  // Informações do arquivo
-  fileName     String
-  originalName String
-  mimeType     String
-  fileSize     Int // Tamanho em bytes
+//   // Informações do arquivo
+//   fileName     String
+//   originalName String
+//   mimeType     String
+//   fileSize     Int // Tamanho em bytes
 
-  // URLs
-  url          String // URL principal
-  thumbnailUrl String? // Thumbnail (para vídeos)
-  previewUrl   String? // Preview/versão menor
+//   // URLs
+//   url          String // URL principal
+//   thumbnailUrl String? // Thumbnail (para vídeos)
+//   previewUrl   String? // Preview/versão menor
 
-  // Metadados
-  type     MediaType
-  width    Int? // Largura (imagens/vídeos)
-  height   Int? // Altura (imagens/vídeos)
-  duration Int? // Duração (vídeos/áudios) em segundos
+//   // Metadados
+//   type     MediaType
+//   width    Int? // Largura (imagens/vídeos)
+//   height   Int? // Altura (imagens/vídeos)
+//   duration Int? // Duração (vídeos/áudios) em segundos
 
-  // Configurações
-  isMain  Boolean @default(false) // Mídia principal?
-  altText String? // Texto alternativo
-  caption String? // Legenda
+//   // Configurações
+//   isMain  Boolean @default(false) // Mídia principal?
+//   altText String? // Texto alternativo
+//   caption String? // Legenda
 
-  // SEO e acessibilidade
-  title       String?
-  description String?
+//   // SEO e acessibilidade
+//   title       String?
+//   description String?
 
-  // Otimização
-  isOptimized      Boolean @default(false)
-  compressionRatio Float? // Taxa de compressão
+//   // Otimização
+//   isOptimized      Boolean @default(false)
+//   compressionRatio Float? // Taxa de compressão
 
-  // Upload info
-  uploadedBy String   @db.ObjectId
-  uploadedAt DateTime @default(now())
+//   // Upload info
+//   uploadedBy String   @db.ObjectId
+//   uploadedAt DateTime @default(now())
 
-  // Storage info
-  storageProvider String  @default("local") // local, s3, cloudinary, etc.
-  storagePath     String
-  publicId        String? // ID público (Cloudinary, etc.)
+//   // Storage info
+//   storageProvider String  @default("local") // local, s3, cloudinary, etc.
+//   storagePath     String
+//   publicId        String? // ID público (Cloudinary, etc.)
 
-  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
-  uploader      User          @relation("AdMediaUploader", fields: [uploadedBy], references: [id])
+//   uploader      User          @relation("AdMediaUploader", fields: [uploadedBy], references: [id])
 
-  @@index([advertisementId, type])
-  @@index([uploadedBy])
-  @@index([isMain])
-  @@map("ad_media")
-}
+//   @@index([advertisementId, type])
+//   @@index([uploadedBy])
+//   @@index([isMain])
+//   @@map("ad_media")
+// }
 
-// Estatísticas das publicidades
+
+// Estatísticas das publicidades - MELHORADO
 model AdStats {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
   advertisementId String @db.ObjectId
 
-  // Data das estatísticas
+  // Data das estatísticas (agregado por dia)
   date DateTime @default(now())
 
-  // Métricas de exibição
+  // Métricas principais
   impressions Int @default(0) // Visualizações
   clicks      Int @default(0) // Cliques
-  conversions Int @default(0) // Conversões (se trackeable)
-
-  // Métricas de engajamento
-  hoverTime   Int   @default(0) // Tempo de hover (milissegundos)
-  scrollDepth Float @default(0) // Profundidade do scroll (%)
+  hoverTime   Int @default(0) // Tempo de hover total em ms
 
   // Dados contextuais
   userAgent String? // User agent
   referrer  String? // Página de origem
   country   String? // País do usuário
-  device    String? // Tipo de dispositivo
+  device    String? // mobile, tablet, desktop
 
   // Dados da página
   pageUrl   String? // URL da página onde foi exibido
   pageTitle String? // Título da página
-  placement AdPlacement? // Onde foi exibido
 
   // Dados do usuário (se logado)
-  userId          String?          @db.ObjectId
-  userLevel       DifficultyLevel?
-  userInstruments String[]         @default([]) // IDs dos instrumentos do usuário
+  userId     String?     @db.ObjectId
+  userLevel  AdUserLevel @default(ALL)
 
   advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
   user          User?         @relation("AdStatsUser", fields: [userId], references: [id])
 
+  @@unique([advertisementId, date, device], name: "unique_daily_stats")
   @@index([advertisementId, date])
   @@index([date])
-  @@index([userId])
-  @@index([country])
   @@index([device])
   @@map("ad_stats")
-}
-
-// Cache de estatísticas agregadas
-model AdStatsAggregate {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
-  advertisementId String @db.ObjectId
-
-  // Período
-  period    String // 'daily', 'weekly', 'monthly'
-  startDate DateTime
-  endDate   DateTime
-
-  // Métricas agregadas
-  totalImpressions Int   @default(0)
-  totalClicks      Int   @default(0)
-  totalConversions Int   @default(0)
-  avgCTR           Float @default(0) // Click-through rate
-  avgCPC           Float @default(0) // Cost per click
-
-  // Breakdown por dispositivo
-  mobileImpressions  Int @default(0)
-  tabletImpressions  Int @default(0)
-  desktopImpressions Int @default(0)
-
-  mobileClicks  Int @default(0)
-  tabletClicks  Int @default(0)
-  desktopClicks Int @default(0)
-
-  // Top países
-  topCountries Json? // {country: count}
-  topPages     Json? // {page: impressions}
-
-  // Performance por horário
-  hourlyStats Json? // {hour: {impressions, clicks}}
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // advertisement  Advertisement @relation("AdAggregateStats", fields: [advertisementId], references: [id], onDelete: Cascade)
-
-  @@unique([advertisementId, period, startDate])
-  @@index([period, startDate])
-  @@map("ad_stats_aggregate")
-}
-
-// Templates de publicidade
-model AdTemplate {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-
-  name        String
-  description String?
-  category    String // 'music-school', 'teacher', 'instrument-shop', etc.
-
-  // Template structure
-  type         AdType
-  placement    AdPlacement
-  htmlTemplate String // Template HTML
-  cssTemplate  String? // Template CSS
-  jsTemplate   String? // Template JavaScript
-
-  // Template variables
-  variables Json // Schema das variáveis: {name, type, required, default}
-
-  // Preview
-  previewImage String?
-
-  // Usage
-  isPublic   Boolean @default(true)
-  usageCount Int     @default(0)
-
-  // Creator
-  createdBy String   @db.ObjectId
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  creator User @relation("AdTemplateCreator", fields: [createdBy], references: [id])
-
-  @@index([category, isPublic])
-  @@index([type, placement])
-  @@map("ad_templates")
 }

@@ -20,6 +20,7 @@ import ComposersByEpoch from '../components/ComposersByEpoch';
 import RandomDiscoveries from '../components/RandomDiscoveries';
 import RecentAdditions from '../components/RecentAdditions';
 import MusicalFacts from '../components/MusicalFacts';
+import AdContainer from '../components/Ads/AdContainer';
 
 export default async function EnhancedHomePage() {
   // Buscar todos os dados em paralelo para melhor performance
@@ -43,6 +44,8 @@ export default async function EnhancedHomePage() {
 
   return (
     <div className="classical-theme">
+      <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" />
+
       {/* Hero principal */}
       <HeroMainPage />
 

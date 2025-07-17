@@ -913,7 +913,7 @@ export default function WorkDetailsClient({
             </div>
           </AnimatedCard>
 
-          <AdContainer placement="HEADER" className="space-y-4" />
+          <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" />
 
           {/* 🆕 Seção de Partituras IMSLP com nova lógica */}
           {work.imslpPermlink && (

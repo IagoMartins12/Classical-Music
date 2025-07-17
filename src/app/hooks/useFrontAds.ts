@@ -1,142 +1,132 @@
-// app/hooks/useFrontAds.ts - Hook para usar publicidades no frontend
+// app/hooks/useFrontAds.ts - Hook atualizado para buscar anúncios
 import { useState, useEffect, useCallback } from 'react';
+import { useSession } from 'next-auth/react';
 
-export interface AdData {
+interface UseFrontAdsParams {
+  placement: string;
+  targetType?: string;
+  instrumentId?: string;
+  userLevel?: string;
+}
+
+interface Advertisement {
   id: string;
   title: string;
   description?: string;
-  tagline?: string;
   content?: string;
   imageUrl?: string;
+  thumbnailUrl?: string;
   videoUrl?: string;
   ctaText?: string;
   targetUrl?: string;
+  linkType: 'url' | 'whatsapp';
   isExternal: boolean;
   type: string;
   placement: string;
   targetType: string;
+  targetUserLevel: string;
   advertiserName: string;
+  advertiserEmail?: string;
+  advertiserPhone?: string;
   advertiserWebsite?: string;
-  priority: number;
-  weight: number;
   showOnMobile: boolean;
   showOnTablet: boolean;
   showOnDesktop: boolean;
-  customCSS?: string;
-  mediaFiles?: any[];
-  instrumentTargets?: any[];
-  composerTargets?: any[];
-  epochTargets?: any[];
+  instrumentId?: string;
+  instrument?: {
+    id: string;
+    name: string;
+  };
 }
 
-interface UseAdsParams {
-  placement?: string;
-  targetType?: string;
-  instrumentIds?: string[];
-  composerIds?: string[];
-  epochIds?: string[];
-  enabled?: boolean;
-}
-
-interface UseAdsReturn {
-  ads: AdData[];
+interface UseFrontAdsReturn {
+  ads: Advertisement[];
   loading: boolean;
   error: string | null;
   trackEvent: (adId: string, event: string, data?: any) => Promise<void>;
   refetch: () => Promise<void>;
 }
 
-export const useFrontAds = (params: UseAdsParams = {}): UseAdsReturn => {
-  const [ads, setAds] = useState<AdData[]>([]);
+export const useFrontAds = ({
+  placement,
+  targetType = 'GENERAL',
+  instrumentId,
+  userLevel = 'ALL',
+}: UseFrontAdsParams): UseFrontAdsReturn => {
+  const [ads, setAds] = useState<Advertisement[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const {
-    placement,
-    targetType,
-    instrumentIds,
-    composerIds,
-    epochIds,
-    enabled = true,
-  } = params;
+  const { data: session } = useSession();
 
   const fetchAds = useCallback(async () => {
-    if (!enabled) return;
-
     setLoading(true);
     setError(null);
 
     try {
-      const searchParams = new URLSearchParams();
+      // Construir parâmetros da query
+      const params = new URLSearchParams({
+        placement,
+        targetType,
+      });
 
-      if (placement) searchParams.append('placement', placement);
-      if (targetType) searchParams.append('targetType', targetType);
-      if (instrumentIds?.length)
-        searchParams.append('instruments', instrumentIds.join(','));
-      if (composerIds?.length)
-        searchParams.append('composers', composerIds.join(','));
-      if (epochIds?.length) searchParams.append('epochs', epochIds.join(','));
+      if (instrumentId) {
+        params.append('instrumentId', instrumentId);
+      }
 
-      console.log('search', searchParams);
-      const response = await fetch(`/api/ads?${searchParams}`, {
+      if (userLevel !== 'ALL') {
+        params.append('userLevel', userLevel);
+      }
+
+      // Adicionar info do usuário se logado
+      if (session?.user) {
+        const userRole = session.user.role;
+        if (userRole === 1) {
+          params.append('userLevel', 'TEACHER');
+        } else if (userRole === 0) {
+          params.append('userLevel', 'STUDENT');
+        }
+      }
+
+      const response = await fetch(`/api/ads?${params}`, {
         method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
         cache: 'no-store',
       });
 
       if (!response.ok) {
-        throw new Error('Erro ao buscar publicidades');
+        throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
 
       const data = await response.json();
 
       if (data.success) {
-        setAds(data.ads);
+        setAds(data.ads || []);
       } else {
-        throw new Error('Resposta inválida do servidor');
+        throw new Error(data.error || 'Erro ao buscar anúncios');
       }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Erro desconhecido';
       setError(errorMessage);
-      console.error('Erro ao buscar publicidades:', err);
+      console.error('Erro ao buscar anúncios:', err);
+      setAds([]); // Limpar ads em caso de erro
     } finally {
       setLoading(false);
     }
-  }, [placement, targetType, instrumentIds, composerIds, epochIds, enabled]);
+  }, [placement, targetType, instrumentId, userLevel, session]);
 
   const trackEvent = useCallback(
     async (adId: string, event: string, data: any = {}) => {
       try {
-        // Adicionar dados da página atual
         const trackingData = {
           ...data,
           pageUrl: window.location.href,
           pageTitle: document.title,
-          placement,
           timestamp: new Date().toISOString(),
+          placement,
+          userAgent: navigator.userAgent,
+          referrer: document.referrer,
         };
-
-        // Tentar obter localização do usuário (se permitido)
-        if (!trackingData.country && 'geolocation' in navigator) {
-          try {
-            const position = await new Promise<GeolocationPosition>(
-              (resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject, {
-                  timeout: 5000,
-                });
-              }
-            );
-
-            // Usar um serviço de geocoding reverso (simplificado)
-            const response = await fetch(
-              `https://api.ipapi.com/api/check?access_key=YOUR_API_KEY`
-            );
-            const locationData = await response.json();
-            trackingData.country = locationData.country_name;
-          } catch (geoError) {
-            // Ignorar erro de geolocalização
-          }
-        }
 
         await fetch('/api/ads', {
           method: 'POST',
@@ -149,15 +139,20 @@ export const useFrontAds = (params: UseAdsParams = {}): UseAdsReturn => {
         });
       } catch (error) {
         console.error('Erro ao registrar evento:', error);
-        // Não mostrar erro ao usuário para não quebrar a experiência
+        // Não propagar o erro para não quebrar a UX
       }
     },
     [placement]
   );
 
   useEffect(() => {
+    // Não mostrar ads para super admins
+    if (session?.user?.role === 2) {
+      return;
+    }
+
     fetchAds();
-  }, [fetchAds]);
+  }, [fetchAds, session]);
 
   return {
     ads,

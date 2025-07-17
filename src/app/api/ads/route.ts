@@ -1,28 +1,26 @@
-// app/api/ads/route.ts - API pública para buscar publicidades
+// app/api/ads/route.ts - API atualizada para anúncios
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 
-// Cache de publicidades ativas para performance
+// Cache de anúncios ativos para performance
 const getCachedAds = unstable_cache(
   async (
     placement?: string,
     targetType?: string,
-    instrumentIds?: string[],
-    composerIds?: string[],
-    epochIds?: string[]
+    instrumentId?: string,
+    userLevel?: string
   ) => {
     const where: any = {
       status: 'ACTIVE',
-      // isApproved: true,
-      // OR: [{ startDate: null }, { startDate: { lte: new Date() } }],
-      // AND: [
-      //   {
-      //     OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
-      //   },
-      // ],
+      OR: [{ startDate: null }, { startDate: { lte: new Date() } }],
+      AND: [
+        {
+          OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
+        },
+      ],
     };
 
     if (placement) {
@@ -33,33 +31,15 @@ const getCachedAds = unstable_cache(
       where.targetType = targetType;
     }
 
-    // Filtros de targeting específico
-    if (
-      targetType === 'INSTRUMENT' &&
-      instrumentIds &&
-      instrumentIds.length > 0
-    ) {
-      where.instrumentTargets = {
-        some: {
-          instrumentId: { in: instrumentIds },
-        },
+    if (userLevel && userLevel !== 'ALL') {
+      where.targetUserLevel = {
+        in: ['ALL', userLevel],
       };
     }
 
-    if (targetType === 'COMPOSER' && composerIds && composerIds.length > 0) {
-      where.composerTargets = {
-        some: {
-          composerId: { in: composerIds },
-        },
-      };
-    }
-
-    if (targetType === 'EPOCH' && epochIds && epochIds.length > 0) {
-      where.epochTargets = {
-        some: {
-          epochId: { in: epochIds },
-        },
-      };
+    // Filtro para targeting específico por instrumento
+    if (targetType === 'INSTRUMENT' && instrumentId) {
+      where.instrumentId = instrumentId;
     }
 
     return await prisma.advertisement.findMany({
@@ -68,65 +48,33 @@ const getCachedAds = unstable_cache(
         id: true,
         title: true,
         description: true,
-        tagline: true,
         content: true,
         imageUrl: true,
+        thumbnailUrl: true,
         videoUrl: true,
         ctaText: true,
         targetUrl: true,
+        linkType: true,
         isExternal: true,
         type: true,
         placement: true,
         targetType: true,
+        targetUserLevel: true,
         advertiserName: true,
         advertiserWebsite: true,
-        priority: true,
-        weight: true,
         showOnMobile: true,
         showOnTablet: true,
         showOnDesktop: true,
-        customCSS: true,
-        // NÃO incluir customJS por segurança
-        mediaFiles: {
+        instrumentId: true,
+        instrument: {
           select: {
             id: true,
-            url: true,
-            thumbnailUrl: true,
-            type: true,
-            isMain: true,
-            altText: true,
-            caption: true,
-          },
-          where: { isMain: true },
-          take: 1,
-        },
-        instrumentTargets: {
-          select: {
-            instrument: {
-              select: { id: true, name: true },
-            },
-          },
-        },
-        composerTargets: {
-          select: {
-            composer: {
-              select: { id: true, name: true },
-            },
-          },
-        },
-        epochTargets: {
-          select: {
-            epoch: {
-              select: { id: true, name: true },
-            },
+            name: true,
           },
         },
       },
-      orderBy: [
-        { priority: 'desc' },
-        { weight: 'desc' },
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ createdAt: 'desc' }],
+      take: 1, // APENAS UM AD POR COMBINAÇÃO
     });
   },
   ['public-ads'],
@@ -137,39 +85,23 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const placement = searchParams.get('placement');
-    const targetType = searchParams.get('targetType');
-    const instrumentIds = searchParams
-      .get('instruments')
-      ?.split(',')
-      .filter(Boolean);
-    const composerIds = searchParams
-      .get('composers')
-      ?.split(',')
-      .filter(Boolean);
-    const epochIds = searchParams.get('epochs')?.split(',').filter(Boolean);
+    const targetType = searchParams.get('targetType') || 'GENERAL';
+    const instrumentId = searchParams.get('instrumentId');
+    const userLevel = searchParams.get('userLevel') || 'ALL';
     const userAgent = request.headers.get('user-agent') || '';
 
-    console.log('search ', {
-      searchParams,
-      placement,
-      instrumentIds,
-      targetType,
-    });
     // Detectar tipo de dispositivo
     const isMobile = /mobile|android|iphone/i.test(userAgent);
     const isTablet = /tablet|ipad/i.test(userAgent);
     const isDesktop = !isMobile && !isTablet;
 
-    // Buscar publicidades
+    // Buscar anúncios
     const ads = await getCachedAds(
       placement || undefined,
-      targetType || undefined,
-      instrumentIds,
-      composerIds,
-      epochIds
+      targetType,
+      instrumentId || undefined,
+      userLevel
     );
-
-    console.log('ADS', { ads, placement, targetType });
 
     // Filtrar por dispositivo
     const filteredAds = ads.filter((ad) => {
@@ -179,29 +111,13 @@ export async function GET(request: NextRequest) {
       return true;
     });
 
-    // Implementar rotação baseada em peso
-    const weightedAds = [];
-    for (const ad of filteredAds) {
-      for (let i = 0; i < ad.weight; i++) {
-        weightedAds.push(ad);
-      }
-    }
-
-    // Embaralhar mantendo prioridade
-    const shuffled = weightedAds.sort((a, b) => {
-      if (a.priority !== b.priority) {
-        return b.priority - a.priority; // Prioridade maior primeiro
-      }
-      return Math.random() - 0.5; // Embaralhar ads com mesma prioridade
-    });
-
     return NextResponse.json({
       success: true,
-      ads: shuffled.slice(0, 10), // Limitar a 10 ads por request
-      count: shuffled.length,
+      ads: filteredAds,
+      count: filteredAds.length,
     });
   } catch (error) {
-    console.error('Erro ao buscar publicidades:', error);
+    console.error('Erro ao buscar anúncios:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }
@@ -222,18 +138,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar se a publicidade existe e está ativa
+    // Verificar se o anúncio existe e está ativo
     const ad = await prisma.advertisement.findFirst({
       where: {
         id: adId,
         status: 'ACTIVE',
-        isApproved: true,
       },
     });
 
     if (!ad) {
       return NextResponse.json(
-        { error: 'Publicidade não encontrada ou inativa' },
+        { error: 'Anúncio não encontrado ou inativo' },
         { status: 404 }
       );
     }
@@ -247,22 +162,17 @@ export async function POST(request: NextRequest) {
     const referrer = request.headers.get('referer') || '';
 
     // Determinar tipo de dispositivo
-    const isMobile = /mobile|android|iphone|ipad/i.test(userAgent);
+    const isMobile = /mobile|android|iphone/i.test(userAgent);
     const isTablet = /tablet|ipad/i.test(userAgent);
     const device = isMobile ? 'mobile' : isTablet ? 'tablet' : 'desktop';
 
-    // Criar registro de estatística
-    const statsData: any = {
-      advertisementId: adId,
-      userAgent,
-      referrer,
-      device,
-      userId,
-      pageUrl: data.pageUrl,
-      pageTitle: data.pageTitle,
-      placement: data.placement,
-      country: data.country,
-    };
+    // Determinar nível do usuário
+    let userLevel = 'ALL';
+    if (session?.user?.role === 1) {
+      userLevel = 'TEACHER';
+    } else if (session?.user?.role === 0) {
+      userLevel = 'STUDENT';
+    }
 
     // Buscar estatística do dia atual para este ad
     const today = new Date();
@@ -277,7 +187,6 @@ export async function POST(request: NextRequest) {
           gte: today,
           lt: tomorrow,
         },
-        userId: userId || null,
         device,
       },
     });
@@ -293,9 +202,6 @@ export async function POST(request: NextRequest) {
         case 'click':
           updateData.clicks = { increment: 1 };
           break;
-        case 'conversion':
-          updateData.conversions = { increment: 1 };
-          break;
         case 'hover':
           updateData.hoverTime = { increment: data.duration || 0 };
           break;
@@ -308,10 +214,18 @@ export async function POST(request: NextRequest) {
     } else {
       // Criar nova estatística
       const initialStats: any = {
-        ...statsData,
+        advertisementId: adId,
+        date: today,
+        userAgent,
+        referrer,
+        device,
+        userId,
+        userLevel,
+        pageUrl: data.pageUrl,
+        pageTitle: data.pageTitle,
+        country: data.country,
         impressions: 0,
         clicks: 0,
-        conversions: 0,
         hoverTime: 0,
       };
 
@@ -322,9 +236,6 @@ export async function POST(request: NextRequest) {
         case 'click':
           initialStats.clicks = 1;
           break;
-        case 'conversion':
-          initialStats.conversions = 1;
-          break;
         case 'hover':
           initialStats.hoverTime = data.duration || 0;
           break;
@@ -333,32 +244,6 @@ export async function POST(request: NextRequest) {
       await prisma.adStats.create({
         data: initialStats,
       });
-    }
-
-    // Verificar se atingiu limites máximos
-    if (ad.maxViews || ad.maxClicks) {
-      const totalStats = await prisma.adStats.aggregate({
-        where: { advertisementId: adId },
-        _sum: {
-          impressions: true,
-          clicks: true,
-        },
-      });
-
-      const shouldPause =
-        (ad.maxViews &&
-          totalStats._sum.impressions &&
-          totalStats._sum.impressions >= ad.maxViews) ||
-        (ad.maxClicks &&
-          totalStats._sum.clicks &&
-          totalStats._sum.clicks >= ad.maxClicks);
-
-      if (shouldPause) {
-        await prisma.advertisement.update({
-          where: { id: adId },
-          data: { status: 'PAUSED' },
-        });
-      }
     }
 
     return NextResponse.json({

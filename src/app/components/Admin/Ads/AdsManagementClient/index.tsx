@@ -1,4 +1,4 @@
-// app/admin/ads/AdsManagementClient.tsx
+// app/admin/ads/AdsManagementClient.tsx - Atualizado com clonagem
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -16,6 +16,11 @@ import {
   FiTarget,
   FiTrendingUp,
   FiRefreshCw,
+  FiMessageCircle,
+  FiExternalLink,
+  FiUpload,
+  FiAlertTriangle,
+  FiCopy, // 🆕 Ícone de clonagem
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -32,6 +37,7 @@ import AdStatsModal from '../AdStatsModal';
 import MediaUploadModal from '../MediaUploadModal';
 import EditAdModal from '../EditAdModal';
 import CreateAdModal from '../CreateAdModal';
+import CloneAdModal from '../CloneAdModal'; // 🆕 Novo modal
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import Image from 'next/image';
@@ -66,8 +72,6 @@ const targetTypeOptions = [
   { value: '', label: 'Todos os Targets' },
   { value: 'GENERAL', label: 'Geral' },
   { value: 'INSTRUMENT', label: 'Por Instrumento' },
-  { value: 'COMPOSER', label: 'Por Compositor' },
-  { value: 'EPOCH', label: 'Por Época' },
   { value: 'USER_LEVEL', label: 'Por Nível' },
 ];
 
@@ -80,12 +84,14 @@ export default function AdsManagementClient() {
     updateAdStatus,
     deleteAd,
     stats,
+    refreshStats,
   } = useAds();
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingAd, setEditingAd] = useState<any>(null);
   const [statsAd, setStatsAd] = useState<any>(null);
   const [mediaAd, setMediaAd] = useState<any>(null);
+  const [cloningAd, setCloningAd] = useState<any>(null); // 🆕 Estado para clonagem
   const [selectedAds, setSelectedAds] = useState<string[]>([]);
   const [filters, setFilters] = useState<FilterState>({
     status: '',
@@ -100,6 +106,11 @@ export default function AdsManagementClient() {
     fetchAds(1, filters);
   }, [filters]);
 
+  // Buscar estatísticas ao carregar
+  useEffect(() => {
+    refreshStats();
+  }, []);
+
   const handleFilterChange = (key: keyof FilterState, value: string) => {
     setFilters((prev) => ({
       ...prev,
@@ -111,35 +122,39 @@ export default function AdsManagementClient() {
     try {
       await updateAdStatus(adId, newStatus);
       toast.success('Status atualizado com sucesso');
-    } catch (error) {
-      console.log('error', error);
-      toast.error('Erro ao atualizar status');
+    } catch (error: any) {
+      toast.error(error.message || 'Erro ao atualizar status');
     }
   };
 
   const handleDeleteAd = async (adId: string) => {
-    if (confirm('Tem certeza que deseja deletar esta publicidade?')) {
+    if (
+      confirm(
+        'Tem certeza que deseja deletar este anúncio? Esta ação não pode ser desfeita.'
+      )
+    ) {
       try {
         await deleteAd(adId);
-        toast.success('Publicidade deletada com sucesso');
-      } catch (error) {
-        console.log('error', error);
-
-        toast.error('Erro ao deletar publicidade');
+        toast.success('Anúncio deletado com sucesso');
+      } catch (error: any) {
+        toast.error(error.message || 'Erro ao deletar anúncio');
       }
     }
   };
 
+  // 🆕 Função para iniciar clonagem
+  const handleCloneAd = (ad: any) => {
+    setCloningAd(ad);
+  };
+
   const handleBulkAction = async (action: string) => {
     if (selectedAds.length === 0) {
-      toast.error('Selecione pelo menos uma publicidade');
+      toast.error('Selecione pelo menos um anúncio');
       return;
     }
 
     if (
-      confirm(
-        `Executar ação "${action}" em ${selectedAds.length} publicidade(s)?`
-      )
+      confirm(`Executar ação "${action}" em ${selectedAds.length} anúncio(s)?`)
     ) {
       try {
         await Promise.all(
@@ -148,11 +163,9 @@ export default function AdsManagementClient() {
           )
         );
         setSelectedAds([]);
-        toast.success(`Ação executada em ${selectedAds.length} publicidade(s)`);
-      } catch (error) {
-        console.log('error', error);
-
-        toast.error('Erro ao executar ação em lote');
+        toast.success(`Ação executada em ${selectedAds.length} anúncio(s)`);
+      } catch (error: any) {
+        toast.error(error.message || 'Erro ao executar ação em lote');
       }
     }
   };
@@ -168,8 +181,6 @@ export default function AdsManagementClient() {
       case 'SCHEDULED':
         return 'text-accent-blue bg-accent-blue/10';
       case 'EXPIRED':
-        return 'text-accent-red bg-accent-red/10';
-      case 'REJECTED':
         return 'text-accent-red bg-accent-red/10';
       default:
         return 'text-theme-tertiary bg-theme-secondary';
@@ -188,8 +199,6 @@ export default function AdsManagementClient() {
         return 'Agendado';
       case 'EXPIRED':
         return 'Expirado';
-      case 'REJECTED':
-        return 'Rejeitado';
       default:
         return status;
     }
@@ -208,6 +217,23 @@ export default function AdsManagementClient() {
     }
   };
 
+  const hasMedia = (ad: any) => {
+    return ad.imageUrl || ad.videoUrl;
+  };
+
+  const getTargetTypeLabel = (ad: any) => {
+    if (ad.targetType === 'INSTRUMENT' && ad.instrument) {
+      return `${ad.instrument.name}`;
+    } else if (ad.targetType === 'USER_LEVEL') {
+      return ad.targetUserLevel === 'ALL'
+        ? 'Todos os usuários'
+        : ad.targetUserLevel === 'TEACHER'
+        ? 'Professores'
+        : 'Estudantes';
+    }
+    return 'Geral';
+  };
+
   if (loading && ads.length === 0) {
     return (
       <PageContainer showBackground={true}>
@@ -215,7 +241,7 @@ export default function AdsManagementClient() {
           <div className="text-center">
             <LoadingSpinner size="lg" />
             <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando publicidades...
+              Carregando anúncios...
             </p>
           </div>
         </div>
@@ -226,7 +252,11 @@ export default function AdsManagementClient() {
   return (
     <PageContainer showBackground={true}>
       <div className="space-y-8">
-        <AnimatedContainer delay={0.1} staggerSpeed="normal">
+        <AnimatedContainer
+          delay={0.1}
+          staggerSpeed="normal"
+          className="flex flex-col gap-6"
+        >
           {/* Header Section */}
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
@@ -236,7 +266,7 @@ export default function AdsManagementClient() {
                 </div>
               </div>
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gradient-brand classical-title mb-4">
-                Gerenciamento de Publicidades
+                Gerenciamento de Anúncios
               </h1>
               <p className="text-lg md:text-xl text-theme-secondary classical-subtitle max-w-2xl mx-auto">
                 Gerencie campanhas publicitárias e parcerias
@@ -320,7 +350,7 @@ export default function AdsManagementClient() {
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <Input
                     type="text"
-                    placeholder="Buscar publicidades..."
+                    placeholder="Buscar anúncios..."
                     value={filters.search}
                     onChange={(e) =>
                       handleFilterChange('search', e.target.value)
@@ -366,7 +396,10 @@ export default function AdsManagementClient() {
                   leftIcon={
                     <FiRefreshCw className={loading ? 'animate-spin' : ''} />
                   }
-                  onClick={() => fetchAds(1, filters)}
+                  onClick={() => {
+                    fetchAds(1, filters);
+                    refreshStats();
+                  }}
                   disabled={loading}
                 >
                   Atualizar
@@ -377,7 +410,7 @@ export default function AdsManagementClient() {
                   leftIcon={<FiPlus />}
                   onClick={() => setShowCreateModal(true)}
                 >
-                  Nova Publicidade
+                  Novo Anúncio
                 </Button>
               </div>
             </div>
@@ -386,7 +419,7 @@ export default function AdsManagementClient() {
             {selectedAds.length > 0 && (
               <div className="flex items-center gap-2 p-3 bg-brand-primary/10 border border-brand-primary rounded-lg mb-4">
                 <span className="text-sm font-medium text-theme-primary">
-                  {selectedAds.length} selecionada(s)
+                  {selectedAds.length} selecionado(s)
                 </span>
                 <div className="flex items-center gap-2 ml-auto">
                   <Button
@@ -440,16 +473,16 @@ export default function AdsManagementClient() {
                       />
                     </th>
                     <th className="text-left py-3 px-2 text-theme-primary font-medium">
-                      Publicidade
+                      Anúncio
                     </th>
                     <th className="text-left py-3 px-2 text-theme-primary font-medium">
                       Status
                     </th>
                     <th className="text-left py-3 px-2 text-theme-primary font-medium">
-                      Tipo
+                      Segmentação
                     </th>
                     <th className="text-left py-3 px-2 text-theme-primary font-medium">
-                      Target
+                      Mídia
                     </th>
                     <th className="text-left py-3 px-2 text-theme-primary font-medium">
                       Performance
@@ -487,8 +520,8 @@ export default function AdsManagementClient() {
                           <div className="flex items-center space-x-3">
                             {ad.imageUrl ? (
                               <Image
-                                width={25}
-                                height={25}
+                                width={48}
+                                height={48}
                                 src={ad.imageUrl}
                                 alt={ad.title}
                                 className="w-12 h-12 rounded-lg object-cover"
@@ -499,12 +532,28 @@ export default function AdsManagementClient() {
                               </div>
                             )}
                             <div>
-                              <h3 className="font-medium text-theme-primary">
-                                {ad.title}
-                              </h3>
-                              <p className="text-sm text-theme-tertiary">
-                                {ad.advertiserName}
-                              </p>
+                              <div className="flex items-center space-x-2">
+                                <h3 className="font-medium text-theme-primary">
+                                  {ad.title}
+                                </h3>
+                                {!hasMedia(ad) && (
+                                  <FiAlertTriangle
+                                    className="w-4 h-4 text-accent-amber"
+                                    title="Sem mídia"
+                                  />
+                                )}
+                              </div>
+                              <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
+                                <span>{ad.advertiserName}</span>
+                                <span>•</span>
+                                <span>{ad.placement}</span>
+                                {ad.linkType === 'whatsapp' && (
+                                  <>
+                                    <span>•</span>
+                                    <FiMessageCircle className="w-3 h-3" />
+                                  </>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </td>
@@ -518,23 +567,29 @@ export default function AdsManagementClient() {
                           </span>
                         </td>
                         <td className="py-3 px-2">
-                          <div className="flex items-center space-x-2">
-                            <TypeIcon className="w-4 h-4 text-theme-tertiary" />
-                            <span className="text-sm text-theme-primary">
-                              {ad.type}
-                            </span>
-                          </div>
+                          <span className="text-sm text-theme-secondary">
+                            {getTargetTypeLabel(ad)}
+                          </span>
                         </td>
                         <td className="py-3 px-2">
-                          <span className="text-sm text-theme-secondary">
-                            {ad.targetType}
-                          </span>
+                          <div className="flex items-center space-x-1">
+                            {ad.imageUrl && (
+                              <FiImage className="w-4 h-4 text-accent-green" />
+                            )}
+                            {ad.videoUrl && (
+                              <FiVideo className="w-4 h-4 text-accent-blue" />
+                            )}
+                            {!hasMedia(ad) && (
+                              <span className="text-xs text-accent-red">
+                                Sem mídia
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="py-3 px-2">
                           <div className="text-sm">
                             <div className="text-theme-primary font-medium">
-                              {ad.totalImpressions?.toLocaleString() || 0}{' '}
-                              impressões
+                              {ad.totalImpressions?.toLocaleString() || 0} imp.
                             </div>
                             <div className="text-theme-tertiary">
                               CTR: {ad.ctr?.toFixed(2) || 0}%
@@ -543,19 +598,31 @@ export default function AdsManagementClient() {
                         </td>
                         <td className="py-3 px-2">
                           <div className="flex items-center space-x-1">
+                            {/* 🆕 Botão de clonagem */}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              leftIcon={<FiCopy />}
+                              onClick={() => handleCloneAd(ad)}
+                              title="Clonar anúncio"
+                              className="text-accent-purple hover:text-accent-purple"
+                            />
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              leftIcon={<FiUpload />}
+                              onClick={() => setMediaAd(ad)}
+                              title="Gerenciar mídia"
+                              className={
+                                !hasMedia(ad) ? 'text-accent-amber' : ''
+                              }
+                            />
                             <Button
                               variant="ghost"
                               size="sm"
                               leftIcon={<FiBarChart2 />}
                               onClick={() => setStatsAd(ad)}
                               title="Ver estatísticas"
-                            />
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              leftIcon={<FiImage />}
-                              onClick={() => setMediaAd(ad)}
-                              title="Gerenciar mídia"
                             />
                             <Button
                               variant="ghost"
@@ -583,6 +650,7 @@ export default function AdsManagementClient() {
                                   handleStatusChange(ad.id, 'ACTIVE')
                                 }
                                 title="Ativar"
+                                disabled={!hasMedia(ad)}
                               />
                             )}
                             <Button
@@ -605,19 +673,19 @@ export default function AdsManagementClient() {
                 <div className="text-center py-12">
                   <FiTarget className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                   <h3 className="text-xl font-medium text-theme-primary mb-2">
-                    Nenhuma publicidade encontrada
+                    Nenhum anúncio encontrado
                   </h3>
                   <p className="text-theme-tertiary mb-6">
                     {filters.search || filters.status || filters.type
                       ? 'Tente ajustar os filtros de busca'
-                      : 'Comece criando sua primeira publicidade'}
+                      : 'Comece criando seu primeiro anúncio'}
                   </p>
                   <Button
                     variant="primary"
                     leftIcon={<FiPlus />}
                     onClick={() => setShowCreateModal(true)}
                   >
-                    Criar Publicidade
+                    Criar Anúncio
                   </Button>
                 </div>
               )}
@@ -669,6 +737,7 @@ export default function AdsManagementClient() {
           onSuccess={() => {
             setShowCreateModal(false);
             fetchAds(1, filters);
+            refreshStats();
           }}
         />
       )}
@@ -680,6 +749,20 @@ export default function AdsManagementClient() {
           onSuccess={() => {
             setEditingAd(null);
             fetchAds(pagination?.page || 1, filters);
+            refreshStats();
+          }}
+        />
+      )}
+
+      {/* 🆕 Modal de clonagem */}
+      {cloningAd && (
+        <CloneAdModal
+          ad={cloningAd}
+          onClose={() => setCloningAd(null)}
+          onSuccess={() => {
+            setCloningAd(null);
+            fetchAds(pagination?.page || 1, filters);
+            refreshStats();
           }}
         />
       )}
@@ -687,13 +770,20 @@ export default function AdsManagementClient() {
       {statsAd && (
         <AdStatsModal
           ad={statsAd}
-          statsAd={statsAd}
           onClose={() => setStatsAd(null)}
+          statsAd={!!statsAd}
         />
       )}
 
       {mediaAd && (
-        <MediaUploadModal ad={mediaAd} onClose={() => setMediaAd(null)} />
+        <MediaUploadModal
+          ad={mediaAd}
+          onClose={() => setMediaAd(null)}
+          onSuccess={() => {
+            setMediaAd(null);
+            fetchAds(pagination?.page || 1, filters);
+          }}
+        />
       )}
     </PageContainer>
   );
