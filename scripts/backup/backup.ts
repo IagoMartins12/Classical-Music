@@ -26,7 +26,6 @@ const MODELS_ORDER = [
 
   // Partituras e processamento (dependem de work)
   'workScore',
-  'scoreProcessingLog',
 
   // Dados do usuário relacionados a obras
   'userInstrument',

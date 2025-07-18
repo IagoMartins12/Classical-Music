@@ -196,7 +196,6 @@ model User {
   studyModeSettings Json?
 
   // Relações de publicidade
-  // uploadedAdMedia  AdMedia[]       @relation("AdMediaUploader")
 
   // Configurações de publicidade
   showAds       Boolean @default(true) // Usuário quer ver ads?
@@ -385,48 +384,7 @@ model WorkScore {
   @@map("work_scores")
 }
 
-// Model para logs de processamento em background
-model ScoreProcessingLog {
-  id     String           @id @default(auto()) @map("_id") @db.ObjectId
-  workId String           @db.ObjectId
-  action String // Tipo de ação: 'cache_incremental', 'background_cache_complete', etc.
-  status ProcessingStatus @default(PENDING)
 
-  // Dados de execução
-  startedAt   DateTime?
-  completedAt DateTime?
-  duration    Int? // Duração em milissegundos
-
-  // Dados da fila
-  priority     Int       @default(5) // 1-10 (10 = máxima prioridade)
-  scheduledFor DateTime? // Para agendamento
-  retryCount   Int       @default(0)
-  maxRetries   Int       @default(3)
-
-  // Estatísticas de processamento
-  itemsTotal   Int? // Total de itens a processar
-  itemsSuccess Int? // Itens processados com sucesso
-  itemsFailed  Int? // Itens que falharam
-  itemsSkipped Int? // Itens que foram pulados
-
-  // Dados adicionais
-  details Json? // Dados específicos do job
-  error   String? // Mensagem de erro se falhou
-
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relação
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-
-  // Índices para performance
-  @@index([status, priority, scheduledFor])
-  @@index([workId, action, status])
-  @@index([status, createdAt])
-  @@index([action, status])
-  @@map("score_processing_logs")
-}
 
 // Models existentes (mantendo todos)
 
@@ -567,7 +525,6 @@ model Composer {
   @@index([verificationStatus])
   @@index([dataQuality])
 }
-
 model Epoch {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
@@ -650,6 +607,41 @@ model Work {
   imslpTags         String[]         @default([])
   difficultyLevel   DifficultyLevel?
 
+  // 🆕 CAMPOS DE MÍDIA AUTOMÁTICA
+  spotifyTrackId    String?   // ID da track no Spotify
+  spotifyTrackUrl   String?   // URL da track no Spotify  
+  spotifyPreviewUrl String?   // URL do preview (30s) do Spotify
+  spotifyAlbumArt   String?   // URL da capa do álbum
+  spotifyArtists    String[]  @default([]) // Lista de artistas encontrados
+  spotifyAlbumName  String?   // Nome do álbum
+  spotifyDuration   Int?      // Duração em ms
+  spotifyPopularity Int?      // Popularidade (0-100)
+
+  youtubeVideoId    String?   // ID do vídeo no YouTube
+  youtubeVideoUrl   String?   // URL completa do vídeo
+  youtubeThumbnail  String?   // URL da thumbnail
+  youtubeTitle      String?   // Título do vídeo encontrado
+  youtubeChannel    String?   // Canal do YouTube
+  youtubeDuration   String?   // Duração formatada (ex: "PT4M33S")
+  youtubeViewCount  String?   // Número de visualizações
+  youtubePublishedAt DateTime? // Data de publicação
+
+  // Metadados de busca
+  mediaSearchStatus String?   @default("pending") // "pending", "searching", "found", "not_found", "error"
+  mediaSearchAttempts Int     @default(0)
+  lastMediaSearch   DateTime?
+  mediaSearchError  String?   // Último erro de busca
+  mediaSearchStrategy String? // Estratégia usada na busca bem-sucedida
+
+  // Configurações de qualidade
+  mediaQualityScore  Int?     // Score de qualidade (0-100) baseado em match de título/artista
+  manuallyVerified   Boolean  @default(false) // Se foi verificado manualmente
+  mediaPreferences   Json?    // Preferências de mídia específicas da obra
+
+  // Cache de busca para evitar re-buscas desnecessárias
+  searchCacheData   Json?     // Cache dos dados de busca
+  searchCacheExpiry DateTime? // Expiração do cache
+
   //Verificação
   verificationStatus String? // "verified", "pending", "disputed"
   verifiedBy         String?   @db.ObjectId
@@ -705,8 +697,9 @@ model Work {
 
   // Relações com sistema de cache incremental
   cachedScores   WorkScore[]
-  processingLogs ScoreProcessingLog[]
 
+  mediaSearchLogs MediaSearchLog[]
+  
   // 🆕 ÍNDICES OTIMIZADOS PARA BUSCA DE OBRAS - SUBSTITUA OS ÍNDICES EXISTENTES
   @@index([title]) // Busca simples por título
   @@index([opOrCatalog]) // Busca por catálogo/opus
@@ -732,7 +725,48 @@ model Work {
   @@index([createdBy])
   @@index([isCustom])
   @@index([moodTags])
+
+  @@index([mediaSearchStatus])
+  @@index([lastMediaSearch])
+  @@index([spotifyTrackId])
+  @@index([youtubeVideoId])
+  @@index([mediaQualityScore])
+
 }
+
+// 🆕 MODELO PARA LOG DE BUSCAS DE MÍDIA
+model MediaSearchLog {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  workId String @db.ObjectId
+
+  // Dados da busca
+  searchType    String   // "spotify", "youtube", "both"
+  searchQuery   String   // Query utilizada
+  searchResults Json?    // Resultados brutos da API
+  
+  // Resultado
+  success       Boolean  @default(false)
+  foundSpotify  Boolean  @default(false)
+  foundYoutube  Boolean  @default(false)
+  qualityScore  Int?     // Score de qualidade do match
+  
+  // Metadados
+  strategy      String?  // Estratégia de busca utilizada
+  apiCalls      Int      @default(0) // Número de chamadas de API utilizadas
+  processingTime Int?    // Tempo de processamento em ms
+  errorMessage  String?  // Mensagem de erro se houver
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  
+  @@index([workId, createdAt])
+  @@index([searchType, success])
+  @@index([createdAt])
+  @@map("media_search_logs")
+}
+
 
 model UserInstrument {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
@@ -1243,38 +1277,6 @@ model UploadModeration {
   @@map("upload_moderation")
 }
 
-// Novo modelo para estatísticas de reports (cache)
-model ReportStats {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-
-  // Período das estatísticas
-  period String // "daily", "weekly", "monthly"
-  date   DateTime
-
-  // Estatísticas gerais
-  totalReports    Int @default(0)
-  pendingReports  Int @default(0)
-  approvedReports Int @default(0)
-  rejectedReports Int @default(0)
-
-  // Reports por tipo
-  composerReports Int @default(0)
-  workReports     Int @default(0)
-  scoreReports    Int @default(0)
-
-  // Reports por motivo (JSON para flexibilidade)
-  reasonBreakdown Json?
-
-  // Tempo médio de resolução
-  avgResolutionTime Int? // em minutos
-
-  createdAt DateTime @default(now())
-
-  @@unique([period, date])
-  @@index([period])
-  @@index([date])
-  @@map("report_stats")
-}
 
 model GeneratedReport {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
@@ -1386,58 +1388,6 @@ model Advertisement {
   @@index([createdBy])
   @@map("advertisements")
 }
-
-// Mídia das publicidades
-// model AdMedia {
-//   id              String @id @default(auto()) @map("_id") @db.ObjectId
-//   advertisementId String @db.ObjectId
-
-//   // Informações do arquivo
-//   fileName     String
-//   originalName String
-//   mimeType     String
-//   fileSize     Int // Tamanho em bytes
-
-//   // URLs
-//   url          String // URL principal
-//   thumbnailUrl String? // Thumbnail (para vídeos)
-//   previewUrl   String? // Preview/versão menor
-
-//   // Metadados
-//   type     MediaType
-//   width    Int? // Largura (imagens/vídeos)
-//   height   Int? // Altura (imagens/vídeos)
-//   duration Int? // Duração (vídeos/áudios) em segundos
-
-//   // Configurações
-//   isMain  Boolean @default(false) // Mídia principal?
-//   altText String? // Texto alternativo
-//   caption String? // Legenda
-
-//   // SEO e acessibilidade
-//   title       String?
-//   description String?
-
-//   // Otimização
-//   isOptimized      Boolean @default(false)
-//   compressionRatio Float? // Taxa de compressão
-
-//   // Upload info
-//   uploadedBy String   @db.ObjectId
-//   uploadedAt DateTime @default(now())
-
-//   // Storage info
-//   storageProvider String  @default("local") // local, s3, cloudinary, etc.
-//   storagePath     String
-//   publicId        String? // ID público (Cloudinary, etc.)
-
-//   uploader      User          @relation("AdMediaUploader", fields: [uploadedBy], references: [id])
-
-//   @@index([advertisementId, type])
-//   @@index([uploadedBy])
-//   @@index([isMain])
-//   @@map("ad_media")
-// }
 
 
 // Estatísticas das publicidades - MELHORADO

@@ -22,7 +22,6 @@ async function fixUpdatedAtFields() {
       { name: 'WorkAnnotation', collection: 'work_annotations' },
       { name: 'FavoriteScore', collection: 'favorite_scores' },
       { name: 'WorkScore', collection: 'work_scores' },
-      { name: 'ScoreProcessingLog', collection: 'score_processing_logs' },
     ];
 
     let totalFixed = 0;

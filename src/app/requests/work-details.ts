@@ -31,6 +31,28 @@ export interface WorkDetails {
   imslpTags?: string[];
   difficultyLevel?: string;
   isVerified: boolean;
+
+  // 🆕 CAMPOS DE MÍDIA AUTOMÁTICA
+  spotifyTrackId?: string;
+  spotifyTrackUrl?: string;
+  spotifyPreviewUrl?: string;
+  spotifyAlbumArt?: string;
+  spotifyArtists?: string[];
+  spotifyAlbumName?: string;
+  spotifyDuration?: number;
+  spotifyPopularity?: number;
+
+  youtubeVideoId?: string;
+  youtubeVideoUrl?: string;
+  youtubeThumbnail?: string;
+  youtubeTitle?: string;
+  youtubeChannel?: string;
+  youtubePublishedAt?: Date;
+
+  mediaSearchStatus?: string;
+  mediaQualityScore?: number;
+  lastMediaSearch?: Date;
+
   composer: {
     id: string;
     name: string;

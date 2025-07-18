@@ -44,6 +44,8 @@ import VerificationBadge from '../Verification/VerificationBadge';
 import VerificationButton from '../Verification/VerificationButton';
 import AdContainer from '../Ads/AdContainer';
 import EditButton from '../Common/EditButton';
+import MediaPlayer from '../MediaPlayer';
+import { useMediaSearch } from '@/app/hooks/useMediaSearch';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -123,6 +125,7 @@ export default function WorkDetailsClient({
       );
     },
   });
+  const mediaSearch = useMediaSearch(work);
   const { navigateToUrl } = useNavigate();
 
   // Não renderizar até estar montado
@@ -914,6 +917,12 @@ export default function WorkDetailsClient({
           </AnimatedCard>
 
           <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" />
+
+          <MediaPlayer
+            composerName={work.composer.fullName}
+            workTitle={work.title}
+            mediaSearch={mediaSearch}
+          />
 
           {/* 🆕 Seção de Partituras IMSLP com nova lógica */}
           {work.imslpPermlink && (
