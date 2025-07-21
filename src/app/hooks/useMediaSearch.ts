@@ -1,9 +1,6 @@
-// app/hooks/useMediaSearch.ts
 'use client';
-
+// app/hooks/useMediaSearch.ts
 import { useState, useEffect, useCallback } from 'react';
-import { WorkDetails } from '@/app/requests/work-details';
-import { isWorkTooComplexForAutoSearch } from '../libs/media-search/simplified-media-search';
 
 export interface MediaSearchResult {
   spotify: {
@@ -15,8 +12,6 @@ export interface MediaSearchResult {
     albumName: string;
     duration: number;
     popularity: number;
-    strategy?: string; // 🆕 Estratégia usada para encontrar
-    qualityScore?: number; // 🆕 Score de qualidade
   } | null;
   youtube: {
     videoId: string;
@@ -25,135 +20,98 @@ export interface MediaSearchResult {
     title: string;
     channel: string;
     publishedAt: string;
-    strategy?: string; // 🆕 Estratégia usada para encontrar
-    qualityScore?: number; // 🆕 Score de qualidade
   } | null;
-  metadata?: {
-    processingTime: number;
-    apiCalls: number;
-    queriesUsed: number; // 🆕 Número de queries utilizadas
-    strategy: string;
-  };
 }
 
-export interface UseMediaSearchResult {
-  // Estados
-  hasMedia: boolean;
-  isSearching: boolean;
-  searchCompleted: boolean;
+export interface MediaSearchState {
+  isLoading: boolean;
   error: string | null;
-  isComplexWork: boolean; // 🆕 Se a obra é muito complexa
-
-  // Dados
-  mediaData: MediaSearchResult | null;
-  searchMetadata: any;
-
-  // Ações
-  searchMedia: (forceRefresh?: boolean) => Promise<void>;
-  clearError: () => void;
-
-  // Estados computados
-  hasSpotify: boolean;
-  hasYoutube: boolean;
-  canPlayPreview: boolean;
-  searchProgress: number;
-  shouldAutoSearch: boolean; // 🆕 Se deve fazer busca automática
+  lastSearched: string | null;
+  canSearch: boolean;
+  hasMedia: boolean;
+  data: MediaSearchResult;
 }
 
-export function useMediaSearch(work: WorkDetails): UseMediaSearchResult {
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchCompleted, setSearchCompleted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [mediaData, setMediaData] = useState<MediaSearchResult | null>(null);
-  const [searchMetadata, setSearchMetadata] = useState<any>(null);
-  const [searchProgress, setSearchProgress] = useState(0);
+export interface UseMediaSearchOptions {
+  workId: string;
+  initialData?: Partial<MediaSearchResult>;
+  autoLoad?: boolean;
+}
 
-  // 🆕 Verificar se a obra é muito complexa para busca automática
-  const isComplexWork = isWorkTooComplexForAutoSearch({
-    title: work.title,
-    composer: { fullName: work.composer.fullName },
-    workType: work.workType,
-    movementNumber: work.movementNumber,
-    instrument: work.instrument,
-    id: work.id,
+export function useMediaSearch({
+  workId,
+  initialData,
+  autoLoad = true,
+}: UseMediaSearchOptions) {
+  const [state, setState] = useState<MediaSearchState>({
+    isLoading: false,
+    error: null,
+    lastSearched: null,
+    canSearch: true,
+    hasMedia: false,
+    data: {
+      spotify: initialData?.spotify || null,
+      youtube: initialData?.youtube || null,
+    },
   });
 
-  // Verificar se já tem mídia nos dados iniciais da obra
-  const hasInitialMedia = !!(work.spotifyTrackId || work.youtubeVideoId);
-
-  // 🆕 Lógica melhorada para decidir se deve fazer busca automática
-  const shouldAutoSearch = !hasInitialMedia && !isComplexWork;
-
-  // Inicializar dados existentes
+  // Verificar se tem mídia
   useEffect(() => {
-    if (hasInitialMedia) {
-      const initialMedia: MediaSearchResult = {
-        spotify: work.spotifyTrackId
-          ? {
-              trackId: work.spotifyTrackId,
-              trackUrl: work.spotifyTrackUrl || '',
-              previewUrl: work.spotifyPreviewUrl || null,
-              albumArt: work.spotifyAlbumArt || null,
-              artists: work.spotifyArtists || [],
-              albumName: work.spotifyAlbumName || '',
-              duration: work.spotifyDuration || 0,
-              popularity: work.spotifyPopularity || 0,
-            }
-          : null,
-        youtube: work.youtubeVideoId
-          ? {
-              videoId: work.youtubeVideoId,
-              videoUrl: work.youtubeVideoUrl || '',
-              thumbnail: work.youtubeThumbnail || null,
-              title: work.youtubeTitle || '',
-              channel: work.youtubeChannel || '',
-              publishedAt: work.youtubePublishedAt?.toString() || '',
-            }
-          : null,
-      };
+    const hasMedia = !!(state.data.spotify || state.data.youtube);
+    setState((prev) => ({ ...prev, hasMedia }));
+  }, [state.data]);
 
-      setMediaData(initialMedia);
-      setSearchCompleted(true);
-
-      console.log(`🎵 [MEDIA-HOOK] Mídia existente carregada: ${work.title}`);
+  // Carregar dados iniciais se autoLoad estiver ativo
+  useEffect(() => {
+    if (autoLoad && workId && !state.hasMedia && !state.isLoading) {
+      checkExistingMedia();
     }
-  }, [work, hasInitialMedia]);
+  }, [workId, autoLoad]);
 
-  /**
-   * 🆕 Buscar mídia na API com sistema simplificado
-   */
+  const checkExistingMedia = useCallback(async () => {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+      const response = await fetch(`/api/works/${workId}/media`);
+
+      if (!response.ok) {
+        throw new Error('Erro ao verificar mídia existente');
+      }
+
+      const data = await response.json();
+
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        data: {
+          spotify: data.spotify || null,
+          youtube: data.youtube || null,
+        },
+        lastSearched: data.lastSearched || null,
+      }));
+    } catch (error) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: error instanceof Error ? error.message : 'Erro desconhecido',
+      }));
+    }
+  }, [workId]);
+
   const searchMedia = useCallback(
     async (forceRefresh = false) => {
-      if (isSearching) {
-        console.log(`⚠️ [MEDIA-HOOK] Busca já em andamento: ${work.title}`);
+      if (!workId) {
+        setState((prev) => ({ ...prev, error: 'ID da obra é obrigatório' }));
         return;
       }
-
-      // Se já tem mídia e não é refresh forçado, não buscar
-      if (!forceRefresh && hasInitialMedia) {
-        console.log(`ℹ️ [MEDIA-HOOK] Mídia já existe: ${work.title}`);
-        return;
-      }
-
-      // 🆕 Verificar se é obra muito complexa (só em refresh manual)
-      if (!forceRefresh && isComplexWork) {
-        console.log(`⏸️ [MEDIA-HOOK] Obra muito complexa: ${work.title}`);
-        setError(
-          'Esta obra é muito complexa para busca automática. Use o botão "Buscar Mídia" para tentar manualmente.'
-        );
-        return;
-      }
-
-      setIsSearching(true);
-      setError(null);
-      setSearchProgress(10);
 
       try {
-        console.log(
-          `🔍 [MEDIA-HOOK] Iniciando busca simplificada: ${work.title} - ${work.composer.fullName}`
-        );
-
-        setSearchProgress(30);
+        setState((prev) => ({
+          ...prev,
+          isLoading: true,
+          error: null,
+          canSearch: false,
+        }));
 
         const response = await fetch('/api/media-search', {
           method: 'POST',
@@ -161,228 +119,284 @@ export function useMediaSearch(work: WorkDetails): UseMediaSearchResult {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            workId: work.id,
+            workId,
             forceRefresh,
           }),
         });
 
-        setSearchProgress(60);
+        const data = await response.json();
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.error || `Erro HTTP ${response.status}`);
+          throw new Error(data.error || 'Erro na busca de mídia');
         }
 
-        const result = await response.json();
+        if (data.success) {
+          setState((prev) => ({
+            ...prev,
+            isLoading: false,
+            canSearch: true,
+            data: {
+              spotify: data.spotify || prev.data.spotify,
+              youtube: data.youtube || prev.data.youtube,
+            },
+            lastSearched: new Date().toISOString(),
+          }));
 
-        setSearchProgress(90);
-
-        if (result.success) {
-          const newMediaData: MediaSearchResult = {
-            spotify: result.spotify,
-            youtube: result.youtube,
-            metadata: result.metadata,
+          return {
+            success: true,
+            found: !!(data.spotify || data.youtube),
+            spotify: !!data.spotify,
+            youtube: !!data.youtube,
           };
-
-          setMediaData(newMediaData);
-          setSearchMetadata(result.metadata);
-          setSearchCompleted(true);
-
-          // 🆕 Logs melhorados
-          const foundCount =
-            (result.spotify ? 1 : 0) + (result.youtube ? 1 : 0);
-          console.log(
-            `✅ [MEDIA-HOOK] Busca concluída: ${foundCount}/2 tipos encontrados`
-          );
-
-          if (result.spotify) {
-            console.log(
-              `🎵 [SPOTIFY] "${result.spotify.artists?.join(', ')}" - ${
-                result.spotify.trackUrl
-              }`
-            );
-          }
-
-          if (result.youtube) {
-            console.log(
-              `📺 [YOUTUBE] "${result.youtube.title}" - ${result.youtube.videoUrl}`
-            );
-          }
-
-          // 🆕 Log de performance
-          if (result.metadata) {
-            console.log(
-              `⚡ [PERFORMANCE] ${result.metadata.processingTime}ms, ${result.metadata.apiCalls} API calls`
-            );
-          }
         } else {
-          throw new Error(result.error || 'Falha na busca de mídia');
+          throw new Error(data.error || 'Nenhuma mídia encontrada');
         }
-
-        setSearchProgress(100);
-      } catch (err) {
+      } catch (error) {
         const errorMessage =
-          err instanceof Error ? err.message : 'Erro desconhecido';
-        console.error(`❌ [MEDIA-HOOK] Erro na busca:`, errorMessage);
+          error instanceof Error ? error.message : 'Erro desconhecido';
 
-        // 🆕 Mensagens de erro mais específicas
-        let userFriendlyError = errorMessage;
-        if (errorMessage.includes('muito complexa')) {
-          userFriendlyError =
-            'Esta obra é muito complexa para busca automática. Tente buscar manualmente ou adicione mídia personalizada.';
-        } else if (
-          errorMessage.includes('rate limit') ||
-          errorMessage.includes('Aguarde')
-        ) {
-          userFriendlyError =
-            'Muitas buscas recentes. Aguarde alguns minutos antes de tentar novamente.';
-        } else if (
-          errorMessage.includes('API') ||
-          errorMessage.includes('Network')
-        ) {
-          userFriendlyError =
-            'Erro de conexão. Verifique sua internet e tente novamente.';
-        } else if (
-          errorMessage.includes('401') ||
-          errorMessage.includes('unauthorized')
-        ) {
-          userFriendlyError =
-            'Erro de autenticação nas APIs de música. Contate o suporte.';
+        setState((prev) => ({
+          ...prev,
+          isLoading: false,
+          canSearch: true,
+          error: errorMessage,
+        }));
+
+        // Se o erro for de rate limiting, ajustar canSearch
+        if (errorMessage.includes('Aguarde')) {
+          setState((prev) => ({ ...prev, canSearch: false }));
+
+          // Re-habilitar busca após 30 minutos
+          setTimeout(() => {
+            setState((prev) => ({ ...prev, canSearch: true }));
+          }, 30 * 60 * 1000);
         }
 
-        setError(userFriendlyError);
-        setSearchProgress(0);
-      } finally {
-        setIsSearching(false);
-
-        // Reset do progresso após um tempo
-        setTimeout(() => {
-          setSearchProgress(0);
-        }, 2000);
+        return {
+          success: false,
+          error: errorMessage,
+        };
       }
     },
-    [work, isSearching, hasInitialMedia, isComplexWork]
+    [workId]
   );
 
-  /**
-   * 🆕 Busca automática melhorada
-   */
-  useEffect(() => {
-    // Condições para busca automática:
-    // 1. Não tem mídia existente
-    // 2. Não está buscando
-    // 3. Não completou busca
-    // 4. Não é obra complexa
-    // 5. Tipo de obra apropriado
-    if (shouldAutoSearch && !isSearching && !searchCompleted) {
-      console.log(`🚀 [MEDIA-HOOK] Preparando busca automática: ${work.title}`);
+  const refreshMedia = useCallback(() => {
+    return searchMedia(true);
+  }, [searchMedia]);
 
-      // 🆕 Delay inteligente baseado no tipo de obra
-      let delay = 1000; // Base: 1 segundo
-
-      // Obras individuais: busca mais rápida
-      if (work.workType === 'INDIVIDUAL') {
-        delay = 500;
-      }
-      // Coleções pequenas: delay moderado
-      else if (
-        work.workType === 'COLLECTED_WORKS' &&
-        work.movementNumber &&
-        work.movementNumber <= 3
-      ) {
-        delay = 1500;
-      }
-      // Outras obras: delay maior
-      else {
-        delay = 2000;
-      }
-
-      // Adicionar randomização para evitar sobrecarga
-      delay += Math.random() * 1000;
-
-      console.log(`⏰ [MEDIA-HOOK] Busca automática em ${Math.round(delay)}ms`);
-
-      const timeoutId = setTimeout(() => {
-        searchMedia();
-      }, delay);
-
-      // Cleanup
-      return () => clearTimeout(timeoutId);
-    } else if (isComplexWork) {
-      console.log(
-        `⏸️ [MEDIA-HOOK] Busca automática desabilitada (obra complexa): ${work.title}`
-      );
-    } else if (hasInitialMedia) {
-      console.log(
-        `✅ [MEDIA-HOOK] Mídia já existe, busca desnecessária: ${work.title}`
-      );
-    }
-  }, [
-    work,
-    shouldAutoSearch,
-    isSearching,
-    searchCompleted,
-    searchMedia,
-    isComplexWork,
-    hasInitialMedia,
-  ]);
-
-  /**
-   * Limpar erro
-   */
   const clearError = useCallback(() => {
-    setError(null);
+    setState((prev) => ({ ...prev, error: null }));
   }, []);
 
-  // 🆕 Estados computados melhorados
-  const hasMedia = !!(mediaData?.spotify || mediaData?.youtube);
-  const hasSpotify = !!mediaData?.spotify;
-  const hasYoutube = !!mediaData?.youtube;
-  const canPlayPreview = !!mediaData?.spotify?.previewUrl;
+  const updateSpotifyData = useCallback(
+    (spotifyData: MediaSearchResult['spotify']) => {
+      setState((prev) => ({
+        ...prev,
+        data: {
+          ...prev.data,
+          spotify: spotifyData,
+        },
+      }));
+    },
+    []
+  );
 
-  // 🆕 Debug info em desenvolvimento
+  const updateYouTubeData = useCallback(
+    (youtubeData: MediaSearchResult['youtube']) => {
+      setState((prev) => ({
+        ...prev,
+        data: {
+          ...prev.data,
+          youtube: youtubeData,
+        },
+      }));
+    },
+    []
+  );
+
+  const clearMedia = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      data: {
+        spotify: null,
+        youtube: null,
+      },
+      error: null,
+    }));
+  }, []);
+
+  // Verificar se pode buscar (rate limiting)
+  const checkCanSearch = useCallback(() => {
+    if (!state.lastSearched) return true;
+
+    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+    const lastSearch = new Date(state.lastSearched);
+
+    return lastSearch < thirtyMinutesAgo;
+  }, [state.lastSearched]);
+
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(`🔍 [MEDIA-HOOK DEBUG] ${work.title}:`, {
-        hasInitialMedia,
-        isComplexWork,
-        shouldAutoSearch,
-        hasMedia,
-        workType: work.workType,
-        movementNumber: work.movementNumber,
-      });
-    }
-  }, [
-    work.title,
-    hasInitialMedia,
-    isComplexWork,
-    shouldAutoSearch,
-    hasMedia,
-    work.workType,
-    work.movementNumber,
-  ]);
+    setState((prev) => ({ ...prev, canSearch: checkCanSearch() }));
+  }, [checkCanSearch]);
 
   return {
-    // Estados
-    hasMedia,
-    isSearching,
-    searchCompleted,
-    error,
-    isComplexWork, // 🆕
-
-    // Dados
-    mediaData,
-    searchMetadata,
+    // Estado
+    ...state,
 
     // Ações
     searchMedia,
+    refreshMedia,
     clearError,
+    clearMedia,
+    checkExistingMedia,
+    updateSpotifyData,
+    updateYouTubeData,
 
-    // Estados computados
-    hasSpotify,
-    hasYoutube,
-    canPlayPreview,
-    searchProgress,
-    shouldAutoSearch, // 🆕
+    // Computed
+    needsSearch: !state.hasMedia && !state.error,
+    isRateLimited: !state.canSearch && !!state.lastSearched,
+    timeUntilCanSearch: state.lastSearched
+      ? Math.max(
+          0,
+          30 * 60 * 1000 - (Date.now() - new Date(state.lastSearched).getTime())
+        )
+      : 0,
+  };
+}
+
+// Hook para usar com múltiplas obras (batch)
+export function useMediaSearchBatch() {
+  const [jobs, setJobs] = useState<Map<string, MediaSearchState>>(new Map());
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const addWork = useCallback(
+    (workId: string, initialData?: Partial<MediaSearchResult>) => {
+      setJobs((prev) => {
+        const newJobs = new Map(prev);
+        newJobs.set(workId, {
+          isLoading: false,
+          error: null,
+          lastSearched: null,
+          canSearch: true,
+          hasMedia: !!(initialData?.spotify || initialData?.youtube),
+          data: {
+            spotify: initialData?.spotify || null,
+            youtube: initialData?.youtube || null,
+          },
+        });
+        return newJobs;
+      });
+    },
+    []
+  );
+
+  const removeWork = useCallback((workId: string) => {
+    setJobs((prev) => {
+      const newJobs = new Map(prev);
+      newJobs.delete(workId);
+      return newJobs;
+    });
+  }, []);
+
+  const processWork = useCallback(
+    async (workId: string) => {
+      const currentJob = jobs.get(workId);
+      if (!currentJob || currentJob.hasMedia) return;
+
+      setJobs((prev) => {
+        const newJobs = new Map(prev);
+        const job = newJobs.get(workId);
+        if (job) {
+          newJobs.set(workId, { ...job, isLoading: true, error: null });
+        }
+        return newJobs;
+      });
+
+      try {
+        const response = await fetch('/api/media-search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ workId }),
+        });
+
+        const data = await response.json();
+
+        setJobs((prev) => {
+          const newJobs = new Map(prev);
+          const job = newJobs.get(workId);
+          if (job) {
+            newJobs.set(workId, {
+              ...job,
+              isLoading: false,
+              hasMedia: !!(data.spotify || data.youtube),
+              data: {
+                spotify: data.spotify || null,
+                youtube: data.youtube || null,
+              },
+              lastSearched: new Date().toISOString(),
+            });
+          }
+          return newJobs;
+        });
+
+        return data;
+      } catch (error) {
+        setJobs((prev) => {
+          const newJobs = new Map(prev);
+          const job = newJobs.get(workId);
+          if (job) {
+            newJobs.set(workId, {
+              ...job,
+              isLoading: false,
+              error:
+                error instanceof Error ? error.message : 'Erro desconhecido',
+            });
+          }
+          return newJobs;
+        });
+      }
+    },
+    [jobs]
+  );
+
+  const processAllWorks = useCallback(async () => {
+    setIsProcessing(true);
+
+    const workIds = Array.from(jobs.keys()).filter((workId) => {
+      const job = jobs.get(workId);
+      return job && !job.hasMedia && !job.isLoading;
+    });
+
+    for (const workId of workIds) {
+      await processWork(workId);
+      // Delay para rate limiting
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
+    setIsProcessing(false);
+  }, [jobs, processWork]);
+
+  const getJobStats = useCallback(() => {
+    const allJobs = Array.from(jobs.values());
+    return {
+      total: allJobs.length,
+      withMedia: allJobs.filter((job) => job.hasMedia).length,
+      loading: allJobs.filter((job) => job.isLoading).length,
+      errors: allJobs.filter((job) => job.error).length,
+      pending: allJobs.filter(
+        (job) => !job.hasMedia && !job.error && !job.isLoading
+      ).length,
+    };
+  }, [jobs]);
+
+  return {
+    jobs: Object.fromEntries(jobs),
+    isProcessing,
+    addWork,
+    removeWork,
+    processWork,
+    processAllWorks,
+    getJobStats: getJobStats(),
   };
 }

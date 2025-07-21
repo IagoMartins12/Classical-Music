@@ -1,7 +1,4 @@
-// app/components/Admin/MediaManager.tsx
-'use client';
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FiPlay,
   FiPause,
@@ -13,6 +10,7 @@ import {
   FiAlertTriangle,
   FiCheckCircle,
   FiClock,
+  FiZap,
 } from 'react-icons/fi';
 import { SiSpotify, SiYoutube } from 'react-icons/si';
 
@@ -22,6 +20,8 @@ interface MediaStats {
   withYoutube: number;
   withBoth: number;
   withNone: number;
+  validForAutoSearch: number;
+  invalidForAutoSearch: number;
   pending: number;
   errors: number;
   lastUpdated: string;
@@ -39,11 +39,11 @@ interface BatchJob {
   estimatedCompletion?: string;
 }
 
-export default function MediaManager() {
+const MediaManager: React.FC = () => {
   const [stats, setStats] = useState<MediaStats | null>(null);
   const [batchJob, setBatchJob] = useState<BatchJob | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [selectedStrategy, setSelectedStrategy] = useState('ultra-simple');
 
   // Carregar estatísticas
   useEffect(() => {
@@ -70,7 +70,10 @@ export default function MediaManager() {
       const response = await fetch('/api/admin/media-batch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'start', filter: selectedFilter }),
+        body: JSON.stringify({
+          action: 'start',
+          strategy: selectedStrategy,
+        }),
       });
 
       if (response.ok) {
@@ -115,12 +118,12 @@ export default function MediaManager() {
 
   if (isLoading) {
     return (
-      <div className="bg-gradient-primary">
-        <div className="section-wrap">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex items-center justify-center py-16">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
-              <span className="text-theme-primary font-medium">
+              <div className="w-8 h-8 border-4 border-blue-500/30 border-t-blue-500 rounded-full animate-spin"></div>
+              <span className="text-white font-medium">
                 Carregando estatísticas...
               </span>
             </div>
@@ -131,97 +134,89 @@ export default function MediaManager() {
   }
 
   return (
-    <div className="bg-gradient-primary">
-      <div className="section-wrap space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gradient-brand classical-title">
+            <h1 className="text-3xl font-bold text-white">
               Gerenciador de Mídia
             </h1>
-            <p className="text-theme-secondary mt-2">
-              Gerencie a busca automática de áudio e vídeo para as obras
+            <p className="text-gray-400 mt-2">
+              Sistema ultra-simplificado para busca automática de áudio e vídeo
             </p>
           </div>
           <button
             onClick={loadStats}
-            className="btn-classical-secondary flex items-center space-x-2"
+            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg flex items-center space-x-2 transition-colors"
           >
             <FiRefreshCw className="w-4 h-4" />
             <span>Atualizar</span>
           </button>
         </div>
 
-        {/* Estatísticas Gerais */}
+        {/* Estatísticas Principais */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="classical-card p-6">
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                  <FiDatabase className="w-5 h-5 text-theme-primary" />
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <FiDatabase className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-theme-primary">
-                    Total de Obras
-                  </h3>
-                  <p className="text-2xl font-bold text-gradient-brand">
+                  <h3 className="font-semibold text-white">Total de Obras</h3>
+                  <p className="text-2xl font-bold text-blue-400">
                     {stats.total.toLocaleString()}
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="classical-card p-6">
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                  <SiSpotify className="w-5 h-5 text-theme-primary" />
+                <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-500 rounded-xl flex items-center justify-center">
+                  <SiSpotify className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-theme-primary">
-                    Com Spotify
-                  </h3>
-                  <p className="text-2xl font-bold text-accent-green">
+                  <h3 className="font-semibold text-white">Com Spotify</h3>
+                  <p className="text-2xl font-bold text-green-400">
                     {stats.withSpotify.toLocaleString()}
                   </p>
-                  <p className="text-sm text-theme-tertiary">
+                  <p className="text-sm text-gray-400">
                     {((stats.withSpotify / stats.total) * 100).toFixed(1)}%
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="classical-card p-6">
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-red to-accent-orange rounded-xl flex items-center justify-center">
-                  <SiYoutube className="w-5 h-5 text-theme-primary" />
+                <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center">
+                  <SiYoutube className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-theme-primary">
-                    Com YouTube
-                  </h3>
-                  <p className="text-2xl font-bold text-accent-red">
+                  <h3 className="font-semibold text-white">Com YouTube</h3>
+                  <p className="text-2xl font-bold text-red-400">
                     {stats.withYoutube.toLocaleString()}
                   </p>
-                  <p className="text-sm text-theme-tertiary">
+                  <p className="text-sm text-gray-400">
                     {((stats.withYoutube / stats.total) * 100).toFixed(1)}%
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="classical-card p-6">
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                  <FiCheckCircle className="w-5 h-5 text-theme-primary" />
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl flex items-center justify-center">
+                  <FiCheckCircle className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-theme-primary">
-                    Com Ambos
-                  </h3>
-                  <p className="text-2xl font-bold text-accent-purple">
+                  <h3 className="font-semibold text-white">Com Ambos</h3>
+                  <p className="text-2xl font-bold text-purple-400">
                     {stats.withBoth.toLocaleString()}
                   </p>
-                  <p className="text-sm text-theme-tertiary">
+                  <p className="text-sm text-gray-400">
                     {((stats.withBoth / stats.total) * 100).toFixed(1)}%
                   </p>
                 </div>
@@ -230,25 +225,145 @@ export default function MediaManager() {
           </div>
         )}
 
+        {/* Estatísticas de Busca Automática */}
+        {stats && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
+                <FiZap className="w-5 h-5 text-yellow-400" />
+                <span>Elegibilidade para Busca Automática</span>
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-gray-300">Obras Válidas</span>
+                    <span className="text-green-400 font-medium">
+                      {stats.validForAutoSearch} (
+                      {((stats.validForAutoSearch / stats.total) * 100).toFixed(
+                        1
+                      )}
+                      %)
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-green-500 to-green-400 h-2 rounded-full"
+                      style={{
+                        width: `${
+                          (stats.validForAutoSearch / stats.total) * 100
+                        }%`,
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-gray-300">Obras Inválidas</span>
+                    <span className="text-orange-400 font-medium">
+                      {stats.invalidForAutoSearch} (
+                      {(
+                        (stats.invalidForAutoSearch / stats.total) *
+                        100
+                      ).toFixed(1)}
+                      %)
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-orange-500 to-orange-400 h-2 rounded-full"
+                      style={{
+                        width: `${
+                          (stats.invalidForAutoSearch / stats.total) * 100
+                        }%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 p-3 bg-yellow-900/20 border border-yellow-700/30 rounded-lg">
+                <p className="text-yellow-300 text-xs">
+                  <strong>Obras inválidas:</strong> Coletâneas, livros, métodos,
+                  exercícios e obras muito genéricas são excluídas da busca
+                  automática.
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
+                <FiBarChart2 className="w-5 h-5 text-blue-400" />
+                <span>Cobertura de Mídia</span>
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-gray-300">Sem Mídia</span>
+                    <span className="text-gray-400 font-medium">
+                      {stats.withNone} (
+                      {((stats.withNone / stats.total) * 100).toFixed(1)}%)
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-gray-500 to-gray-400 h-2 rounded-full"
+                      style={{
+                        width: `${(stats.withNone / stats.total) * 100}%`,
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-gray-300">Com Mídia</span>
+                    <span className="text-blue-400 font-medium">
+                      {stats.total - stats.withNone} (
+                      {(
+                        ((stats.total - stats.withNone) / stats.total) *
+                        100
+                      ).toFixed(1)}
+                      %)
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-blue-500 to-blue-400 h-2 rounded-full"
+                      style={{
+                        width: `${
+                          ((stats.total - stats.withNone) / stats.total) * 100
+                        }%`,
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Status do Job em Lote */}
         {batchJob && (
-          <div className="classical-card p-6">
+          <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center">
                   {batchJob.status === 'running' ? (
-                    <FiPlay className="w-5 h-5 text-theme-primary animate-pulse" />
+                    <FiPlay className="w-5 h-5 text-white animate-pulse" />
                   ) : batchJob.status === 'paused' ? (
-                    <FiPause className="w-5 h-5 text-theme-primary" />
+                    <FiPause className="w-5 h-5 text-white" />
                   ) : batchJob.status === 'error' ? (
-                    <FiAlertTriangle className="w-5 h-5 text-theme-primary" />
+                    <FiAlertTriangle className="w-5 h-5 text-white" />
                   ) : (
-                    <FiCheckCircle className="w-5 h-5 text-theme-primary" />
+                    <FiCheckCircle className="w-5 h-5 text-white" />
                   )}
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-theme-primary">
-                    Busca em Lote -{' '}
+                  <h3 className="text-lg font-semibold text-white">
+                    Busca Ultra-Simples -{' '}
                     {batchJob.status === 'running'
                       ? 'Em Execução'
                       : batchJob.status === 'paused'
@@ -257,7 +372,7 @@ export default function MediaManager() {
                       ? 'Erro'
                       : 'Concluído'}
                   </h3>
-                  <p className="text-theme-secondary">
+                  <p className="text-gray-400">
                     {batchJob.processed} de {batchJob.total} obras processadas
                   </p>
                 </div>
@@ -267,7 +382,7 @@ export default function MediaManager() {
                 {batchJob.status === 'running' && (
                   <button
                     onClick={pauseBatchSearch}
-                    className="btn-classical-secondary flex items-center space-x-2"
+                    className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg flex items-center space-x-2 transition-colors"
                   >
                     <FiPause className="w-4 h-4" />
                     <span>Pausar</span>
@@ -277,7 +392,7 @@ export default function MediaManager() {
                 {batchJob.status === 'paused' && (
                   <button
                     onClick={resumeBatchSearch}
-                    className="btn-classical-primary flex items-center space-x-2"
+                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center space-x-2 transition-colors"
                   >
                     <FiPlay className="w-4 h-4" />
                     <span>Retomar</span>
@@ -288,21 +403,21 @@ export default function MediaManager() {
 
             {/* Barra de Progresso */}
             <div className="space-y-4">
-              <div className="flex justify-between text-sm text-theme-tertiary">
+              <div className="flex justify-between text-sm text-gray-400">
                 <span>Progresso: {batchJob.progress.toFixed(1)}%</span>
-                <span>Encontrado mídia: {batchJob.found}</span>
+                <span>Mídia encontrada: {batchJob.found}</span>
                 <span>Erros: {batchJob.errors}</span>
               </div>
 
-              <div className="w-full bg-theme-secondary/20 rounded-full h-3">
+              <div className="w-full bg-gray-700 rounded-full h-3">
                 <div
-                  className="bg-gradient-to-r from-accent-blue to-accent-green h-3 rounded-full transition-all duration-300"
+                  className="bg-gradient-to-r from-blue-500 to-green-500 h-3 rounded-full transition-all duration-300"
                   style={{ width: `${batchJob.progress}%` }}
                 />
               </div>
 
               {batchJob.estimatedCompletion && (
-                <p className="text-sm text-theme-tertiary text-center">
+                <p className="text-sm text-gray-400 text-center">
                   <FiClock className="w-4 h-4 inline mr-1" />
                   Conclusão estimada:{' '}
                   {new Date(batchJob.estimatedCompletion).toLocaleString(
@@ -315,150 +430,79 @@ export default function MediaManager() {
         )}
 
         {/* Controles de Busca */}
-        <div className="classical-card p-6">
-          <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
+        <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+          <h3 className="text-lg font-semibold text-white mb-4 flex items-center space-x-2">
             <FiSearch className="w-5 h-5" />
-            <span>Busca em Lote</span>
+            <span>Busca Ultra-Simples em Lote</span>
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Filtros */}
+            {/* Info sobre a estratégia */}
             <div>
-              <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                Filtrar obras:
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                Estratégia de Busca:
               </label>
-              <select
-                value={selectedFilter}
-                onChange={(e) => setSelectedFilter(e.target.value)}
-                className="w-full px-3 py-2 bg-theme-elevated border border-theme-secondary rounded-lg text-theme-primary focus:outline-none focus:ring-2 focus:ring-brand-primary"
-              >
-                <option value="all">Todas as obras sem mídia</option>
-                <option value="individual">Apenas obras individuais</option>
-                <option value="collections-small">
-                  Coleções pequenas (≤5 movimentos)
-                </option>
-                <option value="collections-medium">
-                  Coleções médias (6-10 movimentos)
-                </option>
-                <option value="errors-only">
-                  Apenas obras com erro anterior
-                </option>
-                <option value="high-priority">
-                  Alta prioridade (compositores famosos)
-                </option>
-              </select>
+              <div className="p-4 bg-gray-700 rounded-lg">
+                <div className="flex items-center space-x-2 mb-2">
+                  <FiZap className="w-4 h-4 text-yellow-400" />
+                  <span className="text-white font-medium">Ultra-Simples</span>
+                </div>
+                <ul className="text-sm text-gray-300 space-y-1">
+                  <li>• Busca: "título - compositor"</li>
+                  <li>• Sempre pega o PRIMEIRO resultado válido</li>
+                  <li>• Filtra apenas música clássica</li>
+                  <li>• Exclui coletâneas e obras complexas</li>
+                  <li>• Máxima velocidade e eficiência</li>
+                </ul>
+              </div>
             </div>
 
             {/* Ações */}
-            <div className="flex items-end space-x-3">
+            <div className="flex flex-col justify-end space-y-3">
               <button
                 onClick={startBatchSearch}
                 disabled={batchJob?.status === 'running'}
-                className="btn-classical-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center space-x-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
               >
-                <FiPlay className="w-4 h-4" />
-                <span>Iniciar Busca</span>
+                <FiPlay className="w-5 h-5" />
+                <span>Iniciar Busca Ultra-Simples</span>
               </button>
 
-              <button className="btn-classical-secondary flex items-center space-x-2">
+              <button className="w-full px-6 py-3 bg-gray-600 hover:bg-gray-500 text-white rounded-lg flex items-center justify-center space-x-2 transition-colors">
                 <FiSettings className="w-4 h-4" />
-                <span>Configurações</span>
+                <span>Configurações Avançadas</span>
               </button>
             </div>
           </div>
 
-          <div className="mt-4 p-4 bg-accent-blue/10 border border-accent-blue/20 rounded-lg">
-            <p className="text-sm text-theme-secondary mb-2">
-              <strong>⚠️ Importante:</strong> A busca em lote pode levar várias
-              horas para completar.
+          <div className="mt-6 p-4 bg-blue-900/20 border border-blue-700/30 rounded-lg">
+            <p className="text-blue-300 text-sm mb-2">
+              <strong>🚀 Sistema Ultra-Simplificado:</strong>
             </p>
-            <ul className="text-sm text-theme-tertiary space-y-1 ml-4">
-              <li>• Respeita limites de rate limiting das APIs</li>
-              <li>• Processa obras em lotes de 10 com delays de 5s</li>
-              <li>• Pode ser pausada e retomada a qualquer momento</li>
-              <li>• Evita re-processar obras já analisadas</li>
+            <ul className="text-blue-400 text-sm space-y-1 ml-4">
+              <li>
+                • Busca apenas obras válidas (exclui coletâneas automaticamente)
+              </li>
+              <li>• Query simples: "título - compositor"</li>
+              <li>• Pega sempre o primeiro resultado válido encontrado</li>
+              <li>• 10x mais rápido que o sistema anterior</li>
+              <li>• Respeita rate limits: 1 req/seg para cada API</li>
             </ul>
           </div>
         </div>
 
-        {/* Gráfico de Cobertura */}
+        {/* Última atualização */}
         {stats && (
-          <div className="classical-card p-6">
-            <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-              <FiBarChart2 className="w-5 h-5" />
-              <span>Cobertura de Mídia</span>
-            </h3>
-
-            <div className="space-y-4">
-              {/* Spotify */}
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-theme-secondary">Spotify</span>
-                  <span className="text-accent-green font-medium">
-                    {stats.withSpotify} / {stats.total} (
-                    {((stats.withSpotify / stats.total) * 100).toFixed(1)}%)
-                  </span>
-                </div>
-                <div className="w-full bg-theme-secondary/20 rounded-full h-2">
-                  <div
-                    className="bg-gradient-to-r from-accent-green to-accent-blue h-2 rounded-full"
-                    style={{
-                      width: `${(stats.withSpotify / stats.total) * 100}%`,
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* YouTube */}
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-theme-secondary">YouTube</span>
-                  <span className="text-accent-red font-medium">
-                    {stats.withYoutube} / {stats.total} (
-                    {((stats.withYoutube / stats.total) * 100).toFixed(1)}%)
-                  </span>
-                </div>
-                <div className="w-full bg-theme-secondary/20 rounded-full h-2">
-                  <div
-                    className="bg-gradient-to-r from-accent-red to-accent-orange h-2 rounded-full"
-                    style={{
-                      width: `${(stats.withYoutube / stats.total) * 100}%`,
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Ambos */}
-              <div>
-                <div className="flex justify-between text-sm mb-2">
-                  <span className="text-theme-secondary">
-                    Ambas as plataformas
-                  </span>
-                  <span className="text-accent-purple font-medium">
-                    {stats.withBoth} / {stats.total} (
-                    {((stats.withBoth / stats.total) * 100).toFixed(1)}%)
-                  </span>
-                </div>
-                <div className="w-full bg-theme-secondary/20 rounded-full h-2">
-                  <div
-                    className="bg-gradient-to-r from-accent-purple to-accent-blue h-2 rounded-full"
-                    style={{
-                      width: `${(stats.withBoth / stats.total) * 100}%`,
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6 text-center">
-              <p className="text-sm text-theme-tertiary">
-                Última atualização:{' '}
-                {new Date(stats.lastUpdated).toLocaleString('pt-BR')}
-              </p>
-            </div>
+          <div className="text-center">
+            <p className="text-gray-400 text-sm">
+              Última atualização:{' '}
+              {new Date(stats.lastUpdated).toLocaleString('pt-BR')}
+            </p>
           </div>
         )}
       </div>
     </div>
   );
-}
+};
+
+export default MediaManager;

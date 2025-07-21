@@ -1,13 +1,9 @@
 // app/api/media-search/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
-import {
-  generateSimpleSearchQueries,
-  calculateSimpleQualityScore,
-  isWorkTooComplexForAutoSearch,
-} from '@/app/libs/media-search/simplified-media-search';
-import { searchSpotifyTrack } from '@/app/libs/media-search/spotify-search';
-import { searchYouTubeVideo } from '@/app/libs/media-search/youtube-search';
+import { isValidForAutoSearch } from '@/app/libs/media-search/simplified-media-search';
+import { searchYouTubeFirst } from '@/app/libs/media-search/youtube-search';
+import { searchSpotifyFirst } from '@/app/libs/media-search/spotify-search';
 
 export async function POST(request: NextRequest) {
   try {
@@ -77,10 +73,10 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Verificar se a obra é muito complexa para busca automática
-    if (isWorkTooComplexForAutoSearch(work)) {
+    // Verificar se a obra é válida para busca automática
+    if (!isValidForAutoSearch(work)) {
       console.log(
-        `⚠️ [MEDIA-SEARCH] Obra muito complexa para busca automática: ${work.title}`
+        `⚠️ [MEDIA-SEARCH] Obra não válida para busca automática: ${work.title}`
       );
 
       await prisma.work.update({
@@ -88,19 +84,20 @@ export async function POST(request: NextRequest) {
         data: {
           mediaSearchStatus: 'not_found',
           lastMediaSearch: new Date(),
-          mediaSearchError: 'Obra muito complexa para busca automática',
+          mediaSearchError:
+            'Obra não válida para busca automática (coletânea/livro)',
         },
       });
 
       return NextResponse.json({
         success: false,
         error:
-          'Esta obra é muito complexa para busca automática. Adicione mídia manualmente.',
+          'Esta obra não é válida para busca automática (coletânea, livro ou obra muito genérica).',
       });
     }
 
     console.log(
-      `🎵 [MEDIA-SEARCH] Iniciando busca SIMPLIFICADA para: ${work.title} - ${work.composer.fullName}`
+      `🎵 [MEDIA-SEARCH] Iniciando busca ULTRA SIMPLES para: ${work.title} - ${work.composer.fullName}`
     );
 
     // Atualizar status para "searching"
@@ -115,84 +112,11 @@ export async function POST(request: NextRequest) {
 
     const startTime = Date.now();
 
-    // Gerar queries simples (máximo 3)
-    const searchQueries = generateSimpleSearchQueries(work);
-    console.log(
-      `🔍 [MEDIA-SEARCH] Queries geradas (${searchQueries.length}):`,
-      searchQueries
-    );
-
-    let spotifyResult = null;
-    let youtubeResult = null;
-    let bestStrategy = '';
-    let apiCalls = 0;
-
-    // Buscar em paralelo com queries simples
-    for (const query of searchQueries) {
-      console.log(
-        `🎼 [MEDIA-SEARCH] Testando: "${query.query}" (${query.strategy})`
-      );
-
-      // Se já encontrou ambos, parar
-      if (spotifyResult && youtubeResult) {
-        break;
-      }
-
-      try {
-        const [spotify, youtube] = await Promise.all([
-          !spotifyResult
-            ? searchSpotifyTrack(query.query, work.composer.fullName)
-            : null,
-          !youtubeResult
-            ? searchYouTubeVideo(query.query, work.composer.fullName)
-            : null,
-        ]);
-
-        apiCalls += 2;
-
-        // Avaliar qualidade dos resultados
-        if (spotify && !spotifyResult) {
-          const score = calculateSimpleQualityScore(
-            work.title,
-            work.composer.fullName,
-            spotify.name,
-            spotify.artists.map((a) => a.name).join(' ')
-          );
-
-          console.log(`🎯 [SPOTIFY] Score: ${score}% para "${spotify.name}"`);
-
-          if (score >= 60) {
-            // Mínimo 60% de relevância
-            spotifyResult = spotify;
-            bestStrategy += `${query.strategy} (Spotify), `;
-          }
-        }
-
-        if (youtube && !youtubeResult) {
-          const score = calculateSimpleQualityScore(
-            work.title,
-            work.composer.fullName,
-            youtube.snippet.title,
-            youtube.snippet.channelTitle
-          );
-
-          console.log(
-            `🎯 [YOUTUBE] Score: ${score}% para "${youtube.snippet.title}"`
-          );
-
-          if (score >= 60) {
-            // Mínimo 60% de relevância
-            youtubeResult = youtube;
-            bestStrategy += `${query.strategy} (YouTube), `;
-          }
-        }
-      } catch (error) {
-        console.error(
-          `❌ [MEDIA-SEARCH] Erro na query "${query.query}":`,
-          error
-        );
-      }
-    }
+    // Buscar em paralelo - sempre pega o PRIMEIRO resultado válido
+    const [spotifyResult, youtubeResult] = await Promise.all([
+      searchSpotifyFirst(work),
+      searchYouTubeFirst(work),
+    ]);
 
     const processingTime = Date.now() - startTime;
 
@@ -254,7 +178,7 @@ export async function POST(request: NextRequest) {
       };
     }
 
-    updateData.mediaSearchStrategy = bestStrategy.replace(/, $/, '') || 'none';
+    updateData.mediaSearchStrategy = 'ultra-simple-first-result';
 
     // Salvar na base de dados
     await prisma.work.update({
@@ -267,17 +191,15 @@ export async function POST(request: NextRequest) {
       data: {
         workId,
         searchType: 'both',
-        searchQuery: searchQueries[0].query,
+        searchQuery: `${work.title} - ${work.composer.fullName}`,
         searchResults: {
-          queriesUsed: searchQueries.length,
-          apiCalls,
           processingTime,
         },
         success: !!(spotifyResult || youtubeResult),
         foundSpotify: !!spotifyResult,
         foundYoutube: !!youtubeResult,
-        strategy: bestStrategy,
-        apiCalls,
+        strategy: 'ultra-simple-first-result',
+        apiCalls: 2, // Spotify + YouTube
         processingTime,
       },
     });
@@ -295,9 +217,7 @@ export async function POST(request: NextRequest) {
       youtube: responseYoutube,
       metadata: {
         processingTime,
-        apiCalls,
-        queriesUsed: searchQueries.length,
-        strategy: bestStrategy,
+        strategy: 'ultra-simple-first-result',
       },
     });
   } catch (error) {

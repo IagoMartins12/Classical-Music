@@ -1,10 +1,4 @@
-// app/libs/media-search/simplified-media-search.ts
-
-export interface SearchQuery {
-  query: string;
-  strategy: string;
-  priority: number;
-}
+// app/libs/media-search/ultra-simple-search.ts
 
 export interface WorkWithRelations {
   id: string;
@@ -21,184 +15,140 @@ export interface WorkWithRelations {
 }
 
 /**
- * Gera queries de busca SIMPLES e EFICAZES
- * Máximo 3 queries para não sobrecarregar as APIs
+ * Verifica se uma obra é válida para busca automática
+ * Exclui coletâneas, livros e obras muito genéricas
  */
-export function generateSimpleSearchQueries(
-  work: WorkWithRelations
-): SearchQuery[] {
-  const queries: SearchQuery[] = [];
+export function isValidForAutoSearch(work: WorkWithRelations): boolean {
+  const title = work.title.toLowerCase();
+
+  // Palavras que indicam coletâneas/livros/obras complexas
+  const excludeKeywords = [
+    'complete works',
+    'collected works',
+    'anthology',
+    'collection',
+    'album',
+    'book',
+    'volume',
+    'vol.',
+    'études',
+    'etudes',
+    'studies',
+    'exercises',
+    'method',
+    'school',
+    'tutorial',
+    'course',
+    'manuscript',
+    'autograph',
+    'sketches',
+    'fragments',
+  ];
+
+  // Se contém palavras excluídas, não é válida
+  if (excludeKeywords.some((keyword) => title.includes(keyword))) {
+    return false;
+  }
+
+  // Se é uma obra coletada com muitos movimentos, não é válida
+  if (
+    work.workType === 'COLLECTED_WORKS' &&
+    work.movementNumber &&
+    work.movementNumber > 8
+  ) {
+    return false;
+  }
+
+  // Títulos muito curtos ou genéricos
+  if (work.title.trim().length < 3) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Gera query simples: "título - compositor"
+ */
+export function generateSimpleQuery(work: WorkWithRelations): string {
   const title = cleanTitle(work.title);
   const composer = work.composer.fullName;
 
-  // QUERY 1: Básica - Título + Compositor (mais provável de funcionar)
-  queries.push({
-    query: `${title} ${composer}`,
-    strategy: 'basic',
-    priority: 100,
-  });
-
-  // QUERY 2: Com opus (se disponível)
-  if (work.opOrCatalog) {
-    const opus = cleanOpus(work.opOrCatalog);
-    queries.push({
-      query: `${title} ${opus} ${composer}`,
-      strategy: 'with-opus',
-      priority: 90,
-    });
-  }
-
-  // QUERY 3: Apenas para obras individuais, adicionar instrumento
-  if (work.workType === 'INDIVIDUAL' && work.instrument) {
-    queries.push({
-      query: `${title} ${composer} ${work.instrument.name}`,
-      strategy: 'with-instrument',
-      priority: 80,
-    });
-  }
-
-  return queries;
+  return `${title} - ${composer}`;
 }
 
 /**
  * Limpa o título removendo informações desnecessárias
  */
 function cleanTitle(title: string): string {
-  return title
-    .replace(/,\s*(Op\.|BWV|K\.|Hob\.|D\.|CD|L\.)\s*[\d\w\-\/\.]+/gi, '') // Remove catálogos inline
-    .replace(/\s*\([^)]*\)/g, '') // Remove parênteses
-    .replace(/\s*\[[^\]]*\]/g, '') // Remove colchetes
-    .replace(/["'"]/g, '') // Remove aspas
-    .replace(/[,;:]/g, ' ') // Substitui pontuação por espaço
-    .replace(/\s+/g, ' ') // Remove espaços duplos
-    .trim();
+  return (
+    title
+      // Remove números de catálogo inline
+      .replace(/,?\s*(Op\.|BWV|K\.|Hob\.|D\.|CD|L\.)\s*[\d\w\-\/\.]+/gi, '')
+      // Remove informações entre parênteses e colchetes
+      .replace(/\s*[\(\[\{][^\)\]\}]*[\)\]\}]/g, '')
+      // Remove aspas e pontuação desnecessária
+      .replace(/["'"]/g, '')
+      .replace(/[,;:]/g, ' ')
+      // Remove múltiplos espaços
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
 }
 
 /**
- * Limpa e padroniza opus/catálogo
+ * Verifica se um resultado é música clássica válida
  */
-function cleanOpus(opus: string): string {
-  return opus
-    .replace(/[,;]/g, '') // Remove vírgulas e ponto-vírgula
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+export function isValidClassicalResult(title: string, artist: string): boolean {
+  const combined = `${title} ${artist}`.toLowerCase();
 
-/**
- * Calcula score de qualidade SIMPLIFICADO
- * Foca na similaridade de título e compositor
- */
-export function calculateSimpleQualityScore(
-  originalTitle: string,
-  originalComposer: string,
-  foundTitle: string,
-  foundArtist: string
-): number {
-  let score = 0;
+  // Palavras que indicam que NÃO é música clássica
+  const excludeKeywords = [
+    'remix',
+    'electronic',
+    'jazz version',
+    'rock version',
+    'pop version',
+    'hip hop',
+    'rap',
+    'disco',
+    'funk',
+    'metal',
+    'karaoke',
+    'backing track',
+    'play along',
+    'tutorial',
+    'lesson',
+    'how to',
+    'reaction',
+    'review',
+  ];
 
-  // Normalizar strings para comparação
-  const origTitle = normalizeString(originalTitle);
-  const origComposer = normalizeString(originalComposer);
-  const foundTitleNorm = normalizeString(foundTitle);
-  const foundArtistNorm = normalizeString(foundArtist);
-
-  // 40 pontos: Compositor deve estar presente (ESSENCIAL)
-  if (
-    foundArtistNorm.includes(origComposer) ||
-    foundTitleNorm.includes(origComposer)
-  ) {
-    score += 40;
-  } else {
-    // Se não tem o compositor, score baixo
-    return score;
+  // Se contém palavras não-clássicas, rejeitar
+  if (excludeKeywords.some((keyword) => combined.includes(keyword))) {
+    return false;
   }
 
-  // 30 pontos: Similaridade do título
-  const titleWords = origTitle.split(' ').filter((word) => word.length > 2);
-  const matchedWords = titleWords.filter(
-    (word) => foundTitleNorm.includes(word) || foundArtistNorm.includes(word)
-  );
-  score += (matchedWords.length / titleWords.length) * 30;
-
-  // 20 pontos: Palavras-chave clássicas
+  // Palavras que indicam música clássica
   const classicalKeywords = [
     'classical',
     'piano',
     'violin',
     'orchestra',
     'symphony',
+    'philharmonic',
+    'chamber',
+    'quartet',
     'sonata',
     'concerto',
-    'quartet',
-    'chamber',
-    'philharmonic',
+    'opus',
+    'op.',
+    'bwv',
+    'ensemble',
+    'conservatory',
+    'recital',
   ];
 
-  if (
-    classicalKeywords.some(
-      (keyword) =>
-        foundTitleNorm.includes(keyword) || foundArtistNorm.includes(keyword)
-    )
-  ) {
-    score += 20;
-  }
-
-  // 10 pontos: Não é remix/cover/versão alternativa
-  const excludeKeywords = [
-    'remix',
-    'cover',
-    'version',
-    'electronic',
-    'jazz',
-    'rock',
-  ];
-  if (
-    !excludeKeywords.some(
-      (keyword) =>
-        foundTitleNorm.includes(keyword) || foundArtistNorm.includes(keyword)
-    )
-  ) {
-    score += 10;
-  }
-
-  return Math.min(100, Math.max(0, score));
-}
-
-/**
- * Normaliza string para comparação
- */
-function normalizeString(str: string): string {
-  return str
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove acentos
-    .replace(/[^\w\s]/g, ' ') // Remove pontuação
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-/**
- * Verifica se uma obra é muito complexa para busca automática
- */
-export function isWorkTooComplexForAutoSearch(
-  work: WorkWithRelations
-): boolean {
-  // Coleções com muitos movimentos são complexas
-  if (
-    work.workType === 'COLLECTED_WORKS' &&
-    work.movementNumber &&
-    work.movementNumber > 10
-  ) {
-    return true;
-  }
-
-  // Títulos muito genéricos
-  const genericTitles = ['collection', 'complete works', 'anthology', 'album'];
-  if (
-    genericTitles.some((generic) => work.title.toLowerCase().includes(generic))
-  ) {
-    return true;
-  }
-
-  return false;
+  // Deve conter pelo menos uma palavra clássica
+  return classicalKeywords.some((keyword) => combined.includes(keyword));
 }

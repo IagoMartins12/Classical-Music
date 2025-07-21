@@ -1,4 +1,9 @@
-// app/libs/media-search/spotify-search.ts
+// app/libs/media-search/simplified-spotify-search.ts
+
+import {
+  generateSimpleQuery,
+  isValidClassicalResult,
+} from './simplified-media-search';
 
 interface SpotifyTrack {
   id: string;
@@ -24,12 +29,11 @@ interface SpotifySearchResponse {
 }
 
 /**
- * Busca SIMPLIFICADA no Spotify
- * Foca em encontrar o resultado mais relevante rapidamente
+ * Busca ULTRA SIMPLIFICADA no Spotify
+ * Sempre pega o PRIMEIRO resultado válido
  */
-export async function searchSpotifyTrack(
-  query: string,
-  composerName: string
+export async function searchSpotifyFirst(
+  work: any
 ): Promise<SpotifyTrack | null> {
   try {
     const accessToken = await getSpotifyAccessToken();
@@ -38,14 +42,14 @@ export async function searchSpotifyTrack(
       return null;
     }
 
-    // Query simplificada sem filtros problemáticos
-    const searchQuery = buildSimpleSpotifyQuery(query);
+    // Query ultra simples: "título - compositor"
+    const searchQuery = generateSimpleQuery(work);
     console.log(`🎵 [SPOTIFY] Buscando: "${searchQuery}"`);
 
     const response = await fetch(
       `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         searchQuery
-      )}&type=track&limit=50&market=BR`,
+      )}&type=track&limit=20&market=BR`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -70,200 +74,34 @@ export async function searchSpotifyTrack(
       return null;
     }
 
-    // Filtrar e encontrar o melhor resultado
-    const bestTrack = findBestSpotifyMatch(
-      data.tracks.items,
-      query,
-      composerName
-    );
+    // Encontra o PRIMEIRO resultado válido
+    for (const track of data.tracks.items) {
+      const artistNames = track.artists.map((a) => a.name).join(', ');
 
-    if (!bestTrack) {
-      console.log(`ℹ️ [SPOTIFY] Nenhum resultado relevante encontrado`);
-      return null;
+      // Verifica se é música clássica válida
+      if (isValidClassicalResult(track.name, artistNames)) {
+        // Verifica se tem pelo menos o nome do compositor
+        const composerName = work.composer.fullName.toLowerCase();
+        const trackData = `${track.name} ${artistNames}`.toLowerCase();
+
+        if (
+          trackData.includes(composerName) ||
+          composerName.split(' ').some((name: any) => trackData.includes(name))
+        ) {
+          console.log(
+            `✅ [SPOTIFY] PRIMEIRO resultado válido: "${track.name}" por ${artistNames}`
+          );
+          return track;
+        }
+      }
     }
 
-    const artistNames = bestTrack.artists.map((a) => a.name).join(', ');
-    console.log(
-      `✅ [SPOTIFY] Encontrado: "${bestTrack.name}" por ${artistNames}`
-    );
-
-    return bestTrack;
+    console.log(`ℹ️ [SPOTIFY] Nenhum resultado clássico válido encontrado`);
+    return null;
   } catch (error) {
     console.error('❌ [SPOTIFY] Erro na busca:', error);
     return null;
   }
-}
-
-/**
- * Constrói query simples e eficaz para Spotify
- * Remove filtros que estavam causando problemas
- */
-function buildSimpleSpotifyQuery(query: string): string {
-  // Apenas a query básica, sem filtros complexos
-  return query
-    .replace(/[""'']/g, '') // Remove aspas especiais
-    .replace(/[,;:]/g, ' ') // Substitui pontuação por espaço
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-/**
- * Encontra o melhor match usando o score de qualidade simplificado
- */
-function findBestSpotifyMatch(
-  tracks: SpotifyTrack[],
-  originalQuery: string,
-  composerName: string
-): SpotifyTrack | null {
-  let bestTrack: SpotifyTrack | null = null;
-  let bestScore = 0;
-
-  for (const track of tracks) {
-    // Pular tracks sem preview (preferir com preview)
-    const artistNames = track.artists.map((a) => a.name).join(' ');
-
-    // Calcular score básico
-    let score = calculateSpotifyRelevanceScore(
-      track,
-      originalQuery,
-      composerName
-    );
-
-    // Bonus por ter preview
-    if (track.preview_url) {
-      score += 15;
-    }
-
-    // Bonus por popularidade moderada (não muito comercial, não muito obscuro)
-    if (track.popularity >= 30 && track.popularity <= 80) {
-      score += 10;
-    }
-
-    // Verificar se é música clássica
-    if (!isClassicalMusic(track.name, artistNames)) {
-      score = 0; // Zerar score se não for clássica
-    }
-
-    if (score > bestScore && score >= 60) {
-      // Mínimo de 60% de relevância
-      bestScore = score;
-      bestTrack = track;
-    }
-  }
-
-  console.log(`🎯 [SPOTIFY] Melhor score: ${bestScore}%`);
-  return bestTrack;
-}
-
-/**
- * Calcula score de relevância simplificado
- */
-function calculateSpotifyRelevanceScore(
-  track: SpotifyTrack,
-  originalQuery: string,
-  composerName: string
-): number {
-  const trackName = track.name.toLowerCase();
-  const artistNames = track.artists
-    .map((a) => a.name)
-    .join(' ')
-    .toLowerCase();
-  const queryLower = originalQuery.toLowerCase();
-  const composerLower = composerName.toLowerCase();
-
-  let score = 0;
-
-  // 40 pontos: Compositor deve estar nos artistas ou no nome da track
-  if (
-    artistNames.includes(composerLower) ||
-    trackName.includes(composerLower)
-  ) {
-    score += 40;
-  } else {
-    return 0; // Se não tem o compositor, não é relevante
-  }
-
-  // 30 pontos: Palavras do título original devem estar presentes
-  const queryWords = queryLower.split(' ').filter((word) => word.length > 2);
-  const matchedWords = queryWords.filter(
-    (word) => trackName.includes(word) || artistNames.includes(word)
-  );
-  score += (matchedWords.length / queryWords.length) * 30;
-
-  // 20 pontos: Album com palavras clássicas
-  const albumName = track.album.name.toLowerCase();
-  const classicalAlbumKeywords = [
-    'complete',
-    'works',
-    'collection',
-    'essential',
-    'sonatas',
-    'concertos',
-    'symphonies',
-    'classical',
-    'piano',
-    'violin',
-    'chamber',
-  ];
-  if (classicalAlbumKeywords.some((keyword) => albumName.includes(keyword))) {
-    score += 20;
-  }
-
-  // 10 pontos: Duração apropriada (1-20 minutos)
-  const durationMinutes = track.duration_ms / (1000 * 60);
-  if (durationMinutes >= 1 && durationMinutes <= 20) {
-    score += 10;
-  }
-
-  return score;
-}
-
-/**
- * Verifica se é música clássica (simplificado)
- */
-function isClassicalMusic(trackName: string, artistNames: string): boolean {
-  const combined = `${trackName} ${artistNames}`.toLowerCase();
-
-  // Palavras que indicam música clássica
-  const classicalKeywords = [
-    'piano',
-    'violin',
-    'orchestra',
-    'symphony',
-    'philharmonic',
-    'chamber',
-    'quartet',
-    'sonata',
-    'concerto',
-    'classical',
-    'opus',
-    'op.',
-    'bwv',
-  ];
-
-  // Palavras que indicam NÃO ser música clássica
-  const nonClassicalKeywords = [
-    'remix',
-    'electronic',
-    'jazz',
-    'rock',
-    'pop',
-    'hip hop',
-    'rap',
-    'disco',
-    'funk',
-    'metal',
-    'cover version',
-    'karaoke',
-  ];
-
-  // Se contém palavras não-clássicas, rejeitar
-  if (nonClassicalKeywords.some((keyword) => combined.includes(keyword))) {
-    return false;
-  }
-
-  // Se contém palavras clássicas, aceitar
-  return classicalKeywords.some((keyword) => combined.includes(keyword));
 }
 
 /**

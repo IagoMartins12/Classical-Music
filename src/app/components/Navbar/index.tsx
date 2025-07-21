@@ -87,7 +87,8 @@ const Navbar: React.FC = () => {
   const submenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const optionsArr: NavItem[] = [
-    { label: 'História da Música', href: '/music-history' },
+    { label: 'Compositores', href: '/composers' },
+
     {
       label: 'Obras',
       href: '/works',
@@ -104,8 +105,14 @@ const Navbar: React.FC = () => {
         },
       ],
     },
-    { label: 'Compositores', href: '/composers' },
-    { label: 'Instrumentos', href: '/instruments' },
+    {
+      label: 'História',
+      href: '/music-history',
+      submenu: [
+        { label: 'História da Música', href: '/music-history' },
+        { label: 'Instrumentos', href: '/instruments' },
+      ],
+    },
     {
       label: 'Ajuda & Suporte',
       submenu: [

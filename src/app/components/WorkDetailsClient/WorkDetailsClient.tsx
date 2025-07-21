@@ -44,8 +44,9 @@ import VerificationBadge from '../Verification/VerificationBadge';
 import VerificationButton from '../Verification/VerificationButton';
 import AdContainer from '../Ads/AdContainer';
 import EditButton from '../Common/EditButton';
-import MediaPlayer from '../MediaPlayer';
 import { useMediaSearch } from '@/app/hooks/useMediaSearch';
+import MediaSection from '../Players/MediaSection';
+import UniversalAudioPlayer from '../Players/UniversalAudioPlayer';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -918,10 +919,11 @@ export default function WorkDetailsClient({
 
           <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" />
 
-          <MediaPlayer
+          <MediaSection
             composerName={work.composer.fullName}
             workTitle={work.title}
             mediaSearch={mediaSearch}
+            work={work}
           />
 
           {/* 🆕 Seção de Partituras IMSLP com nova lógica */}
