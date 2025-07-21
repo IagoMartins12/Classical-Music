@@ -114,7 +114,7 @@ export default function CreateAdModal({
       try {
         const response = await fetch('/api/instruments');
         const data = await response.json();
-        setAvailableInstruments(data.instruments || []);
+        setAvailableInstruments(data);
       } catch (error) {
         console.error('Erro ao buscar instrumentos:', error);
       }

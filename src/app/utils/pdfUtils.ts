@@ -171,7 +171,7 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
 
     // Tentar usar PDF.js
     try {
-      return await generateWithPDFJS(file);
+      return null;
     } catch (pdfError) {
       console.warn('⚠️ PDF.js falhou, gerando placeholder:', pdfError);
       return await generatePlaceholder(file);
@@ -180,76 +180,6 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
     console.error('❌ Erro geral ao gerar thumbnail:', error);
     return null;
   }
-}
-
-/**
- * Método principal com PDF.js - VERSÃO APRIMORADA
- */
-async function generateWithPDFJS(file: File): Promise<string | null> {
-  // Importar PDF.js dinamicamente
-  const pdfjsLib = await import('pdfjs-dist');
-
-  // Configurar worker
-  const workerUrl = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
-  pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
-
-  console.log('🔧 PDF.js configurado:', pdfjsLib.version);
-
-  // Converter arquivo para ArrayBuffer
-  const arrayBuffer = await file.arrayBuffer();
-
-  // Carregar PDF com configurações robustas
-  const loadingTask = pdfjsLib.getDocument({
-    data: arrayBuffer,
-    verbosity: 0,
-    isEvalSupported: false,
-    disableFontFace: true,
-    useSystemFonts: true,
-    standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/standard_fonts/`,
-  });
-
-  const pdf = await loadingTask.promise;
-  console.log(`📄 PDF carregado: ${pdf.numPages} páginas`);
-
-  // Obter primeira página
-  const page = await pdf.getPage(1);
-
-  // Configurar viewport para thumbnail de qualidade
-  const viewport = page.getViewport({ scale: 1 });
-
-  // Calcular escala para thumbnail de 200px de largura (boa qualidade)
-  const targetWidth = 200;
-  const scale = targetWidth / viewport.width;
-  const scaledViewport = page.getViewport({ scale });
-
-  // Criar canvas
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d');
-
-  if (!context) {
-    throw new Error('Contexto canvas não disponível');
-  }
-
-  canvas.width = scaledViewport.width;
-  canvas.height = scaledViewport.height;
-
-  // Configurar contexto para melhor qualidade
-  context.imageSmoothingEnabled = true;
-  context.imageSmoothingQuality = 'high';
-
-  // Renderizar página
-  const renderContext = {
-    canvasContext: context,
-    viewport: scaledViewport,
-    background: 'white', // Fundo branco para melhor contraste
-  };
-
-  await page.render(renderContext).promise;
-
-  console.log(`✅ Thumbnail renderizado: ${canvas.width}x${canvas.height}`);
-
-  // Converter para JPEG com boa qualidade
-  return canvas.toDataURL('image/jpeg', 0.85);
 }
 
 /**

@@ -1326,11 +1326,25 @@ model Advertisement {
   description String?
   content     String? // Conteúdo HTML/texto adicional
 
-  // Mídia - APENAS UPLOAD, NÃO URL
-  imageUrl     String? // URL do arquivo uploadado
-  thumbnailUrl String? // Thumbnail gerada automaticamente
-  videoUrl     String? // URL do vídeo uploadado (opcional)
-
+  // 🆕 Mídia com versões responsivas
+  // Substituir imageUrl, thumbnailUrl, videoUrl por:
+  
+  // URLs principais (para compatibilidade)
+  imageUrl     String? // URL da versão desktop (principal)
+  thumbnailUrl String? // URL do thumbnail
+  videoUrl     String? // URL da versão desktop do vídeo
+  
+  // 🆕 Versões responsivas (JSON fields)
+  imageVersions Json? // { desktop: string, tablet: string, mobile: string, original: string, thumbnail: string }
+  videoVersions Json? // { desktop: string, tablet: string, mobile: string, original: string }
+  
+  // 🆕 Metadados de mídia
+  mediaMetadata Json? // { originalDimensions: { width: number, height: number }, processedAt: string, fileSize: number, format: string }
+  
+  // 🆕 Configurações de qualidade
+  imageQuality  String @default("high") // "high", "medium", "low"
+  videoQuality  String @default("high") // "high", "medium", "low"
+  
   // Links e ações
   ctaText     String? // Texto do call-to-action
   targetUrl   String? // URL de destino OU número WhatsApp
@@ -1386,6 +1400,8 @@ model Advertisement {
   @@index([status, placement])
   @@index([targetType, instrumentId])
   @@index([createdBy])
+  @@index([imageQuality])
+  @@index([videoQuality])
   @@map("advertisements")
 }
 

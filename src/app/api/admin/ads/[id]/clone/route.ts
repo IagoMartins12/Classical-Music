@@ -1,10 +1,10 @@
-// app/api/admin/ads/[id]/clone/route.ts - API para clonagem de anúncios
+// app/api/admin/ads/[id]/clone/route.ts - API para clonagem usando serverMediaProcessor
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
-import { cloneAdMedia } from '@/app/libs/mediaUtils';
+import { cloneAdMedia } from '@/app/libs/ads/serverMediaProcessor';
 
 export async function POST(
   request: NextRequest,
@@ -20,6 +20,8 @@ export async function POST(
     const originalAdId = params.id;
     const body = await request.json();
     const modifications = body || {};
+
+    console.log(`📋 Iniciando clonagem do anúncio ${originalAdId}`);
 
     // Buscar anúncio original
     const originalAd = await prisma.advertisement.findUnique({
@@ -41,6 +43,8 @@ export async function POST(
       );
     }
 
+    console.log(`✅ Anúncio original encontrado: ${originalAd.title}`);
+
     // Preparar dados para o clone
     const cloneData = {
       // Dados básicos - aplicar modificações se fornecidas
@@ -48,10 +52,12 @@ export async function POST(
       description: modifications.description || originalAd.description,
       content: modifications.content || originalAd.content,
 
-      // Mídia - manter as URLs originais
+      // Mídia - inicialmente manter as URLs originais (serão atualizadas após clonagem)
       imageUrl: originalAd.imageUrl,
       thumbnailUrl: originalAd.thumbnailUrl,
       videoUrl: originalAd.videoUrl,
+      imageVersions: originalAd.imageVersions,
+      videoVersions: originalAd.videoVersions,
 
       // CTA e links
       ctaText: modifications.ctaText || originalAd.ctaText,
@@ -93,6 +99,15 @@ export async function POST(
       showOnTablet: modifications.showOnTablet ?? originalAd.showOnTablet,
       showOnDesktop: modifications.showOnDesktop ?? originalAd.showOnDesktop,
 
+      // Qualidade de mídia
+      imageQuality: originalAd.imageQuality || 'high',
+      videoQuality: originalAd.videoQuality || 'high',
+      mediaMetadata: {
+        ...originalAd.mediaMetadata,
+        clonedFrom: originalAdId,
+        clonedAt: new Date().toISOString(),
+      },
+
       // Controle de acesso
       createdBy: session.user.id,
     };
@@ -120,6 +135,8 @@ export async function POST(
       );
     }
 
+    console.log('✅ Nenhum conflito encontrado, criando clone...');
+
     // Criar o clone
     const clonedAd = await prisma.advertisement.create({
       data: cloneData,
@@ -141,59 +158,141 @@ export async function POST(
       },
     });
 
-    // 🆕 Clonar mídia (criar cópias físicas dos arquivos)
-    const clonedMedia = await cloneAdMedia(originalAd, clonedAd.id);
+    console.log(`✅ Anúncio clonado criado com ID: ${clonedAd.id}`);
 
-    // Atualizar o anúncio clonado com as novas URLs de mídia
-    let finalAd = clonedAd;
-    if (
-      clonedMedia.imageUrl ||
-      clonedMedia.thumbnailUrl ||
-      clonedMedia.videoUrl
-    ) {
-      finalAd = await prisma.advertisement.update({
-        where: { id: clonedAd.id },
-        data: {
-          imageUrl: clonedMedia.imageUrl,
-          thumbnailUrl: clonedMedia.thumbnailUrl,
-          videoUrl: clonedMedia.videoUrl,
-        },
-        include: {
-          creator: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
+    // Clonar mídia física (criar cópias independentes dos arquivos)
+    let clonedMediaInfo = {
+      image: false,
+      thumbnail: false,
+      video: false,
+    };
+
+    try {
+      console.log('📁 Iniciando clonagem de mídia...');
+
+      const clonedMedia = await cloneAdMedia(originalAd, clonedAd.id);
+
+      if (clonedMedia.imageUrl || clonedMedia.imageVersions) {
+        clonedMediaInfo.image = true;
+      }
+
+      if (clonedMedia.videoUrl || clonedMedia.videoVersions) {
+        clonedMediaInfo.video = true;
+      }
+
+      if (clonedMedia.thumbnailUrl) {
+        clonedMediaInfo.thumbnail = true;
+      }
+
+      // Atualizar o anúncio clonado com as novas URLs de mídia
+      if (Object.keys(clonedMedia).length > 0) {
+        const updateData: any = {};
+
+        if (clonedMedia.imageUrl) updateData.imageUrl = clonedMedia.imageUrl;
+        if (clonedMedia.imageVersions)
+          updateData.imageVersions = clonedMedia.imageVersions;
+        if (clonedMedia.videoUrl) updateData.videoUrl = clonedMedia.videoUrl;
+        if (clonedMedia.videoVersions)
+          updateData.videoVersions = clonedMedia.videoVersions;
+        if (clonedMedia.thumbnailUrl)
+          updateData.thumbnailUrl = clonedMedia.thumbnailUrl;
+
+        const finalAd = await prisma.advertisement.update({
+          where: { id: clonedAd.id },
+          data: updateData,
+          include: {
+            creator: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            instrument: {
+              select: {
+                id: true,
+                name: true,
+              },
             },
           },
-          instrument: {
-            select: {
-              id: true,
-              name: true,
-            },
+        });
+
+        console.log('✅ Mídia clonada e URLs atualizadas');
+
+        // Invalidar cache
+        revalidateTag('public-ads');
+
+        return NextResponse.json({
+          success: true,
+          ad: finalAd,
+          message: 'Anúncio clonado com sucesso! 🎉',
+          mediaCloned: clonedMediaInfo,
+          details: {
+            originalId: originalAdId,
+            clonedId: clonedAd.id,
+            hasMedia: clonedMediaInfo.image || clonedMediaInfo.video,
+            modifications: Object.keys(modifications).filter(
+              (key) => modifications[key] !== originalAd[key]
+            ),
           },
+        });
+      }
+    } catch (mediaError) {
+      console.warn(
+        '⚠️ Erro na clonagem de mídia, mas anúncio foi criado:',
+        mediaError
+      );
+
+      // Anúncio foi criado, mas mídia não foi clonada
+      // Invalidar cache mesmo assim
+      revalidateTag('public-ads');
+
+      return NextResponse.json({
+        success: true,
+        ad: clonedAd,
+        message:
+          'Anúncio clonado, mas mídia não foi copiada. Você pode fazer upload manual.',
+        warning: 'Mídia não foi clonada automaticamente',
+        mediaCloned: clonedMediaInfo,
+        details: {
+          originalId: originalAdId,
+          clonedId: clonedAd.id,
+          hasMedia: false,
+          mediaError:
+            mediaError instanceof Error
+              ? mediaError.message
+              : 'Erro desconhecido',
         },
       });
     }
+
+    // Se chegou aqui, não teve mídia para clonar
+    console.log('ℹ️ Anúncio original não tinha mídia para clonar');
 
     // Invalidar cache
     revalidateTag('public-ads');
 
     return NextResponse.json({
       success: true,
-      ad: finalAd,
-      message: 'Anúncio clonado com sucesso',
-      mediaCloned: {
-        image: !!clonedMedia.imageUrl,
-        thumbnail: !!clonedMedia.thumbnailUrl,
-        video: !!clonedMedia.videoUrl,
+      ad: clonedAd,
+      message: 'Anúncio clonado com sucesso!',
+      mediaCloned: clonedMediaInfo,
+      details: {
+        originalId: originalAdId,
+        clonedId: clonedAd.id,
+        hasMedia: false,
+        note: 'Anúncio original não tinha mídia',
       },
     });
   } catch (error) {
-    console.error('Erro ao clonar anúncio:', error);
+    console.error('❌ Erro ao clonar anúncio:', error);
+
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido',
+      },
       { status: 500 }
     );
   }
