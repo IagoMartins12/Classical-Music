@@ -7,10 +7,21 @@ import prisma from '@/app/libs/prismadb';
 import { revalidatePath } from 'next/cache';
 import { OnboardingData } from '../stores/authStore';
 import { allFamousNames } from '../requests/utils';
+import {
+  createToken,
+  logSecurityEvent,
+  checkTokenRateLimit,
+} from '@/app/libs/tokenUtils';
+import { createTokenUrl } from '@/app/libs/tokenUtils';
+import { headers } from 'next/headers';
+import { sendTemplateEmail } from '../libs/newsletter/email';
 
 // Validation schemas
 const registerSchema = z.object({
-  username: z.string().min(1, 'Username é obrigatório').max(50),
+  username: z
+    .string()
+    .min(2, 'Nome de usuário deve ter pelo menos 2 caracteres')
+    .max(50),
   email: z.string().email('Email inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
 });
@@ -79,19 +90,28 @@ export interface OnboardingOptionsResult {
   message: string;
 }
 
-// Register user with email and password
+export interface ResendConfirmationResult {
+  success: boolean;
+  message: string;
+}
+
+// Register user with email and password - VERSÃO INTEGRADA
 export async function registerUser(data: {
   username: string;
   email: string;
   password: string;
 }): Promise<AuthResult> {
   try {
-    // Validate input
+    // Validate input with Zod
     const validatedData = registerSchema.parse(data);
+
+    // Normalize email
+    const normalizedEmail = validatedData.email.toLowerCase().trim();
+    const normalizedUsername = validatedData.username.trim();
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
-      where: { email: validatedData.email.toLowerCase() },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
@@ -101,40 +121,58 @@ export async function registerUser(data: {
       };
     }
 
+    // Check if username already exists
     const existingUserUsername = await prisma.user.findFirst({
       where: {
         username: {
-          equals: validatedData.username,
+          equals: normalizedUsername,
           mode: 'insensitive',
         },
       },
     });
+
     if (existingUserUsername) {
       return {
         success: false,
-        message: 'Um usuário com este nome de usuário existe.',
+        message: 'Um usuário com este nome de usuário já existe.',
       };
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(validatedData.password, 12);
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(
+      validatedData.password,
+      saltRounds
+    );
+
+    // Get request information for logs
+    const headersList = await headers();
+    const userIP =
+      headersList.get('x-forwarded-for') ||
+      headersList.get('x-real-ip') ||
+      'unknown';
+    const userAgent = headersList.get('user-agent') || 'unknown';
 
     // Create user
     const user = await prisma.user.create({
       data: {
-        username: validatedData.username,
-        email: validatedData.email.toLowerCase(),
+        firstName: normalizedUsername,
+        username: normalizedUsername,
+        email: normalizedEmail,
         hashedPassword,
         role: 0, // normal user
         onboardingCompleted: false,
         profilePublic: true,
         showLocation: false,
+        // IMPORTANTE: emailVerified fica null até confirmação
+        emailVerified: null,
       },
       select: {
         id: true,
         firstName: true,
         lastName: true,
         email: true,
+        username: true,
         image: true,
         role: true,
         onboardingCompleted: true,
@@ -143,14 +181,102 @@ export async function registerUser(data: {
       },
     });
 
-    return {
-      success: true,
-      message: 'Conta criada com sucesso!',
-      user,
-      requiresOnboarding: true,
-    };
+    // NOVO: Criar token de confirmação de conta
+    try {
+      const confirmationToken = await createToken({
+        userId: user.id,
+        type: 'EMAIL_CONFIRMATION',
+        expiresInHours: 24, // Token válido por 24 horas
+        ipAddress: userIP,
+        userAgent,
+        metadata: {
+          registrationTime: new Date().toISOString(),
+          emailAddress: normalizedEmail,
+        },
+      });
+
+      // NOVO: Criar URL de confirmação
+      const confirmationUrl = createTokenUrl(
+        process.env.NEXTAUTH_URL || 'http://localhost:3000',
+        'confirm-account',
+        confirmationToken
+      );
+
+      // NOVO: Enviar email de confirmação de conta
+      const emailResult = await sendTemplateEmail(normalizedEmail, {
+        type: 'ACCOUNT_CONFIRMATION',
+        variables: {
+          firstName: user.firstName || 'Usuário',
+          confirmationUrl,
+        },
+      });
+
+      if (emailResult.success) {
+        // Log de sucesso
+        logSecurityEvent('USER_REGISTERED_WITH_CONFIRMATION', user.id, {
+          email: normalizedEmail,
+          username: normalizedUsername,
+          ip: userIP,
+          userAgent,
+          emailProvider: emailResult.provider,
+        });
+
+        return {
+          success: true,
+          message:
+            'Conta criada com sucesso! Verifique seu email para confirmar sua conta.',
+          user,
+          requiresOnboarding: true,
+        };
+      } else {
+        // Se falhar o envio do email, ainda assim criou a conta
+        // Mas avisa sobre o problema
+        logSecurityEvent('USER_REGISTERED_EMAIL_FAILED', user.id, {
+          email: normalizedEmail,
+          username: normalizedUsername,
+          ip: userIP,
+          emailError: emailResult.error,
+        });
+
+        return {
+          success: true,
+          message:
+            'Conta criada, mas houve um problema ao enviar o email de confirmação. Entre em contato conosco.',
+          user,
+          requiresOnboarding: true,
+        };
+      }
+    } catch (tokenError) {
+      // Se falhar a criação do token, ainda assim criou a conta
+      // Mas o usuário precisará solicitar confirmação manualmente
+      console.error('Erro ao criar token de confirmação:', tokenError);
+
+      logSecurityEvent('USER_REGISTERED_TOKEN_FAILED', user.id, {
+        email: normalizedEmail,
+        username: normalizedUsername,
+        ip: userIP,
+        tokenError:
+          tokenError instanceof Error ? tokenError.message : 'Unknown error',
+      });
+
+      return {
+        success: true,
+        message:
+          'Conta criada, mas houve um problema técnico. Entre em contato conosco para ativar sua conta.',
+        user,
+        requiresOnboarding: true,
+      };
+    }
   } catch (error) {
     console.error('Registration error:', error);
+
+    // Log do erro (sem dados sensíveis)
+    logSecurityEvent('USER_REGISTRATION_ERROR', '', {
+      email: data.email ? 'provided' : 'not_provided',
+      username: data.username ? 'provided' : 'not_provided',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      ip: (await headers()).get('x-forwarded-for') || 'unknown',
+    });
 
     if (error instanceof z.ZodError) {
       return {
@@ -159,9 +285,145 @@ export async function registerUser(data: {
       };
     }
 
+    // Verificar se o erro é de duplicação (pode acontecer em race conditions)
+    if (error instanceof Error && error.message.includes('Unique constraint')) {
+      if (error.message.includes('email')) {
+        return {
+          success: false,
+          message: 'Um usuário com este email já existe.',
+        };
+      }
+      if (error.message.includes('username')) {
+        return {
+          success: false,
+          message: 'Um usuário com este nome de usuário já existe.',
+        };
+      }
+    }
+
     return {
       success: false,
       message: 'Erro interno do servidor. Tente novamente.',
+    };
+  }
+}
+
+// NOVO: Action para reenviar email de confirmação
+export async function resendAccountConfirmation(
+  email: string
+): Promise<ResendConfirmationResult> {
+  try {
+    if (!email || !email.trim()) {
+      return {
+        success: false,
+        message: 'Email é obrigatório',
+      };
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Buscar usuário
+    const user = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        emailVerified: true,
+      },
+    });
+
+    if (!user) {
+      // Por segurança, não revelar se o email existe ou não
+      return {
+        success: true,
+        message:
+          'Se este email estiver cadastrado, você receberá um novo link de confirmação.',
+      };
+    }
+
+    // Verificar se já foi confirmado
+    if (user.emailVerified) {
+      return {
+        success: false,
+        message: 'Esta conta já foi confirmada',
+      };
+    }
+
+    // Verificar rate limiting
+    const rateLimit = await checkTokenRateLimit(
+      user.id,
+      'EMAIL_CONFIRMATION',
+      3
+    );
+
+    if (!rateLimit.allowed) {
+      return {
+        success: false,
+        message: 'Muitas tentativas. Aguarde 1 hora para solicitar novamente.',
+      };
+    }
+
+    // Obter informações da requisição
+    const headersList = await headers();
+    const userIP = headersList.get('x-forwarded-for') || 'unknown';
+    const userAgent = headersList.get('user-agent') || 'unknown';
+
+    // Criar novo token
+    const confirmationToken = await createToken({
+      userId: user.id,
+      type: 'EMAIL_CONFIRMATION',
+      expiresInHours: 24,
+      ipAddress: userIP,
+      userAgent,
+    });
+
+    // Criar URL de confirmação
+    const confirmationUrl = createTokenUrl(
+      process.env.NEXTAUTH_URL || 'http://localhost:3000',
+      'confirm-account',
+      confirmationToken
+    );
+
+    // Enviar email
+    const emailResult = await sendTemplateEmail(normalizedEmail, {
+      type: 'ACCOUNT_CONFIRMATION',
+      variables: {
+        firstName: user.firstName || 'Usuário',
+        confirmationUrl,
+      },
+    });
+
+    if (emailResult.success) {
+      logSecurityEvent('ACCOUNT_CONFIRMATION_RESENT', user.id, {
+        email: normalizedEmail,
+        ip: userIP,
+        remainingAttempts: rateLimit.remainingAttempts - 1,
+      });
+
+      return {
+        success: true,
+        message:
+          'Novo email de confirmação enviado! Verifique sua caixa de entrada.',
+      };
+    } else {
+      return {
+        success: false,
+        message: 'Erro ao enviar email. Tente novamente.',
+      };
+    }
+  } catch (error) {
+    console.error('Erro ao reenviar confirmação:', error);
+
+    logSecurityEvent('RESEND_CONFIRMATION_ERROR', '', {
+      email: email ? 'provided' : 'not_provided',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      ip: (await headers()).get('x-forwarded-for') || 'unknown',
+    });
+
+    return {
+      success: false,
+      message: 'Erro interno. Tente novamente.',
     };
   }
 }
@@ -197,6 +459,7 @@ export async function loginUser(data: {
         practiceTimePerWeek: true,
         profilePublic: true,
         showLocation: true,
+        emailVerified: true, // NOVO: Verificar se email foi confirmado
       },
     });
 
@@ -206,6 +469,9 @@ export async function loginUser(data: {
         message: 'Email ou senha incorretos.',
       };
     }
+
+    // OPCIONAL: Email não confirmado não bloqueia login
+    // Usuário pode fazer login mesmo sem confirmar email
 
     // Verify password
     const isValidPassword = await bcrypt.compare(
@@ -221,9 +487,7 @@ export async function loginUser(data: {
     }
 
     // Remove password from response
-    const { ...safeUser } = user;
-
-    // const { hashedPassword, ...safeUser } = user;
+    const { hashedPassword, ...safeUser } = user;
 
     return {
       success: true,
@@ -313,6 +577,7 @@ export async function getFamousComposers() {
 
   return composerData;
 }
+
 export async function getEpochs() {
   const epochsData = await prisma.epoch.findMany({
     select: {
@@ -579,6 +844,7 @@ export async function getUserById(userId: string) {
         practiceTimePerWeek: true,
         profilePublic: true,
         showLocation: true,
+        emailVerified: true, // NOVO: Incluir status de verificação
       },
     });
 

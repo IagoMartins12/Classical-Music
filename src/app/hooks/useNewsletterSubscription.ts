@@ -1,4 +1,4 @@
-// app/hooks/useNewsletterSubscription.ts
+// app/hooks/useNewsletterSubscription.ts - VERSÃO ATUALIZADA
 import { useState, useCallback, useEffect } from 'react';
 
 interface SubscribeData {
@@ -12,18 +12,33 @@ interface SubscribeData {
   utmSource?: string;
 }
 
+// 🆕 NOVO: Resposta expandida com verificação de duplicados
 interface SubscribeResponse {
   success: boolean;
   message: string;
   status: string;
   error?: string;
+  errorCode?: string;
+  subscribedAt?: string;
+  needsConfirmation?: boolean;
+  canResendConfirmation?: boolean;
+  existingToken?: string;
+  subscriber?: {
+    email: string;
+    firstName?: string;
+    subscribedAt: string;
+  };
 }
 
 interface UseNewsletterSubscriptionReturn {
   subscribe: (data: SubscribeData) => Promise<void>;
+  resendConfirmation: (email: string) => Promise<void>;
   loading: boolean;
   success: boolean;
   error: string | null;
+  errorCode: string | null;
+  status: string | null;
+  canResend: boolean;
   reset: () => void;
 }
 
@@ -33,10 +48,18 @@ export const useNewsletterSubscription =
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    // 🆕 NOVO: Estados adicionais para verificação
+    const [errorCode, setErrorCode] = useState<string | null>(null);
+    const [status, setStatus] = useState<string | null>(null);
+    const [canResend, setCanResend] = useState(false);
+
     const subscribe = useCallback(async (data: SubscribeData) => {
       setLoading(true);
       setError(null);
+      setErrorCode(null);
+      setStatus(null);
       setSuccess(false);
+      setCanResend(false);
 
       try {
         const response = await fetch('/api/newsletter/subscribe', {
@@ -51,13 +74,57 @@ export const useNewsletterSubscription =
 
         if (result.success) {
           setSuccess(true);
+          setStatus(result.status);
           setError(null);
         } else {
           setError(result.error || 'Erro na inscrição');
+          setErrorCode(result.errorCode || null);
+          setStatus(result.status || null);
           setSuccess(false);
+
+          // 🆕 NOVO: Verificar se pode reenviar confirmação
+          setCanResend(result.canResendConfirmation || false);
         }
       } catch (err) {
         console.error('Erro na inscrição da newsletter:', err);
+        setError('Erro de conexão. Tente novamente.');
+        setSuccess(false);
+        setErrorCode('CONNECTION_ERROR');
+      } finally {
+        setLoading(false);
+      }
+    }, []);
+
+    // 🆕 NOVO: Função para reenviar confirmação
+    const resendConfirmation = useCallback(async (email: string) => {
+      setLoading(true);
+      setError(null);
+      setErrorCode(null);
+
+      try {
+        const response = await fetch('/api/newsletter/subscribe', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: email.trim(),
+            action: 'resend-confirmation',
+          }),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          setSuccess(true);
+          setError(null);
+          setCanResend(false); // Desabilitar botão após reenvio bem-sucedido
+        } else {
+          setError(result.error || 'Erro ao reenviar confirmação');
+          setSuccess(false);
+        }
+      } catch (err) {
+        console.error('Erro ao reenviar confirmação:', err);
         setError('Erro de conexão. Tente novamente.');
         setSuccess(false);
       } finally {
@@ -69,13 +136,20 @@ export const useNewsletterSubscription =
       setLoading(false);
       setSuccess(false);
       setError(null);
+      setErrorCode(null);
+      setStatus(null);
+      setCanResend(false);
     }, []);
 
     return {
       subscribe,
+      resendConfirmation, // 🆕 NOVO
       loading,
       success,
       error,
+      errorCode, // 🆕 NOVO
+      status, // 🆕 NOVO
+      canResend, // 🆕 NOVO
       reset,
     };
   };
@@ -89,6 +163,61 @@ interface NewsletterPreferences {
   marketing: boolean;
   frequency: 'daily' | 'weekly' | 'monthly';
 }
+
+interface UseNewsletterPreferencesReturn {
+  preferences: NewsletterPreferences | null;
+  updatePreferences: (
+    newPreferences: Partial<NewsletterPreferences>
+  ) => Promise<void>;
+  loading: boolean;
+  error: string | null;
+}
+
+export const useNewsletterPreferences = (): UseNewsletterPreferencesReturn => {
+  const [preferences, setPreferences] = useState<NewsletterPreferences | null>(
+    null
+  );
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const updatePreferences = useCallback(
+    async (newPreferences: Partial<NewsletterPreferences>) => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await fetch('/api/newsletter/preferences', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newPreferences),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          setPreferences(result.preferences);
+        } else {
+          setError(result.error || 'Erro ao atualizar preferências');
+        }
+      } catch (err) {
+        console.error('Erro ao atualizar preferências:', err);
+        setError('Erro de conexão. Tente novamente.');
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
+
+  return {
+    preferences,
+    updatePreferences,
+    loading,
+    error,
+  };
+};
 
 // Hook para estatísticas de newsletter (admin)
 interface NewsletterStats {
@@ -114,6 +243,7 @@ interface NewsletterStats {
     openRate: number;
     clickRate: number;
     sentAt: string;
+    emailsSent?: number;
   }>;
   newSubscribersLast30Days: number;
 }
@@ -168,7 +298,7 @@ export const useNewsletterStats = (): UseNewsletterStatsReturn => {
   };
 };
 
-// Utility functions
+// 🆕 NOVO: Utility functions expandidas
 export const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
@@ -220,4 +350,102 @@ export const getSubscriptionStatusLabel = (status: string): string => {
     default:
       return 'Desconhecido';
   }
+};
+
+// 🆕 NOVO: Funções para tratamento de erros específicos
+export const getSubscriptionErrorMessage = (
+  errorCode: string,
+  status?: string
+): string => {
+  switch (errorCode) {
+    case 'ALREADY_SUBSCRIBED':
+      return 'Este email já está inscrito na nossa newsletter.';
+    case 'PENDING_CONFIRMATION':
+      return 'Este email já foi cadastrado mas ainda não foi confirmado.';
+    case 'EMAIL_BOUNCED':
+      return 'Este email teve problemas de entrega anteriormente.';
+    case 'EMAIL_BLOCKED':
+      return 'Este email foi bloqueado por política de segurança.';
+    case 'CONNECTION_ERROR':
+      return 'Erro de conexão. Verifique sua internet e tente novamente.';
+    default:
+      return 'Ocorreu um erro inesperado. Tente novamente.';
+  }
+};
+
+export const getSubscriptionErrorAction = (errorCode: string): string => {
+  switch (errorCode) {
+    case 'ALREADY_SUBSCRIBED':
+      return 'Você já está recebendo nossa newsletter.';
+    case 'PENDING_CONFIRMATION':
+      return 'Verifique seu email ou solicite um novo link de confirmação.';
+    case 'EMAIL_BOUNCED':
+      return 'Verifique se o endereço está correto ou use outro email.';
+    case 'EMAIL_BLOCKED':
+      return 'Entre em contato conosco se acredita que isso é um erro.';
+    case 'CONNECTION_ERROR':
+      return 'Tente novamente em alguns instantes.';
+    default:
+      return 'Tente novamente ou entre em contato conosco.';
+  }
+};
+
+// 🆕 NOVO: Hook para gerenciar estado do formulário de newsletter
+export const useNewsletterForm = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    firstName: '',
+  });
+
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
+  const updateField = useCallback(
+    (field: string, value: string) => {
+      setFormData((prev) => ({ ...prev, [field]: value }));
+      // Limpar erro quando usuário digita
+      if (formErrors[field]) {
+        setFormErrors((prev) => ({ ...prev, [field]: '' }));
+      }
+    },
+    [formErrors]
+  );
+
+  const validateForm = useCallback((): {
+    valid: boolean;
+    errors: Record<string, string>;
+  } => {
+    const errors: Record<string, string> = {};
+
+    if (!formData.email.trim()) {
+      errors.email = 'Email é obrigatório';
+    } else if (!validateEmail(formData.email)) {
+      errors.email = 'Email inválido';
+    }
+
+    if (
+      formData.firstName.trim().length > 0 &&
+      formData.firstName.trim().length < 2
+    ) {
+      errors.firstName = 'Nome deve ter pelo menos 2 caracteres';
+    }
+
+    setFormErrors(errors);
+    return {
+      valid: Object.keys(errors).length === 0,
+      errors,
+    };
+  }, [formData]);
+
+  const resetForm = useCallback(() => {
+    setFormData({ email: '', firstName: '' });
+    setFormErrors({});
+  }, []);
+
+  return {
+    formData,
+    formErrors,
+    updateField,
+    validateForm,
+    resetForm,
+  };
 };

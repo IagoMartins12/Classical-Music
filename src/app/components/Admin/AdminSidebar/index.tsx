@@ -30,6 +30,7 @@ import {
   FiMail, // Nova importação para backup
 } from 'react-icons/fi';
 import { useAdminStats } from '@/app/hooks/admin/useAdminStats';
+import { BiTestTube } from 'react-icons/bi';
 
 interface SidebarSection {
   title: string;
@@ -230,6 +231,12 @@ export default function AdminSidebar() {
           label: 'Analytics',
           icon: FiTrendingUp,
           isActive: pathname.startsWith('/admin/newsletter/analytics'),
+        },
+        {
+          label: 'Listas de Teste',
+          href: '/admin/newsletter/test-lists',
+          icon: BiTestTube,
+          badge: 'Novo',
         },
         {
           href: '/admin/newsletter/automation',

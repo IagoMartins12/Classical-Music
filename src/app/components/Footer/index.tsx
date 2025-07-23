@@ -1,4 +1,4 @@
-// app/components/Footer.tsx - VERSÃO ATUALIZADA
+// app/components/Footer.tsx - VERSÃO FINAL INTEGRADA
 'use client';
 
 import React, { useState } from 'react';
@@ -17,6 +17,8 @@ import {
   FiCheck,
   FiAlertCircle,
   FiLoader,
+  FiRefreshCw,
+  FiEye,
 } from 'react-icons/fi';
 import {
   FaFacebook,
@@ -27,15 +29,31 @@ import {
   FaSpotify,
 } from 'react-icons/fa';
 import { GiGrandPiano, GiViolin, GiTrumpet } from 'react-icons/gi';
-import { useNewsletterSubscription } from '@/app/hooks/useNewsletterSubscription';
+import {
+  useNewsletterSubscription,
+  useNewsletterForm,
+} from '@/app/hooks/useNewsletterSubscription';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
-  const { subscribe, loading, success, error, reset } =
-    useNewsletterSubscription();
 
-  const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
+  // 🆕 USAR HOOKS ATUALIZADOS
+  const {
+    subscribe,
+    resendConfirmation,
+    loading,
+    success,
+    error,
+    errorCode,
+    status,
+    canResend,
+    reset,
+  } = useNewsletterSubscription();
+
+  const { formData, formErrors, updateField, validateForm, resetForm } =
+    useNewsletterForm();
+
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const quickLinks = [
     { label: 'História da Música', href: '/music-history', icon: FiBookOpen },
@@ -100,57 +118,143 @@ const Footer: React.FC = () => {
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email.trim()) {
+    const validation = validateForm();
+    if (!validation.valid) {
       return;
     }
 
     try {
       await subscribe({
-        email: email.trim(),
-        firstName: firstName.trim() || undefined,
-        sourceUrl: window.location.href,
+        email: formData.email,
+        firstName: formData.firstName || undefined,
+        sourceUrl:
+          typeof window !== 'undefined' ? window.location.href : undefined,
         utmSource: 'footer',
       });
-
-      // Limpar campos após sucesso
-      if (success) {
-        setEmail('');
-        setFirstName('');
-      }
     } catch (err) {
       console.error('Erro na inscrição:', err);
     }
   };
 
-  const getNewsletterStatus = () => {
+  const handleResendConfirmation = async () => {
+    if (!formData.email) return;
+
+    try {
+      await resendConfirmation(formData.email);
+    } catch (err) {
+      console.error('Erro ao reenviar:', err);
+    }
+  };
+
+  const handleReset = () => {
+    reset();
+    resetForm();
+    setShowAdvanced(false);
+  };
+
+  // 🆕 FUNÇÃO PARA RENDERIZAR STATUS AVANÇADO
+  const renderNewsletterStatus = () => {
     if (loading) {
-      return {
-        icon: <FiLoader className="w-4 h-4 animate-spin text-brand-primary" />,
-        message: 'Processando...',
-        color: 'text-brand-primary',
-      };
+      return (
+        <div className="flex items-center space-x-2 text-brand-primary">
+          <FiLoader className="w-4 h-4 animate-spin" />
+          <span className="text-sm">Processando...</span>
+        </div>
+      );
     }
 
     if (success) {
-      return {
-        icon: <FiCheck className="w-4 h-4 text-accent-green" />,
-        message: 'Inscrição realizada! Verifique seu email.',
-        color: 'text-green-500',
-      };
+      return (
+        <div className="space-y-3">
+          <div className="flex items-center space-x-2 text-accent-green">
+            <FiCheck className="w-4 h-4" />
+            <span className="text-sm font-medium">
+              {status === 'RESUBSCRIBED'
+                ? 'Bem-vindo de volta!'
+                : 'Inscrição realizada!'}
+            </span>
+          </div>
+
+          {status === 'PENDING' && (
+            <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-3">
+              <p className="text-accent-blue text-sm">
+                📧 Verifique seu email para confirmar a inscrição
+              </p>
+            </div>
+          )}
+
+          <button
+            onClick={handleReset}
+            className="text-xs text-theme-tertiary hover:text-theme-primary underline"
+          >
+            Inscrever outro email
+          </button>
+        </div>
+      );
     }
 
     if (error) {
-      return {
-        icon: <FiAlertCircle className="w-4 h-4 text-accent-red" />,
-        message: error,
-        color: 'text-accent-red',
-      };
+      return (
+        <div className="space-y-3">
+          <div className="flex items-start space-x-2 text-accent-red">
+            <FiAlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <div className="text-sm">
+              <p className="font-medium">{getErrorTitle(errorCode)}</p>
+              <p className="text-xs mt-1 opacity-80">{error}</p>
+            </div>
+          </div>
+
+          {/* 🆕 OPÇÕES BASEADAS NO TIPO DE ERRO */}
+          <div className="flex flex-wrap gap-2">
+            {canResend && (
+              <button
+                onClick={handleResendConfirmation}
+                disabled={loading}
+                className="text-xs bg-accent-amber bg-opacity-20 text-accent-amber px-2 py-1 rounded hover:bg-opacity-30 transition-colors disabled:opacity-50"
+              >
+                <FiRefreshCw className="w-3 h-3 inline mr-1" />
+                Reenviar confirmação
+              </button>
+            )}
+
+            {errorCode === 'ALREADY_SUBSCRIBED' && (
+              <Link
+                href="/newsletter/preferences"
+                className="text-xs bg-accent-blue bg-opacity-20 text-accent-blue px-2 py-1 rounded hover:bg-opacity-30 transition-colors"
+              >
+                <FiEye className="w-3 h-3 inline mr-1" />
+                Ver preferências
+              </Link>
+            )}
+
+            <button
+              onClick={handleReset}
+              className="text-xs text-theme-tertiary hover:text-theme-primary underline"
+            >
+              Tentar novamente
+            </button>
+          </div>
+        </div>
+      );
     }
 
     return null;
   };
 
-  const newsletterStatus = getNewsletterStatus();
+  const getErrorTitle = (code?: string | null): string => {
+    switch (code) {
+      case 'ALREADY_SUBSCRIBED':
+        return 'Já inscrito';
+      case 'PENDING_CONFIRMATION':
+        return 'Aguardando confirmação';
+      case 'EMAIL_BOUNCED':
+        return 'Email com problema';
+      case 'EMAIL_BLOCKED':
+        return 'Email bloqueado';
+      default:
+        return 'Erro na inscrição';
+    }
+  };
 
   return (
     <footer className="relative mt-20 bg-gradient-to-b from-theme-primary to-theme-secondary border-t border-theme-secondary">
@@ -282,7 +386,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Newsletter Section - ATUALIZADA */}
+        {/* 🆕 NEWSLETTER SECTION ATUALIZADA */}
         <div className="border-t border-theme-secondary" id="newsletter">
           <div className="section-wrap py-8">
             <div className="classical-card p-6 bg-gradient-to-r from-brand-primary/5 to-accent-purple/5 border border-brand-primary/20">
@@ -290,72 +394,98 @@ const Footer: React.FC = () => {
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-theme-primary flex items-center mb-2">
                     <FiHeart className="w-5 h-5 mr-2 text-brand-primary" />
-                    Receba novidades sobre música clássica
+                    Newsletter de Música Clássica
                   </h3>
-                  <p className="text-sm text-theme-tertiary">
-                    Fique por dentro de novos compositores, obras, partituras e
-                    dicas de estudo
+                  <p className="text-sm text-theme-tertiary mb-4">
+                    Receba descobertas musicais, partituras exclusivas e dicas
+                    de estudo
                   </p>
 
-                  {/* Status da inscrição */}
-                  {newsletterStatus && (
-                    <div
-                      className={`flex items-center space-x-2 mt-3 text-sm ${newsletterStatus.color}`}
-                    >
-                      {newsletterStatus.icon}
-                      <span>{newsletterStatus.message}</span>
-                      {(success || error) && (
-                        <button
-                          onClick={reset}
-                          className="ml-2 text-xs hover:underline text-theme-primary"
-                        >
-                          Limpar
-                        </button>
-                      )}
-                    </div>
-                  )}
+                  {/* 🆕 STATUS AVANÇADO */}
+                  {renderNewsletterStatus()}
                 </div>
 
-                <form
-                  onSubmit={handleNewsletterSubmit}
-                  className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto min-w-0 lg:min-w-[400px]"
-                >
-                  <div className="flex flex-col sm:flex-row gap-3 flex-1">
-                    <input
-                      type="email"
-                      placeholder="Seu e-mail"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      disabled={loading || success}
-                      className="px-4 py-2 bg-theme-tertiary border border-theme-secondary rounded-lg text-sm focus:outline-none focus:border-brand-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1 min-w-0"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={loading || success || !email.trim()}
-                    className="px-6 py-2 bg-brand-gradient text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 flex items-center justify-center space-x-2"
+                {/* 🆕 FORMULÁRIO APRIMORADO */}
+                {(!success || showAdvanced) && (
+                  <form
+                    onSubmit={handleNewsletterSubmit}
+                    className="flex flex-col space-y-3 w-full lg:w-auto min-w-0 lg:min-w-[400px]"
                   >
-                    {loading ? (
-                      <>
-                        <FiLoader className="w-4 h-4 animate-spin" />
-                        <span>Enviando...</span>
-                      </>
-                    ) : success ? (
-                      <>
-                        <FiCheck className="w-4 h-4" />
-                        <span>Inscrito!</span>
-                      </>
-                    ) : (
-                      <span>Inscrever</span>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <input
+                        type="email"
+                        placeholder="Seu e-mail"
+                        value={formData.email}
+                        onChange={(e) => updateField('email', e.target.value)}
+                        required
+                        disabled={loading}
+                        className={`px-4 py-2 bg-theme-tertiary border ${
+                          formErrors.email
+                            ? 'border-accent-red'
+                            : 'border-theme-secondary'
+                        } rounded-lg text-sm focus:outline-none focus:border-brand-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1 min-w-0`}
+                      />
+
+                      {showAdvanced && (
+                        <input
+                          type="text"
+                          placeholder="Seu nome (opcional)"
+                          value={formData.firstName}
+                          onChange={(e) =>
+                            updateField('firstName', e.target.value)
+                          }
+                          disabled={loading}
+                          className={`px-4 py-2 bg-theme-tertiary border ${
+                            formErrors.firstName
+                              ? 'border-accent-red'
+                              : 'border-theme-secondary'
+                          } rounded-lg text-sm focus:outline-none focus:border-brand-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1 min-w-0`}
+                        />
+                      )}
+                    </div>
+
+                    {/* 🆕 ERROS DE VALIDAÇÃO */}
+                    {(formErrors.email || formErrors.firstName) && (
+                      <div className="text-xs text-accent-red">
+                        {formErrors.email || formErrors.firstName}
+                      </div>
                     )}
-                  </button>
-                </form>
+
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => setShowAdvanced(!showAdvanced)}
+                        disabled={loading}
+                        className="text-xs text-theme-tertiary hover:text-brand-primary transition-colors disabled:opacity-50"
+                      >
+                        {showAdvanced ? 'Menos opções' : 'Adicionar nome'}
+                      </button>
+
+                      <button
+                        type="submit"
+                        disabled={loading || !formData.email.trim()}
+                        className="px-6 py-2 bg-brand-gradient text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 flex items-center justify-center space-x-2"
+                      >
+                        {loading ? (
+                          <>
+                            <FiLoader className="w-4 h-4 animate-spin" />
+                            <span>Enviando...</span>
+                          </>
+                        ) : (
+                          <span>Inscrever</span>
+                        )}
+                      </button>
+                    </div>
+                  </form>
+                )}
               </div>
 
               {/* Privacy note */}
               <div className="mt-4 pt-4 border-t border-theme-secondary/50">
                 <p className="text-xs text-theme-tertiary">
+                  ✅ Sistema com verificação de duplicados • 🔒 Confirmação por
+                  email • 📧 Cancelamento fácil
+                  <br />
                   Ao se inscrever, você concorda com nossa{' '}
                   <Link
                     href="/privacy"
@@ -363,7 +493,7 @@ const Footer: React.FC = () => {
                   >
                     Política de Privacidade
                   </Link>
-                  . Você pode cancelar a inscrição a qualquer momento.
+                  .
                 </p>
               </div>
             </div>

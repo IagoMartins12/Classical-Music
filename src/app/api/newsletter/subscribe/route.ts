@@ -1,42 +1,13 @@
-// app/api/newsletter/subscribe/route.ts
+// app/api/newsletter/subscribe/route.ts - VERSÃO ATUALIZADA
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import crypto from 'crypto';
 import prisma from '@/app/libs/prismadb';
-import { getClientIpAddress, getUserAgent } from '../../contact/route';
-import { sendEmail } from '@/app/libs/newsletter/email';
-import { getSession } from 'next-auth/react';
-import { authOptions } from '@/app/libs/auth';
-import { getServerSession } from 'next-auth';
-
-// Validação de entrada
-const subscribeSchema = z.object({
-  email: z.string().email('Email inválido'),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
-  interests: z.array(z.string()).optional(),
-  experienceLevel: z.enum(['BEGINNER', 'INTERMEDIATE', 'ADVANCED']).optional(),
-  frequency: z.enum(['daily', 'weekly', 'monthly']).optional(),
-  sourceUrl: z.string().optional(),
-  utmSource: z.string().optional(),
-});
+import { createToken, logSecurityEvent } from '@/app/libs/tokenUtils';
+import { createTokenUrl } from '@/app/libs/tokenUtils';
+import { sendTemplateEmail } from '@/app/libs/newsletter/email';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const validation = subscribeSchema.safeParse(body);
-
-    if (!validation.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Dados inválidos',
-          details: validation.error.issues,
-        },
-        { status: 400 }
-      );
-    }
-
     const {
       email,
       firstName,
@@ -46,238 +17,372 @@ export async function POST(request: NextRequest) {
       frequency = 'weekly',
       sourceUrl,
       utmSource,
-    } = validation.data;
+    } = body;
 
-    // Verificar se já existe subscriber
+    // Validações básicas
+    if (!email || typeof email !== 'string') {
+      return NextResponse.json(
+        { success: false, error: 'Email é obrigatório' },
+        { status: 400 }
+      );
+    }
+
+    // Validar formato do email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { success: false, error: 'Email inválido' },
+        { status: 400 }
+      );
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Obter informações da requisição
+    const userIP =
+      request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown';
+    const userAgent = request.headers.get('user-agent') || 'unknown';
+
+    // 🆕 VERIFICAR SE EMAIL JÁ ESTÁ CADASTRADO
     const existingSubscriber = await prisma.newsletterSubscriber.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
+      select: {
+        id: true,
+        email: true,
+        status: true,
+        firstName: true,
+        subscribedAt: true,
+        confirmedAt: true,
+        confirmationToken: true,
+      },
     });
 
+    // Se email já existe, tratar conforme o status
     if (existingSubscriber) {
-      if (existingSubscriber.status === 'ACTIVE') {
-        return NextResponse.json(
-          {
+      switch (existingSubscriber.status) {
+        case 'ACTIVE':
+          return NextResponse.json({
             success: false,
             error: 'Este email já está inscrito na nossa newsletter',
-            status: 'already_subscribed',
-          },
-          { status: 409 }
-        );
-      }
+            errorCode: 'ALREADY_SUBSCRIBED',
+            status: 'ACTIVE',
+            subscribedAt: existingSubscriber.subscribedAt.toISOString(),
+            message:
+              'Você já está recebendo nossa newsletter. Se não está recebendo os emails, verifique sua caixa de spam.',
+          });
 
-      if (existingSubscriber.status === 'PENDING') {
-        // Reenviar email de confirmação
-        await sendConfirmationEmail(existingSubscriber);
-        return NextResponse.json({
-          success: true,
-          message: 'Email de confirmação reenviado',
-          status: 'confirmation_resent',
-        });
-      }
-
-      // Se estava unsubscribed, reativar
-      if (existingSubscriber.status === 'UNSUBSCRIBED') {
-        const confirmationToken = crypto.randomBytes(32).toString('hex');
-
-        const updated = await prisma.newsletterSubscriber.update({
-          where: { email },
-          data: {
+        case 'PENDING':
+          // Oferecer opção de reenviar confirmação
+          return NextResponse.json({
+            success: false,
+            error: 'Este email já foi cadastrado mas ainda não foi confirmado',
+            errorCode: 'PENDING_CONFIRMATION',
             status: 'PENDING',
-            firstName: firstName || existingSubscriber.firstName,
-            lastName: lastName || existingSubscriber.lastName,
-            interests:
-              interests.length > 0 ? interests : existingSubscriber.interests,
-            experienceLevel:
-              experienceLevel || existingSubscriber.experienceLevel,
-            frequency,
-            confirmationToken,
-            confirmedAt: null,
-            unsubscribedAt: null,
-            subscribedAt: new Date(),
-            sourceUrl: sourceUrl || existingSubscriber.sourceUrl,
-            referralSource: utmSource || existingSubscriber.referralSource,
-            ipAddress: getClientIpAddress(request),
-            userAgent: getUserAgent(request),
-          },
-        });
+            subscribedAt: existingSubscriber.subscribedAt.toISOString(),
+            message:
+              'Verifique seu email para confirmar a inscrição ou solicite um novo link.',
+            canResendConfirmation: true,
+            existingToken: existingSubscriber.confirmationToken,
+          });
 
-        await sendConfirmationEmail(updated);
+        case 'UNSUBSCRIBED':
+          // Permitir reinscrição - atualizar registro existente
+          const resubscribeToken = await createToken({
+            userId: existingSubscriber.id, // Usar o ID do subscriber como userId
+            type: 'NEWSLETTER_CONFIRMATION',
+            ipAddress: userIP,
+            userAgent,
+          });
 
-        return NextResponse.json({
-          success: true,
-          message: 'Inscrição reativada! Verifique seu email para confirmar.',
-          status: 'resubscribed',
-        });
+          const confirmationUrl = createTokenUrl(
+            process.env.NEXTAUTH_URL || 'http://localhost:3000',
+            'newsletter/confirm',
+            resubscribeToken
+          );
+
+          // Atualizar subscriber existente
+          await prisma.newsletterSubscriber.update({
+            where: { id: existingSubscriber.id },
+            data: {
+              status: 'PENDING',
+              firstName: firstName?.trim() || existingSubscriber.firstName,
+              subscribedAt: new Date(),
+              confirmedAt: null,
+              confirmationToken: resubscribeToken,
+              preferences: interests.length > 0 ? { interests } : undefined,
+              frequency,
+              sourceUrl,
+              referralSource: utmSource,
+              ipAddress: userIP,
+              userAgent,
+            },
+          });
+
+          // Enviar email de re-confirmação
+          const resubEmailResult = await sendTemplateEmail(normalizedEmail, {
+            type: 'WELCOME',
+            variables: {
+              firstName: firstName || existingSubscriber.firstName || 'Usuário',
+              confirmationUrl,
+              unsubscribeUrl: `${process.env.NEXTAUTH_URL}/newsletter/unsubscribe/${resubscribeToken}`,
+            },
+          });
+
+          if (!resubEmailResult.success) {
+            return NextResponse.json(
+              { success: false, error: 'Erro ao enviar email de confirmação' },
+              { status: 500 }
+            );
+          }
+
+          logSecurityEvent('NEWSLETTER_RESUBSCRIBED', existingSubscriber.id, {
+            email: normalizedEmail,
+            ip: userIP,
+            source: utmSource,
+          });
+
+          return NextResponse.json({
+            success: true,
+            message: 'Bem-vindo de volta! Enviamos um email de confirmação.',
+            status: 'RESUBSCRIBED',
+            needsConfirmation: true,
+          });
+
+        case 'BOUNCED':
+          return NextResponse.json({
+            success: false,
+            error: 'Este email teve problemas de entrega anteriormente',
+            errorCode: 'EMAIL_BOUNCED',
+            status: 'BOUNCED',
+            message:
+              'Verifique se o endereço de email está correto ou use outro email.',
+          });
+
+        case 'BLOCKED':
+          return NextResponse.json({
+            success: false,
+            error: 'Este email foi bloqueado',
+            errorCode: 'EMAIL_BLOCKED',
+            status: 'BLOCKED',
+            message: 'Entre em contato conosco se acredita que isso é um erro.',
+          });
+
+        default:
+          return NextResponse.json({
+            success: false,
+            error: 'Status de email desconhecido',
+            errorCode: 'UNKNOWN_STATUS',
+          });
       }
     }
 
-    // Verificar se é usuário logado
-    let userId = null;
-    try {
-      // Verificar se tem session cookie/token
-      const user = await getServerSession(authOptions);
-      userId = user?.user.id || null;
-    } catch (error) {
-      // Não logado, continuar sem userId
-    }
+    // 🆕 EMAIL NÃO EXISTE - CRIAR NOVA INSCRIÇÃO
+
+    // Verificar se é usuário registrado
+    const existingUser = await prisma.user.findUnique({
+      where: { email: normalizedEmail },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+      },
+    });
+
+    // Criar token de confirmação
+    const confirmationToken = await createToken({
+      userId: existingUser?.id || 'anonymous', // Se não for usuário registrado
+      type: 'NEWSLETTER_CONFIRMATION',
+      ipAddress: userIP,
+      userAgent,
+    });
+
+    const confirmationUrl = createTokenUrl(
+      process.env.NEXTAUTH_URL || 'http://localhost:3000',
+      'newsletter/confirm',
+      confirmationToken
+    );
 
     // Criar novo subscriber
-    const confirmationToken = crypto.randomBytes(32).toString('hex');
-    const unsubscribeToken = crypto.randomBytes(32).toString('hex');
-
-    const subscriber = await prisma.newsletterSubscriber.create({
+    const newSubscriber = await prisma.newsletterSubscriber.create({
       data: {
-        email,
-        firstName,
-        lastName,
-        userId,
-        interests,
-        experienceLevel,
-        frequency,
+        email: normalizedEmail,
+        firstName: firstName?.trim() || existingUser?.firstName || null,
+        lastName: lastName?.trim() || existingUser?.lastName || null,
+        userId: existingUser?.id || null,
+        status: 'PENDING',
         confirmationToken,
-        unsubscribeToken,
+        preferences: interests.length > 0 ? { interests } : null,
+        frequency,
         sourceUrl,
         referralSource: utmSource,
-        ipAddress: getClientIpAddress(request),
-        userAgent: getUserAgent(request),
-        preferences: {
-          weekly_digest: true,
-          new_composers: true,
-          new_works: true,
-          study_reminders: false,
-          marketing: false,
-        },
+        ipAddress: userIP,
+        userAgent,
       },
     });
 
     // Enviar email de confirmação
-    await sendConfirmationEmail(subscriber);
+    const emailResult = await sendTemplateEmail(normalizedEmail, {
+      type: 'WELCOME',
+      variables: {
+        firstName: firstName || existingUser?.firstName || 'Usuário',
+        confirmationUrl,
+        unsubscribeUrl: `${process.env.NEXTAUTH_URL}/newsletter/unsubscribe/${confirmationToken}`,
+      },
+    });
 
-    // Log do evento
-    await logNewsletterEvent('SUBSCRIBE_ATTEMPT', {
-      email,
-      subscriberId: subscriber.id,
-      source: utmSource || 'direct',
-      ipAddress: getClientIpAddress(request),
+    if (!emailResult.success) {
+      // Se falhar o envio, deletar o subscriber criado
+      await prisma.newsletterSubscriber.delete({
+        where: { id: newSubscriber.id },
+      });
+
+      return NextResponse.json(
+        { success: false, error: 'Erro ao enviar email de confirmação' },
+        { status: 500 }
+      );
+    }
+
+    // Log de segurança
+    logSecurityEvent('NEWSLETTER_SUBSCRIBED', existingUser?.id || 'anonymous', {
+      email: normalizedEmail,
+      ip: userIP,
+      source: utmSource,
+      hasUserAccount: !!existingUser,
     });
 
     return NextResponse.json({
       success: true,
       message: 'Inscrição realizada! Verifique seu email para confirmar.',
-      status: 'pending_confirmation',
+      status: 'PENDING',
+      needsConfirmation: true,
+      subscriber: {
+        email: normalizedEmail,
+        firstName: firstName || existingUser?.firstName,
+        subscribedAt: newSubscriber.subscribedAt.toISOString(),
+      },
     });
   } catch (error) {
     console.error('Erro na inscrição da newsletter:', error);
 
+    logSecurityEvent('NEWSLETTER_SUBSCRIPTION_ERROR', '', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      ip: request.headers.get('x-forwarded-for') || 'unknown',
+    });
+
     return NextResponse.json(
-      {
-        success: false,
-        error: 'Erro interno do servidor. Tente novamente mais tarde.',
-      },
+      { success: false, error: 'Erro interno. Tente novamente.' },
       { status: 500 }
     );
   }
 }
 
-// Função para enviar email de confirmação
-async function sendConfirmationEmail(subscriber: any) {
-  const confirmationUrl = `${process.env.NEXTAUTH_URL}/newsletter/confirm?token=${subscriber.confirmationToken}`;
-
-  const template = await getEmailTemplate('WELCOME');
-
-  const emailData = {
-    to: subscriber.email,
-    subject: 'Confirme sua inscrição na Classical Hub',
-    html: replaceTemplateVariables(template.htmlContent, {
-      firstName: subscriber.firstName || 'Música',
-      confirmationUrl,
-      email: subscriber.email,
-    }),
-    text: replaceTemplateVariables(template.textContent, {
-      firstName: subscriber.firstName || 'Música',
-      confirmationUrl,
-      email: subscriber.email,
-    }),
-  };
-
-  await sendEmail(emailData);
-}
-
-// Função para buscar template de email
-async function getEmailTemplate(type: string) {
-  const template = await prisma.newsletterTemplate.findFirst({
-    where: {
-      type: type as any,
-      isActive: true,
-      isDefault: true,
-    },
-  });
-
-  if (!template) {
-    // Template padrão fallback
-    return {
-      htmlContent: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1>Bem-vindo à Classical Hub, {{firstName}}!</h1>
-          <p>Obrigado por se inscrever na nossa newsletter de música clássica.</p>
-          <p>Para confirmar sua inscrição, clique no botão abaixo:</p>
-          <a href="{{confirmationUrl}}" style="background: #6366f1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 20px 0;">
-            Confirmar Inscrição
-          </a>
-          <p>Se você não solicitou esta inscrição, pode ignorar este email.</p>
-          <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
-          <p style="color: #666; font-size: 14px;">
-            Classical Hub - Sua plataforma de música clássica<br>
-            Email: {{email}}
-          </p>
-        </div>
-      `,
-      textContent: `
-Bem-vindo à Classical Hub, {{firstName}}!
-
-Obrigado por se inscrever na nossa newsletter de música clássica.
-
-Para confirmar sua inscrição, acesse o link: {{confirmationUrl}}
-
-Se você não solicitou esta inscrição, pode ignorar este email.
-
-Classical Hub - Sua plataforma de música clássica
-Email: {{email}}
-      `,
-    };
-  }
-
-  return template;
-}
-
-// Função para substituir variáveis no template
-function replaceTemplateVariables(
-  content: string,
-  variables: Record<string, string>
-) {
-  let result = content;
-
-  Object.entries(variables).forEach(([key, value]) => {
-    const regex = new RegExp(`{{${key}}}`, 'g');
-    result = result.replace(regex, value || '');
-  });
-
-  return result;
-}
-
-// Função para obter usuário atual (simplificada)
-async function getCurrentUser(request: NextRequest) {
-  // Implementar lógica de autenticação baseada em session/token
-  // Por enquanto retorna null
-  return null;
-}
-
-// Função para log de eventos
-async function logNewsletterEvent(eventType: string, data: any) {
+// 🆕 MÉTODO PUT para reenviar confirmação
+export async function PUT(request: NextRequest) {
   try {
-    // Implementar logging se necessário
-    console.log(`Newsletter Event: ${eventType}`, data);
+    const body = await request.json();
+    const { email, action } = body;
+
+    if (action !== 'resend-confirmation') {
+      return NextResponse.json(
+        { success: false, error: 'Ação inválida' },
+        { status: 400 }
+      );
+    }
+
+    if (!email) {
+      return NextResponse.json(
+        { success: false, error: 'Email é obrigatório' },
+        { status: 400 }
+      );
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Buscar subscriber
+    const subscriber = await prisma.newsletterSubscriber.findUnique({
+      where: { email: normalizedEmail },
+    });
+
+    if (!subscriber) {
+      return NextResponse.json(
+        { success: false, error: 'Email não encontrado' },
+        { status: 404 }
+      );
+    }
+
+    if (subscriber.status === 'ACTIVE') {
+      return NextResponse.json(
+        { success: false, error: 'Email já está confirmado' },
+        { status: 400 }
+      );
+    }
+
+    if (subscriber.status !== 'PENDING') {
+      return NextResponse.json(
+        { success: false, error: 'Status de email inválido para reenvio' },
+        { status: 400 }
+      );
+    }
+
+    // Criar novo token
+    const userIP = request.headers.get('x-forwarded-for') || 'unknown';
+    const userAgent = request.headers.get('user-agent') || 'unknown';
+
+    const newConfirmationToken = await createToken({
+      userId: subscriber.userId || 'anonymous',
+      type: 'NEWSLETTER_CONFIRMATION',
+      ipAddress: userIP,
+      userAgent,
+    });
+
+    const confirmationUrl = createTokenUrl(
+      process.env.NEXTAUTH_URL || 'http://localhost:3000',
+      'newsletter/confirm',
+      newConfirmationToken
+    );
+
+    // Atualizar token do subscriber
+    await prisma.newsletterSubscriber.update({
+      where: { id: subscriber.id },
+      data: {
+        confirmationToken: newConfirmationToken,
+      },
+    });
+
+    // Reenviar email
+    const emailResult = await sendTemplateEmail(normalizedEmail, {
+      type: 'WELCOME',
+      variables: {
+        firstName: subscriber.firstName || 'Usuário',
+        confirmationUrl,
+        unsubscribeUrl: `${process.env.NEXTAUTH_URL}/newsletter/unsubscribe/${newConfirmationToken}`,
+      },
+    });
+
+    if (!emailResult.success) {
+      return NextResponse.json(
+        { success: false, error: 'Erro ao reenviar email' },
+        { status: 500 }
+      );
+    }
+
+    logSecurityEvent('NEWSLETTER_CONFIRMATION_RESENT', subscriber.id, {
+      email: normalizedEmail,
+      ip: userIP,
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: 'Email de confirmação reenviado com sucesso!',
+    });
   } catch (error) {
-    console.error('Erro ao fazer log do evento:', error);
+    console.error('Erro ao reenviar confirmação:', error);
+
+    return NextResponse.json(
+      { success: false, error: 'Erro interno' },
+      { status: 500 }
+    );
   }
 }

@@ -1,4 +1,4 @@
-// app/libs/email.ts
+// app/libs/email.ts - VERSÃO ATUALIZADA com customHtmlContent
 import nodemailer from 'nodemailer';
 import { emailTemplates, processTemplate } from './emailTemplates';
 
@@ -39,12 +39,15 @@ export interface EmailData {
   priority?: 'high' | 'normal' | 'low';
 }
 
+// 🆕 ATUALIZADO: Interface com customHtmlContent e customTextContent
 export interface EmailTemplate {
   type: string;
   variables: Record<string, any>;
   customSubject?: string;
   customFrom?: string;
   customReplyTo?: string;
+  customHtmlContent?: string; // 🆕 NOVO
+  customTextContent?: string; // 🆕 NOVO
 }
 
 export interface EmailResult {
@@ -153,36 +156,76 @@ export async function sendEmail(emailData: EmailData): Promise<EmailResult> {
 }
 
 /**
- * Enviar email usando template pré-definido
+ * 🆕 ATUALIZADO: Enviar email usando template pré-definido com suporte a customHtmlContent
  */
 export async function sendTemplateEmail(
-  to: string | string[],
+  to: string | string[] | null,
   templateData: EmailTemplate
 ): Promise<EmailResult> {
+  if (!to)
+    return {
+      success: false,
+      error: 'Email não informado',
+    };
+
   try {
-    const template =
-      emailTemplates[templateData.type as keyof typeof emailTemplates];
+    let htmlContent: string;
+    let textContent: string;
+    let subject: string;
 
-    if (!template) {
-      return {
-        success: false,
-        error: `Template '${templateData.type}' não encontrado`,
-      };
+    // 🆕 NOVO: Se customHtmlContent for fornecido, usar ele
+    if (templateData.customHtmlContent) {
+      // Usar HTML customizado
+      htmlContent = processTemplate(
+        templateData.customHtmlContent,
+        templateData.variables
+      );
+
+      // Usar texto customizado ou gerar a partir do HTML
+      if (templateData.customTextContent) {
+        textContent = processTemplate(
+          templateData.customTextContent,
+          templateData.variables
+        );
+      } else {
+        // Gerar texto simples a partir do HTML (remove tags)
+        textContent = htmlContent
+          .replace(/<[^>]*>/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+
+      // Usar subject customizado ou padrão
+      subject = processTemplate(
+        templateData.customSubject || `📧 ${templateData.type} - Classical Hub`,
+        templateData.variables
+      );
+    } else {
+      // 🔄 LÓGICA ORIGINAL: Usar template predefinido
+      const template =
+        emailTemplates[templateData.type as keyof typeof emailTemplates];
+
+      if (!template) {
+        return {
+          success: false,
+          error: `Template '${templateData.type}' não encontrado`,
+        };
+      }
+
+      // Processar template com variáveis
+      htmlContent = processTemplate(
+        template.htmlContent,
+        templateData.variables
+      );
+      textContent = processTemplate(
+        template.textContent,
+        templateData.variables
+      );
+      subject = processTemplate(
+        templateData.customSubject || template.subject,
+        templateData.variables
+      );
     }
-
-    // Processar template com variáveis
-    const htmlContent = processTemplate(
-      template.htmlContent,
-      templateData.variables
-    );
-    const textContent = processTemplate(
-      template.textContent,
-      templateData.variables
-    );
-    const subject = processTemplate(
-      templateData.customSubject || template.subject,
-      templateData.variables
-    );
 
     const emailData: EmailData = {
       to,
@@ -296,6 +339,46 @@ export async function verifyEmailConfig(): Promise<{
       error: error.message || 'Erro na verificação',
     };
   }
+}
+
+/**
+ * 🆕 NOVO: Função helper para criar emails completamente customizados
+ */
+export async function sendCustomEmail(
+  to: string | string[],
+  subject: string,
+  htmlContent: string,
+  textContent?: string,
+  options?: {
+    from?: string;
+    replyTo?: string;
+    cc?: string | string[];
+    bcc?: string | string[];
+    attachments?: Array<{
+      filename: string;
+      content: Buffer | string;
+      contentType?: string;
+    }>;
+  }
+): Promise<EmailResult> {
+  const emailData: EmailData = {
+    to,
+    subject,
+    html: htmlContent,
+    text:
+      textContent ||
+      htmlContent
+        .replace(/<[^>]*>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim(),
+    from: options?.from,
+    replyTo: options?.replyTo,
+    cc: options?.cc,
+    bcc: options?.bcc,
+    attachments: options?.attachments,
+  };
+
+  return await sendEmail(emailData);
 }
 
 /**
