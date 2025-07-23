@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "workstyle": "tsx scripts/tags-analysis.ts",
     "scraper": "tsx scripts/imslp-scraper.ts",
     "scraper:start": "tsx scripts/imslp-scraper.ts start",
     "scraper:stop": "tsx scripts/imslp-scraper.ts stop",

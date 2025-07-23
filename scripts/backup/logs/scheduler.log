@@ -1,0 +1,10 @@
+[2025-07-21T20:28:58.163Z] 🚀 Inicializando sistema de backup agendado...
+[2025-07-21T20:28:58.166Z] 📊 Configurações: MAX_BACKUPS=5, RETENTION_DAYS=30
+[2025-07-21T20:28:58.178Z] 💾 Verificação de saúde concluída - Backups dir: /home/iago/Documentos/Projetos/classical-music/backups
+[2025-07-21T20:28:58.178Z] ✅ Sistema saudável - 2 backups, 0 corrompidos
+[2025-07-21T20:28:58.203Z] ✅ Sistema de backup agendado iniciado com sucesso
+[2025-07-21T20:28:58.203Z] 📅 Próximo backup agendado: hoje às 02:00
+[2025-07-21T20:29:00.198Z] 🛑 Parando serviço de backup agendado...
+[2025-07-21T20:29:00.200Z] ✅ Serviço de backup agendado parado
+[2025-07-21T20:29:22.620Z] 🛑 Parando serviço de backup agendado...
+[2025-07-21T20:29:22.623Z] ✅ Serviço de backup agendado parado
