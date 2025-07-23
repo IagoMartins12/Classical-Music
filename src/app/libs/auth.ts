@@ -1,4 +1,4 @@
-// app/libs/auth.ts (alternativa - forçar refresh sempre para imagem)
+// app/libs/auth.ts - Versão melhorada com debug
 import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -17,6 +17,7 @@ export const authOptions: NextAuthOptions = {
           prompt: 'consent',
           access_type: 'offline',
           response_type: 'code',
+          scope: 'openid email profile', // Mais explícito
         },
       },
     }),
@@ -53,6 +54,7 @@ export const authOptions: NextAuthOptions = {
             practiceTimePerWeek: true,
             profilePublic: true,
             showLocation: true,
+            emailVerified: true,
           },
         });
 
@@ -89,12 +91,19 @@ export const authOptions: NextAuthOptions = {
           practiceTimePerWeek: user.practiceTimePerWeek,
           profilePublic: user.profilePublic,
           showLocation: user.showLocation,
+          emailVerified: user.emailVerified,
         };
       },
     }),
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
+      console.log('🔐 SignIn callback:', {
+        provider: account?.provider,
+        userId: user.id,
+        email: user.email,
+      });
+
       if (account?.provider === 'google') {
         try {
           const existingUser = await prisma.user.findUnique({
@@ -102,28 +111,35 @@ export const authOptions: NextAuthOptions = {
           });
 
           if (!existingUser) {
+            console.log('👤 Criando novo usuário Google:', user.email);
+
             const googleProfile = profile as {
               given_name?: string;
               family_name?: string;
+              picture?: string;
             };
 
             const newUser = await prisma.user.create({
               data: {
-                email: user.email!,
+                email: user.email!.toLowerCase(),
                 firstName:
                   googleProfile?.given_name || user.name?.split(' ')[0] || '',
                 lastName:
                   googleProfile?.family_name ||
                   user.name?.split(' ').slice(1).join(' ') ||
                   '',
-                image: user.image,
+                image: googleProfile?.picture || user.image,
                 role: 0,
                 onboardingCompleted: false,
                 profilePublic: true,
                 showLocation: false,
+                emailVerified: new Date(), // Google emails são pré-verificados
               },
             });
 
+            console.log('✅ Usuário Google criado:', newUser.id);
+
+            // Atualizar dados temporários do usuário para os callbacks seguintes
             user.id = newUser.id;
             user.firstName = newUser.firstName;
             user.lastName = newUser.lastName;
@@ -140,11 +156,21 @@ export const authOptions: NextAuthOptions = {
             user.practiceTimePerWeek = newUser.practiceTimePerWeek;
             user.profilePublic = newUser.profilePublic;
             user.showLocation = newUser.showLocation;
+          } else {
+            console.log('👤 Usuário Google existente:', existingUser.id);
+
+            // Atualizar imagem se mudou
+            if (user.image && user.image !== existingUser.image) {
+              await prisma.user.update({
+                where: { id: existingUser.id },
+                data: { image: user.image },
+              });
+            }
           }
 
           return true;
         } catch (error) {
-          console.error('Google sign-in error:', error);
+          console.error('❌ Erro no Google sign-in:', error);
           return false;
         }
       }
@@ -153,6 +179,12 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user, account, trigger }) {
+      console.log('🔑 JWT callback:', {
+        trigger,
+        hasUser: !!user,
+        tokenId: token.id,
+      });
+
       // Initial sign in
       if (account && user) {
         return {
@@ -178,6 +210,8 @@ export const authOptions: NextAuthOptions = {
 
       // Se for um update, buscar dados frescos do banco
       if (trigger === 'update' && token.id) {
+        console.log('🔄 Atualizando token do usuário:', token.id);
+
         const freshUser = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: {
@@ -199,6 +233,7 @@ export const authOptions: NextAuthOptions = {
             practiceTimePerWeek: true,
             profilePublic: true,
             showLocation: true,
+            emailVerified: true,
           },
         });
 
@@ -220,8 +255,8 @@ export const authOptions: NextAuthOptions = {
             practiceTimePerWeek: freshUser.practiceTimePerWeek,
             profilePublic: freshUser.profilePublic,
             showLocation: freshUser.showLocation,
-            // Importante: atualizar a imagem também
-            picture: freshUser.image,
+            emailVerified: freshUser.emailVerified,
+            picture: freshUser.image, // Atualizar imagem
           };
         }
       }
@@ -230,8 +265,13 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      // SEMPRE buscar dados frescos do banco (para garantir dados atualizados)
+      console.log('📱 Session callback:', {
+        tokenId: token.id,
+        email: session.user?.email,
+      });
+
       if (token.id) {
+        // Buscar dados sempre atualizados do banco
         const user = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: {
@@ -253,6 +293,7 @@ export const authOptions: NextAuthOptions = {
             practiceTimePerWeek: true,
             profilePublic: true,
             showLocation: true,
+            emailVerified: true,
           },
         });
 
@@ -261,7 +302,7 @@ export const authOptions: NextAuthOptions = {
             id: user.id,
             email: user.email!,
             name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-            image: user.image, // Sempre pegará a imagem atualizada do banco
+            image: user.image,
             firstName: user.firstName,
             lastName: user.lastName,
             bio: user.bio,
@@ -283,16 +324,61 @@ export const authOptions: NextAuthOptions = {
 
       return session;
     },
+
+    // Callback para redirecionar após login/registro
+    async redirect({ url, baseUrl }) {
+      console.log('🔀 Redirect callback:', { url, baseUrl });
+
+      // Se está vindo do callback do Google
+      if (url.includes('/api/auth/callback/google')) {
+        return baseUrl; // Redireciona para a home
+      }
+
+      // Para outras situações, usar comportamento padrão
+      if (url.startsWith('/')) return `${baseUrl}${url}`;
+      if (new URL(url).origin === baseUrl) return url;
+
+      return baseUrl;
+    },
   },
   pages: {
-    signIn: '/',
-    error: '/',
+    signIn: '/', // Página customizada de login (seus modals)
+    error: '/', // Página de erro customizada
   },
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
-    updateAge: 0, // Força update da sessão a cada requisição
+    updateAge: 24 * 60 * 60, // 24 hours - atualiza sessão a cada 24h
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
+  // Configurações de log em desenvolvimento
+  logger: {
+    error(code, metadata) {
+      console.error('❌ NextAuth Error:', code, metadata);
+    },
+    warn(code) {
+      console.warn('⚠️ NextAuth Warning:', code);
+    },
+    debug(code, metadata) {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🐛 NextAuth Debug:', code, metadata);
+      }
+    },
+  },
+};
+
+// Utilitário para verificar se Google OAuth está configurado
+export const isGoogleOAuthConfigured = () => {
+  return !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
+};
+
+// Utilitário para verificar configuração geral
+export const isAuthConfigured = () => {
+  return !!(
+    process.env.NEXTAUTH_SECRET &&
+    process.env.NEXTAUTH_URL &&
+    process.env.DATABASE_URL &&
+    isGoogleOAuthConfigured()
+  );
 };

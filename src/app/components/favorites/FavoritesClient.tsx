@@ -563,8 +563,7 @@ function ComposerFavoriteCard({
   viewMode,
 }: ComposerFavoriteCardProps) {
   return (
-    <AnimatedCard
-      hover="lift"
+    <div
       className={`classical-card p-6 group hover:shadow-theme-glow transition-all ${
         viewMode === 'list' ? 'flex items-center space-x-6' : ''
       }`}
@@ -642,7 +641,7 @@ function ComposerFavoriteCard({
           </div>
         )}
       </div>
-    </AnimatedCard>
+    </div>
   );
 }
 
@@ -654,8 +653,7 @@ interface WorkFavoriteCardProps {
 
 function WorkFavoriteCard({ favorite, viewMode }: WorkFavoriteCardProps) {
   return (
-    <AnimatedCard
-      hover="lift"
+    <div
       className={`classical-card p-6 group hover:shadow-theme-glow transition-all ${
         viewMode === 'list' ? 'flex items-center space-x-6' : ''
       }`}
@@ -729,7 +727,7 @@ function WorkFavoriteCard({ favorite, viewMode }: WorkFavoriteCardProps) {
           </div>
         )}
       </div>
-    </AnimatedCard>
+    </div>
   );
 }
 
@@ -741,8 +739,7 @@ interface ScoreFavoriteCardProps {
 
 function ScoreFavoriteCard({ favorite, viewMode }: ScoreFavoriteCardProps) {
   return (
-    <AnimatedCard
-      hover="lift"
+    <div
       className={`classical-card p-6 group hover:shadow-theme-glow transition-all ${
         viewMode === 'list' ? 'flex items-center space-x-6' : ''
       }`}
@@ -907,6 +904,6 @@ function ScoreFavoriteCard({ favorite, viewMode }: ScoreFavoriteCardProps) {
           </div>
         )}
       </div>
-    </AnimatedCard>
+    </div>
   );
 }

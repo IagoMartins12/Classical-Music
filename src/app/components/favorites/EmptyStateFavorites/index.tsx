@@ -200,7 +200,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
                 className="btn-classical-primary flex items-center justify-center space-x-2 group"
               >
                 <FiUser className="w-4 h-4" />
-                <span>Explorar Compositores</span>
+                <span>Ver Compositores</span>
                 <svg
                   className="w-4 h-4 transition-transform group-hover:translate-x-1"
                   fill="none"
@@ -240,7 +240,7 @@ const EmptyStateFavorites: React.FC<emptyStatesProps> = ({
               {/* 🆕 Novo botão para partituras */}
               <Link
                 href="/works"
-                className="btn-classical-tertiary flex items-center justify-center space-x-2 group"
+                className="btn-classical-primary flex items-center justify-center space-x-2 group"
               >
                 <FiFileText className="w-4 h-4" />
                 <span>Ver Partituras</span>

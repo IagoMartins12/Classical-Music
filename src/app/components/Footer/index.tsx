@@ -33,6 +33,7 @@ import {
   useNewsletterSubscription,
   useNewsletterForm,
 } from '@/app/hooks/useNewsletterSubscription';
+import Button from '../Common/Button';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -196,12 +197,9 @@ const Footer: React.FC = () => {
     if (error) {
       return (
         <div className="space-y-3">
-          <div className="flex items-start space-x-2 text-accent-red">
-            <FiAlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-            <div className="text-sm">
-              <p className="font-medium">{getErrorTitle(errorCode)}</p>
-              <p className="text-xs mt-1 opacity-80">{error}</p>
-            </div>
+          <div className="flex items-center space-x-2 text-accent-red">
+            <FiAlertCircle className="w-4 h-4 mt-0.5 text-red-600 flex-shrink-0" />
+            <p className="text-sm text-red-500 mt-1">{error}</p>
           </div>
 
           {/* 🆕 OPÇÕES BASEADAS NO TIPO DE ERRO */}
@@ -215,16 +213,6 @@ const Footer: React.FC = () => {
                 <FiRefreshCw className="w-3 h-3 inline mr-1" />
                 Reenviar confirmação
               </button>
-            )}
-
-            {errorCode === 'ALREADY_SUBSCRIBED' && (
-              <Link
-                href="/newsletter/preferences"
-                className="text-xs bg-accent-blue bg-opacity-20 text-accent-blue px-2 py-1 rounded hover:bg-opacity-30 transition-colors"
-              >
-                <FiEye className="w-3 h-3 inline mr-1" />
-                Ver preferências
-              </Link>
             )}
 
             <button
@@ -257,7 +245,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="relative mt-20 bg-gradient-to-b from-theme-primary to-theme-secondary border-t border-theme-secondary">
+    <footer className="relative  bg-gradient-to-b from-theme-primary to-theme-secondary border-t border-theme-secondary">
       {/* Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-10 -left-10 w-40 h-40 bg-brand-primary opacity-5 rounded-full blur-3xl"></div>
@@ -451,30 +439,21 @@ const Footer: React.FC = () => {
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between">
-                      <button
-                        type="button"
-                        onClick={() => setShowAdvanced(!showAdvanced)}
-                        disabled={loading}
-                        className="text-xs text-theme-tertiary hover:text-brand-primary transition-colors disabled:opacity-50"
-                      >
-                        {showAdvanced ? 'Menos opções' : 'Adicionar nome'}
-                      </button>
-
-                      <button
+                    <div className="flex items-center justify-end">
+                      <Button
                         type="submit"
+                        variant="outline"
                         disabled={loading || !formData.email.trim()}
-                        className="px-6 py-2 bg-brand-gradient text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 flex items-center justify-center space-x-2"
                       >
                         {loading ? (
                           <>
                             <FiLoader className="w-4 h-4 animate-spin" />
-                            <span>Enviando...</span>
+                            {/* <span>Enviando...</span> */}
                           </>
                         ) : (
                           <span>Inscrever</span>
                         )}
-                      </button>
+                      </Button>
                     </div>
                   </form>
                 )}
