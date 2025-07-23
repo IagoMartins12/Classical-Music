@@ -24,7 +24,10 @@ import {
   FiChevronRight,
   FiHardDrive, // Nova importação para backup
   FiLayout,
-  FiPlus, // Nova importação para backup
+  FiPlus,
+  FiClock,
+  FiSend,
+  FiMail, // Nova importação para backup
 } from 'react-icons/fi';
 import { useAdminStats } from '@/app/hooks/admin/useAdminStats';
 
@@ -189,6 +192,65 @@ export default function AdminSidebar() {
         },
       ],
     },
+    // 🆕 SEÇÃO DE NEWSLETTER
+    {
+      title: 'Newsletter & Email',
+      items: [
+        {
+          href: '/admin/newsletter',
+          label: 'Dashboard',
+          icon: FiMail,
+          badge:
+            mounted && stats
+              ? stats.trends.last7Days.newAnnotations
+              : undefined,
+          isActive: pathname === '/admin/newsletter',
+        },
+        {
+          href: '/admin/newsletter/subscribers',
+          label: 'Subscribers',
+          icon: FiUsers,
+          badge: mounted && stats ? stats.overview.totalUsers : undefined,
+          isActive: pathname.startsWith('/admin/newsletter/subscribers'),
+        },
+        {
+          href: '/admin/newsletter/campaigns',
+          label: 'Campanhas',
+          icon: FiSend,
+          isActive: pathname.startsWith('/admin/newsletter/campaigns'),
+        },
+        {
+          href: '/admin/newsletter/templates',
+          label: 'Templates',
+          icon: FiFileText,
+          isActive: pathname.startsWith('/admin/newsletter/templates'),
+        },
+        {
+          href: '/admin/newsletter/analytics',
+          label: 'Analytics',
+          icon: FiTrendingUp,
+          isActive: pathname.startsWith('/admin/newsletter/analytics'),
+        },
+        {
+          href: '/admin/newsletter/automation',
+          label: 'Automação',
+          icon: FiClock,
+          isActive: pathname.startsWith('/admin/newsletter/automation'),
+        },
+        {
+          href: '/admin/newsletter/backup',
+          label: 'Backup',
+          icon: FiHardDrive,
+          isActive: pathname.startsWith('/admin/newsletter/backup'),
+        },
+        {
+          href: '/admin/newsletter/settings',
+          label: 'Configurações',
+          icon: FiSettings,
+          isActive: pathname.startsWith('/admin/newsletter/settings'),
+        },
+      ],
+    },
     // 🆕 NOVA SEÇÃO DE BACKUP
     {
       title: 'Sistema & Backup',
@@ -220,14 +282,14 @@ export default function AdminSidebar() {
           href: '/admin/ads',
           label: 'Gerenciar Ads',
           icon: FiTarget, // Adicionar ao imports: FiTarget
-          badge: mounted && stats ? stats.ads?.totalActive : undefined,
+          // badge: mounted && stats ? stats.ads?.totalActive : undefined,
           isActive: pathname.startsWith('/admin/ads'),
         },
         {
           href: '/admin/advertisers',
           label: 'Anunciantes',
           icon: FiUsers,
-          badge: mounted && stats ? stats.ads?.totalAdvertisers : undefined,
+          // badge: mounted && stats ? stats.ads?.totalAdvertisers : undefined,
           isActive: pathname.startsWith('/admin/advertisers'),
         },
       ],

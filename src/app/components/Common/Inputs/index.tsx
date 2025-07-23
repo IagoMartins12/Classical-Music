@@ -2,6 +2,7 @@
 'use client';
 
 import React, { forwardRef, useId, useState, useEffect } from 'react';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -11,6 +12,8 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   rightIcon?: React.ReactNode;
   variant?: 'default' | 'outlined' | 'filled';
   inputType?: string;
+  isPassword?: boolean;
+
   customId?: string; // 🆕 Prop para ID customizado
 }
 
@@ -23,6 +26,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       leftIcon,
       rightIcon,
       variant = 'default',
+      isPassword = false,
       className = '',
       inputType,
       customId, // 🆕 ID customizado
@@ -32,6 +36,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
   ) => {
     // 🆕 Estado para controlar se o componente foi hidratado
     const [isHydrated, setIsHydrated] = useState(false);
+    const [showPassword, setShowPassword] = React.useState(false);
+    const inputType2 = isPassword
+      ? showPassword
+        ? 'text'
+        : 'password'
+      : inputType;
 
     // 🆕 Use o ID customizado se fornecido, senão gere um
     const generatedId = useId();
@@ -87,14 +97,29 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             id={finalInputId} // 🆕 Usar ID controlado por estado
-            type={inputType || props.type || 'text'}
+            type={inputType2 || inputType || props.type || 'text'}
             className={`${baseClasses} ${className}`}
             {...props}
           />
 
-          {rightIcon && (
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary">
-              {rightIcon}
+          {(rightIcon || isPassword) && (
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              {isPassword ? (
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-theme-tertiary hover:text-brand-primary transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <FiEyeOff className="w-4 h-4" />
+                  ) : (
+                    <FiEye className="w-4 h-4" />
+                  )}
+                </button>
+              ) : (
+                rightIcon
+              )}
             </div>
           )}
         </div>

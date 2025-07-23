@@ -152,6 +152,45 @@ enum MediaType {
   DOCUMENT
 }
 
+// Enums para o sistema de newsletter
+enum SubscriptionStatus {
+  PENDING     // Aguardando confirmação (double opt-in)
+  ACTIVE      // Inscrito ativo
+  UNSUBSCRIBED // Cancelou inscrição
+  BOUNCED     // Email com bounce
+  BLOCKED     // Bloqueado por spam/abuse
+}
+
+enum EmailTemplateType {
+  WELCOME           // Email de boas-vindas
+  WEEKLY_DIGEST     // Resumo semanal
+  NEW_COMPOSER      // Novo compositor adicionado
+  NEW_WORK          // Nova obra adicionada
+  STUDY_REMINDER    // Lembrete de estudo
+  CUSTOM_CAMPAIGN   // Campanha personalizada
+  UNSUBSCRIBE       // Confirmação de cancelamento
+}
+
+enum CampaignStatus {
+  DRAFT       // Rascunho
+  SCHEDULED   // Agendada
+  SENDING     // Enviando
+  SENT        // Enviada
+  PAUSED      // Pausada
+  CANCELLED   // Cancelada
+  FAILED      // Falhou
+}
+
+enum EmailEventType {
+  SENT        // Email enviado
+  DELIVERED   // Entregue
+  OPENED      // Aberto
+  CLICKED     // Clicou em link
+  BOUNCED     // Retornou (bounce)
+  COMPLAINED  // Marcado como spam
+  UNSUBSCRIBED // Cancelou inscrição
+}
+
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   firstName      String?
@@ -254,6 +293,14 @@ model User {
   createdAds Advertisement[] @relation("AdCreator")
   editedAds  Advertisement[] @relation("AdEditor")
   adStats    AdStats[]       @relation("AdStatsUser")
+
+  // Relações de newsletter (ADICIONAR)
+  newsletterSubscription    NewsletterSubscriber?         @relation("NewsletterSubscriber")
+  createdNewsletterTemplates NewsletterTemplate[]         @relation("NewsletterTemplateCreator")
+  editedNewsletterTemplates  NewsletterTemplate[]         @relation("NewsletterTemplateEditor")
+  createdNewsletterCampaigns NewsletterCampaign[]         @relation("NewsletterCampaignCreator")
+  editedNewsletterCampaigns  NewsletterCampaign[]         @relation("NewsletterCampaignEditor")
+  editedNewsletterSettings   NewsletterSettings[]         @relation("NewsletterSettingsEditor")
   
   favoriteScores FavoriteScore[]
 
@@ -1441,4 +1488,280 @@ model AdStats {
   @@index([date])
   @@index([device])
   @@map("ad_stats")
+}
+
+// Subscribers da newsletter
+model NewsletterSubscriber {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  email String @unique
+
+  // Dados do subscriber
+  firstName String?
+  lastName  String?
+  userId    String? @db.ObjectId @unique // Se for usuário registrado
+
+  // Status da inscrição
+  status           SubscriptionStatus @default(PENDING)
+  subscribedAt     DateTime           @default(now())
+  unsubscribedAt   DateTime?
+  confirmationToken String?          @unique // Token para double opt-in
+  confirmedAt      DateTime?
+
+  // Preferências de email
+  preferences Json? // Quais tipos de email quer receber
+  frequency   String @default("weekly") // daily, weekly, monthly
+  timezone    String @default("America/Sao_Paulo")
+  language    String @default("pt-BR")
+
+  // Segmentação
+  interests          String[] @default([]) // Interesses musicais
+  experienceLevel    DifficultyLevel?
+  favoriteInstruments String[] @default([])
+  favoriteEpochs     String[] @default([])
+  
+  // Dados de engajamento
+  lastEmailOpenedAt  DateTime?
+  emailOpenCount     Int      @default(0)
+  emailClickCount    Int      @default(0)
+  avgEngagementScore Float?   @default(0) // Score 0-100 baseado em engajamento
+
+  // Metadados
+  sourceUrl      String? // De onde veio a inscrição
+  userAgent      String?
+  ipAddress      String?
+  referralSource String? // Google, Facebook, Direct, etc.
+
+  // Dados de unsubscribe
+  unsubscribeReason String?
+  unsubscribeToken  String? @unique
+  
+  // Relações
+  user           User?                 @relation("NewsletterSubscriber", fields: [userId], references: [id])
+  emailEvents    NewsletterEmailEvent[]
+  campaignSends  NewsletterCampaignSend[]
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Índices
+  @@index([status])
+  @@index([subscribedAt])
+  @@index([interests])
+  @@index([avgEngagementScore])
+  @@map("newsletter_subscribers")
+}
+
+// Templates de email
+model NewsletterTemplate {
+  id   String            @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  type EmailTemplateType
+
+  // Conteúdo do template
+  subject     String
+  htmlContent String // HTML do email
+  textContent String // Versão texto alternativa
+  
+  // Design e personalização
+  designData Json? // Dados do editor visual (se houver)
+  variables  String[] @default([]) // Variáveis disponíveis: {{firstName}}, {{newWorks}}, etc.
+  
+  // Configurações
+  isActive        Boolean @default(true)
+  isDefault       Boolean @default(false) // Template padrão para o tipo
+  senderName      String  @default("Classical Hub")
+  senderEmail     String  @default("noreply@classicalhub.com")
+  replyToEmail    String?
+  
+  // Metadados
+  description     String?
+  previewText     String? // Texto de preview no email client
+  tags            String[] @default([])
+  
+  // Estatísticas (cache)
+  timesUsed       Int     @default(0)
+  avgOpenRate     Float?  @default(0)
+  avgClickRate    Float?  @default(0)
+  
+  // Controle de acesso
+  createdBy       String  @db.ObjectId
+  lastEditedBy    String? @db.ObjectId
+  lastEditedAt    DateTime?
+  
+  // Relações
+  creator         User                 @relation("NewsletterTemplateCreator", fields: [createdBy], references: [id])
+  editor          User?                @relation("NewsletterTemplateEditor", fields: [lastEditedBy], references: [id])
+  campaigns       NewsletterCampaign[]
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Índices
+  @@index([type, isActive])
+  @@index([isDefault, type])
+  @@index([createdBy])
+  @@index([tags])
+  @@map("newsletter_templates")
+}
+
+// Campanhas de email
+model NewsletterCampaign {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+
+  // Configurações básicas
+  subject      String
+  templateId   String         @db.ObjectId
+  status       CampaignStatus @default(DRAFT)
+  
+  // Agendamento
+  scheduledAt  DateTime?
+  sentAt       DateTime?
+  
+  // Segmentação
+  targetAll            Boolean  @default(false)
+  targetSegments       Json?    // Critérios de segmentação
+  targetSubscriberIds  String[] @default([]) @db.ObjectId // IDs específicos
+  
+  // Conteúdo personalizado (se diferente do template)
+  customSubject     String?
+  customHtmlContent String?
+  customTextContent String?
+  
+  // Configurações de envio
+  senderName    String  @default("Classical Hub")
+  senderEmail   String  @default("noreply@classicalhub.com")
+  replyToEmail  String?
+  testEmailSent Boolean @default(false)
+  
+  // Estatísticas
+  totalSubscribers Int @default(0) // Quantos vão receber
+  emailsSent       Int @default(0) // Quantos foram enviados
+  emailsDelivered  Int @default(0) // Quantos foram entregues
+  emailsOpened     Int @default(0) // Quantos foram abertos
+  emailsClicked    Int @default(0) // Quantos tiveram cliques
+  emailsBounced    Int @default(0) // Quantos retornaram
+  emailsComplained Int @default(0) // Quantos marcaram como spam
+  emailsUnsubscribed    Int      @default(0)
+
+
+  // Taxas calculadas (cache)
+  deliveryRate Float? @default(0) // emailsDelivered / emailsSent
+  openRate     Float? @default(0) // emailsOpened / emailsDelivered  
+  clickRate    Float? @default(0) // emailsClicked / emailsDelivered
+  bounceRate   Float? @default(0) // emailsBounced / emailsSent
+  
+  // Controle de acesso
+  createdBy    String    @db.ObjectId
+  lastEditedBy String?   @db.ObjectId
+  lastEditedAt DateTime?
+  
+  // Metadados
+  notes        String?
+  tags         String[] @default([])
+  
+  // Relações
+  template     NewsletterTemplate        @relation(fields: [templateId], references: [id])
+  creator      User                      @relation("NewsletterCampaignCreator", fields: [createdBy], references: [id])
+  editor       User?                     @relation("NewsletterCampaignEditor", fields: [lastEditedBy], references: [id])
+  sends        NewsletterCampaignSend[]
+  events       NewsletterEmailEvent[]
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Índices
+  @@index([status])
+  @@index([scheduledAt])
+  @@index([createdBy])
+  @@index([sentAt])
+  @@index([tags])
+  @@map("newsletter_campaigns")
+}
+
+// Registro de envios por campanha/subscriber
+model NewsletterCampaignSend {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  campaignId   String @db.ObjectId
+  subscriberId String @db.ObjectId
+  
+  // Status do envio
+  status       String    @default("pending") // pending, sent, failed
+  sentAt       DateTime?
+  failureReason String?
+  
+  // Dados do envio
+  emailId      String? // ID do provedor de email (SendGrid, etc.)
+  
+  // Relações
+  campaign     NewsletterCampaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  subscriber   NewsletterSubscriber  @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Índices
+  @@unique([campaignId, subscriberId])
+  @@index([status])
+  @@index([sentAt])
+  @@map("newsletter_campaign_sends")
+}
+
+// Eventos de email (opens, clicks, bounces, etc.)
+model NewsletterEmailEvent {
+  id           String          @id @default(auto()) @map("_id") @db.ObjectId
+  eventType    EmailEventType
+  subscriberId String          @db.ObjectId
+  campaignId   String?         @db.ObjectId
+  
+  // Dados do evento
+  timestamp    DateTime        @default(now())
+  emailId      String?         // ID do provedor de email
+  clickedUrl   String?         // Se foi um click, qual URL
+  userAgent    String?
+  ipAddress    String?
+  location     Json?           // Dados de geolocalização
+  
+  // Metadata adicional
+  eventData    Json?           // Dados específicos do evento
+  
+  // Relações
+  subscriber   NewsletterSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+  campaign     NewsletterCampaign?  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  
+  // Índices
+  @@index([eventType, timestamp])
+  @@index([subscriberId, eventType])
+  @@index([campaignId, eventType])
+  @@index([timestamp])
+  @@map("newsletter_email_events")
+}
+
+// Configurações globais da newsletter
+model NewsletterSettings {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  key   String @unique
+  value String
+  
+  // Metadados
+  description String?
+  category    String? // "smtp", "design", "automation", etc.
+  
+  // Controle
+  lastEditedBy String?   @db.ObjectId
+  lastEditedAt DateTime?
+  
+  // Relação
+  editor       User?     @relation("NewsletterSettingsEditor", fields: [lastEditedBy], references: [id])
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+  @@map("newsletter_settings")
 }

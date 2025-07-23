@@ -1,3 +1,4 @@
+// app/contact/ContactPageClient.tsx - VERSÃO ATUALIZADA FUNCIONAL
 'use client';
 
 import React, { useState } from 'react';
@@ -12,12 +13,13 @@ import {
   FiSend,
   FiClock,
   FiCheckCircle,
+  FiAlertCircle,
+  FiLoader,
+  FiHeart,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
-import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
+import { BiBug } from 'react-icons/bi';
 import Link from 'next/link';
-
-// Importar componentes de animação
 import {
   PageContainer,
   AnimatedContainer,
@@ -26,7 +28,8 @@ import {
   SequentialGrid,
   FloatingElement,
 } from '../../components/animation/AnimatedComponents';
-import { BiBug } from 'react-icons/bi';
+import AnimatedMusicalNotes from '@/app/components/AnimatedMusicalNotes';
+import { useContactForm } from '@/app/hooks/useContactForm';
 
 interface ContactOption {
   icon: React.ComponentType<{ className?: string }>;
@@ -34,6 +37,7 @@ interface ContactOption {
   description: string;
   action: string;
   color: string;
+  category: string;
 }
 
 const contactOptions: ContactOption[] = [
@@ -43,6 +47,7 @@ const contactOptions: ContactOption[] = [
     description: 'Dúvidas sobre funcionalidades, conta ou navegação',
     action: 'Falar com Suporte',
     color: 'from-accent-blue to-accent-purple',
+    category: 'suporte',
   },
   {
     icon: BiBug,
@@ -50,6 +55,7 @@ const contactOptions: ContactOption[] = [
     description: 'Encontrou um erro ou problema técnico?',
     action: 'Reportar Problema',
     color: 'from-accent-red to-accent-amber',
+    category: 'bug',
   },
   {
     icon: FiUpload,
@@ -57,6 +63,7 @@ const contactOptions: ContactOption[] = [
     description: 'Questões sobre uploads, verificação ou moderação',
     action: 'Contatar Moderação',
     color: 'from-accent-green to-accent-blue',
+    category: 'moderacao',
   },
   {
     icon: FiUser,
@@ -64,53 +71,122 @@ const contactOptions: ContactOption[] = [
     description: 'Interesse em parcerias, colaborações ou publicidade',
     action: 'Propor Parceria',
     color: 'from-brand-primary to-brand-secondary',
+    category: 'parceria',
   },
 ];
 
-export default function ContactPage() {
+export default function ContactPageClient() {
+  const { submitForm, loading, success, error, reset } = useContactForm();
+  const [selectedCategory, setSelectedCategory] = useState('suporte');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
-    category: 'suporte',
     message: '',
     priority: 'normal',
+    subscribeNewsletter: false,
   });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<
-    'idle' | 'success' | 'error'
-  >('idle');
 
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]:
+        type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
     }));
   };
 
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-
-    // Simular envio
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSubmitStatus('success');
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        category: 'suporte',
-        message: '',
-        priority: 'normal',
-      });
-    }, 2000);
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category);
+    setFormData((prev) => ({
+      ...prev,
+      subject: getDefaultSubject(category),
+    }));
   };
+
+  const getDefaultSubject = (category: string): string => {
+    switch (category) {
+      case 'suporte':
+        return 'Dúvida sobre funcionalidades';
+      case 'bug':
+        return 'Relato de problema técnico';
+      case 'moderacao':
+        return 'Questão sobre moderação de conteúdo';
+      case 'parceria':
+        return 'Proposta de parceria';
+      default:
+        return '';
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (
+      !formData.name.trim() ||
+      !formData.email.trim() ||
+      !formData.message.trim()
+    ) {
+      return;
+    }
+
+    try {
+      await submitForm({
+        ...formData,
+        category: selectedCategory,
+        sourceUrl: window.location.href,
+        userAgent: navigator.userAgent,
+      });
+
+      if (success) {
+        // Limpar formulário
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: '',
+          priority: 'normal',
+          subscribeNewsletter: false,
+        });
+      }
+    } catch (err) {
+      console.error('Erro no envio:', err);
+    }
+  };
+
+  const getFormStatus = () => {
+    if (loading) {
+      return {
+        icon: <FiLoader className="w-5 h-5 animate-spin text-brand-primary" />,
+        message: 'Enviando mensagem...',
+        color: 'text-brand-primary',
+      };
+    }
+
+    if (success) {
+      return {
+        icon: <FiCheckCircle className="w-5 h-5 text-accent-green" />,
+        message: 'Mensagem enviada com sucesso! Responderemos em breve.',
+        color: 'text-accent-green',
+      };
+    }
+
+    if (error) {
+      return {
+        icon: <FiAlertCircle className="w-5 h-5 text-accent-red" />,
+        message: error,
+        color: 'text-accent-red',
+      };
+    }
+
+    return null;
+  };
+
+  const formStatus = getFormStatus();
 
   return (
     <PageContainer showBackground={true} className="classical-theme">
@@ -168,7 +244,12 @@ export default function ContactPage() {
                 <AnimatedCard
                   key={index}
                   hover="lift"
-                  className="classical-card p-6 cursor-pointer group"
+                  className={`classical-card p-6 cursor-pointer group transition-all duration-300 ${
+                    selectedCategory === option.category
+                      ? 'ring-2 ring-brand-primary bg-brand-primary/5'
+                      : ''
+                  }`}
+                  onClick={() => handleCategorySelect(option.category)}
                 >
                   <div
                     className={`w-16 h-16 bg-gradient-to-br ${option.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
@@ -184,8 +265,16 @@ export default function ContactPage() {
                     {option.description}
                   </p>
 
-                  <div className="text-brand-primary font-medium group-hover:text-brand-secondary transition-colors">
-                    {option.action} →
+                  <div
+                    className={`font-medium transition-colors ${
+                      selectedCategory === option.category
+                        ? 'text-brand-primary'
+                        : 'text-theme-tertiary group-hover:text-brand-primary'
+                    }`}
+                  >
+                    {selectedCategory === option.category
+                      ? '✓ Selecionado'
+                      : `${option.action} →`}
                   </div>
                 </AnimatedCard>
               ))}
@@ -205,16 +294,32 @@ export default function ContactPage() {
                   Envie sua mensagem
                 </h3>
 
-                {submitStatus === 'success' && (
-                  <div className="mb-6 p-4 bg-accent-green/10 border border-accent-green/20 rounded-lg flex items-center space-x-3">
-                    <FiCheckCircle className="w-5 h-5 text-accent-green" />
-                    <span className="text-accent-green font-medium">
-                      Mensagem enviada com sucesso! Responderemos em breve.
+                {formStatus && (
+                  <div
+                    className={`mb-6 p-4 rounded-lg border flex items-center space-x-3 ${
+                      success
+                        ? 'bg-accent-green/10 border-accent-green/20'
+                        : error
+                        ? 'bg-accent-red/10 border-accent-red/20'
+                        : 'bg-brand-primary/10 border-brand-primary/20'
+                    }`}
+                  >
+                    {formStatus.icon}
+                    <span className={`font-medium ${formStatus.color}`}>
+                      {formStatus.message}
                     </span>
+                    {(success || error) && (
+                      <button
+                        onClick={reset}
+                        className="ml-auto text-xs hover:underline"
+                      >
+                        Fechar
+                      </button>
+                    )}
                   </div>
                 )}
 
-                <div className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-theme-secondary mb-2">
@@ -226,7 +331,8 @@ export default function ContactPage() {
                         value={formData.name}
                         onChange={handleInputChange}
                         required
-                        className="input-classical-2 w-full"
+                        disabled={loading || success}
+                        className="input-classical-2 w-full disabled:opacity-50"
                         placeholder="Seu nome completo"
                       />
                     </div>
@@ -241,7 +347,8 @@ export default function ContactPage() {
                         value={formData.email}
                         onChange={handleInputChange}
                         required
-                        className="input-classical-2 w-full"
+                        disabled={loading || success}
+                        className="input-classical-2 w-full disabled:opacity-50"
                         placeholder="seu@email.com"
                       />
                     </div>
@@ -257,46 +364,28 @@ export default function ContactPage() {
                       value={formData.subject}
                       onChange={handleInputChange}
                       required
-                      className="input-classical-2 w-full"
+                      disabled={loading || success}
+                      className="input-classical-2 w-full disabled:opacity-50"
                       placeholder="Descreva brevemente o assunto"
                     />
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-theme-secondary mb-2">
-                        Categoria
-                      </label>
-                      <select
-                        name="category"
-                        value={formData.category}
-                        onChange={handleInputChange}
-                        className="input-classical-2 w-full"
-                      >
-                        <option value="suporte">Suporte Geral</option>
-                        <option value="bug">Reportar Bug</option>
-                        <option value="moderacao">Moderação</option>
-                        <option value="parceria">Parcerias</option>
-                        <option value="feedback">Feedback</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-theme-secondary mb-2">
-                        Prioridade
-                      </label>
-                      <select
-                        name="priority"
-                        value={formData.priority}
-                        onChange={handleInputChange}
-                        className="input-classical-2 w-full"
-                      >
-                        <option value="baixa">Baixa</option>
-                        <option value="normal">Normal</option>
-                        <option value="alta">Alta</option>
-                        <option value="urgente">Urgente</option>
-                      </select>
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-theme-secondary mb-2">
+                      Prioridade
+                    </label>
+                    <select
+                      name="priority"
+                      value={formData.priority}
+                      onChange={handleInputChange}
+                      disabled={loading || success}
+                      className="input-classical-2 w-full disabled:opacity-50"
+                    >
+                      <option value="baixa">Baixa</option>
+                      <option value="normal">Normal</option>
+                      <option value="alta">Alta</option>
+                      <option value="urgente">Urgente</option>
+                    </select>
                   </div>
 
                   <div>
@@ -309,21 +398,54 @@ export default function ContactPage() {
                       onChange={handleInputChange}
                       required
                       rows={6}
-                      className="input-classical-2 w-full resize-none"
+                      disabled={loading || success}
+                      className="input-classical-2 w-full resize-none disabled:opacity-50"
                       placeholder="Descreva sua dúvida, problema ou sugestão em detalhes..."
                     />
                   </div>
 
+                  {/* Newsletter Subscription Option */}
+                  <div className="flex items-start space-x-3 p-4 bg-theme-secondary rounded-lg">
+                    <input
+                      type="checkbox"
+                      name="subscribeNewsletter"
+                      checked={formData.subscribeNewsletter}
+                      onChange={handleInputChange}
+                      disabled={loading || success}
+                      className="mt-1 rounded border-theme-primary text-brand-primary focus:ring-brand-primary disabled:opacity-50"
+                    />
+                    <div>
+                      <label className="font-medium text-theme-primary cursor-pointer">
+                        Receber newsletter
+                      </label>
+                      <p className="text-sm text-theme-tertiary">
+                        Mantenha-se atualizado com novidades sobre música
+                        clássica, novos compositores e funcionalidades da
+                        plataforma.
+                      </p>
+                    </div>
+                  </div>
+
                   <button
-                    type="button"
-                    onClick={handleSubmit}
-                    disabled={isSubmitting}
-                    className="btn-classical-primary w-full flex items-center justify-center space-x-3 py-4 disabled:opacity-50"
+                    type="submit"
+                    disabled={
+                      loading ||
+                      success ||
+                      !formData.name.trim() ||
+                      !formData.email.trim() ||
+                      !formData.message.trim()
+                    }
+                    className="btn-classical-primary w-full flex items-center justify-center space-x-3 py-4 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting ? (
+                    {loading ? (
                       <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <FiLoader className="w-5 h-5 animate-spin" />
                         <span>Enviando...</span>
+                      </>
+                    ) : success ? (
+                      <>
+                        <FiCheckCircle className="w-5 h-5" />
+                        <span>Enviado!</span>
                       </>
                     ) : (
                       <>
@@ -332,7 +454,7 @@ export default function ContactPage() {
                       </>
                     )}
                   </button>
-                </div>
+                </form>
               </AnimatedCard>
 
               {/* Contact Info */}
