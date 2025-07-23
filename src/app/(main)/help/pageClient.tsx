@@ -52,7 +52,7 @@ const helpCategories: HelpCategory[] = [
   {
     id: 'getting-started',
     title: 'Primeiros Passos',
-    description: 'Aprenda a usar o Classical Hub desde o início',
+    description: 'Aprenda a usar o Opus Atlas desde o início',
     icon: FiPlay,
     color: 'from-accent-green to-accent-blue',
     guides: [
@@ -321,7 +321,7 @@ export default function HelpPage() {
               <AnimatedItem direction="up" springType="gentle">
                 <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
                   Guias completos, tutoriais em vídeo e dicas para dominar todas
-                  as funcionalidades do Classical Hub.
+                  as funcionalidades do Opus Atlas.
                 </p>
               </AnimatedItem>
             </div>
@@ -608,7 +608,7 @@ export default function HelpPage() {
 
                 <p className="text-xl text-theme-secondary mb-12 classical-body">
                   Nossa equipe de suporte está sempre pronta para ajudar você a
-                  aproveitar ao máximo o Classical Hub.
+                  aproveitar ao máximo o Opus Atlas.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-6 justify-center">

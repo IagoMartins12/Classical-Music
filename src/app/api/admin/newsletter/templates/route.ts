@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
         textContent: textContent || '',
         description,
         isDefault: isDefault || false,
-        senderName: senderName || 'Classical Hub',
+        senderName: senderName || 'Opus Atlas',
         senderEmail: senderEmail || 'noreply@classicalhub.com',
         replyToEmail,
         createdBy: session.user.id,

@@ -138,7 +138,7 @@ export async function POST(request: NextRequest) {
         templateId,
         targetSegments: targetSegments || null,
         scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
-        senderName: senderName || 'Classical Hub',
+        senderName: senderName || 'Opus Atlas',
         senderEmail: senderEmail || 'noreply@classicalhub.com',
         replyToEmail: replyToEmail || null,
         createdBy: session.user.id,

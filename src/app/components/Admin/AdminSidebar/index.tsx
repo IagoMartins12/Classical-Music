@@ -201,17 +201,13 @@ export default function AdminSidebar() {
           href: '/admin/newsletter',
           label: 'Dashboard',
           icon: FiMail,
-          badge:
-            mounted && stats
-              ? stats.trends.last7Days.newAnnotations
-              : undefined,
+
           isActive: pathname === '/admin/newsletter',
         },
         {
           href: '/admin/newsletter/subscribers',
           label: 'Subscribers',
           icon: FiUsers,
-          badge: mounted && stats ? stats.overview.totalUsers : undefined,
           isActive: pathname.startsWith('/admin/newsletter/subscribers'),
         },
         {

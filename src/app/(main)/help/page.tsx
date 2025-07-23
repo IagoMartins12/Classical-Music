@@ -3,9 +3,9 @@
 import HelpPage from './pageClient';
 
 export const metadata = {
-  title: 'Central de Ajuda - Classical Hub',
+  title: 'Central de Ajuda - Opus Atlas',
   description:
-    'Guias completos, tutoriais em vídeo e dicas para dominar todas as funcionalidades do Classical Hub.',
+    'Guias completos, tutoriais em vídeo e dicas para dominar todas as funcionalidades do Opus Atlas.',
   keywords: [
     'ajuda',
     'tutoriais',
@@ -17,8 +17,8 @@ export const metadata = {
     'favoritos',
   ],
   openGraph: {
-    title: 'Central de Ajuda | Classical Hub',
-    description: 'Tutoriais e guias para aproveitar ao máximo o Classical Hub.',
+    title: 'Central de Ajuda | Opus Atlas',
+    description: 'Tutoriais e guias para aproveitar ao máximo o Opus Atlas.',
     type: 'website',
   },
   robots: {

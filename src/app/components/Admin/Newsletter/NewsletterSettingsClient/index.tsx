@@ -67,7 +67,7 @@ export default function NewsletterSettingsClient() {
     secure: false,
     user: '',
     pass: '',
-    fromName: 'Classical Hub',
+    fromName: 'Opus Atlas',
     fromEmail: 'noreply@classicalhub.com',
     replyToEmail: 'contato@classicalhub.com',
   });
@@ -156,8 +156,12 @@ export default function NewsletterSettingsClient() {
 
   return (
     <PageContainer showBackground={true}>
-      <div className="space-y-8">
-        <AnimatedContainer delay={0.1} staggerSpeed="normal">
+      <div className="space-y-8 ">
+        <AnimatedContainer
+          delay={0.1}
+          staggerSpeed="normal"
+          className="flex flex-col gap-4"
+        >
           {/* Header */}
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
@@ -412,7 +416,7 @@ export default function NewsletterSettingsClient() {
                         }))
                       }
                       className="input-classical-2 w-full"
-                      placeholder="Classical Hub"
+                      placeholder="Opus Atlas"
                     />
                   </div>
 

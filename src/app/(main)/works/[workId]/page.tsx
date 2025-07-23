@@ -24,13 +24,13 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
 
     if (!work) {
       return {
-        title: 'Obra não encontrada - Classical Hub',
+        title: 'Obra não encontrada - Opus Atlas',
         description:
           'A obra solicitada não foi encontrada em nossa enciclopédia.',
       };
     }
 
-    const title = `${work.title} - ${work.composer.name} | Classical Hub`;
+    const title = `${work.title} - ${work.composer.name} | Opus Atlas`;
     const description = `${work.title} de ${work.composer.fullName}${
       work.opOrCatalog ? ` (${work.opOrCatalog})` : ''
     }. ${work.tone ? `Tom: ${work.tone}. ` : ''}${
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
       'música clássica',
       'IMSLP',
       'estudo musical',
-      'Classical Hub',
+      'Opus Atlas',
       ...(work.categoryNames || []),
       ...(work.workGenresArr || []),
     ]
@@ -64,23 +64,23 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
           ? description.substring(0, 157) + '...'
           : description,
       keywords,
-      authors: [{ name: 'Classical Hub' }],
-      creator: 'Classical Hub',
-      publisher: 'Classical Hub',
+      authors: [{ name: 'Opus Atlas' }],
+      creator: 'Opus Atlas',
+      publisher: 'Opus Atlas',
       openGraph: {
         title: `${work.title} - ${work.composer.name}`,
         description: `Obra de ${work.composer.fullName}${
           work.opOrCatalog ? ` - ${work.opOrCatalog}` : ''
-        }. Explore partituras e recursos para estudo na Classical Hub.`,
+        }. Explore partituras e recursos para estudo na Opus Atlas.`,
         type: 'music.song',
-        siteName: 'Classical Hub - Enciclopédia de Música Clássica',
+        siteName: 'Opus Atlas - Enciclopédia de Música Clássica',
         locale: 'pt_BR',
         images: [
           {
             url: '/images/classical-hub-og.png', // Imagem padrão
             width: 1200,
             height: 630,
-            alt: `${work.title} - ${work.composer.name} | Classical Hub`,
+            alt: `${work.title} - ${work.composer.name} | Opus Atlas`,
           },
         ],
       },
@@ -127,7 +127,7 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
           },
           isPartOf: {
             '@type': 'WebSite',
-            name: 'Classical Hub',
+            name: 'Opus Atlas',
             url: 'https://classicalhub.com',
           },
           musicArrangement: work.opOrCatalog,
@@ -150,7 +150,7 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
   } catch (error) {
     console.error('Erro ao gerar metadata:', error);
     return {
-      title: 'Obra não encontrada - Classical Hub',
+      title: 'Obra não encontrada - Opus Atlas',
       description:
         'A obra solicitada não foi encontrada em nossa enciclopédia.',
     };

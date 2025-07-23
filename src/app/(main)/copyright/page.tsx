@@ -3,9 +3,9 @@
 import CopyrightPage from './pageClient';
 
 export const metadata = {
-  title: 'Direitos Autorais - Classical Hub',
+  title: 'Direitos Autorais - Opus Atlas',
   description:
-    'Como o Classical Hub respeita e protege direitos autorais. Informações sobre domínio público, IMSLP e processo DMCA.',
+    'Como o Opus Atlas respeita e protege direitos autorais. Informações sobre domínio público, IMSLP e processo DMCA.',
   keywords: [
     'direitos autorais',
     'copyright',
@@ -16,7 +16,7 @@ export const metadata = {
     'propriedade intelectual',
   ],
   openGraph: {
-    title: 'Direitos Autorais | Classical Hub',
+    title: 'Direitos Autorais | Opus Atlas',
     description:
       'Como respeitamos e protegemos direitos autorais na plataforma.',
     type: 'website',

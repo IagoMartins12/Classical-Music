@@ -40,7 +40,7 @@ const copyrightData: CopyrightSection[] = [
     title: 'Nosso Compromisso',
     icon: FiShield,
     content: [
-      'O Classical Hub respeita rigorosamente os direitos autorais de compositores, editores e demais detentores de direitos.',
+      'O Opus Atlas respeita rigorosamente os direitos autorais de compositores, editores e demais detentores de direitos.',
       'Trabalhamos exclusivamente com partituras de domínio público, principalmente através do IMSLP (International Music Score Library Project).',
       'Implementamos sistemas de verificação para garantir que todo conteúdo disponibilizado seja legal e apropriado.',
       'Colaboramos com editoras e detentores de direitos para resolver rapidamente qualquer questão que possa surgir.',
@@ -51,7 +51,7 @@ const copyrightData: CopyrightSection[] = [
     title: 'Domínio Público e IMSLP',
     icon: FiGlobe,
     content: [
-      'A maioria das partituras disponíveis no Classical Hub provém do IMSLP, uma biblioteca digital de partituras de domínio público.',
+      'A maioria das partituras disponíveis no Opus Atlas provém do IMSLP, uma biblioteca digital de partituras de domínio público.',
       'Obras entram em domínio público quando seus direitos autorais expiram, geralmente 70 anos após a morte do compositor.',
       'Verificamos cuidadosamente o status de domínio público antes de disponibilizar qualquer conteúdo.',
       'Respeitamos as diferenças nas leis de direitos autorais entre países e aplicamos as mais restritivas.',
@@ -110,7 +110,7 @@ const copyrightData: CopyrightSection[] = [
     title: 'Uso Educacional e Fair Use',
     icon: FiBook,
     content: [
-      'O Classical Hub é uma plataforma educacional dedicada ao ensino e aprendizado de música clássica.',
+      'O Opus Atlas é uma plataforma educacional dedicada ao ensino e aprendizado de música clássica.',
       'Nosso uso de conteúdo se enquadra em exceções educacionais das leis de direitos autorais.',
       'Não comercializamos partituras ou conteúdo protegido por direitos autorais.',
       'Sempre creditamos adequadamente autores, editores e fontes originais.',
@@ -220,7 +220,7 @@ export default function CopyrightPage() {
 
               <AnimatedItem direction="up" springType="gentle">
                 <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
-                  Conheça como o Classical Hub respeita e protege os direitos
+                  Conheça como o Opus Atlas respeita e protege os direitos
                   autorais de compositores, editores e criadores de conteúdo
                   musical.
                 </p>
@@ -255,7 +255,7 @@ export default function CopyrightPage() {
                       Compromisso com a Legalidade
                     </h2>
                     <p className="text-lg text-theme-secondary classical-body leading-relaxed">
-                      O Classical Hub opera dentro dos mais rigorosos padrões
+                      O Opus Atlas opera dentro dos mais rigorosos padrões
                       legais, trabalhando exclusivamente com partituras de
                       domínio público e implementando sistemas robustos de
                       verificação para garantir que todo conteúdo

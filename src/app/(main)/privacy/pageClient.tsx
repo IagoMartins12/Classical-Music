@@ -199,7 +199,7 @@ export default function PrivacyPage() {
               <AnimatedItem direction="up" springType="gentle">
                 <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
                   Conheça como protegemos seus dados e respeitamos sua
-                  privacidade no Classical Hub.
+                  privacidade no Opus Atlas.
                 </p>
               </AnimatedItem>
 
@@ -232,8 +232,8 @@ export default function PrivacyPage() {
                       Compromisso com sua Privacidade
                     </h2>
                     <p className="text-lg text-theme-secondary classical-body leading-relaxed">
-                      No Classical Hub, levamos sua privacidade muito a sério.
-                      Esta política explica como coletamos, usamos, protegemos e
+                      No Opus Atlas, levamos sua privacidade muito a sério. Esta
+                      política explica como coletamos, usamos, protegemos e
                       compartilhamos suas informações quando você usa nossa
                       plataforma educacional de música clássica.
                     </p>

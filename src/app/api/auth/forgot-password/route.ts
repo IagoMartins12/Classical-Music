@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
           resetUrl: '#', // URL vazia para contas Google
           isGoogleAccount: true,
         },
-        customSubject: '🔒 Tentativa de reset em conta Google - Classical Hub',
+        customSubject: '🔒 Tentativa de reset em conta Google - Opus Atlas',
         customHtmlContent: `
           <div style="background: #fef3c7; padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b;">
             <h3 style="color: #92400e;">ℹ️ Conta vinculada ao Google</h3>

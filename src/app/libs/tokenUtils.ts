@@ -1,4 +1,4 @@
-// app/libs/tokenUtils.ts
+// app/libs/tokenUtils.ts - VERSÃO CORRIGIDA
 import crypto from 'crypto';
 import prisma from './prismadb';
 
@@ -8,12 +8,13 @@ export type TokenType =
   | 'NEWSLETTER_CONFIRMATION';
 
 interface CreateTokenOptions {
-  userId: string;
+  userId?: string; // 🆕 OPCIONAL agora
   type: TokenType;
   expiresInHours?: number;
   metadata?: Record<string, any>;
   ipAddress?: string;
   userAgent?: string;
+  anonymousEmail?: string; // 🆕 Para tokens anônimos (newsletter)
 }
 
 interface TokenValidationResult {
@@ -44,6 +45,7 @@ export async function createToken(
     metadata,
     ipAddress,
     userAgent,
+    anonymousEmail,
   } = options;
 
   // Gerar token único
@@ -53,28 +55,43 @@ export async function createToken(
   const expiresAt = new Date();
   expiresAt.setHours(expiresAt.getHours() + expiresInHours);
 
-  // Invalidar tokens antigos do mesmo tipo para o usuário
-  await prisma.userToken.updateMany({
-    where: {
-      userId,
-      type: type as any,
-      used: false,
-    },
-    data: {
-      used: true,
-    },
-  });
+  // 🆕 INVALIDAR TOKENS ANTIGOS - Só se tiver userId
+  if (userId) {
+    await prisma.userToken.updateMany({
+      where: {
+        userId,
+        type: type as any,
+        used: false,
+      },
+      data: {
+        used: true,
+      },
+    });
+  } else if (anonymousEmail && type === 'NEWSLETTER_CONFIRMATION') {
+    // 🆕 Para tokens anônimos de newsletter, invalidar por email
+    await prisma.userToken.updateMany({
+      where: {
+        anonymousEmail,
+        type: type as any,
+        used: false,
+      },
+      data: {
+        used: true,
+      },
+    });
+  }
 
   // Criar novo token
   await prisma.userToken.create({
     data: {
-      userId,
+      userId: userId || undefined, // 🆕 undefined se não tiver userId
       type: type as any,
       token,
       expiresAt,
       metadata: metadata || {},
       ipAddress,
       userAgent,
+      anonymousEmail, // 🆕 Email anônimo se fornecido
     },
   });
 
@@ -177,16 +194,29 @@ export async function cleanupExpiredTokens(): Promise<number> {
 }
 
 /**
- * Revogar todos os tokens de um usuário (útil para logout global)
+ * 🆕 ATUALIZADO: Revogar todos os tokens de um usuário (com suporte a anônimos)
  */
 export async function revokeAllUserTokens(
-  userId: string,
-  type?: TokenType
+  userId?: string,
+  type?: TokenType,
+  anonymousEmail?: string
 ): Promise<number> {
   const where: any = {
-    userId,
     used: false,
   };
+
+  // Se tem userId, buscar por userId
+  if (userId) {
+    where.userId = userId;
+  }
+  // Se não tem userId mas tem email anônimo, buscar por email
+  else if (anonymousEmail) {
+    where.anonymousEmail = anonymousEmail;
+  }
+  // Se não tem nenhum dos dois, não fazer nada
+  else {
+    return 0;
+  }
 
   if (type) {
     where.type = type;
@@ -326,25 +356,32 @@ export function validatePasswordStrength(password: string): {
 }
 
 /**
- * Rate limiting para criação de tokens (prevenir spam)
+ * 🆕 ATUALIZADO: Rate limiting para criação de tokens (com suporte a anônimos)
  */
 export async function checkTokenRateLimit(
-  userId: string,
+  userIdOrEmail: string,
   type: TokenType,
-  maxTokensPerHour: number = 3
+  maxTokensPerHour: number = 3,
+  isAnonymous: boolean = false
 ): Promise<{ allowed: boolean; remainingAttempts: number }> {
   const oneHourAgo = new Date();
   oneHourAgo.setHours(oneHourAgo.getHours() - 1);
 
-  const recentTokens = await prisma.userToken.count({
-    where: {
-      userId,
-      type: type as any,
-      createdAt: {
-        gte: oneHourAgo,
-      },
+  let where: any = {
+    type: type as any,
+    createdAt: {
+      gte: oneHourAgo,
     },
-  });
+  };
+
+  // Se é anônimo, buscar por email
+  if (isAnonymous) {
+    where.anonymousEmail = userIdOrEmail;
+  } else {
+    where.userId = userIdOrEmail;
+  }
+
+  const recentTokens = await prisma.userToken.count({ where });
 
   const remainingAttempts = Math.max(0, maxTokensPerHour - recentTokens);
 
@@ -369,7 +406,3 @@ export function logSecurityEvent(
     ...details,
   });
 }
-
-/**
- * Verificar se IP está em blacklist (implementar conforme necessário)
- */

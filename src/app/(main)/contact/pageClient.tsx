@@ -217,7 +217,7 @@ export default function ContactPageClient() {
               <AnimatedItem direction="up" springType="gentle">
                 <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
                   Estamos aqui para ajudar você a aproveitar ao máximo sua
-                  experiência musical no Classical Hub.
+                  experiência musical no Opus Atlas.
                 </p>
               </AnimatedItem>
             </div>

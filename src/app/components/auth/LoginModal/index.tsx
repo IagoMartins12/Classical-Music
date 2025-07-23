@@ -1,9 +1,9 @@
-// components/auth/LoginModal.tsx - VERSÃO ATUALIZADA
+// components/auth/LoginModal.tsx - VERSÃO COM TRATAMENTO DE CONFLITO
 'use client';
 
 import React, { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { FiMail, FiLock } from 'react-icons/fi';
+import { FiMail, FiLock, FiAlertTriangle } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
 
@@ -12,16 +12,19 @@ import { useLoginModal } from '@/app/stores/authStore';
 import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
-import ForgotPasswordModal from '../ForgotPasswordModal'; // 🆕 IMPORT
+import ForgotPasswordModal from '../ForgotPasswordModal';
 import { useRouter } from 'next/navigation';
 
 const LoginModal: React.FC = () => {
   const { isOpen, close, switchToRegister } = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-
-  // 🆕 NOVO: Estado para modal de esqueci senha
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+
+  // 🆕 NOVO: Estado para erro específico de conflito de email
+  const [emailConflictError, setEmailConflictError] = useState<string | null>(
+    null
+  );
 
   const [formData, setFormData] = useState({
     email: '',
@@ -35,9 +38,14 @@ const LoginModal: React.FC = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear error when user starts typing
+    // Clear errors when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
+
+    // 🆕 NOVO: Limpar erro de conflito ao digitar
+    if (emailConflictError) {
+      setEmailConflictError(null);
     }
   };
 
@@ -64,6 +72,7 @@ const LoginModal: React.FC = () => {
     if (!validateForm()) return;
 
     setIsLoading(true);
+    setEmailConflictError(null); // Limpar erro anterior
 
     try {
       const result = await signIn('credentials', {
@@ -77,13 +86,8 @@ const LoginModal: React.FC = () => {
         toast.error('Email ou senha incorretos');
       } else {
         toast.success('Login realizado com sucesso!');
-
-        // Check if user needs onboarding
-        // This will be handled by the session callback
         close();
         refresh();
-        // The onboarding check will be handled by the AuthProvider
-        // based on the session data
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -96,6 +100,7 @@ const LoginModal: React.FC = () => {
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
+    setEmailConflictError(null); // Limpar erro anterior
 
     try {
       const result = await signIn('google', {
@@ -104,7 +109,21 @@ const LoginModal: React.FC = () => {
       });
 
       if (result?.error) {
-        toast.error('Erro ao fazer login com Google');
+        // 🆕 NOVO: Verificar se é erro de conflito específico
+        if (result.error === 'Callback') {
+          // Este é o erro que vem quando o signIn callback retorna false
+          // Precisamos identificar se foi por conflito de email
+          console.log(
+            '❌ Erro de callback Google - provavelmente conflito de email'
+          );
+
+          setEmailConflictError(
+            'Este email já está cadastrado com senha. Use "Entrar com Email" ou redefina sua senha.'
+          );
+          toast.error('Este email já possui uma conta com senha');
+        } else {
+          toast.error('Erro ao fazer login com Google');
+        }
       } else {
         toast.success('Login realizado com sucesso!');
         close();
@@ -120,10 +139,10 @@ const LoginModal: React.FC = () => {
   const handleClose = () => {
     setFormData({ email: '', password: '' });
     setErrors({});
+    setEmailConflictError(null); // 🆕 NOVO: Limpar erro de conflito
     close();
   };
 
-  // 🆕 NOVO: Handlers para modal de esqueci senha
   const handleForgotPassword = () => {
     setForgotPasswordOpen(true);
   };
@@ -134,7 +153,6 @@ const LoginModal: React.FC = () => {
 
   const handleBackToLoginFromForgot = () => {
     setForgotPasswordOpen(false);
-    // LoginModal já está aberto, só fechamos o ForgotPassword
   };
 
   return (
@@ -158,6 +176,47 @@ const LoginModal: React.FC = () => {
             Entre na sua conta para continuar sua jornada musical
           </p>
         </div>
+
+        {/* 🆕 NOVO: Aviso de conflito de email */}
+        {emailConflictError && (
+          <div className="mb-6 p-4 rounded-lg bg-accent-amber bg-opacity-10 border border-accent-amber">
+            <div className="flex items-start">
+              <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="font-medium text-accent-amber mb-1">
+                  Email já cadastrado
+                </h4>
+                <p className="text-sm text-accent-amber opacity-90">
+                  {emailConflictError}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    onClick={() => {
+                      setEmailConflictError(null);
+                      // Focar no campo de email para facilitar o login
+                      const emailInput = document.querySelector(
+                        'input[name="email"]'
+                      ) as HTMLInputElement;
+                      if (emailInput) emailInput.focus();
+                    }}
+                    className="text-xs text-accent-amber hover:text-accent-amber opacity-80 hover:opacity-100 underline transition-opacity"
+                  >
+                    Fazer login com email
+                  </button>
+                  <span className="text-xs text-accent-amber opacity-50">
+                    •
+                  </span>
+                  <button
+                    onClick={handleForgotPassword}
+                    className="text-xs text-accent-amber hover:text-accent-amber opacity-80 hover:opacity-100 underline transition-opacity"
+                  >
+                    Esqueci minha senha
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Google Sign In */}
         <Button
@@ -221,7 +280,7 @@ const LoginModal: React.FC = () => {
             autoComplete="current-password"
           />
 
-          {/* 🆕 NOVO: Forgot Password Link */}
+          {/* Forgot Password Link */}
           <div className="text-right">
             <button
               type="button"
@@ -275,7 +334,7 @@ const LoginModal: React.FC = () => {
         </div>
       </Modal>
 
-      {/* 🆕 NOVO: Forgot Password Modal */}
+      {/* Forgot Password Modal */}
       <ForgotPasswordModal
         isOpen={forgotPasswordOpen}
         onClose={handleCloseForgotPassword}

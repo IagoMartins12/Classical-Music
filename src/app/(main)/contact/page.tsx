@@ -3,7 +3,7 @@
 import ContactPage from './pageClient';
 
 export const metadata = {
-  title: 'Entre em Contato - Classical Hub',
+  title: 'Entre em Contato - Opus Atlas',
   description:
     'Fale conosco! Nossa equipe está pronta para ajudar com suporte, parcerias, moderação e questões técnicas.',
   keywords: [
@@ -16,7 +16,7 @@ export const metadata = {
     'moderação',
   ],
   openGraph: {
-    title: 'Contato | Classical Hub',
+    title: 'Contato | Opus Atlas',
     description: 'Entre em contato com nossa equipe de suporte especializada.',
     type: 'website',
   },

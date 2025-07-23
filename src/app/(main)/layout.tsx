@@ -16,7 +16,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Classical Hub - Enciclopédia de Música Clássica',
+  title: 'Opus Atlas - Enciclopédia de Música Clássica',
   description:
     'Explore, aprenda e pratique música clássica com nossa enciclopédia interativa. Descubra compositores, obras e desenvolva suas habilidades musicais.',
   keywords: [
@@ -27,10 +27,10 @@ export const metadata: Metadata = {
     'piano',
     'estudo musical',
   ],
-  authors: [{ name: 'Classical Hub Team' }],
-  creator: 'Classical Hub',
+  authors: [{ name: 'Opus Atlas Team' }],
+  creator: 'Opus Atlas',
   openGraph: {
-    title: 'Classical Hub - Enciclopédia de Música Clássica',
+    title: 'Opus Atlas - Enciclopédia de Música Clássica',
     description:
       'Explore, aprenda e pratique música clássica com nossa enciclopédia interativa.',
     type: 'website',
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Classical Hub - Enciclopédia de Música Clássica',
+    title: 'Opus Atlas - Enciclopédia de Música Clássica',
     description:
       'Explore, aprenda e pratique música clássica com nossa enciclopédia interativa.',
   },

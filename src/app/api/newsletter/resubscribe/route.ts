@@ -77,7 +77,7 @@ export async function sendWelcomeEmail(subscriber: any) {
 
     const emailData = {
       to: subscriber.email,
-      subject: 'Bem-vindo à Classical Hub! 🎼',
+      subject: 'Bem-vindo à Opus Atlas! 🎼',
       html: replaceTemplateVariables(template.htmlContent, {
         firstName: subscriber.firstName || 'Amante da música',
         email: subscriber.email,
@@ -100,17 +100,17 @@ export async function sendUnsubscribeConfirmationEmail(subscriber: any) {
   try {
     const emailData = {
       to: subscriber.email,
-      subject: 'Inscrição cancelada - Classical Hub',
+      subject: 'Inscrição cancelada - Opus Atlas',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>Inscrição cancelada</h2>
           <p>Olá ${subscriber.firstName || ''},</p>
-          <p>Sua inscrição na newsletter da Classical Hub foi cancelada com sucesso.</p>
+          <p>Sua inscrição na newsletter da Opus Atlas foi cancelada com sucesso.</p>
           <p>Sentimos muito em vê-lo partir! Se mudar de ideia, sempre pode se inscrever novamente em nosso site.</p>
           <p>Obrigado por ter sido parte da nossa comunidade de música clássica.</p>
           <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
           <p style="color: #666; font-size: 14px;">
-            Classical Hub - Sua plataforma de música clássica
+            Opus Atlas - Sua plataforma de música clássica
           </p>
         </div>
       `,
@@ -119,13 +119,13 @@ Inscrição cancelada
 
 Olá ${subscriber.firstName || ''},
 
-Sua inscrição na newsletter da Classical Hub foi cancelada com sucesso.
+Sua inscrição na newsletter da Opus Atlas foi cancelada com sucesso.
 
 Sentimos muito em vê-lo partir! Se mudar de ideia, sempre pode se inscrever novamente em nosso site.
 
 Obrigado por ter sido parte da nossa comunidade de música clássica.
 
-Classical Hub - Sua plataforma de música clássica
+Opus Atlas - Sua plataforma de música clássica
       `,
     };
 
@@ -146,7 +146,7 @@ async function sendConfirmationEmail(subscriber: any) {
 
   const emailData = {
     to: subscriber.email,
-    subject: 'Confirme sua inscrição na Classical Hub',
+    subject: 'Confirme sua inscrição na Opus Atlas',
     html: replaceTemplateVariables(template.htmlContent, {
       firstName: subscriber.firstName || 'Música',
       confirmationUrl,
@@ -175,7 +175,7 @@ async function getEmailTemplate(type: string) {
     return {
       htmlContent: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1>Bem-vindo à Classical Hub, {{firstName}}!</h1>
+          <h1>Bem-vindo à Opus Atlas, {{firstName}}!</h1>
           <p>Obrigado por se inscrever na nossa newsletter de música clássica.</p>
           <p>Para confirmar sua inscrição, clique no botão abaixo:</p>
           <a href="{{confirmationUrl}}" style="background: #6366f1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 20px 0;">
@@ -185,7 +185,7 @@ async function getEmailTemplate(type: string) {
         </div>
       `,
       textContent: `
-Bem-vindo à Classical Hub, {{firstName}}!
+Bem-vindo à Opus Atlas, {{firstName}}!
 
 Para confirmar sua inscrição, acesse: {{confirmationUrl}}
 

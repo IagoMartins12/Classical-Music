@@ -103,7 +103,7 @@ export default function AboutPage() {
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
                   <GiGrandPiano className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
-                    Bem-vindo ao Classical Hub
+                    Bem-vindo ao Opus Atlas
                   </span>
                 </div>
               </AnimatedItem>
@@ -170,7 +170,7 @@ export default function AboutPage() {
                   </p>
 
                   <p className="text-lg text-theme-secondary leading-relaxed classical-body">
-                    O Classical Hub foi criado para ser mais que uma simples
+                    O Opus Atlas foi criado para ser mais que uma simples
                     enciclopédia. Somos um ecossistema educacional que combina
                     conhecimento histórico com ferramentas práticas de estudo,
                     criando uma experiência única para músicos de todos os

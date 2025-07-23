@@ -81,6 +81,16 @@ async function analyzeIMSLPTags(): Promise<TagAnalysis> {
     `   Encontrados ${composers.length} compositores com imslpCategories\n`
   );
 
+  const deletedFavorits = await prisma.favoriteComposer.deleteMany();
+  const deletedFavorits2 = await prisma.favoriteScore.deleteMany();
+  const deletedFavorits3 = await prisma.favoriteWork.deleteMany();
+
+  console.log('DELETADOS', {
+    deletedFavorits,
+    deletedFavorits2,
+    deletedFavorits3,
+  });
+
   // 2. Buscar dados das obras
   console.log('📊 Buscando dados das obras...');
   const works = await prisma.work.findMany({

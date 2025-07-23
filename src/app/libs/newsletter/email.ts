@@ -15,7 +15,7 @@ const EMAIL_CONFIG = {
   },
 
   defaults: {
-    from: process.env.EMAIL_FROM || 'Classical Hub <noreply@classicalhub.com>',
+    from: process.env.EMAIL_FROM || 'Opus Atlas <noreply@classicalhub.com>',
     replyTo: process.env.EMAIL_REPLY_TO || 'contato@classicalhub.com',
   },
 };
@@ -197,7 +197,7 @@ export async function sendTemplateEmail(
 
       // Usar subject customizado ou padrão
       subject = processTemplate(
-        templateData.customSubject || `📧 ${templateData.type} - Classical Hub`,
+        templateData.customSubject || `📧 ${templateData.type} - Opus Atlas`,
         templateData.variables
       );
     } else {

@@ -3,14 +3,14 @@
 export const emailTemplates = {
   // Template existente de Newsletter
   WELCOME: {
-    subject: 'Confirme sua inscrição na Classical Hub 🎼',
+    subject: 'Confirme sua inscrição na Opus Atlas 🎼',
     htmlContent: `
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirme sua inscrição - Classical Hub</title>
+    <title>Confirme sua inscrição - Opus Atlas</title>
     <style>
         body { font-family: 'Georgia', serif; margin: 0; padding: 0; background-color: #f8fafc; }
         .container { max-width: 600px; margin: 0 auto; background: white; }
@@ -44,7 +44,7 @@ export const emailTemplates = {
     <div class="container">
         <div class="header">
             <div class="music-note">🎼</div>
-            <h1>Bem-vindo à Classical Hub!</h1>
+            <h1>Bem-vindo à Opus Atlas!</h1>
             <p>Sua jornada musical começa aqui</p>
         </div>
         
@@ -65,7 +65,7 @@ export const emailTemplates = {
         </div>
         
         <div class="footer">
-            <p><strong>Classical Hub</strong> - Sua plataforma de música clássica</p>
+            <p><strong>Opus Atlas</strong> - Sua plataforma de música clássica</p>
             <p>
                 <a href="{{unsubscribeUrl}}">Cancelar inscrição</a> | 
                 <a href="https://classicalhub.com/privacy">Política de Privacidade</a>
@@ -75,27 +75,27 @@ export const emailTemplates = {
 </body>
 </html>`,
     textContent: `
-Bem-vindo à Classical Hub!
+Bem-vindo à Opus Atlas!
 
 Olá {{firstName}},
 
 Para confirmar sua inscrição na newsletter, acesse: {{confirmationUrl}}
 
-Classical Hub - Sua plataforma de música clássica
+Opus Atlas - Sua plataforma de música clássica
 Cancelar inscrição: {{unsubscribeUrl}}
 `,
   },
 
   // 🆕 NOVO: Template de Confirmação de Conta
   ACCOUNT_CONFIRMATION: {
-    subject: '🎼 Confirme sua conta na Classical Hub',
+    subject: '🎼 Confirme sua conta na Opus Atlas',
     htmlContent: `
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirme sua conta - Classical Hub</title>
+    <title>Confirme sua conta - Opus Atlas</title>
     <style>
         body { font-family: 'Georgia', serif; margin: 0; padding: 0; background-color: #f8fafc; }
         .container { max-width: 600px; margin: 0 auto; background: white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
@@ -261,7 +261,7 @@ Cancelar inscrição: {{unsubscribeUrl}}
         </div>
         
         <div class="footer">
-            <h3>Classical Hub</h3>
+            <h3>Opus Atlas</h3>
             <p>A maior plataforma de música clássica do Brasil</p>
             
             <div class="social-links">
@@ -282,7 +282,7 @@ Cancelar inscrição: {{unsubscribeUrl}}
 </body>
 </html>`,
     textContent: `
-🎼 CONFIRME SUA CONTA - CLASSICAL HUB
+🎼 CONFIRME SUA CONTA - Opus Atlas
 
 Olá {{firstName}},
 
@@ -301,7 +301,7 @@ SEGURANÇA: Este link é válido por 24 horas e pode ser usado apenas uma vez.
 
 Se você não criou esta conta, pode ignorar este email com segurança.
 
-Classical Hub - A maior plataforma de música clássica do Brasil
+Opus Atlas - A maior plataforma de música clássica do Brasil
 São Paulo, Brasil
 contato@classicalhub.com
 `,
@@ -309,14 +309,14 @@ contato@classicalhub.com
 
   // 🆕 NOVO: Template de Reset de Senha
   PASSWORD_RESET: {
-    subject: '🔒 Redefinir senha - Classical Hub',
+    subject: '🔒 Redefinir senha - Opus Atlas',
     htmlContent: `
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redefinir Senha - Classical Hub</title>
+    <title>Redefinir Senha - Opus Atlas</title>
     <style>
         body { font-family: 'Georgia', serif; margin: 0; padding: 0; background-color: #f8fafc; }
         .container { max-width: 600px; margin: 0 auto; background: white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
@@ -398,7 +398,7 @@ contato@classicalhub.com
             </p>
             
             <p style="color: #4b5563; line-height: 1.6; margin-bottom: 20px;">
-                Recebemos uma solicitação para redefinir a senha da sua conta na Classical Hub.
+                Recebemos uma solicitação para redefinir a senha da sua conta na Opus Atlas.
             </p>
             
             <div class="reset-info">
@@ -456,7 +456,7 @@ contato@classicalhub.com
         </div>
         
         <div class="footer">
-            <p><strong>Classical Hub</strong> - Sua segurança é nossa prioridade</p>
+            <p><strong>Opus Atlas</strong> - Sua segurança é nossa prioridade</p>
             <p>
                 São Paulo, Brasil<br>
                 <a href="mailto:suporte@classicalhub.com">suporte@classicalhub.com</a><br>
@@ -468,7 +468,7 @@ contato@classicalhub.com
 </body>
 </html>`,
     textContent: `
-🔒 REDEFINIR SENHA - CLASSICAL HUB
+🔒 REDEFINIR SENHA - Opus Atlas
 
 Olá {{firstName}},
 
@@ -494,21 +494,21 @@ Se você não solicitou esta mudança, ignore este email.
 
 Problemas? Contate: suporte@classicalhub.com
 
-Classical Hub - Sua segurança é nossa prioridade
+Opus Atlas - Sua segurança é nossa prioridade
 São Paulo, Brasil
 `,
   },
 
   // Template existente da Newsletter Semanal (mantido)
   WEEKLY_DIGEST: {
-    subject: '🎼 Classical Hub Weekly - Suas descobertas musicais da semana',
+    subject: '🎼 Opus Atlas Weekly - Suas descobertas musicais da semana',
     htmlContent: `
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classical Hub Weekly</title>
+    <title>Opus Atlas Weekly</title>
     <style>
         body { font-family: 'Georgia', serif; margin: 0; padding: 0; background-color: #f8fafc; }
         .container { max-width: 650px; margin: 0 auto; background: white; }
@@ -541,7 +541,7 @@ São Paulo, Brasil
 <body>
     <div class="container">
         <div class="header">
-            <h1>Classical Hub Weekly</h1>
+            <h1>Opus Atlas Weekly</h1>
             <p>Suas descobertas musicais da semana</p>
         </div>
         
@@ -557,7 +557,7 @@ São Paulo, Brasil
         </div>
         
         <div class="footer">
-            <p><strong>Classical Hub</strong> - Sua plataforma de música clássica</p>
+            <p><strong>Opus Atlas</strong> - Sua plataforma de música clássica</p>
             <p>
                 <a href="{{unsubscribeUrl}}">Cancelar inscrição</a> | 
                 <a href="{{preferencesUrl}}">Gerenciar preferências</a>
@@ -567,7 +567,7 @@ São Paulo, Brasil
 </body>
 </html>`,
     textContent: `
-CLASSICAL HUB WEEKLY
+Opus Atlas WEEKLY
 
 Olá {{firstName}},
 
@@ -636,7 +636,7 @@ Cancelar inscrição: {{unsubscribeUrl}}
         </div>
         
         <div class="footer">
-            <p><strong>Classical Hub</strong> - Sempre descobrindo novos talentos</p>
+            <p><strong>Opus Atlas</strong> - Sempre descobrindo novos talentos</p>
             <p>
                 <a href="{{unsubscribeUrl}}">Cancelar inscrição</a>
             </p>

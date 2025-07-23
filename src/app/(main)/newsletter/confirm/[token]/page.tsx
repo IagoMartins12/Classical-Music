@@ -176,7 +176,7 @@ export default function NewsletterConfirmPage() {
                 onClick={() => router.push('/')}
                 className="animate-pulse"
               >
-                Explorar Classical Hub
+                Explorar Opus Atlas
               </Button>
 
               <Button
@@ -320,7 +320,7 @@ export default function NewsletterConfirmPage() {
                 <GiGrandPiano className="w-10 h-10 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
               </div>
               <span className="text-2xl font-bold text-gradient-brand classical-title">
-                Classical Hub
+                Opus Atlas
               </span>
             </Link>
           </div>

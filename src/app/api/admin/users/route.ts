@@ -470,7 +470,6 @@ export async function PATCH(request: NextRequest) {
       'canUploadComposers',
       'canUploadWorks',
       'canUploadScores',
-      'canModerateUploads',
       'uploadLimitDaily',
       'uploadLimitMonthly',
     ];
@@ -500,10 +499,7 @@ export async function PATCH(request: NextRequest) {
         email: true,
         userType: true,
         experienceLevel: true,
-        canUploadComposers: true,
-        canUploadWorks: true,
-        canUploadScores: true,
-        canModerateUploads: true,
+
         uploadLimitDaily: true,
         uploadLimitMonthly: true,
       },

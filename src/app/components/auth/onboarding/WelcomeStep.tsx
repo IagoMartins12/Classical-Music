@@ -22,7 +22,7 @@ const WelcomeStep: React.FC = () => {
         </div>
 
         <h3 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-          Bem-vindo à Classical Hub!
+          Bem-vindo à Opus Atlas!
         </h3>
 
         <p className="text-lg text-theme-secondary max-w-2xl mx-auto leading-relaxed">

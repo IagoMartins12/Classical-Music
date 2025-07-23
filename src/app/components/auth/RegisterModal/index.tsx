@@ -1,4 +1,4 @@
-// components/auth/RegisterModal.tsx - VERSÃO ATUALIZADA
+// components/auth/RegisterModal.tsx - VERSÃO COM LOGIN AUTOMÁTICO
 'use client';
 
 import React, { useState } from 'react';
@@ -9,6 +9,7 @@ import {
   FiUser,
   FiCheckCircle,
   FiAlertCircle,
+  FiAlertTriangle,
 } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
@@ -25,6 +26,7 @@ interface RegisterStep {
   userData?: {
     firstName?: string;
     email?: string;
+    isLoggedIn?: boolean; // 🆕 NOVO: Indicar se já fez login automático
   };
 }
 
@@ -37,6 +39,11 @@ const RegisterModal: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  // 🆕 NOVO: Estado para erro específico de conflito de email
+  const [emailConflictError, setEmailConflictError] = useState<string | null>(
+    null
+  );
 
   const [formData, setFormData] = useState({
     username: '',
@@ -56,6 +63,11 @@ const RegisterModal: React.FC = () => {
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
+    }
+
+    // 🆕 NOVO: Limpar erro de conflito ao digitar
+    if (emailConflictError) {
+      setEmailConflictError(null);
     }
   };
 
@@ -90,12 +102,44 @@ const RegisterModal: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // 🆕 NOVO: Função para fazer login automático após registro
+  const performAutoLogin = async (email: string, password: string) => {
+    try {
+      console.log('🔄 Fazendo login automático após registro...');
+
+      const result = await signIn('credentials', {
+        email: email.trim(),
+        password: password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        console.error('❌ Erro no login automático:', result.error);
+        toast.error(
+          'Conta criada, mas erro no login automático. Faça login manualmente.'
+        );
+        return false;
+      } else {
+        console.log('✅ Login automático realizado com sucesso!');
+        toast.success('Conta criada e login realizado com sucesso!');
+        return true;
+      }
+    } catch (error) {
+      console.error('❌ Erro no login automático:', error);
+      toast.error(
+        'Conta criada, mas erro no login automático. Faça login manualmente.'
+      );
+      return false;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
     setIsLoading(true);
+    setEmailConflictError(null); // Limpar erro anterior
 
     try {
       const result = await registerUser({
@@ -105,16 +149,20 @@ const RegisterModal: React.FC = () => {
       });
 
       if (result.success) {
-        // 🆕 NOVO: Após criar conta, mostrar tela de confirmação
+        // 🆕 NOVO: Fazer login automático após registro bem-sucedido
+        const loginSuccess = await performAutoLogin(
+          formData.email.trim(),
+          formData.password
+        );
+
         setRegisterStep({
           step: 'confirmation-sent',
           userData: {
             firstName: formData.username.trim(),
             email: formData.email.trim(),
+            isLoggedIn: loginSuccess, // 🆕 NOVO: Indicar se fez login
           },
         });
-
-        toast.success('Conta criada! Verifique seu email para confirmar.');
       } else {
         setErrors({ general: result.message });
         toast.error(result.message);
@@ -130,6 +178,7 @@ const RegisterModal: React.FC = () => {
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
+    setEmailConflictError(null); // Limpar erro anterior
 
     try {
       const result = await signIn('google', {
@@ -138,9 +187,20 @@ const RegisterModal: React.FC = () => {
       });
 
       if (result?.error) {
-        toast.error('Erro ao registrar com Google');
+        // 🆕 NOVO: Verificar se é erro de conflito específico
+        if (result.error === 'Callback') {
+          console.log(
+            '❌ Erro de callback Google no registro - provavelmente conflito de email'
+          );
+
+          setEmailConflictError(
+            'Este email já está cadastrado com senha. Use "Fazer Login" para acessar sua conta.'
+          );
+          toast.error('Este email já possui uma conta com senha');
+        } else {
+          toast.error('Erro ao registrar com Google');
+        }
       } else {
-        toast.success('Conta criada com Google!');
         close();
         // Google users will also need onboarding
         setTimeout(() => {
@@ -164,6 +224,7 @@ const RegisterModal: React.FC = () => {
       confirmPassword: '',
     });
     setErrors({});
+    setEmailConflictError(null); // 🆕 NOVO: Limpar erro de conflito
     setRegisterStep({ step: 'form' });
     close();
   };
@@ -173,96 +234,144 @@ const RegisterModal: React.FC = () => {
     switchToLogin();
   };
 
-  // 🆕 NOVO: Renderizar tela de confirmação de email
+  // 🆕 NOVO: Função para prosseguir para o onboarding
+  const handleProceedToOnboarding = () => {
+    close();
+    setTimeout(() => {
+      openOnboarding();
+    }, 300);
+  };
+
+  // Renderizar tela de confirmação de email - VERSÃO ATUALIZADA
   const renderConfirmationSent = () => (
     <>
       <div className="text-center mb-8">
         <div className="flex justify-center mb-4">
           <div className="w-16 h-16 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center shadow-theme-glow animate-pulse">
-            <FiMail className="w-8 h-8 text-white" />
+            <FiCheckCircle className="w-8 h-8 text-white" />
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          🎉 Conta Criada!
+          🎉 Bem-vindo à Opus Atlas!
         </h2>
         <p className="text-theme-secondary">
-          Verifique seu email para confirmar sua conta
+          {registerStep.userData?.isLoggedIn
+            ? 'Conta criada e você já está logado!'
+            : 'Conta criada com sucesso!'}
         </p>
       </div>
 
       <div className="space-y-6">
-        <div className="bg-accent-green bg-opacity-10 border border-accent-green rounded-lg p-4">
+        {/* 🆕 NOVO: Status de login */}
+        {registerStep.userData?.isLoggedIn ? (
+          <></>
+        ) : (
+          <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-lg p-4">
+            <div className="flex items-start">
+              <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="font-medium text-accent-amber mb-1">
+                  Login manual necessário
+                </h4>
+                <p className="text-sm text-accent-amber opacity-80">
+                  Houve um problema no login automático. Faça login manualmente
+                  para continuar.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Informações sobre confirmação de email */}
+        <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
           <div className="flex items-start">
-            <FiCheckCircle className="w-5 h-5 text-accent-green mr-3 mt-0.5 flex-shrink-0" />
             <div>
-              <h4 className="font-medium text-accent-green mb-1">
-                Email de Confirmação Enviado
+              <h4 className="font-medium text-accent-blue mb-1">
+                📧 Email de Confirmação Enviado
               </h4>
-              <p className="text-sm text-accent-green opacity-80">
+              <p className="text-sm text-accent-blue opacity-80 mb-2">
                 Enviamos um link de confirmação para{' '}
                 <strong>{registerStep.userData?.email}</strong>
               </p>
+              <div className="text-xs text-accent-blue opacity-70 space-y-1">
+                <p>
+                  • <strong>Para usar normalmente:</strong> Não é necessário
+                  confirmar agora
+                </p>
+                <p>
+                  • <strong>Para uploads:</strong> Confirme seu email para fazer
+                  uploads de arquivos
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
         <div className="bg-theme-secondary rounded-lg p-4 space-y-3">
           <h4 className="text-sm font-medium text-theme-primary flex items-center">
-            <FiMail className="w-4 h-4 mr-2" />
+            <FiCheckCircle className="w-4 h-4 mr-2" />
             Próximos passos:
           </h4>
           <ul className="text-sm text-theme-tertiary space-y-2">
             <li className="flex items-start">
               <span className="text-brand-primary mr-2 font-medium">1.</span>
-              Verifique sua caixa de entrada (e spam)
+              Complete seu perfil musical (recomendado)
             </li>
             <li className="flex items-start">
               <span className="text-brand-primary mr-2 font-medium">2.</span>
-              Clique no link "Confirmar Conta"
+              Comece a explorar compositores e obras
             </li>
             <li className="flex items-start">
               <span className="text-brand-primary mr-2 font-medium">3.</span>
-              Complete seu perfil musical
+              Confirme seu email quando puder (para uploads)
             </li>
             <li className="flex items-start">
               <span className="text-brand-primary mr-2 font-medium">4.</span>
-              Comece a explorar a música clássica!
+              Aproveite sua jornada musical!
             </li>
           </ul>
         </div>
 
-        <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
-          <div className="flex items-start">
-            <FiAlertCircle className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-medium text-accent-blue mb-1">
-                Não recebeu o email?
-              </h4>
-              <ul className="text-sm text-accent-blue opacity-80 space-y-1">
-                <li>• Verifique sua caixa de spam/lixo eletrônico</li>
-                <li>• Aguarde alguns minutos</li>
-                <li>• Verifique se digitou o email corretamente</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
         <div className="space-y-3">
+          {/* 🆕 NOVO: Botão dinâmico baseado no status de login */}
+          {registerStep.userData?.isLoggedIn ? (
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full"
+              onClick={handleProceedToOnboarding}
+            >
+              Completar Perfil Musical
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full"
+              onClick={handleBackToLogin}
+            >
+              Ir para Login
+            </Button>
+          )}
+
           <Button
-            variant="primary"
+            variant="ghost"
             size="lg"
             className="w-full"
-            onClick={handleBackToLogin}
-          >
-            Ir para Login
-          </Button>
-
-          <button
             onClick={handleClose}
-            className="w-full text-sm text-theme-tertiary hover:text-theme-primary transition-colors"
           >
-            Fechar
-          </button>
+            {registerStep.userData?.isLoggedIn ? 'Explorar Agora' : 'Fechar'}
+          </Button>
+        </div>
+
+        {/* 🆕 NOVO: Informação adicional sobre confirmação */}
+        <div className="text-center pt-4 border-t border-theme-secondary">
+          <p className="text-xs text-theme-tertiary">
+            💡 <strong>Dica:</strong> Você pode usar o site normalmente sem
+            confirmar o email.
+            <br />A confirmação é necessária apenas para fazer uploads de
+            partituras e compositores.
+          </p>
         </div>
       </div>
     </>
@@ -278,12 +387,40 @@ const RegisterModal: React.FC = () => {
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          Junte-se à Classical Hub
+          Junte-se à Opus Atlas
         </h2>
         <p className="text-theme-secondary">
           Crie sua conta e comece sua jornada na música clássica
         </p>
       </div>
+
+      {/* 🆕 NOVO: Aviso de conflito de email */}
+      {emailConflictError && (
+        <div className="mb-6 p-4 rounded-lg bg-accent-amber bg-opacity-10 border border-accent-amber">
+          <div className="flex items-start">
+            <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+            <div>
+              <h4 className="font-medium text-accent-amber mb-1">
+                Email já cadastrado
+              </h4>
+              <p className="text-sm text-accent-amber opacity-90">
+                {emailConflictError}
+              </p>
+              <div className="mt-3">
+                <button
+                  onClick={() => {
+                    handleClose();
+                    switchToLogin();
+                  }}
+                  className="text-sm text-accent-amber hover:text-accent-amber opacity-80 hover:opacity-100 underline transition-opacity"
+                >
+                  Ir para Login
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Google Sign Up */}
       <Button

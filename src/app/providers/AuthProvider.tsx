@@ -3,7 +3,6 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { SessionProvider } from 'next-auth/react';
-import { Toaster } from 'react-hot-toast';
 
 // Import modals
 import LoginModal from '@/app/components/auth/LoginModal';

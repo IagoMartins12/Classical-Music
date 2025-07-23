@@ -265,7 +265,7 @@ const Footer: React.FC = () => {
                   <GiGrandPiano className="w-10 h-10 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
                 </div>
                 <span className="text-2xl font-bold text-gradient-brand classical-title">
-                  Classical Hub
+                  Opus Atlas
                 </span>
               </Link>
 
@@ -484,9 +484,7 @@ const Footer: React.FC = () => {
           <div className="section-wrap py-6">
             <div className="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
               <div className="text-sm text-theme-tertiary text-center md:text-left">
-                <p>
-                  © {currentYear} Classical Hub. Todos os direitos reservados.
-                </p>
+                <p>© {currentYear} Opus Atlas. Todos os direitos reservados.</p>
               </div>
 
               <div className="flex items-center space-x-6 text-sm text-theme-tertiary">

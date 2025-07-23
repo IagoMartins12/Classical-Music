@@ -240,19 +240,15 @@ model User {
 
   studyModeSettings Json?
 
-  // Relações de publicidade
 
   // Configurações de publicidade
   showAds       Boolean @default(true) // Usuário quer ver ads?
-  adPreferences Json? // Preferências de ads
 
   // Anotações relacionadas
   workAnnotations   WorkAnnotation[]
   annotationVotes   AnnotationHelpfulVote[]
   verifiedComposers Composer[]              @relation("VerifiedComposers")
 
-  // Configurações de anotações
-  annotationPreferences Json? // Preferências de exibição, notificações, etc.
 
   // Estatísticas de contribuição
   helpfulAnnotationsCount Int      @default(0) // Cache de anotações úteis
@@ -268,14 +264,10 @@ model User {
   // Estatísticas de upload
   totalUploads    Int @default(0)
   approvedUploads Int @default(0)
-  rejectedUploads Int @default(0)
   uploadScore     Int @default(0) // Score baseado na qualidade dos uploads
 
   // Permissões de upload
-  canUploadComposers Boolean @default(true)
-  canUploadWorks     Boolean @default(true)
-  canUploadScores    Boolean @default(true)
-  canModerateUploads Boolean @default(false)
+
 
   // Limites de upload
   uploadLimitDaily      Int      @default(50)
@@ -328,7 +320,6 @@ model User {
   @@index([userType])
   @@index([onboardingCompleted])
   @@index([uploadScore])
-  @@index([canModerateUploads])
 }
 
 // 🆕 Model para cache de partituras com sistema incremental
@@ -442,7 +433,7 @@ model WorkScore {
 
 model UserToken {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String    @db.ObjectId
+  userId    String?   @db.ObjectId // 🆕 TORNAR OPCIONAL para tokens anônimos
   type      TokenType
   token     String    @unique
   expiresAt DateTime
@@ -451,15 +442,19 @@ model UserToken {
   ipAddress String?   // IP que solicitou
   userAgent String?   // User agent que solicitou
   
+  // 🆕 NOVOS CAMPOS para identificação anônima
+  anonymousEmail String? // Email do usuário anônimo (para newsletter)
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
-  // Relação
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // 🆕 RELAÇÃO OPCIONAL
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   // Índices
   @@index([type, expiresAt])
   @@index([userId, type])
+  @@index([anonymousEmail]) // 🆕 Índice para email anônimo
   @@map("user_tokens")
 }
 
@@ -1601,8 +1596,8 @@ model NewsletterTemplate {
   // Configurações
   isActive        Boolean @default(true)
   isDefault       Boolean @default(false) // Template padrão para o tipo
-  senderName      String  @default("Classical Hub")
-  senderEmail     String  @default("noreply@classicalhub.com")
+  senderName      String  @default("Opus Atlas")
+  senderEmail     String  @default("noreply@opusatlas.com")
   replyToEmail    String?
   
   // Metadados
@@ -1662,8 +1657,8 @@ model NewsletterCampaign {
   customTextContent String?
   
   // Configurações de envio
-  senderName    String  @default("Classical Hub")
-  senderEmail   String  @default("noreply@classicalhub.com")
+  senderName    String  @default("Opus Atlas")
+  senderEmail   String  @default("noreply@opusatlas.com")
   replyToEmail  String?
   testEmailSent Boolean @default(false)
   

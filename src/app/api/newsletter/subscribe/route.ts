@@ -1,4 +1,4 @@
-// app/api/newsletter/subscribe/route.ts - VERSÃO ATUALIZADA
+// app/api/newsletter/subscribe/route.ts - VERSÃO CORRIGIDA
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/app/libs/prismadb';
 import { createToken, logSecurityEvent } from '@/app/libs/tokenUtils';
@@ -90,10 +90,11 @@ export async function POST(request: NextRequest) {
         case 'UNSUBSCRIBED':
           // Permitir reinscrição - atualizar registro existente
           const resubscribeToken = await createToken({
-            userId: existingSubscriber.id, // Usar o ID do subscriber como userId
+            userId: undefined, // 🆕 Não tem userId
             type: 'NEWSLETTER_CONFIRMATION',
             ipAddress: userIP,
             userAgent,
+            anonymousEmail: normalizedEmail, // 🆕 Usar email como identificador
           });
 
           const confirmationUrl = createTokenUrl(
@@ -190,12 +191,13 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Criar token de confirmação
+    // 🆕 CRIAR TOKEN DE CONFIRMAÇÃO CORRIGIDO
     const confirmationToken = await createToken({
-      userId: existingUser?.id || 'anonymous', // Se não for usuário registrado
+      userId: existingUser?.id, // 🆕 Usar userId se existir
       type: 'NEWSLETTER_CONFIRMATION',
       ipAddress: userIP,
       userAgent,
+      anonymousEmail: !existingUser ? normalizedEmail : undefined, // 🆕 Só se não for usuário registrado
     });
 
     const confirmationUrl = createTokenUrl(
@@ -330,11 +332,13 @@ export async function PUT(request: NextRequest) {
     const userIP = request.headers.get('x-forwarded-for') || 'unknown';
     const userAgent = request.headers.get('user-agent') || 'unknown';
 
+    // 🆕 CRIAR TOKEN CORRIGIDO PARA REENVIO
     const newConfirmationToken = await createToken({
-      userId: subscriber.userId || 'anonymous',
+      userId: subscriber.userId || undefined, // 🆕 Usar userId se existir
       type: 'NEWSLETTER_CONFIRMATION',
       ipAddress: userIP,
       userAgent,
+      anonymousEmail: !subscriber.userId ? normalizedEmail : undefined, // 🆕 Só se não tiver userId
     });
 
     const confirmationUrl = createTokenUrl(

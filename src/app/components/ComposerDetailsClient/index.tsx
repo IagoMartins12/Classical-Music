@@ -37,7 +37,6 @@ import {
 import { getComposerNationalityDisplay } from '../Utils/nationalityFlags';
 import { INSTRUMENT_MAPPING } from '../../../../scripts/imslp-works-scraper-util';
 import VerificationBadge from '../Verification/VerificationBadge';
-import Button from '../Common/Button';
 import ReportButton from '../Report/ReportButton';
 import VerificationModal from '../Verification/VerificationModal';
 import VerificationButton from '../Verification/VerificationButton';

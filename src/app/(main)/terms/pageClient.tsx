@@ -41,7 +41,7 @@ const termsData: TermsSection[] = [
     title: 'Aceitação dos Termos',
     icon: FiCheck,
     content: [
-      'Ao acessar e usar o Classical Hub, você concorda em ficar vinculado a estes Termos de Uso e todas as leis e regulamentos aplicáveis.',
+      'Ao acessar e usar o Opus Atlas, você concorda em ficar vinculado a estes Termos de Uso e todas as leis e regulamentos aplicáveis.',
       'Se você não concordar com algum destes termos, está proibido de usar ou acessar este site.',
       'Reservamo-nos o direito de modificar estes termos a qualquer momento, sendo sua responsabilidade verificar periodicamente as alterações.',
     ],
@@ -51,7 +51,7 @@ const termsData: TermsSection[] = [
     title: 'Uso da Plataforma',
     icon: FiUser,
     content: [
-      'O Classical Hub é uma plataforma educacional destinada ao estudo e apreciação da música clássica.',
+      'O Opus Atlas é uma plataforma educacional destinada ao estudo e apreciação da música clássica.',
       'Você pode usar a plataforma para explorar compositores, obras, partituras e utilizar as ferramentas de estudo disponíveis.',
       'É proibido usar a plataforma para fins comerciais não autorizados, spam ou qualquer atividade ilegal.',
       'Você é responsável por manter a segurança de sua conta e senha.',
@@ -161,7 +161,7 @@ export default function TermsPage() {
 
               <AnimatedItem direction="up" springType="gentle">
                 <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
-                  Conheça os termos que regem o uso do Classical Hub e nossa
+                  Conheça os termos que regem o uso do Opus Atlas e nossa
                   comunidade musical.
                 </p>
               </AnimatedItem>
@@ -192,7 +192,7 @@ export default function TermsPage() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold classical-title text-theme-primary mb-4">
-                      Bem-vindo ao Classical Hub
+                      Bem-vindo ao Opus Atlas
                     </h2>
                     <p className="text-lg text-theme-secondary classical-body leading-relaxed">
                       Estes Termos de Uso estabelecem as regras para o uso de
@@ -270,7 +270,7 @@ export default function TermsPage() {
                       <li className="flex items-start space-x-2">
                         <FiCheck className="w-4 h-4 text-accent-green mt-0.5 flex-shrink-0" />
                         <span>
-                          O Classical Hub é uma plataforma educacional sem fins
+                          O Opus Atlas é uma plataforma educacional sem fins
                           lucrativos
                         </span>
                       </li>

@@ -84,7 +84,7 @@ async function getOrCreateNewsletterSettings() {
         { key: 'smtp_pass', value: process.env.SMTP_PASS || '' },
         {
           key: 'smtp_from_name',
-          value: process.env.SMTP_FROM_NAME || 'Classical Hub',
+          value: process.env.SMTP_FROM_NAME || 'Opus Atlas',
         },
         {
           key: 'smtp_from_email',
@@ -214,7 +214,7 @@ function formatSettings(settingsArray: any[]) {
       secure: settingsMap.smtp_secure === 'true',
       user: settingsMap.smtp_user || '',
       pass: settingsMap.smtp_pass || '',
-      fromName: settingsMap.smtp_from_name || 'Classical Hub',
+      fromName: settingsMap.smtp_from_name || 'Opus Atlas',
       fromEmail: settingsMap.smtp_from_email || 'noreply@classicalhub.com',
       replyToEmail: settingsMap.smtp_reply_to || 'contato@classicalhub.com',
     },

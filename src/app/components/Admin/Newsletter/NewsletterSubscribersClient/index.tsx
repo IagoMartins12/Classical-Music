@@ -31,6 +31,8 @@ import {
   getSubscriptionStatusLabel,
 } from '@/app/hooks/useNewsletterSubscription';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
+import Select from '@/app/components/Common/Select';
+import Input from '@/app/components/Common/Inputs';
 
 interface FilterState {
   status: string;
@@ -39,7 +41,7 @@ interface FilterState {
   engagement: string;
 }
 
-const statusOptions = [
+const subscribeOptions = [
   { value: '', label: 'Todos os Status' },
   { value: 'ACTIVE', label: 'Ativos' },
   { value: 'PENDING', label: 'Pendentes' },
@@ -157,10 +159,23 @@ export default function NewsletterSubscribersClient() {
     );
   }
 
+  const statusOptions = [
+    { value: '', label: '>Todos os períodos' },
+    { value: 'today', label: 'Hoje' },
+    { value: 'week', label: 'Esta semana' },
+    { value: 'month', label: 'Este mês' },
+    { value: 'quarter', label: 'Este trimestre' },
+    { value: 'year', label: 'Este ano' },
+  ];
+
   return (
     <PageContainer showBackground={true}>
       <div className="space-y-8">
-        <AnimatedContainer delay={0.1} staggerSpeed="normal">
+        <AnimatedContainer
+          delay={0.1}
+          staggerSpeed="normal"
+          className="flex flex-col gap-4"
+        >
           {/* Header */}
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
@@ -247,7 +262,7 @@ export default function NewsletterSubscribersClient() {
                 {/* Search */}
                 <div className="relative flex-1 max-w-md">
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                  <input
+                  <Input
                     type="text"
                     placeholder="Buscar por email ou nome..."
                     value={filters.search}
@@ -322,20 +337,13 @@ export default function NewsletterSubscribersClient() {
                   <label className="block text-sm font-medium text-theme-secondary mb-2">
                     Período de Inscrição
                   </label>
-                  <select
+                  <Select
+                    options={subscribeOptions}
                     value={filters.dateRange}
                     onChange={(e) =>
                       handleFilterChange('dateRange', e.target.value)
                     }
-                    className="w-full px-3 py-2 bg-theme-primary border border-theme-primary rounded-lg text-theme-primary focus:outline-none focus:ring-2 focus:ring-brand-primary"
-                  >
-                    <option value="">Todos os períodos</option>
-                    <option value="today">Hoje</option>
-                    <option value="week">Esta semana</option>
-                    <option value="month">Este mês</option>
-                    <option value="quarter">Este trimestre</option>
-                    <option value="year">Este ano</option>
-                  </select>
+                  />
                 </div>
 
                 <div>
@@ -419,7 +427,7 @@ export default function NewsletterSubscribersClient() {
                 <thead>
                   <tr className="border-b border-theme-primary">
                     <th className="text-left py-3 px-2">
-                      <input
+                      <Input
                         type="checkbox"
                         checked={
                           selectedSubscribers.length === subscribers.length &&
@@ -470,7 +478,7 @@ export default function NewsletterSubscribersClient() {
                         className="border-b border-theme-secondary hover:bg-theme-secondary/50"
                       >
                         <td className="py-3 px-2">
-                          <input
+                          <Input
                             type="checkbox"
                             checked={selectedSubscribers.includes(
                               subscriber.id

@@ -6,11 +6,11 @@ import AuthCheck from '../../components/AuthCheck';
 import AnnotationsPageServer from './pageServer';
 
 export const metadata: Metadata = {
-  title: 'Minhas Anotações | Classical Hub',
+  title: 'Minhas Anotações | Opus Atlas',
   description:
     'Gerencie suas anotações musicais e compartilhe conhecimento com a comunidade',
   keywords:
-    'anotações musicais, técnica, interpretação, estudo musical, classical hub',
+    'anotações musicais, técnica, interpretação, estudo musical, Opus Atlas',
   openGraph: {
     title: 'Minhas Anotações Musicais',
     description:

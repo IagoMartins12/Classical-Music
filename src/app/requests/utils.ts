@@ -2527,7 +2527,7 @@ export const allFamousNames = [
   'Ennio Morricone',
 ];
 
-// 300 Curiosidades Musicais para Classical Hub
+// 300 Curiosidades Musicais para Opus Atlas
 export const musicalFacts = [
   // PERÍODO MEDIEVAL (25 curiosidades)
   {

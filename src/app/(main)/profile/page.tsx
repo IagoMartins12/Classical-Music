@@ -8,7 +8,7 @@ import { authOptions } from '../../libs/auth';
 import AuthCheck from '../../components/AuthCheck';
 
 export const metadata: Metadata = {
-  title: 'Meu Perfil | Classical Hub',
+  title: 'Meu Perfil | Opus Atlas',
   description:
     'Gerencie suas informações pessoais, preferências musicais e configurações da conta',
 };

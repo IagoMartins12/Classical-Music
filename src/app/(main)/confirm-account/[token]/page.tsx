@@ -203,7 +203,7 @@ export default function ConfirmAccountPage() {
                 size="lg"
                 onClick={() => router.push('/')}
               >
-                Explorar Classical Hub
+                Explorar Opus Atlas
               </Button>
             </div>
 
@@ -341,7 +341,7 @@ export default function ConfirmAccountPage() {
                 <GiGrandPiano className="w-10 h-10 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
               </div>
               <span className="text-2xl font-bold text-gradient-brand classical-title">
-                Classical Hub
+                Opus Atlas
               </span>
             </Link>
           </div>

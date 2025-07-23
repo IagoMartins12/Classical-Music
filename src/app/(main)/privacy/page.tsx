@@ -3,9 +3,9 @@
 import PrivacyPage from './pageClient';
 
 export const metadata = {
-  title: 'Política de Privacidade - Classical Hub',
+  title: 'Política de Privacidade - Opus Atlas',
   description:
-    'Conheça como protegemos seus dados e respeitamos sua privacidade no Classical Hub. Informações sobre coleta, uso e proteção de dados.',
+    'Conheça como protegemos seus dados e respeitamos sua privacidade no Opus Atlas. Informações sobre coleta, uso e proteção de dados.',
   keywords: [
     'privacidade',
     'proteção de dados',
@@ -15,7 +15,7 @@ export const metadata = {
     'dados pessoais',
   ],
   openGraph: {
-    title: 'Política de Privacidade | Classical Hub',
+    title: 'Política de Privacidade | Opus Atlas',
     description: 'Como protegemos seus dados e respeitamos sua privacidade.',
     type: 'website',
   },

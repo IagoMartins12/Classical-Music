@@ -40,9 +40,9 @@ const faqData: FAQItem[] = [
     id: '1',
     category: 'Geral',
     icon: FiHelpCircle,
-    question: 'O que é o Classical Hub?',
+    question: 'O que é o Opus Atlas?',
     answer:
-      'O Classical Hub é uma plataforma completa para o estudo e apreciação da música clássica. Combinamos uma enciclopédia detalhada de compositores e obras com ferramentas práticas de estudo, sistema de favoritos, anotações e muito mais. Nossa base de dados inclui informações do IMSLP e permite uploads da comunidade.',
+      'O Opus Atlas é uma plataforma completa para o estudo e apreciação da música clássica. Combinamos uma enciclopédia detalhada de compositores e obras com ferramentas práticas de estudo, sistema de favoritos, anotações e muito mais. Nossa base de dados inclui informações do IMSLP e permite uploads da comunidade.',
   },
   {
     id: '2',
@@ -182,7 +182,7 @@ export default function FAQPage() {
               <AnimatedItem direction="up" springType="gentle">
                 <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
                   Encontre respostas rápidas para as dúvidas mais comuns sobre o
-                  Classical Hub e suas funcionalidades.
+                  Opus Atlas e suas funcionalidades.
                 </p>
               </AnimatedItem>
             </div>
@@ -325,7 +325,7 @@ export default function FAQPage() {
 
               <p className="text-xl text-theme-secondary mb-12 classical-body">
                 Nossa equipe está sempre pronta para ajudar você a aproveitar ao
-                máximo o Classical Hub.
+                máximo o Opus Atlas.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center">

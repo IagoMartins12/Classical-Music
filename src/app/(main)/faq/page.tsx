@@ -1,9 +1,9 @@
 import FAQPage from './pageClient';
 
 export const metadata = {
-  title: 'Perguntas Frequentes - Classical Hub',
+  title: 'Perguntas Frequentes - Opus Atlas',
   description:
-    'Encontre respostas rápidas para as dúvidas mais comuns sobre o Classical Hub, suas funcionalidades e como usar a plataforma.',
+    'Encontre respostas rápidas para as dúvidas mais comuns sobre o Opus Atlas, suas funcionalidades e como usar a plataforma.',
   keywords: [
     'FAQ',
     'perguntas frequentes',
@@ -14,9 +14,9 @@ export const metadata = {
     'suporte',
   ],
   openGraph: {
-    title: 'FAQ - Perguntas Frequentes | Classical Hub',
+    title: 'FAQ - Perguntas Frequentes | Opus Atlas',
     description:
-      'Tire suas dúvidas sobre como usar o Classical Hub e suas funcionalidades.',
+      'Tire suas dúvidas sobre como usar o Opus Atlas e suas funcionalidades.',
     type: 'website',
   },
   robots: {

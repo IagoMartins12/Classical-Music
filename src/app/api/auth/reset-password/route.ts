@@ -189,7 +189,7 @@ export async function POST(request: NextRequest) {
           ipAddress: userIP,
           resetUrl: '#', // Não é usado neste caso
         },
-        customSubject: '🔒 Senha alterada com sucesso - Classical Hub',
+        customSubject: '🔒 Senha alterada com sucesso - Opus Atlas',
         customHtmlContent: `
         <div style="padding: 20px; background: #f0fdf4; border-left: 4px solid #22c55e; border-radius: 8px;">
           <h3 style="color: #166534; margin: 0 0 10px 0;">✅ Senha Alterada</h3>

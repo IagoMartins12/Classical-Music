@@ -26,7 +26,6 @@ export default function UserEditModal({
     canUploadComposers: true,
     canUploadWorks: true,
     canUploadScores: true,
-    canModerateUploads: false,
     uploadLimitDaily: 50,
     uploadLimitMonthly: 1000,
   });
@@ -117,38 +116,6 @@ export default function UserEditModal({
             <h3 className="text-lg font-bold text-theme-primary mb-4">
               Permissões
             </h3>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { key: 'canUploadComposers', label: 'Upload de Compositores' },
-                { key: 'canUploadWorks', label: 'Upload de Obras' },
-                { key: 'canUploadScores', label: 'Upload de Partituras' },
-                { key: 'canModerateUploads', label: 'Moderar Uploads' },
-              ].map((permission) => (
-                <label
-                  key={permission.key}
-                  className="flex items-center space-x-3"
-                >
-                  <input
-                    type="checkbox"
-                    checked={
-                      formData[
-                        permission.key as keyof typeof formData
-                      ] as boolean
-                    }
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        [permission.key]: e.target.checked,
-                      }))
-                    }
-                    className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2"
-                  />
-                  <span className="text-sm text-theme-primary">
-                    {permission.label}
-                  </span>
-                </label>
-              ))}
-            </div>
           </div>
 
           {/* Upload Limits */}

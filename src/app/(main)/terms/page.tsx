@@ -3,9 +3,9 @@
 import TermsPage from './pageClient';
 
 export const metadata = {
-  title: 'Termos de Uso - Classical Hub',
+  title: 'Termos de Uso - Opus Atlas',
   description:
-    'Conheça os termos que regem o uso do Classical Hub, nossa comunidade musical e sistema de uploads.',
+    'Conheça os termos que regem o uso do Opus Atlas, nossa comunidade musical e sistema de uploads.',
   keywords: [
     'termos de uso',
     'termos legais',
@@ -16,8 +16,8 @@ export const metadata = {
     'comunidade',
   ],
   openGraph: {
-    title: 'Termos de Uso | Classical Hub',
-    description: 'Termos e condições de uso da plataforma Classical Hub.',
+    title: 'Termos de Uso | Opus Atlas',
+    description: 'Termos e condições de uso da plataforma Opus Atlas.',
     type: 'website',
   },
   robots: {

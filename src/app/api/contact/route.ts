@@ -150,7 +150,7 @@ async function sendSupportEmail(data: {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
           <h1 style="color: white; margin: 0; font-size: 24px;">Nova Mensagem de Contato</h1>
-          <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0;">Classical Hub</p>
+          <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0;">Opus Atlas</p>
         </div>
         
         <div style="background: white; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
@@ -232,7 +232,7 @@ async function sendSupportEmail(data: {
       </div>
     `,
     text: `
-Nova Mensagem de Contato - Classical Hub
+Nova Mensagem de Contato - Opus Atlas
 
 Ticket ID: ${data.ticketId}
 Categoria: ${categoryLabel}
@@ -277,7 +277,7 @@ async function sendConfirmationEmail(data: {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); padding: 30px; text-align: center; border-radius: 12px 12px 0 0;">
           <h1 style="color: white; margin: 0; font-size: 24px;">Mensagem Recebida!</h1>
-          <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0;">Classical Hub</p>
+          <p style="color: rgba(255,255,255,0.9); margin: 8px 0 0 0;">Opus Atlas</p>
         </div>
         
         <div style="background: white; padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
@@ -349,7 +349,7 @@ ${
 Se precisar de algo urgente, você pode entrar em contato conosco pelo telefone: +55 (11) 9999-9999
 
 Atenciosamente,
-Equipe Classical Hub
+Equipe Opus Atlas
     `,
   };
 

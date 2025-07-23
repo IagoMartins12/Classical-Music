@@ -3,9 +3,9 @@
 import AboutPage from './pageClient';
 
 export const metadata = {
-  title: 'Sobre Nós - Classical Hub',
+  title: 'Sobre Nós - Opus Atlas',
   description:
-    'Conheça a missão do Classical Hub: democratizar o acesso à música clássica através de uma plataforma educacional completa e inovadora.',
+    'Conheça a missão do Opus Atlas: democratizar o acesso à música clássica através de uma plataforma educacional completa e inovadora.',
   keywords: [
     'sobre',
     'missão',
@@ -16,7 +16,7 @@ export const metadata = {
     'educação musical',
   ],
   openGraph: {
-    title: 'Sobre o Classical Hub',
+    title: 'Sobre o Opus Atlas',
     description:
       'Conheça nossa missão de democratizar o acesso à música clássica.',
     type: 'website',

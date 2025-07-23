@@ -1,13 +1,13 @@
-// app/libs/auth.ts - Versão melhorada com debug
+// app/libs/auth.ts - VERSÃO CORRIGIDA para OAuth Account Linking
 import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
 import prisma from '@/app/libs/prismadb';
+import { CustomPrismaAdapter } from './CustomPrismaAdapter';
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: CustomPrismaAdapter(prisma),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
           prompt: 'consent',
           access_type: 'offline',
           response_type: 'code',
-          scope: 'openid email profile', // Mais explícito
+          scope: 'openid email profile',
         },
       },
     }),
@@ -98,114 +98,71 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      console.log('🔐 SignIn callback:', {
-        provider: account?.provider,
-        userId: user.id,
-        email: user.email,
-      });
-
+      // Para contas Google, sempre permitir
+      // O CustomPrismaAdapter vai lidar com a criação/vinculação
       if (account?.provider === 'google') {
-        try {
-          const existingUser = await prisma.user.findUnique({
-            where: { email: user.email! },
-          });
-
-          if (!existingUser) {
-            console.log('👤 Criando novo usuário Google:', user.email);
-
-            const googleProfile = profile as {
-              given_name?: string;
-              family_name?: string;
-              picture?: string;
-            };
-
-            const newUser = await prisma.user.create({
-              data: {
-                email: user.email!.toLowerCase(),
-                firstName:
-                  googleProfile?.given_name || user.name?.split(' ')[0] || '',
-                lastName:
-                  googleProfile?.family_name ||
-                  user.name?.split(' ').slice(1).join(' ') ||
-                  '',
-                image: googleProfile?.picture || user.image,
-                role: 0,
-                onboardingCompleted: false,
-                profilePublic: true,
-                showLocation: false,
-                emailVerified: new Date(), // Google emails são pré-verificados
-              },
-            });
-
-            console.log('✅ Usuário Google criado:', newUser.id);
-
-            // Atualizar dados temporários do usuário para os callbacks seguintes
-            user.id = newUser.id;
-            user.firstName = newUser.firstName;
-            user.lastName = newUser.lastName;
-            user.bio = newUser.bio;
-            user.role = newUser.role;
-            user.onboardingCompleted = newUser.onboardingCompleted;
-            user.userType = newUser.userType;
-            user.city = newUser.city;
-            user.state = newUser.state;
-            user.country = newUser.country;
-            user.favoriteComposerId = newUser.favoriteComposerId;
-            user.favoriteEpochId = newUser.favoriteEpochId;
-            user.experienceLevel = newUser.experienceLevel;
-            user.practiceTimePerWeek = newUser.practiceTimePerWeek;
-            user.profilePublic = newUser.profilePublic;
-            user.showLocation = newUser.showLocation;
-          } else {
-            console.log('👤 Usuário Google existente:', existingUser.id);
-
-            // Atualizar imagem se mudou
-            if (user.image && user.image !== existingUser.image) {
-              await prisma.user.update({
-                where: { id: existingUser.id },
-                data: { image: user.image },
-              });
-            }
-          }
-
-          return true;
-        } catch (error) {
-          console.error('❌ Erro no Google sign-in:', error);
-          return false;
-        }
+        console.log('✅ Login Google permitido, adapter vai processar');
+        return true;
       }
 
+      // Para outros providers, comportamento padrão
       return true;
     },
 
     async jwt({ token, user, account, trigger }) {
-      console.log('🔑 JWT callback:', {
-        trigger,
-        hasUser: !!user,
-        tokenId: token.id,
-      });
+      // Initial sign in - user object is available
+      if (user) {
+        console.log('🔑 Initial JWT creation for:', user.email);
 
-      // Initial sign in
-      if (account && user) {
-        return {
-          ...token,
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          bio: user.bio,
-          role: user.role,
-          onboardingCompleted: user.onboardingCompleted,
-          userType: user.userType,
-          city: user.city,
-          state: user.state,
-          country: user.country,
-          favoriteComposerId: user.favoriteComposerId,
-          favoriteEpochId: user.favoriteEpochId,
-          experienceLevel: user.experienceLevel,
-          practiceTimePerWeek: user.practiceTimePerWeek,
-          profilePublic: user.profilePublic,
-          showLocation: user.showLocation,
-        };
+        // Buscar dados completos do usuário no banco
+        const fullUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            image: true,
+            bio: true,
+            role: true,
+            onboardingCompleted: true,
+            userType: true,
+            city: true,
+            state: true,
+            country: true,
+            favoriteComposerId: true,
+            favoriteEpochId: true,
+            experienceLevel: true,
+            practiceTimePerWeek: true,
+            profilePublic: true,
+            showLocation: true,
+            emailVerified: true,
+          },
+        });
+
+        if (fullUser) {
+          return {
+            ...token,
+            id: fullUser.id,
+            firstName: fullUser.firstName,
+            lastName: fullUser.lastName,
+            bio: fullUser.bio,
+            role: fullUser.role,
+            onboardingCompleted: fullUser.onboardingCompleted,
+            userType: fullUser.userType,
+            city: fullUser.city,
+            state: fullUser.state,
+            country: fullUser.country,
+            favoriteComposerId: fullUser.favoriteComposerId,
+            favoriteEpochId: fullUser.favoriteEpochId,
+            experienceLevel: fullUser.experienceLevel,
+            practiceTimePerWeek: fullUser.practiceTimePerWeek,
+            profilePublic: fullUser.profilePublic,
+            showLocation: fullUser.showLocation,
+            emailVerified: fullUser.emailVerified,
+            picture: fullUser.image,
+          };
+        }
       }
 
       // Se for um update, buscar dados frescos do banco
@@ -256,7 +213,7 @@ export const authOptions: NextAuthOptions = {
             profilePublic: freshUser.profilePublic,
             showLocation: freshUser.showLocation,
             emailVerified: freshUser.emailVerified,
-            picture: freshUser.image, // Atualizar imagem
+            picture: freshUser.image,
           };
         }
       }
@@ -265,11 +222,6 @@ export const authOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      console.log('📱 Session callback:', {
-        tokenId: token.id,
-        email: session.user?.email,
-      });
-
       if (token.id) {
         // Buscar dados sempre atualizados do banco
         const user = await prisma.user.findUnique({
@@ -327,8 +279,6 @@ export const authOptions: NextAuthOptions = {
 
     // Callback para redirecionar após login/registro
     async redirect({ url, baseUrl }) {
-      console.log('🔀 Redirect callback:', { url, baseUrl });
-
       // Se está vindo do callback do Google
       if (url.includes('/api/auth/callback/google')) {
         return baseUrl; // Redireciona para a home
@@ -348,11 +298,10 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 days
-    updateAge: 24 * 60 * 60, // 24 hours - atualiza sessão a cada 24h
+    updateAge: 24 * 60 * 60, // 24 hours
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: process.env.NODE_ENV === 'development',
-  // Configurações de log em desenvolvimento
   logger: {
     error(code, metadata) {
       console.error('❌ NextAuth Error:', code, metadata);
@@ -368,12 +317,38 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
-// Utilitário para verificar se Google OAuth está configurado
+// 🆕 NOVO: Função para verificar se email foi registrado com senha
+export const checkEmailRegistrationMethod = async (email: string) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email: email.toLowerCase() },
+      select: {
+        id: true,
+        hashedPassword: true,
+        emailVerified: true,
+      },
+    });
+
+    if (!user) {
+      return { exists: false, method: null };
+    }
+
+    return {
+      exists: true,
+      method: user.hashedPassword ? 'password' : 'google',
+      isVerified: !!user.emailVerified,
+    };
+  } catch (error) {
+    console.error('Erro ao verificar método de registro:', error);
+    return { exists: false, method: null };
+  }
+};
+
+// Utilitários existentes
 export const isGoogleOAuthConfigured = () => {
   return !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
 };
 
-// Utilitário para verificar configuração geral
 export const isAuthConfigured = () => {
   return !!(
     process.env.NEXTAUTH_SECRET &&
