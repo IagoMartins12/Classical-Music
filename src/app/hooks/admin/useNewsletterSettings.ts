@@ -23,17 +23,8 @@ interface NewsletterSettings {
     defaultFrequency: string;
     maxSubscribersPerBatch: number;
     delayBetweenBatches: number;
-    enableAutomation: boolean;
     enableAnalytics: boolean;
     retentionDays: number;
-  };
-  automation: {
-    welcomeEmailDelay: number;
-    weeklyDigestDay: number;
-    weeklyDigestHour: number;
-    newComposerNotificationDelay: number;
-    enableBehaviorTriggers: boolean;
-    maxEmailsPerDay: number;
   };
 }
 

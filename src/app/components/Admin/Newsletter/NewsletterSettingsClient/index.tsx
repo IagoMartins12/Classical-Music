@@ -43,18 +43,8 @@ interface GeneralSettings {
   defaultFrequency: string;
   maxSubscribersPerBatch: number;
   delayBetweenBatches: number;
-  enableAutomation: boolean;
   enableAnalytics: boolean;
   retentionDays: number;
-}
-
-interface AutomationSettings {
-  welcomeEmailDelay: number;
-  weeklyDigestDay: number;
-  weeklyDigestHour: number;
-  newComposerNotificationDelay: number;
-  enableBehaviorTriggers: boolean;
-  maxEmailsPerDay: number;
 }
 
 export default function NewsletterSettingsClient() {
@@ -77,20 +67,9 @@ export default function NewsletterSettingsClient() {
     defaultFrequency: 'weekly',
     maxSubscribersPerBatch: 100,
     delayBetweenBatches: 2000,
-    enableAutomation: true,
     enableAnalytics: true,
     retentionDays: 365,
   });
-
-  const [automationSettings, setAutomationSettings] =
-    useState<AutomationSettings>({
-      welcomeEmailDelay: 0,
-      weeklyDigestDay: 1, // Segunda-feira
-      weeklyDigestHour: 10,
-      newComposerNotificationDelay: 3600,
-      enableBehaviorTriggers: true,
-      maxEmailsPerDay: 1000,
-    });
 
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState('smtp');
@@ -102,7 +81,6 @@ export default function NewsletterSettingsClient() {
       // Carregar configurações do servidor
       setSMTPSettings((prev) => ({ ...prev, ...settings.smtp }));
       setGeneralSettings((prev) => ({ ...prev, ...settings.general }));
-      setAutomationSettings((prev) => ({ ...prev, ...settings.automation }));
     }
   }, [settings]);
 
@@ -112,7 +90,6 @@ export default function NewsletterSettingsClient() {
       await saveSettings({
         smtp: smtpSettings,
         general: generalSettings,
-        automation: automationSettings,
       });
     } catch (error: any) {
       console.error('Erro ao salvar configurações:', error);
@@ -135,7 +112,6 @@ export default function NewsletterSettingsClient() {
   const tabs = [
     { id: 'smtp', label: 'Configurações SMTP', icon: FiServer },
     { id: 'general', label: 'Configurações Gerais', icon: FiSettings },
-    { id: 'automation', label: 'Automação', icon: FiClock },
     { id: 'security', label: 'Segurança', icon: FiShield },
   ];
 
@@ -209,26 +185,6 @@ export default function NewsletterSettingsClient() {
                   ) : (
                     <FiAlertTriangle className="w-6 h-6 text-accent-red" />
                   )}
-                </div>
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard className="classical-card p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-theme-tertiary mb-1">Automação</p>
-                  <p
-                    className={`text-lg font-bold ${
-                      generalSettings.enableAutomation
-                        ? 'text-accent-green'
-                        : 'text-accent-red'
-                    }`}
-                  >
-                    {generalSettings.enableAutomation ? 'Ativa' : 'Inativa'}
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-accent-blue/20 rounded-xl flex items-center justify-center">
-                  <FiClock className="w-6 h-6 text-accent-blue" />
                 </div>
               </div>
             </AnimatedCard>
@@ -531,28 +487,6 @@ export default function NewsletterSettingsClient() {
                     <div className="flex items-center space-x-3">
                       <input
                         type="checkbox"
-                        checked={generalSettings.enableAutomation}
-                        onChange={(e) =>
-                          setGeneralSettings((prev) => ({
-                            ...prev,
-                            enableAutomation: e.target.checked,
-                          }))
-                        }
-                        className="rounded border-theme-primary text-brand-primary focus:ring-brand-primary"
-                      />
-                      <div>
-                        <label className="font-medium text-theme-primary">
-                          Habilitar Automação
-                        </label>
-                        <p className="text-sm text-theme-tertiary">
-                          Emails automáticos e triggers comportamentais
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-3">
-                      <input
-                        type="checkbox"
                         checked={generalSettings.enableAnalytics}
                         onChange={(e) =>
                           setGeneralSettings((prev) => ({
@@ -650,150 +584,6 @@ export default function NewsletterSettingsClient() {
                         max="2555"
                       />
                     </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'automation' && (
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold text-theme-primary mb-6">
-                  Configurações de Automação
-                </h3>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Delay Email de Boas-vindas (segundos)
-                    </label>
-                    <input
-                      type="number"
-                      value={automationSettings.welcomeEmailDelay}
-                      onChange={(e) =>
-                        setAutomationSettings((prev) => ({
-                          ...prev,
-                          welcomeEmailDelay: parseInt(e.target.value),
-                        }))
-                      }
-                      className="input-classical-2 w-full"
-                      min="0"
-                    />
-                    <p className="text-xs text-theme-tertiary mt-1">
-                      0 = imediato
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Delay Notificação Novo Compositor (segundos)
-                    </label>
-                    <input
-                      type="number"
-                      value={automationSettings.newComposerNotificationDelay}
-                      onChange={(e) =>
-                        setAutomationSettings((prev) => ({
-                          ...prev,
-                          newComposerNotificationDelay: parseInt(
-                            e.target.value
-                          ),
-                        }))
-                      }
-                      className="input-classical-2 w-full"
-                      min="0"
-                    />
-                    <p className="text-xs text-theme-tertiary mt-1">
-                      3600 = 1 hora
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Dia da Newsletter Semanal
-                    </label>
-                    <select
-                      value={automationSettings.weeklyDigestDay}
-                      onChange={(e) =>
-                        setAutomationSettings((prev) => ({
-                          ...prev,
-                          weeklyDigestDay: parseInt(e.target.value),
-                        }))
-                      }
-                      className="input-classical-2 w-full"
-                    >
-                      <option value="0">Domingo</option>
-                      <option value="1">Segunda-feira</option>
-                      <option value="2">Terça-feira</option>
-                      <option value="3">Quarta-feira</option>
-                      <option value="4">Quinta-feira</option>
-                      <option value="5">Sexta-feira</option>
-                      <option value="6">Sábado</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Hora da Newsletter Semanal
-                    </label>
-                    <input
-                      type="number"
-                      value={automationSettings.weeklyDigestHour}
-                      onChange={(e) =>
-                        setAutomationSettings((prev) => ({
-                          ...prev,
-                          weeklyDigestHour: parseInt(e.target.value),
-                        }))
-                      }
-                      className="input-classical-2 w-full"
-                      min="0"
-                      max="23"
-                    />
-                    <p className="text-xs text-theme-tertiary mt-1">
-                      Formato 24h (10 = 10:00)
-                    </p>
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-theme-secondary mb-2">
-                      Máximo de Emails por Dia
-                    </label>
-                    <input
-                      type="number"
-                      value={automationSettings.maxEmailsPerDay}
-                      onChange={(e) =>
-                        setAutomationSettings((prev) => ({
-                          ...prev,
-                          maxEmailsPerDay: parseInt(e.target.value),
-                        }))
-                      }
-                      className="input-classical-2 w-full"
-                      min="1"
-                    />
-                    <p className="text-xs text-theme-tertiary mt-1">
-                      Limite diário para prevenir spam
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3 p-4 bg-theme-secondary rounded-lg">
-                  <input
-                    type="checkbox"
-                    checked={automationSettings.enableBehaviorTriggers}
-                    onChange={(e) =>
-                      setAutomationSettings((prev) => ({
-                        ...prev,
-                        enableBehaviorTriggers: e.target.checked,
-                      }))
-                    }
-                    className="rounded border-theme-primary text-brand-primary focus:ring-brand-primary"
-                  />
-                  <div>
-                    <label className="font-medium text-theme-primary">
-                      Habilitar Triggers Comportamentais
-                    </label>
-                    <p className="text-sm text-theme-tertiary">
-                      Emails baseados em ações dos usuários (novos compositores,
-                      etc.)
-                    </p>
                   </div>
                 </div>
               </div>

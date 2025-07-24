@@ -98,7 +98,6 @@ async function getOrCreateNewsletterSettings() {
         { key: 'default_frequency', value: 'weekly' },
         { key: 'max_subscribers_per_batch', value: '100' },
         { key: 'delay_between_batches', value: '2000' },
-        { key: 'enable_automation', value: 'true' },
         { key: 'enable_analytics', value: 'true' },
         { key: 'retention_days', value: '365' },
         { key: 'welcome_email_delay', value: '0' },
@@ -149,10 +148,7 @@ async function saveNewsletterSettings(settings: any) {
         key: 'delay_between_batches',
         value: settings.general.delayBetweenBatches.toString(),
       },
-      {
-        key: 'enable_automation',
-        value: settings.general.enableAutomation.toString(),
-      },
+
       {
         key: 'enable_analytics',
         value: settings.general.enableAnalytics.toString(),
@@ -160,30 +156,6 @@ async function saveNewsletterSettings(settings: any) {
       {
         key: 'retention_days',
         value: settings.general.retentionDays.toString(),
-      },
-      {
-        key: 'welcome_email_delay',
-        value: settings.automation.welcomeEmailDelay.toString(),
-      },
-      {
-        key: 'weekly_digest_day',
-        value: settings.automation.weeklyDigestDay.toString(),
-      },
-      {
-        key: 'weekly_digest_hour',
-        value: settings.automation.weeklyDigestHour.toString(),
-      },
-      {
-        key: 'new_composer_notification_delay',
-        value: settings.automation.newComposerNotificationDelay.toString(),
-      },
-      {
-        key: 'enable_behavior_triggers',
-        value: settings.automation.enableBehaviorTriggers.toString(),
-      },
-      {
-        key: 'max_emails_per_day',
-        value: settings.automation.maxEmailsPerDay.toString(),
       },
     ];
 
@@ -227,19 +199,8 @@ function formatSettings(settingsArray: any[]) {
       delayBetweenBatches: parseInt(
         settingsMap.delay_between_batches || '2000'
       ),
-      enableAutomation: settingsMap.enable_automation === 'true',
       enableAnalytics: settingsMap.enable_analytics === 'true',
       retentionDays: parseInt(settingsMap.retention_days || '365'),
-    },
-    automation: {
-      welcomeEmailDelay: parseInt(settingsMap.welcome_email_delay || '0'),
-      weeklyDigestDay: parseInt(settingsMap.weekly_digest_day || '1'),
-      weeklyDigestHour: parseInt(settingsMap.weekly_digest_hour || '10'),
-      newComposerNotificationDelay: parseInt(
-        settingsMap.new_composer_notification_delay || '3600'
-      ),
-      enableBehaviorTriggers: settingsMap.enable_behavior_triggers === 'true',
-      maxEmailsPerDay: parseInt(settingsMap.max_emails_per_day || '1000'),
     },
   };
 }

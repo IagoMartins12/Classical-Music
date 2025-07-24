@@ -234,12 +234,7 @@ export default function AdminSidebar() {
           icon: BiTestTube,
           badge: 'Novo',
         },
-        {
-          href: '/admin/newsletter/automation',
-          label: 'Automação',
-          icon: FiClock,
-          isActive: pathname.startsWith('/admin/newsletter/automation'),
-        },
+
         {
           href: '/admin/newsletter/backup',
           label: 'Backup',
