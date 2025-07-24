@@ -4,7 +4,6 @@
 import { useState, useEffect } from 'react';
 import {
   FiX,
-  FiSend,
   FiCalendar,
   FiUsers,
   FiFileText,
@@ -14,11 +13,12 @@ import {
 } from 'react-icons/fi';
 import Button from '@/app/components/Common/Button';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
+
+import Modal from '@/app/components/Modal';
 import {
   getAllEmailTemplates,
   previewTemplate,
-} from '@/app/libs/newsletter/emailTemplates2';
-import Modal from '@/app/components/Modal';
+} from '@/app/libs/newsletter/emailTemplates';
 
 interface CreateCampaignModalProps {
   onClose: () => void;
@@ -90,6 +90,7 @@ export default function CreateCampaignModal({
           : null,
       };
 
+      console.log('campaignData', campaignData);
       let result;
       if (editCampaign) {
         result = await updateCampaign(editCampaign.id, campaignData);
@@ -128,12 +129,6 @@ export default function CreateCampaignModal({
           <h2 className="text-xl font-bold text-theme-primary">
             {editCampaign ? 'Editar Campanha' : 'Nova Campanha'}
           </h2>
-          <button
-            onClick={onClose}
-            className="text-theme-tertiary hover:text-theme-primary transition-colors"
-          >
-            <FiX className="w-6 h-6" />
-          </button>
         </div>
 
         {/* Steps */}

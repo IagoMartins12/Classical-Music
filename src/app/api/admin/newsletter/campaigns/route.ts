@@ -1,9 +1,10 @@
+// app/api/admin/newsletter/campaigns/route.ts
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
+import { getEmailTemplate } from '@/app/libs/newsletter/emailTemplates';
 
-// app/api/admin/newsletter/campaigns/route.ts
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -103,46 +104,95 @@ export async function POST(request: NextRequest) {
       name,
       subject,
       templateId,
+      templateType, // 🆕 NOVO: Tipo do template built-in
       targetSegments,
       scheduledAt,
       senderName,
       senderEmail,
       replyToEmail,
+      customContent, // 🆕 NOVO: Conteúdo customizado
+      status = 'DRAFT',
     } = body;
 
-    // Validações básicas
-    if (!name || !subject || !templateId) {
+    // 🆕 VALIDAÇÃO MELHORADA: Aceitar templateType OU templateId
+    if (!name || !subject) {
       return NextResponse.json(
-        { success: false, error: 'Nome, assunto e template são obrigatórios' },
+        { success: false, error: 'Nome e assunto são obrigatórios' },
         { status: 400 }
       );
     }
 
-    // Verificar se template existe
-    const template = await prisma.newsletterTemplate.findUnique({
-      where: { id: templateId },
-    });
+    // 🆕 VALIDAÇÃO DO TEMPLATE
+    let finalTemplateId = templateId;
+    let useBuiltInTemplate = false;
 
-    if (!template) {
+    if (!templateId && templateType) {
+      // Usando template built-in
+      const builtInTemplate = getEmailTemplate(templateType);
+      if (!builtInTemplate) {
+        return NextResponse.json(
+          { success: false, error: 'Template built-in não encontrado' },
+          { status: 400 }
+        );
+      }
+      useBuiltInTemplate = true;
+
+      // 🆕 CRIAR UM TEMPLATE TEMPORÁRIO NO BANCO PARA MANTER A RELAÇÃO
+      const tempTemplate = await prisma.newsletterTemplate.create({
+        data: {
+          name: `Built-in: ${builtInTemplate.description}`,
+          type: templateType as any,
+          subject: builtInTemplate.subject,
+          htmlContent: builtInTemplate.htmlContent,
+          textContent: builtInTemplate.textContent,
+          variables: builtInTemplate.variables,
+          description: `Template built-in: ${builtInTemplate.description}`,
+          isActive: true,
+          isDefault: false,
+          createdBy: session.user.id,
+        },
+      });
+      finalTemplateId = tempTemplate.id;
+    } else if (templateId) {
+      // Usando template personalizado - verificar se existe
+      const template = await prisma.newsletterTemplate.findUnique({
+        where: { id: templateId },
+      });
+
+      if (!template) {
+        return NextResponse.json(
+          { success: false, error: 'Template personalizado não encontrado' },
+          { status: 404 }
+        );
+      }
+    } else {
       return NextResponse.json(
-        { success: false, error: 'Template não encontrado' },
-        { status: 404 }
+        { success: false, error: 'Template ou tipo de template é obrigatório' },
+        { status: 400 }
       );
     }
 
-    // Criar campanha
+    // 🆕 CRIAR CAMPANHA COM DADOS CORRETOS
+    const campaignData: any = {
+      name,
+      subject,
+      templateId: finalTemplateId,
+      targetSegments: targetSegments || null,
+      scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
+      senderName: senderName || 'Opus Atlas',
+      senderEmail: senderEmail || 'noreply@classicalhub.com',
+      replyToEmail: replyToEmail || null,
+      createdBy: session.user.id,
+      status: status,
+    };
+
+    // 🆕 ADICIONAR CONTEÚDO CUSTOMIZADO SE FORNECIDO
+    if (customContent && templateType === 'CAMPAIGN_CUSTOM') {
+      campaignData.customHtmlContent = customContent;
+    }
+
     const campaign = await prisma.newsletterCampaign.create({
-      data: {
-        name,
-        subject,
-        templateId,
-        targetSegments: targetSegments || null,
-        scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
-        senderName: senderName || 'Opus Atlas',
-        senderEmail: senderEmail || 'noreply@classicalhub.com',
-        replyToEmail: replyToEmail || null,
-        createdBy: session.user.id,
-      },
+      data: campaignData,
       include: {
         template: {
           select: {
@@ -169,6 +219,9 @@ export async function POST(request: NextRequest) {
         sentAt: campaign.sentAt?.toISOString() || null,
         createdAt: campaign.createdAt.toISOString(),
         updatedAt: campaign.updatedAt.toISOString(),
+        // 🆕 ADICIONAR INFORMAÇÃO SE É TEMPLATE BUILT-IN
+        isBuiltInTemplate: useBuiltInTemplate,
+        templateType: useBuiltInTemplate ? templateType : null,
       },
     });
   } catch (error) {

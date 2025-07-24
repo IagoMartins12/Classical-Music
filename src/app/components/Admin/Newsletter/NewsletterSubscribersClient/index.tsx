@@ -50,6 +50,15 @@ const subscribeOptions = [
   { value: 'BLOCKED', label: 'Bloqueados' },
 ];
 
+const dateRangeOptions = [
+  { value: '', label: 'Todos os períodos' },
+  { value: 'today', label: 'Hoje' },
+  { value: 'week', label: 'Esta semana' },
+  { value: 'month', label: 'Este mês' },
+  { value: 'quarter', label: 'Este trimestre' },
+  { value: 'year', label: 'Este ano' },
+];
+
 const engagementOptions = [
   { value: '', label: 'Todos os Níveis' },
   { value: 'high', label: 'Alto Engajamento' },
@@ -159,15 +168,6 @@ export default function NewsletterSubscribersClient() {
     );
   }
 
-  const statusOptions = [
-    { value: '', label: '>Todos os períodos' },
-    { value: 'today', label: 'Hoje' },
-    { value: 'week', label: 'Esta semana' },
-    { value: 'month', label: 'Este mês' },
-    { value: 'quarter', label: 'Este trimestre' },
-    { value: 'year', label: 'Este ano' },
-  ];
-
   return (
     <PageContainer showBackground={true}>
       <div className="space-y-8">
@@ -275,22 +275,16 @@ export default function NewsletterSubscribersClient() {
 
                 {/* Quick Filters */}
                 <div className="flex gap-2">
-                  <select
+                  <Select
+                    options={subscribeOptions}
                     value={filters.status}
                     onChange={(e) =>
                       handleFilterChange('status', e.target.value)
                     }
-                    className="px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary focus:outline-none focus:ring-2 focus:ring-brand-primary"
-                  >
-                    {statusOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  />
 
                   <Button
-                    variant="ghost"
+                    variant="secondary"
                     size="sm"
                     leftIcon={<FiFilter />}
                     onClick={() => setShowFilters(!showFilters)}
@@ -338,7 +332,7 @@ export default function NewsletterSubscribersClient() {
                     Período de Inscrição
                   </label>
                   <Select
-                    options={subscribeOptions}
+                    options={dateRangeOptions}
                     value={filters.dateRange}
                     onChange={(e) =>
                       handleFilterChange('dateRange', e.target.value)
@@ -350,24 +344,18 @@ export default function NewsletterSubscribersClient() {
                   <label className="block text-sm font-medium text-theme-secondary mb-2">
                     Nível de Engajamento
                   </label>
-                  <select
+                  <Select
+                    options={engagementOptions}
                     value={filters.engagement}
                     onChange={(e) =>
                       handleFilterChange('engagement', e.target.value)
                     }
-                    className="w-full px-3 py-2 bg-theme-primary border border-theme-primary rounded-lg text-theme-primary focus:outline-none focus:ring-2 focus:ring-brand-primary"
-                  >
-                    {engagementOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </div>
 
                 <div className="flex items-end">
                   <Button
-                    variant="ghost"
+                    variant="secondary"
                     size="sm"
                     onClick={() =>
                       setFilters({

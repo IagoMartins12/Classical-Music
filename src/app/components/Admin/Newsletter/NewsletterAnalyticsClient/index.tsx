@@ -47,7 +47,6 @@ export default function NewsletterAnalyticsClient() {
     { id: 'overview', label: 'Visão Geral', icon: FiBarChart2 },
     { id: 'campaigns', label: 'Campanhas', icon: FiMail },
     { id: 'subscribers', label: 'Subscribers', icon: FiUsers },
-    { id: 'engagement', label: 'Engajamento', icon: FiTrendingUp },
   ];
 
   const dateRangeOptions = [
@@ -132,7 +131,11 @@ export default function NewsletterAnalyticsClient() {
   return (
     <PageContainer showBackground={true}>
       <div className="space-y-8">
-        <AnimatedContainer delay={0.1} staggerSpeed="normal">
+        <AnimatedContainer
+          delay={0.1}
+          staggerSpeed="normal"
+          className="flex flex-col gap-4"
+        >
           {/* Header */}
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
@@ -537,29 +540,6 @@ export default function NewsletterAnalyticsClient() {
                           {analytics.subscribers.lowEngagement}
                         </span>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeTab === 'engagement' && analytics && (
-              <div className="space-y-6">
-                <h3 className="text-xl font-bold text-theme-primary">
-                  Métricas de Engajamento
-                </h3>
-
-                <div className="bg-theme-secondary p-6 rounded-lg">
-                  <h4 className="font-medium text-theme-primary mb-4">
-                    Tendências de Engajamento
-                  </h4>
-                  <div className="h-64 flex items-center justify-center text-theme-tertiary">
-                    <div className="text-center">
-                      <FiTrendingUp className="w-16 h-16 mx-auto mb-4" />
-                      <p>Gráfico de tendências seria implementado aqui</p>
-                      <p className="text-sm">
-                        Mostrando evolução das taxas de abertura e cliques
-                      </p>
                     </div>
                   </div>
                 </div>

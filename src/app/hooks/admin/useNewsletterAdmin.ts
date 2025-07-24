@@ -281,15 +281,31 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
     },
     []
   );
-
   const createCampaign = useCallback(async (data: any): Promise<Campaign> => {
     try {
+      // 🆕 PREPARAR DADOS CORRETAMENTE
+      const campaignData = {
+        name: data.name,
+        subject: data.subject,
+        templateType: data.templateType, // 🆕 SEMPRE ENVIAR templateType
+        templateId: data.templateId || '', // 🆕 Pode ser vazio para templates built-in
+        customContent: data.customContent,
+        scheduledAt: data.scheduledAt,
+        status: data.status || 'DRAFT',
+        targetSegments: data.targetSegments,
+        senderName: data.senderName,
+        senderEmail: data.senderEmail,
+        replyToEmail: data.replyToEmail,
+      };
+
+      console.log('📤 Enviando dados da campanha:', campaignData);
+
       const response = await fetch('/api/admin/newsletter/campaigns', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(campaignData),
       });
 
       const result = await response.json();
@@ -302,11 +318,10 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
         throw new Error(result.error || 'Erro ao criar campanha');
       }
     } catch (err) {
-      console.error('Erro ao criar campanha:', err);
+      console.error('❌ Erro ao criar campanha:', err);
       throw err;
     }
   }, []);
-
   const updateCampaign = useCallback(
     async (id: string, data: any): Promise<Campaign> => {
       try {

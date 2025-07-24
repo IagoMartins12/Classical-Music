@@ -24,6 +24,8 @@ import {
   LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
+import Select from '@/app/components/Common/Select';
+import Input from '@/app/components/Common/Inputs';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import CreateCampaignModal from './CreateCampaignModal';
 import { CampaignStatsModal } from './CampaignStatsModal';
@@ -43,6 +45,14 @@ const statusOptions = [
   { value: 'PAUSED', label: 'Pausadas' },
   { value: 'CANCELLED', label: 'Canceladas' },
   { value: 'FAILED', label: 'Falharam' },
+];
+
+const dateRangeOptions = [
+  { value: '', label: 'Todos os períodos' },
+  { value: 'today', label: 'Hoje' },
+  { value: 'week', label: 'Esta semana' },
+  { value: 'month', label: 'Este mês' },
+  { value: 'year', label: 'Este ano' },
 ];
 
 export default function NewsletterCampaignsClient() {
@@ -164,7 +174,11 @@ export default function NewsletterCampaignsClient() {
   return (
     <PageContainer showBackground={true}>
       <div className="space-y-8">
-        <AnimatedContainer delay={0.1} staggerSpeed="normal">
+        <AnimatedContainer
+          delay={0.1}
+          staggerSpeed="normal"
+          className="flex flex-col gap-4"
+        >
           {/* Header */}
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
@@ -248,7 +262,7 @@ export default function NewsletterCampaignsClient() {
                 {/* Search */}
                 <div className="relative flex-1 max-w-md">
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                  <input
+                  <Input
                     type="text"
                     placeholder="Buscar campanhas..."
                     value={filters.search}
@@ -261,33 +275,21 @@ export default function NewsletterCampaignsClient() {
 
                 {/* Filters */}
                 <div className="flex gap-2">
-                  <select
+                  <Select
+                    options={statusOptions}
                     value={filters.status}
                     onChange={(e) =>
                       handleFilterChange('status', e.target.value)
                     }
-                    className="px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary focus:outline-none focus:ring-2 focus:ring-brand-primary"
-                  >
-                    {statusOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  />
 
-                  <select
+                  <Select
+                    options={dateRangeOptions}
                     value={filters.dateRange}
                     onChange={(e) =>
                       handleFilterChange('dateRange', e.target.value)
                     }
-                    className="px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary focus:outline-none focus:ring-2 focus:ring-brand-primary"
-                  >
-                    <option value="">Todos os períodos</option>
-                    <option value="today">Hoje</option>
-                    <option value="week">Esta semana</option>
-                    <option value="month">Este mês</option>
-                    <option value="year">Este ano</option>
-                  </select>
+                  />
                 </div>
               </div>
 

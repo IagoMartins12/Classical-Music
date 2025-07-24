@@ -53,9 +53,8 @@ export default function NewsletterDashboardClient() {
       title: 'Nova Campanha',
       description: 'Criar campanha de email',
       icon: FiPlus,
-      href: '/admin/newsletter/campaigns/create',
+      href: '/admin/newsletter/campaigns',
       color: 'from-brand-primary to-brand-secondary',
-      badge: 'Novo',
     },
     {
       title: 'Gerenciar Subscribers',
@@ -134,7 +133,11 @@ export default function NewsletterDashboardClient() {
   return (
     <PageContainer showBackground={true}>
       <div className="space-y-8">
-        <AnimatedContainer delay={0.1} staggerSpeed="normal">
+        <AnimatedContainer
+          delay={0.1}
+          staggerSpeed="normal"
+          className="flex flex-col gap-4"
+        >
           {/* Header */}
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
@@ -166,8 +169,7 @@ export default function NewsletterDashboardClient() {
                   variant="primary"
                   leftIcon={<FiPlus />}
                   onClick={() =>
-                    (window.location.href =
-                      '/admin/newsletter/campaigns/create')
+                    (window.location.href = '/admin/newsletter/campaigns')
                   }
                 >
                   Nova Campanha
@@ -465,61 +467,6 @@ export default function NewsletterDashboardClient() {
               )}
             </AnimatedCard>
           </div>
-
-          {/* System Status */}
-          <AnimatedCard className="classical-card p-6">
-            <h3 className="text-xl font-bold text-theme-primary mb-6">
-              Status do Sistema
-            </h3>
-
-            <div className="grid md:grid-cols-4 gap-4">
-              <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                <div className="flex items-center justify-center mb-2">
-                  <div className="w-3 h-3 bg-accent-green rounded-full animate-pulse mr-2"></div>
-                  <span className="font-medium text-theme-primary">SMTP</span>
-                </div>
-                <div className="text-2xl font-bold text-accent-green">
-                  Online
-                </div>
-                <div className="text-xs text-theme-tertiary">Funcionando</div>
-              </div>
-
-              <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                <div className="flex items-center justify-center mb-2">
-                  <div className="w-3 h-3 bg-accent-blue rounded-full mr-2"></div>
-                  <span className="font-medium text-theme-primary">Queue</span>
-                </div>
-                <div className="text-2xl font-bold text-accent-blue">0</div>
-                <div className="text-xs text-theme-tertiary">
-                  Emails pendentes
-                </div>
-              </div>
-
-              <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                <div className="flex items-center justify-center mb-2">
-                  <div className="w-3 h-3 bg-accent-amber rounded-full mr-2"></div>
-                  <span className="font-medium text-theme-primary">
-                    Delivery
-                  </span>
-                </div>
-                <div className="text-2xl font-bold text-accent-amber">
-                  98.5%
-                </div>
-                <div className="text-xs text-theme-tertiary">Taxa entrega</div>
-              </div>
-
-              <div className="text-center p-4 bg-theme-secondary rounded-xl">
-                <div className="flex items-center justify-center mb-2">
-                  <div className="w-3 h-3 bg-accent-purple rounded-full mr-2"></div>
-                  <span className="font-medium text-theme-primary">
-                    Templates
-                  </span>
-                </div>
-                <div className="text-2xl font-bold text-accent-purple">6</div>
-                <div className="text-xs text-theme-tertiary">Ativos</div>
-              </div>
-            </div>
-          </AnimatedCard>
         </AnimatedContainer>
       </div>
     </PageContainer>

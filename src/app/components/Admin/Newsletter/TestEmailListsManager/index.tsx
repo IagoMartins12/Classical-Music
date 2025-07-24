@@ -12,8 +12,6 @@ import {
   FiEyeOff,
   FiCopy,
   FiSearch,
-  FiFilter,
-  FiMoreVertical,
   FiSend,
   FiCheckCircle,
   FiClock,
@@ -735,31 +733,17 @@ export default function TestEmailListsManager() {
   const [editingList, setEditingList] = useState<any>(null);
 
   // Filtrar e ordenar listas
-  const filteredLists = lists
-    .filter((list) => {
-      const matchesSearch =
-        !searchTerm ||
-        list.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        list.description?.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredLists = lists.filter((list) => {
+    const matchesSearch =
+      !searchTerm ||
+      list.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      list.description?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      const matchesFilter =
-        filterActive === 'all' || list.isActive === filterActive;
+    const matchesFilter =
+      filterActive === 'all' || list.isActive === filterActive;
 
-      return matchesSearch && matchesFilter;
-    })
-    .sort((a, b) => {
-      let aValue = a[sortBy as keyof typeof a];
-      let bValue = b[sortBy as keyof typeof b];
-
-      if (typeof aValue === 'string') aValue = aValue.toLowerCase();
-      if (typeof bValue === 'string') bValue = bValue.toLowerCase();
-
-      if (sortOrder === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-      }
-    });
+    return matchesSearch && matchesFilter;
+  });
 
   const handleRefresh = () => {
     fetchLists({
@@ -830,7 +814,11 @@ export default function TestEmailListsManager() {
   return (
     <PageContainer showBackground={true}>
       <div className="space-y-8">
-        <AnimatedContainer delay={0.1} staggerSpeed="normal">
+        <AnimatedContainer
+          delay={0.1}
+          staggerSpeed="normal"
+          className="flex flex-col gap-4"
+        >
           {/* Header */}
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
