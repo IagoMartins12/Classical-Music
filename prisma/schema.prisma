@@ -169,6 +169,8 @@ enum EmailTemplateType {
   STUDY_REMINDER    // Lembrete de estudo
   CUSTOM_CAMPAIGN   // Campanha personalizada
   UNSUBSCRIBE       // Confirmação de cancelamento
+  PASSWORD_RESET
+  ACCOUNT_CONFIRMATION
 }
 
 enum CampaignStatus {
@@ -196,7 +198,6 @@ enum TokenType {
   PASSWORD_RESET
   NEWSLETTER_CONFIRMATION
 }
-
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   firstName      String?
@@ -303,6 +304,9 @@ model User {
   editedNewsletterCampaigns  NewsletterCampaign[]         @relation("NewsletterCampaignEditor")
   editedNewsletterSettings   NewsletterSettings[]         @relation("NewsletterSettingsEditor")
   
+  approvedNewsletterTemplates NewsletterTemplate[]        @relation("NewsletterTemplateApprover")
+  templateUsageLogs          TemplateUsageLog[]
+  createdTemplateFragments   TemplateFragment[]
   favoriteScores FavoriteScore[]
 
   instruments       UserInstrument[]
@@ -1593,12 +1597,14 @@ model NewsletterTemplate {
   designData Json? // Dados do editor visual (se houver)
   variables  String[] @default([]) // Variáveis disponíveis: {{firstName}}, {{newWorks}}, etc.
   
-  // Configurações
-  isActive        Boolean @default(true)
-  isDefault       Boolean @default(false) // Template padrão para o tipo
+  // Configurações de remetente
   senderName      String  @default("Opus Atlas")
   senderEmail     String  @default("noreply@opusatlas.com")
   replyToEmail    String?
+  
+  // Configurações
+  isActive        Boolean @default(true)
+  isDefault       Boolean @default(false) // Template padrão para o tipo
   
   // Metadados
   description     String?
@@ -1610,27 +1616,59 @@ model NewsletterTemplate {
   avgOpenRate     Float?  @default(0)
   avgClickRate    Float?  @default(0)
   
+  // 🆕 NOVOS CAMPOS PARA MELHOR GESTÃO
+  category        String? // Categoria personalizada (ex: "Promocional", "Transacional")
+  priority        Int     @default(0) // Prioridade de exibição
+  
+  // Configurações avançadas
+  trackingEnabled Boolean @default(true) // Se deve rastrear aberturas/cliques
+  autoTextVersion Boolean @default(true) // Se deve gerar versão texto automaticamente
+  
+  // Dados de qualidade
+  qualityScore    Float?  // Score de qualidade calculado (0-100)
+  lastQualityCheck DateTime? // Última verificação de qualidade
+  
+  // Configurações de uso
+  usageRestrictions Json? // Restrições de uso (ex: apenas para admins, frequência máxima)
+  expiresAt        DateTime? // Data de expiração do template (opcional)
+  
   // Controle de acesso
   createdBy       String  @db.ObjectId
   lastEditedBy    String? @db.ObjectId
   lastEditedAt    DateTime?
   
+  // Aprovação (opcional)
+  approvalStatus  String  @default("approved") // "pending", "approved", "rejected"
+  approvedBy      String? @db.ObjectId
+  approvedAt      DateTime?
+  approvalNotes   String?
+  
   // Relações
   creator         User                 @relation("NewsletterTemplateCreator", fields: [createdBy], references: [id])
   editor          User?                @relation("NewsletterTemplateEditor", fields: [lastEditedBy], references: [id])
+  approver        User?                @relation("NewsletterTemplateApprover", fields: [approvedBy], references: [id])
   campaigns       NewsletterCampaign[]
+  
+  // Novos relacionamentos
+  derivedFromId   String?              @db.ObjectId
   
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Índices
+  // Índices otimizados
   @@index([type, isActive])
   @@index([isDefault, type])
   @@index([createdBy])
   @@index([tags])
+  @@index([category, priority]) // 🆕 Para categorização
+  @@index([qualityScore]) // 🆕 Para rankings de qualidade
+  @@index([approvalStatus]) // 🆕 Para fluxo de aprovação
+  @@index([timesUsed, avgOpenRate]) // 🆕 Para análise de performance
+  @@index([expiresAt]) // 🆕 Para limpeza automática
   @@map("newsletter_templates")
 }
+
 
 // Campanhas de email
 model NewsletterCampaign {
@@ -1639,8 +1677,13 @@ model NewsletterCampaign {
 
   // Configurações básicas
   subject      String
-  templateId   String         @db.ObjectId
+  templateId   String?        @db.ObjectId // 🆕 Tornar opcional
+  templateType String?        // 🆕 Tipo de template usado (para built-in)
   status       CampaignStatus @default(DRAFT)
+  
+  // 🆕 NOVOS CAMPOS PARA MELHOR INTEGRAÇÃO COM TEMPLATES
+  useCustomTemplate Boolean @default(false) // Se usa template personalizado
+  templateSnapshot  Json?   // Snapshot do template no momento do envio
   
   // Agendamento
   scheduledAt  DateTime?
@@ -1662,22 +1705,35 @@ model NewsletterCampaign {
   replyToEmail  String?
   testEmailSent Boolean @default(false)
   
-  // Estatísticas
-  totalSubscribers Int @default(0) // Quantos vão receber
-  emailsSent       Int @default(0) // Quantos foram enviados
-  emailsDelivered  Int @default(0) // Quantos foram entregues
-  emailsOpened     Int @default(0) // Quantos foram abertos
-  emailsClicked    Int @default(0) // Quantos tiveram cliques
-  emailsBounced    Int @default(0) // Quantos retornaram
-  emailsComplained Int @default(0) // Quantos marcaram como spam
-  emailsUnsubscribed    Int      @default(0)
-
-
+  // 🆕 CONFIGURAÇÕES AVANÇADAS
+  priority      String  @default("normal") // "low", "normal", "high", "urgent"
+  deliveryOptions Json? // Opções de entrega (throttling, retry, etc.)
+  
+  // Estatísticas expandidas
+  totalSubscribers    Int @default(0) // Quantos vão receber
+  emailsSent          Int @default(0) // Quantos foram enviados
+  emailsDelivered     Int @default(0) // Quantos foram entregues
+  emailsOpened        Int @default(0) // Quantos foram abertos
+  emailsClicked       Int @default(0) // Quantos tiveram cliques
+  emailsBounced       Int @default(0) // Quantos retornaram
+  emailsComplained    Int @default(0) // Quantos marcaram como spam
+  emailsUnsubscribed  Int @default(0) // Quantos cancelaram inscrição
+  
+  // 🆕 MÉTRICAS AVANÇADAS
+  uniqueOpens         Int @default(0) // Aberturas únicas
+  uniqueClicks        Int @default(0) // Cliques únicos
+  avgEngagementTime   Float? // Tempo médio de engajamento
+  topClickedLinks     Json? // Links mais clicados
+  deviceStats         Json? // Estatísticas por dispositivo
+  locationStats       Json? // Estatísticas por localização
+  
   // Taxas calculadas (cache)
   deliveryRate Float? @default(0) // emailsDelivered / emailsSent
   openRate     Float? @default(0) // emailsOpened / emailsDelivered  
   clickRate    Float? @default(0) // emailsClicked / emailsDelivered
   bounceRate   Float? @default(0) // emailsBounced / emailsSent
+  spamRate     Float? @default(0) // emailsComplained / emailsDelivered
+  unsubscribeRate Float? @default(0) // emailsUnsubscribed / emailsDelivered
   
   // Controle de acesso
   createdBy    String    @db.ObjectId
@@ -1688,8 +1744,13 @@ model NewsletterCampaign {
   notes        String?
   tags         String[] @default([])
   
+  // 🆕 AUDITORIA E COMPLIANCE
+  gdprCompliant    Boolean @default(true) // Se está em conformidade com GDPR
+  retentionPeriod  Int?    // Período de retenção em dias
+  archiveAfter     DateTime? // Data para arquivar automaticamente
+  
   // Relações
-  template     NewsletterTemplate        @relation(fields: [templateId], references: [id])
+  template     NewsletterTemplate?       @relation(fields: [templateId], references: [id])
   creator      User                      @relation("NewsletterCampaignCreator", fields: [createdBy], references: [id])
   editor       User?                     @relation("NewsletterCampaignEditor", fields: [lastEditedBy], references: [id])
   sends        NewsletterCampaignSend[]
@@ -1699,12 +1760,16 @@ model NewsletterCampaign {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Índices
+  // Índices atualizados
   @@index([status])
   @@index([scheduledAt])
   @@index([createdBy])
   @@index([sentAt])
   @@index([tags])
+  @@index([useCustomTemplate, templateType]) // 🆕 Para filtrar por tipo de template
+  @@index([priority, scheduledAt]) // 🆕 Para fila de envio
+  @@index([openRate, clickRate]) // 🆕 Para rankings de performance
+  @@index([archiveAfter]) // 🆕 Para limpeza automática
   @@map("newsletter_campaigns")
 }
 
@@ -1823,4 +1888,71 @@ model TestEmailList {
   @@index([isActive])
   @@index([name])
   @@map("test_email_lists")
+}
+model TemplateUsageLog {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  templateId String   @db.ObjectId
+  campaignId String?  @db.ObjectId // Pode ser null para testes
+  userId     String   @db.ObjectId
+  
+  // Dados do uso
+  usageType  String   // "campaign", "test", "preview"
+  context    Json?    // Contexto adicional do uso
+  
+  // Métricas do uso
+  renderTime Float?   // Tempo de renderização em ms
+  variables  Json?    // Variáveis usadas na renderização
+  errors     String[] @default([]) // Erros encontrados
+  
+  // Resultado
+  successful Boolean  @default(true)
+  emailsSent Int?     // Para campanhas
+  
+  createdAt DateTime @default(now())
+  
+  // Relações
+  user     User                @relation(fields: [userId], references: [id])
+  
+  @@index([templateId, createdAt])
+  @@index([usageType])
+  @@index([successful])
+  @@map("template_usage_logs")
+}
+
+// 🆕 NOVO MODELO: Fragmentos de template reutilizáveis
+model TemplateFragment {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  
+  // Conteúdo do fragmento
+  htmlContent String
+  textContent String?
+  variables   String[] @default([])
+  
+  // Categorização
+  category    String   // "header", "footer", "content-block", "cta", etc.
+  tags        String[] @default([])
+  
+  // Configurações
+  isActive    Boolean  @default(true)
+  isPublic    Boolean  @default(false) // Se pode ser usado por outros
+  
+  // Estatísticas
+  timesUsed   Int      @default(0)
+  
+  // Controle de acesso
+  createdBy   String   @db.ObjectId
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relações
+  creator     User     @relation(fields: [createdBy], references: [id])
+  
+  @@index([category, isActive])
+  @@index([createdBy])
+  @@index([tags])
+  @@map("template_fragments")
 }

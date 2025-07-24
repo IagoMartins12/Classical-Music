@@ -61,8 +61,7 @@ export default function NewsletterCampaignsClient() {
     campaignsLoading,
     campaignsPagination,
     fetchCampaigns,
-    createCampaign,
-    updateCampaign,
+
     deleteCampaign,
     sendCampaign,
   } = useNewsletterAdmin();

@@ -1,6 +1,7 @@
-// app/hooks/admin/useNewsletterAdmin.ts
+// app/hooks/admin/useNewsletterAdmin.ts - VERSÃO COMPLETA
 import { useState, useCallback } from 'react';
 
+// Interfaces existentes (manter todas)
 interface Subscriber {
   id: string;
   email: string;
@@ -58,18 +59,77 @@ interface Template {
   subject: string;
   htmlContent: string;
   textContent: string;
+  description?: string;
+  senderName: string;
+  senderEmail: string;
+  replyToEmail?: string;
+  variables: string[];
   isActive: boolean;
   isDefault: boolean;
-  variables: string[];
   timesUsed: number;
   avgOpenRate?: number;
   avgClickRate?: number;
+  qualityScore?: number;
+  category?: string;
+  priority: number;
+  tags: string[];
+  creator: {
+    id: string;
+    firstName?: string;
+    lastName?: string;
+  };
+  editor?: {
+    id: string;
+    firstName?: string;
+    lastName?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  lastEditedAt?: string;
+}
+
+// 🆕 NOVA: Interface para fragmentos de template
+interface TemplateFragment {
+  id: string;
+  name: string;
+  description?: string;
+  htmlContent: string;
+  textContent?: string;
+  variables: string[];
+  category: string;
+  tags: string[];
+  isActive: boolean;
+  isPublic: boolean;
+  timesUsed: number;
   creator: {
     id: string;
     firstName?: string;
     lastName?: string;
   };
   createdAt: string;
+  updatedAt: string;
+}
+
+// 🆕 NOVA: Interface para estatísticas de templates
+interface TemplateStats {
+  totalTemplates: number;
+  activeTemplates: number;
+  defaultTemplates: number;
+  totalUsage: number;
+  avgQualityScore: number;
+  topPerformingTemplates: Template[];
+  templatesByType: Record<string, number>;
+  recentActivity: {
+    created: number;
+    updated: number;
+    used: number;
+  };
+  performanceMetrics: {
+    avgOpenRate: number;
+    avgClickRate: number;
+    bestOpenRate: number;
+    bestClickRate: number;
+  };
 }
 
 interface Pagination {
@@ -100,43 +160,74 @@ interface UseNewsletterAdminReturn {
   updateCampaign: (id: string, data: any) => Promise<Campaign>;
   deleteCampaign: (id: string) => Promise<void>;
   sendCampaign: (id: string) => Promise<void>;
+  duplicateCampaign: (id: string) => Promise<Campaign>;
 
-  // Templates
+  // Templates - VERSÃO COMPLETA
   templates: Template[];
   templatesLoading: boolean;
+  templateStats: TemplateStats | null;
   fetchTemplates: (filters?: any) => Promise<void>;
+  fetchTemplate: (id: string) => Promise<Template | null>;
   createTemplate: (data: any) => Promise<Template>;
   updateTemplate: (id: string, data: any) => Promise<Template>;
   deleteTemplate: (id: string) => Promise<void>;
+  deleteTemplates: (ids: string[]) => Promise<void>;
+  duplicateTemplate: (id: string) => Promise<Template>;
+  setAsDefault: (id: string) => Promise<void>;
+  toggleTemplateStatus: (id: string) => Promise<void>;
+  previewTemplate: (id: string, variables?: any) => Promise<any>;
+  analyzeTemplate: (id: string) => Promise<any>;
+  fetchTemplateStats: () => Promise<void>;
+
+  // 🆕 NOVO: Template Fragments
+  fragments: TemplateFragment[];
+  fragmentsLoading: boolean;
+  fetchFragments: (filters?: any) => Promise<void>;
+  createFragment: (data: any) => Promise<TemplateFragment>;
+  updateFragment: (id: string, data: any) => Promise<TemplateFragment>;
+  deleteFragment: (id: string) => Promise<void>;
+
+  // 🆕 NOVO: Template Quality & Analytics
+  generateTemplateReport: (id: string) => Promise<any>;
+  validateTemplate: (
+    data: any
+  ) => Promise<{ valid: boolean; errors: string[] }>;
+  suggestImprovements: (id: string) => Promise<string[]>;
+  compareTemplates: (id1: string, id2: string) => Promise<any>;
 
   // General
   loading: boolean;
   error: string | null;
   pagination?: Pagination;
+  refreshAll: () => Promise<void>;
 }
 
 export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
-  // Subscribers state
+  // Estados existentes
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [subscribersLoading, setSubscribersLoading] = useState(false);
   const [subscribersPagination, setSubscribersPagination] =
     useState<Pagination>();
 
-  // Campaigns state
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [campaignsLoading, setCampaignsLoading] = useState(false);
   const [campaignsPagination, setCampaignsPagination] = useState<Pagination>();
 
-  // Templates state
   const [templates, setTemplates] = useState<Template[]>([]);
   const [templatesLoading, setTemplatesLoading] = useState(false);
+  const [templateStats, setTemplateStats] = useState<TemplateStats | null>(
+    null
+  );
 
-  // General state
+  // 🆕 NOVOS ESTADOS
+  const [fragments, setFragments] = useState<TemplateFragment[]>([]);
+  const [fragmentsLoading, setFragmentsLoading] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState<Pagination>();
 
-  // Subscribers methods
+  // === SUBSCRIBERS METHODS (manter existentes) ===
   const fetchSubscribers = useCallback(
     async (page: number, filters: any = {}) => {
       setSubscribersLoading(true);
@@ -175,16 +266,13 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
     try {
       const response = await fetch(`/api/admin/newsletter/subscribers/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
       const result = await response.json();
 
       if (result.success) {
-        // Atualizar subscriber na lista
         setSubscribers((prev) =>
           prev.map((sub) =>
             sub.id === id ? { ...sub, ...result.subscriber } : sub
@@ -208,7 +296,6 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
       const result = await response.json();
 
       if (result.success) {
-        // Remover subscriber da lista
         setSubscribers((prev) => prev.filter((sub) => sub.id !== id));
       } else {
         throw new Error(result.error || 'Erro ao deletar subscriber');
@@ -247,7 +334,7 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
     }
   }, []);
 
-  // Campaigns methods
+  // === CAMPAIGNS METHODS (manter existentes + melhorias) ===
   const fetchCampaigns = useCallback(
     async (page: number, filters: any = {}) => {
       setCampaignsLoading(true);
@@ -281,62 +368,59 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
     },
     []
   );
+
   const createCampaign = useCallback(async (data: any): Promise<Campaign> => {
     try {
-      // 🆕 PREPARAR DADOS CORRETAMENTE
       const campaignData = {
         name: data.name,
         subject: data.subject,
-        templateType: data.templateType, // 🆕 SEMPRE ENVIAR templateType
-        templateId: data.templateId || '', // 🆕 Pode ser vazio para templates built-in
+        templateType: data.templateType,
+        templateId: data.templateId || '',
         customContent: data.customContent,
+        customHtmlContent: data.customHtmlContent,
+        customTextContent: data.customTextContent,
+        customSubject: data.customSubject,
         scheduledAt: data.scheduledAt,
         status: data.status || 'DRAFT',
         targetSegments: data.targetSegments,
         senderName: data.senderName,
         senderEmail: data.senderEmail,
         replyToEmail: data.replyToEmail,
+        useCustomTemplate: data.useCustomTemplate,
       };
-
-      console.log('📤 Enviando dados da campanha:', campaignData);
 
       const response = await fetch('/api/admin/newsletter/campaigns', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(campaignData),
       });
 
       const result = await response.json();
 
       if (result.success) {
-        // Adicionar campanha à lista
         setCampaigns((prev) => [result.campaign, ...prev]);
         return result.campaign;
       } else {
         throw new Error(result.error || 'Erro ao criar campanha');
       }
     } catch (err) {
-      console.error('❌ Erro ao criar campanha:', err);
+      console.error('Erro ao criar campanha:', err);
       throw err;
     }
   }, []);
+
   const updateCampaign = useCallback(
     async (id: string, data: any): Promise<Campaign> => {
       try {
         const response = await fetch(`/api/admin/newsletter/campaigns/${id}`, {
           method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
 
         const result = await response.json();
 
         if (result.success) {
-          // Atualizar campanha na lista
           setCampaigns((prev) =>
             prev.map((camp) =>
               camp.id === id ? { ...camp, ...result.campaign } : camp
@@ -363,7 +447,6 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
       const result = await response.json();
 
       if (result.success) {
-        // Remover campanha da lista
         setCampaigns((prev) => prev.filter((camp) => camp.id !== id));
       } else {
         throw new Error(result.error || 'Erro ao deletar campanha');
@@ -386,7 +469,6 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
       const result = await response.json();
 
       if (result.success) {
-        // Atualizar status da campanha
         setCampaigns((prev) =>
           prev.map((camp) =>
             camp.id === id
@@ -403,13 +485,45 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
     }
   }, []);
 
-  // Templates methods
+  // 🆕 NOVO: Duplicar campanha
+  const duplicateCampaign = useCallback(
+    async (id: string): Promise<Campaign> => {
+      try {
+        const response = await fetch(
+          `/api/admin/newsletter/campaigns/${id}/duplicate`,
+          {
+            method: 'POST',
+          }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+          setCampaigns((prev) => [result.campaign, ...prev]);
+          return result.campaign;
+        } else {
+          throw new Error(result.error || 'Erro ao duplicar campanha');
+        }
+      } catch (err) {
+        console.error('Erro ao duplicar campanha:', err);
+        throw err;
+      }
+    },
+    []
+  );
+
+  // === TEMPLATES METHODS - VERSÃO COMPLETA ===
   const fetchTemplates = useCallback(async (filters: any = {}) => {
     setTemplatesLoading(true);
     setError(null);
 
     try {
-      const queryParams = new URLSearchParams(filters);
+      const queryParams = new URLSearchParams();
+      if (filters.search) queryParams.set('search', filters.search);
+      if (filters.type) queryParams.set('type', filters.type);
+      if (filters.status) queryParams.set('status', filters.status);
+      if (filters.category) queryParams.set('category', filters.category);
+
       const response = await fetch(
         `/api/admin/newsletter/templates?${queryParams}`
       );
@@ -428,20 +542,38 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
     }
   }, []);
 
+  const fetchTemplate = useCallback(
+    async (id: string): Promise<Template | null> => {
+      try {
+        const response = await fetch(`/api/admin/newsletter/templates/${id}`);
+        const result = await response.json();
+
+        if (result.success) {
+          return result.template;
+        } else {
+          setError(result.error || 'Erro ao carregar template');
+          return null;
+        }
+      } catch (err) {
+        console.error('Erro ao buscar template:', err);
+        setError('Erro de conexão');
+        return null;
+      }
+    },
+    []
+  );
+
   const createTemplate = useCallback(async (data: any): Promise<Template> => {
     try {
       const response = await fetch('/api/admin/newsletter/templates', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
       const result = await response.json();
 
       if (result.success) {
-        // Adicionar template à lista
         setTemplates((prev) => [result.template, ...prev]);
         return result.template;
       } else {
@@ -458,16 +590,13 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
       try {
         const response = await fetch(`/api/admin/newsletter/templates/${id}`, {
           method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
 
         const result = await response.json();
 
         if (result.success) {
-          // Atualizar template na lista
           setTemplates((prev) =>
             prev.map((temp) =>
               temp.id === id ? { ...temp, ...result.template } : temp
@@ -494,7 +623,6 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
       const result = await response.json();
 
       if (result.success) {
-        // Remover template da lista
         setTemplates((prev) => prev.filter((temp) => temp.id !== id));
       } else {
         throw new Error(result.error || 'Erro ao deletar template');
@@ -504,6 +632,341 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
       throw err;
     }
   }, []);
+
+  // 🆕 NOVO: Deletar múltiplos templates
+  const deleteTemplates = useCallback(async (ids: string[]) => {
+    try {
+      const response = await fetch('/api/admin/newsletter/templates', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ templateIds: ids }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setTemplates((prev) => prev.filter((temp) => !ids.includes(temp.id)));
+      } else {
+        throw new Error(result.error || 'Erro ao deletar templates');
+      }
+    } catch (err) {
+      console.error('Erro ao deletar templates:', err);
+      throw err;
+    }
+  }, []);
+
+  const duplicateTemplate = useCallback(
+    async (id: string): Promise<Template> => {
+      try {
+        const originalTemplate = await fetchTemplate(id);
+        if (!originalTemplate) {
+          throw new Error('Template original não encontrado');
+        }
+
+        const duplicateData = {
+          name: `${originalTemplate.name} (Cópia)`,
+          type: originalTemplate.type,
+          subject: originalTemplate.subject,
+          htmlContent: originalTemplate.htmlContent,
+          textContent: originalTemplate.textContent,
+          description: originalTemplate.description,
+          senderName: originalTemplate.senderName,
+          senderEmail: originalTemplate.senderEmail,
+          replyToEmail: originalTemplate.replyToEmail,
+          variables: originalTemplate.variables,
+          category: originalTemplate.category,
+          tags: originalTemplate.tags,
+          isActive: false,
+          isDefault: false,
+        };
+
+        return await createTemplate(duplicateData);
+      } catch (err) {
+        console.error('Erro ao duplicar template:', err);
+        throw err;
+      }
+    },
+    [fetchTemplate, createTemplate]
+  );
+
+  const setAsDefault = useCallback(
+    async (id: string): Promise<void> => {
+      try {
+        await updateTemplate(id, { isDefault: true });
+      } catch (err) {
+        console.error('Erro ao definir template como padrão:', err);
+        throw err;
+      }
+    },
+    [updateTemplate]
+  );
+
+  const toggleTemplateStatus = useCallback(
+    async (id: string): Promise<void> => {
+      try {
+        const template = templates.find((t) => t.id === id);
+        if (!template) throw new Error('Template não encontrado');
+
+        await updateTemplate(id, { isActive: !template.isActive });
+      } catch (err) {
+        console.error('Erro ao alterar status do template:', err);
+        throw err;
+      }
+    },
+    [templates, updateTemplate]
+  );
+
+  // 🆕 NOVO: Preview de template
+  const previewTemplate = useCallback(async (id: string, variables?: any) => {
+    try {
+      const url = `/api/admin/newsletter/templates/${id}/preview`;
+      const method = variables ? 'POST' : 'GET';
+      const body = variables ? JSON.stringify({ variables }) : undefined;
+
+      const response = await fetch(url, {
+        method,
+        headers: variables ? { 'Content-Type': 'application/json' } : {},
+        body,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        return result.preview;
+      } else {
+        throw new Error(result.error || 'Erro ao gerar preview');
+      }
+    } catch (err) {
+      console.error('Erro ao gerar preview:', err);
+      throw err;
+    }
+  }, []);
+
+  // 🆕 NOVO: Analisar template
+  const analyzeTemplate = useCallback(async (id: string) => {
+    try {
+      const response = await fetch(
+        `/api/admin/newsletter/templates/${id}/analyze`
+      );
+      const result = await response.json();
+
+      if (result.success) {
+        return result.analysis;
+      } else {
+        throw new Error(result.error || 'Erro ao analisar template');
+      }
+    } catch (err) {
+      console.error('Erro ao analisar template:', err);
+      throw err;
+    }
+  }, []);
+
+  // 🆕 NOVO: Buscar estatísticas de templates
+  const fetchTemplateStats = useCallback(async () => {
+    try {
+      const response = await fetch('/api/admin/newsletter/templates/stats');
+      const result = await response.json();
+
+      if (result.success) {
+        setTemplateStats(result.stats);
+      } else {
+        setError(result.error || 'Erro ao carregar estatísticas');
+      }
+    } catch (err) {
+      console.error('Erro ao buscar estatísticas:', err);
+      setError('Erro de conexão');
+    }
+  }, []);
+
+  // === TEMPLATE FRAGMENTS METHODS ===
+  const fetchFragments = useCallback(async (filters: any = {}) => {
+    setFragmentsLoading(true);
+    setError(null);
+
+    try {
+      const queryParams = new URLSearchParams(filters);
+      const response = await fetch(
+        `/api/admin/newsletter/fragments?${queryParams}`
+      );
+      const result = await response.json();
+
+      if (result.success) {
+        setFragments(result.fragments);
+      } else {
+        setError(result.error || 'Erro ao carregar fragmentos');
+      }
+    } catch (err) {
+      console.error('Erro ao buscar fragmentos:', err);
+      setError('Erro de conexão');
+    } finally {
+      setFragmentsLoading(false);
+    }
+  }, []);
+
+  const createFragment = useCallback(
+    async (data: any): Promise<TemplateFragment> => {
+      try {
+        const response = await fetch('/api/admin/newsletter/fragments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          setFragments((prev) => [result.fragment, ...prev]);
+          return result.fragment;
+        } else {
+          throw new Error(result.error || 'Erro ao criar fragmento');
+        }
+      } catch (err) {
+        console.error('Erro ao criar fragmento:', err);
+        throw err;
+      }
+    },
+    []
+  );
+
+  const updateFragment = useCallback(
+    async (id: string, data: any): Promise<TemplateFragment> => {
+      try {
+        const response = await fetch(`/api/admin/newsletter/fragments/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          setFragments((prev) =>
+            prev.map((frag) =>
+              frag.id === id ? { ...frag, ...result.fragment } : frag
+            )
+          );
+          return result.fragment;
+        } else {
+          throw new Error(result.error || 'Erro ao atualizar fragmento');
+        }
+      } catch (err) {
+        console.error('Erro ao atualizar fragmento:', err);
+        throw err;
+      }
+    },
+    []
+  );
+
+  const deleteFragment = useCallback(async (id: string) => {
+    try {
+      const response = await fetch(`/api/admin/newsletter/fragments/${id}`, {
+        method: 'DELETE',
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setFragments((prev) => prev.filter((frag) => frag.id !== id));
+      } else {
+        throw new Error(result.error || 'Erro ao deletar fragmento');
+      }
+    } catch (err) {
+      console.error('Erro ao deletar fragmento:', err);
+      throw err;
+    }
+  }, []);
+
+  // === TEMPLATE QUALITY & ANALYTICS ===
+  const generateTemplateReport = useCallback(async (id: string) => {
+    try {
+      const response = await fetch(
+        `/api/admin/newsletter/templates/${id}/report`
+      );
+      const result = await response.json();
+
+      if (result.success) {
+        return result.report;
+      } else {
+        throw new Error(result.error || 'Erro ao gerar relatório');
+      }
+    } catch (err) {
+      console.error('Erro ao gerar relatório:', err);
+      throw err;
+    }
+  }, []);
+
+  const validateTemplate = useCallback(async (data: any) => {
+    try {
+      const response = await fetch('/api/admin/newsletter/templates/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        return { valid: result.valid, errors: result.errors };
+      } else {
+        throw new Error(result.error || 'Erro ao validar template');
+      }
+    } catch (err) {
+      console.error('Erro ao validar template:', err);
+      throw err;
+    }
+  }, []);
+
+  const suggestImprovements = useCallback(async (id: string) => {
+    try {
+      const response = await fetch(
+        `/api/admin/newsletter/templates/${id}/suggestions`
+      );
+      const result = await response.json();
+
+      if (result.success) {
+        return result.suggestions;
+      } else {
+        throw new Error(result.error || 'Erro ao obter sugestões');
+      }
+    } catch (err) {
+      console.error('Erro ao obter sugestões:', err);
+      throw err;
+    }
+  }, []);
+
+  const compareTemplates = useCallback(async (id1: string, id2: string) => {
+    try {
+      const response = await fetch(
+        `/api/admin/newsletter/templates/compare?template1=${id1}&template2=${id2}`
+      );
+      const result = await response.json();
+
+      if (result.success) {
+        return result.comparison;
+      } else {
+        throw new Error(result.error || 'Erro ao comparar templates');
+      }
+    } catch (err) {
+      console.error('Erro ao comparar templates:', err);
+      throw err;
+    }
+  }, []);
+
+  // 🆕 NOVO: Refresh geral
+  const refreshAll = useCallback(async () => {
+    setLoading(true);
+    try {
+      await Promise.all([
+        fetchTemplates(),
+        fetchTemplateStats(),
+        fetchFragments(),
+      ]);
+    } catch (err) {
+      console.error('Erro ao atualizar dados:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchTemplates, fetchTemplateStats, fetchFragments]);
 
   return {
     // Subscribers
@@ -524,18 +987,47 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
     updateCampaign,
     deleteCampaign,
     sendCampaign,
+    duplicateCampaign,
 
-    // Templates
+    // Templates - VERSÃO COMPLETA
     templates,
     templatesLoading,
+    templateStats,
     fetchTemplates,
+    fetchTemplate,
     createTemplate,
     updateTemplate,
     deleteTemplate,
+    deleteTemplates,
+    duplicateTemplate,
+    setAsDefault,
+    toggleTemplateStatus,
+    previewTemplate,
+    analyzeTemplate,
+    fetchTemplateStats,
+
+    // Template Fragments
+    fragments,
+    fragmentsLoading,
+    fetchFragments,
+    createFragment,
+    updateFragment,
+    deleteFragment,
+
+    // Template Quality & Analytics
+    generateTemplateReport,
+    validateTemplate,
+    suggestImprovements,
+    compareTemplates,
 
     // General
-    loading: subscribersLoading || campaignsLoading || templatesLoading,
+    loading:
+      subscribersLoading ||
+      campaignsLoading ||
+      templatesLoading ||
+      fragmentsLoading,
     error,
     pagination,
+    refreshAll,
   };
 };
