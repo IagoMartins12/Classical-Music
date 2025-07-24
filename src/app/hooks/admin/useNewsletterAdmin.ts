@@ -132,6 +132,73 @@ interface TemplateStats {
   };
 }
 
+// 🆕 NOVAS: Interfaces para teste de campanha
+interface TestEmailList {
+  id: string;
+  name: string;
+  description?: string;
+  emails: string[];
+  color: string;
+  isActive: boolean;
+  totalEmails: number;
+  timesUsed: number;
+  lastUsed?: string;
+  createdAt: string;
+  updatedAt: string;
+  creator: {
+    id: string;
+    firstName: string;
+    lastName: string;
+  };
+}
+
+interface SendTestCampaignData {
+  testListIds: string[];
+  customVariables?: Record<string, any>;
+  sendMode?: 'bulk' | 'individual';
+}
+
+interface SendTestResult {
+  success: boolean;
+  message: string;
+  results: {
+    total: number;
+    successful: number;
+    failed: number;
+    successRate: string;
+    errors?: string[];
+    hasMoreErrors?: boolean;
+  };
+  metadata: {
+    processingTime: number;
+    sendMode: string;
+    campaignName: string;
+    templateType: string;
+    listsUsed: Array<{
+      id: string;
+      name: string;
+      emailCount: number;
+    }>;
+  };
+}
+
+interface CampaignTestInfo {
+  campaign: {
+    id: string;
+    name: string;
+    subject: string;
+    templateType: string;
+    templateName: string;
+  };
+  testLists: TestEmailList[];
+  stats: {
+    totalLists: number;
+    totalEmails: number;
+    averageListSize: number;
+    mostUsedList: TestEmailList | null;
+  };
+}
+
 interface Pagination {
   page: number;
   limit: number;
@@ -194,6 +261,13 @@ interface UseNewsletterAdminReturn {
   ) => Promise<{ valid: boolean; errors: string[] }>;
   suggestImprovements: (id: string) => Promise<string[]>;
   compareTemplates: (id1: string, id2: string) => Promise<any>;
+
+  // 🆕 NOVO: Test Campaign Methods
+  sendTestCampaign: (
+    id: string,
+    data: SendTestCampaignData
+  ) => Promise<SendTestResult | null>;
+  getCampaignTestInfo: (id: string) => Promise<CampaignTestInfo | null>;
 
   // General
   loading: boolean;
@@ -952,6 +1026,90 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
     }
   }, []);
 
+  // === 🆕 TEST CAMPAIGN METHODS ===
+
+  /**
+   * Enviar campanha para listas de teste
+   */
+  const sendTestCampaign = useCallback(
+    async (
+      id: string,
+      data: SendTestCampaignData
+    ): Promise<SendTestResult | null> => {
+      try {
+        const response = await fetch(
+          `/api/admin/newsletter/campaigns/${id}/send-test`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+          // Atualizar estatísticas da campanha se necessário
+          setCampaigns((prev) =>
+            prev.map((camp) =>
+              camp.id === id
+                ? {
+                    ...camp,
+                    // Adicionar metadados de teste se desejar
+                    lastTestSent: new Date().toISOString(),
+                  }
+                : camp
+            )
+          );
+
+          return {
+            success: result.success,
+            message: result.message,
+            results: result.results,
+            metadata: result.metadata,
+          };
+        } else {
+          throw new Error(result.error || 'Erro ao enviar teste');
+        }
+      } catch (err) {
+        console.error('Erro ao enviar teste de campanha:', err);
+        setError(err instanceof Error ? err.message : 'Erro desconhecido');
+        return null;
+      }
+    },
+    []
+  );
+
+  /**
+   * Obter informações de teste para uma campanha
+   */
+  const getCampaignTestInfo = useCallback(
+    async (id: string): Promise<CampaignTestInfo | null> => {
+      try {
+        const response = await fetch(
+          `/api/admin/newsletter/campaigns/${id}/send-test`
+        );
+        const result = await response.json();
+
+        if (result.success) {
+          return {
+            campaign: result.campaign,
+            testLists: result.testLists,
+            stats: result.stats,
+          };
+        } else {
+          setError(result.error || 'Erro ao carregar informações de teste');
+          return null;
+        }
+      } catch (err) {
+        console.error('Erro ao buscar informações de teste:', err);
+        setError('Erro de conexão');
+        return null;
+      }
+    },
+    []
+  );
+
   // 🆕 NOVO: Refresh geral
   const refreshAll = useCallback(async () => {
     setLoading(true);
@@ -1019,6 +1177,10 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
     validateTemplate,
     suggestImprovements,
     compareTemplates,
+
+    // 🆕 Test Campaign Methods
+    sendTestCampaign,
+    getCampaignTestInfo,
 
     // General
     loading:

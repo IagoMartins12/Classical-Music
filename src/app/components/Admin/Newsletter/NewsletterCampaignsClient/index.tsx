@@ -29,6 +29,8 @@ import Input from '@/app/components/Common/Inputs';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import CreateCampaignModal from './CreateCampaignModal';
 import { CampaignStatsModal } from './CampaignStatsModal';
+import { FaFlask } from 'react-icons/fa';
+import SendTestCampaignModal from './SendTestCampaignModal';
 
 interface FilterState {
   status: string;
@@ -61,7 +63,6 @@ export default function NewsletterCampaignsClient() {
     campaignsLoading,
     campaignsPagination,
     fetchCampaigns,
-
     deleteCampaign,
     sendCampaign,
   } = useNewsletterAdmin();
@@ -69,6 +70,12 @@ export default function NewsletterCampaignsClient() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState<any>(null);
   const [showStatsModal, setShowStatsModal] = useState(false);
+
+  // 🆕 NOVOS ESTADOS para teste
+  const [showTestModal, setShowTestModal] = useState(false);
+  const [selectedCampaignForTest, setSelectedCampaignForTest] =
+    useState<any>(null);
+
   const [filters, setFilters] = useState<FilterState>({
     status: '',
     search: '',
@@ -112,6 +119,19 @@ export default function NewsletterCampaignsClient() {
         console.error('Erro ao deletar campanha:', error);
       }
     }
+  };
+
+  // 🆕 NOVA FUNÇÃO para abrir modal de teste
+  const handleSendTest = (campaign: any) => {
+    setSelectedCampaignForTest(campaign);
+    setShowTestModal(true);
+  };
+
+  // 🆕 NOVA FUNÇÃO para sucesso do teste
+  const handleTestSuccess = (result: any) => {
+    console.log('Teste enviado com sucesso:', result);
+    // Opcional: mostrar notificação de sucesso
+    // Pode adicionar toast/notification aqui
   };
 
   const getStatusColor = (status: string) => {
@@ -195,8 +215,9 @@ export default function NewsletterCampaignsClient() {
             </div>
           </AnimatedItem>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          {/* 🆕 Stats Cards Atualizadas */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
+            {/* Total */}
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -211,6 +232,7 @@ export default function NewsletterCampaignsClient() {
               </div>
             </AnimatedCard>
 
+            {/* Enviadas */}
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -225,6 +247,7 @@ export default function NewsletterCampaignsClient() {
               </div>
             </AnimatedCard>
 
+            {/* Agendadas */}
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -239,6 +262,28 @@ export default function NewsletterCampaignsClient() {
               </div>
             </AnimatedCard>
 
+            {/* 🆕 Prontas para Teste */}
+            <AnimatedCard className="classical-card p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-theme-tertiary mb-1">
+                    Prontas p/ Teste
+                  </p>
+                  <p className="text-3xl font-bold text-accent-purple">
+                    {
+                      campaigns.filter(
+                        (c) => c.status === 'DRAFT' || c.status === 'SCHEDULED'
+                      ).length
+                    }
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-accent-purple/20 rounded-xl flex items-center justify-center">
+                  <FaFlask className="w-6 h-6 text-accent-purple" />
+                </div>
+              </div>
+            </AnimatedCard>
+
+            {/* Rascunhos */}
             <AnimatedCard className="classical-card p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -431,8 +476,11 @@ export default function NewsletterCampaignsClient() {
                             )}
                           </div>
                         </td>
+
+                        {/* 🆕 AÇÕES ATUALIZADAS COM BOTÃO DE TESTE */}
                         <td className="py-3 px-2">
                           <div className="flex items-center space-x-1">
+                            {/* Estatísticas */}
                             <Button
                               variant="ghost"
                               size="sm"
@@ -443,35 +491,56 @@ export default function NewsletterCampaignsClient() {
                               }}
                               title="Ver estatísticas"
                             />
+
+                            {/* Preview */}
                             <Button
                               variant="ghost"
                               size="sm"
                               leftIcon={<FiEye />}
                               onClick={() => {
-                                /* Modal de preview */
+                                /* Modal de preview - implementar se necessário */
                               }}
                               title="Preview"
                             />
+
+                            {/* 🆕 NOVO: Envio de Teste */}
+                            {(campaign.status === 'DRAFT' ||
+                              campaign.status === 'SCHEDULED') && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                leftIcon={<FaFlask />}
+                                onClick={() => handleSendTest(campaign)}
+                                title="Enviar Teste"
+                                className="text-accent-purple hover:text-accent-purple"
+                              />
+                            )}
+
+                            {/* Editar */}
                             {campaign.status === 'DRAFT' && (
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 leftIcon={<FiEdit />}
                                 onClick={() => {
-                                  /* Modal de edição */
+                                  /* Modal de edição - implementar se necessário */
                                 }}
                                 title="Editar"
                               />
                             )}
+
+                            {/* Duplicar */}
                             <Button
                               variant="ghost"
                               size="sm"
                               leftIcon={<FiCopy />}
                               onClick={() => {
-                                /* Duplicar campanha */
+                                /* Duplicar campanha - implementar se necessário */
                               }}
                               title="Duplicar"
                             />
+
+                            {/* Enviar Real */}
                             {(campaign.status === 'DRAFT' ||
                               campaign.status === 'SCHEDULED') && (
                               <Button
@@ -483,6 +552,8 @@ export default function NewsletterCampaignsClient() {
                                 className="text-accent-green hover:text-accent-green"
                               />
                             )}
+
+                            {/* Deletar */}
                             <Button
                               variant="ghost"
                               size="sm"
@@ -568,7 +639,7 @@ export default function NewsletterCampaignsClient() {
         </AnimatedContainer>
       </div>
 
-      {/* Modals */}
+      {/* Modals Existentes */}
       {showCreateModal && (
         <CreateCampaignModal
           onClose={() => setShowCreateModal(false)}
@@ -586,6 +657,19 @@ export default function NewsletterCampaignsClient() {
             setShowStatsModal(false);
             setSelectedCampaign(null);
           }}
+        />
+      )}
+
+      {/* 🆕 NOVO: Modal de Envio de Teste */}
+      {showTestModal && selectedCampaignForTest && (
+        <SendTestCampaignModal
+          isOpen={showTestModal}
+          onClose={() => {
+            setShowTestModal(false);
+            setSelectedCampaignForTest(null);
+          }}
+          campaign={selectedCampaignForTest}
+          onSuccess={handleTestSuccess}
         />
       )}
     </PageContainer>
