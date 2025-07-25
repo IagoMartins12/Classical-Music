@@ -48,6 +48,7 @@ export class IMSLPDirectUrlResolverOptimized {
     'imslp.eu',
     'ks3.imslp.org',
     'ks4.imslp.org',
+    'petruccimusiclibrary.ca',
   ];
 
   /**

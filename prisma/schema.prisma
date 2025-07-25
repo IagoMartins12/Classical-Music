@@ -684,48 +684,44 @@ model Work {
   imslpTags         String[]         @default([])
   difficultyLevel   DifficultyLevel?
 
-  // 🆕 CAMPOS DE MÍDIA AUTOMÁTICA
-  spotifyTrackId    String?   // ID da track no Spotify
-  spotifyTrackUrl   String?   // URL da track no Spotify  
-  spotifyPreviewUrl String?   // URL do preview (30s) do Spotify
-  spotifyAlbumArt   String?   // URL da capa do álbum
-  spotifyArtists    String[]  @default([]) // Lista de artistas encontrados
-  spotifyAlbumName  String?   // Nome do álbum
-  spotifyDuration   Int?      // Duração em ms
-  spotifyPopularity Int?      // Popularidade (0-100)
+  // 🆕 MÍDIA SIMPLIFICADA
+  // Spotify (essencial)
+  spotifyTrackId  String? // ID da track
+  spotifyTrackUrl String? // URL da track
+  
+  // YouTube (essencial)
+  youtubeVideoId  String? // ID do vídeo
+  youtubeVideoUrl String? // URL do vídeo
+  youtubeTitle    String? // Título do vídeo
+  
+  // Áudio customizado
+  customAudioUrl  String? // URL de áudio customizado (upload)
+  customAudioFile String? // Arquivo de áudio local
+  
+  // Metadados de busca (simplificado)
+  mediaSource     String? @default("none") // "auto", "manual", "none"
+  lastMediaSearch DateTime?
+  mediaSearchError String?
 
-  youtubeVideoId    String?   // ID do vídeo no YouTube
-  youtubeVideoUrl   String?   // URL completa do vídeo
-  youtubeThumbnail  String?   // URL da thumbnail
-  youtubeTitle      String?   // Título do vídeo encontrado
-  youtubeChannel    String?   // Canal do YouTube
-  youtubeDuration   String?   // Duração formatada (ex: "PT4M33S")
-  youtubeViewCount  String?   // Número de visualizações
-  youtubePublishedAt DateTime? // Data de publicação
-
-  // Metadados de busca
-  mediaSearchStatus String?   @default("pending") // "pending", "searching", "found", "not_found", "error"
-  mediaSearchAttempts Int     @default(0)
-  lastMediaSearch   DateTime?
-  mediaSearchError  String?   // Último erro de busca
-  mediaSearchStrategy String? // Estratégia usada na busca bem-sucedida
-
-  // Configurações de qualidade
-  mediaQualityScore  Int?     // Score de qualidade (0-100) baseado em match de título/artista
-  manuallyVerified   Boolean  @default(false) // Se foi verificado manualmente
-  mediaPreferences   Json?    // Preferências de mídia específicas da obra
-
-  // Cache de busca para evitar re-buscas desnecessárias
-  searchCacheData   Json?     // Cache dos dados de busca
-  searchCacheExpiry DateTime? // Expiração do cache
-
-  //Verificação
+  // 🆕 VIDEO AULA EXPANDIDA
+  videoAulaUrl      String?   // URL externa
+  videoAulaFile     String?   // Arquivo local
+  videoAulaTitle    String?   // Título personalizado
+  videoAulaType     String?   // "video", "story", "reels", "live"
+  videoAulaSource   String?   // "youtube", "instagram", "tiktok", "local", "external"
+  videoAulaAddedBy  String?   @db.ObjectId
+  videoAulaAddedAt  DateTime?
+  
+  // 🆕 Metadados específicos por tipo
+  videoAulaMetadata Json? // { duration?, aspectRatio?, platform?, embedCode? }
+  
+  // Verificação
   verificationStatus String? // "verified", "pending", "disputed"
   verifiedBy         String?   @db.ObjectId
   verifiedAt         DateTime?
-  isVerified         Boolean   @default(false) // Status de verificação
+  isVerified         Boolean   @default(false)
 
-  // Campos para rastreamento de uploads
+  // Campos para rastreamento
   createdBy     String? @db.ObjectId
   createdByUser User?   @relation("UserCreatedWorks", fields: [createdBy], references: [id])
   isCustom      Boolean @default(false)
@@ -733,17 +729,9 @@ model Work {
   // Metadados de edição
   lastEditedBy String?   @db.ObjectId
   lastEditedAt DateTime?
-  editHistory  Json? // Histórico de edições
+  editHistory  Json?
 
-  // Campos específicos do IMSLP melhorados
-  imslpScore     Int? // Score/ranking no IMSLP
-  imslpDownloads Int? // Downloads no IMSLP
-  imslpRating    Float? // Rating no IMSLP
-
-  // Campos técnicos melhorados
-  keySignature    String? // Armadura de clave
-  moodTags        String[] @default([]) // Tags de humor/atmosfera
-
+  // Relações existentes
   composer   Composer   @relation(fields: [composerId], references: [id])
   epoch      Epoch      @relation(fields: [epochId], references: [id])
   instrument Instrument @relation(fields: [instrumentId], references: [id])
@@ -764,35 +752,28 @@ model Work {
   pdfAnnotations PdfAnnotation[]
   scoreBookmarks ScoreBookmark[]
 
-  // Anotações relacionadas
   workAnnotations WorkAnnotation[]
 
-  // Estatísticas de anotações (cache para performance)
   annotationsCount        Int       @default(0)
   helpfulAnnotationsCount Int       @default(0)
   lastAnnotationAt        DateTime?
 
-  // Relações com sistema de cache incremental
-  cachedScores   WorkScore[]
-
+  cachedScores    WorkScore[]
   mediaSearchLogs MediaSearchLog[]
   
-  // 🆕 ÍNDICES OTIMIZADOS PARA BUSCA DE OBRAS - SUBSTITUA OS ÍNDICES EXISTENTES
-  @@index([title]) // Busca simples por título
-  @@index([opOrCatalog]) // Busca por catálogo/opus
-  @@index([composerId]) // Join com compositor
+  // 🆕 ÍNDICES ATUALIZADOS
+  @@index([title])
+  @@index([opOrCatalog])
+  @@index([composerId])
   @@index([imslpId])
-  // 🆕 ÍNDICES COMPOSTOS PARA BUSCA OTIMIZADA
-  @@index([title, composerId]) // Busca por título + compositor
-  @@index([composerId, title]) // Ordem reversa para diferentes queries
-  @@index([opOrCatalog, composerId]) // Busca por opus + compositor
-  // 🆕 ÍNDICES PARA ORDENAÇÃO E FILTROS
-  @@index([title, createdAt]) // Ordenação por título e data
-  @@index([composerId, createdAt]) // Obras recentes de um compositor
+  @@index([title, composerId])
+  @@index([composerId, title])
+  @@index([opOrCatalog, composerId])
+  @@index([title, createdAt])
+  @@index([composerId, createdAt])
   @@index([workType])
   @@index([parentWorkId])
   @@index([isPartOfCollection])
-  // Índices existentes mantidos (não remover)
   @@index([composerId, instrumentId])
   @@index([composerId, epochId])
   @@index([instrumentId, epochId])
@@ -801,14 +782,32 @@ model Work {
   @@index([workGenresArr])
   @@index([createdBy])
   @@index([isCustom])
-  @@index([moodTags])
 
-  @@index([mediaSearchStatus])
+  // 🆕 Índices para mídia
+  @@index([mediaSource])
   @@index([lastMediaSearch])
   @@index([spotifyTrackId])
   @@index([youtubeVideoId])
-  @@index([mediaQualityScore])
+  @@index([videoAulaType])
+  @@index([videoAulaSource])
+}
 
+// 🆕 Enum para tipos de vídeo aula
+enum VideoAulaType {
+  VIDEO     // Vídeo normal
+  STORY     // Story (vertical, curta duração)
+  REELS     // Reels/Shorts (vertical, música)
+  LIVE      // Live/Transmissão ao vivo
+  TUTORIAL  // Tutorial específico
+}
+
+enum VideoAulaSource {
+  YOUTUBE
+  INSTAGRAM
+  TIKTOK
+  FACEBOOK
+  LOCAL     // Upload local
+  EXTERNAL  // URL externa
 }
 
 // 🆕 MODELO PARA LOG DE BUSCAS DE MÍDIA

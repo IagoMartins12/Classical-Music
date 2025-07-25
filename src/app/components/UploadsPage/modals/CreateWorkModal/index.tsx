@@ -36,6 +36,8 @@ import {
   VALID_PORTUGUESE_WORKGENRES,
 } from '@/app/utils/valid-categories-and-genres';
 import { useToast } from '@/app/hooks/useToast';
+import { SiInstagram, SiSpotify, SiTiktok, SiYoutube } from 'react-icons/si';
+import { FaGraduationCap } from 'react-icons/fa';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -45,6 +47,22 @@ interface CreateWorkModalProps {
   epochs: Array<{ id: string; name: string }>;
   editingWork?: any;
 }
+
+const extractSpotifyTrackId = (url: string) => {
+  if (url.includes('spotify.com/track/')) {
+    return url.split('/track/')[1].split('?')[0];
+  }
+  return null;
+};
+
+const extractYouTubeVideoId = (url: string) => {
+  if (url.includes('youtu.be/')) {
+    return url.split('youtu.be/')[1].split('?')[0];
+  } else if (url.includes('youtube.com/watch?v=')) {
+    return url.split('v=')[1].split('&')[0];
+  }
+  return null;
+};
 
 const workTypeOptions = [
   { value: 'INDIVIDUAL', label: 'Obra Individual' },
@@ -102,6 +120,27 @@ const CreateWorkModal = ({
 
   // 🆕 ESTADO PARA DETECTAR EDIÇÃO DE FONTE EXTERNA
   const [isEditingExternalSource, setIsEditingExternalSource] = useState(false);
+  const [includeMedia, setIncludeMedia] = useState(false);
+  const [mediaData, setMediaData] = useState({
+    // Spotify
+    spotifyUrl: '',
+
+    // YouTube
+    youtubeUrl: '',
+
+    // Áudio customizado
+    audioFile: null as File | null,
+
+    // Video Aula
+    hasVideoAula: false,
+    videoAulaUrl: '',
+    videoAulaFile: null as File | null,
+    videoAulaTitle: '',
+    videoAulaType: 'video', // video, story, reels, live, tutorial
+    videoAulaSource: 'youtube', // youtube, instagram, tiktok, local, external
+  });
+  const [uploadingAudio, setUploadingAudio] = useState(false);
+  const [uploadingVideoAula, setUploadingVideoAula] = useState(false);
 
   // 🔧 CORRIGIDO: Memoizar as opções para evitar recriação a cada render
   const validCategoryOptions = useMemo(() => getAllValidCategories(), []);
@@ -176,6 +215,23 @@ const CreateWorkModal = ({
     requiredFields,
     customValidations
   );
+
+  // 🆕 Opções para Video Aula
+  const videoAulaTypeOptions = [
+    { value: 'video', label: 'Vídeo Normal' },
+    { value: 'story', label: 'Story (Vertical)' },
+    { value: 'reels', label: 'Reels/Shorts' },
+    { value: 'live', label: 'Live/Transmissão' },
+    { value: 'tutorial', label: 'Tutorial' },
+  ];
+
+  const videoAulaSourceOptions = [
+    { value: 'youtube', label: 'YouTube' },
+    { value: 'instagram', label: 'Instagram' },
+    { value: 'tiktok', label: 'TikTok' },
+    { value: 'local', label: 'Upload Local' },
+    { value: 'external', label: 'URL Externa' },
+  ];
 
   // 🔧 CORRIGIDO: Usar useCallback para estabilizar funções
   const handleInputChange = useCallback(
@@ -254,9 +310,96 @@ const CreateWorkModal = ({
         imslpTags: editingWork.imslpTags?.join(', ') || '',
         difficultyLevel: editingWork.difficultyLevel || '', // 🔧 CORRIGIDO: string vazia
       });
+
+      const hasExistingMedia = !!(
+        editingWork.spotifyTrackId ||
+        editingWork.youtubeVideoId ||
+        editingWork.customAudioFile ||
+        editingWork.videoAulaUrl ||
+        editingWork.videoAulaFile
+      );
+
+      setIncludeMedia(hasExistingMedia);
+
+      setMediaData({
+        spotifyUrl: editingWork.spotifyTrackUrl || '',
+        youtubeUrl: editingWork.youtubeVideoUrl || '',
+        audioFile: null,
+        hasVideoAula: !!(editingWork.videoAulaUrl || editingWork.videoAulaFile),
+        videoAulaUrl: editingWork.videoAulaUrl || '',
+        videoAulaFile: null,
+        videoAulaTitle: editingWork.videoAulaTitle || '',
+        videoAulaType: editingWork.videoAulaType || 'video',
+        videoAulaSource: editingWork.videoAulaSource || 'youtube',
+      });
     }
   }, [editingWork]);
 
+  const handleAudioUpload = async (file: File) => {
+    if (!file) return;
+
+    setUploadingAudio(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+      formDataUpload.append('mediaType', 'audio');
+
+      // Para edição, usar workId existente, senão usar temp
+      const workId = editingWork?.id || 'temp';
+
+      const response = await fetch(`/api/works/${workId}/media/upload`, {
+        method: 'POST',
+        body: formDataUpload,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro no upload');
+      }
+
+      setMediaData((prev) => ({ ...prev, audioFile: file }));
+      toast.success('Áudio enviado com sucesso!');
+    } catch (error) {
+      console.error('Erro no upload de áudio:', error);
+      toast.error(error instanceof Error ? error.message : 'Erro no upload');
+    } finally {
+      setUploadingAudio(false);
+    }
+  };
+
+  // 🆕 Upload de video aula
+  const handleVideoAulaUpload = async (file: File) => {
+    if (!file) return;
+
+    setUploadingVideoAula(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+      formDataUpload.append('mediaType', 'videoAula');
+
+      const workId = editingWork?.id || 'temp';
+
+      const response = await fetch(`/api/works/${workId}/media/upload`, {
+        method: 'POST',
+        body: formDataUpload,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro no upload');
+      }
+
+      setMediaData((prev) => ({ ...prev, videoAulaFile: file }));
+      toast.success('Video aula enviado com sucesso!');
+    } catch (error) {
+      console.error('Erro no upload de video aula:', error);
+      toast.error(error instanceof Error ? error.message : 'Erro no upload');
+    } finally {
+      setUploadingVideoAula(false);
+    }
+  };
   // Carregar dados adicionais quando necessário
   const loadFormData = async () => {
     try {
@@ -357,6 +500,38 @@ const CreateWorkModal = ({
           : null,
         // 🔧 CORRIGIDO: Certificar que difficultyLevel é null quando vazio
         difficultyLevel: formData.difficultyLevel || null,
+        ...(includeMedia && {
+          // Spotify
+          spotifyTrackUrl: mediaData.spotifyUrl || null,
+          spotifyTrackId: mediaData.spotifyUrl
+            ? extractSpotifyTrackId(mediaData.spotifyUrl)
+            : null,
+
+          // YouTube
+          youtubeVideoUrl: mediaData.youtubeUrl || null,
+          youtubeVideoId: mediaData.youtubeUrl
+            ? extractYouTubeVideoId(mediaData.youtubeUrl)
+            : null,
+          youtubeTitle: mediaData.youtubeUrl
+            ? `${formData.title} - ${
+                composers.find((c) => c.id === formData.composerId)?.fullName
+              }`
+            : null,
+
+          // Áudio customizado será tratado pelo upload
+
+          // Video Aula
+          ...(mediaData.hasVideoAula && {
+            videoAulaUrl: mediaData.videoAulaUrl || null,
+            videoAulaTitle: mediaData.videoAulaTitle || formData.title,
+            videoAulaType: mediaData.videoAulaType,
+            videoAulaSource: mediaData.videoAulaSource,
+            videoAulaAddedAt: new Date(),
+          }),
+
+          // Marcar como manual
+          mediaSource: 'manual',
+        }),
       };
 
       const url = editingWork
@@ -971,6 +1146,271 @@ const CreateWorkModal = ({
                     leftIcon={<FiPlay />}
                   />
                 </div>
+              </AnimatedCard>
+
+              {/* 🆕 NOVA SEÇÃO: MÍDIA */}
+              <AnimatedCard className="classical-card-simple p-4" hover="none">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-2">
+                    <FiMusic className="w-4 h-4 text-theme-tertiary" />
+                    <span className="text-sm font-medium text-theme-primary">
+                      Adicionar Mídia
+                    </span>
+                  </div>
+
+                  <label className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={includeMedia}
+                      onChange={(e) => setIncludeMedia(e.target.checked)}
+                      className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-brand-primary"
+                    />
+                    <span className="text-sm text-theme-primary">
+                      Adicionar mídia?
+                    </span>
+                  </label>
+                </div>
+
+                {includeMedia && (
+                  <div className="space-y-6 border-t border-theme-secondary pt-4">
+                    {/* Spotify */}
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <SiSpotify className="w-5 h-5 text-green-400" />
+                        <h4 className="text-lg font-semibold text-theme-primary">
+                          Spotify
+                        </h4>
+                      </div>
+                      <Input
+                        label="URL do Spotify"
+                        value={mediaData.spotifyUrl}
+                        onChange={(e) =>
+                          setMediaData((prev) => ({
+                            ...prev,
+                            spotifyUrl: e.target.value,
+                          }))
+                        }
+                        placeholder="https://open.spotify.com/track/..."
+                        leftIcon={<SiSpotify />}
+                      />
+                    </div>
+
+                    {/* YouTube */}
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <SiYoutube className="w-5 h-5 text-red-400" />
+                        <h4 className="text-lg font-semibold text-theme-primary">
+                          YouTube
+                        </h4>
+                      </div>
+                      <Input
+                        label="URL do YouTube"
+                        value={mediaData.youtubeUrl}
+                        onChange={(e) =>
+                          setMediaData((prev) => ({
+                            ...prev,
+                            youtubeUrl: e.target.value,
+                          }))
+                        }
+                        placeholder="https://www.youtube.com/watch?v=..."
+                        leftIcon={<SiYoutube />}
+                      />
+                    </div>
+
+                    {/* Áudio Customizado */}
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <FiMusic className="w-5 h-5 text-blue-400" />
+                        <h4 className="text-lg font-semibold text-theme-primary">
+                          Áudio Personalizado
+                        </h4>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                          Upload de Arquivo de Áudio
+                        </label>
+                        <input
+                          type="file"
+                          accept="audio/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              setMediaData((prev) => ({
+                                ...prev,
+                                audioFile: file,
+                              }));
+                              if (editingWork) {
+                                handleAudioUpload(file);
+                              }
+                            }
+                          }}
+                          className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary"
+                          disabled={uploadingAudio}
+                        />
+                        {uploadingAudio && (
+                          <p className="text-sm text-blue-400 mt-1 flex items-center space-x-1">
+                            <FiLoader className="w-4 h-4 animate-spin" />
+                            <span>Enviando áudio...</span>
+                          </p>
+                        )}
+                        {mediaData.audioFile && (
+                          <p className="text-sm text-theme-secondary mt-1">
+                            Arquivo: {mediaData.audioFile.name}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Video Aula */}
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <FaGraduationCap className="w-5 h-5 text-purple-400" />
+                          <h4 className="text-lg font-semibold text-theme-primary">
+                            Video Aula
+                          </h4>
+                        </div>
+
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={mediaData.hasVideoAula}
+                            onChange={(e) =>
+                              setMediaData((prev) => ({
+                                ...prev,
+                                hasVideoAula: e.target.checked,
+                              }))
+                            }
+                            className="w-4 h-4 text-purple-600 bg-theme-elevated border-theme-secondary rounded focus:ring-purple-500"
+                          />
+                          <span className="text-sm text-theme-primary">
+                            Incluir video aula?
+                          </span>
+                        </label>
+                      </div>
+
+                      {mediaData.hasVideoAula && (
+                        <div className="space-y-4 p-4 bg-purple-900/10 border border-purple-700/30 rounded-xl">
+                          {/* Tipo e Fonte */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                                Tipo de Vídeo
+                              </label>
+                              <Select
+                                options={videoAulaTypeOptions}
+                                value={mediaData.videoAulaType}
+                                onChange={(e) =>
+                                  setMediaData((prev) => ({
+                                    ...prev,
+                                    videoAulaType: e.target.value,
+                                  }))
+                                }
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                                Plataforma/Fonte
+                              </label>
+                              <Select
+                                options={videoAulaSourceOptions}
+                                value={mediaData.videoAulaSource}
+                                onChange={(e) =>
+                                  setMediaData((prev) => ({
+                                    ...prev,
+                                    videoAulaSource: e.target.value,
+                                  }))
+                                }
+                              />
+                            </div>
+                          </div>
+
+                          {/* Título personalizado */}
+                          <Input
+                            label="Título da Video Aula"
+                            value={mediaData.videoAulaTitle}
+                            onChange={(e) =>
+                              setMediaData((prev) => ({
+                                ...prev,
+                                videoAulaTitle: e.target.value,
+                              }))
+                            }
+                            placeholder="Ex: Tutorial de Técnica - Chopin Étude Op. 10 No. 1"
+                          />
+
+                          {/* URL ou Upload */}
+                          {mediaData.videoAulaSource !== 'local' ? (
+                            <Input
+                              label="URL do Vídeo"
+                              value={mediaData.videoAulaUrl}
+                              onChange={(e) =>
+                                setMediaData((prev) => ({
+                                  ...prev,
+                                  videoAulaUrl: e.target.value,
+                                }))
+                              }
+                              placeholder={
+                                mediaData.videoAulaSource === 'youtube'
+                                  ? 'https://www.youtube.com/watch?v=...'
+                                  : mediaData.videoAulaSource === 'instagram'
+                                  ? 'https://www.instagram.com/reel/...'
+                                  : 'https://...'
+                              }
+                              leftIcon={
+                                mediaData.videoAulaSource === 'youtube' ? (
+                                  <SiYoutube />
+                                ) : mediaData.videoAulaSource ===
+                                  'instagram' ? (
+                                  <SiInstagram />
+                                ) : mediaData.videoAulaSource === 'tiktok' ? (
+                                  <SiTiktok />
+                                ) : (
+                                  <FiExternalLink />
+                                )
+                              }
+                            />
+                          ) : (
+                            <div>
+                              <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                                Upload de Video Aula
+                              </label>
+                              <input
+                                type="file"
+                                accept="video/*"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    setMediaData((prev) => ({
+                                      ...prev,
+                                      videoAulaFile: file,
+                                    }));
+                                    if (editingWork) {
+                                      handleVideoAulaUpload(file);
+                                    }
+                                  }
+                                }}
+                                className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary"
+                                disabled={uploadingVideoAula}
+                              />
+                              {uploadingVideoAula && (
+                                <p className="text-sm text-purple-400 mt-1 flex items-center space-x-1">
+                                  <FiLoader className="w-4 h-4 animate-spin" />
+                                  <span>Enviando video aula...</span>
+                                </p>
+                              )}
+                              {mediaData.videoAulaFile && (
+                                <p className="text-sm text-theme-secondary mt-1">
+                                  Arquivo: {mediaData.videoAulaFile.name}
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </AnimatedCard>
 
               {/* Actions */}

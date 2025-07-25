@@ -44,7 +44,6 @@ import VerificationBadge from '../Verification/VerificationBadge';
 import VerificationButton from '../Verification/VerificationButton';
 import AdContainer from '../Ads/AdContainer';
 import EditButton from '../Common/EditButton';
-import { useMediaSearch } from '@/app/hooks/useMediaSearch';
 import MediaSection from '../Players/MediaSection';
 
 interface WorkDetailsClientProps {
@@ -55,11 +54,13 @@ interface WorkDetailsClientProps {
     learned: any[];
   };
   isAdmin: boolean;
+  canEditMedia: boolean; // 🆕 Nova prop
 }
 
 export default function WorkDetailsClient({
   work,
   isAdmin,
+  canEditMedia, // 🆕
   learningData = { wantToLearn: [], learned: [] },
 }: WorkDetailsClientProps) {
   // Estados seguros para SSR
@@ -125,26 +126,7 @@ export default function WorkDetailsClient({
       );
     },
   });
-  const mediaSearch = useMediaSearch(work);
   const { navigateToUrl } = useNavigate();
-
-  // Não renderizar até estar montado
-  if (!mounted) {
-    return (
-      <div className="bg-gradient-primary">
-        <div className="section-wrap">
-          <div className="flex items-center justify-center py-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
-              <span className="text-theme-primary font-medium">
-                Carregando obra...
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   // Funções utilitárias mantidas...
   const formatDuration = (duration?: string) => {
@@ -919,10 +901,9 @@ export default function WorkDetailsClient({
           <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" />
 
           <MediaSection
-            composerName={work.composer.fullName}
-            workTitle={work.title}
-            mediaSearch={mediaSearch}
             work={work}
+            canEditMedia={canEditMedia}
+            // onOpenEditModal poderia abrir um modal específico se necessário
           />
 
           {/* 🆕 Seção de Partituras IMSLP com nova lógica */}

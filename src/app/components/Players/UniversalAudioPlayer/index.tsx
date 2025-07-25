@@ -1,4 +1,6 @@
+// app/components/Players/UniversalAudioPlayer.tsx - ATUALIZADO
 'use client';
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   FiPlay,
@@ -8,11 +10,13 @@ import {
   FiExternalLink,
   FiRefreshCw,
   FiAlertTriangle,
+  FiMusic,
+  FiUpload,
 } from 'react-icons/fi';
 import { SiSpotify, SiYoutube } from 'react-icons/si';
 
 interface AudioSource {
-  type: 'spotify-full' | 'spotify-preview' | 'youtube-audio' | 'alternative';
+  type: 'spotify-preview' | 'youtube-audio' | 'custom-audio' | 'alternative';
   url: string;
   duration?: number;
   quality?: string;
@@ -29,25 +33,24 @@ interface UniversalAudioPlayerProps {
   spotifyTrack?: {
     trackId: string;
     trackUrl: string;
-    previewUrl: string | null;
-    albumArt: string | null;
-    artists: string[];
-    albumName: string;
-    duration: number;
-    popularity: number;
-  };
+  } | null;
   youtubeVideo?: {
     videoId: string;
     videoUrl: string;
     title: string;
-    channel: string;
-  };
+  } | null;
+  customAudio?: {
+    url: string;
+    file: string;
+    title?: string;
+  } | null;
 }
 
 const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   work,
   spotifyTrack,
   youtubeVideo,
+  customAudio,
 }) => {
   // Estados do player
   const [isPlaying, setIsPlaying] = useState(false);
@@ -62,49 +65,46 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   const [currentSource, setCurrentSource] = useState<AudioSource | null>(null);
   const [isSearchingAlternatives, setIsSearchingAlternatives] = useState(false);
 
-  // Estados de autenticação
-  const [isSpotifyAuthenticated, setIsSpotifyAuthenticated] = useState(false);
-  const [isSpotifyPremium, setIsSpotifyPremium] = useState(false);
-
   // Refs
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const spotifyPlayerRef = useRef<any>(null);
   const waveformRef = useRef<HTMLDivElement | null>(null);
 
   // Inicializar fontes de áudio disponíveis
   useEffect(() => {
     const sources: AudioSource[] = [];
 
-    // 1. Spotify Preview (sempre disponível se tiver)
-    if (spotifyTrack?.previewUrl) {
+    // 1. Áudio Customizado (prioridade máxima)
+    if (customAudio?.url || customAudio?.file) {
       sources.push({
-        type: 'spotify-preview',
-        url: spotifyTrack.previewUrl,
-        duration: 30000, // 30 segundos
-        quality: '128kbps',
-        label: 'Spotify Preview (30s)',
+        type: 'custom-audio',
+        url: customAudio.url || customAudio.file,
+        duration: 0, // Será detectado pelo player
+        quality: 'original',
+        label: customAudio.title || 'Áudio Personalizado',
       });
     }
 
-    // 2. Spotify Completo (se autenticado e premium)
-    if (spotifyTrack && isSpotifyAuthenticated && isSpotifyPremium) {
+    // 2. Spotify Preview (se disponível - buscar preview via API)
+    if (spotifyTrack?.trackId) {
+      // Note: Para ter preview, precisaria buscar dados completos do Spotify
+      // Por ora, apenas link direto
       sources.push({
-        type: 'spotify-full',
-        url: `spotify:track:${spotifyTrack.trackId}`,
-        duration: spotifyTrack.duration,
-        quality: '320kbps',
-        label: 'Spotify Completo',
+        type: 'spotify-preview',
+        url: spotifyTrack.trackUrl,
+        duration: 0,
+        quality: 'link',
+        label: 'Link do Spotify',
         requiresAuth: true,
       });
     }
 
     setAudioSources(sources);
 
-    // Definir fonte padrão
+    // Definir fonte padrão (priorizar áudio customizado)
     if (sources.length > 0 && !currentSource) {
       setCurrentSource(sources[0]);
     }
-  }, [spotifyTrack, isSpotifyAuthenticated, isSpotifyPremium, currentSource]);
+  }, [spotifyTrack, youtubeVideo, customAudio, currentSource]);
 
   // Buscar fontes alternativas de áudio
   const searchAlternativeAudioSources = useCallback(async () => {
@@ -195,7 +195,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   // Configurar player de áudio
   useEffect(() => {
     if (
-      currentSource?.type === 'spotify-preview' ||
+      currentSource?.type === 'custom-audio' ||
       currentSource?.type === 'youtube-audio' ||
       currentSource?.type === 'alternative'
     ) {
@@ -209,7 +209,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
       const handleEnded = () => setIsPlaying(false);
       const handleError = () => {
         console.error('Erro ao carregar áudio:', currentSource.url);
-        // Tentar próxima fonte disponível
         tryNextAudioSource();
       };
 
@@ -250,24 +249,22 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     try {
       setIsLoading(true);
 
-      if (currentSource.type === 'spotify-full') {
-        // Usar Spotify Web Playback SDK
-        if (spotifyPlayerRef.current) {
-          if (isPlaying) {
-            await spotifyPlayerRef.current.pause();
-          } else {
-            await spotifyPlayerRef.current.resume();
-          }
-        }
-      } else {
-        // Usar HTML5 Audio
-        if (!audioRef.current) return;
+      if (
+        currentSource.type === 'spotify-preview' &&
+        currentSource.requiresAuth
+      ) {
+        // Abrir Spotify em nova aba
+        window.open(currentSource.url, '_blank');
+        return;
+      }
 
-        if (isPlaying) {
-          audioRef.current.pause();
-        } else {
-          await audioRef.current.play();
-        }
+      // Usar HTML5 Audio para todos os outros tipos
+      if (!audioRef.current) return;
+
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        await audioRef.current.play();
       }
 
       setIsPlaying(!isPlaying);
@@ -284,9 +281,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     setVolume(newVolume);
     setIsMuted(newVolume === 0);
 
-    if (currentSource?.type === 'spotify-full' && spotifyPlayerRef.current) {
-      await spotifyPlayerRef.current.setVolume(newVolume);
-    } else if (audioRef.current) {
+    if (audioRef.current) {
       audioRef.current.volume = newVolume;
     }
   };
@@ -295,9 +290,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     const newMuted = !isMuted;
     setIsMuted(newMuted);
 
-    if (currentSource?.type === 'spotify-full' && spotifyPlayerRef.current) {
-      await spotifyPlayerRef.current.setVolume(newMuted ? 0 : volume);
-    } else if (audioRef.current) {
+    if (audioRef.current) {
       audioRef.current.volume = newMuted ? 0 : volume;
     }
   };
@@ -311,14 +304,33 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
 
   const getSourceIcon = (source: AudioSource) => {
     switch (source.type) {
-      case 'spotify-full':
       case 'spotify-preview':
         return <SiSpotify className="w-4 h-4 text-green-400" />;
       case 'youtube-audio':
         return <SiYoutube className="w-4 h-4 text-red-400" />;
+      case 'custom-audio':
+        return <FiUpload className="w-4 h-4 text-blue-400" />;
       default:
-        return <FiVolume2 className="w-4 h-4 text-blue-400" />;
+        return <FiMusic className="w-4 h-4 text-purple-400" />;
     }
+  };
+
+  const getAudioCover = () => {
+    if (customAudio) {
+      // Para áudio customizado, usar uma imagem padrão ou do compositor
+      return (
+        <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+          <FiMusic className="w-8 h-8 text-white" />
+        </div>
+      );
+    }
+
+    // Fallback padrão
+    return (
+      <div className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-600 rounded-lg flex items-center justify-center">
+        <FiMusic className="w-8 h-8 text-gray-400" />
+      </div>
+    );
   };
 
   if (audioSources.length === 0) {
@@ -359,17 +371,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
       <div className="p-6 pb-4">
         <div className="flex items-start space-x-4">
           <div className="relative">
-            {spotifyTrack?.albumArt ? (
-              <img
-                src={spotifyTrack.albumArt}
-                alt={spotifyTrack.albumName}
-                className="w-20 h-20 rounded-lg object-cover shadow-lg"
-              />
-            ) : (
-              <div className="w-20 h-20 bg-gray-700 rounded-lg flex items-center justify-center">
-                <FiVolume2 className="w-8 h-8 text-gray-400" />
-              </div>
-            )}
+            {getAudioCover()}
             {isPlaying && (
               <div className="absolute inset-0 rounded-lg border-2 border-green-400 animate-pulse" />
             )}

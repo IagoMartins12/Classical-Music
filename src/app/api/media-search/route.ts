@@ -41,22 +41,13 @@ export async function POST(request: NextRequest) {
           ? {
               trackId: work.spotifyTrackId,
               trackUrl: work.spotifyTrackUrl,
-              previewUrl: work.spotifyPreviewUrl,
-              albumArt: work.spotifyAlbumArt,
-              artists: work.spotifyArtists,
-              albumName: work.spotifyAlbumName,
-              duration: work.spotifyDuration,
-              popularity: work.spotifyPopularity,
             }
           : null,
         youtube: work.youtubeVideoId
           ? {
               videoId: work.youtubeVideoId,
               videoUrl: work.youtubeVideoUrl,
-              thumbnail: work.youtubeThumbnail,
               title: work.youtubeTitle,
-              channel: work.youtubeChannel,
-              publishedAt: work.youtubePublishedAt,
             }
           : null,
       });
@@ -82,7 +73,6 @@ export async function POST(request: NextRequest) {
       await prisma.work.update({
         where: { id: workId },
         data: {
-          mediaSearchStatus: 'not_found',
           lastMediaSearch: new Date(),
           mediaSearchError:
             'Obra não válida para busca automática (coletânea/livro)',
@@ -104,9 +94,7 @@ export async function POST(request: NextRequest) {
     await prisma.work.update({
       where: { id: workId },
       data: {
-        mediaSearchStatus: 'searching',
         lastMediaSearch: new Date(),
-        mediaSearchAttempts: work.mediaSearchAttempts + 1,
       },
     });
 
@@ -229,7 +217,6 @@ export async function POST(request: NextRequest) {
       await prisma.work.update({
         where: { id: body.workId },
         data: {
-          mediaSearchStatus: 'error',
           mediaSearchError:
             error instanceof Error ? error.message : 'Erro desconhecido',
           lastMediaSearch: new Date(),

@@ -2,7 +2,6 @@
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 
-// Interfaces mantidas (com novos campos)
 export interface WorkDetails {
   id: string;
   title: string;
@@ -24,34 +23,32 @@ export interface WorkDetails {
   isPartOfCollection: boolean;
   parentWorkId?: string;
   movementNumber?: number;
-  createdAt: Date;
   timeSignature?: string;
   tempoMarking?: string;
   movementsDetailed?: any;
   imslpTags?: string[];
   difficultyLevel?: string;
+  createdAt: Date;
   isVerified: boolean;
 
-  // 🆕 CAMPOS DE MÍDIA AUTOMÁTICA
+  // 🆕 CAMPOS DE MÍDIA
   spotifyTrackId?: string;
   spotifyTrackUrl?: string;
-  spotifyPreviewUrl?: string;
-  spotifyAlbumArt?: string;
-  spotifyArtists?: string[];
-  spotifyAlbumName?: string;
-  spotifyDuration?: number;
-  spotifyPopularity?: number;
 
   youtubeVideoId?: string;
   youtubeVideoUrl?: string;
-  youtubeThumbnail?: string;
   youtubeTitle?: string;
-  youtubeChannel?: string;
-  youtubePublishedAt?: Date;
 
-  mediaSearchStatus?: string;
-  mediaQualityScore?: number;
+  videoAulaUrl?: string;
+  videoAulaFile?: string;
+  videoAulaTitle?: string;
+  videoAulaType?: string;
+  videoAulaAddedBy?: string;
+  videoAulaAddedAt?: Date;
+  videoAulaMetadata?: any;
+
   lastMediaSearch?: Date;
+  mediaSearchError?: string;
 
   composer: {
     id: string;
@@ -59,16 +56,19 @@ export interface WorkDetails {
     fullName: string;
     epochName: string | null;
   };
+
   instrument: {
     id: string;
     name: string;
   } | null;
+
   epoch: {
     id: string;
     name: string;
   } | null;
+
   categoryNames: string[];
-  workGenresArr?: string[];
+  workGenresArr: string[];
 }
 
 export interface WorkListItem {
@@ -81,22 +81,15 @@ export interface WorkListItem {
   mediaDuration?: string;
   workType: string;
   isPartOfCollection: boolean;
-  difficultyLevel?: string;
-  isVerified: boolean;
   composer: {
     id: string;
     name: string;
-    fullName: string | null;
     epochName: string | null;
   };
+
   instrument: {
-    id: string;
     name: string;
   } | null;
-  epoch: {
-    id: string;
-    name: string;
-  };
 }
 
 export interface WorksListResponse {
@@ -600,6 +593,8 @@ export async function revalidateWorkCache(workId?: string) {
   revalidateTag('works-ultra-optimized');
   revalidateTag('total-works-count');
   revalidateTag('filter-options-ultra');
+  revalidateTag('work-media'); // 🆕 Novo tag para mídia
+
   revalidateTag('instruments-cache');
   revalidateTag('epochs-cache');
   revalidateTag('work-genres-cache');
@@ -612,12 +607,13 @@ export async function revalidateWorkCache(workId?: string) {
   console.log('🔄 Cache de obras invalidado (ultra otimizado)');
 }
 
-// 🚀 BUSCAR DETALHES DE UMA OBRA ESPECÍFICA (MANTIDO)
-export const getWorkById = unstable_cache(
-  async (workId: string): Promise<WorkDetails | null> => {
+const getCachedWorkData = unstable_cache(
+  async (workId: string) => {
     try {
       const work = await prisma.work.findUnique({
-        where: { id: workId },
+        where: {
+          id: workId,
+        },
         select: {
           id: true,
           title: true,
@@ -639,15 +635,37 @@ export const getWorkById = unstable_cache(
           isPartOfCollection: true,
           parentWorkId: true,
           movementNumber: true,
-          createdAt: true,
-          categoryNames: true,
-          workGenresArr: true,
           timeSignature: true,
           tempoMarking: true,
           movementsDetailed: true,
           imslpTags: true,
           difficultyLevel: true,
+          createdAt: true,
+          instrumentId: true,
+          epochId: true,
+          categoryNames: true,
+          workGenresArr: true,
           isVerified: true,
+
+          // 🆕 INCLUIR CAMPOS DE MÍDIA
+          spotifyTrackId: true,
+          spotifyTrackUrl: true,
+
+          youtubeVideoId: true,
+          youtubeVideoUrl: true,
+          youtubeTitle: true,
+
+          videoAulaUrl: true,
+          videoAulaFile: true,
+          videoAulaTitle: true,
+          videoAulaType: true,
+          videoAulaAddedBy: true,
+          videoAulaAddedAt: true,
+          videoAulaMetadata: true,
+
+          lastMediaSearch: true,
+          mediaSearchError: true,
+
           composer: {
             select: {
               id: true,
@@ -656,69 +674,112 @@ export const getWorkById = unstable_cache(
               epochName: true,
             },
           },
-          instrument: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          epoch: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
         },
       });
 
       if (!work) return null;
 
+      // Buscar genre, instrument, epoch em paralelo
+      const [instrument, epoch] = await Promise.all([
+        work.instrumentId
+          ? prisma.instrument.findUnique({
+              where: { id: work.instrumentId },
+              select: { id: true, name: true },
+            })
+          : null,
+        work.epochId
+          ? prisma.epoch.findUnique({
+              where: { id: work.epochId },
+              select: { id: true, name: true },
+            })
+          : null,
+      ]);
+
       return {
-        id: work.id,
-        title: work.title,
-        subtitle: work.subtitle || undefined,
-        opOrCatalog: work.opOrCatalog || undefined,
-        compositionYear: work.compositionYear || undefined,
-        firstPublishDate: work.firstPublishDate || undefined,
-        tone: work.tone || undefined,
-        mediaDuration: work.mediaDuration || undefined,
-        imslpPermlink: work.imslpPermlink,
-        imslpId: work.imslpId,
-        videoUrl: work.videoUrl || undefined,
-        workStyle: work.workStyle || undefined,
-        moviment: work.moviment || undefined,
-        dedicateTo: work.dedicateTo || undefined,
-        dedicationComposerLink: work.dedicationComposerLink || undefined,
-        instrumentation: work.instrumentation || undefined,
-        workType: work.workType,
-        isPartOfCollection: work.isPartOfCollection,
-        parentWorkId: work.parentWorkId || undefined,
-        movementNumber: work.movementNumber || undefined,
-        createdAt: work.createdAt,
-        categoryNames: work.categoryNames,
-        workGenresArr: work.workGenresArr,
-        timeSignature: work.timeSignature || undefined,
-        tempoMarking: work.tempoMarking || undefined,
-        movementsDetailed: work.movementsDetailed || undefined,
-        imslpTags: work.imslpTags || undefined,
-        difficultyLevel: work.difficultyLevel || undefined,
-        composer: work.composer,
-        instrument: work.instrument,
-        epoch: work.epoch,
-        isVerified: work.isVerified,
+        ...work,
+        instrument,
+        epoch,
       };
     } catch (error) {
-      console.error('❌ Erro ao buscar obra por ID:', error);
+      console.error('Erro ao buscar dados da obra:', error);
       return null;
     }
   },
-  ['work-details-ultra'],
+  ['work-basic-data-with-media'],
   {
-    revalidate: 3600,
-    tags: ['work-details-ultra'],
+    revalidate: 7200, // 2 horas
+    tags: ['work-basic-data', 'work-media'],
   }
 );
 
+export const getWorkById = async (
+  workId: string
+): Promise<WorkDetails | null> => {
+  try {
+    const work = await getCachedWorkData(workId);
+
+    if (!work) {
+      return null;
+    }
+
+    return {
+      id: work.id,
+      title: work.title,
+      subtitle: work.subtitle || undefined,
+      opOrCatalog: work.opOrCatalog || undefined,
+      compositionYear: work.compositionYear || undefined,
+      firstPublishDate: work.firstPublishDate || undefined,
+      tone: work.tone || undefined,
+      mediaDuration: work.mediaDuration || undefined,
+      imslpPermlink: work.imslpPermlink,
+      imslpId: work.imslpId,
+      videoUrl: work.videoUrl || undefined,
+      workStyle: work.workStyle || undefined,
+      moviment: work.moviment || undefined,
+      dedicateTo: work.dedicateTo || undefined,
+      dedicationComposerLink: work.dedicationComposerLink || undefined,
+      instrumentation: work.instrumentation || undefined,
+      workType: work.workType,
+      isPartOfCollection: work.isPartOfCollection,
+      parentWorkId: work.parentWorkId || undefined,
+      movementNumber: work.movementNumber || undefined,
+      timeSignature: work.timeSignature || undefined,
+      tempoMarking: work.tempoMarking || undefined,
+      movementsDetailed: work.movementsDetailed || undefined,
+      imslpTags: work.imslpTags || undefined,
+      difficultyLevel: work.difficultyLevel || undefined,
+      createdAt: work.createdAt,
+      composer: work.composer,
+      instrument: work.instrument,
+      epoch: work.epoch,
+      categoryNames: work.categoryNames,
+      workGenresArr: work.workGenresArr,
+      isVerified: work.isVerified,
+
+      // 🆕 INCLUIR MÍDIA NO RETORNO
+      spotifyTrackId: work.spotifyTrackId || undefined,
+      spotifyTrackUrl: work.spotifyTrackUrl || undefined,
+
+      youtubeVideoId: work.youtubeVideoId || undefined,
+      youtubeVideoUrl: work.youtubeVideoUrl || undefined,
+      youtubeTitle: work.youtubeTitle || undefined,
+
+      videoAulaUrl: work.videoAulaUrl || undefined,
+      videoAulaFile: work.videoAulaFile || undefined,
+      videoAulaTitle: work.videoAulaTitle || undefined,
+      videoAulaType: work.videoAulaType || undefined,
+      videoAulaAddedBy: work.videoAulaAddedBy || undefined,
+      videoAulaAddedAt: work.videoAulaAddedAt || undefined,
+      videoAulaMetadata: work.videoAulaMetadata || undefined,
+
+      lastMediaSearch: work.lastMediaSearch || undefined,
+      mediaSearchError: work.mediaSearchError || undefined,
+    };
+  } catch (error) {
+    console.error('Erro ao buscar obra:', error);
+    return null;
+  }
+};
 // 🚀 BUSCAR GÊNEROS COM FILTRO (MANTIDO)
 export const searchWorkGenres = async (
   searchTerm: string = '',
@@ -783,105 +844,3 @@ export const getInstruments = unstable_cache(
     tags: ['instruments-list'],
   }
 );
-
-// 🚀 BUSCAR ÉPOCAS (MANTIDO PARA COMPATIBILIDADE)
-export const getEpochs = unstable_cache(
-  async () => {
-    try {
-      const { epochs } = await getFilterOptions();
-      return epochs;
-    } catch (error) {
-      console.error('❌ Erro ao buscar épocas:', error);
-      return [];
-    }
-  },
-  ['epochs-list'],
-  {
-    revalidate: 7200,
-    tags: ['epochs-list'],
-  }
-);
-
-// 🚀 BUSCAR COMPOSITORES POPULARES (MANTIDO PARA COMPATIBILIDADE)
-export const getPopularComposers = unstable_cache(
-  async (): Promise<
-    { id: string; name: string; fullName?: string; worksCount?: number }[]
-  > => {
-    try {
-      const { popularComposers } = await getFilterOptions();
-      return popularComposers;
-    } catch (error) {
-      console.error('❌ Erro ao buscar compositores populares:', error);
-      return [];
-    }
-  },
-  ['popular-composers-list'],
-  {
-    revalidate: 3600,
-    tags: ['popular-composers-list'],
-  }
-);
-
-// 🚀 VERIFICAR CACHE DE PARTITURAS (MANTIDO PARA COMPATIBILIDADE)
-export const hasScoresInCache = unstable_cache(
-  async (
-    workId: string
-  ): Promise<{
-    hasCache: boolean;
-    cacheInfo: {
-      totalScores: number;
-      lastUpdated: Date | null;
-      types: string[];
-    } | null;
-  }> => {
-    try {
-      const cachedScores = await prisma.workScore.findMany({
-        where: {
-          workId,
-          isActive: true,
-          OR: [{ expiresAt: { gt: new Date() } }, { expiresAt: null }],
-        },
-        select: {
-          type: true,
-          updatedAt: true,
-        },
-      });
-
-      if (cachedScores.length === 0) {
-        return { hasCache: false, cacheInfo: null };
-      }
-
-      const lastUpdated = cachedScores.reduce((latest, score) => {
-        const scoreDate = new Date(score.updatedAt);
-        return latest > scoreDate ? latest : scoreDate;
-      }, new Date(0));
-
-      const types = [...new Set(cachedScores.map((score) => score.type))];
-
-      return {
-        hasCache: true,
-        cacheInfo: {
-          totalScores: cachedScores.length,
-          lastUpdated: lastUpdated > new Date(0) ? lastUpdated : null,
-          types,
-        },
-      };
-    } catch (error) {
-      console.error('❌ Erro ao verificar cache de partituras:', error);
-      return { hasCache: false, cacheInfo: null };
-    }
-  },
-  ['work-scores-cache'],
-  {
-    revalidate: 300, // Cache por 5 minutos
-    tags: ['work-scores-cache'],
-  }
-);
-
-// 🚀 INVALIDAR CACHE DE PARTITURAS (MANTIDO PARA COMPATIBILIDADE)
-export async function revalidateWorkScoreCache(workId: string) {
-  const { revalidateTag } = await import('next/cache');
-  revalidateTag('work-scores-cache');
-  revalidateTag(`work-cache-${workId}`);
-  console.log(`🔄 Cache de partituras invalidado para obra: ${workId}`);
-}

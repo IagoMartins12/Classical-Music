@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsServer.tsx - Versão Atualizada com Sistema Incremental
+// app/work/[workId]/WorkDetailsServer.tsx - Atualizado com Permissões
 import { notFound } from 'next/navigation';
 import { getRelatedWorks, getWorkById } from '@/app/requests/work-page-details';
 import { getServerSession } from 'next-auth';
@@ -18,7 +18,7 @@ export default async function WorkDetailsServer({
     console.log(`🎼 [SERVER] Carregando dados da obra ${workId}`);
     const startTime = Date.now();
 
-    // 🚀 Carregar dados da obra e obras relacionadas em paralelo para máxima performance
+    // Carregar dados da obra e obras relacionadas em paralelo
     const [work, relatedWorks] = await Promise.all([
       getWorkById(workId),
       getRelatedWorks(workId, 6),
@@ -32,12 +32,25 @@ export default async function WorkDetailsServer({
     const loadTime = Date.now() - startTime;
     console.log(`✅ [SERVER] Dados da obra carregados em ${loadTime}ms`);
 
-    const isAdmin = session?.user.role === 2;
+    // 🆕 VERIFICAR PERMISSÕES COMPLETAS
+    const isAdmin = session?.user?.role === 2;
+    const isOwner = work.createdBy === session?.user?.id;
+    const canEditMedia = isAdmin || isOwner;
+
+    console.log('🔐 [SERVER] Permissões:', {
+      userId: session?.user?.id,
+      workCreator: work.createdBy,
+      isAdmin,
+      isOwner,
+      canEditMedia,
+      work,
+    });
 
     return (
       <WorkDetailsClient
         work={work}
         isAdmin={isAdmin}
+        canEditMedia={canEditMedia} // 🆕 Nova permissão
         relatedWorks={relatedWorks}
         learningData={{ wantToLearn: [], learned: [] }}
       />
@@ -45,7 +58,6 @@ export default async function WorkDetailsServer({
   } catch (error) {
     console.error(`❌ [SERVER] Erro ao carregar obra ${workId}:`, error);
 
-    // Log detalhado do erro
     if (error instanceof Error) {
       console.error(`- Mensagem: ${error.message}`);
       console.error(`- Stack: ${error.stack}`);

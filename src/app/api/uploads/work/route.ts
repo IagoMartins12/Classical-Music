@@ -1,4 +1,4 @@
-// app/api/uploads/work/route.ts
+// app/api/uploads/work/route.ts - ATUALIZADO COM SISTEMA DE MÍDIA
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -67,33 +67,48 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar se já existe obra com mesmo imslpId
-    // if (body.imslpId) {
-    //   const existingWork = await prisma.work.findFirst({
-    //     where: {
-    //       imslpId: body.imslpId,
-    //       id: { not: body.excludeId || null }, // Para permitir edição
-    //     },
-    //   });
+    // 🆕 Preparar dados de mídia se fornecidos
+    const mediaData: any = {};
 
-    //   if (existingWork) {
-    //     return NextResponse.json(
-    //       {
-    //         error: 'Já existe uma obra com este ID do IMSLP',
-    //         existingWork: {
-    //           id: existingWork.id,
-    //           title: existingWork.title,
-    //         },
-    //       },
-    //       { status: 400 }
-    //     );
-    //   }
-    // }
+    if (body.spotifyTrackId || body.spotifyTrackUrl) {
+      mediaData.spotifyTrackId = body.spotifyTrackId || null;
+      mediaData.spotifyTrackUrl = body.spotifyTrackUrl || null;
+    }
+
+    if (body.youtubeVideoId || body.youtubeVideoUrl) {
+      mediaData.youtubeVideoId = body.youtubeVideoId || null;
+      mediaData.youtubeVideoUrl = body.youtubeVideoUrl || null;
+      mediaData.youtubeTitle = body.youtubeTitle || null;
+    }
+
+    if (body.customAudioUrl || body.customAudioFile) {
+      mediaData.customAudioUrl = body.customAudioUrl || null;
+      mediaData.customAudioFile = body.customAudioFile || null;
+    }
+
+    if (body.videoAulaUrl || body.videoAulaFile) {
+      mediaData.videoAulaUrl = body.videoAulaUrl || null;
+      mediaData.videoAulaFile = body.videoAulaFile || null;
+      mediaData.videoAulaTitle = body.videoAulaTitle || null;
+      mediaData.videoAulaType = body.videoAulaType || 'video';
+      mediaData.videoAulaSource = body.videoAulaSource || 'youtube';
+      mediaData.videoAulaAddedBy = userId;
+      mediaData.videoAulaAddedAt = new Date();
+      mediaData.videoAulaMetadata = body.videoAulaMetadata || null;
+    }
+
+    // Determinar fonte da mídia
+    if (Object.keys(mediaData).length > 0) {
+      mediaData.mediaSource = body.mediaSource || 'manual';
+    } else {
+      mediaData.mediaSource = 'none';
+    }
 
     // Criar obra
     const work = await prisma.work.create({
       data: {
         ...body,
+        ...mediaData, // 🆕 Incluir dados de mídia
         createdBy: userId,
         isCustom: true,
         // Converter arrays de string para formato correto
@@ -122,7 +137,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // 🆕 Registrar no histórico
+    // 🆕 Registrar no histórico (incluindo dados de mídia)
     await logWorkCreate(
       userId,
       work.id,
@@ -143,12 +158,25 @@ export async function POST(request: NextRequest) {
         difficultyLevel: work.difficultyLevel,
         isIMSLP: !!work.imslpId,
         dataSource: body.dataSource || 'manual',
+        // 🆕 Incluir informações de mídia no histórico
+        hasMedia: Object.keys(mediaData).length > 1, // > 1 porque sempre tem mediaSource
+        mediaSource: mediaData.mediaSource,
+        hasSpotify: !!work.spotifyTrackId,
+        hasYoutube: !!work.youtubeVideoId,
+        hasCustomAudio: !!(work.customAudioUrl || work.customAudioFile),
+        hasVideoAula: !!(work.videoAulaUrl || work.videoAulaFile),
+        videoAulaType: work.videoAulaType,
+        videoAulaSource: work.videoAulaSource,
       },
       request
     );
 
     // Invalidar cache
     await revalidateUploadsCache(userId);
+
+    console.log(
+      `✅ [WORK-CREATE] Obra "${work.title}" criada com mídia por ${session.user.email}`
+    );
 
     return NextResponse.json({
       message: 'Obra criada com sucesso!',

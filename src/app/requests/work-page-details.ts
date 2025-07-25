@@ -24,6 +24,7 @@ export interface WorkDetails {
   movementNumber?: number;
   createdAt: Date;
   isVerified: boolean;
+  createdBy?: string | null;
   composer: {
     id: string;
     name: string;
@@ -105,6 +106,7 @@ const getCachedWorkData = unstable_cache(
           categoryNames: true,
           workGenresArr: true,
           isVerified: true,
+          createdBy: true,
           composer: {
             select: {
               id: true,
@@ -189,6 +191,7 @@ export const getWorkById = async (
       categoryNames: work.categoryNames,
       workGenresArr: work.workGenresArr,
       isVerified: work.isVerified,
+      createdBy: work.createdBy,
     };
   } catch (error) {
     console.error('Erro ao buscar obra:', error);

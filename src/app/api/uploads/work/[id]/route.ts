@@ -1,79 +1,15 @@
-// app/api/uploads/work/[id]/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
+import { cleanupWorkMediaServer } from '@/app/hooks/useWorkCleanup';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateUploadsCache } from '@/app/requests/upload';
-import {
-  logWorkUpdate,
-  logWorkDelete,
-  logScoreDelete,
-} from '@/app/utils/historyUtils';
-import {
-  cleanupScoreFiles,
-  logCleanupResult,
-} from '@/app/utils/fileCleanupUtils';
+import { logWorkUpdate } from '@/app/utils/historyUtils';
+import { getServerSession } from 'next-auth';
+import { NextRequest, NextResponse } from 'next/server';
 
 interface Params {
   id: string;
 }
-
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<Params> }
-) {
-  try {
-    const { id } = await params;
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
-    }
-
-    const work = await prisma.work.findUnique({
-      where: { id },
-      include: {
-        composer: { select: { id: true, name: true, fullName: true } },
-        epoch: { select: { id: true, name: true } },
-        instrument: { select: { id: true, name: true } },
-        cachedScores: {
-          select: {
-            id: true,
-            title: true,
-            source: true,
-            fileFormat: true,
-            pageCount: true,
-            fileSize: true,
-          },
-        },
-      },
-    });
-
-    if (!work) {
-      return NextResponse.json(
-        { error: 'Obra não encontrada' },
-        { status: 404 }
-      );
-    }
-
-    // Verificar permissões
-    const isAdmin = session.user.role === 2;
-    const isOwner = work.createdBy === session.user.id;
-
-    if (!isAdmin && !isOwner && !work.isCustom) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
-    }
-
-    return NextResponse.json({ work });
-  } catch (error) {
-    console.error('Erro ao buscar obra:', error);
-    return NextResponse.json(
-      { error: 'Erro interno do servidor' },
-      { status: 500 }
-    );
-  }
-}
-
+// app/api/uploads/work/[id]/route.ts - PUT ATUALIZADO COM MÍDIA
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<Params> }
@@ -150,7 +86,7 @@ export async function PUT(
       }
     }
 
-    // 🆕 Salvar dados antigos para comparação
+    // 🆕 Salvar dados antigos para comparação (incluindo mídia)
     const oldData = {
       title: currentWork.title,
       subtitle: currentWork.subtitle,
@@ -181,13 +117,89 @@ export async function PUT(
       movementsDetailed: currentWork.movementsDetailed,
       imslpTags: currentWork.imslpTags,
       difficultyLevel: currentWork.difficultyLevel,
+      // 🆕 Dados de mídia antigos
+      spotifyTrackId: currentWork.spotifyTrackId,
+      spotifyTrackUrl: currentWork.spotifyTrackUrl,
+      youtubeVideoId: currentWork.youtubeVideoId,
+      youtubeVideoUrl: currentWork.youtubeVideoUrl,
+      youtubeTitle: currentWork.youtubeTitle,
+      customAudioUrl: currentWork.customAudioUrl,
+      customAudioFile: currentWork.customAudioFile,
+      videoAulaUrl: currentWork.videoAulaUrl,
+      videoAulaFile: currentWork.videoAulaFile,
+      videoAulaTitle: currentWork.videoAulaTitle,
+      videoAulaType: currentWork.videoAulaType,
+      videoAulaSource: currentWork.videoAulaSource,
+      mediaSource: currentWork.mediaSource,
     };
+
+    // 🆕 Preparar dados de mídia se fornecidos
+    const mediaData: any = {};
+
+    // Spotify
+    if (
+      body.hasOwnProperty('spotifyTrackId') ||
+      body.hasOwnProperty('spotifyTrackUrl')
+    ) {
+      mediaData.spotifyTrackId = body.spotifyTrackId || null;
+      mediaData.spotifyTrackUrl = body.spotifyTrackUrl || null;
+    }
+
+    // YouTube
+    if (
+      body.hasOwnProperty('youtubeVideoId') ||
+      body.hasOwnProperty('youtubeVideoUrl')
+    ) {
+      mediaData.youtubeVideoId = body.youtubeVideoId || null;
+      mediaData.youtubeVideoUrl = body.youtubeVideoUrl || null;
+      mediaData.youtubeTitle = body.youtubeTitle || null;
+    }
+
+    // Áudio customizado
+    if (
+      body.hasOwnProperty('customAudioUrl') ||
+      body.hasOwnProperty('customAudioFile')
+    ) {
+      mediaData.customAudioUrl = body.customAudioUrl || null;
+      mediaData.customAudioFile = body.customAudioFile || null;
+    }
+
+    // Video Aula
+    if (
+      body.hasOwnProperty('videoAulaUrl') ||
+      body.hasOwnProperty('videoAulaFile')
+    ) {
+      mediaData.videoAulaUrl = body.videoAulaUrl || null;
+      mediaData.videoAulaFile = body.videoAulaFile || null;
+      mediaData.videoAulaTitle = body.videoAulaTitle || null;
+      mediaData.videoAulaType = body.videoAulaType || 'video';
+      mediaData.videoAulaSource = body.videoAulaSource || 'youtube';
+
+      // Se está adicionando/alterando video aula, atualizar metadados
+      if (body.videoAulaUrl || body.videoAulaFile) {
+        mediaData.videoAulaAddedBy = userId;
+        mediaData.videoAulaAddedAt = new Date();
+      }
+
+      if (body.videoAulaMetadata) {
+        mediaData.videoAulaMetadata = body.videoAulaMetadata;
+      }
+    }
+
+    // Determinar fonte da mídia
+    if (body.hasOwnProperty('mediaSource')) {
+      mediaData.mediaSource = body.mediaSource;
+    } else if (Object.keys(mediaData).length > 0) {
+      // Se está alterando mídia mas não especificou source, marcar como manual
+      mediaData.mediaSource = 'manual';
+    }
 
     // Atualizar obra
     const updatedWork = await prisma.work.update({
       where: { id },
       data: {
         ...body,
+        ...mediaData, // 🆕 Incluir dados de mídia
         lastEditedBy: userId,
         lastEditedAt: new Date(),
         // Converter arrays de string para formato correto
@@ -216,7 +228,21 @@ export async function PUT(
       },
     });
 
-    // 🆕 Registrar alterações no histórico
+    // 🆕 Detectar mudanças na mídia para histórico
+    const mediaChanges = {
+      spotifyChanged: oldData.spotifyTrackId !== updatedWork.spotifyTrackId,
+      youtubeChanged: oldData.youtubeVideoId !== updatedWork.youtubeVideoId,
+      customAudioChanged:
+        oldData.customAudioFile !== updatedWork.customAudioFile,
+      videoAulaChanged:
+        oldData.videoAulaUrl !== updatedWork.videoAulaUrl ||
+        oldData.videoAulaFile !== updatedWork.videoAulaFile,
+      mediaSourceChanged: oldData.mediaSource !== updatedWork.mediaSource,
+    };
+
+    const hasMediaChanges = Object.values(mediaChanges).some(Boolean);
+
+    // 🆕 Registrar alterações no histórico (incluindo mídia)
     await logWorkUpdate(
       userId,
       id,
@@ -251,16 +277,43 @@ export async function PUT(
         movementsDetailed: updatedWork.movementsDetailed,
         imslpTags: updatedWork.imslpTags,
         difficultyLevel: updatedWork.difficultyLevel,
+        // 🆕 Dados de mídia novos
+        spotifyTrackId: updatedWork.spotifyTrackId,
+        spotifyTrackUrl: updatedWork.spotifyTrackUrl,
+        youtubeVideoId: updatedWork.youtubeVideoId,
+        youtubeVideoUrl: updatedWork.youtubeVideoUrl,
+        youtubeTitle: updatedWork.youtubeTitle,
+        customAudioUrl: updatedWork.customAudioUrl,
+        customAudioFile: updatedWork.customAudioFile,
+        videoAulaUrl: updatedWork.videoAulaUrl,
+        videoAulaFile: updatedWork.videoAulaFile,
+        videoAulaTitle: updatedWork.videoAulaTitle,
+        videoAulaType: updatedWork.videoAulaType,
+        videoAulaSource: updatedWork.videoAulaSource,
+        mediaSource: updatedWork.mediaSource,
+        // 🆕 Metadados das mudanças de mídia
+        mediaChanges,
+        hasMediaChanges,
       },
-      'Obra atualizada via formulário',
+      hasMediaChanges
+        ? 'Obra e mídia atualizadas via formulário'
+        : 'Obra atualizada via formulário',
       request
     );
 
     // Invalidar cache
     await revalidateUploadsCache(userId);
 
+    console.log(
+      `✅ [WORK-UPDATE] Obra "${updatedWork.title}" atualizada${
+        hasMediaChanges ? ' (incluindo mídia)' : ''
+      } por ${session.user.email}`
+    );
+
     return NextResponse.json({
-      message: 'Obra atualizada com sucesso!',
+      message: hasMediaChanges
+        ? 'Obra e mídia atualizadas com sucesso!'
+        : 'Obra atualizada com sucesso!',
       work: updatedWork,
     });
   } catch (error) {
@@ -272,52 +325,152 @@ export async function PUT(
   }
 }
 
+// DELETE - Deletar obra COM limpeza automática de mídia
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<Params> }
 ) {
   try {
-    const { id } = await params;
     const session = await getServerSession(authOptions);
-
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    const userId = session.user.id;
+    const { id } = await params;
 
-    // Buscar obra com todas as partituras e obras filhas para exclusão em cascata
+    // Verificar se obra existe e permissões
     const work = await prisma.work.findUnique({
-      where: { id },
+      where: { id: id },
+      select: {
+        id: true,
+        title: true,
+        createdBy: true,
+        // Verificar se tem mídia para log
+        spotifyTrackId: true,
+        youtubeVideoId: true,
+        customAudioFile: true,
+        videoAulaUrl: true,
+        videoAulaFile: true,
+      },
+    });
+
+    if (!work) {
+      return NextResponse.json(
+        { error: 'Obra não encontrada' },
+        { status: 404 }
+      );
+    }
+
+    // Verificar permissões
+    const isAdmin = session.user.role >= 2; // Apenas super admin pode deletar
+    const isOwner = work.createdBy === session.user.id;
+
+    if (!isAdmin && !isOwner) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
+    }
+
+    console.log(
+      `🗑️ [WORK-DELETE] Iniciando exclusão da obra "${work.title}" por ${session.user.email}`
+    );
+
+    // Verificar se tem mídia associada
+    const hasMedia = !!(
+      work.spotifyTrackId ||
+      work.youtubeVideoId ||
+      work.customAudioFile ||
+      work.videoAulaUrl ||
+      work.videoAulaFile
+    );
+
+    if (hasMedia) {
+      console.log(
+        `📁 [WORK-DELETE] Obra tem mídia associada, iniciando limpeza...`
+      );
+    }
+
+    // 1. Primeiro, remover da base de dados (cascade vai cuidar das relações)
+    await prisma.work.delete({
+      where: { id: id },
+    });
+
+    console.log(`✅ [WORK-DELETE] Obra removida da base de dados`);
+
+    // 2. Depois, limpar arquivos de mídia do sistema de arquivos
+    if (hasMedia) {
+      const cleanupSuccess = await cleanupWorkMediaServer(id);
+
+      if (cleanupSuccess) {
+        console.log(`🧹 [WORK-DELETE] Arquivos de mídia removidos com sucesso`);
+      } else {
+        console.warn(
+          `⚠️ [WORK-DELETE] Alguns arquivos de mídia podem não ter sido removidos`
+        );
+      }
+    }
+
+    // 3. Log de auditoria
+    console.log(
+      `🎉 [WORK-DELETE] Exclusão completa da obra "${work.title}" finalizada`
+    );
+
+    return NextResponse.json({
+      success: true,
+      message: `Obra "${work.title}" e todos os arquivos associados foram removidos com sucesso`,
+      hadMedia: hasMedia,
+    });
+  } catch (error) {
+    console.error('❌ [WORK-DELETE] Erro ao deletar obra:', error);
+
+    // Se erro for de constraint/relação, dar mensagem mais específica
+    if (error instanceof Error && error.message.includes('constraint')) {
+      return NextResponse.json(
+        {
+          error:
+            'Não é possível deletar esta obra pois ela tem dados relacionados (favoritos, anotações, etc.). Entre em contato com o administrador.',
+        },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido',
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// GET - Buscar obra (código existente mantido se houver)
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<Params> }
+) {
+  try {
+    const { id } = await params;
+
+    const work = await prisma.work.findUnique({
+      where: { id: id },
       include: {
-        composer: { select: { name: true, fullName: true } },
-        epoch: { select: { name: true } },
-        instrument: { select: { name: true } },
-        cachedScores: {
+        composer: {
           select: {
             id: true,
-            title: true,
-            sourceId: true,
-            downloadUrl: true,
-            thumbnailUrl: true,
-            fileSize: true,
-            pageCount: true,
-            source: true,
+            name: true,
+            fullName: true,
+            epochName: true,
           },
         },
-        childWorks: {
+        instrument: {
           select: {
             id: true,
-            title: true,
-            cachedScores: {
-              select: {
-                id: true,
-                title: true,
-                sourceId: true,
-                downloadUrl: true,
-                thumbnailUrl: true,
-              },
-            },
+            name: true,
+          },
+        },
+        epoch: {
+          select: {
+            id: true,
+            name: true,
           },
         },
       },
@@ -330,246 +483,95 @@ export async function DELETE(
       );
     }
 
+    return NextResponse.json({
+      success: true,
+      work,
+    });
+  } catch (error) {
+    console.error('❌ [WORK-GET] Erro ao buscar obra:', error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}
+
+// 🆕 PATCH - Atualizar apenas mídia da obra
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<Params> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+    }
+
+    const { id } = await params;
+    const body = await request.json();
+
+    // Verificar se obra existe e permissões
+    const work = await prisma.work.findUnique({
+      where: { id: id },
+      select: {
+        id: true,
+        title: true,
+        createdBy: true,
+      },
+    });
+
+    if (!work) {
+      return NextResponse.json(
+        { error: 'Obra não encontrada' },
+        { status: 404 }
+      );
+    }
+
     // Verificar permissões
-    const isAdmin = session.user.role === 2;
-    const isOwner = work.createdBy === userId;
+    const isAdmin = session.user.role >= 1;
+    const isOwner = work.createdBy === session.user.id;
 
     if (!isAdmin && !isOwner) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
     }
 
-    // Contadores para relatório
-    let deletedScoresCount = 0;
-    let deletedChildWorksCount = 0;
-    const totalCleanupResult = {
-      removedFiles: [] as string[],
-      removedDirectories: [] as string[],
-      errors: [] as string[],
-      totalSize: 0,
+    // Atualizar apenas campos de mídia
+    const mediaFields = {
+      spotifyTrackId: body.spotifyTrackId || null,
+      spotifyTrackUrl: body.spotifyTrackUrl || null,
+      youtubeVideoId: body.youtubeVideoId || null,
+      youtubeVideoUrl: body.youtubeVideoUrl || null,
+      youtubeTitle: body.youtubeTitle || null,
+      customAudioUrl: body.customAudioUrl || null,
+      customAudioFile: body.customAudioFile || null,
+      videoAulaUrl: body.videoAulaUrl || null,
+      videoAulaFile: body.videoAulaFile || null,
+      videoAulaTitle: body.videoAulaTitle || null,
+      videoAulaType: body.videoAulaType || null,
+      videoAulaSource: body.videoAulaSource || null,
+      videoAulaAddedBy: session.user.id,
+      videoAulaAddedAt: new Date(),
+      mediaSource: body.mediaSource || 'manual',
+      lastEditedBy: session.user.id,
+      lastEditedAt: new Date(),
     };
 
-    // 🆕 EXCLUSÃO EM CASCATA COM LIMPEZA DE ARQUIVOS
-    await prisma.$transaction(async (tx) => {
-      // 1. Primeiro, excluir partituras das obras filhas E seus arquivos
-      for (const childWork of work.childWorks) {
-        if (childWork.cachedScores.length > 0) {
-          // Registrar e limpar arquivos de cada partitura da obra filha
-          for (const score of childWork.cachedScores) {
-            try {
-              // 🆕 Limpar arquivos da partitura
-              const scoreCleanup = await cleanupScoreFiles(
-                score.downloadUrl,
-                score.thumbnailUrl
-              );
-
-              // Acumular resultados da limpeza
-              totalCleanupResult.removedFiles.push(
-                ...scoreCleanup.removedFiles
-              );
-              totalCleanupResult.removedDirectories.push(
-                ...scoreCleanup.removedDirectories
-              );
-              totalCleanupResult.errors.push(...scoreCleanup.errors);
-              totalCleanupResult.totalSize += scoreCleanup.totalSize;
-
-              await logScoreDelete(
-                userId,
-                score.id,
-                {
-                  title: score.title,
-                  sourceId: score.sourceId,
-                  workTitle: childWork.title,
-                  composerName: work.composer.fullName || work.composer.name,
-                  deletedBy: 'CASCADE_WORK_DELETE',
-                },
-                `Partitura excluída automaticamente devido à exclusão da obra principal "${work.title}"`,
-                request
-              );
-            } catch (logError) {
-              console.warn(
-                'Erro ao registrar exclusão de partitura da obra filha no histórico:',
-                logError
-              );
-            }
-          }
-
-          // Excluir partituras da obra filha
-          await tx.workScore.deleteMany({
-            where: { workId: childWork.id },
-          });
-
-          deletedScoresCount += childWork.cachedScores.length;
-        }
-
-        // Registrar obra filha no histórico antes de excluir
-        try {
-          await logWorkDelete(
-            userId,
-            childWork.id,
-            {
-              title: childWork.title,
-              composerName: work.composer.fullName || work.composer.name,
-              epochName: work.epoch?.name,
-              instrumentName: work.instrument?.name,
-              parentWorkTitle: work.title,
-              scoresCount: childWork.cachedScores.length,
-              deletedBy: 'CASCADE_WORK_DELETE',
-            },
-            `Obra filha excluída automaticamente devido à exclusão da obra principal "${work.title}"`,
-            request
-          );
-        } catch (logError) {
-          console.warn(
-            'Erro ao registrar exclusão de obra filha no histórico:',
-            logError
-          );
-        }
-
-        deletedChildWorksCount++;
-      }
-
-      // 2. Excluir todas as obras filhas
-      if (work.childWorks.length > 0) {
-        await tx.work.deleteMany({
-          where: { parentWorkId: id },
-        });
-      }
-
-      // 3. Excluir partituras da obra principal E seus arquivos
-      if (work.cachedScores.length > 0) {
-        // Registrar e limpar arquivos de cada partitura
-        for (const score of work.cachedScores) {
-          try {
-            // 🆕 Limpar arquivos da partitura
-            const scoreCleanup = await cleanupScoreFiles(
-              score.downloadUrl,
-              score.thumbnailUrl
-            );
-
-            // Acumular resultados da limpeza
-            totalCleanupResult.removedFiles.push(...scoreCleanup.removedFiles);
-            totalCleanupResult.removedDirectories.push(
-              ...scoreCleanup.removedDirectories
-            );
-            totalCleanupResult.errors.push(...scoreCleanup.errors);
-            totalCleanupResult.totalSize += scoreCleanup.totalSize;
-
-            await logScoreDelete(
-              userId,
-              score.id,
-              {
-                title: score.title,
-                sourceId: score.sourceId,
-                workTitle: work.title,
-                composerName: work.composer.fullName || work.composer.name,
-                fileSize: score.fileSize,
-                pageCount: score.pageCount,
-                source: score.source,
-                deletedBy: 'CASCADE_WORK_DELETE',
-              },
-              `Partitura excluída automaticamente devido à exclusão da obra "${work.title}"`,
-              request
-            );
-          } catch (logError) {
-            console.warn(
-              'Erro ao registrar exclusão de partitura no histórico:',
-              logError
-            );
-          }
-        }
-
-        // Excluir partituras da obra principal
-        await tx.workScore.deleteMany({
-          where: { workId: id },
-        });
-
-        deletedScoresCount += work.cachedScores.length;
-      }
-
-      // 4. Finalmente, excluir a obra principal
-      await tx.work.delete({
-        where: { id },
-      });
+    const updatedWork = await prisma.work.update({
+      where: { id: id },
+      data: mediaFields,
     });
 
-    // 🆕 Salvar dados para histórico da obra principal
-    const deletedData = {
-      title: work.title,
-      composerName: work.composer.fullName || work.composer.name,
-      epochName: work.epoch.name,
-      instrumentName: work.instrument.name,
-      opOrCatalog: work.opOrCatalog,
-      compositionYear: work.compositionYear,
-      workStyle: work.workStyle,
-      workType: work.workType,
-      scoresCount: work.cachedScores.length,
-      childWorksCount: work.childWorks.length,
-      categoryNames: work.categoryNames,
-      workGenresArr: work.workGenresArr,
-      isIMSLP: !!work.imslpId,
-      cascadeDelete: true,
-      totalDeletedScores: deletedScoresCount,
-      totalDeletedChildWorks: deletedChildWorksCount,
-      cleanupResult: {
-        filesRemoved: totalCleanupResult.removedFiles.length,
-        directoriesRemoved: totalCleanupResult.removedDirectories.length,
-        spaceCleaned: `${(totalCleanupResult.totalSize / 1024 / 1024).toFixed(
-          2
-        )}MB`,
-        errors: totalCleanupResult.errors.length,
-      },
-    };
-
-    // 🆕 Registrar exclusão da obra no histórico
-    try {
-      await logWorkDelete(
-        userId,
-        id,
-        deletedData,
-        `Obra excluída via interface com exclusão em cascata: ${deletedChildWorksCount} obras filhas, ${deletedScoresCount} partituras e ${totalCleanupResult.removedFiles.length} arquivos removidos`,
-        request
-      );
-    } catch (logError) {
-      console.warn(
-        'Erro ao registrar exclusão de obra no histórico:',
-        logError
-      );
-    }
-
-    // Invalidar cache
-    await revalidateUploadsCache(userId);
-
-    // 🆕 Log final da limpeza total
-    console.log(`📊 Limpeza total da exclusão da obra ${work.title}:`);
-    logCleanupResult(totalCleanupResult, 'Exclusão completa da obra');
+    console.log(
+      `🎵 [MEDIA-UPDATE] Mídia da obra "${work.title}" atualizada por ${session.user.email}`
+    );
 
     return NextResponse.json({
-      message: `Obra excluída com sucesso! ${deletedChildWorksCount} obras filhas, ${deletedScoresCount} partituras e ${totalCleanupResult.removedFiles.length} arquivos foram removidos automaticamente.`,
-      details: {
-        workTitle: work.title,
-        deletedScores: work.cachedScores.length,
-        deletedChildWorks: deletedChildWorksCount,
-        totalDeletedScores: deletedScoresCount,
-        cleanup: {
-          filesRemoved: totalCleanupResult.removedFiles.length,
-          directoriesRemoved: totalCleanupResult.removedDirectories.length,
-          spaceCleaned: `${(totalCleanupResult.totalSize / 1024 / 1024).toFixed(
-            2
-          )}MB`,
-          errors: totalCleanupResult.errors.length,
-        },
-        childWorks: work.childWorks.map((cw) => ({
-          title: cw.title,
-          scoresCount: cw.cachedScores.length,
-        })),
-        scores: work.cachedScores.map((s) => ({
-          title: s.title,
-          sourceId: s.sourceId,
-        })),
-      },
+      success: true,
+      message: 'Mídia atualizada com sucesso!',
+      work: updatedWork,
     });
   } catch (error) {
-    console.error('Erro ao excluir obra:', error);
+    console.error('❌ [MEDIA-UPDATE] Erro ao atualizar mídia:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

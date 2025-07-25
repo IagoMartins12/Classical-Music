@@ -159,14 +159,6 @@ export async function generateMetadata({ params }: WorkDetailsPageProps) {
 
 // 🆕 Cache otimizado da página com estratégia inteligente
 export const revalidate = 3600; // 1 hora para dados básicos
-export const dynamic = 'force-static'; // Forçar geração estática quando possível
-
-// 🆕 Gerar páginas estáticas para obras populares (opcional)
-export async function generateStaticParams() {
-  // Esta função pode ser implementada para pré-gerar páginas das obras mais populares
-  // Por enquanto, deixar vazio para geração sob demanda
-  return [];
-}
 
 export default async function WorkDetailsPage({
   params,
@@ -186,9 +178,5 @@ export default async function WorkDetailsPage({
 
   console.log('session', session?.user);
 
-  return (
-    <Suspense fallback={<WorkDetailsLoading />}>
-      <WorkDetailsServer workId={resolvedParams.workId} />
-    </Suspense>
-  );
+  return <WorkDetailsServer workId={resolvedParams.workId} />;
 }
