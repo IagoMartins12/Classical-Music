@@ -8,11 +8,7 @@ import {
   FiRefreshCw,
   FiSearch,
   FiAlertCircle,
-  FiExternalLink,
-  FiPlay,
   FiEdit3,
-  FiSettings,
-  FiUpload,
   FiX,
   FiCheck,
   FiLoader,
@@ -63,13 +59,11 @@ interface MediaSectionProps {
     mediaSearchError?: string;
   };
   canEditMedia?: boolean;
-  onOpenEditModal?: () => void;
 }
 
 const MediaSection: React.FC<MediaSectionProps> = ({
   work,
   canEditMedia = false,
-  onOpenEditModal,
 }) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
@@ -493,27 +487,10 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   </h3>
                 </div>
 
-                {mediaData.spotify ||
-                mediaData.youtube ||
-                mediaData.customAudio ? (
-                  <UniversalAudioPlayer
-                    work={work}
-                    spotifyTrack={mediaData.spotify}
-                    youtubeVideo={mediaData.youtube}
-                    customAudio={mediaData.customAudio}
-                  />
-                ) : (
-                  <div className="bg-theme-elevated rounded-xl p-8 border-2 border-dashed border-theme-secondary text-center">
-                    <FiMusic className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
-                    <p className="text-theme-secondary">
-                      {isSearching
-                        ? 'Procurando fontes de áudio...'
-                        : searchError
-                        ? 'Sem áudio encontrado'
-                        : 'Nenhuma fonte de áudio disponível'}
-                    </p>
-                  </div>
-                )}
+                <UniversalAudioPlayer
+                  work={work}
+                  customAudio={mediaData.customAudio}
+                />
               </div>
             </AnimatedItem>
 
@@ -639,7 +616,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
             <div className="mt-6 bg-blue-900/20 border border-blue-700/30 rounded-xl p-4 flex items-center space-x-3">
               <FiRefreshCw className="w-5 h-5 text-blue-400 animate-spin" />
               <p className="text-blue-300 text-sm">
-                Buscando mídia para "{work.title}"...
+                Buscando mídia para &quot;{work.title}&quot;...
               </p>
             </div>
           </AnimatedItem>

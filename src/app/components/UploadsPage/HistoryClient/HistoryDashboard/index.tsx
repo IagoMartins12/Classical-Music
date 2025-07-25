@@ -179,11 +179,7 @@ const HistoryDashboard = ({
     delete: colors.danger,
   };
 
-  const entityColors = {
-    composer: colors.primary,
-    work: colors.secondary,
-    score: colors.warning,
-  };
+
 
   if (loading) {
     return (
@@ -606,7 +602,7 @@ const HistoryDashboard = ({
               </h3>
 
               <div className="space-y-3 max-h-64 overflow-y-auto">
-                {stats.recentActions.map((action, index) => (
+                {stats.recentActions.map((action) => (
                   <div
                     key={action.id}
                     className="flex items-center space-x-3 p-3 rounded-lg bg-theme-secondary/30"

@@ -297,7 +297,6 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
   const [fragments, setFragments] = useState<TemplateFragment[]>([]);
   const [fragmentsLoading, setFragmentsLoading] = useState(false);
 
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pagination, setPagination] = useState<Pagination>();
 
@@ -1112,7 +1111,6 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
 
   // 🆕 NOVO: Refresh geral
   const refreshAll = useCallback(async () => {
-    setLoading(true);
     try {
       await Promise.all([
         fetchTemplates(),
@@ -1122,7 +1120,6 @@ export const useNewsletterAdmin = (): UseNewsletterAdminReturn => {
     } catch (err) {
       console.error('Erro ao atualizar dados:', err);
     } finally {
-      setLoading(false);
     }
   }, [fetchTemplates, fetchTemplateStats, fetchFragments]);
 

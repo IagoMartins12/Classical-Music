@@ -1,6 +1,7 @@
 // app/components/Ads/AdBanner.tsx - Banner simples para header
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { FiX, FiExternalLink } from 'react-icons/fi';
 
@@ -56,7 +57,9 @@ export default function AdBanner({
       >
         <div className="flex items-center space-x-4">
           {ad.imageUrl && (
-            <img
+            <Image
+              height={12}
+              width={12}
               src={ad.imageUrl}
               alt={ad.title}
               className="w-12 h-12 rounded-lg object-cover"

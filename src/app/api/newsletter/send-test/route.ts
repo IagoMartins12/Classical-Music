@@ -247,7 +247,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET - Obter templates disponíveis e estatísticas
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 

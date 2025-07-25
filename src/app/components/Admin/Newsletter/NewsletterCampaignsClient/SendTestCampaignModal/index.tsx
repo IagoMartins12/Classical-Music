@@ -3,16 +3,12 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  FiX,
   FiSend,
   FiMail,
   FiUsers,
   FiCheckCircle,
   FiAlertCircle,
-  FiClock,
-  FiRefreshCw,
   FiEdit,
-  FiEye,
   FiSettings,
 } from 'react-icons/fi';
 import Button from '@/app/components/Common/Button';
@@ -210,7 +206,7 @@ export default function SendTestCampaignModal({
             Enviar Teste da Campanha
           </h2>
           <p className="text-theme-secondary">
-            Teste "{campaign.name}" antes do envio oficial
+            Teste &quot;{campaign.name}&quot; antes do envio oficial
           </p>
         </div>
 
@@ -471,7 +467,7 @@ export default function SendTestCampaignModal({
         Enviando Emails de Teste...
       </h2>
       <p className="text-theme-secondary mb-6">
-        Processando envio da campanha "{campaign.name}"
+        Processando envio da campanha &quot;{campaign.name}&quot;
       </p>
       <div className="w-32 h-1 bg-theme-secondary rounded-full mx-auto overflow-hidden">
         <div className="h-full bg-gradient-to-r from-accent-amber to-accent-red animate-pulse"></div>

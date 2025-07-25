@@ -6,7 +6,6 @@ import {
   FiSettings,
   FiServer,
   FiShield,
-  FiClock,
   FiUsers,
   FiCheckCircle,
   FiAlertTriangle,

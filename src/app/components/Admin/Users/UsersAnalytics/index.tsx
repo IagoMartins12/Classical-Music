@@ -1,18 +1,16 @@
 // app/components/Admin/Users/UsersAnalytics.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiUsers,
   FiActivity,
   FiUpload,
-  FiMessageSquare,
   FiClock,
   FiTrendingUp,
   FiTarget,
   FiAward,
-  FiFilter,
   FiDownload,
   FiRefreshCw,
   FiEye,
@@ -33,31 +31,17 @@ import {
   MultiLineChart,
   AdminBarChart,
   MetricCard,
-  HorizontalBarChart,
 } from '@/app/components/Admin/Charts/AdminCharts';
 import { formatNumber, formatDuration } from '@/app/hooks/admin/useAdminStats';
 import { useAdminUsers } from '@/app/hooks/admin/useAdminUsers';
 
 export default function UsersAnalytics() {
   const router = useRouter();
-  const {
-    users,
-    analytics,
-    loading,
-    error,
-    fetchUsers,
-    fetchAnalytics,
-    refreshData,
-  } = useAdminUsers();
-  const [timeframe, setTimeframe] = useState('30d');
+  const { analytics, loading, error, fetchUsers, refreshData } =
+    useAdminUsers();
   const [userSegment, setUserSegment] = useState('all');
   const [refreshing, setRefreshing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleRefresh = async () => {
     setRefreshing(true);

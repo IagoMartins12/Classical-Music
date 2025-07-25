@@ -44,7 +44,6 @@ export default function ResetPasswordPage() {
 
   const {
     loading,
-    success,
     error,
     validateResetToken,
     resetPassword,

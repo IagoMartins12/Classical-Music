@@ -17,7 +17,6 @@ import {
   FiTrendingUp,
   FiRefreshCw,
   FiMessageCircle,
-  FiExternalLink,
   FiUpload,
   FiAlertTriangle,
   FiCopy, // 🆕 Ícone de clonagem

@@ -127,6 +127,8 @@ export default function ConfirmAccountPage() {
         }));
       }
     } catch (error) {
+      console.log('error', error);
+
       setState((prev) => ({
         ...prev,
         message: 'Erro de conexão ao reenviar email',

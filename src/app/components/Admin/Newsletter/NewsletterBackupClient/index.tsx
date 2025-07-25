@@ -7,7 +7,6 @@ import {
   FiDownload,
   FiUpload,
   FiRefreshCw,
-  FiDatabase,
   FiShield,
   FiCalendar,
   FiFileText,
@@ -15,7 +14,6 @@ import {
   FiMail,
   FiCheckCircle,
   FiAlertTriangle,
-  FiClock,
   FiTrash2,
   FiEye,
 } from 'react-icons/fi';

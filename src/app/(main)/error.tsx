@@ -3,22 +3,13 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import {
-  FiAlertTriangle,
-  FiHome,
-  FiRefreshCw,
-  FiMusic,
-  FiHelpCircle,
-  FiArrowLeft,
-} from 'react-icons/fi';
-import { GiMusicalNotes, GiViolin } from 'react-icons/gi';
+import { FiAlertTriangle, FiHome, FiRefreshCw, FiMusic } from 'react-icons/fi';
+import { GiMusicalNotes } from 'react-icons/gi';
 import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
-  FloatingElement,
 } from '../components/animation/AnimatedComponents';
-import { LuPiano } from 'react-icons/lu';
 import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
 
 interface ErrorProps {
@@ -170,8 +161,8 @@ export default function Error({ error, reset }: ErrorProps) {
           <AnimatedItem direction="up" springType="gentle">
             <div className="mt-12 p-6 classical-card-simple max-w-2xl mx-auto">
               <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
-                "A música pode dar nome ao inominável e comunicar o
-                desconhecido."
+                &quot;A música pode dar nome ao inominável e comunicar o
+                desconhecido.&quot;
               </blockquote>
               <cite className="text-brand-primary font-semibold">
                 — Leonard Bernstein

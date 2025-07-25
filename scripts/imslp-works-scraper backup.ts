@@ -11,7 +11,6 @@ import {
   WORK_GENRE_TRANSLATIONS,
   INSTRUMENT_MAPPING,
   NORMALIZED_CATEGORIES,
-  WORK_TYPE_KEYWORDS,
   NOTE_TRANSLATIONS,
   MODE_TRANSLATIONS,
 } from './imslp-works-scraper-util';
@@ -481,7 +480,7 @@ class WorkScraper {
   // Buscar compositor no banco de dados
   async findComposerInDatabase(composerName: string): Promise<Composer | null> {
     try {
-      let composer = await prisma.composer.findFirst({
+      const composer = await prisma.composer.findFirst({
         where: {
           OR: [
             { name: { contains: composerName, mode: 'insensitive' } },
@@ -853,7 +852,7 @@ class WorkScraper {
       workDetails.imslpId = pageid || id;
 
       // Determinar tipo de trabalho
-      let workTypeText = this.determineWorkType(worktitle, $);
+      const workTypeText = this.determineWorkType(worktitle, $);
       workDetails.workType = this.determineWorkType(worktitle, $);
 
       // Extrair informações da tabela de detalhes
@@ -1054,10 +1053,10 @@ class WorkScraper {
       // workDetails.genreId = primaryGenre?.id || DEFAULT_GENRE_ID;
       workDetails.workGenreId = primaryWorkGenre?.id || DEFAULT_WORK_GENRE_ID;
 
-      let epoch = workDetails.workStyle;
+      const epoch = workDetails.workStyle;
       let epochData: null | Epoch = null;
 
-      let epochObject: { [key: string]: string } = {
+      const epochObject: { [key: string]: string } = {
         medieval: 'Medieval',
         renaissance: 'Renascentista',
         baroque: 'Barroco',

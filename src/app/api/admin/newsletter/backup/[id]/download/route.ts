@@ -33,6 +33,7 @@ export async function GET(
         },
       });
     } catch (error) {
+      console.log('error', error);
       return NextResponse.json(
         { success: false, error: 'Backup não encontrado' },
         { status: 404 }

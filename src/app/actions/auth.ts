@@ -487,7 +487,7 @@ export async function loginUser(data: {
     }
 
     // Remove password from response
-    const { hashedPassword, ...safeUser } = user;
+    const { hashedPassword: _hashedPassword, ...safeUser } = user;
 
     return {
       success: true,

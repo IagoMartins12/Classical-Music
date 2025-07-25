@@ -272,7 +272,7 @@ export async function DELETE(
       await unlink(filePath);
       console.log('🗑️ [MEDIA-UPLOAD] Arquivo removido:', fileName);
     } catch (error) {
-      console.warn('⚠️ [MEDIA-UPLOAD] Arquivo não encontrado:', fileName);
+      console.warn('⚠️ [MEDIA-UPLOAD] Arquivo não encontrado:', error);
     }
 
     return NextResponse.json({

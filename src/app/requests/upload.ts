@@ -382,7 +382,7 @@ export const getFilterData = unstable_cache(
 export const getAvailableEpochs = unstable_cache(
   async (userId: string, type: string = 'all') => {
     try {
-      let epochIds: string[] = [];
+      const epochIds: string[] = [];
 
       if (type === 'all' || type === 'composer') {
         const composerEpochs = await prisma.composer.findMany({

@@ -81,10 +81,7 @@ const OPUS_ATLAS_CONFIG = {
 /**
  * Layout premium preto/dourado para o Opus Atlas
  */
-function getPremiumOpusAtlasLayout(
-  content: string,
-  templateType: string = 'default'
-): string {
+function getPremiumOpusAtlasLayout(content: string): string {
   return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>

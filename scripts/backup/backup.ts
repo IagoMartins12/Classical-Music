@@ -271,7 +271,7 @@ async function performBackup(): Promise<void> {
     };
 
     let totalRecords = 0;
-    let largeCollectionsProcessed = [];
+    const largeCollectionsProcessed = [];
     const collectionsDir = path.join(backupDir, 'collections');
     await fs.mkdir(collectionsDir, { recursive: true });
 
@@ -897,7 +897,7 @@ async function verifyBackup(backupPath: string): Promise<boolean> {
     console.log(`🔍 Verificando integridade de: ${backupPath}`);
 
     let backupData: BackupData;
-    let useIndividualCollections = false;
+    const useIndividualCollections = false;
 
     // Tentar ler backup principal
     try {

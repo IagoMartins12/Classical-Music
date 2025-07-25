@@ -1,7 +1,7 @@
 // app/components/Admin/System/SystemPerformance.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   FiServer,
   FiCpu,
@@ -19,8 +19,6 @@ import {
   FiSettings,
   FiTrendingUp,
   FiClock,
-  FiMonitor,
-  FiShield,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -42,7 +40,6 @@ import {
 export default function SystemPerformance() {
   const {
     metrics,
-    alerts,
     logs,
     loading,
     error,
@@ -58,7 +55,6 @@ export default function SystemPerformance() {
     getActiveAlerts,
     getCriticalAlerts,
     formatUptime,
-    formatBytes,
     formatPercentage,
     getDetailedStats,
   } = useSystemMonitoring();
@@ -980,7 +976,9 @@ export default function SystemPerformance() {
                             <span className="text-theme-secondary">
                               {status}
                             </span>
-                            <span className="font-medium">{count}</span>
+                            <span className="font-medium">
+                              {count as string}
+                            </span>
                           </div>
                         )
                       )}
@@ -999,7 +997,9 @@ export default function SystemPerformance() {
                             <span className="text-theme-secondary truncate">
                               {path}
                             </span>
-                            <span className="font-medium">{count}</span>
+                            <span className="font-medium">
+                              {count as string}
+                            </span>
                           </div>
                         ))}
                     </div>

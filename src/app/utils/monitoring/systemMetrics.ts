@@ -167,6 +167,7 @@ class SystemMonitor {
         si.disksIO().catch(() => null),
       ]);
 
+      console.log('diskLayout', diskLayout);
       // Pegar o disco principal (geralmente o primeiro ou o maior)
       const mainDisk =
         diskSpace.find((disk) => disk.mount === '/' || disk.mount === 'C:') ||
@@ -225,7 +226,8 @@ class SystemMonitor {
         name: stat.iface,
         rx: stat.rx_bytes || 0,
         tx: stat.tx_bytes || 0,
-        speed: stat.speed || 0,
+        // speed: stat.speed || 0,
+        speed: 0,
       }));
 
       const totalRx = interfaces.reduce((sum, iface) => sum + iface.rx, 0);

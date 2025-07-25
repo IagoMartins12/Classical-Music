@@ -5,7 +5,7 @@ import { authOptions } from '@/app/libs/auth';
 import { verifyEmailConfig } from '@/app/libs/newsletter/email';
 import prisma from '@/app/libs/prismadb';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 

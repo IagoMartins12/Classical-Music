@@ -161,7 +161,7 @@ export async function POST(
     console.log(`✅ Anúncio clonado criado com ID: ${clonedAd.id}`);
 
     // Clonar mídia física (criar cópias independentes dos arquivos)
-    let clonedMediaInfo = {
+    const clonedMediaInfo = {
       image: false,
       thumbnail: false,
       video: false,

@@ -10,29 +10,12 @@ import {
   FiVideo,
   FiDownload,
   FiEdit3,
-  FiInstagram,
 } from 'react-icons/fi';
 import { SiYoutube, SiInstagram, SiTiktok } from 'react-icons/si';
-import { AnimatedItem, AnimatedCard } from '../../animation/AnimatedComponents';
+import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { FaGraduationCap } from 'react-icons/fa';
 import Button from '../../Common/Button';
-
-interface VideoAulaData {
-  url?: string;
-  file?: string;
-  title?: string;
-  type?: string; // "video", "story", "reels", "live", "tutorial"
-  source?: string; // "youtube", "instagram", "tiktok", "local", "external"
-  addedBy?: string;
-  addedAt?: string;
-  metadata?: {
-    duration?: string;
-    thumbnail?: string;
-    platform?: string;
-    description?: string;
-    aspectRatio?: string; // "16:9", "9:16", "1:1"
-  };
-}
+import Image from 'next/image';
 
 interface VideoAulaSectionProps {
   work: {
@@ -72,33 +55,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   // Só renderizar se tiver conteúdo
   const hasVideoAula = !!(work.videoAulaUrl || work.videoAulaFile);
 
-  // Se não tem vídeo aula, não renderizar nada
-  if (!hasVideoAula) {
-    return null;
-  }
-
-  // Detectar plataforma e gerar URLs de embed
-  useEffect(() => {
-    if (work.videoAulaUrl) {
-      const info = detectVideoInfo(
-        work.videoAulaUrl,
-        work.videoAulaType,
-        work.videoAulaSource
-      );
-      setVideoInfo(info);
-    } else if (work.videoAulaFile) {
-      setVideoInfo({
-        platform: 'local',
-        embedUrl: work.videoAulaFile,
-        thumbnailUrl: work.videoAulaMetadata?.thumbnail || '',
-        canEmbed: true,
-        aspectRatio: work.videoAulaMetadata?.aspectRatio || '16:9',
-        displayType: getDisplayType(work.videoAulaType),
-      });
-    }
-  }, [work]);
-
-  const detectVideoInfo = (url: string, type?: string, source?: string) => {
+  const detectVideoInfo = (url: string, type?: string) => {
     const videoType = type || 'video';
     const aspectRatio = getAspectRatio(videoType);
     const displayType = getDisplayType(videoType);
@@ -301,6 +258,27 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
     return {};
   };
 
+  // Detectar plataforma e gerar URLs de embed
+  useEffect(() => {
+    if (work.videoAulaUrl) {
+      const info = detectVideoInfo(work.videoAulaUrl, work.videoAulaType);
+      setVideoInfo(info);
+    } else if (work.videoAulaFile) {
+      setVideoInfo({
+        platform: 'local',
+        embedUrl: work.videoAulaFile,
+        thumbnailUrl: work.videoAulaMetadata?.thumbnail || '',
+        canEmbed: true,
+        aspectRatio: work.videoAulaMetadata?.aspectRatio || '16:9',
+        displayType: getDisplayType(work.videoAulaType),
+      });
+    }
+  }, [work]);
+
+  // Se não tem vídeo aula, não renderizar nada
+  if (!hasVideoAula) {
+    return null;
+  }
   if (!videoInfo) {
     return (
       <AnimatedCard hover="lift" className="classical-card">
@@ -371,7 +349,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
             >
               <div className="w-full h-full bg-gradient-to-br from-blue-800/50 to-purple-800/50 relative overflow-hidden rounded-xl">
                 {videoInfo.thumbnailUrl ? (
-                  <img
+                  <Image
+                    width={50}
+                    height={50}
                     src={videoInfo.thumbnailUrl}
                     alt={work.videoAulaTitle || `Video aula - ${work.title}`}
                     className="w-full h-full object-cover"

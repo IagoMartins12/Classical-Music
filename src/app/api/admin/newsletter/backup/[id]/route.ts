@@ -48,6 +48,8 @@ export async function GET(
         backup,
       });
     } catch (error) {
+      console.error('Erro ao buscar backup:', error);
+
       return NextResponse.json(
         { success: false, error: 'Backup não encontrado' },
         { status: 404 }
@@ -88,6 +90,7 @@ export async function DELETE(
         message: 'Backup deletado com sucesso',
       });
     } catch (error) {
+      console.error('Erro ao buscar backup:', error);
       return NextResponse.json(
         { success: false, error: 'Backup não encontrado' },
         { status: 404 }

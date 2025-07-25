@@ -7,16 +7,15 @@ import {
   FiPause,
   FiVolume2,
   FiVolumeX,
-  FiExternalLink,
   FiRefreshCw,
   FiAlertTriangle,
   FiMusic,
   FiUpload,
 } from 'react-icons/fi';
-import { SiSpotify, SiYoutube } from 'react-icons/si';
+import { SiYoutube } from 'react-icons/si';
 
 interface AudioSource {
-  type: 'spotify-preview' | 'youtube-audio' | 'custom-audio' | 'alternative';
+  type: 'youtube-audio' | 'custom-audio' | 'alternative';
   url: string;
   duration?: number;
   quality?: string;
@@ -30,15 +29,7 @@ interface UniversalAudioPlayerProps {
     title: string;
     composer: { fullName: string };
   };
-  spotifyTrack?: {
-    trackId: string;
-    trackUrl: string;
-  } | null;
-  youtubeVideo?: {
-    videoId: string;
-    videoUrl: string;
-    title: string;
-  } | null;
+
   customAudio?: {
     url: string;
     file: string;
@@ -48,8 +39,6 @@ interface UniversalAudioPlayerProps {
 
 const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   work,
-  spotifyTrack,
-  youtubeVideo,
   customAudio,
 }) => {
   // Estados do player
@@ -84,27 +73,13 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
       });
     }
 
-    // 2. Spotify Preview (se disponível - buscar preview via API)
-    if (spotifyTrack?.trackId) {
-      // Note: Para ter preview, precisaria buscar dados completos do Spotify
-      // Por ora, apenas link direto
-      sources.push({
-        type: 'spotify-preview',
-        url: spotifyTrack.trackUrl,
-        duration: 0,
-        quality: 'link',
-        label: 'Link do Spotify',
-        requiresAuth: true,
-      });
-    }
-
     setAudioSources(sources);
 
     // Definir fonte padrão (priorizar áudio customizado)
     if (sources.length > 0 && !currentSource) {
       setCurrentSource(sources[0]);
     }
-  }, [spotifyTrack, youtubeVideo, customAudio, currentSource]);
+  }, [customAudio, currentSource]);
 
   // Buscar fontes alternativas de áudio
   const searchAlternativeAudioSources = useCallback(async () => {
@@ -113,23 +88,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     setIsSearchingAlternatives(true);
 
     try {
-      // 1. Tentar extrair áudio do YouTube (se elegível)
-      if (youtubeVideo) {
-        const youtubeAudio = await extractYouTubeAudio(youtubeVideo.videoId);
-        if (youtubeAudio) {
-          setAudioSources((prev) => [
-            ...prev,
-            {
-              type: 'youtube-audio',
-              url: youtubeAudio.audioUrl,
-              duration: youtubeAudio.duration,
-              quality: youtubeAudio.quality,
-              label: 'YouTube Áudio Completo',
-            },
-          ]);
-        }
-      }
-
       // 2. Buscar em fontes gratuitas (Internet Archive, etc.)
       const alternativeSources = await searchFreeAudioSources();
       if (alternativeSources.length > 0) {
@@ -149,26 +107,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     } finally {
       setIsSearchingAlternatives(false);
     }
-  }, [youtubeVideo, isSearchingAlternatives]);
-
-  // Extrair áudio do YouTube
-  const extractYouTubeAudio = async (videoId: string) => {
-    try {
-      const response = await fetch('/api/youtube-audio-proxy', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ videoId }),
-      });
-
-      if (!response.ok) return null;
-
-      const data = await response.json();
-      return data.audioInfo;
-    } catch (error) {
-      console.error('Erro ao extrair áudio do YouTube:', error);
-      return null;
-    }
-  };
+  }, [isSearchingAlternatives]);
 
   // Buscar fontes gratuitas
   const searchFreeAudioSources = async () => {
@@ -249,15 +188,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     try {
       setIsLoading(true);
 
-      if (
-        currentSource.type === 'spotify-preview' &&
-        currentSource.requiresAuth
-      ) {
-        // Abrir Spotify em nova aba
-        window.open(currentSource.url, '_blank');
-        return;
-      }
-
       // Usar HTML5 Audio para todos os outros tipos
       if (!audioRef.current) return;
 
@@ -304,8 +234,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
 
   const getSourceIcon = (source: AudioSource) => {
     switch (source.type) {
-      case 'spotify-preview':
-        return <SiSpotify className="w-4 h-4 text-green-400" />;
       case 'youtube-audio':
         return <SiYoutube className="w-4 h-4 text-red-400" />;
       case 'custom-audio':
@@ -412,18 +340,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
                 }`}
               />
             </button>
-
-            {spotifyTrack && (
-              <a
-                href={spotifyTrack.trackUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 text-green-400 hover:text-green-300 transition-colors"
-                title="Abrir no Spotify"
-              >
-                <FiExternalLink className="w-4 h-4" />
-              </a>
-            )}
           </div>
         </div>
       </div>

@@ -15,7 +15,6 @@ import {
   FiCheckCircle,
   FiAlertCircle,
   FiLoader,
-  FiHeart,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
 import { BiBug } from 'react-icons/bi';

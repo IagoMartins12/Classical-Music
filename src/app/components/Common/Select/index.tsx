@@ -128,7 +128,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {/* Debug info em desenvolvimento */}
         {process.env.NODE_ENV === 'development' && defaultValue && (
           <div className="mt-1 text-xs text-gray-500">
-            Default: "{defaultValue}" →{' '}
+            Default: &quot;{defaultValue}&quot; →{' '}
             {resolvedDefaultValue
               ? `"${resolvedDefaultValue}"`
               : 'não encontrado'}

@@ -97,7 +97,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ account }) {
       // Para contas Google, sempre permitir
       // O CustomPrismaAdapter vai lidar com a criação/vinculação
       if (account?.provider === 'google') {
@@ -109,7 +109,7 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
 
-    async jwt({ token, user, account, trigger }) {
+    async jwt({ token, user, trigger }) {
       // Initial sign in - user object is available
       if (user) {
         console.log('🔑 Initial JWT creation for:', user.email);

@@ -15,8 +15,6 @@ import {
   FiUpload,
   FiSettings,
   FiChevronDown,
-  FiHelpCircle,
-  FiInfo,
 } from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
 import { ThemeToggle } from '../ThemeToggle';

@@ -311,22 +311,22 @@ export function getImageDimensions(
 // Funções que só funcionam no servidor (evitam erros de importação)
 export const serverOnlyFunctions = {
   // Essas funções são implementadas apenas nas API routes
-  processImage: async (...args: any[]) => {
+  processImage: async () => {
     throw new Error('processImage só pode ser usado no servidor');
   },
-  processVideo: async (...args: any[]) => {
+  processVideo: async () => {
     throw new Error('processVideo só pode ser usado no servidor');
   },
-  generateVideoThumbnail: async (...args: any[]) => {
+  generateVideoThumbnail: async () => {
     throw new Error('generateVideoThumbnail só pode ser usado no servidor');
   },
-  deleteMediaFile: async (...args: any[]) => {
+  deleteMediaFile: async () => {
     throw new Error('deleteMediaFile só pode ser usado no servidor');
   },
-  deleteAllMediaVersions: async (...args: any[]) => {
+  deleteAllMediaVersions: async () => {
     throw new Error('deleteAllMediaVersions só pode ser usado no servidor');
   },
-  cloneAdMedia: async (...args: any[]) => {
+  cloneAdMedia: async () => {
     throw new Error('cloneAdMedia só pode ser usado no servidor');
   },
 };

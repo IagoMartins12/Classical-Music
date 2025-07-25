@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { FiMail, FiX, FiHeart, FiCheck, FiArrowRight } from 'react-icons/fi';
+import { FiMail, FiX, FiCheck, FiArrowRight } from 'react-icons/fi';
 import {
   PageContainer,
   AnimatedContainer,

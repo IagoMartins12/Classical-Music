@@ -3,22 +3,18 @@
 
 import Link from 'next/link';
 import {
-  FiSearch,
   FiHome,
   FiMusic,
   FiUsers,
   FiBookOpen,
-  FiArrowLeft,
   FiCompass,
 } from 'react-icons/fi';
-import { GiMusicalNotes, GiViolin } from 'react-icons/gi';
+import { GiMusicalNotes } from 'react-icons/gi';
 import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
-  FloatingElement,
 } from '../components/animation/AnimatedComponents';
-import { LuPiano } from 'react-icons/lu';
 import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
 
 export default function NotFound() {
@@ -140,7 +136,7 @@ export default function NotFound() {
           <AnimatedItem direction="up" springType="gentle">
             <div className="p-6 classical-card-simple max-w-2xl mx-auto mb-8">
               <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
-                "A música é a linguagem universal da humanidade."
+                &quot;A música é a linguagem universal da humanidade.&quot;
               </blockquote>
               <cite className="text-brand-primary font-semibold">
                 — Henry Wadsworth Longfellow

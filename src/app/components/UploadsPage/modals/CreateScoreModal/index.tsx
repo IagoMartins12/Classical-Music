@@ -127,7 +127,6 @@ const CreateScoreModal = ({
   }>({ isValidating: false, isValid: false });
 
   // Estados para upload e thumbnail
-  const [uploadedFilePath, setUploadedFilePath] = useState<string>('');
   const [generatedThumbnail, setGeneratedThumbnail] = useState<string | null>(
     null
   );
@@ -144,7 +143,7 @@ const CreateScoreModal = ({
   const requiredFields = ['workId', 'title', 'downloadUrl'];
   const customValidations = {
     ...scoreModalValidations,
-    uploadMode: (value: any) => {
+    uploadMode: () => {
       if (!editingScore && !uploadMode) {
         return 'Escolha entre URL ou upload de arquivo';
       }
@@ -209,7 +208,6 @@ const CreateScoreModal = ({
       if (editingScore.downloadUrl) {
         if (editingScore.downloadUrl.startsWith('/uploads/')) {
           setUploadMode('file');
-          setUploadedFilePath(editingScore.downloadUrl);
         } else {
           setUploadMode('url');
         }
@@ -236,7 +234,6 @@ const CreateScoreModal = ({
   const resetUploadMode = () => {
     setUploadMode(null);
     setSelectedFile(null);
-    setUploadedFilePath('');
     setGeneratedThumbnail(null);
     setGeneratingThumbnail(false);
     setPdfValidation({ isValidating: false, isValid: false });
@@ -327,8 +324,6 @@ const CreateScoreModal = ({
 
       const data = await response.json();
       console.log('✅ Arquivo principal enviado:', data.url);
-
-      setUploadedFilePath(data.url);
 
       let thumbnailUrl = null;
       if (file.type === 'application/pdf') {
@@ -824,7 +819,6 @@ const CreateScoreModal = ({
                         type="button"
                         onClick={() => {
                           setSelectedFile(null);
-                          setUploadedFilePath('');
                           setGeneratedThumbnail(null);
                           setGeneratingThumbnail(false);
                           setFormData((prev) => ({

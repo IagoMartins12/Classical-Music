@@ -15,7 +15,6 @@ import {
   FiCheckCircle,
   FiClock,
   FiXCircle,
-  FiPlus,
 } from 'react-icons/fi';
 import {
   AnimatedCard,

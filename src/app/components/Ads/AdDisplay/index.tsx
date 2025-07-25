@@ -240,7 +240,6 @@ const PremiumAdItem = React.forwardRef<
     {
       ad,
       placement,
-      deviceType,
       showTitle,
       showAdvertiserName,
       isHovered,
@@ -507,7 +506,6 @@ const SidebarPremiumAd = React.forwardRef<
       media,
       showTitle,
       showAdvertiserName,
-      isHovered,
       onClick,
       onMouseEnter,
       onMouseLeave,
@@ -612,17 +610,7 @@ const ContentPremiumAd = React.forwardRef<
   }
 >(
   (
-    {
-      ad,
-      media,
-      placement,
-      showTitle,
-      showAdvertiserName,
-      onClick,
-      onMouseEnter,
-      onMouseLeave,
-      onDismiss,
-    },
+    { ad, media, showTitle, onClick, onMouseEnter, onMouseLeave, onDismiss },
     ref
   ) => {
     return (

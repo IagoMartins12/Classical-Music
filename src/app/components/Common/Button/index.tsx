@@ -11,7 +11,6 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   children?: React.ReactNode;
-  loading?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -23,7 +22,6 @@ const Button: React.FC<ButtonProps> = ({
   children,
   disabled,
   className = '',
-  loading,
   ...props
 }) => {
   const baseClasses = `

@@ -96,7 +96,7 @@ export async function POST(
     }
 
     // Preparar dados do template
-    let templateData: any = {
+    const templateData: any = {
       type: campaign.template?.type || 'CAMPAIGN_CUSTOM',
       variables: {
         // Variáveis padrão

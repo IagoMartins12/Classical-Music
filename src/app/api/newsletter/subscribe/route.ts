@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
       firstName,
       lastName,
       interests = [],
-      experienceLevel,
       frequency = 'weekly',
       sourceUrl,
       utmSource,

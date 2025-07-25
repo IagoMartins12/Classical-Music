@@ -91,7 +91,6 @@ export async function POST(request: NextRequest) {
 
     const tokenRecord = validation.token;
     const userId = tokenRecord.userId;
-    const user = tokenRecord.user;
 
     // Verificar se usuário ainda existe e tem senha
     const currentUser = await prisma.user.findUnique({

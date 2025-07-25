@@ -5,7 +5,6 @@ import Button from '@/app/components/Common/Button';
 import { useAds } from '@/app/hooks/admin/useAds';
 import { useState, useEffect } from 'react';
 import {
-  FiX,
   FiBarChart2,
   FiTrendingUp,
   FiEye,

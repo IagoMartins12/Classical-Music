@@ -201,7 +201,7 @@ export default function NewsletterAnalyticsClient() {
 
           {/* Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-            {metricCards.map((metric, index) => (
+            {metricCards.map((metric) => (
               <AnimatedCard key={metric.title} className="classical-card p-6">
                 <div className="flex items-center justify-between">
                   <div>

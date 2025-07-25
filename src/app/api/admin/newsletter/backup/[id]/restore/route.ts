@@ -80,8 +80,13 @@ async function restoreNewsletterData(backupData: any) {
         for (const subscriber of backupData.subscribers) {
           try {
             // Remover campos que podem causar conflito
-            const { id, createdAt, updatedAt, user, ...subscriberData } =
-              subscriber;
+            const {
+              id: _id,
+              createdAt: _createdAt,
+              updatedAt: _updatedAt,
+              user: _user,
+              ...subscriberData
+            } = subscriber;
 
             await tx.newsletterSubscriber.upsert({
               where: { email: subscriber.email },
@@ -104,8 +109,13 @@ async function restoreNewsletterData(backupData: any) {
       if (backupData.templates && Array.isArray(backupData.templates)) {
         for (const template of backupData.templates) {
           try {
-            const { id, createdAt, updatedAt, creator, ...templateData } =
-              template;
+            const {
+              id: _id,
+              createdAt: _createdAt,
+              updatedAt: _updatedAt,
+              creator: _creator,
+              ...templateData
+            } = template;
 
             await tx.newsletterTemplate.create({
               data: {
@@ -127,11 +137,11 @@ async function restoreNewsletterData(backupData: any) {
         for (const campaign of backupData.campaigns) {
           try {
             const {
-              id,
-              createdAt,
-              updatedAt,
-              template,
-              creator,
+              id: _id,
+              createdAt: _createdAt,
+              updatedAt: _updatedAt,
+              template: _template,
+              creator: _creator,
               ...campaignData
             } = campaign;
 
@@ -162,7 +172,7 @@ async function restoreNewsletterData(backupData: any) {
 
         for (const event of recentEvents) {
           try {
-            const { id, ...eventData } = event;
+            const { id: _id, ...eventData } = event;
 
             await tx.newsletterEmailEvent.create({
               data: eventData,

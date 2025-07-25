@@ -96,8 +96,6 @@ const StudyPDFViewer: React.FC<StudyPDFViewerProps> = ({
 
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const annotationCanvasRef = useRef<HTMLCanvasElement>(null);
 
   // Carregar PDF quando score muda
   useEffect(() => {
@@ -330,147 +328,147 @@ const StudyPDFViewer: React.FC<StudyPDFViewerProps> = ({
     ]
   );
 
-  // Handlers de mouse para anotações
-  const handleCanvasClick = useCallback(
-    async (e: React.MouseEvent<HTMLCanvasElement>) => {
-      if (!isAnnotating || !selectedScore?.id) return;
+  // // Handlers de mouse para anotações
+  // const handleCanvasClick = useCallback(
+  //   async (e: React.MouseEvent<HTMLCanvasElement>) => {
+  //     if (!isAnnotating || !selectedScore?.id) return;
 
-      const canvas = e.currentTarget;
-      const rect = canvas.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100; // Percentual
-      const y = ((e.clientY - rect.top) / rect.height) * 100; // Percentual
+  //     const canvas = e.currentTarget;
+  //     const rect = canvas.getBoundingClientRect();
+  //     const x = ((e.clientX - rect.left) / rect.width) * 100; // Percentual
+  //     const y = ((e.clientY - rect.top) / rect.height) * 100; // Percentual
 
-      if (annotationTool === 'note') {
-        const content = prompt('Digite sua anotação:');
-        if (content) {
-          const annotation: Annotation = {
-            id: Date.now().toString(),
-            type: 'note',
-            page: currentPage,
-            x,
-            y,
-            content,
-            color: '#FF6B6B',
-          };
+  //     if (annotationTool === 'note') {
+  //       const content = prompt('Digite sua anotação:');
+  //       if (content) {
+  //         const annotation: Annotation = {
+  //           id: Date.now().toString(),
+  //           type: 'note',
+  //           page: currentPage,
+  //           x,
+  //           y,
+  //           content,
+  //           color: '#FF6B6B',
+  //         };
 
-          try {
-            // Salvar no backend
-            const response = await fetch('/api/pdf-annotations', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                workId: work.id,
-                scoreId: selectedScore.id,
-                type: annotation.type,
-                page: annotation.page,
-                x: annotation.x,
-                y: annotation.y,
-                content: annotation.content,
-                color: annotation.color,
-              }),
-            });
+  //         try {
+  //           // Salvar no backend
+  //           const response = await fetch('/api/pdf-annotations', {
+  //             method: 'POST',
+  //             headers: { 'Content-Type': 'application/json' },
+  //             body: JSON.stringify({
+  //               workId: work.id,
+  //               scoreId: selectedScore.id,
+  //               type: annotation.type,
+  //               page: annotation.page,
+  //               x: annotation.x,
+  //               y: annotation.y,
+  //               content: annotation.content,
+  //               color: annotation.color,
+  //             }),
+  //           });
 
-            if (response.ok) {
-              const result = await response.json();
-              if (result.success) {
-                setAnnotations((prev) => [
-                  ...prev,
-                  { ...annotation, id: result.annotation.id },
-                ]);
-                onUpdateSession({
-                  annotationsCreated: session.annotationsCreated + 1,
-                });
-                console.log(`✅ [PDF-VIEWER] Anotação criada: ${content}`);
-              }
-            }
-          } catch (error) {
-            console.error('❌ [PDF-VIEWER] Erro ao criar anotação:', error);
-            // Adicionar localmente mesmo se falhar no backend
-            setAnnotations((prev) => [...prev, annotation]);
-            onUpdateSession({
-              annotationsCreated: session.annotationsCreated + 1,
-            });
-          }
-        }
-      } else if (annotationTool === 'highlight') {
-        const annotation: Annotation = {
-          id: Date.now().toString(),
-          type: 'highlight',
-          page: currentPage,
-          x,
-          y,
-          width: 5,
-          height: 2,
-          color: '#FFEB3B',
-        };
+  //           if (response.ok) {
+  //             const result = await response.json();
+  //             if (result.success) {
+  //               setAnnotations((prev) => [
+  //                 ...prev,
+  //                 { ...annotation, id: result.annotation.id },
+  //               ]);
+  //               onUpdateSession({
+  //                 annotationsCreated: session.annotationsCreated + 1,
+  //               });
+  //               console.log(`✅ [PDF-VIEWER] Anotação criada: ${content}`);
+  //             }
+  //           }
+  //         } catch (error) {
+  //           console.error('❌ [PDF-VIEWER] Erro ao criar anotação:', error);
+  //           // Adicionar localmente mesmo se falhar no backend
+  //           setAnnotations((prev) => [...prev, annotation]);
+  //           onUpdateSession({
+  //             annotationsCreated: session.annotationsCreated + 1,
+  //           });
+  //         }
+  //       }
+  //     } else if (annotationTool === 'highlight') {
+  //       const annotation: Annotation = {
+  //         id: Date.now().toString(),
+  //         type: 'highlight',
+  //         page: currentPage,
+  //         x,
+  //         y,
+  //         width: 5,
+  //         height: 2,
+  //         color: '#FFEB3B',
+  //       };
 
-        try {
-          // Salvar no backend
-          const response = await fetch('/api/pdf-annotations', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              workId: work.id,
-              scoreId: selectedScore.id,
-              type: annotation.type,
-              page: annotation.page,
-              x: annotation.x,
-              y: annotation.y,
-              width: annotation.width,
-              height: annotation.height,
-              color: annotation.color,
-            }),
-          });
+  //       try {
+  //         // Salvar no backend
+  //         const response = await fetch('/api/pdf-annotations', {
+  //           method: 'POST',
+  //           headers: { 'Content-Type': 'application/json' },
+  //           body: JSON.stringify({
+  //             workId: work.id,
+  //             scoreId: selectedScore.id,
+  //             type: annotation.type,
+  //             page: annotation.page,
+  //             x: annotation.x,
+  //             y: annotation.y,
+  //             width: annotation.width,
+  //             height: annotation.height,
+  //             color: annotation.color,
+  //           }),
+  //         });
 
-          if (response.ok) {
-            const result = await response.json();
-            if (result.success) {
-              setAnnotations((prev) => [
-                ...prev,
-                { ...annotation, id: result.annotation.id },
-              ]);
-              onUpdateSession({
-                annotationsCreated: session.annotationsCreated + 1,
-              });
-              console.log(`✅ [PDF-VIEWER] Highlight criado`);
-            }
-          }
-        } catch (error) {
-          console.error('❌ [PDF-VIEWER] Erro ao criar highlight:', error);
-          // Adicionar localmente mesmo se falhar no backend
-          setAnnotations((prev) => [...prev, annotation]);
-          onUpdateSession({
-            annotationsCreated: session.annotationsCreated + 1,
-          });
-        }
-      }
-    },
-    [
-      isAnnotating,
-      annotationTool,
-      currentPage,
-      session.annotationsCreated,
-      onUpdateSession,
-      selectedScore,
-      work.id,
-    ]
-  );
+  //         if (response.ok) {
+  //           const result = await response.json();
+  //           if (result.success) {
+  //             setAnnotations((prev) => [
+  //               ...prev,
+  //               { ...annotation, id: result.annotation.id },
+  //             ]);
+  //             onUpdateSession({
+  //               annotationsCreated: session.annotationsCreated + 1,
+  //             });
+  //             console.log(`✅ [PDF-VIEWER] Highlight criado`);
+  //           }
+  //         }
+  //       } catch (error) {
+  //         console.error('❌ [PDF-VIEWER] Erro ao criar highlight:', error);
+  //         // Adicionar localmente mesmo se falhar no backend
+  //         setAnnotations((prev) => [...prev, annotation]);
+  //         onUpdateSession({
+  //           annotationsCreated: session.annotationsCreated + 1,
+  //         });
+  //       }
+  //     }
+  //   },
+  //   [
+  //     isAnnotating,
+  //     annotationTool,
+  //     currentPage,
+  //     session.annotationsCreated,
+  //     onUpdateSession,
+  //     selectedScore,
+  //     work.id,
+  //   ]
+  // );
 
-  // Handler para contexto (criar bookmark)
-  const handleContextMenu = useCallback(
-    (e: React.MouseEvent<HTMLCanvasElement>) => {
-      e.preventDefault();
+  // // Handler para contexto (criar bookmark)
+  // const handleContextMenu = useCallback(
+  //   (e: React.MouseEvent<HTMLCanvasElement>) => {
+  //     e.preventDefault();
 
-      const canvas = e.currentTarget;
-      const rect = canvas.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
+  //     const canvas = e.currentTarget;
+  //     const rect = canvas.getBoundingClientRect();
+  //     const x = ((e.clientX - rect.left) / rect.width) * 100;
+  //     const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-      setBookmarkPosition({ x, y });
-      setShowBookmarkDialog(true);
-    },
-    []
-  );
+  //     setBookmarkPosition({ x, y });
+  //     setShowBookmarkDialog(true);
+  //   },
+  //   []
+  // );
 
   // Ir para bookmark
   const goToBookmark = useCallback((bookmark: Bookmark) => {
@@ -813,11 +811,7 @@ const StudyPDFViewer: React.FC<StudyPDFViewerProps> = ({
                   onLoad={() => setIsLoading(false)}
                 />
               ) : (
-                <div
-                  className="w-full h-full bg-white flex items-center justify-center cursor-crosshair"
-                  onClick={handleCanvasClick}
-                  onContextMenu={handleContextMenu}
-                >
+                <div className="w-full h-full bg-white flex items-center justify-center cursor-crosshair">
                   <div className="text-center space-y-4 p-8">
                     <FiFile className="w-16 h-16 text-gray-400 mx-auto" />
                     <div>

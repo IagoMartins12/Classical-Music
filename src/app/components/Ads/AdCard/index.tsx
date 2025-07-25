@@ -1,6 +1,7 @@
 // app/components/Ads/AdCard.tsx - Card de publicidade para sidebar
 'use client';
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { FiX, FiExternalLink } from 'react-icons/fi';
 
@@ -56,7 +57,9 @@ export default function AdCard({
         {/* Image */}
         {(mainMedia?.url || ad.imageUrl) && (
           <div className="aspect-video overflow-hidden">
-            <img
+            <Image
+              height={30}
+              width={30}
               src={mainMedia?.url || ad.imageUrl}
               alt={mainMedia?.altText || ad.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

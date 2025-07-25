@@ -15,7 +15,6 @@ import {
   FiCheckCircle,
   FiAlertCircle,
   FiStar,
-  FiMoreVertical,
   FiCode,
   FiSettings,
 } from 'react-icons/fi';
@@ -595,7 +594,7 @@ export default function NewsletterTemplatesClient() {
         <CreateEditTemplateModal
           isOpen={showCreateModal}
           onClose={() => setShowCreateModal(false)}
-          onSuccess={(template) => {
+          onSuccess={() => {
             setShowCreateModal(false);
             fetchTemplates(filters);
           }}
@@ -610,7 +609,7 @@ export default function NewsletterTemplatesClient() {
             setSelectedTemplate(null);
           }}
           template={selectedTemplate}
-          onSuccess={(template) => {
+          onSuccess={() => {
             setShowEditModal(false);
             setSelectedTemplate(null);
             fetchTemplates(filters);

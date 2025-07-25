@@ -477,7 +477,7 @@ export function getComposerNationalityDisplay(nationality: string): {
   };
 }
 
-export default {
+const nationalityFlagsUtils = {
   getNationalityFlag,
   getFlagEmoji,
   getCountryCode,
@@ -488,3 +488,5 @@ export default {
   FlagComponent,
   getComposerNationalityDisplay,
 };
+
+export default nationalityFlagsUtils;

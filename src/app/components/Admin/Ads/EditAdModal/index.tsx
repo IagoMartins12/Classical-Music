@@ -353,7 +353,7 @@ export default function EditAdModal({
                 {hasMedia ? (
                   <>
                     ✅ Este anúncio possui mídia (imagem/vídeo). Use a opção
-                    "Gerenciar mídia" para alterá-la.
+                    &quot;Gerenciar mídia&quot; para alterá-la.
                   </>
                 ) : (
                   <>
@@ -784,7 +784,7 @@ export default function EditAdModal({
               variant="primary"
               leftIcon={<FiSave />}
               disabled={loading || !!conflictInfo}
-              loading={loading}
+              isLoading={loading}
             >
               Salvar Alterações
             </Button>

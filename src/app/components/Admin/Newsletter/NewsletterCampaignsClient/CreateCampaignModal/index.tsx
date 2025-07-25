@@ -178,6 +178,7 @@ export default function CreateCampaignModal({
           ),
         };
       } catch (error) {
+        console.log(error);
         preview = {
           html: selectedTemplate.htmlContent,
           text: selectedTemplate.textContent,
@@ -387,7 +388,7 @@ export default function CreateCampaignModal({
                           <FiFileText className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
                           <p className="text-theme-tertiary mb-4">
                             Nenhum template personalizado disponível para o tipo
-                            "{form.templateType}"
+                            &quot;{form.templateType}&quot;
                           </p>
                           <Button
                             variant="ghost"

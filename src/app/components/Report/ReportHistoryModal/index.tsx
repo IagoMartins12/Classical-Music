@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiX, FiClock, FiUser, FiFlag } from 'react-icons/fi';
+import { FiUser, FiFlag } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
@@ -171,7 +171,7 @@ export default function ReportHistoryModal({
                     </h4>
                     {report.description && (
                       <p className="text-sm text-theme-secondary italic">
-                        "{report.description}"
+                        &quot;{report.description}&quot;
                       </p>
                     )}
                   </div>

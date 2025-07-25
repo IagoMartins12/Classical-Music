@@ -170,13 +170,6 @@ export default function WorksManagement() {
       return;
     }
 
-    // Implementar ações em lote
-    for (const workId of selectedWorks) {
-      if (action === 'export') {
-        // Implementar exportação
-      }
-    }
-
     setSelectedWorks(new Set());
     toast.success(`Ação aplicada a ${selectedWorks.size} obras`);
   };
@@ -195,7 +188,6 @@ export default function WorksManagement() {
         return 'text-theme-tertiary bg-theme-secondary';
     }
   };
-
 
   if (loading && !works.length) {
     return (

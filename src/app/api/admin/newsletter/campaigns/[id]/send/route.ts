@@ -121,17 +121,19 @@ async function startCampaignSending(campaignId: string) {
     const result = await sendBulkEmail(
       recipients,
       {
-        type: campaign.template.type as any,
+        type: campaign.template ? campaign.template.type : 'DEFAULT',
         variables: {
           // Variáveis do template baseadas no tipo
-          ...getTemplateVariables(campaign.template.type),
+          ...getTemplateVariables(
+            campaign.template ? campaign.template.type : 'DEFAULT'
+          ),
           campaignId: campaign.id,
         },
       },
       {
         batchSize: 50,
         delay: 2000, // 2 segundos entre batches
-        onProgress: async (sent, total) => {
+        onProgress: async (sent) => {
           // Atualizar progresso no banco
           await prisma.newsletterCampaign.update({
             where: { id: campaignId },

@@ -1,7 +1,5 @@
 // app/work/[workId]/page.tsx - Página otimizada com cache inteligente
-import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import WorkDetailsLoading from './loading';
 import WorkDetailsServer from './WorkDetailsServer';
 import { getWorkById } from '@/app/requests/work-page-details';
 import { getServerSession } from 'next-auth';

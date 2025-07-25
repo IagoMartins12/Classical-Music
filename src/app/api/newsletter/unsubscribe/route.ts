@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Buscar subscriber
-    let whereCondition: any = {};
+    const whereCondition: any = {};
     if (token) {
       whereCondition.unsubscribeToken = token;
     } else if (email) {
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { token, email, reason, feedback } = body;
+    const { token, email, reason } = body;
 
     if (!token && !email) {
       return NextResponse.json(
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Buscar subscriber
-    let whereCondition: any = {};
+    const whereCondition: any = {};
     if (token) {
       whereCondition.unsubscribeToken = token;
     } else if (email) {

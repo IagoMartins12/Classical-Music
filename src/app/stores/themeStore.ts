@@ -120,7 +120,7 @@ export const useThemeInitializer = () => {
   React.useEffect(() => {
     applyTheme(mode);
 
-    // eslint-disable-next-line
+     
   }, []);
 
   // Handle system theme preference

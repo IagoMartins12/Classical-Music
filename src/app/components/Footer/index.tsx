@@ -18,7 +18,6 @@ import {
   FiAlertCircle,
   FiLoader,
   FiRefreshCw,
-  FiEye,
 } from 'react-icons/fi';
 import {
   FaFacebook,
@@ -45,7 +44,6 @@ const Footer: React.FC = () => {
     loading,
     success,
     error,
-    errorCode,
     status,
     canResend,
     reset,
@@ -227,21 +225,6 @@ const Footer: React.FC = () => {
     }
 
     return null;
-  };
-
-  const getErrorTitle = (code?: string | null): string => {
-    switch (code) {
-      case 'ALREADY_SUBSCRIBED':
-        return 'Já inscrito';
-      case 'PENDING_CONFIRMATION':
-        return 'Aguardando confirmação';
-      case 'EMAIL_BOUNCED':
-        return 'Email com problema';
-      case 'EMAIL_BLOCKED':
-        return 'Email bloqueado';
-      default:
-        return 'Erro na inscrição';
-    }
   };
 
   return (

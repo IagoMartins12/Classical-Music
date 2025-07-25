@@ -4,8 +4,6 @@ import prisma from '@/app/libs/prismadb';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import {
-  calculateTemplateQuality,
-  suggestTemplateImprovements,
   generateTemplateReport,
   DatabaseTemplate,
 } from '@/app/libs/newsletter/templateUtils';

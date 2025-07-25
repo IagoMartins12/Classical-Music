@@ -50,7 +50,7 @@ export async function copyMediaFile(
     // Verificar se arquivo original existe
     try {
       await fs.access(originalPath);
-    } catch (error) {
+    } catch (_error) {
       console.error('Arquivo original não encontrado:', originalPath);
       return null;
     }
@@ -204,6 +204,7 @@ export async function generateVideoThumbnail(
   videoPath: string
 ): Promise<string | null> {
   try {
+    console.log('videoPath', videoPath);
     // TODO: Implementar geração de thumbnail com ffmpeg
     // const ffmpeg = require('fluent-ffmpeg');
     // const thumbnailFilename = `thumb_${Date.now()}.jpg`;
@@ -248,7 +249,7 @@ export function isValidMediaUrl(url: string): boolean {
   try {
     const urlObj = new URL(url);
     return ['http:', 'https:'].includes(urlObj.protocol);
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }
@@ -280,7 +281,7 @@ export async function getMediaFileInfo(fileUrl: string) {
         modified: stats.mtime,
         extension: path.extname(filename).toLowerCase(),
       };
-    } catch (error) {
+    } catch (_error) {
       return {
         exists: false,
         size: 0,

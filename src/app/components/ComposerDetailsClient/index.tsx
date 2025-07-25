@@ -19,16 +19,11 @@ import {
   FiMusic,
   FiHeart,
   FiInfo,
-  FiShield,
-  FiEdit,
 } from 'react-icons/fi';
-
 import ComposerBiography from '../ComposerBiography';
 import ComposerWorks from '../ComposersClient/ComposerWorks';
 import FavoriteButton from '../FavoriteButton';
 import ShareButton from '../ShareButton'; // Novo componente
-
-// Importar componentes de animação
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -40,7 +35,6 @@ import VerificationBadge from '../Verification/VerificationBadge';
 import ReportButton from '../Report/ReportButton';
 import VerificationModal from '../Verification/VerificationModal';
 import VerificationButton from '../Verification/VerificationButton';
-import { useRouter } from 'next/navigation';
 import EditButton from '../Common/EditButton';
 
 interface ComposerDetailsClientProps {
@@ -60,7 +54,6 @@ export default function ComposerDetailsClient({
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [isVerified, setIsVerified] = useState(composer.isVerified || false);
 
-  const router = useRouter();
   const handleVerificationChange = (verified: boolean) => {
     setIsVerified(verified);
     // Atualizar no contexto global se necessário
@@ -634,7 +627,6 @@ export default function ComposerDetailsClient({
               <ComposerBiography
                 composerId={composer.id}
                 initialBio={composer.bio}
-                composerName={composer.name}
               />
             </AnimatedItem>
           </AnimatedCard>

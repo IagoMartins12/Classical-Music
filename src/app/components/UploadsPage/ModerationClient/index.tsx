@@ -15,7 +15,6 @@ import {
   FiShield,
   FiAlertTriangle,
   FiExternalLink,
-  FiMoreHorizontal,
   FiEye,
 } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
@@ -539,9 +538,7 @@ const ModerationClient = ({
                           }&status=${status}`
                         : `/uploads/moderation?page=${i + 1}&status=${status}`;
 
-                      router.push(
-                        `/uploads/moderation?page=${i + 1}&status=${status}`
-                      );
+                      router.push(url);
                     }}
                     className={`px-4 py-2 rounded-lg ${
                       page === i + 1

@@ -136,7 +136,6 @@ class DatabaseMonitor {
   ): Promise<DatabaseMetrics['queries']> {
     try {
       const opcounters = serverStatus.opcounters || {};
-      const opcountersRepl = serverStatus.opcountersRepl || {};
 
       // Simulação de queries lentas (em produção, você pode usar profiler)
       const slowQueries = await this.getSlowQueries();
@@ -207,6 +206,7 @@ class DatabaseMonitor {
             .estimatedDocumentCount();
           totalDocuments += count;
         } catch (error) {
+          console.log('error', error);
           // Ignorar erros de coleções específicas
         }
       }

@@ -1,7 +1,7 @@
 import { sendEmail } from '@/app/libs/newsletter/email';
 import prisma from '@/app/libs/prismadb';
 import { NextRequest, NextResponse } from 'next/server';
-
+import crypto from 'crypto';
 // app/api/newsletter/resubscribe/route.ts
 export async function POST(request: NextRequest) {
   try {
@@ -38,7 +38,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Gerar novo token de confirmação
-    const crypto = require('crypto');
     const confirmationToken = crypto.randomBytes(32).toString('hex');
 
     // Reativar subscriber

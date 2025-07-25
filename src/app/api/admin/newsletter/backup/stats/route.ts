@@ -2,11 +2,11 @@
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { getServerSession } from 'next-auth';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
         backupSize = formatFileSize(stats[0].size);
       }
     } catch (error) {
-      // Diretório não existe ou está vazio
+      console.log('error', error);
     }
 
     const stats = {

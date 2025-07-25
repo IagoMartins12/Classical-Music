@@ -36,8 +36,6 @@ interface CreateListData {
   isActive?: boolean;
 }
 
-interface UpdateListData extends Partial<CreateListData> {}
-
 interface TestEmailListsState {
   lists: TestEmailList[];
   stats: TestEmailListStats | null;
@@ -125,6 +123,7 @@ export const useTestEmailLists = () => {
           }));
         }
       } catch (error) {
+        console.log('error', error);
         setState((prev) => ({
           ...prev,
           error: 'Erro de conexão',
@@ -149,6 +148,7 @@ export const useTestEmailLists = () => {
           return null;
         }
       } catch (error) {
+        console.log('error', error);
         setState((prev) => ({ ...prev, error: 'Erro de conexão' }));
         return null;
       }
@@ -193,6 +193,7 @@ export const useTestEmailLists = () => {
           return { success: false, error: result.error };
         }
       } catch (error) {
+        console.log('error', error);
         const errorMessage = 'Erro de conexão';
         setState((prev) => ({
           ...prev,
@@ -210,7 +211,7 @@ export const useTestEmailLists = () => {
   const updateList = useCallback(
     async (
       id: string,
-      data: UpdateListData
+      data: CreateListData
     ): Promise<{ success: boolean; list?: TestEmailList; error?: string }> => {
       setState((prev) => ({ ...prev, loading: true, error: null }));
 
@@ -246,6 +247,7 @@ export const useTestEmailLists = () => {
           return { success: false, error: result.error };
         }
       } catch (error) {
+        console.log('error', error);
         const errorMessage = 'Erro de conexão';
         setState((prev) => ({
           ...prev,
@@ -299,6 +301,7 @@ export const useTestEmailLists = () => {
           return { success: false, error: result.error };
         }
       } catch (error) {
+        console.log('error', error);
         const errorMessage = 'Erro de conexão';
         setState((prev) => ({
           ...prev,
@@ -362,6 +365,7 @@ export const useTestEmailLists = () => {
           return { success: false, error: result.error };
         }
       } catch (error) {
+        console.log('error', error);
         const errorMessage = 'Erro de conexão';
         setState((prev) => ({
           ...prev,
@@ -493,6 +497,7 @@ export const useTestEmailSending = () => {
           return null;
         }
       } catch (error) {
+        console.log('error', error);
         const errorMessage = 'Erro de conexão';
         setError(errorMessage);
         setLoading(false);
@@ -517,6 +522,7 @@ export const useTestEmailSending = () => {
         return null;
       }
     } catch (error) {
+      console.log('error', error);
       setError('Erro de conexão');
       return null;
     }

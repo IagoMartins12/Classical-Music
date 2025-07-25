@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
       });
 
       // Enviar email especial para contas Google
-      const emailResult = await sendTemplateEmail(user.email, {
+      await sendTemplateEmail(user.email, {
         type: 'PASSWORD_RESET',
         variables: {
           firstName: user.firstName || 'Usuário',

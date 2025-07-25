@@ -8,7 +8,6 @@ import {
   FiAlertTriangle,
   FiTrash2,
   FiCheck,
-  FiX,
   FiInfo,
   FiHelpCircle,
   FiLoader,

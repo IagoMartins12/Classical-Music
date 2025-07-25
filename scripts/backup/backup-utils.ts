@@ -1,7 +1,6 @@
 // scripts/backup/backup-utils.ts
 import fs from 'fs/promises'
 import path from 'path'
-import { performBackup, performRestore } from './backup'
 
 // Utilitário para cleanup de backups antigos
 export async function cleanupOldBackups(daysToKeep: number = 30): Promise<void> {

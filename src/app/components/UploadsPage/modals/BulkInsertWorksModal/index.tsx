@@ -98,13 +98,9 @@ const BulkInsertWorksModal = ({
 
   // 🆕 NOVO: Estados para progresso individual
   const [workProgress, setWorkProgress] = useState<WorkProgress[]>([]);
-  const [currentProcessing, setCurrentProcessing] = useState<string | null>(
-    null
-  );
 
   // Estados de loading
   const [isDiscovering, setIsDiscovering] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
 
   // Estados de edição
   const [editingWork, setEditingWork] = useState<DiscoveredWork | null>(null);
@@ -197,7 +193,6 @@ const BulkInsertWorksModal = ({
       return;
     }
 
-    setIsProcessing(true);
     setCurrentStep('process');
     setProcessResults([]);
 
@@ -218,7 +213,6 @@ const BulkInsertWorksModal = ({
         const work = selectedWorks[i];
 
         // Marcar como processando
-        setCurrentProcessing(work.id);
         setWorkProgress((prev) =>
           prev.map((p) =>
             p.tempId === work.id
@@ -327,7 +321,6 @@ const BulkInsertWorksModal = ({
         }
       }
 
-      setCurrentProcessing(null);
       setProcessResults(results);
       setCurrentStep('results');
 
@@ -363,8 +356,6 @@ const BulkInsertWorksModal = ({
       toast.error(
         error instanceof Error ? error.message : 'Erro no processamento'
       );
-    } finally {
-      setIsProcessing(false);
     }
   };
 
@@ -380,7 +371,6 @@ const BulkInsertWorksModal = ({
     setDiscoveredWorks([]);
     setProcessResults([]);
     setWorkProgress([]);
-    setCurrentProcessing(null);
     setStats({ total: 0, new: 0, existing: 0, selected: 0 });
     onClose();
   };
@@ -822,7 +812,7 @@ const BulkInsertWorksModal = ({
 
                   {/* Results list */}
                   <div className="max-h-80 overflow-y-auto space-y-2">
-                    {processResults.map((result, index) => (
+                    {processResults.map((result) => (
                       <div
                         key={result.tempId}
                         className={`border rounded-lg p-3 ${

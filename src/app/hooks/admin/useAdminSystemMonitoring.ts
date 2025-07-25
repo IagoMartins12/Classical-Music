@@ -428,6 +428,7 @@ export const useRealTimeStats = () => {
           setConnected(true);
         }
       } catch (error) {
+              console.log('error', error);
         setConnected(false);
       }
     }, 5000); // Atualizar a cada 5 segundos

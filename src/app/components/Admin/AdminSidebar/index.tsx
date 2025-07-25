@@ -22,10 +22,7 @@ import {
   FiAward,
   FiChevronDown,
   FiChevronRight,
-  FiHardDrive, // Nova importação para backup
-  FiLayout,
-  FiPlus,
-  FiClock,
+  FiHardDrive,
   FiSend,
   FiMail, // Nova importação para backup
 } from 'react-icons/fi';

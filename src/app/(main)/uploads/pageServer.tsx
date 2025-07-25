@@ -2,7 +2,6 @@
 
 import UploadsClient from '@/app/components/UploadsPage/UploadsClient';
 import {
-  getAvailableEpochs,
   getEpochsCache,
   getFilterData,
   getUserUploads,
@@ -33,16 +32,6 @@ export default async function UploadsPageServer({
 
   // 🆕 Determinar se deve limitar por tipo (apenas na aba "all")
   const limitPerType = type === 'all';
-
-  // 🆕 Mapear tipo da URL para tipo interno
-  const internalType =
-    type === 'composer'
-      ? 'composer'
-      : type === 'work'
-      ? 'work'
-      : type === 'score'
-      ? 'score'
-      : 'all';
 
   const [uploadsData, filterData, epochsData] = await Promise.all([
     getUserUploads({

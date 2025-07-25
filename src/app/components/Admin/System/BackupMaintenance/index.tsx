@@ -7,7 +7,6 @@ import {
   FiUpload,
   FiRefreshCw,
   FiTrash2,
-  FiSettings,
   FiClock,
   FiHardDrive,
   FiDatabase,
@@ -17,13 +16,11 @@ import {
   FiCheckCircle,
   FiAlertTriangle,
   FiX,
-  FiCalendar,
   FiFileText,
   FiArchive,
   FiTool,
   FiZap,
   FiActivity,
-  FiSave,
   FiEdit,
 } from 'react-icons/fi';
 import {
@@ -31,10 +28,8 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
-  LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
-import Select from '@/app/components/Common/Select';
 
 interface BackupJob {
   id: string;
@@ -105,8 +100,6 @@ export default function BackupMaintenance() {
     []
   );
   const [systemHealth, setSystemHealth] = useState<SystemHealth | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [showBackupModal, setShowBackupModal] = useState(false);
   const [runningTasks, setRunningTasks] = useState<Set<string>>(new Set());
 
   // Mock data
@@ -343,12 +336,6 @@ export default function BackupMaintenance() {
     }, 500);
   };
 
-  const handleCreateBackup = async (backupConfig: any) => {
-    console.log('Creating backup with config:', backupConfig);
-    // Implementar criação de backup
-    setShowBackupModal(false);
-  };
-
   const formatFileSize = (gb: number) => {
     if (gb < 1) return `${(gb * 1024).toFixed(1)} MB`;
     return `${gb.toFixed(1)} GB`;
@@ -358,11 +345,7 @@ export default function BackupMaintenance() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-bold text-theme-primary">Backups</h3>
-        <Button
-          variant="primary"
-          leftIcon={<FiDownload />}
-          onClick={() => setShowBackupModal(true)}
-        >
+        <Button variant="primary" leftIcon={<FiDownload />}>
           Novo Backup
         </Button>
       </div>

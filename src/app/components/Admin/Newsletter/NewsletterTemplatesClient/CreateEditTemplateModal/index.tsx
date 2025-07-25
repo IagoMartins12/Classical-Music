@@ -9,7 +9,6 @@ import {
   FiEye,
   FiCode,
   FiFileText,
-  FiMail,
   FiSettings,
   FiAlertCircle,
 } from 'react-icons/fi';

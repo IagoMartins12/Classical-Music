@@ -367,7 +367,7 @@ export async function checkTokenRateLimit(
   const oneHourAgo = new Date();
   oneHourAgo.setHours(oneHourAgo.getHours() - 1);
 
-  let where: any = {
+  const where: any = {
     type: type as any,
     createdAt: {
       gte: oneHourAgo,

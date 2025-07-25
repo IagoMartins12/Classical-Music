@@ -253,7 +253,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             </li>
             <li className="flex items-start">
               <span className="text-brand-primary mr-2">2.</span>
-              Clique no link "Redefinir Senha"
+              Clique no link &quot;Redefinir Senha&quoet;
             </li>
             <li className="flex items-start">
               <span className="text-brand-primary mr-2">3.</span>

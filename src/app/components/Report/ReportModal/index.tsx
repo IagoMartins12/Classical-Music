@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FiFlag, FiX, FiAlertTriangle } from 'react-icons/fi';
+import { FiFlag, FiAlertTriangle } from 'react-icons/fi';
 import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';
@@ -95,6 +95,7 @@ export default function ReportModal({
         toaster.error(error.error || 'Erro ao enviar report');
       }
     } catch (error) {
+      console.log('error', error);
       toaster.error('Erro ao enviar report');
     } finally {
       setIsSubmitting(false);
@@ -142,7 +143,9 @@ export default function ReportModal({
                 <h2 className="text-xl font-bold text-theme-primary">
                   Reportar {getEntityTypeLabel()}
                 </h2>
-                <p className="text-sm text-theme-secondary">"{entityName}"</p>
+                <p className="text-sm text-theme-secondary">
+                  &quot;{entityName}&quot;
+                </p>
               </div>
             </div>
           </div>

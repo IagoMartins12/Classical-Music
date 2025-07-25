@@ -18,11 +18,8 @@ import LearningModal from '@/app/components/LearningModal';
 import { EmptyState } from './EmptyState';
 import { LearningCard } from './LearningCard';
 import Select from '../Common/Select';
-import { useAuth } from '@/app/hooks/useAuth';
 import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
 import { PiTarget } from 'react-icons/pi';
-
-// Importar componentes de animação
 import {
   PageContainer,
   AnimatedContainer,
@@ -30,7 +27,6 @@ import {
   AnimatedCard,
   SequentialGrid,
 } from '../animation/AnimatedComponents';
-import LearningPageLoading from '@/app/(main)/learning/loading';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 type FilterTab = 'all' | 'want-to-learn' | 'learned';
@@ -62,7 +58,6 @@ const dificultyOptions = [
 
 const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
   // States
-  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [searchQuery, setSearchQuery] = useState('');
@@ -82,17 +77,11 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
   const { wantToLearn, learned, initializeLearning, initialized } =
     useLearningStore();
 
-  const { isAuthenticated } = useAuth();
-
   useEffect(() => {
     if (!initialized && initialData) {
       initializeLearning(initialData.wantToLearn, initialData.learned);
     }
   }, [initialData]);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Check if has active filters
   const hasActiveFilters = useMemo(() => {

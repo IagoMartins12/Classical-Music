@@ -332,7 +332,10 @@ export default function CloneAdModal({
               <ul className="text-sm text-theme-secondary mt-1 space-y-1">
                 <li>• Todas as configurações são copiadas</li>
                 <li>• Mídia é duplicada fisicamente (cópias independentes)</li>
-                <li>• Sempre começa como "Rascunho" para evitar conflitos</li>
+                <li>
+                  • Sempre começa como &quot;Rascunho&quot; para evitar
+                  conflitos
+                </li>
                 <li>
                   • Você pode modificar qualquer configuração antes de criar
                 </li>
@@ -831,7 +834,7 @@ export default function CloneAdModal({
               variant="primary"
               leftIcon={<FiCopy />}
               disabled={loading || !!conflictInfo}
-              loading={loading}
+              isLoading={loading}
             >
               {loading ? 'Clonando...' : 'Clonar Anúncio'}
             </Button>

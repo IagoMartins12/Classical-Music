@@ -353,10 +353,7 @@ export const getSubscriptionStatusLabel = (status: string): string => {
 };
 
 // 🆕 NOVO: Funções para tratamento de erros específicos
-export const getSubscriptionErrorMessage = (
-  errorCode: string,
-  status?: string
-): string => {
+export const getSubscriptionErrorMessage = (errorCode: string): string => {
   switch (errorCode) {
     case 'ALREADY_SUBSCRIBED':
       return 'Este email já está inscrito na nossa newsletter.';

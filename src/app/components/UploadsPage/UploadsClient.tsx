@@ -50,7 +50,6 @@ import { useToast } from '@/app/hooks/useToast';
 import UploadComposerCard from './UploadComposerCard';
 import UploadWorkCard from './UploadWorkCard';
 import UploadScoreCard from './UploadScoreCard';
-import { useConfirmModal } from '../ConfirmModal';
 
 interface Epoch {
   id: string;
@@ -124,7 +123,6 @@ const UploadsClient = ({
 
   // 🆕 HOOKS PARA TOASTS E MODAIS
   const toast = useToast();
-  const { confirm } = useConfirmModal();
 
   const [isPending, startTransition] = useTransition();
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
@@ -176,23 +174,12 @@ const UploadsClient = ({
 
   const [loadingFormData, setLoadingFormData] = useState(false);
 
-  // 🔧 MEMOIZAR ARRAYS PARA EVITAR LOOP INFINITO
-  const memoizedLocalWorks = useMemo(() => {
-    return filterWorks.map((work) => ({
-      id: work.id,
-      title: work.title,
-      composer: {
-        name: work.composerName,
-        fullName: work.composerName,
-      },
-    }));
-  }, [filterWorks]);
+
 
   const memoizedLocalComposers = useMemo(() => {
     return filterComposers;
   }, [filterComposers]);
 
-  const memoizedEmptyArray = useMemo(() => [], []);
 
   // Carregar dados do formulário quando necessário
   useEffect(() => {
@@ -524,12 +511,12 @@ const UploadsClient = ({
 
   // FUNÇÃO DE DELETE ATUALIZADA COM MODAL DE CONFIRMAÇÃO
   const handleDelete = async (item: UserUpload) => {
-    const itemType =
-      item.type === 'composer'
-        ? 'compositor'
-        : item.type === 'work'
-        ? 'obra'
-        : 'partitura';
+    // const itemType =
+    //   item.type === 'composer'
+    //     ? 'compositor'
+    //     : item.type === 'work'
+    //     ? 'obra'
+    //     : 'partitura';
 
     await performDelete(item);
   };

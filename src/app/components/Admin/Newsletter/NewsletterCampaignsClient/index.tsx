@@ -643,7 +643,7 @@ export default function NewsletterCampaignsClient() {
       {showCreateModal && (
         <CreateCampaignModal
           onClose={() => setShowCreateModal(false)}
-          onSuccess={(campaign) => {
+          onSuccess={() => {
             setShowCreateModal(false);
             fetchCampaigns(1, filters);
           }}

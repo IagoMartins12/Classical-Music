@@ -695,7 +695,7 @@ export default function CreateAdModal({
               variant="primary"
               leftIcon={<FiSave />}
               disabled={loading || !!conflictInfo}
-              loading={loading}
+              isLoading={loading}
             >
               Criar Anúncio
             </Button>

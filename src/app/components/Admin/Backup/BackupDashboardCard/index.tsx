@@ -292,7 +292,7 @@ export default function BackupDashboardCard({
                 leftIcon={<FiDownload />}
                 onClick={createBackup}
                 disabled={isCreatingBackup || stats?.isBackupRunning}
-                loading={isCreatingBackup}
+                isLoading={isCreatingBackup}
                 className="flex-1"
               >
                 {isCreatingBackup ? 'Criando...' : 'Criar Backup'}

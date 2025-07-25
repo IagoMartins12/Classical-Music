@@ -9,6 +9,7 @@ export interface ApplicationMetrics {
     concurrent: number;
     newToday: number;
     totalOnline: number;
+    totalUsers: number;
   };
   sessions: {
     total: number;
@@ -99,7 +100,7 @@ class ApplicationMonitor {
         this.redisClient = new Redis(redisUrl);
         console.log('Redis conectado para monitoramento');
       }
-    } catch (error) {
+    } catch (_error) {
       console.log('Redis não disponível, usando cache em memória');
     }
   }
@@ -209,6 +210,7 @@ class ApplicationMonitor {
         concurrent: this.activeUsers.size,
         newToday,
         totalOnline: recentSessions,
+        totalUsers: totalUsers,
       };
     } catch (error) {
       console.error('Erro ao obter métricas de usuários:', error);
@@ -218,6 +220,7 @@ class ApplicationMonitor {
         concurrent: 0,
         newToday: 0,
         totalOnline: 0,
+        totalUsers: 0,
       };
     }
   }
@@ -523,6 +526,7 @@ class ApplicationMonitor {
           concurrent: 0,
           newToday: 0,
           totalOnline: 0,
+          totalUsers: 0,
         },
         sessions: {
           total: 0,

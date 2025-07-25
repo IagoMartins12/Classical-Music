@@ -1,7 +1,7 @@
 // app/components/Admin/Reports/AdvancedReports.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   FiFileText,
   FiDownload,

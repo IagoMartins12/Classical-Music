@@ -3,7 +3,6 @@
 
 import { useState } from 'react';
 import { FiFlag } from 'react-icons/fi';
-import Button from '@/app/components/Common/Button';
 import ReportModal from '../ReportModal';
 
 interface ReportButtonProps {
@@ -22,7 +21,6 @@ export default function ReportButton({
   entityName,
   variant = 'ghost',
   size = 'md',
-  showLabel = false,
   className = '',
 }: ReportButtonProps) {
   const [showModal, setShowModal] = useState(false);

@@ -82,10 +82,10 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
     if (formData.emails.trim()) {
       const emailLines = formData.emails
         .split('\n')
-        .filter((line) => line.trim());
+        .filter((line: string) => line.trim());
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const invalidEmails = emailLines.filter(
-        (email) => !emailRegex.test(email.trim())
+        (email: string) => !emailRegex.test(email.trim())
       );
 
       if (invalidEmails.length > 0) {
@@ -107,8 +107,8 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
     const emailList = formData.emails
       ? formData.emails
           .split('\n')
-          .filter((line) => line.trim())
-          .map((email) => email.trim())
+          .filter((line: string) => line.trim())
+          .map((email: string) => email.trim())
       : [];
 
     const data = {
@@ -228,8 +228,9 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
             {formData.emails.trim() && (
               <p className="text-theme-tertiary text-sm mt-1">
                 {
-                  formData.emails.split('\n').filter((line) => line.trim())
-                    .length
+                  formData.emails
+                    .split('\n')
+                    .filter((line: string) => line.trim()).length
                 }{' '}
                 email(s)
               </p>
@@ -329,7 +330,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
   selectedLists,
   availableLists,
 }) => {
-  const { sendTestEmails, loading, result, error, getAvailableTemplates } =
+  const { sendTestEmails, result, getAvailableTemplates } =
     useTestEmailSending();
 
   const [formData, setFormData] = useState({
@@ -373,7 +374,7 @@ const SendTestModal: React.FC<SendTestModalProps> = ({
     e.preventDefault();
     setStep('sending');
 
-    const result = await sendTestEmails({
+    await sendTestEmails({
       testListIds: selectedLists,
       templateType: formData.templateType,
       customSubject: formData.customSubject || undefined,

@@ -3,25 +3,17 @@
 
 import { useBiographyGenerator } from '@/app/hooks/useBiographyGenerator';
 import { useState, useEffect, useRef } from 'react';
-import {
-  FiRefreshCw,
-  FiAlertCircle,
-  FiBookOpen,
-  FiZap,
-  FiX,
-} from 'react-icons/fi';
+import { FiRefreshCw, FiAlertCircle, FiX } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 
 interface ComposerBiographyProps {
   composerId: string;
   initialBio?: string;
-  composerName: string;
 }
 
 export default function ComposerBiography({
   composerId,
   initialBio,
-  composerName,
 }: ComposerBiographyProps) {
   const [displayBio, setDisplayBio] = useState(initialBio || '');
   const { biography, isGenerating, error, generateBiography } =

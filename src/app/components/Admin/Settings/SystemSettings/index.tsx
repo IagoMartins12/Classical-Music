@@ -1,7 +1,7 @@
 // app/components/Admin/Settings/SystemSettings.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   FiSettings,
   FiShield,
@@ -89,25 +89,12 @@ interface QualityRule {
   parameters: Record<string, any>;
 }
 
-interface NotificationTemplate {
-  id: string;
-  name: string;
-  type: 'email' | 'push' | 'system';
-  subject: string;
-  content: string;
-  variables: string[];
-  isActive: boolean;
-}
-
 export default function SystemSettings() {
   const [activeTab, setActiveTab] = useState('general');
   const [config, setConfig] = useState<SystemConfig | null>(null);
   const [qualityRules, setQualityRules] = useState<QualityRule[]>([]);
 
-  const [saving, setSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-  const [showRuleModal, setShowRuleModal] = useState(false);
-  const [editingRule, setEditingRule] = useState<QualityRule | null>(null);
 
   const tabs = [
     { id: 'general', label: 'Geral', icon: FiSettings },
@@ -118,20 +105,6 @@ export default function SystemSettings() {
     { id: 'performance', label: 'Performance', icon: FiZap },
     { id: 'rules', label: 'Regras de Qualidade', icon: FiTarget },
   ];
-
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      // Simular salvamento
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      console.log('Configurações salvas:', config);
-      setHasChanges(false);
-    } catch (error) {
-      console.error('Erro ao salvar:', error);
-    } finally {
-      setSaving(false);
-    }
-  };
 
   const updateConfig = (
     section: keyof SystemConfig,
@@ -374,11 +347,7 @@ export default function SystemSettings() {
         <h3 className="text-lg font-bold text-theme-primary">
           Regras de Qualidade
         </h3>
-        <Button
-          variant="primary"
-          leftIcon={<FiPlus />}
-          onClick={() => setShowRuleModal(true)}
-        >
+        <Button variant="primary" leftIcon={<FiPlus />}>
           Nova Regra
         </Button>
       </div>
@@ -438,15 +407,7 @@ export default function SystemSettings() {
 
               <div className="flex items-center space-x-2 ml-4">
                 {renderToggle(rule.isActive, () => toggleRule(rule.id))}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  leftIcon={<FiEdit />}
-                  onClick={() => {
-                    setEditingRule(rule);
-                    setShowRuleModal(true);
-                  }}
-                />
+                <Button variant="ghost" size="sm" leftIcon={<FiEdit />} />
                 <Button
                   variant="ghost"
                   size="sm"
@@ -460,19 +421,6 @@ export default function SystemSettings() {
       </div>
     </div>
   );
-
-  if (!config) {
-    return (
-      <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="text-center">
-            <FiSettings className="w-12 h-12 text-theme-tertiary mx-auto mb-4 animate-spin" />
-            <p className="text-theme-primary">Carregando configurações...</p>
-          </div>
-        </div>
-      </PageContainer>
-    );
-  }
 
   return (
     <PageContainer showBackground={true}>
@@ -511,12 +459,7 @@ export default function SystemSettings() {
                   >
                     Descartar
                   </Button>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    leftIcon={<FiSave />}
-                    onClick={handleSave}
-                  >
+                  <Button variant="primary" size="sm" leftIcon={<FiSave />}>
                     Salvar
                   </Button>
                 </div>
@@ -586,7 +529,6 @@ export default function SystemSettings() {
               variant="primary"
               size="lg"
               leftIcon={<FiSave />}
-              onClick={handleSave}
               disabled={!hasChanges}
             >
               Salvar Todas as Configurações

@@ -5,7 +5,6 @@ import { useState } from 'react';
 import {
   FiThumbsUp,
   FiThumbsDown,
-  FiMessageCircle,
   FiEdit3,
   FiTrash2,
   FiEye,

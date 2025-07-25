@@ -4,7 +4,6 @@ import {
   AdapterUser,
   AdapterAccount,
   AdapterSession,
-  VerificationToken,
 } from 'next-auth/adapters';
 import { PrismaClient } from '@prisma/client';
 
@@ -12,14 +11,6 @@ import { PrismaClient } from '@prisma/client';
 interface CreateUserData {
   name?: string | null;
   email: string;
-  image?: string | null;
-  emailVerified?: Date | null;
-}
-
-interface UpdateUserData {
-  id: string;
-  name?: string | null;
-  email?: string | null;
   image?: string | null;
   emailVerified?: Date | null;
 }
@@ -167,7 +158,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
       Pick<AdapterUser, 'id'>): Promise<AdapterUser> => {
       try {
         // Separar nome se fornecido
-        let updateData: any = { ...data };
+        const updateData: any = { ...data };
 
         if (data.name) {
           const nameParts = data.name.trim().split(' ');

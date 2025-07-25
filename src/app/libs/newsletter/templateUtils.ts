@@ -1,9 +1,7 @@
 // app/libs/newsletter/templateUtils.ts
 import {
-  getAllEmailTemplates,
   getEmailTemplate,
   processTemplate,
-  extractVariables,
   validateTemplateVariables,
 } from './emailTemplates';
 
@@ -232,7 +230,6 @@ export class TemplateService {
     if (template.htmlContent && template.textContent && template.subject) {
       try {
         const allContent = `${template.htmlContent} ${template.textContent} ${template.subject}`;
-        const variables = extractVariables(allContent);
 
         // Verificar se há variáveis malformadas
         const malformedVars = allContent
@@ -250,6 +247,7 @@ export class TemplateService {
           );
         }
       } catch (error) {
+        console.log('erro', error);
         errors.push('Erro ao analisar variáveis do template');
       }
     }

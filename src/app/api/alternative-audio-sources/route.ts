@@ -34,16 +34,12 @@ export async function POST(request: NextRequest) {
     const wikimediaSources = await searchWikimedia(title, composer);
     sources.push(...wikimediaSources);
 
-    // 3. IMSLP (se tiver áudios)
-    const imslpSources = await searchIMSLP(title, composer);
-    sources.push(...imslpSources);
-
     // 4. Freesound (para alguns casos específicos)
     const freesoundSources = await searchFreesound(title, composer);
     sources.push(...freesoundSources);
 
     // 5. Classical Music Archives
-    const classicalSources = await searchClassicalArchives(title, composer);
+    const classicalSources = await searchClassicalArchives();
     sources.push(...classicalSources);
 
     console.log(
@@ -113,7 +109,7 @@ async function searchInternetArchive(
               break; // Usar apenas o primeiro formato encontrado
             }
           } catch (e) {
-            // Continuar para próximo formato
+            console.log('error', e);
           }
         }
       }
@@ -190,29 +186,9 @@ async function getWikimediaFileUrl(filename: string): Promise<string | null> {
 
     return null;
   } catch (error) {
+    console.error('Erro:', error);
+
     return null;
-  }
-}
-
-/**
- * Buscar no IMSLP (se tiver arquivos de áudio)
- */
-async function searchIMSLP(
-  title: string,
-  composer: string
-): Promise<AudioSource[]> {
-  try {
-    // IMSLP tem alguns arquivos de áudio, mas é principalmente partituras
-    // Esta é uma busca básica - você pode expandir conforme a API do IMSLP
-
-    const query = encodeURIComponent(`${title} ${composer}`);
-    // IMSLP não tem API oficial, então seria necessário scraping cuidadoso
-    // Por enquanto, retornar array vazio
-
-    return [];
-  } catch (error) {
-    console.error('Erro no IMSLP:', error);
-    return [];
   }
 }
 
@@ -259,10 +235,7 @@ async function searchFreesound(
 /**
  * Buscar em archives de música clássica especializados
  */
-async function searchClassicalArchives(
-  title: string,
-  composer: string
-): Promise<AudioSource[]> {
+async function searchClassicalArchives(): Promise<AudioSource[]> {
   try {
     // Aqui você pode adicionar outros archives especializados em música clássica:
     // - Classical Music Archive
@@ -273,7 +246,7 @@ async function searchClassicalArchives(
     const sources: AudioSource[] = [];
 
     // Exemplo: buscar em MusOpen (se tiver API)
-    const musOpenSources = await searchMusOpen(title, composer);
+    const musOpenSources = await searchMusOpen();
     sources.push(...musOpenSources);
 
     return sources;
@@ -286,10 +259,7 @@ async function searchClassicalArchives(
 /**
  * Buscar no MusOpen (exemplo)
  */
-async function searchMusOpen(
-  title: string,
-  composer: string
-): Promise<AudioSource[]> {
+async function searchMusOpen(): Promise<AudioSource[]> {
   try {
     // MusOpen não tem API pública oficial
     // Esta seria uma implementação de exemplo
@@ -299,6 +269,7 @@ async function searchMusOpen(
 
     return [];
   } catch (error) {
+    console.log('error', error);
     return [];
   }
 }

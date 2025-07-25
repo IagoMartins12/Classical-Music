@@ -19,11 +19,8 @@ import {
   FiEye,
   FiMapPin,
   FiMonitor,
-  FiRefreshCw,
   FiDatabase,
   FiCheck,
-  FiX,
-  FiAlertCircle,
 } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -80,7 +77,6 @@ const HistoryClient = ({
   const [selectedType, setSelectedType] = useState(type);
   const [selectedAction, setSelectedAction] = useState(action);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-  const [stats, setStats] = useState<any>(null);
 
   const typeOptions = [
     { value: 'all', label: 'Todos os tipos' },
@@ -98,7 +94,7 @@ const HistoryClient = ({
 
   useEffect(() => {
     fetchHistory();
-    fetchStats();
+    // fetchStats();
   }, [page, type, action, userId]);
 
   const fetchHistory = async () => {
@@ -125,19 +121,19 @@ const HistoryClient = ({
     }
   };
 
-  const fetchStats = async () => {
-    try {
-      const response = await fetch(
-        `/api/uploads/history/stats?userId=${userId}`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setStats(data);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar estatísticas:', error);
-    }
-  };
+  // const fetchStats = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `/api/uploads/history/stats?userId=${userId}`
+  //     );
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setStats(data);
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao carregar estatísticas:', error);
+  //   }
+  // };
 
   const updateFilters = () => {
     const params = new URLSearchParams();

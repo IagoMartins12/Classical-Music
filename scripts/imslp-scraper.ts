@@ -834,7 +834,7 @@ class IMSLPScraper {
   } {
     try {
       let completenessScore = 0;
-      let maxScore = 8; // Reduzido de 10 para 8 (removido compositionsCount)
+      const maxScore = 8; // Reduzido de 10 para 8 (removido compositionsCount)
 
       // Verificar elementos presentes
       if ($('.cp_firsth h2').length > 0) completenessScore += 1; // Tem nome

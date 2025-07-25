@@ -76,6 +76,7 @@ export const usePasswordReset = () => {
 
       return result;
     } catch (error) {
+      console.log('error', error);
       const errorMessage = 'Erro de conexão. Tente novamente.';
       setState((prev) => ({
         ...prev,
@@ -120,6 +121,7 @@ export const usePasswordReset = () => {
 
       return result;
     } catch (error) {
+      console.log('error', error);
       const errorMessage = 'Erro ao validar token';
       setState((prev) => ({
         ...prev,
@@ -168,6 +170,7 @@ export const usePasswordReset = () => {
 
       return result;
     } catch (error) {
+      console.log('error', error);
       const errorMessage = 'Erro de conexão. Tente novamente.';
       setState((prev) => ({
         ...prev,

@@ -17,7 +17,6 @@ import {
   FiMinimize2,
   FiAlertCircle,
   FiSave,
-  FiTarget,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { WorkDetails } from '@/app/requests/work-details';
@@ -126,9 +125,7 @@ const StudyModeClient: React.FC<StudyModeClientProps> = ({
     scores: imslpScores,
     loading: loadingScores,
     error: scoresError,
-    selectedScore,
     setSelectedScore,
-    getTabStats,
   } = useIMSLPScoresIncremental(work.imslpPermlink, {
     workId: work.id,
     enabled: mounted,

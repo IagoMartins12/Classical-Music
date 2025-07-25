@@ -2,7 +2,6 @@
 'use client';
 
 import { FiEdit } from 'react-icons/fi';
-import Button from '@/app/components/Common/Button';
 import { useRouter } from 'next/navigation';
 
 interface EditButtonProps {

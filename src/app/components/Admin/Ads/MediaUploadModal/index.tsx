@@ -24,6 +24,7 @@ import {
   AD_DIMENSIONS,
   validateMediaDimensions,
 } from '@/app/libs/ads/mediaUtils';
+import ImageNext from 'next/image';
 
 interface MediaUploadModalProps {
   ad: any;
@@ -362,7 +363,9 @@ export default function MediaUploadModal({
                   {ad.imageUrl || ad.imageVersions ? (
                     <div className="space-y-3">
                       <div className="relative overflow-hidden rounded-lg aspect-video bg-theme-secondary">
-                        <img
+                        <ImageNext
+                          width={50}
+                          height={50}
                           src={
                             ad.imageUrl ||
                             ad.imageVersions?.desktop ||
@@ -547,7 +550,9 @@ export default function MediaUploadModal({
                     <div className="md:col-span-2">
                       <div className="aspect-video bg-theme-secondary rounded-lg overflow-hidden">
                         {filePreview.type === 'image' ? (
-                          <img
+                          <ImageNext
+                            width={50}
+                            height={50}
                             src={filePreview.url}
                             alt="Preview"
                             className="w-full h-full object-cover"
@@ -757,7 +762,7 @@ export default function MediaUploadModal({
                 variant="primary"
                 onClick={uploadFile}
                 disabled={uploading}
-                loading={uploading}
+                isLoading={uploading}
                 leftIcon={<FiUpload />}
               >
                 {uploading ? 'Processando...' : 'Fazer Upload'}

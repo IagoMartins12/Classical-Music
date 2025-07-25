@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  FiArrowLeft,
   FiSave,
   FiTrash2,
   FiLoader,
@@ -16,7 +15,6 @@ import {
   FiUser,
   FiTag,
   FiInfo,
-  FiClock,
   FiFileText,
   FiImage,
   FiExternalLink,

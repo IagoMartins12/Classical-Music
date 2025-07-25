@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { FiFlag, FiCheck, FiX, FiClock } from 'react-icons/fi';
+import { FiFlag, FiCheck, FiClock } from 'react-icons/fi';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 
 interface ReportNotification {

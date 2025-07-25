@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     const recentActivity = await getRecentActivity(startDate, endDate);
 
     // Dados para gráficos
-    const chartData = await getChartData(startDate, endDate);
+    const chartData = await getChartData();
 
     const analytics = {
       subscribers: subscriberAnalytics,
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
 export function getDateRange(range: string) {
   const now = new Date();
   const endDate = new Date(now);
-  let startDate = new Date(now);
+  const startDate = new Date(now);
 
   switch (range) {
     case '7d':
@@ -432,7 +432,7 @@ async function getRecentActivity(startDate: Date, endDate: Date) {
   return events;
 }
 
-async function getChartData(startDate: Date, endDate: Date) {
+async function getChartData() {
   // Dados para gráficos seriam calculados aqui
   // Por simplicidade, retornando estrutura vazia
   return {

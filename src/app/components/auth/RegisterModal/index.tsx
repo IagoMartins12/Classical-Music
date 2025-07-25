@@ -8,7 +8,6 @@ import {
   FiLock,
   FiUser,
   FiCheckCircle,
-  FiAlertCircle,
   FiAlertTriangle,
 } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';

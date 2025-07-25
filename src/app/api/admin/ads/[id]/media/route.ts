@@ -15,10 +15,7 @@ import {
   generateVideoThumbnail,
 } from '@/app/libs/ads/serverMediaProcessor';
 
-import {
-  validateMediaDimensions,
-  AD_DIMENSIONS,
-} from '@/app/libs/ads/mediaUtils';
+import { AD_DIMENSIONS } from '@/app/libs/ads/mediaUtils';
 
 export async function POST(
   request: NextRequest,
@@ -96,7 +93,7 @@ export async function POST(
     try {
       await mkdir(uploadDir, { recursive: true });
     } catch (error) {
-      console.log('📁 Diretório já existe');
+      console.log('📁 Diretório já existe', error);
     }
 
     // Salvar arquivo temporário
@@ -107,8 +104,8 @@ export async function POST(
 
     console.log(`📁 Arquivo salvo temporariamente: ${tempFilePath}`);
 
-    let processedMedia: any = {};
-    let mediaMetadata: any = {
+    const processedMedia: any = {};
+    const mediaMetadata: any = {
       originalFilename: file.name,
       fileSize: file.size,
       processedAt: new Date().toISOString(),
@@ -124,8 +121,7 @@ export async function POST(
         // mas vamos processar independentemente
         const imageVersions = await processImage(
           tempFilePath,
-          ad.placement as keyof typeof AD_DIMENSIONS,
-          adId
+          ad.placement as keyof typeof AD_DIMENSIONS
         );
 
         processedMedia.imageVersions = imageVersions;
@@ -139,8 +135,7 @@ export async function POST(
 
         const videoVersions = await processVideo(
           tempFilePath,
-          ad.placement as keyof typeof AD_DIMENSIONS,
-          adId
+          ad.placement as keyof typeof AD_DIMENSIONS
         );
 
         processedMedia.videoVersions = videoVersions;

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import React, { useState } from 'react';
 import { FiPlay, FiExternalLink, FiCalendar, FiUser } from 'react-icons/fi';
 import { SiYoutube } from 'react-icons/si';
@@ -66,7 +67,9 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
           <div className="relative group cursor-pointer" onClick={showPlayer}>
             <div className="aspect-video bg-gray-800 relative overflow-hidden">
               {video.thumbnail ? (
-                <img
+                <Image
+                  width={100}
+                  height={100}
                   src={video.thumbnail}
                   alt={video.title}
                   className="w-full h-full object-cover"

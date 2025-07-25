@@ -900,11 +900,7 @@ export default function WorkDetailsClient({
 
           <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" />
 
-          <MediaSection
-            work={work}
-            canEditMedia={canEditMedia}
-            // onOpenEditModal poderia abrir um modal específico se necessário
-          />
+          <MediaSection work={work} canEditMedia={canEditMedia} />
 
           {/* 🆕 Seção de Partituras IMSLP com nova lógica */}
           {work.imslpPermlink && (

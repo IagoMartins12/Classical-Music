@@ -1,7 +1,6 @@
 // middleware.ts
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 import { PROTECTED_ROUTES, PUBLIC_ROUTES } from './utils/auth';
 
 // Armazenar métricas em memória (em produção, usar Redis ou BD)
@@ -121,8 +120,7 @@ if (typeof globalThis !== 'undefined') {
 function detectSuspiciousActivity(
   path: string,
   method: string,
-  userAgent?: string,
-  ip?: string
+  userAgent?: string
 ): { isSuspicious: boolean; reason?: string } {
   const key = `${method}:${path}`;
   const metric = requestMetrics.get(key);
@@ -183,7 +181,7 @@ function detectSuspiciousActivity(
 export default withAuth(
   function middleware(req) {
     const startTime = Date.now();
-    const { pathname, search } = req.nextUrl;
+    const { pathname } = req.nextUrl;
     const method = req.method;
     const userAgent = req.headers.get('user-agent') || undefined;
     const ip =
@@ -216,8 +214,7 @@ export default withAuth(
     const suspiciousCheck = detectSuspiciousActivity(
       pathname,
       method,
-      userAgent,
-      ip
+      userAgent
     );
     if (suspiciousCheck.isSuspicious) {
       console.warn(

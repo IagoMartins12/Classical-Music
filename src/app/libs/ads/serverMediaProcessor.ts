@@ -9,12 +9,14 @@ let ffmpeg: any;
 // Importar apenas no servidor
 if (typeof window === 'undefined') {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     sharp = require('sharp');
   } catch (error) {
     console.warn('Sharp não disponível:', error);
   }
 
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     ffmpeg = require('fluent-ffmpeg');
   } catch (error) {
     console.warn('FFmpeg não disponível:', error);
@@ -44,8 +46,7 @@ export interface ProcessedMedia {
  */
 export async function processImage(
   filePath: string,
-  placement: keyof typeof AD_DIMENSIONS,
-  adId: string
+  placement: keyof typeof AD_DIMENSIONS
 ): Promise<MediaVersions> {
   if (!sharp) {
     console.warn('Sharp não disponível, usando arquivo original');
@@ -138,8 +139,7 @@ export async function processImage(
  */
 export async function processVideo(
   filePath: string,
-  placement: keyof typeof AD_DIMENSIONS,
-  adId: string
+  placement: keyof typeof AD_DIMENSIONS
 ): Promise<MediaVersions> {
   if (!ffmpeg) {
     console.warn('FFmpeg não disponível, usando arquivo original');
@@ -180,11 +180,11 @@ export async function processVideo(
             '-movflags +faststart',
             `-vf scale=${dims.width}:${dims.height}:force_original_aspect_ratio=increase,crop=${dims.width}:${dims.height}`,
           ])
-          .on('start', (commandLine) => {
+          .on('start', (commandLine: unknown) => {
             console.log(`🎬 Iniciando processamento ${device}:`, commandLine);
           })
-          .on('progress', (progress) => {
-            if (progress.percent) {
+          .on('progress', (progress: any) => {
+            if (progress?.percent) {
               console.log(
                 `📊 Progresso ${device}: ${Math.round(progress.percent)}%`
               );
@@ -216,7 +216,7 @@ export async function processVideo(
                 });
             }
           })
-          .on('error', (error) => {
+          .on('error', (error: unknown) => {
             console.error(`❌ Erro processando ${device}:`, error);
             reject(error);
           })
@@ -270,7 +270,7 @@ export async function generateVideoThumbnail(
           reject(error);
         }
       })
-      .on('error', (error) => {
+      .on('error', (error: unknown) => {
         console.error('❌ Erro ao gerar thumbnail:', error);
         reject(error);
       });
