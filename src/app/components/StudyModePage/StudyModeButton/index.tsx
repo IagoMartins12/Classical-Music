@@ -1,10 +1,10 @@
 import React from 'react';
 import { FiBookOpen, FiClock, FiMusic, FiTarget } from 'react-icons/fi';
 import { useStudyModeStore } from '@/app/stores/useStudyModeStore';
-import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import { useAuth } from '@/app/hooks/useAuth';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
 
 interface StudyModeButtonProps {
   workId: string;

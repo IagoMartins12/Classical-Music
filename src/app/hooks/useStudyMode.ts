@@ -1,7 +1,7 @@
 // app/hooks/useStudyMode.ts
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from 'react-hot-toast';
-import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
+import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
 
 export interface StudySession {
   id?: string;

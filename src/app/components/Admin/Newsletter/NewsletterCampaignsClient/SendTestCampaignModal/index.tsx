@@ -165,7 +165,7 @@ export default function SendTestCampaignModal({
   const renderFormStep = () => {
     if (loading) {
       return (
-        <div className="text-center py-12">
+        <div className="text-center flex items-center justify-center flex-col py-12">
           <LoadingSpinner size="lg" />
           <p className="text-theme-secondary mt-4">
             Carregando listas de teste...

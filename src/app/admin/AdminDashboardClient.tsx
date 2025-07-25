@@ -121,7 +121,11 @@ export default function AdminDashboardClient() {
   return (
     <PageContainer showBackground={true}>
       <div className="space-y-8">
-        <AnimatedContainer delay={0.1} staggerSpeed="normal">
+        <AnimatedContainer
+          delay={0.1}
+          staggerSpeed="normal"
+          className="flex flex-col gap-4"
+        >
           {/* Header Section */}
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8 lg:py-12">
@@ -259,18 +263,6 @@ export default function AdminDashboardClient() {
                 Estatísticas Rápidas
               </h3>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center space-x-3">
-                    <FiUsers className="w-5 h-5 text-accent-blue" />
-                    <span className="text-theme-primary text-sm lg:text-base">
-                      Novos Usuários
-                    </span>
-                  </div>
-                  <span className="font-bold text-accent-blue">
-                    {stats.trends.last7Days.newUsers || 0}
-                  </span>
-                </div>
-
                 <div className="flex items-center justify-between p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-center space-x-3">
                     <FiShield className="w-5 h-5 text-accent-amber" />

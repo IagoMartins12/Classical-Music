@@ -1,7 +1,7 @@
 // stores/useStudyModeStore.ts
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
+import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
 
 export interface StudySession {
   id?: string;

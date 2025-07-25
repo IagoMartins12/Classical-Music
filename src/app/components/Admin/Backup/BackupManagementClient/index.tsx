@@ -101,7 +101,11 @@ export default function BackupManagementClient() {
   return (
     <PageContainer showBackground={true}>
       <div className="space-y-8">
-        <AnimatedContainer delay={0.1} staggerSpeed="normal">
+        <AnimatedContainer
+          delay={0.1}
+          staggerSpeed="normal"
+          className="flex flex-col gap-4"
+        >
           {/* Header Section */}
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8 lg:py-12">

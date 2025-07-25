@@ -4,7 +4,6 @@
 import { MouseEvent, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
-import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import {
   FiHeart,
   FiStar,
@@ -16,6 +15,7 @@ import {
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useLoginModal } from '@/app/stores/authStore';
+import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
 
 interface FavoriteScoreButtonProps {
   workId: string;

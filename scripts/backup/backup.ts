@@ -13,16 +13,20 @@ const MODELS_ORDER = [
   'instrument',
   'workGenre',
 
-  // Usuários
+  // Usuários e autenticação
   'user',
   'account',
   'session',
+  'userToken', // 🆕 Tokens de confirmação/reset
 
   // Compositores (dependem de epoch e role)
   'composer',
 
   // Obras (dependem de composer, epoch, instrument)
   'work',
+
+  // Logs de mídia (dependem de work)
+  'mediaSearchLog', // 🆕 Logs de busca de mídia
 
   // Partituras e processamento (dependem de work)
   'workScore',
@@ -49,6 +53,22 @@ const MODELS_ORDER = [
   // Histórico e moderação
   'uploadHistory',
   'uploadModeration',
+  'generatedReport', // 🆕 Relatórios gerados
+
+  // Sistema de publicidade
+  'advertisement', // 🆕 Publicidades (depende de user e instrument)
+  'adStats', // 🆕 Estatísticas de ads
+
+  // Sistema de newsletter
+  'newsletterSubscriber', // 🆕 Inscritos na newsletter
+  'newsletterSettings', // 🆕 Configurações globais
+  'testEmailList', // 🆕 Listas de teste de email
+  'templateFragment', // 🆕 Fragmentos reutilizáveis
+  'newsletterTemplate', // 🆕 Templates de email
+  'newsletterCampaign', // 🆕 Campanhas de email
+  'newsletterCampaignSend', // 🆕 Envios por campanha
+  'newsletterEmailEvent', // 🆕 Eventos de email
+  'templateUsageLog', // 🆕 Log de uso de templates
 ];
 
 interface BackupData {

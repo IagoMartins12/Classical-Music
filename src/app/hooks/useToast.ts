@@ -19,7 +19,11 @@ interface ToastOptions {
 }
 
 export const useToast = () => {
-  const success = (title: string, message?: string, options?: ToastOptions) => {
+  const success = (
+    title: string,
+    message?: string | null,
+    options?: ToastOptions
+  ) => {
     const toastMessage = message ? `${title}\n${message}` : title;
     return toast.success(toastMessage, {
       duration: options?.duration || 4000,
@@ -45,7 +49,11 @@ export const useToast = () => {
     });
   };
 
-  const error = (title: string, message?: string, options?: ToastOptions) => {
+  const error = (
+    title: string,
+    message?: string | null,
+    options?: ToastOptions
+  ) => {
     const toastMessage = message ? `${title}\n${message}` : title;
     return toast.error(toastMessage, {
       duration: options?.duration || 6000,
@@ -71,7 +79,11 @@ export const useToast = () => {
     });
   };
 
-  const warning = (title: string, message?: string, options?: ToastOptions) => {
+  const warning = (
+    title: string,
+    message?: string | null,
+    options?: ToastOptions
+  ) => {
     const toastMessage = message ? `${title}\n${message}` : title;
     return toast(toastMessage, {
       duration: options?.duration || 5000,
@@ -94,7 +106,11 @@ export const useToast = () => {
     });
   };
 
-  const info = (title: string, message?: string, options?: ToastOptions) => {
+  const info = (
+    title: string,
+    message?: string | null,
+    options?: ToastOptions
+  ) => {
     const toastMessage = message ? `${title}\n${message}` : title;
     return toast(toastMessage, {
       duration: options?.duration || 4000,
@@ -119,8 +135,8 @@ export const useToast = () => {
 
   const loading = (
     title: string,
-    message?: string,
-    options?: Omit<ToastOptions, 'duration'>
+    message?: string | null,
+    options?: ToastOptions
   ) => {
     const toastMessage = message ? `${title}\n${message}` : title;
     return toast.loading(toastMessage, {
@@ -146,7 +162,11 @@ export const useToast = () => {
     });
   };
 
-  const upload = (title: string, message?: string, options?: ToastOptions) => {
+  const upload = (
+    title: string,
+    message?: string | null,
+    options?: ToastOptions
+  ) => {
     const toastMessage = message ? `${title}\n${message}` : title;
     return toast(toastMessage, {
       duration: options?.duration || 4000,

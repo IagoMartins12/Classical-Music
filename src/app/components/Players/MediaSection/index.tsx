@@ -8,6 +8,7 @@ import {
 } from 'react-icons/fi';
 import SpotifyAudioPlayer from '../SpotifyAudioPlayer';
 import YouTubeVideoPlayer from '../YouTubeVideoPlayer';
+import UniversalAudioPlayer from '../UniversalAudioPlayer';
 
 interface MediaSectionProps {
   work: {
@@ -133,11 +134,11 @@ const MediaSection: React.FC<MediaSectionProps> = ({ work }) => {
           <FiMusic className="w-5 h-5" />
           <span>Áudio e Vídeo</span>
         </h3>
-        {/* <UniversalAudioPlayer
+        <UniversalAudioPlayer
           work={work}
           youtubeVideo={youtubeData}
           spotifyTrack={spotifyData}
-        /> */}
+        />
 
         {canSearch && (
           <div className="flex space-x-2">

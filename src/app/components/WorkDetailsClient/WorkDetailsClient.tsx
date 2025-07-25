@@ -46,7 +46,6 @@ import AdContainer from '../Ads/AdContainer';
 import EditButton from '../Common/EditButton';
 import { useMediaSearch } from '@/app/hooks/useMediaSearch';
 import MediaSection from '../Players/MediaSection';
-import UniversalAudioPlayer from '../Players/UniversalAudioPlayer';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;

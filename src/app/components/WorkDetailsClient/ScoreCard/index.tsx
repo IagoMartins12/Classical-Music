@@ -1,9 +1,9 @@
 // ScoreCard.tsx - VERSÃO OTIMIZADA sem múltiplas requisições
-import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
 import { FiClock, FiDownload, FiFileText, FiUser } from 'react-icons/fi';
 import { useState } from 'react';
 import Image from 'next/image';
 import FavoriteScoreButton from '../../FavoriteScoreButton';
+import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
 // 🆕 Importar apenas o componente de badge, não o hook
 
 interface ScoreCardProps {
