@@ -271,8 +271,8 @@ export async function DELETE(
       const { unlink } = await import('fs/promises');
       await unlink(filePath);
       console.log('🗑️ [MEDIA-UPLOAD] Arquivo removido:', fileName);
-    } catch (error) {
-      console.warn('⚠️ [MEDIA-UPLOAD] Arquivo não encontrado:', error);
+    } catch {
+      console.warn('⚠️ [MEDIA-UPLOAD] Arquivo não encontrado:');
     }
 
     return NextResponse.json({

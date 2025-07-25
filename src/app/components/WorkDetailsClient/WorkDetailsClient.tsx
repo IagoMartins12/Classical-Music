@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { WorkDetails } from '@/app/requests/work-details';
 import {
   FiCalendar,
   FiMusic,
@@ -45,6 +44,7 @@ import VerificationButton from '../Verification/VerificationButton';
 import AdContainer from '../Ads/AdContainer';
 import EditButton from '../Common/EditButton';
 import MediaSection from '../Players/MediaSection';
+import { WorkDetails } from '@/app/requests/work-page-details';
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
@@ -492,23 +492,6 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {/* 🆕 Time Signature */}
-                    {work.timeSignature && (
-                      <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiActivity className="w-4 h-4 text-theme-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
-                            Fórmula de Compasso
-                          </p>
-                          <p className="text-theme-primary font-semibold">
-                            {work.timeSignature}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
                     {/* 🆕 Tempo Marking */}
                     {work.tempoMarking && (
                       <div className="flex items-start space-x-3 group">
@@ -634,29 +617,6 @@ export default function WorkDetailsClient({
                             </span>
                           </div>
                         )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* 🆕 IMSLP Tags Section */}
-                  {work.imslpTags && work.imslpTags.length > 0 && (
-                    <div className="border-t border-theme-secondary pt-6">
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                        <FiZap className="w-5 h-5 text-accent-green" />
-                        <span>Tags IMSLP</span>
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {work.imslpTags.map((tag, index) => (
-                          <AnimatedItem
-                            key={index}
-                            hover="scale"
-                            springType="bouncy"
-                          >
-                            <span className="px-3 py-1 bg-gradient-to-r from-accent-green/10 to-accent-green/20 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium hover:scale-105 hover:shadow-theme-glow transition-all duration-300">
-                              {tag}
-                            </span>
-                          </AnimatedItem>
-                        ))}
                       </div>
                     </div>
                   )}

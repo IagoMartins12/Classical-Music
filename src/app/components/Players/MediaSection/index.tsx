@@ -1,4 +1,4 @@
-// app/components/Players/MediaSection.tsx - REDESIGN PREMIUM COMPLETO
+// app/components/Players/MediaSection.tsx - REDESIGN COMPLETO COM MELHORIAS
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -12,6 +12,7 @@ import {
   FiX,
   FiCheck,
   FiLoader,
+  FiClock,
 } from 'react-icons/fi';
 import { SiSpotify, SiYoutube } from 'react-icons/si';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
@@ -26,6 +27,13 @@ interface MediaData {
   spotify: {
     trackId: string;
     trackUrl: string;
+    displayTitle?: string; // 🆕 "Composer - Interpreter"
+    duration?: number; // 🆕 Duração em ms
+    artists?: string[]; // 🆕 Lista de artistas
+    previewUrl?: string | null;
+    albumArt?: string | null;
+    albumName?: string;
+    popularity?: number;
   } | null;
   youtube: {
     videoId: string;
@@ -37,6 +45,7 @@ interface MediaData {
     file: string;
     title?: string;
   } | null;
+  alternativeAudio: any[]; // 🆕 Fontes alternativas
 }
 
 interface MediaSectionProps {
@@ -46,14 +55,20 @@ interface MediaSectionProps {
     composer: {
       fullName: string;
     };
-    // Dados de mídia simplificados
+    // 🆕 Dados de mídia expandidos
     spotifyTrackId?: string;
     spotifyTrackUrl?: string;
+    spotifyDisplayTitle?: string; // 🆕
+    spotifyDuration?: number; // 🆕
+    spotifyArtists?: string; // 🆕 JSON string
+
     youtubeVideoId?: string;
     youtubeVideoUrl?: string;
     youtubeTitle?: string;
+
     customAudioUrl?: string;
     customAudioFile?: string;
+
     mediaSource?: string; // "auto", "manual", "none"
     lastMediaSearch?: Date;
     mediaSearchError?: string;
@@ -71,6 +86,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     spotify: null,
     youtube: null,
     customAudio: null,
+    alternativeAudio: [], // 🆕
   });
   const [showEditMode, setShowEditMode] = useState(false);
   const [editData, setEditData] = useState({
@@ -82,6 +98,35 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
   const toast = useToast();
 
+  // Função para parsear artistas do Spotify
+  const parseSpotifyArtists = (artistsData: any): string[] => {
+    if (!artistsData) return [];
+
+    try {
+      // Se já é um array, extrair nomes
+      if (Array.isArray(artistsData)) {
+        return artistsData.map((artist) =>
+          typeof artist === 'string' ? artist : artist.name || artist
+        );
+      }
+
+      // Se é string JSON, parsear
+      if (typeof artistsData === 'string') {
+        const parsed = JSON.parse(artistsData);
+        if (Array.isArray(parsed)) {
+          return parsed.map((artist) =>
+            typeof artist === 'string' ? artist : artist.name || artist
+          );
+        }
+      }
+
+      return [];
+    } catch (error) {
+      console.error('Erro ao parsear artistas do Spotify:', error);
+      return [];
+    }
+  };
+
   // Inicializar dados da mídia
   useEffect(() => {
     const initialData: MediaData = {
@@ -89,6 +134,13 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         ? {
             trackId: work.spotifyTrackId,
             trackUrl: work.spotifyTrackUrl!,
+            displayTitle: work.spotifyDisplayTitle,
+            duration: work.spotifyDuration,
+            artists: parseSpotifyArtists(work.spotifyArtists), // 🔧 CORRIGIDO
+            previewUrl: null,
+            albumArt: null,
+            albumName: '',
+            popularity: 0,
           }
         : null,
 
@@ -108,6 +160,8 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               title: `${work.title} - Áudio Personalizado`,
             }
           : null,
+
+      alternativeAudio: [], // 🆕 Será carregado dinamicamente
     };
 
     setMediaData(initialData);
@@ -116,17 +170,20 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
   // Verificar se tem alguma mídia
   const hasAnyMedia =
-    mediaData.spotify || mediaData.youtube || mediaData.customAudio;
+    mediaData.spotify ||
+    mediaData.youtube ||
+    mediaData.customAudio ||
+    mediaData.alternativeAudio.length > 0; // 🆕
 
-  // Verificar se alguma mídia foi adicionada manualmente
+  // Verificar fonte da mídia
   const isAutomatic = work.mediaSource === 'auto';
   const isManual = work.mediaSource === 'manual';
 
-  // Decidir que ação mostrar
+  // 🆕 Lógica dos botões atualizada
   const showLoadMediaButton = !hasAnyMedia && !isSearching;
   const showRefreshButton = hasAnyMedia && isAutomatic && !isSearching;
 
-  // Buscar mídia automaticamente
+  // 🆕 Buscar mídia automaticamente - TODAS AS 3 FONTES
   const searchMedia = async (forceRefresh = false) => {
     setIsSearching(true);
     setSearchError(null);
@@ -150,19 +207,25 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       }
 
       if (data.success) {
-        // Atualizar dados locais
+        // 🆕 Atualizar dados locais com TODAS as fontes
         setMediaData((prev) => ({
           ...prev,
           spotify: data.spotify || prev.spotify,
           youtube: data.youtube || prev.youtube,
+          alternativeAudio: data.alternativeAudio || [], // 🆕 Fontes alternativas
         }));
 
-        if (data.spotify || data.youtube) {
-          toast.success(
-            `Mídia encontrada! ${data.spotify ? 'Spotify' : ''} ${
-              data.youtube ? 'YouTube' : ''
-            }`
+        const foundSources = [];
+        if (data.spotify) foundSources.push('Spotify');
+        if (data.youtube) foundSources.push('YouTube');
+        if (data.alternativeAudio?.length > 0) {
+          foundSources.push(
+            `${data.alternativeAudio.length} fonte(s) alternativa(s)`
           );
+        }
+
+        if (foundSources.length > 0) {
+          toast.success(`Mídia encontrada! ${foundSources.join(', ')}`);
         } else {
           setSearchError('Nenhuma mídia encontrada para esta obra');
           toast.warning('Nenhuma mídia encontrada');
@@ -301,6 +364,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     }
   };
 
+  // 🆕 Formatador de duração melhorado
+  const formatDuration = (durationMs?: number) => {
+    if (!durationMs) return null;
+    const minutes = Math.floor(durationMs / 60000);
+    const seconds = Math.floor((durationMs % 60000) / 1000);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
   return (
     <AnimatedCard hover="lift" className="classical-card overflow-hidden">
       {/* Header da Seção */}
@@ -316,6 +387,13 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               </h2>
               <p className="text-theme-secondary text-sm">
                 Áudio, vídeos e conteúdo musical
+                {/* 🆕 Mostrar fonte da mídia */}
+                {hasAnyMedia && (
+                  <span className="ml-2 text-xs">
+                    •{' '}
+                    {isAutomatic ? 'Automático' : isManual ? 'Manual' : 'Misto'}
+                  </span>
+                )}
               </p>
             </div>
           </div>
@@ -353,7 +431,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               </Button>
             )}
 
-            {/* Botão de Refresh (só para mídia automática) */}
+            {/* 🆕 Botão de Refresh (só para mídia automática) */}
             {showRefreshButton && (
               <Button
                 variant="secondary"
@@ -363,6 +441,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 }
                 onClick={() => searchMedia(true)}
                 disabled={isSearching}
+                title="Atualizar mídia automática"
               >
                 Atualizar
               </Button>
@@ -485,11 +564,18 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <h3 className="text-lg font-semibold text-theme-primary classical-title">
                     Reprodução de Áudio
                   </h3>
+                  {/* 🆕 Contador de fontes alternativas */}
+                  {mediaData.alternativeAudio.length > 0 && (
+                    <span className="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">
+                      +{mediaData.alternativeAudio.length} fontes
+                    </span>
+                  )}
                 </div>
 
                 <UniversalAudioPlayer
                   work={work}
                   customAudio={mediaData.customAudio}
+                  alternativeAudioSources={mediaData.alternativeAudio} // 🆕 Passar fontes alternativas
                 />
               </div>
             </AnimatedItem>
@@ -497,11 +583,23 @@ const MediaSection: React.FC<MediaSectionProps> = ({
             {/* Link do Spotify */}
             <AnimatedItem direction="up" delay={0.2}>
               <div className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <SiSpotify className="w-5 h-5 text-green-400" />
-                  <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                    Spotify
-                  </h3>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <SiSpotify className="w-5 h-5 text-green-400" />
+                    <h3 className="text-lg font-semibold text-theme-primary classical-title">
+                      Spotify
+                    </h3>
+                  </div>
+
+                  {/* 🆕 Mostrar duração se disponível */}
+                  {mediaData.spotify?.duration && (
+                    <div className="flex items-center space-x-1 text-green-400">
+                      <FiClock className="w-3 h-3" />
+                      <span className="text-sm font-medium">
+                        {formatDuration(mediaData.spotify.duration)}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {mediaData.spotify ? (
@@ -509,12 +607,15 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     spotify={{
                       trackId: mediaData.spotify.trackId,
                       trackUrl: mediaData.spotify.trackUrl,
-                      previewUrl: null,
-                      albumArt: null,
-                      artists: [work.composer.fullName],
-                      albumName: work.title,
-                      duration: 0,
-                      popularity: 0,
+                      displayTitle: mediaData.spotify.displayTitle, // 🆕
+                      duration: mediaData.spotify.duration || 0, // 🆕
+                      previewUrl: mediaData.spotify.previewUrl || null,
+                      albumArt: mediaData.spotify.albumArt || null,
+                      artists: mediaData.spotify.artists || [
+                        work.composer.fullName,
+                      ],
+                      albumName: mediaData.spotify.albumName || work.title,
+                      popularity: mediaData.spotify.popularity || 0,
                     }}
                   />
                 ) : (
@@ -590,34 +691,67 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           </AnimatedItem>
         )}
 
-        {/* Status da mídia */}
-        {hasAnyMedia && (
-          <AnimatedItem direction="up" delay={0.6}>
-            <div className="mt-6 bg-green-900/20 border border-green-700/30 rounded-xl p-3 text-center">
-              <p className="text-green-300 text-sm">
-                <strong>Mídia carregada:</strong>{' '}
-                {isManual
-                  ? 'Adicionada manualmente'
-                  : 'Encontrada automaticamente'}
-                {work.lastMediaSearch && (
-                  <span className="block text-green-400 text-xs mt-1">
-                    Última busca:{' '}
-                    {new Date(work.lastMediaSearch).toLocaleString('pt-BR')}
-                  </span>
-                )}
-              </p>
-            </div>
-          </AnimatedItem>
-        )}
-
         {/* Status de Carregamento Global */}
         {isSearching && (
           <AnimatedItem direction="up" delay={0.1}>
             <div className="mt-6 bg-blue-900/20 border border-blue-700/30 rounded-xl p-4 flex items-center space-x-3">
               <FiRefreshCw className="w-5 h-5 text-blue-400 animate-spin" />
-              <p className="text-blue-300 text-sm">
-                Buscando mídia para &quot;{work.title}&quot;...
-              </p>
+              <div className="flex-1">
+                <p className="text-blue-300 text-sm font-medium">
+                  Buscando mídia para &quot;{work.title}&quot;...
+                </p>
+                <p className="text-blue-400 text-xs mt-1">
+                  🎵 Spotify • 📺 YouTube • 🎼 Fontes Alternativas
+                </p>
+              </div>
+            </div>
+          </AnimatedItem>
+        )}
+
+        {/* 🆕 Resumo das Fontes Encontradas */}
+        {hasAnyMedia && !isSearching && (
+          <AnimatedItem direction="up" delay={0.6}>
+            <div className="mt-6 bg-gradient-to-r from-green-900/10 to-blue-900/10 border border-green-700/20 rounded-xl p-4">
+              <div className="flex items-center space-x-4 text-sm">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  <span className="text-theme-secondary">
+                    Mídia disponível:
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                  {mediaData.spotify && (
+                    <div className="flex items-center space-x-1 text-green-400">
+                      <SiSpotify className="w-3 h-3" />
+                      <span>Spotify</span>
+                    </div>
+                  )}
+
+                  {mediaData.youtube && (
+                    <div className="flex items-center space-x-1 text-red-400">
+                      <SiYoutube className="w-3 h-3" />
+                      <span>YouTube</span>
+                    </div>
+                  )}
+
+                  {mediaData.customAudio && (
+                    <div className="flex items-center space-x-1 text-blue-400">
+                      <FiMusic className="w-3 h-3" />
+                      <span>Áudio Customizado</span>
+                    </div>
+                  )}
+
+                  {mediaData.alternativeAudio.length > 0 && (
+                    <div className="flex items-center space-x-1 text-purple-400">
+                      <FiMusic className="w-3 h-3" />
+                      <span>
+                        {mediaData.alternativeAudio.length} alternativa(s)
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </AnimatedItem>
         )}

@@ -25,8 +25,6 @@ const MODELS_ORDER = [
   // Obras (dependem de composer, epoch, instrument)
   'work',
 
-  // Logs de mídia (dependem de work)
-  'mediaSearchLog', // 🆕 Logs de busca de mídia
 
   // Partituras e processamento (dependem de work)
   'workScore',

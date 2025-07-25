@@ -1,4 +1,4 @@
-// app/components/Players/UniversalAudioPlayer.tsx - ATUALIZADO
+// app/components/Players/UniversalAudioPlayer.tsx - CORRIGIDO
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -35,11 +35,15 @@ interface UniversalAudioPlayerProps {
     file: string;
     title?: string;
   } | null;
+
+  // 🆕 Prop para fontes alternativas vindas da busca de mídia
+  alternativeAudioSources?: any[];
 }
 
 const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   work,
   customAudio,
+  alternativeAudioSources = [], // 🆕 Receber fontes alternativas
 }) => {
   // Estados do player
   const [isPlaying, setIsPlaying] = useState(false);
@@ -53,13 +57,14 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   const [audioSources, setAudioSources] = useState<AudioSource[]>([]);
   const [currentSource, setCurrentSource] = useState<AudioSource | null>(null);
   const [isSearchingAlternatives, setIsSearchingAlternatives] = useState(false);
+  const [sourcesInitialized, setSourcesInitialized] = useState(false); // 🆕 Flag para controlar inicialização
 
   // Refs
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const waveformRef = useRef<HTMLDivElement | null>(null);
 
-  // Inicializar fontes de áudio disponíveis
-  useEffect(() => {
+  // 🆕 Função para inicializar fontes de áudio
+  const initializeAudioSources = useCallback(() => {
     const sources: AudioSource[] = [];
 
     // 1. Áudio Customizado (prioridade máxima)
@@ -73,44 +78,49 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
       });
     }
 
+    // 2. 🆕 Fontes alternativas vindas da busca de mídia
+    if (alternativeAudioSources && alternativeAudioSources.length > 0) {
+      const alternativeSources = alternativeAudioSources.map(
+        (source, index) => ({
+          type: 'alternative' as const,
+          url: source.audioUrl,
+          duration: source.duration,
+          quality: source.quality || 'varies',
+          label: source.source || `Fonte Alternativa ${index + 1}`,
+        })
+      );
+      sources.push(...alternativeSources);
+    }
+
+    console.log('🎵 [AUDIO-PLAYER] Fontes inicializadas:', sources.length);
+
     setAudioSources(sources);
 
-    // Definir fonte padrão (priorizar áudio customizado)
+    // 🆕 FIX: Definir fonte padrão quando há fontes disponíveis
     if (sources.length > 0 && !currentSource) {
+      console.log(
+        '🎵 [AUDIO-PLAYER] Definindo fonte padrão:',
+        sources[0].label
+      );
       setCurrentSource(sources[0]);
     }
-  }, [customAudio, currentSource]);
 
-  // Buscar fontes alternativas de áudio
+    setSourcesInitialized(true); // 🆕 Marcar como inicializado
+  }, [customAudio, alternativeAudioSources, currentSource]);
+
+  // 🆕 Inicializar fontes quando componente monta ou props mudam
+  useEffect(() => {
+    if (!sourcesInitialized) {
+      initializeAudioSources();
+    }
+  }, [initializeAudioSources, sourcesInitialized]);
+
+  // Buscar fontes alternativas adicionais (quando chamado manualmente)
   const searchAlternativeAudioSources = useCallback(async () => {
     if (isSearchingAlternatives) return;
 
     setIsSearchingAlternatives(true);
 
-    try {
-      // 2. Buscar em fontes gratuitas (Internet Archive, etc.)
-      const alternativeSources = await searchFreeAudioSources();
-      if (alternativeSources.length > 0) {
-        setAudioSources((prev) => [
-          ...prev,
-          ...alternativeSources.map((source) => ({
-            type: 'alternative' as const,
-            url: source.audioUrl,
-            duration: source.duration,
-            quality: 'varies',
-            label: `${source.source} (Grátis)`,
-          })),
-        ]);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar fontes alternativas:', error);
-    } finally {
-      setIsSearchingAlternatives(false);
-    }
-  }, [isSearchingAlternatives]);
-
-  // Buscar fontes gratuitas
-  const searchFreeAudioSources = async () => {
     try {
       const response = await fetch('/api/alternative-audio-sources', {
         method: 'POST',
@@ -121,49 +131,102 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
         }),
       });
 
-      if (!response.ok) return [];
+      if (!response.ok) {
+        console.error('Erro ao buscar fontes alternativas:', response.status);
+        return;
+      }
 
       const data = await response.json();
-      return data.sources || [];
+      const newSources = data.sources || [];
+
+      if (newSources.length > 0) {
+        const alternativeSources = newSources.map(
+          (source: any, index: number) => ({
+            type: 'alternative' as const,
+            url: source.audioUrl,
+            duration: source.duration,
+            quality: source.quality || 'varies',
+            label: source.source || `Fonte Alternativa ${index + 1}`,
+          })
+        );
+
+        // 🆕 FIX: Adicionar novas fontes sem duplicar
+        setAudioSources((prev) => {
+          const existingUrls = new Set(prev.map((s) => s.url));
+          const uniqueNewSources = alternativeSources.filter(
+            (s: any) => !existingUrls.has(s.url)
+          );
+
+          const updatedSources = [...prev, ...uniqueNewSources];
+
+          // Se não havia fonte selecionada, selecionar a primeira nova
+          if (!currentSource && uniqueNewSources.length > 0) {
+            setCurrentSource(uniqueNewSources[0]);
+          }
+
+          return updatedSources;
+        });
+
+        console.log(
+          `✅ [AUDIO-PLAYER] ${newSources.length} novas fontes adicionadas`
+        );
+      }
     } catch (error) {
       console.error('Erro ao buscar fontes alternativas:', error);
-      return [];
+    } finally {
+      setIsSearchingAlternatives(false);
     }
-  };
+  }, [
+    isSearchingAlternatives,
+    work.title,
+    work.composer.fullName,
+    currentSource,
+  ]);
 
   // Configurar player de áudio
   useEffect(() => {
-    if (
-      currentSource?.type === 'custom-audio' ||
-      currentSource?.type === 'youtube-audio' ||
-      currentSource?.type === 'alternative'
-    ) {
-      const audio = new Audio(currentSource.url);
-      audio.volume = isMuted ? 0 : volume;
-      audio.crossOrigin = 'anonymous';
-      audioRef.current = audio;
+    if (!currentSource) return;
 
-      const handleTimeUpdate = () => setCurrentTime(audio.currentTime * 1000);
-      const handleLoadedMetadata = () => setDuration(audio.duration * 1000);
-      const handleEnded = () => setIsPlaying(false);
-      const handleError = () => {
-        console.error('Erro ao carregar áudio:', currentSource.url);
-        tryNextAudioSource();
-      };
+    console.log(
+      '🎵 [AUDIO-PLAYER] Configurando player para:',
+      currentSource.label
+    );
 
-      audio.addEventListener('timeupdate', handleTimeUpdate);
-      audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.addEventListener('ended', handleEnded);
-      audio.addEventListener('error', handleError);
+    const audio = new Audio(currentSource.url);
+    audio.volume = isMuted ? 0 : volume;
+    audio.crossOrigin = 'anonymous';
+    audioRef.current = audio;
 
-      return () => {
-        audio.removeEventListener('timeupdate', handleTimeUpdate);
-        audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-        audio.removeEventListener('ended', handleEnded);
-        audio.removeEventListener('error', handleError);
-        audio.pause();
-      };
-    }
+    const handleTimeUpdate = () => setCurrentTime(audio.currentTime * 1000);
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration * 1000);
+      console.log(
+        '🎵 [AUDIO-PLAYER] Áudio carregado, duração:',
+        audio.duration
+      );
+    };
+    const handleEnded = () => setIsPlaying(false);
+    const handleError = (e: any) => {
+      console.error(
+        '❌ [AUDIO-PLAYER] Erro ao carregar áudio:',
+        currentSource.url,
+        e
+      );
+      tryNextAudioSource();
+    };
+
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
+
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
+      audio.pause();
+    };
   }, [currentSource, volume, isMuted]);
 
   // Tentar próxima fonte de áudio em caso de erro
@@ -174,32 +237,59 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     const nextSource = audioSources[currentIndex + 1];
 
     if (nextSource) {
+      console.log(
+        '🔄 [AUDIO-PLAYER] Tentando próxima fonte:',
+        nextSource.label
+      );
       setCurrentSource(nextSource);
     } else {
-      // Buscar fontes alternativas se nenhuma funcionou
+      console.log(
+        '🔍 [AUDIO-PLAYER] Todas as fontes falharam, buscando alternativas...'
+      );
       searchAlternativeAudioSources();
     }
   }, [audioSources, currentSource, searchAlternativeAudioSources]);
 
+  // 🆕 FIX: Função para selecionar fonte manualmente
+  const selectAudioSource = useCallback(
+    (source: AudioSource) => {
+      console.log(
+        '🎵 [AUDIO-PLAYER] Fonte selecionada manualmente:',
+        source.label
+      );
+
+      // Parar áudio atual se estiver tocando
+      if (audioRef.current && isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      }
+
+      setCurrentSource(source);
+    },
+    [isPlaying]
+  );
+
   // Controles do player
   const togglePlay = async () => {
-    if (!currentSource) return;
+    if (!currentSource || !audioRef.current) {
+      console.warn('🎵 [AUDIO-PLAYER] Nenhuma fonte ou player disponível');
+      return;
+    }
 
     try {
       setIsLoading(true);
 
-      // Usar HTML5 Audio para todos os outros tipos
-      if (!audioRef.current) return;
-
       if (isPlaying) {
         audioRef.current.pause();
+        console.log('⏸️ [AUDIO-PLAYER] Pausado');
       } else {
         await audioRef.current.play();
+        console.log('▶️ [AUDIO-PLAYER] Reproduzindo');
       }
 
       setIsPlaying(!isPlaying);
     } catch (error) {
-      console.error('Erro ao controlar reprodução:', error);
+      console.error('❌ [AUDIO-PLAYER] Erro ao controlar reprodução:', error);
       tryNextAudioSource();
     } finally {
       setIsLoading(false);
@@ -245,7 +335,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
 
   const getAudioCover = () => {
     if (customAudio) {
-      // Para áudio customizado, usar uma imagem padrão ou do compositor
       return (
         <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
           <FiMusic className="w-8 h-8 text-white" />
@@ -260,6 +349,20 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
       </div>
     );
   };
+
+  // 🆕 FIX: Renderizar baseado no estado de inicialização
+  if (!sourcesInitialized) {
+    return (
+      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-400 text-sm">
+            Inicializando player de áudio...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   if (audioSources.length === 0) {
     return (
@@ -351,7 +454,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
             {audioSources.map((source, index) => (
               <button
                 key={index}
-                onClick={() => setCurrentSource(source)}
+                onClick={() => selectAudioSource(source)} // 🆕 FIX: Usar função correta
                 className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-colors ${
                   currentSource === source
                     ? 'bg-blue-600 text-white'
@@ -392,7 +495,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
           {/* Play/Pause */}
           <button
             onClick={togglePlay}
-            disabled={isLoading}
+            disabled={isLoading || !currentSource}
             className="w-14 h-14 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center text-white transition-colors shadow-lg hover:shadow-xl transform hover:scale-105 disabled:opacity-50"
           >
             {isLoading ? (

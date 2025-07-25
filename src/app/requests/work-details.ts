@@ -23,10 +23,8 @@ export interface WorkDetails {
   isPartOfCollection: boolean;
   parentWorkId?: string;
   movementNumber?: number;
-  timeSignature?: string;
   tempoMarking?: string;
   movementsDetailed?: any;
-  imslpTags?: string[];
   difficultyLevel?: string;
   createdAt: Date;
   isVerified: boolean;
@@ -635,7 +633,6 @@ const getCachedWorkData = unstable_cache(
           isPartOfCollection: true,
           parentWorkId: true,
           movementNumber: true,
-          timeSignature: true,
           tempoMarking: true,
           movementsDetailed: true,
           imslpTags: true,
@@ -743,10 +740,8 @@ export const getWorkById = async (
       isPartOfCollection: work.isPartOfCollection,
       parentWorkId: work.parentWorkId || undefined,
       movementNumber: work.movementNumber || undefined,
-      timeSignature: work.timeSignature || undefined,
       tempoMarking: work.tempoMarking || undefined,
       movementsDetailed: work.movementsDetailed || undefined,
-      imslpTags: work.imslpTags || undefined,
       difficultyLevel: work.difficultyLevel || undefined,
       createdAt: work.createdAt,
       composer: work.composer,

@@ -684,24 +684,31 @@ model Work {
   imslpTags         String[]         @default([])
   difficultyLevel   DifficultyLevel?
 
-  // 🆕 MÍDIA SIMPLIFICADA
-  // Spotify (essencial)
-  spotifyTrackId  String? // ID da track
-  spotifyTrackUrl String? // URL da track
-  
+   // 🆕 MÍDIA SIMPLIFICADA E MELHORADA
+  // Spotify (essencial + novos campos)
+  spotifyTrackId      String? // ID da track
+  spotifyTrackUrl     String? // URL da track
+  spotifyDisplayTitle String? // 🆕 "Frédéric Chopin - Yuja Wang"
+  spotifyDuration     Int?    // 🆕 Duração em ms
+  spotifyArtists Json? // 🔧 MUDANÇA: String? → Json?
+  spotifyThumbnail    String? // 🆕 URL da capa do álbum
+
   // YouTube (essencial)
   youtubeVideoId  String? // ID do vídeo
   youtubeVideoUrl String? // URL do vídeo
   youtubeTitle    String? // Título do vídeo
   
   // Áudio customizado
-  customAudioUrl  String? // URL de áudio customizado (upload)
+  customAudioUrl  String? // URL de áudio customizado (upload OU fonte alternativa)
   customAudioFile String? // Arquivo de áudio local
+  customAudioSource String? // 🆕 "upload", "internet_archive", "wikimedia", etc.
+  customAudioMetadata Json? // 🆕 Metadados da fonte alternativa
   
   // Metadados de busca (simplificado)
   mediaSource     String? @default("none") // "auto", "manual", "none"
   lastMediaSearch DateTime?
   mediaSearchError String?
+  
 
   // 🆕 VIDEO AULA EXPANDIDA
   videoAulaUrl      String?   // URL externa
@@ -759,7 +766,6 @@ model Work {
   lastAnnotationAt        DateTime?
 
   cachedScores    WorkScore[]
-  mediaSearchLogs MediaSearchLog[]
   
   // 🆕 ÍNDICES ATUALIZADOS
   @@index([title])
@@ -790,6 +796,10 @@ model Work {
   @@index([youtubeVideoId])
   @@index([videoAulaType])
   @@index([videoAulaSource])
+
+  // 🆕 ÍNDICES ATUALIZADOS PARA MÍDIA
+  @@index([spotifyDisplayTitle]) // 🆕 Índice para título com intérprete
+  @@index([spotifyDuration]) // 🆕 Índice para duração
 }
 
 // 🆕 Enum para tipos de vídeo aula
@@ -809,40 +819,6 @@ enum VideoAulaSource {
   LOCAL     // Upload local
   EXTERNAL  // URL externa
 }
-
-// 🆕 MODELO PARA LOG DE BUSCAS DE MÍDIA
-model MediaSearchLog {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  workId String @db.ObjectId
-
-  // Dados da busca
-  searchType    String   // "spotify", "youtube", "both"
-  searchQuery   String   // Query utilizada
-  searchResults Json?    // Resultados brutos da API
-  
-  // Resultado
-  success       Boolean  @default(false)
-  foundSpotify  Boolean  @default(false)
-  foundYoutube  Boolean  @default(false)
-  qualityScore  Int?     // Score de qualidade do match
-  
-  // Metadados
-  strategy      String?  // Estratégia de busca utilizada
-  apiCalls      Int      @default(0) // Número de chamadas de API utilizadas
-  processingTime Int?    // Tempo de processamento em ms
-  errorMessage  String?  // Mensagem de erro se houver
-  
-  // Timestamps
-  createdAt DateTime @default(now())
-  
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
-  
-  @@index([workId, createdAt])
-  @@index([searchType, success])
-  @@index([createdAt])
-  @@map("media_search_logs")
-}
-
 
 model UserInstrument {
   id           String @id @default(auto()) @map("_id") @db.ObjectId

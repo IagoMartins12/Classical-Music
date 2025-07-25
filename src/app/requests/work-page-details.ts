@@ -1,4 +1,4 @@
-// app/requests/work-details.ts
+// app/requests/work-page-details.ts - ATUALIZADO COM NOVOS CAMPOS SPOTIFY
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 
@@ -25,6 +25,29 @@ export interface WorkDetails {
   createdAt: Date;
   isVerified: boolean;
   createdBy?: string | null;
+
+  // 🆕 Campos de mídia expandidos
+  spotifyTrackId?: string | null;
+  spotifyTrackUrl?: string | null;
+  spotifyDisplayTitle?: string | null; // 🆕 "Composer - Interpreter"
+  spotifyDuration?: number | null; // 🆕 Duração em ms
+  spotifyArtists?: string | null; // 🆕 JSON com array de artistas
+
+  youtubeVideoId?: string | null;
+  youtubeVideoUrl?: string | null;
+  youtubeTitle?: string | null;
+
+  customAudioUrl?: string | null;
+  customAudioFile?: string | null;
+
+  mediaSource?: string | null; // "auto", "manual", "none"
+  lastMediaSearch?: Date | null;
+  mediaSearchError?: string | null;
+
+  tempoMarking?: string | null;
+  movementsDetailed?: any;
+  difficultyLevel?: string | null;
+
   composer: {
     id: string;
     name: string;
@@ -36,6 +59,7 @@ export interface WorkDetails {
     id: string;
     name: string;
   } | null;
+
   epoch: {
     id: string;
     name: string;
@@ -71,7 +95,6 @@ export interface WorksListResponse {
   hasMore: boolean;
 }
 
-// Função auxiliar para buscar categorias e gêneros de trabalho
 // Cache dos dados da obra (sem anotações/favoritos) por 2 horas
 const getCachedWorkData = unstable_cache(
   async (workId: string) => {
@@ -107,6 +130,29 @@ const getCachedWorkData = unstable_cache(
           workGenresArr: true,
           isVerified: true,
           createdBy: true,
+
+          // 🆕 Campos de mídia expandidos
+          spotifyTrackId: true,
+          spotifyTrackUrl: true,
+          spotifyDisplayTitle: true, // 🆕
+          spotifyDuration: true, // 🆕
+          spotifyArtists: true, // 🆕
+
+          youtubeVideoId: true,
+          youtubeVideoUrl: true,
+          youtubeTitle: true,
+
+          customAudioUrl: true,
+          customAudioFile: true,
+
+          mediaSource: true, // "auto", "manual", "none"
+          lastMediaSearch: true,
+          mediaSearchError: true,
+
+          tempoMarking: true,
+          movementsDetailed: true,
+          difficultyLevel: true,
+
           composer: {
             select: {
               id: true,
@@ -120,7 +166,7 @@ const getCachedWorkData = unstable_cache(
 
       if (!work) return null;
 
-      // Buscar genre, instrument, epoch, categories e workGenres
+      // Buscar instrument e epoch
       const [instrument, epoch] = await Promise.all([
         work.instrumentId
           ? prisma.instrument.findUnique({
@@ -192,6 +238,27 @@ export const getWorkById = async (
       workGenresArr: work.workGenresArr,
       isVerified: work.isVerified,
       createdBy: work.createdBy,
+
+      // 🆕 Campos de mídia expandidos
+      spotifyTrackId: work.spotifyTrackId,
+      spotifyTrackUrl: work.spotifyTrackUrl,
+      spotifyDisplayTitle: work.spotifyDisplayTitle, // 🆕
+      spotifyDuration: work.spotifyDuration, // 🆕
+      spotifyArtists: work.spotifyArtists, // 🆕
+
+      youtubeVideoId: work.youtubeVideoId,
+      youtubeVideoUrl: work.youtubeVideoUrl,
+      youtubeTitle: work.youtubeTitle,
+
+      customAudioUrl: work.customAudioUrl,
+      customAudioFile: work.customAudioFile,
+
+      mediaSource: work.mediaSource, // "auto", "manual", "none"
+      lastMediaSearch: work.lastMediaSearch,
+      tempoMarking: work.tempoMarking,
+      movementsDetailed: work.movementsDetailed,
+      difficultyLevel: work.difficultyLevel,
+      mediaSearchError: work.mediaSearchError,
     };
   } catch (error) {
     console.error('Erro ao buscar obra:', error);
