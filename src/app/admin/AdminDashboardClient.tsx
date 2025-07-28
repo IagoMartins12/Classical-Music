@@ -29,7 +29,6 @@ import {
   MetricCard,
   TrendAreaChart,
 } from '../components/Admin/Charts/AdminCharts';
-import QuickActions from '../components/Admin/QuickActions';
 import RecentActivity from '../components/Admin/Activity/RecentActivity';
 import BackupDashboardCard from '../components/Admin/Backup/BackupDashboardCard';
 
@@ -405,9 +404,9 @@ export default function AdminDashboardClient() {
           {/* Actions and Activity Grid */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
             {/* Quick Actions */}
-            <AnimatedItem direction="up" springType="gentle">
+            {/* <AnimatedItem direction="up" springType="gentle">
               <QuickActions stats={stats} onRefresh={handleRefresh} />
-            </AnimatedItem>
+            </AnimatedItem> */}
 
             {/* Recent Activity */}
             <AnimatedItem direction="up" springType="gentle">

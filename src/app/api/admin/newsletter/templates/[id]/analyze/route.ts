@@ -8,10 +8,12 @@ import {
   DatabaseTemplate,
 } from '@/app/libs/newsletter/templateUtils';
 import { extractVariables } from '@/app/libs/newsletter/emailTemplates';
-
+interface Params {
+  id: string;
+}
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -23,7 +25,7 @@ export async function GET(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json(

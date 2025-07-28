@@ -6,6 +6,7 @@ import { unstable_cache } from 'next/cache';
 export interface WorkDetails {
   id: string;
   title: string;
+  subtitle?: string | null;
   opOrCatalog?: string;
   compositionYear?: string;
   firstPublishDate?: string;
@@ -56,7 +57,6 @@ export interface WorkDetails {
   lastMediaSearch?: Date | null;
   mediaSearchError?: string | null;
 
-  tempoMarking?: string | null;
   movementsDetailed?: any;
   difficultyLevel?: string | null;
 
@@ -84,6 +84,7 @@ export interface WorkDetails {
 export interface WorkListItem {
   id: string;
   title: string;
+  subtitle?: string | null;
   opOrCatalog?: string;
   compositionYear?: string;
   tone?: string;
@@ -119,6 +120,7 @@ const getCachedWorkData = unstable_cache(
           id: true,
           title: true,
           opOrCatalog: true,
+          subtitle: true,
           compositionYear: true,
           firstPublishDate: true,
           tone: true,
@@ -172,7 +174,6 @@ const getCachedWorkData = unstable_cache(
           lastMediaSearch: true,
           mediaSearchError: true,
 
-          tempoMarking: true,
           movementsDetailed: true,
           difficultyLevel: true,
 
@@ -237,6 +238,7 @@ export const getWorkById = async (
       id: work.id,
       title: work.title,
       opOrCatalog: work.opOrCatalog || undefined,
+      subtitle: work.subtitle,
       compositionYear: work.compositionYear || undefined,
       firstPublishDate: work.firstPublishDate || undefined,
       tone: work.tone || undefined,
@@ -289,7 +291,6 @@ export const getWorkById = async (
 
       mediaSource: work.mediaSource, // "auto", "manual", "none"
       lastMediaSearch: work.lastMediaSearch,
-      tempoMarking: work.tempoMarking,
       movementsDetailed: work.movementsDetailed,
       difficultyLevel: work.difficultyLevel,
       mediaSearchError: work.mediaSearchError,
@@ -332,6 +333,7 @@ export const getRelatedWorks = unstable_cache(
           id: true,
           title: true,
           opOrCatalog: true,
+          subtitle: true,
           compositionYear: true,
           tone: true,
           mediaDuration: true,

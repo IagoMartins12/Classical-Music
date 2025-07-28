@@ -152,8 +152,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!Array.isArray(emails) || !emails.every((e) => typeof e === 'string')) {
+      return NextResponse.json({
+        success: false,
+        message: 'Lista de emails inválidas!',
+      });
+    }
     // Normalizar emails (remover duplicatas e converter para lowercase)
-    const normalizedEmails = [
+    const normalizedEmails: string[] = [
       ...new Set(emails.map((email: string) => email.toLowerCase().trim())),
     ];
 

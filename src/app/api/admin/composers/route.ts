@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
-import { unstable_cache } from 'next/cache';
 
 interface ComposerFilters {
   search?: string;
@@ -16,95 +15,71 @@ interface ComposerFilters {
   limit?: number;
 }
 
-interface ComposerStats {
-  total: number;
-  verified: number;
-  byEpoch: Array<{
-    epoch: string;
-    count: number;
-  }>;
-  byQuality: Array<{
-    quality: string;
-    count: number;
-  }>;
-  recentlyAdded: number;
-  mostPopular: Array<{
-    id: string;
-    name: string;
-    worksCount: number;
-    favoritesCount: number;
-  }>;
-}
+const getCachedComposerStats = async () => {
+  const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-const getCachedComposerStats = unstable_cache(
-  async (): Promise<ComposerStats> => {
-    const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-
-    const [total, verified, byEpoch, byQuality, recentlyAdded, mostPopular] =
-      await Promise.all([
-        prisma.composer.count(),
-        prisma.composer.count({ where: { isVerified: true } }),
-        prisma.composer.groupBy({
-          by: ['epochId'],
-          _count: { id: true },
-          include: {
-            epoch: { select: { name: true } },
-          },
-        }),
-        prisma.composer.groupBy({
-          by: ['dataQuality'],
-          _count: { id: true },
-        }),
-        prisma.composer.count({
-          where: { createdAt: { gte: lastWeek } },
-        }),
-        prisma.composer.findMany({
-          select: {
-            id: true,
-            name: true,
-            _count: {
-              select: {
-                works: true,
-                favoriteByUsers: true,
-              },
+  const [total, verified, byEpochRaw, byQuality, recentlyAdded, mostPopular] =
+    await Promise.all([
+      prisma.composer.count(),
+      prisma.composer.count({ where: { isVerified: true } }),
+      prisma.composer.groupBy({
+        by: ['epochId'],
+        _count: { id: true },
+      }),
+      prisma.composer.groupBy({
+        by: ['dataQuality'],
+        _count: { id: true },
+      }),
+      prisma.composer.count({
+        where: { createdAt: { gte: lastWeek } },
+      }),
+      prisma.composer.findMany({
+        select: {
+          id: true,
+          name: true,
+          _count: {
+            select: {
+              works: true,
+              favoriteByUsers: true,
             },
           },
-          orderBy: {
-            favoriteByUsers: { _count: 'desc' },
-          },
-          take: 10,
-        }),
-      ]);
+        },
+        orderBy: {
+          favoriteByUsers: { _count: 'desc' },
+        },
+        take: 10,
+      }),
+    ]);
 
-    // Buscar nomes das épocas
-    const epochNames = await prisma.epoch.findMany({
-      select: { id: true, name: true },
-    });
-    const epochMap = new Map(epochNames.map((e) => [e.id, e.name]));
+  // Buscar os nomes das épocas separadamente
+  const epochIds = byEpochRaw.map((e) => e.epochId);
+  const epochNames = await prisma.epoch.findMany({
+    where: { id: { in: epochIds } },
+    select: { id: true, name: true },
+  });
 
-    return {
-      total,
-      verified,
-      byEpoch: byEpoch.map((item) => ({
-        epoch: epochMap.get(item.epochId) || 'Desconhecido',
-        count: item._count.id,
-      })),
-      byQuality: byQuality.map((item) => ({
-        quality: item.dataQuality || 'unknown',
-        count: item._count.id,
-      })),
-      recentlyAdded,
-      mostPopular: mostPopular.map((composer) => ({
-        id: composer.id,
-        name: composer.name,
-        worksCount: composer._count.works,
-        favoritesCount: composer._count.favoriteByUsers,
-      })),
-    };
-  },
-  ['admin-composer-stats'],
-  { revalidate: 600 } // 10 minutos
-);
+  const epochMap = new Map(epochNames.map((e) => [e.id, e.name]));
+
+  return {
+    total,
+    verified,
+    byEpoch: byEpochRaw.map((item) => ({
+      epoch: epochMap.get(item.epochId) || 'Desconhecido',
+      count: item._count.id,
+    })),
+    byQuality: byQuality.map((item) => ({
+      quality: item.dataQuality || 'unknown',
+      count: item._count.id,
+    })),
+    recentlyAdded,
+    mostPopular: mostPopular.map((composer) => ({
+      id: composer.id,
+      name: composer.name,
+      worksCount: composer._count.works,
+      favoritesCount: composer._count.favoriteByUsers,
+    })),
+  };
+};
 
 const getComposersList = async (filters: ComposerFilters) => {
   const {

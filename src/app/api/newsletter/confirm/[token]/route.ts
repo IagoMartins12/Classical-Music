@@ -11,12 +11,16 @@ import {
 } from '@/app/libs/tokenUtils';
 import { sendTemplateEmail } from '@/app/libs/newsletter/email';
 
+interface Params {
+  token: string;
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
-    const { token } = params;
+    const { token } = await params;
 
     if (!token) {
       return NextResponse.json(
@@ -132,7 +136,7 @@ export async function GET(
 // POST method para reenviar confirmação (se necessário)
 export async function POST(
   request: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const body = await request.json();
@@ -145,7 +149,7 @@ export async function POST(
       );
     }
 
-    const { token } = params;
+    const { token } = await params;
 
     // Buscar o token original para pegar informações do subscriber
     const tokenRecord = await prisma.userToken.findUnique({

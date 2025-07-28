@@ -4,10 +4,13 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import path from 'path';
 import fs from 'fs/promises';
+interface Params {
+  id: string;
+}
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -19,7 +22,7 @@ export async function GET(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const backupsDir = path.join(process.cwd(), 'backups', 'newsletter');
     const backupFile = path.join(backupsDir, `${id}.json`);
 
@@ -66,7 +69,7 @@ export async function GET(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -78,7 +81,7 @@ export async function DELETE(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const backupsDir = path.join(process.cwd(), 'backups', 'newsletter');
     const backupFile = path.join(backupsDir, `${id}.json`);
 

@@ -19,28 +19,16 @@ export function getRequestInfo(request?: NextRequest) {
   if (!request) return {};
 
   return {
-    ipAddress: getClientIP(request),
     userAgent: request.headers.get('user-agent') || undefined,
   };
 }
 
-/**
- * Extrai IP do cliente considerando proxies
- */
-function getClientIP(request: NextRequest): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  const realIP = request.headers.get('x-real-ip');
-  const remoteAddr = request.ip;
-
-  if (forwarded) {
-    return forwarded.split(',')[0].trim();
-  }
-
-  if (realIP) {
-    return realIP;
-  }
-
-  return remoteAddr || 'unknown';
+// app/utils/helpers.ts (função auxiliar)
+export function generateTicketId(): string {
+  const prefix = 'CH';
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `${prefix}-${timestamp}-${random}`;
 }
 
 /**
@@ -541,4 +529,23 @@ export async function getUserHistoryStats(userId: string) {
       recentActions: [],
     };
   }
+}
+
+export function getClientIpAddress(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  const realIp = request.headers.get('x-real-ip');
+
+  if (forwarded) {
+    return forwarded.split(',')[0].trim();
+  }
+
+  if (realIp) {
+    return realIp;
+  }
+
+  return 'unknown';
+}
+
+export function getUserAgent(request: NextRequest): string {
+  return request.headers.get('user-agent') || 'unknown';
 }

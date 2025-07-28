@@ -18,10 +18,10 @@ import {
   Cell,
 } from 'recharts';
 
-interface ChartData {
-  name: string;
-  value: number;
-  [key: string]: any;
+export interface ChartData {
+  name?: string;
+  value?: number; // usado em Area, Bar, Pie, etc.
+  [key: string]: string | number | undefined;
 }
 
 interface AdminChartProps {
@@ -366,8 +366,13 @@ export const HorizontalBarChart = ({
     )}
     <div className="space-y-3">
       {data.map((item, index) => {
-        const maxValue = Math.max(...data.map((d) => d.value));
-        const percentage = (item.value / maxValue) * 100;
+        const maxValue = Math.max(
+          ...data.map((d) => (typeof d.value === 'number' ? d.value : 0))
+        );
+        const percentage =
+          typeof item.value === 'number' && maxValue > 0
+            ? (item.value / maxValue) * 100
+            : 0;
 
         return (
           <div key={index} className="flex items-center space-x-3">
@@ -384,7 +389,7 @@ export const HorizontalBarChart = ({
               />
             </div>
             <div className="w-16 text-sm font-bold text-theme-primary text-right">
-              {item.value.toLocaleString()}
+              {item.value ? item.value.toLocaleString() : 'Valor desconhecido'}
             </div>
           </div>
         );

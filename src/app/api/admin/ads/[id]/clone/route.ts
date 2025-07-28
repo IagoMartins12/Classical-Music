@@ -108,7 +108,7 @@ export async function POST(
       imageQuality: originalAd.imageQuality || 'high',
       videoQuality: originalAd.videoQuality || 'high',
       mediaMetadata: {
-        ...originalAd.mediaMetadata,
+        ...(originalAd.mediaMetadata as Record<string, any>),
         clonedFrom: originalAdId,
         clonedAt: new Date().toISOString(),
       },
@@ -238,7 +238,9 @@ export async function POST(
             clonedId: clonedAd.id,
             hasMedia: clonedMediaInfo.image || clonedMediaInfo.video,
             modifications: Object.keys(modifications).filter(
-              (key) => modifications[key] !== originalAd[key]
+              (key) =>
+                modifications[key as keyof typeof originalAd] !==
+                originalAd[key as keyof typeof originalAd]
             ),
           },
         });

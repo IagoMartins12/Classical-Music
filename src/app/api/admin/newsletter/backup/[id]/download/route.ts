@@ -4,10 +4,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import fs from 'fs/promises';
 
+interface Params {
+  id: string;
+}
 // app/api/admin/newsletter/backup/[id]/download/route.ts
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -19,7 +22,7 @@ export async function GET(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const backupsDir = path.join(process.cwd(), 'backups', 'newsletter');
     const backupFile = path.join(backupsDir, `${id}.json`);
 

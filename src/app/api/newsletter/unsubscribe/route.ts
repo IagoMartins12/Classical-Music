@@ -1,6 +1,6 @@
 import prisma from '@/app/libs/prismadb';
+import { sendUnsubscribeConfirmationEmail } from '@/app/utils/subscribe';
 import { NextRequest, NextResponse } from 'next/server';
-import { sendUnsubscribeConfirmationEmail } from '../resubscribe/route';
 
 // app/api/newsletter/unsubscribe/route.ts
 export async function GET(request: NextRequest) {

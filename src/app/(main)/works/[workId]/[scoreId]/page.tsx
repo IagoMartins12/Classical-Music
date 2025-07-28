@@ -7,7 +7,7 @@ import StudyModeLoading from './loading';
 
 interface StudyParams {
   workId: string;
-  scoreId?: string[];
+  scoreId?: string;
 }
 
 interface StudyPageProps {

@@ -5,10 +5,14 @@ import path from 'path';
 import fs from 'fs/promises';
 import prisma from '@/app/libs/prismadb';
 
+interface Params {
+  id: string;
+}
+
 // app/api/admin/newsletter/backup/[id]/restore/route.ts
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -20,7 +24,7 @@ export async function POST(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const backupsDir = path.join(process.cwd(), 'backups', 'newsletter');
     const backupFile = path.join(backupsDir, `${id}.json`);
 

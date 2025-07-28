@@ -47,9 +47,10 @@ export async function POST(request: NextRequest) {
               trackUrl: work.spotifyTrackUrl,
               displayTitle: work.spotifyDisplayTitle, // 🆕 Título com intérprete
               duration: work.spotifyDuration, // 🆕 Duração
-              artists: work.spotifyArtists
-                ? JSON.parse(work.spotifyArtists)
-                : [], // 🆕 Artists
+              artists:
+                typeof work.spotifyArtists === 'string'
+                  ? JSON.parse(work.spotifyArtists)
+                  : [],
               thumbnail: work.spotifyThumbnail, // 🆕 Thumbnail
             }
           : null,

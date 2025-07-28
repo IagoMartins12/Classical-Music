@@ -1,5 +1,10 @@
 // app/api/contact/route.ts
 import { sendEmail } from '@/app/libs/newsletter/email';
+import {
+  generateTicketId,
+  getClientIpAddress,
+  getUserAgent,
+} from '@/app/utils/historyUtils';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -416,32 +421,4 @@ async function logContactSubmission(data: any) {
   } catch (error) {
     console.error('Erro ao fazer log do contato:', error);
   }
-}
-
-// app/utils/helpers.ts (função auxiliar)
-export function generateTicketId(): string {
-  const prefix = 'CH';
-  const timestamp = Date.now().toString(36).toUpperCase();
-  const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `${prefix}-${timestamp}-${random}`;
-}
-
-// app/utils/request.ts (funções auxiliares)
-export function getClientIpAddress(request: NextRequest): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  const realIp = request.headers.get('x-real-ip');
-
-  if (forwarded) {
-    return forwarded.split(',')[0].trim();
-  }
-
-  if (realIp) {
-    return realIp;
-  }
-
-  return 'unknown';
-}
-
-export function getUserAgent(request: NextRequest): string {
-  return request.headers.get('user-agent') || 'unknown';
 }

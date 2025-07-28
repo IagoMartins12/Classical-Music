@@ -16,6 +16,7 @@ import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { FaGraduationCap } from 'react-icons/fa';
 import Button from '../../Common/Button';
 import Image from 'next/image';
+import { WorkDetails } from '@/app/requests/work-page-details';
 
 interface VideoAulaSectionProps {
   work: {

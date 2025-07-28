@@ -39,14 +39,14 @@ interface ComposerStats {
 }
 
 interface ComposerFilters {
-  search?: string;
-  epoch?: string;
-  verified?: boolean;
-  dataQuality?: string;
-  sortBy?: 'name' | 'createdAt' | 'worksCount' | 'favoritesCount';
-  sortOrder?: 'asc' | 'desc';
-  page?: number;
-  limit?: number;
+  search?: string | null;
+  epoch?: string | null;
+  verified?: boolean | null;
+  dataQuality?: string | null;
+  sortBy?: 'name' | 'createdAt' | 'worksCount' | 'favoritesCount' | string;
+  sortOrder?: 'asc' | 'desc' | null | string;
+  page?: number | null;
+  limit?: number | null;
 }
 
 interface UseAdminComposersReturn {

@@ -1,7 +1,7 @@
 // app/api/newsletter/confirm/route.ts
 import prisma from '@/app/libs/prismadb';
+import { sendWelcomeEmail } from '@/app/utils/subscribe';
 import { NextRequest, NextResponse } from 'next/server';
-import { sendWelcomeEmail } from '../resubscribe/route';
 
 export async function GET(request: NextRequest) {
   try {

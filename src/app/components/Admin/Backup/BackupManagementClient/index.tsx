@@ -228,7 +228,7 @@ export default function BackupManagementClient() {
                     leftIcon={<FiDownload />}
                     onClick={createBackup}
                     disabled={isCreatingBackup || stats?.isBackupRunning}
-                    loading={isCreatingBackup}
+                    isLoading={isCreatingBackup}
                   >
                     {isCreatingBackup ? 'Criando...' : 'Criar Backup'}
                   </Button>

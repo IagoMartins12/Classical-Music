@@ -23,6 +23,7 @@ import SpotifyRedirectCard from '../SpotifyRedirectCard';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import { useToast } from '@/app/hooks/useToast';
+import { WorkDetails } from '@/app/requests/work-page-details';
 
 interface MediaData {
   spotify: {
@@ -52,33 +53,7 @@ interface MediaData {
 }
 
 interface MediaSectionProps {
-  work: {
-    id: string;
-    title: string;
-    composer: {
-      fullName: string;
-    };
-    // 🆕 Dados de mídia expandidos com thumbnail
-    spotifyTrackId?: string;
-    spotifyTrackUrl?: string;
-    spotifyDisplayTitle?: string;
-    spotifyDuration?: number;
-    spotifyArtists?: string;
-    spotifyThumbnail?: string;
-
-    youtubeVideoId?: string;
-    youtubeVideoUrl?: string;
-    youtubeTitle?: string;
-
-    customAudioUrl?: string;
-    customAudioFile?: string;
-    customAudioSource?: string; // 🆕 "upload" ou nome da fonte
-    customAudioMetadata?: any; // 🆕 Metadados JSON
-
-    mediaSource?: string;
-    lastMediaSearch?: Date;
-    mediaSearchError?: string;
-  };
+  work: WorkDetails;
   canEditMedia?: boolean;
   onMediaUpdate?: (newMediaData: any) => void; // 🆕 Callback para atualizações
 }

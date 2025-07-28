@@ -76,9 +76,9 @@ export async function GET(request: NextRequest) {
       composerCount: uploadsData.composerCount || 0,
       workCount: uploadsData.workCount || 0,
       scoreCount: uploadsData.scoreCount || 0,
-      hasMoreComposers: uploadsData.hasMoreComposers || false,
-      hasMoreWorks: uploadsData.hasMoreWorks || false,
-      hasMoreScores: uploadsData.hasMoreScores || false,
+      // hasMoreComposers: uploadsData.hasMoreComposers || false,
+      // hasMoreWorks: uploadsData.hasMoreWorks || false,
+      // hasMoreScores: uploadsData.hasMoreScores || false,
       currentPage: page,
       totalPages,
       filters: {

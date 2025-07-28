@@ -5,9 +5,13 @@ import prisma from '@/app/libs/prismadb';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 
+interface Params {
+  id: string;
+}
+
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -19,7 +23,7 @@ export async function POST(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const {
       testListIds,
@@ -236,7 +240,7 @@ export async function POST(
 // GET - Obter listas de teste disponíveis para uma campanha
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -248,7 +252,7 @@ export async function GET(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Verificar se campanha existe
     const campaign = await prisma.newsletterCampaign.findUnique({

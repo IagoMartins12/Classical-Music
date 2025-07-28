@@ -525,15 +525,12 @@ async function checkExistingWorks(
         // 🔧 CORREÇÃO: Usar títulos escapados e normalizados
         const titleQueries = batch
           .map((work) => {
-            // Normalizar e escapar o título
             const normalizedTitle = normalizeTitle(work.title);
             const escapedTitle = escapeRegexChars(normalizedTitle);
-
-            // Usar apenas primeiros 15 caracteres para evitar problemas
             const searchTerm = escapedTitle.substring(0, 15);
 
             if (searchTerm.length < 3) {
-              return null; // Ignorar títulos muito curtos
+              return null;
             }
 
             return {
@@ -543,7 +540,32 @@ async function checkExistingWorks(
               },
             };
           })
-          .filter(Boolean); // Remove queries nulas
+          .filter(
+            (q): q is { title: { contains: string; mode: 'insensitive' } } =>
+              q !== null
+          );
+
+        // const titleQueries = batch
+        //   .map((work) => {
+        //     // Normalizar e escapar o título
+        //     const normalizedTitle = normalizeTitle(work.title);
+        //     const escapedTitle = escapeRegexChars(normalizedTitle);
+
+        //     // Usar apenas primeiros 15 caracteres para evitar problemas
+        //     const searchTerm = escapedTitle.substring(0, 15);
+
+        //     if (searchTerm.length < 3) {
+        //       return null; // Ignorar títulos muito curtos
+        //     }
+
+        //     return {
+        //       title: {
+        //         contains: searchTerm,
+        //         mode: 'insensitive' as const,
+        //       },
+        //     };
+        //   })
+        //   .filter(Boolean); // Remove queries nulas
 
         if (titleQueries.length > 0) {
           try {

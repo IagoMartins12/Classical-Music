@@ -10,6 +10,7 @@
     "migrate": "tsx scripts/migrate.ts",
     "fix-works": "tsx scripts/fix-famous-work-subtitle.ts",
     "fix-works:execute": "tsx scripts/fix-famous-work-subtitle.ts execute",
+    "fix-works:diagnose": "tsx scripts/fix-famous-work-subtitle.ts diagnose",
     "scraper": "tsx scripts/imslp-scraper.ts",
     "scraper:start": "tsx scripts/imslp-scraper.ts start",
     "scraper:stop": "tsx scripts/imslp-scraper.ts stop",

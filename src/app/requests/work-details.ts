@@ -25,28 +25,28 @@ export interface WorkDetails {
   movementNumber?: number;
   tempoMarking?: string;
   movementsDetailed?: any;
-  difficultyLevel?: string;
+  difficultyLevel?: string | null;
   createdAt: Date;
   isVerified: boolean;
 
   // 🆕 CAMPOS DE MÍDIA
-  spotifyTrackId?: string;
-  spotifyTrackUrl?: string;
+  spotifyTrackId?: string | null;
+  spotifyTrackUrl?: string | null;
 
-  youtubeVideoId?: string;
-  youtubeVideoUrl?: string;
-  youtubeTitle?: string;
+  youtubeVideoId?: string | null;
+  youtubeVideoUrl?: string | null;
+  youtubeTitle?: string | null;
 
-  videoAulaUrl?: string;
-  videoAulaFile?: string;
-  videoAulaTitle?: string;
-  videoAulaType?: string;
-  videoAulaAddedBy?: string;
-  videoAulaAddedAt?: Date;
-  videoAulaMetadata?: any;
+  videoAulaUrl?: string | null;
+  videoAulaFile?: string | null;
+  videoAulaTitle?: string | null;
+  videoAulaType?: string | null;
+  videoAulaAddedBy?: string | null;
+  videoAulaAddedAt?: Date | null;
+  videoAulaMetadata?: any | null;
 
-  lastMediaSearch?: Date;
-  mediaSearchError?: string;
+  lastMediaSearch?: Date | null;
+  mediaSearchError?: string | null;
 
   composer: {
     id: string;
@@ -435,11 +435,8 @@ function formatWorkItem(work: any): WorkListItem {
     mediaDuration: work.mediaDuration || undefined,
     workType: work.workType,
     isPartOfCollection: work.isPartOfCollection,
-    difficultyLevel: work.difficultyLevel || undefined,
     composer: work.composer,
     instrument: work.instrument,
-    epoch: work.epoch,
-    isVerified: work.isVerified,
   };
 }
 

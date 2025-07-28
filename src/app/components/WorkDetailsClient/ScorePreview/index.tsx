@@ -1,4 +1,4 @@
-import { IMSLPScore } from '@/app/libs/imslp-score-scraper';
+import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
 import Image from 'next/image';
 import { LuDownload, LuFileText } from 'react-icons/lu';
 

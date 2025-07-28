@@ -4,7 +4,7 @@
 import { MdVerified } from 'react-icons/md';
 
 interface VerificationBadgeProps {
-  verified: boolean;
+  verified?: boolean;
   title?: 'Compositor' | 'Peça';
   size?: 'sm' | 'md' | 'lg';
   variant?: 'icon' | 'badge' | 'text';

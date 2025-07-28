@@ -271,20 +271,6 @@ export async function POST(request: NextRequest) {
           paginationOptions
         );
 
-      console.log(`✅ [API-CONSISTENT] Scraping consistente concluído:`, {
-        workTitle: scrapedData.workTitle,
-        loadedCounts: scrapedData.loadedCounts,
-        totalCounts: scrapedData.totalCounts,
-        hasMore: scrapedData.hasMore,
-        scoresByType: Object.keys(scrapedData.scoresByType).reduce(
-          (acc, type) => {
-            acc[type] = scrapedData.scoresByType[type].length;
-            return acc;
-          },
-          {} as Record<string, number>
-        ),
-      });
-
       // 🆕 Log detalhado dos títulos para debug
       if (targetTabType === 'arrangements') {
         console.log(`🎵 [API-CONSISTENT] Títulos de arranjos extraídos:`);

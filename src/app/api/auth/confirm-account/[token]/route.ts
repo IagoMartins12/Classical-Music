@@ -11,12 +11,16 @@ import {
 } from '@/app/libs/tokenUtils';
 import { sendTemplateEmail } from '@/app/libs/newsletter/email';
 
+interface Params {
+  token: string;
+}
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
-    const { token } = params;
+    const { token } = await params;
 
     if (!token) {
       return NextResponse.json(
@@ -130,7 +134,7 @@ export async function GET(
 // POST method para reenviar confirmação
 export async function POST(
   request: NextRequest,
-  { params }: { params: { token: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const body = await request.json();
@@ -143,7 +147,7 @@ export async function POST(
       );
     }
 
-    const { token } = params;
+    const { token } = await params;
 
     // Buscar o token original para pegar informações do usuário
     const tokenRecord = await prisma.userToken.findUnique({
@@ -170,7 +174,7 @@ export async function POST(
     const user = tokenRecord.user;
 
     // Verificar se já foi confirmado
-    if (user.emailVerified) {
+    if (user?.emailVerified) {
       return NextResponse.json(
         { success: false, error: 'Email já foi confirmado' },
         { status: 400 }
@@ -179,6 +183,15 @@ export async function POST(
 
     // Verificar rate limiting
 
+    if (!user?.id) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Usuario não encontrado`,
+        },
+        { status: 429 }
+      );
+    }
     const rateLimit = await checkTokenRateLimit(
       user.id,
       'EMAIL_CONFIRMATION',

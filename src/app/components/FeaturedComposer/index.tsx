@@ -18,7 +18,7 @@ interface FeaturedComposerProps {
   composer: {
     id: string;
     name: string;
-    isVerified: boolean;
+    isVerified?: boolean;
     fullName: string;
     birthDate?: string | null;
     deathDate?: string | null;

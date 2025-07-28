@@ -110,7 +110,6 @@ export default function WorkDetailsClient({
   // 🆕 Estado local para dados de mídia (pode ser atualizado por ações do usuário)
   const [currentAudioData, setCurrentAudioData] =
     useState<ProcessedAudioData | null>(audioData || null);
-  const [isLoadingMedia, setIsLoadingMedia] = useState(false);
 
   const handleVerificationChange = (verified: boolean) => {
     setIsVerified(verified);
@@ -263,76 +262,6 @@ export default function WorkDetailsClient({
   const formatDuration = (duration?: string) => {
     if (!duration) return null;
     return duration;
-  };
-
-  const renderMovementsDetailed = (movements?: any) => {
-    if (!movements) return null;
-
-    try {
-      const parsedMovements =
-        typeof movements === 'string' ? JSON.parse(movements) : movements;
-
-      if (Array.isArray(parsedMovements)) {
-        return (
-          <div className="space-y-3">
-            <span className="text-sm font-medium text-theme-tertiary block mb-3">
-              Movimentos Detalhados:
-            </span>
-            <div className="space-y-2">
-              {parsedMovements.map((movement, index) => (
-                <div
-                  key={index}
-                  className="p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary/30"
-                >
-                  <div className="flex items-center space-x-2 mb-1">
-                    <span className="w-6 h-6 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center text-xs font-bold text-theme-primary">
-                      {index + 1}
-                    </span>
-                    <span className="font-semibold text-theme-primary">
-                      {movement.title ||
-                        movement.name ||
-                        `Movimento ${index + 1}`}
-                    </span>
-                  </div>
-                  {movement.tempo && (
-                    <p className="text-sm text-theme-secondary ml-8">
-                      <span className="font-medium">Tempo:</span>{' '}
-                      {movement.tempo}
-                    </p>
-                  )}
-                  {movement.key && (
-                    <p className="text-sm text-theme-secondary ml-8">
-                      <span className="font-medium">Tom:</span> {movement.key}
-                    </p>
-                  )}
-                  {movement.duration && (
-                    <p className="text-sm text-theme-secondary ml-8">
-                      <span className="font-medium">Duração:</span>{' '}
-                      {movement.duration}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      }
-    } catch (error) {
-      console.error('Erro ao parsear movimentos:', error);
-    }
-
-    return (
-      <div className="p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
-        <span className="font-medium text-theme-tertiary block mb-1">
-          Movimentos:
-        </span>
-        <span className="text-theme-primary">
-          {typeof movements === 'string'
-            ? movements
-            : JSON.stringify(movements)}
-        </span>
-      </div>
-    );
   };
 
   const getWorkTypeLabel = (type: string) => {
@@ -631,23 +560,6 @@ export default function WorkDetailsClient({
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {work.tone}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* 🆕 Tempo Marking */}
-                    {work.tempoMarking && (
-                      <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <GiMetronome className="w-4 h-4 text-theme-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
-                            Indicação de Tempo
-                          </p>
-                          <p className="text-theme-primary font-semibold">
-                            {work.tempoMarking}
                           </p>
                         </div>
                       </div>
@@ -986,14 +898,6 @@ export default function WorkDetailsClient({
                       )}
                     </div>
                   </div>
-
-                  {/* 🆕 Card de Estatísticas de Mídia */}
-                  {currentAudioData?.hasAnyAudio && (
-                    <MediaStatsCard
-                      audioData={currentAudioData}
-                      isLoading={isLoadingMedia}
-                    />
-                  )}
                 </div>
               </div>
             </div>
@@ -1065,114 +969,3 @@ export default function WorkDetailsClient({
     </div>
   );
 }
-
-// 🆕 Componente para exibir estatísticas de mídia
-const MediaStatsCard: React.FC<{
-  audioData: ProcessedAudioData;
-  isLoading: boolean;
-}> = ({ audioData, isLoading }) => {
-  const getCompletenessColor = (completeness: number) => {
-    if (completeness >= 80) return 'text-green-400';
-    if (completeness >= 50) return 'text-yellow-400';
-    return 'text-red-400';
-  };
-
-  const getCompletenessLabel = (completeness: number) => {
-    if (completeness >= 80) return 'Excelente';
-    if (completeness >= 50) return 'Boa';
-    return 'Básica';
-  };
-
-  return (
-    <AnimatedCard className="classical-card-simple p-6">
-      <h3 className="text-lg font-semibold text-theme-primary mb-4 classical-title">
-        Estatísticas de Mídia
-      </h3>
-
-      <div className="space-y-4">
-        {/* Completude */}
-        <div className="flex items-center justify-between">
-          <span className="text-theme-secondary text-sm">Completude:</span>
-          <div className="flex items-center space-x-2">
-            <span
-              className={`font-semibold ${getCompletenessColor(
-                audioData.completeness
-              )}`}
-            >
-              {audioData.completeness}%
-            </span>
-            <span className="text-xs text-theme-tertiary">
-              {getCompletenessLabel(audioData.completeness)}
-            </span>
-          </div>
-        </div>
-
-        {/* Fontes Disponíveis */}
-        <div className="border-t border-theme-secondary pt-4">
-          <p className="text-xs text-theme-tertiary mb-2">
-            Fontes disponíveis:
-          </p>
-          <div className="space-y-1">
-            {audioData.spotify && (
-              <div className="flex items-center space-x-2 text-xs">
-                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                <span className="text-theme-secondary">Spotify</span>
-                {audioData.spotify.thumbnail && (
-                  <span className="text-green-400">• Capa</span>
-                )}
-              </div>
-            )}
-
-            {audioData.youtube && (
-              <div className="flex items-center space-x-2 text-xs">
-                <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-                <span className="text-theme-secondary">YouTube</span>
-              </div>
-            )}
-
-            {audioData.customAudio && (
-              <div className="flex items-center space-x-2 text-xs">
-                <div
-                  className={`w-2 h-2 rounded-full ${
-                    audioData.customAudio.isUpload
-                      ? 'bg-blue-400'
-                      : 'bg-purple-400'
-                  }`}
-                ></div>
-                <span className="text-theme-secondary">
-                  {audioData.customAudio.isUpload
-                    ? 'Upload'
-                    : audioData.customAudio.source}
-                </span>
-                <span className="text-green-400">• Salvo</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Última Busca */}
-        {audioData.lastMediaSearch && (
-          <div className="border-t border-theme-secondary pt-4">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-theme-tertiary">Última busca:</span>
-              <span className="text-theme-secondary">
-                {new Date(audioData.lastMediaSearch).toLocaleDateString(
-                  'pt-BR'
-                )}
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Erro de Busca */}
-        {audioData.mediaSearchError && (
-          <div className="border-t border-red-700/30 pt-4">
-            <p className="text-xs text-red-400">
-              Erro: {audioData.mediaSearchError}
-            </p>
-          </div>
-        )}
-      </div>
-    </AnimatedCard>
-  );
-};

@@ -5,6 +5,7 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateUploadsCache } from '@/app/requests/upload';
 import { logScoreCreate } from '@/app/utils/historyUtils';
+import { ProcessingStatus } from '@prisma/client';
 
 export async function POST(request: NextRequest) {
   try {
@@ -101,14 +102,13 @@ export async function POST(request: NextRequest) {
           ? JSON.parse(body.customData)
           : body.customData
         : null,
-      processingStatus: 'COMPLETED',
+      processingStatus: ProcessingStatus.COMPLETED,
       isActive: true,
       isVerified: false,
       lastVerified: new Date(),
       lastAccessed: new Date(),
       accessCount: 0,
       priority: body.priority || 0,
-      cacheVersion: '1.0',
     };
 
     // Criar partitura

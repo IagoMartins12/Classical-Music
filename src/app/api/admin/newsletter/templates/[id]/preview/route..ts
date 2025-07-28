@@ -4,10 +4,12 @@ import prisma from '@/app/libs/prismadb';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { processTemplate } from '@/app/libs/newsletter/emailTemplates';
-
+interface Params {
+  id: string;
+}
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -19,7 +21,7 @@ export async function GET(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const { searchParams } = new URL(request.url);
     const format = searchParams.get('format') || 'html'; // html, text, both
 
@@ -225,7 +227,7 @@ export async function GET(
 // POST - Preview com dados customizados
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -237,7 +239,7 @@ export async function POST(
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { variables = {}, format = 'html' } = body;
 

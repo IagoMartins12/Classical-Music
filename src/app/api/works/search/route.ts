@@ -224,10 +224,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
-// 🆕 FUNÇÃO PARA INVALIDAR CACHE
-export async function invalidateWorksSearchCache() {
-  const { revalidateTag } = await import('next/cache');
-  revalidateTag('works-search');
-  console.log('🔄 Cache de busca de obras invalidado');
-}

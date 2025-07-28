@@ -381,8 +381,8 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
             Não foi possível encontrar áudio para esta obra.
           </p>
           <p className="text-gray-500 text-xs">
-            Use o botão "Carregar Mídia" ou "Mais Fontes" acima para buscar
-            fontes de áudio.
+            Use o botão &quot;Carregar Mídia&quot; ou &quot;Mais Fontes&quot;
+            acima para buscar fontes de áudio.
           </p>
         </div>
       </div>
