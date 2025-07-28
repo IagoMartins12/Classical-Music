@@ -1,4 +1,4 @@
-// app/api/media-search/route.ts - ATUALIZADA
+// app/api/media-search/route.ts - ATUALIZADA PARA SALVAR ÁUDIO ALTERNATIVO
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidateTag } from 'next/cache';
 import prisma from '@/app/libs/prismadb';
@@ -35,6 +35,9 @@ export async function POST(request: NextRequest) {
 
     // Verificar se já tem mídia e não é refresh forçado
     if (!forceRefresh && (work.spotifyTrackId || work.youtubeVideoId)) {
+      // 🆕 Sempre buscar fontes alternativas, mesmo se já tem mídia básica
+      const alternativeAudioResult = await searchAlternativeAudioSources(work);
+
       return NextResponse.json({
         success: true,
         message: 'Mídia já existe',
@@ -47,6 +50,7 @@ export async function POST(request: NextRequest) {
               artists: work.spotifyArtists
                 ? JSON.parse(work.spotifyArtists)
                 : [], // 🆕 Artists
+              thumbnail: work.spotifyThumbnail, // 🆕 Thumbnail
             }
           : null,
         youtube: work.youtubeVideoId
@@ -56,7 +60,11 @@ export async function POST(request: NextRequest) {
               title: work.youtubeTitle,
             }
           : null,
-        alternativeAudio: await searchAlternativeAudioSources(work), // 🆕 Buscar sempre fontes alternativas
+        alternativeAudio: alternativeAudioResult, // 🆕 Sempre retornar fontes alternativas
+        metadata: {
+          audioSourceSaved: false, // Mídia já existia
+          alternativeSourcesFound: alternativeAudioResult.length,
+        },
       });
     }
 
@@ -115,8 +123,11 @@ export async function POST(request: NextRequest) {
 
     let responseSpotify = null;
     let responseYoutube = null;
+    let audioSourceSaved = false;
+    let savedAudioUrl = null;
+    let savedAudioSource = null;
 
-    // 🆕 Salvar resultados do Spotify (COM INTÉRPRETE E DURAÇÃO)
+    // 🆕 Salvar resultados do Spotify (COM INTÉRPRETE, DURAÇÃO E THUMBNAIL)
     if (spotifyResult) {
       // Criar título com compositor + intérprete
       const composer = spotifyResult.artists.find(
@@ -137,12 +148,21 @@ export async function POST(request: NextRequest) {
           ? `${composer.name} - ${interpreters.map((a) => a.name).join(', ')}`
           : spotifyResult.artists.map((a) => a.name).join(', ');
 
+      // 🆕 Obter melhor thumbnail (maior resolução disponível)
+      const thumbnail =
+        spotifyResult.album.images.length > 0
+          ? spotifyResult.album.images.sort(
+              (a, b) => (b.height || 0) - (a.height || 0)
+            )[0].url
+          : null;
+
       responseSpotify = {
         trackId: spotifyResult.id,
         trackUrl: spotifyResult.external_urls.spotify,
         displayTitle, // 🆕 Título com intérprete
         previewUrl: spotifyResult.preview_url,
-        albumArt: spotifyResult.album.images[0]?.url,
+        albumArt: thumbnail, // 🆕 Usar thumbnail como albumArt
+        thumbnail, // 🆕 Campo dedicado para thumbnail
         artists: spotifyResult.artists.map((a) => a.name), // 🆕 Lista de artistas
         albumName: spotifyResult.album.name,
         duration: spotifyResult.duration_ms, // 🆕 Duração em ms
@@ -156,6 +176,7 @@ export async function POST(request: NextRequest) {
         spotifyDisplayTitle: displayTitle, // 🆕 Salvar título com intérprete
         spotifyDuration: spotifyResult.duration_ms, // 🆕 Salvar duração
         spotifyArtists: JSON.stringify(spotifyResult.artists), // 🆕 Salvar artists completos
+        spotifyThumbnail: thumbnail, // 🆕 Salvar thumbnail
       };
     }
 
@@ -178,6 +199,44 @@ export async function POST(request: NextRequest) {
       };
     }
 
+    // 🆕 SALVAR PRIMEIRA FONTE ALTERNATIVA VÁLIDA NO BANCO
+    if (alternativeAudioResult.length > 0 && !work.customAudioUrl) {
+      // Apenas salvar se não existir nenhuma fonte customizada ainda
+      const firstValidSource = await validateFirstAudioSource(
+        alternativeAudioResult
+      );
+
+      if (firstValidSource) {
+        console.log(
+          '💾 [MEDIA-SEARCH] Salvando primeira fonte alternativa válida:',
+          {
+            source: firstValidSource.source,
+            url: firstValidSource.audioUrl,
+            quality: firstValidSource.quality,
+          }
+        );
+
+        updateData = {
+          ...updateData,
+          customAudioUrl: firstValidSource.audioUrl,
+          customAudioSource: firstValidSource.source, // 🆕 Nome da fonte
+          customAudioMetadata: {
+            title: firstValidSource.title,
+            source: firstValidSource.source,
+            quality: firstValidSource.quality,
+            license: firstValidSource.license,
+            duration: firstValidSource.duration,
+            format: firstValidSource.format,
+            autoSavedAt: new Date().toISOString(),
+          },
+        };
+
+        audioSourceSaved = true;
+        savedAudioUrl = firstValidSource.audioUrl;
+        savedAudioSource = firstValidSource.source;
+      }
+    }
+
     // Salvar na base de dados
     await prisma.work.update({
       where: { id: workId },
@@ -192,7 +251,9 @@ export async function POST(request: NextRequest) {
     console.log(
       `📊 [MEDIA-SEARCH] Spotify: ${spotifyResult ? '✅' : '❌'}, YouTube: ${
         youtubeResult ? '✅' : '❌'
-      }, Audio Alternativo: ${alternativeAudioResult.length > 0 ? '✅' : '❌'}`
+      }, Audio Alternativo: ${
+        alternativeAudioResult.length > 0 ? '✅' : '❌'
+      }, Audio Salvo: ${audioSourceSaved ? '✅' : '❌'}`
     );
 
     return NextResponse.json({
@@ -203,6 +264,10 @@ export async function POST(request: NextRequest) {
       metadata: {
         processingTime,
         alternativeSourcesFound: alternativeAudioResult.length,
+        spotifyThumbnailSaved: !!updateData.spotifyThumbnail, // 🆕 Confirmar se thumbnail foi salvo
+        audioSourceSaved, // 🆕 Se uma fonte alternativa foi salva
+        savedAudioUrl, // 🆕 URL da fonte salva
+        savedAudioSource, // 🆕 Nome da fonte salva
       },
     });
   } catch (error) {
@@ -236,21 +301,123 @@ export async function POST(request: NextRequest) {
 // 🆕 Função para buscar fontes alternativas de áudio
 async function searchAlternativeAudioSources(work: any) {
   try {
-    const response = await fetch('/api/alternative-audio-sources', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        title: work.title,
-        composer: work.composer.fullName,
-      }),
-    });
+    console.log('🔍 [MEDIA-SEARCH] Buscando fontes alternativas de áudio...');
 
-    if (!response.ok) return [];
+    const response = await fetch(
+      `${
+        process.env.NEXTAUTH_URL || 'http://localhost:3000'
+      }/api/alternative-audio-sources`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: work.title,
+          composer: work.composer.fullName,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      console.error(
+        '❌ [MEDIA-SEARCH] Erro ao buscar fontes alternativas:',
+        response.status
+      );
+      return [];
+    }
 
     const data = await response.json();
+    console.log(
+      '✅ [MEDIA-SEARCH] Fontes alternativas encontradas:',
+      data.sources?.length || 0
+    );
+
     return data.sources || [];
   } catch (error) {
-    console.error('Erro ao buscar fontes alternativas:', error);
+    console.error(
+      '❌ [MEDIA-SEARCH] Erro ao buscar fontes alternativas:',
+      error
+    );
     return [];
   }
+}
+
+// 🆕 Função para validar a primeira fonte de áudio
+async function validateFirstAudioSource(sources: any[]): Promise<any | null> {
+  console.log('🔍 [MEDIA-SEARCH] Validando primeira fonte de áudio...');
+
+  // Priorizar fontes por qualidade/confiabilidade
+  const priorityOrder = [
+    'Wikimedia Commons',
+    'Internet Archive',
+    'MusOpen',
+    'IMSLP Recordings',
+    'Classical Music Archive',
+    'Freesound',
+  ];
+
+  // Ordenar por prioridade
+  const sortedSources = sources.sort((a, b) => {
+    const priorityA = priorityOrder.indexOf(a.source);
+    const priorityB = priorityOrder.indexOf(b.source);
+
+    // Se não estão na lista de prioridade, colocar no final
+    const scoreA = priorityA === -1 ? 999 : priorityA;
+    const scoreB = priorityB === -1 ? 999 : priorityB;
+
+    return scoreA - scoreB;
+  });
+
+  // Tentar validar as primeiras 3 fontes
+  for (const source of sortedSources.slice(0, 3)) {
+    try {
+      console.log(
+        `🔍 [MEDIA-SEARCH] Validando fonte: ${source.source} - ${source.audioUrl}`
+      );
+
+      // Fazer uma requisição HEAD para verificar se o arquivo existe
+      const headResponse = await fetch(source.audioUrl, {
+        method: 'HEAD',
+        signal: AbortSignal.timeout(5000), // 5 segundos timeout
+        headers: {
+          'User-Agent': 'OpusAtlas/1.0 (Classical Music Encyclopedia)',
+        },
+      });
+
+      if (headResponse.ok) {
+        const contentType = headResponse.headers.get('content-type');
+        const contentLength = headResponse.headers.get('content-length');
+
+        // Verificar se é realmente um arquivo de áudio
+        if (contentType && contentType.startsWith('audio/')) {
+          console.log(
+            `✅ [MEDIA-SEARCH] Fonte válida encontrada: ${source.source}`
+          );
+
+          return {
+            ...source,
+            validatedAt: new Date().toISOString(),
+            contentType,
+            contentLength,
+          };
+        } else {
+          console.log(
+            `⚠️ [MEDIA-SEARCH] Fonte não é áudio: ${source.source} (${contentType})`
+          );
+        }
+      } else {
+        console.log(
+          `❌ [MEDIA-SEARCH] Fonte não acessível: ${source.source} (${headResponse.status})`
+        );
+      }
+    } catch (error) {
+      console.log(
+        `❌ [MEDIA-SEARCH] Erro ao validar fonte: ${source.source}:`,
+        error
+      );
+      continue;
+    }
+  }
+
+  console.log('❌ [MEDIA-SEARCH] Nenhuma fonte alternativa válida encontrada');
+  return null;
 }

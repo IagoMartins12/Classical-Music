@@ -349,112 +349,6 @@ export default function IMSLPTabsIncremental({
                   </div>
                 )}
               </div>
-
-              {/* 🆕 Barra de progresso da tab ativa */}
-              {/* {activeTabStats.total > 0 && (
-                <div className="mt-4">
-                  <div className="flex items-center justify-between text-sm text-theme-tertiary mb-2">
-                    <span>
-                      Progresso da tab ativa: {getTabLabel(activeTab)}
-                    </span>
-                    <div className="flex items-center space-x-2">
-                      <span>{activeTabStats.progress}%</span>
-                      <span className="text-xs">
-                        ({activeTabStats.loaded}/{activeTabStats.total})
-                      </span>
-                    </div>
-                  </div>
-                  <div className="w-full bg-theme-elevated border border-theme-primary/20 rounded-full h-2">
-                    <div
-                      className="bg-gradient-to-r from-accent-blue to-accent-purple h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${activeTabStats.progress}%` }}
-                    ></div>
-                  </div>
-                </div>
-              )} */}
-
-              {/* Barra de progresso geral */}
-              {/* {totalAvailable > 0 && (
-                <div className="mt-3">
-                  <div className="flex items-center justify-between text-sm text-theme-tertiary mb-2">
-                    <span>Progresso geral</span>
-                    <div className="flex items-center space-x-2">
-                      <span>{progressPercentage}%</span>
-                      <span className="text-xs">
-                        ({currentLoaded}/{totalAvailable})
-                      </span>
-                      {backgroundCaching && (
-                        <div className="flex items-center space-x-1 text-accent-green">
-                          <FiZap className="w-3 h-3" />
-                          <span>Cache: {cacheProgress}%</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="w-full bg-theme-elevated border border-theme-primary/20 rounded-full h-2">
-                    <div
-                      className="bg-gradient-to-r from-brand-primary to-brand-secondary h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${progressPercentage}%` }}
-                    ></div>
-                  </div>
-
-                  {/* Barra de cache em background */}
-              {/* {backgroundCaching && (
-                    <div className="w-full bg-accent-green/20 border border-accent-green/30 rounded-full h-1 mt-1">
-                      <div
-                        className="bg-gradient-to-r from-accent-green to-accent-blue h-1 rounded-full transition-all duration-500"
-                        style={{ width: `${cacheProgress}%` }}
-                      ></div>
-                    </div>
-                  )} */}
-              {/* </div> */}
-              {/* )} */}
-
-              {/* Estatísticas de favoritos destacadas */}
-              {/* {!loadingFavorites && favoriteStats.length > 0 && (
-                <div className="mt-4 p-4 bg-gradient-to-r from-accent-red/5 to-accent-gold/5 border border-accent-red/20 rounded-xl">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
-                        <FiTrendingUp className="w-4 h-4 text-accent-red" />
-                        <span className="text-sm font-medium text-theme-primary">
-                          Estatísticas de Favoritos
-                        </span>
-                      </div>
-                      <div className="text-xs text-theme-secondary space-x-4">
-                        <span>
-                          Total:{' '}
-                          {favoriteStats.reduce(
-                            (sum, stat) => sum + stat.totalFavorites,
-                            0
-                          )}{' '}
-                          favoritos
-                        </span>
-                        <span>•</span>
-                        <span>
-                          {favoriteStats.length} partituras favoritadas
-                        </span>
-                        {mostFavorited && (
-                          <>
-                            <span>•</span>
-                            <span>
-                              Líder: {mostFavorited.totalFavorites} favoritos
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <button
-                      onClick={refetchFavorites}
-                      className="text-xs text-theme-tertiary hover:text-theme-primary transition-colors flex items-center space-x-1"
-                      title="Atualizar estatísticas"
-                    >
-                      <FiRefreshCw className="w-3 h-3" />
-                      <span>Atualizar</span>
-                    </button>
-                  </div>
-                </div>
-              )} */}
             </div>
 
             {/* Tabs Navigation */}
@@ -538,7 +432,7 @@ export default function IMSLPTabsIncremental({
                 <div className="space-y-6">
                   {activeTabData.map((scoreGroup, groupIndex) => (
                     <div
-                      key={scoreGroup.groupIndex}
+                      key={groupIndex}
                       className="space-y-4 animate-fade-in-up"
                       style={{ animationDelay: `${groupIndex * 0.1}s` }}
                     >

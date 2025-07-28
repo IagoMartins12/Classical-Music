@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - ATUALIZADO com Nova Lógica de Cache
+// app/work/[workId]/WorkDetailsClient.tsx - COMPLETO COM TODAS AS FUNCIONALIDADES + ÁUDIO PROCESSADO
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,9 +7,7 @@ import {
   FiCalendar,
   FiMusic,
   FiInfo,
-  FiActivity,
   FiTarget,
-  FiZap,
   FiSettings,
   FiBookOpen,
   FiExternalLink,
@@ -18,7 +16,6 @@ import {
   FiHeadphones,
   FiMapPin,
   FiClock,
-  FiLayers,
   FiTag,
 } from 'react-icons/fi';
 import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
@@ -45,9 +42,47 @@ import AdContainer from '../Ads/AdContainer';
 import EditButton from '../Common/EditButton';
 import MediaSection from '../Players/MediaSection';
 import { WorkDetails } from '@/app/requests/work-page-details';
+import VideoAulaSection from '../Players/VideoAulaSection';
+
+// 🆕 Interface para dados de áudio processados (deve coincidir com o server)
+interface ProcessedAudioData {
+  hasAnyAudio: boolean;
+  customAudio: {
+    url: string;
+    file: string;
+    source: string;
+    metadata: any;
+    isUpload: boolean;
+    isAlternativeSource: boolean;
+    isPersistent: boolean;
+    title: string;
+  } | null;
+  spotify: {
+    trackId: string;
+    trackUrl: string;
+    displayTitle?: string;
+    duration?: number;
+    artists: string[];
+    thumbnail?: string;
+    previewUrl?: string | null;
+    albumArt?: string | null;
+    albumName?: string;
+    popularity?: number;
+  } | null;
+  youtube: {
+    videoId: string;
+    videoUrl: string;
+    title: string;
+  } | null;
+  mediaSource: string | null;
+  lastMediaSearch: Date | null;
+  mediaSearchError: string | null;
+  completeness: number;
+}
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
+  audioData?: ProcessedAudioData; // 🆕 Dados de áudio processados (opcional para compatibilidade)
   relatedWorks?: any[];
   learningData?: {
     wantToLearn: any[];
@@ -59,6 +94,7 @@ interface WorkDetailsClientProps {
 
 export default function WorkDetailsClient({
   work,
+  audioData, // 🆕 Dados de áudio processados
   isAdmin,
   canEditMedia, // 🆕
   learningData = { wantToLearn: [], learned: [] },
@@ -71,14 +107,27 @@ export default function WorkDetailsClient({
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [isVerified, setIsVerified] = useState(work.isVerified || false);
 
+  // 🆕 Estado local para dados de mídia (pode ser atualizado por ações do usuário)
+  const [currentAudioData, setCurrentAudioData] =
+    useState<ProcessedAudioData | null>(audioData || null);
+  const [isLoadingMedia, setIsLoadingMedia] = useState(false);
+
   const handleVerificationChange = (verified: boolean) => {
     setIsVerified(verified);
     // Atualizar no contexto global se necessário
   };
+
   // Verificar se está montado (hidratado)
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // 🆕 Atualizar estado local quando dados do server mudarem
+  useEffect(() => {
+    if (audioData) {
+      setCurrentAudioData(audioData);
+    }
+  }, [audioData]);
 
   // Hook otimizado para partitura mais favoritada
   const {
@@ -126,7 +175,89 @@ export default function WorkDetailsClient({
       );
     },
   });
+
   const { navigateToUrl } = useNavigate();
+
+  // 🆕 Converter dados processados para formato esperado pelo MediaSection
+  const workForMediaSection = currentAudioData
+    ? {
+        ...work,
+        // Garantir que os dados de áudio mais recentes sejam usados
+        spotifyTrackId:
+          currentAudioData.spotify?.trackId || work.spotifyTrackId,
+        spotifyTrackUrl:
+          currentAudioData.spotify?.trackUrl || work.spotifyTrackUrl,
+        spotifyDisplayTitle:
+          currentAudioData.spotify?.displayTitle || work.spotifyDisplayTitle,
+        spotifyDuration:
+          currentAudioData.spotify?.duration || work.spotifyDuration,
+        spotifyArtists: currentAudioData.spotify?.artists
+          ? JSON.stringify(currentAudioData.spotify.artists)
+          : work.spotifyArtists,
+        spotifyThumbnail:
+          currentAudioData.spotify?.thumbnail || work.spotifyThumbnail,
+
+        youtubeVideoId:
+          currentAudioData.youtube?.videoId || work.youtubeVideoId,
+        youtubeVideoUrl:
+          currentAudioData.youtube?.videoUrl || work.youtubeVideoUrl,
+        youtubeTitle: currentAudioData.youtube?.title || work.youtubeTitle,
+
+        customAudioUrl:
+          currentAudioData.customAudio?.url || work.customAudioUrl,
+        customAudioFile:
+          currentAudioData.customAudio?.file || work.customAudioFile,
+        customAudioSource:
+          currentAudioData.customAudio?.source || work.customAudioSource,
+        customAudioMetadata:
+          currentAudioData.customAudio?.metadata || work.customAudioMetadata,
+
+        mediaSource: currentAudioData.mediaSource || work.mediaSource,
+        lastMediaSearch:
+          currentAudioData.lastMediaSearch || work.lastMediaSearch,
+        mediaSearchError:
+          currentAudioData.mediaSearchError || work.mediaSearchError,
+      }
+    : work;
+
+  // 🆕 Callback para quando a mídia for atualizada
+  const handleMediaUpdate = (newMediaData: Partial<ProcessedAudioData>) => {
+    console.log('🔄 [WORK-CLIENT] Atualizando dados de mídia:', newMediaData);
+
+    setCurrentAudioData((prev) => {
+      if (!prev) {
+        // Se não tinha dados antes, criar estrutura inicial
+        return {
+          hasAnyAudio: !!(
+            newMediaData.customAudio ||
+            newMediaData.spotify ||
+            newMediaData.youtube
+          ),
+          customAudio: null,
+          spotify: null,
+          youtube: null,
+          mediaSource: null,
+          lastMediaSearch: null,
+          mediaSearchError: null,
+          completeness: 0,
+          ...newMediaData,
+        };
+      }
+
+      return {
+        ...prev,
+        ...newMediaData,
+        hasAnyAudio: !!(
+          newMediaData.customAudio ||
+          newMediaData.spotify ||
+          newMediaData.youtube ||
+          prev.customAudio ||
+          prev.spotify ||
+          prev.youtube
+        ),
+      };
+    });
+  };
 
   // Funções utilitárias mantidas...
   const formatDuration = (duration?: string) => {
@@ -203,6 +334,7 @@ export default function WorkDetailsClient({
       </div>
     );
   };
+
   const getWorkTypeLabel = (type: string) => {
     const labels = {
       INDIVIDUAL: 'Obra Individual',
@@ -242,6 +374,18 @@ export default function WorkDetailsClient({
     setSelectedScoreForStudy(score);
     setSelectedScore(score?.id || null);
   };
+
+  console.log('🎵 [WORK-CLIENT] Renderizando com dados de áudio:', {
+    workId: work.id,
+    hasAudioData: !!currentAudioData,
+    hasAnyAudio: currentAudioData?.hasAnyAudio,
+    hasCustomAudio: !!currentAudioData?.customAudio,
+    hasSpotify: !!currentAudioData?.spotify,
+    hasYoutube: !!currentAudioData?.youtube,
+    audioSource: currentAudioData?.customAudio?.source,
+    completeness: currentAudioData?.completeness,
+    canEditMedia,
+  });
 
   return (
     <div className="bg-gradient-primary">
@@ -544,17 +688,6 @@ export default function WorkDetailsClient({
                     )}
                   </div>
 
-                  {/* 🆕 Movements Detailed Section */}
-                  {work.movementsDetailed && (
-                    <div className="border-t border-theme-secondary pt-6">
-                      <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
-                        <FiLayers className="w-5 h-5 text-accent-purple" />
-                        <span>Estrutura da Obra</span>
-                      </h3>
-                      {renderMovementsDetailed(work.movementsDetailed)}
-                    </div>
-                  )}
-
                   {/* Informações Adicionais */}
                   {(work.firstPublishDate ||
                     work.dedicateTo ||
@@ -853,6 +986,14 @@ export default function WorkDetailsClient({
                       )}
                     </div>
                   </div>
+
+                  {/* 🆕 Card de Estatísticas de Mídia */}
+                  {currentAudioData?.hasAnyAudio && (
+                    <MediaStatsCard
+                      audioData={currentAudioData}
+                      isLoading={isLoadingMedia}
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -860,7 +1001,14 @@ export default function WorkDetailsClient({
 
           <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" />
 
-          <MediaSection work={work} canEditMedia={canEditMedia} />
+          {/* 🆕 Seção de Multimídia com dados processados */}
+          <MediaSection
+            work={workForMediaSection}
+            canEditMedia={canEditMedia}
+            onMediaUpdate={handleMediaUpdate} // 🆕 Callback para atualizações
+          />
+
+          <VideoAulaSection work={work} canEditMedia={canEditMedia} />
 
           {/* 🆕 Seção de Partituras IMSLP com nova lógica */}
           {work.imslpPermlink && (
@@ -917,3 +1065,114 @@ export default function WorkDetailsClient({
     </div>
   );
 }
+
+// 🆕 Componente para exibir estatísticas de mídia
+const MediaStatsCard: React.FC<{
+  audioData: ProcessedAudioData;
+  isLoading: boolean;
+}> = ({ audioData, isLoading }) => {
+  const getCompletenessColor = (completeness: number) => {
+    if (completeness >= 80) return 'text-green-400';
+    if (completeness >= 50) return 'text-yellow-400';
+    return 'text-red-400';
+  };
+
+  const getCompletenessLabel = (completeness: number) => {
+    if (completeness >= 80) return 'Excelente';
+    if (completeness >= 50) return 'Boa';
+    return 'Básica';
+  };
+
+  return (
+    <AnimatedCard className="classical-card-simple p-6">
+      <h3 className="text-lg font-semibold text-theme-primary mb-4 classical-title">
+        Estatísticas de Mídia
+      </h3>
+
+      <div className="space-y-4">
+        {/* Completude */}
+        <div className="flex items-center justify-between">
+          <span className="text-theme-secondary text-sm">Completude:</span>
+          <div className="flex items-center space-x-2">
+            <span
+              className={`font-semibold ${getCompletenessColor(
+                audioData.completeness
+              )}`}
+            >
+              {audioData.completeness}%
+            </span>
+            <span className="text-xs text-theme-tertiary">
+              {getCompletenessLabel(audioData.completeness)}
+            </span>
+          </div>
+        </div>
+
+        {/* Fontes Disponíveis */}
+        <div className="border-t border-theme-secondary pt-4">
+          <p className="text-xs text-theme-tertiary mb-2">
+            Fontes disponíveis:
+          </p>
+          <div className="space-y-1">
+            {audioData.spotify && (
+              <div className="flex items-center space-x-2 text-xs">
+                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                <span className="text-theme-secondary">Spotify</span>
+                {audioData.spotify.thumbnail && (
+                  <span className="text-green-400">• Capa</span>
+                )}
+              </div>
+            )}
+
+            {audioData.youtube && (
+              <div className="flex items-center space-x-2 text-xs">
+                <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                <span className="text-theme-secondary">YouTube</span>
+              </div>
+            )}
+
+            {audioData.customAudio && (
+              <div className="flex items-center space-x-2 text-xs">
+                <div
+                  className={`w-2 h-2 rounded-full ${
+                    audioData.customAudio.isUpload
+                      ? 'bg-blue-400'
+                      : 'bg-purple-400'
+                  }`}
+                ></div>
+                <span className="text-theme-secondary">
+                  {audioData.customAudio.isUpload
+                    ? 'Upload'
+                    : audioData.customAudio.source}
+                </span>
+                <span className="text-green-400">• Salvo</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Última Busca */}
+        {audioData.lastMediaSearch && (
+          <div className="border-t border-theme-secondary pt-4">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-theme-tertiary">Última busca:</span>
+              <span className="text-theme-secondary">
+                {new Date(audioData.lastMediaSearch).toLocaleDateString(
+                  'pt-BR'
+                )}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Erro de Busca */}
+        {audioData.mediaSearchError && (
+          <div className="border-t border-red-700/30 pt-4">
+            <p className="text-xs text-red-400">
+              Erro: {audioData.mediaSearchError}
+            </p>
+          </div>
+        )}
+      </div>
+    </AnimatedCard>
+  );
+};

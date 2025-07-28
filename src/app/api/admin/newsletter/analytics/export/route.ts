@@ -6,7 +6,7 @@ import {
   getDateRange,
   getEngagementAnalytics,
   getSubscriberAnalytics,
-} from '../route';
+} from '@/app/utils/analyticsUtils';
 
 // app/api/admin/newsletter/analytics/export/route.ts
 export async function GET(request: NextRequest) {

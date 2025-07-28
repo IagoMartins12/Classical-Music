@@ -1,4 +1,4 @@
-// app/components/Players/SpotifyRedirectCard.tsx - ATUALIZADO
+// app/components/Players/SpotifyRedirectCard.tsx - ATUALIZADO COM THUMBNAIL PERSISTENTE
 'use client';
 
 import React from 'react';
@@ -13,7 +13,8 @@ interface SpotifyRedirectCardProps {
     trackUrl: string;
     displayTitle?: string; // 🆕 "Frédéric Chopin - Yuja Wang"
     previewUrl: string | null;
-    albumArt: string | null;
+    albumArt: string | null; // Para compatibilidade
+    thumbnail?: string | null; // 🆕 Thumbnail salvo na base de dados
     artists: string[];
     albumName: string;
     duration: number; // 🆕 Duração em ms
@@ -50,6 +51,23 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
 
   const artistInfo = parseArtistInfo();
 
+  // 🆕 Priorizar thumbnail salvo na base de dados
+  const getThumbnailUrl = () => {
+    // 1. Thumbnail salvo na base de dados (prioridade máxima)
+    if (spotify.thumbnail) {
+      return spotify.thumbnail;
+    }
+
+    // 2. AlbumArt como fallback
+    if (spotify.albumArt) {
+      return spotify.albumArt;
+    }
+
+    return null;
+  };
+
+  const thumbnailUrl = getThumbnailUrl();
+
   return (
     <AnimatedItem hover="scale" springType="bouncy">
       <div className="bg-gradient-to-br from-green-900/20 to-green-800/20 border border-green-700/30 rounded-xl overflow-hidden hover:border-green-600/50 transition-all duration-300 hover:shadow-green-500/20 hover:shadow-lg">
@@ -68,31 +86,51 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
               </div>
             </div>
 
-            {/* 🆕 Duração */}
-            {spotify.duration > 0 && (
-              <div className="flex items-center space-x-1 text-green-400">
-                <FiClock className="w-3 h-3" />
-                <span className="text-xs font-medium">
-                  {formatDuration(spotify.duration)}
-                </span>
-              </div>
-            )}
+            {/* 🆕 Duração e indicador de thumbnail */}
+            <div className="flex items-center space-x-3">
+              {/* Duração */}
+              {spotify.duration > 0 && (
+                <div className="flex items-center space-x-1 text-green-400">
+                  <FiClock className="w-3 h-3" />
+                  <span className="text-xs font-medium">
+                    {formatDuration(spotify.duration)}
+                  </span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Conteúdo Principal */}
         <div className="p-4">
           <div className="flex space-x-4">
-            {/* Capa do Álbum */}
-            <div className="flex-shrink-0">
-              {spotify.albumArt ? (
-                <Image
-                  width={80}
-                  height={80}
-                  src={spotify.albumArt}
-                  alt={spotify.albumName}
-                  className="w-20 h-20 rounded-lg object-cover shadow-lg border border-green-700/30"
-                />
+            {/* Capa do Álbum - 🆕 Com indicador de qualidade */}
+            <div className="flex-shrink-0 relative">
+              {thumbnailUrl ? (
+                <div className="relative">
+                  <Image
+                    width={80}
+                    height={80}
+                    src={thumbnailUrl}
+                    alt={spotify.albumName}
+                    className="w-20 h-20 rounded-lg object-cover shadow-lg border border-green-700/30"
+                    onError={(e) => {
+                      console.warn(
+                        'Erro ao carregar thumbnail do Spotify:',
+                        thumbnailUrl
+                      );
+                      // Fallback para ícone
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+
+                  {/* 🆕 Indicador de qualidade da imagem */}
+                  {spotify.thumbnail && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#1db954] rounded-full flex items-center justify-center border border-green-900">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div className="w-20 h-20 bg-gradient-to-br from-green-800/50 to-green-700/50 rounded-lg flex items-center justify-center border border-green-700/30">
                   <SiSpotify className="w-8 h-8 text-green-400" />
@@ -121,19 +159,16 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                   </p>
                 </div>
 
-                {/* 🆕 Informações adicionais */}
+                {/* 🆕 Informações adicionais expandidas */}
                 <div className="flex items-center space-x-3 text-xs text-gray-400">
-                  {spotify.popularity > 0 && (
-                    <div className="flex items-center space-x-1">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                      <span>Popular: {spotify.popularity}/100</span>
-                    </div>
-                  )}
-
+                  {/* Preview disponível */}
                   {spotify.previewUrl && (
-                    <div className="flex items-center space-x-1">
+                    <div
+                      className="flex items-center space-x-1"
+                      title="Preview de 30s disponível"
+                    >
                       <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      <span>Preview disponível</span>
+                      <span>Preview 30s</span>
                     </div>
                   )}
                 </div>
@@ -141,7 +176,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
             </div>
           </div>
 
-          {/* 🆕 Preview Player (se disponível) */}
+          {/* 🆕 Preview Player (se disponível) - Melhorado */}
           {spotify.previewUrl && (
             <div className="mt-4 p-3 bg-green-900/10 rounded-lg border border-green-700/20">
               <div className="flex items-center space-x-3">
@@ -149,18 +184,31 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                   <FiMusic className="w-4 h-4 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-green-300 text-sm font-medium">
-                    Preview de 30s
-                  </p>
-                  <audio controls className="w-full mt-1 h-8" preload="none">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-green-300 text-sm font-medium">
+                      Preview de 30s
+                    </p>
+                    {spotify.duration > 0 && (
+                      <span className="text-xs text-green-400">
+                        Música completa: {formatDuration(spotify.duration)}
+                      </span>
+                    )}
+                  </div>
+                  <audio
+                    controls
+                    className="w-full mt-1 h-8"
+                    preload="none"
+                    controlsList="nodownload"
+                  >
                     <source src={spotify.previewUrl} type="audio/mpeg" />
+                    Seu navegador não suporta o elemento de áudio.
                   </audio>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Botão de Redirecionamento */}
+          {/* Botão de Redirecionamento - 🆕 Melhorado */}
           <div className="mt-4">
             <a
               href={spotify.trackUrl}
@@ -172,6 +220,22 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
               <span>Ouvir no Spotify</span>
               <FiExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </a>
+
+            {/* 🆕 Link direto para o álbum (se disponível) */}
+            {spotify.albumName && (
+              <div className="mt-2 text-center">
+                <a
+                  href={`https://open.spotify.com/search/${encodeURIComponent(
+                    spotify.albumName
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-green-400 hover:text-green-300 transition-colors"
+                >
+                  Ver álbum completo: {spotify.albumName}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-// app/components/Players/UniversalAudioPlayer.tsx - CORRIGIDO
+// app/components/Players/UniversalAudioPlayer.tsx - SIMPLIFICADO SEM BUSCA DE FONTES
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
@@ -7,20 +7,26 @@ import {
   FiPause,
   FiVolume2,
   FiVolumeX,
-  FiRefreshCw,
   FiAlertTriangle,
   FiMusic,
   FiUpload,
+  FiDatabase,
 } from 'react-icons/fi';
 import { SiYoutube } from 'react-icons/si';
 
 interface AudioSource {
-  type: 'youtube-audio' | 'custom-audio' | 'alternative';
+  type:
+    | 'youtube-audio'
+    | 'custom-audio'
+    | 'alternative-saved'
+    | 'alternative-fresh';
   url: string;
   duration?: number;
   quality?: string;
   label: string;
   requiresAuth?: boolean;
+  isPersistent?: boolean; // 🆕 Se está salvo no banco
+  metadata?: any; // 🆕 Metadados da fonte
 }
 
 interface UniversalAudioPlayerProps {
@@ -28,22 +34,28 @@ interface UniversalAudioPlayerProps {
     id: string;
     title: string;
     composer: { fullName: string };
+    // 🆕 Campos expandidos para áudio customizado
+    customAudioUrl?: string | null;
+    customAudioFile?: string | null;
+    customAudioSource?: string | null; // "upload" ou nome da fonte
+    customAudioMetadata?: any; // Metadados JSON
   };
 
   customAudio?: {
     url: string;
     file: string;
     title?: string;
+    isPersistent?: boolean;
   } | null;
 
-  // 🆕 Prop para fontes alternativas vindas da busca de mídia
+  // 🆕 Prop para fontes alternativas temporárias (vindas do MediaSection)
   alternativeAudioSources?: any[];
 }
 
 const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   work,
   customAudio,
-  alternativeAudioSources = [], // 🆕 Receber fontes alternativas
+  alternativeAudioSources = [],
 }) => {
   // Estados do player
   const [isPlaying, setIsPlaying] = useState(false);
@@ -56,47 +68,80 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   // Estados das fontes de áudio
   const [audioSources, setAudioSources] = useState<AudioSource[]>([]);
   const [currentSource, setCurrentSource] = useState<AudioSource | null>(null);
-  const [isSearchingAlternatives, setIsSearchingAlternatives] = useState(false);
-  const [sourcesInitialized, setSourcesInitialized] = useState(false); // 🆕 Flag para controlar inicialização
+  const [sourcesInitialized, setSourcesInitialized] = useState(false);
 
   // Refs
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const waveformRef = useRef<HTMLDivElement | null>(null);
 
-  // 🆕 Função para inicializar fontes de áudio
+  // 🆕 Função para inicializar fontes de áudio COM PRIORIDADES CORRETAS
   const initializeAudioSources = useCallback(() => {
     const sources: AudioSource[] = [];
 
-    // 1. Áudio Customizado (prioridade máxima)
+    console.log('🎵 [AUDIO-PLAYER] Inicializando fontes com prioridades:', {
+      hasCustomAudio: !!customAudio,
+      hasWorkAudioUrl: !!work.customAudioUrl,
+      workAudioSource: work.customAudioSource,
+      alternativeSourcesCount: alternativeAudioSources.length,
+    });
+
+    // 🎯 PRIORIDADE 1: Áudio Customizado (UPLOAD) - SEMPRE PRIMEIRO
     if (customAudio?.url || customAudio?.file) {
       sources.push({
         type: 'custom-audio',
         url: customAudio.url || customAudio.file,
-        duration: 0, // Será detectado pelo player
+        duration: 0,
         quality: 'original',
         label: customAudio.title || 'Áudio Personalizado',
+        isPersistent: customAudio.isPersistent ?? true,
       });
+      console.log('✅ [AUDIO-PLAYER] Adicionado: Áudio customizado (upload)');
     }
 
-    // 2. 🆕 Fontes alternativas vindas da busca de mídia
-    if (alternativeAudioSources && alternativeAudioSources.length > 0) {
-      const alternativeSources = alternativeAudioSources.map(
-        (source, index) => ({
-          type: 'alternative' as const,
+    // 🎯 PRIORIDADE 2: Fonte Alternativa SALVA no banco (se não for upload)
+    if (
+      work.customAudioUrl &&
+      work.customAudioSource &&
+      work.customAudioSource !== 'upload'
+    ) {
+      sources.push({
+        type: 'alternative-saved',
+        url: work.customAudioUrl,
+        duration: work.customAudioMetadata?.duration || 0,
+        quality: work.customAudioMetadata?.quality || 'varies',
+        label: `${work.customAudioSource} (Salvo)`,
+        isPersistent: true,
+        metadata: work.customAudioMetadata,
+      });
+      console.log(
+        '✅ [AUDIO-PLAYER] Adicionado: Fonte alternativa salva -',
+        work.customAudioSource
+      );
+    }
+
+    // 🎯 PRIORIDADE 3: Fontes alternativas TEMPORÁRIAS (não salvas) - vindas do MediaSection
+    if (alternativeAudioSources.length > 0) {
+      const freshAlternativeSources = alternativeAudioSources.map(
+        (source: any, index: number) => ({
+          type: 'alternative-fresh' as const,
           url: source.audioUrl,
           duration: source.duration,
           quality: source.quality || 'varies',
-          label: source.source || `Fonte Alternativa ${index + 1}`,
+          label: `${source.source} (${index + 1})`,
+          isPersistent: false, // NÃO são persistentes
+          metadata: source,
         })
       );
-      sources.push(...alternativeSources);
-    }
 
-    console.log('🎵 [AUDIO-PLAYER] Fontes inicializadas:', sources.length);
+      sources.push(...freshAlternativeSources);
+      console.log(
+        `✅ [AUDIO-PLAYER] Adicionado: ${freshAlternativeSources.length} fonte(s) alternativa(s) temporária(s)`
+      );
+    }
 
     setAudioSources(sources);
 
-    // 🆕 FIX: Definir fonte padrão quando há fontes disponíveis
+    // 🆕 Definir fonte padrão (sempre a primeira disponível)
     if (sources.length > 0 && !currentSource) {
       console.log(
         '🎵 [AUDIO-PLAYER] Definindo fonte padrão:',
@@ -105,92 +150,30 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
       setCurrentSource(sources[0]);
     }
 
-    setSourcesInitialized(true); // 🆕 Marcar como inicializado
-  }, [customAudio, alternativeAudioSources, currentSource]);
+    setSourcesInitialized(true);
+  }, [
+    customAudio,
+    work.customAudioUrl,
+    work.customAudioSource,
+    work.customAudioMetadata,
+    alternativeAudioSources,
+    currentSource,
+  ]);
 
   // 🆕 Inicializar fontes quando componente monta ou props mudam
   useEffect(() => {
-    if (!sourcesInitialized) {
-      initializeAudioSources();
-    }
-  }, [initializeAudioSources, sourcesInitialized]);
-
-  // Buscar fontes alternativas adicionais (quando chamado manualmente)
-  const searchAlternativeAudioSources = useCallback(async () => {
-    if (isSearchingAlternatives) return;
-
-    setIsSearchingAlternatives(true);
-
-    try {
-      const response = await fetch('/api/alternative-audio-sources', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: work.title,
-          composer: work.composer.fullName,
-        }),
-      });
-
-      if (!response.ok) {
-        console.error('Erro ao buscar fontes alternativas:', response.status);
-        return;
-      }
-
-      const data = await response.json();
-      const newSources = data.sources || [];
-
-      if (newSources.length > 0) {
-        const alternativeSources = newSources.map(
-          (source: any, index: number) => ({
-            type: 'alternative' as const,
-            url: source.audioUrl,
-            duration: source.duration,
-            quality: source.quality || 'varies',
-            label: source.source || `Fonte Alternativa ${index + 1}`,
-          })
-        );
-
-        // 🆕 FIX: Adicionar novas fontes sem duplicar
-        setAudioSources((prev) => {
-          const existingUrls = new Set(prev.map((s) => s.url));
-          const uniqueNewSources = alternativeSources.filter(
-            (s: any) => !existingUrls.has(s.url)
-          );
-
-          const updatedSources = [...prev, ...uniqueNewSources];
-
-          // Se não havia fonte selecionada, selecionar a primeira nova
-          if (!currentSource && uniqueNewSources.length > 0) {
-            setCurrentSource(uniqueNewSources[0]);
-          }
-
-          return updatedSources;
-        });
-
-        console.log(
-          `✅ [AUDIO-PLAYER] ${newSources.length} novas fontes adicionadas`
-        );
-      }
-    } catch (error) {
-      console.error('Erro ao buscar fontes alternativas:', error);
-    } finally {
-      setIsSearchingAlternatives(false);
-    }
-  }, [
-    isSearchingAlternatives,
-    work.title,
-    work.composer.fullName,
-    currentSource,
-  ]);
+    initializeAudioSources();
+  }, [initializeAudioSources]);
 
   // Configurar player de áudio
   useEffect(() => {
     if (!currentSource) return;
 
-    console.log(
-      '🎵 [AUDIO-PLAYER] Configurando player para:',
-      currentSource.label
-    );
+    console.log('🎵 [AUDIO-PLAYER] Configurando player para:', {
+      label: currentSource.label,
+      type: currentSource.type,
+      isPersistent: currentSource.isPersistent,
+    });
 
     const audio = new Audio(currentSource.url);
     audio.volume = isMuted ? 0 : volume;
@@ -244,19 +227,19 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
       setCurrentSource(nextSource);
     } else {
       console.log(
-        '🔍 [AUDIO-PLAYER] Todas as fontes falharam, buscando alternativas...'
+        '❌ [AUDIO-PLAYER] Todas as fontes falharam. Use o botão "Mais Fontes" no MediaSection para buscar alternativas.'
       );
-      searchAlternativeAudioSources();
     }
-  }, [audioSources, currentSource, searchAlternativeAudioSources]);
+  }, [audioSources, currentSource]);
 
-  // 🆕 FIX: Função para selecionar fonte manualmente
+  // 🆕 Função para selecionar fonte manualmente
   const selectAudioSource = useCallback(
     (source: AudioSource) => {
-      console.log(
-        '🎵 [AUDIO-PLAYER] Fonte selecionada manualmente:',
-        source.label
-      );
+      console.log('🎵 [AUDIO-PLAYER] Fonte selecionada manualmente:', {
+        label: source.label,
+        type: source.type,
+        isPersistent: source.isPersistent,
+      });
 
       // Parar áudio atual se estiver tocando
       if (audioRef.current && isPlaying) {
@@ -322,21 +305,42 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
+  // 🆕 Ícone da fonte com indicadores de persistência
   const getSourceIcon = (source: AudioSource) => {
     switch (source.type) {
       case 'youtube-audio':
         return <SiYoutube className="w-4 h-4 text-red-400" />;
       case 'custom-audio':
         return <FiUpload className="w-4 h-4 text-blue-400" />;
+      case 'alternative-saved':
+        return <FiDatabase className="w-4 h-4 text-green-400" />; // 🆕 Ícone para salvas
+      case 'alternative-fresh':
+        return <FiMusic className="w-4 h-4 text-purple-400" />; // 🆕 Ícone para temporárias
       default:
-        return <FiMusic className="w-4 h-4 text-purple-400" />;
+        return <FiMusic className="w-4 h-4 text-gray-400" />;
     }
   };
 
   const getAudioCover = () => {
-    if (customAudio) {
+    if (currentSource?.type === 'custom-audio') {
       return (
         <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+          <FiUpload className="w-8 h-8 text-white" />
+        </div>
+      );
+    }
+
+    if (currentSource?.type === 'alternative-saved') {
+      return (
+        <div className="w-20 h-20 bg-gradient-to-br from-green-600 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
+          <FiDatabase className="w-8 h-8 text-white" />
+        </div>
+      );
+    }
+
+    if (currentSource?.type === 'alternative-fresh') {
+      return (
+        <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
           <FiMusic className="w-8 h-8 text-white" />
         </div>
       );
@@ -350,7 +354,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     );
   };
 
-  // 🆕 FIX: Renderizar baseado no estado de inicialização
+  // 🆕 Status de inicialização
   if (!sourcesInitialized) {
     return (
       <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
@@ -364,6 +368,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     );
   }
 
+  // 🆕 Estado sem fontes disponíveis
   if (audioSources.length === 0) {
     return (
       <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
@@ -375,22 +380,10 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
           <p className="text-gray-400 text-sm mb-4">
             Não foi possível encontrar áudio para esta obra.
           </p>
-          <button
-            onClick={searchAlternativeAudioSources}
-            disabled={isSearchingAlternatives}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 mx-auto transition-colors disabled:opacity-50"
-          >
-            <FiRefreshCw
-              className={`w-4 h-4 ${
-                isSearchingAlternatives ? 'animate-spin' : ''
-              }`}
-            />
-            <span>
-              {isSearchingAlternatives
-                ? 'Buscando...'
-                : 'Buscar Fontes de Áudio'}
-            </span>
-          </button>
+          <p className="text-gray-500 text-xs">
+            Use o botão "Carregar Mídia" ou "Mais Fontes" acima para buscar
+            fontes de áudio.
+          </p>
         </div>
       </div>
     );
@@ -414,7 +407,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
             </h3>
             <p className="text-gray-400 text-sm">{work.composer.fullName}</p>
 
-            {/* Fonte atual */}
+            {/* 🆕 Fonte atual com indicadores de persistência */}
             {currentSource && (
               <div className="flex items-center space-x-2 mt-2">
                 {getSourceIcon(currentSource)}
@@ -426,35 +419,26 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
                     {currentSource.quality}
                   </span>
                 )}
+                {currentSource.isPersistent && (
+                  <span className="text-xs bg-green-600 text-white px-2 py-1 rounded flex items-center space-x-1">
+                    <FiDatabase className="w-3 h-3" />
+                    <span>Salvo</span>
+                  </span>
+                )}
               </div>
             )}
-          </div>
-
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={searchAlternativeAudioSources}
-              disabled={isSearchingAlternatives}
-              className="p-2 text-gray-400 hover:text-white transition-colors disabled:opacity-50"
-              title="Buscar mais fontes"
-            >
-              <FiRefreshCw
-                className={`w-4 h-4 ${
-                  isSearchingAlternatives ? 'animate-spin' : ''
-                }`}
-              />
-            </button>
           </div>
         </div>
       </div>
 
-      {/* Seletor de fontes */}
+      {/* 🆕 Seletor de fontes com indicadores de persistência */}
       {audioSources.length > 1 && (
         <div className="px-6 pb-4">
           <div className="flex space-x-2 overflow-x-auto">
             {audioSources.map((source, index) => (
               <button
                 key={index}
-                onClick={() => selectAudioSource(source)} // 🆕 FIX: Usar função correta
+                onClick={() => selectAudioSource(source)}
                 className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-colors ${
                   currentSource === source
                     ? 'bg-blue-600 text-white'
@@ -463,6 +447,12 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
               >
                 {getSourceIcon(source)}
                 <span>{source.label}</span>
+                {source.isPersistent && (
+                  <FiDatabase
+                    className="w-3 h-3 text-green-400"
+                    title="Salvo no banco"
+                  />
+                )}
               </button>
             ))}
           </div>

@@ -1,8 +1,9 @@
 // app/hooks/useWorkCleanup.ts
-'use client';
 
 import { useCallback } from 'react';
 import { useToast } from './useToast';
+import fs from 'fs/promises';
+import path from 'path';
 
 export function useWorkCleanup() {
   const toast = useToast();
@@ -142,12 +143,9 @@ export function useWorkCleanup() {
 // Função utilitária para usar em componentes de classe ou server-side
 export async function cleanupWorkMediaServer(workId: string) {
   try {
-    const { rmdir } = await import('fs/promises');
-    const path = await import('path');
-
     const workMediaDir = path.join(process.cwd(), 'public', 'uploads', workId);
 
-    await rmdir(workMediaDir, { recursive: true });
+    await fs.rmdir(workMediaDir, { recursive: true });
     console.log(`✅ [SERVER-CLEANUP] Mídia removida para obra: ${workId}`);
     return true;
   } catch (error) {

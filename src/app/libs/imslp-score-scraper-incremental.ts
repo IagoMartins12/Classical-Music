@@ -631,7 +631,172 @@ export class IMSLPScraperIncremental {
 
     if (!hiddenLink) return null;
 
-    // Extrair metadados básicos
+    // 🚀 CAPTURA APRIMORADA DE THUMBNAIL - MÚLTIPLAS ESTRATÉGIAS
+    let thumbnailUrl: string | undefined;
+
+    try {
+      console.log(
+        `🔍 [THUMBNAIL] Buscando thumbnail para partitura ${scoreId}...`
+      );
+
+      // 🔧 FUNÇÃO AUXILIAR: Construir URL correta baseada no conteúdo
+      const buildThumbnailUrl = (rawUrl: string): string => {
+        if (rawUrl.startsWith('http')) {
+          return rawUrl; // Já é uma URL completa
+        }
+
+        // 🚀 VERIFICAÇÃO ESPECÍFICA: CDN vs IMSLP normal
+        if (rawUrl.includes('cdn')) {
+          const finalUrl = `https://${rawUrl}`;
+          console.log(`🌐 [THUMBNAIL-CDN] URL com CDN: ${finalUrl}`);
+          return finalUrl;
+        } else {
+          const finalUrl = `https://imslp.org${rawUrl}`;
+          console.log(`🌐 [THUMBNAIL-NORMAL] URL normal: ${finalUrl}`);
+          return finalUrl;
+        }
+      };
+
+      // === ESTRATÉGIA 1: data-src (lazy loading) ===
+      const $imgDataSrc = $element.find('img[data-src]');
+      if ($imgDataSrc.length > 0) {
+        const dataSrc = $imgDataSrc.first().attr('data-src');
+        if (dataSrc && dataSrc.includes('/images/')) {
+          thumbnailUrl = buildThumbnailUrl(dataSrc);
+          console.log(`✅ [THUMBNAIL-1] Data-src encontrado: ${thumbnailUrl}`);
+        }
+      }
+
+      // === ESTRATÉGIA 2: src normal (imagens já carregadas) ===
+      if (!thumbnailUrl) {
+        const $imgSrc = $element.find('img[src]');
+        if ($imgSrc.length > 0) {
+          const src = $imgSrc.first().attr('src');
+          if (
+            src &&
+            src.includes('/images/') &&
+            !src.includes('loading') &&
+            !src.includes('spinner')
+          ) {
+            thumbnailUrl = buildThumbnailUrl(src);
+            console.log(`✅ [THUMBNAIL-2] Src encontrado: ${thumbnailUrl}`);
+          }
+        }
+      }
+
+      // === ESTRATÉGIA 3: Links de Preview no HTML ===
+      if (!thumbnailUrl) {
+        const elementHtml = $element.html() || '';
+
+        // Buscar padrão: ([Preview](/images/...))
+        const previewMatch = elementHtml.match(/\[Preview\]\(([^)]+\.jpg)\)/i);
+        if (previewMatch) {
+          const previewUrl = previewMatch[1];
+          thumbnailUrl = buildThumbnailUrl(previewUrl);
+          console.log(
+            `✅ [THUMBNAIL-3] Preview link encontrado: ${thumbnailUrl}`
+          );
+        }
+      }
+
+      // === ESTRATÉGIA 4: Links PV- (Preview Files) ===
+      if (!thumbnailUrl) {
+        const $previewLinks = $element.find('a[href*="PV-"]');
+        if ($previewLinks.length > 0) {
+          const previewHref = $previewLinks.first().attr('href');
+          if (previewHref && previewHref.endsWith('.jpg')) {
+            thumbnailUrl = buildThumbnailUrl(previewHref);
+            console.log(
+              `✅ [THUMBNAIL-4] Preview PV- encontrado: ${thumbnailUrl}`
+            );
+          }
+        }
+      }
+
+      // === ESTRATÉGIA 5: Busca em elementos relacionados ===
+      if (!thumbnailUrl) {
+        // Buscar em elementos pais/irmãos próximos
+        const $relatedContainer =
+          $element.closest('.we').length > 0
+            ? $element.closest('.we')
+            : $element.parent();
+
+        const $relatedImages = $relatedContainer.find('img');
+
+        $relatedImages.each((_, imgEl) => {
+          if (thumbnailUrl) return false; // Para quando encontrar a primeira
+
+          const $img = $(imgEl);
+          const imgDataSrc = $img.attr('data-src');
+          const imgSrc = $img.attr('src');
+
+          const imgUrl = imgDataSrc || imgSrc;
+
+          if (
+            imgUrl &&
+            imgUrl.includes('/images/') &&
+            !imgUrl.includes('loading')
+          ) {
+            thumbnailUrl = buildThumbnailUrl(imgUrl);
+            console.log(
+              `✅ [THUMBNAIL-5] Imagem relacionada encontrada: ${thumbnailUrl}`
+            );
+            return false; // Para o loop
+          }
+        });
+      }
+
+      // === ESTRATÉGIA 6: Busca por href de imagens no texto ===
+      if (!thumbnailUrl) {
+        const elementText = $element.text() + $element.html();
+
+        // Buscar URLs de imagens no texto/HTML
+        const imageUrlMatch = elementText.match(
+          /\/images\/[a-f0-9]\/[a-f0-9]{2}\/[^"'\s)]+\.jpg/i
+        );
+        if (imageUrlMatch) {
+          thumbnailUrl = buildThumbnailUrl(imageUrlMatch[0]);
+          console.log(
+            `✅ [THUMBNAIL-6] URL de imagem no texto encontrada: ${thumbnailUrl}`
+          );
+        }
+      }
+
+      // === ESTRATÉGIA 7: Construção baseada em padrões IMSLP ===
+      if (!thumbnailUrl) {
+        // Tentar encontrar referências a arquivos de imagem baseados no scoreId
+        const possiblePatterns = [
+          `/images/thumb/TN-${scoreId}.jpg`,
+          `/images/thumb/PV-${scoreId}.jpg`,
+        ];
+
+        for (const pattern of possiblePatterns) {
+          // Não definimos thumbnailUrl aqui porque são apenas tentativas
+          // mas você pode implementar uma validação HTTP se quiser verificar se existem
+          console.log(
+            `🔄 [THUMBNAIL-7] Padrão possível: https://imslp.org${pattern}`
+          );
+        }
+      }
+
+      // === LOG FINAL ===
+      if (thumbnailUrl) {
+        console.log(
+          `🎯 [THUMBNAIL-FINAL] ✅ Thumbnail capturado para ${scoreId}: ${thumbnailUrl}`
+        );
+      } else {
+        console.log(
+          `⚠️ [THUMBNAIL-FINAL] ❌ Nenhum thumbnail encontrado para ${scoreId}`
+        );
+      }
+    } catch (error) {
+      console.error(
+        `❌ [THUMBNAIL-ERROR] Erro ao capturar thumbnail para ${scoreId}:`,
+        error
+      );
+    }
+
+    // Extrair metadados básicos (seu código original)
     const fileInfo = $downloadSection.find('.we_file_info2').text();
     const fileSizeMatch = fileInfo.match(/(\d+\.?\d*)(MB|KB)/);
     const pageCountMatch = fileInfo.match(/(\d+)\s*pp\./);
@@ -650,6 +815,8 @@ export class IMSLPScraperIncremental {
           ? parseInt(downloadCountMatch[1])
           : undefined,
         type,
+        // 🆕 IMPORTANTE: Adicionar thumbnailUrl aos metadados
+        thumbnailUrl,
       },
     };
   }

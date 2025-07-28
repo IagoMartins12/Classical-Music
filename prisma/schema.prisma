@@ -690,7 +690,7 @@ model Work {
   spotifyTrackUrl     String? // URL da track
   spotifyDisplayTitle String? // 🆕 "Frédéric Chopin - Yuja Wang"
   spotifyDuration     Int?    // 🆕 Duração em ms
-  spotifyArtists Json? // 🔧 MUDANÇA: String? → Json?
+  spotifyArtists      Json?   // 🔧 MUDANÇA: String? → Json?
   spotifyThumbnail    String? // 🆕 URL da capa do álbum
 
   // YouTube (essencial)
@@ -800,6 +800,7 @@ model Work {
   // 🆕 ÍNDICES ATUALIZADOS PARA MÍDIA
   @@index([spotifyDisplayTitle]) // 🆕 Índice para título com intérprete
   @@index([spotifyDuration]) // 🆕 Índice para duração
+  @@index([spotifyThumbnail]) // 🆕 Índice para thumbnail
 }
 
 // 🆕 Enum para tipos de vídeo aula

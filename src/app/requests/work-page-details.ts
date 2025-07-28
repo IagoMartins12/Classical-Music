@@ -1,5 +1,6 @@
-// app/requests/work-page-details.ts - ATUALIZADO COM NOVOS CAMPOS SPOTIFY
+// app/requests/work-page-details.ts - CORRIGIDO O TYPO NO CAMPO customAudioSource
 import prisma from '@/app/libs/prismadb';
+import { JsonValue } from '@prisma/client/runtime/library';
 import { unstable_cache } from 'next/cache';
 
 export interface WorkDetails {
@@ -26,19 +27,30 @@ export interface WorkDetails {
   isVerified: boolean;
   createdBy?: string | null;
 
-  // 🆕 Campos de mídia expandidos
+  // 🆕 Campos de mídia expandidos com thumbnail
   spotifyTrackId?: string | null;
   spotifyTrackUrl?: string | null;
   spotifyDisplayTitle?: string | null; // 🆕 "Composer - Interpreter"
   spotifyDuration?: number | null; // 🆕 Duração em ms
-  spotifyArtists?: string | null; // 🆕 JSON com array de artistas
+  spotifyArtists?: JsonValue | null; // 🆕 JSON com array de artistas
+  spotifyThumbnail?: string | null; // 🆕 URL da thumbnail do Spotify
 
   youtubeVideoId?: string | null;
   youtubeVideoUrl?: string | null;
   youtubeTitle?: string | null;
 
+  videoAulaUrl?: string | null;
+  videoAulaFile?: string | null;
+  videoAulaMetadata?: JsonValue | null;
+  videoAulaSource?: string | null;
+  videoAulaTitle?: string | null;
+  videoAulaType?: string | null;
+  videoAulaAddedAt?: Date | null;
+
   customAudioUrl?: string | null;
   customAudioFile?: string | null;
+  customAudioMetadata?: JsonValue | null;
+  customAudioSource?: string | null; // 🔧 CORRIGIDO: era customAudioMSource
 
   mediaSource?: string | null; // "auto", "manual", "none"
   lastMediaSearch?: Date | null;
@@ -131,19 +143,30 @@ const getCachedWorkData = unstable_cache(
           isVerified: true,
           createdBy: true,
 
-          // 🆕 Campos de mídia expandidos
+          // 🆕 Campos de mídia expandidos com thumbnail
           spotifyTrackId: true,
           spotifyTrackUrl: true,
           spotifyDisplayTitle: true, // 🆕
           spotifyDuration: true, // 🆕
           spotifyArtists: true, // 🆕
+          spotifyThumbnail: true, // 🆕 Thumbnail do Spotify
 
           youtubeVideoId: true,
           youtubeVideoUrl: true,
           youtubeTitle: true,
 
+          videoAulaUrl: true,
+          videoAulaFile: true,
+          videoAulaMetadata: true,
+          videoAulaSource: true,
+          videoAulaTitle: true,
+          videoAulaType: true,
+          videoAulaAddedAt: true,
+
           customAudioUrl: true,
           customAudioFile: true,
+          customAudioMetadata: true,
+          customAudioSource: true, // 🔧 CORRIGIDO: era customAudioMSource
 
           mediaSource: true, // "auto", "manual", "none"
           lastMediaSearch: true,
@@ -239,19 +262,30 @@ export const getWorkById = async (
       isVerified: work.isVerified,
       createdBy: work.createdBy,
 
-      // 🆕 Campos de mídia expandidos
+      // 🆕 Campos de mídia expandidos com thumbnail
       spotifyTrackId: work.spotifyTrackId,
       spotifyTrackUrl: work.spotifyTrackUrl,
       spotifyDisplayTitle: work.spotifyDisplayTitle, // 🆕
       spotifyDuration: work.spotifyDuration, // 🆕
       spotifyArtists: work.spotifyArtists, // 🆕
+      spotifyThumbnail: work.spotifyThumbnail, // 🆕 Thumbnail do Spotify
 
       youtubeVideoId: work.youtubeVideoId,
       youtubeVideoUrl: work.youtubeVideoUrl,
       youtubeTitle: work.youtubeTitle,
 
+      videoAulaUrl: work.videoAulaUrl,
+      videoAulaFile: work.videoAulaFile,
+      videoAulaMetadata: work.videoAulaMetadata,
+      videoAulaSource: work.videoAulaSource,
+      videoAulaTitle: work.videoAulaTitle,
+      videoAulaType: work.videoAulaType,
+      videoAulaAddedAt: work.videoAulaAddedAt,
+
       customAudioUrl: work.customAudioUrl,
       customAudioFile: work.customAudioFile,
+      customAudioMetadata: work.customAudioMetadata,
+      customAudioSource: work.customAudioSource, // 🔧 CORRIGIDO
 
       mediaSource: work.mediaSource, // "auto", "manual", "none"
       lastMediaSearch: work.lastMediaSearch,
@@ -359,12 +393,85 @@ export const getRelatedWorks = unstable_cache(
   }
 );
 
+// 🆕 Função para buscar estatísticas de mídia da obra
+export const getWorkMediaStats = unstable_cache(
+  async (workId: string) => {
+    try {
+      const work = await prisma.work.findUnique({
+        where: { id: workId },
+        select: {
+          spotifyTrackId: true,
+          spotifyDuration: true,
+          spotifyThumbnail: true,
+          youtubeVideoId: true,
+          customAudioFile: true,
+          customAudioUrl: true, // 🆕 Incluir URL customizada
+          customAudioSource: true, // 🆕 Incluir fonte
+          mediaSource: true,
+          lastMediaSearch: true,
+        },
+      });
+
+      if (!work) return null;
+
+      return {
+        hasSpotify: !!work.spotifyTrackId,
+        hasYoutube: !!work.youtubeVideoId,
+        hasCustomAudio: !!(work.customAudioFile || work.customAudioUrl),
+        hasThumbnail: !!work.spotifyThumbnail,
+        audioSource: work.customAudioSource, // 🆕 Incluir fonte do áudio
+        mediaSource: work.mediaSource,
+        lastSearched: work.lastMediaSearch,
+        completeness: calculateMediaCompleteness(work),
+      };
+    } catch (error) {
+      console.error('Erro ao buscar estatísticas de mídia:', error);
+      return null;
+    }
+  },
+  ['work-media-stats'],
+  {
+    revalidate: 1800, // 30 minutos
+    tags: ['work-media-stats'],
+  }
+);
+
+// 🆕 Função para calcular completude da mídia
+function calculateMediaCompleteness(work: any): number {
+  let score = 0;
+  let maxScore = 0;
+
+  // Spotify (40 pontos máximo)
+  maxScore += 40;
+  if (work.spotifyTrackId) {
+    score += 20; // Track ID
+    if (work.spotifyDuration) score += 5; // Duração
+    if (work.spotifyThumbnail) score += 10; // Thumbnail
+    if (work.spotifyDisplayTitle) score += 5; // Display title
+  }
+
+  // YouTube (30 pontos máximo)
+  maxScore += 30;
+  if (work.youtubeVideoId) {
+    score += 30;
+  }
+
+  // Áudio customizado (30 pontos máximo)
+  maxScore += 30;
+  if (work.customAudioFile || work.customAudioUrl) {
+    score += 30;
+  }
+
+  return Math.round((score / maxScore) * 100);
+}
+
 // Função para invalidar cache
 export async function revalidateWorkCache(workId?: string) {
   const { revalidateTag } = await import('next/cache');
   revalidateTag('works-list');
   revalidateTag('work-basic-data');
   revalidateTag('related-works');
+  revalidateTag('work-media-stats'); // 🆕
   revalidateTag('instruments-list');
   if (workId) {
     revalidateTag(`work-${workId}`);

@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "tsx scripts/migrate.ts",
+    "fix-works": "tsx scripts/fix-famous-work-subtitle.ts",
+    "fix-works:execute": "tsx scripts/fix-famous-work-subtitle.ts execute",
     "scraper": "tsx scripts/imslp-scraper.ts",
     "scraper:start": "tsx scripts/imslp-scraper.ts start",
     "scraper:stop": "tsx scripts/imslp-scraper.ts stop",

@@ -1,4 +1,4 @@
-// app/components/Players/MediaSection.tsx - REDESIGN COMPLETO COM MELHORIAS
+// app/components/Players/MediaSection.tsx - ATUALIZADO COM BUSCA INTEGRADA DE ÁUDIO
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -12,7 +12,8 @@ import {
   FiX,
   FiCheck,
   FiLoader,
-  FiClock,
+  FiDatabase,
+  FiTrash2,
 } from 'react-icons/fi';
 import { SiSpotify, SiYoutube } from 'react-icons/si';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
@@ -27,9 +28,10 @@ interface MediaData {
   spotify: {
     trackId: string;
     trackUrl: string;
-    displayTitle?: string; // 🆕 "Composer - Interpreter"
-    duration?: number; // 🆕 Duração em ms
-    artists?: string[]; // 🆕 Lista de artistas
+    displayTitle?: string;
+    duration?: number;
+    artists?: string[];
+    thumbnail?: string;
     previewUrl?: string | null;
     albumArt?: string | null;
     albumName?: string;
@@ -44,8 +46,9 @@ interface MediaData {
     url: string;
     file: string;
     title?: string;
+    isPersistent?: boolean;
   } | null;
-  alternativeAudio: any[]; // 🆕 Fontes alternativas
+  alternativeAudio: any[];
 }
 
 interface MediaSectionProps {
@@ -55,12 +58,13 @@ interface MediaSectionProps {
     composer: {
       fullName: string;
     };
-    // 🆕 Dados de mídia expandidos
+    // 🆕 Dados de mídia expandidos com thumbnail
     spotifyTrackId?: string;
     spotifyTrackUrl?: string;
-    spotifyDisplayTitle?: string; // 🆕
-    spotifyDuration?: number; // 🆕
-    spotifyArtists?: string; // 🆕 JSON string
+    spotifyDisplayTitle?: string;
+    spotifyDuration?: number;
+    spotifyArtists?: string;
+    spotifyThumbnail?: string;
 
     youtubeVideoId?: string;
     youtubeVideoUrl?: string;
@@ -68,17 +72,21 @@ interface MediaSectionProps {
 
     customAudioUrl?: string;
     customAudioFile?: string;
+    customAudioSource?: string; // 🆕 "upload" ou nome da fonte
+    customAudioMetadata?: any; // 🆕 Metadados JSON
 
-    mediaSource?: string; // "auto", "manual", "none"
+    mediaSource?: string;
     lastMediaSearch?: Date;
     mediaSearchError?: string;
   };
   canEditMedia?: boolean;
+  onMediaUpdate?: (newMediaData: any) => void; // 🆕 Callback para atualizações
 }
 
 const MediaSection: React.FC<MediaSectionProps> = ({
   work,
   canEditMedia = false,
+  onMediaUpdate, // 🆕 Callback para atualizações
 }) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
@@ -86,13 +94,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     spotify: null,
     youtube: null,
     customAudio: null,
-    alternativeAudio: [], // 🆕
+    alternativeAudio: [],
   });
   const [showEditMode, setShowEditMode] = useState(false);
   const [editData, setEditData] = useState({
     spotifyUrl: '',
     youtubeUrl: '',
     audioFile: null as File | null,
+    removeCustomAudio: false,
   });
   const [isUploading, setIsUploading] = useState(false);
 
@@ -103,14 +112,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     if (!artistsData) return [];
 
     try {
-      // Se já é um array, extrair nomes
       if (Array.isArray(artistsData)) {
         return artistsData.map((artist) =>
           typeof artist === 'string' ? artist : artist.name || artist
         );
       }
 
-      // Se é string JSON, parsear
       if (typeof artistsData === 'string') {
         const parsed = JSON.parse(artistsData);
         if (Array.isArray(parsed)) {
@@ -127,8 +134,17 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     }
   };
 
-  // Inicializar dados da mídia
+  // 🆕 Inicializar dados da mídia E pré-popular campos de edição
   useEffect(() => {
+    console.log('🎵 [MEDIA-SECTION] Inicializando dados de mídia:', {
+      workId: work.id,
+      hasSpotify: !!work.spotifyTrackId,
+      hasYoutube: !!work.youtubeVideoId,
+      hasCustomAudio: !!(work.customAudioUrl || work.customAudioFile),
+      customAudioSource: work.customAudioSource,
+      spotifyThumbnail: work.spotifyThumbnail,
+    });
+
     const initialData: MediaData = {
       spotify: work.spotifyTrackId
         ? {
@@ -136,9 +152,10 @@ const MediaSection: React.FC<MediaSectionProps> = ({
             trackUrl: work.spotifyTrackUrl!,
             displayTitle: work.spotifyDisplayTitle,
             duration: work.spotifyDuration,
-            artists: parseSpotifyArtists(work.spotifyArtists), // 🔧 CORRIGIDO
+            artists: parseSpotifyArtists(work.spotifyArtists),
+            thumbnail: work.spotifyThumbnail,
             previewUrl: null,
-            albumArt: null,
+            albumArt: work.spotifyThumbnail,
             albumName: '',
             popularity: 0,
           }
@@ -152,43 +169,58 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           }
         : null,
 
+      // 🆕 ÁUDIO CUSTOMIZADO - distinguir entre upload e fonte alternativa salva
       customAudio:
         work.customAudioUrl || work.customAudioFile
           ? {
-              url: work.customAudioUrl!,
+              url: work.customAudioUrl || work.customAudioFile!,
               file: work.customAudioFile!,
-              title: `${work.title} - Áudio Personalizado`,
+              title:
+                work.customAudioSource === 'upload'
+                  ? `${work.title} - Áudio Personalizado`
+                  : `${work.title} - ${work.customAudioSource}`,
+              isPersistent: true,
             }
           : null,
 
-      alternativeAudio: [], // 🆕 Será carregado dinamicamente
+      alternativeAudio: [],
     };
 
     setMediaData(initialData);
     setSearchError(work.mediaSearchError || null);
+
+    // 🆕 PRÉ-POPULAR CAMPOS DE EDIÇÃO com dados existentes
+    setEditData({
+      spotifyUrl: work.spotifyTrackUrl || '', // 🎯 Pré-popular Spotify
+      youtubeUrl: work.youtubeVideoUrl || '', // 🎯 Pré-popular YouTube
+      audioFile: null,
+      removeCustomAudio: false,
+    });
+
+    console.log(
+      '✅ [MEDIA-SECTION] Dados inicializados e campos pré-populados:',
+      {
+        spotify: !!initialData.spotify,
+        youtube: !!initialData.youtube,
+        customAudio: !!initialData.customAudio,
+        customAudioSource: work.customAudioSource,
+        prePopulatedSpotify: !!work.spotifyTrackUrl,
+        prePopulatedYoutube: !!work.youtubeVideoUrl,
+      }
+    );
   }, [work]);
 
-  // Verificar se tem alguma mídia
-  const hasAnyMedia =
-    mediaData.spotify ||
-    mediaData.youtube ||
-    mediaData.customAudio ||
-    mediaData.alternativeAudio.length > 0; // 🆕
-
-  // Verificar fonte da mídia
-  const isAutomatic = work.mediaSource === 'auto';
-  const isManual = work.mediaSource === 'manual';
-
-  // 🆕 Lógica dos botões atualizada
-  const showLoadMediaButton = !hasAnyMedia && !isSearching;
-  const showRefreshButton = hasAnyMedia && isAutomatic && !isSearching;
-
-  // 🆕 Buscar mídia automaticamente - TODAS AS 3 FONTES
+  // 🆕 Buscar mídia automaticamente (INTEGRADA: Spotify + YouTube + Áudio)
   const searchMedia = async (forceRefresh = false) => {
     setIsSearching(true);
     setSearchError(null);
 
     try {
+      console.log('🔍 [MEDIA-SECTION] Iniciando busca COMPLETA de mídia:', {
+        workId: work.id,
+        forceRefresh,
+      });
+
       const response = await fetch('/api/media-search', {
         method: 'POST',
         headers: {
@@ -207,20 +239,97 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       }
 
       if (data.success) {
-        // 🆕 Atualizar dados locais com TODAS as fontes
+        console.log('✅ [MEDIA-SECTION] Busca COMPLETA concluída:', {
+          spotify: !!data.spotify,
+          youtube: !!data.youtube,
+          alternativeAudio: data.alternativeAudio?.length || 0,
+          spotifyThumbnail: data.spotify?.thumbnail,
+          audioSaved: data.metadata?.audioSourceSaved || false, // 🆕 Verificar se áudio foi salvo
+        });
+
+        // Atualizar dados locais
         setMediaData((prev) => ({
           ...prev,
-          spotify: data.spotify || prev.spotify,
+          spotify: data.spotify
+            ? {
+                ...data.spotify,
+                thumbnail: data.spotify.thumbnail,
+                albumArt: data.spotify.thumbnail || data.spotify.albumArt,
+              }
+            : prev.spotify,
           youtube: data.youtube || prev.youtube,
-          alternativeAudio: data.alternativeAudio || [], // 🆕 Fontes alternativas
+          // 🆕 Se foi salva uma fonte alternativa, mostrar ela como customAudio
+          customAudio: data.metadata?.audioSourceSaved
+            ? {
+                url: data.metadata.savedAudioUrl,
+                file: data.metadata.savedAudioUrl,
+                title: `${work.title} - ${data.metadata.savedAudioSource}`,
+                isPersistent: true,
+              }
+            : prev.customAudio,
+          alternativeAudio: data.alternativeAudio || [],
         }));
 
+        // 🆕 Notificar o parent sobre a atualização
+        if (onMediaUpdate) {
+          onMediaUpdate({
+            spotify: data.spotify
+              ? {
+                  trackId: data.spotify.trackId,
+                  trackUrl: data.spotify.trackUrl,
+                  displayTitle: data.spotify.displayTitle,
+                  duration: data.spotify.duration,
+                  artists: data.spotify.artists,
+                  thumbnail: data.spotify.thumbnail,
+                }
+              : null,
+            youtube: data.youtube
+              ? {
+                  videoId: data.youtube.videoId,
+                  videoUrl: data.youtube.videoUrl,
+                  title: data.youtube.title,
+                }
+              : null,
+            customAudio: data.metadata?.audioSourceSaved
+              ? {
+                  url: data.metadata.savedAudioUrl,
+                  file: data.metadata.savedAudioUrl,
+                  source: data.metadata.savedAudioSource,
+                  metadata: data.metadata,
+                  isUpload: false,
+                  isAlternativeSource: true,
+                  isPersistent: true,
+                  title: `${work.title} - ${data.metadata.savedAudioSource}`,
+                }
+              : null,
+          });
+        }
+
+        // 🆕 Atualizar campos de edição com novos dados encontrados
+        if (data.spotify && !editData.spotifyUrl) {
+          setEditData((prev) => ({
+            ...prev,
+            spotifyUrl: data.spotify.trackUrl,
+          }));
+        }
+        if (data.youtube && !editData.youtubeUrl) {
+          setEditData((prev) => ({
+            ...prev,
+            youtubeUrl: data.youtube.videoUrl,
+          }));
+        }
+
         const foundSources = [];
-        if (data.spotify) foundSources.push('Spotify');
+        if (data.spotify) {
+          foundSources.push('Spotify');
+        }
         if (data.youtube) foundSources.push('YouTube');
+        if (data.metadata?.audioSourceSaved) {
+          foundSources.push(`Áudio: ${data.metadata.savedAudioSource}`);
+        }
         if (data.alternativeAudio?.length > 0) {
           foundSources.push(
-            `${data.alternativeAudio.length} fonte(s) alternativa(s)`
+            `${data.alternativeAudio.length} fonte(s) alternativa(s) temporária(s)`
           );
         }
 
@@ -234,13 +343,150 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         throw new Error(data.error || 'Erro na busca');
       }
     } catch (error) {
-      console.error('Erro na busca de mídia:', error);
+      console.error('❌ [MEDIA-SECTION] Erro na busca de mídia:', error);
       const errorMessage =
         error instanceof Error ? error.message : 'Erro desconhecido';
       setSearchError(errorMessage);
       toast.error(`Erro na busca: ${errorMessage}`);
     } finally {
       setIsSearching(false);
+    }
+  };
+
+  // 🆕 Buscar APENAS fontes alternativas adicionais (para botão "Buscar mais fontes")
+  const searchAlternativeAudioSources = async () => {
+    try {
+      console.log(
+        '🔍 [MEDIA-SECTION] Buscando fontes alternativas adicionais...'
+      );
+
+      const response = await fetch('/api/alternative-audio-sources', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: work.title,
+          composer: work.composer.fullName,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error('Erro ao buscar fontes alternativas:', response.status);
+        return;
+      }
+
+      const data = await response.json();
+      const newSources = data.sources || [];
+
+      if (newSources.length > 0) {
+        // 🆕 Adicionar novas fontes temporárias (não salvas no banco)
+        setMediaData((prev) => ({
+          ...prev,
+          alternativeAudio: newSources,
+        }));
+
+        // 🆕 Notificar o parent sobre as novas fontes (opcionalmente)
+        if (onMediaUpdate) {
+          onMediaUpdate({
+            alternativeAudio: newSources,
+          });
+        }
+
+        toast.success(
+          `${newSources.length} fonte(s) alternativa(s) temporária(s) encontrada(s)!`
+        );
+      } else {
+        toast.warning('Nenhuma fonte alternativa adicional encontrada');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar fontes alternativas:', error);
+      toast.error('Erro ao buscar fontes alternativas');
+    }
+  };
+
+  // 🆕 Função para deletar áudio customizado (física + banco)
+  const deleteCustomAudio = async () => {
+    if (!canEditMedia) {
+      toast.error('Você não tem permissão para editar mídia');
+      return;
+    }
+
+    if (!work.customAudioFile && !work.customAudioUrl) {
+      toast.error('Nenhum áudio customizado para deletar');
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+
+      console.log('🗑️ [MEDIA-SECTION] Deletando áudio customizado:', {
+        customAudioFile: work.customAudioFile,
+        customAudioSource: work.customAudioSource,
+      });
+
+      // 🎯 DELETAR ARQUIVO FÍSICO (se for upload local)
+      if (work.customAudioFile && work.customAudioSource === 'upload') {
+        const fileName = work.customAudioFile.split('/').pop();
+        if (fileName) {
+          const deleteFileResponse = await fetch(
+            `/api/works/${work.id}/media/upload?fileName=${fileName}&mediaType=audio`,
+            { method: 'DELETE' }
+          );
+
+          if (!deleteFileResponse.ok) {
+            console.warn('⚠️ [MEDIA-SECTION] Falha ao deletar arquivo físico');
+          } else {
+            console.log('✅ [MEDIA-SECTION] Arquivo físico deletado');
+          }
+        }
+      }
+
+      // 🎯 LIMPAR CAMPOS NO BANCO
+      const response = await fetch(`/api/works/${work.id}/media`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          removeCustomAudio: true,
+          mediaSource: 'manual',
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erro ao deletar');
+      }
+
+      console.log('✅ [MEDIA-SECTION] Áudio customizado deletado com sucesso');
+
+      // 🎯 LIMPAR INTERFACE
+      setMediaData((prev) => ({
+        ...prev,
+        customAudio: null,
+      }));
+
+      setEditData((prev) => ({
+        ...prev,
+        removeCustomAudio: false,
+      }));
+
+      // 🆕 Notificar o parent sobre a remoção
+      if (onMediaUpdate) {
+        onMediaUpdate({
+          customAudio: null,
+        });
+      }
+
+      toast.success('Áudio customizado removido com sucesso!');
+    } catch (error) {
+      console.error(
+        '❌ [MEDIA-SECTION] Erro ao deletar áudio customizado:',
+        error
+      );
+      toast.error(
+        error instanceof Error ? error.message : 'Erro ao deletar áudio'
+      );
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -253,6 +499,13 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
     try {
       setIsUploading(true);
+
+      console.log('💾 [MEDIA-SECTION] Salvando mídia manual:', {
+        spotifyUrl: !!editData.spotifyUrl,
+        youtubeUrl: !!editData.youtubeUrl,
+        audioFile: !!editData.audioFile,
+        removeCustomAudio: editData.removeCustomAudio,
+      });
 
       const updateData: any = {};
 
@@ -285,8 +538,17 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         }
       }
 
+      // Remover áudio customizado
+      if (editData.removeCustomAudio) {
+        updateData.removeCustomAudio = true;
+      }
+
       // Upload de áudio
       if (editData.audioFile) {
+        console.log(
+          '📤 [MEDIA-SECTION] Fazendo upload de áudio customizado...'
+        );
+
         const formData = new FormData();
         formData.append('file', editData.audioFile);
         formData.append('mediaType', 'audio');
@@ -305,18 +567,28 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           throw new Error(uploadData.error || 'Erro no upload');
         }
 
+        console.log('✅ [MEDIA-SECTION] Upload concluído:', uploadData.url);
+
         updateData.customAudioFile = uploadData.url;
+        updateData.customAudioUrl = uploadData.url;
+        updateData.customAudioSource = 'upload'; // 🆕 Marcar como upload
+        updateData.customAudioMetadata = {
+          title: `${work.title} - Áudio Personalizado`,
+          source: 'upload',
+          originalName: editData.audioFile.name,
+          uploadedAt: new Date().toISOString(),
+        };
       }
 
       // Marcar como manual
       updateData.mediaSource = 'manual';
 
       // Salvar no banco
+      console.log('💾 [MEDIA-SECTION] Salvando na base de dados...');
+
       const response = await fetch(`/api/works/${work.id}/media`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updateData),
       });
 
@@ -326,6 +598,8 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         throw new Error(data.error || 'Erro ao salvar');
       }
 
+      console.log('✅ [MEDIA-SECTION] Dados salvos com sucesso');
+
       // Atualizar interface
       setMediaData((prev) => ({
         ...prev,
@@ -333,6 +607,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           ? {
               trackId: updateData.spotifyTrackId,
               trackUrl: updateData.spotifyTrackUrl,
+              displayTitle: updateData.spotifyDisplayTitle,
+              duration: updateData.spotifyDuration,
+              artists: updateData.spotifyArtists
+                ? JSON.parse(updateData.spotifyArtists)
+                : [],
+              thumbnail: updateData.spotifyThumbnail,
             }
           : prev.spotify,
         youtube: updateData.youtubeVideoId
@@ -342,20 +622,67 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               title: updateData.youtubeTitle,
             }
           : prev.youtube,
-        customAudio: updateData.customAudioFile
+        customAudio: editData.removeCustomAudio
+          ? null
+          : updateData.customAudioFile
           ? {
               url: updateData.customAudioFile,
               file: updateData.customAudioFile,
               title: `${work.title} - Áudio Personalizado`,
+              isPersistent: true,
             }
           : prev.customAudio,
       }));
 
+      // 🆕 Notificar o parent sobre a atualização
+      if (onMediaUpdate) {
+        onMediaUpdate({
+          spotify: updateData.spotifyTrackId
+            ? {
+                trackId: updateData.spotifyTrackId,
+                trackUrl: updateData.spotifyTrackUrl,
+                displayTitle: updateData.spotifyDisplayTitle,
+                duration: updateData.spotifyDuration,
+                artists: updateData.spotifyArtists
+                  ? JSON.parse(updateData.spotifyArtists)
+                  : [],
+                thumbnail: updateData.spotifyThumbnail,
+              }
+            : null,
+          youtube: updateData.youtubeVideoId
+            ? {
+                videoId: updateData.youtubeVideoId,
+                videoUrl: updateData.youtubeVideoUrl,
+                title: updateData.youtubeTitle,
+              }
+            : null,
+          customAudio: editData.removeCustomAudio
+            ? null
+            : updateData.customAudioFile
+            ? {
+                url: updateData.customAudioFile,
+                file: updateData.customAudioFile,
+                source: 'upload',
+                metadata: updateData.customAudioMetadata,
+                isUpload: true,
+                isAlternativeSource: false,
+                isPersistent: true,
+                title: `${work.title} - Áudio Personalizado`,
+              }
+            : null,
+        });
+      }
+
       setShowEditMode(false);
-      setEditData({ spotifyUrl: '', youtubeUrl: '', audioFile: null });
+      setEditData({
+        spotifyUrl: updateData.spotifyTrackUrl || '',
+        youtubeUrl: updateData.youtubeVideoUrl || '',
+        audioFile: null,
+        removeCustomAudio: false,
+      });
       toast.success('Mídia salva com sucesso!');
     } catch (error) {
-      console.error('Erro ao salvar mídia manual:', error);
+      console.error('❌ [MEDIA-SECTION] Erro ao salvar mídia manual:', error);
       toast.error(
         error instanceof Error ? error.message : 'Erro ao salvar mídia'
       );
@@ -364,13 +691,19 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     }
   };
 
-  // 🆕 Formatador de duração melhorado
-  const formatDuration = (durationMs?: number) => {
-    if (!durationMs) return null;
-    const minutes = Math.floor(durationMs / 60000);
-    const seconds = Math.floor((durationMs % 60000) / 1000);
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
+  // Verificar se tem alguma mídia
+  const hasAnyMedia =
+    mediaData.spotify ||
+    mediaData.youtube ||
+    mediaData.customAudio ||
+    mediaData.alternativeAudio.length > 0;
+
+  // Verificar fonte da mídia
+  const isAutomatic = work.mediaSource === 'auto';
+
+  // Lógica dos botões
+  const showLoadMediaButton = !hasAnyMedia && !isSearching;
+  const showRefreshButton = hasAnyMedia && isAutomatic;
 
   return (
     <AnimatedCard hover="lift" className="classical-card overflow-hidden">
@@ -387,20 +720,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               </h2>
               <p className="text-theme-secondary text-sm">
                 Áudio, vídeos e conteúdo musical
-                {/* 🆕 Mostrar fonte da mídia */}
-                {hasAnyMedia && (
-                  <span className="ml-2 text-xs">
-                    •{' '}
-                    {isAutomatic ? 'Automático' : isManual ? 'Manual' : 'Misto'}
-                  </span>
-                )}
               </p>
             </div>
           </div>
 
           {/* Botões de Ação */}
           <div className="flex items-center space-x-3">
-            {/* Botão de Editar (se permitido) */}
             {canEditMedia && (
               <Button
                 variant="secondary"
@@ -412,7 +737,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               </Button>
             )}
 
-            {/* Botão de Carregar Mídia */}
             {showLoadMediaButton && (
               <Button
                 variant="primary"
@@ -431,7 +755,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               </Button>
             )}
 
-            {/* 🆕 Botão de Refresh (só para mídia automática) */}
             {showRefreshButton && (
               <Button
                 variant="secondary"
@@ -443,14 +766,27 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 disabled={isSearching}
                 title="Atualizar mídia automática"
               >
-                Atualizar
+                {isSearching ? 'Atualizando...' : 'Atualizar Mídia'}
+              </Button>
+            )}
+
+            {/* 🆕 Botão para buscar mais fontes alternativas */}
+            {hasAnyMedia && (
+              <Button
+                variant="ghost"
+                size="sm"
+                leftIcon={<FiMusic />}
+                onClick={searchAlternativeAudioSources}
+                title="Buscar mais fontes de áudio alternativas"
+              >
+                Mais Fontes
               </Button>
             )}
           </div>
         </div>
       </div>
 
-      {/* Modo de Edição */}
+      {/* 🆕 Modo de Edição COM CAMPOS PRÉ-POPULADOS */}
       {showEditMode && canEditMedia && (
         <div className="px-8 pb-6">
           <AnimatedCard className="bg-blue-900/20 border border-blue-700/30 p-4">
@@ -459,6 +795,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
             </h3>
 
             <div className="space-y-4">
+              {/* 🎯 Campo Spotify PRÉ-POPULADO */}
               <Input
                 label="URL do Spotify"
                 value={editData.spotifyUrl}
@@ -472,6 +809,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 leftIcon={<SiSpotify />}
               />
 
+              {/* 🎯 Campo YouTube PRÉ-POPULADO */}
               <Input
                 label="URL do YouTube"
                 value={editData.youtubeUrl}
@@ -485,10 +823,58 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 leftIcon={<SiYoutube />}
               />
 
+              {/* 🆕 Seção de áudio customizado melhorada */}
               <div>
                 <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                  Upload de Áudio
+                  Áudio Personalizado
                 </label>
+
+                {/* 🆕 Mostrar áudio existente com opção de deletar */}
+                {mediaData.customAudio && (
+                  <div className="mb-3 p-3 bg-green-900/20 border border-green-700/30 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <FiDatabase className="w-4 h-4 text-green-400" />
+                        <span className="text-sm text-green-300">
+                          {work.customAudioSource === 'upload'
+                            ? 'Áudio personalizado já salvo'
+                            : `Fonte alternativa salva: ${work.customAudioSource}`}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setEditData((prev) => ({
+                              ...prev,
+                              removeCustomAudio: !prev.removeCustomAudio,
+                            }))
+                          }
+                          className={`text-xs px-2 py-1 rounded transition-colors ${
+                            editData.removeCustomAudio
+                              ? 'bg-red-600 text-white'
+                              : 'bg-gray-600 text-gray-300 hover:bg-gray-500'
+                          }`}
+                        >
+                          {editData.removeCustomAudio
+                            ? 'Cancelar Remoção'
+                            : 'Remover'}
+                        </button>
+                        {/* 🆕 Botão de deletar direto */}
+                        <button
+                          type="button"
+                          onClick={deleteCustomAudio}
+                          disabled={isUploading}
+                          className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 flex items-center space-x-1"
+                        >
+                          <FiTrash2 className="w-3 h-3" />
+                          <span>Deletar</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <input
                   type="file"
                   accept="audio/*"
@@ -496,13 +882,19 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     setEditData((prev) => ({
                       ...prev,
                       audioFile: e.target.files?.[0] || null,
+                      removeCustomAudio: false,
                     }))
                   }
                   className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary"
                 />
                 {editData.audioFile && (
                   <p className="text-sm text-theme-secondary mt-1">
-                    Arquivo: {editData.audioFile.name}
+                    Novo arquivo: {editData.audioFile.name}
+                  </p>
+                )}
+                {editData.removeCustomAudio && (
+                  <p className="text-sm text-red-400 mt-1">
+                    ⚠️ O áudio atual será removido
                   </p>
                 )}
               </div>
@@ -523,7 +915,8 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     isUploading ||
                     (!editData.spotifyUrl &&
                       !editData.youtubeUrl &&
-                      !editData.audioFile)
+                      !editData.audioFile &&
+                      !editData.removeCustomAudio)
                   }
                 >
                   {isUploading ? 'Salvando...' : 'Salvar Mídia'}
@@ -535,10 +928,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   leftIcon={<FiX />}
                   onClick={() => {
                     setShowEditMode(false);
+                    // 🆕 Restaurar campos com dados existentes
                     setEditData({
-                      spotifyUrl: '',
-                      youtubeUrl: '',
+                      spotifyUrl: work.spotifyTrackUrl || '',
+                      youtubeUrl: work.youtubeVideoUrl || '',
                       audioFile: null,
+                      removeCustomAudio: false,
                     });
                   }}
                 >
@@ -556,7 +951,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Coluna 1: Áudio */}
           <div className="space-y-6">
-            {/* Player de Áudio Universal */}
             <AnimatedItem direction="up" delay={0.1}>
               <div className="space-y-4">
                 <div className="flex items-center space-x-2">
@@ -564,18 +958,26 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <h3 className="text-lg font-semibold text-theme-primary classical-title">
                     Reprodução de Áudio
                   </h3>
-                  {/* 🆕 Contador de fontes alternativas */}
-                  {mediaData.alternativeAudio.length > 0 && (
-                    <span className="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">
-                      +{mediaData.alternativeAudio.length} fontes
-                    </span>
-                  )}
+                  <div className="flex items-center space-x-2">
+                    {mediaData.alternativeAudio.length > 0 && (
+                      <span className="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">
+                        +{mediaData.alternativeAudio.length} fontes temporárias
+                      </span>
+                    )}
+                    {mediaData.customAudio?.isPersistent && (
+                      <span className="text-xs bg-green-600 text-white px-2 py-1 rounded-full flex items-center space-x-1">
+                        <FiDatabase className="w-3 h-3" />
+                        <span>Salvo</span>
+                      </span>
+                    )}
+                  </div>
                 </div>
 
+                {/* 🆕 Player simplificado - apenas recebe as fontes */}
                 <UniversalAudioPlayer
                   work={work}
                   customAudio={mediaData.customAudio}
-                  alternativeAudioSources={mediaData.alternativeAudio} // 🆕 Passar fontes alternativas
+                  alternativeAudioSources={mediaData.alternativeAudio}
                 />
               </div>
             </AnimatedItem>
@@ -590,16 +992,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                       Spotify
                     </h3>
                   </div>
-
-                  {/* 🆕 Mostrar duração se disponível */}
-                  {mediaData.spotify?.duration && (
-                    <div className="flex items-center space-x-1 text-green-400">
-                      <FiClock className="w-3 h-3" />
-                      <span className="text-sm font-medium">
-                        {formatDuration(mediaData.spotify.duration)}
-                      </span>
-                    </div>
-                  )}
                 </div>
 
                 {mediaData.spotify ? (
@@ -607,10 +999,11 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     spotify={{
                       trackId: mediaData.spotify.trackId,
                       trackUrl: mediaData.spotify.trackUrl,
-                      displayTitle: mediaData.spotify.displayTitle, // 🆕
-                      duration: mediaData.spotify.duration || 0, // 🆕
+                      displayTitle: mediaData.spotify.displayTitle,
+                      duration: mediaData.spotify.duration || 0,
                       previewUrl: mediaData.spotify.previewUrl || null,
                       albumArt: mediaData.spotify.albumArt || null,
+                      thumbnail: mediaData.spotify.thumbnail,
                       artists: mediaData.spotify.artists || [
                         work.composer.fullName,
                       ],
@@ -636,7 +1029,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
           {/* Coluna 2: Vídeos */}
           <div className="space-y-6">
-            {/* Vídeo do YouTube */}
             <AnimatedItem direction="up" delay={0.3}>
               <div className="space-y-4">
                 <div className="flex items-center space-x-2">
@@ -701,14 +1093,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   Buscando mídia para &quot;{work.title}&quot;...
                 </p>
                 <p className="text-blue-400 text-xs mt-1">
-                  🎵 Spotify • 📺 YouTube • 🎼 Fontes Alternativas
+                  🎵 Spotify • 📺 YouTube • 🎼 Fontes de Áudio Alternativas
                 </p>
               </div>
             </div>
           </AnimatedItem>
         )}
 
-        {/* 🆕 Resumo das Fontes Encontradas */}
+        {/* Resumo das Fontes Encontradas */}
         {hasAnyMedia && !isSearching && (
           <AnimatedItem direction="up" delay={0.6}>
             <div className="mt-6 bg-gradient-to-r from-green-900/10 to-blue-900/10 border border-green-700/20 rounded-xl p-4">
@@ -738,7 +1130,16 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   {mediaData.customAudio && (
                     <div className="flex items-center space-x-1 text-blue-400">
                       <FiMusic className="w-3 h-3" />
-                      <span>Áudio Customizado</span>
+                      <span>
+                        {work.customAudioSource === 'upload'
+                          ? 'Áudio Customizado'
+                          : `Fonte: ${work.customAudioSource}`}
+                      </span>
+                      {mediaData.customAudio.isPersistent && (
+                        <span className="text-xs bg-blue-600 px-1 rounded">
+                          SALVO
+                        </span>
+                      )}
                     </div>
                   )}
 
@@ -746,7 +1147,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     <div className="flex items-center space-x-1 text-purple-400">
                       <FiMusic className="w-3 h-3" />
                       <span>
-                        {mediaData.alternativeAudio.length} alternativa(s)
+                        {mediaData.alternativeAudio.length} temporária(s)
                       </span>
                     </div>
                   )}

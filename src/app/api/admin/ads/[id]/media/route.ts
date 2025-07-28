@@ -16,10 +16,13 @@ import {
 } from '@/app/libs/ads/serverMediaProcessor';
 
 import { AD_DIMENSIONS } from '@/app/libs/ads/mediaUtils';
+interface Params {
+  id: string;
+}
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -27,8 +30,9 @@ export async function POST(
     if (!session?.user || session.user.role < 1) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
+    const { id } = await params;
 
-    const adId = params.id;
+    const adId = id;
 
     // Verificar se o anúncio existe
     const ad = await prisma.advertisement.findUnique({
@@ -271,7 +275,7 @@ export async function POST(
 // DELETE - Remover mídia (usando processador servidor)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -279,8 +283,9 @@ export async function DELETE(
     if (!session?.user || session.user.role < 1) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
+    const { id } = await params;
 
-    const adId = params.id;
+    const adId = id;
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
 

@@ -6,9 +6,13 @@ import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 import { cloneAdMedia } from '@/app/libs/ads/serverMediaProcessor';
 
+interface Params {
+  id: string;
+}
+
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<Params> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -16,8 +20,9 @@ export async function POST(
     if (!session?.user || session.user.role < 1) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
+    const { id } = await params;
 
-    const originalAdId = params.id;
+    const originalAdId = id;
     const body = await request.json();
     const modifications = body || {};
 
