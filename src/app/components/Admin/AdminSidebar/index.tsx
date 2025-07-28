@@ -26,6 +26,7 @@ import {
   FiSend,
   FiMail, // Nova importação para backup
 } from 'react-icons/fi';
+import { GrHostMaintenance } from 'react-icons/gr';
 import { useAdminStats } from '@/app/hooks/admin/useAdminStats';
 import { BiTestTube } from 'react-icons/bi';
 
@@ -229,7 +230,6 @@ export default function AdminSidebar() {
           label: 'Listas de Teste',
           href: '/admin/newsletter/test-lists',
           icon: BiTestTube,
-          badge: 'Novo',
         },
 
         {
@@ -256,6 +256,7 @@ export default function AdminSidebar() {
           icon: FiHardDrive,
           isActive: pathname.startsWith('/admin/backup'),
         },
+
         {
           href: '/admin/system',
           label: 'Sistema',
@@ -279,13 +280,6 @@ export default function AdminSidebar() {
           icon: FiTarget, // Adicionar ao imports: FiTarget
           // badge: mounted && stats ? stats.ads?.totalActive : undefined,
           isActive: pathname.startsWith('/admin/ads'),
-        },
-        {
-          href: '/admin/advertisers',
-          label: 'Anunciantes',
-          icon: FiUsers,
-          // badge: mounted && stats ? stats.ads?.totalAdvertisers : undefined,
-          isActive: pathname.startsWith('/admin/advertisers'),
         },
       ],
     },

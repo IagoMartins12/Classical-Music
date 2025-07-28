@@ -30,46 +30,15 @@ interface QuickStat {
 
 interface AdminHeaderProps {
   onMenuClick: () => void;
-  stats: AdminStats | null;
-  loading: boolean;
 }
 
-export default function AdminHeader({
-  onMenuClick,
-  stats,
-  loading,
-}: AdminHeaderProps) {
+export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   const { data: session } = useSession();
   const pathname = usePathname();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   // Verificar se é admin
   if (!session?.user || session.user.role !== 2) return null;
-
-  // Quick stats para exibição no header
-  const quickStats: QuickStat[] = [
-    {
-      label: 'Usuários Ativos',
-      value: stats?.engagement.dailyActiveUsers || 0,
-      icon: FiUsers,
-      color: 'text-accent-blue',
-      href: '/admin/users',
-    },
-    {
-      label: 'Reports Pendentes',
-      value: stats?.moderation?.totalReports || 0,
-      icon: FiFlag,
-      color: 'text-accent-red',
-      href: '/admin/moderation',
-    },
-    {
-      label: 'Novos Uploads',
-      value: stats?.trends.last7Days.newUploads || 0,
-      icon: FiDatabase,
-      color: 'text-accent-green',
-      href: '/admin/uploads',
-    },
-  ];
 
   // Navigation items
   const navigationItems = [
@@ -175,35 +144,6 @@ export default function AdminHeader({
               </nav>
             </div>
 
-            {/* Quick Stats - Desktop */}
-            <div className="hidden 2xl:flex items-center space-x-4">
-              {quickStats.map((stat, index) => (
-                <Link
-                  key={index}
-                  href={stat.href || '#'}
-                  className="flex items-center space-x-2 lg:space-x-3 p-2 lg:p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary transition-all group"
-                >
-                  <div
-                    className={`w-6 h-6 lg:w-8 lg:h-8 rounded-lg flex items-center justify-center ${stat.color} bg-opacity-20`}
-                  >
-                    <stat.icon
-                      className={`w-3 h-3 lg:w-4 lg:h-4 ${stat.color}`}
-                    />
-                  </div>
-                  <div>
-                    <div
-                      className={`text-sm lg:text-lg font-bold ${stat.color}`}
-                    >
-                      {loading ? '--' : formatQuickStatValue(stat.value)}
-                    </div>
-                    <div className="text-xs text-theme-tertiary group-hover:text-theme-secondary">
-                      {stat.label}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
             {/* Actions */}
             <div className="flex items-center space-x-2 lg:space-x-4">
               <div className="hidden md:flex items-center space-x-1">
@@ -244,7 +184,7 @@ export default function AdminHeader({
 
                 {/* User Dropdown */}
                 {showUserMenu && (
-                  <div className="absolute right-0 top-full mt-2 w-48 lg:w-56 bg-theme-elevated border border-theme-primary rounded-xl shadow-2xl py-2 z-50">
+                  <div className="absolute right-0 top-full mt-2 w-48 lg:w-72 bg-theme-elevated border border-theme-primary rounded-xl shadow-2xl py-2 z-50">
                     <div className="px-4 py-3 border-b border-theme-secondary">
                       <p className="font-medium text-theme-primary text-sm">
                         {session.user.firstName || 'Admin'}{' '}
@@ -262,15 +202,6 @@ export default function AdminHeader({
                     >
                       <FiHome className="w-4 h-4" />
                       <span>Ver Site Principal</span>
-                    </Link>
-
-                    <Link
-                      href="/admin/profile"
-                      className="flex items-center space-x-3 px-4 py-2 text-theme-secondary hover:text-theme-primary hover:bg-theme-secondary transition-all text-sm"
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      <FiUsers className="w-4 h-4" />
-                      <span>Meu Perfil</span>
                     </Link>
 
                     <Link
@@ -295,33 +226,6 @@ export default function AdminHeader({
                 )}
               </div>
             </div>
-          </div>
-
-          {/* Mobile Quick Stats */}
-          <div className="2xl:hidden grid grid-cols-3 gap-2 lg:gap-4 pb-3 lg:pb-4">
-            {quickStats.map((stat, index) => (
-              <Link
-                key={index}
-                href={stat.href || '#'}
-                className="flex items-center space-x-2 p-2 lg:p-3 bg-theme-secondary rounded-lg hover:bg-theme-primary transition-all group"
-              >
-                <div
-                  className={`w-5 h-5 lg:w-6 lg:h-6 rounded flex items-center justify-center ${stat.color} bg-opacity-20 flex-shrink-0`}
-                >
-                  <stat.icon
-                    className={`w-3 h-3 lg:w-3 lg:h-3 ${stat.color}`}
-                  />
-                </div>
-                <div className="min-w-0">
-                  <div className={`text-xs lg:text-sm font-bold ${stat.color}`}>
-                    {loading ? '--' : formatQuickStatValue(stat.value)}
-                  </div>
-                  <div className="text-xs text-theme-tertiary group-hover:text-theme-secondary truncate">
-                    {stat.label}
-                  </div>
-                </div>
-              </Link>
-            ))}
           </div>
         </div>
       </div>

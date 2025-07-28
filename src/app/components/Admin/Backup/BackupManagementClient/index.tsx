@@ -17,6 +17,7 @@ import {
   FiSettings,
   FiInfo,
   FiBarChart2,
+  FiX,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -25,17 +26,41 @@ import {
   PageContainer,
   LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
-import {
-  useBackupManagement,
-  formatBackupDate,
-  getBackupAge,
-  getStatusColor,
-  getStatusLabel,
-} from '@/app/hooks/admin/useBackupManagement';
+import { useBackupManagement } from '@/app/hooks/admin/useBackupManagement';
 import Button from '@/app/components/Common/Button';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
+import { useMaintenanceSystem } from '@/app/hooks/admin/useMaintenanceSystem';
+import Modal from '@/app/components/Modal';
+import Input from '@/app/components/Common/Inputs';
+
+interface BackupScheduleFormData {
+  name: string;
+  frequency: 'daily' | 'weekly' | 'monthly';
+  time: string;
+  collections: string[];
+  retentionDays: number;
+  enabled: boolean;
+}
+const safeDate = (date: Date | string | undefined | null): Date | null => {
+  if (!date) return null;
+  if (typeof date === 'string') {
+    const parsed = new Date(date);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  }
+  return date instanceof Date ? date : null;
+};
 
 export default function BackupManagementClient() {
+  const [showScheduleForm, setShowScheduleForm] = useState(false);
+  const [scheduleForm, setScheduleForm] = useState<BackupScheduleFormData>({
+    name: '',
+    frequency: 'daily',
+    time: '02:00',
+    collections: [],
+    retentionDays: 30,
+    enabled: true,
+  });
+
   const {
     backups,
     stats,
@@ -47,11 +72,42 @@ export default function BackupManagementClient() {
     createBackup,
     restoreBackup,
     deleteBackup,
+    formatBackupDate,
+    getBackupAge,
+    getStatusColor,
+    getStatusLabel,
     lastUpdated,
   } = useBackupManagement();
+  const maintenance = useMaintenanceSystem();
 
   const [mounted, setMounted] = useState(false);
   const [selectedBackup, setSelectedBackup] = useState<string | null>(null);
+
+  const handleCreateSchedule = async () => {
+    if (!scheduleForm.name.trim()) {
+      return;
+    }
+
+    await maintenance.createBackupSchedule(scheduleForm);
+    setShowScheduleForm(false);
+    setScheduleForm({
+      name: '',
+      frequency: 'daily',
+      time: '02:00',
+      collections: [],
+      retentionDays: 30,
+      enabled: true,
+    });
+  };
+
+  const handleCollectionToggle = (collection: string) => {
+    setScheduleForm((prev) => ({
+      ...prev,
+      collections: prev.collections.includes(collection)
+        ? prev.collections.filter((c) => c !== collection)
+        : [...prev.collections, collection],
+    }));
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -261,6 +317,93 @@ export default function BackupManagementClient() {
                       </p>
                     </div>
                   </div>
+                </div>
+              )}
+            </AnimatedCard>
+          </AnimatedItem>
+
+          {/* Backup Schedules */}
+          <AnimatedItem direction="up" springType="gentle">
+            <AnimatedCard className="classical-card p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-theme-primary">
+                  Agendamentos de Backup
+                </h3>
+              </div>
+
+              {maintenance.backupSchedules.length === 0 ? (
+                <div className="text-center py-8 bg-theme-secondary rounded-xl">
+                  <FiCalendar className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                  <p className="text-theme-secondary">Nenhum backup agendado</p>
+                  <Button
+                    variant="secondary"
+                    className="mt-4"
+                    onClick={() => setShowScheduleForm(true)}
+                  >
+                    Criar Primeiro Agendamento
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {maintenance.backupSchedules.map((schedule) => (
+                    <div
+                      key={schedule.id}
+                      className="p-4 border rounded-xl transition-all cursor-pointer "
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div
+                            className={`w-3 h-3 rounded-full ${
+                              schedule.enabled
+                                ? 'bg-accent-green'
+                                : 'bg-theme-tertiary'
+                            }`}
+                          />
+                          <div>
+                            <h5 className="font-medium text-theme-primary">
+                              {schedule.name}
+                            </h5>
+                            <div className="flex items-center space-x-4 text-sm text-theme-secondary">
+                              <span>
+                                {schedule.frequency === 'daily'
+                                  ? 'Diário '
+                                  : schedule.frequency === 'weekly'
+                                  ? 'Semanal '
+                                  : 'Mensal '}{' '}
+                                às {schedule.time}
+                              </span>
+                              <span>
+                                Retenção: {schedule.retentionDays} dias
+                              </span>
+                              {schedule.collections &&
+                                schedule.collections.length > 0 && (
+                                  <span>
+                                    Collections: {schedule.collections.length}
+                                  </span>
+                                )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm text-theme-tertiary">
+                            {maintenance.getNextRunFormatted(
+                              safeDate(schedule.nextRun)
+                            )}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            leftIcon={<FiTrash2 />}
+                            onClick={() =>
+                              maintenance.deleteBackupSchedule(schedule.id)
+                            }
+                            className="text-accent-red hover:bg-accent-red/10"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </AnimatedCard>
@@ -534,6 +677,169 @@ export default function BackupManagementClient() {
           </AnimatedItem>
         </AnimatedContainer>
       </div>
+
+      {/* Schedule Form Modal */}
+      {showScheduleForm && (
+        <Modal isOpen maxWidth="5xl" onClose={() => setShowScheduleForm(false)}>
+          <div className="bg-theme-elevated  p-6 overflow-y-auto">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-theme-primary">
+                Agendar Backup
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowScheduleForm(false)}
+              >
+                <FiX className="w-5 h-5" />
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-theme-primary mb-2">
+                  Nome do Agendamento
+                </label>
+                <Input
+                  type="text"
+                  value={scheduleForm.name}
+                  onChange={(e) =>
+                    setScheduleForm((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
+                  className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
+                  placeholder="Backup Diário do Sistema"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                    Frequência
+                  </label>
+                  <select
+                    value={scheduleForm.frequency}
+                    onChange={(e) =>
+                      setScheduleForm((prev) => ({
+                        ...prev,
+                        frequency: e.target.value as
+                          | 'daily'
+                          | 'weekly'
+                          | 'monthly',
+                      }))
+                    }
+                    className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
+                  >
+                    <option value="daily">Diário</option>
+                    <option value="weekly">Semanal</option>
+                    <option value="monthly">Mensal</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                    Horário
+                  </label>
+                  <Input
+                    type="time"
+                    value={scheduleForm.time}
+                    onChange={(e) =>
+                      setScheduleForm((prev) => ({
+                        ...prev,
+                        time: e.target.value,
+                      }))
+                    }
+                    className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-theme-primary mb-2">
+                  Retenção (dias)
+                </label>
+                <Input
+                  type="number"
+                  value={scheduleForm.retentionDays}
+                  onChange={(e) =>
+                    setScheduleForm((prev) => ({
+                      ...prev,
+                      retentionDays: parseInt(e.target.value) || 30,
+                    }))
+                  }
+                  className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
+                  min="1"
+                  max="365"
+                />
+              </div>
+
+              {/* Collections Selection */}
+              <div>
+                <label className="block text-sm font-medium text-theme-primary mb-2">
+                  Collections (deixe vazio para backup completo)
+                </label>
+                <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
+                  {maintenance.availableCollections.map((collection) => (
+                    <label
+                      key={collection.name}
+                      className="flex items-center space-x-2 p-2 bg-theme-secondary rounded-lg cursor-pointer hover:bg-theme-primary"
+                    >
+                      <Input
+                        type="checkbox"
+                        checked={scheduleForm.collections.includes(
+                          collection.name
+                        )}
+                        onChange={() => handleCollectionToggle(collection.name)}
+                        className="rounded text-brand-primary"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-theme-primary truncate">
+                          {collection.displayName}
+                        </p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  checked={scheduleForm.enabled}
+                  onChange={(e) =>
+                    setScheduleForm((prev) => ({
+                      ...prev,
+                      enabled: e.target.checked,
+                    }))
+                  }
+                  className="rounded text-brand-primary"
+                />
+                <label className="text-sm text-theme-primary">
+                  Ativar agendamento imediatamente
+                </label>
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3 mt-6">
+              <Button
+                variant="ghost"
+                onClick={() => setShowScheduleForm(false)}
+              >
+                Cancelar
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleCreateSchedule}
+                disabled={!scheduleForm.name.trim()}
+              >
+                Criar Agendamento
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </PageContainer>
   );
 }

@@ -47,11 +47,7 @@ export default function AdminLayoutClient({
   return (
     <div className="bg-theme-primary">
       {/* Header */}
-      <AdminHeader
-        onMenuClick={() => setSidebarOpen(true)}
-        stats={stats}
-        loading={loading}
-      />
+      <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
 
       <div className="flex">
         {/* Desktop Sidebar */}

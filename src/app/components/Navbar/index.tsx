@@ -85,6 +85,9 @@ const Navbar: React.FC = () => {
   const submenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const optionsArr: NavItem[] = [
+    { label: 'História da Música', href: '/music-history' },
+
+    { label: 'Instrumentos', href: '/instruments' },
     { label: 'Compositores', href: '/composers' },
 
     {
@@ -103,63 +106,10 @@ const Navbar: React.FC = () => {
         },
       ],
     },
+
     {
-      label: 'História',
-      href: '/music-history',
-      submenu: [
-        { label: 'História da Música', href: '/music-history' },
-        { label: 'Instrumentos', href: '/instruments' },
-      ],
-    },
-    {
-      label: 'Ajuda & Suporte',
-      submenu: [
-        {
-          label: 'Central de Ajuda',
-          href: '/help',
-          description: 'Guias e tutoriais completos',
-        },
-        {
-          label: 'Perguntas Frequentes',
-          href: '/faq',
-          description: 'Respostas para dúvidas comuns',
-        },
-        {
-          label: 'Suporte Técnico',
-          href: '/support',
-          description: 'Problemas técnicos e bugs',
-        },
-        {
-          label: 'Entre em Contato',
-          href: '/contact',
-          description: 'Fale com nossa equipe',
-        },
-      ],
-    },
-    {
-      label: 'Sobre & Legal',
-      submenu: [
-        {
-          label: 'Sobre Nós',
-          href: '/about-us',
-          description: 'Conheça nossa missão',
-        },
-        {
-          label: 'Termos de Uso',
-          href: '/terms',
-          description: 'Regras da plataforma',
-        },
-        {
-          label: 'Política de Privacidade',
-          href: '/privacy',
-          description: 'Como protegemos seus dados',
-        },
-        {
-          label: 'Direitos Autorais',
-          href: '/copyright',
-          description: 'Políticas de copyright',
-        },
-      ],
+      label: 'Sobre Nós',
+      href: '/about-us',
     },
   ];
 

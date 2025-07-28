@@ -39,6 +39,7 @@ import { formatNumber } from '@/app/hooks/admin/useAdminStats';
 import { toast } from 'react-hot-toast';
 import { useAdminComposers } from '@/app/hooks/admin/useAdminComposers';
 import Image from 'next/image';
+import Input from '@/app/components/Common/Inputs';
 
 interface ComposerFilters {
   search: string;
@@ -305,7 +306,7 @@ export default function ComposersManagement() {
 
         {/* Filters and Controls */}
         <AnimatedItem direction="up" springType="gentle">
-          <AnimatedCard className="classical-card p-6 mb-8">
+          <div className="classical-card p-6 mb-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
               <h3 className="text-xl font-bold text-theme-primary">
                 Lista de Compositores
@@ -330,28 +331,62 @@ export default function ComposersManagement() {
                 >
                   Atualizar
                 </Button>
-                <Button variant="secondary" size="sm" leftIcon={<FiDownload />}>
-                  Exportar
-                </Button>
+
                 <Button
                   variant="primary"
                   size="sm"
                   leftIcon={<FiPlus />}
-                  onClick={() => router.push('/admin/composers/create')}
+                  onClick={() => router.push('/uploads')}
                 >
                   Novo Compositor
                 </Button>
               </div>
             </div>
 
+            <div className={`space-y-4 mb-6 block`}>
+              <div className="flex items-center space-x-4">
+                <Select
+                  value={filters.sortBy}
+                  onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+                  options={[
+                    { value: 'createdAt', label: 'Data de Criação' },
+                    { value: 'name', label: 'Nome' },
+                    { value: 'worksCount', label: 'Número de Obras' },
+                    { value: 'favoritesCount', label: 'Favoritos' },
+                  ]}
+                  className="input-classical-2"
+                />
+
+                <Select
+                  value={filters.sortOrder}
+                  onChange={(e) =>
+                    handleFilterChange('sortOrder', e.target.value)
+                  }
+                  options={[
+                    { value: 'desc', label: 'Decrescente' },
+                    { value: 'asc', label: 'Crescente' },
+                  ]}
+                  className="input-classical-2"
+                />
+
+                <Button
+                  variant="primary"
+                  size="sm"
+                  leftIcon={<FiSearch />}
+                  onClick={handleSearch}
+                >
+                  Buscar
+                </Button>
+              </div>
+            </div>
             {/* Filtros */}
             <div
               className={`space-y-4 mb-6 ${showFilters ? 'block' : 'hidden'}`}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="relative">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                  <input
+                  <Input
+                    leftIcon={<FiSearch />}
                     type="text"
                     placeholder="Buscar compositores..."
                     value={filters.search}
@@ -359,7 +394,7 @@ export default function ComposersManagement() {
                       setFilters({ ...filters, search: e.target.value })
                     }
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    className="input-classical-2 pl-10 w-full"
+                    className="input-classical-2 !pl-10 w-full"
                   />
                 </div>
 
@@ -396,41 +431,6 @@ export default function ComposersManagement() {
                   ]}
                   className="input-classical-2"
                 />
-              </div>
-
-              <div className="flex items-center space-x-4">
-                <Select
-                  value={filters.sortBy}
-                  onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                  options={[
-                    { value: 'createdAt', label: 'Data de Criação' },
-                    { value: 'name', label: 'Nome' },
-                    { value: 'worksCount', label: 'Número de Obras' },
-                    { value: 'favoritesCount', label: 'Favoritos' },
-                  ]}
-                  className="input-classical-2"
-                />
-
-                <Select
-                  value={filters.sortOrder}
-                  onChange={(e) =>
-                    handleFilterChange('sortOrder', e.target.value)
-                  }
-                  options={[
-                    { value: 'desc', label: 'Decrescente' },
-                    { value: 'asc', label: 'Crescente' },
-                  ]}
-                  className="input-classical-2"
-                />
-
-                <Button
-                  variant="primary"
-                  size="sm"
-                  leftIcon={<FiSearch />}
-                  onClick={handleSearch}
-                >
-                  Buscar
-                </Button>
               </div>
             </div>
 
@@ -565,9 +565,7 @@ export default function ComposersManagement() {
                         variant="ghost"
                         size="sm"
                         leftIcon={<FiEye />}
-                        onClick={() =>
-                          router.push(`/admin/composers/${composer.id}`)
-                        }
+                        onClick={() => router.push(`/composer/${composer.id}`)}
                         title="Ver detalhes"
                       />
                       <Button
@@ -575,7 +573,7 @@ export default function ComposersManagement() {
                         size="sm"
                         leftIcon={<FiEdit />}
                         onClick={() =>
-                          router.push(`/admin/composers/${composer.id}/edit`)
+                          router.push(`/uploads/composers/${composer.id}/edit`)
                         }
                         title="Editar"
                       />
@@ -656,7 +654,7 @@ export default function ComposersManagement() {
                 </div>
               </div>
             )}
-          </AnimatedCard>
+          </div>
         </AnimatedItem>
       </AnimatedContainer>
     </PageContainer>

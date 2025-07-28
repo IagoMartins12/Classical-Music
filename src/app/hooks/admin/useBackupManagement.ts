@@ -6,7 +6,7 @@ export interface BackupInfo {
   id: string;
   name: string;
   size: string;
-  date: Date;
+  date: Date | string;
   status: 'completed' | 'failed' | 'in_progress';
   totalRecords?: number;
   collections?: number;
@@ -16,7 +16,7 @@ export interface BackupInfo {
 
 export interface BackupStats {
   totalBackups: number;
-  lastBackupDate: Date | null;
+  lastBackupDate: Date | string | null;
   totalSize: string;
   oldestBackup: string | null;
   newestBackup: string | null;
@@ -38,6 +38,13 @@ interface UseBackupManagementReturn {
   deleteBackup: (backupId: string) => Promise<void>;
   checkBackupStatus: () => Promise<boolean>;
   lastUpdated: Date | null;
+
+  // Utility functions
+  formatBackupDate: (date: Date | string) => string;
+  getBackupAge: (date: Date | string) => string;
+  getStatusColor: (status: string) => string;
+  getStatusIcon: (status: string) => string;
+  getStatusLabel: (status: string) => string;
 }
 
 export const useBackupManagement = (): UseBackupManagementReturn => {
@@ -253,6 +260,72 @@ export const useBackupManagement = (): UseBackupManagementReturn => {
     return fetchBackups();
   }, [fetchBackups]);
 
+  // Utility functions
+  const formatBackupDate = useCallback((date: Date | string): string => {
+    return new Date(date).toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }, []);
+
+  const getBackupAge = useCallback((date: Date | string): string => {
+    const now = new Date();
+    const diff = now.getTime() - new Date(date).getTime();
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) {
+      return `${days} dia${days > 1 ? 's' : ''}`;
+    } else if (hours > 0) {
+      return `${hours} hora${hours > 1 ? 's' : ''}`;
+    } else {
+      const minutes = Math.floor(diff / (1000 * 60));
+      return `${minutes} min`;
+    }
+  }, []);
+
+  const getStatusColor = useCallback((status: string): string => {
+    switch (status) {
+      case 'completed':
+        return 'text-accent-green bg-accent-green/10';
+      case 'failed':
+        return 'text-accent-red bg-accent-red/10';
+      case 'in_progress':
+        return 'text-accent-amber bg-accent-amber/10';
+      default:
+        return 'text-theme-tertiary bg-theme-secondary';
+    }
+  }, []);
+
+  const getStatusIcon = useCallback((status: string): string => {
+    switch (status) {
+      case 'completed':
+        return 'FiCheckCircle';
+      case 'failed':
+        return 'FiX';
+      case 'in_progress':
+        return 'FiRefreshCw';
+      default:
+        return 'FiClock';
+    }
+  }, []);
+
+  const getStatusLabel = useCallback((status: string): string => {
+    switch (status) {
+      case 'completed':
+        return 'Concluído';
+      case 'failed':
+        return 'Falhou';
+      case 'in_progress':
+        return 'Em Progresso';
+      default:
+        return 'Desconhecido';
+    }
+  }, []);
+
   // Carregar backups iniciais
   useEffect(() => {
     fetchBackups();
@@ -309,58 +382,12 @@ export const useBackupManagement = (): UseBackupManagementReturn => {
     deleteBackup,
     checkBackupStatus,
     lastUpdated,
+
+    // Utility functions
+    formatBackupDate,
+    getBackupAge,
+    getStatusColor,
+    getStatusIcon,
+    getStatusLabel,
   };
-};
-
-// Utilitários para formatação
-export const formatBackupDate = (date: Date): string => {
-  return new Date(date).toLocaleString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-};
-
-export const getBackupAge = (date: Date): string => {
-  const now = new Date();
-  const diff = now.getTime() - new Date(date).getTime();
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const days = Math.floor(hours / 24);
-
-  if (days > 0) {
-    return `${days} dia${days > 1 ? 's' : ''}`;
-  } else if (hours > 0) {
-    return `${hours} hora${hours > 1 ? 's' : ''}`;
-  } else {
-    const minutes = Math.floor(diff / (1000 * 60));
-    return `${minutes} min`;
-  }
-};
-
-export const getStatusColor = (status: BackupInfo['status']): string => {
-  switch (status) {
-    case 'completed':
-      return 'text-accent-green';
-    case 'failed':
-      return 'text-accent-red';
-    case 'in_progress':
-      return 'text-accent-amber';
-    default:
-      return 'text-theme-tertiary';
-  }
-};
-
-export const getStatusLabel = (status: BackupInfo['status']): string => {
-  switch (status) {
-    case 'completed':
-      return 'Concluído';
-    case 'failed':
-      return 'Falhou';
-    case 'in_progress':
-      return 'Em Progresso';
-    default:
-      return 'Desconhecido';
-  }
 };

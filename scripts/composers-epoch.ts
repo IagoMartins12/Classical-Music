@@ -575,7 +575,34 @@ async function analyzeAndFixComposerEpochs(): Promise<void> {
 
 // Função principal
 async function main(): Promise<void> {
-  await analyzeAndFixComposerEpochs();
+  console.log('verificando...');
+  const updatedWork = await prisma.work.findMany({
+    where: {
+      subtitle: {
+        not: null,
+      },
+    },
+    select: {
+      id: true,
+      title: true,
+      subtitle: true,
+    },
+    take: 10000,
+  });
+  const ids = updatedWork.map((work) => work.id);
+  const removedSubtitle = await prisma.work.updateMany({
+    where: {
+      id: {
+        in: ids,
+      },
+    },
+    data: {
+      subtitle: null,
+    },
+  });
+
+  console.log('updatedWork', removedSubtitle);
+  // await analyzeAndFixComposerEpochs();
 }
 
 // Executar script

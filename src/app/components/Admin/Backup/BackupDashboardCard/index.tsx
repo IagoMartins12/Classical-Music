@@ -15,12 +15,9 @@ import {
   FiRefreshCw,
 } from 'react-icons/fi';
 import { AnimatedCard } from '@/app/components/animation/AnimatedComponents';
-import {
-  useBackupManagement,
-  formatBackupDate,
-  getBackupAge,
-} from '@/app/hooks/admin/useBackupManagement';
+
 import Button from '@/app/components/Common/Button';
+import { useBackupManagement } from '@/app/hooks/admin/useBackupManagement';
 
 interface BackupDashboardCardProps {
   className?: string;
@@ -37,6 +34,9 @@ export default function BackupDashboardCard({
     isCreatingBackup,
     createBackup,
     refreshBackups,
+
+    formatBackupDate,
+    getBackupAge,
     lastUpdated,
   } = useBackupManagement();
 
