@@ -32,16 +32,30 @@ import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import { useMaintenanceSystem } from '@/app/hooks/admin/useMaintenanceSystem';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
+import Select from '@/app/components/Common/Select';
 
 interface BackupScheduleFormData {
   name: string;
   frequency: 'daily' | 'weekly' | 'monthly';
   time: string;
+  dayOfWeek?: number; // 0 = domingo, 1 = segunda, etc. (para weekly)
+  dayOfMonth?: number; // 1-28 (para monthly)
   collections: string[];
   retentionDays: number;
   enabled: boolean;
 }
-const safeDate = (date: Date | string | undefined | null): Date | null => {
+
+const DAYS_OF_WEEK = [
+  { value: 0, label: 'Domingo' },
+  { value: 1, label: 'Segunda-feira' },
+  { value: 2, label: 'Terça-feira' },
+  { value: 3, label: 'Quarta-feira' },
+  { value: 4, label: 'Quinta-feira' },
+  { value: 5, label: 'Sexta-feira' },
+  { value: 6, label: 'Sábado' },
+];
+
+const safeDate = (date: any): any => {
   if (!date) return null;
   if (typeof date === 'string') {
     const parsed = new Date(date);
@@ -56,6 +70,8 @@ export default function BackupManagementClient() {
     name: '',
     frequency: 'daily',
     time: '02:00',
+    dayOfWeek: 0, // Domingo por padrão
+    dayOfMonth: 1, // Dia 1 por padrão
     collections: [],
     retentionDays: 30,
     enabled: true,
@@ -88,12 +104,22 @@ export default function BackupManagementClient() {
       return;
     }
 
-    await maintenance.createBackupSchedule(scheduleForm);
+    // Preparar dados do agendamento com os novos campos
+    const scheduleData = {
+      ...scheduleForm,
+      // Remover campos não utilizados baseado na frequência
+      ...(scheduleForm.frequency !== 'weekly' && { dayOfWeek: undefined }),
+      ...(scheduleForm.frequency !== 'monthly' && { dayOfMonth: undefined }),
+    };
+
+    await maintenance.createBackupSchedule(scheduleData);
     setShowScheduleForm(false);
     setScheduleForm({
       name: '',
       frequency: 'daily',
       time: '02:00',
+      dayOfWeek: 0,
+      dayOfMonth: 1,
       collections: [],
       retentionDays: 30,
       enabled: true,
@@ -107,6 +133,30 @@ export default function BackupManagementClient() {
         ? prev.collections.filter((c) => c !== collection)
         : [...prev.collections, collection],
     }));
+  };
+
+  // Função para gerar descrição amigável do agendamento
+  const getScheduleDescription = (schedule: any) => {
+    const time = schedule.time;
+    let dayDescription = '';
+
+    switch (schedule.frequency) {
+      case 'daily':
+        dayDescription = 'Diariamente';
+        break;
+      case 'weekly':
+        const dayName =
+          DAYS_OF_WEEK.find((d) => d.value === schedule.dayOfWeek)?.label ||
+          'Domingo';
+        dayDescription = `Toda ${dayName}`;
+        break;
+      case 'monthly':
+        const day = schedule.dayOfMonth || 1;
+        dayDescription = `Todo dia ${day} do mês`;
+        break;
+    }
+
+    return `${dayDescription} às ${time}`;
   };
 
   useEffect(() => {
@@ -329,6 +379,13 @@ export default function BackupManagementClient() {
                 <h3 className="text-xl font-bold text-theme-primary">
                   Agendamentos de Backup
                 </h3>
+                <Button
+                  variant="secondary"
+                  leftIcon={<FiCalendar />}
+                  onClick={() => setShowScheduleForm(true)}
+                >
+                  Novo Agendamento
+                </Button>
               </div>
 
               {maintenance.backupSchedules.length === 0 ? (
@@ -364,14 +421,7 @@ export default function BackupManagementClient() {
                               {schedule.name}
                             </h5>
                             <div className="flex items-center space-x-4 text-sm text-theme-secondary">
-                              <span>
-                                {schedule.frequency === 'daily'
-                                  ? 'Diário '
-                                  : schedule.frequency === 'weekly'
-                                  ? 'Semanal '
-                                  : 'Mensal '}{' '}
-                                às {schedule.time}
-                              </span>
+                              <span>{getScheduleDescription(schedule)}</span>
                               <span>
                                 Retenção: {schedule.retentionDays} dias
                               </span>
@@ -681,7 +731,7 @@ export default function BackupManagementClient() {
       {/* Schedule Form Modal */}
       {showScheduleForm && (
         <Modal isOpen maxWidth="5xl" onClose={() => setShowScheduleForm(false)}>
-          <div className="bg-theme-elevated  p-6 overflow-y-auto">
+          <div className="bg-theme-elevated p-6 overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-theme-primary">
                 Agendar Backup
@@ -695,7 +745,7 @@ export default function BackupManagementClient() {
               </Button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-theme-primary mb-2">
                   Nome do Agendamento
@@ -714,12 +764,17 @@ export default function BackupManagementClient() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-theme-primary mb-2">
                     Frequência
                   </label>
-                  <select
+                  <Select
+                    options={[
+                      { value: 'daily', label: 'Diário' },
+                      { value: 'weekly', label: 'Semanal' },
+                      { value: 'monthly', label: 'Mensal' },
+                    ]}
                     value={scheduleForm.frequency}
                     onChange={(e) =>
                       setScheduleForm((prev) => ({
@@ -731,11 +786,7 @@ export default function BackupManagementClient() {
                       }))
                     }
                     className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
-                  >
-                    <option value="daily">Diário</option>
-                    <option value="weekly">Semanal</option>
-                    <option value="monthly">Mensal</option>
-                  </select>
+                  />
                 </div>
 
                 <div>
@@ -755,6 +806,58 @@ export default function BackupManagementClient() {
                   />
                 </div>
               </div>
+
+              {/* Campos condicionais para dia da semana/mês */}
+              {scheduleForm.frequency === 'weekly' && (
+                <div>
+                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                    Dia da Semana
+                  </label>
+                  <Select
+                    options={DAYS_OF_WEEK.map((day) => ({
+                      value: day.value.toString(),
+                      label: day.label,
+                    }))}
+                    value={scheduleForm.dayOfWeek?.toString() || '0'}
+                    onChange={(e) =>
+                      setScheduleForm((prev) => ({
+                        ...prev,
+                        dayOfWeek: parseInt(e.target.value),
+                      }))
+                    }
+                    className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
+                  />
+                  <p className="text-xs text-theme-tertiary mt-1">
+                    Selecione o dia da semana para executar o backup semanal
+                  </p>
+                </div>
+              )}
+
+              {scheduleForm.frequency === 'monthly' && (
+                <div>
+                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                    Dia do Mês
+                  </label>
+                  <Input
+                    type="number"
+                    min="1"
+                    max="28"
+                    value={scheduleForm.dayOfMonth || 1}
+                    onChange={(e) =>
+                      setScheduleForm((prev) => ({
+                        ...prev,
+                        dayOfMonth: parseInt(e.target.value) || 1,
+                      }))
+                    }
+                    className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
+                  />
+                  <p className="text-xs text-theme-tertiary mt-1">
+                    Selecione o dia do mês (1-28) para executar o backup mensal.
+                    Recomendamos até o dia 28 para garantir execução em todos os
+                    meses.
+                  </p>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-theme-primary mb-2">
@@ -819,6 +922,30 @@ export default function BackupManagementClient() {
                 <label className="text-sm text-theme-primary">
                   Ativar agendamento imediatamente
                 </label>
+              </div>
+
+              {/* Preview do agendamento */}
+              <div className="p-4 bg-theme-secondary rounded-lg border border-theme-primary">
+                <h4 className="text-sm font-medium text-theme-primary mb-2">
+                  Prévia do Agendamento
+                </h4>
+                <p className="text-sm text-theme-secondary">
+                  <strong>{scheduleForm.name || 'Novo Agendamento'}</strong>{' '}
+                  será executado{' '}
+                  {getScheduleDescription({
+                    frequency: scheduleForm.frequency,
+                    time: scheduleForm.time,
+                    dayOfWeek: scheduleForm.dayOfWeek,
+                    dayOfMonth: scheduleForm.dayOfMonth,
+                  }).toLowerCase()}
+                  {scheduleForm.collections.length > 0
+                    ? ` nas collections: ${scheduleForm.collections.join(', ')}`
+                    : ' com backup completo'}
+                  .
+                </p>
+                <p className="text-xs text-theme-tertiary mt-1">
+                  Backups serão mantidos por {scheduleForm.retentionDays} dias.
+                </p>
               </div>
             </div>
 
