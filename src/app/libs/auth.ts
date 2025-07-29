@@ -270,6 +270,7 @@ export const authOptions: NextAuthOptions = {
             practiceTimePerWeek: user.practiceTimePerWeek,
             profilePublic: user.profilePublic,
             showLocation: user.showLocation,
+            emailVerified: user.emailVerified,
           };
         }
       }

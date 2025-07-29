@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import FavoriteScoreButton from '../../FavoriteScoreButton';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
+import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 // 🆕 Importar apenas o componente de badge, não o hook
 
 interface ScoreCardProps {
@@ -45,6 +46,9 @@ const ScoreCard = ({
   const [showMagnified, setShowMagnified] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
+  const { isInSelectionMode, selectedWorkScore, setSelectedWorkScore } =
+    useLearningModalStore();
+
   // Determina se deve mostrar o thumbnail
   const shouldShowThumbnail = groupSize === 1 || isLastInGroup;
 
@@ -60,7 +64,8 @@ const ScoreCard = ({
       className={`
           cursor-pointer transition-all flex flex-col-reverse duration-300 hover:shadow-theme-glow group relative overflow-hidden
           ${
-            isSelected
+            isSelected ||
+            (isInSelectionMode && selectedWorkScore?.sourceId === score.id)
               ? 'classical-card !p-0 border-brand-primary bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5 shadow-theme-glow'
               : 'classical-card-simple hover:border-theme-primary hover:bg-interactive-hover'
           }
@@ -71,7 +76,12 @@ const ScoreCard = ({
               : ''
           }
         `}
-      onClick={onSelect}
+      onClick={() => {
+        if (isInSelectionMode) {
+          setSelectedWorkScore(null);
+        }
+        onSelect();
+      }}
     >
       <div className="flex flex-col sm:flex-row items-center gap-6 p-6">
         {/* Thumbnail com efeito lupa */}

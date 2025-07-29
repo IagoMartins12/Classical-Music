@@ -579,7 +579,7 @@ export default function IMSLPTabsIncremental({
                   >
                     <div className="classical-card-2 p-6">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
+                        <h3 className="texPreview dat-lg font-semibold text-theme-primary flex items-center space-x-2">
                           <FiBookOpen className="w-5 h-5 text-accent-blue" />
                           <span>Preview da Partitura</span>
                         </h3>

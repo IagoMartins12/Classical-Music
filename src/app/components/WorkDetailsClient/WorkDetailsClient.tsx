@@ -419,7 +419,7 @@ export default function WorkDetailsClient({
 
           {/* Seção de partituras com modo especial */}
           {work.imslpPermlink && (
-            <AnimatedCard hover="none" className="">
+            <AnimatedCard hover="none">
               <IMSLPTabsIncremental
                 imslpData={imslpScores}
                 loading={loadingScores}
@@ -1058,7 +1058,7 @@ export default function WorkDetailsClient({
 
           {/* Seção de Partituras IMSLP */}
           {work.imslpPermlink && (
-            <AnimatedCard hover="none" className="">
+            <AnimatedCard hover="none">
               <IMSLPTabsIncremental
                 imslpData={imslpScores}
                 loading={loadingScores}
