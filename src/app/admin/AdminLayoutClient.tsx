@@ -3,7 +3,6 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { useAdminStats } from '@/app/hooks/admin/useAdminStats';
 import AdminHeader from '../components/Admin/AdminHeader';
 import AdminSidebar from '../components/Admin/AdminSidebar';
 
@@ -16,7 +15,6 @@ export default function AdminLayoutClient({
 }: AdminLayoutClientProps) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { stats, loading } = useAdminStats();
 
   // Fechar sidebar em mobile quando a rota mudar
   useEffect(() => {

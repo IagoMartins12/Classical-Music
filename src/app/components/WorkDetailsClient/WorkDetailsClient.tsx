@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - COMPLETO COM TODAS AS FUNCIONALIDADES + ÁUDIO PROCESSADO
+// app/work/[workId]/WorkDetailsClient.tsx - ATUALIZADO COM INTEGRAÇÃO
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -17,9 +17,13 @@ import {
   FiMapPin,
   FiClock,
   FiTag,
+  FiX,
+  FiCheckCircle,
 } from 'react-icons/fi';
 import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
 import { useNavigate } from '@/app/hooks/useNavigate';
+import { useScoreSelectionStore } from '@/app/stores/useScoreSelectionStore';
+import { useLearningModalStore } from '@/app/stores/useLearningModalStore'; // ✅ NOVO
 import FavoriteButton from '../FavoriteButton';
 import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
@@ -33,7 +37,7 @@ import ShareButton from '../ShareButton';
 import AnnotationsSection from '../Annotations/AnnotationsSection';
 import { useMostFavoritedForWork } from '@/app/stores/useMostFavoritedStore';
 import IMSLPTabsIncremental from './IMSLPTabsIncremental';
-import { GiMetronome, GiMusicalNotes } from 'react-icons/gi';
+import { GiMusicalNotes } from 'react-icons/gi';
 import ReportButton from '../Report/ReportButton';
 import VerificationModal from '../Verification/VerificationModal';
 import VerificationBadge from '../Verification/VerificationBadge';
@@ -42,9 +46,9 @@ import AdContainer from '../Ads/AdContainer';
 import EditButton from '../Common/EditButton';
 import MediaSection from '../Players/MediaSection';
 import { WorkDetails } from '@/app/requests/work-page-details';
-import VideoAulaSection from '../Players/VideoAulaSection';
+import LearningModal from '../LearningModal';
 
-// 🆕 Interface para dados de áudio processados (deve coincidir com o server)
+// Interface para dados de áudio processados (mantida igual)
 interface ProcessedAudioData {
   hasAnyAudio: boolean;
   customAudio: {
@@ -82,21 +86,21 @@ interface ProcessedAudioData {
 
 interface WorkDetailsClientProps {
   work: WorkDetails;
-  audioData?: ProcessedAudioData; // 🆕 Dados de áudio processados (opcional para compatibilidade)
+  audioData?: ProcessedAudioData;
   relatedWorks?: any[];
   learningData?: {
     wantToLearn: any[];
     learned: any[];
   };
   isAdmin: boolean;
-  canEditMedia: boolean; // 🆕 Nova prop
+  canEditMedia: boolean;
 }
 
 export default function WorkDetailsClient({
   work,
-  audioData, // 🆕 Dados de áudio processados
+  audioData,
   isAdmin,
-  canEditMedia, // 🆕
+  canEditMedia,
   learningData = { wantToLearn: [], learned: [] },
 }: WorkDetailsClientProps) {
   // Estados seguros para SSR
@@ -107,13 +111,25 @@ export default function WorkDetailsClient({
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [isVerified, setIsVerified] = useState(work.isVerified || false);
 
-  // 🆕 Estado local para dados de mídia (pode ser atualizado por ações do usuário)
+  // 🆕 Estado local para dados de mídia
   const [currentAudioData, setCurrentAudioData] =
     useState<ProcessedAudioData | null>(audioData || null);
 
+  // ✅ Hooks para seleção de partitura (mantidos)
+  const {
+    isSelectionMode,
+    activeType,
+    tempSelectedWorkScore,
+    selectFromWorkScore, // ✅ NOVA função
+    confirmScoreSelection,
+    cancelScoreSelection,
+  } = useScoreSelectionStore();
+
+  // ✅ NOVO: Hook para LearningModal global
+  const { isInSelectionMode } = useLearningModalStore();
+
   const handleVerificationChange = (verified: boolean) => {
     setIsVerified(verified);
-    // Atualizar no contexto global se necessário
   };
 
   // Verificar se está montado (hidratado)
@@ -121,7 +137,7 @@ export default function WorkDetailsClient({
     setMounted(true);
   }, []);
 
-  // 🆕 Atualizar estado local quando dados do server mudarem
+  // Atualizar estado local quando dados do server mudarem
   useEffect(() => {
     if (audioData) {
       setCurrentAudioData(audioData);
@@ -137,7 +153,7 @@ export default function WorkDetailsClient({
     isScoreMostFavorited,
   } = useMostFavoritedForWork(mounted ? work.id : '');
 
-  // 🆕 Hook para carregamento incremental com nova lógica de cache
+  // Hook para carregamento incremental
   const {
     scores: imslpScores,
     loading: loadingScores,
@@ -148,8 +164,8 @@ export default function WorkDetailsClient({
     currentLoaded,
     refetch: refetchScores,
     loadMore,
-    loadMoreForTab, // ✅ Esta função está correta
-    loadAll, // ✅ Esta função está correta
+    loadMoreForTab,
+    loadAll,
     fromCache,
     backgroundCaching,
     cacheProgress,
@@ -177,11 +193,10 @@ export default function WorkDetailsClient({
 
   const { navigateToUrl } = useNavigate();
 
-  // 🆕 Converter dados processados para formato esperado pelo MediaSection
+  // Converter dados processados para formato esperado pelo MediaSection
   const workForMediaSection = currentAudioData
     ? {
         ...work,
-        // Garantir que os dados de áudio mais recentes sejam usados
         spotifyTrackId:
           currentAudioData.spotify?.trackId || work.spotifyTrackId,
         spotifyTrackUrl:
@@ -195,13 +210,11 @@ export default function WorkDetailsClient({
           : work.spotifyArtists,
         spotifyThumbnail:
           currentAudioData.spotify?.thumbnail || work.spotifyThumbnail,
-
         youtubeVideoId:
           currentAudioData.youtube?.videoId || work.youtubeVideoId,
         youtubeVideoUrl:
           currentAudioData.youtube?.videoUrl || work.youtubeVideoUrl,
         youtubeTitle: currentAudioData.youtube?.title || work.youtubeTitle,
-
         customAudioUrl:
           currentAudioData.customAudio?.url || work.customAudioUrl,
         customAudioFile:
@@ -210,7 +223,6 @@ export default function WorkDetailsClient({
           currentAudioData.customAudio?.source || work.customAudioSource,
         customAudioMetadata:
           currentAudioData.customAudio?.metadata || work.customAudioMetadata,
-
         mediaSource: currentAudioData.mediaSource || work.mediaSource,
         lastMediaSearch:
           currentAudioData.lastMediaSearch || work.lastMediaSearch,
@@ -219,13 +231,12 @@ export default function WorkDetailsClient({
       }
     : work;
 
-  // 🆕 Callback para quando a mídia for atualizada
+  // Callback para quando a mídia for atualizada
   const handleMediaUpdate = (newMediaData: Partial<ProcessedAudioData>) => {
     console.log('🔄 [WORK-CLIENT] Atualizando dados de mídia:', newMediaData);
 
     setCurrentAudioData((prev) => {
       if (!prev) {
-        // Se não tinha dados antes, criar estrutura inicial
         return {
           hasAnyAudio: !!(
             newMediaData.customAudio ||
@@ -256,6 +267,55 @@ export default function WorkDetailsClient({
         ),
       };
     });
+  };
+
+  // ✅ MODIFICADO: Handler para seleção de partitura
+  const handleScoreSelectForLearning = async (score: IMSLPScore) => {
+    if (isSelectionMode || isInSelectionMode) {
+      console.log(
+        '🎯 [WORK-CLIENT] Selecionando partitura para aprendizado:',
+        score.title
+      );
+
+      // ✅ NOVA: Buscar WorkScore correspondente ao IMSLPScore
+      try {
+        const response = await fetch(
+          `/api/work-scores?workId=${work.id}&sourceId=${score.id}&source=IMSLP`
+        );
+
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.workScore) {
+            // ✅ Usar WorkScore existente
+            selectFromWorkScore(result.workScore);
+          } else {
+            console.warn(
+              '⚠️ [WORK-CLIENT] WorkScore não encontrado para IMSLPScore:',
+              score.id
+            );
+            // TODO: Mostrar toast informando que a partitura não está disponível para vinculação
+          }
+        }
+      } catch (error) {
+        console.error('❌ [WORK-CLIENT] Erro ao buscar WorkScore:', error);
+      }
+    } else {
+      // Comportamento normal de seleção para estudo
+      setSelectedScoreForStudy(score);
+      setSelectedScore(score?.id || null);
+    }
+  };
+
+  // 🆕 Handler para confirmar seleção
+  const handleConfirmSelection = () => {
+    console.log('✅ [WORK-CLIENT] Confirmando seleção de partitura');
+    confirmScoreSelection();
+  };
+
+  // 🆕 Handler para cancelar seleção
+  const handleCancelSelection = () => {
+    console.log('❌ [WORK-CLIENT] Cancelando seleção de partitura');
+    cancelScoreSelection();
   };
 
   // Funções utilitárias mantidas...
@@ -299,27 +359,110 @@ export default function WorkDetailsClient({
       : 'from-theme-primary to-theme-secondary';
   };
 
-  const handleScoreSelect = (score: IMSLPScore) => {
-    setSelectedScoreForStudy(score);
-    setSelectedScore(score?.id || null);
-  };
-
-  console.log('🎵 [WORK-CLIENT] Renderizando com dados de áudio:', {
+  console.log('🎵 [WORK-CLIENT] Renderizando:', {
     workId: work.id,
-    hasAudioData: !!currentAudioData,
-    hasAnyAudio: currentAudioData?.hasAnyAudio,
-    hasCustomAudio: !!currentAudioData?.customAudio,
-    hasSpotify: !!currentAudioData?.spotify,
-    hasYoutube: !!currentAudioData?.youtube,
-    audioSource: currentAudioData?.customAudio?.source,
-    completeness: currentAudioData?.completeness,
-    canEditMedia,
+    isSelectionMode,
+    isInSelectionMode,
+    activeType,
   });
 
+  // ✅ MODIFICADO: Se estiver em modo de seleção (qualquer um)
+  if (isSelectionMode || isInSelectionMode) {
+    return (
+      <div className="bg-gradient-primary">
+        <div className="section-wrap space-y-8 relative z-10">
+          {/* Header do modo seleção */}
+          <AnimatedItem direction="down" springType="gentle">
+            <div className="bg-gradient-to-r from-accent-blue/10 to-brand-primary/10 border-2 border-accent-blue/30 rounded-2xl p-6 mb-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-brand-primary rounded-2xl flex items-center justify-center">
+                    <FiTarget className="w-6 h-6 text-theme-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-theme-primary classical-title">
+                      Selecionar Partitura para{' '}
+                      {activeType === 'want-to-learn'
+                        ? 'Quero Aprender'
+                        : 'Já Aprendi'}
+                    </h2>
+                    <p className="text-theme-secondary">
+                      {tempSelectedWorkScore
+                        ? `Partitura selecionada: ${tempSelectedWorkScore.title}`
+                        : 'Clique em uma partitura abaixo para selecioná-la'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  {tempSelectedWorkScore && (
+                    <button
+                      onClick={handleConfirmSelection}
+                      className="btn-classical-primary flex items-center space-x-2"
+                    >
+                      <FiCheckCircle className="w-4 h-4" />
+                      <span>Confirmar Seleção</span>
+                    </button>
+                  )}
+
+                  <button
+                    onClick={handleCancelSelection}
+                    className="btn-classical-secondary flex items-center space-x-2"
+                  >
+                    <FiX className="w-4 h-4" />
+                    <span>Cancelar</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </AnimatedItem>
+
+          {/* Seção de partituras com modo especial */}
+          {work.imslpPermlink && (
+            <AnimatedCard hover="none" className="">
+              <IMSLPTabsIncremental
+                imslpData={imslpScores}
+                loading={loadingScores}
+                loadingMore={loadingMore}
+                error={scoresError}
+                onRefetch={refetchScores}
+                onLoadMore={loadMore}
+                onLoadMoreForTab={loadMoreForTab}
+                onLoadAll={loadAll}
+                onScoreSelect={handleScoreSelectForLearning}
+                workId={work.id}
+                workTitle={work.title}
+                composerName={work.composer.fullName}
+                hasMore={hasMore}
+                totalAvailable={totalAvailable}
+                currentLoaded={currentLoaded}
+                backgroundCaching={backgroundCaching}
+                cacheProgress={cacheProgress}
+                getTabStats={getTabStats}
+                mostFavoritedScoreId={mostFavoritedScoreId}
+                mostFavoritedSource={mostFavoritedSource}
+                hasMostFavorited={hasMostFavorited}
+                loadingMostFavorited={loadingMostFavorited}
+                isScoreMostFavorited={isScoreMostFavorited}
+                // 🆕 Props para modo seleção
+                isSelectionMode={true}
+                selectionType={activeType}
+                tempSelectedWorkScore={tempSelectedWorkScore}
+              />
+            </AnimatedCard>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Renderização normal (código original mantido)
   return (
     <div className="bg-gradient-primary">
-      {/* Inicializar dados de aprendizado e favoritos do SSR */}
       <LearningInitializer learningData={learningData} />
+
+      {/* ✅ NOVO: LearningModal global */}
+      <LearningModal />
 
       <div className="section-wrap space-y-8 relative z-10">
         {/* Breadcrumb */}
@@ -372,6 +515,7 @@ export default function WorkDetailsClient({
           staggerSpeed="normal"
           className="flex flex-col gap-4"
         >
+          {/* Card principal da obra (mantido igual) */}
           <AnimatedCard
             hover="lift"
             className="classical-card overflow-hidden relative"
@@ -407,7 +551,7 @@ export default function WorkDetailsClient({
                             />
                           )}
                         </div>
-                        {/* 🆕 Subtitle */}
+                        {/* Subtitle */}
                         {work.subtitle && (
                           <h2 className="text-2xl md:text-3xl text-theme-secondary mt-2 classical-subtitle font-medium">
                             {work.subtitle}
@@ -475,7 +619,7 @@ export default function WorkDetailsClient({
                       </div>
                     </div>
 
-                    {/* 🆕 Difficulty Level Badge */}
+                    {/* Difficulty Level Badge */}
                     {work.difficultyLevel && (
                       <div className="flex items-center space-x-3">
                         <div
@@ -512,7 +656,7 @@ export default function WorkDetailsClient({
                     </div>
                   </div>
 
-                  {/* Grid de Informações Detalhadas - UPDATED com novas propriedades */}
+                  {/* Grid de Informações Detalhadas (resto do código mantido igual...) */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Ano de Composição */}
                     {work.compositionYear && (
@@ -600,7 +744,7 @@ export default function WorkDetailsClient({
                     )}
                   </div>
 
-                  {/* Informações Adicionais */}
+                  {/* Informações Adicionais (resto mantido igual...) */}
                   {(work.firstPublishDate ||
                     work.dedicateTo ||
                     work.workStyle) && (
@@ -666,7 +810,7 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
-                  {/* Tags de Categorias e Gêneros - UPDATED */}
+                  {/* Tags de Categorias e Gêneros (resto mantido igual...) */}
                   {work.workGenresArr &&
                     (work.categoryNames?.length > 0 ||
                       work.workGenresArr?.length > 0) && (
@@ -741,7 +885,7 @@ export default function WorkDetailsClient({
                     )}
                 </div>
 
-                {/* Sidebar com Player e Links */}
+                {/* Sidebar com Player e Links (resto mantido igual...) */}
                 <div className="space-y-6">
                   {/* Player de Áudio/Vídeo */}
                   {work.videoUrl && (
@@ -828,7 +972,7 @@ export default function WorkDetailsClient({
                     </div>
                   </div>
 
-                  {/* Informações Técnicas - UPDATED */}
+                  {/* Informações Técnicas */}
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
@@ -848,7 +992,7 @@ export default function WorkDetailsClient({
                         </span>
                       </div>
 
-                      {/* 🆕 Difficulty Level in Technical Details */}
+                      {/* Difficulty Level in Technical Details */}
                       {work.difficultyLevel && (
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-theme-tertiary">
@@ -905,16 +1049,14 @@ export default function WorkDetailsClient({
 
           <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" />
 
-          {/* 🆕 Seção de Multimídia com dados processados */}
+          {/* Seção de Multimídia */}
           <MediaSection
             work={workForMediaSection}
             canEditMedia={canEditMedia}
-            onMediaUpdate={handleMediaUpdate} // 🆕 Callback para atualizações
+            onMediaUpdate={handleMediaUpdate}
           />
 
-          <VideoAulaSection work={work} canEditMedia={canEditMedia} />
-
-          {/* 🆕 Seção de Partituras IMSLP com nova lógica */}
+          {/* Seção de Partituras IMSLP */}
           {work.imslpPermlink && (
             <AnimatedCard hover="none" className="">
               <IMSLPTabsIncremental
@@ -924,9 +1066,9 @@ export default function WorkDetailsClient({
                 error={scoresError}
                 onRefetch={refetchScores}
                 onLoadMore={loadMore}
-                onLoadMoreForTab={loadMoreForTab} // ✅ Passa a função correta
-                onLoadAll={loadAll} // ✅ Passa a função correta
-                onScoreSelect={handleScoreSelect}
+                onLoadMoreForTab={loadMoreForTab}
+                onLoadAll={loadAll}
+                onScoreSelect={handleScoreSelectForLearning}
                 workId={work.id}
                 workTitle={work.title}
                 composerName={work.composer.fullName}
@@ -935,13 +1077,16 @@ export default function WorkDetailsClient({
                 currentLoaded={currentLoaded}
                 backgroundCaching={backgroundCaching}
                 cacheProgress={cacheProgress}
-                getTabStats={getTabStats} // ✅ Passa a função correta
-                // Props de favoritos
+                getTabStats={getTabStats}
                 mostFavoritedScoreId={mostFavoritedScoreId}
                 mostFavoritedSource={mostFavoritedSource}
                 hasMostFavorited={hasMostFavorited}
                 loadingMostFavorited={loadingMostFavorited}
                 isScoreMostFavorited={isScoreMostFavorited}
+                // 🆕 Props padrão para modo normal
+                isSelectionMode={false}
+                selectionType={null}
+                tempSelectedWorkScore={null}
               />
             </AnimatedCard>
           )}

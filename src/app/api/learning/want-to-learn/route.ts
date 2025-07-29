@@ -1,4 +1,4 @@
-// app/api/learning/want-to-learn/route.ts
+// app/api/learning/want-to-learn/route.ts - CORRIGIDO COM WORKSCORE
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -18,13 +18,15 @@ export async function POST(request: NextRequest) {
       workId,
       action,
       priority = 0,
-      // Campos adicionais
+      // Campos adicionais existentes
       notes,
       targetDate,
       estimatedStudyTime,
       difficulty,
       motivation,
       context,
+      // ✅ CAMPO CORRIGIDO COM WORKSCORE
+      selectedWorkScoreId,
     } = body;
 
     if (!workId || !action) {
@@ -52,6 +54,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // ✅ VALIDAR WORKSCORE SE FORNECIDO
+    if (selectedWorkScoreId) {
+      const workScoreExists = await prisma.workScore.findFirst({
+        where: {
+          id: selectedWorkScoreId,
+          workId: workId, // Garantir que pertence à obra
+          isActive: true,
+        },
+      });
+
+      if (!workScoreExists) {
+        return NextResponse.json(
+          { error: 'Partitura não encontrada ou não pertence a esta obra' },
+          { status: 400 }
+        );
+      }
+    }
+
     if (action === 'add') {
       // Remover da lista de "já aprendi" se estiver lá (exclusão mútua)
       await prisma.learned.deleteMany({
@@ -77,6 +97,10 @@ export async function POST(request: NextRequest) {
       if (motivation) dataToSave.motivation = motivation;
       if (context) dataToSave.context = context;
 
+      // ✅ ADICIONAR WORKSCORE SE FORNECIDO
+      if (selectedWorkScoreId)
+        dataToSave.selectedWorkScoreId = selectedWorkScoreId;
+
       // Adicionar à lista de desejos (upsert para atualizar se já existir)
       const wantToLearnItem = await prisma.wantToLearn.upsert({
         where: {
@@ -99,6 +123,27 @@ export async function POST(request: NextRequest) {
                   fullName: true,
                 },
               },
+            },
+          },
+          // ✅ INCLUIR DADOS DO WORKSCORE
+          selectedWorkScore: {
+            select: {
+              id: true,
+              sourceId: true,
+              source: true,
+              title: true,
+              downloadUrl: true,
+              thumbnailUrl: true,
+              fileSize: true,
+              pageCount: true,
+              fileFormat: true,
+              type: true,
+              editor: true,
+              publisher: true,
+              copyright: true,
+              uploadDate: true,
+              uploader: true,
+              notes: true,
             },
           },
         },
@@ -125,6 +170,9 @@ export async function POST(request: NextRequest) {
           difficulty: wantToLearnItem.difficulty,
           motivation: wantToLearnItem.motivation,
           context: wantToLearnItem.context,
+          // ✅ INCLUIR WORKSCORE NA RESPOSTA
+          selectedWorkScoreId: wantToLearnItem.selectedWorkScoreId,
+          selectedWorkScore: wantToLearnItem.selectedWorkScore,
           work: wantToLearnItem.work,
         },
       });
@@ -171,17 +219,37 @@ export async function PATCH(request: NextRequest) {
     const {
       workId,
       priority,
-      // Campos adicionais para atualização
+      // Campos adicionais para atualização existentes
       notes,
       targetDate,
       estimatedStudyTime,
       difficulty,
       motivation,
       context,
+      // ✅ CAMPO CORRIGIDO COM WORKSCORE
+      selectedWorkScoreId,
     } = body;
 
     if (!workId) {
       return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 });
+    }
+
+    // ✅ VALIDAR WORKSCORE SE FORNECIDO
+    if (selectedWorkScoreId) {
+      const workScoreExists = await prisma.workScore.findFirst({
+        where: {
+          id: selectedWorkScoreId,
+          workId: workId,
+          isActive: true,
+        },
+      });
+
+      if (!workScoreExists) {
+        return NextResponse.json(
+          { error: 'Partitura não encontrada ou não pertence a esta obra' },
+          { status: 400 }
+        );
+      }
     }
 
     // Preparar dados para atualização
@@ -206,6 +274,10 @@ export async function PATCH(request: NextRequest) {
     if (difficulty !== undefined) dataToUpdate.difficulty = difficulty;
     if (motivation !== undefined) dataToUpdate.motivation = motivation;
     if (context !== undefined) dataToUpdate.context = context;
+
+    // ✅ ATUALIZAR WORKSCORE SE FORNECIDO
+    if (selectedWorkScoreId !== undefined)
+      dataToUpdate.selectedWorkScoreId = selectedWorkScoreId;
 
     // Atualizar item
     const updated = await prisma.wantToLearn.updateMany({
@@ -243,6 +315,27 @@ export async function PATCH(request: NextRequest) {
             },
           },
         },
+        // ✅ INCLUIR DADOS DO WORKSCORE
+        selectedWorkScore: {
+          select: {
+            id: true,
+            sourceId: true,
+            source: true,
+            title: true,
+            downloadUrl: true,
+            thumbnailUrl: true,
+            fileSize: true,
+            pageCount: true,
+            fileFormat: true,
+            type: true,
+            editor: true,
+            publisher: true,
+            copyright: true,
+            uploadDate: true,
+            uploader: true,
+            notes: true,
+          },
+        },
       },
     });
 
@@ -265,6 +358,9 @@ export async function PATCH(request: NextRequest) {
             difficulty: updatedItem.difficulty,
             motivation: updatedItem.motivation,
             context: updatedItem.context,
+            // ✅ INCLUIR WORKSCORE NA RESPOSTA
+            selectedWorkScoreId: updatedItem.selectedWorkScoreId,
+            selectedWorkScore: updatedItem.selectedWorkScore,
             work: updatedItem.work,
           }
         : null,
@@ -310,6 +406,27 @@ export async function GET(request: NextRequest) {
               },
             },
           },
+          // ✅ INCLUIR DADOS DO WORKSCORE
+          selectedWorkScore: {
+            select: {
+              id: true,
+              sourceId: true,
+              source: true,
+              title: true,
+              downloadUrl: true,
+              thumbnailUrl: true,
+              fileSize: true,
+              pageCount: true,
+              fileFormat: true,
+              type: true,
+              editor: true,
+              publisher: true,
+              copyright: true,
+              uploadDate: true,
+              uploader: true,
+              notes: true,
+            },
+          },
         },
       });
 
@@ -328,6 +445,9 @@ export async function GET(request: NextRequest) {
               difficulty: wantToLearnItem.difficulty,
               motivation: wantToLearnItem.motivation,
               context: wantToLearnItem.context,
+              // ✅ INCLUIR WORKSCORE NA RESPOSTA
+              selectedWorkScoreId: wantToLearnItem.selectedWorkScoreId,
+              selectedWorkScore: wantToLearnItem.selectedWorkScore,
               work: wantToLearnItem.work,
             }
           : null,
@@ -353,6 +473,27 @@ export async function GET(request: NextRequest) {
             },
           },
         },
+        // ✅ INCLUIR DADOS DO WORKSCORE
+        selectedWorkScore: {
+          select: {
+            id: true,
+            sourceId: true,
+            source: true,
+            title: true,
+            downloadUrl: true,
+            thumbnailUrl: true,
+            fileSize: true,
+            pageCount: true,
+            fileFormat: true,
+            type: true,
+            editor: true,
+            publisher: true,
+            copyright: true,
+            uploadDate: true,
+            uploader: true,
+            notes: true,
+          },
+        },
       },
       orderBy: [{ priority: 'desc' }, { addedAt: 'desc' }],
     });
@@ -370,6 +511,9 @@ export async function GET(request: NextRequest) {
         difficulty: item.difficulty,
         motivation: item.motivation,
         context: item.context,
+        // ✅ INCLUIR WORKSCORE NA RESPOSTA
+        selectedWorkScoreId: item.selectedWorkScoreId,
+        selectedWorkScore: item.selectedWorkScore,
         work: item.work,
       })),
       count: wantToLearnItems.length,

@@ -29,7 +29,7 @@ async function loadSchedules(): Promise<BackupSchedule[]> {
 
     const content = await fs.readFile(SCHEDULES_FILE, 'utf8');
     return JSON.parse(content);
-  } catch (error) {
+  } catch {
     // Se o arquivo não existir, retornar array vazio
     return [];
   }
@@ -43,7 +43,7 @@ async function saveSchedules(schedules: BackupSchedule[]): Promise<void> {
 }
 
 // GET - Listar agendamentos
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
@@ -333,81 +333,6 @@ export async function DELETE(request: NextRequest) {
     });
   } catch (error) {
     console.error('Erro ao remover agendamento:', error);
-    return NextResponse.json(
-      { error: 'Erro interno do servidor' },
-      { status: 500 }
-    );
-  }
-}
-
-// Função auxiliar para testar expressões cron geradas
-export async function testCronExpression(request: NextRequest) {
-  try {
-    const session = await getServerSession(authOptions);
-
-    if (!session?.user?.id || session.user.role !== 2) {
-      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
-    }
-
-    const requestData: CreateBackupScheduleRequest = await request.json();
-
-    const validationErrors = validateScheduleConfig(requestData);
-    if (validationErrors.length > 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Dados inválidos',
-          details: validationErrors,
-        },
-        { status: 400 }
-      );
-    }
-
-    const cronExpression = generateCronExpression(requestData);
-    const nextRun = calculateNextRun(requestData);
-    const description = getScheduleDescription({
-      ...requestData,
-      id: 'test',
-      nextRun,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as BackupSchedule);
-
-    // Calcular próximas 5 execuções para previsualização
-    const upcomingRuns: Date[] = [];
-    let currentDate = new Date(nextRun);
-
-    for (let i = 0; i < 5; i++) {
-      upcomingRuns.push(new Date(currentDate));
-
-      // Calcular próxima execução baseada na frequência
-      switch (requestData.frequency) {
-        case 'daily':
-          currentDate.setDate(currentDate.getDate() + 1);
-          break;
-        case 'weekly':
-          currentDate.setDate(currentDate.getDate() + 7);
-          break;
-        case 'monthly':
-          currentDate.setMonth(currentDate.getMonth() + 1);
-          break;
-      }
-    }
-
-    return NextResponse.json({
-      success: true,
-      test: {
-        cronExpression,
-        description,
-        nextRun: nextRun.toISOString(),
-        upcomingRuns: upcomingRuns.map((date) => ({
-          date: date.toISOString(),
-          formatted: date.toLocaleString('pt-BR'),
-        })),
-      },
-    });
-  } catch (error) {
-    console.error('Erro ao testar expressão cron:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

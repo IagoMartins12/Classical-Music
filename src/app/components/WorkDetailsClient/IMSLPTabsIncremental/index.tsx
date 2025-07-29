@@ -64,6 +64,11 @@ interface IMSLPTabsIncrementalProps {
   hasMostFavorited?: boolean;
   loadingMostFavorited?: boolean;
   isScoreMostFavorited?: (scoreId: string, scoreSource?: string) => boolean;
+
+  // 🆕 Props para modo de seleção
+  isSelectionMode?: boolean;
+  selectionType?: 'want-to-learn' | 'learned' | null;
+  tempSelectedWorkScore?: { id: string; title: string; source: string } | null;
 }
 
 interface TabInfo {

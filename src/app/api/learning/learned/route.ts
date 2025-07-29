@@ -1,4 +1,4 @@
-// app/api/learning/learned/route.ts
+// app/api/learning/learned/route.ts - CORRIGIDO COM WORKSCORE
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       workId,
       action,
       mastery = 0,
-      // Campos adicionais
+      // Campos adicionais existentes
       studyStartDate,
       studyDuration,
       notes,
@@ -28,6 +28,8 @@ export async function POST(request: NextRequest) {
       enjoyment,
       technicalChallenges,
       musicalInsights,
+      // ✅ CAMPO CORRIGIDO COM WORKSCORE
+      selectedWorkScoreId,
     } = body;
 
     if (!workId || !action) {
@@ -53,6 +55,24 @@ export async function POST(request: NextRequest) {
         { error: 'Obra não encontrada' },
         { status: 404 }
       );
+    }
+
+    // ✅ VALIDAR WORKSCORE SE FORNECIDO
+    if (selectedWorkScoreId) {
+      const workScoreExists = await prisma.workScore.findFirst({
+        where: {
+          id: selectedWorkScoreId,
+          workId: workId, // Garantir que pertence à obra
+          isActive: true,
+        },
+      });
+
+      if (!workScoreExists) {
+        return NextResponse.json(
+          { error: 'Partitura não encontrada ou não pertence a esta obra' },
+          { status: 400 }
+        );
+      }
     }
 
     if (action === 'add') {
@@ -85,6 +105,10 @@ export async function POST(request: NextRequest) {
         dataToSave.technicalChallenges = technicalChallenges;
       if (musicalInsights) dataToSave.musicalInsights = musicalInsights;
 
+      // ✅ ADICIONAR WORKSCORE SE FORNECIDO
+      if (selectedWorkScoreId)
+        dataToSave.selectedWorkScoreId = selectedWorkScoreId;
+
       // Adicionar à lista de aprendidas (upsert para atualizar se já existir)
       const learnedItem = await prisma.learned.upsert({
         where: {
@@ -110,6 +134,27 @@ export async function POST(request: NextRequest) {
                   fullName: true,
                 },
               },
+            },
+          },
+          // ✅ INCLUIR DADOS DO WORKSCORE
+          selectedWorkScore: {
+            select: {
+              id: true,
+              sourceId: true,
+              source: true,
+              title: true,
+              downloadUrl: true,
+              thumbnailUrl: true,
+              fileSize: true,
+              pageCount: true,
+              fileFormat: true,
+              type: true,
+              editor: true,
+              publisher: true,
+              copyright: true,
+              uploadDate: true,
+              uploader: true,
+              notes: true,
             },
           },
         },
@@ -139,6 +184,9 @@ export async function POST(request: NextRequest) {
           enjoyment: learnedItem.enjoyment,
           technicalChallenges: learnedItem.technicalChallenges,
           musicalInsights: learnedItem.musicalInsights,
+          // ✅ INCLUIR WORKSCORE NA RESPOSTA
+          selectedWorkScoreId: learnedItem.selectedWorkScoreId,
+          selectedWorkScore: learnedItem.selectedWorkScore,
           work: learnedItem.work,
         },
       });
@@ -185,7 +233,7 @@ export async function PATCH(request: NextRequest) {
     const {
       workId,
       mastery,
-      // Campos adicionais para atualização
+      // Campos adicionais para atualização existentes
       studyStartDate,
       studyDuration,
       notes,
@@ -195,10 +243,30 @@ export async function PATCH(request: NextRequest) {
       enjoyment,
       technicalChallenges,
       musicalInsights,
+      // ✅ CAMPO CORRIGIDO COM WORKSCORE
+      selectedWorkScoreId,
     } = body;
 
     if (!workId) {
       return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 });
+    }
+
+    // ✅ VALIDAR WORKSCORE SE FORNECIDO
+    if (selectedWorkScoreId) {
+      const workScoreExists = await prisma.workScore.findFirst({
+        where: {
+          id: selectedWorkScoreId,
+          workId: workId,
+          isActive: true,
+        },
+      });
+
+      if (!workScoreExists) {
+        return NextResponse.json(
+          { error: 'Partitura não encontrada ou não pertence a esta obra' },
+          { status: 400 }
+        );
+      }
     }
 
     // Preparar dados para atualização
@@ -232,6 +300,10 @@ export async function PATCH(request: NextRequest) {
       dataToUpdate.technicalChallenges = technicalChallenges;
     if (musicalInsights !== undefined)
       dataToUpdate.musicalInsights = musicalInsights;
+
+    // ✅ ATUALIZAR WORKSCORE SE FORNECIDO
+    if (selectedWorkScoreId !== undefined)
+      dataToUpdate.selectedWorkScoreId = selectedWorkScoreId;
 
     // Atualizar maestria
     const updated = await prisma.learned.updateMany({
@@ -269,6 +341,27 @@ export async function PATCH(request: NextRequest) {
             },
           },
         },
+        // ✅ INCLUIR DADOS DO WORKSCORE
+        selectedWorkScore: {
+          select: {
+            id: true,
+            sourceId: true,
+            source: true,
+            title: true,
+            downloadUrl: true,
+            thumbnailUrl: true,
+            fileSize: true,
+            pageCount: true,
+            fileFormat: true,
+            type: true,
+            editor: true,
+            publisher: true,
+            copyright: true,
+            uploadDate: true,
+            uploader: true,
+            notes: true,
+          },
+        },
       },
     });
 
@@ -295,6 +388,9 @@ export async function PATCH(request: NextRequest) {
             enjoyment: updatedItem.enjoyment,
             technicalChallenges: updatedItem.technicalChallenges,
             musicalInsights: updatedItem.musicalInsights,
+            // ✅ INCLUIR WORKSCORE NA RESPOSTA
+            selectedWorkScoreId: updatedItem.selectedWorkScoreId,
+            selectedWorkScore: updatedItem.selectedWorkScore,
             work: updatedItem.work,
           }
         : null,
@@ -340,6 +436,27 @@ export async function GET(request: NextRequest) {
               },
             },
           },
+          // ✅ INCLUIR DADOS DO WORKSCORE
+          selectedWorkScore: {
+            select: {
+              id: true,
+              sourceId: true,
+              source: true,
+              title: true,
+              downloadUrl: true,
+              thumbnailUrl: true,
+              fileSize: true,
+              pageCount: true,
+              fileFormat: true,
+              type: true,
+              editor: true,
+              publisher: true,
+              copyright: true,
+              uploadDate: true,
+              uploader: true,
+              notes: true,
+            },
+          },
         },
       });
 
@@ -361,6 +478,9 @@ export async function GET(request: NextRequest) {
               enjoyment: learnedItem.enjoyment,
               technicalChallenges: learnedItem.technicalChallenges,
               musicalInsights: learnedItem.musicalInsights,
+              // ✅ INCLUIR WORKSCORE NA RESPOSTA
+              selectedWorkScoreId: learnedItem.selectedWorkScoreId,
+              selectedWorkScore: learnedItem.selectedWorkScore,
               work: learnedItem.work,
             }
           : null,
@@ -386,6 +506,27 @@ export async function GET(request: NextRequest) {
             },
           },
         },
+        // ✅ INCLUIR DADOS DO WORKSCORE
+        selectedWorkScore: {
+          select: {
+            id: true,
+            sourceId: true,
+            source: true,
+            title: true,
+            downloadUrl: true,
+            thumbnailUrl: true,
+            fileSize: true,
+            pageCount: true,
+            fileFormat: true,
+            type: true,
+            editor: true,
+            publisher: true,
+            copyright: true,
+            uploadDate: true,
+            uploader: true,
+            notes: true,
+          },
+        },
       },
       orderBy: [{ mastery: 'desc' }, { learnedAt: 'desc' }],
     });
@@ -406,6 +547,9 @@ export async function GET(request: NextRequest) {
         enjoyment: item.enjoyment,
         technicalChallenges: item.technicalChallenges,
         musicalInsights: item.musicalInsights,
+        // ✅ INCLUIR WORKSCORE NA RESPOSTA
+        selectedWorkScoreId: item.selectedWorkScoreId,
+        selectedWorkScore: item.selectedWorkScore,
         work: item.work,
       })),
       count: learnedItems.length,

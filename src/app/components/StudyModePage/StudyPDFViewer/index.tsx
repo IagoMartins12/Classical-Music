@@ -21,9 +21,9 @@ import {
   FiEyeOff,
   FiFile,
 } from 'react-icons/fi';
-import { WorkDetails } from '@/app/requests/work-details';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental'; // 🆕 Import corrigido
 import { StudySession } from '../StudyModeClient';
+import { WorkDetails } from '@/app/requests/work-details-score';
 
 interface StudyPDFViewerProps {
   work: WorkDetails;

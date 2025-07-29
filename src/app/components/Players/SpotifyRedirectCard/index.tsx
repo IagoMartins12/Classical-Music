@@ -11,7 +11,7 @@ interface SpotifyRedirectCardProps {
   spotify: {
     trackId: string;
     trackUrl: string;
-    displayTitle?: string; // 🆕 "Frédéric Chopin - Yuja Wang"
+    displayTitle?: string | null; // 🆕 "Frédéric Chopin - Yuja Wang"
     previewUrl: string | null;
     albumArt: string | null; // Para compatibilidade
     thumbnail?: string | null; // 🆕 Thumbnail salvo na base de dados

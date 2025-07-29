@@ -146,8 +146,8 @@ const MAINTENANCE_TASKS: MaintenanceTask[] = [
   },
 ];
 
-let BACKUP_SCHEDULES: BackupSchedule[] = [];
-let runningTasks = new Set<string>();
+const BACKUP_SCHEDULES: BackupSchedule[] = [];
+const runningTasks = new Set<string>();
 
 // Função para calcular próxima execução
 function calculateNextRun(frequency: string, time?: string): Date {
@@ -258,7 +258,7 @@ async function getDirSize(dirPath: string): Promise<number> {
         size += stats.size;
       }
     }
-  } catch (error) {
+  } catch {
     // Ignore errors
   }
   return size;

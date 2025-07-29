@@ -8,13 +8,36 @@ export interface WantToLearnItem {
   workId: string;
   priority: number; // 1-5 priority level
   addedAt: string;
-  // Campos opcionais para enriquecer a experiência
+
+  // Campos opcionais existentes
   notes?: string;
   targetDate?: string;
   estimatedStudyTime?: number; // em horas
   difficulty?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
   motivation?: string;
   context?: string;
+
+  // ✅ RELAÇÃO COM WORKSCORE
+  selectedWorkScoreId?: string;
+  selectedWorkScore?: {
+    id: string;
+    sourceId: string; // ID original da partitura (IMSLP, etc.)
+    source: 'IMSLP' | 'CUSTOM' | 'UPLOAD';
+    title: string;
+    downloadUrl?: string;
+    thumbnailUrl?: string;
+    fileSize?: string;
+    pageCount?: string;
+    fileFormat: string;
+    editor?: string;
+    publisher?: string;
+    copyright?: string;
+    uploadDate?: string;
+    uploader?: string;
+    notes?: string;
+    type: string; // SCORES, PARTS, ARRANGEMENTS, etc.
+  };
+
   work?: {
     id: string;
     title: string;
@@ -32,7 +55,8 @@ export interface LearnedItem {
   workId: string;
   learnedAt: string;
   mastery: number; // 1-5 mastery level
-  // Campos opcionais para enriquecer a experiência
+
+  // Campos opcionais existentes
   studyStartDate?: string;
   studyDuration?: number; // em dias
   notes?: string;
@@ -43,6 +67,28 @@ export interface LearnedItem {
   enjoyment?: number;
   technicalChallenges?: string;
   musicalInsights?: string;
+
+  // ✅ RELAÇÃO COM WORKSCORE
+  selectedWorkScoreId?: string;
+  selectedWorkScore?: {
+    id: string;
+    sourceId: string; // ID original da partitura (IMSLP, etc.)
+    source: 'IMSLP' | 'CUSTOM' | 'UPLOAD';
+    title: string;
+    downloadUrl?: string;
+    thumbnailUrl?: string;
+    fileSize?: string;
+    pageCount?: string;
+    fileFormat: string;
+    editor?: string;
+    publisher?: string;
+    copyright?: string;
+    uploadDate?: string;
+    uploader?: string;
+    notes?: string;
+    type: string; // SCORES, PARTS, ARRANGEMENTS, etc.
+  };
+
   work?: {
     id: string;
     title: string;

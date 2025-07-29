@@ -362,6 +362,9 @@ model WorkScore {
   // Relação com usuário criador
   createdByUser User? @relation("UserCreatedScores", fields: [uploadedBy], references: [id])
 
+  wantToLearnSelections WantToLearn[] @relation("WantToLearnSelectedScore")
+  learnedSelections     Learned[]     @relation("LearnedSelectedScore")
+
   // Campos de qualidade e verificação
   dataQuality        String? // "high", "medium", "low"
   verificationStatus String? // "verified", "pending", "disputed"
@@ -990,9 +993,12 @@ model WantToLearn {
   difficulty         DifficultyLevel?
   reminder           Boolean          @default(false)
   reminderFrequency  String?
+  motivation         String?
+  context            String?
 
-  motivation String?
-  context    String?
+  // ✅ RELAÇÃO CORRETA COM WORKSCORE
+  selectedWorkScoreId String?    @db.ObjectId
+  selectedWorkScore   WorkScore? @relation("WantToLearnSelectedScore", fields: [selectedWorkScoreId], references: [id], onDelete: SetNull)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
@@ -1000,6 +1006,7 @@ model WantToLearn {
   @@unique([userId, workId])
   @@index([userId, priority])
   @@index([targetDate])
+  @@index([selectedWorkScoreId]) // ✅ Índice para a relação
 }
 
 model Learned {
@@ -1015,14 +1022,16 @@ model Learned {
   wouldRecommend    Boolean   @default(true)
   publicPerformance Boolean   @default(false)
   lastPracticed     DateTime?
-
-  difficulty          DifficultyLevel?
-  enjoyment           Int?
+  difficulty        DifficultyLevel?
+  enjoyment         Int?
   technicalChallenges String?
   musicalInsights     String?
-
   performanceCount Int     @default(0)
   bestPerformance  String?
+
+  // ✅ RELAÇÃO CORRETA COM WORKSCORE
+  selectedWorkScoreId String?    @db.ObjectId
+  selectedWorkScore   WorkScore? @relation("LearnedSelectedScore", fields: [selectedWorkScoreId], references: [id], onDelete: SetNull)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
@@ -1031,7 +1040,9 @@ model Learned {
   @@index([userId, mastery])
   @@index([learnedAt])
   @@index([lastPracticed])
+  @@index([selectedWorkScoreId]) // ✅ Índice para a relação
 }
+
 
 model UserSelectedScore {
   id     String @id @default(auto()) @map("_id") @db.ObjectId

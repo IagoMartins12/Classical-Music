@@ -89,7 +89,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
                 className="text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium"
                 onClick={(e) => e.stopPropagation()}
               >
-                {work.composer.fullName}
+                {work.composer.fullname}
               </Link>
             </div>
           </div>
@@ -142,7 +142,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
 
           {/* Badges */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {work.epoch.name && (
+            {work.epoch && work.epoch.name && (
               <span className="inline-flex items-center px-2 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-xs font-medium">
                 <FiClock className="w-2.5 h-2.5 mr-1" />
                 {work.epoch.name}

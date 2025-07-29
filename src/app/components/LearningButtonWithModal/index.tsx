@@ -1,17 +1,25 @@
-// components/LearningButton/LearningButtonWithModal.tsx
+// components/LearningButton/LearningButtonWithModal.tsx - REDESENHADO COM STORE GLOBAL
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiBookOpen, FiCheckCircle, FiTarget, FiStar } from 'react-icons/fi';
+import {
+  FiBookOpen,
+  FiCheckCircle,
+  FiTarget,
+  FiStar,
+  FiEdit3,
+} from 'react-icons/fi';
 import {
   LearnedItem,
   useLearningStore,
   WantToLearnItem,
 } from '@/app/stores/useLearningStore';
+import {
+  useLearningModalStore,
+  type LearningType,
+  type SelectedWorkScore,
+} from '@/app/stores/useLearningModalStore';
 import { useAuth } from '@/app/hooks/useAuth';
-import LearningModal from '../LearningModal';
-
-export type LearningType = 'want-to-learn' | 'learned';
 
 interface LearningButtonWithModalProps {
   workId: string;
@@ -38,16 +46,18 @@ const LearningButtonWithModal = ({
 }: LearningButtonWithModalProps) => {
   const { isAuthenticated } = useAuth();
   const [mounted, setMounted] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const {
     isWantToLearn,
     isLearned,
-
     loading,
     getWantToLearnItem,
     getLearnedItem,
   } = useLearningStore();
+
+  // ✅ Usar store global do modal
+  const { openModal } = useLearningModalStore();
 
   useEffect(() => {
     setMounted(true);
@@ -90,6 +100,7 @@ const LearningButtonWithModal = ({
           labels: {
             active: 'Quero estudar',
             inactive: 'Quero estudar',
+            edit: 'Editar estudo',
             remove: 'Remover da lista',
           },
           icon: isActive ? FiTarget : FiBookOpen,
@@ -107,6 +118,7 @@ const LearningButtonWithModal = ({
           labels: {
             active: 'Já aprendi',
             inactive: 'Marcar como aprendida',
+            edit: 'Editar aprendizado',
             remove: 'Remover da lista',
           },
           icon: isActive ? FiCheckCircle : FiBookOpen,
@@ -161,14 +173,118 @@ const LearningButtonWithModal = ({
     }
   };
 
-  // Handler para abrir modal ou remover
+  // ✅ Handler para abrir modal usando store global
   const handleClick = () => {
     if (disabled || isLoading || !isAuthenticated) {
       return;
     }
 
-    // Sempre abrir o modal (para adicionar ou editar)
-    setShowModal(true);
+    console.log(`🎵 [LEARNING-BUTTON] Abrindo modal para ${type}:`, workTitle);
+
+    // ✅ Preparar dados iniciais
+    let initialWantToLearnData = {};
+    let initialLearnedData = {};
+    let initialWorkScore: SelectedWorkScore | null = null;
+
+    if (currentItem) {
+      if (type === 'want-to-learn') {
+        const item = currentItem as WantToLearnItem;
+        initialWantToLearnData = {
+          priority: item.priority || 0,
+          notes: item.notes || '',
+          targetDate: item.targetDate ? item.targetDate.split('T')[0] : '',
+          estimatedStudyTime: item.estimatedStudyTime || undefined,
+          difficulty: item.difficulty || undefined,
+          motivation: item.motivation || '',
+          context: item.context || '',
+          selectedWorkScoreId: item.selectedWorkScoreId,
+        };
+
+        // ✅ Configurar WorkScore se existir
+        if (item.selectedWorkScore) {
+          initialWorkScore = {
+            id: item.selectedWorkScore.id,
+            sourceId: item.selectedWorkScore.sourceId,
+            source: item.selectedWorkScore.source,
+            title: item.selectedWorkScore.title,
+            downloadUrl: item.selectedWorkScore.downloadUrl,
+            thumbnailUrl: item.selectedWorkScore.thumbnailUrl,
+            fileSize: item.selectedWorkScore.fileSize,
+            pageCount: item.selectedWorkScore.pageCount,
+            fileFormat: item.selectedWorkScore.fileFormat,
+            type: item.selectedWorkScore.type,
+            editor: item.selectedWorkScore.editor,
+            publisher: item.selectedWorkScore.publisher,
+            copyright: item.selectedWorkScore.copyright,
+            uploadDate: item.selectedWorkScore.uploadDate,
+            uploader: item.selectedWorkScore.uploader,
+            notes: item.selectedWorkScore.notes,
+          };
+        }
+      } else {
+        const item = currentItem as LearnedItem;
+        initialLearnedData = {
+          mastery: item.mastery || 0,
+          studyStartDate: item.studyStartDate
+            ? item.studyStartDate.split('T')[0]
+            : '',
+          studyDuration: item.studyDuration || undefined,
+          notes: item.notes || '',
+          wouldRecommend: item.wouldRecommend ?? true,
+          publicPerformance: item.publicPerformance || false,
+          difficulty: item.difficulty || undefined,
+          enjoyment: item.enjoyment || undefined,
+          technicalChallenges: item.technicalChallenges || '',
+          musicalInsights: item.musicalInsights || '',
+          selectedWorkScoreId: item.selectedWorkScoreId,
+        };
+
+        // ✅ Configurar WorkScore se existir
+        if (item.selectedWorkScore) {
+          initialWorkScore = {
+            id: item.selectedWorkScore.id,
+            sourceId: item.selectedWorkScore.sourceId,
+            source: item.selectedWorkScore.source,
+            title: item.selectedWorkScore.title,
+            downloadUrl: item.selectedWorkScore.downloadUrl,
+            thumbnailUrl: item.selectedWorkScore.thumbnailUrl,
+            fileSize: item.selectedWorkScore.fileSize,
+            pageCount: item.selectedWorkScore.pageCount,
+            fileFormat: item.selectedWorkScore.fileFormat,
+            type: item.selectedWorkScore.type,
+            editor: item.selectedWorkScore.editor,
+            publisher: item.selectedWorkScore.publisher,
+            copyright: item.selectedWorkScore.copyright,
+            uploadDate: item.selectedWorkScore.uploadDate,
+            uploader: item.selectedWorkScore.uploader,
+            notes: item.selectedWorkScore.notes,
+          };
+        }
+      }
+    } else {
+      // ✅ Dados padrão para novos itens
+      if (type === 'want-to-learn') {
+        initialWantToLearnData = { priority: 0 };
+      } else {
+        initialLearnedData = {
+          mastery: 0,
+          wouldRecommend: true,
+          publicPerformance: false,
+        };
+      }
+    }
+
+    // ✅ Abrir modal com dados iniciais
+    openModal({
+      workId,
+      workTitle,
+      composerName,
+      type,
+      isCurrentlyActive: isActive,
+      initialWantToLearnData,
+      initialLearnedData,
+      initialWorkScore,
+    });
   };
 
   // Stars indicator for compact view
@@ -198,64 +314,77 @@ const LearningButtonWithModal = ({
     </div>
   );
 
-  const Icon = config.icon;
+  // ✅ Ícone dinâmico baseado no estado
+  const getIcon = () => {
+    if (isActive && isHovered && variant === 'detailed') {
+      return FiEdit3; // Mostrar ícone de edição no hover se ativo
+    }
+    return config.icon;
+  };
+
+  const Icon = getIcon();
+
+  // ✅ Texto dinâmico baseado no estado
+  const getButtonText = () => {
+    if (isActive && isHovered && variant === 'detailed') {
+      return config.labels.edit;
+    }
+    return isActive ? config.labels.active : config.labels.inactive;
+  };
 
   if (!mounted) {
     return (
       <div className={`${getButtonClasses()} ${className}`} style={style}>
         <FiBookOpen className={`${sizes[size].icon} opacity-50`} />
-        <span className="ml-2 opacity-50">Carregando...</span>
+        {variant !== 'compact' && (
+          <span className="ml-2 opacity-50">Carregando...</span>
+        )}
       </div>
     );
   }
 
   return (
-    <>
-      <div className="relative">
-        <button
-          onClick={handleClick}
-          disabled={disabled || isLoading}
-          className={`${getButtonClasses()} ${className}`}
-          style={style}
-          title={isActive ? config.labels.active : config.labels.inactive}
+    <div className="relative">
+      <button
+        onClick={handleClick}
+        disabled={disabled || isLoading}
+        className={`${getButtonClasses()} ${className}`}
+        style={style}
+        title={getButtonText()}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* Loading overlay */}
+        {isLoading && <LoadingSpinner />}
+
+        {/* Main content */}
+        <div
+          className={`flex items-center ${
+            isLoading ? 'opacity-0' : 'opacity-100'
+          } transition-opacity`}
         >
-          {/* Loading overlay */}
-          {isLoading && <LoadingSpinner />}
+          <Icon
+            className={`${sizes[size].icon} transition-transform group-hover:scale-110`}
+          />
 
-          {/* Main content */}
-          <div
-            className={`flex items-center ${
-              isLoading ? 'opacity-0' : 'opacity-100'
-            } transition-opacity`}
-          >
-            <Icon
-              className={`${sizes[size].icon} transition-transform group-hover:scale-110`}
-            />
+          {variant !== 'compact' && (
+            <span className="ml-2 font-medium">{getButtonText()}</span>
+          )}
 
-            {variant !== 'compact' && (
-              <span className="ml-2 font-medium">
-                {isActive ? config.labels.active : config.labels.inactive}
-              </span>
-            )}
+          <StarsIndicator />
+        </div>
 
-            <StarsIndicator />
+        {/* Gradient overlay */}
+        <div className="absolute rounded-xl inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+        {/* ✅ Indicator para edição quando hover em item ativo */}
+        {isActive && isHovered && variant !== 'detailed' && (
+          <div className="absolute inset-0 bg-black/10 rounded-xl flex items-center justify-center">
+            <FiEdit3 className={`${sizes[size].icon} opacity-80`} />
           </div>
-
-          {/* Gradient overlay */}
-          <div className="absolute rounded-xl inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        </button>
-      </div>
-
-      {/* Modal */}
-      <LearningModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        workId={workId}
-        workTitle={workTitle}
-        composerName={composerName}
-        type={type}
-      />
-    </>
+        )}
+      </button>
+    </div>
   );
 };
 

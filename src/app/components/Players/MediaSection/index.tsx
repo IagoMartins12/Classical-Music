@@ -29,10 +29,10 @@ interface MediaData {
   spotify: {
     trackId: string;
     trackUrl: string;
-    displayTitle?: string;
-    duration?: number;
+    displayTitle?: string | null;
+    duration?: number | null;
     artists?: string[];
-    thumbnail?: string;
+    thumbnail?: string | null;
     previewUrl?: string | null;
     albumArt?: string | null;
     albumName?: string;

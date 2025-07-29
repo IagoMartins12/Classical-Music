@@ -14,19 +14,9 @@ import {
   FiFlag,
   FiChevronDown,
   FiActivity,
-  FiDatabase,
   FiHome,
   FiMenu,
 } from 'react-icons/fi';
-import { AdminStats } from '@/app/hooks/admin/useAdminStats';
-
-interface QuickStat {
-  label: string;
-  value: number;
-  icon: React.ComponentType<any>;
-  color: string;
-  href?: string;
-}
 
 interface AdminHeaderProps {
   onMenuClick: () => void;
@@ -79,16 +69,6 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
       callbackUrl: '/',
       redirect: true,
     });
-  };
-
-  const formatQuickStatValue = (value: number): string => {
-    if (value >= 1000000) {
-      return `${(value / 1000000).toFixed(1)}M`;
-    }
-    if (value >= 1000) {
-      return `${(value / 1000).toFixed(1)}K`;
-    }
-    return value.toString();
   };
 
   return (

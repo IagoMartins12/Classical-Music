@@ -19,7 +19,6 @@ import {
   FiSave,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
-import { WorkDetails } from '@/app/requests/work-details';
 import {
   UserStudySettings,
   ActiveStudySession,
@@ -32,6 +31,7 @@ import StudyMetronome from '../StudyMetronome';
 import StudyNotes from '../StudyNotes';
 import StudyControls from '../StudyControls';
 import StudySessionSummary from '../StudySessionSummary';
+import { WorkDetails } from '@/app/requests/work-details-score';
 
 interface StudyModeClientProps {
   work: WorkDetails;

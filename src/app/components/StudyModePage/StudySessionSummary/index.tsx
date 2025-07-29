@@ -20,8 +20,8 @@ import {
   FiZap,
 } from 'react-icons/fi';
 import { StudySession } from '../StudyModeClient';
-import { WorkDetails } from '@/app/requests/work-details';
 import { useToast } from '@/app/hooks/useToast';
+import { WorkDetails } from '@/app/requests/work-details-score';
 
 interface StudySessionSummaryProps {
   session: StudySession;

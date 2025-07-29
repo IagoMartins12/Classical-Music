@@ -14,7 +14,6 @@ import {
   FiCheckCircle,
   FiX,
   FiRefreshCw,
-  FiDownload,
   FiStar,
   FiMusic,
   FiHeart,

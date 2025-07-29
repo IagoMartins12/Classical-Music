@@ -24,6 +24,12 @@ interface ScoreCardProps {
     avgRating?: number;
     isMostFavorited?: boolean;
   };
+
+  // 🆕 Props para modo de seleção
+  isSelectionMode?: boolean;
+  selectionType?: 'want-to-learn' | 'learned' | null;
+  isTempSelected?: boolean;
+  tempSelectedWorkScore?: { id: string; title: string; source: string } | null;
 }
 
 const ScoreCard = ({

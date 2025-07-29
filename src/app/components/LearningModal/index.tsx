@@ -1,4 +1,4 @@
-// components/LearningModal/LearningModal.tsx
+// components/LearningModal/LearningModal.tsx - ATUALIZADO COM STORE GLOBAL
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -13,58 +13,25 @@ import {
   FiBookOpen,
   FiAward,
   FiTrendingUp,
+  FiFileText,
+  FiPlus,
+  FiEdit3,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useAuth } from '@/app/hooks/useAuth';
+import {
+  useLearningModalStore,
+  type LearningType,
+  type DifficultyLevel,
+  type SelectedWorkScore,
+} from '@/app/stores/useLearningModalStore';
 import Modal from '../Modal';
 import Button from '../Common/Button';
 import StarRating from './StarRating';
 import FormField from './FormField';
 
-export type LearningType = 'want-to-learn' | 'learned';
-export type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
-
-interface LearningModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  workId: string;
-  workTitle: string;
-  composerName: string;
-  type: LearningType;
-}
-
-interface WantToLearnFormData {
-  priority: number;
-  notes?: string;
-  targetDate?: string;
-  estimatedStudyTime?: number;
-  difficulty?: DifficultyLevel;
-  motivation?: string;
-  context?: string;
-}
-
-interface LearnedFormData {
-  mastery: number;
-  studyStartDate?: string;
-  studyDuration?: number;
-  notes?: string;
-  wouldRecommend: boolean;
-  publicPerformance: boolean;
-  difficulty?: DifficultyLevel;
-  enjoyment?: number;
-  technicalChallenges?: string;
-  musicalInsights?: string;
-}
-
-const LearningModal = ({
-  isOpen,
-  onClose,
-  workId,
-  workTitle,
-  composerName,
-  type,
-}: LearningModalProps) => {
+const LearningModal = () => {
   const { user } = useAuth();
   const {
     toggleWantToLearn,
@@ -73,79 +40,95 @@ const LearningModal = ({
     removeLearned,
     getWantToLearnItem,
     getLearnedItem,
-    isWantToLearn,
-    isLearned,
     addLearned,
     addWantToLearn,
   } = useLearningStore();
+
+  // ✅ Usar store global
+  const {
+    isOpen,
+    workId,
+    workTitle,
+    composerName,
+    type,
+    isCurrentlyActive,
+    wantToLearnForm,
+    learnedForm,
+    selectedWorkScore,
+    closeModal,
+    updateWantToLearnForm,
+    updateLearnedForm,
+    setSelectedWorkScore,
+    startScoreSelection,
+    reset,
+  } = useLearningModalStore();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Verificar se o item já existe
-  const isCurrentlyActive =
-    type === 'want-to-learn' ? isWantToLearn(workId) : isLearned(workId);
+  // ✅ Obter item do tipo oposto para sugestão de partitura (apenas se não estiver editando)
+  const oppositeItem =
+    !isCurrentlyActive && workId
+      ? type === 'want-to-learn'
+        ? getLearnedItem(workId)
+        : getWantToLearnItem(workId)
+      : null;
 
-  // Obter o item atual (com todos os dados)
-  const currentItem =
-    type === 'want-to-learn'
-      ? getWantToLearnItem(workId)
-      : getLearnedItem(workId);
-
-  // Form states
-  const [wantToLearnForm, setWantToLearnForm] = useState<WantToLearnFormData>({
-    priority: 0,
-  });
-
-  const [learnedForm, setLearnedForm] = useState<LearnedFormData>({
-    mastery: 0,
-    wouldRecommend: true,
-    publicPerformance: false,
-  });
-
-  // Initialize form with existing data if editing
+  // ✅ Aplicar sugestão do tipo oposto se não houver WorkScore e não estiver editando
   useEffect(() => {
-    if (currentItem) {
-      if (type === 'want-to-learn') {
-        const item = currentItem as any; // WantToLearnItem
-        setWantToLearnForm({
-          priority: item.priority || 0,
-          notes: item.notes || '',
-          targetDate: item.targetDate ? item.targetDate.split('T')[0] : '',
-          estimatedStudyTime: item.estimatedStudyTime || undefined,
-          difficulty: item.difficulty || undefined,
-          motivation: item.motivation || '',
-          context: item.context || '',
-        });
-      } else {
-        const item = currentItem as any; // LearnedItem
-        setLearnedForm({
-          mastery: item.mastery || 0,
-          studyStartDate: item.studyStartDate
-            ? item.studyStartDate.split('T')[0]
-            : '',
-          studyDuration: item.studyDuration || undefined,
-          notes: item.notes || '',
-          wouldRecommend: item.wouldRecommend ?? true,
-          publicPerformance: item.publicPerformance || false,
-          difficulty: item.difficulty || undefined,
-          enjoyment: item.enjoyment || undefined,
-          technicalChallenges: item.technicalChallenges || '',
-          musicalInsights: item.musicalInsights || '',
-        });
-      }
-    } else {
-      // Reset to defaults when no existing item
-      setWantToLearnForm({ priority: 0 });
-      setLearnedForm({
-        mastery: 0,
-        wouldRecommend: true,
-        publicPerformance: false,
+    if (
+      !isCurrentlyActive &&
+      !selectedWorkScore &&
+      oppositeItem?.selectedWorkScore
+    ) {
+      console.log(
+        '💡 [LEARNING-MODAL] Aplicando sugestão do tipo oposto:',
+        oppositeItem.selectedWorkScore.title
+      );
+      setSelectedWorkScore({
+        id: oppositeItem.selectedWorkScore.id,
+        sourceId: oppositeItem.selectedWorkScore.sourceId,
+        source: oppositeItem.selectedWorkScore.source,
+        title: oppositeItem.selectedWorkScore.title,
+        downloadUrl: oppositeItem.selectedWorkScore.downloadUrl,
+        thumbnailUrl: oppositeItem.selectedWorkScore.thumbnailUrl,
+        fileSize: oppositeItem.selectedWorkScore.fileSize,
+        pageCount: oppositeItem.selectedWorkScore.pageCount,
+        fileFormat: oppositeItem.selectedWorkScore.fileFormat,
+        type: oppositeItem.selectedWorkScore.type,
+        editor: oppositeItem.selectedWorkScore.editor,
+        publisher: oppositeItem.selectedWorkScore.publisher,
+        copyright: oppositeItem.selectedWorkScore.copyright,
+        uploadDate: oppositeItem.selectedWorkScore.uploadDate,
+        uploader: oppositeItem.selectedWorkScore.uploader,
+        notes: oppositeItem.selectedWorkScore.notes,
       });
     }
-  }, [currentItem, type]);
+  }, [
+    isCurrentlyActive,
+    selectedWorkScore,
+    oppositeItem,
+    setSelectedWorkScore,
+  ]);
+
+  // ✅ Handler para adicionar partitura (não fecha modal)
+  const handleAddScore = () => {
+    if (!workId || !workTitle || !composerName || !type) return;
+
+    console.log('🎼 [LEARNING-MODAL] Iniciando seleção de partitura');
+
+    // ✅ NOVO: Passar partitura atual para manter selecionada
+    startScoreSelection();
+  };
+
+  // ✅ Handler para remover partitura
+  const handleRemoveScore = () => {
+    console.log('🗑️ [LEARNING-MODAL] Removendo partitura selecionada');
+    setSelectedWorkScore(null);
+  };
 
   // Handle form submission
   const handleSubmit = async () => {
-    if (!user?.id) return;
+    if (!user?.id || !workId || !type) return;
 
     setIsSubmitting(true);
     try {
@@ -164,7 +147,6 @@ const LearningModal = ({
           if (response.ok) {
             const result = await response.json();
             if (result.success && result.item) {
-              // Atualizar item no store local
               addWantToLearn(result.item);
             }
             toast.success('Obra atualizada na sua lista de estudos!', {
@@ -187,7 +169,6 @@ const LearningModal = ({
           if (response.ok) {
             const result = await response.json();
             if (result.success && result.item) {
-              // Atualizar item no store local
               addLearned(result.item);
             }
             toast.success('Dados da obra aprendida atualizados!', {
@@ -224,7 +205,9 @@ const LearningModal = ({
           });
         }
       }
-      onClose();
+
+      // ✅ Fechar modal e limpar estado
+      closeModal();
     } catch (error) {
       console.error('Erro ao salvar:', error);
       toast.error('Erro ao salvar. Tente novamente.');
@@ -235,7 +218,7 @@ const LearningModal = ({
 
   // Handle removal
   const handleRemove = async () => {
-    if (!user?.id) return;
+    if (!user?.id || !workId || !type) return;
 
     setIsSubmitting(true);
     try {
@@ -252,7 +235,9 @@ const LearningModal = ({
           duration: 3000,
         });
       }
-      onClose();
+
+      // ✅ Fechar modal e limpar estado
+      closeModal();
     } catch (error) {
       console.error('Erro ao remover:', error);
       toast.error('Erro ao remover. Tente novamente.');
@@ -293,10 +278,15 @@ const LearningModal = ({
     { value: 'ADVANCED', label: 'Avançado' },
   ];
 
+  // ✅ Handler para fechar (com limpeza)
   const handleClose = () => {
-    // Não resetar os forms para manter a persistência
-    onClose();
+    closeModal();
   };
+
+  // ✅ Se não tiver dados básicos, não renderizar
+  if (!workId || !workTitle || !composerName || !type) {
+    return null;
+  }
 
   return (
     <Modal
@@ -307,7 +297,7 @@ const LearningModal = ({
       className="max-h-[90vh] overflow-hidden"
     >
       {/* Header */}
-      <div className="px-6 py-4 ">
+      <div className="px-6 py-4">
         <div className="flex items-center space-x-3">
           <div
             className={`w-10 h-10 rounded-xl bg-gradient-to-br ${
@@ -340,14 +330,116 @@ const LearningModal = ({
 
       {/* Form Content */}
       <div className="px-6 py-6 space-y-6">
+        {/* ✅ Seção de Partitura */}
+        <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+                <FiFileText className="w-4 h-4 text-theme-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-theme-primary">
+                  Partitura de Estudo
+                </h3>
+                <p className="text-sm text-theme-secondary">
+                  {selectedWorkScore
+                    ? 'Partitura vinculada'
+                    : 'Nenhuma partitura selecionada'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {selectedWorkScore ? (
+            // Mostrar WorkScore selecionado
+            <div className="bg-theme-elevated rounded-xl p-4 border border-theme-primary">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
+                    <FiMusic className="w-5 h-5 text-theme-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-theme-primary text-sm">
+                      {selectedWorkScore.title}
+                    </h4>
+                    <p className="text-xs text-theme-tertiary">
+                      Fonte: {selectedWorkScore.source}
+                      {selectedWorkScore.fileSize &&
+                        ` • ${selectedWorkScore.fileSize}`}
+                      {selectedWorkScore.pageCount &&
+                        ` • ${selectedWorkScore.pageCount} páginas`}
+                      {selectedWorkScore.type && ` • ${selectedWorkScore.type}`}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleAddScore}
+                    className="btn-classical-secondary-sm flex items-center space-x-2"
+                  >
+                    <FiEdit3 className="w-3 h-3" />
+                    <span>Trocar</span>
+                  </button>
+                  <button
+                    onClick={handleRemoveScore}
+                    className="btn-classical-outline-sm text-accent-red border-accent-red hover:bg-accent-red hover:text-theme-primary"
+                  >
+                    Remover
+                  </button>
+                </div>
+              </div>
+
+              {/* ✅ Indicador se é sugestão do tipo oposto */}
+              {!isCurrentlyActive &&
+                oppositeItem?.selectedWorkScore?.id ===
+                  selectedWorkScore.id && (
+                  <div className="mt-3 p-2 bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-lg">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 bg-accent-green rounded-full flex items-center justify-center">
+                        <span className="text-xs">💡</span>
+                      </div>
+                      <span className="text-sm text-accent-green font-medium">
+                        Sugestão: partitura do "
+                        {type === 'want-to-learn'
+                          ? 'já aprendi'
+                          : 'quero aprender'}
+                        "
+                      </span>
+                    </div>
+                  </div>
+                )}
+            </div>
+          ) : (
+            // Botão para adicionar partitura
+            <button
+              onClick={handleAddScore}
+              className="w-full border-2 border-dashed border-theme-secondary hover:border-brand-primary rounded-xl p-4 text-center transition-all duration-300 hover:bg-brand-primary/5 group"
+            >
+              <div className="flex flex-col items-center space-y-2">
+                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border-2 border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <FiPlus className="w-6 h-6 text-brand-primary" />
+                </div>
+                <div>
+                  <p className="font-semibold text-theme-primary">
+                    Adicionar Partitura
+                  </p>
+                  <p className="text-sm text-theme-secondary">
+                    Selecione uma partitura específica para vincular a este
+                    estudo
+                  </p>
+                </div>
+              </div>
+            </button>
+          )}
+        </div>
+
+        {/* Formulários condicionais */}
         {type === 'want-to-learn' ? (
           // Want to Learn Form
           <>
             <StarRating
               value={wantToLearnForm.priority}
-              onChange={(value) =>
-                setWantToLearnForm((prev) => ({ ...prev, priority: value }))
-              }
+              onChange={(value) => updateWantToLearnForm({ priority: value })}
               label="Prioridade"
               labels={['Baixa', 'Baixa-Média', 'Média', 'Média-Alta', 'Alta']}
             />
@@ -360,10 +452,7 @@ const LearningModal = ({
               <textarea
                 value={wantToLearnForm.motivation || ''}
                 onChange={(e) =>
-                  setWantToLearnForm((prev) => ({
-                    ...prev,
-                    motivation: e.target.value,
-                  }))
+                  updateWantToLearnForm({ motivation: e.target.value })
                 }
                 className="w-full input-classical-2 resize-none"
                 rows={3}
@@ -381,10 +470,7 @@ const LearningModal = ({
                   type="date"
                   value={wantToLearnForm.targetDate || ''}
                   onChange={(e) =>
-                    setWantToLearnForm((prev) => ({
-                      ...prev,
-                      targetDate: e.target.value,
-                    }))
+                    updateWantToLearnForm({ targetDate: e.target.value })
                   }
                   className="w-full input-classical-2"
                 />
@@ -401,10 +487,9 @@ const LearningModal = ({
                   max="1000"
                   value={wantToLearnForm.estimatedStudyTime || ''}
                   onChange={(e) =>
-                    setWantToLearnForm((prev) => ({
-                      ...prev,
+                    updateWantToLearnForm({
                       estimatedStudyTime: parseInt(e.target.value) || undefined,
-                    }))
+                    })
                   }
                   className="w-full input-classical-2"
                   placeholder="Ex: 50"
@@ -416,11 +501,10 @@ const LearningModal = ({
               <select
                 value={wantToLearnForm.difficulty || ''}
                 onChange={(e) =>
-                  setWantToLearnForm((prev) => ({
-                    ...prev,
+                  updateWantToLearnForm({
                     difficulty:
                       (e.target.value as DifficultyLevel) || undefined,
-                  }))
+                  })
                 }
                 className="w-full input-classical-2"
               >
@@ -441,10 +525,7 @@ const LearningModal = ({
                 type="text"
                 value={wantToLearnForm.context || ''}
                 onChange={(e) =>
-                  setWantToLearnForm((prev) => ({
-                    ...prev,
-                    context: e.target.value,
-                  }))
+                  updateWantToLearnForm({ context: e.target.value })
                 }
                 className="w-full input-classical-2"
                 placeholder="Ex: Recital, aula, estudo pessoal..."
@@ -455,10 +536,7 @@ const LearningModal = ({
               <textarea
                 value={wantToLearnForm.notes || ''}
                 onChange={(e) =>
-                  setWantToLearnForm((prev) => ({
-                    ...prev,
-                    notes: e.target.value,
-                  }))
+                  updateWantToLearnForm({ notes: e.target.value })
                 }
                 className="w-full input-classical-2 resize-none"
                 rows={3}
@@ -471,9 +549,7 @@ const LearningModal = ({
           <>
             <StarRating
               value={learnedForm.mastery}
-              onChange={(value) =>
-                setLearnedForm((prev) => ({ ...prev, mastery: value }))
-              }
+              onChange={(value) => updateLearnedForm({ mastery: value })}
               label="Nível de Maestria"
               labels={[
                 'Iniciante',
@@ -490,10 +566,7 @@ const LearningModal = ({
                   type="date"
                   value={learnedForm.studyStartDate || ''}
                   onChange={(e) =>
-                    setLearnedForm((prev) => ({
-                      ...prev,
-                      studyStartDate: e.target.value,
-                    }))
+                    updateLearnedForm({ studyStartDate: e.target.value })
                   }
                   className="w-full input-classical-2"
                 />
@@ -509,10 +582,9 @@ const LearningModal = ({
                   min="1"
                   value={learnedForm.studyDuration || ''}
                   onChange={(e) =>
-                    setLearnedForm((prev) => ({
-                      ...prev,
+                    updateLearnedForm({
                       studyDuration: parseInt(e.target.value) || undefined,
-                    }))
+                    })
                   }
                   className="w-full input-classical-2"
                   placeholder="Ex: 90"
@@ -525,11 +597,10 @@ const LearningModal = ({
                 <select
                   value={learnedForm.difficulty || ''}
                   onChange={(e) =>
-                    setLearnedForm((prev) => ({
-                      ...prev,
+                    updateLearnedForm({
                       difficulty:
                         (e.target.value as DifficultyLevel) || undefined,
-                    }))
+                    })
                   }
                   className="w-full input-classical-2"
                 >
@@ -544,12 +615,7 @@ const LearningModal = ({
               <div className="space-y-2">
                 <StarRating
                   value={learnedForm.enjoyment || 0}
-                  onChange={(value) =>
-                    setLearnedForm((prev) => ({
-                      ...prev,
-                      enjoyment: value,
-                    }))
-                  }
+                  onChange={(value) => updateLearnedForm({ enjoyment: value })}
                   label="Satisfação"
                   labels={[
                     'Não gostei',
@@ -570,10 +636,7 @@ const LearningModal = ({
               <textarea
                 value={learnedForm.technicalChallenges || ''}
                 onChange={(e) =>
-                  setLearnedForm((prev) => ({
-                    ...prev,
-                    technicalChallenges: e.target.value,
-                  }))
+                  updateLearnedForm({ technicalChallenges: e.target.value })
                 }
                 className="w-full input-classical-2 resize-none"
                 rows={2}
@@ -589,10 +652,7 @@ const LearningModal = ({
               <textarea
                 value={learnedForm.musicalInsights || ''}
                 onChange={(e) =>
-                  setLearnedForm((prev) => ({
-                    ...prev,
-                    musicalInsights: e.target.value,
-                  }))
+                  updateLearnedForm({ musicalInsights: e.target.value })
                 }
                 className="w-full input-classical-2 resize-none"
                 rows={2}
@@ -607,10 +667,7 @@ const LearningModal = ({
                   id="wouldRecommend"
                   checked={learnedForm.wouldRecommend}
                   onChange={(e) =>
-                    setLearnedForm((prev) => ({
-                      ...prev,
-                      wouldRecommend: e.target.checked,
-                    }))
+                    updateLearnedForm({ wouldRecommend: e.target.checked })
                   }
                   className="w-4 h-4 text-accent-green border-theme-secondary rounded focus:ring-brand-primary"
                 />
@@ -628,10 +685,7 @@ const LearningModal = ({
                   id="publicPerformance"
                   checked={learnedForm.publicPerformance}
                   onChange={(e) =>
-                    setLearnedForm((prev) => ({
-                      ...prev,
-                      publicPerformance: e.target.checked,
-                    }))
+                    updateLearnedForm({ publicPerformance: e.target.checked })
                   }
                   className="w-4 h-4 text-accent-green border-theme-secondary rounded focus:ring-brand-primary"
                 />
@@ -647,12 +701,7 @@ const LearningModal = ({
             <FormField label="Notas Gerais" icon={FiBookOpen}>
               <textarea
                 value={learnedForm.notes || ''}
-                onChange={(e) =>
-                  setLearnedForm((prev) => ({
-                    ...prev,
-                    notes: e.target.value,
-                  }))
-                }
+                onChange={(e) => updateLearnedForm({ notes: e.target.value })}
                 className="w-full input-classical-2 resize-none"
                 rows={3}
                 placeholder="Suas impressões gerais sobre o aprendizado desta obra..."
@@ -673,7 +722,7 @@ const LearningModal = ({
             Deletar peça da lista
           </Button>
         )}
-        <div className=" flex items-center space-x-3">
+        <div className="flex items-center space-x-3">
           <Button variant="secondary" onClick={handleClose}>
             Cancelar
           </Button>

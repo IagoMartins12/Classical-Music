@@ -26,7 +26,6 @@ import {
   FiSend,
   FiMail, // Nova importação para backup
 } from 'react-icons/fi';
-import { GrHostMaintenance } from 'react-icons/gr';
 import { useAdminStats } from '@/app/hooks/admin/useAdminStats';
 import { BiTestTube } from 'react-icons/bi';
 

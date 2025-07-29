@@ -79,9 +79,15 @@ export interface WorkListItem {
   mediaDuration?: string;
   workType: string;
   isPartOfCollection: boolean;
+  isVerified: boolean;
+  epoch?: {
+    id?: string;
+    name?: string;
+  };
   composer: {
     id: string;
     name: string;
+    fullname?: string;
     epochName: string | null;
   };
 
@@ -176,6 +182,16 @@ async function getWorksWithoutFilters(
         instrumentId: true,
         epochId: true,
         isVerified: true,
+        composer: {
+          select: {
+            fullName: true,
+          },
+        },
+        epoch: {
+          select: {
+            name: true,
+          },
+        },
       },
       // 🔥 ORDENAÇÃO SIMPLES (evita joins complexos)
       orderBy: [
@@ -394,6 +410,7 @@ async function getWorksWithFilters(
             epochName: true,
           },
         },
+
         instrument: {
           select: {
             id: true,
@@ -437,6 +454,7 @@ function formatWorkItem(work: any): WorkListItem {
     isPartOfCollection: work.isPartOfCollection,
     composer: work.composer,
     instrument: work.instrument,
+    isVerified: work.isVerified,
   };
 }
 
