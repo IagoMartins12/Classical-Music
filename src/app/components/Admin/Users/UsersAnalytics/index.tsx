@@ -138,7 +138,7 @@ export default function UsersAnalytics() {
         </AnimatedItem>
 
         {/* Controls */}
-        <AnimatedItem direction="up" springType="gentle">
+        {/* <AnimatedItem direction="up" springType="gentle">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8 p-4 bg-theme-secondary rounded-xl">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <div className="flex items-center space-x-2 bg-theme-primary rounded-lg px-3 py-2">
@@ -207,7 +207,7 @@ export default function UsersAnalytics() {
               </Button>
             </div>
           </div>
-        </AnimatedItem>
+        </AnimatedItem> */}
 
         {/* Overview Metrics */}
         {analytics && (
@@ -535,14 +535,7 @@ export default function UsersAnalytics() {
             >
               Ver Lista Completa
             </Button>
-            <Button
-              variant="secondary"
-              leftIcon={<FiShield />}
-              onClick={() => router.push('/admin/users/moderation')}
-              className="flex-1"
-            >
-              Moderação de Usuários
-            </Button>
+
             <Button
               variant="secondary"
               leftIcon={<FiDownload />}

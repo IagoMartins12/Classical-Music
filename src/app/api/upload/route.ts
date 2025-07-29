@@ -1,10 +1,11 @@
-// app/api/upload/route.ts - VERSÃO MELHORADA
+// app/api/upload/route.ts - SISTEMA COM UPLOADS TEMPORÁRIOS E DEFINITIVOS
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { generateUniqueFileName } from '@/app/utils/fileUtils';
+import { sanitizeWorkTitle } from '@/app/utils/pdfUtils';
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,6 +19,13 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File;
     const type = formData.get('type') as string;
 
+    // 🆕 Novos parâmetros para diferentes tipos de upload
+    const userId = formData.get('userId') as string;
+    const tempId = formData.get('tempId') as string;
+    const workTitle = formData.get('workTitle') as string;
+    const year = formData.get('year') as string;
+    const month = formData.get('month') as string;
+
     if (!file) {
       return NextResponse.json(
         { error: 'Arquivo não fornecido' },
@@ -25,7 +33,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 🆕 Logs detalhados para debug
     console.log('📤 [UPLOAD] Novo upload:', {
       fileName: file.name,
       fileType: file.type,
@@ -34,7 +41,7 @@ export async function POST(request: NextRequest) {
       user: session.user.name || session.user.email,
     });
 
-    // 🆕 Validação de tipo expandida
+    // 🆕 Validação de tipo expandida para novos tipos
     const allowedTypes = {
       score: [
         'application/pdf',
@@ -55,6 +62,9 @@ export async function POST(request: NextRequest) {
         'image/webp',
         'image/jpg',
       ],
+      // 🆕 Novos tipos para o sistema de thumbnails
+      'score-temp': ['image/png', 'image/jpeg', 'application/pdf'],
+      'score-final': ['image/png', 'image/jpeg', 'application/pdf'],
     };
 
     const validTypes = allowedTypes[type as keyof typeof allowedTypes] || [];
@@ -78,6 +88,8 @@ export async function POST(request: NextRequest) {
     const maxSizes = {
       score: 50 * 1024 * 1024, // 50MB para partituras
       image: 10 * 1024 * 1024, // 10MB para imagens
+      'score-temp': 50 * 1024 * 1024, // 50MB para uploads temporários
+      'score-final': 50 * 1024 * 1024, // 50MB para uploads definitivos
     };
 
     const maxSize = maxSizes[type as keyof typeof maxSizes] || 10 * 1024 * 1024;
@@ -93,41 +105,127 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 🆕 Verificação adicional para arquivos vazios
     if (file.size === 0) {
       return NextResponse.json(
-        {
-          error: 'Arquivo está vazio',
-        },
+        { error: 'Arquivo está vazio' },
         { status: 400 }
       );
     }
 
-    // 🆕 Gerar nome único mais descritivo
-    const prefix =
-      type === 'image' && file.name.includes('thumbnail') ? 'thumb' : type;
-    const fileName = generateUniqueFileName(file.name, prefix);
+    // 🆕 Determinar estrutura de pastas baseado no tipo
+    let uploadDir: string;
+    let fileName: string;
+    let publicUrl: string;
+    let tempPath: string | undefined;
 
-    // 🆕 Estrutura de pastas por data (YYYY/MM)
     const now = new Date();
-    const year = now.getFullYear();
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
-    const dateFolder = `${year}/${month}`;
+    const currentYear = now.getFullYear();
+    const currentMonth = (now.getMonth() + 1).toString().padStart(2, '0');
 
-    // Definir pasta de upload com estrutura hierárquica
-    const uploadDir = path.join(
-      process.cwd(),
-      'public',
-      'uploads',
-      type,
-      dateFolder
-    );
+    switch (type) {
+      case 'score-temp':
+        // 🆕 Upload temporário na pasta do usuário
+        if (!userId || !tempId) {
+          return NextResponse.json(
+            {
+              error:
+                'userId e tempId são obrigatórios para uploads temporários',
+            },
+            { status: 400 }
+          );
+        }
+
+        fileName = file.name.includes('thumb')
+          ? `temp-${tempId}-thumb.png`
+          : `temp-${tempId}.pdf`;
+
+        uploadDir = path.join(
+          process.cwd(),
+          'public',
+          'uploads',
+          'scores',
+          'temp',
+          userId
+        );
+
+        publicUrl = `/uploads/scores/temp/${userId}/${fileName}`;
+        tempPath = path.join(uploadDir, fileName); // Para mover depois
+        break;
+
+      case 'score-final':
+        // 🆕 Upload definitivo na estrutura organizada por obra
+        if (!workTitle || !year || !month) {
+          return NextResponse.json(
+            {
+              error:
+                'workTitle, year e month são obrigatórios para uploads definitivos',
+            },
+            { status: 400 }
+          );
+        }
+
+        const cleanTitle = sanitizeWorkTitle(workTitle);
+        fileName = file.name.includes('thumb')
+          ? `${cleanTitle}-thumb.png`
+          : `${cleanTitle}.pdf`;
+
+        uploadDir = path.join(
+          process.cwd(),
+          'public',
+          'uploads',
+          'scores',
+          'final',
+          year,
+          month,
+          cleanTitle
+        );
+
+        publicUrl = `/uploads/scores/final/${year}/${month}/${cleanTitle}/${fileName}`;
+        break;
+
+      case 'image':
+        // Upload de imagem padrão (para thumbnails manuais, etc.)
+        const prefix = 'image';
+        fileName = generateUniqueFileName(file.name, prefix);
+
+        uploadDir = path.join(
+          process.cwd(),
+          'public',
+          'uploads',
+          type,
+          currentYear.toString(),
+          currentMonth
+        );
+
+        publicUrl = `/uploads/${type}/${currentYear}/${currentMonth}/${fileName}`;
+        break;
+
+      default:
+        // Upload padrão (score normal, outros tipos)
+        const defaultPrefix =
+          type === 'image' && file.name.includes('thumbnail') ? 'thumb' : type;
+        fileName = generateUniqueFileName(file.name, defaultPrefix);
+
+        uploadDir = path.join(
+          process.cwd(),
+          'public',
+          'uploads',
+          type,
+          currentYear.toString(),
+          currentMonth
+        );
+
+        publicUrl = `/uploads/${type}/${currentYear}/${currentMonth}/${fileName}`;
+        break;
+    }
+
     const filePath = path.join(uploadDir, fileName);
 
     console.log('📁 [UPLOAD] Estrutura de pastas:', {
+      type,
       uploadDir: uploadDir.replace(process.cwd(), '.'),
       fileName,
-      fullPath: filePath.replace(process.cwd(), '.'),
+      publicUrl,
     });
 
     // Criar diretório se não existir
@@ -148,10 +246,7 @@ export async function POST(request: NextRequest) {
       throw new Error('Erro ao salvar arquivo no servidor');
     }
 
-    // 🆕 URL pública estruturada
-    const publicUrl = `/uploads/${type}/${dateFolder}/${fileName}`;
-
-    // 🆕 Metadados adicionais
+    // 🆕 Metadados expandidos para diferentes tipos
     const fileExtension = path.extname(file.name).toLowerCase();
     const fileBaseName = path.basename(file.name, fileExtension);
 
@@ -166,10 +261,18 @@ export async function POST(request: NextRequest) {
       type: file.type,
       uploadType: type,
       uploadDate: now.toISOString(),
+
+      // 🆕 Campos específicos para sistema de thumbnails
+      tempPath: tempPath, // Para uploads temporários
+      workTitle: workTitle, // Para uploads definitivos
+      isTemporary: type === 'score-temp',
+      isFinal: type === 'score-final',
+
       path: {
         relative: publicUrl,
-        directory: `/uploads/${type}/${dateFolder}`,
+        directory: uploadDir.replace(path.join(process.cwd(), 'public'), ''),
         filename: fileName,
+        absolute: filePath,
       },
       message: 'Upload realizado com sucesso',
     };
@@ -178,6 +281,7 @@ export async function POST(request: NextRequest) {
       url: publicUrl,
       size: file.size,
       type: file.type,
+      isTemporary: type === 'score-temp',
     });
 
     return NextResponse.json(response);

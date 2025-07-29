@@ -385,8 +385,8 @@ export default function ScoresManagement() {
         )}
 
         {/* Filters and Controls */}
-        <AnimatedItem direction="up" springType="gentle">
-          <AnimatedCard className="classical-card p-6 mb-8">
+        <AnimatedItem direction="up" springType="gentle" hover="none">
+          <AnimatedCard className="classical-card p-6 mb-8" hover="none">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
               <h3 className="text-xl font-bold text-theme-primary">
                 Lista de Partituras

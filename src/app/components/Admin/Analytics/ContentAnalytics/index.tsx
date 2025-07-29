@@ -773,20 +773,6 @@ export default function ContentAnalytics() {
                 disponíveis
               </span>
             </Button>
-
-            <Button
-              variant="secondary"
-              className="h-auto p-6 flex-col"
-              onClick={() => router.push('/admin/quality')}
-            >
-              <FiShield className="w-8 h-8 mb-3 text-accent-purple" />
-              <span className="font-bold mb-2">Controle de Qualidade</span>
-              <span className="text-sm text-theme-tertiary text-center">
-                Score{' '}
-                {contentMetrics?.qualityMetrics.averageQualityScore.toFixed(1)}
-                /5.0
-              </span>
-            </Button>
           </div>
         </AnimatedItem>
       </AnimatedContainer>

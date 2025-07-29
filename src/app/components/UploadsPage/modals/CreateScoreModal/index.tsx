@@ -1,4 +1,4 @@
-// app/components/UploadsPage/modals/CreateScoreModal/index.tsx - CORRIGIDO
+// app/components/UploadsPage/modals/CreateScoreModal/index.tsx - COM THUMBNAILS TEMPORÁRIAS
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -18,6 +18,7 @@ import {
   FiAlertCircle,
   FiLink,
   FiX,
+  FiClock,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -37,7 +38,8 @@ import {
   validateUploadedFile,
   isProbablyPDF,
   isValidUrl,
-  generateAndUploadPDFThumbnail,
+  generateAndUploadTempThumbnail, // 🆕 Nova função
+  formatFileSize,
 } from '@/app/utils/pdfUtils';
 import { useToast } from '@/app/hooks/useToast';
 
@@ -84,7 +86,13 @@ const CreateScoreModal = ({
   const [uploadingFile, setUploadingFile] = useState(false);
   const [validatingPDF, setValidatingPDF] = useState(false);
 
-  // 🆕 REFS PARA SCROLL DE VALIDAÇÃO
+  // 🆕 Estados específicos para thumbnails
+  const [generatingThumbnail, setGeneratingThumbnail] = useState(false);
+  const [thumbnailGenerated, setThumbnailGenerated] = useState(false);
+  const [thumbnailError, setThumbnailError] = useState<string | null>(null);
+  const [isLargePDF, setIsLargePDF] = useState(false);
+
+  // REFS PARA SCROLL DE VALIDAÇÃO
   const fieldRefs = {
     workId: useRef<HTMLDivElement>(null),
     title: useRef<HTMLInputElement>(null),
@@ -116,6 +124,9 @@ const CreateScoreModal = ({
     downloadCount: '',
     isCustom: true,
     customData: '',
+    // 🆕 Campos para arquivos temporários
+    tempThumbnailPath: '',
+    tempPdfPath: '',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -130,16 +141,15 @@ const CreateScoreModal = ({
   const [generatedThumbnail, setGeneratedThumbnail] = useState<string | null>(
     null
   );
-  const [generatingThumbnail, setGeneratingThumbnail] = useState(false);
 
-  // 🆕 ESTADO PARA DADOS DA OBRA (quando editando)
+  // ESTADO PARA DADOS DA OBRA (quando editando)
   const [workData, setWorkData] = useState<{
     id: string;
     title: string;
     composer: { name: string; fullName: string };
   } | null>(null);
 
-  // 🆕 VALIDAÇÕES CUSTOMIZADAS CORRIGIDAS
+  // VALIDAÇÕES CUSTOMIZADAS CORRIGIDAS
   const requiredFields = ['workId', 'title', 'downloadUrl'];
   const customValidations = {
     ...scoreModalValidations,
@@ -174,7 +184,7 @@ const CreateScoreModal = ({
   // Populate form when editing
   useEffect(() => {
     if (editingScore) {
-      // 🆕 BUSCAR DADOS DA OBRA
+      // BUSCAR DADOS DA OBRA
       const work = works.find((w) => w.id === editingScore.workId);
       if (work) {
         setWorkData(work);
@@ -202,6 +212,8 @@ const CreateScoreModal = ({
         customData: editingScore.customData
           ? JSON.stringify(editingScore.customData)
           : '',
+        tempThumbnailPath: '',
+        tempPdfPath: '',
       });
 
       // Determinar modo de upload baseado na URL
@@ -223,7 +235,6 @@ const CreateScoreModal = ({
   };
 
   const handleWorkSelect = (workId: string) => {
-    console.log('workId', workId);
     setFormData((prev) => ({ ...prev, workId }));
     if (errors.workId) {
       setErrors((prev) => ({ ...prev, workId: '' }));
@@ -236,8 +247,17 @@ const CreateScoreModal = ({
     setSelectedFile(null);
     setGeneratedThumbnail(null);
     setGeneratingThumbnail(false);
+    setThumbnailGenerated(false);
+    setThumbnailError(null);
+    setIsLargePDF(false);
     setPdfValidation({ isValidating: false, isValid: false });
-    setFormData((prev) => ({ ...prev, downloadUrl: '', thumbnailUrl: '' }));
+    setFormData((prev) => ({
+      ...prev,
+      downloadUrl: '',
+      thumbnailUrl: '',
+      tempThumbnailPath: '',
+      tempPdfPath: '',
+    }));
   };
 
   // Função para selecionar modo de upload
@@ -297,8 +317,12 @@ const CreateScoreModal = ({
   };
 
   const toast = useToast();
+
+  // 🆕 FUNÇÃO DE UPLOAD ATUALIZADA COM THUMBNAILS TEMPORÁRIAS
   const handleFileUpload = async (file: File) => {
     setUploadingFile(true);
+    setThumbnailError(null);
+    setThumbnailGenerated(false);
 
     try {
       const validation = await validateUploadedFile(file);
@@ -308,10 +332,32 @@ const CreateScoreModal = ({
         return;
       }
 
-      console.log('📤 Iniciando upload do arquivo principal...');
+      // 🆕 Verificar se é PDF grande
+      const isLarge = file.size > 10 * 1024 * 1024; // 10MB
+      setIsLargePDF(isLarge);
+
+      if (isLarge) {
+        toast.info(
+          '📄 PDF grande detectado - processo pode ser mais lento',
+          null,
+          {
+            duration: 3000,
+            // icon: '⏳',
+          }
+        );
+      }
+
+      console.log('📤 Iniciando upload do arquivo principal (temporário)...');
+
+      // 🆕 Upload do PDF principal para pasta temporária
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
-      uploadFormData.append('type', 'score');
+      uploadFormData.append('type', 'score-temp');
+      uploadFormData.append('userId', '64f5b3a7e123456789abcdef'); // TODO: Pegar do session
+      uploadFormData.append(
+        'tempId',
+        `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      );
 
       const response = await fetch('/api/upload', {
         method: 'POST',
@@ -323,33 +369,50 @@ const CreateScoreModal = ({
       }
 
       const data = await response.json();
-      console.log('✅ Arquivo principal enviado:', data.url);
+      console.log('✅ Arquivo principal enviado (temporário):', data.url);
 
+      // 🆕 Gerar thumbnail provisória
       let thumbnailUrl = null;
+      let thumbnailResult = null;
       if (file.type === 'application/pdf') {
         setGeneratingThumbnail(true);
 
         try {
-          console.log('🖼️ Iniciando geração de thumbnail...');
-          const thumbnailResult = await generateAndUploadPDFThumbnail(file);
+          console.log('🖼️ Iniciando geração de thumbnail provisória...');
+
+          // Gerar thumbnail usando nova função
+          thumbnailResult = await generateAndUploadTempThumbnail(
+            file,
+            '64f5b3a7e123456789abcdef' // TODO: Pegar do session
+          );
 
           if (thumbnailResult.success && thumbnailResult.thumbnailUrl) {
             thumbnailUrl = thumbnailResult.thumbnailUrl;
             setGeneratedThumbnail(thumbnailUrl);
-            console.log('✅ Thumbnail gerado e salvo:', thumbnailUrl);
+            setThumbnailGenerated(true);
+            console.log('✅ Thumbnail provisória gerada:', thumbnailUrl);
+
+            toast.success('Preview da partitura gerado com sucesso!');
           } else {
             console.warn(
               '⚠️ Não foi possível gerar thumbnail:',
               thumbnailResult.error
             );
+            setThumbnailError(thumbnailResult.error || 'Erro desconhecido');
+
+            toast.info('⚠️ Preview não disponível - usando placeholder');
           }
         } catch (error) {
           console.warn('⚠️ Erro ao gerar thumbnail:', error);
+          setThumbnailError('Erro ao gerar preview');
+
+          toast.error('⚠️ Erro ao gerar preview da partitura');
         } finally {
           setGeneratingThumbnail(false);
         }
       }
 
+      // 🆕 Atualizar form data com caminhos temporários
       setFormData((prev) => ({
         ...prev,
         downloadUrl: data.url,
@@ -359,17 +422,20 @@ const CreateScoreModal = ({
           prev.title || validation.title || file.name.replace(/\.[^/.]+$/, ''),
         fileFormat: getFileExtension(file.name).toUpperCase(),
         thumbnailUrl: thumbnailUrl || prev.thumbnailUrl,
+        // 🆕 Salvar caminhos temporários para mover depois
+        tempPdfPath: data.tempPath || '',
+        tempThumbnailPath: thumbnailResult?.tempThumbnailPath || '',
       }));
 
       setSelectedFile(file);
       setPdfValidation({ isValidating: false, isValid: true });
 
-      // 🆕 LIMPAR ERRO DE DOWNLOAD URL QUANDO ARQUIVO FOR CARREGADO
+      // LIMPAR ERRO DE DOWNLOAD URL QUANDO ARQUIVO FOR CARREGADO
       if (errors.downloadUrl) {
         setErrors((prev) => ({ ...prev, downloadUrl: '' }));
       }
 
-      console.log('✅ Upload completo:', {
+      console.log('✅ Upload temporário completo:', {
         mainFile: data.url,
         thumbnail: thumbnailUrl,
         fileSize: validation.fileSize,
@@ -388,7 +454,7 @@ const CreateScoreModal = ({
     }
   };
 
-  // 🆕 VALIDAÇÃO MELHORADA COM SCROLL
+  // VALIDAÇÃO MELHORADA COM SCROLL
   const handleValidation = () => {
     const { isValid, errors: validationErrors } = validateForm(formData);
     setErrors(validationErrors);
@@ -398,7 +464,7 @@ const CreateScoreModal = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 🆕 USAR VALIDAÇÃO CUSTOMIZADA (SEM required DO HTML)
+    // USAR VALIDAÇÃO CUSTOMIZADA (SEM required DO HTML)
     if (!handleValidation()) {
       return;
     }
@@ -421,6 +487,12 @@ const CreateScoreModal = ({
           : null,
         source: uploadMode === 'file' ? 'UPLOAD' : 'CUSTOM',
         isCustom: true,
+        // 🆕 Incluir informações sobre arquivos temporários
+        hasTemporaryFiles: !!(
+          formData.tempPdfPath || formData.tempThumbnailPath
+        ),
+        tempPdfPath: formData.tempPdfPath,
+        tempThumbnailPath: formData.tempThumbnailPath,
       };
 
       console.log('submitData', submitData);
@@ -568,7 +640,7 @@ const CreateScoreModal = ({
                       </button>
                     </div>
 
-                    {/* 🆕 ERRO DE MODO DE UPLOAD */}
+                    {/* ERRO DE MODO DE UPLOAD */}
                     {errors.uploadMode && (
                       <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                         <div className="flex items-center space-x-2">
@@ -579,134 +651,6 @@ const CreateScoreModal = ({
                         </div>
                       </div>
                     )}
-                  </div>
-                </AnimatedCard>
-              )}
-
-              {/* Informações do Arquivo Atual - Apenas para edição */}
-              {editingScore && (
-                <AnimatedCard className="classical-card-2 p-4">
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiFile className="w-5 h-5" />
-                    <span>Arquivo Atual</span>
-                  </h3>
-
-                  <div className="space-y-4">
-                    <div className="p-4 bg-theme-secondary/10 rounded-lg border border-theme-primary/20">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-accent-blue/20 rounded-lg flex items-center justify-center">
-                          <FiFile className="w-5 h-5 text-accent-blue" />
-                        </div>
-                        <div className="flex-1">
-                          <p className="font-medium text-theme-primary">
-                            {editingScore.title}
-                          </p>
-                          <div className="text-sm text-theme-secondary space-x-4">
-                            {editingScore.fileFormat && (
-                              <span>Formato: {editingScore.fileFormat}</span>
-                            )}
-                            {editingScore.fileSize && (
-                              <span>Tamanho: {editingScore.fileSize}</span>
-                            )}
-                            {editingScore.pageCount && (
-                              <span>Páginas: {editingScore.pageCount}</span>
-                            )}
-                          </div>
-                        </div>
-                        {editingScore.downloadUrl && (
-                          <a
-                            href={editingScore.downloadUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn-classical-secondary btn-sm flex items-center space-x-2"
-                          >
-                            <FiDownload className="w-4 h-4" />
-                            <span>Download</span>
-                          </a>
-                        )}
-                      </div>
-
-                      {editingScore.thumbnailUrl && (
-                        <div className="mt-4 pt-4 border-t border-theme-primary/20">
-                          <p className="text-sm font-medium text-theme-tertiary mb-2">
-                            Miniatura:
-                          </p>
-                          <div className="w-20 h-24 mx-auto rounded border border-theme-primary/30 overflow-hidden">
-                            <Image
-                              src={editingScore.thumbnailUrl}
-                              alt="Thumbnail"
-                              width={80}
-                              height={96}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="p-3 bg-accent-blue/10 rounded-lg border border-accent-blue/30">
-                      <div className="flex items-start space-x-2">
-                        <FiInfo className="w-4 h-4 text-accent-blue mt-0.5 flex-shrink-0" />
-                        <div className="text-sm text-accent-blue">
-                          <p className="font-medium">
-                            Arquivo não pode ser alterado
-                          </p>
-                          <p>
-                            Durante a edição, você pode alterar apenas as
-                            informações e metadados da partitura.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </AnimatedCard>
-              )}
-
-              {/* URL Input (apenas se modo URL selecionado e não estiver editando) */}
-              {uploadMode === 'url' && !editingScore && (
-                <AnimatedCard className="classical-card-2 p-4">
-                  <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
-                    <FiLink className="w-5 h-5" />
-                    <span>URL do Arquivo</span>
-                  </h3>
-
-                  <div className="space-y-4">
-                    <Input
-                      label="URL do Arquivo *"
-                      ref={fieldRefs.downloadUrl}
-                      value={formData.downloadUrl}
-                      onChange={(e) => handleUrlChange(e.target.value)}
-                      placeholder="https://exemplo.com/partitura.pdf"
-                      leftIcon={<FiDownload />}
-                      error={errors.downloadUrl}
-                    />
-
-                    {validatingPDF && (
-                      <div className="flex items-center space-x-2 text-sm text-brand-primary">
-                        <FiLoader className="w-4 h-4 animate-spin" />
-                        <span>Validando PDF...</span>
-                      </div>
-                    )}
-
-                    {formData.downloadUrl &&
-                      !validatingPDF &&
-                      pdfValidation.isValid && (
-                        <div className="flex items-center space-x-2 text-sm text-accent-green">
-                          <FiCheck className="w-4 h-4" />
-                          <span>
-                            PDF válido - informações extraídas automaticamente
-                          </span>
-                        </div>
-                      )}
-
-                    {formData.downloadUrl &&
-                      !validatingPDF &&
-                      pdfValidation.error && (
-                        <div className="flex items-center space-x-2 text-sm text-accent-red">
-                          <FiAlertCircle className="w-4 h-4" />
-                          <span>{pdfValidation.error}</span>
-                        </div>
-                      )}
                   </div>
                 </AnimatedCard>
               )}
@@ -751,7 +695,7 @@ const CreateScoreModal = ({
                           </span>
                         </div>
                       ) : selectedFile ? (
-                        <div className="space-y-3">
+                        <div className="space-y-4">
                           <div className="flex items-center justify-center space-x-2">
                             <FiFile className="w-6 h-6 text-accent-green" />
                             <span className="text-theme-primary font-medium">
@@ -762,15 +706,37 @@ const CreateScoreModal = ({
                             </span>
                           </div>
 
-                          {generatedThumbnail && (
+                          {/* 🆕 Status da geração de thumbnail */}
+                          {generatingThumbnail && (
                             <div className="mt-4 text-center">
-                              <p className="text-sm text-theme-tertiary mb-2">
-                                Miniatura gerada:
-                              </p>
+                              <div className="flex items-center justify-center space-x-2 text-sm text-brand-primary">
+                                <FiLoader className="w-4 h-4 animate-spin" />
+                                <span>
+                                  {isLargePDF
+                                    ? 'Gerando preview (PDF grande - pode levar alguns segundos)...'
+                                    : 'Gerando preview da partitura...'}
+                                </span>
+                              </div>
+                              {isLargePDF && (
+                                <div className="mt-2 text-xs text-theme-tertiary">
+                                  📄 PDFs grandes podem levar mais tempo para
+                                  processar
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* 🆕 Thumbnail gerada com sucesso */}
+                          {generatedThumbnail && thumbnailGenerated && (
+                            <div className="mt-4 text-center">
+                              <div className="flex items-center justify-center space-x-2 text-sm text-accent-green mb-2">
+                                <FiCheck className="w-4 h-4" />
+                                <span>Preview gerado com sucesso!</span>
+                              </div>
                               <div className="w-24 h-32 mx-auto rounded border border-theme-primary/30 overflow-hidden shadow-theme-small">
                                 <Image
                                   src={generatedThumbnail}
-                                  alt="Thumbnail da partitura"
+                                  alt="Preview da partitura"
                                   width={96}
                                   height={128}
                                   className="w-full h-full object-cover"
@@ -779,11 +745,15 @@ const CreateScoreModal = ({
                             </div>
                           )}
 
-                          {generatingThumbnail && (
+                          {/* 🆕 Erro na geração de thumbnail */}
+                          {thumbnailError && !generatingThumbnail && (
                             <div className="mt-4 text-center">
-                              <div className="flex items-center justify-center space-x-2 text-sm text-brand-primary">
-                                <FiLoader className="w-4 h-4 animate-spin" />
-                                <span>Gerando miniatura...</span>
+                              <div className="flex items-center justify-center space-x-2 text-sm text-amber-600 mb-2">
+                                <FiAlertCircle className="w-4 h-4" />
+                                <span>Preview não disponível</span>
+                              </div>
+                              <div className="text-xs text-theme-tertiary">
+                                {thumbnailError}
                               </div>
                             </div>
                           )}
@@ -798,11 +768,14 @@ const CreateScoreModal = ({
                             Formatos suportados: PDF, MIDI, MusicXML, SVG, PNG,
                             JPG
                           </p>
+                          <p className="text-theme-tertiary text-xs mt-1">
+                            🖼️ Para PDFs, será gerado um preview automaticamente
+                          </p>
                         </div>
                       )}
                     </div>
 
-                    {/* 🆕 ERRO DE UPLOAD DE ARQUIVO */}
+                    {/* ERRO DE UPLOAD DE ARQUIVO */}
                     {errors.downloadUrl && uploadMode === 'file' && (
                       <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                         <div className="flex items-center space-x-2">
@@ -819,13 +792,7 @@ const CreateScoreModal = ({
                         type="button"
                         onClick={() => {
                           setSelectedFile(null);
-                          setGeneratedThumbnail(null);
-                          setGeneratingThumbnail(false);
-                          setFormData((prev) => ({
-                            ...prev,
-                            downloadUrl: '',
-                            thumbnailUrl: '',
-                          }));
+                          resetUploadMode();
                         }}
                         className="flex items-center space-x-2 mx-auto text-sm text-theme-tertiary hover:text-accent-red transition-colors"
                       >

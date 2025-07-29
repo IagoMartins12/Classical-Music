@@ -184,15 +184,6 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                       <span>Ver Site Principal</span>
                     </Link>
 
-                    <Link
-                      href="/admin/settings"
-                      className="flex items-center space-x-3 px-4 py-2 text-theme-secondary hover:text-theme-primary hover:bg-theme-secondary transition-all text-sm"
-                      onClick={() => setShowUserMenu(false)}
-                    >
-                      <FiSettings className="w-4 h-4" />
-                      <span>Configurações</span>
-                    </Link>
-
                     <div className="border-t border-theme-secondary my-2" />
 
                     <button

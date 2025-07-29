@@ -3,7 +3,7 @@
 import AboutPage from './pageClient';
 
 export const metadata = {
-  title: 'Sobre Nós - Opus Atlas',
+  title: 'Quem somos - Opus Atlas',
   description:
     'Conheça a missão do Opus Atlas: democratizar o acesso à música clássica através de uma plataforma educacional completa e inovadora.',
   keywords: [

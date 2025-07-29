@@ -463,7 +463,7 @@ export default function AdminAnalytics() {
 
         {/* Recommendations */}
         {analytics.insights.recommendations.length > 0 && (
-          <AnimatedItem direction="up" springType="gentle">
+          <AnimatedItem direction="up" springType="gentle" className="my-4">
             <AnimatedCard className="classical-card p-6">
               <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
                 <FiTarget className="w-5 h-5 text-accent-amber" />
@@ -503,15 +503,17 @@ export default function AdminAnalytics() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Button
               variant="secondary"
-              className="h-auto p-6 flex flex-col items-center justify-center"
+              className="h-auto p-6 "
               onClick={() => router.push('/admin/users')}
             >
-              <FiUsers className="w-8 h-8 mb-3 text-accent-blue" />
-              <span className="font-bold mb-2">Gerenciar Usuários</span>
-              <span className="text-sm text-theme-tertiary text-center">
-                {formatNumber(analytics.overview.users.total)} usuários
-                registrados
-              </span>
+              <div className="flex flex-col items-center justify-center">
+                <FiUsers className="w-8 h-8 mb-3 text-accent-blue" />
+                <span className="font-bold mb-2">Gerenciar Usuários</span>
+                <span className="text-sm text-theme-tertiary text-center">
+                  {formatNumber(analytics.overview.users.total)} usuários
+                  registrados
+                </span>
+              </div>
             </Button>
 
             <Button
@@ -519,12 +521,14 @@ export default function AdminAnalytics() {
               className="h-auto p-6 flex-col"
               onClick={() => router.push('/admin/content')}
             >
-              <FiDatabase className="w-8 h-8 mb-3 text-accent-green" />
-              <span className="font-bold mb-2">Gerenciar Conteúdo</span>
-              <span className="text-sm text-theme-tertiary text-center">
-                {formatNumber(analytics.overview.content.works)} obras
-                catalogadas
-              </span>
+              <div className="flex flex-col items-center justify-center">
+                <FiDatabase className="w-8 h-8 mb-3 text-accent-green" />
+                <span className="font-bold mb-2">Gerenciar Conteúdo</span>
+                <span className="text-sm text-theme-tertiary text-center">
+                  {formatNumber(analytics.overview.content.works)} obras
+                  catalogadas
+                </span>
+              </div>
             </Button>
 
             <Button
@@ -532,11 +536,14 @@ export default function AdminAnalytics() {
               className="h-auto p-6 flex-col"
               onClick={() => router.push('/admin/insights')}
             >
-              <FiTrendingUp className="w-8 h-8 mb-3 text-accent-purple" />
-              <span className="font-bold mb-2">Insights Avançados</span>
-              <span className="text-sm text-theme-tertiary text-center">
-                Análises e predições
-              </span>
+              <div className="flex flex-col items-center justify-center">
+                {' '}
+                <FiTrendingUp className="w-8 h-8 mb-3 text-accent-purple" />
+                <span className="font-bold mb-2">Insights Avançados</span>
+                <span className="text-sm text-theme-tertiary text-center">
+                  Análises e predições
+                </span>
+              </div>
             </Button>
 
             <Button
@@ -544,11 +551,14 @@ export default function AdminAnalytics() {
               className="h-auto p-6 flex-col"
               onClick={() => router.push('/admin/system')}
             >
-              <FiZap className="w-8 h-8 mb-3 text-accent-amber" />
-              <span className="font-bold mb-2">Sistema</span>
-              <span className="text-sm text-theme-tertiary text-center">
-                Performance {analytics.overview.system.performance.toFixed(1)}%
-              </span>
+              <div className="flex flex-col items-center justify-center">
+                <FiZap className="w-8 h-8 mb-3 text-accent-amber" />
+                <span className="font-bold mb-2">Sistema</span>
+                <span className="text-sm text-theme-tertiary text-center">
+                  Performance {analytics.overview.system.performance.toFixed(1)}
+                  %
+                </span>
+              </div>
             </Button>
           </div>
         </AnimatedItem>

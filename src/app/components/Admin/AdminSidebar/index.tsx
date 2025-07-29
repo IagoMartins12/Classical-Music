@@ -86,14 +86,13 @@ export default function AdminSidebar() {
       ],
     },
     {
-      title: 'Usuários & Comunidade',
+      title: 'Usuários',
       items: [
         {
           href: '/admin/users',
           label: 'Usuários',
           icon: FiUsers,
-          badge:
-            mounted && stats ? stats.engagement.dailyActiveUsers : undefined,
+          badge: mounted && stats ? stats.overview.totalUsers : undefined,
           isActive: pathname.startsWith('/admin/users'),
           children: [
             {
@@ -115,13 +114,6 @@ export default function AdminSidebar() {
               isActive: pathname === '/admin/users/annotators',
             },
           ],
-        },
-        {
-          href: '/admin/community',
-          label: 'Comunidade',
-          icon: FiMessageSquare,
-          badge: mounted && stats ? stats.overview.totalAnnotations : undefined,
-          isActive: pathname.startsWith('/admin/community'),
         },
       ],
     },
@@ -163,7 +155,7 @@ export default function AdminSidebar() {
       title: 'Moderação',
       items: [
         {
-          href: '/uploads/moderation',
+          href: '/admin/moderation',
           label: 'Moderação',
           icon: FiShield,
           badge:
@@ -173,7 +165,7 @@ export default function AdminSidebar() {
           isActive: pathname.startsWith('/uploads/moderation'),
         },
         {
-          href: '/admin/reports',
+          href: '/admin/report',
           label: 'Reports',
           icon: FiFlag,
           badge:
@@ -181,12 +173,6 @@ export default function AdminSidebar() {
               ? stats.moderation.totalReports
               : undefined,
           isActive: pathname.startsWith('/admin/reports'),
-        },
-        {
-          href: '/admin/quality',
-          label: 'Qualidade',
-          icon: FiAward,
-          isActive: pathname.startsWith('/admin/quality'),
         },
       ],
     },
@@ -262,12 +248,6 @@ export default function AdminSidebar() {
           icon: FiDatabase,
           isActive: pathname.startsWith('/admin/system'),
         },
-        {
-          href: '/admin/settings',
-          label: 'Configurações',
-          icon: FiSettings,
-          isActive: pathname.startsWith('/admin/settings'),
-        },
       ],
     },
     {
@@ -290,26 +270,6 @@ export default function AdminSidebar() {
           label: 'Analytics',
           icon: FiActivity,
           isActive: pathname.startsWith('/admin/analytics'),
-          children: [
-            {
-              href: '/admin/analytics/engagement',
-              label: 'Engajamento',
-              icon: FiHeart,
-              isActive: pathname === '/admin/analytics/engagement',
-            },
-            {
-              href: '/admin/analytics/content',
-              label: 'Conteúdo',
-              icon: FiDatabase,
-              isActive: pathname === '/admin/analytics/content',
-            },
-            {
-              href: '/admin/analytics/performance',
-              label: 'Performance',
-              icon: FiTarget,
-              isActive: pathname === '/admin/analytics/performance',
-            },
-          ],
         },
         {
           href: '/admin/insights',

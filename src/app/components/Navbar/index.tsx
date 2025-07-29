@@ -108,7 +108,7 @@ const Navbar: React.FC = () => {
     },
 
     {
-      label: 'Sobre Nós',
+      label: 'Quem somos',
       href: '/about-us',
     },
   ];

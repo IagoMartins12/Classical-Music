@@ -1,4 +1,4 @@
-// app/utils/fileCleanupUtils.ts
+// app/utils/fileCleanupUtils.ts - ATUALIZADO PARA NOVA ESTRUTURA
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -134,6 +134,206 @@ export async function removeFilesByUrls(
 }
 
 /**
+ * 🆕 Remove pasta completa de uma obra (PDF + thumbnail + pasta)
+ */
+export async function cleanupScoreWorkDirectory(
+  downloadUrl: string | null,
+  thumbnailUrl: string | null
+): Promise<CleanupResult> {
+  console.log(`🧹 Limpando pasta completa da obra...`);
+
+  try {
+    // Extrair pasta da obra do downloadUrl
+    const workDir = extractWorkDirectoryFromUrl(downloadUrl);
+
+    if (workDir) {
+      console.log(`📁 Removendo pasta da obra: ${workDir}`);
+      return await removeDirectory(workDir);
+    } else {
+      // Fallback: remover arquivos individuais
+      console.log(
+        `⚠️ Não foi possível identificar pasta da obra, removendo arquivos individuais`
+      );
+      return await removeFilesByUrls([downloadUrl, thumbnailUrl]);
+    }
+  } catch (error) {
+    console.error('❌ Erro ao limpar pasta da obra:', error);
+
+    // Fallback: tentar remover arquivos individuais
+    return await removeFilesByUrls([downloadUrl, thumbnailUrl]);
+  }
+}
+
+/**
+ * 🆕 Extrai o diretório da obra de uma URL
+ * Ex: /uploads/scores/final/2024/12/sonata-ao-luar/sonata-ao-luar.pdf
+ *     → /public/uploads/scores/final/2024/12/sonata-ao-luar/
+ */
+function extractWorkDirectoryFromUrl(url: string | null): string | null {
+  if (!url) return null;
+
+  try {
+    // Verificar se é URL da estrutura nova (final)
+    const finalScoreMatch = url.match(
+      /\/uploads\/scores\/final\/(\d{4})\/(\d{2})\/([^\/]+)\//
+    );
+
+    if (finalScoreMatch) {
+      const [, year, month, workTitle] = finalScoreMatch;
+      return path.join(
+        process.cwd(),
+        'public',
+        'uploads',
+        'scores',
+        'final',
+        year,
+        month,
+        workTitle
+      );
+    }
+
+    // Verificar se é URL da estrutura antiga
+    const oldScoreMatch = url.match(/\/uploads\/score\/(\d{4})\/(\d{2})\//);
+
+    if (oldScoreMatch) {
+      const [, year, month] = oldScoreMatch;
+      const fileName = path.basename(url);
+      const fileDir = path.dirname(
+        path.join(process.cwd(), 'public', url.substring(1))
+      );
+      return fileDir;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('❌ Erro ao extrair diretório da obra:', error);
+    return null;
+  }
+}
+
+/**
+ * 🆕 Remove arquivos temporários órfãos do usuário
+ */
+export async function cleanupUserTemporaryFiles(
+  userId: string
+): Promise<CleanupResult> {
+  console.log(`🧹 Limpando arquivos temporários do usuário: ${userId}`);
+
+  const userTempDir = path.join(
+    process.cwd(),
+    'public',
+    'uploads',
+    'scores',
+    'temp',
+    userId
+  );
+
+  return await removeDirectory(userTempDir);
+}
+
+/**
+ * 🆕 Remove todos os arquivos temporários órfãos (mais antigos que X horas)
+ */
+export async function cleanupOrphanedTemporaryFiles(
+  maxAgeHours: number = 24
+): Promise<CleanupResult> {
+  console.log(`🧹 Limpando arquivos temporários órfãos (>${maxAgeHours}h)...`);
+
+  const result: CleanupResult = {
+    removedFiles: [],
+    removedDirectories: [],
+    errors: [],
+    totalSize: 0,
+  };
+
+  try {
+    const tempDir = path.join(
+      process.cwd(),
+      'public',
+      'uploads',
+      'scores',
+      'temp'
+    );
+
+    // Verificar se pasta temp existe
+    const tempExists = await fs
+      .access(tempDir)
+      .then(() => true)
+      .catch(() => false);
+    if (!tempExists) {
+      console.log('📁 Pasta de arquivos temporários não existe');
+      return result;
+    }
+
+    // Listar todas as pastas de usuários
+    const userDirs = await fs.readdir(tempDir, { withFileTypes: true });
+
+    for (const userDir of userDirs) {
+      if (!userDir.isDirectory()) continue;
+
+      const userDirPath = path.join(tempDir, userDir.name);
+
+      try {
+        // Listar arquivos na pasta do usuário
+        const files = await fs.readdir(userDirPath, { withFileTypes: true });
+
+        for (const file of files) {
+          if (file.isDirectory()) continue;
+
+          const filePath = path.join(userDirPath, file.name);
+
+          try {
+            // Verificar idade do arquivo
+            const stats = await fs.stat(filePath);
+            const ageHours =
+              (Date.now() - stats.mtime.getTime()) / (1000 * 60 * 60);
+
+            if (ageHours > maxAgeHours) {
+              // Arquivo antigo, remover
+              result.totalSize += stats.size;
+              await fs.unlink(filePath);
+              result.removedFiles.push(filePath);
+              console.log(
+                `🗑️ Arquivo temporário órfão removido: ${filePath} (${ageHours.toFixed(
+                  1
+                )}h)`
+              );
+            }
+          } catch (fileError) {
+            const errorMsg = `Erro ao processar arquivo ${filePath}: ${fileError}`;
+            result.errors.push(errorMsg);
+            console.error(`❌ ${errorMsg}`);
+          }
+        }
+
+        // Tentar remover pasta do usuário se estiver vazia
+        try {
+          const remainingFiles = await fs.readdir(userDirPath);
+          if (remainingFiles.length === 0) {
+            await fs.rmdir(userDirPath);
+            result.removedDirectories.push(userDirPath);
+            console.log(`📂 Pasta temporária vazia removida: ${userDirPath}`);
+          }
+        } catch (dirError) {
+          // Não é erro crítico se não conseguir remover pasta vazia
+          console.log(`📁 Pasta não vazia ou erro ao remover: ${userDirPath}`);
+        }
+      } catch (userDirError) {
+        const errorMsg = `Erro ao processar pasta do usuário ${userDirPath}: ${userDirError}`;
+        result.errors.push(errorMsg);
+        console.error(`❌ ${errorMsg}`);
+      }
+    }
+  } catch (error) {
+    const errorMsg = `Erro ao limpar arquivos temporários órfãos: ${error}`;
+    result.errors.push(errorMsg);
+    console.error(`❌ ${errorMsg}`);
+  }
+
+  return result;
+}
+
+/**
  * Remove todas as imagens de um compositor
  */
 export async function cleanupComposerFiles(
@@ -168,7 +368,7 @@ export async function cleanupUserFiles(userId: string): Promise<CleanupResult> {
 }
 
 /**
- * Remove arquivos específicos de uma score (PDF + thumbnail)
+ * 🆕 Remove arquivos de uma partitura (ATUALIZADO para nova estrutura)
  */
 export async function cleanupScoreFiles(
   downloadUrl: string | null,
@@ -176,8 +376,21 @@ export async function cleanupScoreFiles(
 ): Promise<CleanupResult> {
   console.log(`🧹 Limpando arquivos da partitura...`);
 
-  const urls = [downloadUrl, thumbnailUrl];
-  return await removeFilesByUrls(urls);
+  // 🆕 Tentar remover pasta completa primeiro
+  const workDirResult = await cleanupScoreWorkDirectory(
+    downloadUrl,
+    thumbnailUrl
+  );
+
+  if (workDirResult.removedDirectories.length > 0) {
+    // Pasta completa foi removida com sucesso
+    console.log('✅ Pasta completa da obra removida');
+    return workDirResult;
+  } else {
+    // Fallback: remover arquivos individuais
+    console.log('⚠️ Removendo arquivos individuais (fallback)');
+    return await removeFilesByUrls([downloadUrl, thumbnailUrl]);
+  }
 }
 
 /**
@@ -203,6 +416,19 @@ export function extractUserIdFromUrl(url: string | null): string | null {
 }
 
 /**
+ * 🆕 Extrai título da obra de uma URL de partitura
+ */
+export function extractWorkTitleFromScoreUrl(
+  url: string | null
+): string | null {
+  if (!url) return null;
+
+  // Exemplo: /uploads/scores/final/2024/12/sonata-ao-luar/sonata-ao-luar.pdf
+  const match = url.match(/\/uploads\/scores\/final\/\d{4}\/\d{2}\/([^\/]+)\//);
+  return match ? match[1] : null;
+}
+
+/**
  * Log detalhado do resultado da limpeza
  */
 export function logCleanupResult(result: CleanupResult, context: string) {
@@ -224,6 +450,14 @@ export function logCleanupResult(result: CleanupResult, context: string) {
     console.log(`   🗑️ Arquivos removidos:`);
     result.removedFiles.forEach((file) => {
       const relativePath = file.replace(process.cwd(), '.');
+      console.log(`      ${relativePath}`);
+    });
+  }
+
+  if (result.removedDirectories.length > 0) {
+    console.log(`   📂 Diretórios removidos:`);
+    result.removedDirectories.forEach((dir) => {
+      const relativePath = dir.replace(process.cwd(), '.');
       console.log(`      ${relativePath}`);
     });
   }

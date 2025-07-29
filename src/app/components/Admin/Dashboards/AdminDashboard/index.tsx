@@ -7,7 +7,6 @@ import {
   FiUsers,
   FiMusic,
   FiFileText,
-
   FiClock,
   FiHeart,
   FiMessageSquare,
@@ -30,7 +29,6 @@ import {
   formatDuration,
   formatPercentage,
   formatGrowthRate,
-
 } from '@/app/hooks/admin/useAdminStats';
 import {
   AnimatedCard,
@@ -1008,18 +1006,6 @@ export default function AdminDashboard() {
                   <span className="font-bold mb-2">Relatórios</span>
                   <span className="text-sm text-theme-tertiary text-center">
                     Análises detalhadas e métricas
-                  </span>
-                </Button>
-
-                <Button
-                  variant="secondary"
-                  className="h-auto p-6 flex-col"
-                  onClick={() => router.push('/admin/settings')}
-                >
-                  <FiSettings className="w-8 h-8 mb-3 text-accent-purple" />
-                  <span className="font-bold mb-2">Configurações</span>
-                  <span className="text-sm text-theme-tertiary text-center">
-                    Configurações da plataforma
                   </span>
                 </Button>
               </div>
