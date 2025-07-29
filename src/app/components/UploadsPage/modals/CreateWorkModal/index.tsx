@@ -38,6 +38,7 @@ import {
 import { useToast } from '@/app/hooks/useToast';
 import { SiInstagram, SiSpotify, SiTiktok, SiYoutube } from 'react-icons/si';
 import { FaGraduationCap } from 'react-icons/fa';
+import { useAuth } from '@/app/hooks/useAuth';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -80,6 +81,65 @@ const difficultyOptions = [
   { value: 'BEGINNER', label: 'Iniciante' },
   { value: 'INTERMEDIATE', label: 'Intermediário' },
   { value: 'ADVANCED', label: 'Avançado' },
+];
+
+const tonalityOptions = [
+  { value: '', label: 'Selecione uma tonalidade' },
+
+  // Tonalidades Maiores
+  { value: 'Do maior', label: 'Dó maior' },
+  { value: 'Do# maior', label: 'Dó# maior' },
+  { value: 'Reb maior', label: 'Réb maior' },
+  { value: 'Re maior', label: 'Ré maior' },
+  { value: 'Re# maior', label: 'Ré# maior' },
+  { value: 'Mib maior', label: 'Mib maior' },
+  { value: 'Mi maior', label: 'Mi maior' },
+  { value: 'Fa maior', label: 'Fá maior' },
+  { value: 'Fa# maior', label: 'Fá# maior' },
+  { value: 'Solb maior', label: 'Solb maior' },
+  { value: 'Sol maior', label: 'Sol maior' },
+  { value: 'Sol# maior', label: 'Sol# maior' },
+  { value: 'Lab maior', label: 'Láb maior' },
+  { value: 'La maior', label: 'Lá maior' },
+  { value: 'La# maior', label: 'Lá# maior' },
+  { value: 'Sib maior', label: 'Sib maior' },
+  { value: 'Si maior', label: 'Si maior' },
+
+  // Tonalidades Menores
+  { value: 'Do menor', label: 'Dó menor' },
+  { value: 'Do# menor', label: 'Dó# menor' },
+  { value: 'Reb menor', label: 'Réb menor' },
+  { value: 'Re menor', label: 'Ré menor' },
+  { value: 'Re# menor', label: 'Ré# menor' },
+  { value: 'Mib menor', label: 'Mib menor' },
+  { value: 'Mi menor', label: 'Mi menor' },
+  { value: 'Fa menor', label: 'Fá menor' },
+  { value: 'Fa# menor', label: 'Fá# menor' },
+  { value: 'Solb menor', label: 'Solb menor' },
+  { value: 'Sol menor', label: 'Sol menor' },
+  { value: 'Sol# menor', label: 'Sol# menor' },
+  { value: 'Lab menor', label: 'Láb menor' },
+  { value: 'La menor', label: 'Lá menor' },
+  { value: 'La# menor', label: 'Lá# menor' },
+  { value: 'Sib menor', label: 'Sib menor' },
+  { value: 'Si menor', label: 'Si menor' },
+
+  // Modos
+  { value: 'Dorico', label: 'Dórico' },
+  { value: 'Frigio', label: 'Frígio' },
+  { value: 'Lidio', label: 'Lídio' },
+  { value: 'Mixolidio', label: 'Mixolídio' },
+  { value: 'Eolio', label: 'Eólio' },
+  { value: 'Locrio', label: 'Lócrio' },
+
+  // Outras categorias
+  { value: 'Atonal', label: 'Atonal' },
+  { value: 'Politonal', label: 'Politonal' },
+  { value: 'Modal', label: 'Modal' },
+  { value: 'Cromática', label: 'Cromática' },
+  { value: 'Dodecafônica', label: 'Dodecafônica' },
+  { value: 'Pentatônica', label: 'Pentatônica' },
+  { value: 'Não especificada', label: 'Não especificada' },
 ];
 
 // 🆕 FUNÇÃO PARA LIMPAR URL DO IMSLP
@@ -142,6 +202,7 @@ const CreateWorkModal = ({
   const [uploadingAudio, setUploadingAudio] = useState(false);
   const [uploadingVideoAula, setUploadingVideoAula] = useState(false);
 
+  const { user } = useAuth();
   // 🔧 CORRIGIDO: Memoizar as opções para evitar recriação a cada render
   const validCategoryOptions = useMemo(() => getAllValidCategories(), []);
   const validWorkGenreOptions = useMemo(
@@ -990,12 +1051,19 @@ const CreateWorkModal = ({
                     placeholder="1794"
                   />
 
-                  <Input
-                    label="Tonalidade"
-                    value={formData.tone}
-                    onChange={(e) => handleInputChange('tone', e.target.value)}
-                    placeholder="Sol menor"
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                      Tonalidade
+                    </label>
+                    <Select
+                      options={tonalityOptions}
+                      value={formData.tone}
+                      onChange={(e) =>
+                        handleInputChange('tone', e.target.value)
+                      }
+                      placeholder="Selecione uma tonalidade"
+                    />
+                  </div>
 
                   <Input
                     label="Duração"
@@ -1262,153 +1330,155 @@ const CreateWorkModal = ({
                     </div>
 
                     {/* Video Aula */}
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                          <FaGraduationCap className="w-5 h-5 text-purple-400" />
-                          <h4 className="text-lg font-semibold text-theme-primary">
-                            Video Aula
-                          </h4>
-                        </div>
-
-                        <label className="flex items-center space-x-2 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={mediaData.hasVideoAula}
-                            onChange={(e) =>
-                              setMediaData((prev) => ({
-                                ...prev,
-                                hasVideoAula: e.target.checked,
-                              }))
-                            }
-                            className="w-4 h-4 text-purple-600 bg-theme-elevated border-theme-secondary rounded focus:ring-purple-500"
-                          />
-                          <span className="text-sm text-theme-primary">
-                            Incluir video aula?
-                          </span>
-                        </label>
-                      </div>
-
-                      {mediaData.hasVideoAula && (
-                        <div className="space-y-4 p-4 bg-purple-900/10 border border-purple-700/30 rounded-xl">
-                          {/* Tipo e Fonte */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                                Tipo de Vídeo
-                              </label>
-                              <Select
-                                options={videoAulaTypeOptions}
-                                value={mediaData.videoAulaType}
-                                onChange={(e) =>
-                                  setMediaData((prev) => ({
-                                    ...prev,
-                                    videoAulaType: e.target.value,
-                                  }))
-                                }
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                                Plataforma/Fonte
-                              </label>
-                              <Select
-                                options={videoAulaSourceOptions}
-                                value={mediaData.videoAulaSource}
-                                onChange={(e) =>
-                                  setMediaData((prev) => ({
-                                    ...prev,
-                                    videoAulaSource: e.target.value,
-                                  }))
-                                }
-                              />
-                            </div>
+                    {user && user.role >= 1 && (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <FaGraduationCap className="w-5 h-5 text-purple-400" />
+                            <h4 className="text-lg font-semibold text-theme-primary">
+                              Video Aula
+                            </h4>
                           </div>
 
-                          {/* Título personalizado */}
-                          <Input
-                            label="Título da Video Aula"
-                            value={mediaData.videoAulaTitle}
-                            onChange={(e) =>
-                              setMediaData((prev) => ({
-                                ...prev,
-                                videoAulaTitle: e.target.value,
-                              }))
-                            }
-                            placeholder="Ex: Tutorial de Técnica - Chopin Étude Op. 10 No. 1"
-                          />
-
-                          {/* URL ou Upload */}
-                          {mediaData.videoAulaSource !== 'local' ? (
-                            <Input
-                              label="URL do Vídeo"
-                              value={mediaData.videoAulaUrl}
+                          <label className="flex items-center space-x-2 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={mediaData.hasVideoAula}
                               onChange={(e) =>
                                 setMediaData((prev) => ({
                                   ...prev,
-                                  videoAulaUrl: e.target.value,
+                                  hasVideoAula: e.target.checked,
                                 }))
                               }
-                              placeholder={
-                                mediaData.videoAulaSource === 'youtube'
-                                  ? 'https://www.youtube.com/watch?v=...'
-                                  : mediaData.videoAulaSource === 'instagram'
-                                  ? 'https://www.instagram.com/reel/...'
-                                  : 'https://...'
-                              }
-                              leftIcon={
-                                mediaData.videoAulaSource === 'youtube' ? (
-                                  <SiYoutube />
-                                ) : mediaData.videoAulaSource ===
-                                  'instagram' ? (
-                                  <SiInstagram />
-                                ) : mediaData.videoAulaSource === 'tiktok' ? (
-                                  <SiTiktok />
-                                ) : (
-                                  <FiExternalLink />
-                                )
-                              }
+                              className="w-4 h-4 text-purple-600 bg-theme-elevated border-theme-secondary rounded focus:ring-purple-500"
                             />
-                          ) : (
-                            <div>
-                              <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                                Upload de Video Aula
-                              </label>
-                              <input
-                                type="file"
-                                accept="video/*"
-                                onChange={(e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) {
+                            <span className="text-sm text-theme-primary">
+                              Incluir video aula?
+                            </span>
+                          </label>
+                        </div>
+
+                        {mediaData.hasVideoAula && (
+                          <div className="space-y-4 p-4 bg-purple-900/10 border border-purple-700/30 rounded-xl">
+                            {/* Tipo e Fonte */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                                  Tipo de Vídeo
+                                </label>
+                                <Select
+                                  options={videoAulaTypeOptions}
+                                  value={mediaData.videoAulaType}
+                                  onChange={(e) =>
                                     setMediaData((prev) => ({
                                       ...prev,
-                                      videoAulaFile: file,
-                                    }));
-                                    if (editingWork) {
-                                      handleVideoAulaUpload(file);
-                                    }
+                                      videoAulaType: e.target.value,
+                                    }))
                                   }
-                                }}
-                                className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary"
-                                disabled={uploadingVideoAula}
-                              />
-                              {uploadingVideoAula && (
-                                <p className="text-sm text-purple-400 mt-1 flex items-center space-x-1">
-                                  <FiLoader className="w-4 h-4 animate-spin" />
-                                  <span>Enviando video aula...</span>
-                                </p>
-                              )}
-                              {mediaData.videoAulaFile && (
-                                <p className="text-sm text-theme-secondary mt-1">
-                                  Arquivo: {mediaData.videoAulaFile.name}
-                                </p>
-                              )}
+                                />
+                              </div>
+
+                              <div>
+                                <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                                  Plataforma/Fonte
+                                </label>
+                                <Select
+                                  options={videoAulaSourceOptions}
+                                  value={mediaData.videoAulaSource}
+                                  onChange={(e) =>
+                                    setMediaData((prev) => ({
+                                      ...prev,
+                                      videoAulaSource: e.target.value,
+                                    }))
+                                  }
+                                />
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      )}
-                    </div>
+
+                            {/* Título personalizado */}
+                            <Input
+                              label="Título da Video Aula"
+                              value={mediaData.videoAulaTitle}
+                              onChange={(e) =>
+                                setMediaData((prev) => ({
+                                  ...prev,
+                                  videoAulaTitle: e.target.value,
+                                }))
+                              }
+                              placeholder="Ex: Tutorial de Técnica - Chopin Étude Op. 10 No. 1"
+                            />
+
+                            {/* URL ou Upload */}
+                            {mediaData.videoAulaSource !== 'local' ? (
+                              <Input
+                                label="URL do Vídeo"
+                                value={mediaData.videoAulaUrl}
+                                onChange={(e) =>
+                                  setMediaData((prev) => ({
+                                    ...prev,
+                                    videoAulaUrl: e.target.value,
+                                  }))
+                                }
+                                placeholder={
+                                  mediaData.videoAulaSource === 'youtube'
+                                    ? 'https://www.youtube.com/watch?v=...'
+                                    : mediaData.videoAulaSource === 'instagram'
+                                    ? 'https://www.instagram.com/reel/...'
+                                    : 'https://...'
+                                }
+                                leftIcon={
+                                  mediaData.videoAulaSource === 'youtube' ? (
+                                    <SiYoutube />
+                                  ) : mediaData.videoAulaSource ===
+                                    'instagram' ? (
+                                    <SiInstagram />
+                                  ) : mediaData.videoAulaSource === 'tiktok' ? (
+                                    <SiTiktok />
+                                  ) : (
+                                    <FiExternalLink />
+                                  )
+                                }
+                              />
+                            ) : (
+                              <div>
+                                <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                                  Upload de Video Aula
+                                </label>
+                                <input
+                                  type="file"
+                                  accept="video/*"
+                                  onChange={(e) => {
+                                    const file = e.target.files?.[0];
+                                    if (file) {
+                                      setMediaData((prev) => ({
+                                        ...prev,
+                                        videoAulaFile: file,
+                                      }));
+                                      if (editingWork) {
+                                        handleVideoAulaUpload(file);
+                                      }
+                                    }
+                                  }}
+                                  className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary"
+                                  disabled={uploadingVideoAula}
+                                />
+                                {uploadingVideoAula && (
+                                  <p className="text-sm text-purple-400 mt-1 flex items-center space-x-1">
+                                    <FiLoader className="w-4 h-4 animate-spin" />
+                                    <span>Enviando video aula...</span>
+                                  </p>
+                                )}
+                                {mediaData.videoAulaFile && (
+                                  <p className="text-sm text-theme-secondary mt-1">
+                                    Arquivo: {mediaData.videoAulaFile.name}
+                                  </p>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </AnimatedCard>
