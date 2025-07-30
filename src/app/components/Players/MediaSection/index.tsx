@@ -185,6 +185,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     );
   }, [work]);
 
+  console.log('work', work);
   // 🆕 Buscar mídia automaticamente (INTEGRADA: Spotify + YouTube + Áudio)
   const searchMedia = async (forceRefresh = false) => {
     setIsSearching(true);
@@ -303,9 +304,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           foundSources.push(`Áudio: ${data.metadata.savedAudioSource}`);
         }
         if (data.alternativeAudio?.length > 0) {
-          foundSources.push(
-            `${data.alternativeAudio.length} fonte(s) alternativa(s) temporária(s)`
-          );
+          foundSources.push(`Audio`);
         }
 
         if (foundSources.length > 0) {
@@ -730,7 +729,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               </Button>
             )}
 
-            {showRefreshButton && (
+            {/* {showRefreshButton && (
               <Button
                 variant="secondary"
                 size="sm"
@@ -743,10 +742,10 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               >
                 {isSearching ? 'Atualizando...' : 'Atualizar Mídia'}
               </Button>
-            )}
+            )} */}
 
             {/* 🆕 Botão para buscar mais fontes alternativas */}
-            {hasAnyMedia && (
+            {/* {hasAnyMedia && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -756,7 +755,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               >
                 Mais Fontes
               </Button>
-            )}
+            )} */}
           </div>
         </div>
       </div>
@@ -817,24 +816,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                         </span>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setEditData((prev) => ({
-                              ...prev,
-                              removeCustomAudio: !prev.removeCustomAudio,
-                            }))
-                          }
-                          className={`text-xs px-2 py-1 rounded transition-colors ${
-                            editData.removeCustomAudio
-                              ? 'bg-red-600 text-white'
-                              : 'bg-gray-600 text-gray-300 hover:bg-gray-500'
-                          }`}
-                        >
-                          {editData.removeCustomAudio
-                            ? 'Cancelar Remoção'
-                            : 'Remover'}
-                        </button>
                         {/* 🆕 Botão de deletar direto */}
                         <button
                           type="button"
@@ -867,6 +848,15 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     Novo arquivo: {editData.audioFile.name}
                   </p>
                 )}
+                {work.customAudioMetadata &&
+                  //@ts-ignore - Campo existe
+                  work.customAudioMetadata?.title &&
+                  !editData.audioFile && (
+                    <p className="text-sm text-theme-secondary mt-1">
+                      {/* @ts-ignore - Campo existe */}
+                      Arquivo já selecionado {work.customAudioMetadata?.title}
+                    </p>
+                  )}
                 {editData.removeCustomAudio && (
                   <p className="text-sm text-red-400 mt-1">
                     ⚠️ O áudio atual será removido
@@ -933,19 +923,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <h3 className="text-lg font-semibold text-theme-primary classical-title">
                     Reprodução de Áudio
                   </h3>
-                  <div className="flex items-center space-x-2">
-                    {mediaData.alternativeAudio.length > 0 && (
-                      <span className="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">
-                        +{mediaData.alternativeAudio.length} fontes temporárias
-                      </span>
-                    )}
-                    {mediaData.customAudio?.isPersistent && (
-                      <span className="text-xs bg-green-600 text-white px-2 py-1 rounded-full flex items-center space-x-1">
-                        <FiDatabase className="w-3 h-3" />
-                        <span>Salvo</span>
-                      </span>
-                    )}
-                  </div>
                 </div>
 
                 {/* 🆕 Player simplificado - apenas recebe as fontes */}
@@ -953,6 +930,8 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   work={work}
                   customAudio={mediaData.customAudio}
                   alternativeAudioSources={mediaData.alternativeAudio}
+                  isSearching={isSearching}
+                  searchError={searchError}
                 />
               </div>
             </AnimatedItem>
@@ -1068,7 +1047,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   Buscando mídia para &quot;{work.title}&quot;...
                 </p>
                 <p className="text-blue-400 text-xs mt-1">
-                  🎵 Spotify • 📺 YouTube • 🎼 Fontes de Áudio Alternativas
+                  🎵 Spotify • 📺 YouTube • 🎼 Fontes de Áudio
                 </p>
               </div>
             </div>

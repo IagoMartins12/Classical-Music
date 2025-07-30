@@ -583,8 +583,8 @@ async function searchClassicalArchives(
     sources.push(...choralSources);
 
     // 2. Classical Music Archive (se tiver API)
-    const classicalSources = await searchClassicalMusicArchive(title, composer);
-    sources.push(...classicalSources);
+    // const classicalSources = await searchClassicalMusicArchive(title, composer);
+    // sources.push(...classicalSources);
 
     return sources;
   } catch (error) {

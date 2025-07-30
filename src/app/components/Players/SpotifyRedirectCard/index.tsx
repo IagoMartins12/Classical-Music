@@ -69,7 +69,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
   const thumbnailUrl = getThumbnailUrl();
 
   return (
-    <AnimatedItem hover="scale" springType="bouncy">
+    <AnimatedItem hover="none" springType="bouncy">
       <div className="bg-gradient-to-br from-green-900/20 to-green-800/20 border border-green-700/30 rounded-xl overflow-hidden hover:border-green-600/50 transition-all duration-300 hover:shadow-green-500/20 hover:shadow-lg">
         {/* Header com Logo Spotify */}
         <div className="p-4 border-b border-green-700/30 bg-green-900/10">

@@ -65,7 +65,7 @@ export default function EmailVerificationRequired({
           <AnimatedItem direction="up" springType="smooth">
             <p className="text-xl md:text-2xl text-theme-secondary mb-8 leading-relaxed">
               Para fazer uploads de compositores e partituras, você precisa
-              confirmar seu email 📧
+              confirmar seu email.
             </p>
           </AnimatedItem>
 

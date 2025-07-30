@@ -110,7 +110,7 @@ const HeroMainPage = () => {
 
         {/* Card Sobre o Projeto */}
         <Link
-          href="/sobre"
+          href="/about-us"
           className="relative rounded-2xl bg-white shadow-lg !p-0 classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500"
         >
           <div className="relative h-64">

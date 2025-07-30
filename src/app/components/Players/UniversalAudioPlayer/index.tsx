@@ -41,6 +41,8 @@ interface UniversalAudioPlayerProps {
     customAudioMetadata?: any; // Metadados JSON
   };
 
+  isSearching: boolean;
+  searchError: string | null;
   customAudio?: {
     url: string;
     file: string;
@@ -55,6 +57,8 @@ interface UniversalAudioPlayerProps {
 const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   work,
   customAudio,
+  isSearching,
+  searchError,
   alternativeAudioSources = [],
 }) => {
   // Estados do player
@@ -371,18 +375,15 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   // 🆕 Estado sem fontes disponíveis
   if (audioSources.length === 0) {
     return (
-      <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+      <div className="bg-theme-elevated rounded-xl p-8 border-2 border-dashed border-theme-secondary text-center">
         <div className="text-center">
-          <FiAlertTriangle className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-          <h3 className="text-white font-semibold mb-2">
-            Nenhuma fonte de áudio disponível
-          </h3>
-          <p className="text-gray-400 text-sm mb-4">
-            Não foi possível encontrar áudio para esta obra.
-          </p>
-          <p className="text-gray-500 text-xs">
-            Use o botão &quot;Carregar Mídia&quot; ou &quot;Mais Fontes&quot;
-            acima para buscar fontes de áudio.
+          <FiAlertTriangle className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
+          <p className="text-theme-secondary">
+            {isSearching
+              ? 'Procurando áudio...'
+              : searchError
+              ? 'Sem áudio encontrado'
+              : 'Nenhum áudio encontrado'}
           </p>
         </div>
       </div>
