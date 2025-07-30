@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiSave,
   FiCopy,
   FiTarget,
   FiMessageCircle,
@@ -281,7 +280,7 @@ export default function CloneAdModal({
             );
             return;
           }
-        } catch (parseError) {
+        } catch {
           // Se não conseguir fazer parse, tratar como erro normal
         }
       }
@@ -305,7 +304,7 @@ export default function CloneAdModal({
                 Clonar Anúncio
               </h2>
               <p className="text-sm text-theme-tertiary">
-                Criar cópia de "{ad.title}"
+                Criar cópia de &quot;{ad.title}&quot;
               </p>
             </div>
           </div>

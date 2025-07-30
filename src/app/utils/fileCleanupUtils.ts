@@ -221,8 +221,6 @@ function extractScoreDirectoryFromUrl(url: string | null): string | null {
     const veryOldMatch = url.match(/\/uploads\/score\/(\d{4})\/(\d{2})\//);
 
     if (veryOldMatch) {
-      const [, year, month] = veryOldMatch;
-      const fileName = path.basename(url);
       const fileDir = path.dirname(
         path.join(process.cwd(), 'public', url.substring(1))
       );
@@ -339,7 +337,7 @@ export async function cleanupOrphanedTemporaryFiles(
             result.removedDirectories.push(userDirPath);
             console.log(`📂 Pasta temporária vazia removida: ${userDirPath}`);
           }
-        } catch (dirError) {
+        } catch{
           // Não é erro crítico se não conseguir remover pasta vazia
           console.log(`📁 Pasta não vazia ou erro ao remover: ${userDirPath}`);
         }

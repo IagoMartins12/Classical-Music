@@ -116,7 +116,7 @@ export default function MediaUploadModal({
       let previewUrl: string;
       try {
         previewUrl = createPreviewUrl(file);
-      } catch (error) {
+      } catch {
         toast.error('Erro ao criar preview do arquivo');
         return;
       }

@@ -5,7 +5,8 @@ import prisma from './prismadb';
 export type TokenType =
   | 'EMAIL_CONFIRMATION'
   | 'PASSWORD_RESET'
-  | 'NEWSLETTER_CONFIRMATION';
+  | 'NEWSLETTER_CONFIRMATION'
+  | 'EMAIL_CHANGE';
 
 interface CreateTokenOptions {
   userId?: string; // 🆕 OPCIONAL agora
@@ -271,6 +272,10 @@ export const TOKEN_CONFIG = {
   NEWSLETTER_CONFIRMATION: {
     expiresInHours: 48,
     description: 'Confirmação de inscrição na newsletter',
+  },
+  EMAIL_CHANGE: {
+    expiresInHours: 48,
+    description: 'Confirmação de mudança de Email',
   },
 } as const;
 

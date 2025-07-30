@@ -17,7 +17,6 @@ import {
   FiTarget,
   FiAward,
   FiPieChart,
-  FiSettings,
   FiArrowUp,
   FiArrowDown,
   FiDatabase,

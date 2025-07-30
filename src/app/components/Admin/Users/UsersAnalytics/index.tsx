@@ -1,7 +1,6 @@
 // app/components/Admin/Users/UsersAnalytics.tsx
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiUsers,
@@ -14,9 +13,6 @@ import {
   FiDownload,
   FiRefreshCw,
   FiEye,
-  FiShield,
-  FiSearch,
-  FiUserPlus,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -26,7 +22,6 @@ import {
   LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
-import Select from '@/app/components/Common/Select';
 import {
   MultiLineChart,
   AdminBarChart,
@@ -37,17 +32,7 @@ import { useAdminUsers } from '@/app/hooks/admin/useAdminUsers';
 
 export default function UsersAnalytics() {
   const router = useRouter();
-  const { analytics, loading, error, fetchUsers, refreshData } =
-    useAdminUsers();
-  const [userSegment, setUserSegment] = useState('all');
-  const [refreshing, setRefreshing] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await refreshData();
-    setRefreshing(false);
-  };
+  const { analytics, loading, error, refreshData } = useAdminUsers();
 
   const handleExportData = () => {
     if (!analytics) return;
@@ -74,13 +59,6 @@ export default function UsersAnalytics() {
     a.click();
   };
 
-  const handleSearch = () => {
-    fetchUsers({
-      search: searchTerm,
-      userType: userSegment !== 'all' ? userSegment : undefined,
-    });
-  };
-
   if (error) {
     return (
       <PageContainer showBackground={true}>
@@ -93,7 +71,7 @@ export default function UsersAnalytics() {
           <Button
             variant="primary"
             leftIcon={<FiRefreshCw />}
-            onClick={handleRefresh}
+            onClick={refreshData}
           >
             Tentar Novamente
           </Button>
@@ -136,78 +114,6 @@ export default function UsersAnalytics() {
             </p>
           </div>
         </AnimatedItem>
-
-        {/* Controls */}
-        {/* <AnimatedItem direction="up" springType="gentle">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8 p-4 bg-theme-secondary rounded-xl">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <div className="flex items-center space-x-2 bg-theme-primary rounded-lg px-3 py-2">
-                <FiSearch className="w-4 h-4 text-theme-tertiary" />
-                <input
-                  type="text"
-                  placeholder="Buscar usuários..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  className="bg-transparent border-none outline-none text-theme-primary placeholder-theme-tertiary text-sm flex-1"
-                />
-              </div>
-
-              <Select
-                value={userSegment}
-                onChange={(e) => setUserSegment(e.target.value)}
-                options={[
-                  { value: 'all', label: 'Todos os Tipos' },
-                  { value: 'MUSIC_STUDENT', label: 'Estudantes' },
-                  { value: 'CASUAL_USER', label: 'Usuários Casuais' },
-                  { value: 'PROFESSIONAL', label: 'Profissionais' },
-                  { value: 'TEACHER', label: 'Professores' },
-                ]}
-                className="input-classical-2 min-w-[160px]"
-              />
-
-              <Button
-                variant="secondary"
-                size="sm"
-                leftIcon={<FiSearch />}
-                onClick={handleSearch}
-              >
-                Buscar
-              </Button>
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                leftIcon={
-                  <FiRefreshCw className={refreshing ? 'animate-spin' : ''} />
-                }
-                onClick={handleRefresh}
-                disabled={refreshing}
-              >
-                Atualizar
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                leftIcon={<FiDownload />}
-                onClick={handleExportData}
-                disabled={!analytics}
-              >
-                Exportar
-              </Button>
-              <Button
-                variant="primary"
-                size="sm"
-                leftIcon={<FiUserPlus />}
-                onClick={() => router.push('/admin/users/create')}
-              >
-                Novo Usuário
-              </Button>
-            </div>
-          </div>
-        </AnimatedItem> */}
 
         {/* Overview Metrics */}
         {analytics && (

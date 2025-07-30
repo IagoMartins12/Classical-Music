@@ -400,8 +400,6 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
       // Pegar primeira página
       const page = await pdf.getPage(1);
 
-      // Configurar viewport
-      const viewport = page.getViewport({ scale: 1.5 }); // Escala para qualidade
 
       // Criar canvas
       let canvas = document.createElement('canvas');
@@ -719,7 +717,7 @@ function extractTitleFromUrl(url: string): string {
     const capitalized = cleaned.replace(/\b\w/g, (char) => char.toUpperCase());
 
     return capitalized.trim();
-  } catch (error) {
+  } catch {
     return '';
   }
 }

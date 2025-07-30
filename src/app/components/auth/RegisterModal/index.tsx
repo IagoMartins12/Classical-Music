@@ -421,31 +421,6 @@ const RegisterModal: React.FC = () => {
         </div>
       )}
 
-      {/* Google Sign Up */}
-      <Button
-        variant="google"
-        size="lg"
-        onClick={handleGoogleSignIn}
-        isLoading={isGoogleLoading}
-        leftIcon={<FcGoogle />}
-        className="w-full mb-6"
-        disabled={isLoading}
-      >
-        Continuar com Google
-      </Button>
-
-      {/* Divider */}
-      <div className="relative mb-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-theme-secondary" />
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-4 bg-theme-elevated text-theme-tertiary">
-            ou registre-se com email
-          </span>
-        </div>
-      </div>
-
       {/* Registration Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* General Error */}
@@ -525,6 +500,30 @@ const RegisterModal: React.FC = () => {
           Criar Conta
         </Button>
       </form>
+
+      {/* Divider */}
+      <div className="relative my-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-theme-secondary" />
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-theme-elevated text-theme-tertiary">
+            ou registre-se com email
+          </span>
+        </div>
+      </div>
+      {/* Google Sign Up */}
+      <Button
+        variant="google"
+        size="lg"
+        onClick={handleGoogleSignIn}
+        isLoading={isGoogleLoading}
+        leftIcon={<FcGoogle />}
+        className="w-full"
+        disabled={isLoading}
+      >
+        Continuar com Google
+      </Button>
 
       {/* Login Link */}
       <div className="mt-8 text-center">

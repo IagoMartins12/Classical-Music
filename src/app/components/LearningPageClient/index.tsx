@@ -65,7 +65,6 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
     DifficultyLevel | 'all'
   >('all');
   const [priorityFilter, setPriorityFilter] = useState<number | 'all'>('all');
-  const [showModal, setShowModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [modalConfig, setModalConfig] = useState<{
     workId: string;
@@ -178,7 +177,6 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
       composerName: item.work.composer.fullName,
       type,
     });
-    setShowModal(true);
   };
 
   return (
@@ -542,19 +540,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
       </AnimatedContainer>
 
       {/* Modal */}
-      {modalConfig && (
-        <LearningModal
-          isOpen={showModal}
-          onClose={() => {
-            setShowModal(false);
-            setModalConfig(null);
-          }}
-          workId={modalConfig.workId}
-          workTitle={modalConfig.workTitle}
-          composerName={modalConfig.composerName}
-          type={modalConfig.type}
-        />
-      )}
+      {modalConfig && <LearningModal />}
     </PageContainer>
   );
 };

@@ -75,7 +75,7 @@ const OPUS_ATLAS_CONFIG = {
   LOCATION: 'Brasil',
 
   // 🎭 LOGO - Reserve espaço para quando tiver
-  LOGO_PLACEHOLDER: '✨', // Emoji temporário, fácil de substituir
+  LOGO_PLACEHOLDER: '', // Emoji temporário, fácil de substituir
 };
 
 /**
@@ -945,6 +945,372 @@ Cancelar: {{unsubscribeUrl}}`,
       'unsubscribeUrl',
     ],
     description: 'Template customizável para campanhas específicas',
+  },
+
+  EMAIL_CHANGE_CONFIRMATION: {
+    subject: `Confirme sua mudança de email - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
+    htmlContent: getPremiumOpusAtlasLayout(
+      `
+      <p style="font-size: 20px; color: #d4af37; margin-bottom: 20px; text-align: center;">
+        Olá {{firstName}}! 📧
+      </p>
+      
+      <p style="color: #e5e7eb; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+        Você solicitou a alteração do email da sua conta no ${OPUS_ATLAS_CONFIG.BRAND_NAME}.
+      </p>
+      
+      <div class="premium-card">
+        <h3 style="color: #d4af37; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+          📧 Detalhes da Mudança
+        </h3>
+        <div style="text-align: center; color: #e5e7eb;">
+          <p style="margin: 0 0 10px 0;">
+            <strong>Email atual:</strong> {{oldEmail}}
+          </p>
+          <p style="margin: 0 0 10px 0;">
+            <strong>Novo email:</strong> {{newEmail}}
+          </p>
+          <p style="margin: 0 0 10px 0;">
+            <strong>Data da solicitação:</strong> {{requestDate}}
+          </p>
+          <p style="margin: 0 0 10px 0;">
+            <strong>IP:</strong> {{ipAddress}}
+          </p>
+        </div>
+      </div>
+      
+      <p style="color: #e5e7eb; line-height: 1.7; margin: 25px 0; text-align: center;">
+        Para confirmar esta mudança e ativar seu novo email, clique no botão abaixo:
+      </p>
+      
+      <div style="text-align: center; margin: 40px 0;">
+        <a href="{{confirmationUrl}}" class="btn-premium">
+          ✅ Confirmar Mudança de Email
+        </a>
+      </div>
+      
+      <div class="warning-box">
+        <div class="warning-icon">⚠️</div>
+        <div class="warning-text">
+          <strong>Importante:</strong>
+          <ul style="margin: 10px 0; padding-left: 20px;">
+            <li>Este link é válido por 24 horas</li>
+            <li>Após a confirmação, você perderá temporariamente algumas funcionalidades até verificar o novo email</li>
+            <li>Você receberá notificações em ambos os emails durante a transição</li>
+            <li>Se você não solicitou esta mudança, ignore este email</li>
+          </ul>
+        </div>
+      </div>
+      
+      <p style="color: #888; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
+        Se o botão não funcionar, copie e cole este link no seu navegador:<br>
+        <a href="{{confirmationUrl}}" style="color: #d4af37; word-break: break-all;">{{confirmationUrl}}</a>
+      </p>
+    `
+    ),
+    textContent: `CONFIRME SUA MUDANÇA DE EMAIL - ${OPUS_ATLAS_CONFIG.BRAND_NAME}
+
+Olá {{firstName}},
+
+Você solicitou a alteração do email da sua conta.
+
+DETALHES DA MUDANÇA:
+Email atual: {{oldEmail}}
+Novo email: {{newEmail}}
+Data: {{requestDate}}
+IP: {{ipAddress}}
+
+Para confirmar a mudança, acesse:
+{{confirmationUrl}}
+
+IMPORTANTE:
+- Link válido por 24 horas
+- Você perderá temporariamente algumas funcionalidades até verificar o novo email
+- Se não solicitou esta mudança, ignore este email
+
+${OPUS_ATLAS_CONFIG.BRAND_NAME} - Sua segurança é nossa prioridade
+${OPUS_ATLAS_CONFIG.LOCATION}`,
+    variables: [
+      'firstName',
+      'oldEmail',
+      'newEmail',
+      'confirmationUrl',
+      'requestDate',
+      'ipAddress',
+    ],
+    description: 'Email de confirmação para mudança de email',
+  },
+
+  // 🆕 NEW TEMPLATE: Email Change Success
+  EMAIL_CHANGE_SUCCESS: {
+    subject: `Email alterado com sucesso - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
+    htmlContent: getPremiumOpusAtlasLayout(
+      `
+      <p style="font-size: 20px; color: #d4af37; margin-bottom: 20px; text-align: center;">
+        Olá {{firstName}}! ✅
+      </p>
+      
+      <div class="welcome-message">
+        <h3 style="color: #d4af37; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+          🎉 Email alterado com sucesso!
+        </h3>
+        <p style="color: #e5e7eb; margin: 0; line-height: 1.7; text-align: center;">
+          Seu email foi alterado com sucesso e sua conta está totalmente funcional novamente.
+        </p>
+      </div>
+      
+      <div class="premium-card">
+        <h3 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">📧 Resumo da Alteração</h3>
+        <div style="text-align: center; color: #e5e7eb;">
+          <p style="margin: 0 0 10px 0;">
+            <strong>Email anterior:</strong> {{oldEmail}}
+          </p>
+          <p style="margin: 0 0 10px 0;">
+            <strong>Novo email:</strong> {{newEmail}}
+          </p>
+          <p style="margin: 0 0 10px 0;">
+            <strong>Data da alteração:</strong> {{changeDate}}
+          </p>
+        </div>
+      </div>
+      
+      <div class="premium-card">
+        <h4 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">✨ Funcionalidades Restauradas:</h4>
+        <div style="color: #e5e7eb; text-align: left;">
+          <div style="margin-bottom: 8px;">✅ Upload de compositores e obras</div>
+          <div style="margin-bottom: 8px;">✅ Upload de partituras</div>
+          <div style="margin-bottom: 8px;">✅ Acesso completo à plataforma</div>
+          <div style="margin-bottom: 8px;">✅ Recebimento de notificações</div>
+          <div>✅ Todas as funcionalidades premium</div>
+        </div>
+      </div>
+      
+      <div class="text-center" style="margin: 40px 0;">
+        <a href="{{siteUrl}}" class="btn-premium">Acessar Minha Conta</a>
+      </div>
+      
+      <p style="color: #888; font-size: 14px; line-height: 1.6; margin-top: 20px; text-align: center;">
+        Problemas com sua conta? Entre em contato conosco em 
+        <a href="mailto:${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}" style="color: #d4af37;">${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}</a>
+      </p>
+    `
+    ),
+    textContent: `EMAIL ALTERADO COM SUCESSO - ${OPUS_ATLAS_CONFIG.BRAND_NAME}
+
+Olá {{firstName}},
+
+✅ Seu email foi alterado com sucesso!
+
+RESUMO DA ALTERAÇÃO:
+Email anterior: {{oldEmail}}
+Novo email: {{newEmail}}
+Data: {{changeDate}}
+
+FUNCIONALIDADES RESTAURADAS:
+✅ Upload de compositores e obras
+✅ Upload de partituras  
+✅ Acesso completo à plataforma
+✅ Recebimento de notificações
+✅ Todas as funcionalidades premium
+
+Acesse sua conta: {{siteUrl}}
+
+Problemas? Contate: ${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}
+
+${OPUS_ATLAS_CONFIG.BRAND_NAME} - Bem-vindo de volta!
+${OPUS_ATLAS_CONFIG.LOCATION}`,
+    variables: ['firstName', 'oldEmail', 'newEmail', 'changeDate', 'siteUrl'],
+    description: 'Email de confirmação após mudança bem-sucedida',
+  },
+
+  // 🆕 NEW TEMPLATE: Email Changed Notification (to old email)
+  EMAIL_CHANGED_NOTIFICATION: {
+    subject: `Seu email foi alterado - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
+    htmlContent: getPremiumOpusAtlasLayout(
+      `
+      <p style="font-size: 20px; color: #d4af37; margin-bottom: 20px; text-align: center;">
+        Olá {{firstName}}! 📧
+      </p>
+      
+      <p style="color: #e5e7eb; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+        Este é um aviso de que o email da sua conta ${OPUS_ATLAS_CONFIG.BRAND_NAME} foi alterado.
+      </p>
+      
+      <div class="premium-card">
+        <h3 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">📧 Detalhes da Alteração</h3>
+        <div style="text-align: center; color: #e5e7eb;">
+          <p style="margin: 0 0 10px 0;">
+            <strong>Email anterior:</strong> {{oldEmail}}
+          </p>
+          <p style="margin: 0 0 10px 0;">
+            <strong>Novo email:</strong> {{newEmail}}
+          </p>
+          <p style="margin: 0 0 10px 0;">
+            <strong>Data da alteração:</strong> {{changeDate}}
+          </p>
+          <p style="margin: 0 0 10px 0;">
+            <strong>IP:</strong> {{ipAddress}}
+          </p>
+        </div>
+      </div>
+      
+      <div class="warning-box">
+        <div class="warning-icon">🔒</div>
+        <div class="warning-text">
+          <strong>Não foi você?</strong><br>
+          Se você não solicitou esta mudança, sua conta pode ter sido comprometida. 
+          Entre em contato conosco imediatamente em 
+          <a href="mailto:${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}" style="color: #d4af37;">
+            ${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}
+          </a>
+        </div>
+      </div>
+      
+      <p style="color: #e5e7eb; text-align: center; margin-top: 30px;">
+        A partir de agora, todas as comunicações serão enviadas para o novo email.
+      </p>
+    `
+    ),
+    textContent: `EMAIL ALTERADO - ${OPUS_ATLAS_CONFIG.BRAND_NAME}
+
+Olá {{firstName}},
+
+Este é um aviso de que o email da sua conta foi alterado.
+
+DETALHES:
+Email anterior: {{oldEmail}}
+Novo email: {{newEmail}}
+Data: {{changeDate}}
+IP: {{ipAddress}}
+
+NÃO FOI VOCÊ?
+Se não solicitou esta mudança, sua conta pode ter sido comprometida.
+Contate imediatamente: ${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}
+
+${OPUS_ATLAS_CONFIG.BRAND_NAME} - Sua segurança é nossa prioridade
+${OPUS_ATLAS_CONFIG.LOCATION}`,
+    variables: ['firstName', 'oldEmail', 'newEmail', 'changeDate', 'ipAddress'],
+    description: 'Notificação para o email antigo sobre mudança',
+  },
+
+  // 🆕 NEW TEMPLATE: Account Farewell
+  ACCOUNT_FAREWELL: {
+    subject: `Sentiremos sua falta - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
+    htmlContent: getPremiumOpusAtlasLayout(
+      `
+      <p style="font-size: 20px; color: #d4af37; margin-bottom: 20px; text-align: center;">
+        Adeus, {{firstName}} 💔
+      </p>
+      
+      <p style="color: #e5e7eb; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+        Sua conta ${OPUS_ATLAS_CONFIG.BRAND_NAME} foi excluída conforme solicitado. 
+        Sentiremos muito sua falta em nossa comunidade musical.
+      </p>
+      
+      <div class="premium-card">
+        <h3 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">📊 Sua Jornada Musical</h3>
+        <div style="text-align: center; color: #e5e7eb;">
+          <p style="margin: 0 0 15px 0;">
+            <strong>Tempo na comunidade:</strong> {{accountAge}} dias
+          </p>
+          <p style="margin: 0 0 15px 0;">
+            <strong>Compositores adicionados:</strong> {{composersCount}}
+          </p>
+          <p style="margin: 0 0 15px 0;">
+            <strong>Obras contribuídas:</strong> {{worksCount}}
+          </p>
+          <p style="margin: 0 0 15px 0;">
+            <strong>Sessões de estudo:</strong> {{studySessionsCount}}
+          </p>
+          <p style="margin: 0 0 15px 0;">
+            <strong>Horas de prática registradas:</strong> {{totalStudyHours}}h
+          </p>
+        </div>
+      </div>
+      
+      <p style="color: #e5e7eb; line-height: 1.7; margin: 25px 0; text-align: center;">
+        Obrigado por fazer parte da nossa comunidade e por contribuir para tornar 
+        a música clássica mais acessível a todos.
+      </p>
+      
+      <div class="premium-card">
+        <h4 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">🗑️ Dados Removidos</h4>
+        <p style="color: #e5e7eb; text-align: center; margin-bottom: 20px;">
+          Conforme solicitado, todos os seus dados foram permanentemente removidos:
+        </p>
+        <div style="color: #e5e7eb; text-align: left;">
+          <div style="margin-bottom: 8px;">🗂️ Informações pessoais e de perfil</div>
+          <div style="margin-bottom: 8px;">🎼 Compositores e obras criados</div>
+          <div style="margin-bottom: 8px;">📝 Anotações e comentários</div>
+          <div style="margin-bottom: 8px;">❤️ Favoritos e listas pessoais</div>
+          <div style="margin-bottom: 8px;">📊 Estatísticas e progresso</div>
+          <div style="margin-bottom: 8px;">⚙️ Configurações e preferências</div>
+          <div>🔐 Tokens e dados de sessão</div>
+        </div>
+      </div>
+      
+      <p style="color: #e5e7eb; line-height: 1.7; margin: 30px 0; text-align: center; font-style: italic;">
+        "A música é a revelação mais alta que toda filosofia" - Beethoven
+      </p>
+      
+      <p style="color: #e5e7eb; text-align: center; margin-top: 30px;">
+        Se um dia quiser retornar, estaremos aqui. A música clássica sempre tem um lugar 
+        para os que a amam.
+      </p>
+      
+      <div class="text-center" style="margin: 40px 0;">
+        <a href="{{siteUrl}}" class="btn-secondary">Visitar ${OPUS_ATLAS_CONFIG.BRAND_NAME}</a>
+      </div>
+      
+      <p style="color: #888; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
+        Exclusão confirmada em {{deletionDate}}<br>
+        Este email foi enviado para: {{email}}
+      </p>
+    `
+    ),
+    textContent: `SENTIREMOS SUA FALTA - ${OPUS_ATLAS_CONFIG.BRAND_NAME}
+
+Adeus, {{firstName}}
+
+Sua conta foi excluída conforme solicitado. Sentiremos muito sua falta.
+
+SUA JORNADA MUSICAL:
+- Tempo na comunidade: {{accountAge}} dias
+- Compositores adicionados: {{composersCount}}
+- Obras contribuídas: {{worksCount}}
+- Sessões de estudo: {{studySessionsCount}}
+- Horas de prática: {{totalStudyHours}}h
+
+DADOS REMOVIDOS:
+🗂️ Informações pessoais e de perfil
+🎼 Compositores e obras criados
+📝 Anotações e comentários
+❤️ Favoritos e listas pessoais
+📊 Estatísticas e progresso
+⚙️ Configurações e preferências
+🔐 Tokens e dados de sessão
+
+"A música é a revelação mais alta que toda filosofia" - Beethoven
+
+Se um dia quiser retornar, estaremos aqui.
+
+Visite: {{siteUrl}}
+Exclusão: {{deletionDate}}
+
+${OPUS_ATLAS_CONFIG.BRAND_NAME} - Obrigado por tudo
+${OPUS_ATLAS_CONFIG.LOCATION}`,
+    variables: [
+      'firstName',
+      'email',
+      'accountAge',
+      'composersCount',
+      'worksCount',
+      'studySessionsCount',
+      'totalStudyHours',
+      'deletionDate',
+      'siteUrl',
+    ],
+    description: 'Email de despedida após exclusão da conta',
   },
 };
 

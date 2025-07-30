@@ -11,15 +11,12 @@ import {
   FiLoader,
   FiInfo,
   FiImage,
-  FiDownload,
   FiFileText,
   FiTag,
   FiCheck,
   FiAlertCircle,
   FiLink,
   FiX,
-  FiClock,
-  FiUser,
   FiFilter,
 } from 'react-icons/fi';
 import {
@@ -42,7 +39,6 @@ import {
   isProbablyPDF,
   isValidUrl,
   generateAndUploadTempThumbnail,
-  formatFileSize,
 } from '@/app/utils/pdfUtils';
 import { useToast } from '@/app/hooks/useToast';
 

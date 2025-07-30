@@ -5,7 +5,6 @@ import { authOptions } from '@/app/libs/auth';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { generateUniqueFileName } from '@/app/utils/fileUtils';
-import { sanitizeWorkTitle } from '@/app/utils/pdfUtils';
 
 export async function POST(request: NextRequest) {
   try {

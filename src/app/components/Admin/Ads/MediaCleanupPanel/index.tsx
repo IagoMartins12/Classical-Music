@@ -67,7 +67,7 @@ export default function MediaCleanupPanel() {
       } else {
         toast.error('Erro ao carregar relatório');
       }
-    } catch (error) {
+    } catch {
       toast.error('Erro ao conectar com o servidor');
     } finally {
       setLoading(false);
@@ -126,7 +126,7 @@ export default function MediaCleanupPanel() {
       } else {
         toast.error(data.error || 'Erro na limpeza');
       }
-    } catch (error) {
+    } catch {
       toast.error('Erro ao executar limpeza');
     } finally {
       setLoading(false);

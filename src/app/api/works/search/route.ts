@@ -628,34 +628,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-
-// 🚀 FUNÇÃO PARA INVALIDAÇÃO INTELIGENTE DO CACHE
-export async function revalidateWorkSearchCache(
-  type: 'all' | 'composer' | 'search' = 'all'
-) {
-  const { revalidateTag } = await import('next/cache');
-
-  switch (type) {
-    case 'composer':
-      revalidateTag('composer-works');
-      revalidateTag('composer-works-hybrid');
-      break;
-    case 'search':
-      revalidateTag('works-search');
-      revalidateTag('works-general-hybrid');
-      revalidateTag('works-general-hybrid-v2'); // 🆕 Nova versão otimizada
-      revalidateTag('works-composer-filtered-hybrid');
-      break;
-    case 'all':
-      revalidateTag('random-works');
-      revalidateTag('composer-works');
-      revalidateTag('composer-works-hybrid');
-      revalidateTag('works-search');
-      revalidateTag('works-general-hybrid');
-      revalidateTag('works-general-hybrid-v2'); // 🆕 Nova versão otimizada
-      revalidateTag('works-composer-filtered-hybrid');
-      break;
-  }
-
-  console.log(`🔄 Cache híbrido invalidado: ${type}`);
-}

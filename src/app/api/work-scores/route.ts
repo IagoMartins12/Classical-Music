@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
     }
 
     // ✅ BUSCAR WorkScore EXISTENTE
-    let workScore = await prisma.workScore.findFirst({
+    const workScore = await prisma.workScore.findFirst({
       where: {
         workId: workId,
         sourceId: sourceId,

@@ -64,14 +64,6 @@ export async function POST(request: NextRequest) {
         id: { in: testListIds },
         isActive: true,
       },
-      include: {
-        creator: {
-          select: {
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
     });
 
     if (testLists.length === 0) {

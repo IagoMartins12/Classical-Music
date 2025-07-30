@@ -26,7 +26,7 @@ declare module 'next-auth' {
       practiceTimePerWeek?: number | null;
       profilePublic: boolean;
       showLocation: boolean;
-      emailVerified: Date | null;
+      emailVerified?: Date | null;
     } & DefaultSession['user'];
   }
 
@@ -51,6 +51,7 @@ declare module 'next-auth' {
     practiceTimePerWeek?: number | null;
     profilePublic: boolean;
     showLocation: boolean;
+    emailVerified?: Date | null;
   }
 
   interface Profile {

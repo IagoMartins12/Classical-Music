@@ -3,6 +3,7 @@
 
 import React, { forwardRef, useId, useState, useEffect } from 'react';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+import { MdErrorOutline } from 'react-icons/md';
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -56,6 +57,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const finalInputId = isHydrated ? inputId : undefined;
 
     const baseClasses = `
+
       input-classical w-full
       pl-4
       ${leftIcon ? 'pl-10' : 'pl-4'}
@@ -71,7 +73,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       focus:ring-brand-primary
       focus:border-brand-primary
       transition-all duration-200
-      ${error ? 'border-accent-red focus:ring-accent-red' : ''}
+      ${error ? 'border-red-400 focus:ring-accent-red' : ''}
       ${variant === 'filled' ? 'bg-theme-secondary' : ''}
       ${variant === 'outlined' ? 'border-2' : ''}
     `;
@@ -81,7 +83,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={finalInputId}
-            className="block text-sm font-medium text-theme-primary mb-2"
+            className="block  text-sm font-medium text-theme-primary mb-2"
           >
             {label}
           </label>
@@ -124,7 +126,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
 
-        {error && <p className="mt-1 text-sm text-accent-red">{error}</p>}
+        {error && (
+          <div className="flex gap-2 items-center mt-1">
+            <MdErrorOutline className="text-red-500" />
+            <p className="mt-1 text-sm text-red-400">{error}</p>
+          </div>
+        )}
 
         {helperText && !error && (
           <p className="mt-1 text-sm text-theme-tertiary">{helperText}</p>

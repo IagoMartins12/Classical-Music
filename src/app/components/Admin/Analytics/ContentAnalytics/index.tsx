@@ -16,7 +16,6 @@ import {
   FiRefreshCw,
   FiEye,
   FiEdit,
-  FiShield,
   FiBarChart2,
   FiActivity,
   FiTarget,

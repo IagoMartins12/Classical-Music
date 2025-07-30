@@ -8,7 +8,7 @@ import Button from '../../Common/Button';
 import { useEmailVerification } from '@/app/hooks/useEmailVerification';
 
 interface EmailVerificationBannerProps {
-  userEmail: string;
+  userEmail?: string | null;
   userName?: string;
   dismissible?: boolean;
   className?: string;

@@ -16,7 +16,6 @@ import {
   FiAlertCircle,
   FiStar,
   FiCode,
-  FiSettings,
 } from 'react-icons/fi';
 import {
   AnimatedCard,

@@ -1,4 +1,4 @@
-// schema.prisma - Schema atualizado com sistema incremental de cache
+// schema.prisma - Schema atualizado com sistema completo de cascade deletions
 
 generator client {
   provider = "prisma-client-js"
@@ -9,7 +9,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Enums existentes
+// Enums existentes (mantendo todos iguais)
 enum DifficultyLevel {
   BEGINNER
   INTERMEDIATE
@@ -64,7 +64,6 @@ enum IMSLPScoreType {
   SOURCES
 }
 
-// Enums para sistema de cache
 enum ScoreSource {
   IMSLP // Do IMSLP
   CUSTOM // Adicionado manualmente
@@ -79,7 +78,6 @@ enum ProcessingStatus {
   CANCELLED
 }
 
-// Enums para anotações musicais
 enum AnnotationCategory {
   TECHNIQUE // Técnica (dedilhado, articulação, etc.)
   INTERPRETATION // Interpretação (dinâmica, fraseado, etc.)
@@ -103,7 +101,6 @@ enum AnnotationScope {
   MOVEMENT // Movimento inteiro
   ENTIRE_WORK // Obra inteira
 }
-
 
 enum AdType {
   BANNER
@@ -152,7 +149,6 @@ enum MediaType {
   DOCUMENT
 }
 
-// Enums para o sistema de newsletter
 enum SubscriptionStatus {
   PENDING     // Aguardando confirmação (double opt-in)
   ACTIVE      // Inscrito ativo
@@ -197,7 +193,9 @@ enum TokenType {
   EMAIL_CONFIRMATION
   PASSWORD_RESET
   NEWSLETTER_CONFIRMATION
+  EMAIL_CHANGE // 🆕 Para mudança de email
 }
+
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   firstName      String?
@@ -241,7 +239,6 @@ model User {
 
   studyModeSettings Json?
 
-
   // Configurações de publicidade
   showAds       Boolean @default(true) // Usuário quer ver ads?
 
@@ -250,13 +247,12 @@ model User {
   annotationVotes   AnnotationHelpfulVote[]
   verifiedComposers Composer[]              @relation("VerifiedComposers")
 
-
   // Estatísticas de contribuição
   helpfulAnnotationsCount Int      @default(0) // Cache de anotações úteis
   totalAnnotationsCount   Int      @default(0) // Cache total de anotações
   expertInstruments       String[] @default([]) // Instrumentos que o usuário é expert
 
-  // Relações de moderação
+  // 🔄 RELAÇÕES DE MODERAÇÃO - ATUALIZADAS COM CASCADE
   reportedUploads  UploadModeration[] @relation("ReportedUploads")
   moderatedUploads UploadModeration[] @relation("ModeratedUploads")
   uploadHistory    UploadHistory[]
@@ -266,9 +262,6 @@ model User {
   totalUploads    Int @default(0)
   approvedUploads Int @default(0)
   uploadScore     Int @default(0) // Score baseado na qualidade dos uploads
-
-  // Permissões de upload
-
 
   // Limites de upload
   uploadLimitDaily      Int      @default(50)
@@ -284,6 +277,7 @@ model User {
 
   tokens        UserToken[]
 
+  // 🔄 RELAÇÕES DE CRIAÇÃO - ATUALIZADAS PARA SetNull
   createdWorks     Work[]      @relation("UserCreatedWorks")
   createdComposers Composer[]  @relation("UserCreatedComposers")
   createdScores    WorkScore[] @relation("UserCreatedScores")
@@ -291,12 +285,13 @@ model User {
   favoriteComposer Composer? @relation("FavoriteComposer", fields: [favoriteComposerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   favoriteEpoch    Epoch?    @relation("FavoriteEpoch", fields: [favoriteEpochId], references: [id])
 
+  // 🔄 RELAÇÕES DE ANÚNCIOS - ATUALIZADAS PARA SetNull
   createdAds Advertisement[] @relation("AdCreator")
   editedAds  Advertisement[] @relation("AdEditor")
   adStats    AdStats[]       @relation("AdStatsUser")
 
-  // Relações de newsletter (ADICIONAR)
-  newsletterSubscription    NewsletterSubscriber?         @relation("NewsletterSubscriber")
+  // 🔄 RELAÇÕES DE NEWSLETTER - ATUALIZADA COM CASCADE
+  newsletterSubscription NewsletterSubscriber? @relation("NewsletterSubscriber")
   
   favoriteScores FavoriteScore[]
 
@@ -317,7 +312,6 @@ model User {
   @@index([uploadScore])
 }
 
-// 🆕 Model para cache de partituras com sistema incremental
 model WorkScore {
   id       String      @id @default(auto()) @map("_id") @db.ObjectId
   workId   String      @db.ObjectId
@@ -350,9 +344,10 @@ model WorkScore {
   ratingsCount  Int?
   downloadCount Int?
 
-  // Relação com usuário criador
-  createdByUser User? @relation("UserCreatedScores", fields: [uploadedBy], references: [id])
+  // 🔄 RELAÇÃO COM USUÁRIO CRIADOR - ATUALIZADA PARA SetNull
+  createdByUser User? @relation("UserCreatedScores", fields: [uploadedBy], references: [id], onDelete: SetNull)
 
+  // 🔄 RELAÇÕES ATUALIZADAS PARA SetNull
   wantToLearnSelections WantToLearn[] @relation("WantToLearnSelectedScore")
   learnedSelections     Learned[]     @relation("LearnedSelectedScore")
 
@@ -396,7 +391,7 @@ model WorkScore {
   expiresAt    DateTime? // TTL do cache
   cacheVersion String    @default("1.0")
 
-  // 🆕 Campos para sistema incremental
+  // Campos para sistema incremental
   imslpTotalCounts String? // JSON com totais reais do IMSLP por tipo
   lastIMSLPSync    DateTime? // Última sincronização completa com IMSLP
 
@@ -418,8 +413,8 @@ model WorkScore {
   @@index([isActive, expiresAt])
   @@index([lastAccessed, isActive])
   @@index([priority, createdAt])
-  @@index([lastIMSLPSync]) // 🆕 Índice para sincronização
-  @@index([imslpTotalCounts]) // 🆕 Índice para metadados
+  @@index([lastIMSLPSync])
+  @@index([imslpTotalCounts])
   @@index([uploadedBy])
   @@index([dataQuality])
   @@index([verificationStatus])
@@ -431,7 +426,7 @@ model WorkScore {
 
 model UserToken {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String?   @db.ObjectId // 🆕 TORNAR OPCIONAL para tokens anônimos
+  userId    String?   @db.ObjectId // OPCIONAL para tokens anônimos
   type      TokenType
   token     String    @unique
   expiresAt DateTime
@@ -440,22 +435,21 @@ model UserToken {
   ipAddress String?   // IP que solicitou
   userAgent String?   // User agent que solicitou
   
-  // 🆕 NOVOS CAMPOS para identificação anônima
+  // NOVOS CAMPOS para identificação anônima
   anonymousEmail String? // Email do usuário anônimo (para newsletter)
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
-  // 🆕 RELAÇÃO OPCIONAL
+  // RELAÇÃO OPCIONAL
   user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   // Índices
   @@index([type, expiresAt])
   @@index([userId, type])
-  @@index([anonymousEmail]) // 🆕 Índice para email anônimo
+  @@index([anonymousEmail])
   @@map("user_tokens")
 }
-
 
 // Models existentes (mantendo todos)
 
@@ -532,9 +526,9 @@ model Composer {
   dataCompleteness Float? // Porcentagem de completude dos dados (0-100)
   hasValidImage    Boolean  @default(false) // Se tem imagem válida (não placeholder)
 
-  // Campos para rastreamento de uploads
+  // 🔄 CAMPOS PARA RASTREAMENTO DE UPLOADS - ATUALIZADOS PARA SetNull
   createdBy     String? @db.ObjectId
-  createdByUser User?   @relation("UserCreatedComposers", fields: [createdBy], references: [id])
+  createdByUser User?   @relation("UserCreatedComposers", fields: [createdBy], references: [id], onDelete: SetNull)
   isCustom      Boolean @default(false)
 
   // Campos de qualidade e verificação
@@ -563,22 +557,21 @@ model Composer {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  // Relações existentes
+  // 🔄 RELAÇÕES EXISTENTES - ATUALIZADAS
   epoch           Epoch              @relation(fields: [epochId], references: [id])
-  works           Work[]
-  favoritedBy     FavoriteComposer[]
+  works           Work[]             // 🔄 CASCADE - deletar obras quando deletar compositor
+  favoritedBy     FavoriteComposer[] // 🔄 CASCADE será configurado no FavoriteComposer
   favoriteByUsers User[]             @relation("FavoriteComposer")
 
-  verifier User? @relation("VerifiedComposers", fields: [verifiedBy], references: [id])
-
+  verifier User? @relation("VerifiedComposers", fields: [verifiedBy], references: [id], onDelete: SetNull)
 
   // Índices otimizados
   @@index([name])
   @@index([epochId])
   @@index([fullName])
   @@index([otherName])
-  @@index([verifiedBy]) // Novo índice para verificador
-  @@index([isVerified]) // Novo índice para verificação
+  @@index([verifiedBy])
+  @@index([isVerified])
   @@index([alternativeNames])
   @@index([imslpCategories])
   @@index([primaryRoleId])
@@ -596,6 +589,7 @@ model Composer {
   @@index([verificationStatus])
   @@index([dataQuality])
 }
+
 model Epoch {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
@@ -603,7 +597,6 @@ model Epoch {
   composers       Composer[]
   works           Work[]
   favoriteByUsers User[]     @relation("FavoriteEpoch")
-
 
   @@index([name])
 }
@@ -627,7 +620,6 @@ model Instrument {
   works      Work[]
 
   advertisements Advertisement[]
-
 
   @@index([category])
 }
@@ -678,14 +670,14 @@ model Work {
   imslpTags         String[]         @default([])
   difficultyLevel   DifficultyLevel?
 
-   // 🆕 MÍDIA SIMPLIFICADA E MELHORADA
+  // MÍDIA SIMPLIFICADA E MELHORADA
   // Spotify (essencial + novos campos)
   spotifyTrackId      String? // ID da track
   spotifyTrackUrl     String? // URL da track
-  spotifyDisplayTitle String? // 🆕 "Frédéric Chopin - Yuja Wang"
-  spotifyDuration     Int?    // 🆕 Duração em ms
-  spotifyArtists      Json?   // 🔧 MUDANÇA: String? → Json?
-  spotifyThumbnail    String? // 🆕 URL da capa do álbum
+  spotifyDisplayTitle String? // "Frédéric Chopin - Yuja Wang"
+  spotifyDuration     Int?    // Duração em ms
+  spotifyArtists      Json?   // String? → Json?
+  spotifyThumbnail    String? // URL da capa do álbum
 
   // YouTube (essencial)
   youtubeVideoId  String? // ID do vídeo
@@ -695,16 +687,15 @@ model Work {
   // Áudio customizado
   customAudioUrl  String? // URL de áudio customizado (upload OU fonte alternativa)
   customAudioFile String? // Arquivo de áudio local
-  customAudioSource String? // 🆕 "upload", "internet_archive", "wikimedia", etc.
-  customAudioMetadata Json? // 🆕 Metadados da fonte alternativa
+  customAudioSource String? // "upload", "internet_archive", "wikimedia", etc.
+  customAudioMetadata Json? // Metadados da fonte alternativa
   
   // Metadados de busca (simplificado)
   mediaSource     String? @default("none") // "auto", "manual", "none"
   lastMediaSearch DateTime?
   mediaSearchError String?
-  
 
-  // 🆕 VIDEO AULA EXPANDIDA
+  // VIDEO AULA EXPANDIDA
   videoAulaUrl      String?   // URL externa
   videoAulaFile     String?   // Arquivo local
   videoAulaTitle    String?   // Título personalizado
@@ -713,18 +704,18 @@ model Work {
   videoAulaAddedBy  String?   @db.ObjectId
   videoAulaAddedAt  DateTime?
   
-  // 🆕 Metadados específicos por tipo
+  // Metadados específicos por tipo
   videoAulaMetadata Json? // { duration?, aspectRatio?, platform?, embedCode? }
   
-  // Verificação
+  // 🔄 VERIFICAÇÃO - ATUALIZADA PARA SetNull
   verificationStatus String? // "verified", "pending", "disputed"
   verifiedBy         String?   @db.ObjectId
   verifiedAt         DateTime?
   isVerified         Boolean   @default(false)
 
-  // Campos para rastreamento
+  // 🔄 CAMPOS PARA RASTREAMENTO - ATUALIZADOS PARA SetNull
   createdBy     String? @db.ObjectId
-  createdByUser User?   @relation("UserCreatedWorks", fields: [createdBy], references: [id])
+  createdByUser User?   @relation("UserCreatedWorks", fields: [createdBy], references: [id], onDelete: SetNull)
   isCustom      Boolean @default(false)
 
   // Metadados de edição
@@ -732,14 +723,15 @@ model Work {
   lastEditedAt DateTime?
   editHistory  Json?
 
-  // Relações existentes
-  composer   Composer   @relation(fields: [composerId], references: [id])
+  // 🔄 RELAÇÕES EXISTENTES - ALGUMAS ATUALIZADAS
+  composer   Composer   @relation(fields: [composerId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar compositor
   epoch      Epoch      @relation(fields: [epochId], references: [id])
   instrument Instrument @relation(fields: [instrumentId], references: [id])
 
   parentWork Work?  @relation("WorkHierarchy", fields: [parentWorkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   childWorks Work[] @relation("WorkHierarchy")
 
+  // 🔄 TODAS ESSAS RELAÇÕES TERÃO CASCADE QUANDO DELETAR WORK
   favoriteScores     FavoriteScore[]
   scoreFavoriteStats ScoreFavoriteStats[]
 
@@ -761,7 +753,7 @@ model Work {
 
   cachedScores    WorkScore[]
   
-  // 🆕 ÍNDICES ATUALIZADOS
+  // ÍNDICES ATUALIZADOS
   @@index([title])
   @@index([opOrCatalog])
   @@index([composerId])
@@ -783,7 +775,7 @@ model Work {
   @@index([createdBy])
   @@index([isCustom])
 
-  // 🆕 Índices para mídia
+  // Índices para mídia
   @@index([mediaSource])
   @@index([lastMediaSearch])
   @@index([spotifyTrackId])
@@ -791,13 +783,13 @@ model Work {
   @@index([videoAulaType])
   @@index([videoAulaSource])
 
-  // 🆕 ÍNDICES ATUALIZADOS PARA MÍDIA
-  @@index([spotifyDisplayTitle]) // 🆕 Índice para título com intérprete
-  @@index([spotifyDuration]) // 🆕 Índice para duração
-  @@index([spotifyThumbnail]) // 🆕 Índice para thumbnail
+  // ÍNDICES ATUALIZADOS PARA MÍDIA
+  @@index([spotifyDisplayTitle])
+  @@index([spotifyDuration])
+  @@index([spotifyThumbnail])
 }
 
-// 🆕 Enum para tipos de vídeo aula
+// Enum para tipos de vídeo aula
 enum VideoAulaType {
   VIDEO     // Vídeo normal
   STORY     // Story (vertical, curta duração)
@@ -841,7 +833,7 @@ model Annotation {
   updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 }
 
 model PdfAnnotation {
@@ -875,7 +867,7 @@ model PdfAnnotation {
   updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 
   @@index([userId, workId, scoreId])
   @@index([workId, scoreId, page])
@@ -907,7 +899,7 @@ model ScoreBookmark {
   updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 
   @@index([userId, workId, scoreId])
   @@index([workId, scoreId])
@@ -963,7 +955,7 @@ model StudySession {
   windowLayout Json?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 
   @@index([userId, date])
   @@index([workId, date])
@@ -987,17 +979,17 @@ model WantToLearn {
   motivation         String?
   context            String?
 
-  // ✅ RELAÇÃO CORRETA COM WORKSCORE
+  // 🔄 RELAÇÃO CORRETA COM WORKSCORE - ATUALIZADA PARA SetNull
   selectedWorkScoreId String?    @db.ObjectId
   selectedWorkScore   WorkScore? @relation("WantToLearnSelectedScore", fields: [selectedWorkScoreId], references: [id], onDelete: SetNull)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 
   @@unique([userId, workId])
   @@index([userId, priority])
   @@index([targetDate])
-  @@index([selectedWorkScoreId]) // ✅ Índice para a relação
+  @@index([selectedWorkScoreId])
 }
 
 model Learned {
@@ -1020,20 +1012,19 @@ model Learned {
   performanceCount Int     @default(0)
   bestPerformance  String?
 
-  // ✅ RELAÇÃO CORRETA COM WORKSCORE
+  // 🔄 RELAÇÃO CORRETA COM WORKSCORE - ATUALIZADA PARA SetNull
   selectedWorkScoreId String?    @db.ObjectId
   selectedWorkScore   WorkScore? @relation("LearnedSelectedScore", fields: [selectedWorkScoreId], references: [id], onDelete: SetNull)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 
   @@unique([userId, workId])
   @@index([userId, mastery])
   @@index([learnedAt])
   @@index([lastPracticed])
-  @@index([selectedWorkScoreId]) // ✅ Índice para a relação
+  @@index([selectedWorkScoreId])
 }
-
 
 model UserSelectedScore {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
@@ -1067,7 +1058,7 @@ model UserSelectedScore {
   isActive     Boolean  @default(true)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1107,7 +1098,7 @@ model FavoriteWork {
   workId String @db.ObjectId
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 
   @@unique([userId, workId])
 }
@@ -1118,7 +1109,7 @@ model FavoriteComposer {
   composerId String @db.ObjectId
 
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  composer Composer @relation(fields: [composerId], references: [id], onDelete: Cascade)
+  composer Composer @relation(fields: [composerId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar composer
 
   @@unique([userId, composerId])
 }
@@ -1168,7 +1159,7 @@ model WorkAnnotation {
 
   // Relações
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 
   // Relações de interação
   helpfulVotes AnnotationHelpfulVote[]
@@ -1228,7 +1219,7 @@ model FavoriteScore {
 
   // Relações
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 
   // Índices otimizados
   @@unique([userId, workId, scoreId, scoreSource], name: "user_work_score_unique")
@@ -1260,7 +1251,7 @@ model ScoreFavoriteStats {
   lastUpdated DateTime @default(now())
 
   // Relação
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade)
+  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 
   // Índices
   @@unique([workId, scoreId, scoreSource], name: "work_score_stats_unique")
@@ -1292,7 +1283,7 @@ model UploadHistory {
   @@map("upload_history")
 }
 
-// Atualizar modelo UploadModeration para incluir novos campos
+// 🔄 MODELO ATUALIZADO COM CASCADE PARA RESOLVER O ERRO
 model UploadModeration {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   entityType  String // "composer", "work", "score"
@@ -1318,20 +1309,20 @@ model UploadModeration {
   createdAt  DateTime  @default(now())
   resolvedAt DateTime?
 
-  reporter  User  @relation("ReportedUploads", fields: [reportedBy], references: [id])
-  moderator User? @relation("ModeratedUploads", fields: [moderatedBy], references: [id])
+  // 🔄 RELAÇÕES ATUALIZADAS COM CASCADE - RESOLVE O ERRO
+  reporter  User  @relation("ReportedUploads", fields: [reportedBy], references: [id], onDelete: Cascade)
+  moderator User? @relation("ModeratedUploads", fields: [moderatedBy], references: [id], onDelete: SetNull)
 
   // Índices otimizados
   @@index([entityType, entityId])
-  @@index([status, priority]) // Novo índice para prioridade
+  @@index([status, priority])
   @@index([reportedBy])
   @@index([moderatedBy])
   @@index([createdAt])
-  @@index([reason]) // Novo índice para motivos
-  @@index([category]) // Novo índice para categorias
+  @@index([reason])
+  @@index([category])
   @@map("upload_moderation")
 }
-
 
 model GeneratedReport {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
@@ -1372,7 +1363,7 @@ model GeneratedReport {
   @@map("generated_reports")
 }
 
-// Model Advertisement com constraint corrigida
+// 🔄 MODELO ADVERTISEMENT ATUALIZADO COM SetNull
 model Advertisement {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
@@ -1381,20 +1372,20 @@ model Advertisement {
   description String?
   content     String? // Conteúdo HTML/texto adicional
 
-  // 🆕 Mídia com versões responsivas
+  // Mídia com versões responsivas
   // URLs principais (para compatibilidade)
   imageUrl     String? // URL da versão desktop (principal)
   thumbnailUrl String? // URL do thumbnail
   videoUrl     String? // URL da versão desktop do vídeo
   
-  // 🆕 Versões responsivas (JSON fields)
+  // Versões responsivas (JSON fields)
   imageVersions Json? // { desktop: string, tablet: string, mobile: string, original: string, thumbnail: string }
   videoVersions Json? // { desktop: string, tablet: string, mobile: string, original: string }
   
-  // 🆕 Metadados de mídia
+  // Metadados de mídia
   mediaMetadata Json? // { originalDimensions: { width: number, height: number }, processedAt: string, fileSize: number, format: string }
   
-  // 🆕 Configurações de qualidade
+  // Configurações de qualidade
   imageQuality  String @default("high") // "high", "medium", "low"
   videoQuality  String @default("high") // "high", "medium", "low"
   
@@ -1431,7 +1422,7 @@ model Advertisement {
   showOnTablet  Boolean @default(true)
   showOnDesktop Boolean @default(true)
 
-  // Controle de acesso
+  // 🔄 CONTROLE DE ACESSO ATUALIZADO PARA SetNull
   createdBy    String    @db.ObjectId
   lastEditedBy String?   @db.ObjectId
   lastEditedAt DateTime?
@@ -1440,16 +1431,15 @@ model Advertisement {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relações
-  creator     User        @relation("AdCreator", fields: [createdBy], references: [id])
-  editor      User?       @relation("AdEditor", fields: [lastEditedBy], references: [id])
+  // 🔄 RELAÇÕES ATUALIZADAS PARA SetNull
+  creator     User        @relation("AdCreator", fields: [createdBy], references: [id], onDelete: Cascade)
+  editor      User?       @relation("AdEditor", fields: [lastEditedBy], references: [id], onDelete: SetNull)
   instrument  Instrument? @relation(fields: [instrumentId], references: [id])
 
-  // Estatísticas
+  // 🔄 ESTATÍSTICAS COM CASCADE
   stats AdStats[]
 
-  // 🔧 CONSTRAINT CORRIGIDA - agora inclui o TYPE
-  // Isso permite múltiplos tipos no mesmo placement, mas apenas um por [type, placement, targetType, instrumentId]
+  // Constraint corrigida
   @@unique([type, placement, targetType, instrumentId], name: "unique_ad_per_complete_combination")
   
   // Índices otimizados para busca
@@ -1461,8 +1451,7 @@ model Advertisement {
   @@map("advertisements")
 }
 
-
-// Estatísticas das publicidades - MELHORADO
+// 🔄 ESTATÍSTICAS DAS PUBLICIDADES ATUALIZADA COM CASCADE E SetNull
 model AdStats {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
   advertisementId String @db.ObjectId
@@ -1485,12 +1474,13 @@ model AdStats {
   pageUrl   String? // URL da página onde foi exibido
   pageTitle String? // Título da página
 
-  // Dados do usuário (se logado)
+  // 🔄 DADOS DO USUÁRIO ATUALIZADOS PARA SetNull
   userId     String?     @db.ObjectId
   userLevel  AdUserLevel @default(ALL)
 
-  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
-  user          User?         @relation("AdStatsUser", fields: [userId], references: [id])
+  // 🔄 RELAÇÕES ATUALIZADAS
+  advertisement Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar advertisement
+  user          User?         @relation("AdStatsUser", fields: [userId], references: [id], onDelete: SetNull) // 🔄 SetNull quando deletar user
 
   @@unique([advertisementId, date, device], name: "unique_daily_stats")
   @@index([advertisementId, date])
@@ -1499,7 +1489,7 @@ model AdStats {
   @@map("ad_stats")
 }
 
-// Subscribers da newsletter
+// 🔄 SUBSCRIBERS DA NEWSLETTER ATUALIZADO COM CASCADE
 model NewsletterSubscriber {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   email String @unique
@@ -1544,8 +1534,8 @@ model NewsletterSubscriber {
   unsubscribeReason String?
   unsubscribeToken  String? @unique
   
-  // Relações
-  user           User?                 @relation("NewsletterSubscriber", fields: [userId], references: [id])
+  // 🔄 RELAÇÕES ATUALIZADAS
+  user           User?                 @relation("NewsletterSubscriber", fields: [userId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar user
   emailEvents    NewsletterEmailEvent[]
   campaignSends  NewsletterCampaignSend[]
 
@@ -1595,7 +1585,7 @@ model NewsletterTemplate {
   avgOpenRate     Float?  @default(0)
   avgClickRate    Float?  @default(0)
   
-  // 🆕 NOVOS CAMPOS PARA MELHOR GESTÃO
+  // NOVOS CAMPOS PARA MELHOR GESTÃO
   category        String? // Categoria personalizada (ex: "Promocional", "Transacional")
   priority        Int     @default(0) // Prioridade de exibição
   
@@ -1633,27 +1623,26 @@ model NewsletterTemplate {
   @@index([type, isActive])
   @@index([isDefault, type])
   @@index([tags])
-  @@index([category, priority]) // 🆕 Para categorização
-  @@index([qualityScore]) // 🆕 Para rankings de qualidade
-  @@index([approvalStatus]) // 🆕 Para fluxo de aprovação
-  @@index([timesUsed, avgOpenRate]) // 🆕 Para análise de performance
-  @@index([expiresAt]) // 🆕 Para limpeza automática
+  @@index([category, priority])
+  @@index([qualityScore])
+  @@index([approvalStatus])
+  @@index([timesUsed, avgOpenRate])
+  @@index([expiresAt])
   @@map("newsletter_templates")
 }
 
-
-// Campanhas de email
+// 🔄 CAMPANHAS DE EMAIL COM CASCADE
 model NewsletterCampaign {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
 
   // Configurações básicas
   subject      String
-  templateId   String?        @db.ObjectId // 🆕 Tornar opcional
-  templateType String?        // 🆕 Tipo de template usado (para built-in)
+  templateId   String?        @db.ObjectId // Tornar opcional
+  templateType String?        // Tipo de template usado (para built-in)
   status       CampaignStatus @default(DRAFT)
   
-  // 🆕 NOVOS CAMPOS PARA MELHOR INTEGRAÇÃO COM TEMPLATES
+  // NOVOS CAMPOS PARA MELHOR INTEGRAÇÃO COM TEMPLATES
   useCustomTemplate Boolean @default(false) // Se usa template personalizado
   templateSnapshot  Json?   // Snapshot do template no momento do envio
   
@@ -1677,7 +1666,7 @@ model NewsletterCampaign {
   replyToEmail  String?
   testEmailSent Boolean @default(false)
   
-  // 🆕 CONFIGURAÇÕES AVANÇADAS
+  // CONFIGURAÇÕES AVANÇADAS
   priority      String  @default("normal") // "low", "normal", "high", "urgent"
   deliveryOptions Json? // Opções de entrega (throttling, retry, etc.)
   
@@ -1691,7 +1680,7 @@ model NewsletterCampaign {
   emailsComplained    Int @default(0) // Quantos marcaram como spam
   emailsUnsubscribed  Int @default(0) // Quantos cancelaram inscrição
   
-  // 🆕 MÉTRICAS AVANÇADAS
+  // MÉTRICAS AVANÇADAS
   uniqueOpens         Int @default(0) // Aberturas únicas
   uniqueClicks        Int @default(0) // Cliques únicos
   avgEngagementTime   Float? // Tempo médio de engajamento
@@ -1714,12 +1703,12 @@ model NewsletterCampaign {
   notes        String?
   tags         String[] @default([])
   
-  // 🆕 AUDITORIA E COMPLIANCE
+  // AUDITORIA E COMPLIANCE
   gdprCompliant    Boolean @default(true) // Se está em conformidade com GDPR
   retentionPeriod  Int?    // Período de retenção em dias
   archiveAfter     DateTime? // Data para arquivar automaticamente
   
-  // Relações
+  // 🔄 RELAÇÕES COM CASCADE
   template     NewsletterTemplate?       @relation(fields: [templateId], references: [id])
   sends        NewsletterCampaignSend[]
   events       NewsletterEmailEvent[]
@@ -1733,14 +1722,14 @@ model NewsletterCampaign {
   @@index([scheduledAt])
   @@index([sentAt])
   @@index([tags])
-  @@index([useCustomTemplate, templateType]) // 🆕 Para filtrar por tipo de template
-  @@index([priority, scheduledAt]) // 🆕 Para fila de envio
-  @@index([openRate, clickRate]) // 🆕 Para rankings de performance
-  @@index([archiveAfter]) // 🆕 Para limpeza automática
+  @@index([useCustomTemplate, templateType])
+  @@index([priority, scheduledAt])
+  @@index([openRate, clickRate])
+  @@index([archiveAfter])
   @@map("newsletter_campaigns")
 }
 
-// Registro de envios por campanha/subscriber
+// 🔄 REGISTRO DE ENVIOS COM CASCADE
 model NewsletterCampaignSend {
   id           String @id @default(auto()) @map("_id") @db.ObjectId
   campaignId   String @db.ObjectId
@@ -1754,7 +1743,7 @@ model NewsletterCampaignSend {
   // Dados do envio
   emailId      String? // ID do provedor de email (SendGrid, etc.)
   
-  // Relações
+  // 🔄 RELAÇÕES COM CASCADE
   campaign     NewsletterCampaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   subscriber   NewsletterSubscriber  @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
   
@@ -1769,7 +1758,7 @@ model NewsletterCampaignSend {
   @@map("newsletter_campaign_sends")
 }
 
-// Eventos de email (opens, clicks, bounces, etc.)
+// 🔄 EVENTOS DE EMAIL COM CASCADE
 model NewsletterEmailEvent {
   id           String          @id @default(auto()) @map("_id") @db.ObjectId
   eventType    EmailEventType
@@ -1787,7 +1776,7 @@ model NewsletterEmailEvent {
   // Metadata adicional
   eventData    Json?           // Dados específicos do evento
   
-  // Relações
+  // 🔄 RELAÇÕES COM CASCADE
   subscriber   NewsletterSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
   campaign     NewsletterCampaign?  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   
@@ -1812,7 +1801,6 @@ model NewsletterSettings {
   // Controle
   lastEditedBy String?   @db.ObjectId
   lastEditedAt DateTime?
-  
   
   // Timestamps
   createdAt DateTime @default(now())
@@ -1850,8 +1838,7 @@ model TestEmailList {
   @@map("test_email_lists")
 }
 
-
-// 🆕 NOVO MODELO: Fragmentos de template reutilizáveis
+// NOVO MODELO: Fragmentos de template reutilizáveis
 model TemplateFragment {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   name        String
@@ -1872,7 +1859,6 @@ model TemplateFragment {
   
   // Estatísticas
   timesUsed   Int      @default(0)
-  
   
   // Timestamps
   createdAt   DateTime @default(now())

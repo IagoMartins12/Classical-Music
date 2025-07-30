@@ -157,7 +157,7 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
           const data = await response.json();
 
           // 🆕 PRIORIZAÇÃO CORRIGIDA: SEMPRE obras do usuário primeiro
-          let combinedWorks = prioritizeUserWorks(data.works || []);
+          const combinedWorks = prioritizeUserWorks(data.works || []);
 
           setWorks(combinedWorks);
           console.log(

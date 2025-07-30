@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
-import { writeFile, mkdir } from 'fs/promises';
+import { writeFile } from 'fs/promises';
 import path from 'path';
 import { revalidateTag } from 'next/cache';
 
@@ -14,7 +14,6 @@ import {
   deleteAllMediaVersions,
   generateVideoThumbnail,
   createAdMediaDirectory,
-  deleteAdMediaDirectory,
 } from '@/app/libs/ads/serverMediaProcessor';
 
 import { AD_DIMENSIONS } from '@/app/libs/ads/mediaUtils';
@@ -193,7 +192,7 @@ export async function POST(
     } finally {
       // 🆕 Limpar arquivo temporário
       try {
-        await require('fs/promises').unlink(tempFilePath);
+        // await require('fs/promises').unlink(tempFilePath);
         console.log('🧹 Arquivo temporário removido');
       } catch (cleanupError) {
         console.warn('⚠️ Erro ao limpar arquivo temporário:', cleanupError);

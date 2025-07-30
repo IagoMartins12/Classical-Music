@@ -22,9 +22,7 @@ import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import {
   useLearningModalStore,
-  type LearningType,
   type DifficultyLevel,
-  type SelectedWorkScore,
 } from '@/app/stores/useLearningModalStore';
 import Modal from '../Modal';
 import Button from '../Common/Button';
@@ -60,7 +58,6 @@ const LearningModal = () => {
     updateLearnedForm,
     setSelectedWorkScore,
     startScoreSelection,
-    reset,
   } = useLearningModalStore();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -330,109 +327,6 @@ const LearningModal = () => {
 
       {/* Form Content */}
       <div className="px-6 py-6 space-y-6">
-        {/* ✅ Seção de Partitura */}
-        <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                <FiFileText className="w-4 h-4 text-theme-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-theme-primary">
-                  Partitura de Estudo
-                </h3>
-                <p className="text-sm text-theme-secondary">
-                  {selectedWorkScore
-                    ? 'Partitura vinculada'
-                    : 'Nenhuma partitura selecionada'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {selectedWorkScore ? (
-            // Mostrar WorkScore selecionado
-            <div className="bg-theme-elevated rounded-xl p-4 border border-theme-primary">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
-                    <FiMusic className="w-5 h-5 text-theme-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-theme-primary text-sm">
-                      {selectedWorkScore.title}
-                    </h4>
-                    <p className="text-xs text-theme-tertiary">
-                      Fonte: {selectedWorkScore.source}
-                      {selectedWorkScore.fileSize &&
-                        ` • ${selectedWorkScore.fileSize}`}
-                      {selectedWorkScore.pageCount &&
-                        ` • ${selectedWorkScore.pageCount} páginas`}
-                      {selectedWorkScore.type && ` • ${selectedWorkScore.type}`}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={handleAddScore}
-                    className="btn-classical-secondary-sm flex items-center space-x-2"
-                  >
-                    <FiEdit3 className="w-3 h-3" />
-                    <span>Trocar</span>
-                  </button>
-                  <button
-                    onClick={handleRemoveScore}
-                    className="btn-classical-outline-sm text-accent-red border-accent-red hover:bg-accent-red hover:text-theme-primary"
-                  >
-                    Remover
-                  </button>
-                </div>
-              </div>
-
-              {/* ✅ Indicador se é sugestão do tipo oposto */}
-              {!isCurrentlyActive &&
-                oppositeItem?.selectedWorkScore?.id ===
-                  selectedWorkScore.id && (
-                  <div className="mt-3 p-2 bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-lg">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 bg-accent-green rounded-full flex items-center justify-center">
-                        <span className="text-xs">💡</span>
-                      </div>
-                      <span className="text-sm text-accent-green font-medium">
-                        Sugestão: partitura do "
-                        {type === 'want-to-learn'
-                          ? 'já aprendi'
-                          : 'quero aprender'}
-                        "
-                      </span>
-                    </div>
-                  </div>
-                )}
-            </div>
-          ) : (
-            // Botão para adicionar partitura
-            <button
-              onClick={handleAddScore}
-              className="w-full border-2 border-dashed border-theme-secondary hover:border-brand-primary rounded-xl p-4 text-center transition-all duration-300 hover:bg-brand-primary/5 group"
-            >
-              <div className="flex flex-col items-center space-y-2">
-                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border-2 border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <FiPlus className="w-6 h-6 text-brand-primary" />
-                </div>
-                <div>
-                  <p className="font-semibold text-theme-primary">
-                    Adicionar Partitura
-                  </p>
-                  <p className="text-sm text-theme-secondary">
-                    Selecione uma partitura específica para vincular a este
-                    estudo
-                  </p>
-                </div>
-              </div>
-            </button>
-          )}
-        </div>
-
         {/* Formulários condicionais */}
         {type === 'want-to-learn' ? (
           // Want to Learn Form
@@ -708,6 +602,107 @@ const LearningModal = () => {
               />
             </FormField>
           </>
+        )}
+      </div>
+
+      {/* ✅ Seção de Partitura */}
+      <div className="border-2 border-dashed border-theme-secondary rounded-xl p-6 bg-gradient-to-br from-theme-elevated/50 to-interactive-hover/30">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+              <FiFileText className="w-4 h-4 text-theme-primary" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-theme-primary">
+                Partitura de Estudo
+              </h3>
+              <p className="text-sm text-theme-secondary">
+                {selectedWorkScore
+                  ? 'Partitura vinculada'
+                  : 'Nenhuma partitura selecionada'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {selectedWorkScore ? (
+          // Mostrar WorkScore selecionado
+          <div className="bg-theme-elevated rounded-xl p-4 border border-theme-primary">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-lg flex items-center justify-center">
+                  <FiMusic className="w-5 h-5 text-theme-primary" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-theme-primary text-sm">
+                    {selectedWorkScore.title}
+                  </h4>
+                  <p className="text-xs text-theme-tertiary">
+                    Fonte: {selectedWorkScore.source}
+                    {selectedWorkScore.fileSize &&
+                      ` • ${selectedWorkScore.fileSize}`}
+                    {selectedWorkScore.pageCount &&
+                      ` • ${selectedWorkScore.pageCount} páginas`}
+                    {selectedWorkScore.type && ` • ${selectedWorkScore.type}`}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={handleAddScore}
+                  className="btn-classical-secondary-sm flex items-center space-x-2"
+                >
+                  <FiEdit3 className="w-3 h-3" />
+                  <span>Trocar</span>
+                </button>
+                <button
+                  onClick={handleRemoveScore}
+                  className="btn-classical-outline-sm text-accent-red border-accent-red hover:bg-accent-red hover:text-theme-primary"
+                >
+                  Remover
+                </button>
+              </div>
+            </div>
+
+            {/* ✅ Indicador se é sugestão do tipo oposto */}
+            {!isCurrentlyActive &&
+              oppositeItem?.selectedWorkScore?.id === selectedWorkScore.id && (
+                <div className="mt-3 p-2 bg-gradient-to-r from-accent-green/10 to-accent-blue/10 border border-accent-green/30 rounded-lg">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 bg-accent-green rounded-full flex items-center justify-center">
+                      <span className="text-xs">💡</span>
+                    </div>
+                    <span className="text-sm text-accent-green font-medium">
+                      Sugestão: partitura do &quot;
+                      {type === 'want-to-learn'
+                        ? 'já aprendi'
+                        : 'quero aprender'}
+                      &quot;
+                    </span>
+                  </div>
+                </div>
+              )}
+          </div>
+        ) : (
+          // Botão para adicionar partitura
+          <button
+            onClick={handleAddScore}
+            className="w-full border-2 border-dashed border-theme-secondary hover:border-brand-primary rounded-xl p-4 text-center transition-all duration-300 hover:bg-brand-primary/5 group"
+          >
+            <div className="flex flex-col items-center space-y-2">
+              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 border-2 border-brand-primary/30 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <FiPlus className="w-6 h-6 text-brand-primary" />
+              </div>
+              <div>
+                <p className="font-semibold text-theme-primary">
+                  Adicionar Partitura
+                </p>
+                <p className="text-sm text-theme-secondary">
+                  Selecione uma partitura específica para vincular a este estudo
+                </p>
+              </div>
+            </div>
+          </button>
         )}
       </div>
 

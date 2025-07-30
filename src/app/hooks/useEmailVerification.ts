@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import { resendAccountConfirmation } from '@/app/actions/auth';
 
 interface UseEmailVerificationProps {
-  userEmail: string;
+  userEmail?: string | null;
   onSuccess?: () => void;
   onError?: (error: string) => void;
 }

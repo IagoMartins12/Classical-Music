@@ -19,10 +19,7 @@ import {
 import AnimatedMusicalNotes from '../../AnimatedMusicalNotes';
 import Button from '../../Common/Button';
 import { useEmailVerification } from '@/app/hooks/useEmailVerification';
-import {
-  useEmailRefresh,
-  useEmailRefreshSimple,
-} from '@/app/hooks/useEmailRefresh';
+import { useEmailRefreshSimple } from '@/app/hooks/useEmailRefresh';
 
 interface EmailVerificationRequiredProps {
   userEmail: string;

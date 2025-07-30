@@ -406,9 +406,7 @@ export default function NewsletterCampaignsClient() {
                             <div className="flex items-center space-x-2 text-xs text-theme-tertiary mt-1">
                               <span>{campaign.template.name}</span>
                               <span>•</span>
-                              <span>
-                                por {campaign.creator.firstName || 'Admin'}
-                              </span>
+                              <span>por Admin</span>
                             </div>
                           </div>
                         </td>

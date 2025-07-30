@@ -294,6 +294,11 @@ const getCachedWorksSimpleFilter = unstable_cache(
     try {
       // 🔥 ESTRATÉGIA: MongoDB Aggregation para filtros simples
       const filterKey = Object.keys(filters).find((key) => filters[key]);
+
+      if (!filterKey) {
+        console.log('Nenhum filtro válido encontrado');
+      }
+
       const filterValue = filters[filterKey!];
 
       // Converter para ObjectId se necessário
@@ -306,7 +311,9 @@ const getCachedWorksSimpleFilter = unstable_cache(
       } else if (filterKey === 'epochId') {
         matchStage.epochId = { $oid: filterValue };
       } else {
-        matchStage[filterKey] = filterValue;
+        if (filterKey) {
+          matchStage[filterKey] = filterValue;
+        }
       }
 
       const result = await prisma.work.aggregateRaw({
