@@ -155,10 +155,11 @@ const Footer: React.FC = () => {
   const renderNewsletterStatus = () => {
     if (loading) {
       return (
-        <div className="flex items-center space-x-2 text-brand-primary">
-          <FiLoader className="w-4 h-4 animate-spin" />
-          <span className="text-sm">Processando...</span>
-        </div>
+        <></>
+        // <div className="flex items-center space-x-2 text-brand-primary">
+        //   <FiLoader className="w-4 h-4 animate-spin" />
+        //   <span className="text-sm">Processando...</span>
+        // </div>
       );
     }
 

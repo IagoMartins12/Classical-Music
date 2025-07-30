@@ -411,7 +411,7 @@ export default function NewsletterTemplatesClient() {
             {filteredTemplates.length > 0 ? (
               <SequentialGrid cols={1} gap={4} delayBetweenItems={0.05}>
                 {filteredTemplates.map((template) => (
-                  <AnimatedCard key={template.id} className="classical-card">
+                  <div key={template.id} className="classical-card">
                     <div className="p-6">
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0 mr-4">
@@ -480,13 +480,6 @@ export default function NewsletterTemplatesClient() {
                               <FiCode className="w-4 h-4 mr-1" />
                               <span>
                                 {template.variables?.length || 0} variáveis
-                              </span>
-                            </div>
-
-                            <div className="flex items-center">
-                              <FiSettings className="w-4 h-4 mr-1" />
-                              <span>
-                                por {template.creator?.firstName || 'Admin'}
                               </span>
                             </div>
                           </div>
@@ -558,7 +551,7 @@ export default function NewsletterTemplatesClient() {
                         </div>
                       </div>
                     </div>
-                  </AnimatedCard>
+                  </div>
                 ))}
               </SequentialGrid>
             ) : (

@@ -490,11 +490,11 @@ function getPremiumOpusAtlasLayout(content: string): string {
  */
 export const emailTemplates: Record<string, EmailTemplate> = {
   WELCOME: {
-    subject: `Bem-vindo(a) ao ${OPUS_ATLAS_CONFIG.BRAND_NAME}, {{firstName}}! ✨`,
+    subject: `Bem-vindo(a) ao ${OPUS_ATLAS_CONFIG.BRAND_NAME}, {{firstName}}!`,
     htmlContent: getPremiumOpusAtlasLayout(
       `
       <h2 style="color: #d4af37; margin-bottom: 25px; font-size: 28px; text-align: center;">Bem-vindo(a), {{firstName}}!</h2>
-      
+      Bem-
       <p style="font-size: 18px; line-height: 1.8; margin-bottom: 25px; text-align: center;">
         É com grande alegria que recebemos você na comunidade <strong class="text-gold">${OPUS_ATLAS_CONFIG.BRAND_NAME}</strong>! 
         Agora você faz parte da plataforma de música clássica.
@@ -502,7 +502,7 @@ export const emailTemplates: Record<string, EmailTemplate> = {
       
       <div class="welcome-message">
         <h3 style="color: #d4af37; margin-bottom: 20px; font-size: 22px; text-align: center;">
-          🎼 Sua jornada musical começa agora
+          Sua jornada musical começa agora!
         </h3>
         <div style="text-align: left; color: #e5e7eb;">
           <div style="margin-bottom: 12px;">✨ Newsletter  com conteúdo exclusivo</div>
@@ -547,7 +547,7 @@ Para cancelar: {{unsubscribeUrl}}`,
   },
 
   ACCOUNT_CONFIRMATION: {
-    subject: `✨ Confirme sua conta no ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
+    subject: `Confirme sua conta no ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
     htmlContent: getPremiumOpusAtlasLayout(
       `
       <p style="font-size: 20px; color: #d4af37; margin-bottom: 20px; text-align: center;">
@@ -571,7 +571,7 @@ Para cancelar: {{unsubscribeUrl}}`,
       
       <div style="text-align: center; margin: 40px 0;">
         <a href="{{confirmationUrl}}" class="btn-premium">
-          ✨ Confirmar Minha Conta
+          Confirmar Minha Conta
         </a>
       </div>Premium
       
@@ -612,7 +612,7 @@ Para cancelar: {{unsubscribeUrl}}`,
       </p>
     `
     ),
-    textContent: `✨ CONFIRME SUA CONTA - ${OPUS_ATLAS_CONFIG.BRAND_NAME}
+    textContent: `CONFIRME SUA CONTA - ${OPUS_ATLAS_CONFIG.BRAND_NAME}
 
 Olá {{firstName}},
 
@@ -639,7 +639,7 @@ ${OPUS_ATLAS_CONFIG.CONTACT_EMAIL}`,
   },
 
   PASSWORD_RESET: {
-    subject: `🔒 Redefinir senha - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
+    subject: `Redefinir senha - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
     htmlContent: getPremiumOpusAtlasLayout(
       `
       <p style="font-size: 20px; color: #d4af37; margin-bottom: 25px; text-align: center;">

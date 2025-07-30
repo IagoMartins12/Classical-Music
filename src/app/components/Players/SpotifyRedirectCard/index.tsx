@@ -150,7 +150,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                   {/* 🆕 Indicador visual se tem intérprete */}
                   {artistInfo.hasInterpreter && (
                     <p className="text-green-400 text-xs">
-                      ✨ Compositor • Intérprete
+                      Compositor • Intérprete
                     </p>
                   )}
 

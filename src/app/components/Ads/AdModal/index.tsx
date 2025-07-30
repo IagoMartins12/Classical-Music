@@ -244,7 +244,7 @@ export default function AdModal({ ad, onClose, onTrackEvent }: AdModalProps) {
           {/* Premium badge */}
           <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
             <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-              ✨ PREMIUM
+              ✨
             </div>
           </div>
 

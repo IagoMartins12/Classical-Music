@@ -687,7 +687,7 @@ body {
 
 /* Indicador elegante de publicidade */
 .ad-premium-container::after {
-  content: '✨ Publicidade Premium';
+  content: '✨ Publicidade';
   position: absolute;
   top: 12px;
   left: 12px;

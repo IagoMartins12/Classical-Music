@@ -35,22 +35,6 @@ export async function GET(
     const template = await prisma.newsletterTemplate.findUnique({
       where: { id },
       include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            username: true,
-          },
-        },
-        editor: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            username: true,
-          },
-        },
         campaigns: {
           select: {
             id: true,
@@ -167,7 +151,6 @@ export async function PATCH(
         where: {
           name: body.name.trim(),
           id: { not: id },
-          createdBy: session.user.id,
         },
       });
 
@@ -284,24 +267,7 @@ export async function PATCH(
     const updatedTemplate = await prisma.newsletterTemplate.update({
       where: { id },
       data: updateData,
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            username: true,
-          },
-        },
-        editor: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            username: true,
-          },
-        },
-      },
+      include: {},
     });
 
     return NextResponse.json({

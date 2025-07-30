@@ -89,7 +89,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
                 className="text-sm text-accent-blue hover:text-accent-purple transition-colors font-medium"
                 onClick={(e) => e.stopPropagation()}
               >
-                {work.composer.fullname}
+                {work.composer.fullName}
               </Link>
             </div>
           </div>

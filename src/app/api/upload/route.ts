@@ -22,9 +22,9 @@ export async function POST(request: NextRequest) {
     // 🆕 Novos parâmetros para diferentes tipos de upload
     const userId = formData.get('userId') as string;
     const tempId = formData.get('tempId') as string;
-    const workTitle = formData.get('workTitle') as string;
-    const year = formData.get('year') as string;
-    const month = formData.get('month') as string;
+    const scoreDir = formData.get('scoreDir') as string;
+    const thumbDir = formData.get('thumbDir') as string;
+    const isThumb = formData.get('isThumb') as string;
 
     if (!file) {
       return NextResponse.json(
@@ -153,34 +153,40 @@ export async function POST(request: NextRequest) {
         break;
 
       case 'score-final':
-        // 🆕 Upload definitivo na estrutura organizada por obra
-        if (!workTitle || !year || !month) {
+        // 🆕 Upload definitivo na estrutura organizada por obra - NOVA ESTRUTURA
+        if (!scoreDir) {
           return NextResponse.json(
-            {
-              error:
-                'workTitle, year e month são obrigatórios para uploads definitivos',
-            },
+            { error: 'scoreDir é obrigatório para uploads definitivos' },
             { status: 400 }
           );
         }
 
-        const cleanTitle = sanitizeWorkTitle(workTitle);
-        fileName = file.name.includes('thumb')
-          ? `${cleanTitle}-thumb.png`
-          : `${cleanTitle}.pdf`;
-
-        uploadDir = path.join(
-          process.cwd(),
-          'public',
-          'uploads',
-          'scores',
-          'final',
-          year,
-          month,
-          cleanTitle
-        );
-
-        publicUrl = `/uploads/scores/final/${year}/${month}/${cleanTitle}/${fileName}`;
+        // Definir se é thumbnail ou PDF
+        if (isThumb === 'true' && thumbDir) {
+          // É thumbnail - vai para subpasta thumb
+          fileName = file.name;
+          uploadDir = path.join(
+            process.cwd(),
+            'public',
+            'uploads',
+            'scores',
+            'final',
+            thumbDir
+          );
+          publicUrl = `/uploads/scores/final/${thumbDir}/${fileName}`;
+        } else {
+          // É PDF - vai para pasta da partitura
+          fileName = file.name;
+          uploadDir = path.join(
+            process.cwd(),
+            'public',
+            'uploads',
+            'scores',
+            'final',
+            scoreDir
+          );
+          publicUrl = `/uploads/scores/final/${scoreDir}/${fileName}`;
+        }
         break;
 
       case 'image':
@@ -264,7 +270,8 @@ export async function POST(request: NextRequest) {
 
       // 🆕 Campos específicos para sistema de thumbnails
       tempPath: tempPath, // Para uploads temporários
-      workTitle: workTitle, // Para uploads definitivos
+      scoreDir: scoreDir, // Para uploads definitivos
+      thumbDir: thumbDir, // Diretório da thumbnail
       isTemporary: type === 'score-temp',
       isFinal: type === 'score-final',
 

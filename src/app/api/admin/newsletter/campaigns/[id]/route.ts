@@ -27,14 +27,7 @@ export async function GET(
       where: { id },
       include: {
         template: true,
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
+
         events: {
           take: 100,
           orderBy: { timestamp: 'desc' },
@@ -89,13 +82,6 @@ export async function PATCH(
       },
       include: {
         template: true,
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
       },
     });
 

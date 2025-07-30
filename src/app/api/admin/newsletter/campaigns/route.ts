@@ -42,14 +42,6 @@ export async function GET(request: NextRequest) {
               type: true,
             },
           },
-          creator: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-            },
-          },
         },
       }),
       prisma.newsletterCampaign.count({ where }),
@@ -149,7 +141,6 @@ export async function POST(request: NextRequest) {
           description: `Template built-in: ${builtInTemplate.description}`,
           isActive: true,
           isDefault: false,
-          createdBy: session.user.id,
         },
       });
       finalTemplateId = tempTemplate.id;
@@ -199,13 +190,6 @@ export async function POST(request: NextRequest) {
             id: true,
             name: true,
             type: true,
-          },
-        },
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
           },
         },
       },

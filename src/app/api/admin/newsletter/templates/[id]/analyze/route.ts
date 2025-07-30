@@ -38,13 +38,6 @@ export async function GET(
     const template = await prisma.newsletterTemplate.findUnique({
       where: { id },
       include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
         campaigns: {
           select: {
             id: true,
@@ -86,10 +79,6 @@ export async function GET(
       timesUsed: template.timesUsed,
       avgOpenRate: template.avgOpenRate,
       avgClickRate: template.avgClickRate,
-      creator: {
-        firstName: template.creator.firstName,
-        lastName: template.creator.lastName,
-      },
     };
 
     // Gerar análise completa

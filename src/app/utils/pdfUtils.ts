@@ -15,6 +15,125 @@ interface ThumbnailResult {
 }
 
 /**
+ * 🆕 Detecta as bordas do conteúdo removendo espaços em branco
+ */
+function detectContentBounds(
+  context: CanvasRenderingContext2D,
+  width: number,
+  height: number
+): {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+} {
+  console.log('🔍 Analisando conteúdo para detectar bordas...');
+
+  const imageData = context.getImageData(0, 0, width, height);
+  const data = imageData.data;
+
+  let left = width;
+  let right = 0;
+  let top = height;
+  let bottom = 0;
+
+  // Definir threshold para detectar conteúdo (não-branco)
+  const threshold = 250; // Pixels com RGB abaixo disso são considerados conteúdo
+
+  // Função para verificar se um pixel é "conteúdo" (não-branco)
+  const isContent = (x: number, y: number): boolean => {
+    const index = (y * width + x) * 4;
+    const r = data[index];
+    const g = data[index + 1];
+    const b = data[index + 2];
+    const alpha = data[index + 3];
+
+    // Considerar conteúdo se não for quase branco ou se tem transparência
+    return (r < threshold || g < threshold || b < threshold) && alpha > 0;
+  };
+
+  // Verificar cada pixel procurando por conteúdo
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (isContent(x, y)) {
+        left = Math.min(left, x);
+        right = Math.max(right, x);
+        top = Math.min(top, y);
+        bottom = Math.max(bottom, y);
+      }
+    }
+  }
+
+  // Se não encontrou conteúdo, usar canvas inteiro
+  if (left === width) {
+    console.log('⚠️ Nenhum conteúdo detectado, usando canvas completo');
+    return { left: 0, top: 0, right: width, bottom: height };
+  }
+
+  // Adicionar pequena margem ao redor do conteúdo
+  const margin = Math.min(20, Math.min(width, height) * 0.02);
+
+  const bounds = {
+    left: Math.max(0, left - margin),
+    top: Math.max(0, top - margin),
+    right: Math.min(width, right + margin),
+    bottom: Math.min(height, bottom + margin),
+  };
+
+  const contentWidth = bounds.right - bounds.left;
+  const contentHeight = bounds.bottom - bounds.top;
+  const reductionPercent = (
+    ((width * height - contentWidth * contentHeight) / (width * height)) *
+    100
+  ).toFixed(1);
+
+  console.log(
+    `✂️ Conteúdo detectado: ${contentWidth}x${contentHeight} (redução de ${reductionPercent}% de espaço em branco)`
+  );
+
+  return bounds;
+}
+
+/**
+ * 🆕 Carrega PDF.js via CDN com versão compatível
+ */
+async function loadPDFJS(): Promise<any> {
+  return new Promise((resolve, reject) => {
+    // Verificar se já está carregado
+    if ((window as any).pdfjsLib) {
+      resolve((window as any).pdfjsLib);
+      return;
+    }
+
+    // Carregar script do PDF.js
+    const script = document.createElement('script');
+    script.src =
+      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    script.onload = () => {
+      const pdfjsLib = (window as any).pdfjsLib;
+
+      if (!pdfjsLib) {
+        reject(new Error('PDF.js não foi carregado corretamente'));
+        return;
+      }
+
+      // Configurar worker com versão compatível
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+      console.log('✅ PDF.js carregado via CDN:', pdfjsLib.version);
+      resolve(pdfjsLib);
+    };
+
+    script.onerror = () => {
+      reject(new Error('Erro ao carregar PDF.js via CDN'));
+    };
+
+    document.head.appendChild(script);
+  });
+}
+
+/**
  * Verifica se uma URL é um PDF válido e extrai informações básicas
  */
 export async function validateAndExtractPDFInfo(url: string): Promise<PDFInfo> {
@@ -156,14 +275,15 @@ export async function generateAndUploadTempThumbnail(
 }
 
 /**
- * 🆕 Gera thumbnail DEFINITIVA para pasta final da obra
+ * 🆕 Gera thumbnail DEFINITIVA para pasta final da obra - VERSÃO ATUALIZADA
  */
 export async function generateAndUploadFinalThumbnail(
   file: File,
   workTitle: string,
-  year: number,
-  month: number
-): Promise<ThumbnailResult> {
+  scoreId?: string
+): Promise<
+  ThumbnailResult & { scoreId: string; scoreDir: string; thumbDir: string }
+> {
   try {
     console.log('🖼️ Gerando thumbnail definitiva para:', workTitle);
 
@@ -173,6 +293,9 @@ export async function generateAndUploadFinalThumbnail(
       return {
         success: false,
         error: 'Não foi possível gerar thumbnail',
+        scoreId: scoreId || '',
+        scoreDir: '',
+        thumbDir: '',
       };
     }
 
@@ -180,17 +303,18 @@ export async function generateAndUploadFinalThumbnail(
     const response = await fetch(thumbnailDataUrl);
     const blob = await response.blob();
 
-    // Nome da obra limpo para usar como pasta
-    const cleanWorkTitle = sanitizeWorkTitle(workTitle);
-    const thumbnailName = `${cleanWorkTitle}-thumb.png`;
+    // 🆕 Gerar estrutura de pastas com ID único
+    const structure = generateScoreDirectory(workTitle, scoreId);
+    const cleanTitle = sanitizeWorkTitle(workTitle);
+    const thumbnailName = `${cleanTitle}.png`;
 
-    // Upload para pasta definitiva
+    // Upload para pasta definitiva com nova estrutura
     const formData = new FormData();
     formData.append('file', blob, thumbnailName);
     formData.append('type', 'score-final');
-    formData.append('workTitle', cleanWorkTitle);
-    formData.append('year', year.toString());
-    formData.append('month', month.toString().padStart(2, '0'));
+    formData.append('scoreDir', structure.scoreDir);
+    formData.append('thumbDir', structure.thumbDir);
+    formData.append('isThumb', 'true');
 
     const uploadResponse = await fetch('/api/upload', {
       method: 'POST',
@@ -208,12 +332,18 @@ export async function generateAndUploadFinalThumbnail(
     return {
       success: true,
       thumbnailUrl: uploadData.url,
+      scoreId: structure.scoreId,
+      scoreDir: structure.scoreDir,
+      thumbDir: structure.thumbDir,
     };
   } catch (error) {
     console.error('❌ Erro ao gerar thumbnail definitiva:', error);
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Erro desconhecido',
+      scoreId: scoreId || '',
+      scoreDir: '',
+      thumbDir: '',
     };
   }
 }
@@ -237,17 +367,23 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
       return null;
     }
 
-    // 🆕 Tentar importar PDF.js dinamicamente
+    // 🆕 Tentar importar PDF.js dinamicamente - VERSÃO CORRIGIDA
     let pdfjsLib: any;
     try {
-      // Tentar importar PDF.js
-      pdfjsLib = await import('pdfjs-dist');
-
-      // Configurar worker
-      if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      // Verificar se PDF.js já está carregado globalmente
+      if (typeof window !== 'undefined' && (window as any).pdfjsLib) {
+        pdfjsLib = (window as any).pdfjsLib;
+        console.log('📚 Usando PDF.js global:', pdfjsLib.version);
+      } else {
+        // Carregar PDF.js via CDN se não estiver disponível
+        pdfjsLib = await loadPDFJS();
       }
+
+      if (!pdfjsLib) {
+        throw new Error('PDF.js não pôde ser carregado');
+      }
+
+      console.log('📚 PDF.js carregado:', pdfjsLib.version);
     } catch (pdfError) {
       console.warn('⚠️ PDF.js não disponível, usando fallback:', pdfError);
       return await generatePlaceholder(file);
@@ -268,34 +404,99 @@ export async function generatePDFThumbnail(file: File): Promise<string | null> {
       const viewport = page.getViewport({ scale: 1.5 }); // Escala para qualidade
 
       // Criar canvas
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
+      let canvas = document.createElement('canvas');
+      let context = canvas.getContext('2d');
 
       if (!context) {
         throw new Error('Não foi possível criar contexto do canvas');
       }
 
-      // Ajustar tamanho do canvas
-      canvas.width = Math.min(viewport.width, 400); // Máximo 400px de largura
-      canvas.height = Math.min(viewport.height, 520); // Máximo 520px de altura
+      // Renderizar página em canvas temporário maior para análise
+      const tempCanvas = document.createElement('canvas');
+      const tempContext = tempCanvas.getContext('2d');
 
-      // Escalar proporcionalmente
-      const scaleX = canvas.width / viewport.width;
-      const scaleY = canvas.height / viewport.height;
-      const scale = Math.min(scaleX, scaleY);
+      if (!tempContext) {
+        throw new Error('Não foi possível criar contexto temporário do canvas');
+      }
 
-      canvas.width = viewport.width * scale;
-      canvas.height = viewport.height * scale;
+      // Usar escala maior para melhor qualidade de análise
+      const analysisScale = 2;
+      const analysisViewport = page.getViewport({ scale: analysisScale });
 
-      // Renderizar página
-      const renderContext = {
-        canvasContext: context,
-        viewport: page.getViewport({ scale }),
+      tempCanvas.width = analysisViewport.width;
+      tempCanvas.height = analysisViewport.height;
+
+      // Renderizar em alta resolução para análise
+      const analysisRenderContext = {
+        canvasContext: tempContext,
+        viewport: analysisViewport,
       };
 
-      await page.render(renderContext).promise;
+      await page.render(analysisRenderContext).promise;
+      console.log(
+        `📊 Página renderizada para análise: ${tempCanvas.width}x${tempCanvas.height}`
+      );
 
-      console.log('✅ Thumbnail gerada com PDF.js');
+      // 🆕 Detectar área de conteúdo e recortar espaços em branco
+      const contentBounds = detectContentBounds(
+        tempContext,
+        tempCanvas.width,
+        tempCanvas.height
+      );
+      console.log('📐 Área de conteúdo detectada:', contentBounds);
+
+      // Criar canvas final com tamanho otimizado
+      canvas = document.createElement('canvas');
+      context = canvas.getContext('2d');
+
+      if (!context) {
+        throw new Error('Não foi possível criar contexto do canvas final');
+      }
+
+      // 🆕 Calcular dimensões finais mantendo proporção do conteúdo
+      const contentWidth = contentBounds.right - contentBounds.left;
+      const contentHeight = contentBounds.bottom - contentBounds.top;
+      const contentAspectRatio = contentWidth / contentHeight;
+
+      // Definir tamanho máximo para thumbnail
+      const maxWidth = 400;
+      const maxHeight = 520;
+
+      let finalWidth, finalHeight;
+
+      if (contentAspectRatio > maxWidth / maxHeight) {
+        // Conteúdo é mais largo
+        finalWidth = Math.min(maxWidth, contentWidth / analysisScale);
+        finalHeight = finalWidth / contentAspectRatio;
+      } else {
+        // Conteúdo é mais alto
+        finalHeight = Math.min(maxHeight, contentHeight / analysisScale);
+        finalWidth = finalHeight * contentAspectRatio;
+      }
+
+      canvas.width = Math.round(finalWidth);
+      canvas.height = Math.round(finalHeight);
+
+      console.log(
+        `🖼️ Canvas final: ${canvas.width}x${
+          canvas.height
+        } (aspect: ${contentAspectRatio.toFixed(2)})`
+      );
+
+      // 🆕 Desenhar apenas a área de conteúdo no canvas final
+      context.drawImage(
+        tempCanvas,
+        contentBounds.left, // sx - posição x da área de origem
+        contentBounds.top, // sy - posição y da área de origem
+        contentWidth, // sw - largura da área de origem
+        contentHeight, // sh - altura da área de origem
+        0, // dx - posição x no canvas de destino
+        0, // dy - posição y no canvas de destino
+        canvas.width, // dw - largura no canvas de destino
+        canvas.height // dh - altura no canvas de destino
+      );
+
+      console.log('✅ Thumbnail gerada com crop automático');
       return canvas.toDataURL('image/png', 0.8); // Qualidade 80%
     } catch (renderError) {
       console.warn('⚠️ Erro ao renderizar PDF, usando fallback:', renderError);
@@ -381,6 +582,45 @@ export function sanitizeWorkTitle(title: string): string {
     .replace(/-+/g, '-') // Múltiplos hífens viram um
     .replace(/^-|-$/g, '') // Remover hífens do início/fim
     .substring(0, 50); // Máximo 50 caracteres
+}
+
+/**
+ * 🆕 Gera ID único para partitura específica
+ */
+export function generateScoreId(): string {
+  const timestamp = Date.now();
+  const random = Math.random().toString(36).substr(2, 8);
+  return `${timestamp}-${random}`;
+}
+
+/**
+ * 🆕 Gera estrutura de pastas para partitura específica
+ */
+export function generateScoreDirectory(
+  workTitle: string,
+  scoreId?: string
+): {
+  workDir: string;
+  scoreDir: string;
+  thumbDir: string;
+  scoreId: string;
+} {
+  const now = new Date();
+  const year = now.getFullYear().toString();
+  const month = (now.getMonth() + 1).toString().padStart(2, '0');
+  const cleanTitle = sanitizeWorkTitle(workTitle);
+  const finalScoreId = scoreId || generateScoreId();
+
+  const workDir = `${year}/${month}/${cleanTitle}`;
+  const scoreDir = `${workDir}/${cleanTitle}-${finalScoreId}`;
+  const thumbDir = `${scoreDir}/thumb`;
+
+  return {
+    workDir,
+    scoreDir,
+    thumbDir,
+    scoreId: finalScoreId,
+  };
 }
 
 /**

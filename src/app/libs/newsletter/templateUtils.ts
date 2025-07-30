@@ -32,10 +32,6 @@ export interface DatabaseTemplate {
   timesUsed: number;
   avgOpenRate?: number | null;
   avgClickRate?: number | null;
-  creator: {
-    firstName?: string | null;
-    lastName?: string | null;
-  };
 }
 
 // Interface para dados de renderização

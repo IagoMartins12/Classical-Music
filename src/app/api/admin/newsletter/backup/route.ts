@@ -135,9 +135,6 @@ async function createNewsletterBackup(config: any) {
     const campaigns = await prisma.newsletterCampaign.findMany({
       include: {
         template: true,
-        creator: {
-          select: { id: true, firstName: true, lastName: true, email: true },
-        },
       },
     });
     backupData.campaigns = campaigns;
@@ -146,11 +143,7 @@ async function createNewsletterBackup(config: any) {
   // Backup de templates
   if (config.includeTemplates) {
     const templates = await prisma.newsletterTemplate.findMany({
-      include: {
-        creator: {
-          select: { id: true, firstName: true, lastName: true, email: true },
-        },
-      },
+      include: {},
     });
     backupData.templates = templates;
   }

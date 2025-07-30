@@ -64,14 +64,6 @@ export async function POST(
         id: { in: testListIds },
         isActive: true,
       },
-      include: {
-        creator: {
-          select: {
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
     });
 
     if (testLists.length === 0) {
@@ -282,15 +274,7 @@ export async function GET(
       where: {
         isActive: true,
       },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
+
       orderBy: [{ timesUsed: 'desc' }, { name: 'asc' }],
     });
 

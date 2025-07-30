@@ -8,19 +8,24 @@ import { logScoreCreate } from '@/app/utils/historyUtils';
 import { ProcessingStatus } from '@prisma/client';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { sanitizeWorkTitle } from '@/app/utils/pdfUtils';
+import {
+  sanitizeWorkTitle,
+  generateScoreDirectory,
+} from '@/app/utils/pdfUtils';
 
 /**
- * 🆕 Move arquivos da pasta temporária para a pasta definitiva
+ * 🆕 Move arquivos da pasta temporária para a pasta definitiva - NOVA ESTRUTURA
  */
 async function moveTemporaryFilesToFinal(
   tempPdfPath: string,
   tempThumbnailPath: string,
   workTitle: string,
   workId: string
-): Promise<{ pdfUrl: string; thumbnailUrl: string | null }> {
+): Promise<{ pdfUrl: string; thumbnailUrl: string | null; scoreId: string }> {
   try {
-    console.log('📁 Movendo arquivos temporários para pasta definitiva...');
+    console.log('📁 Iniciando movimentação de arquivos temporários...');
+    console.log('📄 PDF temporário:', tempPdfPath);
+    console.log('🖼️ Thumbnail temporário:', tempThumbnailPath);
 
     // Obter dados da obra para criar estrutura de pastas
     const work = await prisma.work.findUnique({
@@ -32,41 +37,71 @@ async function moveTemporaryFilesToFinal(
       throw new Error('Obra não encontrada');
     }
 
-    const now = new Date();
-    const year = now.getFullYear().toString();
-    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    // 🆕 Gerar estrutura de pastas com ID único
+    const structure = generateScoreDirectory(work.title);
     const cleanTitle = sanitizeWorkTitle(work.title);
 
+    console.log('📁 Nova estrutura gerada:', structure);
+
     // Criar estrutura de pastas definitiva
-    const finalDir = path.join(
+    const finalPdfDir = path.join(
       process.cwd(),
       'public',
       'uploads',
       'scores',
       'final',
-      year,
-      month,
-      cleanTitle
+      structure.scoreDir
     );
 
-    // Criar diretório se não existir
-    await fs.mkdir(finalDir, { recursive: true });
+    const finalThumbDir = path.join(
+      process.cwd(),
+      'public',
+      'uploads',
+      'scores',
+      'final',
+      structure.thumbDir
+    );
 
-    // Nomes dos arquivos definitivos
+    console.log('📁 Diretório PDF:', finalPdfDir);
+    console.log('📁 Diretório thumbnail:', finalThumbDir);
+
+    // Criar diretórios se não existirem
+    await fs.mkdir(finalPdfDir, { recursive: true });
+    await fs.mkdir(finalThumbDir, { recursive: true });
+    console.log('✅ Diretórios criados/verificados');
+
+    // 🆕 Nomes dos arquivos definitivos
     const finalPdfName = `${cleanTitle}.pdf`;
-    const finalThumbnailName = `${cleanTitle}-thumb.png`;
+    const finalThumbnailName = `${cleanTitle}.png`;
 
     // Caminhos definitivos
-    const finalPdfPath = path.join(finalDir, finalPdfName);
-    const finalThumbnailPath = path.join(finalDir, finalThumbnailName);
+    const finalPdfPath = path.join(finalPdfDir, finalPdfName);
+    const finalThumbnailPath = path.join(finalThumbDir, finalThumbnailName);
 
-    // URLs públicas definitivas
-    const pdfUrl = `/uploads/scores/final/${year}/${month}/${cleanTitle}/${finalPdfName}`;
+    // 🆕 URLs públicas definitivas com nova estrutura
+    const pdfUrl = `/uploads/scores/final/${structure.scoreDir}/${finalPdfName}`;
     let thumbnailUrl: string | null = null;
 
-    // 🆕 Mover arquivo PDF
-    if (tempPdfPath && tempPdfPath.startsWith('/uploads/')) {
-      const tempPdfFullPath = path.join(process.cwd(), 'public', tempPdfPath);
+    // 🆕 Mover arquivo PDF (CORRIGIDO)
+    if (tempPdfPath) {
+      let tempPdfFullPath: string;
+
+      // Verificar se é URL ou caminho completo
+      if (tempPdfPath.startsWith('/uploads/')) {
+        tempPdfFullPath = path.join(process.cwd(), 'public', tempPdfPath);
+      } else if (tempPdfPath.startsWith('http')) {
+        console.warn('⚠️ PDF é URL externa, não pode ser movido:', tempPdfPath);
+        return {
+          pdfUrl: tempPdfPath,
+          thumbnailUrl: null,
+          scoreId: structure.scoreId,
+        };
+      } else {
+        tempPdfFullPath = tempPdfPath;
+      }
+
+      console.log('📄 Movendo PDF de:', tempPdfFullPath);
+      console.log('📄 Para:', finalPdfPath);
 
       // Verificar se arquivo temporário existe
       const pdfExists = await fs
@@ -75,26 +110,53 @@ async function moveTemporaryFilesToFinal(
         .catch(() => false);
 
       if (pdfExists) {
+        // Copiar arquivo
         await fs.copyFile(tempPdfFullPath, finalPdfPath);
-        console.log(`✅ PDF movido: ${tempPdfPath} → ${pdfUrl}`);
+        console.log(`✅ PDF copiado com sucesso`);
 
-        // Remover arquivo temporário
-        await fs.unlink(tempPdfFullPath).catch(console.warn);
+        // Verificar se foi copiado corretamente
+        const finalExists = await fs
+          .access(finalPdfPath)
+          .then(() => true)
+          .catch(() => false);
+        if (finalExists) {
+          // Remover arquivo temporário apenas se cópia foi bem-sucedida
+          await fs.unlink(tempPdfFullPath);
+          console.log(`🗑️ PDF temporário removido: ${tempPdfFullPath}`);
+        } else {
+          throw new Error('Cópia do PDF falhou - arquivo final não existe');
+        }
       } else {
         console.warn(
           '⚠️ Arquivo PDF temporário não encontrado:',
           tempPdfFullPath
         );
+        // Se não achou arquivo temporário, usar URL original
+        return {
+          pdfUrl: tempPdfPath,
+          thumbnailUrl: null,
+          scoreId: structure.scoreId,
+        };
       }
     }
 
-    // 🆕 Mover arquivo de thumbnail (se existir)
-    if (tempThumbnailPath && tempThumbnailPath.startsWith('/uploads/')) {
-      const tempThumbnailFullPath = path.join(
-        process.cwd(),
-        'public',
-        tempThumbnailPath
-      );
+    // 🆕 Mover arquivo de thumbnail para subpasta thumb
+    if (tempThumbnailPath) {
+      let tempThumbnailFullPath: string;
+
+      // Verificar se é URL ou caminho completo
+      if (tempThumbnailPath.startsWith('/uploads/')) {
+        tempThumbnailFullPath = path.join(
+          process.cwd(),
+          'public',
+          tempThumbnailPath
+        );
+      } else {
+        tempThumbnailFullPath = tempThumbnailPath;
+      }
+
+      console.log('🖼️ Movendo thumbnail de:', tempThumbnailFullPath);
+      console.log('🖼️ Para:', finalThumbnailPath);
 
       // Verificar se thumbnail temporário existe
       const thumbExists = await fs
@@ -103,40 +165,64 @@ async function moveTemporaryFilesToFinal(
         .catch(() => false);
 
       if (thumbExists) {
+        // Copiar thumbnail
         await fs.copyFile(tempThumbnailFullPath, finalThumbnailPath);
-        thumbnailUrl = `/uploads/scores/final/${year}/${month}/${cleanTitle}/${finalThumbnailName}`;
-        console.log(
-          `✅ Thumbnail movido: ${tempThumbnailPath} → ${thumbnailUrl}`
-        );
+        console.log(`✅ Thumbnail copiado com sucesso`);
 
-        // Remover thumbnail temporário
-        await fs.unlink(tempThumbnailFullPath).catch(console.warn);
+        // Verificar se foi copiado corretamente
+        const finalThumbExists = await fs
+          .access(finalThumbnailPath)
+          .then(() => true)
+          .catch(() => false);
+        if (finalThumbExists) {
+          thumbnailUrl = `/uploads/scores/final/${structure.thumbDir}/${finalThumbnailName}`;
+
+          // Remover thumbnail temporário apenas se cópia foi bem-sucedida
+          await fs.unlink(tempThumbnailFullPath);
+          console.log(
+            `🗑️ Thumbnail temporário removido: ${tempThumbnailFullPath}`
+          );
+        } else {
+          console.warn('⚠️ Cópia do thumbnail falhou - usando URL original');
+          thumbnailUrl = tempThumbnailPath;
+        }
       } else {
         console.warn(
           '⚠️ Arquivo de thumbnail temporário não encontrado:',
           tempThumbnailFullPath
         );
+        thumbnailUrl = tempThumbnailPath; // Usar URL original se não achou
       }
     }
 
     // 🆕 Tentar limpar pasta temporária do usuário se estiver vazia
     try {
-      if (tempPdfPath.includes('/temp/')) {
+      if (tempPdfPath && tempPdfPath.includes('/temp/')) {
         const tempUserDir = path.dirname(
           path.join(process.cwd(), 'public', tempPdfPath)
         );
-        const files = await fs.readdir(tempUserDir);
+        const files = await fs.readdir(tempUserDir).catch(() => []);
 
         if (files.length === 0) {
           await fs.rmdir(tempUserDir);
           console.log('🗑️ Pasta temporária vazia removida:', tempUserDir);
+        } else {
+          console.log(
+            '📁 Pasta temporária ainda contém arquivos:',
+            files.length
+          );
         }
       }
     } catch (cleanupError) {
       console.warn('⚠️ Erro ao limpar pasta temporária:', cleanupError);
     }
 
-    return { pdfUrl, thumbnailUrl };
+    console.log('✅ Movimentação concluída:', {
+      pdfUrl,
+      thumbnailUrl,
+      scoreId: structure.scoreId,
+    });
+    return { pdfUrl, thumbnailUrl, scoreId: structure.scoreId };
   } catch (error) {
     console.error('❌ Erro ao mover arquivos temporários:', error);
     throw new Error(`Erro ao organizar arquivos: ${error}`);
@@ -187,6 +273,7 @@ export async function POST(request: NextRequest) {
     // 🆕 Mover arquivos temporários para pasta definitiva (se aplicável)
     let finalPdfUrl = body.downloadUrl;
     let finalThumbnailUrl = body.thumbnailUrl;
+    let scoreId: string | undefined;
 
     if (
       body.hasTemporaryFiles &&
@@ -206,10 +293,12 @@ export async function POST(request: NextRequest) {
 
         finalPdfUrl = movedFiles.pdfUrl;
         finalThumbnailUrl = movedFiles.thumbnailUrl || body.thumbnailUrl;
+        scoreId = movedFiles.scoreId; // 🆕 Capturar scoreId gerado
 
         console.log('✅ Arquivos movidos com sucesso:', {
           pdf: finalPdfUrl,
           thumbnail: finalThumbnailUrl,
+          scoreId,
         });
       } catch (moveError) {
         console.error('❌ Erro ao mover arquivos:', moveError);
@@ -220,14 +309,17 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Gerar sourceId único para partituras customizadas
-    const sourceId = body.sourceId || generateSourceId(body.source || 'CUSTOM');
+    // 🆕 Gerar sourceId usando scoreId se disponível
+    const sourceIdBase = body.sourceId || body.source || 'CUSTOM';
+    const finalSourceId = scoreId
+      ? `${sourceIdBase}_${scoreId}`
+      : generateSourceId(sourceIdBase);
 
     // Verificar se já existe partitura com mesmo sourceId para esta obra
     const existingScore = await prisma.workScore.findFirst({
       where: {
         workId: body.workId,
-        sourceId: sourceId,
+        sourceId: finalSourceId,
         source: body.source || 'CUSTOM',
       },
     });
@@ -249,7 +341,7 @@ export async function POST(request: NextRequest) {
     // 🆕 Preparar dados para criação com URLs definitivas
     const scoreData = {
       workId: body.workId,
-      sourceId: sourceId,
+      sourceId: finalSourceId, // 🆕 Usar sourceId com scoreId
       source: body.source || 'CUSTOM',
       title: body.title,
       downloadUrl: finalPdfUrl, // 🆕 URL definitiva

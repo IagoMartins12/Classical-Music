@@ -44,15 +44,6 @@ export async function GET(request: NextRequest) {
     const testLists = await prisma.testEmailList.findMany({
       where,
       orderBy,
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
     });
 
     // Calcular estatísticas
@@ -141,7 +132,6 @@ export async function POST(request: NextRequest) {
     const existingList = await prisma.testEmailList.findFirst({
       where: {
         name: name.trim(),
-        createdBy: session.user.id,
       },
     });
 
@@ -172,16 +162,6 @@ export async function POST(request: NextRequest) {
         color: color || '#6366f1',
         isActive,
         totalEmails: normalizedEmails.length,
-        createdBy: session.user.id,
-      },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
       },
     });
 

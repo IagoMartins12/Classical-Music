@@ -283,7 +283,6 @@ model User {
   selectedScores UserSelectedScore[]
 
   tokens        UserToken[]
-  testEmailLists TestEmailList[] @relation("TestEmailListCreator")
 
   createdWorks     Work[]      @relation("UserCreatedWorks")
   createdComposers Composer[]  @relation("UserCreatedComposers")
@@ -298,15 +297,7 @@ model User {
 
   // Relações de newsletter (ADICIONAR)
   newsletterSubscription    NewsletterSubscriber?         @relation("NewsletterSubscriber")
-  createdNewsletterTemplates NewsletterTemplate[]         @relation("NewsletterTemplateCreator")
-  editedNewsletterTemplates  NewsletterTemplate[]         @relation("NewsletterTemplateEditor")
-  createdNewsletterCampaigns NewsletterCampaign[]         @relation("NewsletterCampaignCreator")
-  editedNewsletterCampaigns  NewsletterCampaign[]         @relation("NewsletterCampaignEditor")
-  editedNewsletterSettings   NewsletterSettings[]         @relation("NewsletterSettingsEditor")
   
-  approvedNewsletterTemplates NewsletterTemplate[]        @relation("NewsletterTemplateApprover")
-  templateUsageLogs          TemplateUsageLog[]
-  createdTemplateFragments   TemplateFragment[]
   favoriteScores FavoriteScore[]
 
   instruments       UserInstrument[]
@@ -1620,20 +1611,14 @@ model NewsletterTemplate {
   expiresAt        DateTime? // Data de expiração do template (opcional)
   
   // Controle de acesso
-  createdBy       String  @db.ObjectId
-  lastEditedBy    String? @db.ObjectId
   lastEditedAt    DateTime?
   
   // Aprovação (opcional)
   approvalStatus  String  @default("approved") // "pending", "approved", "rejected"
-  approvedBy      String? @db.ObjectId
   approvedAt      DateTime?
   approvalNotes   String?
   
   // Relações
-  creator         User                 @relation("NewsletterTemplateCreator", fields: [createdBy], references: [id])
-  editor          User?                @relation("NewsletterTemplateEditor", fields: [lastEditedBy], references: [id])
-  approver        User?                @relation("NewsletterTemplateApprover", fields: [approvedBy], references: [id])
   campaigns       NewsletterCampaign[]
   
   // Novos relacionamentos
@@ -1646,7 +1631,6 @@ model NewsletterTemplate {
   // Índices otimizados
   @@index([type, isActive])
   @@index([isDefault, type])
-  @@index([createdBy])
   @@index([tags])
   @@index([category, priority]) // 🆕 Para categorização
   @@index([qualityScore]) // 🆕 Para rankings de qualidade
@@ -1723,8 +1707,6 @@ model NewsletterCampaign {
   unsubscribeRate Float? @default(0) // emailsUnsubscribed / emailsDelivered
   
   // Controle de acesso
-  createdBy    String    @db.ObjectId
-  lastEditedBy String?   @db.ObjectId
   lastEditedAt DateTime?
   
   // Metadados
@@ -1738,8 +1720,6 @@ model NewsletterCampaign {
   
   // Relações
   template     NewsletterTemplate?       @relation(fields: [templateId], references: [id])
-  creator      User                      @relation("NewsletterCampaignCreator", fields: [createdBy], references: [id])
-  editor       User?                     @relation("NewsletterCampaignEditor", fields: [lastEditedBy], references: [id])
   sends        NewsletterCampaignSend[]
   events       NewsletterEmailEvent[]
   
@@ -1750,7 +1730,6 @@ model NewsletterCampaign {
   // Índices atualizados
   @@index([status])
   @@index([scheduledAt])
-  @@index([createdBy])
   @@index([sentAt])
   @@index([tags])
   @@index([useCustomTemplate, templateType]) // 🆕 Para filtrar por tipo de template
@@ -1833,8 +1812,6 @@ model NewsletterSettings {
   lastEditedBy String?   @db.ObjectId
   lastEditedAt DateTime?
   
-  // Relação
-  editor       User?     @relation("NewsletterSettingsEditor", fields: [lastEditedBy], references: [id])
   
   // Timestamps
   createdAt DateTime @default(now())
@@ -1863,48 +1840,15 @@ model TestEmailList {
   timesUsed   Int      @default(0) // Quantas vezes foi usada
   
   // Auditoria
-  createdBy   String   @db.ObjectId
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
-  // Relação
-  creator User @relation("TestEmailListCreator", fields: [createdBy], references: [id], onDelete: Cascade)
-  
   // Índices
-  @@index([createdBy])
   @@index([isActive])
   @@index([name])
   @@map("test_email_lists")
 }
-model TemplateUsageLog {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
-  templateId String   @db.ObjectId
-  campaignId String?  @db.ObjectId // Pode ser null para testes
-  userId     String   @db.ObjectId
-  
-  // Dados do uso
-  usageType  String   // "campaign", "test", "preview"
-  context    Json?    // Contexto adicional do uso
-  
-  // Métricas do uso
-  renderTime Float?   // Tempo de renderização em ms
-  variables  Json?    // Variáveis usadas na renderização
-  errors     String[] @default([]) // Erros encontrados
-  
-  // Resultado
-  successful Boolean  @default(true)
-  emailsSent Int?     // Para campanhas
-  
-  createdAt DateTime @default(now())
-  
-  // Relações
-  user     User                @relation(fields: [userId], references: [id])
-  
-  @@index([templateId, createdAt])
-  @@index([usageType])
-  @@index([successful])
-  @@map("template_usage_logs")
-}
+
 
 // 🆕 NOVO MODELO: Fragmentos de template reutilizáveis
 model TemplateFragment {
@@ -1928,18 +1872,12 @@ model TemplateFragment {
   // Estatísticas
   timesUsed   Int      @default(0)
   
-  // Controle de acesso
-  createdBy   String   @db.ObjectId
   
   // Timestamps
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
-  // Relações
-  creator     User     @relation(fields: [createdBy], references: [id])
-  
   @@index([category, isActive])
-  @@index([createdBy])
   @@index([tags])
   @@map("template_fragments")
 }

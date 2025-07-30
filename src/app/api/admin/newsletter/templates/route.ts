@@ -55,24 +55,6 @@ export async function GET(request: NextRequest) {
         { isActive: 'desc' }, // Templates ativos primeiro
         { createdAt: 'desc' }, // Mais recentes primeiro
       ],
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            username: true,
-          },
-        },
-        editor: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            username: true,
-          },
-        },
-      },
     });
 
     // Formatar dados para resposta
@@ -175,7 +157,6 @@ export async function POST(request: NextRequest) {
     const existingTemplate = await prisma.newsletterTemplate.findFirst({
       where: {
         name: name.trim(),
-        createdBy: session.user.id,
       },
     });
 
@@ -220,17 +201,6 @@ export async function POST(request: NextRequest) {
         variables: finalVariables,
         isActive,
         isDefault,
-        createdBy: session.user.id,
-      },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            username: true,
-          },
-        },
       },
     });
 

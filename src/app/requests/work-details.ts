@@ -87,7 +87,7 @@ export interface WorkListItem {
   composer: {
     id: string;
     name: string;
-    fullname?: string;
+    fullName?: string | null;
     epochName: string | null;
   };
 

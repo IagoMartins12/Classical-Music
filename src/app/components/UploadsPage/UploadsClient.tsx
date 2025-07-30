@@ -174,12 +174,9 @@ const UploadsClient = ({
 
   const [loadingFormData, setLoadingFormData] = useState(false);
 
-
-
   const memoizedLocalComposers = useMemo(() => {
     return filterComposers;
   }, [filterComposers]);
-
 
   // Carregar dados do formulário quando necessário
   useEffect(() => {

@@ -13,11 +13,6 @@ interface TestEmailList {
   lastUsed?: string;
   createdAt: string;
   updatedAt: string;
-  creator: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
 }
 
 interface TestEmailListStats {

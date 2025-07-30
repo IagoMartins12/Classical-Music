@@ -134,30 +134,35 @@ export async function removeFilesByUrls(
 }
 
 /**
- * 🆕 Remove pasta completa de uma obra (PDF + thumbnail + pasta)
+ * 🆕 Remove pasta completa de uma partitura (PDF + thumbnail + pasta) - ATUALIZADO
  */
 export async function cleanupScoreWorkDirectory(
   downloadUrl: string | null,
   thumbnailUrl: string | null
 ): Promise<CleanupResult> {
-  console.log(`🧹 Limpando pasta completa da obra...`);
+  console.log(`🧹 Limpando pasta completa da partitura...`);
 
   try {
-    // Extrair pasta da obra do downloadUrl
-    const workDir = extractWorkDirectoryFromUrl(downloadUrl);
+    // Extrair pasta da partitura do downloadUrl (prioridade)
+    let scoreDir = extractScoreDirectoryFromUrl(downloadUrl);
 
-    if (workDir) {
-      console.log(`📁 Removendo pasta da obra: ${workDir}`);
-      return await removeDirectory(workDir);
+    // Se não encontrou pelo PDF, tentar pelo thumbnail
+    if (!scoreDir && thumbnailUrl) {
+      scoreDir = extractScoreDirectoryFromUrl(thumbnailUrl);
+    }
+
+    if (scoreDir) {
+      console.log(`📁 Removendo pasta da partitura: ${scoreDir}`);
+      return await removeDirectory(scoreDir);
     } else {
       // Fallback: remover arquivos individuais
       console.log(
-        `⚠️ Não foi possível identificar pasta da obra, removendo arquivos individuais`
+        `⚠️ Não foi possível identificar pasta da partitura, removendo arquivos individuais`
       );
       return await removeFilesByUrls([downloadUrl, thumbnailUrl]);
     }
   } catch (error) {
-    console.error('❌ Erro ao limpar pasta da obra:', error);
+    console.error('❌ Erro ao limpar pasta da partitura:', error);
 
     // Fallback: tentar remover arquivos individuais
     return await removeFilesByUrls([downloadUrl, thumbnailUrl]);
@@ -165,21 +170,41 @@ export async function cleanupScoreWorkDirectory(
 }
 
 /**
- * 🆕 Extrai o diretório da obra de uma URL
- * Ex: /uploads/scores/final/2024/12/sonata-ao-luar/sonata-ao-luar.pdf
- *     → /public/uploads/scores/final/2024/12/sonata-ao-luar/
+ * 🆕 Extrai o diretório da partitura de uma URL - ATUALIZADO PARA NOVA ESTRUTURA
+ * Ex: /uploads/scores/final/2025/07/nome-da-peca/nome-da-peca-123456/nome-da-peca.pdf
+ *     → /public/uploads/scores/final/2025/07/nome-da-peca/nome-da-peca-123456/
  */
-function extractWorkDirectoryFromUrl(url: string | null): string | null {
+function extractScoreDirectoryFromUrl(url: string | null): string | null {
   if (!url) return null;
 
   try {
-    // Verificar se é URL da estrutura nova (final)
-    const finalScoreMatch = url.match(
+    // Verificar se é URL da estrutura nova (final com ID)
+    const newScoreMatch = url.match(
+      /\/uploads\/scores\/final\/(\d{4})\/(\d{2})\/([^\/]+)\/([^\/]+)\//
+    );
+
+    if (newScoreMatch) {
+      const [, year, month, workTitle, scoreDir] = newScoreMatch;
+      return path.join(
+        process.cwd(),
+        'public',
+        'uploads',
+        'scores',
+        'final',
+        year,
+        month,
+        workTitle,
+        scoreDir
+      );
+    }
+
+    // Verificar se é URL da estrutura antiga (final sem ID)
+    const oldFinalMatch = url.match(
       /\/uploads\/scores\/final\/(\d{4})\/(\d{2})\/([^\/]+)\//
     );
 
-    if (finalScoreMatch) {
-      const [, year, month, workTitle] = finalScoreMatch;
+    if (oldFinalMatch) {
+      const [, year, month, workTitle] = oldFinalMatch;
       return path.join(
         process.cwd(),
         'public',
@@ -192,11 +217,11 @@ function extractWorkDirectoryFromUrl(url: string | null): string | null {
       );
     }
 
-    // Verificar se é URL da estrutura antiga
-    const oldScoreMatch = url.match(/\/uploads\/score\/(\d{4})\/(\d{2})\//);
+    // Verificar se é URL da estrutura muito antiga
+    const veryOldMatch = url.match(/\/uploads\/score\/(\d{4})\/(\d{2})\//);
 
-    if (oldScoreMatch) {
-      const [, year, month] = oldScoreMatch;
+    if (veryOldMatch) {
+      const [, year, month] = veryOldMatch;
       const fileName = path.basename(url);
       const fileDir = path.dirname(
         path.join(process.cwd(), 'public', url.substring(1))
@@ -206,7 +231,7 @@ function extractWorkDirectoryFromUrl(url: string | null): string | null {
 
     return null;
   } catch (error) {
-    console.error('❌ Erro ao extrair diretório da obra:', error);
+    console.error('❌ Erro ao extrair diretório da partitura:', error);
     return null;
   }
 }

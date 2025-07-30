@@ -102,8 +102,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.log('🔍 Buscando obras:', { query, limit });
-
     // Buscar obras que correspondem ao termo
     const works = await prisma.work.findMany({
       where: {

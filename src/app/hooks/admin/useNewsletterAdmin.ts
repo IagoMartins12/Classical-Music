@@ -44,11 +44,6 @@ interface Campaign {
     name: string;
     type: string;
   };
-  creator: {
-    id: string;
-    firstName?: string;
-    lastName?: string;
-  };
   createdAt: string;
 }
 
@@ -73,16 +68,7 @@ interface Template {
   category?: string;
   priority: number;
   tags: string[];
-  creator: {
-    id: string;
-    firstName?: string;
-    lastName?: string;
-  };
-  editor?: {
-    id: string;
-    firstName?: string;
-    lastName?: string;
-  };
+
   createdAt: string;
   updatedAt: string;
   lastEditedAt?: string;
@@ -101,11 +87,7 @@ interface TemplateFragment {
   isActive: boolean;
   isPublic: boolean;
   timesUsed: number;
-  creator: {
-    id: string;
-    firstName?: string;
-    lastName?: string;
-  };
+
   createdAt: string;
   updatedAt: string;
 }
@@ -145,11 +127,6 @@ interface TestEmailList {
   lastUsed?: string;
   createdAt: string;
   updatedAt: string;
-  creator: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
 }
 
 interface SendTestCampaignData {

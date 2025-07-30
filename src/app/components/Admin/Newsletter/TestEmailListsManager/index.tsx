@@ -1085,11 +1085,6 @@ export default function TestEmailListsManager() {
                                 </span>
                               </div>
                             )}
-
-                            <div className="flex items-center">
-                              <FiUsers className="w-4 h-4 mr-1" />
-                              <span>Por {list.creator.firstName}</span>
-                            </div>
                           </div>
                         </div>
                       </div>

@@ -1,4 +1,4 @@
-// app/api/uploads/score/[id]/route.ts
+// app/api/uploads/score/[id]/route.ts - DELEÇÃO COMPLETA ATUALIZADA
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -7,7 +7,9 @@ import { revalidateUploadsCache } from '@/app/requests/upload';
 import { logScoreDelete } from '@/app/utils/historyUtils';
 import {
   cleanupScoreFiles,
+  cleanupScoreWorkDirectory,
   logCleanupResult,
+  extractWorkTitleFromScoreUrl,
 } from '@/app/utils/fileCleanupUtils';
 
 interface Params {
@@ -190,23 +192,76 @@ export async function DELETE(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 403 });
     }
 
-    // 🆕 Limpar arquivos da partitura ANTES de excluir o registro
+    // 🆕 LIMPEZA MELHORADA - Pasta completa da obra
     let cleanupResult = {
       removedFiles: [] as string[],
       removedDirectories: [] as string[],
       errors: [] as string[],
       totalSize: 0,
+      workDirectory: null as string | null,
+      cleanupMethod: 'none' as 'work_directory' | 'individual_files' | 'none',
     };
 
     try {
-      console.log(`🧹 Limpando arquivos da partitura: ${score.title}`);
+      console.log(`🧹 Iniciando limpeza completa da partitura: ${score.title}`);
       console.log(`📄 Download URL: ${score.downloadUrl}`);
       console.log(`🖼️ Thumbnail URL: ${score.thumbnailUrl}`);
 
-      cleanupResult = await cleanupScoreFiles(
-        score.downloadUrl,
-        score.thumbnailUrl
-      );
+      // 🆕 Extrair título da obra da URL
+      const workTitle = extractWorkTitleFromScoreUrl(score.downloadUrl);
+
+      if (workTitle) {
+        console.log(`📁 Título da obra identificado: ${workTitle}`);
+
+        // Tentar remover pasta completa da obra
+        const workDirResult = await cleanupScoreWorkDirectory(
+          score.downloadUrl,
+          score.thumbnailUrl
+        );
+
+        if (workDirResult.removedDirectories.length > 0) {
+          // Pasta completa foi removida
+          cleanupResult = {
+            ...workDirResult,
+            workDirectory: workTitle,
+            cleanupMethod: 'work_directory',
+          };
+
+          console.log(`✅ Pasta completa da obra removida: ${workTitle}`);
+        } else {
+          // Fallback: remover arquivos individuais
+          const individualResult = await cleanupScoreFiles(
+            score.downloadUrl,
+            score.thumbnailUrl
+          );
+
+          cleanupResult = {
+            ...individualResult,
+            workDirectory: workTitle,
+            cleanupMethod: 'individual_files',
+          };
+
+          console.log(
+            `⚠️ Pasta completa não removida, arquivos individuais removidos`
+          );
+        }
+      } else {
+        // Não conseguiu identificar estrutura, remover arquivos individuais
+        const individualResult = await cleanupScoreFiles(
+          score.downloadUrl,
+          score.thumbnailUrl
+        );
+
+        cleanupResult = {
+          ...individualResult,
+          workDirectory: null,
+          cleanupMethod: 'individual_files',
+        };
+
+        console.log(
+          `⚠️ Estrutura de obra não identificada, removendo arquivos individuais`
+        );
+      }
 
       logCleanupResult(cleanupResult, `Partitura ${score.title}`);
     } catch (cleanupError) {
@@ -219,7 +274,7 @@ export async function DELETE(
       );
     }
 
-    // 🆕 Salvar dados para histórico antes de excluir
+    // 🆕 Salvar dados expandidos para histórico
     const deletedData = {
       title: score.title,
       sourceId: score.sourceId,
@@ -239,29 +294,57 @@ export async function DELETE(
       copyright: score.copyright,
       isIMSLP: score.source === 'IMSLP',
       deletedBy: 'USER_INTERFACE',
+
+      // 🆕 Dados expandidos de limpeza
       cleanupResult: {
+        method: cleanupResult.cleanupMethod,
+        workDirectory: cleanupResult.workDirectory,
         filesRemoved: cleanupResult.removedFiles.length,
+        directoriesRemoved: cleanupResult.removedDirectories.length,
         spaceCleaned: `${(cleanupResult.totalSize / 1024 / 1024).toFixed(2)}MB`,
         errors: cleanupResult.errors.length,
+        success: cleanupResult.errors.length === 0,
+      },
+
+      // Metadados da estrutura de arquivos
+      fileStructure: {
+        hadWorkDirectory: !!cleanupResult.workDirectory,
+        workDirectoryName: cleanupResult.workDirectory,
+        cleanupMethod: cleanupResult.cleanupMethod,
+        isNewStructure: score.downloadUrl?.includes('/scores/final/') || false,
+        isOldStructure: score.downloadUrl?.includes('/score/') || false,
       },
     };
 
-    // Excluir partitura
+    // Excluir partitura do banco
     await prisma.workScore.delete({
       where: { id },
     });
 
-    // 🆕 Registrar exclusão no histórico
+    // 🆕 Registrar exclusão no histórico com dados expandidos
     try {
+      const historyDescription =
+        cleanupResult.cleanupMethod === 'work_directory'
+          ? `Partitura excluída via interface. Pasta completa da obra removida: ${
+              cleanupResult.workDirectory
+            } (${cleanupResult.removedFiles.length} arquivos, ${(
+              cleanupResult.totalSize /
+              1024 /
+              1024
+            ).toFixed(2)}MB)`
+          : `Partitura excluída via interface. ${
+              cleanupResult.removedFiles.length
+            } arquivos removidos (${(
+              cleanupResult.totalSize /
+              1024 /
+              1024
+            ).toFixed(2)}MB)`;
+
       await logScoreDelete(
         userId,
         id,
         deletedData,
-        `Partitura excluída via interface. ${
-          cleanupResult.removedFiles.length
-        } arquivos removidos (${(cleanupResult.totalSize / 1024 / 1024).toFixed(
-          2
-        )}MB)`,
+        historyDescription,
         request
       );
     } catch (logError) {
@@ -274,30 +357,64 @@ export async function DELETE(
     // Invalidar cache
     await revalidateUploadsCache(userId);
 
+    // 🆕 Resposta expandida com detalhes da limpeza
+    const successMessage =
+      cleanupResult.cleanupMethod === 'work_directory'
+        ? `Partitura e pasta da obra "${cleanupResult.workDirectory}" excluídas com sucesso!`
+        : `Partitura excluída com sucesso! ${cleanupResult.removedFiles.length} arquivos foram removidos.`;
+
     return NextResponse.json({
-      message: `Partitura excluída com sucesso! ${cleanupResult.removedFiles.length} arquivos foram removidos.`,
+      message: successMessage,
       details: {
         scoreTitle: score.title,
         workTitle: score.work.title,
         composerName: score.work.composer.fullName || score.work.composer.name,
         sourceId: score.sourceId,
         source: score.source,
+
+        // 🆕 Detalhes expandidos da limpeza
         cleanup: {
+          method: cleanupResult.cleanupMethod,
+          workDirectory: cleanupResult.workDirectory,
           filesRemoved: cleanupResult.removedFiles.length,
+          directoriesRemoved: cleanupResult.removedDirectories.length,
           spaceCleaned: `${(cleanupResult.totalSize / 1024 / 1024).toFixed(
             2
           )}MB`,
           errors: cleanupResult.errors.length,
+          success: cleanupResult.errors.length === 0,
+
+          // Lista de arquivos removidos (para debug/auditoria)
           removedFiles: cleanupResult.removedFiles.map((file) =>
             file.replace(process.cwd(), '.')
           ),
+          removedDirectories: cleanupResult.removedDirectories.map((dir) =>
+            dir.replace(process.cwd(), '.')
+          ),
+
+          // Mensagens de erro se houver
+          errorMessages: cleanupResult.errors,
+        },
+
+        // 🆕 Informações sobre a estrutura de arquivos
+        fileStructure: {
+          hadWorkDirectory: !!cleanupResult.workDirectory,
+          workDirectoryName: cleanupResult.workDirectory,
+          wasNewStructure:
+            score.downloadUrl?.includes('/scores/final/') || false,
+          wasOldStructure: score.downloadUrl?.includes('/score/') || false,
+          originalDownloadUrl: score.downloadUrl,
+          originalThumbnailUrl: score.thumbnailUrl,
         },
       },
     });
   } catch (error) {
-    console.error('Erro ao excluir partitura:', error);
+    console.error('❌ Erro ao excluir partitura:', error);
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido',
+      },
       { status: 500 }
     );
   }

@@ -26,15 +26,6 @@ export async function GET(
     // Buscar lista de teste
     const testList = await prisma.testEmailList.findUnique({
       where: { id },
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
     });
 
     if (!testList) {
@@ -95,7 +86,7 @@ export async function PUT(
     }
 
     // Verificar permissão (apenas criador ou super admin)
-    if (existingList.createdBy !== session.user.id && session.user.role !== 2) {
+    if (session.user.role !== 2) {
       return NextResponse.json(
         { success: false, error: 'Sem permissão para editar esta lista' },
         { status: 403 }
@@ -118,7 +109,6 @@ export async function PUT(
       const nameConflict = await prisma.testEmailList.findFirst({
         where: {
           name: name.trim(),
-          createdBy: session.user.id,
           id: { not: id },
         },
       });
@@ -187,15 +177,6 @@ export async function PUT(
     const updatedList = await prisma.testEmailList.update({
       where: { id },
       data: updateData,
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
     });
 
     return NextResponse.json({
@@ -248,7 +229,7 @@ export async function DELETE(
     }
 
     // Verificar permissão (apenas criador ou super admin)
-    if (existingList.createdBy !== session.user.id && session.user.role !== 2) {
+    if (session.user.role !== 2) {
       return NextResponse.json(
         { success: false, error: 'Sem permissão para deletar esta lista' },
         { status: 403 }
@@ -316,16 +297,6 @@ export async function PATCH(
             color: existingList.color,
             isActive: existingList.isActive,
             totalEmails: existingList.totalEmails,
-            createdBy: session.user.id,
-          },
-          include: {
-            creator: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-              },
-            },
           },
         });
 
@@ -345,15 +316,6 @@ export async function PATCH(
         const toggledList = await prisma.testEmailList.update({
           where: { id },
           data: { isActive: !existingList.isActive },
-          include: {
-            creator: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-              },
-            },
-          },
         });
 
         return NextResponse.json({
@@ -376,15 +338,6 @@ export async function PATCH(
           data: {
             emails: [],
             totalEmails: 0,
-          },
-          include: {
-            creator: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-              },
-            },
           },
         });
 
@@ -440,15 +393,6 @@ export async function PATCH(
           data: {
             emails: combinedEmails,
             totalEmails: combinedEmails.length,
-          },
-          include: {
-            creator: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-              },
-            },
           },
         });
 
