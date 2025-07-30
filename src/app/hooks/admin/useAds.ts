@@ -1,4 +1,4 @@
-// app/hooks/admin/useAds.ts - Hook admin corrigido para schema atual
+// app/hooks/admin/useAds.ts - Hook admin atualizado para nova estrutura de pastas
 import { useState, useCallback } from 'react';
 
 export interface Advertisement {
@@ -9,6 +9,46 @@ export interface Advertisement {
   imageUrl?: string;
   thumbnailUrl?: string;
   videoUrl?: string;
+
+  // 🆕 Novas estruturas de versões responsivas
+  imageVersions?: {
+    original?: string;
+    desktop?: string;
+    tablet?: string;
+    mobile?: string;
+    thumbnail?: string;
+  };
+  videoVersions?: {
+    original?: string;
+    desktop?: string;
+    tablet?: string;
+    mobile?: string;
+    thumbnail?: string;
+  };
+
+  // 🆕 Metadados de mídia
+  mediaMetadata?: {
+    originalFilename?: string;
+    fileSize?: number;
+    processedAt?: string;
+    placement?: string;
+    quality?: string;
+    adDirectory?: string; // Nome da pasta exclusiva
+    originalDimensions?: {
+      width: number;
+      height: number;
+    };
+    processingError?: string;
+    fallbackUsed?: boolean;
+    clonedFrom?: string;
+    clonedAt?: string;
+    clonedMediaAt?: string;
+  };
+
+  // 🆕 Configurações de qualidade
+  imageQuality?: string;
+  videoQuality?: string;
+
   ctaText?: string;
   targetUrl?: string;
   linkType: 'url' | 'whatsapp';
@@ -82,14 +122,17 @@ interface UseAdsReturn {
   uploadMedia: (
     adId: string,
     file: File,
-    type: 'image' | 'video'
+    type: 'image' | 'video',
+    quality?: string
   ) => Promise<any>;
   deleteMedia: (adId: string, type: 'image' | 'video') => Promise<void>;
   refreshStats: () => Promise<void>;
   checkConflict: (
+    type: string,
     placement: string,
     targetType: string,
-    instrumentId?: string
+    instrumentId?: string,
+    excludeId?: string
   ) => Promise<any>;
 }
 
@@ -225,6 +268,7 @@ export const useAds = (): UseAdsReturn => {
     [updateAd]
   );
 
+  // 🆕 Função deleteAd atualizada com informações sobre limpeza de pasta
   const deleteAd = useCallback(async (id: string): Promise<void> => {
     setLoading(true);
     setError(null);
@@ -239,6 +283,19 @@ export const useAds = (): UseAdsReturn => {
         throw new Error(errorData.error || 'Erro ao deletar anúncio');
       }
 
+      const responseData = await response.json();
+
+      // 🆕 Log sobre limpeza de pasta (opcional)
+      if (responseData.details?.mediaDirectoryDeleted) {
+        console.log(
+          `🗑️ Pasta de mídia removida: ${responseData.details.adDirectory}`
+        );
+      } else if (responseData.details?.adDirectory) {
+        console.warn(
+          `⚠️ Pasta de mídia não foi removida: ${responseData.details.adDirectory}`
+        );
+      }
+
       // Remover da lista local
       setAds((prev) => prev.filter((ad) => ad.id !== id));
     } catch (err) {
@@ -251,6 +308,7 @@ export const useAds = (): UseAdsReturn => {
     }
   }, []);
 
+  // 🆕 Função cloneAd atualizada para nova estrutura
   const cloneAd = useCallback(
     async (id: string, modifications: any = {}): Promise<Advertisement> => {
       setLoading(true);
@@ -271,6 +329,18 @@ export const useAds = (): UseAdsReturn => {
         const data = await response.json();
 
         if (data.success) {
+          // 🆕 Log sobre nova pasta de mídia (opcional)
+          if (data.details?.newDirectory) {
+            console.log(
+              `📁 Nova pasta de mídia criada: ${data.details.newDirectory}`
+            );
+          }
+
+          // 🆕 Log sobre mídia clonada
+          if (data.details?.hasMedia) {
+            console.log(`📋 Mídia clonada com sucesso para novo anúncio`);
+          }
+
           // Adicionar à lista local
           setAds((prev) => [data.ad, ...prev]);
           return data.ad;
@@ -321,12 +391,19 @@ export const useAds = (): UseAdsReturn => {
     []
   );
 
+  // 🆕 Função uploadMedia atualizada com parâmetro de qualidade
   const uploadMedia = useCallback(
-    async (adId: string, file: File, type: 'image' | 'video'): Promise<any> => {
+    async (
+      adId: string,
+      file: File,
+      type: 'image' | 'video',
+      quality: string = 'high'
+    ): Promise<any> => {
       try {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('type', type);
+        formData.append('quality', quality);
 
         const response = await fetch(`/api/admin/ads/${adId}/media`, {
           method: 'POST',
@@ -339,6 +416,14 @@ export const useAds = (): UseAdsReturn => {
         }
 
         const data = await response.json();
+
+        // 🆕 Log sobre pasta de mídia (opcional)
+        if (data.data?.mediaMetadata?.adDirectory) {
+          console.log(
+            `📁 Mídia salva em: ${data.data.mediaMetadata.adDirectory}`
+          );
+        }
+
         return data.success ? data : null;
       } catch (err) {
         console.error('Erro no upload:', err);
@@ -361,6 +446,15 @@ export const useAds = (): UseAdsReturn => {
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || 'Erro ao deletar mídia');
+        }
+
+        const data = await response.json();
+
+        // 🆕 Log sobre arquivos deletados (opcional)
+        if (data.deletedFiles?.length > 0) {
+          console.log(
+            `🗑️ Arquivos de mídia removidos: ${data.deletedFiles.length}`
+          );
         }
       } catch (err) {
         console.error('Erro ao deletar mídia:', err);
@@ -389,18 +483,25 @@ export const useAds = (): UseAdsReturn => {
 
   const checkConflict = useCallback(
     async (
+      type: string, // 🆕 OBRIGATÓRIO agora
       placement: string,
       targetType: string,
-      instrumentId?: string
+      instrumentId?: string,
+      excludeId?: string // 🆕 Para edição
     ): Promise<any> => {
       try {
         const params = new URLSearchParams({
+          type, // 🆕 INCLUIR TYPE
           placement,
           targetType,
         });
 
         if (instrumentId) {
           params.append('instrumentId', instrumentId);
+        }
+
+        if (excludeId) {
+          params.append('excludeId', excludeId);
         }
 
         const response = await fetch(`/api/admin/ads/check-conflict?${params}`);

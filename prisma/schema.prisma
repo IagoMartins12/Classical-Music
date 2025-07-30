@@ -1372,7 +1372,7 @@ model GeneratedReport {
   @@map("generated_reports")
 }
 
-// Model principal para publicidades - SIMPLIFICADO
+// Model Advertisement com constraint corrigida
 model Advertisement {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
@@ -1382,8 +1382,6 @@ model Advertisement {
   content     String? // Conteúdo HTML/texto adicional
 
   // 🆕 Mídia com versões responsivas
-  // Substituir imageUrl, thumbnailUrl, videoUrl por:
-  
   // URLs principais (para compatibilidade)
   imageUrl     String? // URL da versão desktop (principal)
   thumbnailUrl String? // URL do thumbnail
@@ -1450,8 +1448,11 @@ model Advertisement {
   // Estatísticas
   stats AdStats[]
 
-  // Índices otimizados para busca única por tipo
-  @@unique([placement, targetType, instrumentId], name: "unique_ad_per_type")
+  // 🔧 CONSTRAINT CORRIGIDA - agora inclui o TYPE
+  // Isso permite múltiplos tipos no mesmo placement, mas apenas um por [type, placement, targetType, instrumentId]
+  @@unique([type, placement, targetType, instrumentId], name: "unique_ad_per_complete_combination")
+  
+  // Índices otimizados para busca
   @@index([status, placement])
   @@index([targetType, instrumentId])
   @@index([createdBy])

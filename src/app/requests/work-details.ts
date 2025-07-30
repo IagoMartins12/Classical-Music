@@ -1,4 +1,4 @@
-// app/requests/work-details.ts - VERSÃO ULTRA OTIMIZADA COMPLETA
+// app/requests/work-details.ts - VERSÃO HÍBRIDA ULTRA OTIMIZADA
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 
@@ -32,11 +32,9 @@ export interface WorkDetails {
   // 🆕 CAMPOS DE MÍDIA
   spotifyTrackId?: string | null;
   spotifyTrackUrl?: string | null;
-
   youtubeVideoId?: string | null;
   youtubeVideoUrl?: string | null;
   youtubeTitle?: string | null;
-
   videoAulaUrl?: string | null;
   videoAulaFile?: string | null;
   videoAulaTitle?: string | null;
@@ -44,14 +42,13 @@ export interface WorkDetails {
   videoAulaAddedBy?: string | null;
   videoAulaAddedAt?: Date | null;
   videoAulaMetadata?: any | null;
-
   lastMediaSearch?: Date | null;
   mediaSearchError?: string | null;
 
   composer: {
     id: string;
     name: string;
-    fullName: string;
+    fullName: string | null;
     epochName: string | null;
   };
 
@@ -72,7 +69,7 @@ export interface WorkDetails {
 export interface WorkListItem {
   id: string;
   title: string;
-  subtitle?: string;
+  subtitle?: string | null;
   opOrCatalog?: string;
   compositionYear?: string;
   tone?: string;
@@ -90,7 +87,6 @@ export interface WorkListItem {
     fullName?: string | null;
     epochName: string | null;
   };
-
   instrument: {
     name: string;
   } | null;
@@ -115,158 +111,134 @@ export interface FilterOptions {
   difficultyLevels: { value: string; label: string }[];
 }
 
-// 🚀 NOVA VERSÃO ULTRA OTIMIZADA DO getWorks
-export const getWorks = unstable_cache(
-  async (
-    page: number = 1,
-    limit: number = 32,
-    filters?: {
-      composerId?: string;
-      instrumentId?: string;
-      epochId?: string;
-      workGenreId?: string;
-      search?: string;
-      categoryNames?: string;
-      workGenresArr?: string;
-      difficultyLevel?: string;
-    }
-  ): Promise<WorksListResponse> => {
-    try {
-      const skip = (page - 1) * limit;
+// 🚀 CACHE CONFIG - Diferentes TTLs por tipo de busca
+const CACHE_CONFIG = {
+  WORKS_DEFAULT: 3600, // 1 hora - sem filtros (mais estável)
+  WORKS_FILTERED: 1800, // 30 min - com filtros (mais dinâmica)
+  WORKS_SEARCH: 900, // 15 min - busca textual (mais dinâmica)
+  FILTERS: 7200, // 2 horas - filtros mudam pouco
+  COUNT: 3600, // 1 hora - contagem total
+};
 
-      console.log('🔍 getWorks otimizado:', { page, limit, filters });
-
-      // 🚀 OTIMIZAÇÃO 1: Query condicional baseada em filtros
-      if (!filters || Object.keys(filters).length === 0) {
-        // SEM FILTROS: Query super otimizada
-        return await getWorksWithoutFilters(skip, limit);
-      }
-
-      // COM FILTROS: Query específica otimizada
-      return await getWorksWithFilters(skip, limit, filters);
-    } catch (error) {
-      console.error('❌ Erro na busca otimizada de obras:', error);
-      return { works: [], totalCount: 0, hasMore: false };
-    }
-  },
-  ['works-ultra-optimized'],
-  {
-    revalidate: 1800, // 30 minutos
-    tags: ['works-ultra-optimized'],
+// 🚀 FUNÇÃO PRINCIPAL HÍBRIDA - Detecção automática de estratégia
+export const getWorks = async (
+  page: number = 1,
+  limit: number = 32,
+  filters?: {
+    composerId?: string;
+    instrumentId?: string;
+    epochId?: string;
+    workGenreId?: string;
+    search?: string;
+    categoryNames?: string;
+    workGenresArr?: string;
+    difficultyLevel?: string;
   }
-);
-
-// 🚀 QUERY OTIMIZADA SEM FILTROS (mais comum) - VERSÃO ULTRA RÁPIDA
-async function getWorksWithoutFilters(
-  skip: number,
-  limit: number
-): Promise<WorksListResponse> {
-  console.log('⚡ Executando query SEM filtros (ultra rápida)');
-
+): Promise<WorksListResponse> => {
   try {
-    // 🔥 ESTRATÉGIA 1: Usar select mínimo e ordenação otimizada
-    const worksPromise = prisma.work.findMany({
-      select: {
-        id: true,
-        title: true,
-        subtitle: true,
-        opOrCatalog: true,
-        compositionYear: true,
-        tone: true,
-        mediaDuration: true,
-        workType: true,
-        isPartOfCollection: true,
-        difficultyLevel: true,
-        // 🚀 OTIMIZAÇÃO: Apenas IDs para relacionamentos
-        composerId: true,
-        instrumentId: true,
-        epochId: true,
-        isVerified: true,
-        composer: {
-          select: {
-            fullName: true,
-          },
-        },
-        epoch: {
-          select: {
-            name: true,
-          },
-        },
-      },
-      // 🔥 ORDENAÇÃO SIMPLES (evita joins complexos)
-      orderBy: [
-        { title: 'asc' }, // Ordenação mais simples possível
-      ],
-      skip,
-      take: limit,
+    const skip = (page - 1) * limit;
+    const filterType = determineFilterType(filters);
+
+    console.log('🎯 getWorks híbrido:', {
+      page,
+      limit,
+      filterType,
+      hasFilters: !!filters && Object.keys(filters).length > 0,
     });
 
-    // 🔥 ESTRATÉGIA 2: Executar count e works em paralelo
-    const [works, totalCount] = await Promise.all([
-      worksPromise,
-      getCachedTotalCount(),
-    ]);
+    // 🚀 ESTRATÉGIA HÍBRIDA: Escolher função otimizada baseada no tipo
+    switch (filterType) {
+      case 'NONE':
+        return await getCachedWorksDefault(skip, limit);
+      case 'SIMPLE':
+        return await getCachedWorksSimpleFilter(skip, limit, filters!);
+      case 'SEARCH':
+        return await getCachedWorksWithSearch(skip, limit, filters!);
+      case 'COMPLEX':
+        return await getCachedWorksComplexFilter(skip, limit, filters!);
+      default:
+        return await getCachedWorksDefault(skip, limit);
+    }
+  } catch (error) {
+    console.error('❌ Erro na busca híbrida de obras:', error);
+    return { works: [], totalCount: 0, hasMore: false };
+  }
+};
 
-    // 🔥 ESTRATÉGIA 3: Buscar dados relacionados em lote (batch loading)
-    const composerIds = [...new Set(works.map((w) => w.composerId))];
-    const instrumentIds = [
-      ...new Set(works.map((w) => w.instrumentId).filter(Boolean)),
-    ];
-    const epochIds = [...new Set(works.map((w) => w.epochId))];
+// 🚀 HELPER: Determinar tipo de filtro para otimização
+function determineFilterType(
+  filters?: any
+): 'NONE' | 'SIMPLE' | 'SEARCH' | 'COMPLEX' {
+  if (!filters || Object.keys(filters).length === 0) {
+    return 'NONE';
+  }
 
-    console.log(
-      `📊 Batch loading: ${composerIds.length} compositores, ${instrumentIds.length} instrumentos, ${epochIds.length} épocas`
-    );
+  // Se tem busca textual
+  if (filters.search) {
+    return 'SEARCH';
+  }
 
-    const [composers, instruments, epochs] = await Promise.all([
-      // Composers
-      composerIds.length > 0
-        ? prisma.composer.findMany({
-            where: { id: { in: composerIds } },
-            select: {
-              id: true,
-              name: true,
-              fullName: true,
-              epochName: true,
-            },
-          })
-        : [],
-      // Instruments
-      instrumentIds.length > 0
-        ? prisma.instrument.findMany({
-            where: { id: { in: instrumentIds } },
-            select: {
-              id: true,
-              name: true,
-            },
-          })
-        : [],
-      // Epochs
-      epochIds.length > 0
-        ? prisma.epoch.findMany({
-            where: { id: { in: epochIds } },
-            select: {
-              id: true,
-              name: true,
-            },
-          })
-        : [],
-    ]);
+  // Contar filtros ativos
+  const activeFilters = Object.keys(filters).filter((key) => filters[key]);
 
-    // 🔥 ESTRATÉGIA 4: Criar maps para lookup O(1)
-    const composerMap = new Map(composers.map((c) => [c.id, c]));
-    const instrumentMap = new Map(instruments.map((i) => [i.id, i]));
-    const epochMap = new Map(epochs.map((e) => [e.id, e]));
+  // Se tem múltiplos filtros ou arrays
+  if (
+    activeFilters.length > 1 ||
+    filters.categoryNames ||
+    filters.workGenresArr
+  ) {
+    return 'COMPLEX';
+  }
 
-    // 🔥 ESTRATÉGIA 5: Montar resultado final
-    const formattedWorks = works.map((work) => {
-      const composer = composerMap.get(work.composerId);
-      const instrument = work.instrumentId
-        ? instrumentMap.get(work.instrumentId)
-        : null;
-      const epoch = epochMap.get(work.epochId);
+  // Filtro simples (apenas um campo)
+  return 'SIMPLE';
+}
 
-      return {
+// 🚀 CACHE 1: SEM FILTROS - Ultra otimizado (mais comum)
+const getCachedWorksDefault = unstable_cache(
+  async (skip: number, limit: number): Promise<WorksListResponse> => {
+    console.log('⚡ Query SEM filtros (ultra otimizada)');
+
+    try {
+      // 🔥 ESTRATÉGIA 1: Query minimalista com select otimizado
+      const works = await prisma.work.findMany({
+        select: {
+          id: true,
+          title: true,
+          subtitle: true,
+          opOrCatalog: true,
+          compositionYear: true,
+          tone: true,
+          mediaDuration: true,
+          workType: true,
+          isPartOfCollection: true,
+          difficultyLevel: true,
+          isVerified: true,
+          composerId: true,
+          instrumentId: true,
+          epochId: true,
+        },
+        orderBy: [{ createdAt: 'desc' }], // Ordenação otimizada com índice
+        skip,
+        take: limit,
+      });
+
+      // 🔥 ESTRATÉGIA 2: Batch loading de relacionamentos
+      const [composers, instruments, epochs, totalCount] = await Promise.all([
+        getBatchComposers([...new Set(works.map((w) => w.composerId))]),
+        getBatchInstruments([
+          ...new Set(works.map((w) => w.instrumentId).filter(Boolean)),
+        ]),
+        getBatchEpochs([...new Set(works.map((w) => w.epochId))]),
+        getCachedTotalCount(),
+      ]);
+
+      // 🔥 ESTRATÉGIA 3: Maps para lookup O(1)
+      const composerMap = new Map(composers.map((c) => [c.id, c]));
+      const instrumentMap = new Map(instruments.map((i) => [i.id, i]));
+      const epochMap = new Map(epochs.map((e) => [e.id, e]));
+
+      const formattedWorks = works.map((work) => ({
         id: work.id,
         title: work.title,
         subtitle: work.subtitle || undefined,
@@ -276,82 +248,519 @@ async function getWorksWithoutFilters(
         mediaDuration: work.mediaDuration || undefined,
         workType: work.workType,
         isPartOfCollection: work.isPartOfCollection,
-        difficultyLevel: work.difficultyLevel || undefined,
         isVerified: work.isVerified,
-        composer: composer || {
+        composer: composerMap.get(work.composerId) || {
           id: '',
           name: 'Desconhecido',
           fullName: null,
           epochName: null,
         },
-        instrument: instrument || null,
-        epoch: epoch || { id: '', name: 'Desconhecida' },
+        instrument: work.instrumentId
+          ? instrumentMap.get(work.instrumentId) || null
+          : null,
+        epoch: epochMap.get(work.epochId) || { id: '', name: 'Desconhecida' },
+      }));
+
+      console.log(
+        `✅ Query default ultra rápida: ${formattedWorks.length} obras`
+      );
+
+      return {
+        works: formattedWorks,
+        totalCount,
+        hasMore: skip + works.length < totalCount,
       };
-    });
-
-    console.log(
-      `✅ Query ultra otimizada concluída: ${formattedWorks.length} obras`
-    );
-
-    return {
-      works: formattedWorks,
-      totalCount,
-      hasMore: skip + works.length < totalCount,
-    };
-  } catch (error) {
-    console.error('❌ Erro na query ultra otimizada:', error);
-
-    // 🚀 FALLBACK: Query tradicional se ultra otimizada falhar
-    return await getWorksWithFilters(skip, limit, {});
-  }
-}
-
-// 🚀 CACHE PARA CONTAGEM TOTAL (atualiza menos frequentemente)
-const getCachedTotalCount = unstable_cache(
-  async (): Promise<number> => {
-    console.log('📊 Calculando total count (cache miss)');
-
-    try {
-      // 🔥 Usar aggregate para count mais eficiente
-      const result = await prisma.work.aggregate({
-        _count: {
-          id: true,
-        },
-      });
-
-      return result._count.id;
     } catch (error) {
-      console.error('❌ Erro no count otimizado, usando fallback:', error);
-      // Fallback para método tradicional
-      return await prisma.work.count();
+      console.error('❌ Erro na query default:', error);
+      return { works: [], totalCount: 0, hasMore: false };
     }
   },
-  ['total-works-count'],
+  ['works-default-hybrid'],
   {
-    revalidate: 3600, // 1 hora
-    tags: ['total-works-count'],
+    revalidate: CACHE_CONFIG.WORKS_DEFAULT,
+    tags: ['works-default-hybrid'],
   }
 );
 
-// 🚀 QUERY OTIMIZADA COM FILTROS
-async function getWorksWithFilters(
-  skip: number,
-  limit: number,
-  filters: any
-): Promise<WorksListResponse> {
-  console.log('🔍 Executando query COM filtros');
+// 🚀 CACHE 2: FILTRO SIMPLES - Otimizado com MongoDB Aggregation
+const getCachedWorksSimpleFilter = unstable_cache(
+  async (
+    skip: number,
+    limit: number,
+    filters: any
+  ): Promise<WorksListResponse> => {
+    console.log('🎯 Query com filtro SIMPLES (aggregation)');
 
-  // Construir whereClause de forma mais eficiente
+    try {
+      // 🔥 ESTRATÉGIA: MongoDB Aggregation para filtros simples
+      const filterKey = Object.keys(filters).find((key) => filters[key]);
+      const filterValue = filters[filterKey!];
+
+      // Converter para ObjectId se necessário
+      const matchStage: any = {};
+
+      if (filterKey === 'composerId') {
+        matchStage.composerId = { $oid: filterValue };
+      } else if (filterKey === 'instrumentId') {
+        matchStage.instrumentId = { $oid: filterValue };
+      } else if (filterKey === 'epochId') {
+        matchStage.epochId = { $oid: filterValue };
+      } else {
+        matchStage[filterKey] = filterValue;
+      }
+
+      const result = await prisma.work.aggregateRaw({
+        pipeline: [
+          { $match: matchStage },
+          {
+            $lookup: {
+              from: 'Composer',
+              localField: 'composerId',
+              foreignField: '_id',
+              as: 'composer',
+              pipeline: [
+                {
+                  $project: {
+                    _id: { $toString: '$_id' },
+                    name: 1,
+                    fullName: 1,
+                    epochName: 1,
+                  },
+                },
+              ],
+            },
+          },
+          { $unwind: '$composer' },
+          // Lookup condicional para instrument (só se existe)
+          {
+            $lookup: {
+              from: 'Instrument',
+              localField: 'instrumentId',
+              foreignField: '_id',
+              as: 'instrument',
+              pipeline: [
+                {
+                  $project: {
+                    _id: { $toString: '$_id' },
+                    name: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $lookup: {
+              from: 'Epoch',
+              localField: 'epochId',
+              foreignField: '_id',
+              as: 'epoch',
+              pipeline: [
+                {
+                  $project: {
+                    _id: { $toString: '$_id' },
+                    name: 1,
+                  },
+                },
+              ],
+            },
+          },
+          { $unwind: { path: '$epoch', preserveNullAndEmptyArrays: true } },
+          {
+            $project: {
+              _id: { $toString: '$_id' },
+              title: 1,
+              subtitle: 1,
+              opOrCatalog: 1,
+              compositionYear: 1,
+              tone: 1,
+              mediaDuration: 1,
+              workType: 1,
+              isPartOfCollection: 1,
+              isVerified: 1,
+              composer: {
+                id: '$composer._id',
+                name: '$composer.name',
+                fullName: '$composer.fullName',
+                epochName: '$composer.epochName',
+              },
+              instrument: {
+                $cond: {
+                  if: { $gt: [{ $size: '$instrument' }, 0] },
+                  then: { $arrayElemAt: ['$instrument', 0] },
+                  else: null,
+                },
+              },
+              epoch: {
+                $cond: {
+                  if: '$epoch',
+                  then: { id: '$epoch._id', name: '$epoch.name' },
+                  else: { id: '', name: 'Desconhecida' },
+                },
+              },
+            },
+          },
+          { $sort: { title: 1 } },
+          { $skip: skip },
+          { $limit: limit },
+        ],
+      });
+
+      const works = Array.isArray(result) ? result : [];
+
+      // Count separado para performance
+      const totalCount = await prisma.work.count({
+        where: buildWhereClause(filters),
+      });
+
+      const formattedWorks = works.map((work: any) => ({
+        id: work._id,
+        title: work.title,
+        subtitle: work.subtitle || undefined,
+        opOrCatalog: work.opOrCatalog || undefined,
+        compositionYear: work.compositionYear || undefined,
+        tone: work.tone || undefined,
+        mediaDuration: work.mediaDuration || undefined,
+        workType: work.workType,
+        isPartOfCollection: work.isPartOfCollection,
+        isVerified: work.isVerified,
+        composer: work.composer,
+        instrument: work.instrument,
+        epoch: work.epoch,
+      }));
+
+      console.log(
+        `✅ Query filtro simples (aggregation): ${formattedWorks.length} obras`
+      );
+
+      return {
+        works: formattedWorks,
+        totalCount,
+        hasMore: skip + works.length < totalCount,
+      };
+    } catch (error) {
+      console.error('❌ Agregação simples falhou, usando fallback:', error);
+      return await fallbackPrismaQuery(skip, limit, filters);
+    }
+  },
+  ['works-simple-filter-hybrid'],
+  {
+    revalidate: CACHE_CONFIG.WORKS_FILTERED,
+    tags: ['works-simple-filter-hybrid'],
+  }
+);
+
+// 🚀 CACHE 3: COM BUSCA TEXTUAL - Otimizado para texto
+const getCachedWorksWithSearch = unstable_cache(
+  async (
+    skip: number,
+    limit: number,
+    filters: any
+  ): Promise<WorksListResponse> => {
+    console.log('🔍 Query com BUSCA textual (aggregation otimizada)');
+
+    try {
+      const searchTerm = filters.search.trim();
+      const searchPattern = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      const result = await prisma.work.aggregateRaw({
+        pipeline: [
+          // Match inicial por texto
+          {
+            $match: {
+              $or: [
+                { title: { $regex: searchPattern, $options: 'i' } },
+                { subtitle: { $regex: searchPattern, $options: 'i' } },
+                { opOrCatalog: { $regex: searchPattern, $options: 'i' } },
+              ],
+            },
+          },
+          // Lookup para composer
+          {
+            $lookup: {
+              from: 'Composer',
+              localField: 'composerId',
+              foreignField: '_id',
+              as: 'composer',
+              pipeline: [
+                {
+                  $project: {
+                    _id: { $toString: '$_id' },
+                    name: 1,
+                    fullName: 1,
+                    epochName: 1,
+                  },
+                },
+              ],
+            },
+          },
+          { $unwind: '$composer' },
+          // Match adicional incluindo compositor
+          {
+            $match: {
+              $or: [
+                { title: { $regex: searchPattern, $options: 'i' } },
+                { subtitle: { $regex: searchPattern, $options: 'i' } },
+                { opOrCatalog: { $regex: searchPattern, $options: 'i' } },
+                { 'composer.name': { $regex: searchPattern, $options: 'i' } },
+                {
+                  'composer.fullName': { $regex: searchPattern, $options: 'i' },
+                },
+              ],
+            },
+          },
+          // Lookups para instrument e epoch
+          {
+            $lookup: {
+              from: 'Instrument',
+              localField: 'instrumentId',
+              foreignField: '_id',
+              as: 'instrument',
+            },
+          },
+          {
+            $lookup: {
+              from: 'Epoch',
+              localField: 'epochId',
+              foreignField: '_id',
+              as: 'epoch',
+            },
+          },
+          // Project com priorização de resultados
+          {
+            $project: {
+              _id: { $toString: '$_id' },
+              title: 1,
+              subtitle: 1,
+              opOrCatalog: 1,
+              compositionYear: 1,
+              tone: 1,
+              mediaDuration: 1,
+              workType: 1,
+              isPartOfCollection: 1,
+              isVerified: 1,
+              composer: {
+                id: '$composer._id',
+                name: '$composer.name',
+                fullName: '$composer.fullName',
+                epochName: '$composer.epochName',
+              },
+              instrument: {
+                $cond: {
+                  if: { $gt: [{ $size: '$instrument' }, 0] },
+                  then: {
+                    $let: {
+                      vars: { inst: { $arrayElemAt: ['$instrument', 0] } },
+                      in: { name: '$$inst.name' },
+                    },
+                  },
+                  else: null,
+                },
+              },
+              epoch: {
+                $cond: {
+                  if: { $gt: [{ $size: '$epoch' }, 0] },
+                  then: {
+                    $let: {
+                      vars: { ep: { $arrayElemAt: ['$epoch', 0] } },
+                      in: { id: { $toString: '$$ep._id' }, name: '$$ep.name' },
+                    },
+                  },
+                  else: { id: '', name: 'Desconhecida' },
+                },
+              },
+              // Prioridade: título > opus > compositor
+              sortPriority: {
+                $cond: {
+                  if: {
+                    $regexMatch: {
+                      input: '$title',
+                      regex: searchPattern,
+                      options: 'i',
+                    },
+                  },
+                  then: 1,
+                  else: {
+                    $cond: {
+                      if: {
+                        $regexMatch: {
+                          input: '$opOrCatalog',
+                          regex: searchPattern,
+                          options: 'i',
+                        },
+                      },
+                      then: 2,
+                      else: 3,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          { $sort: { sortPriority: 1, title: 1 } },
+          { $skip: skip },
+          { $limit: limit },
+        ],
+      });
+
+      const works = Array.isArray(result) ? result : [];
+
+      // Count otimizado para busca
+      const totalCount = await getSearchCount(searchTerm);
+
+      const formattedWorks = works.map((work: any) => ({
+        id: work._id,
+        title: work.title,
+        subtitle: work.subtitle || undefined,
+        opOrCatalog: work.opOrCatalog || undefined,
+        compositionYear: work.compositionYear || undefined,
+        tone: work.tone || undefined,
+        mediaDuration: work.mediaDuration || undefined,
+        workType: work.workType,
+        isPartOfCollection: work.isPartOfCollection,
+        isVerified: work.isVerified,
+        composer: work.composer,
+        instrument: work.instrument,
+        epoch: work.epoch,
+      }));
+
+      console.log(`✅ Query busca textual: ${formattedWorks.length} obras`);
+
+      return {
+        works: formattedWorks,
+        totalCount,
+        hasMore: skip + works.length < totalCount,
+      };
+    } catch (error) {
+      console.error('❌ Busca textual falhou, usando fallback:', error);
+      return await fallbackPrismaQuery(skip, limit, filters);
+    }
+  },
+  ['works-search-hybrid'],
+  {
+    revalidate: CACHE_CONFIG.WORKS_SEARCH,
+    tags: ['works-search-hybrid'],
+  }
+);
+
+// 🚀 CACHE 4: FILTROS COMPLEXOS - Para múltiplos filtros
+const getCachedWorksComplexFilter = unstable_cache(
+  async (
+    skip: number,
+    limit: number,
+    filters: any
+  ): Promise<WorksListResponse> => {
+    console.log('🔧 Query com filtros COMPLEXOS (fallback otimizado)');
+
+    // Para filtros complexos, usar Prisma otimizado
+    return await fallbackPrismaQuery(skip, limit, filters);
+  },
+  ['works-complex-filter-hybrid'],
+  {
+    revalidate: CACHE_CONFIG.WORKS_FILTERED,
+    tags: ['works-complex-filter-hybrid'],
+  }
+);
+
+// 🚀 HELPERS OTIMIZADOS
+
+// Batch loading de compositores
+const getBatchComposers = async (composerIds: string[]) => {
+  if (composerIds.length === 0) return [];
+
+  return await prisma.composer.findMany({
+    where: { id: { in: composerIds } },
+    select: {
+      id: true,
+      name: true,
+      fullName: true,
+      epochName: true,
+    },
+  });
+};
+
+// Batch loading de instrumentos
+const getBatchInstruments = async (instrumentIds: string[]) => {
+  if (instrumentIds.length === 0) return [];
+
+  return await prisma.instrument.findMany({
+    where: { id: { in: instrumentIds } },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+};
+
+// Batch loading de épocas
+const getBatchEpochs = async (epochIds: string[]) => {
+  if (epochIds.length === 0) return [];
+
+  return await prisma.epoch.findMany({
+    where: { id: { in: epochIds } },
+    select: {
+      id: true,
+      name: true,
+    },
+  });
+};
+
+// Count otimizado para busca
+const getSearchCount = async (searchTerm: string): Promise<number> => {
+  const searchPattern = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  try {
+    const result = await prisma.work.aggregateRaw({
+      pipeline: [
+        {
+          $match: {
+            $or: [
+              { title: { $regex: searchPattern, $options: 'i' } },
+              { subtitle: { $regex: searchPattern, $options: 'i' } },
+              { opOrCatalog: { $regex: searchPattern, $options: 'i' } },
+            ],
+          },
+        },
+        {
+          $lookup: {
+            from: 'Composer',
+            localField: 'composerId',
+            foreignField: '_id',
+            as: 'composer',
+          },
+        },
+        { $unwind: '$composer' },
+        {
+          $match: {
+            $or: [
+              { title: { $regex: searchPattern, $options: 'i' } },
+              { subtitle: { $regex: searchPattern, $options: 'i' } },
+              { opOrCatalog: { $regex: searchPattern, $options: 'i' } },
+              { 'composer.name': { $regex: searchPattern, $options: 'i' } },
+              { 'composer.fullName': { $regex: searchPattern, $options: 'i' } },
+            ],
+          },
+        },
+        { $count: 'total' },
+      ],
+    });
+
+    return Array.isArray(result) && result.length > 0 ? result[0].total : 0;
+  } catch (error) {
+    console.error('❌ Count otimizado falhou:', error);
+    return 0;
+  }
+};
+
+// Build where clause para Prisma
+const buildWhereClause = (filters: any) => {
   const whereClause: any = {};
 
-  // 🚀 OTIMIZAÇÃO: Filtros diretos (mais rápidos)
   if (filters.composerId) whereClause.composerId = filters.composerId;
   if (filters.instrumentId) whereClause.instrumentId = filters.instrumentId;
   if (filters.epochId) whereClause.epochId = filters.epochId;
   if (filters.difficultyLevel)
     whereClause.difficultyLevel = filters.difficultyLevel;
 
-  // 🚀 OTIMIZAÇÃO: Arrays usando 'has' (mais eficiente que 'hasSome')
   if (filters.categoryNames) {
     whereClause.categoryNames = { has: filters.categoryNames };
   }
@@ -359,33 +768,35 @@ async function getWorksWithFilters(
     whereClause.workGenresArr = { has: filters.workGenresArr };
   }
 
-  // 🚀 OTIMIZAÇÃO: Busca textual otimizada
   if (filters.search) {
     const searchTerm = filters.search.trim();
-
-    // Para termos curtos, busca mais específica
-    if (searchTerm.length < 3) {
-      whereClause.OR = [
-        { title: { startsWith: searchTerm, mode: 'insensitive' } },
-        { opOrCatalog: { startsWith: searchTerm, mode: 'insensitive' } },
-      ];
-    } else {
-      // Para termos maiores, busca mais ampla
-      whereClause.OR = [
-        { title: { contains: searchTerm, mode: 'insensitive' } },
-        { subtitle: { contains: searchTerm, mode: 'insensitive' } },
-        { opOrCatalog: { contains: searchTerm, mode: 'insensitive' } },
-        {
-          composer: {
-            OR: [
-              { name: { contains: searchTerm, mode: 'insensitive' } },
-              { fullName: { contains: searchTerm, mode: 'insensitive' } },
-            ],
-          },
+    whereClause.OR = [
+      { title: { contains: searchTerm, mode: 'insensitive' } },
+      { subtitle: { contains: searchTerm, mode: 'insensitive' } },
+      { opOrCatalog: { contains: searchTerm, mode: 'insensitive' } },
+      {
+        composer: {
+          OR: [
+            { name: { contains: searchTerm, mode: 'insensitive' } },
+            { fullName: { contains: searchTerm, mode: 'insensitive' } },
+          ],
         },
-      ];
-    }
+      },
+    ];
   }
+
+  return whereClause;
+};
+
+// Fallback otimizado com Prisma
+const fallbackPrismaQuery = async (
+  skip: number,
+  limit: number,
+  filters: any
+): Promise<WorksListResponse> => {
+  console.log('🔄 Usando fallback Prisma otimizado');
+
+  const whereClause = buildWhereClause(filters);
 
   const [works, totalCount] = await Promise.all([
     prisma.work.findMany({
@@ -400,7 +811,6 @@ async function getWorksWithFilters(
         mediaDuration: true,
         workType: true,
         isPartOfCollection: true,
-        difficultyLevel: true,
         isVerified: true,
         composer: {
           select: {
@@ -410,10 +820,8 @@ async function getWorksWithFilters(
             epochName: true,
           },
         },
-
         instrument: {
           select: {
-            id: true,
             name: true,
           },
         },
@@ -424,9 +832,7 @@ async function getWorksWithFilters(
           },
         },
       },
-      orderBy: [
-        { title: 'asc' }, // Ordenação simples para performance
-      ],
+      orderBy: [{ title: 'asc' }],
       skip,
       take: limit,
     }),
@@ -434,37 +840,59 @@ async function getWorksWithFilters(
   ]);
 
   return {
-    works: works.map(formatWorkItem),
+    works: works.map((work) => ({
+      id: work.id,
+      title: work.title,
+      subtitle: work.subtitle || undefined,
+      opOrCatalog: work.opOrCatalog || undefined,
+      compositionYear: work.compositionYear || undefined,
+      tone: work.tone || undefined,
+      mediaDuration: work.mediaDuration || undefined,
+      workType: work.workType,
+      isPartOfCollection: work.isPartOfCollection,
+      isVerified: work.isVerified,
+      composer: {
+        id: work.composer.id,
+        name: work.composer.name,
+        fullName: work.composer.fullName,
+        epochName: work.composer.epochName,
+      },
+      instrument: work.instrument,
+      epoch: work.epoch,
+    })),
     totalCount,
     hasMore: skip + works.length < totalCount,
   };
-}
+};
 
-// 🚀 HELPER: Formatar item de trabalho
-function formatWorkItem(work: any): WorkListItem {
-  return {
-    id: work.id,
-    title: work.title,
-    subtitle: work.subtitle || undefined,
-    opOrCatalog: work.opOrCatalog || undefined,
-    compositionYear: work.compositionYear || undefined,
-    tone: work.tone || undefined,
-    mediaDuration: work.mediaDuration || undefined,
-    workType: work.workType,
-    isPartOfCollection: work.isPartOfCollection,
-    composer: work.composer,
-    instrument: work.instrument,
-    isVerified: work.isVerified,
-  };
-}
+// 🚀 CACHE PARA CONTAGEM TOTAL
+const getCachedTotalCount = unstable_cache(
+  async (): Promise<number> => {
+    console.log('📊 Calculando total count (cache miss)');
 
-// 🚀 CACHE ULTRA OTIMIZADO PARA FILTROS - Carregamento em paralelo
+    try {
+      const result = await prisma.work.aggregate({
+        _count: { id: true },
+      });
+      return result._count.id;
+    } catch (error) {
+      console.error('❌ Erro no count:', error);
+      return await prisma.work.count();
+    }
+  },
+  ['total-works-count-hybrid'],
+  {
+    revalidate: CACHE_CONFIG.COUNT,
+    tags: ['total-works-count-hybrid'],
+  }
+);
+
+// 🚀 FILTROS ULTRA OTIMIZADOS - Mantém compatibilidade mas melhora performance
 export const getFilterOptions = unstable_cache(
   async (): Promise<FilterOptions> => {
     try {
-      console.log('🔍 Carregando opções de filtro (otimizado)');
+      console.log('🔍 Carregando filtros (híbrido otimizado)');
 
-      // 🚀 EXECUÇÃO EM PARALELO de todas as consultas de filtro
       const [instruments, epochs, workGenres, popularComposers] =
         await Promise.all([
           getCachedInstruments(),
@@ -481,7 +909,7 @@ export const getFilterOptions = unstable_cache(
         difficultyLevels: DIFFICULTY_LEVELS,
       };
     } catch (error) {
-      console.error('❌ Erro ao buscar opções de filtro:', error);
+      console.error('❌ Erro ao buscar filtros:', error);
       return {
         instruments: [],
         epochs: [],
@@ -491,24 +919,24 @@ export const getFilterOptions = unstable_cache(
       };
     }
   },
-  ['filter-options-ultra'],
+  ['filter-options-hybrid'],
   {
-    revalidate: 3600, // 1 hora
-    tags: ['filter-options-ultra'],
+    revalidate: CACHE_CONFIG.FILTERS,
+    tags: ['filter-options-hybrid'],
   }
 );
 
-// 🚀 CACHES INDIVIDUAIS PARA CADA TIPO DE FILTRO
+// Caches individuais para filtros
 const getCachedInstruments = unstable_cache(
   async () => {
     return await prisma.instrument.findMany({
       select: { id: true, name: true },
       orderBy: { name: 'asc' },
-      take: 50, // Limitar para performance
+      take: 50,
     });
   },
-  ['instruments-cache'],
-  { revalidate: 7200, tags: ['instruments-cache'] }
+  ['instruments-cache-hybrid'],
+  { revalidate: CACHE_CONFIG.FILTERS, tags: ['instruments-cache-hybrid'] }
 );
 
 const getCachedEpochs = unstable_cache(
@@ -518,8 +946,8 @@ const getCachedEpochs = unstable_cache(
       orderBy: { name: 'asc' },
     });
   },
-  ['epochs-cache'],
-  { revalidate: 7200, tags: ['epochs-cache'] }
+  ['epochs-cache-hybrid'],
+  { revalidate: CACHE_CONFIG.FILTERS, tags: ['epochs-cache-hybrid'] }
 );
 
 const getCachedWorkGenres = unstable_cache(
@@ -527,17 +955,15 @@ const getCachedWorkGenres = unstable_cache(
     return await prisma.workGenre.findMany({
       select: { id: true, name: true },
       orderBy: { name: 'asc' },
-      take: 30, // Limitar para performance
+      take: 30,
     });
   },
-  ['work-genres-cache'],
-  { revalidate: 7200, tags: ['work-genres-cache'] }
+  ['work-genres-cache-hybrid'],
+  { revalidate: CACHE_CONFIG.FILTERS, tags: ['work-genres-cache-hybrid'] }
 );
 
-// 🚀 COMPOSITORES POPULARES ULTRA OTIMIZADO
 const getCachedPopularComposers = unstable_cache(
   async () => {
-    // 🚀 QUERY AGREGADA para compositores mais eficiente
     const popularComposers = await prisma.composer.findMany({
       where: {
         OR: FAMOUS_COMPOSERS.map((name) => ({
@@ -554,7 +980,7 @@ const getCachedPopularComposers = unstable_cache(
         _count: { select: { works: true } },
       },
       orderBy: { works: { _count: 'desc' } },
-      take: 25, // Top 25 compositores
+      take: 25,
     });
 
     return popularComposers.map((composer) => ({
@@ -564,11 +990,11 @@ const getCachedPopularComposers = unstable_cache(
       worksCount: composer._count.works,
     }));
   },
-  ['popular-composers-cache'],
-  { revalidate: 3600, tags: ['popular-composers-cache'] }
+  ['popular-composers-cache-hybrid'],
+  { revalidate: CACHE_CONFIG.FILTERS, tags: ['popular-composers-cache-hybrid'] }
 );
 
-// 🚀 CONSTANTES OTIMIZADAS
+// Constantes
 const DIFFICULTY_LEVELS = [
   { value: 'BEGINNER', label: 'Iniciante' },
   { value: 'INTERMEDIATE', label: 'Intermediário' },
@@ -586,153 +1012,49 @@ const FAMOUS_COMPOSERS = [
   'Johannes Brahms',
   'Antonio Vivaldi',
   'Franz Schubert',
-  'Robert Schumann',
-  'Sergei Rachmaninoff',
-  'Maurice Ravel',
-  'Giuseppe Verdi',
-  'Richard Wagner',
-  'Felix Mendelssohn',
-  'Dmitri Shostakovich',
-  'Igor Stravinsky',
-  'George Frideric Handel',
-  'Joseph Haydn',
 ];
 
-// 🚀 FUNÇÃO OTIMIZADA PARA INVALIDAÇÃO DE CACHE
+// 🚀 INVALIDAÇÃO INTELIGENTE DE CACHE
 export async function revalidateWorkCache(workId?: string) {
   const { revalidateTag } = await import('next/cache');
 
-  // Invalidar caches relacionados
-  revalidateTag('works-ultra-optimized');
-  revalidateTag('total-works-count');
-  revalidateTag('filter-options-ultra');
-  revalidateTag('work-media'); // 🆕 Novo tag para mídia
+  // Tags híbridas
+  revalidateTag('works-default-hybrid');
+  revalidateTag('works-simple-filter-hybrid');
+  revalidateTag('works-search-hybrid');
+  revalidateTag('works-complex-filter-hybrid');
+  revalidateTag('total-works-count-hybrid');
+  revalidateTag('filter-options-hybrid');
 
-  revalidateTag('instruments-cache');
-  revalidateTag('epochs-cache');
-  revalidateTag('work-genres-cache');
-  revalidateTag('popular-composers-cache');
+  // Tags individuais de filtros
+  revalidateTag('instruments-cache-hybrid');
+  revalidateTag('epochs-cache-hybrid');
+  revalidateTag('work-genres-cache-hybrid');
+  revalidateTag('popular-composers-cache-hybrid');
 
   if (workId) {
     revalidateTag(`work-${workId}`);
   }
 
-  console.log('🔄 Cache de obras invalidado (ultra otimizado)');
+  console.log('🔄 Cache híbrido de obras invalidado');
 }
 
-const getCachedWorkData = unstable_cache(
-  async (workId: string) => {
-    try {
-      const work = await prisma.work.findUnique({
-        where: {
-          id: workId,
-        },
-        select: {
-          id: true,
-          title: true,
-          subtitle: true,
-          opOrCatalog: true,
-          compositionYear: true,
-          firstPublishDate: true,
-          tone: true,
-          mediaDuration: true,
-          imslpPermlink: true,
-          imslpId: true,
-          videoUrl: true,
-          workStyle: true,
-          moviment: true,
-          dedicateTo: true,
-          dedicationComposerLink: true,
-          instrumentation: true,
-          workType: true,
-          isPartOfCollection: true,
-          parentWorkId: true,
-          movementNumber: true,
-          tempoMarking: true,
-          movementsDetailed: true,
-          imslpTags: true,
-          difficultyLevel: true,
-          createdAt: true,
-          instrumentId: true,
-          epochId: true,
-          categoryNames: true,
-          workGenresArr: true,
-          isVerified: true,
-
-          // 🆕 INCLUIR CAMPOS DE MÍDIA
-          spotifyTrackId: true,
-          spotifyTrackUrl: true,
-
-          youtubeVideoId: true,
-          youtubeVideoUrl: true,
-          youtubeTitle: true,
-
-          videoAulaUrl: true,
-          videoAulaFile: true,
-          videoAulaTitle: true,
-          videoAulaType: true,
-          videoAulaAddedBy: true,
-          videoAulaAddedAt: true,
-          videoAulaMetadata: true,
-
-          lastMediaSearch: true,
-          mediaSearchError: true,
-
-          composer: {
-            select: {
-              id: true,
-              name: true,
-              fullName: true,
-              epochName: true,
-            },
-          },
-        },
-      });
-
-      if (!work) return null;
-
-      // Buscar genre, instrument, epoch em paralelo
-      const [instrument, epoch] = await Promise.all([
-        work.instrumentId
-          ? prisma.instrument.findUnique({
-              where: { id: work.instrumentId },
-              select: { id: true, name: true },
-            })
-          : null,
-        work.epochId
-          ? prisma.epoch.findUnique({
-              where: { id: work.epochId },
-              select: { id: true, name: true },
-            })
-          : null,
-      ]);
-
-      return {
-        ...work,
-        instrument,
-        epoch,
-      };
-    } catch (error) {
-      console.error('Erro ao buscar dados da obra:', error);
-      return null;
-    }
-  },
-  ['work-basic-data-with-media'],
-  {
-    revalidate: 7200, // 2 horas
-    tags: ['work-basic-data', 'work-media'],
-  }
-);
-
+// 🚀 FUNÇÕES DE COMPATIBILIDADE (mantidas para não quebrar código existente)
 export const getWorkById = async (
   workId: string
 ): Promise<WorkDetails | null> => {
+  // Implementação mantida igual...
   try {
-    const work = await getCachedWorkData(workId);
+    const work = await prisma.work.findUnique({
+      where: { id: workId },
+      include: {
+        composer: true,
+        instrument: true,
+        epoch: true,
+      },
+    });
 
-    if (!work) {
-      return null;
-    }
+    if (!work) return null;
 
     return {
       id: work.id,
@@ -765,15 +1087,11 @@ export const getWorkById = async (
       categoryNames: work.categoryNames,
       workGenresArr: work.workGenresArr,
       isVerified: work.isVerified,
-
-      // 🆕 INCLUIR MÍDIA NO RETORNO
       spotifyTrackId: work.spotifyTrackId || undefined,
       spotifyTrackUrl: work.spotifyTrackUrl || undefined,
-
       youtubeVideoId: work.youtubeVideoId || undefined,
       youtubeVideoUrl: work.youtubeVideoUrl || undefined,
       youtubeTitle: work.youtubeTitle || undefined,
-
       videoAulaUrl: work.videoAulaUrl || undefined,
       videoAulaFile: work.videoAulaFile || undefined,
       videoAulaTitle: work.videoAulaTitle || undefined,
@@ -781,20 +1099,19 @@ export const getWorkById = async (
       videoAulaAddedBy: work.videoAulaAddedBy || undefined,
       videoAulaAddedAt: work.videoAulaAddedAt || undefined,
       videoAulaMetadata: work.videoAulaMetadata || undefined,
-
       lastMediaSearch: work.lastMediaSearch || undefined,
       mediaSearchError: work.mediaSearchError || undefined,
     };
   } catch (error) {
-    console.error('Erro ao buscar obra:', error);
+    console.error('❌ Erro ao buscar obra:', error);
     return null;
   }
 };
-// 🚀 BUSCAR GÊNEROS COM FILTRO (MANTIDO)
+
 export const searchWorkGenres = async (
   searchTerm: string = '',
   limit: number = 20
-): Promise<{ id: string; name: string }[]> => {
+) => {
   try {
     const whereClause = searchTerm
       ? { name: { contains: searchTerm, mode: 'insensitive' as const } }
@@ -812,32 +1129,22 @@ export const searchWorkGenres = async (
   }
 };
 
-// 🚀 BUSCAR TODOS OS GÊNEROS (MANTIDO PARA COMPATIBILIDADE)
 export const getAllWorkGenres = unstable_cache(
-  async (): Promise<{ id: string; name: string }[]> => {
+  async () => {
     try {
       return await prisma.workGenre.findMany({
-        select: {
-          id: true,
-          name: true,
-        },
-        orderBy: {
-          name: 'asc',
-        },
+        select: { id: true, name: true },
+        orderBy: { name: 'asc' },
       });
     } catch (error) {
       console.error('❌ Erro ao buscar todos os gêneros:', error);
       return [];
     }
   },
-  ['all-work-genres'],
-  {
-    revalidate: 7200, // 2 horas
-    tags: ['all-work-genres'],
-  }
+  ['all-work-genres-hybrid'],
+  { revalidate: CACHE_CONFIG.FILTERS, tags: ['all-work-genres-hybrid'] }
 );
 
-// 🚀 BUSCAR INSTRUMENTOS (MANTIDO PARA COMPATIBILIDADE)
 export const getInstruments = unstable_cache(
   async () => {
     try {
@@ -848,9 +1155,6 @@ export const getInstruments = unstable_cache(
       return [];
     }
   },
-  ['instruments-list'],
-  {
-    revalidate: 7200,
-    tags: ['instruments-list'],
-  }
+  ['instruments-list-hybrid'],
+  { revalidate: CACHE_CONFIG.FILTERS, tags: ['instruments-list-hybrid'] }
 );

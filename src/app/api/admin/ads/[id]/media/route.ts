@@ -1,4 +1,4 @@
-// app/api/admin/ads/[id]/media/route.ts - Upload usando processador servidor
+// app/api/admin/ads/[id]/media/route.ts - Upload usando pasta exclusiva por AD
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -7,15 +7,18 @@ import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { revalidateTag } from 'next/cache';
 
-// Importar funções do servidor
+// Importar funções do servidor atualizadas
 import {
   processImage,
   processVideo,
   deleteAllMediaVersions,
   generateVideoThumbnail,
+  createAdMediaDirectory,
+  deleteAdMediaDirectory,
 } from '@/app/libs/ads/serverMediaProcessor';
 
 import { AD_DIMENSIONS } from '@/app/libs/ads/mediaUtils';
+
 interface Params {
   id: string;
 }
@@ -31,7 +34,6 @@ export async function POST(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
     const { id } = await params;
-
     const adId = id;
 
     // Verificar se o anúncio existe
@@ -87,21 +89,16 @@ export async function POST(
       );
     }
 
-    // Gerar nome único para o arquivo
+    // 🆕 Criar diretório exclusivo para o anúncio
+    const adDir = await createAdMediaDirectory(ad.title, ad.id);
+
+    // Gerar nome único para o arquivo temporário
     const timestamp = Date.now();
     const extension = file.name.split('.').pop();
-    const filename = `ad_${adId}_${type}_${timestamp}.${extension}`;
+    const filename = `${type}_${timestamp}.${extension}`;
 
-    // Criar diretório se não existir
-    const uploadDir = path.join(process.cwd(), 'public/uploads/ads');
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (error) {
-      console.log('📁 Diretório já existe', error);
-    }
-
-    // Salvar arquivo temporário
-    const tempFilePath = path.join(uploadDir, filename);
+    // Salvar arquivo temporário na pasta do ad
+    const tempFilePath = path.join(adDir, `temp_${filename}`);
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     await writeFile(tempFilePath, buffer);
@@ -115,17 +112,19 @@ export async function POST(
       processedAt: new Date().toISOString(),
       placement: ad.placement,
       quality: quality,
+      adDirectory: `${ad.title}-${ad.id}`, // 🆕 Registrar diretório usado
     };
 
     try {
       if (type === 'image') {
         console.log('🖼️ Iniciando processamento de imagem...');
 
-        // Para imagens, podemos validar dimensões no lado cliente também
-        // mas vamos processar independentemente
+        // 🆕 Usar nova função com título e ID do ad
         const imageVersions = await processImage(
           tempFilePath,
-          ad.placement as keyof typeof AD_DIMENSIONS
+          ad.placement as keyof typeof AD_DIMENSIONS,
+          ad.title,
+          ad.id
         );
 
         processedMedia.imageVersions = imageVersions;
@@ -137,9 +136,12 @@ export async function POST(
       } else if (type === 'video') {
         console.log('🎥 Iniciando processamento de vídeo...');
 
+        // 🆕 Usar nova função com título e ID do ad
         const videoVersions = await processVideo(
           tempFilePath,
-          ad.placement as keyof typeof AD_DIMENSIONS
+          ad.placement as keyof typeof AD_DIMENSIONS,
+          ad.title,
+          ad.id
         );
 
         processedMedia.videoVersions = videoVersions;
@@ -152,18 +154,29 @@ export async function POST(
     } catch (processingError) {
       console.error('❌ Erro no processamento:', processingError);
 
-      // Em caso de erro no processamento, usar arquivo original como fallback
-      const fallbackUrl = `/uploads/ads/${filename}`;
+      // 🆕 Em caso de erro, usar arquivo na pasta do ad como fallback
+      const adDir = await createAdMediaDirectory(ad.title, ad.id);
+      const fallbackFilename = `${type}_original.${extension}`;
+      const fallbackPath = path.join(adDir, fallbackFilename);
+      const fallbackPublicPath = `/uploads/ads/${ad.title}-${ad.id}/${fallbackFilename}`;
+
+      // Copiar arquivo temporário para local definitivo
+      await writeFile(fallbackPath, buffer);
+
       if (type === 'image') {
-        processedMedia.imageUrl = fallbackUrl;
-        processedMedia.imageVersions = { original: fallbackUrl };
+        processedMedia.imageUrl = fallbackPublicPath;
+        processedMedia.imageVersions = { original: fallbackPublicPath };
       } else {
-        processedMedia.videoUrl = fallbackUrl;
-        processedMedia.videoVersions = { original: fallbackUrl };
+        processedMedia.videoUrl = fallbackPublicPath;
+        processedMedia.videoVersions = { original: fallbackPublicPath };
 
         // Tentar gerar thumbnail simples para vídeo
         try {
-          const thumbnailUrl = await generateVideoThumbnail(tempFilePath);
+          const thumbnailUrl = await generateVideoThumbnail(
+            fallbackPath,
+            ad.title,
+            ad.id
+          );
           if (thumbnailUrl) {
             processedMedia.thumbnailUrl = thumbnailUrl;
           }
@@ -177,6 +190,14 @@ export async function POST(
           ? processingError.message
           : 'Erro desconhecido';
       mediaMetadata.fallbackUsed = true;
+    } finally {
+      // 🆕 Limpar arquivo temporário
+      try {
+        await require('fs/promises').unlink(tempFilePath);
+        console.log('🧹 Arquivo temporário removido');
+      } catch (cleanupError) {
+        console.warn('⚠️ Erro ao limpar arquivo temporário:', cleanupError);
+      }
     }
 
     // Deletar mídia anterior antes de atualizar
@@ -250,7 +271,7 @@ export async function POST(
           idealDimensions:
             AD_DIMENSIONS[ad.placement as keyof typeof AD_DIMENSIONS],
           qualityTips: [
-            '✨ Imagens foram otimizadas para todos os dispositivos',
+            '✨ Mídia salva em pasta exclusiva do anúncio',
             '📱 Versões responsivas criadas automaticamente',
             '🎯 Proporções ajustadas para melhor visualização',
             type === 'video'
@@ -284,7 +305,6 @@ export async function DELETE(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
     const { id } = await params;
-
     const adId = id;
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');

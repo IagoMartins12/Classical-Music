@@ -1,4 +1,4 @@
-// app/admin/ads/components/MediaUploadModal.tsx - Modal aprimorado com preview e qualidade
+// app/admin/ads/components/MediaUploadModal.tsx - Modal com preview corrigido
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
@@ -60,6 +60,42 @@ export default function MediaUploadModal({
   const placementDimensions =
     AD_DIMENSIONS[ad.placement as keyof typeof AD_DIMENSIONS];
 
+  // 🆕 Função corrigida para criar preview
+  const createPreviewUrl = useCallback((file: File): string => {
+    try {
+      return URL.createObjectURL(file);
+    } catch (error) {
+      console.error('❌ Erro ao criar preview URL:', error);
+      throw error;
+    }
+  }, []);
+
+  // 🆕 Função corrigida para obter dimensões de imagem
+  const getImageDimensions = useCallback(
+    (file: File): Promise<{ width: number; height: number }> => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        const url = createPreviewUrl(file);
+
+        img.onload = () => {
+          resolve({
+            width: img.naturalWidth,
+            height: img.naturalHeight,
+          });
+          URL.revokeObjectURL(url); // Limpar URL após obter dimensões
+        };
+
+        img.onerror = () => {
+          reject(new Error('Falha ao carregar imagem para obter dimensões'));
+          URL.revokeObjectURL(url);
+        };
+
+        img.src = url;
+      });
+    },
+    [createPreviewUrl]
+  );
+
   const handleFileSelect = useCallback(
     async (file: File) => {
       if (!file) return;
@@ -76,34 +112,76 @@ export default function MediaUploadModal({
       const type = isImage ? 'image' : 'video';
       setUploadType(type);
 
-      // Criar preview
-      const url = URL.createObjectURL(file);
-      const preview: FilePreview = { file, type, url };
+      // 🆕 Criar preview imediatamente
+      let previewUrl: string;
+      try {
+        previewUrl = createPreviewUrl(file);
+      } catch (error) {
+        toast.error('Erro ao criar preview do arquivo');
+        return;
+      }
 
+      // Criar objeto base do preview
+      const preview: FilePreview = {
+        file,
+        type,
+        url: previewUrl,
+      };
+
+      // 🆕 Definir preview imediatamente (para mostrar na tela)
+      setFilePreview(preview);
+
+      // Para imagens, obter dimensões e validar em background
       if (isImage) {
-        // Obter dimensões da imagem
-        const img = new Image();
-        img.onload = () => {
-          const dimensions = { width: img.width, height: img.height };
+        try {
+          console.log('🖼️ Obtendo dimensões da imagem...');
+          const dimensions = await getImageDimensions(file);
+
+          console.log(
+            `📐 Dimensões obtidas: ${dimensions.width}x${dimensions.height}`
+          );
+
           const validation = validateMediaDimensions(
-            img.width,
-            img.height,
+            dimensions.width,
+            dimensions.height,
             ad.placement as keyof typeof AD_DIMENSIONS
           );
 
-          preview.dimensions = dimensions;
-          preview.validation = validation;
-          setFilePreview({ ...preview });
+          // 🆕 Atualizar preview com dimensões e validação
+          setFilePreview((prev) => {
+            if (prev && prev.file === file) {
+              return {
+                ...prev,
+                dimensions,
+                validation,
+              };
+            }
+            return prev;
+          });
 
-          URL.revokeObjectURL(url); // Limpar URL temporária
-        };
-        img.src = url;
+          console.log('✅ Validação de imagem concluída');
+        } catch (error) {
+          console.error('❌ Erro ao obter dimensões:', error);
+
+          // 🆕 Atualizar preview com erro, mas manter o preview visível
+          setFilePreview((prev) => {
+            if (prev && prev.file === file) {
+              return {
+                ...prev,
+                validation: {
+                  isValid: false,
+                  message: 'Não foi possível validar as dimensões da imagem',
+                },
+              };
+            }
+            return prev;
+          });
+        }
       } else {
-        // Para vídeos, apenas definir o preview
-        setFilePreview({ ...preview });
+        console.log('🎥 Arquivo de vídeo selecionado - preview criado');
       }
     },
-    [ad.placement]
+    [ad.placement, createPreviewUrl, getImageDimensions]
   );
 
   const uploadFile = async () => {
@@ -139,7 +217,8 @@ export default function MediaUploadModal({
         }, 1000);
       }
 
-      setFilePreview(null);
+      // 🆕 Limpar preview corretamente
+      clearPreview();
       onSuccess?.();
       onClose();
     } catch (error: any) {
@@ -202,12 +281,29 @@ export default function MediaUploadModal({
     }
   };
 
-  const clearPreview = () => {
+  // 🆕 Função corrigida para limpar preview
+  const clearPreview = useCallback(() => {
     if (filePreview?.url) {
-      URL.revokeObjectURL(filePreview.url);
+      try {
+        URL.revokeObjectURL(filePreview.url);
+        console.log('🧹 Preview URL limpa');
+      } catch (error) {
+        console.warn('⚠️ Erro ao limpar preview URL:', error);
+      }
     }
     setFilePreview(null);
-  };
+
+    // Limpar input file também
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, [filePreview]);
+
+  // 🆕 Cleanup ao desmontar componente
+  const handleModalClose = useCallback(() => {
+    clearPreview();
+    onClose();
+  }, [clearPreview, onClose]);
 
   const qualityOptions = [
     {
@@ -228,7 +324,7 @@ export default function MediaUploadModal({
   ] as const;
 
   return (
-    <Modal isOpen={!!ad} onClose={onClose} maxWidth="4xl">
+    <Modal isOpen={!!ad} onClose={handleModalClose} maxWidth="4xl">
       <div className="w-full">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">
@@ -532,7 +628,7 @@ export default function MediaUploadModal({
                 </div>
               </div>
 
-              {/* Preview do arquivo selecionado */}
+              {/* 🆕 Preview do arquivo selecionado - CORRIGIDO */}
               {filePreview && (
                 <div className="classical-card p-4 bg-accent-green/5 border border-accent-green/20">
                   <div className="flex items-center justify-between mb-3">
@@ -551,8 +647,8 @@ export default function MediaUploadModal({
                       <div className="aspect-video bg-theme-secondary rounded-lg overflow-hidden">
                         {filePreview.type === 'image' ? (
                           <ImageNext
-                            width={50}
-                            height={50}
+                            width={400}
+                            height={300}
                             src={filePreview.url}
                             alt="Preview"
                             className="w-full h-full object-cover"
@@ -562,6 +658,7 @@ export default function MediaUploadModal({
                             src={filePreview.url}
                             className="w-full h-full object-cover"
                             controls
+                            preload="metadata"
                           />
                         )}
                       </div>
@@ -727,6 +824,9 @@ export default function MediaUploadModal({
                     </h4>
                     <ul className="text-sm text-theme-secondary space-y-1">
                       <li>
+                        • 📁 Arquivos salvos em pasta exclusiva do anúncio
+                      </li>
+                      <li>
                         • Criamos versões otimizadas para desktop, tablet e
                         mobile
                       </li>
@@ -753,7 +853,11 @@ export default function MediaUploadModal({
           </div>
 
           <div className="flex space-x-3">
-            <Button variant="ghost" onClick={onClose} disabled={uploading}>
+            <Button
+              variant="ghost"
+              onClick={handleModalClose}
+              disabled={uploading}
+            >
               Fechar
             </Button>
 

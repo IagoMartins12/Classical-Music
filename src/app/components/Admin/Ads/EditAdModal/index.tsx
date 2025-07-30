@@ -176,6 +176,7 @@ export default function EditAdModal({
 
       try {
         const result = await checkConflict(
+          formData.type,
           formData.placement,
           formData.targetType,
           formData.targetType === 'INSTRUMENT'
@@ -184,7 +185,11 @@ export default function EditAdModal({
         );
 
         if (result.hasConflict) {
-          setConflictInfo(result.message);
+          const conflictMessages = result.conflicts
+            ? result.conflicts.map((c: any) => c.message).join(' ')
+            : result.message;
+
+          setConflictInfo(conflictMessages);
         } else {
           setConflictInfo(null);
         }

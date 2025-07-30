@@ -130,6 +130,7 @@ export default function CreateAdModal({
 
       try {
         const result = await checkConflict(
+          formData.type,
           formData.placement,
           formData.targetType,
           formData.targetType === 'INSTRUMENT'
@@ -138,7 +139,11 @@ export default function CreateAdModal({
         );
 
         if (result.hasConflict) {
-          setConflictInfo(result.message);
+          const conflictMessages = result.conflicts
+            ? result.conflicts.map((c: any) => c.message).join(' ')
+            : result.message;
+
+          setConflictInfo(conflictMessages);
         } else {
           setConflictInfo(null);
         }

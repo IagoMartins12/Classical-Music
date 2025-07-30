@@ -1,4 +1,4 @@
-// app/libs/serverMediaProcessor.ts - Processamento de mídia apenas no servidor
+// app/libs/ads/serverMediaProcessor.ts - Processamento com pastas exclusivas por AD
 import path from 'path';
 import fs from 'fs/promises';
 
@@ -42,21 +42,77 @@ export interface ProcessedMedia {
 }
 
 /**
+ * Cria slug a partir do título + ID
+ */
+export function createAdSlug(title: string, id: string): string {
+  const slug = title
+    .toLowerCase()
+    .normalize('NFD') // Remove acentos
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '') // Remove caracteres especiais
+    .replace(/\s+/g, '-') // Substitui espaços por hífens
+    .replace(/-+/g, '-') // Remove hífens duplos
+    .replace(/^-|-$/g, ''); // Remove hífens do início/fim
+
+  return `${slug}-${id}`.substring(0, 100); // Limita a 100 caracteres
+}
+
+/**
+ * Cria diretório exclusivo para o anúncio
+ */
+export async function createAdMediaDirectory(
+  adTitle: string,
+  adId: string
+): Promise<string> {
+  const slug = createAdSlug(adTitle, adId);
+  const adDir = path.join(process.cwd(), 'public/uploads/ads', slug);
+
+  try {
+    await fs.mkdir(adDir, { recursive: true });
+    console.log(`📁 Diretório criado: ${adDir}`);
+    return adDir;
+  } catch (error) {
+    console.error('❌ Erro ao criar diretório:', error);
+    throw error;
+  }
+}
+
+/**
+ * Obtém caminho do diretório do anúncio
+ */
+export function getAdMediaDirectory(adTitle: string, adId: string): string {
+  const slug = createAdSlug(adTitle, adId);
+  return path.join(process.cwd(), 'public/uploads/ads', slug);
+}
+
+/**
+ * Obtém URL pública do diretório do anúncio
+ */
+export function getAdMediaPublicPath(adTitle: string, adId: string): string {
+  const slug = createAdSlug(adTitle, adId);
+  return `/uploads/ads/${slug}`;
+}
+
+/**
  * Processa imagem criando versões otimizadas para diferentes dispositivos
  */
 export async function processImage(
   filePath: string,
-  placement: keyof typeof AD_DIMENSIONS
+  placement: keyof typeof AD_DIMENSIONS,
+  adTitle: string,
+  adId: string
 ): Promise<MediaVersions> {
   if (!sharp) {
     console.warn('Sharp não disponível, usando arquivo original');
-    const originalUrl = `/uploads/ads/${path.basename(filePath)}`;
+    const publicPath = getAdMediaPublicPath(adTitle, adId);
+    const originalUrl = `${publicPath}/${path.basename(filePath)}`;
     return { original: originalUrl };
   }
 
   try {
     const dimensions = AD_DIMENSIONS[placement];
-    const uploadDir = path.dirname(filePath);
+    const adDir = await createAdMediaDirectory(adTitle, adId);
+    const publicPath = getAdMediaPublicPath(adTitle, adId);
     const originalName = path.basename(filePath, path.extname(filePath));
     const ext = '.webp'; // Usar WebP para melhor compressão
 
@@ -72,11 +128,8 @@ export async function processImage(
 
     // Processar para cada dispositivo
     for (const [device, dims] of Object.entries(dimensions)) {
-      const outputPath = path.join(
-        uploadDir,
-        `${originalName}_${device}${ext}`
-      );
-      const publicUrl = `/uploads/ads/${path.basename(outputPath)}`;
+      const outputPath = path.join(adDir, `${originalName}_${device}${ext}`);
+      const publicUrl = `${publicPath}/${path.basename(outputPath)}`;
 
       await originalImage
         .clone()
@@ -98,8 +151,8 @@ export async function processImage(
     }
 
     // Criar thumbnail pequeno adicional
-    const thumbnailPath = path.join(uploadDir, `${originalName}_thumb${ext}`);
-    const thumbnailUrl = `/uploads/ads/${path.basename(thumbnailPath)}`;
+    const thumbnailPath = path.join(adDir, `${originalName}_thumb${ext}`);
+    const thumbnailUrl = `${publicPath}/${path.basename(thumbnailPath)}`;
 
     await originalImage
       .clone()
@@ -114,13 +167,12 @@ export async function processImage(
 
     // Manter original otimizado
     const processedOriginalPath = path.join(
-      uploadDir,
+      adDir,
       `${originalName}_original${ext}`
     );
-    const originalUrl = `/uploads/ads/${path.basename(processedOriginalPath)}`;
+    const originalUrl = `${publicPath}/${path.basename(processedOriginalPath)}`;
 
     await originalImage.webp({ quality: 95 }).toFile(processedOriginalPath);
-
     versions.original = originalUrl;
 
     console.log('✅ Processamento de imagem concluído');
@@ -128,9 +180,20 @@ export async function processImage(
   } catch (error) {
     console.error('❌ Erro ao processar imagem:', error);
 
-    // Fallback: usar arquivo original
-    const originalUrl = `/uploads/ads/${path.basename(filePath)}`;
-    return { original: originalUrl };
+    // Fallback: copiar arquivo original para pasta do ad
+    try {
+      const adDir = await createAdMediaDirectory(adTitle, adId);
+      const publicPath = getAdMediaPublicPath(adTitle, adId);
+      const filename = path.basename(filePath);
+      const fallbackPath = path.join(adDir, filename);
+
+      await fs.copyFile(filePath, fallbackPath);
+      const originalUrl = `${publicPath}/${filename}`;
+      return { original: originalUrl };
+    } catch (fallbackError) {
+      console.error('❌ Erro no fallback:', fallbackError);
+      throw error;
+    }
   }
 }
 
@@ -139,18 +202,32 @@ export async function processImage(
  */
 export async function processVideo(
   filePath: string,
-  placement: keyof typeof AD_DIMENSIONS
+  placement: keyof typeof AD_DIMENSIONS,
+  adTitle: string,
+  adId: string
 ): Promise<MediaVersions> {
   if (!ffmpeg) {
     console.warn('FFmpeg não disponível, usando arquivo original');
-    const originalUrl = `/uploads/ads/${path.basename(filePath)}`;
-    return { original: originalUrl };
+    try {
+      const adDir = await createAdMediaDirectory(adTitle, adId);
+      const publicPath = getAdMediaPublicPath(adTitle, adId);
+      const filename = path.basename(filePath);
+      const fallbackPath = path.join(adDir, filename);
+
+      await fs.copyFile(filePath, fallbackPath);
+      const originalUrl = `${publicPath}/${filename}`;
+      return { original: originalUrl };
+    } catch (error) {
+      console.error('❌ Erro no fallback de vídeo:', error);
+      throw error;
+    }
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
       const dimensions = AD_DIMENSIONS[placement];
-      const uploadDir = path.dirname(filePath);
+      const adDir = await createAdMediaDirectory(adTitle, adId);
+      const publicPath = getAdMediaPublicPath(adTitle, adId);
       const originalName = path.basename(filePath, path.extname(filePath));
 
       const versions: MediaVersions = {};
@@ -161,11 +238,8 @@ export async function processVideo(
 
       // Processar para cada dispositivo
       Object.entries(dimensions).forEach(([device, dims]) => {
-        const outputPath = path.join(
-          uploadDir,
-          `${originalName}_${device}.mp4`
-        );
-        const publicUrl = `/uploads/ads/${path.basename(outputPath)}`;
+        const outputPath = path.join(adDir, `${originalName}_${device}.mp4`);
+        const publicUrl = `${publicPath}/${path.basename(outputPath)}`;
 
         ffmpeg(filePath)
           .size(`${dims.width}x${dims.height}`)
@@ -199,20 +273,40 @@ export async function processVideo(
 
             if (processedCount === totalToProcess) {
               // Criar thumbnail do vídeo
-              generateVideoThumbnail(filePath)
+              generateVideoThumbnail(filePath, adTitle, adId)
                 .then((thumbnailUrl) => {
                   versions.thumbnail = thumbnailUrl;
-                  versions.original = `/uploads/ads/${path.basename(filePath)}`;
-                  console.log('✅ Processamento de vídeo concluído');
-                  resolve(versions);
+
+                  // Copiar original para pasta do ad
+                  const originalName = path.basename(filePath);
+                  const originalPath = path.join(adDir, originalName);
+                  fs.copyFile(filePath, originalPath)
+                    .then(() => {
+                      versions.original = `${publicPath}/${originalName}`;
+                      console.log('✅ Processamento de vídeo concluído');
+                      resolve(versions);
+                    })
+                    .catch((error) => {
+                      console.warn('⚠️ Erro ao copiar original:', error);
+                      resolve(versions);
+                    });
                 })
                 .catch((error) => {
                   console.warn(
                     '⚠️ Erro ao criar thumbnail, mas vídeo processado:',
                     error
                   );
-                  versions.original = `/uploads/ads/${path.basename(filePath)}`;
-                  resolve(versions);
+                  // Copiar original mesmo sem thumbnail
+                  const originalName = path.basename(filePath);
+                  const originalPath = path.join(adDir, originalName);
+                  fs.copyFile(filePath, originalPath)
+                    .then(() => {
+                      versions.original = `${publicPath}/${originalName}`;
+                      resolve(versions);
+                    })
+                    .catch(() => {
+                      resolve(versions);
+                    });
                 });
             }
           })
@@ -224,10 +318,7 @@ export async function processVideo(
       });
     } catch (error) {
       console.error('❌ Erro ao processar vídeo:', error);
-
-      // Fallback: usar arquivo original
-      const originalUrl = `/uploads/ads/${path.basename(filePath)}`;
-      resolve({ original: originalUrl });
+      reject(error);
     }
   });
 }
@@ -236,49 +327,85 @@ export async function processVideo(
  * Gera thumbnail de vídeo
  */
 export async function generateVideoThumbnail(
-  videoPath: string
+  videoPath: string,
+  adTitle: string,
+  adId: string
 ): Promise<string> {
   if (!ffmpeg || !sharp) {
     console.warn('FFmpeg ou Sharp não disponível para thumbnail');
     return '';
   }
 
-  return new Promise((resolve, reject) => {
-    const uploadDir = path.dirname(videoPath);
-    const originalName = path.basename(videoPath, path.extname(videoPath));
-    const tempPath = path.join(uploadDir, `${originalName}_thumb_temp.png`);
-    const thumbnailPath = path.join(uploadDir, `${originalName}_thumb.webp`);
-    const publicUrl = `/uploads/ads/${path.basename(thumbnailPath)}`;
+  return new Promise(async (resolve, reject) => {
+    try {
+      const adDir = await createAdMediaDirectory(adTitle, adId);
+      const publicPath = getAdMediaPublicPath(adTitle, adId);
+      const originalName = path.basename(videoPath, path.extname(videoPath));
+      const tempPath = path.join(adDir, `${originalName}_thumb_temp.png`);
+      const thumbnailPath = path.join(adDir, `${originalName}_thumb.webp`);
+      const publicUrl = `${publicPath}/${path.basename(thumbnailPath)}`;
 
-    ffmpeg(videoPath)
-      .screenshots({
-        timestamps: ['10%'],
-        filename: path.basename(tempPath),
-        folder: uploadDir,
-        size: '300x200',
-      })
-      .on('end', async () => {
-        try {
-          // Converter para WebP usando Sharp
-          await sharp(tempPath).webp({ quality: 80 }).toFile(thumbnailPath);
+      ffmpeg(videoPath)
+        .screenshots({
+          timestamps: ['10%'],
+          filename: path.basename(tempPath),
+          folder: adDir,
+          size: '300x200',
+        })
+        .on('end', async () => {
+          try {
+            // Converter para WebP usando Sharp
+            await sharp(tempPath).webp({ quality: 80 }).toFile(thumbnailPath);
 
-          // Remover PNG temporário
-          await fs.unlink(tempPath).catch(console.error);
-          resolve(publicUrl);
-        } catch (error) {
-          console.error('❌ Erro ao converter thumbnail:', error);
+            // Remover PNG temporário
+            await fs.unlink(tempPath).catch(console.error);
+            resolve(publicUrl);
+          } catch (error) {
+            console.error('❌ Erro ao converter thumbnail:', error);
+            reject(error);
+          }
+        })
+        .on('error', (error: unknown) => {
+          console.error('❌ Erro ao gerar thumbnail:', error);
           reject(error);
-        }
-      })
-      .on('error', (error: unknown) => {
-        console.error('❌ Erro ao gerar thumbnail:', error);
-        reject(error);
-      });
+        });
+    } catch (error) {
+      console.error('❌ Erro ao preparar thumbnail:', error);
+      reject(error);
+    }
   });
 }
 
 /**
- * Remove arquivos de mídia
+ * Remove diretório completo de um anúncio
+ */
+export async function deleteAdMediaDirectory(
+  adTitle: string,
+  adId: string
+): Promise<boolean> {
+  try {
+    const adDir = getAdMediaDirectory(adTitle, adId);
+
+    // Verificar se diretório existe
+    try {
+      await fs.access(adDir);
+    } catch {
+      console.log(`📁 Diretório não existe: ${adDir}`);
+      return true; // Não é erro se não existe
+    }
+
+    // Remover diretório recursivamente
+    await fs.rm(adDir, { recursive: true, force: true });
+    console.log(`🗑️ Diretório removido: ${adDir}`);
+    return true;
+  } catch (error) {
+    console.error('❌ Erro ao deletar diretório:', error);
+    return false;
+  }
+}
+
+/**
+ * Remove arquivo específico de mídia
  */
 export async function deleteMediaFile(publicUrl: string): Promise<boolean> {
   if (!publicUrl || !publicUrl.startsWith('/uploads/ads/')) {
@@ -322,12 +449,17 @@ export async function deleteAllMediaVersions(
  */
 export async function cloneAdMedia(
   originalAd: any,
+  newAdTitle: string,
   newAdId: string
 ): Promise<ProcessedMedia> {
   try {
     const result: ProcessedMedia = {};
 
     console.log(`📋 Clonando mídia para anúncio ${newAdId}`);
+
+    // Criar diretório para o novo ad
+    const newAdDir = await createAdMediaDirectory(newAdTitle, newAdId);
+    const newPublicPath = getAdMediaPublicPath(newAdTitle, newAdId);
 
     // Clonar versões de imagem
     if (
@@ -341,9 +473,8 @@ export async function cloneAdMedia(
           try {
             const originalPath = path.join(process.cwd(), 'public', url);
             const filename = path.basename(url);
-            const newFilename = filename.replace(/^[^_]+/, `ad_${newAdId}`);
-            const newPath = path.join(path.dirname(originalPath), newFilename);
-            const newUrl = url.replace(filename, newFilename);
+            const newPath = path.join(newAdDir, filename);
+            const newUrl = `${newPublicPath}/${filename}`;
 
             await fs.copyFile(originalPath, newPath);
             imageVersions[device as keyof MediaVersions] = newUrl;
@@ -372,9 +503,8 @@ export async function cloneAdMedia(
           try {
             const originalPath = path.join(process.cwd(), 'public', url);
             const filename = path.basename(url);
-            const newFilename = filename.replace(/^[^_]+/, `ad_${newAdId}`);
-            const newPath = path.join(path.dirname(originalPath), newFilename);
-            const newUrl = url.replace(filename, newFilename);
+            const newPath = path.join(newAdDir, filename);
+            const newUrl = `${newPublicPath}/${filename}`;
 
             await fs.copyFile(originalPath, newPath);
             videoVersions[device as keyof MediaVersions] = newUrl;
@@ -400,9 +530,8 @@ export async function cloneAdMedia(
           originalAd.thumbnailUrl
         );
         const filename = path.basename(originalAd.thumbnailUrl);
-        const newFilename = filename.replace(/^[^_]+/, `ad_${newAdId}`);
-        const newPath = path.join(path.dirname(originalPath), newFilename);
-        const newUrl = originalAd.thumbnailUrl.replace(filename, newFilename);
+        const newPath = path.join(newAdDir, filename);
+        const newUrl = `${newPublicPath}/${filename}`;
 
         await fs.copyFile(originalPath, newPath);
         result.thumbnailUrl = newUrl;
@@ -436,11 +565,15 @@ export async function cleanupOldMedia(): Promise<void> {
       return;
     }
 
-    const files = await fs.readdir(uploadsDir);
-    console.log(`🧹 Verificando ${files.length} arquivos para limpeza`);
+    const directories = await fs.readdir(uploadsDir, { withFileTypes: true });
+    const adDirectories = directories.filter((dir) => dir.isDirectory());
 
-    // Aqui você pode implementar lógica para remover arquivos antigos
-    // Por exemplo, arquivos mais antigos que 30 dias que não estão sendo usados
+    console.log(
+      `🧹 Verificando ${adDirectories.length} diretórios de ads para limpeza`
+    );
+
+    // Aqui você pode implementar lógica para remover diretórios órfãos
+    // Por exemplo, verificar se o ID do ad ainda existe no banco
 
     console.log('🧹 Limpeza de mídia concluída');
   } catch (error) {

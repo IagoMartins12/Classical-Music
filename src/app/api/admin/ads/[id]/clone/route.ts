@@ -1,4 +1,4 @@
-// app/api/admin/ads/[id]/clone/route.ts - API para clonagem usando serverMediaProcessor
+// app/api/admin/ads/[id]/clone/route.ts - API com verificação detalhada de conflitos
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -21,7 +21,6 @@ export async function POST(
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
     const { id } = await params;
-
     const originalAdId = id;
     const body = await request.json();
     const modifications = body || {};
@@ -50,32 +49,26 @@ export async function POST(
 
     console.log(`✅ Anúncio original encontrado: ${originalAd.title}`);
 
+    // Definir título do clone e dados
+    const cloneTitle = modifications.title || `${originalAd.title} - Cópia`;
+
     // Preparar dados para o clone
     const cloneData = {
-      // Dados básicos - aplicar modificações se fornecidas
-      title: modifications.title || `${originalAd.title} - Cópia`,
+      title: cloneTitle,
       description: modifications.description || originalAd.description,
       content: modifications.content || originalAd.content,
-
-      // Mídia - inicialmente manter as URLs originais (serão atualizadas após clonagem)
-      imageUrl: originalAd.imageUrl,
-      thumbnailUrl: originalAd.thumbnailUrl,
-      videoUrl: originalAd.videoUrl,
-      imageVersions: originalAd.imageVersions,
-      videoVersions: originalAd.videoVersions,
-
-      // CTA e links
+      imageUrl: null,
+      thumbnailUrl: null,
+      videoUrl: null,
+      imageVersions: null,
+      videoVersions: null,
       ctaText: modifications.ctaText || originalAd.ctaText,
       targetUrl: modifications.targetUrl || originalAd.targetUrl,
       linkType: modifications.linkType || originalAd.linkType,
       isExternal: modifications.isExternal ?? originalAd.isExternal,
-
-      // Configurações de exibição - aplicar modificações
       type: modifications.type || originalAd.type,
       placement: modifications.placement || originalAd.placement,
-      status: modifications.status || 'DRAFT', // Sempre começar como DRAFT
-
-      // Targeting - aplicar modificações
+      status: modifications.status || 'DRAFT',
       targetType: modifications.targetType || originalAd.targetType,
       targetUserLevel:
         modifications.targetUserLevel || originalAd.targetUserLevel,
@@ -83,8 +76,6 @@ export async function POST(
         modifications.instrumentId !== undefined
           ? modifications.instrumentId
           : originalAd.instrumentId,
-
-      // Dados do anunciante
       advertiserName: modifications.advertiserName || originalAd.advertiserName,
       advertiserEmail:
         modifications.advertiserEmail || originalAd.advertiserEmail,
@@ -92,19 +83,13 @@ export async function POST(
         modifications.advertiserPhone || originalAd.advertiserPhone,
       advertiserWebsite:
         modifications.advertiserWebsite || originalAd.advertiserWebsite,
-
-      // Agendamento - resetar datas
       startDate: modifications.startDate
         ? new Date(modifications.startDate)
         : null,
       endDate: modifications.endDate ? new Date(modifications.endDate) : null,
-
-      // Dispositivos
       showOnMobile: modifications.showOnMobile ?? originalAd.showOnMobile,
       showOnTablet: modifications.showOnTablet ?? originalAd.showOnTablet,
       showOnDesktop: modifications.showOnDesktop ?? originalAd.showOnDesktop,
-
-      // Qualidade de mídia
       imageQuality: originalAd.imageQuality || 'high',
       videoQuality: originalAd.videoQuality || 'high',
       mediaMetadata: {
@@ -112,174 +97,283 @@ export async function POST(
         clonedFrom: originalAdId,
         clonedAt: new Date().toISOString(),
       },
-
-      // Controle de acesso
       createdBy: session.user.id,
     };
 
-    // Verificar se há conflito com a nova configuração
-    const conflictCheck = await prisma.advertisement.findFirst({
-      where: {
-        placement: cloneData.placement,
-        targetType: cloneData.targetType,
-        instrumentId: cloneData.instrumentId,
-        status: { in: ['ACTIVE', 'SCHEDULED'] },
-      },
-    });
-
-    if (conflictCheck) {
-      return NextResponse.json(
-        {
-          error: `Já existe um anúncio ativo para esta combinação: ${
-            cloneData.placement
-          } + ${cloneData.targetType}${
-            cloneData.instrumentId ? ` + instrumento específico` : ''
-          }`,
-        },
-        { status: 400 }
-      );
-    }
-
-    console.log('✅ Nenhum conflito encontrado, criando clone...');
-
-    // Criar o clone
-    const clonedAd = await prisma.advertisement.create({
-      data: cloneData,
-      include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-          },
-        },
-        instrument: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-      },
-    });
-
-    console.log(`✅ Anúncio clonado criado com ID: ${clonedAd.id}`);
-
-    // Clonar mídia física (criar cópias independentes dos arquivos)
-    const clonedMediaInfo = {
-      image: false,
-      thumbnail: false,
-      video: false,
-    };
+    // 🆕 VERIFICAÇÃO DETALHADA DE CONFLITOS
+    console.log('🔍 Executando verificação detalhada de conflitos...');
 
     try {
-      console.log('📁 Iniciando clonagem de mídia...');
+      const conflictCheckResponse = await fetch(
+        `${
+          process.env.NEXTAUTH_URL || 'http://localhost:3000'
+        }/api/admin/ads/check-conflict`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Cookie: request.headers.get('cookie') || '', // Passar cookies para autenticação
+          },
+          body: JSON.stringify(cloneData),
+        }
+      );
 
-      const clonedMedia = await cloneAdMedia(originalAd, clonedAd.id);
+      if (conflictCheckResponse.ok) {
+        const conflictResult = await conflictCheckResponse.json();
 
-      if (clonedMedia.imageUrl || clonedMedia.imageVersions) {
-        clonedMediaInfo.image = true;
-      }
+        console.log('📊 Resultado da verificação:', conflictResult.summary);
 
-      if (clonedMedia.videoUrl || clonedMedia.videoVersions) {
-        clonedMediaInfo.video = true;
-      }
+        if (conflictResult.hasConflict) {
+          console.log('❌ Conflitos detectados:');
+          conflictResult.conflicts.forEach((conflict: any, index: number) => {
+            console.log(
+              `  ${index + 1}. ${conflict.type}: ${conflict.message}`
+            );
+          });
 
-      if (clonedMedia.thumbnailUrl) {
-        clonedMediaInfo.thumbnail = true;
-      }
-
-      // Atualizar o anúncio clonado com as novas URLs de mídia
-      if (Object.keys(clonedMedia).length > 0) {
-        const updateData: any = {};
-
-        if (clonedMedia.imageUrl) updateData.imageUrl = clonedMedia.imageUrl;
-        if (clonedMedia.imageVersions)
-          updateData.imageVersions = clonedMedia.imageVersions;
-        if (clonedMedia.videoUrl) updateData.videoUrl = clonedMedia.videoUrl;
-        if (clonedMedia.videoVersions)
-          updateData.videoVersions = clonedMedia.videoVersions;
-        if (clonedMedia.thumbnailUrl)
-          updateData.thumbnailUrl = clonedMedia.thumbnailUrl;
-
-        const finalAd = await prisma.advertisement.update({
-          where: { id: clonedAd.id },
-          data: updateData,
-          include: {
-            creator: {
-              select: {
-                id: true,
-                firstName: true,
-                lastName: true,
-                email: true,
+          // Retornar detalhes dos conflitos
+          return NextResponse.json(
+            {
+              error: 'Conflitos detectados que impedem a clonagem',
+              details: {
+                summary: conflictResult.summary,
+                conflicts: conflictResult.conflicts,
+                checkedConstraints: conflictResult.checkedConstraints,
+                cloneData: {
+                  placement: cloneData.placement,
+                  targetType: cloneData.targetType,
+                  instrumentId: cloneData.instrumentId,
+                  status: cloneData.status,
+                },
+                suggestions: generateConflictSuggestions(
+                  conflictResult.conflicts
+                ),
               },
             },
-            instrument: {
-              select: {
-                id: true,
-                name: true,
+            { status: 409 }
+          ); // 409 Conflict
+        } else {
+          console.log(
+            '✅ Nenhum conflito detectado, prosseguindo com a clonagem'
+          );
+        }
+      } else {
+        console.warn(
+          '⚠️ Erro na verificação de conflitos, prosseguindo sem verificação'
+        );
+      }
+    } catch (conflictError) {
+      console.warn('⚠️ Erro ao verificar conflitos:', conflictError);
+      console.log('⚠️ Prosseguindo sem verificação de conflitos');
+    }
+
+    // Tentar criar o clone
+    let clonedAd;
+    try {
+      console.log('🔨 Criando clone no banco de dados...');
+
+      clonedAd = await prisma.advertisement.create({
+        data: cloneData,
+        include: {
+          creator: {
+            select: { id: true, firstName: true, lastName: true, email: true },
+          },
+          instrument: {
+            select: { id: true, name: true },
+          },
+        },
+      });
+
+      console.log(`✅ Anúncio clonado criado com ID: ${clonedAd.id}`);
+    } catch (dbError: any) {
+      console.error('❌ Erro ao criar clone no banco:', dbError);
+
+      // 🆕 ANÁLISE DETALHADA DO ERRO DO BANCO
+      if (dbError.code === 'P2002') {
+        // Unique constraint violation
+        const constraintInfo = dbError.meta?.target || [];
+        const constraintName = dbError.meta?.constraint || 'unknown';
+
+        console.log(`🔍 Violação de constraint: ${constraintName}`);
+        console.log(`🔍 Campos afetados:`, constraintInfo);
+
+        let detailedError = `Erro de constraint única no banco de dados.\n`;
+        detailedError += `Constraint violada: ${constraintName}\n`;
+        detailedError += `Campos: ${
+          Array.isArray(constraintInfo)
+            ? constraintInfo.join(', ')
+            : constraintInfo
+        }\n`;
+
+        // Buscar o anúncio conflitante
+        let conflictingAd = null;
+        try {
+          if (Array.isArray(constraintInfo)) {
+            const conflictWhere: any = {};
+
+            if (constraintInfo.includes('placement'))
+              conflictWhere.placement = cloneData.placement;
+            if (constraintInfo.includes('targetType'))
+              conflictWhere.targetType = cloneData.targetType;
+            if (constraintInfo.includes('instrumentId'))
+              conflictWhere.instrumentId = cloneData.instrumentId;
+
+            conflictingAd = await prisma.advertisement.findFirst({
+              where: conflictWhere,
+              include: {
+                instrument: { select: { name: true } },
+                creator: { select: { firstName: true, lastName: true } },
               },
+            });
+
+            if (conflictingAd) {
+              detailedError += `\nAnúncio conflitante encontrado:\n`;
+              detailedError += `- ID: ${conflictingAd.id}\n`;
+              detailedError += `- Título: ${conflictingAd.title}\n`;
+              detailedError += `- Anunciante: ${conflictingAd.advertiserName}\n`;
+              detailedError += `- Status: ${conflictingAd.status}\n`;
+              detailedError += `- Placement: ${conflictingAd.placement}\n`;
+              detailedError += `- Target Type: ${conflictingAd.targetType}\n`;
+              if (conflictingAd.instrumentId) {
+                detailedError += `- Instrumento: ${
+                  conflictingAd.instrument?.name || conflictingAd.instrumentId
+                }\n`;
+              }
+              detailedError += `- Criador: ${conflictingAd.creator?.firstName} ${conflictingAd.creator?.lastName}\n`;
+            }
+          }
+        } catch (searchError) {
+          console.warn('⚠️ Erro ao buscar anúncio conflitante:', searchError);
+        }
+
+        return NextResponse.json(
+          {
+            error: 'Erro de constraint única',
+            details: {
+              type: 'DATABASE_CONSTRAINT_VIOLATION',
+              constraintName,
+              constraintFields: constraintInfo,
+              message: detailedError,
+              conflictingAd,
+              attemptedData: {
+                placement: cloneData.placement,
+                targetType: cloneData.targetType,
+                instrumentId: cloneData.instrumentId,
+                status: cloneData.status,
+              },
+              suggestions: [
+                'Altere o posicionamento (placement) do anúncio',
+                'Altere o tipo de segmentação (targetType)',
+                'Se for por instrumento, escolha outro instrumento',
+                'Mantenha como DRAFT se há conflito com anúncios ativos',
+              ],
             },
           },
-        });
+          { status: 409 }
+        );
+      }
 
-        console.log('✅ Mídia clonada e URLs atualizadas');
+      // Outros erros do banco
+      throw dbError;
+    }
 
-        // Invalidar cache
+    // Resto do código de clonagem de mídia...
+    const clonedMediaInfo = { image: false, thumbnail: false, video: false };
+    const hasMedia =
+      originalAd.imageUrl ||
+      originalAd.videoUrl ||
+      originalAd.imageVersions ||
+      originalAd.videoVersions;
+
+    if (hasMedia) {
+      try {
+        console.log('📁 Iniciando clonagem de mídia...');
+        const clonedMedia = await cloneAdMedia(
+          originalAd,
+          clonedAd.title,
+          clonedAd.id
+        );
+
+        if (clonedMedia.imageUrl || clonedMedia.imageVersions) {
+          clonedMediaInfo.image = true;
+        }
+        if (clonedMedia.videoUrl || clonedMedia.videoVersions) {
+          clonedMediaInfo.video = true;
+        }
+        if (clonedMedia.thumbnailUrl) {
+          clonedMediaInfo.thumbnail = true;
+        }
+
+        if (Object.keys(clonedMedia).length > 0) {
+          const updateData: any = {};
+          if (clonedMedia.imageUrl) updateData.imageUrl = clonedMedia.imageUrl;
+          if (clonedMedia.imageVersions)
+            updateData.imageVersions = clonedMedia.imageVersions;
+          if (clonedMedia.videoUrl) updateData.videoUrl = clonedMedia.videoUrl;
+          if (clonedMedia.videoVersions)
+            updateData.videoVersions = clonedMedia.videoVersions;
+          if (clonedMedia.thumbnailUrl)
+            updateData.thumbnailUrl = clonedMedia.thumbnailUrl;
+
+          if (updateData.imageVersions || updateData.videoVersions) {
+            updateData.mediaMetadata = {
+              ...(clonedAd.mediaMetadata as Record<string, any>),
+              adDirectory: `${clonedAd.title}-${clonedAd.id}`,
+              clonedMediaAt: new Date().toISOString(),
+            };
+          }
+
+          const finalAd = await prisma.advertisement.update({
+            where: { id: clonedAd.id },
+            data: updateData,
+            include: {
+              creator: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                },
+              },
+              instrument: {
+                select: { id: true, name: true },
+              },
+            },
+          });
+
+          console.log('✅ Mídia clonada e URLs atualizadas');
+          revalidateTag('public-ads');
+
+          return NextResponse.json({
+            success: true,
+            ad: finalAd,
+            message: 'Anúncio clonado com sucesso! 🎉',
+            mediaCloned: clonedMediaInfo,
+            details: {
+              originalId: originalAdId,
+              clonedId: clonedAd.id,
+              hasMedia: clonedMediaInfo.image || clonedMediaInfo.video,
+              newDirectory: `${clonedAd.title}-${clonedAd.id}`,
+              modifications: Object.keys(modifications),
+            },
+          });
+        }
+      } catch (mediaError) {
+        console.warn('⚠️ Erro na clonagem de mídia:', mediaError);
         revalidateTag('public-ads');
 
         return NextResponse.json({
           success: true,
-          ad: finalAd,
-          message: 'Anúncio clonado com sucesso! 🎉',
+          ad: clonedAd,
+          message: 'Anúncio clonado, mas mídia não foi copiada.',
+          warning: 'Mídia não foi clonada automaticamente',
           mediaCloned: clonedMediaInfo,
-          details: {
-            originalId: originalAdId,
-            clonedId: clonedAd.id,
-            hasMedia: clonedMediaInfo.image || clonedMediaInfo.video,
-            modifications: Object.keys(modifications).filter(
-              (key) =>
-                modifications[key as keyof typeof originalAd] !==
-                originalAd[key as keyof typeof originalAd]
-            ),
-          },
         });
       }
-    } catch (mediaError) {
-      console.warn(
-        '⚠️ Erro na clonagem de mídia, mas anúncio foi criado:',
-        mediaError
-      );
-
-      // Anúncio foi criado, mas mídia não foi clonada
-      // Invalidar cache mesmo assim
-      revalidateTag('public-ads');
-
-      return NextResponse.json({
-        success: true,
-        ad: clonedAd,
-        message:
-          'Anúncio clonado, mas mídia não foi copiada. Você pode fazer upload manual.',
-        warning: 'Mídia não foi clonada automaticamente',
-        mediaCloned: clonedMediaInfo,
-        details: {
-          originalId: originalAdId,
-          clonedId: clonedAd.id,
-          hasMedia: false,
-          mediaError:
-            mediaError instanceof Error
-              ? mediaError.message
-              : 'Erro desconhecido',
-        },
-      });
     }
 
-    // Se chegou aqui, não teve mídia para clonar
-    console.log('ℹ️ Anúncio original não tinha mídia para clonar');
-
-    // Invalidar cache
+    // Sem mídia para clonar
     revalidateTag('public-ads');
-
     return NextResponse.json({
       success: true,
       ad: clonedAd,
@@ -289,12 +383,11 @@ export async function POST(
         originalId: originalAdId,
         clonedId: clonedAd.id,
         hasMedia: false,
-        note: 'Anúncio original não tinha mídia',
+        newDirectory: `${clonedAd.title}-${clonedAd.id}`,
       },
     });
   } catch (error) {
     console.error('❌ Erro ao clonar anúncio:', error);
-
     return NextResponse.json(
       {
         error: 'Erro interno do servidor',
@@ -303,4 +396,54 @@ export async function POST(
       { status: 500 }
     );
   }
+}
+
+// 🆕 Função para gerar sugestões baseadas nos conflitos
+function generateConflictSuggestions(conflicts: any[]): string[] {
+  const suggestions = new Set<string>();
+
+  conflicts.forEach((conflict) => {
+    switch (conflict.type) {
+      case 'CONSTRAINT_UNIQUE_PLACEMENT_TARGET_INSTRUMENT':
+        suggestions.add('💡 Altere o posicionamento (placement) do anúncio');
+        suggestions.add('💡 Escolha um tipo de segmentação diferente');
+        if (conflict.conflictingAd?.instrumentId) {
+          suggestions.add(
+            '💡 Selecione outro instrumento ou remova a segmentação por instrumento'
+          );
+        }
+        break;
+
+      case 'CONSTRAINT_UNIQUE_TARGET_INSTRUMENT':
+        suggestions.add('💡 Escolha outro instrumento para segmentação');
+        suggestions.add(
+          '💡 Altere o tipo de segmentação para GENERAL ou USER_LEVEL'
+        );
+        break;
+
+      case 'BUSINESS_RULE_ACTIVE_PLACEMENT':
+        suggestions.add('💡 Pause o anúncio conflitante antes de ativar este');
+        suggestions.add('💡 Mantenha este anúncio como DRAFT');
+        suggestions.add(
+          '💡 Agende este anúncio para após o término do conflitante'
+        );
+        break;
+
+      case 'BUSINESS_LOGIC_MISSING_INSTRUMENT':
+        suggestions.add(
+          '💡 Selecione um instrumento para segmentação por INSTRUMENT'
+        );
+        suggestions.add(
+          '💡 Altere o tipo de segmentação para GENERAL ou USER_LEVEL'
+        );
+        break;
+
+      case 'BUSINESS_LOGIC_UNEXPECTED_INSTRUMENT':
+        suggestions.add('💡 Remova a seleção de instrumento');
+        suggestions.add('💡 Altere o tipo de segmentação para INSTRUMENT');
+        break;
+    }
+  });
+
+  return Array.from(suggestions);
 }
