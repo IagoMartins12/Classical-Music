@@ -70,29 +70,6 @@ export async function POST(request: NextRequest) {
             mode: 'insensitive' as any,
             equals: cleanFullName,
           },
-        },
-
-        // Verificar também no campo name
-        { name: extractLastName(cleanFullName) },
-        {
-          name: {
-            mode: 'insensitive' as any,
-            equals: extractLastName(cleanFullName),
-          },
-        },
-
-        // Verificar nomes alternativos
-        {
-          otherName: {
-            mode: 'insensitive' as any,
-            equals: fullName.trim(),
-          },
-        },
-        {
-          alternativeNames: {
-            mode: 'insensitive' as any,
-            contains: cleanFullName,
-          },
         }
       );
 

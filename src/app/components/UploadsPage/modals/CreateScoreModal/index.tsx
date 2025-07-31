@@ -1,4 +1,4 @@
-// app/components/UploadsPage/modals/CreateScoreModal/index.tsx - COM FILTRO DE COMPOSITOR
+// app/components/UploadsPage/modals/CreateScoreModal/index.tsx - COM FILTRO DE COMPOSITOR E AGRUPAMENTO INTELIGENTE
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -18,6 +18,8 @@ import {
   FiLink,
   FiX,
   FiFilter,
+  FiTarget,
+  FiSettings,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -41,6 +43,7 @@ import {
   generateAndUploadTempThumbnail,
 } from '@/app/utils/pdfUtils';
 import { useToast } from '@/app/hooks/useToast';
+import GroupingSuggestions from '../../GroupingSuggestions';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -393,6 +396,18 @@ const CreateScoreModal = ({
     if (formData.workId && !editingScore) {
       setFormData((prev) => ({ ...prev, workId: '' }));
     }
+  };
+
+  // 🆕 FUNÇÃO PARA AGRUPAMENTO INTELIGENTE
+  const handleGroupSelect = (groupIndex: number, groupTitle: string) => {
+    console.log(
+      `🎯 [MODAL] Grupo selecionado: ${groupTitle} (índice: ${groupIndex})`
+    );
+    setFormData((prev) => ({
+      ...prev,
+      groupIndex: groupIndex.toString(),
+      groupTitle,
+    }));
   };
 
   // Função para resetar modo de upload
@@ -1224,58 +1239,100 @@ const CreateScoreModal = ({
                     placeholder="Informações de copyright"
                   />
 
-                  <Input
-                    label="URL da Miniatura"
-                    value={formData.thumbnailUrl}
-                    onChange={(e) =>
-                      handleInputChange('thumbnailUrl', e.target.value)
-                    }
-                    placeholder="https://exemplo.com/thumb.jpg"
-                    leftIcon={<FiImage />}
-                  />
+                  {!generatedThumbnail && (
+                    <Input
+                      label="URL da Miniatura"
+                      value={formData.thumbnailUrl}
+                      onChange={(e) =>
+                        handleInputChange('thumbnailUrl', e.target.value)
+                      }
+                      placeholder="https://exemplo.com/thumb.jpg"
+                      leftIcon={<FiImage />}
+                    />
+                  )}
                 </div>
               </AnimatedCard>
 
-              {/* Grouping */}
+              {/* 🆕 AGRUPAMENTO INTELIGENTE */}
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiTag className="w-5 h-5" />
                   <span>Agrupamento de Partituras</span>
                 </h3>
 
-                <div className="space-y-4">
-                  <div className="p-4 bg-theme-secondary/10 rounded-lg">
-                    <h4 className="font-medium text-theme-primary mb-2">
-                      Como funciona o agrupamento?
+                <div className="space-y-6">
+                  {/* 🆕 Sugestões de Agrupamento Inteligente */}
+                  {formData.workId && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
+                        <FiTarget className="w-4 h-4 text-accent-green" />
+                        <span>Sugestões de Agrupamento</span>
+                      </h4>
+
+                      <GroupingSuggestions
+                        workId={formData.workId}
+                        onGroupSelect={handleGroupSelect}
+                        currentGroupIndex={formData.groupIndex}
+                        currentGroupTitle={formData.groupTitle}
+                        visible={!!formData.workId}
+                      />
+                    </div>
+                  )}
+
+                  {/* Manual Group Configuration */}
+                  <div>
+                    <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
+                      <FiSettings className="w-4 h-4 text-theme-tertiary" />
+                      <span>Configuração Manual</span>
                     </h4>
-                    <p className="text-sm text-theme-secondary">
-                      Partituras do mesmo grupo são exibidas juntas. Use o{' '}
-                      <strong>Índice do Grupo</strong> para organizar a ordem e
-                      o <strong>Título do Grupo</strong> para dar nome ao
-                      conjunto de partituras.
-                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <Input
+                        label="Índice do Grupo"
+                        value={formData.groupIndex}
+                        onChange={(e) =>
+                          handleInputChange('groupIndex', e.target.value)
+                        }
+                        placeholder="0"
+                        type="number"
+                        min="0"
+                      />
+
+                      <Input
+                        label="Título do Grupo"
+                        value={formData.groupTitle}
+                        onChange={(e) =>
+                          handleInputChange('groupTitle', e.target.value)
+                        }
+                        placeholder="Ex: Partitura Completa, Versão Simplificada"
+                      />
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input
-                      label="Índice do Grupo"
-                      value={formData.groupIndex}
-                      onChange={(e) =>
-                        handleInputChange('groupIndex', e.target.value)
-                      }
-                      placeholder="0"
-                      type="number"
-                      min="0"
-                    />
-
-                    <Input
-                      label="Título do Grupo"
-                      value={formData.groupTitle}
-                      onChange={(e) =>
-                        handleInputChange('groupTitle', e.target.value)
-                      }
-                      placeholder="Ex: Partitura Completa, Versão Simplificada"
-                    />
+                  {/* Info Helper */}
+                  <div className="p-4 bg-theme-secondary/10 rounded-lg">
+                    <h4 className="font-medium text-theme-primary mb-2 flex items-center space-x-2">
+                      <FiInfo className="w-4 h-4" />
+                      <span>Como funciona o agrupamento?</span>
+                    </h4>
+                    <p className="text-sm text-theme-secondary">
+                      Partituras do mesmo grupo são exibidas juntas, seguindo o
+                      padrão IMSLP. Use o <strong>Índice do Grupo</strong> para
+                      organizar a ordem (0, 1, 2...) e o{' '}
+                      <strong>Título do Grupo</strong> para dar nome ao
+                      conjunto.
+                    </p>
+                    <div className="mt-3 text-xs text-theme-tertiary">
+                      <p>
+                        💡 <strong>Exemplo:</strong> Études de Chopin Op.10
+                      </p>
+                      <p>
+                        • Grupo 0: "Partitura Completa" (todos os 12 études)
+                      </p>
+                      <p>
+                        • Grupo 1: "Études Individuais" (étude nº 1, 2, 3...)
+                      </p>
+                    </div>
                   </div>
                 </div>
               </AnimatedCard>

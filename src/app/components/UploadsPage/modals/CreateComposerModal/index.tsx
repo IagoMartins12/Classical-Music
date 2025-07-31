@@ -119,6 +119,7 @@ const CreateComposerModal = ({
     deathDate: '',
     portraitUrl: '',
     epochId: '',
+    epochName: '',
     bio: '',
     diverseInfo: '',
     externalLinks: '',
@@ -176,6 +177,8 @@ const CreateComposerModal = ({
         deathDate: formatDateForInput(editingComposer.deathDate),
         portraitUrl: editingComposer.portraitUrl || '',
         epochId: editingComposer.epochId || '',
+        epochName: editingComposer.epochName || '',
+
         bio: editingComposer.bio || '',
         diverseInfo: editingComposer.diverseInfo || '',
         externalLinks: editingComposer.externalLinks || '',
@@ -635,6 +638,7 @@ const CreateComposerModal = ({
   };
 
   const fillFromScrapingResult = (data: any) => {
+    console.log('SCRAPING RESULT', data);
     setFormData((prev) => ({
       ...prev,
       name: cleanName(data.name || prev.name),
@@ -658,6 +662,7 @@ const CreateComposerModal = ({
 
       // Determinar época automaticamente baseada no ano de nascimento
       epochId: determineEpochId(data.epochName, epochs) || prev.epochId,
+      epochName: data.epochName || prev.epochName,
       primaryRoleId:
         determinePrimaryRoleId(data.primaryRole, roles) || prev.primaryRoleId,
     }));
@@ -1095,9 +1100,24 @@ const CreateComposerModal = ({
                         })),
                       ]}
                       value={formData.epochId}
-                      onChange={(e) =>
-                        handleInputChange('epochId', e.target.value)
-                      }
+                      onChange={(e) => {
+                        const selectedValue = e.target.value;
+                        const selectedOption = [
+                          { value: '', label: 'Selecione uma época' },
+                          ...epochs.map((epoch) => ({
+                            value: epoch.id,
+                            label: epoch.name,
+                          })),
+                        ].find((opt) => opt.value === selectedValue);
+
+                        const selectedLabel = selectedOption?.label;
+
+                        handleInputChange('epochId', selectedValue);
+                        handleInputChange(
+                          'epochName',
+                          selectedLabel ?? 'Desconhecido'
+                        );
+                      }}
                       error={errors.epochId}
                     />
                   </div>
