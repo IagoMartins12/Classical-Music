@@ -263,21 +263,44 @@ const CreateScoreModal = ({
   );
 
   // Populate form when editing
+  // Populate form when editing
   useEffect(() => {
-    if (editingScore) {
+    if (editingScore && works.length > 0) {
+      console.log('🔧 Inicializando modal de edição:', {
+        editingScore: editingScore.title,
+        workId: editingScore.workId,
+        worksAvailable: works.length,
+      });
+
       // BUSCAR DADOS DA OBRA
       const work = works.find((w) => w.id === editingScore.workId);
+
       if (work) {
+        console.log('✅ Obra encontrada:', {
+          workTitle: work.title,
+          composerId: work.composer.id,
+          composerName: work.composer.name,
+        });
+
         setWorkData(work);
-        // 🆕 SETAR COMPOSITOR AUTOMATICAMENTE QUANDO EDITANDO - 🔧 VERIFICAR SE ID EXISTE
+
+        // 🔧 SETAR COMPOSITOR AUTOMATICAMENTE QUANDO EDITANDO
         if (work.composer.id) {
           setComposerFilter(work.composer.id);
+          console.log(
+            '✅ Compositor setado automaticamente:',
+            work.composer.name
+          );
         } else {
+          console.log('⚠️ Compositor sem ID, buscando por nome...');
           // Se não tiver ID, buscar por nome
           findComposerIdByName(work.composer.fullName || work.composer.name);
         }
+      } else {
+        console.error('❌ Obra não encontrada:', editingScore.workId);
       }
 
+      // 🔧 SETAR DADOS DO FORMULÁRIO
       setFormData({
         workId: editingScore.workId || '',
         title: editingScore.title || '',
@@ -312,6 +335,14 @@ const CreateScoreModal = ({
           setUploadMode('url');
         }
       }
+
+      console.log('✅ Modal de edição inicializado:', {
+        workId: editingScore.workId,
+        composerFilter: work?.composer.id || 'não encontrado',
+        title: editingScore.title,
+      });
+    } else if (editingScore && works.length === 0) {
+      console.log('⏳ Aguardando obras serem carregadas...');
     }
   }, [editingScore, works]);
 
@@ -1056,14 +1087,20 @@ const CreateScoreModal = ({
                       selectedComposer={composerFilter}
                       onComposerSelect={handleComposerFilterChange}
                       popularComposers={popularComposers}
-                      isDisabled={shouldDisableComposerFilter}
+                      isDisabled={shouldDisableComposerFilter || editingScore}
                     />
 
                     {shouldDisableComposerFilter && (
-                      <p className="text-xs text-theme-tertiary mt-1">
+                      <p className="text-xs text-theme-tertiary mt-2">
                         💡 O compositor foi selecionado automaticamente baseado
                         na obra escolhida. Limpe a obra para alterar o
                         compositor.
+                      </p>
+                    )}
+
+                    {editingScore && (
+                      <p className="text-xs text-theme-tertiary mt-2">
+                        💡 Compositor não pode ser alterado durante a edição.
                       </p>
                     )}
                   </div>
@@ -1075,19 +1112,26 @@ const CreateScoreModal = ({
                     </label>
 
                     {editingScore && workData ? (
-                      <div className="w-full p-3 bg-theme-secondary/20 border border-theme-secondary rounded-lg text-theme-primary">
-                        <div className="flex items-center space-x-2">
-                          <FiInfo className="w-4 h-4 text-theme-tertiary" />
-                          <span className="font-medium">{workData.title}</span>
-                          <span className="text-theme-tertiary">
-                            por{' '}
-                            {workData.composer.fullName ||
-                              workData.composer.name}
-                          </span>
+                      <div className="w-full p-3 border rounded-lg bg-theme-elevated border-theme-secondary opacity-50 cursor-not-allowed">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center">
+                              <FiCheck className="w-4 h-4 text-accent-blue" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-theme-primary text-sm">
+                                {workData.title}
+                              </p>
+                              <p className="text-theme-tertiary text-xs">
+                                {workData.composer.fullName ||
+                                  workData.composer.name}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-theme-tertiary">
+                            <FiInfo className="w-4 h-4" />
+                          </div>
                         </div>
-                        <p className="text-xs text-theme-tertiary mt-1">
-                          A obra não pode ser alterada durante a edição
-                        </p>
                       </div>
                     ) : (
                       <WorkSearchInput
@@ -1103,6 +1147,11 @@ const CreateScoreModal = ({
                         userSuggestions={userWorks}
                         loadingUserSuggestions={loadingUserWorks}
                       />
+                    )}
+                    {editingScore && workData && (
+                      <p className="text-xs text-theme-tertiary mt-2">
+                        A obra não pode ser alterada durante a edição.
+                      </p>
                     )}
 
                     {errors.workId && (

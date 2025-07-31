@@ -55,7 +55,7 @@ export default async function EditScorePage({ params }: EditScorePageProps) {
           title: true,
           composer: {
             select: {
-              id: true,
+              id: true, // ✅ IMPORTANTE: Incluir o ID do composer
               name: true,
               fullName: true,
             },
@@ -76,20 +76,23 @@ export default async function EditScorePage({ params }: EditScorePageProps) {
     redirect('/');
   }
 
-  // Buscar obras para o modal de edição
+  // ✅ CORRIGIDO: Buscar obras para o modal de edição incluindo o ID do composer
   const works = await prisma.work.findMany({
     select: {
       id: true,
       title: true,
       composer: {
         select: {
+          id: true, // ✅ IMPORTANTE: Incluir o ID do composer
           name: true,
           fullName: true,
         },
       },
     },
+    where: {
+      id: score.work.id,
+    },
     orderBy: { title: 'asc' },
-    take: 100, // Limitar para performance
   });
 
   return (
