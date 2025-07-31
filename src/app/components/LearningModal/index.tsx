@@ -1,4 +1,4 @@
-// components/LearningModal/LearningModal.tsx - ATUALIZADO COM DETECÇÃO DE EDIÇÃO
+// components/LearningModal/LearningModal.tsx - ATUALIZADO COM IMPORT CORRETO
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -914,24 +914,29 @@ const LearningModal = () => {
           currentSelectedScore={selectedWorkScore}
           isEditing={isCurrentlyActive} // ✅ NOVO: Passar se é edição para detectar auto-seleção
           onScoreSelected={(workScore: WorkScore) => {
-            setSelectedWorkScore({
-              id: workScore.id,
-              sourceId: workScore.sourceId,
-              source: workScore.source,
-              title: workScore.title,
-              downloadUrl: workScore.downloadUrl,
-              thumbnailUrl: workScore.thumbnailUrl,
-              fileSize: workScore.fileSize,
-              pageCount: workScore.pageCount,
-              fileFormat: workScore.fileFormat,
-              type: workScore.type,
-              editor: workScore.editor,
-              publisher: workScore.publisher,
-              copyright: workScore.copyright,
-              uploadDate: workScore.uploadDate,
-              uploader: workScore.uploader,
-              notes: workScore.notes,
-            });
+            if (workScore) {
+              setSelectedWorkScore({
+                id: workScore.id,
+                sourceId: workScore.sourceId,
+                source: workScore.source,
+                title: workScore.title,
+                downloadUrl: workScore.downloadUrl,
+                thumbnailUrl: workScore.thumbnailUrl,
+                fileSize: workScore.fileSize,
+                pageCount: workScore.pageCount,
+                fileFormat: workScore.fileFormat,
+                type: workScore.type,
+                editor: workScore.editor,
+                publisher: workScore.publisher,
+                copyright: workScore.copyright,
+                uploadDate: workScore.uploadDate,
+                uploader: workScore.uploader,
+                notes: workScore.notes,
+              });
+            } else {
+              // ✅ NOVO: Permitir remover partitura passando null
+              setSelectedWorkScore(null);
+            }
             setShowScoreSelection(false);
           }}
         />

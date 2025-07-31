@@ -631,7 +631,7 @@ export default function IMSLPTabsIncremental({
             </div>
 
             {/* Tabs Navigation */}
-            {visibleTabs.length > 1 && (
+            {visibleTabs.length > 0 && (
               <nav className="flex scrollbar-hide px-6" aria-label="Tabs">
                 {visibleTabs.map((tab, index) => {
                   const Icon = tab.icon;

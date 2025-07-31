@@ -1,4 +1,4 @@
-// components/ScoreSelectionModal/ScoreSelectionModal.tsx - MELHORADO COM LOAD MORE INCREMENTAL
+// components/ScoreSelectionModal/ScoreSelectionModal.tsx - VERSÃO FINAL CORRIGIDA
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -30,7 +30,7 @@ import Modal from '../../Modal';
 import ScorePreview from '../../WorkDetailsClient/ScorePreview';
 import ScoreCard from '../../WorkDetailsClient/ScoreCard';
 
-// ✅ Interface para WorkScore (dados unificados)
+// ✅ Interface para dados unificados
 interface MixedScoreData {
   id: string;
   title: string;
@@ -46,7 +46,6 @@ interface MixedScoreData {
   uploadDate?: string;
   uploader?: string;
   notes?: string;
-  // Campos específicos do WorkScore
   priority?: number;
   accessCount?: number;
   lastAccessed?: string;
@@ -63,7 +62,7 @@ interface MixedScoreGroup {
   source: 'WORKSCORE';
 }
 
-// ✅ TABS SEM "TODAS" (seguindo padrão IMSLPTabsIncremental)
+// ✅ TABS para categorias
 const SCORE_TABS = [
   {
     id: 'scores',
@@ -127,7 +126,6 @@ interface ScoreSelectionModalProps {
     notes?: string;
   } | null;
   onScoreSelected: (workScore: any) => void;
-  // ✅ NOVO: Prop para detectar se é edição
   isEditing?: boolean;
 }
 
@@ -139,15 +137,16 @@ const ScoreSelectionModal = ({
   composerName,
   currentSelectedScore,
   onScoreSelected,
-  isEditing = false, // ✅ NOVO: Detectar se é edição
+  isEditing = false,
 }: ScoreSelectionModalProps) => {
   const [activeTab, setActiveTab] = useState('scores');
   const [selectedScore, setSelectedScore] = useState<MixedScoreData | null>(
     null
   );
   const [isConverting, setIsConverting] = useState(false);
+  const [hasAutoSelected, setHasAutoSelected] = useState(false);
 
-  // ✅ Hook para buscar WorkScores do banco com limite por tipo
+  // ✅ Hook corrigido com limitPerType
   const {
     workScores,
     loading: loadingWorkScores,
@@ -155,16 +154,26 @@ const ScoreSelectionModal = ({
     hasMore: hasMoreWorkScores,
     total: totalWorkScores,
     loadMore: loadMoreWorkScores,
+    loadMoreForType, // ✅ NOVO: Load more específico por tipo
     refetch: refetchWorkScores,
     pagination,
   } = useWorkScores({
     workId,
-    limitPerType: 20, // ✅ NOVO: 20 por tipo, não total
+    limitPerType: 20, // ✅ 20 por tipo
     enabled: isOpen,
   });
 
-  // ✅ Processar e organizar dados POR TIPO (sem tab "all")
-  const { mixedData, visibleTabs, counts, tabStats } = useMemo(() => {
+  console.log('🔍 [SCORE-SELECTION-MODAL] Dados do hook:', {
+    totalWorkScores,
+    hasMoreWorkScores,
+    workScoresLength: workScores?.length,
+    totalByType: pagination.totalByType,
+    loadedByType: pagination.loadedByType,
+    pagination,
+  });
+
+  // ✅ Processar dados com contadores corretos da API
+  const { mixedData, visibleTabs, tabStats } = useMemo(() => {
     const processed = {
       scores: [] as MixedScoreGroup[],
       parts: [] as MixedScoreGroup[],
@@ -173,23 +182,67 @@ const ScoreSelectionModal = ({
       others: [] as MixedScoreGroup[],
     };
 
-    const counts = {
-      scores: 0,
-      parts: 0,
-      arrangements: 0,
-      uploads: 0,
-      others: 0,
-    };
+    // ✅ Usar dados da API
+    const apiTotalByType = pagination.totalByType || {};
+    const apiLoadedByType = pagination.loadedByType || {};
+
+    console.log('📊 [SCORE-SELECTION-MODAL] Dados da API:', {
+      apiTotalByType,
+      apiLoadedByType,
+    });
 
     const stats = {
-      scores: { loaded: 0, total: 0, hasMore: false, remaining: 0 },
-      parts: { loaded: 0, total: 0, hasMore: false, remaining: 0 },
-      arrangements: { loaded: 0, total: 0, hasMore: false, remaining: 0 },
-      uploads: { loaded: 0, total: 0, hasMore: false, remaining: 0 },
-      others: { loaded: 0, total: 0, hasMore: false, remaining: 0 },
+      scores: {
+        loaded: apiLoadedByType.scores || 0,
+        total: apiTotalByType.scores || 0,
+        hasMore: (apiLoadedByType.scores || 0) < (apiTotalByType.scores || 0),
+        remaining: Math.max(
+          0,
+          (apiTotalByType.scores || 0) - (apiLoadedByType.scores || 0)
+        ),
+      },
+      parts: {
+        loaded: apiLoadedByType.parts || 0,
+        total: apiTotalByType.parts || 0,
+        hasMore: (apiLoadedByType.parts || 0) < (apiTotalByType.parts || 0),
+        remaining: Math.max(
+          0,
+          (apiTotalByType.parts || 0) - (apiLoadedByType.parts || 0)
+        ),
+      },
+      arrangements: {
+        loaded: apiLoadedByType.arrangements || 0,
+        total: apiTotalByType.arrangements || 0,
+        hasMore:
+          (apiLoadedByType.arrangements || 0) <
+          (apiTotalByType.arrangements || 0),
+        remaining: Math.max(
+          0,
+          (apiTotalByType.arrangements || 0) -
+            (apiLoadedByType.arrangements || 0)
+        ),
+      },
+      uploads: {
+        loaded: apiLoadedByType.uploads || 0,
+        total: apiTotalByType.uploads || 0,
+        hasMore: (apiLoadedByType.uploads || 0) < (apiTotalByType.uploads || 0),
+        remaining: Math.max(
+          0,
+          (apiTotalByType.uploads || 0) - (apiLoadedByType.uploads || 0)
+        ),
+      },
+      others: {
+        loaded: apiLoadedByType.others || 0,
+        total: apiTotalByType.others || 0,
+        hasMore: (apiLoadedByType.others || 0) < (apiTotalByType.others || 0),
+        remaining: Math.max(
+          0,
+          (apiTotalByType.others || 0) - (apiLoadedByType.others || 0)
+        ),
+      },
     };
 
-    // ✅ Processar WorkScores por tipo
+    // ✅ Organizar WorkScores por tipo
     if (workScores && workScores.length > 0) {
       const workScoreGroups: { [key: string]: WorkScore[] } = {};
 
@@ -219,7 +272,7 @@ const ScoreSelectionModal = ({
               type === 'uploads'
                 ? 'Open Atlas'
                 : type.charAt(0).toUpperCase() + type.slice(1)
-            } (${scores.length})`,
+            } (${scores.length} carregadas)`,
             source: 'WORKSCORE',
             scores: scores.map(
               (ws): MixedScoreData => ({
@@ -249,42 +302,45 @@ const ScoreSelectionModal = ({
           };
 
           processed[type as keyof typeof processed].push(group);
-          counts[type as keyof typeof counts] += scores.length;
 
-          // ✅ Calcular stats por tipo baseado na paginação
-          const typeTotal = pagination.totalByType?.[type] || scores.length;
-          stats[type as keyof typeof stats] = {
-            loaded: scores.length,
-            total: typeTotal,
-            hasMore: scores.length < typeTotal,
-            remaining: Math.max(0, typeTotal - scores.length),
-          };
+          console.log(`📊 [SCORE-SELECTION-MODAL] Tipo ${type}:`, {
+            loaded: stats[type as keyof typeof stats].loaded,
+            total: stats[type as keyof typeof stats].total,
+            hasMore: stats[type as keyof typeof stats].hasMore,
+            remaining: stats[type as keyof typeof stats].remaining,
+            actualScores: scores.length,
+          });
         }
       });
     }
 
-    // ✅ Determinar tabs visíveis
-    const visible = SCORE_TABS.filter(
-      (tab) => counts[tab.type as keyof typeof counts] > 0
-    );
+    // ✅ Tabs visíveis (que têm conteúdo)
+    const visible = SCORE_TABS.filter((tab) => {
+      const tabStat = stats[tab.type as keyof typeof stats];
+      return tabStat.total > 0;
+    });
 
     return {
       mixedData: processed,
       visibleTabs: visible,
-      counts,
       tabStats: stats,
     };
   }, [workScores, pagination]);
 
-  // ✅ AUTO-SELEÇÃO quando é edição
+  // ✅ Auto-seleção corrigida (não interfere com desmarcação manual)
   useEffect(() => {
-    if (isOpen && isEditing && currentSelectedScore && !selectedScore) {
+    if (
+      isOpen &&
+      isEditing &&
+      currentSelectedScore &&
+      !selectedScore &&
+      !hasAutoSelected
+    ) {
       console.log(
         '🎯 [SCORE-SELECTION-MODAL] Auto-selecionando partitura para edição:',
         currentSelectedScore.title
       );
 
-      // Encontrar a partitura correspondente na lista
       const allScores = Object.values(mixedData).flatMap((groups) =>
         groups.flatMap((group) => group.scores)
       );
@@ -297,6 +353,7 @@ const ScoreSelectionModal = ({
 
       if (matchingScore) {
         setSelectedScore(matchingScore);
+        setHasAutoSelected(true);
 
         // Auto-navegar para a tab correta
         const scoreType = Object.entries(mixedData).find(([_, groups]) =>
@@ -310,35 +367,71 @@ const ScoreSelectionModal = ({
         }
       }
     }
-  }, [isOpen, isEditing, currentSelectedScore, mixedData, selectedScore]);
+  }, [
+    isOpen,
+    isEditing,
+    currentSelectedScore,
+    mixedData,
+    selectedScore,
+    hasAutoSelected,
+  ]);
 
-  // Reset seleção quando modal abre/fecha
+  // ✅ Reset quando modal abre/fecha
   useEffect(() => {
     if (isOpen) {
       if (!isEditing) {
         setSelectedScore(null);
+        setHasAutoSelected(false);
       }
-      // Auto-selecionar primeira tab com conteúdo
       if (visibleTabs.length > 0 && !isEditing) {
         setActiveTab(visibleTabs[0].id);
       }
+    } else {
+      setHasAutoSelected(false);
     }
   }, [isOpen, visibleTabs, isEditing]);
 
+  // ✅ Seleção/desmarcação corrigida
   const handleScoreSelect = (score: MixedScoreData) => {
     if (selectedScore?.id === score.id) {
+      console.log(
+        '❌ [SCORE-SELECTION-MODAL] Desmarcando partitura:',
+        score.title
+      );
       setSelectedScore(null);
+      setHasAutoSelected(false);
     } else {
+      console.log(
+        '✅ [SCORE-SELECTION-MODAL] Selecionando partitura:',
+        score.title
+      );
       setSelectedScore(score);
+      setHasAutoSelected(true);
     }
   };
 
+  // ✅ Confirmação
   const handleConfirmSelection = async () => {
-    if (!selectedScore) return;
+    if (!selectedScore) {
+      console.log(
+        '⚪ [SCORE-SELECTION-MODAL] Confirmando sem partitura selecionada'
+      );
+      onScoreSelected(null);
+      toast.success(
+        isEditing
+          ? 'Partitura removida com sucesso!'
+          : 'Configuração salva sem partitura!',
+        {
+          icon: isEditing ? '🗑️' : '✅',
+          duration: 3000,
+        }
+      );
+      onClose();
+      return;
+    }
 
     setIsConverting(true);
     try {
-      // ✅ WorkScore já existe no banco, usar direto
       const workScore = {
         id: selectedScore.id,
         sourceId: selectedScore.sourceId || selectedScore.id,
@@ -377,27 +470,19 @@ const ScoreSelectionModal = ({
     }
   };
 
-  // ✅ NOVO: Função para carregar mais de um tipo específico
-  const handleLoadMoreForTab = (tabType: string) => {
+  // ✅ Load more funcional específico por tipo
+  const handleLoadMoreForTab = async (tabType: string) => {
     console.log(
       `📊 [SCORE-SELECTION-MODAL] Carregando mais para tab: ${tabType}`
     );
-    // Como useWorkScores carrega todos os tipos, usar loadMore normal
-    loadMoreWorkScores();
-  };
 
-  // ✅ NOVO: Função para carregar todas as partituras de um tipo
-  const handleLoadAllForTab = (tabType: string) => {
-    console.log(
-      `🔄 [SCORE-SELECTION-MODAL] Carregando todas para tab: ${tabType}`
-    );
-    // Para carregar todas, fazer múltiplas chamadas até não ter mais
-    const loadAll = async () => {
-      while (hasMoreWorkScores) {
-        await loadMoreWorkScores();
-      }
-    };
-    loadAll();
+    try {
+      await loadMoreForType(tabType);
+      console.log('✅ [SCORE-SELECTION-MODAL] Load more executado com sucesso');
+    } catch (error) {
+      console.error('❌ [SCORE-SELECTION-MODAL] Erro no load more:', error);
+      toast.error('Erro ao carregar mais partituras');
+    }
   };
 
   const activeTabData = mixedData[activeTab as keyof typeof mixedData] || [];
@@ -437,7 +522,6 @@ const ScoreSelectionModal = ({
                   <p className="text-theme-secondary classical-subtitle">
                     {workTitle} • {composerName}
                   </p>
-                  {/* Indicador de fonte */}
                   {totalWorkScores > 0 && (
                     <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full flex items-center space-x-1">
                       <FiUpload className="w-3 h-3" />
@@ -448,45 +532,56 @@ const ScoreSelectionModal = ({
               </div>
             </div>
 
-            {selectedScore && (
-              <div className="flex items-center space-x-3">
-                <div className="bg-theme-elevated/50 border border-brand-primary/30 rounded-xl px-4 py-2">
-                  <div className="flex items-center space-x-2 text-sm">
-                    <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
-                    <span className="text-theme-secondary font-medium">
-                      {isEditing
+            {/* Status e botão de confirmação */}
+            <div className="flex items-center space-x-3">
+              <div className="bg-theme-elevated/50 border border-brand-primary/30 rounded-xl px-4 py-2">
+                <div className="flex items-center space-x-2 text-sm">
+                  <div
+                    className={`w-2 h-2 rounded-full animate-pulse ${
+                      selectedScore ? 'bg-accent-green' : 'bg-theme-tertiary'
+                    }`}
+                  ></div>
+                  <span className="text-theme-secondary font-medium">
+                    {selectedScore
+                      ? isEditing
                         ? 'Nova partitura selecionada'
-                        : 'Partitura selecionada'}
-                    </span>
-                  </div>
+                        : 'Partitura selecionada'
+                      : 'Nenhuma partitura selecionada'}
+                  </span>
                 </div>
-
-                <button
-                  onClick={handleConfirmSelection}
-                  disabled={isConverting}
-                  className="btn-classical-primary flex items-center space-x-2"
-                >
-                  {isConverting ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      <span>Processando...</span>
-                    </>
-                  ) : (
-                    <>
-                      <FiCheckCircle className="w-4 h-4" />
-                      <span>
-                        {isEditing ? 'Atualizar e Voltar' : 'Confirmar Seleção'}
-                      </span>
-                    </>
-                  )}
-                </button>
               </div>
-            )}
+
+              <button
+                onClick={handleConfirmSelection}
+                disabled={isConverting}
+                className="btn-classical-primary flex items-center space-x-2"
+              >
+                {isConverting ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Processando...</span>
+                  </>
+                ) : (
+                  <>
+                    <FiCheckCircle className="w-4 h-4" />
+                    <span>
+                      {selectedScore
+                        ? isEditing
+                          ? 'Atualizar e Voltar'
+                          : 'Confirmar Seleção'
+                        : isEditing
+                        ? 'Remover Partitura'
+                        : 'Prosseguir sem Partitura'}
+                    </span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* ✅ Tabs Navigation IDENTICAS AO IMSLPTABS */}
-        {visibleTabs.length > 1 && (
+        {/* ✅ Tabs Navigation com contadores corretos */}
+        {visibleTabs.length > 0 && (
           <nav className="flex scrollbar-hide px-6" aria-label="Tabs">
             {visibleTabs.map((tab, index) => {
               const isActive = activeTab === tab.id;
@@ -518,7 +613,7 @@ const ScoreSelectionModal = ({
                     </div>
                     <span className="font-semibold">{tab.label}</span>
 
-                    {/* ✅ Contador com progresso IDENTICO ao IMSLPTabs */}
+                    {/* ✅ Contadores corretos */}
                     <div className="flex items-center space-x-1">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
@@ -589,7 +684,7 @@ const ScoreSelectionModal = ({
                   ))}
                 </AnimatedContainer>
 
-                {/* ✅ NOVOS BOTÕES DE LOAD MORE INTELIGENTES */}
+                {/* ✅ Botões de Load More */}
                 {activeTabStat.hasMore && (
                   <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
                     <div className="text-center">
@@ -604,7 +699,6 @@ const ScoreSelectionModal = ({
                     </div>
 
                     <div className="flex flex-wrap gap-4 justify-center">
-                      {/* Botão "Carregar Mais" específico */}
                       <button
                         onClick={() => handleLoadMoreForTab(activeTab)}
                         disabled={isLoading}
@@ -625,20 +719,6 @@ const ScoreSelectionModal = ({
                           </>
                         )}
                       </button>
-
-                      {/* Botão "Carregar Todas" se tiver mais de 20 */}
-                      {activeTabStat.remaining > 20 && (
-                        <button
-                          onClick={() => handleLoadAllForTab(activeTab)}
-                          disabled={isLoading}
-                          className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          <FiDownload className="w-4 h-4" />
-                          <span>
-                            Carregar Todas ({activeTabStat.remaining} restantes)
-                          </span>
-                        </button>
-                      )}
                     </div>
                   </div>
                 )}
@@ -647,7 +727,7 @@ const ScoreSelectionModal = ({
           </div>
         </div>
 
-        {/* Preview Panel */}
+        {/* ✅ Preview Panel Condicional */}
         {selectedScore && (
           <div className="w-96 border-l border-theme-secondary bg-theme-elevated overflow-y-auto">
             <div className="p-6">
@@ -688,19 +768,21 @@ const ScoreSelectionModal = ({
               {isEditing ? 'Manter Atual' : 'Cancelar'}
             </button>
 
-            {selectedScore && (
-              <button
-                onClick={handleConfirmSelection}
-                disabled={isConverting}
-                className="btn-classical-primary"
-              >
-                {isConverting
-                  ? 'Processando...'
-                  : isEditing
+            <button
+              onClick={handleConfirmSelection}
+              disabled={isConverting}
+              className="btn-classical-primary"
+            >
+              {isConverting
+                ? 'Processando...'
+                : selectedScore
+                ? isEditing
                   ? 'Atualizar e Voltar'
-                  : 'Confirmar Seleção'}
-              </button>
-            )}
+                  : 'Confirmar Seleção'
+                : isEditing
+                ? 'Remover Partitura'
+                : 'Prosseguir sem Partitura'}
+            </button>
           </div>
         </div>
       </div>

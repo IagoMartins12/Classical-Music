@@ -196,7 +196,6 @@ export default function WorkDetailsClient({
     enabled: mounted && !!work.imslpPermlink,
     initialLimit: 5,
     moreLimit: 20,
-    priorityScoreId: selectedScoreForStudy?.id,
     onScoresCached: (fromCache) => {
       console.log(
         `✅ [CLIENT] Estratégia: ${

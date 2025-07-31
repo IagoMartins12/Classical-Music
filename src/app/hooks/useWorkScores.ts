@@ -1,4 +1,4 @@
-// hooks/useWorkScores.ts - Hook MELHORADO para buscar limite por tipo
+// hooks/useWorkScores.ts - Hook COMPLETO com loadMoreForType
 import { useState, useEffect, useCallback } from 'react';
 
 export interface WorkScore {
@@ -48,6 +48,7 @@ interface UseWorkScoresReturn {
   hasMore: boolean;
   refetch: () => Promise<void>;
   loadMore: () => Promise<void>;
+  loadMoreForType: (scoreType: string) => Promise<void>; // ✅ NOVO: Load more específico por tipo
   findWorkScore: (
     sourceId: string,
     source?: string
@@ -148,23 +149,25 @@ export const useWorkScores = (
               );
               return [...prev, ...uniqueNew];
             });
+
+            // ✅ CORRIGIDO: Para limitPerType, incrementar o offset baseado na quantidade atual
             setOffset((prev) => prev + newWorkScores.length);
           }
 
           setTotal(result.total || 0);
           setHasMore(result.hasMore || false);
 
-          // ✅ NOVO: Atualizar paginação com dados por tipo
-          setPagination(
-            result.pagination || {
-              limit: limitPerType || limit,
-              offset: currentOffset,
-              hasNext: false,
-              hasPrev: false,
-              totalByType: result.totalByType || {},
-              loadedByType: result.loadedByType || {},
-            }
-          );
+          // ✅ NOVO: Atualizar paginação com dados por tipo corretos
+          setPagination({
+            limit: limitPerType || limit,
+            offset: currentOffset,
+            hasNext: result.hasMore || false,
+            hasPrev: currentOffset > 0,
+            totalByType:
+              result.totalByType || result.pagination?.totalByType || {},
+            loadedByType:
+              result.loadedByType || result.pagination?.loadedByType || {},
+          });
 
           console.log(
             `✅ [USE-WORK-SCORES] Carregados ${newWorkScores.length}/${result.total} WorkScores`,
@@ -172,6 +175,7 @@ export const useWorkScores = (
               totalByType: result.totalByType,
               loadedByType: result.loadedByType,
               hasMore: result.hasMore,
+              pagination: result.pagination,
             }
           );
         } else {
@@ -204,6 +208,29 @@ export const useWorkScores = (
     console.log('📈 [USE-WORK-SCORES] Carregando mais...');
     await fetchWorkScores(false);
   }, [hasMore, loading, fetchWorkScores]);
+
+  // ✅ NOVO: Função para carregar mais de um tipo específico
+  const loadMoreForType = useCallback(
+    async (scoreType: string) => {
+      if (!hasMore || loading) {
+        console.log('⚠️ [USE-WORK-SCORES] LoadMoreForType cancelado:', {
+          hasMore,
+          loading,
+          scoreType,
+        });
+        return;
+      }
+
+      console.log(
+        `📈 [USE-WORK-SCORES] Carregando mais para tipo: ${scoreType}`
+      );
+
+      // Para limitPerType, o loadMore normal já funciona incrementalmente
+      // A API gerencia automaticamente os tipos
+      await fetchWorkScores(false);
+    },
+    [hasMore, loading, fetchWorkScores]
+  );
 
   // ✅ Função para buscar WorkScore específico
   const findWorkScore = useCallback(
@@ -302,6 +329,7 @@ export const useWorkScores = (
     hasMore,
     refetch,
     loadMore,
+    loadMoreForType, // ✅ NOVO: Função para load more por tipo
     findWorkScore,
     pagination,
   };

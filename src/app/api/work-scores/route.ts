@@ -1,10 +1,26 @@
-// app/api/work-scores/route.ts - API MELHORADA COM LIMITE POR TIPO
+// app/api/work-scores/route.ts - API CORRIGIDA COM LIMITE POR TIPO
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 
-// ✅ ENDPOINT PARA BUSCAR WORKSCORES COM LIMITE POR TIPO
+// ✅ FUNÇÃO AUXILIAR PARA CLASSIFICAR TIPO
+function classifyScoreType(workScore: any): string {
+  if (workScore.source === 'UPLOAD' || workScore.source === 'CUSTOM') {
+    return 'uploads';
+  }
+
+  const type = workScore.type?.toLowerCase() || '';
+
+  if (type.includes('score')) return 'scores';
+  if (type.includes('part')) return 'parts';
+  if (type.includes('arrangement')) return 'arrangements';
+  if (type.includes('libretto')) return 'librettos';
+
+  return 'others';
+}
+
+// ✅ ENDPOINT PARA BUSCAR WORKSCORES COM LIMITE POR TIPO CORRIGIDO
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -21,6 +37,15 @@ export async function GET(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    console.log(`🔍 [WORKSCORE-API] Parâmetros:`, {
+      workId,
+      limitPerType,
+      limit,
+      offset,
+      sourceId,
+      source,
+    });
 
     // 🔍 Busca por sourceId + source
     if (sourceId && source) {
@@ -62,8 +87,12 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // 🔄 Busca por tipo com limites por tipo
+    // 🔄 LÓGICA CORRIGIDA: limitPerType = 20 por requisição por tipo
     if (limitPerType > 0) {
+      console.log(
+        `📊 [WORKSCORE-API] Usando limitPerType: ${limitPerType}, offset: ${offset}`
+      );
+
       const baseWhere: any = {
         workId,
         isActive: true,
@@ -73,75 +102,103 @@ export async function GET(request: NextRequest) {
         baseWhere.source = source;
       }
 
-      const scoreTypes = [
-        { type: 'scores' },
-        { type: 'parts' },
-        { type: 'arrangements' },
-        { type: 'uploads' },
-        { type: 'others' },
-      ];
+      // ✅ PRIMEIRO: Buscar TODOS os WorkScores para classificar por tipo
+      const allWorkScores = await prisma.workScore.findMany({
+        where: baseWhere,
+        orderBy: [
+          { priority: 'desc' },
+          { accessCount: 'desc' },
+          { createdAt: 'desc' },
+        ],
+      });
 
-      const allWorkScores: any[] = [];
+      console.log(
+        `📋 [WORKSCORE-API] Total de WorkScores encontrados: ${allWorkScores.length}`
+      );
+
+      // ✅ SEGUNDO: Classificar TODOS por tipo
+      const allScoresByType: Record<string, any[]> = {
+        scores: [],
+        parts: [],
+        arrangements: [],
+        uploads: [],
+        librettos: [],
+        others: [],
+      };
+
+      allWorkScores.forEach((workScore) => {
+        const type = classifyScoreType(workScore);
+        allScoresByType[type].push(workScore);
+      });
+
+      // ✅ TERCEIRO: Para cada tipo, aplicar paginação individual
+      const selectedScores: any[] = [];
       const totalByType: Record<string, number> = {};
       const loadedByType: Record<string, number> = {};
-      let globalHasMore = false;
 
-      for (const scoreType of scoreTypes) {
-        const typeWhereClause: any = { ...baseWhere };
+      // ✅ NOVO: Calcular quantos "rounds" de carregamento já foram feitos
+      const round = Math.floor(offset / limitPerType);
+      const currentOffsetPerType = round * limitPerType;
 
-        if (scoreType.type === 'uploads') {
-          typeWhereClause.source = { in: ['UPLOAD', 'CUSTOM'] };
-        } else if (scoreType.type === 'scores') {
-          typeWhereClause.type = { equals: 'SCORES' };
-        } else if (scoreType.type === 'parts') {
-          typeWhereClause.type = { equals: 'PARTS' };
-        } else if (scoreType.type === 'arrangements') {
-          typeWhereClause.type = { equals: 'ARRANGEMENTS' };
-        } else if (scoreType.type === 'others') {
-          typeWhereClause.type = { notIn: ['SCORES', 'PARTS', 'ARRANGEMENTS'] };
-          if (!source) {
-            typeWhereClause.source = { notIn: ['UPLOAD', 'CUSTOM'] };
-          }
-        }
+      Object.entries(allScoresByType).forEach(([type, allScoresOfType]) => {
+        totalByType[type] = allScoresOfType.length;
 
-        const typeTotal = await prisma.workScore.count({
-          where: typeWhereClause,
-        });
-        totalByType[scoreType.type] = typeTotal;
+        if (allScoresOfType.length > 0) {
+          // ✅ APLICAR PAGINAÇÃO POR TIPO: pegar próximos limitPerType a partir do offset
+          const startIndex = currentOffsetPerType;
+          const endIndex = startIndex + limitPerType;
+          const selectedOfType = allScoresOfType.slice(startIndex, endIndex);
 
-        if (typeTotal > 0) {
-          const typeScores = await prisma.workScore.findMany({
-            where: typeWhereClause,
-            orderBy: [
-              { priority: 'desc' },
-              { accessCount: 'desc' },
-              { createdAt: 'desc' },
-            ],
-            take: limitPerType,
-            skip: Math.floor((offset * limitPerType) / scoreTypes.length),
-          });
+          selectedScores.push(...selectedOfType);
 
-          loadedByType[scoreType.type] = typeScores.length;
-          allWorkScores.push(...typeScores);
+          // ✅ IMPORTANTE: loadedByType = total carregado até agora para este tipo
+          const totalLoadedForType = Math.min(
+            startIndex + selectedOfType.length,
+            allScoresOfType.length
+          );
+          loadedByType[type] = totalLoadedForType;
 
-          if (typeScores.length < typeTotal) {
-            globalHasMore = true;
-          }
+          console.log(
+            `📊 [WORKSCORE-API] Tipo ${type}: ${selectedOfType.length} novas (${startIndex}-${endIndex}), total carregado: ${totalLoadedForType}/${allScoresOfType.length}`
+          );
         } else {
-          loadedByType[scoreType.type] = 0;
+          loadedByType[type] = 0;
         }
-      }
+      });
+
+      // ✅ QUARTO: Calcular hasMore - se algum tipo ainda tem partituras para carregar
+      let globalHasMore = false;
+      Object.entries(totalByType).forEach(([type, total]) => {
+        const loaded = loadedByType[type] || 0;
+        if (loaded < total) {
+          globalHasMore = true;
+        }
+      });
 
       const totalCount = Object.values(totalByType).reduce(
         (sum, count) => sum + count,
         0
       );
-      const loadedCount = allWorkScores.length;
+      const globalLoadedCount = Object.values(loadedByType).reduce(
+        (sum, count) => sum + count,
+        0
+      );
+
+      console.log(`✅ [WORKSCORE-API] Resultado paginado:`, {
+        selectedInThisRequest: selectedScores.length,
+        globalLoadedCount,
+        totalCount,
+        globalHasMore,
+        totalByType,
+        loadedByType,
+        round,
+        currentOffsetPerType,
+      });
 
       return NextResponse.json({
         success: true,
-        workScores: allWorkScores,
-        count: loadedCount,
+        workScores: selectedScores,
+        count: selectedScores.length,
         total: totalCount,
         hasMore: globalHasMore,
         totalByType,
@@ -151,11 +208,13 @@ export async function GET(request: NextRequest) {
           offset,
           hasNext: globalHasMore,
           hasPrev: offset > 0,
+          totalByType,
+          loadedByType,
         },
       });
     }
 
-    // 📋 Fallback: busca geral
+    // 📋 Fallback: busca geral (mantida igual)
     const whereClause: any = {
       workId,
       isActive: true,
