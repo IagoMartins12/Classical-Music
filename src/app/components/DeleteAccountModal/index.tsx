@@ -22,6 +22,7 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import Button from '../Common/Button';
 import Input from '../Common/Inputs';
 import { AnimatedCard } from '../animation/AnimatedComponents';
+import { BiBookContent, BiBookOpen } from 'react-icons/bi';
 
 interface CascadeInfo {
   totalItems: number;
@@ -168,6 +169,18 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
       icon: FiBookmark,
       label: 'Marcadores',
       count: cascadeInfo?.bookmarksCount || 0,
+      color: 'from-accent-green to-accent-amber',
+    },
+    {
+      icon: BiBookOpen,
+      label: 'Peças aprendidas',
+      count: cascadeInfo?.learnedWorksCount || 0,
+      color: 'from-accent-green to-accent-amber',
+    },
+    {
+      icon: BiBookContent,
+      label: 'Peças que deseja aprender',
+      count: cascadeInfo?.wantToLearnCount || 0,
       color: 'from-accent-green to-accent-amber',
     },
   ];

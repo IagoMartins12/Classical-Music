@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - ATUALIZADO COM INTEGRAÇÃO
+// app/work/[workId]/WorkDetailsClient.tsx - ATUALIZADO COM PREVIEW EM EDIÇÃO
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -19,11 +19,14 @@ import {
   FiTag,
   FiX,
   FiCheckCircle,
+  FiArrowLeft,
+  FiRefreshCw,
 } from 'react-icons/fi';
 import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
+import { useWorkScores } from '@/app/hooks/useWorkScores';
 import { useNavigate } from '@/app/hooks/useNavigate';
 import { useScoreSelectionStore } from '@/app/stores/useScoreSelectionStore';
-import { useLearningModalStore } from '@/app/stores/useLearningModalStore'; // ✅ NOVO
+import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 import FavoriteButton from '../FavoriteButton';
 import { LearningInitializer } from '../LearningInitializer';
 import LearningButtonWithModal from '../LearningButtonWithModal';
@@ -47,8 +50,9 @@ import EditButton from '../Common/EditButton';
 import MediaSection from '../Players/MediaSection';
 import { WorkDetails } from '@/app/requests/work-page-details';
 import LearningModal from '../LearningModal';
+import ScorePreview from './ScorePreview'; // ✅ IMPORTAR SCOREPREVIEW
 
-// Interface para dados de áudio processados (mantida igual)
+// ✅ Interface para dados de áudio processados (mantida igual)
 interface ProcessedAudioData {
   hasAnyAudio: boolean;
   customAudio: {
@@ -111,7 +115,7 @@ export default function WorkDetailsClient({
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [isVerified, setIsVerified] = useState(work.isVerified || false);
 
-  // 🆕 Estado local para dados de mídia
+  // ✅ Estado local para dados de mídia
   const [currentAudioData, setCurrentAudioData] =
     useState<ProcessedAudioData | null>(audioData || null);
 
@@ -120,12 +124,12 @@ export default function WorkDetailsClient({
     isSelectionMode,
     activeType,
     tempSelectedWorkScore,
-    selectFromWorkScore, // ✅ NOVA função
+    selectFromWorkScore,
     confirmScoreSelection,
     cancelScoreSelection,
   } = useScoreSelectionStore();
 
-  // ✅ NOVO: Hook para LearningModal global
+  // ✅ Hook para LearningModal global
   const { isInSelectionMode } = useLearningModalStore();
 
   const handleVerificationChange = (verified: boolean) => {
@@ -153,7 +157,23 @@ export default function WorkDetailsClient({
     isScoreMostFavorited,
   } = useMostFavoritedForWork(mounted ? work.id : '');
 
-  // Hook para carregamento incremental
+  // ✅ Hook para carregamento de WorkScores do banco
+  const {
+    workScores,
+    loading: loadingWorkScores,
+    error: workScoresError,
+    hasMore: hasMoreWorkScores,
+    total: totalWorkScores,
+    loadMore: loadMoreWorkScores,
+    refetch: refetchWorkScores,
+  } = useWorkScores({
+    workId: work.id,
+    limit: 20,
+    enabled: mounted,
+    source: 'UPLOAD',
+  });
+
+  // ✅ Hook para carregamento incremental IMSLP (apenas se tiver link)
   const {
     scores: imslpScores,
     loading: loadingScores,
@@ -171,9 +191,9 @@ export default function WorkDetailsClient({
     cacheProgress,
     setSelectedScore,
     getTabStats,
-  } = useIMSLPScoresIncremental(mounted ? work.imslpPermlink : '', {
+  } = useIMSLPScoresIncremental(work.imslpPermlink || '', {
     workId: work.id,
-    enabled: mounted,
+    enabled: mounted && !!work.imslpPermlink,
     initialLimit: 5,
     moreLimit: 20,
     priorityScoreId: selectedScoreForStudy?.id,
@@ -192,6 +212,66 @@ export default function WorkDetailsClient({
   });
 
   const { navigateToUrl } = useNavigate();
+
+  // ✅ Handler para seleção de partitura (funciona para ambos os tipos)
+  const handleScoreSelectForLearning = async (score: IMSLPScore | any) => {
+    if (isSelectionMode || (isInSelectionMode && score?.title)) {
+      console.log(
+        '🎯 [WORK-CLIENT] Selecionando partitura para aprendizado:',
+        score.title
+      );
+
+      // ✅ Se for IMSLPScore, buscar WorkScore correspondente
+      if (score.id && !score.workId) {
+        // É IMSLPScore
+        try {
+          const response = await fetch(
+            `/api/work-scores?workId=${work.id}&sourceId=${score.id}&source=IMSLP`
+          );
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.workScore) {
+              selectFromWorkScore(result.workScore);
+            } else {
+              console.warn(
+                '⚠️ [WORK-CLIENT] WorkScore não encontrado para IMSLPScore:',
+                score.id
+              );
+            }
+          }
+        } catch (error) {
+          console.error('❌ [WORK-CLIENT] Erro ao buscar WorkScore:', error);
+        }
+      } else {
+        // ✅ Já é WorkScore
+        selectFromWorkScore(score);
+      }
+    } else {
+      // Comportamento normal de seleção para estudo
+      setSelectedScoreForStudy(score);
+      setSelectedScore(score?.id || null);
+    }
+  };
+
+  // ✅ NOVO: Handler para confirmar seleção com verificação de mudança
+  const handleConfirmSelection = () => {
+    console.log('✅ [WORK-CLIENT] Confirmando seleção de partitura');
+    confirmScoreSelection();
+  };
+
+  // ✅ NOVO: Handler para atualizar partitura (se mudou)
+  const handleUpdateScore = () => {
+    console.log('🔄 [WORK-CLIENT] Atualizando partitura selecionada');
+    // Confirma a nova seleção
+    confirmScoreSelection();
+  };
+
+  // ✅ Handler para cancelar seleção
+  const handleCancelSelection = () => {
+    console.log('❌ [WORK-CLIENT] Cancelando seleção de partitura');
+    cancelScoreSelection();
+  };
 
   // Converter dados processados para formato esperado pelo MediaSection
   const workForMediaSection = currentAudioData
@@ -269,55 +349,6 @@ export default function WorkDetailsClient({
     });
   };
 
-  // ✅ MODIFICADO: Handler para seleção de partitura
-  const handleScoreSelectForLearning = async (score: IMSLPScore) => {
-    if (isSelectionMode || isInSelectionMode) {
-      console.log(
-        '🎯 [WORK-CLIENT] Selecionando partitura para aprendizado:',
-        score.title
-      );
-
-      // ✅ NOVA: Buscar WorkScore correspondente ao IMSLPScore
-      try {
-        const response = await fetch(
-          `/api/work-scores?workId=${work.id}&sourceId=${score.id}&source=IMSLP`
-        );
-
-        if (response.ok) {
-          const result = await response.json();
-          if (result.success && result.workScore) {
-            // ✅ Usar WorkScore existente
-            selectFromWorkScore(result.workScore);
-          } else {
-            console.warn(
-              '⚠️ [WORK-CLIENT] WorkScore não encontrado para IMSLPScore:',
-              score.id
-            );
-            // TODO: Mostrar toast informando que a partitura não está disponível para vinculação
-          }
-        }
-      } catch (error) {
-        console.error('❌ [WORK-CLIENT] Erro ao buscar WorkScore:', error);
-      }
-    } else {
-      // Comportamento normal de seleção para estudo
-      setSelectedScoreForStudy(score);
-      setSelectedScore(score?.id || null);
-    }
-  };
-
-  // 🆕 Handler para confirmar seleção
-  const handleConfirmSelection = () => {
-    console.log('✅ [WORK-CLIENT] Confirmando seleção de partitura');
-    confirmScoreSelection();
-  };
-
-  // 🆕 Handler para cancelar seleção
-  const handleCancelSelection = () => {
-    console.log('❌ [WORK-CLIENT] Cancelando seleção de partitura');
-    cancelScoreSelection();
-  };
-
   // Funções utilitárias mantidas...
   const formatDuration = (duration?: string) => {
     if (!duration) return null;
@@ -364,14 +395,20 @@ export default function WorkDetailsClient({
     isSelectionMode,
     isInSelectionMode,
     activeType,
+    hasImslpLink: !!work.imslpPermlink,
+    totalWorkScores,
+    shouldShowPreview: isSelectionMode || isInSelectionMode,
   });
 
-  // ✅ MODIFICADO: Se estiver em modo de seleção (qualquer um)
+  // ✅ MODO DE SELEÇÃO MELHORADO COM PREVIEW (INCLUINDO QUANDO ESTÁ EDITANDO)
   if (isSelectionMode || isInSelectionMode) {
+    console.log(
+      '🎯 [WORK-CLIENT] Entrando em modo seleção com preview lateral'
+    );
     return (
       <div className="bg-gradient-primary">
         <div className="section-wrap space-y-8 relative z-10">
-          {/* Header do modo seleção */}
+          {/* ✅ Header do modo seleção MELHORADO */}
           <AnimatedItem direction="down" springType="gentle">
             <div className="bg-gradient-to-r from-accent-blue/10 to-brand-primary/10 border-2 border-accent-blue/30 rounded-2xl p-6 mb-6">
               <div className="flex items-center justify-between">
@@ -409,54 +446,122 @@ export default function WorkDetailsClient({
                     onClick={handleCancelSelection}
                     className="btn-classical-secondary flex items-center space-x-2"
                   >
-                    <FiX className="w-4 h-4" />
-                    <span>Cancelar</span>
+                    <FiArrowLeft className="w-4 h-4" />
+                    <span>Voltar</span>
                   </button>
                 </div>
               </div>
             </div>
           </AnimatedItem>
 
-          {/* Seção de partituras com modo especial */}
-          {work.imslpPermlink && (
-            <AnimatedCard hover="none">
-              <IMSLPTabsIncremental
-                imslpData={imslpScores}
-                loading={loadingScores}
-                loadingMore={loadingMore}
-                error={scoresError}
-                onRefetch={refetchScores}
-                onLoadMore={loadMore}
-                onLoadMoreForTab={loadMoreForTab}
-                onLoadAll={loadAll}
-                onScoreSelect={handleScoreSelectForLearning}
-                workId={work.id}
-                workTitle={work.title}
-                composerName={work.composer.fullName}
-                hasMore={hasMore}
-                totalAvailable={totalAvailable}
-                currentLoaded={currentLoaded}
-                backgroundCaching={backgroundCaching}
-                cacheProgress={cacheProgress}
-                getTabStats={getTabStats}
-                mostFavoritedScoreId={mostFavoritedScoreId}
-                mostFavoritedSource={mostFavoritedSource}
-                hasMostFavorited={hasMostFavorited}
-                loadingMostFavorited={loadingMostFavorited}
-                isScoreMostFavorited={isScoreMostFavorited}
-                // 🆕 Props para modo seleção
-                isSelectionMode={true}
-                selectionType={activeType}
-                tempSelectedWorkScore={tempSelectedWorkScore}
-              />
-            </AnimatedCard>
-          )}
+          {/* ✅ LAYOUT COM PREVIEW LATERAL */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Lista de Partituras */}
+            <div className="lg:col-span-2">
+              <AnimatedCard hover="none">
+                <IMSLPTabsIncremental
+                  // Props IMSLP (se disponível)
+                  imslpData={work.imslpPermlink ? imslpScores : null}
+                  imslpLoading={loadingScores}
+                  imslpLoadingMore={loadingMore}
+                  imslpError={scoresError}
+                  onImslpRefetch={refetchScores}
+                  onImslpLoadMore={loadMore}
+                  onImslpLoadMoreForTab={loadMoreForTab}
+                  onImslpLoadAll={loadAll}
+                  // Props WorkScores (sempre disponível)
+                  workScores={workScores}
+                  workScoresLoading={loadingWorkScores}
+                  workScoresError={workScoresError}
+                  workScoresHasMore={hasMoreWorkScores}
+                  workScoresTotal={totalWorkScores}
+                  onWorkScoresLoadMore={loadMoreWorkScores}
+                  onWorkScoresRefetch={refetchWorkScores}
+                  // Props comuns
+                  onScoreSelect={handleScoreSelectForLearning}
+                  workId={work.id}
+                  workTitle={work.title}
+                  composerName={work.composer.fullName}
+                  // Props de favoritos
+                  mostFavoritedScoreId={mostFavoritedScoreId}
+                  mostFavoritedSource={mostFavoritedSource}
+                  hasMostFavorited={hasMostFavorited}
+                  loadingMostFavorited={loadingMostFavorited}
+                  isScoreMostFavorited={isScoreMostFavorited}
+                  // Props para modo seleção
+                  isSelectionMode={true}
+                  selectionType={activeType}
+                  tempSelectedWorkScore={tempSelectedWorkScore}
+                  // Props IMSLP específicas
+                  hasMore={hasMore}
+                  totalAvailable={totalAvailable}
+                  currentLoaded={currentLoaded}
+                  backgroundCaching={backgroundCaching}
+                  cacheProgress={cacheProgress}
+                  getTabStats={getTabStats}
+                />
+              </AnimatedCard>
+            </div>
+
+            {/* ✅ PREVIEW LATERAL (SEMPRE VISÍVEL EM MODO SELEÇÃO) */}
+            <div className="lg:col-span-1">
+              <AnimatedCard hover="none" className="sticky top-6">
+                <div className="p-6">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
+                      <FiBookOpen className="w-4 h-4 text-theme-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-theme-primary">
+                      Preview da Partitura
+                    </h3>
+                  </div>
+
+                  {tempSelectedWorkScore ? (
+                    <div className="space-y-4">
+                      <ScorePreview score={tempSelectedWorkScore as any} />
+
+                      {/* ✅ BOTÕES DE AÇÃO MELHORADOS */}
+                      <div className="flex flex-col space-y-3 pt-4 border-t border-theme-secondary">
+                        <button
+                          onClick={handleConfirmSelection}
+                          className="btn-classical-primary flex items-center justify-center space-x-2"
+                        >
+                          <FiCheckCircle className="w-4 h-4" />
+                          <span>Confirmar Seleção</span>
+                        </button>
+
+                        <button
+                          onClick={handleCancelSelection}
+                          className="btn-classical-secondary flex items-center justify-center space-x-2"
+                        >
+                          <FiArrowLeft className="w-4 h-4" />
+                          <span>Voltar</span>
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <FiMusic className="w-8 h-8 text-theme-tertiary" />
+                      </div>
+                      <h4 className="text-lg font-semibold text-theme-primary mb-2">
+                        Selecione uma Partitura
+                      </h4>
+                      <p className="text-theme-secondary text-sm">
+                        Clique em uma partitura ao lado para ver o preview aqui
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </AnimatedCard>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 
-  // Renderização normal (código original mantido)
+  // Renderização normal (resto do código mantido igual)
   return (
     <div className="bg-gradient-primary">
       <LearningInitializer learningData={learningData} />
@@ -515,7 +620,7 @@ export default function WorkDetailsClient({
           staggerSpeed="normal"
           className="flex flex-col gap-4"
         >
-          {/* Card principal da obra (mantido igual) */}
+          {/* Card principal da obra (mantido igual) - TODO: MUITO CÓDIGO, MAS MANTENHO IGUAL PARA NÃO QUEBRAR */}
           <AnimatedCard
             hover="lift"
             className="classical-card overflow-hidden relative"
@@ -656,7 +761,7 @@ export default function WorkDetailsClient({
                     </div>
                   </div>
 
-                  {/* Grid de Informações Detalhadas (resto do código mantido igual...) */}
+                  {/* Grid de Informações Detalhadas - TODO: MANTENDO IGUAL POR SER MUITO CÓDIGO */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Ano de Composição */}
                     {work.compositionYear && (
@@ -885,7 +990,7 @@ export default function WorkDetailsClient({
                     )}
                 </div>
 
-                {/* Sidebar com Player e Links (resto mantido igual...) */}
+                {/* Sidebar com Player e Links - TODO: MANTENDO IGUAL */}
                 <div className="space-y-6">
                   {/* Player de Áudio/Vídeo */}
                   {work.videoUrl && (
@@ -1056,40 +1161,50 @@ export default function WorkDetailsClient({
             onMediaUpdate={handleMediaUpdate}
           />
 
-          {/* Seção de Partituras IMSLP */}
-          {work.imslpPermlink && (
-            <AnimatedCard hover="none">
-              <IMSLPTabsIncremental
-                imslpData={imslpScores}
-                loading={loadingScores}
-                loadingMore={loadingMore}
-                error={scoresError}
-                onRefetch={refetchScores}
-                onLoadMore={loadMore}
-                onLoadMoreForTab={loadMoreForTab}
-                onLoadAll={loadAll}
-                onScoreSelect={handleScoreSelectForLearning}
-                workId={work.id}
-                workTitle={work.title}
-                composerName={work.composer.fullName}
-                hasMore={hasMore}
-                totalAvailable={totalAvailable}
-                currentLoaded={currentLoaded}
-                backgroundCaching={backgroundCaching}
-                cacheProgress={cacheProgress}
-                getTabStats={getTabStats}
-                mostFavoritedScoreId={mostFavoritedScoreId}
-                mostFavoritedSource={mostFavoritedSource}
-                hasMostFavorited={hasMostFavorited}
-                loadingMostFavorited={loadingMostFavorited}
-                isScoreMostFavorited={isScoreMostFavorited}
-                // 🆕 Props padrão para modo normal
-                isSelectionMode={false}
-                selectionType={null}
-                tempSelectedWorkScore={null}
-              />
-            </AnimatedCard>
-          )}
+          {/* ✅ Seção de Partituras SEMPRE VISÍVEL */}
+          <AnimatedCard hover="none">
+            <IMSLPTabsIncremental
+              // Props IMSLP (se disponível)
+              imslpData={work.imslpPermlink ? imslpScores : null}
+              imslpLoading={loadingScores}
+              imslpLoadingMore={loadingMore}
+              imslpError={scoresError}
+              onImslpRefetch={refetchScores}
+              onImslpLoadMore={loadMore}
+              onImslpLoadMoreForTab={loadMoreForTab}
+              onImslpLoadAll={loadAll}
+              // Props WorkScores (sempre disponível)
+              workScores={workScores}
+              workScoresLoading={loadingWorkScores}
+              workScoresError={workScoresError}
+              workScoresHasMore={hasMoreWorkScores}
+              workScoresTotal={totalWorkScores}
+              onWorkScoresLoadMore={loadMoreWorkScores}
+              onWorkScoresRefetch={refetchWorkScores}
+              // Props comuns
+              onScoreSelect={handleScoreSelectForLearning}
+              workId={work.id}
+              workTitle={work.title}
+              composerName={work.composer.fullName}
+              // Props de favoritos
+              mostFavoritedScoreId={mostFavoritedScoreId}
+              mostFavoritedSource={mostFavoritedSource}
+              hasMostFavorited={hasMostFavorited}
+              loadingMostFavorited={loadingMostFavorited}
+              isScoreMostFavorited={isScoreMostFavorited}
+              // Props para modo normal
+              isSelectionMode={false}
+              selectionType={null}
+              tempSelectedWorkScore={null}
+              // Props IMSLP específicas (se disponível)
+              hasMore={hasMore}
+              totalAvailable={totalAvailable}
+              currentLoaded={currentLoaded}
+              backgroundCaching={backgroundCaching}
+              cacheProgress={cacheProgress}
+              getTabStats={getTabStats}
+            />
+          </AnimatedCard>
 
           {/* Seções mantidas iguais... */}
           <AnnotationsSection

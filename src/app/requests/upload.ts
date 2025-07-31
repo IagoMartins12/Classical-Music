@@ -65,7 +65,7 @@ export const getUserUploads = unstable_cache(
           ],
         }),
         ...(epochId && { epochId }),
-        OR: [{ createdBy: userId }, { isCustom: true }],
+        AND: [{ createdBy: userId }],
       };
 
       const workWhere: Prisma.WorkWhereInput = {
@@ -84,7 +84,7 @@ export const getUserUploads = unstable_cache(
         }),
         ...(epochId && { epochId }),
         ...(composerId && { composerId }), // 🆕 Filtro por compositor
-        OR: [{ createdBy: userId }, { isCustom: true }],
+        AND: [{ createdBy: userId }],
       };
 
       const scoreWhere: Prisma.WorkScoreWhereInput = {
@@ -326,7 +326,7 @@ export const getFilterData = unstable_cache(
       const [userComposers, userWorks] = await Promise.all([
         prisma.composer.findMany({
           where: {
-            OR: [{ createdBy: userId }, { isCustom: true }],
+            AND: [{ createdBy: userId }],
           },
           select: {
             id: true,
@@ -338,7 +338,7 @@ export const getFilterData = unstable_cache(
         }),
         prisma.work.findMany({
           where: {
-            OR: [{ createdBy: userId }, { isCustom: true }],
+            AND: [{ createdBy: userId }],
           },
           select: {
             id: true,
@@ -387,7 +387,7 @@ export const getAvailableEpochs = unstable_cache(
       if (type === 'all' || type === 'composer') {
         const composerEpochs = await prisma.composer.findMany({
           where: {
-            OR: [{ createdBy: userId }, { isCustom: true }],
+            AND: [{ createdBy: userId }],
           },
           select: { epochId: true },
           distinct: ['epochId'],
@@ -398,7 +398,7 @@ export const getAvailableEpochs = unstable_cache(
       if (type === 'all' || type === 'work') {
         const workEpochs = await prisma.work.findMany({
           where: {
-            OR: [{ createdBy: userId }, { isCustom: true }],
+            AND: [{ createdBy: userId }],
           },
           select: { epochId: true },
           distinct: ['epochId'],

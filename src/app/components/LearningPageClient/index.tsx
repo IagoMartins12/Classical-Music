@@ -1,4 +1,4 @@
-// app/learning/LearningPageClient.tsx - Com Sistema de Animação
+// app/learning/LearningPageClient.tsx - ATUALIZADO COM OPENDIALOG CORRIGIDO
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -14,7 +14,10 @@ import {
   WantToLearnItem,
   LearnedItem,
 } from '@/app/stores/useLearningStore';
-import LearningModal from '@/app/components/LearningModal';
+import {
+  useLearningModalStore,
+  type SelectedWorkScore,
+} from '@/app/stores/useLearningModalStore';
 import { EmptyState } from './EmptyState';
 import { LearningCard } from './LearningCard';
 import Select from '../Common/Select';
@@ -27,6 +30,7 @@ import {
   AnimatedCard,
   SequentialGrid,
 } from '../animation/AnimatedComponents';
+import LearningModal from '../LearningModal';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 type FilterTab = 'all' | 'want-to-learn' | 'learned';
@@ -66,15 +70,14 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
   >('all');
   const [priorityFilter, setPriorityFilter] = useState<number | 'all'>('all');
   const [showFilters, setShowFilters] = useState(false);
-  const [modalConfig, setModalConfig] = useState<{
-    workId: string;
-    workTitle: string;
-    composerName: string;
-    type: 'want-to-learn' | 'learned';
-  } | null>(null);
 
   const { wantToLearn, learned, initializeLearning, initialized } =
     useLearningStore();
+
+  console.log('wantToLearn', wantToLearn);
+
+  // ✅ Store global do modal atualizado
+  const { openModal } = useLearningModalStore();
 
   useEffect(() => {
     if (!initialized && initialData) {
@@ -98,7 +101,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
     setPriorityFilter('all');
   };
 
-  // Filter and search logic
+  // Filter and search logic (mantido igual)
   const filteredData = useMemo(() => {
     let wantToLearnFiltered = [...wantToLearn];
     let learnedFiltered = [...learned];
@@ -140,7 +143,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
     return { wantToLearn: wantToLearnFiltered, learned: learnedFiltered };
   }, [wantToLearn, learned, searchQuery, difficultyFilter, priorityFilter]);
 
-  // Statistics
+  // Statistics (mantido igual)
   const stats = useMemo(() => {
     const totalItems = wantToLearn.length + learned.length;
     const avgPriority =
@@ -165,17 +168,124 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
     };
   }, [wantToLearn, learned]);
 
+  // ✅ CORRIGIDO: função para editar usando store global com dados iniciais completos
   const handleEditItem = (
     item: WantToLearnItem | LearnedItem,
     type: 'want-to-learn' | 'learned'
   ) => {
     if (!item.work) return;
 
-    setModalConfig({
+    console.log(`🎵 [LEARNING-PAGE] Editando item:`, item.work.title, item);
+
+    // ✅ Preparar dados iniciais COMPLETOS
+    let initialWantToLearnData = {};
+    let initialLearnedData = {};
+    let initialWorkScore: SelectedWorkScore | null = null;
+
+    if (type === 'want-to-learn') {
+      const wantItem = item as WantToLearnItem;
+      initialWantToLearnData = {
+        priority: wantItem.priority || 0,
+        notes: wantItem.notes || '',
+        targetDate: wantItem.targetDate
+          ? wantItem.targetDate.split('T')[0]
+          : '',
+        estimatedStudyTime: wantItem.estimatedStudyTime || undefined,
+        difficulty: wantItem.difficulty || undefined,
+        motivation: wantItem.motivation || '',
+        context: wantItem.context || '',
+        selectedWorkScoreId: wantItem.selectedWorkScoreId,
+      };
+
+      // ✅ WorkScore se existir
+      if (wantItem.selectedWorkScore) {
+        console.log(
+          '📄 [LEARNING-PAGE] Aplicando WorkScore inicial:',
+          wantItem.selectedWorkScore.title
+        );
+        initialWorkScore = {
+          id: wantItem.selectedWorkScore.id,
+          sourceId: wantItem.selectedWorkScore.sourceId,
+          source: wantItem.selectedWorkScore.source,
+          title: wantItem.selectedWorkScore.title,
+          downloadUrl: wantItem.selectedWorkScore.downloadUrl,
+          thumbnailUrl: wantItem.selectedWorkScore.thumbnailUrl,
+          fileSize: wantItem.selectedWorkScore.fileSize,
+          pageCount: wantItem.selectedWorkScore.pageCount,
+          fileFormat: wantItem.selectedWorkScore.fileFormat,
+          type: wantItem.selectedWorkScore.type,
+          editor: wantItem.selectedWorkScore.editor,
+          publisher: wantItem.selectedWorkScore.publisher,
+          copyright: wantItem.selectedWorkScore.copyright,
+          uploadDate: wantItem.selectedWorkScore.uploadDate,
+          uploader: wantItem.selectedWorkScore.uploader,
+          notes: wantItem.selectedWorkScore.notes,
+        };
+      }
+    } else {
+      const learnedItem = item as LearnedItem;
+      initialLearnedData = {
+        mastery: learnedItem.mastery || 0,
+        studyStartDate: learnedItem.studyStartDate
+          ? learnedItem.studyStartDate.split('T')[0]
+          : '',
+        studyDuration: learnedItem.studyDuration || undefined,
+        notes: learnedItem.notes || '',
+        wouldRecommend: learnedItem.wouldRecommend ?? true,
+        publicPerformance: learnedItem.publicPerformance || false,
+        difficulty: learnedItem.difficulty || undefined,
+        enjoyment: learnedItem.enjoyment || undefined,
+        technicalChallenges: learnedItem.technicalChallenges || '',
+        musicalInsights: learnedItem.musicalInsights || '',
+        selectedWorkScoreId: learnedItem.selectedWorkScoreId,
+      };
+
+      // ✅ WorkScore se existir
+      if (learnedItem.selectedWorkScore) {
+        console.log(
+          '📄 [LEARNING-PAGE] Aplicando WorkScore inicial:',
+          learnedItem.selectedWorkScore.title
+        );
+        initialWorkScore = {
+          id: learnedItem.selectedWorkScore.id,
+          sourceId: learnedItem.selectedWorkScore.sourceId,
+          source: learnedItem.selectedWorkScore.source,
+          title: learnedItem.selectedWorkScore.title,
+          downloadUrl: learnedItem.selectedWorkScore.downloadUrl,
+          thumbnailUrl: learnedItem.selectedWorkScore.thumbnailUrl,
+          fileSize: learnedItem.selectedWorkScore.fileSize,
+          pageCount: learnedItem.selectedWorkScore.pageCount,
+          fileFormat: learnedItem.selectedWorkScore.fileFormat,
+          type: learnedItem.selectedWorkScore.type,
+          editor: learnedItem.selectedWorkScore.editor,
+          publisher: learnedItem.selectedWorkScore.publisher,
+          copyright: learnedItem.selectedWorkScore.copyright,
+          uploadDate: learnedItem.selectedWorkScore.uploadDate,
+          uploader: learnedItem.selectedWorkScore.uploader,
+          notes: learnedItem.selectedWorkScore.notes,
+        };
+      }
+    }
+
+    // ✅ Abrir modal com TODOS os dados iniciais
+    console.log('🚀 [LEARNING-PAGE] Abrindo modal com dados:', {
+      workId: item.workId,
+      type,
+      isCurrentlyActive: true,
+      initialWorkScore: initialWorkScore?.title || 'nenhuma',
+      initialWantToLearnData,
+      initialLearnedData,
+    });
+
+    openModal({
       workId: item.workId,
       workTitle: item.work.title,
       composerName: item.work.composer.fullName,
       type,
+      isCurrentlyActive: true, // ✅ SEMPRE TRUE para edição
+      initialWantToLearnData,
+      initialLearnedData,
+      initialWorkScore, // ✅ PASSAR O WORKSCORE INICIAL
     });
   };
 
@@ -199,43 +309,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
           </div>
         </AnimatedItem>
 
-        {/* Statistics Cards */}
-        {/* <AnimatedItem direction="up" springType="gentle">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <StatCard
-              icon={<FiMusic className="w-6 h-6 text-theme-primary" />}
-              title="Total de Obras"
-              value={stats.totalItems}
-              color="brand"
-            />
-
-            <StatCard
-              icon={<FiTarget className="w-6 h-6 text-theme-primary" />}
-              title="Quero Aprender"
-              value={stats.wantToLearnCount}
-              subtitle={
-                stats.highPriorityCount > 0
-                  ? `${stats.highPriorityCount} alta prioridade`
-                  : undefined
-              }
-              color="blue"
-            />
-
-            <StatCard
-              icon={<FiCheckCircle className="w-6 h-6 text-theme-primary" />}
-              title="Já Aprendi"
-              value={stats.learnedCount}
-              subtitle={
-                stats.expertLevelCount > 0
-                  ? `${stats.expertLevelCount} nível expert`
-                  : undefined
-              }
-              color="green"
-            />
-          </div>
-        </AnimatedItem> */}
-
-        {/* Controls */}
+        {/* Controls (mantido igual) */}
         <AnimatedItem direction="up" springType="gentle">
           <AnimatedCard hover="none" className="classical-card p-6">
             <div className="space-y-4">
@@ -325,7 +399,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
                 </div>
               </div>
 
-              {/* Filtros Expandidos */}
+              {/* Filtros Expandidos (mantido igual) */}
               {showFilters && (
                 <AnimatedItem direction="scale" springType="gentle">
                   <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary">
@@ -399,7 +473,7 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
           </AnimatedCard>
         </AnimatedItem>
 
-        {/* Content */}
+        {/* Content (mantido igual, apenas mudança na função onEdit) */}
         <div className="space-y-8">
           {/* Want to Learn Section */}
           {(activeTab === 'all' || activeTab === 'want-to-learn') && (
@@ -539,8 +613,8 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
         </div>
       </AnimatedContainer>
 
-      {/* Modal */}
-      {modalConfig && <LearningModal />}
+      {/* ✅ Modal global (sem condicional) */}
+      <LearningModal />
     </PageContainer>
   );
 };

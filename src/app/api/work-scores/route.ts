@@ -1,17 +1,18 @@
-// app/api/work-scores/route.ts - API ATUALIZADA PARA APENAS BUSCA
+// app/api/work-scores/route.ts - API MELHORADA COM LIMITE POR TIPO
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 
-// ✅ ENDPOINT PARA BUSCAR WORKSCORES EXISTENTES (sem criar)
+// ✅ ENDPOINT PARA BUSCAR WORKSCORES COM LIMITE POR TIPO
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const workId = searchParams.get('workId');
-    const sourceId = searchParams.get('sourceId'); // ✅ NOVO: buscar por sourceId específico
+    const sourceId = searchParams.get('sourceId');
     const source = searchParams.get('source');
     const limit = parseInt(searchParams.get('limit') || '50');
+    const limitPerType = parseInt(searchParams.get('limitPerType') || '0');
     const offset = parseInt(searchParams.get('offset') || '0');
 
     if (!workId) {
@@ -21,16 +22,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // ✅ Se sourceId e source forem fornecidos, buscar WorkScore específico
+    // 🔍 Busca por sourceId + source
     if (sourceId && source) {
-      console.log(
-        `🔍 [WORKSCORE-API] Buscando WorkScore específico: ${sourceId} (${source})`
-      );
-
       const workScore = await prisma.workScore.findFirst({
         where: {
-          workId: workId,
-          sourceId: sourceId,
+          workId,
+          sourceId,
           source: source as any,
           isActive: true,
         },
@@ -42,7 +39,6 @@ export async function GET(request: NextRequest) {
       });
 
       if (workScore) {
-        // ✅ Atualizar contadores de acesso
         await prisma.workScore.update({
           where: { id: workScore.id },
           data: {
@@ -53,30 +49,121 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json({
           success: true,
-          workScore: workScore,
+          workScore,
           found: true,
         });
-      } else {
-        return NextResponse.json({
-          success: true,
-          workScore: null,
-          found: false,
-          message: 'WorkScore não encontrado',
-        });
       }
+
+      return NextResponse.json({
+        success: true,
+        workScore: null,
+        found: false,
+        message: 'WorkScore não encontrado',
+      });
     }
 
-    // ✅ Buscar todas as WorkScores da obra
+    // 🔄 Busca por tipo com limites por tipo
+    if (limitPerType > 0) {
+      const baseWhere: any = {
+        workId,
+        isActive: true,
+      };
+
+      if (source) {
+        baseWhere.source = source;
+      }
+
+      const scoreTypes = [
+        { type: 'scores' },
+        { type: 'parts' },
+        { type: 'arrangements' },
+        { type: 'uploads' },
+        { type: 'others' },
+      ];
+
+      const allWorkScores: any[] = [];
+      const totalByType: Record<string, number> = {};
+      const loadedByType: Record<string, number> = {};
+      let globalHasMore = false;
+
+      for (const scoreType of scoreTypes) {
+        const typeWhereClause: any = { ...baseWhere };
+
+        if (scoreType.type === 'uploads') {
+          typeWhereClause.source = { in: ['UPLOAD', 'CUSTOM'] };
+        } else if (scoreType.type === 'scores') {
+          typeWhereClause.type = { equals: 'SCORES' };
+        } else if (scoreType.type === 'parts') {
+          typeWhereClause.type = { equals: 'PARTS' };
+        } else if (scoreType.type === 'arrangements') {
+          typeWhereClause.type = { equals: 'ARRANGEMENTS' };
+        } else if (scoreType.type === 'others') {
+          typeWhereClause.type = { notIn: ['SCORES', 'PARTS', 'ARRANGEMENTS'] };
+          if (!source) {
+            typeWhereClause.source = { notIn: ['UPLOAD', 'CUSTOM'] };
+          }
+        }
+
+        const typeTotal = await prisma.workScore.count({
+          where: typeWhereClause,
+        });
+        totalByType[scoreType.type] = typeTotal;
+
+        if (typeTotal > 0) {
+          const typeScores = await prisma.workScore.findMany({
+            where: typeWhereClause,
+            orderBy: [
+              { priority: 'desc' },
+              { accessCount: 'desc' },
+              { createdAt: 'desc' },
+            ],
+            take: limitPerType,
+            skip: Math.floor((offset * limitPerType) / scoreTypes.length),
+          });
+
+          loadedByType[scoreType.type] = typeScores.length;
+          allWorkScores.push(...typeScores);
+
+          if (typeScores.length < typeTotal) {
+            globalHasMore = true;
+          }
+        } else {
+          loadedByType[scoreType.type] = 0;
+        }
+      }
+
+      const totalCount = Object.values(totalByType).reduce(
+        (sum, count) => sum + count,
+        0
+      );
+      const loadedCount = allWorkScores.length;
+
+      return NextResponse.json({
+        success: true,
+        workScores: allWorkScores,
+        count: loadedCount,
+        total: totalCount,
+        hasMore: globalHasMore,
+        totalByType,
+        loadedByType,
+        pagination: {
+          limitPerType,
+          offset,
+          hasNext: globalHasMore,
+          hasPrev: offset > 0,
+        },
+      });
+    }
+
+    // 📋 Fallback: busca geral
     const whereClause: any = {
-      workId: workId,
+      workId,
       isActive: true,
     };
 
     if (source) {
       whereClause.source = source;
     }
-
-    console.log(`📋 [WORKSCORE-API] Buscando WorkScores para obra: ${workId}`);
 
     const [workScores, totalCount] = await Promise.all([
       prisma.workScore.findMany({
@@ -89,18 +176,12 @@ export async function GET(request: NextRequest) {
         take: limit,
         skip: offset,
       }),
-      prisma.workScore.count({
-        where: whereClause,
-      }),
+      prisma.workScore.count({ where: whereClause }),
     ]);
-
-    console.log(
-      `✅ [WORKSCORE-API] Encontrados ${workScores.length}/${totalCount} WorkScores`
-    );
 
     return NextResponse.json({
       success: true,
-      workScores: workScores,
+      workScores,
       count: workScores.length,
       total: totalCount,
       hasMore: offset + workScores.length < totalCount,

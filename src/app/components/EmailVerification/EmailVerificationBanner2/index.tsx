@@ -142,14 +142,6 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
                 >
                   Reenviar Verificação
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => (window.location.href = '/profile')}
-                  className={`${textColor} hover:bg-accent-amber/20`}
-                >
-                  Ir para Perfil
-                </Button>
               </div>
             )}
 

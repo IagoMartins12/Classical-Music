@@ -1,11 +1,12 @@
-// components/auth/LoginModal.tsx - VERSÃO COM TRATAMENTO DE CONFLITO
+// components/auth/LoginModal.tsx - VERSÃO COM TRATAMENTO DE ERROS MELHORADO
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { FiMail, FiLock, FiAlertTriangle } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { toast } from 'react-hot-toast';
 import { useLoginModal } from '@/app/stores/authStore';
@@ -13,15 +14,16 @@ import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import ForgotPasswordModal from '../ForgotPasswordModal';
-import { useRouter } from 'next/navigation';
 
 const LoginModal: React.FC = () => {
   const { isOpen, close, switchToRegister } = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // 🆕 NOVO: Estado para erro específico de conflito de email
+  // Estado para erro específico de conflito de email
   const [emailConflictError, setEmailConflictError] = useState<string | null>(
     null
   );
@@ -32,7 +34,86 @@ const LoginModal: React.FC = () => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const { refresh } = useRouter();
+  // 🆕 NOVO: Verificar erros na URL quando o modal abrir
+  useEffect(() => {
+    if (isOpen) {
+      checkUrlErrors();
+    }
+  }, [isOpen]);
+
+  // 🆕 NOVO: Função para verificar e processar erros na URL
+  const checkUrlErrors = () => {
+    if (typeof window === 'undefined') return;
+
+    const currentUrl = new URL(window.location.href);
+    const error = currentUrl.searchParams.get('error');
+    const errorDescription = currentUrl.searchParams.get('error_description');
+
+    if (error) {
+      console.log('🔍 Erro detectado na URL:', { error, errorDescription });
+
+      // Processar diferentes tipos de erro
+      let errorMessage = '';
+      let shouldShowConflictError = false;
+
+      switch (error) {
+        case 'Callback':
+          errorMessage =
+            'Este email já está cadastrado com senha. Use "Entrar com Email" ou redefina sua senha.';
+          shouldShowConflictError = true;
+          break;
+        case 'OAuthCallback':
+          errorMessage = 'Erro na autenticação com Google. Tente novamente.';
+          break;
+        case 'OAuthSignin':
+          errorMessage =
+            'Erro ao iniciar login com Google. Verifique suas permissões.';
+          break;
+        case 'OAuthCreateAccount':
+          errorMessage =
+            'Erro ao criar conta com Google. Este email pode já estar em uso.';
+          shouldShowConflictError = true;
+          break;
+        case 'EmailCreateAccount':
+          errorMessage = 'Este email já está em uso por outra conta.';
+          shouldShowConflictError = true;
+          break;
+        case 'Signin':
+          errorMessage = 'Erro no login. Verifique suas credenciais.';
+          break;
+        case 'SessionRequired':
+          errorMessage = 'Sessão expirada. Faça login novamente.';
+          break;
+        case 'AccessDenied':
+          errorMessage = 'Acesso negado. Verifique suas permissões.';
+          break;
+        case 'Verification':
+          errorMessage = 'Erro na verificação. Tente fazer login novamente.';
+          break;
+        default:
+          // Usar error_description se disponível
+          errorMessage =
+            errorDescription || 'Erro de autenticação. Tente novamente.';
+      }
+
+      // Mostrar erro apropriado
+      if (shouldShowConflictError) {
+        setEmailConflictError(errorMessage);
+      } else {
+        toast.error(errorMessage);
+      }
+
+      // 🆕 NOVO: Limpar URL dos parâmetros de erro
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete('error');
+      cleanUrl.searchParams.delete('error_description');
+      cleanUrl.searchParams.delete('code');
+      cleanUrl.searchParams.delete('state');
+
+      // Atualizar URL sem recarregar a página
+      window.history.replaceState({}, '', cleanUrl.toString());
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -43,7 +124,7 @@ const LoginModal: React.FC = () => {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
 
-    // 🆕 NOVO: Limpar erro de conflito ao digitar
+    // Limpar erro de conflito ao digitar
     if (emailConflictError) {
       setEmailConflictError(null);
     }
@@ -87,7 +168,7 @@ const LoginModal: React.FC = () => {
       } else {
         toast.success('Login realizado com sucesso!');
         close();
-        refresh();
+        router.refresh();
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -103,32 +184,71 @@ const LoginModal: React.FC = () => {
     setEmailConflictError(null); // Limpar erro anterior
 
     try {
+      console.log('🔄 Iniciando login com Google...');
+
       const result = await signIn('google', {
         redirect: false,
         callbackUrl: '/',
       });
 
-      if (result?.error) {
-        // 🆕 NOVO: Verificar se é erro de conflito específico
-        if (result.error === 'Callback') {
-          // Este é o erro que vem quando o signIn callback retorna false
-          // Precisamos identificar se foi por conflito de email
-          console.log(
-            '❌ Erro de callback Google - provavelmente conflito de email'
-          );
+      console.log('📊 Resultado do Google SignIn:', result);
 
-          setEmailConflictError(
-            'Este email já está cadastrado com senha. Use "Entrar com Email" ou redefina sua senha.'
-          );
-          toast.error('Este email já possui uma conta com senha');
+      if (result?.error) {
+        console.error('❌ Erro no Google SignIn:', result.error);
+
+        // Tratar erros específicos do Google
+        switch (result.error) {
+          case 'Callback':
+            setEmailConflictError(
+              'Este email já está cadastrado com senha. Use "Entrar com Email" ou redefina sua senha.'
+            );
+            toast.error('Este email já possui uma conta com senha');
+            break;
+          case 'OAuthCallback':
+            toast.error('Erro na autenticação com Google. Tente novamente.');
+            break;
+          case 'OAuthSignin':
+            toast.error(
+              'Erro ao conectar com Google. Verifique suas permissões.'
+            );
+            break;
+          case 'OAuthCreateAccount':
+            setEmailConflictError(
+              'Este email já está em uso. Tente fazer login com email e senha.'
+            );
+            toast.error('Este email já está em uso');
+            break;
+          case 'EmailCreateAccount':
+            setEmailConflictError(
+              'Este email já está cadastrado. Use o login com email e senha.'
+            );
+            toast.error('Este email já está cadastrado');
+            break;
+          case 'AccessDenied':
+            toast.error('Acesso negado pelo Google. Tente novamente.');
+            break;
+          default:
+            toast.error('Erro ao fazer login com Google. Tente novamente.');
+        }
+      } else if (result?.url) {
+        // Login bem-sucedido
+        console.log('✅ Login Google bem-sucedido, redirecionando...');
+        toast.success('Login realizado com sucesso!');
+        close();
+
+        // Redirecionar ou recarregar
+        if (result.url !== window.location.href) {
+          router.push(result.url);
         } else {
-          toast.error('Erro ao fazer login com Google');
+          router.refresh();
         }
       } else {
+        // Caso não tenha erro nem URL, assume sucesso
         close();
+        router.refresh();
       }
     } catch (error) {
-      console.error('Google sign-in error:', error);
+      console.error('❌ Erro no Google SignIn:', error);
       toast.error('Erro ao fazer login com Google');
     } finally {
       setIsGoogleLoading(false);
@@ -138,7 +258,7 @@ const LoginModal: React.FC = () => {
   const handleClose = () => {
     setFormData({ email: '', password: '' });
     setErrors({});
-    setEmailConflictError(null); // 🆕 NOVO: Limpar erro de conflito
+    setEmailConflictError(null); // Limpar erro de conflito
     close();
   };
 
@@ -176,7 +296,7 @@ const LoginModal: React.FC = () => {
           </p>
         </div>
 
-        {/* 🆕 NOVO: Aviso de conflito de email */}
+        {/* Aviso de conflito de email */}
         {emailConflictError && (
           <div className="mb-6 p-4 rounded-lg bg-accent-amber bg-opacity-10 border border-accent-amber">
             <div className="flex items-start">
@@ -286,7 +406,7 @@ const LoginModal: React.FC = () => {
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="px-4 bg-theme-elevated text-theme-tertiary">
-              ou continue com email
+              ou continue com
             </span>
           </div>
         </div>

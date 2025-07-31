@@ -143,6 +143,7 @@ export async function GET(
         oldEmail: oldEmail || user.email,
         newEmail: newEmail,
         changeDate: new Date().toLocaleString('pt-BR'),
+        siteUrl: process.env.NEXTAUTH_URL || 'http://localhost:3000',
       },
     }).catch((error) => {
       console.error('Erro ao enviar confirmação para novo email:', error);

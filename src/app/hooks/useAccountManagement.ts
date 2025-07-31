@@ -25,7 +25,6 @@ interface CascadeInfo {
   favoriteComposersCount: number;
   learnedWorksCount: number;
   wantToLearnCount: number;
-  userTokensCount: number;
   pdfAnnotationsCount: number;
   bookmarksCount: number;
   sampleComposers: { id: string; name: string; epochName?: string }[];
@@ -176,19 +175,12 @@ export const useAccountManagement = () => {
       );
 
       if (result.success) {
-        toast.success(result.message);
-
-        // Logout and redirect
-        logout();
         await signOut({ redirect: false });
+        toast.success(
+          'Sua conta foi excluída com sucesso. Sentiremos sua falta!'
+        );
         router.push('/');
-
-        // Show success message after redirect
-        setTimeout(() => {
-          toast.success(
-            'Sua conta foi excluída com sucesso. Sentiremos sua falta!'
-          );
-        }, 1000);
+        logout();
 
         return { success: true, data: result.data };
       } else {

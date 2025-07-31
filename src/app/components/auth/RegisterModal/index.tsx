@@ -1,7 +1,7 @@
-// components/auth/RegisterModal.tsx - VERSÃO COM LOGIN AUTOMÁTICO
+// components/auth/RegisterModal.tsx - VERSÃO COM DETECÇÃO DE REGISTRO GOOGLE
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import {
   FiMail,
@@ -12,10 +12,15 @@ import {
 } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { registerUser } from '@/app/actions/auth';
 import { toast } from 'react-hot-toast';
-import { useOnboardingModal, useRegisterModal } from '@/app/stores/authStore';
+import {
+  useOnboardingModal,
+  usePromptModal,
+  useRegisterModal,
+} from '@/app/stores/authStore';
 import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
@@ -25,13 +30,16 @@ interface RegisterStep {
   userData?: {
     firstName?: string;
     email?: string;
-    isLoggedIn?: boolean; // 🆕 NOVO: Indicar se já fez login automático
+    isLoggedIn?: boolean;
+    registrationMethod?: 'credentials' | 'google';
   };
 }
 
 const RegisterModal: React.FC = () => {
   const { isOpen, close, switchToLogin } = useRegisterModal();
   const { open: openOnboarding } = useOnboardingModal();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [registerStep, setRegisterStep] = useState<RegisterStep>({
     step: 'form',
@@ -39,7 +47,7 @@ const RegisterModal: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
-  // 🆕 NOVO: Estado para erro específico de conflito de email
+  // Estado para erro específico de conflito de email
   const [emailConflictError, setEmailConflictError] = useState<string | null>(
     null
   );
@@ -52,19 +60,132 @@ const RegisterModal: React.FC = () => {
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  // 🆕 NOVO: Verificar se retornou de um registro Google
+  useEffect(() => {
+    if (isOpen) {
+      checkGoogleRegistrationReturn();
+      checkUrlErrors();
+    }
+  }, [isOpen]);
+
+  // 🆕 NOVO: Verificar retorno do registro Google
+  const checkGoogleRegistrationReturn = () => {
+    if (typeof window === 'undefined') return;
+
+    // Verificar se há flag de registro Google pendente
+    const googleRegisterFlag = sessionStorage.getItem(
+      'google-register-pending'
+    );
+    const googleRegisterEmail = sessionStorage.getItem('google-register-email');
+    const googleRegisterName = sessionStorage.getItem('google-register-name');
+
+    if (googleRegisterFlag === 'true') {
+      console.log('🎉 Detectado retorno de registro Google');
+
+      // Limpar flags
+      sessionStorage.removeItem('google-register-pending');
+      sessionStorage.removeItem('google-register-email');
+      sessionStorage.removeItem('google-register-name');
+
+      // Mostrar tela de confirmação para usuário Google
+      setRegisterStep({
+        step: 'confirmation-sent',
+        userData: {
+          firstName: googleRegisterName || 'Usuário',
+          email: googleRegisterEmail || '',
+          isLoggedIn: true, // Google users já estão logados
+          registrationMethod: 'google',
+        },
+      });
+
+      toast.success('Conta criada com Google! Bem-vindo à Opus Atlas!');
+    }
+  };
+
+  // Função existente para verificar erros na URL
+  const checkUrlErrors = () => {
+    if (typeof window === 'undefined') return;
+
+    const currentUrl = new URL(window.location.href);
+    const error = currentUrl.searchParams.get('error');
+    const errorDescription = currentUrl.searchParams.get('error_description');
+
+    if (error) {
+      console.log('🔍 Erro detectado na URL (Register):', {
+        error,
+        errorDescription,
+      });
+
+      let errorMessage = '';
+      let shouldShowConflictError = false;
+
+      switch (error) {
+        case 'Callback':
+          errorMessage =
+            'Este email já está cadastrado com senha. Use "Fazer Login" para acessar sua conta.';
+          shouldShowConflictError = true;
+          break;
+        case 'OAuthCallback':
+          errorMessage = 'Erro na autenticação com Google. Tente novamente.';
+          break;
+        case 'OAuthSignin':
+          errorMessage =
+            'Erro ao iniciar registro com Google. Verifique suas permissões.';
+          break;
+        case 'OAuthCreateAccount':
+          errorMessage =
+            'Erro ao criar conta com Google. Este email pode já estar em uso.';
+          shouldShowConflictError = true;
+          break;
+        case 'EmailCreateAccount':
+          errorMessage = 'Este email já está em uso por outra conta.';
+          shouldShowConflictError = true;
+          break;
+        case 'AccessDenied':
+          errorMessage =
+            'Acesso negado pelo Google. Verifique suas permissões.';
+          break;
+        case 'Verification':
+          errorMessage = 'Erro na verificação com Google. Tente novamente.';
+          break;
+        default:
+          errorMessage =
+            errorDescription || 'Erro no registro. Tente novamente.';
+      }
+
+      if (shouldShowConflictError) {
+        setEmailConflictError(errorMessage);
+      } else {
+        toast.error(errorMessage);
+      }
+
+      // Limpar URL dos parâmetros de erro
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete('error');
+      cleanUrl.searchParams.delete('error_description');
+      cleanUrl.searchParams.delete('code');
+      cleanUrl.searchParams.delete('state');
+      window.history.replaceState({}, '', cleanUrl.toString());
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
+
+    const cleanedValue =
+      name === 'username' || name === 'email'
+        ? value.replace(/\s/g, '')
+        : value;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value,
+      [name]: type === 'checkbox' ? checked : cleanedValue,
     }));
 
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }
 
-    // 🆕 NOVO: Limpar erro de conflito ao digitar
     if (emailConflictError) {
       setEmailConflictError(null);
     }
@@ -77,6 +198,11 @@ const RegisterModal: React.FC = () => {
       newErrors.username = 'Nome de usuário é obrigatório';
     } else if (formData.username.trim().length < 2) {
       newErrors.username = 'Nome de usuário deve ter pelo menos 2 caracteres';
+    } else if (formData.username.includes(' ')) {
+      newErrors.username = 'Nome de usuário não pode conter espaços';
+    } else if (!/^[a-zA-Z0-9_-]+$/.test(formData.username)) {
+      newErrors.username =
+        'Nome de usuário só pode conter letras, números, _ e -';
     }
 
     if (!formData.email.trim()) {
@@ -101,7 +227,6 @@ const RegisterModal: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // 🆕 NOVO: Função para fazer login automático após registro
   const performAutoLogin = async (email: string, password: string) => {
     try {
       console.log('🔄 Fazendo login automático após registro...');
@@ -138,7 +263,7 @@ const RegisterModal: React.FC = () => {
     if (!validateForm()) return;
 
     setIsLoading(true);
-    setEmailConflictError(null); // Limpar erro anterior
+    setEmailConflictError(null);
 
     try {
       const result = await registerUser({
@@ -148,7 +273,6 @@ const RegisterModal: React.FC = () => {
       });
 
       if (result.success) {
-        // 🆕 NOVO: Fazer login automático após registro bem-sucedido
         const loginSuccess = await performAutoLogin(
           formData.email.trim(),
           formData.password
@@ -159,11 +283,19 @@ const RegisterModal: React.FC = () => {
           userData: {
             firstName: formData.username.trim(),
             email: formData.email.trim(),
-            isLoggedIn: loginSuccess, // 🆕 NOVO: Indicar se fez login
+            isLoggedIn: loginSuccess,
+            registrationMethod: 'credentials',
           },
         });
       } else {
-        setErrors({ general: result.message });
+        if (
+          result.message.includes('já existe') ||
+          result.message.includes('já cadastrado')
+        ) {
+          setEmailConflictError(result.message);
+        } else {
+          setErrors({ general: result.message });
+        }
         toast.error(result.message);
       }
     } catch (error) {
@@ -175,55 +307,93 @@ const RegisterModal: React.FC = () => {
     }
   };
 
+  // 🆕 ATUALIZADO: handleGoogleSignIn com detecção de registro
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
-    setEmailConflictError(null); // Limpar erro anterior
+    setEmailConflictError(null);
 
     try {
+      console.log('🔄 Iniciando registro com Google...');
+
+      // 🆕 NOVO: Salvar flags no sessionStorage antes do redirect
+      sessionStorage.setItem('google-register-pending', 'true');
+      sessionStorage.setItem(
+        'google-register-timestamp',
+        Date.now().toString()
+      );
+
+      // Fazer o signIn com redirect
       const result = await signIn('google', {
-        redirect: false,
-        callbackUrl: '/',
+        redirect: true, // 🆕 MUDANÇA: usar redirect true para permitir detecção
+        callbackUrl: window.location.origin + '/?google-register=true',
       });
 
+      // Este código só executa se redirect: false
       if (result?.error) {
-        // 🆕 NOVO: Verificar se é erro de conflito específico
-        if (result.error === 'Callback') {
-          console.log(
-            '❌ Erro de callback Google no registro - provavelmente conflito de email'
-          );
+        console.error('❌ Erro no Google SignUp:', result.error);
 
-          setEmailConflictError(
-            'Este email já está cadastrado com senha. Use "Fazer Login" para acessar sua conta.'
-          );
-          toast.error('Este email já possui uma conta com senha');
-        } else {
-          toast.error('Erro ao registrar com Google');
+        // Limpar flags em caso de erro
+        sessionStorage.removeItem('google-register-pending');
+        sessionStorage.removeItem('google-register-timestamp');
+
+        switch (result.error) {
+          case 'Callback':
+            setEmailConflictError(
+              'Este email já está cadastrado com senha. Use "Fazer Login" para acessar sua conta.'
+            );
+            toast.error('Este email já possui uma conta com senha');
+            break;
+          case 'OAuthCallback':
+            toast.error('Erro na autenticação com Google. Tente novamente.');
+            break;
+          case 'OAuthSignin':
+            toast.error(
+              'Erro ao conectar com Google. Verifique suas permissões.'
+            );
+            break;
+          case 'OAuthCreateAccount':
+            setEmailConflictError(
+              'Este email já está em uso. Tente fazer login com esse email.'
+            );
+            toast.error('Este email já está em uso');
+            break;
+          case 'EmailCreateAccount':
+            setEmailConflictError(
+              'Este email já está cadastrado. Use o login com email e senha.'
+            );
+            toast.error('Este email já está cadastrado');
+            break;
+          case 'AccessDenied':
+            toast.error('Acesso negado pelo Google. Tente novamente.');
+            break;
+          default:
+            toast.error('Erro ao registrar com Google. Tente novamente.');
         }
-      } else {
-        close();
-        // Google users will also need onboarding
-        setTimeout(() => {
-          openOnboarding();
-        }, 500);
       }
     } catch (error) {
-      console.error('Google sign-in error:', error);
+      console.error('❌ Erro no Google SignUp:', error);
+
+      // Limpar flags em caso de erro
+      sessionStorage.removeItem('google-register-pending');
+      sessionStorage.removeItem('google-register-timestamp');
+
       toast.error('Erro ao registrar com Google');
     } finally {
       setIsGoogleLoading(false);
     }
   };
 
+  const { open } = usePromptModal();
   const handleClose = () => {
-    // Reset all state
     setFormData({
       username: '',
       email: '',
       password: '',
       confirmPassword: '',
     });
+    open();
     setErrors({});
-    setEmailConflictError(null); // 🆕 NOVO: Limpar erro de conflito
+    setEmailConflictError(null);
     setRegisterStep({ step: 'form' });
     close();
   };
@@ -233,7 +403,6 @@ const RegisterModal: React.FC = () => {
     switchToLogin();
   };
 
-  // 🆕 NOVO: Função para prosseguir para o onboarding
   const handleProceedToOnboarding = () => {
     close();
     setTimeout(() => {
@@ -241,7 +410,7 @@ const RegisterModal: React.FC = () => {
     }, 300);
   };
 
-  // Renderizar tela de confirmação de email - VERSÃO ATUALIZADA
+  // 🆕 ATUALIZADO: renderConfirmationSent com suporte para Google
   const renderConfirmationSent = () => (
     <>
       <div className="text-center mb-8">
@@ -254,57 +423,83 @@ const RegisterModal: React.FC = () => {
           🎉 Bem-vindo à Opus Atlas!
         </h2>
         <p className="text-theme-secondary">
-          {registerStep.userData?.isLoggedIn
-            ? 'Conta criada e você já está logado!'
-            : 'Conta criada com sucesso!'}
+          {registerStep.userData?.registrationMethod === 'google'
+            ? 'Conta criada com Google'
+            : 'Conta criada com sucesso'}
         </p>
       </div>
 
       <div className="space-y-6">
-        {/* 🆕 NOVO: Status de login */}
-        {registerStep.userData?.isLoggedIn ? (
-          <></>
-        ) : (
-          <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-lg p-4">
+        {/* Status de login - não mostrar para usuários Google */}
+        {!registerStep.userData?.isLoggedIn &&
+          registerStep.userData?.registrationMethod !== 'google' && (
+            <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-lg p-4">
+              <div className="flex items-start">
+                <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-medium text-accent-amber mb-1">
+                    Login manual necessário
+                  </h4>
+                  <p className="text-sm text-accent-amber opacity-80">
+                    Houve um problema no login automático. Faça login
+                    manualmente para continuar.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+        {/* Informações específicas para Google vs Email */}
+        {registerStep.userData?.registrationMethod === 'google' ? (
+          <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
             <div className="flex items-start">
-              <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-accent-amber mb-1">
-                  Login manual necessário
+                <h4 className="font-medium text-accent-blue mb-1">
+                  ✅ Conta Google Verificada
                 </h4>
-                <p className="text-sm text-accent-amber opacity-80">
-                  Houve um problema no login automático. Faça login manualmente
-                  para continuar.
+                <p className="text-sm text-accent-blue opacity-80 mb-2">
+                  Sua conta foi criada e verificada automaticamente com{' '}
+                  <strong>{registerStep.userData?.email}</strong>
                 </p>
+                <div className="text-xs text-accent-blue opacity-70 space-y-1">
+                  <p>
+                    • Conta já verificada - nenhuma confirmação adicional
+                    necessária
+                  </p>
+                  <p>
+                    • Você pode usar todos os recursos da plataforma
+                    imediatamente
+                  </p>
+                  <p>• Login rápido com Google nas próximas vezes</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
+            <div className="flex items-start">
+              <div>
+                <h4 className="font-medium text-accent-blue mb-1">
+                  📧 Email de Confirmação Enviado
+                </h4>
+                <p className="text-sm text-accent-blue opacity-80 mb-2">
+                  Enviamos um link de confirmação para{' '}
+                  <strong>{registerStep.userData?.email}</strong>
+                </p>
+                <div className="text-xs text-accent-blue opacity-70 space-y-1">
+                  <p>
+                    • <strong>Para usar normalmente:</strong> Não é necessário
+                    confirmar agora
+                  </p>
+                  <p>
+                    • <strong>Para uploads:</strong> Confirme seu email para
+                    fazer uploads de arquivos
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         )}
-
-        {/* Informações sobre confirmação de email */}
-        <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-lg p-4">
-          <div className="flex items-start">
-            <div>
-              <h4 className="font-medium text-accent-blue mb-1">
-                📧 Email de Confirmação Enviado
-              </h4>
-              <p className="text-sm text-accent-blue opacity-80 mb-2">
-                Enviamos um link de confirmação para{' '}
-                <strong>{registerStep.userData?.email}</strong>
-              </p>
-              <div className="text-xs text-accent-blue opacity-70 space-y-1">
-                <p>
-                  • <strong>Para usar normalmente:</strong> Não é necessário
-                  confirmar agora
-                </p>
-                <p>
-                  • <strong>Para uploads:</strong> Confirme seu email para fazer
-                  uploads de arquivos
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div className="bg-theme-secondary rounded-lg p-4 space-y-3">
           <h4 className="text-sm font-medium text-theme-primary flex items-center">
@@ -320,19 +515,24 @@ const RegisterModal: React.FC = () => {
               <span className="text-brand-primary mr-2 font-medium">2.</span>
               Comece a explorar compositores e obras
             </li>
+            {registerStep.userData?.registrationMethod !== 'google' && (
+              <li className="flex items-start">
+                <span className="text-brand-primary mr-2 font-medium">3.</span>
+                Confirme seu email quando puder (para uploads)
+              </li>
+            )}
             <li className="flex items-start">
-              <span className="text-brand-primary mr-2 font-medium">3.</span>
-              Confirme seu email quando puder (para uploads)
-            </li>
-            <li className="flex items-start">
-              <span className="text-brand-primary mr-2 font-medium">4.</span>
+              <span className="text-brand-primary mr-2 font-medium">
+                {registerStep.userData?.registrationMethod === 'google'
+                  ? '3.'
+                  : '4.'}
+              </span>
               Aproveite sua jornada musical!
             </li>
           </ul>
         </div>
 
         <div className="space-y-3">
-          {/* 🆕 NOVO: Botão dinâmico baseado no status de login */}
           {registerStep.userData?.isLoggedIn ? (
             <Button
               variant="primary"
@@ -363,20 +563,27 @@ const RegisterModal: React.FC = () => {
           </Button>
         </div>
 
-        {/* 🆕 NOVO: Informação adicional sobre confirmação */}
+        {/* Informação adicional - adaptada para Google */}
         <div className="text-center pt-4 border-t border-theme-secondary">
-          <p className="text-xs text-theme-tertiary">
-            💡 <strong>Dica:</strong> Você pode usar o site normalmente sem
-            confirmar o email.
-            <br />A confirmação é necessária apenas para fazer uploads de
-            partituras e compositores.
-          </p>
+          {registerStep.userData?.registrationMethod === 'google' ? (
+            <p className="text-xs text-theme-tertiary">
+              🎵 <strong>Dica:</strong> Use "Continuar com Google" para entrar
+              rapidamente nas próximas vezes!
+            </p>
+          ) : (
+            <p className="text-xs text-theme-tertiary">
+              💡 <strong>Dica:</strong> Você pode usar o site normalmente sem
+              confirmar o email.
+              <br />A confirmação é necessária apenas para fazer uploads de
+              partituras e compositores.
+            </p>
+          )}
         </div>
       </div>
     </>
   );
 
-  // Renderizar formulário de registro original
+  // Resto do código permanece igual...
   const renderRegistrationForm = () => (
     <>
       <div className="text-center mb-8">
@@ -393,60 +600,33 @@ const RegisterModal: React.FC = () => {
         </p>
       </div>
 
-      {/* 🆕 NOVO: Aviso de conflito de email */}
-      {emailConflictError && (
-        <div className="mb-6 p-4 rounded-lg bg-accent-amber bg-opacity-10 border border-accent-amber">
-          <div className="flex items-start">
-            <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
-            <div>
-              <h4 className="font-medium text-accent-amber mb-1">
-                Email já cadastrado
-              </h4>
-              <p className="text-sm text-accent-amber opacity-90">
-                {emailConflictError}
-              </p>
-              <div className="mt-3">
-                <button
-                  onClick={() => {
-                    handleClose();
-                    switchToLogin();
-                  }}
-                  className="text-sm text-accent-amber hover:text-accent-amber opacity-80 hover:opacity-100 underline transition-opacity"
-                >
-                  Ir para Login
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Registration Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* General Error */}
         {errors.general && (
           <div className="p-3 rounded-lg bg-accent-red bg-opacity-10 border border-accent-red text-accent-red text-sm">
             {errors.general}
           </div>
         )}
 
-        {/* Name Fields */}
         <div className="grid grid-cols-1 gap-4">
-          <Input
-            label="Nome de usuário"
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleInputChange}
-            leftIcon={<FiUser className="w-4 h-4" />}
-            placeholder="Seu nome de usuário"
-            error={errors.username}
-            disabled={isLoading || isGoogleLoading}
-            autoComplete="username"
-          />
+          <div>
+            <Input
+              label="Nome de usuário"
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+              leftIcon={<FiUser className="w-4 h-4" />}
+              placeholder="Seu nome de usuário"
+              error={errors.username}
+              disabled={isLoading || isGoogleLoading}
+              autoComplete="username"
+            />
+            <p className="text-xs text-theme-tertiary mt-1">
+              Apenas letras, números, _ e - (sem espaços)
+            </p>
+          </div>
         </div>
 
-        {/* Email */}
         <Input
           label="Email"
           type="email"
@@ -455,12 +635,11 @@ const RegisterModal: React.FC = () => {
           onChange={handleInputChange}
           leftIcon={<FiMail className="w-4 h-4" />}
           placeholder="seu@email.com"
-          error={errors.email}
+          error={errors.email || emailConflictError}
           disabled={isLoading || isGoogleLoading}
           autoComplete="email"
         />
 
-        {/* Password */}
         <Input
           label="Senha"
           name="password"
@@ -474,7 +653,6 @@ const RegisterModal: React.FC = () => {
           autoComplete="new-password"
         />
 
-        {/* Confirm Password */}
         <Input
           label="Confirmar Senha"
           name="confirmPassword"
@@ -488,7 +666,6 @@ const RegisterModal: React.FC = () => {
           autoComplete="new-password"
         />
 
-        {/* Submit Button */}
         <Button
           type="submit"
           variant="primary"
@@ -501,18 +678,17 @@ const RegisterModal: React.FC = () => {
         </Button>
       </form>
 
-      {/* Divider */}
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-theme-secondary" />
         </div>
         <div className="relative flex justify-center text-sm">
           <span className="px-4 bg-theme-elevated text-theme-tertiary">
-            ou registre-se com email
+            ou registre-se com
           </span>
         </div>
       </div>
-      {/* Google Sign Up */}
+
       <Button
         variant="google"
         size="lg"
@@ -525,7 +701,6 @@ const RegisterModal: React.FC = () => {
         Continuar com Google
       </Button>
 
-      {/* Login Link */}
       <div className="mt-8 text-center">
         <p className="text-theme-secondary">
           Já tem uma conta?{' '}
@@ -539,7 +714,6 @@ const RegisterModal: React.FC = () => {
         </p>
       </div>
 
-      {/* Terms and Privacy Notice */}
       <div className="mt-6 text-center">
         <p className="text-xs text-theme-tertiary">
           Ao criar uma conta, você concorda com nossos{' '}

@@ -1,4 +1,4 @@
-// app/learning/components/LearningCard.tsx - Com Sistema de Animação
+// app/learning/components/LearningCard.tsx - Com Sistema de Animação e Download
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -18,6 +18,9 @@ import {
   FiTrash2,
   FiAlertTriangle,
   FiBookOpen,
+  FiDownload,
+  FiFileText,
+  FiMusic,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import {
@@ -166,6 +169,22 @@ const formatDate = (dateString?: string) => {
   return new Date(dateString).toLocaleDateString('pt-BR');
 };
 
+// ✅ NOVA FUNÇÃO PARA DOWNLOAD DA PARTITURA
+const handleScoreDownload = (item: WantToLearnItem | LearnedItem) => {
+  if (!item.selectedWorkScore?.downloadUrl) {
+    toast.error('Link de download não disponível');
+    return;
+  }
+
+  // Abrir download em nova aba
+  window.open(item.selectedWorkScore.downloadUrl, '_blank');
+
+  toast.success(`Download iniciado: ${item.selectedWorkScore.title}`, {
+    icon: '📄',
+    duration: 3000,
+  });
+};
+
 export const LearningCard = ({
   item,
   type,
@@ -180,6 +199,9 @@ export const LearningCard = ({
   const isWantToLearn = type === 'want-to-learn';
   const wantToLearnItem = item as WantToLearnItem;
   const learnedItem = item as LearnedItem;
+
+  // ✅ VERIFICAR SE TEM PARTITURA VINCULADA
+  const hasSelectedScore = !!item.selectedWorkScore;
 
   const handleRemove = async () => {
     if (!user?.id) return;
@@ -211,14 +233,27 @@ export const LearningCard = ({
   if (viewMode === 'list') {
     return (
       <>
-        <div className="classical-card p-6 group hover:shadow-theme-glow transition-all">
+        <div
+          className={`classical-card p-6 group hover:shadow-theme-glow transition-all`}
+        >
           <div className="flex items-center space-x-6">
             <div className="flex-1">
               <div className="flex items-center space-x-4">
                 <div className="flex-1">
-                  <h3 className="font-bold text-theme-primary">
-                    {item.work?.title}
-                  </h3>
+                  <div className="flex items-center space-x-2">
+                    <h3 className="font-bold text-theme-primary">
+                      {item.work?.title}
+                    </h3>
+                    {/* ✅ INDICADOR VISUAL DE PARTITURA VINCULADA */}
+                    {hasSelectedScore && (
+                      <div
+                        className="w-5 h-5 bg-accent-purple/20 border border-accent-purple/40 rounded-full flex items-center justify-center"
+                        title="Tem partitura vinculada"
+                      >
+                        <FiFileText className="w-3 h-3 text-accent-purple" />
+                      </div>
+                    )}
+                  </div>
                   <p className="text-theme-secondary">
                     {item.work?.composer.fullName}
                   </p>
@@ -318,6 +353,22 @@ export const LearningCard = ({
 
                 {/* Action buttons */}
                 <div className="flex items-center flex-col sm:flex-row gap-4 sm:gap-0 space-x-2">
+                  {/* ✅ BOTÃO DE DOWNLOAD DA PARTITURA */}
+                  {hasSelectedScore && (
+                    <AnimatedItem hover="scale">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleScoreDownload(item);
+                        }}
+                        className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
+                        title={`Download: ${item.selectedWorkScore?.title}`}
+                      >
+                        <FiDownload className="w-4 h-4" />
+                      </button>
+                    </AnimatedItem>
+                  )}
+
                   <AnimatedItem hover="scale">
                     <button
                       onClick={onEdit}
@@ -365,13 +416,26 @@ export const LearningCard = ({
 
   return (
     <>
-      <div className="classical-card p-6 group hover:shadow-theme-glow transition-all">
+      <div
+        className={`classical-card p-6 group hover:shadow-theme-glow transition-all`}
+      >
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <h3 className="font-bold text-theme-primary group-hover:text-brand-primary transition-colors classical-title">
-              {item.work?.title}
-            </h3>
+            <div className="flex items-center space-x-2 mb-2">
+              <h3 className="font-bold text-theme-primary group-hover:text-brand-primary transition-colors classical-title">
+                {item.work?.title}
+              </h3>
+              {/* ✅ INDICADOR VISUAL DE PARTITURA VINCULADA */}
+              {hasSelectedScore && (
+                <div
+                  className="w-6 h-6 b rounded-lg flex items-center justify-center"
+                  title="Tem partitura vinculada"
+                >
+                  <FiMusic className="w-3 h-3 text-accent-purple" />
+                </div>
+              )}
+            </div>
             <p className="text-theme-secondary classical-subtitle">
               {item.work?.composer.fullName}
             </p>
@@ -382,6 +446,22 @@ export const LearningCard = ({
             )}
           </div>
           <div className="flex items-center space-x-2">
+            {/* ✅ BOTÃO DE DOWNLOAD DA PARTITURA */}
+            {hasSelectedScore && (
+              <AnimatedItem hover="scale">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleScoreDownload(item);
+                  }}
+                  className="w-8 h-8 bg-theme-secondary hover:bg-interactive-hover rounded-lg flex items-center justify-center text-theme-tertiary hover:text-brand-primary transition-all"
+                  title={`Download: ${item.selectedWorkScore?.title}`}
+                >
+                  <FiDownload className="w-4 h-4" />
+                </button>
+              </AnimatedItem>
+            )}
+
             <AnimatedItem hover="scale">
               <button
                 onClick={onEdit}
@@ -402,6 +482,38 @@ export const LearningCard = ({
             </AnimatedItem>
           </div>
         </div>
+
+        {/* ✅ SEÇÃO DE PARTITURA VINCULADA (se houver) */}
+        {hasSelectedScore && item.selectedWorkScore && (
+          <div className="mb-4 p-3 classical-card-simple rounded-xl">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-accent-purple/20 rounded-lg flex items-center justify-center">
+                <FiFileText className="w-4 h-4 text-accent-purple" />
+              </div>
+              <div className="flex-1">
+                <h4 className="text-sm font-semibold text-theme-primary">
+                  {item.selectedWorkScore.title}
+                </h4>
+                <p className="text-xs text-theme-tertiary">
+                  {item.selectedWorkScore.source} •{' '}
+                  {item.selectedWorkScore.fileSize}
+                  {item.selectedWorkScore.pageCount &&
+                    ` • ${item.selectedWorkScore.pageCount} páginas`}
+                </p>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleScoreDownload(item);
+                }}
+                className="btn-classical-secondary-sm flex items-center space-x-1 text-xs"
+              >
+                <FiDownload className="w-3 h-3" />
+                <span>Download</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Stars */}
         <div className="flex items-center space-x-2 mb-4">

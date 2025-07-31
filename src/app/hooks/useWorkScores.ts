@@ -1,4 +1,4 @@
-// hooks/useWorkScores.ts - Hook para buscar WorkScores
+// hooks/useWorkScores.ts - Hook MELHORADO para buscar limite por tipo
 import { useState, useEffect, useCallback } from 'react';
 
 export interface WorkScore {
@@ -33,7 +33,8 @@ export interface WorkScore {
 interface UseWorkScoresOptions {
   workId: string;
   source?: 'IMSLP' | 'CUSTOM' | 'UPLOAD';
-  limit?: number;
+  limit?: number; // ✅ ANTIGO: limite total
+  limitPerType?: number; // ✅ NOVO: limite por tipo de partitura
   enabled?: boolean;
   autoRefetch?: boolean;
   refetchInterval?: number;
@@ -56,6 +57,8 @@ interface UseWorkScoresReturn {
     offset: number;
     hasNext: boolean;
     hasPrev: boolean;
+    totalByType?: { [key: string]: number }; // ✅ NOVO: Total por tipo
+    loadedByType?: { [key: string]: number }; // ✅ NOVO: Carregado por tipo
   };
 }
 
@@ -66,6 +69,7 @@ export const useWorkScores = (
     workId,
     source,
     limit = 50,
+    limitPerType, // ✅ NOVO: limite por tipo
     enabled = true,
     autoRefetch = false,
     refetchInterval = 0,
@@ -78,19 +82,22 @@ export const useWorkScores = (
   const [hasMore, setHasMore] = useState(false);
   const [offset, setOffset] = useState(0);
   const [pagination, setPagination] = useState({
-    limit,
+    limit: limitPerType || limit,
     offset: 0,
     hasNext: false,
     hasPrev: false,
+    totalByType: {} as { [key: string]: number },
+    loadedByType: {} as { [key: string]: number },
   });
 
-  // ✅ Função para buscar WorkScores
+  // ✅ Função para buscar WorkScores com limite por tipo
   const fetchWorkScores = useCallback(
     async (resetOffset = true) => {
       if (!enabled || !workId) return;
 
       console.log(
-        `🔍 [USE-WORK-SCORES] Buscando WorkScores para obra: ${workId}`
+        `🔍 [USE-WORK-SCORES] Buscando WorkScores para obra: ${workId}`,
+        { limitPerType, limit, resetOffset }
       );
 
       setLoading(true);
@@ -100,9 +107,19 @@ export const useWorkScores = (
         const currentOffset = resetOffset ? 0 : offset;
         const params = new URLSearchParams({
           workId,
-          limit: limit.toString(),
           offset: currentOffset.toString(),
         });
+
+        // ✅ NOVO: Usar limitPerType se fornecido
+        if (limitPerType) {
+          params.append('limitPerType', limitPerType.toString());
+          console.log(
+            `📊 [USE-WORK-SCORES] Usando limitPerType: ${limitPerType}`
+          );
+        } else {
+          params.append('limit', limit.toString());
+          console.log(`📊 [USE-WORK-SCORES] Usando limit total: ${limit}`);
+        }
 
         if (source) {
           params.append('source', source);
@@ -123,23 +140,39 @@ export const useWorkScores = (
             setWorkScores(newWorkScores);
             setOffset(newWorkScores.length);
           } else {
-            setWorkScores((prev) => [...prev, ...newWorkScores]);
+            // ✅ INCREMENTAL: Adicionar sem duplicar
+            setWorkScores((prev) => {
+              const existingIds = new Set(prev.map((ws) => ws.id));
+              const uniqueNew = newWorkScores.filter(
+                (ws: WorkScore) => !existingIds.has(ws.id)
+              );
+              return [...prev, ...uniqueNew];
+            });
             setOffset((prev) => prev + newWorkScores.length);
           }
 
           setTotal(result.total || 0);
           setHasMore(result.hasMore || false);
+
+          // ✅ NOVO: Atualizar paginação com dados por tipo
           setPagination(
             result.pagination || {
-              limit,
+              limit: limitPerType || limit,
               offset: currentOffset,
               hasNext: false,
               hasPrev: false,
+              totalByType: result.totalByType || {},
+              loadedByType: result.loadedByType || {},
             }
           );
 
           console.log(
-            `✅ [USE-WORK-SCORES] Carregados ${newWorkScores.length}/${result.total} WorkScores`
+            `✅ [USE-WORK-SCORES] Carregados ${newWorkScores.length}/${result.total} WorkScores`,
+            {
+              totalByType: result.totalByType,
+              loadedByType: result.loadedByType,
+              hasMore: result.hasMore,
+            }
           );
         } else {
           throw new Error(result.error || 'Erro ao buscar WorkScores');
@@ -151,7 +184,7 @@ export const useWorkScores = (
         setLoading(false);
       }
     },
-    [workId, source, limit, enabled, offset]
+    [workId, source, limit, limitPerType, enabled, offset]
   );
 
   // ✅ Função para recarregar do início
@@ -159,9 +192,16 @@ export const useWorkScores = (
     await fetchWorkScores(true);
   }, [fetchWorkScores]);
 
-  // ✅ Função para carregar mais
+  // ✅ Função para carregar mais (INCREMENTAL)
   const loadMore = useCallback(async () => {
-    if (!hasMore || loading) return;
+    if (!hasMore || loading) {
+      console.log('⚠️ [USE-WORK-SCORES] LoadMore cancelado:', {
+        hasMore,
+        loading,
+      });
+      return;
+    }
+    console.log('📈 [USE-WORK-SCORES] Carregando mais...');
     await fetchWorkScores(false);
   }, [hasMore, loading, fetchWorkScores]);
 
@@ -222,7 +262,7 @@ export const useWorkScores = (
     if (enabled && workId) {
       fetchWorkScores(true);
     }
-  }, [workId, source, enabled, fetchWorkScores]);
+  }, [workId, source, enabled, limitPerType, limit, fetchWorkScores]);
 
   // ✅ Auto-refetch (se habilitado)
   useEffect(() => {
@@ -245,12 +285,14 @@ export const useWorkScores = (
     setHasMore(false);
     setOffset(0);
     setPagination({
-      limit,
+      limit: limitPerType || limit,
       offset: 0,
       hasNext: false,
       hasPrev: false,
+      totalByType: {},
+      loadedByType: {},
     });
-  }, [workId, limit]);
+  }, [workId, limitPerType, limit]);
 
   return {
     workScores,
@@ -265,7 +307,7 @@ export const useWorkScores = (
   };
 };
 
-// ✅ Hook simplificado para buscar um WorkScore específico
+// ✅ Hook simplificado para buscar um WorkScore específico (mantido igual)
 export const useWorkScore = (
   workId: string,
   sourceId: string,

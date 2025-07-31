@@ -1,4 +1,4 @@
-// app/libs/customPrismaAdapter.ts - Adapter customizado com tipagem correta
+// app/libs/CustomPrismaAdapter.ts - VERSÃO OTIMIZADA com detecção de registro
 import {
   Adapter,
   AdapterUser,
@@ -6,8 +6,8 @@ import {
   AdapterSession,
 } from 'next-auth/adapters';
 import { PrismaClient } from '@prisma/client';
+import { sendTemplateEmail } from './newsletter/email';
 
-// Interfaces para compatibilidade com NextAuth
 interface CreateUserData {
   name?: string | null;
   email: string;
@@ -17,11 +17,43 @@ interface CreateUserData {
 
 export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
   return {
-    // Criar usuário com mapeamento correto dos campos
+    // 🆕 ATUALIZADO: createUser com detecção de registro novo
     createUser: async (user: CreateUserData): Promise<AdapterUser> => {
-      console.log('🔧 CustomAdapter: Criando usuário:', user.email);
+      console.log('🔧 CustomAdapter: Processando usuário Google:', user.email);
 
-      // Separar nome completo em firstName e lastName
+      // 🆕 PRIMEIRO: Verificar se usuário já existe
+      const existingUser = await prisma.user.findUnique({
+        where: { email: user.email },
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          image: true,
+          emailVerified: true,
+        },
+      });
+
+      if (existingUser) {
+        console.log('👤 Usuário já existe - fazendo login:', existingUser.id);
+
+        // Limpar flags será feito no cliente pelo GoogleRegistrationHandler
+        console.log('👤 Usuário existente fazendo login via Google');
+
+        return {
+          id: existingUser.id,
+          email: existingUser.email!,
+          emailVerified: existingUser.emailVerified,
+          name: `${existingUser.firstName || ''} ${
+            existingUser.lastName || ''
+          }`.trim(),
+          image: existingUser.image,
+        } as AdapterUser;
+      }
+
+      // 🆕 SE CHEGOU AQUI: É um registro novo
+      console.log('🆕 Criando nova conta Google para:', user.email);
+
       const fullName = user.name || '';
       const nameParts = fullName.trim().split(' ');
       const firstName = nameParts[0] || '';
@@ -36,8 +68,7 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             image: user.image,
             emailVerified: user.emailVerified
               ? new Date(user.emailVerified)
-              : null,
-            // Campos específicos para usuários Google
+              : new Date(), // Google users já têm email verificado
             role: 0,
             onboardingCompleted: false,
             profilePublic: true,
@@ -46,9 +77,43 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           },
         });
 
-        console.log('✅ CustomAdapter: Usuário criado:', createdUser.id);
+        console.log('✅ Nova conta Google criada:', createdUser.id);
 
-        // Retornar no formato esperado pelo NextAuth
+        // A marcação no sessionStorage será feita no cliente pelo RegisterModal
+
+        // Enviar email de boas-vindas para usuários novos
+        try {
+          console.log(
+            '📧 Enviando email de boas-vindas para nova conta Google...'
+          );
+
+          const emailResult = await sendTemplateEmail(user.email, {
+            type: 'ACCOUNT_CONFIRMATION',
+            variables: {
+              firstName: firstName || 'Usuário',
+              userName: firstName || 'Usuário',
+              loginMethod: 'Google',
+              onboardingUrl: `${
+                process.env.NEXTAUTH_URL || 'http://localhost:3000'
+              }/?onboarding=true`,
+              supportUrl: `${
+                process.env.NEXTAUTH_URL || 'http://localhost:3000'
+              }/support`,
+            },
+          });
+
+          if (emailResult.success) {
+            console.log('✅ Email de boas-vindas enviado com sucesso');
+          } else {
+            console.error(
+              '❌ Falha no envio do email de boas-vindas:',
+              emailResult.error
+            );
+          }
+        } catch (emailError) {
+          console.error('❌ Erro ao enviar email de boas-vindas:', emailError);
+        }
+
         return {
           id: createdUser.id,
           email: createdUser.email!,
@@ -59,7 +124,36 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           image: createdUser.image,
         } as AdapterUser;
       } catch (error) {
-        console.error('❌ CustomAdapter: Erro ao criar usuário:', error);
+        console.error('❌ CustomAdapter: Erro ao criar usuário Google:', error);
+
+        // Em caso de race condition (usuário criado entre a verificação e a criação)
+        if (error instanceof Error && error.message.includes('duplicate key')) {
+          console.log(
+            '🔄 Race condition detectada, buscando usuário existente...'
+          );
+
+          const raceUser = await prisma.user.findUnique({
+            where: { email: user.email },
+          });
+
+          if (raceUser) {
+            console.log(
+              '✅ Usuário encontrado após race condition:',
+              raceUser.id
+            );
+
+            return {
+              id: raceUser.id,
+              email: raceUser.email!,
+              emailVerified: raceUser.emailVerified,
+              name: `${raceUser.firstName || ''} ${
+                raceUser.lastName || ''
+              }`.trim(),
+              image: raceUser.image,
+            } as AdapterUser;
+          }
+        }
+
         throw error;
       }
     },
@@ -157,14 +251,13 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
     }: Partial<AdapterUser> &
       Pick<AdapterUser, 'id'>): Promise<AdapterUser> => {
       try {
-        // Separar nome se fornecido
         const updateData: any = { ...data };
 
         if (data.name) {
           const nameParts = data.name.trim().split(' ');
           updateData.firstName = nameParts[0] || '';
           updateData.lastName = nameParts.slice(1).join(' ') || '';
-          delete updateData.name; // Remover campo name
+          delete updateData.name;
         }
 
         if (data.emailVerified) {

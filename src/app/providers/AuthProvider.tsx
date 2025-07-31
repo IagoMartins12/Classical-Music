@@ -16,6 +16,7 @@ import { useHydration } from '../hooks/useHydration';
 import { useUserStore } from '../hooks/userStore';
 import { useOnboardingPersistence } from '../hooks/useOnboardingPersistence';
 import OnboardingPrompt from '../components/auth/onboarding/OnboardingPrompt';
+import GoogleRegistrationHandler from '../components/auth/GoogleRegistrationHandler';
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -65,7 +66,6 @@ const OnboardingManager: React.FC = () => {
 
   // Verificar progresso salvo e decidir se abre modal
   useEffect(() => {
-    console.log('isloading', isLoading);
     const checkAndOpenOnboarding = () => {
       if (hasProgress) {
         // Tem progresso salvo, perguntar se quer continuar
@@ -82,7 +82,7 @@ const OnboardingManager: React.FC = () => {
           hasCheckedProgress,
           isLoading,
         });
-        if (!isAuthenticated) return;
+        if (!isAuthenticated && !hasCheckedProgress) return;
         // openOnboarding();
       }
 
@@ -237,7 +237,7 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
       <LoginModal />
       <RegisterModal />
       <OnboardingModal />
-
+      <GoogleRegistrationHandler />
       {/* Lógica de onboarding com persistência */}
       <OnboardingManager />
 

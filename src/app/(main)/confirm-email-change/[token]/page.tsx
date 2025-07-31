@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import {
   FiCheckCircle,
   FiAlertTriangle,
@@ -11,10 +11,16 @@ import {
   FiMail,
   FiArrowRight,
   FiRefreshCw,
+  FiLogOut,
+  FiHome,
 } from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
 import Button from '@/app/components/Common/Button';
 import { toast } from 'react-hot-toast';
+import { useAuthStore } from '@/app/stores/authStore';
+import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
+import { useLearningStore } from '@/app/stores/useLearningStore';
+import { useAuth } from '@/app/hooks/useAuth';
 
 interface ConfirmationResult {
   success: boolean;
@@ -35,6 +41,13 @@ export default function ConfirmEmailChangePage() {
   const [result, setResult] = useState<ConfirmationResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isResending, setIsResending] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // 🆕 NOVO: Hooks para logout
+  const { logout: authLogout } = useAuthStore();
+  const { logout } = useAuth();
+  const { reset } = useLearningStore();
+  const { reset: resetFavorite } = useFavoritesStore();
 
   const token = params.token as string;
 
@@ -54,22 +67,17 @@ export default function ConfirmEmailChangePage() {
       const data = await response.json();
       setResult(data);
 
+      console.log('data', data);
       if (data.success && data.data) {
-        // 🆕 UPDATE SESSION WITH NEW EMAIL
-        if (updateSession && session) {
-          await updateSession({
-            ...session,
-            user: {
-              ...session.user,
-              email: data.data.newEmail,
-              emailVerified: new Date(),
-            },
-          });
-        }
+        // Não atualizar a sessão - vamos deslogar o usuário
+        toast.success('Email alterado com sucesso!');
 
-        toast.success('Email alterado com sucesso! Sua sessão foi atualizada.');
+        // 🆕 NOVO: Auto-logout após 3 segundos
+        setTimeout(() => {
+          handleAutoLogout();
+        }, 3000);
       } else if (!data.success) {
-        toast.error(data.message);
+        toast.error(data.error);
       }
     } catch (error) {
       console.error('Erro ao confirmar mudança de email:', error);
@@ -81,6 +89,54 @@ export default function ConfirmEmailChangePage() {
       toast.error('Erro de rede. Tente novamente.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  // 🆕 NOVO: Função para logout automático
+  const handleAutoLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      // Usar o mesmo padrão do navbar
+      resetFavorite();
+      logout();
+      reset();
+      authLogout();
+      await signOut({ redirect: false });
+
+      toast.success('Redirecionando para fazer login novamente...', {
+        duration: 4000,
+      });
+
+      // Redirecionar para home após logout
+      setTimeout(() => {
+        router.push('/');
+      }, 10000);
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Erro ao fazer logout');
+      // Ainda assim redirecionar
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
+    }
+  };
+
+  // 🆕 NOVO: Função para logout manual
+  const handleManualLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      resetFavorite();
+      logout();
+      reset();
+      authLogout();
+      await signOut({ redirect: false });
+
+      toast.success('Logout realizado com sucesso!');
+      router.push('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Erro ao fazer logout');
+      router.push('/');
     }
   };
 
@@ -141,8 +197,8 @@ export default function ConfirmEmailChangePage() {
           <p className="text-theme-secondary mb-6">
             Não foi possível processar sua solicitação.
           </p>
-          <Button variant="primary" onClick={() => router.push('/profile')}>
-            Voltar ao Perfil
+          <Button variant="primary" onClick={() => router.push('/')}>
+            Voltar ao Início
           </Button>
         </div>
       );
@@ -184,6 +240,32 @@ export default function ConfirmEmailChangePage() {
             </div>
           )}
 
+          {/* 🆕 NOVO: Aviso sobre logout necessário */}
+          <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4 mb-6">
+            <div className="flex items-start">
+              <FiLogOut className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="font-medium text-accent-amber mb-2">
+                  🔄 Logout Necessário
+                </h4>
+                <p className="text-sm text-accent-amber opacity-90 mb-3">
+                  Por segurança, você será deslogado automaticamente e precisará
+                  fazer login novamente com seu novo email.
+                </p>
+                {isLoggingOut ? (
+                  <div className="flex items-center justify-center text-accent-amber">
+                    <FiLoader className="w-4 h-4 animate-spin mr-2" />
+                    <span className="text-sm">Fazendo logout...</span>
+                  </div>
+                ) : (
+                  <div className="text-xs text-accent-amber opacity-70">
+                    💡 Logout automático em alguns segundos...
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4 mb-6">
             <h4 className="font-medium text-accent-blue mb-2 flex items-center justify-center">
               <FiCheckCircle className="w-4 h-4 mr-2" />
@@ -198,23 +280,45 @@ export default function ConfirmEmailChangePage() {
           </div>
 
           <div className="space-y-3">
+            {/* 🆕 NOVO: Botão para logout manual (caso queira acelerar) */}
             <Button
               variant="primary"
               size="lg"
-              onClick={() => router.push('/profile')}
-              rightIcon={<FiArrowRight />}
+              onClick={handleManualLogout}
+              leftIcon={
+                isLoggingOut ? (
+                  <FiLoader className="animate-spin" />
+                ) : (
+                  <FiLogOut />
+                )
+              }
               className="w-full"
+              disabled={isLoggingOut}
             >
-              Voltar ao Perfil
+              {isLoggingOut ? 'Fazendo Logout...' : 'Fazer Logout Agora'}
             </Button>
+
             <Button
               variant="ghost"
               size="lg"
               onClick={() => router.push('/')}
+              rightIcon={<FiHome />}
               className="w-full"
+              disabled={isLoggingOut}
             >
               Ir para Home
             </Button>
+          </div>
+
+          {/* 🆕 NOVO: Instruções para próximo login */}
+          <div className="text-center pt-4 border-t border-theme-secondary mt-6">
+            <p className="text-xs text-theme-tertiary">
+              🔑 <strong>Próximo login:</strong> Use seu novo email{' '}
+              <span className="font-mono text-theme-primary">
+                {result.data?.newEmail}
+              </span>{' '}
+              para entrar
+            </p>
           </div>
         </div>
       );
@@ -263,7 +367,7 @@ export default function ConfirmEmailChangePage() {
           {result.errorCode === 'USED_TOKEN' && (
             <div className="bg-accent-green/10 border border-accent-green/20 rounded-lg p-4">
               <p className="text-accent-green text-sm">
-                ✅ Este link já foi usado anteriormente. Se você ainda precisa
+                Este link já foi usado anteriormente. Se você ainda precisa
                 alterar seu email, solicite uma nova mudança em seu perfil.
               </p>
             </div>
@@ -310,6 +414,7 @@ export default function ConfirmEmailChangePage() {
               variant="ghost"
               size="lg"
               onClick={() => router.push('/')}
+              rightIcon={<FiHome />}
               className="w-full"
             >
               Voltar ao Início
@@ -322,7 +427,7 @@ export default function ConfirmEmailChangePage() {
 
   return (
     <div className="min-h-screen bg-theme-background flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
+      <div className="max-w-xl w-full">
         <div className="classical-card p-8">
           {/* Header with logo */}
           <div className="text-center mb-8">

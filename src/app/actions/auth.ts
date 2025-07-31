@@ -11,17 +11,23 @@ import {
   createToken,
   logSecurityEvent,
   checkTokenRateLimit,
+  createTokenUrl,
 } from '@/app/libs/tokenUtils';
-import { createTokenUrl } from '@/app/libs/tokenUtils';
 import { headers } from 'next/headers';
 import { sendTemplateEmail } from '../libs/newsletter/email';
 
+// Validation schemas
 // Validation schemas
 const registerSchema = z.object({
   username: z
     .string()
     .min(2, 'Nome de usuário deve ter pelo menos 2 caracteres')
-    .max(50),
+    .max(50)
+    .regex(/^\S+$/, 'Nome de usuário não pode conter espaços')
+    .regex(
+      /^[a-zA-Z0-9_-]+$/,
+      'Nome de usuário só pode conter letras, números, _ e -'
+    ),
   email: z.string().email('Email inválido'),
   password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
 });

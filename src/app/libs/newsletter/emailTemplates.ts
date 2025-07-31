@@ -240,7 +240,7 @@ function getPremiumOpusAtlasLayout(content: string): string {
             display: inline-block; 
             padding: 16px 32px; 
             background: linear-gradient(135deg, #d4af37 0%, #fbbf24 50%, #d4af37 100%); 
-            color: #000000; 
+            color: #FFFFFF; 
             text-decoration: none; 
             border-radius: 8px; 
             margin: 20px 0;
@@ -281,6 +281,7 @@ function getPremiumOpusAtlasLayout(content: string): string {
         }
 
         .feature-card {
+            margin: 20px 0;
             background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
             padding: 25px;
             border-radius: 12px;
@@ -421,6 +422,7 @@ function getPremiumOpusAtlasLayout(content: string): string {
                 display: block;
                 text-align: center;
                 margin: 15px 0;
+                
             }
         }
 
@@ -494,7 +496,6 @@ export const emailTemplates: Record<string, EmailTemplate> = {
     htmlContent: getPremiumOpusAtlasLayout(
       `
       <h2 style="color: #d4af37; margin-bottom: 25px; font-size: 28px; text-align: center;">Bem-vindo(a), {{firstName}}!</h2>
-      Bem-
       <p style="font-size: 18px; line-height: 1.8; margin-bottom: 25px; text-align: center;">
         É com grande alegria que recebemos você na comunidade <strong class="text-gold">${OPUS_ATLAS_CONFIG.BRAND_NAME}</strong>! 
         Agora você faz parte da plataforma de música clássica.
@@ -573,7 +574,7 @@ Para cancelar: {{unsubscribeUrl}}`,
         <a href="{{confirmationUrl}}" class="btn-premium">
           Confirmar Minha Conta
         </a>
-      </div>Premium
+      </div>
       
       <div class="features-grid">
         <div class="feature-card">
@@ -970,12 +971,7 @@ Cancelar: {{unsubscribeUrl}}`,
           <p style="margin: 0 0 10px 0;">
             <strong>Novo email:</strong> {{newEmail}}
           </p>
-          <p style="margin: 0 0 10px 0;">
-            <strong>Data da solicitação:</strong> {{requestDate}}
-          </p>
-          <p style="margin: 0 0 10px 0;">
-            <strong>IP:</strong> {{ipAddress}}
-          </p>
+          
         </div>
       </div>
       
@@ -983,7 +979,7 @@ Cancelar: {{unsubscribeUrl}}`,
         Para confirmar esta mudança e ativar seu novo email, clique no botão abaixo:
       </p>
       
-      <div style="text-align: center; margin: 40px 0;">
+      <div class="text-center" style="margin: 40px 0;">
         <a href="{{confirmationUrl}}" class="btn-premium">
           ✅ Confirmar Mudança de Email
         </a>

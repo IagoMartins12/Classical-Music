@@ -13,6 +13,7 @@ import {
 import { GiGrandPiano } from 'react-icons/gi';
 import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
+import { useOnboardingModal } from '@/app/stores/authStore';
 
 interface ConfirmationState {
   status: 'loading' | 'success' | 'error' | 'already-confirmed';
@@ -52,6 +53,8 @@ export default function ConfirmAccountPage() {
     confirmAccount();
   }, [token]);
 
+  const { open, isOpen } = useOnboardingModal();
+
   const confirmAccount = async () => {
     try {
       setState({
@@ -72,12 +75,15 @@ export default function ConfirmAccountPage() {
         // Redirecionar após sucesso (com delay para mostrar mensagem)
         setTimeout(() => {
           if (result.user?.onboardingCompleted) {
+            if (isOpen) return;
             router.push('/');
           } else {
+            if (isOpen) return;
+
             // Redirecionar para onboarding se não completado
             router.push('/?onboarding=true');
           }
-        }, 3000);
+        }, 6000);
       } else {
         setState({
           status: 'error',
@@ -188,11 +194,7 @@ export default function ConfirmAccountPage() {
                 variant="primary"
                 size="lg"
                 rightIcon={<FiArrowRight />}
-                onClick={() =>
-                  router.push(
-                    state.user?.onboardingCompleted ? '/' : '/?onboarding=true'
-                  )
-                }
+                onClick={() => open()}
                 className="animate-pulse"
               >
                 {state.user?.onboardingCompleted
@@ -210,7 +212,11 @@ export default function ConfirmAccountPage() {
             </div>
 
             <div className="mt-8 text-sm text-theme-tertiary">
-              Redirecionando automaticamente em alguns segundos...
+              {!isOpen && (
+                <span>
+                  Redirecionando automaticamente em alguns segundos...
+                </span>
+              )}
             </div>
           </div>
         );
