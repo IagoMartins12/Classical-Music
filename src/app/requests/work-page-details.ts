@@ -47,6 +47,7 @@ export interface WorkDetails {
   videoAulaTitle?: string | null;
   videoAulaType?: string | null;
   videoAulaAddedAt?: Date | null;
+  videoAulaAddedBy?: string | null;
 
   customAudioUrl?: string | null;
   customAudioFile?: string | null;
@@ -164,6 +165,7 @@ const getCachedWorkData = unstable_cache(
           videoAulaTitle: true,
           videoAulaType: true,
           videoAulaAddedAt: true,
+          videoAulaAddedBy: true,
 
           customAudioUrl: true,
           customAudioFile: true,
@@ -284,6 +286,7 @@ export const getWorkById = async (
       videoAulaType: work.videoAulaType,
       videoAulaAddedAt: work.videoAulaAddedAt,
 
+      videoAulaAddedBy: work.videoAulaAddedBy,
       customAudioUrl: work.customAudioUrl,
       customAudioFile: work.customAudioFile,
       customAudioMetadata: work.customAudioMetadata,

@@ -1,4 +1,4 @@
-// app/admin/backup/BackupManagementClient.tsx
+// app/admin/backup/BackupManagementClient.tsx - ATUALIZADO
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -18,6 +18,8 @@ import {
   FiInfo,
   FiBarChart2,
   FiX,
+  FiTarget,
+  FiLayers,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -33,6 +35,8 @@ import { useMaintenanceSystem } from '@/app/hooks/admin/useMaintenanceSystem';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
+import SelectiveBackupSection from '../SelectiveBackupSection';
+import SelectiveBackupDashboardCard from '../SelectiveBackupDashboardCard';
 
 interface BackupScheduleFormData {
   name: string;
@@ -76,6 +80,11 @@ export default function BackupManagementClient() {
     retentionDays: 30,
     enabled: true,
   });
+
+  // Estado para controle de abas
+  const [activeTab, setActiveTab] = useState<'general' | 'selective'>(
+    'general'
+  );
 
   const {
     backups,
@@ -268,390 +277,437 @@ export default function BackupManagementClient() {
             </div>
           </AnimatedItem>
 
-          {/* Stats Grid */}
-          {stats && (
-            <AnimatedItem direction="up" springType="gentle">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-                <MetricCard
-                  title="Total de Backups"
-                  value={stats.totalBackups}
-                  change={{
-                    value: stats.totalBackups > 0 ? 100 : 0,
-                    isPositive: true,
-                  }}
-                  icon={FiHardDrive}
-                  color="#3B82F6"
-                />
-
-                <MetricCard
-                  title="Tamanho Total"
-                  value={stats.totalSize}
-                  icon={FiBarChart2}
-                  color="#10B981"
-                />
-
-                <MetricCard
-                  title="Último Backup"
-                  value={
-                    stats.lastBackupDate
-                      ? getBackupAge(stats.lastBackupDate)
-                      : 'Nunca'
-                  }
-                  icon={FiClock}
-                  color="#F59E0B"
-                />
-
-                <MetricCard
-                  title="Limite Máximo"
-                  value={`${stats.totalBackups}/${stats.maxBackups}`}
-                  change={{
-                    value: (stats.totalBackups / stats.maxBackups) * 100,
-                    isPositive: stats.totalBackups < stats.maxBackups,
-                  }}
-                  icon={FiSettings}
-                  color="#8B5CF6"
-                />
-              </div>
-            </AnimatedItem>
-          )}
-
-          {/* Action Buttons */}
+          {/* Navegação por Abas */}
           <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard className="classical-card p-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div>
-                  <h3 className="text-xl font-bold text-theme-primary mb-2">
-                    Ações de Backup
-                  </h3>
-                  <p className="text-theme-secondary">
-                    Gerencie backups do banco de dados
-                  </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <Button
-                    variant="primary"
-                    leftIcon={<FiDownload />}
-                    onClick={createBackup}
-                    disabled={isCreatingBackup || stats?.isBackupRunning}
-                    isLoading={isCreatingBackup}
-                  >
-                    {isCreatingBackup ? 'Criando...' : 'Criar Backup'}
-                  </Button>
-
-                  <Button
-                    variant="secondary"
-                    leftIcon={
-                      <FiRefreshCw className={loading ? 'animate-spin' : ''} />
-                    }
-                    onClick={refreshBackups}
-                    disabled={loading}
-                  >
-                    Atualizar Lista
-                  </Button>
-                </div>
-              </div>
-
-              {/* Status atual */}
-              {stats?.isBackupRunning && (
-                <div className="mt-6 p-4 bg-accent-amber/10 border border-accent-amber/20 rounded-xl">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 bg-accent-amber rounded-full animate-pulse"></div>
-                    <div>
-                      <p className="font-medium text-accent-amber">
-                        Backup em Progresso
-                      </p>
-                      <p className="text-sm text-theme-secondary mt-1">
-                        Um backup está sendo criado. A página será atualizada
-                        automaticamente.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </AnimatedCard>
-          </AnimatedItem>
-
-          {/* Backup Schedules */}
-          <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard className="classical-card p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-theme-primary">
-                  Agendamentos de Backup
-                </h3>
-                <Button
-                  variant="secondary"
-                  leftIcon={<FiCalendar />}
-                  onClick={() => setShowScheduleForm(true)}
+            <div className="flex justify-center mb-8">
+              <div className="flex space-x-1 bg-theme-secondary p-1 rounded-xl">
+                <button
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
+                    activeTab === 'general'
+                      ? 'bg-brand-primary text-white shadow-lg'
+                      : 'text-theme-primary hover:bg-theme-primary'
+                  }`}
+                  onClick={() => setActiveTab('general')}
                 >
-                  Novo Agendamento
-                </Button>
+                  <FiDatabase className="w-4 h-4" />
+                  <span>Backup Geral</span>
+                </button>
+                <button
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all ${
+                    activeTab === 'selective'
+                      ? 'bg-brand-primary text-white shadow-lg'
+                      : 'text-theme-primary hover:bg-theme-primary'
+                  }`}
+                  onClick={() => setActiveTab('selective')}
+                >
+                  <FiTarget className="w-4 h-4" />
+                  <span>Backup Seletivo</span>
+                </button>
               </div>
+            </div>
+          </AnimatedItem>
 
-              {maintenance.backupSchedules.length === 0 ? (
-                <div className="text-center py-8 bg-theme-secondary rounded-xl">
-                  <FiCalendar className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
-                  <p className="text-theme-secondary">Nenhum backup agendado</p>
-                  <Button
-                    variant="secondary"
-                    className="mt-4"
-                    onClick={() => setShowScheduleForm(true)}
-                  >
-                    Criar Primeiro Agendamento
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {maintenance.backupSchedules.map((schedule) => (
-                    <div
-                      key={schedule.id}
-                      className="p-4 border rounded-xl transition-all cursor-pointer "
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div
-                            className={`w-3 h-3 rounded-full ${
-                              schedule.enabled
-                                ? 'bg-accent-green'
-                                : 'bg-theme-tertiary'
-                            }`}
-                          />
-                          <div>
-                            <h5 className="font-medium text-theme-primary">
-                              {schedule.name}
-                            </h5>
-                            <div className="flex items-center space-x-4 text-sm text-theme-secondary">
-                              <span>{getScheduleDescription(schedule)}</span>
-                              <span>
-                                Retenção: {schedule.retentionDays} dias
-                              </span>
-                              {schedule.collections &&
-                                schedule.collections.length > 0 && (
-                                  <span>
-                                    Collections: {schedule.collections.length}
-                                  </span>
-                                )}
-                            </div>
-                          </div>
-                        </div>
+          {/* Conteúdo das Abas */}
+          {activeTab === 'general' ? (
+            <>
+              {/* Stats Grid */}
+              {stats && (
+                <AnimatedItem direction="up" springType="gentle">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+                    <MetricCard
+                      title="Total de Backups"
+                      value={stats.totalBackups}
+                      change={{
+                        value: stats.totalBackups > 0 ? 100 : 0,
+                        isPositive: true,
+                      }}
+                      icon={FiHardDrive}
+                      color="#3B82F6"
+                    />
 
-                        <div className="flex items-center space-x-2">
-                          <span className="text-sm text-theme-tertiary">
-                            {maintenance.getNextRunFormatted(
-                              safeDate(schedule.nextRun)
-                            )}
-                          </span>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            leftIcon={<FiTrash2 />}
-                            onClick={() =>
-                              maintenance.deleteBackupSchedule(schedule.id)
-                            }
-                            className="text-accent-red hover:bg-accent-red/10"
+                    <MetricCard
+                      title="Tamanho Total"
+                      value={stats.totalSize}
+                      icon={FiBarChart2}
+                      color="#10B981"
+                    />
+
+                    <MetricCard
+                      title="Último Backup"
+                      value={
+                        stats.lastBackupDate
+                          ? getBackupAge(stats.lastBackupDate)
+                          : 'Nunca'
+                      }
+                      icon={FiClock}
+                      color="#F59E0B"
+                    />
+
+                    <MetricCard
+                      title="Limite Máximo"
+                      value={`${stats.totalBackups}/${stats.maxBackups}`}
+                      change={{
+                        value: (stats.totalBackups / stats.maxBackups) * 100,
+                        isPositive: stats.totalBackups < stats.maxBackups,
+                      }}
+                      icon={FiSettings}
+                      color="#8B5CF6"
+                    />
+                  </div>
+                </AnimatedItem>
+              )}
+
+              {/* Action Buttons */}
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard className="classical-card p-6">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-theme-primary mb-2">
+                        Backup Completo do Banco
+                      </h3>
+                      <p className="text-theme-secondary">
+                        Backup completo de todas as tabelas (Limite: 5 backups)
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Button
+                        variant="primary"
+                        leftIcon={<FiDownload />}
+                        onClick={createBackup}
+                        disabled={isCreatingBackup || stats?.isBackupRunning}
+                        isLoading={isCreatingBackup}
+                      >
+                        {isCreatingBackup
+                          ? 'Criando...'
+                          : 'Criar Backup Completo'}
+                      </Button>
+
+                      <Button
+                        variant="secondary"
+                        leftIcon={
+                          <FiRefreshCw
+                            className={loading ? 'animate-spin' : ''}
                           />
+                        }
+                        onClick={refreshBackups}
+                        disabled={loading}
+                      >
+                        Atualizar Lista
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Status atual */}
+                  {stats?.isBackupRunning && (
+                    <div className="mt-6 p-4 bg-accent-amber/10 border border-accent-amber/20 rounded-xl">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-3 h-3 bg-accent-amber rounded-full animate-pulse"></div>
+                        <div>
+                          <p className="font-medium text-accent-amber">
+                            Backup em Progresso
+                          </p>
+                          <p className="text-sm text-theme-secondary mt-1">
+                            Um backup está sendo criado. A página será
+                            atualizada automaticamente.
+                          </p>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-            </AnimatedCard>
-          </AnimatedItem>
+                  )}
+                </AnimatedCard>
+              </AnimatedItem>
 
-          {/* Backups List */}
-          <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard className="classical-card p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-theme-primary">
-                  Lista de Backups
-                </h3>
-                {stats && (
-                  <div className="text-sm text-theme-secondary">
-                    {stats.totalBackups} de {stats.maxBackups} backups
-                  </div>
-                )}
-              </div>
-
-              {backups.length === 0 ? (
-                <div className="text-center py-12">
-                  <FiDatabase className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
-                  <h4 className="text-lg font-medium text-theme-primary mb-2">
-                    Nenhum backup encontrado
-                  </h4>
-                  <p className="text-theme-secondary mb-6">
-                    Crie seu primeiro backup para começar
-                  </p>
-                  <Button
-                    variant="primary"
-                    leftIcon={<FiDownload />}
-                    onClick={createBackup}
-                    disabled={isCreatingBackup}
-                  >
-                    Criar Primeiro Backup
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {backups.map((backup) => (
-                    <div
-                      key={backup.id}
-                      className={`p-4 border rounded-xl transition-all cursor-pointer ${
-                        selectedBackup === backup.id
-                          ? 'border-brand-primary bg-brand-primary/5'
-                          : 'border-theme-primary hover:border-theme-secondary'
-                      }`}
-                      onClick={() =>
-                        setSelectedBackup(
-                          selectedBackup === backup.id ? null : backup.id
-                        )
-                      }
+              {/* Backup Schedules */}
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard className="classical-card p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-bold text-theme-primary">
+                      Agendamentos de Backup
+                    </h3>
+                    <Button
+                      variant="secondary"
+                      leftIcon={<FiCalendar />}
+                      onClick={() => setShowScheduleForm(true)}
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
-                          <div className="flex-shrink-0">
-                            {backup.status === 'completed' && (
-                              <FiCheckCircle className="w-6 h-6 text-accent-green" />
-                            )}
-                            {backup.status === 'failed' && (
-                              <FiAlertTriangle className="w-6 h-6 text-accent-red" />
-                            )}
-                            {backup.status === 'in_progress' && (
-                              <FiActivity className="w-6 h-6 text-accent-amber animate-pulse" />
-                            )}
-                          </div>
+                      Novo Agendamento
+                    </Button>
+                  </div>
 
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center space-x-3 mb-1">
-                              <h4 className="font-medium text-theme-primary truncate">
-                                {backup.name}
-                              </h4>
-                              <span
-                                className={`text-sm font-medium ${getStatusColor(
-                                  backup.status
-                                )}`}
-                              >
-                                {getStatusLabel(backup.status)}
-                              </span>
-                            </div>
-                            <div className="flex items-center space-x-4 text-sm text-theme-secondary">
-                              <span className="flex items-center space-x-1">
-                                <FiCalendar className="w-3 h-3" />
-                                <span>{formatBackupDate(backup.date)}</span>
-                              </span>
-                              <span className="flex items-center space-x-1">
-                                <FiHardDrive className="w-3 h-3" />
-                                <span>{backup.size}</span>
-                              </span>
-                              {backup.totalRecords && (
-                                <span className="flex items-center space-x-1">
-                                  <FiDatabase className="w-3 h-3" />
-                                  <span>
-                                    {backup.totalRecords.toLocaleString()}{' '}
-                                    registros
-                                  </span>
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center space-x-2">
-                          <span className="text-xs text-theme-tertiary">
-                            {getBackupAge(backup.date)}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Detalhes expandidos */}
-                      {selectedBackup === backup.id && (
-                        <div className="mt-4 pt-4 border-t border-theme-primary">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                            {backup.collections && (
-                              <div>
-                                <span className="text-xs text-theme-tertiary uppercase tracking-wider">
-                                  Collections
-                                </span>
-                                <p className="font-medium text-theme-primary">
-                                  {backup.collections}
-                                </p>
-                              </div>
-                            )}
-                            {backup.duration && (
-                              <div>
-                                <span className="text-xs text-theme-tertiary uppercase tracking-wider">
-                                  Duração
-                                </span>
-                                <p className="font-medium text-theme-primary">
-                                  {backup.duration}
-                                </p>
-                              </div>
-                            )}
-                            <div>
-                              <span className="text-xs text-theme-tertiary uppercase tracking-wider">
-                                ID
-                              </span>
-                              <p className="font-mono text-sm text-theme-primary truncate">
-                                {backup.id}
-                              </p>
-                            </div>
-                          </div>
-
-                          {backup.error && (
-                            <div className="mb-4 p-3 bg-accent-red/10 border border-accent-red/20 rounded-lg">
-                              <p className="text-sm text-accent-red">
-                                <strong>Erro:</strong> {backup.error}
-                              </p>
-                            </div>
-                          )}
-
+                  {maintenance.backupSchedules.length === 0 ? (
+                    <div className="text-center py-8 bg-theme-secondary rounded-xl">
+                      <FiCalendar className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+                      <p className="text-theme-secondary">
+                        Nenhum backup agendado
+                      </p>
+                      <Button
+                        variant="secondary"
+                        className="mt-4"
+                        onClick={() => setShowScheduleForm(true)}
+                      >
+                        Criar Primeiro Agendamento
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {maintenance.backupSchedules.map((schedule) => (
+                        <div
+                          key={schedule.id}
+                          className="p-4 border rounded-xl transition-all cursor-pointer "
+                        >
                           <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                              <FiInfo className="w-4 h-4 text-theme-tertiary" />
-                              <span className="text-sm text-theme-secondary">
-                                Clique nos botões para gerenciar este backup
-                              </span>
+                            <div className="flex items-center space-x-4">
+                              <div
+                                className={`w-3 h-3 rounded-full ${
+                                  schedule.enabled
+                                    ? 'bg-accent-green'
+                                    : 'bg-theme-tertiary'
+                                }`}
+                              />
+                              <div>
+                                <h5 className="font-medium text-theme-primary">
+                                  {schedule.name}
+                                </h5>
+                                <div className="flex items-center space-x-4 text-sm text-theme-secondary">
+                                  <span>
+                                    {getScheduleDescription(schedule)}
+                                  </span>
+                                  <span>
+                                    Retenção: {schedule.retentionDays} dias
+                                  </span>
+                                  {schedule.collections &&
+                                    schedule.collections.length > 0 && (
+                                      <span>
+                                        Collections:{' '}
+                                        {schedule.collections.length}
+                                      </span>
+                                    )}
+                                </div>
+                              </div>
                             </div>
 
                             <div className="flex items-center space-x-2">
-                              {backup.status === 'completed' && (
-                                <Button
-                                  variant="secondary"
-                                  size="sm"
-                                  leftIcon={<FiUpload />}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    restoreBackup(backup.id);
-                                  }}
-                                  disabled={isRestoringBackup}
-                                >
-                                  Restaurar
-                                </Button>
-                              )}
-
+                              <span className="text-sm text-theme-tertiary">
+                                {maintenance.getNextRunFormatted(
+                                  safeDate(schedule.nextRun)
+                                )}
+                              </span>
                               <Button
-                                variant="delete"
+                                variant="ghost"
                                 size="sm"
                                 leftIcon={<FiTrash2 />}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  deleteBackup(backup.id);
-                                }}
-                              >
-                                Excluir
-                              </Button>
+                                onClick={() =>
+                                  maintenance.deleteBackupSchedule(schedule.id)
+                                }
+                                className="text-accent-red hover:bg-accent-red/10"
+                              />
                             </div>
                           </div>
                         </div>
-                      )}
+                      ))}
                     </div>
-                  ))}
-                </div>
-              )}
-            </AnimatedCard>
-          </AnimatedItem>
+                  )}
+                </AnimatedCard>
+              </AnimatedItem>
 
-          {/* System Info */}
+              {/* Backups List */}
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard className="classical-card p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-bold text-theme-primary">
+                      Lista de Backups Completos
+                    </h3>
+                    {stats && (
+                      <div className="text-sm text-theme-secondary">
+                        {stats.totalBackups} de {stats.maxBackups} backups
+                      </div>
+                    )}
+                  </div>
+
+                  {backups.length === 0 ? (
+                    <div className="text-center py-12">
+                      <FiDatabase className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+                      <h4 className="text-lg font-medium text-theme-primary mb-2">
+                        Nenhum backup encontrado
+                      </h4>
+                      <p className="text-theme-secondary mb-6">
+                        Crie seu primeiro backup para começar
+                      </p>
+                      <Button
+                        variant="primary"
+                        leftIcon={<FiDownload />}
+                        onClick={createBackup}
+                        disabled={isCreatingBackup}
+                      >
+                        Criar Primeiro Backup
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {backups.map((backup) => (
+                        <div
+                          key={backup.id}
+                          className={`p-4 border rounded-xl transition-all cursor-pointer ${
+                            selectedBackup === backup.id
+                              ? 'border-brand-primary bg-brand-primary/5'
+                              : 'border-theme-primary hover:border-theme-secondary'
+                          }`}
+                          onClick={() =>
+                            setSelectedBackup(
+                              selectedBackup === backup.id ? null : backup.id
+                            )
+                          }
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-4">
+                              <div className="flex-shrink-0">
+                                {backup.status === 'completed' && (
+                                  <FiCheckCircle className="w-6 h-6 text-accent-green" />
+                                )}
+                                {backup.status === 'failed' && (
+                                  <FiAlertTriangle className="w-6 h-6 text-accent-red" />
+                                )}
+                                {backup.status === 'in_progress' && (
+                                  <FiActivity className="w-6 h-6 text-accent-amber animate-pulse" />
+                                )}
+                              </div>
+
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center space-x-3 mb-1">
+                                  <h4 className="font-medium text-theme-primary truncate">
+                                    {backup.name}
+                                  </h4>
+                                  <span
+                                    className={`text-sm font-medium ${getStatusColor(
+                                      backup.status
+                                    )}`}
+                                  >
+                                    {getStatusLabel(backup.status)}
+                                  </span>
+                                </div>
+                                <div className="flex items-center space-x-4 text-sm text-theme-secondary">
+                                  <span className="flex items-center space-x-1">
+                                    <FiCalendar className="w-3 h-3" />
+                                    <span>{formatBackupDate(backup.date)}</span>
+                                  </span>
+                                  <span className="flex items-center space-x-1">
+                                    <FiHardDrive className="w-3 h-3" />
+                                    <span>{backup.size}</span>
+                                  </span>
+                                  {backup.totalRecords && (
+                                    <span className="flex items-center space-x-1">
+                                      <FiDatabase className="w-3 h-3" />
+                                      <span>
+                                        {backup.totalRecords.toLocaleString()}{' '}
+                                        registros
+                                      </span>
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center space-x-2">
+                              <span className="text-xs text-theme-tertiary">
+                                {getBackupAge(backup.date)}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Detalhes expandidos */}
+                          {selectedBackup === backup.id && (
+                            <div className="mt-4 pt-4 border-t border-theme-primary">
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                {backup.collections && (
+                                  <div>
+                                    <span className="text-xs text-theme-tertiary uppercase tracking-wider">
+                                      Collections
+                                    </span>
+                                    <p className="font-medium text-theme-primary">
+                                      {backup.collections}
+                                    </p>
+                                  </div>
+                                )}
+                                {backup.duration && (
+                                  <div>
+                                    <span className="text-xs text-theme-tertiary uppercase tracking-wider">
+                                      Duração
+                                    </span>
+                                    <p className="font-medium text-theme-primary">
+                                      {backup.duration}
+                                    </p>
+                                  </div>
+                                )}
+                                <div>
+                                  <span className="text-xs text-theme-tertiary uppercase tracking-wider">
+                                    ID
+                                  </span>
+                                  <p className="font-mono text-sm text-theme-primary truncate">
+                                    {backup.id}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {backup.error && (
+                                <div className="mb-4 p-3 bg-accent-red/10 border border-accent-red/20 rounded-lg">
+                                  <p className="text-sm text-accent-red">
+                                    <strong>Erro:</strong> {backup.error}
+                                  </p>
+                                </div>
+                              )}
+
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                  <FiInfo className="w-4 h-4 text-theme-tertiary" />
+                                  <span className="text-sm text-theme-secondary">
+                                    Clique nos botões para gerenciar este backup
+                                  </span>
+                                </div>
+
+                                <div className="flex items-center space-x-2">
+                                  {backup.status === 'completed' && (
+                                    <Button
+                                      variant="secondary"
+                                      size="sm"
+                                      leftIcon={<FiUpload />}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        restoreBackup(backup.id);
+                                      }}
+                                      disabled={isRestoringBackup}
+                                    >
+                                      Restaurar
+                                    </Button>
+                                  )}
+
+                                  <Button
+                                    variant="delete"
+                                    size="sm"
+                                    leftIcon={<FiTrash2 />}
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      deleteBackup(backup.id);
+                                    }}
+                                  >
+                                    Excluir
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </AnimatedCard>
+              </AnimatedItem>
+            </>
+          ) : (
+            /* Aba de Backup Seletivo */
+            <SelectiveBackupSection />
+          )}
+
+          {/* System Info - Sempre visível */}
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard className="classical-card p-6">
               <h3 className="text-xl font-bold text-theme-primary mb-4">
@@ -666,11 +722,17 @@ export default function BackupManagementClient() {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-theme-secondary">
-                        Máximo de backups:
+                        Máximo de backups completos:
                       </span>
                       <span className="font-medium text-theme-primary">
                         {stats?.maxBackups || 5}
                       </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-theme-secondary">
+                        Máximo de backups seletivos:
+                      </span>
+                      <span className="font-medium text-theme-primary">25</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-theme-secondary">

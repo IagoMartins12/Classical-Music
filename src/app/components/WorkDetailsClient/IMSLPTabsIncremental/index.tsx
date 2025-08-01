@@ -584,21 +584,6 @@ export default function IMSLPTabsIncremental({
                           ? 'Selecione uma partitura abaixo'
                           : 'Explore as partituras disponíveis'}
                       </p>
-                      {/* ✅ Indicadores de fonte */}
-                      <div className="flex items-center space-x-2">
-                        {imslpData && (
-                          <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full flex items-center space-x-1">
-                            <FiDatabase className="w-3 h-3" />
-                            <span>IMSLP</span>
-                          </span>
-                        )}
-                        {workScoresTotal > 0 && (
-                          <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full flex items-center space-x-1">
-                            <FiUpload className="w-3 h-3" />
-                            <span>Open Atlas</span>
-                          </span>
-                        )}
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -652,6 +637,11 @@ export default function IMSLPTabsIncremental({
                         imslpData?.totalCounts || {}
                       );
 
+                  console.log('tabStats', {
+                    tabStats,
+                    tabCount,
+                    mixedData,
+                  });
                   return (
                     <AnimatedItem
                       key={tab.id}

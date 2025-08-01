@@ -1,36 +1,61 @@
-// scripts/backup/selective-backup.ts
+// scripts/backup/selective-backup.ts - ATUALIZADO
 import { PrismaClient } from '@prisma/client';
 import fs from 'fs/promises';
 import path from 'path';
 
 const prisma = new PrismaClient();
 
-// Collections disponíveis com suas dependências
+// Lista de todos os models do seu schema na ordem correta para backup seletivo
 const COLLECTION_DEPENDENCIES: { [key: string]: string[] } = {
+  // Tabelas independentes primeiro
   user: [],
   epoch: [],
   role: [],
   instrument: [],
   workGenre: [],
+
+  // Tabelas com dependências
   composer: ['epoch', 'role', 'user'],
   work: ['composer', 'epoch', 'instrument', 'user'],
   workScore: ['work'],
   userInstrument: ['user', 'instrument'],
   annotation: ['user', 'work'],
   pdfAnnotation: ['user', 'work'],
+  workAnnotation: ['user', 'work'],
   favoriteWork: ['user', 'work'],
   favoriteComposer: ['user', 'composer'],
-  newsletterSubscriber: ['user'],
-  newsletterTemplate: ['user'],
+  favoriteScore: ['user', 'work'],
+  studySession: ['user', 'work'],
+  wantToLearn: ['user', 'work'],
+  learned: ['user', 'work'],
+  userSelectedScore: ['user', 'work'],
+  learningGoal: ['user'],
+  scoreBookmark: ['user', 'work'],
+  annotationHelpfulVote: ['user', 'workAnnotation'],
+  scoreFavoriteStats: ['work'],
+  uploadHistory: ['user'],
+  uploadModeration: ['user'],
+  generatedReport: ['user'],
   advertisement: ['user', 'instrument'],
-  // Adicione outras collections conforme necessário
+  adStats: ['advertisement', 'user'],
+  newsletterSubscriber: ['user'],
+  newsletterTemplate: [],
+  newsletterCampaign: ['newsletterTemplate'],
+  newsletterCampaignSend: ['newsletterCampaign', 'newsletterSubscriber'],
+  newsletterEmailEvent: ['newsletterSubscriber', 'newsletterCampaign'],
+  newsletterSettings: [],
+  testEmailList: [],
+  templateFragment: [],
+  userToken: ['user'],
+  account: ['user'],
+  session: ['user'],
 };
 
 interface SelectiveBackupOptions {
   collections: string[];
   includeDependencies: boolean;
   outputDir?: string;
-  compressionLevel?: number;
+  name?: string;
 }
 
 interface BackupResult {
@@ -75,8 +100,20 @@ function resolveDependencies(collections: string[]): string[] {
   return ordered;
 }
 
+// Função para criar diretório de backup seletivo
+async function createSelectiveBackupDirectory(name?: string): Promise<string> {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const backupName = name
+    ? `selective-backup-${name.replace(/[^a-zA-Z0-9]/g, '-')}-${timestamp}`
+    : `selective-backup-${timestamp}`;
+
+  const backupDir = path.join(process.cwd(), 'backups', backupName);
+  await fs.mkdir(backupDir, { recursive: true });
+  return backupDir;
+}
+
 // Executar backup seletivo
-export async function performSelectiveBackup(
+async function performSelectiveBackup(
   options: SelectiveBackupOptions
 ): Promise<BackupResult> {
   const startTime = Date.now();
@@ -95,17 +132,39 @@ export async function performSelectiveBackup(
     );
 
     // Criar diretório de backup
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const backupDir =
-      options.outputDir ||
-      path.join(process.cwd(), 'backups', `selective-backup-${timestamp}`);
+      options.outputDir || (await createSelectiveBackupDirectory(options.name));
 
-    await fs.mkdir(backupDir, { recursive: true });
+    // Criar metadados iniciais
+    const initialMetadata = {
+      timestamp: new Date().toISOString(),
+      version: '1.0.0',
+      type: 'selective',
+      status: 'in_progress',
+      name:
+        options.name ||
+        `Backup Seletivo ${new Date().toLocaleDateString('pt-BR')}`,
+      selectedCollections: options.collections,
+      processedCollections: collectionsToBackup,
+      includedDependencies: options.includeDependencies,
+      totalRecords: 0,
+      collections: [],
+      backupSize: '0 MB',
+      duration: '0s',
+      backupLocation: backupDir,
+      createdAt: new Date().toISOString(),
+    };
+
+    const metadataPath = path.join(backupDir, 'metadata.json');
+    await fs.writeFile(metadataPath, JSON.stringify(initialMetadata, null, 2));
 
     const backupData: any = {
       timestamp: new Date().toISOString(),
       version: '1.0.0',
       type: 'selective',
+      name:
+        options.name ||
+        `Backup Seletivo ${new Date().toLocaleDateString('pt-BR')}`,
       selectedCollections: options.collections,
       processedCollections: collectionsToBackup,
       includedDependencies: options.includeDependencies,
@@ -123,6 +182,7 @@ export async function performSelectiveBackup(
 
     // Conectar ao banco
     await prisma.$connect();
+    console.log('✅ Conectado ao banco de dados');
 
     // Fazer backup de cada collection
     for (const collectionName of collectionsToBackup) {
@@ -142,7 +202,7 @@ export async function performSelectiveBackup(
         }
 
         // Para collections grandes, processar em chunks
-        const CHUNK_SIZE = 1000;
+        const CHUNK_SIZE = 500; // Menor para backup seletivo
         const data = [];
 
         if (count > CHUNK_SIZE) {
@@ -160,6 +220,11 @@ export async function performSelectiveBackup(
             data.push(...chunk);
 
             console.log(`   💾 Processados ${skip + take}/${count} registros`);
+
+            // Liberar memória explicitamente
+            if (global.gc && (skip + take) % (CHUNK_SIZE * 5) === 0) {
+              global.gc();
+            }
           }
         } else {
           // @ts-ignore
@@ -177,12 +242,33 @@ export async function performSelectiveBackup(
           )} registros`
         );
 
-        // Salvar collection individual
-        const collectionPath = path.join(backupDir, `${collectionName}.json`);
+        // Salvar collection individual para facilitar restauração
+        const collectionsDir = path.join(backupDir, 'collections');
+        await fs.mkdir(collectionsDir, { recursive: true });
+
+        const collectionPath = path.join(
+          collectionsDir,
+          `${collectionName}.json`
+        );
         await fs.writeFile(collectionPath, JSON.stringify(data, null, 2));
+
+        // Limpar dados da memória principal para economizar RAM
+        backupData.data[collectionName] = [
+          `${data.length} registros salvos em arquivo separado`,
+        ];
       } catch (error) {
         console.error(`   ❌ Erro em ${collectionName}:`, error);
         backupData.data[collectionName] = [];
+
+        // Salvar erro para debugging
+        const errorData = {
+          collection: collectionName,
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: new Date().toISOString(),
+        };
+
+        const errorPath = path.join(backupDir, `${collectionName}_error.json`);
+        await fs.writeFile(errorPath, JSON.stringify(errorData, null, 2));
       }
     }
 
@@ -194,32 +280,35 @@ export async function performSelectiveBackup(
     backupData.metadata.duration = `${duration}s`;
     backupData.metadata.status = 'completed';
 
-    // Calcular tamanho
-    const backupJson = JSON.stringify(backupData, null, 2);
-    const sizeBytes = Buffer.byteLength(backupJson, 'utf8');
-    backupData.metadata.backupSize = formatBytes(sizeBytes);
+    // Calcular tamanho aproximado
+    const backupSizeBytes = await getDirSize(backupDir);
+    backupData.metadata.backupSize = formatBytes(backupSizeBytes);
 
-    // Salvar backup principal
+    // Salvar backup principal (leve, apenas referências)
     const mainBackupPath = path.join(backupDir, 'backup.json');
-    await fs.writeFile(mainBackupPath, backupJson);
+    await fs.writeFile(mainBackupPath, JSON.stringify(backupData, null, 2));
 
-    // Salvar metadados
-    const metadata = {
-      ...backupData.metadata,
-      collectionsProcessed: collectionsToBackup.length,
-      originalSelections: options.collections,
-      dependenciesIncluded: options.includeDependencies,
-      backupLocation: backupDir,
-      createdAt: new Date().toISOString(),
+    // Atualizar metadados finais
+    const finalMetadata = {
+      ...initialMetadata,
+      status: 'completed',
+      totalRecords: totalRecords,
+      collections: backupData.metadata.collections,
+      backupSize: backupData.metadata.backupSize,
+      duration: backupData.metadata.duration,
+      completedAt: new Date().toISOString(),
+      collectionsCount: backupData.metadata.collections.length,
+      hasMainBackup: true,
+      hasIndividualCollections: true,
     };
 
-    const metadataPath = path.join(backupDir, 'metadata.json');
-    await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
+    await fs.writeFile(metadataPath, JSON.stringify(finalMetadata, null, 2));
 
     console.log('\n✅ Backup seletivo concluído!');
     console.log('='.repeat(60));
     console.log(`📁 Localização: ${backupDir}`);
-    console.log(`📊 Collections processadas: ${collectionsToBackup.length}`);
+    console.log(`📋 Collections selecionadas: ${options.collections.length}`);
+    console.log(`📦 Collections processadas: ${collectionsToBackup.length}`);
     console.log(
       `📈 Total de registros: ${totalRecords.toLocaleString('pt-BR')}`
     );
@@ -237,6 +326,11 @@ export async function performSelectiveBackup(
       dependencies.forEach((dep) => console.log(`   • ${dep}`));
     }
 
+    console.log('\n📂 Arquivos criados:');
+    console.log(`   • metadata.json - Informações completas do backup`);
+    console.log(`   • backup.json - Índice principal (leve)`);
+    console.log(`   • collections/ - Dados das collections individualmente`);
+
     return {
       success: true,
       backupPath: mainBackupPath,
@@ -247,6 +341,23 @@ export async function performSelectiveBackup(
     };
   } catch (error) {
     console.error('\n❌ Erro durante backup seletivo:', error);
+
+    // Salvar erro no diretório se conseguir
+    try {
+      const errorPath = path.join(
+        options.outputDir || process.cwd(),
+        'error.json'
+      );
+      const errorData = {
+        error: error instanceof Error ? error.message : String(error),
+        timestamp: new Date().toISOString(),
+        selectedCollections: options.collections,
+        includeDependencies: options.includeDependencies,
+      };
+      await fs.writeFile(errorPath, JSON.stringify(errorData, null, 2));
+    } catch (saveError) {
+      console.error('Erro ao salvar detalhes do erro:', saveError);
+    }
 
     return {
       success: false,
@@ -262,7 +373,7 @@ export async function performSelectiveBackup(
 }
 
 // Restaurar backup seletivo
-export async function restoreSelectiveBackup(
+async function restoreSelectiveBackup(
   backupPath: string,
   options: {
     collections?: string[];
@@ -284,7 +395,7 @@ export async function restoreSelectiveBackup(
       backupPath = path.join(backupDir, 'backup.json');
     }
 
-    // Ler backup
+    // Ler backup principal
     const backupContent = await fs.readFile(backupPath, 'utf8');
     backupData = JSON.parse(backupContent);
 
@@ -292,6 +403,7 @@ export async function restoreSelectiveBackup(
       `📅 Backup de: ${new Date(backupData.timestamp).toLocaleString('pt-BR')}`
     );
     console.log(`🎯 Tipo: ${backupData.type || 'completo'}`);
+    console.log(`📋 Nome: ${backupData.name || 'Sem nome'}`);
 
     if (backupData.type === 'selective') {
       console.log(
@@ -310,7 +422,7 @@ export async function restoreSelectiveBackup(
     const collectionsToRestore =
       options.collections ||
       backupData.processedCollections ||
-      Object.keys(backupData.data);
+      Object.keys(backupData.data || {});
 
     console.log(
       `🔄 Collections a restaurar: ${collectionsToRestore.join(', ')}`
@@ -319,12 +431,20 @@ export async function restoreSelectiveBackup(
     if (options.dryRun) {
       console.log('\n🧪 Modo de teste - nenhuma alteração será feita');
 
+      const collectionsDir = path.join(backupDir, 'collections');
+
       for (const collection of collectionsToRestore) {
-        const data = backupData.data[collection];
-        if (data && Array.isArray(data)) {
+        try {
+          const collectionPath = path.join(
+            collectionsDir,
+            `${collection}.json`
+          );
+          const data = JSON.parse(await fs.readFile(collectionPath, 'utf8'));
           console.log(
             `   • ${collection}: ${data.length} registros para restaurar`
           );
+        } catch {
+          console.log(`   • ${collection}: arquivo não encontrado`);
         }
       }
       return;
@@ -334,17 +454,24 @@ export async function restoreSelectiveBackup(
     await prisma.$connect();
 
     let totalRestored = 0;
+    const collectionsDir = path.join(backupDir, 'collections');
 
     // Restaurar cada collection
     for (const collectionName of collectionsToRestore) {
-      if (!backupData.data[collectionName]) {
-        console.log(
-          `⚠️  Collection '${collectionName}' não encontrada no backup`
-        );
-        continue;
+      // Tentar ler de arquivo individual primeiro
+      const collectionPath = path.join(
+        collectionsDir,
+        `${collectionName}.json`
+      );
+      let data: any[] = [];
+
+      try {
+        data = JSON.parse(await fs.readFile(collectionPath, 'utf8'));
+      } catch {
+        // Fallback para dados no backup principal
+        data = backupData.data?.[collectionName] || [];
       }
 
-      const data = backupData.data[collectionName];
       if (!Array.isArray(data) || data.length === 0) {
         console.log(`⏭️  ${collectionName} vazio, pulando`);
         continue;
@@ -368,8 +495,8 @@ export async function restoreSelectiveBackup(
       }
 
       try {
-        // Processar em lotes
-        const batchSize = 100;
+        // Processar em lotes menores para backup seletivo
+        const batchSize = 50;
         let batchRestored = 0;
 
         for (let i = 0; i < data.length; i += batchSize) {
@@ -422,8 +549,37 @@ export async function restoreSelectiveBackup(
   }
 }
 
+// Utilitário para calcular tamanho de diretório
+async function getDirSize(dirPath: string): Promise<number> {
+  let size = 0;
+  try {
+    const entries = await fs.readdir(dirPath, { withFileTypes: true });
+
+    for (const entry of entries) {
+      const entryPath = path.join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        size += await getDirSize(entryPath);
+      } else {
+        const stats = await fs.stat(entryPath);
+        size += stats.size;
+      }
+    }
+  } catch (error) {
+    // Ignorar erros
+  }
+  return size;
+}
+
+// Utilitário para formatar bytes
+function formatBytes(bytes: number): string {
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  if (bytes === 0) return '0 Bytes';
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i];
+}
+
 // Listar collections disponíveis
-export async function listAvailableCollections(): Promise<{
+async function listAvailableCollections(): Promise<{
   [key: string]: number;
 }> {
   console.log('📋 Listando collections disponíveis...');
@@ -452,14 +608,6 @@ export async function listAvailableCollections(): Promise<{
   return collections;
 }
 
-// Utilitário para formatar bytes
-function formatBytes(bytes: number): string {
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  if (bytes === 0) return '0 Bytes';
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + ' ' + sizes[i];
-}
-
 // CLI Interface
 async function main() {
   const command = process.argv[2];
@@ -469,6 +617,7 @@ async function main() {
     case 'backup':
       const collections = args.filter((arg) => !arg.startsWith('--'));
       const includeDependencies = args.includes('--with-dependencies');
+      const name = args.find((arg) => arg.startsWith('--name='))?.split('=')[1];
       const outputDir = args
         .find((arg) => arg.startsWith('--output='))
         ?.split('=')[1];
@@ -485,6 +634,7 @@ async function main() {
         collections,
         includeDependencies,
         outputDir,
+        name,
       });
 
       if (!result.success) {
@@ -504,7 +654,7 @@ async function main() {
       if (!backupPath) {
         console.error('❌ Especifique o caminho do backup');
         console.log(
-          'Exemplo: tsx scripts/backup/selective-backup.ts restore ./backups/backup-xxx/backup.json user work'
+          'Exemplo: tsx scripts/backup/selective-backup.ts restore ./backups/selective-backup-xxx/backup.json user work'
         );
         process.exit(1);
       }
@@ -549,6 +699,7 @@ async function main() {
       console.log(
         '  --with-dependencies      - Incluir dependências automaticamente'
       );
+      console.log('  --name=<nome>           - Nome personalizado do backup');
       console.log('  --output=<dir>          - Diretório de saída customizado');
       console.log(
         '  --skip-existing         - Pular collections que já têm dados'
@@ -559,10 +710,10 @@ async function main() {
       console.log('');
       console.log('Exemplos:');
       console.log(
-        '  tsx scripts/backup/selective-backup.ts backup user work composer --with-dependencies'
+        '  tsx scripts/backup/selective-backup.ts backup user work composer --with-dependencies --name="Backup Usuarios e Obras"'
       );
       console.log(
-        '  tsx scripts/backup/selective-backup.ts restore ./backups/backup-xxx/backup.json user work'
+        '  tsx scripts/backup/selective-backup.ts restore ./backups/selective-backup-xxx/backup.json user work'
       );
       console.log('  tsx scripts/backup/selective-backup.ts list');
   }
@@ -574,3 +725,10 @@ if (require.main === module) {
     process.exit(1);
   });
 }
+
+export {
+  performSelectiveBackup,
+  restoreSelectiveBackup,
+  listAvailableCollections,
+  resolveDependencies,
+};

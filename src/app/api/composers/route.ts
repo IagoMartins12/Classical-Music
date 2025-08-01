@@ -236,26 +236,34 @@ async function searchComposers(searchTerm: string, limit: number) {
   } else {
     // Busca por termo específico
     console.log('🔍 Buscando compositores por termo:', searchTerm);
+    const terms = searchTerm.trim().split(/\s+/);
+
     composers = await prisma.composer.findMany({
       where: {
         OR: [
           {
-            name: {
-              contains: searchTerm,
-              mode: 'insensitive',
-            },
+            AND: terms.map((term) => ({
+              name: {
+                contains: term,
+                mode: 'insensitive',
+              },
+            })),
           },
           {
-            fullName: {
-              contains: searchTerm,
-              mode: 'insensitive',
-            },
+            AND: terms.map((term) => ({
+              fullName: {
+                contains: term,
+                mode: 'insensitive',
+              },
+            })),
           },
           {
-            alternativeNames: {
-              contains: searchTerm,
-              mode: 'insensitive',
-            },
+            AND: terms.map((term) => ({
+              alternativeNames: {
+                contains: term,
+                mode: 'insensitive',
+              },
+            })),
           },
           {
             imslpId: {

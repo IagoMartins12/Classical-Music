@@ -1,4 +1,4 @@
-// components/ui/Modal.tsx - Versão com scroll suave exposto
+// components/ui/Modal.tsx - ATUALIZADO COM PREVENÇÃO DE SCROLL E CONFIRMAÇÃO
 'use client';
 
 import React, {
@@ -6,6 +6,7 @@ import React, {
   useRef,
   useImperativeHandle,
   forwardRef,
+  useLayoutEffect,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { FiX } from 'react-icons/fi';
@@ -19,6 +20,9 @@ interface ModalProps {
   showCloseButton?: boolean;
   closeOnOverlayClick?: boolean;
   className?: string;
+  // 🆕 NOVAS PROPS
+  onRequestClose?: () => boolean; // Retorna true se pode fechar, false se deve cancelar
+  preventBodyScroll?: boolean; // Default true
 }
 
 export interface ModalRef {
@@ -35,6 +39,8 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       maxWidth = 'md',
       showCloseButton = true,
       className = '',
+      onRequestClose,
+      preventBodyScroll = true,
     },
     ref
   ) => {
@@ -53,6 +59,35 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       '6xl': 'max-w-6xl',
     };
 
+    // 🆕 PREVENÇÃO DE SCROLL DO BODY
+    useLayoutEffect(() => {
+      if (!preventBodyScroll) return;
+
+      if (isOpen) {
+        // Salvar scroll atual
+        const scrollY = window.scrollY;
+
+        // Aplicar estilos para prevenir scroll
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.width = '100%';
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+          // Restaurar scroll
+          const body = document.body;
+          const scrollY = parseInt(body.style.top || '0') * -1;
+
+          body.style.position = '';
+          body.style.top = '';
+          body.style.width = '';
+          body.style.overflow = '';
+
+          window.scrollTo(0, scrollY);
+        };
+      }
+    }, [isOpen, preventBodyScroll]);
+
     // Expor função de scroll para o componente pai
     useImperativeHandle(ref, () => ({
       scrollToTop: () => {
@@ -65,28 +100,39 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       },
     }));
 
+    // 🆕 HANDLER DE FECHAMENTO COM CONFIRMAÇÃO
+    const handleCloseRequest = () => {
+      if (onRequestClose) {
+        const canClose = onRequestClose();
+        if (canClose) {
+          onClose();
+        }
+        // Se retornar false, não fecha o modal
+      } else {
+        onClose();
+      }
+    };
+
     // Handle escape key
     useEffect(() => {
       const handleEscape = (e: KeyboardEvent) => {
         if (e.key === 'Escape' && isOpen) {
-          onClose();
+          handleCloseRequest();
         }
       };
 
       if (isOpen) {
         document.addEventListener('keydown', handleEscape);
-        document.body.style.overflow = 'hidden';
       }
 
       return () => {
         document.removeEventListener('keydown', handleEscape);
-        document.body.style.overflow = 'unset';
       };
-    }, [isOpen, onClose]);
+    }, [isOpen, onRequestClose]);
 
     // Handle click outside
     const handleOverlayClick = () => {
-      onClose();
+      handleCloseRequest();
     };
 
     if (!isOpen) return null;
@@ -125,7 +171,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
               )}
               {showCloseButton && (
                 <button
-                  onClick={onClose}
+                  onClick={handleCloseRequest}
                   className="
                   p-2 text-theme-tertiary hover:text-brand-primary 
                   hover:bg-interactive-hover rounded-lg transition-all
@@ -143,7 +189,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
           <div
             ref={contentRef}
             className={`
-            overflow-y-auto  classical-scrollbar pt-4  flex-1
+            overflow-y-auto classical-scrollbar pt-4 flex-1
             ${title || showCloseButton ? 'px-6 pb-6' : 'p-6'}
           `}
             style={{ maxHeight: 'calc(90vh - 100px)' }}

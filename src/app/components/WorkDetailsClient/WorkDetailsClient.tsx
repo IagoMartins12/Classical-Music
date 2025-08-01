@@ -197,18 +197,6 @@ export default function WorkDetailsClient({
     enabled: mounted && !!work.imslpPermlink,
     initialLimit: 5,
     moreLimit: 20,
-    onScoresCached: (fromCache) => {
-      console.log(
-        `✅ [CLIENT] Estratégia: ${
-          fromCache ? 'CACHE-ALL' : 'PRIMEIRA-VEZ'
-        } para obra ${work.title}`
-      );
-    },
-    onLoadMoreComplete: (newCount, totalCount) => {
-      console.log(
-        `📈 [CLIENT] Carregamento incremental: ${newCount}/${totalCount} partituras`
-      );
-    },
   });
 
   const { navigateToUrl } = useNavigate();
@@ -260,13 +248,6 @@ export default function WorkDetailsClient({
     confirmScoreSelection();
   };
 
-  // ✅ NOVO: Handler para atualizar partitura (se mudou)
-  const handleUpdateScore = () => {
-    console.log('🔄 [WORK-CLIENT] Atualizando partitura selecionada');
-    // Confirma a nova seleção
-    confirmScoreSelection();
-  };
-
   // ✅ Handler para cancelar seleção
   const handleCancelSelection = () => {
     console.log('❌ [WORK-CLIENT] Cancelando seleção de partitura');
@@ -310,6 +291,24 @@ export default function WorkDetailsClient({
           currentAudioData.mediaSearchError || work.mediaSearchError,
       }
     : work;
+
+  // ✅ CONVERTER WORK PARA O FORMATO ESPERADO PELA VideoAulaSection
+  const workForVideoAulaSection = {
+    id: work.id,
+    title: work.title,
+    composer: {
+      fullName: work.composer.fullName,
+    },
+    // ✅ CONVERTER null para undefined para compatibilidade TypeScript
+    videoAulaUrl: work.videoAulaUrl || undefined,
+    videoAulaFile: work.videoAulaFile || undefined,
+    videoAulaTitle: work.videoAulaTitle || undefined,
+    videoAulaType: work.videoAulaType || undefined,
+    videoAulaSource: work.videoAulaSource || undefined,
+    videoAulaAddedBy: work.videoAulaAddedBy || undefined,
+    videoAulaAddedAt: work.videoAulaAddedAt || undefined,
+    videoAulaMetadata: work.videoAulaMetadata || undefined,
+  };
 
   // Callback para quando a mídia for atualizada
   const handleMediaUpdate = (newMediaData: Partial<ProcessedAudioData>) => {
@@ -1162,8 +1161,8 @@ export default function WorkDetailsClient({
           />
 
           <VideoAulaSection
-            work={workForMediaSection}
-            canEditMedia={canEditMedia}
+            work={workForVideoAulaSection} // ✅ Usar versão convertida
+            canEditMedia={canEditMedia} // ✅ Passar permissão de edição
           />
           {/* ✅ Seção de Partituras SEMPRE VISÍVEL */}
           <AnimatedCard hover="none">

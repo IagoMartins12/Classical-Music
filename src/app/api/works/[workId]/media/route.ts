@@ -98,6 +98,17 @@ export async function PUT(
       }
     }
 
+    if (updateData.videoAulaFile || updateData.videoAulaUrl) {
+      dataToUpdate.videoAulaUrl = updateData.videoAulaUrl || null;
+      dataToUpdate.videoAulaFile = updateData.videoAulaFile || null;
+      dataToUpdate.videoAulaTitle = updateData.videoAulaTitle || null;
+      dataToUpdate.videoAulaType = updateData.videoAulaType || 'video';
+      dataToUpdate.videoAulaSource = updateData.videoAulaSource || 'youtube';
+      dataToUpdate.videoAulaAddedBy = session.user.id;
+      dataToUpdate.videoAulaAddedAt = new Date();
+      dataToUpdate.videoAulaMetadata = updateData.videoAulaMetadata || null;
+    }
+
     // 🆕 Remover áudio customizado (limpar todos os campos relacionados)
     if (updateData.removeCustomAudio) {
       console.log('🗑️ [MEDIA-API] Removendo áudio customizado:', {

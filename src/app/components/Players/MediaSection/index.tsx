@@ -693,7 +693,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 Multimídia
               </h2>
               <p className="text-theme-secondary text-sm">
-                Áudio, vídeos e conteúdo musical
+                Áudio, vídeos e conteúdo musical.
               </p>
             </div>
           </div>
@@ -915,27 +915,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {/* Grid de Mídia */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Coluna 1: Áudio */}
-          <div className="space-y-6">
-            <AnimatedItem direction="up" delay={0.1}>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <FiMusic className="w-5 h-5 text-accent-green" />
-                  <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                    Reprodução de Áudio
-                  </h3>
-                </div>
-
-                {/* 🆕 Player simplificado - apenas recebe as fontes */}
-                <UniversalAudioPlayer
-                  work={work}
-                  customAudio={mediaData.customAudio}
-                  alternativeAudioSources={mediaData.alternativeAudio}
-                  isSearching={isSearching}
-                  searchError={searchError}
-                />
-              </div>
-            </AnimatedItem>
-
+          <div className="space-y-6 flex flex-col justify-between">
             {/* Link do Spotify */}
             <AnimatedItem direction="up" delay={0.2}>
               <div className="space-y-4">
@@ -977,6 +957,26 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     </p>
                   </div>
                 )}
+              </div>
+            </AnimatedItem>
+
+            <AnimatedItem direction="up" delay={0.1}>
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <FiMusic className="w-5 h-5 text-accent-green" />
+                  <h3 className="text-lg font-semibold text-theme-primary classical-title">
+                    Reprodução de Áudio
+                  </h3>
+                </div>
+
+                {/* 🆕 Player simplificado - apenas recebe as fontes */}
+                <UniversalAudioPlayer
+                  work={work}
+                  customAudio={mediaData.customAudio}
+                  alternativeAudioSources={mediaData.alternativeAudio}
+                  isSearching={isSearching}
+                  searchError={searchError}
+                />
               </div>
             </AnimatedItem>
           </div>

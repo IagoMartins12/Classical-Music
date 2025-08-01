@@ -9,6 +9,7 @@ import {
   FiUser,
   FiStar,
   FiFilter,
+  FiAlertCircle,
 } from 'react-icons/fi';
 
 interface Work {
@@ -575,7 +576,14 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       )}
 
       {/* Mensagem de erro */}
-      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+      {error && (
+        <div>
+          <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
+            <FiAlertCircle className="w-4 h-4" />
+            <span>{error}</span>
+          </p>
+        </div>
+      )}
 
       {/* 🆕 Informação sobre o estado atual */}
       {!selectedWorkData && (

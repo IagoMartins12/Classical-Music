@@ -1146,18 +1146,12 @@ const CreateScoreModal = ({
                         filterByComposer={composerFilter}
                         userSuggestions={userWorks}
                         loadingUserSuggestions={loadingUserWorks}
+                        error={errors.workId}
                       />
                     )}
                     {editingScore && workData && (
                       <p className="text-xs text-theme-tertiary mt-2">
                         A obra não pode ser alterada durante a edição.
-                      </p>
-                    )}
-
-                    {errors.workId && (
-                      <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1">
-                        <FiAlertCircle className="w-4 h-4" />
-                        <span>{errors.workId}</span>
                       </p>
                     )}
                   </div>
