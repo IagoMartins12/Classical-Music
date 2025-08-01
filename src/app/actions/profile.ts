@@ -36,9 +36,29 @@ const updatePersonalInfoSchema = z.object({
   lastName: z.string().max(50),
   image: z.string().optional(),
   bio: z.string().max(500).optional(),
+
+  // 🆕 Campos de localização
   city: z.string().max(100).optional(),
   state: z.string().max(100).optional(),
   country: z.string().max(100).optional(),
+
+  // 🆕 Campos de telefone
+  phone: z.string().optional(),
+  phoneCountryCode: z.string().max(5).optional(),
+  phoneNumber: z.string().optional(),
+});
+
+const updateLocationSchema = z.object({
+  city: z.string().max(100).optional(),
+  state: z.string().max(100).optional(),
+  country: z.string().max(100).optional(),
+});
+
+// 🆕 Schema específico para atualização de telefone
+const updatePhoneSchema = z.object({
+  phone: z.string().optional(),
+  phoneCountryCode: z.string().max(5).optional(),
+  phoneNumber: z.string().optional(),
 });
 
 const updateMusicalPreferencesSchema = z.object({
@@ -103,6 +123,47 @@ export interface LoginMethodResult {
   };
 }
 
+function parsePhoneNumber(phone: string) {
+  if (!phone || !phone.startsWith('+')) {
+    return { phoneCountryCode: null, phoneNumber: null };
+  }
+
+  // Regex para extrair código do país (1-4 dígitos após o +)
+  const phoneRegex = /^\+(\d{1,4})(.*)$/;
+  const match = phone.match(phoneRegex);
+
+  if (!match) {
+    return { phoneCountryCode: null, phoneNumber: null };
+  }
+
+  const countryCode = match[1];
+  const number = match[2];
+
+  // Mapear códigos numéricos para códigos de país (exemplos principais)
+  const countryCodeMap: Record<string, string> = {
+    '1': 'US', // Estados Unidos/Canadá
+    '55': 'BR', // Brasil
+    '44': 'GB', // Reino Unido
+    '33': 'FR', // França
+    '49': 'DE', // Alemanha
+    '39': 'IT', // Itália
+    '34': 'ES', // Espanha
+    '7': 'RU', // Rússia
+    '81': 'JP', // Japão
+    '86': 'CN', // China
+    '91': 'IN', // Índia
+    '61': 'AU', // Austrália
+    '52': 'MX', // México
+    '54': 'AR', // Argentina
+    '56': 'CL', // Chile
+    '57': 'CO', // Colômbia
+  };
+
+  return {
+    phoneCountryCode: countryCodeMap[countryCode] || null,
+    phoneNumber: number.replace(/\D/g, ''), // Remove caracteres não numéricos
+  };
+}
 // 🆕 NOVA ACTION: Verificar método de login do usuário
 export async function checkUserLoginMethod(
   userId: string
@@ -939,10 +1000,24 @@ export async function updatePersonalInfo(
     city?: string;
     state?: string;
     country?: string;
+    phone?: string;
+    phoneCountryCode?: string;
+    phoneNumber?: string;
   }
 ): Promise<ProfileResult> {
   try {
     const validatedData = updatePersonalInfoSchema.parse(data);
+
+    // Se tem telefone, processar código do país e número
+    let phoneData = {};
+    if (validatedData.phone) {
+      const parsed = parsePhoneNumber(validatedData.phone);
+      phoneData = {
+        phone: validatedData.phone,
+        phoneCountryCode: parsed.phoneCountryCode,
+        phoneNumber: parsed.phoneNumber,
+      };
+    }
 
     const user = await prisma.user.update({
       where: { id: userId },
@@ -954,6 +1029,7 @@ export async function updatePersonalInfo(
         state: validatedData.state || null,
         country: validatedData.country || null,
         image: validatedData.image,
+        ...phoneData,
       },
       select: {
         id: true,
@@ -963,6 +1039,9 @@ export async function updatePersonalInfo(
         city: true,
         state: true,
         country: true,
+        phone: true,
+        phoneCountryCode: true,
+        phoneNumber: true,
       },
     });
 
@@ -1024,6 +1103,97 @@ export async function updateProfile(
     return {
       success: false,
       message: 'Erro ao atualizar informações. Tente novamente.',
+    };
+  }
+}
+
+export async function updateLocation(
+  userId: string,
+  data: {
+    city?: string;
+    state?: string;
+    country?: string;
+  }
+): Promise<ProfileResult> {
+  try {
+    const validatedData = updateLocationSchema.parse(data);
+
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        city: validatedData.city || null,
+        state: validatedData.state || null,
+        country: validatedData.country || null,
+      },
+      select: {
+        id: true,
+        city: true,
+        state: true,
+        country: true,
+      },
+    });
+
+    revalidatePath('/profile');
+
+    return {
+      success: true,
+      message: 'Localização atualizada com sucesso!',
+      data: user,
+    };
+  } catch (error) {
+    console.error('Update location error:', error);
+
+    if (error instanceof z.ZodError) {
+      return {
+        success: false,
+        message: error.errors[0]?.message || 'Dados inválidos.',
+      };
+    }
+
+    return {
+      success: false,
+      message: 'Erro ao atualizar localização. Tente novamente.',
+    };
+  }
+}
+
+// 🆕 Function específica para atualizar telefone
+export async function updatePhone(
+  userId: string,
+  phone: string
+): Promise<ProfileResult> {
+  try {
+    // Parse do telefone
+    const { phoneCountryCode, phoneNumber } = parsePhoneNumber(phone);
+
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        phone: phone || null,
+        phoneCountryCode,
+        phoneNumber,
+      },
+      select: {
+        id: true,
+        phone: true,
+        phoneCountryCode: true,
+        phoneNumber: true,
+      },
+    });
+
+    revalidatePath('/profile');
+
+    return {
+      success: true,
+      message: 'Telefone atualizado com sucesso!',
+      data: user,
+    };
+  } catch (error) {
+    console.error('Update phone error:', error);
+
+    return {
+      success: false,
+      message: 'Erro ao atualizar telefone. Tente novamente.',
     };
   }
 }
@@ -1193,6 +1363,95 @@ export async function updatePrivacySettings(
     return {
       success: false,
       message: 'Erro ao atualizar configurações. Tente novamente.',
+    };
+  }
+}
+export async function completeOnboarding(
+  userId: string,
+  data: OnboardingData
+): Promise<ProfileResult> {
+  try {
+    if (!userId) {
+      return {
+        success: false,
+        message: 'ID do usuário é obrigatório',
+      };
+    }
+
+    // Processar telefone se fornecido
+    let phoneData = {};
+    if (data.phone) {
+      const parsed = parsePhoneNumber(data.phone);
+      phoneData = {
+        phone: data.phone,
+        phoneCountryCode: parsed.phoneCountryCode,
+        phoneNumber: parsed.phoneNumber,
+      };
+    }
+
+    // Preparar dados para atualização
+    const updateData: any = {
+      onboardingCompleted: true,
+      userType: data.userType,
+      experienceLevel: data.experienceLevel,
+      practiceTimePerWeek: data.practiceTimePerWeek,
+      favoriteComposerId: data.favoriteComposerId,
+      favoriteEpochId: data.favoriteEpochId,
+      bio: data.bio,
+      city: data.location?.city,
+      state: data.location?.state,
+      country: data.location?.country,
+      ...phoneData,
+    };
+
+    // Remover campos undefined
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] === undefined) {
+        delete updateData[key];
+      }
+    });
+
+    await prisma.$transaction(async (tx) => {
+      // Atualizar usuário
+      await tx.user.update({
+        where: { id: userId },
+        data: updateData,
+      });
+
+      // Adicionar instrumentos se fornecidos
+      if (data.instruments && data.instruments.length > 0) {
+        // Deletar instrumentos existentes
+        await tx.userInstrument.deleteMany({
+          where: { userId },
+        });
+
+        // Adicionar novos instrumentos
+        const instrumentsData = data.instruments.map((instrument) => ({
+          userId,
+          instrumentId: instrument.id,
+          level: instrument.level,
+          isPrimary: instrument.isPrimary,
+          isLearning: instrument.isLearning,
+        }));
+
+        await tx.userInstrument.createMany({
+          data: instrumentsData,
+        });
+      }
+    });
+
+    revalidatePath('/profile');
+
+    return {
+      success: true,
+      message: 'Configuração inicial concluída com sucesso!',
+    };
+  } catch (error) {
+    console.error('Complete onboarding error:', error);
+
+    return {
+      success: false,
+      message: 'Erro ao salvar configurações. Tente novamente.',
     };
   }
 }

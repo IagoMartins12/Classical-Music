@@ -21,12 +21,10 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className=" bg-theme-background">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <Suspense fallback={<ProfileSkeleton />}>
-          <ProfilePageClient />
-        </Suspense>
-      </div>
+    <div className="section-wrap">
+      <Suspense fallback={<ProfileSkeleton />}>
+        <ProfilePageClient />
+      </Suspense>
     </div>
   );
 }

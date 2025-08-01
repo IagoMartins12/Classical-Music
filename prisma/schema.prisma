@@ -220,6 +220,11 @@ model User {
   state   String?
   country String?
 
+   // 🆕 CAMPOS DE TELEFONE
+  phone            String? // Telefone completo em formato E.164 (+5511999999999)
+  phoneCountryCode String? // Código do país (BR, US, etc.)
+  phoneNumber      String? // Apenas o número sem código do país
+
   favoriteComposerId String? @db.ObjectId
   favoriteEpochId    String? @db.ObjectId
 

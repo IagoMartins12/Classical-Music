@@ -1,4 +1,4 @@
-// hooks/useAuth.ts (versão atualizada)
+// hooks/useAuth.ts (versão atualizada com novos campos)
 'use client';
 
 import { useSession } from 'next-auth/react';
@@ -44,9 +44,18 @@ export function useAuth() {
             role: session.user.role,
             onboardingCompleted: session.user.onboardingCompleted,
             userType: session.user.userType,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
             city: session.user.city,
             state: session.user.state,
             country: session.user.country,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: session.user.phone,
+            phoneCountryCode: session.user.phoneCountryCode,
+            phoneNumber: session.user.phoneNumber,
+
+            // Campos existentes
             favoriteComposerId: session.user.favoriteComposerId,
             favoriteEpochId: session.user.favoriteEpochId,
             experienceLevel: session.user.experienceLevel,

@@ -1,4 +1,4 @@
-// app/libs/auth.ts - VERSÃO CORRIGIDA para OAuth Account Linking
+// app/libs/auth.ts - VERSÃO ATUALIZADA com campos de telefone
 import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -45,9 +45,17 @@ export const authOptions: NextAuthOptions = {
             role: true,
             onboardingCompleted: true,
             userType: true,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
             city: true,
             state: true,
             country: true,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: true,
+            phoneCountryCode: true,
+            phoneNumber: true,
+
             favoriteComposerId: true,
             favoriteEpochId: true,
             experienceLevel: true,
@@ -82,9 +90,17 @@ export const authOptions: NextAuthOptions = {
           role: user.role,
           onboardingCompleted: user.onboardingCompleted,
           userType: user.userType,
+
+          // 🆕 CAMPOS DE LOCALIZAÇÃO
           city: user.city,
           state: user.state,
           country: user.country,
+
+          // 🆕 CAMPOS DE TELEFONE
+          phone: user.phone,
+          phoneCountryCode: user.phoneCountryCode,
+          phoneNumber: user.phoneNumber,
+
           favoriteComposerId: user.favoriteComposerId,
           favoriteEpochId: user.favoriteEpochId,
           experienceLevel: user.experienceLevel,
@@ -127,9 +143,17 @@ export const authOptions: NextAuthOptions = {
             role: true,
             onboardingCompleted: true,
             userType: true,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
             city: true,
             state: true,
             country: true,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: true,
+            phoneCountryCode: true,
+            phoneNumber: true,
+
             favoriteComposerId: true,
             favoriteEpochId: true,
             experienceLevel: true,
@@ -150,9 +174,17 @@ export const authOptions: NextAuthOptions = {
             role: fullUser.role,
             onboardingCompleted: fullUser.onboardingCompleted,
             userType: fullUser.userType,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
             city: fullUser.city,
             state: fullUser.state,
             country: fullUser.country,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: fullUser.phone,
+            phoneCountryCode: fullUser.phoneCountryCode,
+            phoneNumber: fullUser.phoneNumber,
+
             favoriteComposerId: fullUser.favoriteComposerId,
             favoriteEpochId: fullUser.favoriteEpochId,
             experienceLevel: fullUser.experienceLevel,
@@ -181,9 +213,17 @@ export const authOptions: NextAuthOptions = {
             role: true,
             onboardingCompleted: true,
             userType: true,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
             city: true,
             state: true,
             country: true,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: true,
+            phoneCountryCode: true,
+            phoneNumber: true,
+
             favoriteComposerId: true,
             favoriteEpochId: true,
             experienceLevel: true,
@@ -203,9 +243,17 @@ export const authOptions: NextAuthOptions = {
             role: freshUser.role,
             onboardingCompleted: freshUser.onboardingCompleted,
             userType: freshUser.userType,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
             city: freshUser.city,
             state: freshUser.state,
             country: freshUser.country,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: freshUser.phone,
+            phoneCountryCode: freshUser.phoneCountryCode,
+            phoneNumber: freshUser.phoneNumber,
+
             favoriteComposerId: freshUser.favoriteComposerId,
             favoriteEpochId: freshUser.favoriteEpochId,
             experienceLevel: freshUser.experienceLevel,
@@ -236,9 +284,17 @@ export const authOptions: NextAuthOptions = {
             role: true,
             onboardingCompleted: true,
             userType: true,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
             city: true,
             state: true,
             country: true,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: true,
+            phoneCountryCode: true,
+            phoneNumber: true,
+
             favoriteComposerId: true,
             favoriteEpochId: true,
             experienceLevel: true,
@@ -261,9 +317,17 @@ export const authOptions: NextAuthOptions = {
             role: user.role,
             onboardingCompleted: user.onboardingCompleted,
             userType: user.userType,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
             city: user.city,
             state: user.state,
             country: user.country,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: user.phone,
+            phoneCountryCode: user.phoneCountryCode,
+            phoneNumber: user.phoneNumber,
+
             favoriteComposerId: user.favoriteComposerId,
             favoriteEpochId: user.favoriteEpochId,
             experienceLevel: user.experienceLevel,

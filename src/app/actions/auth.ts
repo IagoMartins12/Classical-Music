@@ -16,8 +16,7 @@ import {
 import { headers } from 'next/headers';
 import { sendTemplateEmail } from '../libs/newsletter/email';
 
-// Validation schemas
-// Validation schemas
+// Validation schemas existentes...
 const registerSchema = z.object({
   username: z
     .string()
@@ -37,6 +36,7 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Senha é obrigatória'),
 });
 
+// 🔧 SCHEMA CORRIGIDO - Suporta objetos completos da localização
 const onboardingSchema = z.object({
   userType: z
     .enum(['MUSIC_STUDENT', 'CASUAL_USER', 'PROFESSIONAL', 'TEACHER'])
@@ -51,13 +51,37 @@ const onboardingSchema = z.object({
       })
     )
     .optional(),
+
+  // 🔧 LOCALIZAÇÃO CORRIGIDA - Objetos completos aninhados
   location: z
     .object({
-      city: z.string().optional(),
-      state: z.string().optional(),
-      country: z.string().optional(),
+      country: z
+        .object({
+          isoCode: z.string(),
+          name: z.string(),
+          flag: z.string(),
+        })
+        .optional(),
+      state: z
+        .object({
+          isoCode: z.string(),
+          name: z.string(),
+          countryCode: z.string(),
+        })
+        .optional(),
+      city: z
+        .object({
+          name: z.string(),
+          stateCode: z.string(),
+          countryCode: z.string(),
+        })
+        .optional(),
     })
     .optional(),
+
+  // 🆕 TELEFONE
+  phone: z.string().optional(),
+
   favoriteComposerId: z.string().optional(),
   favoriteEpochId: z.string().optional(),
   experienceLevel: z.enum(['BEGINNER', 'INTERMEDIATE', 'ADVANCED']).optional(),
@@ -66,7 +90,7 @@ const onboardingSchema = z.object({
   bio: z.string().max(500).optional(),
 });
 
-// Types
+// Types existentes...
 export interface AuthResult {
   success: boolean;
   message: string;
@@ -100,6 +124,70 @@ export interface ResendConfirmationResult {
   success: boolean;
   message: string;
 }
+
+const processPhoneForDatabase = (phone?: string) => {
+  if (!phone || !phone.startsWith('+')) {
+    return {
+      phone: undefined,
+      phoneCountryCode: undefined,
+      phoneNumber: undefined,
+    };
+  }
+
+  // Lista de códigos de país conhecidos (ordenados por tamanho, maior primeiro)
+  const countryCodes = [
+    { dialCode: '+358', code: 'FI' }, // Finlândia
+    { dialCode: '+351', code: 'PT' }, // Portugal
+    { dialCode: '+55', code: 'BR' }, // Brasil
+    { dialCode: '+54', code: 'AR' }, // Argentina
+    { dialCode: '+56', code: 'CL' }, // Chile
+    { dialCode: '+57', code: 'CO' }, // Colômbia
+    { dialCode: '+52', code: 'MX' }, // México
+    { dialCode: '+49', code: 'DE' }, // Alemanha
+    { dialCode: '+44', code: 'GB' }, // Reino Unido
+    { dialCode: '+43', code: 'AT' }, // Áustria
+    { dialCode: '+41', code: 'CH' }, // Suíça
+    { dialCode: '+39', code: 'IT' }, // Itália
+    { dialCode: '+34', code: 'ES' }, // Espanha
+    { dialCode: '+33', code: 'FR' }, // França
+    { dialCode: '+32', code: 'BE' }, // Bélgica
+    { dialCode: '+31', code: 'NL' }, // Países Baixos
+    { dialCode: '+91', code: 'IN' }, // Índia
+    { dialCode: '+86', code: 'CN' }, // China
+    { dialCode: '+81', code: 'JP' }, // Japão
+    { dialCode: '+61', code: 'AU' }, // Austrália
+    { dialCode: '+7', code: 'RU' }, // Rússia
+    { dialCode: '+46', code: 'SE' }, // Suécia
+    { dialCode: '+47', code: 'NO' }, // Noruega
+    { dialCode: '+45', code: 'DK' }, // Dinamarca
+    { dialCode: '+1', code: 'US' }, // Estados Unidos / Canadá
+  ];
+
+  // Encontrar o código do país
+  let matchedCountry = null;
+  for (const country of countryCodes) {
+    if (phone.startsWith(country.dialCode)) {
+      matchedCountry = country;
+      break;
+    }
+  }
+
+  if (!matchedCountry) {
+    return {
+      phone,
+      phoneCountryCode: undefined,
+      phoneNumber: undefined,
+    };
+  }
+
+  const phoneNumber = phone.slice(matchedCountry.dialCode.length);
+
+  return {
+    phone,
+    phoneCountryCode: matchedCountry.code,
+    phoneNumber,
+  };
+};
 
 // Register user with email and password - VERSÃO INTEGRADA
 export async function registerUser(data: {
@@ -595,6 +683,27 @@ export async function getEpochs() {
   return epochsData.filter((epoch) => epoch.name !== 'Desconhecido');
 }
 
+const processLocationForDatabase = (location?: OnboardingData['location']) => {
+  console.log('🔄 Processando localização para o banco:', location);
+
+  if (!location) {
+    return {
+      city: undefined,
+      state: undefined,
+      country: undefined,
+    };
+  }
+
+  const result = {
+    city: location.city?.name || undefined,
+    state: location.state?.name || undefined,
+    country: location.country?.name || undefined,
+  };
+
+  console.log('✅ Localização processada para o banco:', result);
+  return result;
+};
+
 // Get onboarding options (instruments, composers, epochs)
 export async function getOnboardingOptions(): Promise<OnboardingOptionsResult> {
   try {
@@ -632,19 +741,37 @@ export async function completeOnboarding(
   data: OnboardingData
 ): Promise<OnboardingResult> {
   try {
+    console.log('🎯 Iniciando completeOnboarding com dados:', {
+      userId,
+      hasLocation: !!data.location,
+      hasPhone: !!data.phone,
+      userType: data.userType,
+      locationData: data.location,
+    });
+
     // Validate input
     const validatedData = onboardingSchema.parse(data);
+    console.log('✅ Dados validados com sucesso');
+
+    // 🔧 PROCESSAR DADOS DE LOCALIZAÇÃO com objetos completos
+    const locationData = processLocationForDatabase(validatedData.location);
+
+    // 🔧 PROCESSAR DADOS DE TELEFONE
+    const phoneData = processPhoneForDatabase(validatedData.phone);
+
+    console.log('🔄 Dados processados:', {
+      location: locationData,
+      phone: phoneData,
+    });
 
     // Start transaction
     const result = await prisma.$transaction(async (tx) => {
-      // Update user data
+      // 🔄 UPDATE USER DATA com novos campos
       const user = await tx.user.update({
         where: { id: userId },
         data: {
+          // Dados básicos
           userType: validatedData.userType,
-          city: validatedData.location?.city,
-          state: validatedData.location?.state,
-          country: validatedData.location?.country,
           favoriteComposerId: validatedData.favoriteComposerId,
           favoriteEpochId: validatedData.favoriteEpochId,
           experienceLevel: validatedData.experienceLevel,
@@ -652,6 +779,16 @@ export async function completeOnboarding(
           image: validatedData.image,
           bio: validatedData.bio,
           onboardingCompleted: true,
+
+          // 🆕 DADOS DE LOCALIZAÇÃO (strings simples para o banco)
+          city: locationData.city,
+          state: locationData.state,
+          country: locationData.country,
+
+          // 🆕 DADOS DE TELEFONE
+          phone: phoneData.phone,
+          phoneCountryCode: phoneData.phoneCountryCode,
+          phoneNumber: phoneData.phoneNumber,
         },
         select: {
           id: true,
@@ -662,9 +799,15 @@ export async function completeOnboarding(
           role: true,
           onboardingCompleted: true,
           userType: true,
+
+          // 🆕 INCLUIR NOVOS CAMPOS NO SELECT
           city: true,
           state: true,
           country: true,
+          phone: true,
+          phoneCountryCode: true,
+          phoneNumber: true,
+
           favoriteComposerId: true,
           favoriteEpochId: true,
           experienceLevel: true,
@@ -692,6 +835,13 @@ export async function completeOnboarding(
         });
       }
 
+      console.log('✅ Usuário atualizado com sucesso:', {
+        id: user.id,
+        onboardingCompleted: user.onboardingCompleted,
+        hasLocation: !!(user.city || user.state || user.country),
+        hasPhone: !!user.phone,
+      });
+
       return user;
     });
 
@@ -704,9 +854,10 @@ export async function completeOnboarding(
       user: result,
     };
   } catch (error) {
-    console.error('Complete onboarding error:', error);
+    console.error('❌ Complete onboarding error:', error);
 
     if (error instanceof z.ZodError) {
+      console.error('❌ Validation errors:', error.errors);
       return {
         success: false,
         message: error.errors[0]?.message || 'Dados inválidos.',
@@ -720,12 +871,14 @@ export async function completeOnboarding(
   }
 }
 
-// Update user profile (partial update)
+// 🔧 FUNÇÃO CORRIGIDA - updateUserProfile
 export async function updateUserProfile(
   userId: string,
   data: Partial<OnboardingData>
 ): Promise<OnboardingResult> {
   try {
+    console.log('🔄 Atualizando perfil do usuário:', { userId, data });
+
     // Validate input
     const validatedData = onboardingSchema.partial().parse(data);
 
@@ -734,13 +887,8 @@ export async function updateUserProfile(
       // Prepare update data
       const updateData: any = {};
 
+      // Dados básicos
       if (validatedData.userType) updateData.userType = validatedData.userType;
-      if (validatedData.location?.city !== undefined)
-        updateData.city = validatedData.location.city;
-      if (validatedData.location?.state !== undefined)
-        updateData.state = validatedData.location.state;
-      if (validatedData.location?.country !== undefined)
-        updateData.country = validatedData.location.country;
       if (validatedData.favoriteComposerId !== undefined)
         updateData.favoriteComposerId = validatedData.favoriteComposerId;
       if (validatedData.favoriteEpochId !== undefined)
@@ -752,6 +900,22 @@ export async function updateUserProfile(
       if (validatedData.image !== undefined)
         updateData.image = validatedData.image;
       if (validatedData.bio !== undefined) updateData.bio = validatedData.bio;
+
+      // 🔄 PROCESSAR LOCALIZAÇÃO SE FORNECIDA
+      if (validatedData.location !== undefined) {
+        const locationData = processLocationForDatabase(validatedData.location);
+        updateData.city = locationData.city;
+        updateData.state = locationData.state;
+        updateData.country = locationData.country;
+      }
+
+      // 🔄 PROCESSAR TELEFONE SE FORNECIDO
+      if (validatedData.phone !== undefined) {
+        const phoneData = processPhoneForDatabase(validatedData.phone);
+        updateData.phone = phoneData.phone;
+        updateData.phoneCountryCode = phoneData.phoneCountryCode;
+        updateData.phoneNumber = phoneData.phoneNumber;
+      }
 
       // Update user
       const user = await tx.user.update({
@@ -766,9 +930,15 @@ export async function updateUserProfile(
           role: true,
           onboardingCompleted: true,
           userType: true,
+
+          // 🆕 INCLUIR NOVOS CAMPOS
           city: true,
           state: true,
           country: true,
+          phone: true,
+          phoneCountryCode: true,
+          phoneNumber: true,
+
           favoriteComposerId: true,
           favoriteEpochId: true,
           experienceLevel: true,
@@ -811,9 +981,10 @@ export async function updateUserProfile(
       user: result,
     };
   } catch (error) {
-    console.error('Update user profile error:', error);
+    console.error('❌ Update user profile error:', error);
 
     if (error instanceof z.ZodError) {
+      console.error('❌ Validation errors:', error.errors);
       return {
         success: false,
         message: error.errors[0]?.message || 'Dados inválidos.',
@@ -826,7 +997,6 @@ export async function updateUserProfile(
     };
   }
 }
-
 // Get user by ID (for session management)
 export async function getUserById(userId: string) {
   try {
@@ -835,22 +1005,29 @@ export async function getUserById(userId: string) {
       select: {
         id: true,
         firstName: true,
+        bio: true,
         lastName: true,
         email: true,
         image: true,
         role: true,
         onboardingCompleted: true,
         userType: true,
+
+        // 🆕 INCLUIR NOVOS CAMPOS
         city: true,
         state: true,
         country: true,
+        phone: true,
+        phoneCountryCode: true,
+        phoneNumber: true,
+
         favoriteComposerId: true,
         favoriteEpochId: true,
         experienceLevel: true,
         practiceTimePerWeek: true,
         profilePublic: true,
         showLocation: true,
-        emailVerified: true, // NOVO: Incluir status de verificação
+        emailVerified: true,
       },
     });
 

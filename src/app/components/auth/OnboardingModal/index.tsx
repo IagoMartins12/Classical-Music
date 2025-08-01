@@ -1,4 +1,4 @@
-// components/auth/OnboardingModal.tsx - Versão usando Modal com ref
+// components/auth/OnboardingModal.tsx - Versão com sistema completo atualizado
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
@@ -8,7 +8,7 @@ import { FiAlertCircle } from 'react-icons/fi';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import Button from '../../Common/Button';
-import Modal, { ModalRef } from '../../Modal'; // Importar o tipo ModalRef
+import Modal, { ModalRef } from '../../Modal';
 import WelcomeStep from '../onboarding/WelcomeStep';
 import UserTypeStep from '../onboarding/UserTypeStep';
 import InstrumentsStep from '../onboarding/InstrumentsStep';
@@ -16,6 +16,8 @@ import PreferencesStep from '../onboarding/PreferencesStep';
 import ProfileStep from '../onboarding/ProfileStep';
 import CompletionStep from '../onboarding/CompletionStep';
 import { useUserStore } from '@/app/hooks/userStore';
+import { useAuth } from '@/app/hooks/useAuth';
+import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useRouter } from 'next/navigation';
 
 interface OnboardingOptions {
@@ -31,7 +33,7 @@ interface OnboardingOptions {
 }
 
 const OnboardingModal: React.FC = () => {
-  const user = useUserStore();
+  const { user } = useAuth(); // Usar useAuth em vez de useUserStore diretamente
   const {
     isOpen,
     close,
@@ -45,6 +47,7 @@ const OnboardingModal: React.FC = () => {
     setLoading,
     complete,
   } = useOnboardingModal();
+  const { updateUserSession } = useSessionUpdate();
   const router = useRouter();
 
   const [options, setOptions] = useState<OnboardingOptions | null>(null);
@@ -84,37 +87,74 @@ const OnboardingModal: React.FC = () => {
     }
   };
 
+  // 🔄 FUNÇÃO HANDLE COMPLETE ATUALIZADA
   const handleComplete = async () => {
-    if (!user.user?.id) {
+    if (!user?.id) {
       toast.error('Usuário não encontrado');
       return;
     }
 
+    console.log('🎯 Iniciando finalização do onboarding com dados:', {
+      userId: user.id,
+      data,
+      hasLocation: !!data.location,
+      hasPhone: !!data.phone,
+    });
+
     setLoading(true);
 
     try {
-      const result = await completeOnboarding(user.user?.id, data);
+      // 1. Completar onboarding no backend
+      const result = await completeOnboarding(user.id, data);
 
       if (result.success) {
-        toast.success(result.message);
-        complete();
-        router.refresh();
+        console.log('✅ Onboarding completado no backend:', result.user);
+
+        // 2. Atualizar sessão e store local
+        const sessionUpdated = await updateUserSession();
+
+        if (sessionUpdated) {
+          console.log('✅ Sessão atualizada com sucesso');
+
+          // 3. Limpar dados do onboarding e fechar modal
+          complete();
+
+          // 4. Mostrar sucesso
+          toast.success('🎉 Onboarding finalizado com sucesso!');
+
+          // 5. Refresh para garantir que tudo está atualizado
+          router.refresh();
+        } else {
+          console.warn(
+            '⚠️ Problema ao atualizar sessão, mas onboarding foi salvo'
+          );
+          toast.success(
+            'Perfil salvo! Recarregue a página para ver as mudanças.'
+          );
+          complete();
+        }
       } else {
+        console.error('❌ Erro no backend:', result.message);
         toast.error(result.message);
       }
     } catch (error) {
-      console.error('Error completing onboarding:', error);
-      toast.error('Erro ao salvar configurações. Tente novamente.');
+      console.error('❌ Erro inesperado ao completar onboarding:', error);
+      toast.error('Erro inesperado. Tente novamente.');
     } finally {
       setLoading(false);
     }
   };
 
   const handleSkip = () => {
+    console.log('⏭️ Pulando onboarding (salvando progresso)');
     close();
+    toast.success(
+      'Progresso salvo! Você pode continuar depois nas configurações.'
+    );
   };
 
   const handleClose = () => {
+    console.log('❌ Fechando onboarding');
     close();
   };
 
@@ -124,6 +164,7 @@ const OnboardingModal: React.FC = () => {
         'Tem certeza que deseja recomeçar? Todo o progresso será perdido.'
       )
     ) {
+      console.log('🔄 Recomeçando onboarding do zero');
       resetData();
       toast.success('Progresso removido. Começando do início...');
     }
@@ -131,6 +172,7 @@ const OnboardingModal: React.FC = () => {
 
   // Função para avançar step (o useEffect cuida do scroll)
   const handleNextStep = () => {
+    console.log(`➡️ Avançando do step ${step} para ${step + 1}`);
     nextStep();
   };
 
@@ -221,6 +263,21 @@ const OnboardingModal: React.FC = () => {
     }
   };
 
+  // 🐛 Debug para verificar dados do onboarding
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development' && isOpen) {
+      console.log('🔍 OnboardingModal Estado:', {
+        step,
+        data,
+        hasLocation: !!data.location,
+        hasPhone: !!data.phone,
+        canProceed: canProceed(),
+        isLoading,
+        user: user?.id,
+      });
+    }
+  }, [step, data, isLoading, user]);
+
   return (
     <Modal
       ref={modalRef}
@@ -295,6 +352,23 @@ const OnboardingModal: React.FC = () => {
               <FiAlertCircle className="w-3 h-3" />
               <span>Recomeçar do zero</span>
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* 🐛 Debug Info (apenas em desenvolvimento) */}
+      {process.env.NODE_ENV === 'development' && isOpen && (
+        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <h4 className="text-sm font-medium text-yellow-800 mb-2">
+            🔍 Debug - Estado do Onboarding:
+          </h4>
+          <div className="text-xs text-yellow-700 space-y-1">
+            <div>Step: {step}/6</div>
+            <div>UserType: {data.userType || 'não definido'}</div>
+            <div>Localização: {data.location ? '✅' : '❌'}</div>
+            <div>Telefone: {data.phone ? '✅' : '❌'}</div>
+            <div>Pode prosseguir: {canProceed() ? '✅' : '❌'}</div>
+            <div>Loading: {isLoading ? '⏳' : '✅'}</div>
           </div>
         </div>
       )}

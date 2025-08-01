@@ -1,4 +1,4 @@
-// stores/authStore.ts - Versão com persistência completa
+// stores/authStore.ts - Interface OnboardingData CORRIGIDA com objetos completos
 import { create } from 'zustand';
 import {
   subscribeWithSelector,
@@ -7,6 +7,7 @@ import {
 } from 'zustand/middleware';
 import { debounce } from 'lodash';
 
+// 🆕 Interface CORRIGIDA com objetos completos de localização
 export interface OnboardingData {
   userType?: 'MUSIC_STUDENT' | 'CASUAL_USER' | 'PROFESSIONAL' | 'TEACHER';
   instruments?: Array<{
@@ -16,11 +17,30 @@ export interface OnboardingData {
     isPrimary: boolean;
     isLearning: boolean;
   }>;
+
+  // 🔧 LOCALIZAÇÃO CORRIGIDA - Objetos completos como o LocationSelector retorna
   location?: {
-    city?: string;
-    state?: string;
-    country?: string;
+    country?: {
+      isoCode: string;
+      name: string;
+      flag: string;
+    };
+    state?: {
+      isoCode: string;
+      name: string;
+      countryCode: string;
+    };
+    city?: {
+      name: string;
+      stateCode: string;
+      countryCode: string;
+    };
   };
+
+  // 🆕 Telefone
+  phone?: string; // Telefone em formato internacional (+5511999999999)
+
+  // Campos existentes
   favoriteComposerId?: string;
   favoriteEpochId?: string;
   experienceLevel?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
@@ -121,10 +141,17 @@ const initialRegisterForm = {
   error: undefined,
 };
 
+// 🔧 initialOnboardingData CORRIGIDO com objetos completos
 const initialOnboardingData: OnboardingData = {
   userType: undefined,
   instruments: [],
-  location: {},
+  // 🔧 LOCALIZAÇÃO como objeto completo (não strings simples)
+  location: {
+    country: undefined,
+    state: undefined,
+    city: undefined,
+  },
+  phone: undefined, // 🆕 Campo de telefone
   favoriteComposerId: undefined,
   favoriteEpochId: undefined,
   experienceLevel: undefined,
@@ -182,7 +209,7 @@ export const useAuthStore = create<AuthState>()(
           loginForm: initialLoginForm,
           registerForm: initialRegisterForm,
 
-          // Modal actions
+          // Modal actions (mantidos iguais)
           openLoginModal: () =>
             set({
               isLoginModalOpen: true,
@@ -231,7 +258,7 @@ export const useAuthStore = create<AuthState>()(
               registerForm: initialRegisterForm,
             }),
 
-          // Onboarding actions
+          // Onboarding actions (agora suportam objetos completos)
           openOnboardingModal: () => {
             const currentOnboarding = get().onboarding;
 
@@ -245,7 +272,6 @@ export const useAuthStore = create<AuthState>()(
               },
             }));
 
-            // Restaurar progresso se existir
             if (currentOnboarding.isStarted && currentOnboarding.lastSavedAt) {
               console.log('🔄 Restaurando progresso do onboarding...');
               get().restoreOnboardingProgress();
@@ -253,9 +279,7 @@ export const useAuthStore = create<AuthState>()(
           },
 
           closeOnboardingModal: () => {
-            // Salvar progresso antes de fechar
             get().saveOnboardingProgress();
-
             set((state) => ({
               onboarding: {
                 ...state.onboarding,
@@ -319,9 +343,8 @@ export const useAuthStore = create<AuthState>()(
               onboarding: initialOnboardingState,
             });
 
-            // Limpar localStorage também
             if (typeof window !== 'undefined') {
-              localStorage.removeItem('classical-hub-onboarding');
+              localStorage.removeItem('classical-hub-auth');
             }
           },
 
@@ -358,20 +381,25 @@ export const useAuthStore = create<AuthState>()(
             return (
               state.onboarding.isStarted &&
               (state.onboarding.currentStep > 1 ||
-                Object.keys(state.onboarding.data).some(
-                  (key) =>
-                    state.onboarding.data[key as keyof OnboardingData] !==
-                    undefined
-                ))
+                Object.keys(state.onboarding.data).some((key) => {
+                  const value =
+                    state.onboarding.data[key as keyof OnboardingData];
+                  return (
+                    value !== undefined &&
+                    value !== '' &&
+                    (typeof value !== 'object' ||
+                      (typeof value === 'object' &&
+                        Object.keys(value).length > 0))
+                  );
+                }))
             );
           },
 
           markOnboardingComplete: () => {
-            // Salvar dados finais e limpar estado temporário
             get().resetOnboardingData();
           },
 
-          // Form actions
+          // Form actions (mantidos iguais)
           updateLoginForm: (data) =>
             set((state) => ({
               loginForm: { ...state.loginForm, ...data },
@@ -386,7 +414,7 @@ export const useAuthStore = create<AuthState>()(
 
           resetRegisterForm: () => set({ registerForm: initialRegisterForm }),
 
-          // Auth actions
+          // Auth actions (mantidos iguais)
           logout: () =>
             set({
               isLoginModalOpen: false,
@@ -411,7 +439,6 @@ export const useAuthStore = create<AuthState>()(
         name: 'classical-hub-auth',
         storage: createJSONStorage(() => localStorage),
         partialize: (state) => ({
-          // Apenas persistir dados do onboarding, não modais
           onboarding: {
             currentStep: state.onboarding.currentStep,
             data: state.onboarding.data,
@@ -419,9 +446,37 @@ export const useAuthStore = create<AuthState>()(
             lastSavedAt: state.onboarding.lastSavedAt,
           },
         }),
-        version: 1,
-        migrate: (persistedState: any) => {
-          // Migração de versões futuras se necessário
+        version: 3, // 🆕 Incrementar versão devido aos novos campos com objetos completos
+        migrate: (persistedState: any, version: number) => {
+          // Migração para versão 3 (objetos completos de localização)
+          if (version < 3) {
+            const oldLocationData = persistedState.onboarding?.data?.location;
+
+            // Converter strings antigas para objetos completos
+            const newLocationData = {
+              country: oldLocationData?.country
+                ? { isoCode: '', name: oldLocationData.country, flag: '' }
+                : undefined,
+              state: oldLocationData?.state
+                ? { isoCode: '', name: oldLocationData.state, countryCode: '' }
+                : undefined,
+              city: oldLocationData?.city
+                ? { name: oldLocationData.city, stateCode: '', countryCode: '' }
+                : undefined,
+            };
+
+            return {
+              ...persistedState,
+              onboarding: {
+                ...persistedState.onboarding,
+                data: {
+                  ...persistedState.onboarding?.data,
+                  location: newLocationData,
+                  phone: persistedState.onboarding?.data?.phone || undefined,
+                },
+              },
+            };
+          }
           return persistedState;
         },
       }
@@ -429,7 +484,7 @@ export const useAuthStore = create<AuthState>()(
   )
 );
 
-// Hooks com proteção SSR e persistência
+// Hooks mantidos iguais, mas agora suportam objetos completos
 export const useLoginModal = () => {
   const store = useAuthStore();
 

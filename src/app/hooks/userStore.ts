@@ -1,7 +1,8 @@
-// stores/userStore.ts
+// hooks/userStore.ts - Interface User atualizada
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 
+// 🆕 Interface User atualizada com novos campos
 export interface User {
   id: string;
   firstName?: string | null;
@@ -20,9 +21,17 @@ export interface User {
     | 'TEACHER'
     | null;
   onboardingCompleted: boolean;
+
+  // 🆕 Campos de localização atualizados
   city?: string | null;
   state?: string | null;
   country?: string | null;
+
+  // 🆕 Campos de telefone
+  phone?: string | null; // Telefone completo em formato E.164 (+5511999999999)
+  phoneCountryCode?: string | null; // Código do país (BR, US, etc.)
+  phoneNumber?: string | null; // Apenas o número sem código do país
+
   favoriteComposerId?: string | null;
   favoriteEpochId?: string | null;
   experienceLevel?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | null;

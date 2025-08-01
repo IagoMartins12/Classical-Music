@@ -1,37 +1,35 @@
-// components/auth/onboarding/ProfileStep.tsx (versão atualizada)
+// components/auth/onboarding/ProfileStep.tsx - CORRIGIDO para salvar objetos completos
 'use client';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React, { useState } from 'react';
-import { FiMapPin } from 'react-icons/fi';
-import Input from '../../Common/Inputs';
-import ProfileImageUpload from '../../ProfileImageUpload';
 import toast from 'react-hot-toast';
 import { User } from 'next-auth';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import { FaCity, FaGlobeAmericas, FaMapPin } from 'react-icons/fa';
+import ProfileImageUpload from '../../ProfileImageUpload';
+import LocationSelector, { LocationData } from '../../Common/LocationSelector';
+import InternationalPhoneInput from '../../Common/InternationalPhoneInput';
 
 const ProfileStep: React.FC = () => {
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const { data, updateData } = useOnboardingModal();
   const { updateUser: globalUpdateUser, user } = useAuth();
+  const { updateUserSession } = useSessionUpdate();
 
-  const { updateUserSession } = useSessionUpdate(); // Hook personalizado
+  // Função para sincronizar dados do usuário
+  const syncUserData = async (data: Partial<User>) => {
+    globalUpdateUser(data);
+    await updateUserSession();
+  };
 
+  // Handler para mudança de imagem
   const handleImageChange = (imageUrl: string | null) => {
     updateData({ image: imageUrl || undefined });
   };
 
-  const syncUserData = async (data: Partial<User>) => {
-    // 1. Atualizar stores locais
-    globalUpdateUser(data);
-
-    // 2. Forçar refresh da sessão NextAuth
-    await updateUserSession();
-  };
-
+  // Handler para upload de imagem
   const handleImageUpload = async (file: File) => {
     setIsUploadingImage(true);
     try {
@@ -50,26 +48,102 @@ const ProfileStep: React.FC = () => {
 
       if (result.success) {
         const imageUpdate = { image: result.imageUrl };
-
-        // Sincronizar todos os estados
         await syncUserData(imageUpdate);
-
+        updateData({ image: result.imageUrl });
         toast.success('Foto atualizada com sucesso!');
       } else {
         toast.error(result.message || 'Erro ao fazer upload da imagem');
       }
     } catch (error: any) {
-      toast.error('Erro ao fazer upload da imagem', error);
+      toast.error('Erro ao fazer upload da imagem');
+      console.error('Upload error:', error);
     } finally {
       setIsUploadingImage(false);
     }
   };
 
+  // 🔧 HANDLER CORRIGIDO - Salva objetos completos da localização
+  const handleLocationChange = (location: LocationData) => {
+    console.log('🔄 ProfileStep - Salvando localização completa:', location);
+
+    // 💡 AGORA salva os objetos completos, não apenas o nome!
+    updateData({
+      location: {
+        country: location.country
+          ? {
+              isoCode: location.country.isoCode,
+              name: location.country.name,
+              flag: location.country.flag,
+            }
+          : undefined,
+        state: location.state
+          ? {
+              isoCode: location.state.isoCode,
+              name: location.state.name,
+              countryCode: location.state.countryCode,
+            }
+          : undefined,
+        city: location.city
+          ? {
+              name: location.city.name,
+              stateCode: location.city.stateCode,
+              countryCode: location.city.countryCode,
+            }
+          : undefined,
+      },
+    });
+
+    console.log('✅ ProfileStep - Localização salva no onboarding data');
+  };
+
+  // Handler para mudança de telefone
+  const handlePhoneChange = (phone: string) => {
+    console.log('📞 ProfileStep - Salvando telefone:', phone);
+    updateData({ phone });
+  };
+
+  // Função para obter nome de exibição do usuário
   const getUserDisplayName = () => {
-    // Tentar obter o nome dos dados do onboarding ou criar um nome genérico
-    const firstName = data.location?.city || 'Usuário';
+    const firstName = user?.firstName || 'Usuário';
     return firstName;
   };
+
+  // 🔧 CONVERSÃO CORRIGIDA - Converter dados salvos para formato do LocationSelector
+  const currentLocation: LocationData = {
+    country: data.location?.country
+      ? {
+          isoCode: data.location.country.isoCode,
+          name: data.location.country.name,
+          flag: data.location.country.flag,
+        }
+      : undefined,
+    state: data.location?.state
+      ? {
+          isoCode: data.location.state.isoCode,
+          name: data.location.state.name,
+          countryCode: data.location.state.countryCode,
+        }
+      : undefined,
+    city: data.location?.city
+      ? {
+          name: data.location.city.name,
+          stateCode: data.location.city.stateCode,
+          countryCode: data.location.city.countryCode,
+        }
+      : undefined,
+  };
+
+  // 🐛 Debug melhorado
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 ProfileStep - Estado atual:', {
+        'Data do onboarding': data,
+        'Localização do data': data.location,
+        'Telefone do data': data.phone,
+        'Current location convertida': currentLocation,
+      });
+    }
+  }, [data, currentLocation]);
 
   return (
     <div className="py-6">
@@ -78,8 +152,9 @@ const ProfileStep: React.FC = () => {
           Finalize seu perfil
         </h3>
         <p className="text-theme-secondary max-w-lg mx-auto">
-          Adicione uma foto e informações pessoais para completar seu perfil.
-          Tudo é opcional e você pode configurar depois.
+          Adicione uma foto, informações de contato e localização para completar
+          seu perfil. Todos os campos são opcionais e você pode configurar
+          depois.
         </p>
       </div>
 
@@ -99,15 +174,6 @@ const ProfileStep: React.FC = () => {
             fallbackText={getUserDisplayName()}
             showRemove={!!user?.image}
           />
-
-          {/* <ProfileImageUpload
-            currentImage={data.image}
-            onImageChange={handleImageChange}
-            size="lg"
-            fallbackText={getUserDisplayName()}
-            showRemove={!!data.image}
-            className="mx-auto"
-          /> */}
 
           <p className="text-xs text-theme-tertiary mt-2">
             Clique no ícone para adicionar uma foto
@@ -133,63 +199,105 @@ const ProfileStep: React.FC = () => {
           </p>
         </div>
 
-        {/* Location */}
+        {/* Telefone Internacional */}
         <div>
-          <label className="block text-sm font-medium text-theme-secondary mb-3">
-            <FiMapPin className="w-4 h-4 inline mr-2" />
-            Localização (opcional)
-          </label>
+          <InternationalPhoneInput
+            value={data.phone || ''}
+            onChange={handlePhoneChange}
+            label="Telefone (opcional)"
+            placeholder="Digite seu número"
+            defaultCountry="br"
+            showLabel={true}
+          />
+          <p className="text-xs text-theme-tertiary mt-1">
+            Seu telefone será formatado automaticamente para o país selecionado
+          </p>
+        </div>
 
-          <div className="space-y-3">
-            <Input
-              placeholder="Cidade"
-              value={data.location?.city || ''}
-              onChange={(e) =>
-                updateData({
-                  location: { ...data.location, city: e.target.value },
-                })
-              }
-              leftIcon={<FaCity className="w-4 h-4" />}
-            />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Input
-                placeholder="Estado"
-                value={data.location?.state || ''}
-                onChange={(e) =>
-                  updateData({
-                    location: { ...data.location, state: e.target.value },
-                  })
-                }
-                leftIcon={<FaMapPin className="w-4 h-4" />}
-              />
-
-              <Input
-                placeholder="País"
-                value={data.location?.country || ''}
-                onChange={(e) =>
-                  updateData({
-                    location: { ...data.location, country: e.target.value },
-                  })
-                }
-                leftIcon={<FaGlobeAmericas className="w-4 h-4" />}
-              />
-            </div>
+        {/* Localização */}
+        <div>
+          <div className="mb-4">
+            <h4 className="text-sm font-medium text-theme-secondary mb-2">
+              Localização (opcional)
+            </h4>
+            <p className="text-xs text-theme-tertiary mb-4">
+              Selecione seu país, estado e cidade. Essas informações são
+              privadas por padrão.
+            </p>
           </div>
 
-          <p className="text-xs text-theme-tertiary mt-2">
-            Suas informações de localização são privadas por padrão
-          </p>
+          <LocationSelector
+            value={currentLocation}
+            onChange={handleLocationChange}
+            showLabels={false}
+            className="space-y-3"
+          />
         </div>
       </div>
 
-      <div className="mt-8 text-center">
-        <div className="classical-card-2 p-4 max-w-md mx-auto">
+      {/* Dicas e informações */}
+      <div className="mt-8 space-y-4">
+        <div className="classical-card-2 p-4 max-w-lg mx-auto">
           <p className="text-sm text-theme-secondary">
             💡 <strong>Dica:</strong> Um perfil completo ajuda outros usuários a
             se conectarem com você e descobrirem interesses em comum!
           </p>
         </div>
+
+        <div className="classical-card-2 p-4 max-w-lg mx-auto bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-20">
+          <h4 className="text-sm font-medium text-brand-primary mb-2">
+            🔒 Privacidade
+          </h4>
+          <ul className="text-xs text-theme-secondary space-y-1">
+            <li>• Seus dados de contato são sempre privados</li>
+            <li>• A localização só é mostrada se você permitir</li>
+            <li>• Você pode alterar essas configurações a qualquer momento</li>
+          </ul>
+        </div>
+
+        {/* 🐛 Debug Info (apenas em desenvolvimento) */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg max-w-lg mx-auto">
+            <h4 className="text-sm font-medium text-yellow-800 mb-2">
+              🔍 Debug - Dados do ProfileStep:
+            </h4>
+            <div className="text-xs text-yellow-700 space-y-2">
+              <div>
+                <strong>Localização salva:</strong>
+                {data.location?.country && (
+                  <div className="ml-2">
+                    🌍 País: {data.location.country.flag}{' '}
+                    {data.location.country.name} (
+                    {data.location.country.isoCode})
+                  </div>
+                )}
+                {data.location?.state && (
+                  <div className="ml-2">
+                    🗺️ Estado: {data.location.state.name} (
+                    {data.location.state.isoCode})
+                  </div>
+                )}
+                {data.location?.city && (
+                  <div className="ml-2">
+                    🏙️ Cidade: {data.location.city.name}
+                  </div>
+                )}
+                {!data.location?.country && (
+                  <div className="ml-2 text-gray-500">
+                    Nenhuma localização selecionada
+                  </div>
+                )}
+              </div>
+              <div>
+                <strong>Telefone:</strong> {data.phone || 'Não definido'}
+              </div>
+              <div>
+                <strong>Bio:</strong>{' '}
+                {data.bio ? `${data.bio.length} chars` : 'Não definida'}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

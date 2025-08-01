@@ -1,4 +1,4 @@
-// app/libs/CustomPrismaAdapter.ts - VERSÃO OTIMIZADA com detecção de registro
+// app/libs/CustomPrismaAdapter.ts - VERSÃO ATUALIZADA com campos de telefone
 import {
   Adapter,
   AdapterUser,
@@ -31,6 +31,16 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           lastName: true,
           image: true,
           emailVerified: true,
+
+          // 🆕 CAMPOS DE LOCALIZAÇÃO
+          city: true,
+          state: true,
+          country: true,
+
+          // 🆕 CAMPOS DE TELEFONE
+          phone: true,
+          phoneCountryCode: true,
+          phoneNumber: true,
         },
       });
 
@@ -48,6 +58,16 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             existingUser.lastName || ''
           }`.trim(),
           image: existingUser.image,
+
+          // 🆕 CAMPOS DE LOCALIZAÇÃO
+          city: existingUser.city,
+          state: existingUser.state,
+          country: existingUser.country,
+
+          // 🆕 CAMPOS DE TELEFONE
+          phone: existingUser.phone,
+          phoneCountryCode: existingUser.phoneCountryCode,
+          phoneNumber: existingUser.phoneNumber,
         } as AdapterUser;
       }
 
@@ -74,6 +94,16 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             profilePublic: true,
             showLocation: false,
             hashedPassword: null, // Google users não têm senha
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO (valores padrão null)
+            city: null,
+            state: null,
+            country: null,
+
+            // 🆕 CAMPOS DE TELEFONE (valores padrão null)
+            phone: null,
+            phoneCountryCode: null,
+            phoneNumber: null,
           },
         });
 
@@ -122,6 +152,16 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             createdUser.lastName || ''
           }`.trim(),
           image: createdUser.image,
+
+          // 🆕 CAMPOS DE LOCALIZAÇÃO
+          city: createdUser.city,
+          state: createdUser.state,
+          country: createdUser.country,
+
+          // 🆕 CAMPOS DE TELEFONE
+          phone: createdUser.phone,
+          phoneCountryCode: createdUser.phoneCountryCode,
+          phoneNumber: createdUser.phoneNumber,
         } as AdapterUser;
       } catch (error) {
         console.error('❌ CustomAdapter: Erro ao criar usuário Google:', error);
@@ -134,6 +174,24 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
 
           const raceUser = await prisma.user.findUnique({
             where: { email: user.email },
+            select: {
+              id: true,
+              email: true,
+              firstName: true,
+              lastName: true,
+              image: true,
+              emailVerified: true,
+
+              // 🆕 CAMPOS DE LOCALIZAÇÃO
+              city: true,
+              state: true,
+              country: true,
+
+              // 🆕 CAMPOS DE TELEFONE
+              phone: true,
+              phoneCountryCode: true,
+              phoneNumber: true,
+            },
           });
 
           if (raceUser) {
@@ -150,6 +208,16 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
                 raceUser.lastName || ''
               }`.trim(),
               image: raceUser.image,
+
+              // 🆕 CAMPOS DE LOCALIZAÇÃO
+              city: raceUser.city,
+              state: raceUser.state,
+              country: raceUser.country,
+
+              // 🆕 CAMPOS DE TELEFONE
+              phone: raceUser.phone,
+              phoneCountryCode: raceUser.phoneCountryCode,
+              phoneNumber: raceUser.phoneNumber,
             } as AdapterUser;
           }
         }
@@ -163,6 +231,24 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
       try {
         const user = await prisma.user.findUnique({
           where: { id },
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            image: true,
+            emailVerified: true,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
+            city: true,
+            state: true,
+            country: true,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: true,
+            phoneCountryCode: true,
+            phoneNumber: true,
+          },
         });
 
         if (!user) return null;
@@ -173,6 +259,16 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           emailVerified: user.emailVerified,
           name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
           image: user.image,
+
+          // 🆕 CAMPOS DE LOCALIZAÇÃO
+          city: user.city,
+          state: user.state,
+          country: user.country,
+
+          // 🆕 CAMPOS DE TELEFONE
+          phone: user.phone,
+          phoneCountryCode: user.phoneCountryCode,
+          phoneNumber: user.phoneNumber,
         } as AdapterUser;
       } catch (error) {
         console.error('❌ CustomAdapter: Erro ao buscar usuário:', error);
@@ -185,6 +281,24 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
       try {
         const user = await prisma.user.findUnique({
           where: { email: email.toLowerCase() },
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            image: true,
+            emailVerified: true,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
+            city: true,
+            state: true,
+            country: true,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: true,
+            phoneCountryCode: true,
+            phoneNumber: true,
+          },
         });
 
         if (!user) return null;
@@ -195,6 +309,16 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           emailVerified: user.emailVerified,
           name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
           image: user.image,
+
+          // 🆕 CAMPOS DE LOCALIZAÇÃO
+          city: user.city,
+          state: user.state,
+          country: user.country,
+
+          // 🆕 CAMPOS DE TELEFONE
+          phone: user.phone,
+          phoneCountryCode: user.phoneCountryCode,
+          phoneNumber: user.phoneNumber,
         } as AdapterUser;
       } catch (error) {
         console.error(
@@ -221,7 +345,28 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
               providerAccountId,
             },
           },
-          include: { user: true },
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                image: true,
+                emailVerified: true,
+
+                // 🆕 CAMPOS DE LOCALIZAÇÃO
+                city: true,
+                state: true,
+                country: true,
+
+                // 🆕 CAMPOS DE TELEFONE
+                phone: true,
+                phoneCountryCode: true,
+                phoneNumber: true,
+              },
+            },
+          },
         });
 
         if (!account || !account.user) return null;
@@ -234,6 +379,16 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           emailVerified: user.emailVerified,
           name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
           image: user.image,
+
+          // 🆕 CAMPOS DE LOCALIZAÇÃO
+          city: user.city,
+          state: user.state,
+          country: user.country,
+
+          // 🆕 CAMPOS DE TELEFONE
+          phone: user.phone,
+          phoneCountryCode: user.phoneCountryCode,
+          phoneNumber: user.phoneNumber,
         } as AdapterUser;
       } catch (error) {
         console.error(
@@ -267,6 +422,24 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         const user = await prisma.user.update({
           where: { id },
           data: updateData,
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            image: true,
+            emailVerified: true,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
+            city: true,
+            state: true,
+            country: true,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: true,
+            phoneCountryCode: true,
+            phoneNumber: true,
+          },
         });
 
         return {
@@ -275,6 +448,16 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           emailVerified: user.emailVerified,
           name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
           image: user.image,
+
+          // 🆕 CAMPOS DE LOCALIZAÇÃO
+          city: user.city,
+          state: user.state,
+          country: user.country,
+
+          // 🆕 CAMPOS DE TELEFONE
+          phone: user.phone,
+          phoneCountryCode: user.phoneCountryCode,
+          phoneNumber: user.phoneNumber,
         } as AdapterUser;
       } catch (error) {
         console.error('❌ CustomAdapter: Erro ao atualizar usuário:', error);
@@ -420,7 +603,28 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
       try {
         const session = await prisma.session.findUnique({
           where: { sessionToken },
-          include: { user: true },
+          include: {
+            user: {
+              select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                image: true,
+                emailVerified: true,
+
+                // 🆕 CAMPOS DE LOCALIZAÇÃO
+                city: true,
+                state: true,
+                country: true,
+
+                // 🆕 CAMPOS DE TELEFONE
+                phone: true,
+                phoneCountryCode: true,
+                phoneNumber: true,
+              },
+            },
+          },
         });
 
         if (!session || !session.user) return null;
@@ -440,6 +644,16 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
               session.user.lastName || ''
             }`.trim(),
             image: session.user.image,
+
+            // 🆕 CAMPOS DE LOCALIZAÇÃO
+            city: session.user.city,
+            state: session.user.state,
+            country: session.user.country,
+
+            // 🆕 CAMPOS DE TELEFONE
+            phone: session.user.phone,
+            phoneCountryCode: session.user.phoneCountryCode,
+            phoneNumber: session.user.phoneNumber,
           } as AdapterUser,
         };
       } catch (error) {
