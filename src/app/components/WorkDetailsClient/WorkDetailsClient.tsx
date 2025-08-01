@@ -51,6 +51,7 @@ import MediaSection from '../Players/MediaSection';
 import { WorkDetails } from '@/app/requests/work-page-details';
 import LearningModal from '../LearningModal';
 import ScorePreview from './ScorePreview'; // ✅ IMPORTAR SCOREPREVIEW
+import VideoAulaSection from '../Players/VideoAulaSection';
 
 // ✅ Interface para dados de áudio processados (mantida igual)
 interface ProcessedAudioData {
@@ -1160,6 +1161,10 @@ export default function WorkDetailsClient({
             onMediaUpdate={handleMediaUpdate}
           />
 
+          <VideoAulaSection
+            work={workForMediaSection}
+            canEditMedia={canEditMedia}
+          />
           {/* ✅ Seção de Partituras SEMPRE VISÍVEL */}
           <AnimatedCard hover="none">
             <IMSLPTabsIncremental

@@ -57,7 +57,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const finalInputId = isHydrated ? inputId : undefined;
 
     const baseClasses = `
-
       input-classical w-full
       pl-4
       ${leftIcon ? 'pl-10' : 'pl-4'}
@@ -73,7 +72,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       focus:ring-brand-primary
       focus:border-brand-primary
       transition-all duration-200
-      ${error ? 'border-red-400 focus:ring-accent-red' : ''}
+      ${error ? '!border-red-400 !focus:ring-accent-red' : ''}
       ${variant === 'filled' ? 'bg-theme-secondary' : ''}
       ${variant === 'outlined' ? 'border-2' : ''}
     `;

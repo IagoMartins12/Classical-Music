@@ -1,4 +1,4 @@
-// app/profile/components/PersonalInfoSection.tsx - CORRIGIDO com funções utilitárias
+// app/profile/components/PersonalInfoSection.tsx - COM VALIDAÇÃO DE TELEFONE
 'use client';
 
 import React, { useState } from 'react';
@@ -9,6 +9,7 @@ import {
   FiMapPin,
   FiUser,
   FiPhone,
+  FiAlertCircle,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
@@ -26,6 +27,13 @@ import {
   isLocationDataComplete,
 } from '@/app/utils/locationUtils';
 
+// 🆕 IMPORTAR VALIDAÇÃO DE TELEFONE
+import {
+  validatePhoneNumber,
+  canProceedWithPhone,
+  usePhoneValidation,
+} from '@/app/utils/phones_and_location/phoneValidation';
+
 interface PersonalInfoSectionProps {
   user: User;
   updateUser: (data: Partial<User>) => void;
@@ -41,14 +49,12 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
 
-  // 🔧 Estado do formulário CORRIGIDO - Agora mantém objetos completos de localização
   const [formData, setFormData] = useState({
     firstName: user.firstName || '',
     lastName: user.lastName || '',
     bio: user.bio || '',
     phone: user.phone || '',
     image: user.image || '',
-    // 🔧 CORRIGIDO: Agora usa função utilitária para converter strings do banco para objetos completos
     location: convertDatabaseToLocationData({
       country: user.country,
       state: user.state,
@@ -57,6 +63,9 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  // 🆕 VALIDAÇÃO DE TELEFONE EM TEMPO REAL
+  const phoneValidation = usePhoneValidation(formData.phone);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -69,17 +78,15 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
     }
   };
 
-  // 🔧 HANDLER CORRIGIDO - Agora salva objetos completos da localização
   const handleLocationChange = (location: LocationData) => {
     console.log(
       '🔄 PersonalInfoSection - Recebendo localização completa:',
       location
     );
 
-    // ✅ Agora salva os objetos completos no estado local
     setFormData((prev) => ({
       ...prev,
-      location, // Salva o objeto completo LocationData
+      location,
     }));
 
     console.log('✅ PersonalInfoSection - Localização salva no formData');
@@ -89,31 +96,49 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
     }
   };
 
-  // 🆕 Handler para mudança de telefone
+  // 🔧 HANDLER PARA TELEFONE COM VALIDAÇÃO
   const handlePhoneChange = (phone: string) => {
     setFormData((prev) => ({ ...prev, phone }));
 
+    // Limpar erro de telefone quando começar a digitar
     if (errors.phone) {
       setErrors((prev) => ({ ...prev, phone: '' }));
     }
   };
 
+  // 🔧 VALIDAÇÃO ATUALIZADA COM TELEFONE
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
+    // Validação de nome
     if (!formData.firstName.trim()) {
       newErrors.firstName = 'Nome é obrigatório';
     }
 
+    // Validação de bio
     if (formData.bio.length > 500) {
       newErrors.bio = 'Bio não pode ter mais de 500 caracteres';
     }
 
-    // Validar se localização está completa (opcional)
+    // 🆕 VALIDAÇÃO DE TELEFONE
+
+    if (formData.phone && formData.phone.trim() !== '') {
+      const phoneValidationResult = validatePhoneNumber(formData.phone);
+
+      if (!phoneValidationResult.isValid && !phoneValidationResult.isEmpty) {
+        newErrors.phone = phoneValidationResult.error || 'Telefone inválido';
+        console.log('❌ Telefone inválido:', newErrors.phone);
+      } else {
+        console.log('✅ Telefone válido ou vazio');
+      }
+    }
+
+    // Validar localização (opcional)
     if (formData.location && !isLocationDataComplete(formData.location)) {
       console.warn('⚠️ Localização incompleta detectada:', formData.location);
     }
 
+    console.log('🔍 Erros de validação encontrados:', newErrors);
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -126,11 +151,23 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   };
 
   const handleSave = async () => {
-    if (!validateForm()) return;
+    console.log('💾 Tentando salvar dados do perfil');
 
+    if (!validateForm()) {
+      console.log('❌ Validação falhou, não salvando');
+
+      // Se houver erro de telefone, mostrar toast específico
+      if (errors.phone) {
+        toast.error(`Telefone inválido: ${errors.phone}`);
+      }
+
+      return;
+    }
+
+    console.log('✅ Validação passou, prosseguindo com o salvamento');
     setIsLoading(true);
+
     try {
-      // 🔧 DADOS CORRIGIDOS - Converte objetos completos para strings do banco
       const locationForDatabase = convertLocationDataToDatabase(
         formData.location
       );
@@ -140,7 +177,6 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         lastName: formData.lastName,
         bio: formData.bio,
         phone: formData.phone,
-        // 🔧 Usar dados convertidos para o banco
         city: locationForDatabase.city,
         state: locationForDatabase.state,
         country: locationForDatabase.country,
@@ -154,7 +190,6 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       if (result.success) {
         await syncUserData({
           ...dataToSave,
-          // Atualizar também os campos relacionados ao telefone se retornados
           ...(result.data?.phoneCountryCode && {
             phoneCountryCode: result.data.phoneCountryCode,
           }),
@@ -176,14 +211,12 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
   };
 
   const handleCancel = () => {
-    // 🔧 CANCELAR CORRIGIDO - Reconverte dados do usuário
     setFormData({
       firstName: user.firstName || '',
       lastName: user.lastName || '',
       bio: user.bio || '',
       phone: user.phone || '',
       image: user.image || '',
-      // 🔧 Reconverter dados do banco para objetos completos
       location: convertDatabaseToLocationData({
         country: user.country,
         state: user.state,
@@ -237,7 +270,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
     return `${firstName} ${lastName}`.trim();
   };
 
-  // 🐛 Debug melhorado
+  // 🐛 Debug melhorado com telefone
   React.useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       console.log('🔍 PersonalInfoSection - Estado atual:', {
@@ -245,12 +278,16 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           country: user.country,
           state: user.state,
           city: user.city,
+          phone: user.phone,
         },
         'FormData location (objetos completos)': formData.location,
-        'Location completa?': isLocationDataComplete(formData.location),
+        'FormData phone': formData.phone,
+        phoneValidation: phoneValidation,
+        errors: errors,
+        isEditing: isEditing,
       });
     }
-  }, [user, formData.location]);
+  }, [user, formData, phoneValidation, errors, isEditing]);
 
   return (
     <div className="space-y-6">
@@ -291,6 +328,12 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               onClick={handleSave}
               isLoading={isLoading}
               leftIcon={<FiSave />}
+              disabled={!canProceedWithPhone(formData.phone)} // 🆕 Desabilitar se telefone inválido
+              title={
+                errors.phone
+                  ? `Não é possível salvar: ${errors.phone}`
+                  : undefined
+              }
             >
               Salvar
             </Button>
@@ -376,7 +419,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         )}
       </div>
 
-      {/* 🆕 Telefone Internacional */}
+      {/* 🔧 TELEFONE COM VALIDAÇÃO APRIMORADA */}
       <div>
         <InternationalPhoneInput
           value={formData.phone}
@@ -386,23 +429,37 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           placeholder="Digite seu número"
           defaultCountry="br"
           showLabel={true}
-          error={errors.phone}
+          error={errors.phone} // Passar erro específico do telefone
         />
-        {!errors.phone && (
-          <p className="text-xs text-theme-tertiary mt-1">
-            Formato internacional - será formatado automaticamente
-          </p>
+
+        {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE (se editando e houver erro) */}
+        {errors.phone && phoneValidation.showError && phoneValidation.error && (
+          <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3">
+            <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="text-sm font-medium text-red-800">
+                Telefone inválido
+              </h4>
+              <p className="text-sm text-red-700 mt-1">
+                {phoneValidation.error}
+              </p>
+              {phoneValidation.progressMessage && (
+                <p className="text-xs text-red-600 mt-1">
+                  {phoneValidation.progressMessage}
+                </p>
+              )}
+            </div>
+          </div>
         )}
       </div>
 
-      {/* 🔧 LOCALIZAÇÃO CORRIGIDA */}
+      {/* Localização */}
       <div>
         <div className="flex items-center space-x-2 mb-4">
           <FiMapPin className="w-4 h-4 text-brand-primary" />
           <h4 className="font-medium text-theme-primary">Localização</h4>
         </div>
 
-        {/* ✅ Agora usa objetos completos diretamente do formData */}
         <LocationSelector
           value={formData.location}
           onChange={handleLocationChange}
@@ -448,7 +505,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           </div>
         </div>
 
-        {/* 🆕 Informações técnicas do telefone (apenas se houver) */}
+        {/* Informações técnicas do telefone */}
         {user.phone && (
           <div className="mt-4 p-3 bg-theme-secondary bg-opacity-20 rounded-lg">
             <h5 className="text-sm font-medium text-theme-primary mb-2">

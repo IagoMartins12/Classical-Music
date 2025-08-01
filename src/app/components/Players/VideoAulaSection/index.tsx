@@ -1,4 +1,4 @@
-// app/components/VideoAula/VideoAulaSection.tsx
+// app/components/Players/VideoAulaSection.tsx - CORRIGIDO E MELHORADO
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -17,6 +17,7 @@ import { FaGraduationCap } from 'react-icons/fa';
 import Button from '../../Common/Button';
 import Image from 'next/image';
 
+// ✅ INTERFACE CORRIGIDA - removendo null dos tipos
 interface VideoAulaSectionProps {
   work: {
     id: string;
@@ -24,17 +25,42 @@ interface VideoAulaSectionProps {
     composer: {
       fullName: string;
     };
-    videoAulaUrl?: string;
-    videoAulaFile?: string;
-    videoAulaTitle?: string;
-    videoAulaType?: string;
-    videoAulaSource?: string;
-    videoAulaAddedBy?: string;
-    videoAulaAddedAt?: Date;
-    videoAulaMetadata?: any;
+    videoAulaUrl?: string; // string | undefined (sem null)
+    videoAulaFile?: string; // string | undefined (sem null)
+    videoAulaTitle?: string; // string | undefined (sem null)
+    videoAulaType?: string; // string | undefined (sem null)
+    videoAulaSource?: string; // string | undefined (sem null)
+    videoAulaAddedBy?: string; // string | undefined (sem null)
+    videoAulaAddedAt?: Date; // Date | undefined (sem null)
+    videoAulaMetadata?: any; // any | undefined (sem null)
   };
   canEditMedia?: boolean;
   onOpenEditModal?: () => void;
+}
+
+// ✅ OPÇÕES ATUALIZADAS - removendo 'story'
+const videoAulaTypeOptions = [
+  { value: 'video', label: 'Vídeo Normal' },
+  { value: 'reels', label: 'Reels/Shorts' }, // Removido 'story'
+  { value: 'live', label: 'Live/Transmissão' },
+];
+
+const videoAulaSourceOptions = [
+  { value: 'youtube', label: 'YouTube' },
+  { value: 'instagram', label: 'Instagram' },
+  { value: 'tiktok', label: 'TikTok' },
+  { value: 'local', label: 'Upload Local' },
+];
+
+// ✅ INTERFACE PARA INFORMAÇÕES DO VÍDEO
+interface VideoInfo {
+  platform: string;
+  embedUrl: string;
+  thumbnailUrl: string;
+  canEmbed: boolean;
+  aspectRatio: string;
+  displayType: string;
+  embedHtml?: string; // Para TikTok oEmbed
 }
 
 const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
@@ -43,24 +69,30 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   onOpenEditModal,
 }) => {
   const [isPlayerVisible, setIsPlayerVisible] = useState(false);
-  const [videoInfo, setVideoInfo] = useState<{
-    platform: string;
-    embedUrl: string;
-    thumbnailUrl: string;
-    canEmbed: boolean;
-    aspectRatio: string;
-    displayType: string;
-  } | null>(null);
+  const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
+  const [loadingEmbed, setLoadingEmbed] = useState(false);
 
   // Só renderizar se tiver conteúdo
   const hasVideoAula = !!(work.videoAulaUrl || work.videoAulaFile);
 
-  const detectVideoInfo = (url: string, type?: string) => {
+  // ✅ FUNÇÃO PARA DETECTAR INFORMAÇÕES DO VÍDEO - MELHORADA
+  const detectVideoInfo = async (
+    url: string,
+    type?: string,
+    source?: string
+  ): Promise<VideoInfo> => {
     const videoType = type || 'video';
+    const videoSource = source || 'external';
     const aspectRatio = getAspectRatio(videoType);
     const displayType = getDisplayType(videoType);
 
-    // YouTube
+    console.log('🎥 [VIDEO-AULA] Detectando info:', {
+      url,
+      type: videoType,
+      source: videoSource,
+    });
+
+    // ✅ YOUTUBE
     if (url.includes('youtube.com') || url.includes('youtu.be')) {
       const videoId = extractYouTubeId(url);
       return {
@@ -73,96 +105,138 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
       };
     }
 
-    // Instagram
+    // ✅ TIKTOK - usando oEmbed API
+    if (url.includes('tiktok.com')) {
+      try {
+        setLoadingEmbed(true);
+        const oEmbedUrl = `https://www.tiktok.com/oembed?url=${encodeURIComponent(
+          url
+        )}`;
+        const response = await fetch(oEmbedUrl);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ [VIDEO-AULA] TikTok oEmbed success:', data);
+
+          return {
+            platform: 'tiktok',
+            embedUrl: url,
+            thumbnailUrl: data.thumbnail_url || '',
+            canEmbed: true,
+            aspectRatio: '9:16', // TikTok é sempre vertical
+            displayType: 'TikTok',
+            embedHtml: data.html, // HTML do embed
+          };
+        } else {
+          console.warn('⚠️ [VIDEO-AULA] TikTok oEmbed falhou, usando fallback');
+        }
+      } catch (error) {
+        console.error('❌ [VIDEO-AULA] Erro TikTok oEmbed:', error);
+      } finally {
+        setLoadingEmbed(false);
+      }
+
+      // Fallback para TikTok
+      return {
+        platform: 'tiktok',
+        embedUrl: url,
+        thumbnailUrl:
+          work.videoAulaMetadata?.thumbnail || '/images/tiktok-placeholder.png',
+        canEmbed: false, // Forçar abrir em nova aba se oEmbed falhou
+        aspectRatio: '9:16',
+        displayType: 'TikTok',
+      };
+    }
+
+    // ✅ INSTAGRAM - tentar embed, fallback para nova aba
     if (url.includes('instagram.com')) {
-      // Instagram Stories, Reels, Posts têm tratamentos diferentes
-      if (url.includes('/stories/') || type === 'story') {
-        return {
-          platform: 'instagram-story',
-          embedUrl: url,
-          thumbnailUrl: work.videoAulaMetadata?.thumbnail || '',
-          canEmbed: false, // Stories não podem ser embedados facilmente
-          aspectRatio: '9:16',
-          displayType: 'story',
-        };
-      } else if (url.includes('/reel/') || type === 'reels') {
+      if (url.includes('/reel/') || videoType === 'reels') {
+        // Instagram Reels - embed básico
+        const postUrl = url.replace('/reel/', '/p/'); // Converter reel para post
+
         return {
           platform: 'instagram-reel',
-          embedUrl: url.replace('/reel/', '/p/'), // Converter para post embed
-          thumbnailUrl: work.videoAulaMetadata?.thumbnail || '',
-          canEmbed: true,
+          embedUrl: `${postUrl}embed/`,
+          thumbnailUrl:
+            work.videoAulaMetadata?.thumbnail ||
+            '/images/instagram-placeholder.png',
+          canEmbed: true, // Tentar embed
           aspectRatio: '9:16',
-          displayType: 'reel',
+          displayType: 'Instagram Reel',
         };
       } else {
+        // Instagram Post normal
         return {
           platform: 'instagram',
-          embedUrl: url,
-          thumbnailUrl: work.videoAulaMetadata?.thumbnail || '',
+          embedUrl: `${url}embed/`,
+          thumbnailUrl:
+            work.videoAulaMetadata?.thumbnail ||
+            '/images/instagram-placeholder.png',
           canEmbed: true,
           aspectRatio: '1:1',
-          displayType: 'post',
+          displayType: 'Instagram Post',
         };
       }
     }
 
-    // TikTok
-    if (url.includes('tiktok.com')) {
+    // ✅ UPLOAD LOCAL
+    if (videoSource === 'local' || url.startsWith('/uploads/')) {
       return {
-        platform: 'tiktok',
+        platform: 'local',
         embedUrl: url,
-        thumbnailUrl: work.videoAulaMetadata?.thumbnail || '',
-        canEmbed: true,
-        aspectRatio: '9:16',
-        displayType: 'vertical',
-      };
-    }
-
-    // Vídeo direto (mp4, etc.)
-    if (url.match(/\.(mp4|webm|ogg)$/i)) {
-      return {
-        platform: 'direct',
-        embedUrl: url,
-        thumbnailUrl: work.videoAulaMetadata?.thumbnail || '',
+        thumbnailUrl:
+          work.videoAulaMetadata?.thumbnail || '/images/video-placeholder.png',
         canEmbed: true,
         aspectRatio,
         displayType,
       };
     }
 
-    // URL genérica
+    // ✅ VÍDEO DIRETO (mp4, webm, etc.)
+    if (url.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i)) {
+      return {
+        platform: 'direct',
+        embedUrl: url,
+        thumbnailUrl:
+          work.videoAulaMetadata?.thumbnail || '/images/video-placeholder.png',
+        canEmbed: true,
+        aspectRatio,
+        displayType,
+      };
+    }
+
+    // ✅ URL EXTERNA GENÉRICA
     return {
       platform: 'external',
       embedUrl: url,
-      thumbnailUrl: work.videoAulaMetadata?.thumbnail || '',
+      thumbnailUrl:
+        work.videoAulaMetadata?.thumbnail ||
+        '/images/external-video-placeholder.png',
       canEmbed: false,
       aspectRatio,
       displayType,
     };
   };
 
+  // ✅ FUNÇÕES AUXILIARES
   const getAspectRatio = (type?: string) => {
     switch (type) {
-      case 'story':
       case 'reels':
-        return '9:16';
+        return '9:16'; // Vertical
       case 'live':
-        return '16:9';
+      case 'video':
       default:
-        return '16:9';
+        return '16:9'; // Horizontal
     }
   };
 
   const getDisplayType = (type?: string) => {
     switch (type) {
-      case 'story':
-        return 'Story';
       case 'reels':
         return 'Reels';
       case 'live':
         return 'Live';
-      case 'tutorial':
-        return 'Tutorial';
+      case 'video':
       default:
         return 'Vídeo';
     }
@@ -175,31 +249,31 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
     return match && match[2].length === 11 ? match[2] : '';
   };
 
+  // ✅ FUNÇÃO PARA OBTER ÍCONE DA PLATAFORMA
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
       case 'youtube':
         return <SiYoutube className="w-4 h-4 text-red-400" />;
       case 'instagram':
-      case 'instagram-story':
       case 'instagram-reel':
         return <SiInstagram className="w-4 h-4 text-pink-400" />;
       case 'tiktok':
-        return <SiTiktok className="w-4 h-4 text-black" />;
+        return <SiTiktok className="w-4 h-4 text-black dark:text-white" />;
       case 'local':
+      case 'direct':
         return <FiVideo className="w-4 h-4 text-blue-400" />;
       default:
         return <FiExternalLink className="w-4 h-4 text-theme-tertiary" />;
     }
   };
 
+  // ✅ FUNÇÃO PARA OBTER LABEL DA PLATAFORMA
   const getPlatformLabel = (platform: string) => {
     switch (platform) {
       case 'youtube':
         return 'YouTube';
       case 'instagram':
         return 'Instagram';
-      case 'instagram-story':
-        return 'Instagram Story';
       case 'instagram-reel':
         return 'Instagram Reel';
       case 'tiktok':
@@ -213,7 +287,8 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
     }
   };
 
-  const formatDate = (dateString?: string) => {
+  // ✅ FUNÇÃO PARA FORMATEAR DATA
+  const formatDate = (dateString?: Date) => {
     if (!dateString) return '';
     return new Date(dateString).toLocaleDateString('pt-BR', {
       day: '2-digit',
@@ -222,28 +297,34 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
     });
   };
 
+  // ✅ FUNÇÃO PARA MOSTRAR PLAYER
   const showPlayer = () => {
     if (videoInfo?.canEmbed) {
       setIsPlayerVisible(true);
     } else {
       // Abrir em nova aba para plataformas que não permitem embed
-      window.open(work.videoAulaUrl, '_blank');
+      const url = work.videoAulaUrl || work.videoAulaFile;
+      if (url) {
+        window.open(url, '_blank');
+      }
     }
   };
 
+  // ✅ FUNÇÃO PARA OBTER CLASSE DO CONTAINER
   const getContainerClass = () => {
     if (!videoInfo) return 'aspect-video';
 
     switch (videoInfo.aspectRatio) {
       case '9:16':
-        return 'aspect-[9/16] max-h-96'; // Vertical (Stories, Reels)
+        return 'aspect-[9/16] max-w-sm max-h-96'; // Vertical (Reels)
       case '1:1':
-        return 'aspect-square max-h-80'; // Quadrado (Instagram posts)
+        return 'aspect-square max-w-sm max-h-80'; // Quadrado (Instagram posts)
       default:
         return 'aspect-video'; // 16:9 padrão
     }
   };
 
+  // ✅ FUNÇÃO PARA ESTILO DO CONTAINER
   const getContainerStyle = () => {
     if (!videoInfo) return {};
 
@@ -258,32 +339,48 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
     return {};
   };
 
-  // Detectar plataforma e gerar URLs de embed
+  // ✅ DETECTAR PLATAFORMA E GERAR URLs DE EMBED
   useEffect(() => {
-    if (work.videoAulaUrl) {
-      const info = detectVideoInfo(work.videoAulaUrl, work.videoAulaType);
-      setVideoInfo(info);
-    } else if (work.videoAulaFile) {
-      setVideoInfo({
-        platform: 'local',
-        embedUrl: work.videoAulaFile,
-        thumbnailUrl: work.videoAulaMetadata?.thumbnail || '',
-        canEmbed: true,
-        aspectRatio: work.videoAulaMetadata?.aspectRatio || '16:9',
-        displayType: getDisplayType(work.videoAulaType),
-      });
-    }
-  }, [work]);
+    const loadVideoInfo = async () => {
+      if (work.videoAulaUrl) {
+        const info = await detectVideoInfo(
+          work.videoAulaUrl,
+          work.videoAulaType,
+          work.videoAulaSource
+        );
+        setVideoInfo(info);
+      } else if (work.videoAulaFile) {
+        const info = await detectVideoInfo(
+          work.videoAulaFile,
+          work.videoAulaType,
+          'local'
+        );
+        setVideoInfo(info);
+      }
+    };
 
-  // Se não tem vídeo aula, não renderizar nada
+    loadVideoInfo();
+  }, [
+    work.videoAulaUrl,
+    work.videoAulaFile,
+    work.videoAulaType,
+    work.videoAulaSource,
+  ]);
+
+  // ✅ SE NÃO TEM VÍDEO AULA, NÃO RENDERIZAR
   if (!hasVideoAula) {
     return null;
   }
-  if (!videoInfo) {
+
+  // ✅ LOADING STATE
+  if (!videoInfo || loadingEmbed) {
     return (
       <AnimatedCard hover="lift" className="classical-card">
         <div className="p-6 text-center">
-          <p className="text-theme-secondary">Carregando video aula...</p>
+          <div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-theme-secondary">
+            {loadingEmbed ? 'Carregando embed...' : 'Carregando video aula...'}
+          </p>
         </div>
       </AnimatedCard>
     );
@@ -291,7 +388,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
 
   return (
     <AnimatedCard hover="lift" className="classical-card overflow-hidden">
-      {/* Header */}
+      {/* ✅ HEADER */}
       <div className="p-6 border-b border-theme-secondary bg-gradient-to-r from-blue-900/10 to-purple-800/10">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -312,37 +409,40 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
             </div>
           </div>
 
-          {canEditMedia && (
-            <Button
-              variant="secondary"
-              size="sm"
-              leftIcon={<FiEdit3 />}
-              onClick={onOpenEditModal}
-            >
-              Editar
-            </Button>
-          )}
+          <div className="flex items-center space-x-2">
+            {canEditMedia && (
+              <Button
+                variant="secondary"
+                size="sm"
+                leftIcon={<FiEdit3 />}
+                onClick={onOpenEditModal}
+              >
+                Editar
+              </Button>
+            )}
 
-          {/* Link externo se não puder fazer embed */}
-          {!videoInfo.canEmbed && work.videoAulaUrl && (
-            <a
-              href={work.videoAulaUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-400 hover:text-blue-300 transition-colors"
-              title="Abrir em nova aba"
-            >
-              <FiExternalLink className="w-5 h-5" />
-            </a>
-          )}
+            {/* Link externo se não puder fazer embed */}
+            {!videoInfo.canEmbed &&
+              (work.videoAulaUrl || work.videoAulaFile) && (
+                <a
+                  href={work.videoAulaUrl || work.videoAulaFile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 transition-colors p-2 hover:bg-blue-400/10 rounded-lg"
+                  title="Abrir em nova aba"
+                >
+                  <FiExternalLink className="w-5 h-5" />
+                </a>
+              )}
+          </div>
         </div>
       </div>
 
-      {/* Área do Vídeo */}
+      {/* ✅ ÁREA DO VÍDEO */}
       <div className="p-6">
         <div className="relative" style={getContainerStyle()}>
           {!isPlayerVisible || !videoInfo.canEmbed ? (
-            // Thumbnail com botão play
+            // ✅ THUMBNAIL COM BOTÃO PLAY
             <div
               className={`relative group cursor-pointer ${getContainerClass()}`}
               onClick={showPlayer}
@@ -350,13 +450,14 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               <div className="w-full h-full bg-gradient-to-br from-blue-800/50 to-purple-800/50 relative overflow-hidden rounded-xl">
                 {videoInfo.thumbnailUrl ? (
                   <Image
-                    width={50}
-                    height={50}
+                    width={videoInfo.aspectRatio === '9:16' ? 300 : 800}
+                    height={videoInfo.aspectRatio === '9:16' ? 533 : 450}
                     src={videoInfo.thumbnailUrl}
                     alt={work.videoAulaTitle || `Video aula - ${work.title}`}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.currentTarget.style.display = 'none';
+                      // Fallback para placeholder se thumbnail falhar
+                      e.currentTarget.src = '/images/video-placeholder.png';
                     }}
                   />
                 ) : (
@@ -365,7 +466,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   </div>
                 )}
 
-                {/* Overlay com botão play */}
+                {/* ✅ OVERLAY COM BOTÃO PLAY */}
                 <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center group-hover:bg-opacity-30 transition-all">
                   <div className="w-16 h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transform group-hover:scale-110 transition-transform shadow-lg">
                     {videoInfo.canEmbed ? (
@@ -376,7 +477,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   </div>
                 </div>
 
-                {/* Badge da plataforma */}
+                {/* ✅ BADGE DA PLATAFORMA */}
                 <div className="absolute top-3 right-3">
                   <div className="bg-black/60 backdrop-blur-sm rounded-lg px-2 py-1 flex items-center space-x-1">
                     {getPlatformIcon(videoInfo.platform)}
@@ -388,7 +489,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               </div>
             </div>
           ) : (
-            // Player embedado
+            // ✅ PLAYER EMBEDADO
             <div className={getContainerClass()}>
               {videoInfo.platform === 'youtube' ? (
                 <iframe
@@ -399,8 +500,29 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   allowFullScreen
                   className="w-full h-full rounded-xl"
                 />
+              ) : videoInfo.platform === 'tiktok' && videoInfo.embedHtml ? (
+                // TikTok oEmbed HTML
+                <div
+                  className="w-full h-full flex items-center justify-center"
+                  dangerouslySetInnerHTML={{ __html: videoInfo.embedHtml }}
+                />
+              ) : videoInfo.platform === 'instagram-reel' ||
+                videoInfo.platform === 'instagram' ? (
+                // Instagram embed (pode falhar, fallback para nova aba)
+                <iframe
+                  src={videoInfo.embedUrl}
+                  title={work.videoAulaTitle || `Video aula - ${work.title}`}
+                  frameBorder="0"
+                  allowFullScreen
+                  className="w-full h-full rounded-xl"
+                  onError={() => {
+                    // Se embed falhar, abrir em nova aba
+                    window.open(work.videoAulaUrl, '_blank');
+                  }}
+                />
               ) : videoInfo.platform === 'local' ||
                 videoInfo.platform === 'direct' ? (
+                // Vídeo local/direto
                 <video
                   src={videoInfo.embedUrl}
                   controls
@@ -410,23 +532,8 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 >
                   Seu navegador não suporta vídeos HTML5.
                 </video>
-              ) : videoInfo.platform === 'instagram-reel' ? (
-                <blockquote
-                  className="instagram-media"
-                  data-instgrm-permalink={videoInfo.embedUrl}
-                  data-instgrm-version="14"
-                  style={{
-                    background: '#FFF',
-                    border: 0,
-                    borderRadius: '12px',
-                    margin: '1px',
-                    maxWidth: '540px',
-                    minWidth: '326px',
-                    padding: 0,
-                    width: '100%',
-                  }}
-                />
               ) : (
+                // Fallback para iframe genérico
                 <iframe
                   src={videoInfo.embedUrl}
                   title={work.videoAulaTitle || `Video aula - ${work.title}`}
@@ -439,7 +546,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
           )}
         </div>
 
-        {/* Informações do Vídeo */}
+        {/* ✅ INFORMAÇÕES DO VÍDEO */}
         <div className="mt-4 space-y-3">
           {/* Título e Descrição */}
           <div>
@@ -451,14 +558,14 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
             </p>
           </div>
 
-          {/* Metadados */}
-          <div className="flex items-center justify-between text-sm text-theme-tertiary">
+          {/* ✅ METADADOS */}
+          <div className="flex items-center justify-between text-sm text-theme-tertiary flex-wrap gap-2">
             <div className="flex items-center space-x-4">
               {/* Data de adição */}
               {work.videoAulaAddedAt && (
                 <div className="flex items-center space-x-1">
                   <FiUser className="w-4 h-4" />
-                  <span>{formatDate(work.videoAulaAddedAt.toISOString())}</span>
+                  <span>{formatDate(work.videoAulaAddedAt)}</span>
                 </div>
               )}
 
@@ -471,12 +578,12 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               )}
             </div>
 
-            {/* Download (para vídeos locais) */}
+            {/* ✅ DOWNLOAD (para vídeos locais) */}
             {videoInfo.platform === 'local' && work.videoAulaFile && (
               <a
                 href={work.videoAulaFile}
                 download
-                className="flex items-center space-x-1 text-blue-400 hover:text-blue-300 transition-colors"
+                className="flex items-center space-x-1 text-blue-400 hover:text-blue-300 transition-colors hover:bg-blue-400/10 px-2 py-1 rounded"
                 title="Download do vídeo"
               >
                 <FiDownload className="w-4 h-4" />
@@ -485,7 +592,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
             )}
           </div>
 
-          {/* Botão de ação */}
+          {/* ✅ BOTÃO DE AÇÃO */}
           {!isPlayerVisible && (
             <Button
               onClick={showPlayer}
@@ -494,7 +601,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               leftIcon={videoInfo.canEmbed ? <FiPlay /> : <FiExternalLink />}
               className="w-full"
             >
-              {videoInfo.canEmbed ? 'Assistir Video Aula' : 'Abrir Video Aula'}
+              {videoInfo.canEmbed
+                ? 'Assistir Video Aula'
+                : `Abrir no ${getPlatformLabel(videoInfo.platform)}`}
             </Button>
           )}
         </div>

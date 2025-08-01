@@ -13,6 +13,7 @@ import {
   FiTrendingUp,
 } from 'react-icons/fi';
 import { FaGlobeAmericas, FaMapPin, FaCity } from 'react-icons/fa';
+import { translateCountryName } from '@/app/utils/phones_and_location/countryTranslations';
 
 interface LocationData {
   country?: {
@@ -341,12 +342,13 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   const countryOptions = useMemo(() => {
     return Country.getAllCountries().map((country) => ({
       value: country.isoCode,
-      label: country.name,
+      label: translateCountryName(country.name), // 🔄 TRADUÇÃO APLICADA AQUI!
       extra: country.isoCode,
       flag: country.flag,
+      originalName: country.name, // Manter nome original para debug
     }));
   }, []);
-
+  console.log('countr', countryOptions);
   // 🗺️ Preparar opções de estados (dependente do país selecionado)
   const stateOptions = useMemo(() => {
     if (!value.country?.isoCode) return [];

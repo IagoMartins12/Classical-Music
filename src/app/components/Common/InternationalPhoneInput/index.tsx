@@ -1,213 +1,27 @@
-// components/Common/InternationalPhoneInput.tsx (versão corrigida)
+// components/Common/InternationalPhoneInput.tsx (VERSÃO COMPLETA com todos os países)
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { FiPhone, FiChevronDown, FiX, FiTrendingUp } from 'react-icons/fi';
+import {
+  FiPhone,
+  FiChevronDown,
+  FiX,
+  FiTrendingUp,
+  FiGlobe,
+} from 'react-icons/fi';
+import {
+  ALL_PHONE_COUNTRIES,
+  PhoneCountry,
+  getPhoneCountryByCode,
+  searchPhoneCountries,
+} from '@/app/utils/phones_and_location/completePhoneCountries';
+import {
+  formatPhoneNumberWithLimit,
+  getFormattedPlaceholder,
+  handlePhonePaste,
+} from '@/app/utils/phones_and_location/countryTranslations';
 
-// 🌍 Dados dos países para telefone (com flags e formatação)
-const PHONE_COUNTRIES = [
-  {
-    code: 'BR',
-    name: 'Brasil',
-    flag: '🇧🇷',
-    dialCode: '+55',
-    format: '(XX) XXXXX-XXXX',
-    popular: true,
-  },
-  {
-    code: 'US',
-    name: 'Estados Unidos',
-    flag: '🇺🇸',
-    dialCode: '+1',
-    format: '(XXX) XXX-XXXX',
-    popular: true,
-  },
-  {
-    code: 'CA',
-    name: 'Canadá',
-    flag: '🇨🇦',
-    dialCode: '+1',
-    format: '(XXX) XXX-XXXX',
-    popular: true,
-  },
-  {
-    code: 'GB',
-    name: 'Reino Unido',
-    flag: '🇬🇧',
-    dialCode: '+44',
-    format: 'XXXX XXX XXX',
-    popular: true,
-  },
-  {
-    code: 'FR',
-    name: 'França',
-    flag: '🇫🇷',
-    dialCode: '+33',
-    format: 'X XX XX XX XX',
-    popular: true,
-  },
-  {
-    code: 'DE',
-    name: 'Alemanha',
-    flag: '🇩🇪',
-    dialCode: '+49',
-    format: 'XXX XXXXXXXX',
-    popular: true,
-  },
-  {
-    code: 'IT',
-    name: 'Itália',
-    flag: '🇮🇹',
-    dialCode: '+39',
-    format: 'XXX XXX XXXX',
-    popular: true,
-  },
-  {
-    code: 'ES',
-    name: 'Espanha',
-    flag: '🇪🇸',
-    dialCode: '+34',
-    format: 'XXX XX XX XX',
-    popular: true,
-  },
-  {
-    code: 'AR',
-    name: 'Argentina',
-    flag: '🇦🇷',
-    dialCode: '+54',
-    format: 'XX XXXX XXXX',
-  },
-  {
-    code: 'CL',
-    name: 'Chile',
-    flag: '🇨🇱',
-    dialCode: '+56',
-    format: 'X XXXX XXXX',
-  },
-  {
-    code: 'CO',
-    name: 'Colômbia',
-    flag: '🇨🇴',
-    dialCode: '+57',
-    format: 'XXX XXX XXXX',
-  },
-  {
-    code: 'MX',
-    name: 'México',
-    flag: '🇲🇽',
-    dialCode: '+52',
-    format: 'XX XXXX XXXX',
-  },
-  {
-    code: 'JP',
-    name: 'Japão',
-    flag: '🇯🇵',
-    dialCode: '+81',
-    format: 'XX XXXX XXXX',
-  },
-  {
-    code: 'CN',
-    name: 'China',
-    flag: '🇨🇳',
-    dialCode: '+86',
-    format: 'XXX XXXX XXXX',
-  },
-  {
-    code: 'IN',
-    name: 'Índia',
-    flag: '🇮🇳',
-    dialCode: '+91',
-    format: 'XXXXX XXXXX',
-  },
-  {
-    code: 'AU',
-    name: 'Austrália',
-    flag: '🇦🇺',
-    dialCode: '+61',
-    format: 'XXX XXX XXX',
-  },
-  {
-    code: 'RU',
-    name: 'Rússia',
-    flag: '🇷🇺',
-    dialCode: '+7',
-    format: 'XXX XXX XX XX',
-  },
-  {
-    code: 'PT',
-    name: 'Portugal',
-    flag: '🇵🇹',
-    dialCode: '+351',
-    format: 'XXX XXX XXX',
-  },
-  {
-    code: 'NL',
-    name: 'Países Baixos',
-    flag: '🇳🇱',
-    dialCode: '+31',
-    format: 'XX XXX XXXX',
-  },
-  {
-    code: 'BE',
-    name: 'Bélgica',
-    flag: '🇧🇪',
-    dialCode: '+32',
-    format: 'XXX XX XX XX',
-  },
-  {
-    code: 'CH',
-    name: 'Suíça',
-    flag: '🇨🇭',
-    dialCode: '+41',
-    format: 'XX XXX XX XX',
-  },
-  {
-    code: 'AT',
-    name: 'Áustria',
-    flag: '🇦🇹',
-    dialCode: '+43',
-    format: 'XXX XXX XXXX',
-  },
-  {
-    code: 'SE',
-    name: 'Suécia',
-    flag: '🇸🇪',
-    dialCode: '+46',
-    format: 'XX XXX XX XX',
-  },
-  {
-    code: 'NO',
-    name: 'Noruega',
-    flag: '🇳🇴',
-    dialCode: '+47',
-    format: 'XXX XX XXX',
-  },
-  {
-    code: 'DK',
-    name: 'Dinamarca',
-    flag: '🇩🇰',
-    dialCode: '+45',
-    format: 'XX XX XX XX',
-  },
-  {
-    code: 'FI',
-    name: 'Finlândia',
-    flag: '🇫🇮',
-    dialCode: '+358',
-    format: 'XX XXX XXXX',
-  },
-];
-
-interface PhoneCountry {
-  code: string;
-  name: string;
-  flag: string;
-  dialCode: string;
-  format: string;
-  popular?: boolean;
-}
-
-interface InternationalPhoneInputProps {
+export interface InternationalPhoneInputProps {
   value: string;
   onChange: (phone: string) => void;
   disabled?: boolean;
@@ -219,82 +33,37 @@ interface InternationalPhoneInputProps {
   defaultCountry?: string;
 }
 
-// 🔧 FUNÇÕES AUXILIARES CORRIGIDAS
+// 🔧 Função para parsear número de telefone com nova base de dados
 const parsePhoneNumber = (
   phone: string
-): { countryCode: string; number: string } | null => {
-  console.log('📞 Parseando telefone:', phone);
-
+): {
+  countryCode: string;
+  number: string;
+  country: PhoneCountry;
+} | null => {
   if (!phone || !phone.startsWith('+')) {
     return null;
   }
 
-  // Tentar encontrar o país pelo dialCode mais longo primeiro
-  let matchedCountry = null;
-  let matchedDialCode = '';
-
-  // Ordenar por dialCode (mais longo primeiro para evitar conflitos como +1 vs +1242)
-  const sortedCountries = [...PHONE_COUNTRIES].sort(
+  // Ordenar por dialCode (mais longo primeiro para evitar conflitos)
+  const sortedCountries = [...ALL_PHONE_COUNTRIES].sort(
     (a, b) => b.dialCode.length - a.dialCode.length
   );
 
   for (const country of sortedCountries) {
     if (phone.startsWith(country.dialCode)) {
-      matchedCountry = country;
-      matchedDialCode = country.dialCode;
-      break;
+      const number = phone.slice(country.dialCode.length).replace(/\D/g, '');
+
+      return {
+        countryCode: country.code,
+        number,
+        country,
+      };
     }
   }
 
-  if (!matchedCountry) {
-    console.log('❌ Nenhum país encontrado para o telefone:', phone);
-    return null;
-  }
-
-  const number = phone.slice(matchedDialCode.length).replace(/\D/g, '');
-
-  console.log('✅ Telefone parseado:', {
-    countryCode: matchedCountry.code,
-    dialCode: matchedDialCode,
-    number,
-  });
-
-  return {
-    countryCode: matchedCountry.code,
-    number,
-  };
-};
-
-const formatPhoneNumber = (number: string, country: PhoneCountry): string => {
-  if (!number) return '';
-
-  // Remove caracteres não numéricos
-  const digits = number.replace(/\D/g, '');
-
-  // Aplica formatação baseada no país
-  let formatted = '';
-  let digitIndex = 0;
-
-  for (
-    let i = 0;
-    i < country.format.length && digitIndex < digits.length;
-    i++
-  ) {
-    const char = country.format[i];
-    if (char === 'X') {
-      formatted += digits[digitIndex];
-      digitIndex++;
-    } else {
-      formatted += char;
-    }
-  }
-
-  // Adiciona dígitos restantes se houver
-  if (digitIndex < digits.length) {
-    formatted += digits.slice(digitIndex);
-  }
-
-  return formatted;
+  console.log('❌ Nenhum país encontrado para o telefone:', phone);
+  return null;
 };
 
 const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
@@ -304,7 +73,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
   className = '',
   label = 'Telefone',
   error,
-  placeholder = 'Digite seu número',
+  placeholder,
   showLabel = true,
   defaultCountry = 'BR',
 }) => {
@@ -313,24 +82,20 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
   const [localNumber, setLocalNumber] = useState('');
   const [selectedCountryCode, setSelectedCountryCode] =
     useState(defaultCountry);
+  const [warningMessage, setWarningMessage] = useState<string>('');
 
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 🔍 DETECTAR PAÍS ATUAL BASEADO NO VALOR - CORRIGIDO!
+  // 🔍 Detectar país atual usando a nova base completa
   const currentCountry = useMemo(() => {
-    console.log('🔍 Detectando país para o value:', value);
-
     if (value) {
       const parsed = parsePhoneNumber(value);
       if (parsed && parsed.countryCode) {
-        const foundCountry = PHONE_COUNTRIES.find(
-          (c) => c.code === parsed.countryCode
-        );
+        const foundCountry = getPhoneCountryByCode(parsed.countryCode);
         console.log('🎯 País detectado:', foundCountry);
 
         if (foundCountry) {
-          // Atualizar o estado local para manter consistência
           if (selectedCountryCode !== foundCountry.code) {
             setSelectedCountryCode(foundCountry.code);
           }
@@ -339,17 +104,16 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
       }
     }
 
-    // Fallback para o país padrão ou selecionado
     const fallbackCountry =
-      PHONE_COUNTRIES.find((c) => c.code === selectedCountryCode) ||
-      PHONE_COUNTRIES.find((c) => c.code === defaultCountry) ||
-      PHONE_COUNTRIES[0];
+      getPhoneCountryByCode(selectedCountryCode) ||
+      getPhoneCountryByCode(defaultCountry) ||
+      ALL_PHONE_COUNTRIES[0];
 
     console.log('🔄 Usando país fallback:', fallbackCountry);
     return fallbackCountry;
   }, [value, selectedCountryCode, defaultCountry]);
 
-  // 📱 Extrair número local do valor completo - CORRIGIDO!
+  // 📱 Extrair número local do valor completo
   useEffect(() => {
     console.log('📱 Atualizando número local para value:', value);
 
@@ -368,83 +132,131 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
     }
   }, [value, currentCountry]);
 
-  // 🏆 Filtrar países (populares primeiro, depois por busca)
-  const filteredCountries = useMemo(() => {
-    let countries = PHONE_COUNTRIES;
+  // 🎯 HANDLER MELHORADO COM FORMATAÇÃO E LIMITAÇÃO
+  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!currentCountry) return;
 
-    if (searchTerm) {
-      const lowerSearchTerm = searchTerm.toLowerCase();
-      countries = countries.filter(
-        (country) =>
-          country.name.toLowerCase().includes(lowerSearchTerm) ||
-          country.dialCode.includes(lowerSearchTerm) ||
-          country.code.toLowerCase().includes(lowerSearchTerm)
-      );
-    }
+    const inputValue = e.target.value;
+    console.log('📝 Input original:', inputValue);
 
-    // Separar populares dos outros
-    const popular = countries.filter((c) => c.popular);
-    const others = countries.filter((c) => !c.popular);
+    // Usar a função de formatação com limite
+    const { formattedValue, rawDigits, isComplete, maxReached } =
+      formatPhoneNumberWithLimit(inputValue, currentCountry);
 
-    return [...popular, ...others];
-  }, [searchTerm]);
-
-  // 🔄 ATUALIZAR TELEFONE COMPLETO - CORRIGIDO!
-  const updateFullPhone = (country: PhoneCountry, number: string) => {
-    console.log('🔄 Atualizando telefone completo:', {
-      country: country.code,
-      number,
+    console.log('📱 Resultado da formatação:', {
+      formattedValue,
+      rawDigits,
+      isComplete,
+      maxReached,
     });
 
-    if (number && number.trim()) {
-      const cleanNumber = number.replace(/\D/g, '');
-      const fullPhone = `${country.dialCode}${cleanNumber}`;
+    // Mostrar aviso se chegou no limite
+    if (maxReached) {
+    } else {
+      setWarningMessage('');
+    }
+
+    // Atualizar o valor do input com a formatação
+    e.target.value = formattedValue;
+
+    // Atualizar estados
+    setLocalNumber(rawDigits);
+
+    // Gerar telefone completo
+    if (rawDigits) {
+      const fullPhone = `${currentCountry.dialCode}${rawDigits}`;
       console.log('✅ Telefone completo gerado:', fullPhone);
       onChange(fullPhone);
     } else {
-      console.log('🧹 Limpando telefone (número vazio)');
+      console.log('🧹 Limpando telefone');
       onChange('');
     }
   };
 
-  // 🎯 HANDLERS CORRIGIDOS
+  // 📋 HANDLER PARA PASTE COM VALIDAÇÃO
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    if (!currentCountry) return;
+
+    const pastedText = e.clipboardData.getData('text');
+    console.log('📋 Texto colado:', pastedText);
+
+    const { shouldAccept, processedValue, warning } = handlePhonePaste(
+      pastedText,
+      currentCountry
+    );
+
+    if (!shouldAccept) {
+      e.preventDefault();
+      return;
+    }
+
+    if (warning) {
+      setWarningMessage(warning);
+      setTimeout(() => setWarningMessage(''), 3000);
+    }
+
+    // Deixar o evento normal acontecer, mas com o valor processado
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.value = processedValue;
+        const changeEvent = new Event('input', { bubbles: true });
+        inputRef.current.dispatchEvent(changeEvent);
+      }
+    }, 0);
+  };
+
+  // 🏆 Filtrar países com busca inteligente
+  const filteredCountries = useMemo(() => {
+    const searchResults = searchPhoneCountries(searchTerm);
+
+    // Se não há busca, retornar organizados (populares primeiro)
+    if (!searchTerm) {
+      const popular = searchResults.filter((c) => c.popular);
+      const others = searchResults.filter((c) => !c.popular);
+      return [...popular, ...others];
+    }
+
+    // Com busca, manter ordem de relevância
+    return searchResults;
+  }, [searchTerm]);
+
+  // 🎯 Handler para seleção de país
   const handleCountrySelect = (country: PhoneCountry) => {
     console.log('🌍 País selecionado:', country);
 
     setSelectedCountryCode(country.code);
-    updateFullPhone(country, localNumber);
+
+    // Se já existe número local, reformatar para o novo país
+    if (localNumber) {
+      const { rawDigits } = formatPhoneNumberWithLimit(localNumber, country);
+      const fullPhone = `${country.dialCode}${rawDigits}`;
+      onChange(fullPhone);
+    }
+
     setIsOpen(false);
     setSearchTerm('');
     inputRef.current?.focus();
   };
 
-  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    const cleanValue = inputValue.replace(/\D/g, '');
-
-    console.log('📝 Número alterado:', { inputValue, cleanValue });
-
-    if (currentCountry) {
-      setLocalNumber(cleanValue);
-      updateFullPhone(currentCountry, cleanValue);
-    }
-  };
-
-  const handleClear = () => {
-    console.log('🧹 Limpando telefone');
-    setLocalNumber('');
-    onChange('');
-  };
-
   // 📱 Número formatado para exibição
   const formattedNumber = useMemo(() => {
     if (localNumber && currentCountry) {
-      const formatted = formatPhoneNumber(localNumber, currentCountry);
-      console.log('🎨 Número formatado:', { localNumber, formatted });
-      return formatted;
+      const { formattedValue } = formatPhoneNumberWithLimit(
+        localNumber,
+        currentCountry
+      );
+      return formattedValue;
     }
     return localNumber;
   }, [localNumber, currentCountry]);
+
+  // 🎨 Placeholder formatado
+  const dynamicPlaceholder = useMemo(() => {
+    if (currentCountry) {
+      return getFormattedPlaceholder(currentCountry);
+    }
+    return placeholder || 'Digite seu número';
+  }, [currentCountry, placeholder]);
 
   // 🖱️ Fechar dropdown ao clicar fora
   useEffect(() => {
@@ -475,6 +287,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
         localNumber,
         formattedNumber,
         selectedCountryCode,
+        totalCountries: ALL_PHONE_COUNTRIES.length,
       });
     }
   }, [
@@ -504,7 +317,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
               disabled={disabled}
               className={`
                 input-classical !rounded-r-none border-r-0 !px-3 !py-2 flex items-center space-x-2
-                h-full
+                h-full min-w-[120px]
                 ${
                   disabled
                     ? 'cursor-not-allowed opacity-50'
@@ -515,20 +328,22 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
             >
               {currentCountry && (
                 <>
-                  <span className="text-lg">{currentCountry.flag}</span>
-                  <span className="text-sm font-medium text-theme-primary">
+                  <span className="text-lg flex-shrink-0">
+                    {currentCountry.flag}
+                  </span>
+                  <span className="text-sm font-medium text-theme-primary truncate">
                     {currentCountry.dialCode}
                   </span>
                 </>
               )}
               <FiChevronDown
-                className={`w-3 h-3 text-theme-tertiary transition-transform duration-200 ${
+                className={`w-3 h-3 text-theme-tertiary transition-transform duration-200 flex-shrink-0 ${
                   isOpen ? 'rotate-180' : ''
                 }`}
               />
             </button>
 
-            {/* 🎨 Dropdown Elegante */}
+            {/* 🎨 Dropdown Completo com TODOS os países */}
             {isOpen && !disabled && (
               <div
                 ref={dropdownRef}
@@ -536,7 +351,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
               >
                 {/* 🏷️ Header */}
                 <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
-                  <FiTrendingUp className="w-4 h-4 text-brand-primary" />
+                  <FiGlobe className="w-4 h-4 text-brand-primary" />
                   <span className="text-sm font-medium text-theme-secondary">
                     Selecionar País
                   </span>
@@ -548,7 +363,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Buscar país ou código..."
+                    placeholder="Buscar país, código ou DDD..."
                     className="w-full px-3 py-2 text-sm bg-theme-secondary bg-opacity-50 border border-theme-secondary rounded-md focus:outline-none focus:border-brand-primary transition-colors"
                     autoFocus
                   />
@@ -557,51 +372,64 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
                 {/* 📋 Lista de Países */}
                 <div className="max-h-64 overflow-y-auto">
                   {filteredCountries.length > 0 ? (
-                    filteredCountries.map((country) => (
-                      <button
-                        key={country.code}
-                        type="button"
-                        onClick={() => handleCountrySelect(country)}
-                        className={`
-                          w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 
-                          border-b last:border-b-0 border-theme-secondary
-                          ${
-                            currentCountry?.code === country.code
-                              ? 'bg-brand-primary/10 text-brand-primary font-medium'
-                              : 'text-theme-primary'
-                          }
-                        `}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3 min-w-0 flex-1">
-                            <span className="text-lg flex-shrink-0">
-                              {country.flag}
-                            </span>
-                            <div className="min-w-0 flex-1">
-                              <div className="text-sm font-medium truncate">
-                                {country.name}
-                              </div>
-                              <div className="text-xs text-theme-tertiary truncate">
-                                {country.dialCode} • {country.format}
-                              </div>
+                    <>
+                      {/* 🏆 Seção de Populares (se não há busca) */}
+                      {!searchTerm &&
+                        filteredCountries.some((c) => c.popular) && (
+                          <>
+                            <div className="px-4 py-2 bg-brand-primary/5">
+                              <span className="text-xs font-medium text-brand-primary uppercase tracking-wide">
+                                🏆 Populares
+                              </span>
                             </div>
-                          </div>
-                          {country.popular && (
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-brand-primary/10 text-brand-primary flex-shrink-0 ml-2">
-                              Popular
-                            </span>
-                          )}
-                        </div>
-                      </button>
-                    ))
+                            {filteredCountries
+                              .filter((c) => c.popular)
+                              .map((country) => (
+                                <CountryOption
+                                  key={`popular-${country.code}`}
+                                  country={country}
+                                  isSelected={
+                                    currentCountry?.code === country.code
+                                  }
+                                  onClick={() => handleCountrySelect(country)}
+                                />
+                              ))}
+
+                            <div className="px-4 py-2 bg-theme-secondary/5 border-t border-theme-secondary">
+                              <span className="text-xs font-medium text-theme-secondary uppercase tracking-wide">
+                                🌍 Todos os Países
+                              </span>
+                            </div>
+                          </>
+                        )}
+
+                      {/* 📋 Lista Principal */}
+                      {(searchTerm
+                        ? filteredCountries
+                        : filteredCountries.filter((c) => !c.popular)
+                      ).map((country) => (
+                        <CountryOption
+                          key={country.code}
+                          country={country}
+                          isSelected={currentCountry?.code === country.code}
+                          onClick={() => handleCountrySelect(country)}
+                        />
+                      ))}
+                    </>
                   ) : (
+                    // 🚫 Estado Vazio
                     <div className="px-4 py-8 text-center">
-                      <FiPhone className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
+                      <FiGlobe className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                       <p className="text-sm text-theme-secondary">
                         {searchTerm
                           ? `Nenhum país encontrado para "${searchTerm}"`
                           : 'Nenhum país disponível'}
                       </p>
+                      {searchTerm && (
+                        <p className="text-xs text-theme-tertiary mt-1">
+                          Tente buscar por nome, código ou DDD
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -616,13 +444,17 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
               type="tel"
               value={formattedNumber}
               onChange={handleNumberChange}
-              placeholder={
-                currentCountry?.format.replace(/X/g, '0') || placeholder
-              }
+              onPaste={handlePaste}
+              placeholder={dynamicPlaceholder}
               disabled={disabled}
               className={`
                 input-classical !rounded-l-none w-full pr-10
                 ${error ? 'border-accent-red focus:border-accent-red' : ''}
+                ${
+                  warningMessage
+                    ? 'border-orange-400 focus:border-orange-400'
+                    : ''
+                }
                 ${
                   disabled
                     ? 'bg-theme-secondary bg-opacity-50 cursor-not-allowed text-theme-tertiary'
@@ -635,7 +467,11 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
             {(value || localNumber) && !disabled && (
               <button
                 type="button"
-                onClick={handleClear}
+                onClick={() => {
+                  setLocalNumber('');
+                  onChange('');
+                  setWarningMessage('');
+                }}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary hover:text-theme-primary transition-colors"
               >
                 <FiX className="w-4 h-4" />
@@ -644,34 +480,73 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
           </div>
         </div>
 
+        {/* ⚠️ Mensagem de Aviso */}
+        {warningMessage && (
+          <p className="text-xs text-orange-600 flex items-center space-x-1 mt-1 animate-pulse">
+            <span>⚠️</span>
+            <span>{warningMessage}</span>
+          </p>
+        )}
+
         {/* ❌ Erro */}
-        {error && (
+        {error && !warningMessage && (
           <p className="text-xs text-accent-red flex items-center space-x-1 mt-1">
             <span>⚠️</span>
             <span>{error}</span>
           </p>
         )}
 
-        {/* ℹ️ Info sobre formatação */}
-        {!error && !disabled && currentCountry && (
-          <p className="text-xs text-theme-tertiary mt-1">
-            Formato: {currentCountry.flag} {currentCountry.dialCode}{' '}
-            {currentCountry.format}
-          </p>
-        )}
-
-        {/* 🐛 Debug info (apenas em desenvolvimento) */}
-        {process.env.NODE_ENV === 'development' && value && (
-          <div className="mt-2 p-2 bg-theme-secondary bg-opacity-20 rounded text-xs">
-            <div className="text-theme-tertiary">
-              <strong>🔍 Debug:</strong> {value} | País: {currentCountry?.code}{' '}
-              | Local: {localNumber} | Flag: {currentCountry?.flag}
-            </div>
+        {/* ✅ Indicador de Progresso */}
+        {localNumber && currentCountry && (
+          <div className="mt-1">
+            {localNumber.length !== currentCountry.maxDigits && (
+              <p className="text-xs text-theme-tertiary">
+                {localNumber.length}/{currentCountry.maxDigits} dígitos
+              </p>
+            )}
           </div>
         )}
       </div>
     </div>
   );
 };
+
+// 🎨 Componente para opção de país (reutilizável)
+const CountryOption: React.FC<{
+  country: PhoneCountry;
+  isSelected: boolean;
+  onClick: () => void;
+}> = ({ country, isSelected, onClick }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`
+      w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 
+      border-b last:border-b-0 border-theme-secondary
+      ${
+        isSelected
+          ? 'bg-brand-primary/10 text-brand-primary font-medium'
+          : 'text-theme-primary'
+      }
+    `}
+  >
+    <div className="flex items-center justify-between">
+      <div className="flex items-center space-x-3 min-w-0 flex-1">
+        <span className="text-lg flex-shrink-0">{country.flag}</span>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-medium truncate">{country.name}</div>
+          <div className="text-xs text-theme-tertiary truncate">
+            {country.dialCode} • {country.format} • {country.maxDigits} dígitos
+          </div>
+        </div>
+      </div>
+      {country.popular && (
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-brand-primary/10 text-brand-primary flex-shrink-0 ml-2">
+          Popular
+        </span>
+      )}
+    </div>
+  </button>
+);
 
 export default InternationalPhoneInput;

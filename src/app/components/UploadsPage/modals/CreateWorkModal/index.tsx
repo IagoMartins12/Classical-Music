@@ -280,10 +280,8 @@ const CreateWorkModal = ({
   // 🆕 Opções para Video Aula
   const videoAulaTypeOptions = [
     { value: 'video', label: 'Vídeo Normal' },
-    { value: 'story', label: 'Story (Vertical)' },
-    { value: 'reels', label: 'Reels/Shorts' },
+    { value: 'reels', label: 'Reels/Shorts' }, // Removido 'story'
     { value: 'live', label: 'Live/Transmissão' },
-    { value: 'tutorial', label: 'Tutorial' },
   ];
 
   const videoAulaSourceOptions = [
@@ -291,7 +289,6 @@ const CreateWorkModal = ({
     { value: 'instagram', label: 'Instagram' },
     { value: 'tiktok', label: 'TikTok' },
     { value: 'local', label: 'Upload Local' },
-    { value: 'external', label: 'URL Externa' },
   ];
 
   // 🔧 CORRIGIDO: Usar useCallback para estabilizar funções
@@ -1196,22 +1193,12 @@ const CreateWorkModal = ({
                   {/* ID IMSLP */}
                   <Input
                     label="Link IMSLP"
-                    className="hiddem"
                     value={formData.imslpPermlink}
                     onChange={(e) =>
                       handleInputChange('imslpId', e.target.value)
                     }
                     placeholder="Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
                     leftIcon={<FiExternalLink />}
-                  />
-                  <Input
-                    label="URL do Vídeo"
-                    value={formData.videoUrl}
-                    onChange={(e) =>
-                      handleInputChange('videoUrl', e.target.value)
-                    }
-                    placeholder="https://www.youtube.com/watch?v=..."
-                    leftIcon={<FiPlay />}
                   />
                 </div>
               </AnimatedCard>

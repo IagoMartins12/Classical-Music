@@ -1,10 +1,10 @@
-// components/auth/OnboardingModal.tsx - Versão com sistema completo atualizado
+// components/auth/OnboardingModal.tsx - COM VALIDAÇÃO DE TELEFONE
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
 import { getOnboardingOptions, completeOnboarding } from '@/app/actions/auth';
 import { toast } from 'react-hot-toast';
-import { FiAlertCircle } from 'react-icons/fi';
+import { FiAlertCircle, FiPhone } from 'react-icons/fi';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import Button from '../../Common/Button';
@@ -15,10 +15,13 @@ import InstrumentsStep from '../onboarding/InstrumentsStep';
 import PreferencesStep from '../onboarding/PreferencesStep';
 import ProfileStep from '../onboarding/ProfileStep';
 import CompletionStep from '../onboarding/CompletionStep';
-import { useUserStore } from '@/app/hooks/userStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
 import { useRouter } from 'next/navigation';
+import {
+  canProceedWithPhone,
+  usePhoneValidation,
+} from '@/app/utils/phones_and_location/phoneValidation';
 
 interface OnboardingOptions {
   instruments: Array<{ id: string; name: string; category: string | null }>;
@@ -33,7 +36,7 @@ interface OnboardingOptions {
 }
 
 const OnboardingModal: React.FC = () => {
-  const { user } = useAuth(); // Usar useAuth em vez de useUserStore diretamente
+  const { user } = useAuth();
   const {
     isOpen,
     close,
@@ -53,8 +56,15 @@ const OnboardingModal: React.FC = () => {
   const [options, setOptions] = useState<OnboardingOptions | null>(null);
   const [isLoadingOptions, setIsLoadingOptions] = useState(false);
 
-  // Ref para controlar o scroll do modal
+  // 🆕 Estado para erros de validação
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: string]: string;
+  }>({});
+
   const modalRef = useRef<ModalRef>(null);
+
+  // 🆕 VALIDAÇÃO DE TELEFONE EM TEMPO REAL
+  const phoneValidation = usePhoneValidation(data.phone || '');
 
   // Load onboarding options when modal opens
   useEffect(() => {
@@ -69,6 +79,29 @@ const OnboardingModal: React.FC = () => {
       modalRef.current.scrollToTop();
     }
   }, [step, isOpen]);
+
+  // 🆕 Atualizar erros de validação quando telefone mudar
+  useEffect(() => {
+    if (data.phone) {
+      if (phoneValidation.showError && phoneValidation.error) {
+        setValidationErrors((prev) => ({
+          ...prev,
+          phone: phoneValidation.error!,
+        }));
+      } else {
+        setValidationErrors((prev) => {
+          const { phone, ...rest } = prev;
+          return rest;
+        });
+      }
+    } else {
+      // Telefone vazio é válido, remover erro
+      setValidationErrors((prev) => {
+        const { phone, ...rest } = prev;
+        return rest;
+      });
+    }
+  }, [data.phone, phoneValidation.showError, phoneValidation.error]);
 
   const loadOptions = async () => {
     setIsLoadingOptions(true);
@@ -87,7 +120,6 @@ const OnboardingModal: React.FC = () => {
     }
   };
 
-  // 🔄 FUNÇÃO HANDLE COMPLETE ATUALIZADA
   const handleComplete = async () => {
     if (!user?.id) {
       toast.error('Usuário não encontrado');
@@ -99,30 +131,23 @@ const OnboardingModal: React.FC = () => {
       data,
       hasLocation: !!data.location,
       hasPhone: !!data.phone,
+      phoneValidation: phoneValidation,
     });
 
     setLoading(true);
 
     try {
-      // 1. Completar onboarding no backend
       const result = await completeOnboarding(user.id, data);
 
       if (result.success) {
         console.log('✅ Onboarding completado no backend:', result.user);
 
-        // 2. Atualizar sessão e store local
         const sessionUpdated = await updateUserSession();
 
         if (sessionUpdated) {
           console.log('✅ Sessão atualizada com sucesso');
-
-          // 3. Limpar dados do onboarding e fechar modal
           complete();
-
-          // 4. Mostrar sucesso
           toast.success('🎉 Onboarding finalizado com sucesso!');
-
-          // 5. Refresh para garantir que tudo está atualizado
           router.refresh();
         } else {
           console.warn(
@@ -166,16 +191,31 @@ const OnboardingModal: React.FC = () => {
     ) {
       console.log('🔄 Recomeçando onboarding do zero');
       resetData();
+      setValidationErrors({});
       toast.success('Progresso removido. Começando do início...');
     }
   };
 
-  // Função para avançar step (o useEffect cuida do scroll)
   const handleNextStep = () => {
-    console.log(`➡️ Avançando do step ${step} para ${step + 1}`);
+    console.log(`➡️ Tentando avançar do step ${step} para ${step + 1}`);
+
+    // Validar antes de avançar
+    if (!canProceed()) {
+      console.log('❌ Não pode prosseguir - validação falhou');
+
+      // Se é erro de telefone, mostrar toast específico
+      if (validationErrors.phone) {
+        toast.error(validationErrors.phone);
+      }
+
+      return;
+    }
+
+    console.log('✅ Validação passou - avançando step');
     nextStep();
   };
 
+  // 🔧 FUNÇÃO CANPROCEED ATUALIZADA COM VALIDAÇÃO DE TELEFONE
   const canProceed = () => {
     switch (step) {
       case 1:
@@ -183,14 +223,21 @@ const OnboardingModal: React.FC = () => {
       case 2:
         return !!data.userType;
       case 3:
-        return (
-          data.userType !== 'MUSIC_STUDENT' ||
-          (data.instruments && data.instruments.length > 0)
-        );
+        return true; // Instrumentos são opcionais
       case 4:
-        return true;
+        return true; // Preferências são opcionais
       case 5:
-        return true;
+        // 🆕 VALIDAÇÃO DO STEP 5 (ProfileStep) - onde o telefone é coletado
+        const hasValidPhone = canProceedWithPhone(data.phone || '');
+        console.log('🔍 Validação Step 5:', {
+          phone: data.phone,
+          hasValidPhone,
+          phoneValidation: phoneValidation,
+          validationErrors: validationErrors,
+        });
+
+        // Telefone deve ser válido (vazio OU completo)
+        return hasValidPhone;
       case 6:
         return true;
       default:
@@ -263,7 +310,7 @@ const OnboardingModal: React.FC = () => {
     }
   };
 
-  // 🐛 Debug para verificar dados do onboarding
+  // 🐛 Debug aprimorado
   useEffect(() => {
     if (process.env.NODE_ENV === 'development' && isOpen) {
       console.log('🔍 OnboardingModal Estado:', {
@@ -271,12 +318,14 @@ const OnboardingModal: React.FC = () => {
         data,
         hasLocation: !!data.location,
         hasPhone: !!data.phone,
+        phoneValidation: phoneValidation,
+        validationErrors,
         canProceed: canProceed(),
         isLoading,
         user: user?.id,
       });
     }
-  }, [step, data, isLoading, user]);
+  }, [step, data, isLoading, user, phoneValidation, validationErrors]);
 
   return (
     <Modal
@@ -306,6 +355,26 @@ const OnboardingModal: React.FC = () => {
         </div>
       </div>
 
+      {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE (se houver erro) */}
+      {step === 5 && validationErrors.phone && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3">
+          <FiPhone className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+          <div>
+            <h4 className="text-sm font-medium text-red-800">
+              Telefone inválido
+            </h4>
+            <p className="text-sm text-red-700 mt-1">
+              {validationErrors.phone}
+            </p>
+            {phoneValidation.progressMessage && (
+              <p className="text-xs text-red-600 mt-1">
+                {phoneValidation.progressMessage}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Step Content */}
       <div className="">{renderStep()}</div>
 
@@ -330,12 +399,18 @@ const OnboardingModal: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-3">
+            {/* 🆕 FEEDBACK VISUAL DO BOTÃO CONTINUAR */}
             <Button
               variant="primary"
               onClick={handleNextStep}
               disabled={!canProceed() || isLoading}
+              title={
+                !canProceed() && validationErrors.phone
+                  ? validationErrors.phone
+                  : undefined
+              }
             >
-              {step === 6 ? 'Finalizar' : 'Continuar'}
+              {step === 5 ? 'Finalizar Perfil' : 'Continuar'}
             </Button>
           </div>
         </div>
@@ -352,23 +427,6 @@ const OnboardingModal: React.FC = () => {
               <FiAlertCircle className="w-3 h-3" />
               <span>Recomeçar do zero</span>
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* 🐛 Debug Info (apenas em desenvolvimento) */}
-      {process.env.NODE_ENV === 'development' && isOpen && (
-        <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <h4 className="text-sm font-medium text-yellow-800 mb-2">
-            🔍 Debug - Estado do Onboarding:
-          </h4>
-          <div className="text-xs text-yellow-700 space-y-1">
-            <div>Step: {step}/6</div>
-            <div>UserType: {data.userType || 'não definido'}</div>
-            <div>Localização: {data.location ? '✅' : '❌'}</div>
-            <div>Telefone: {data.phone ? '✅' : '❌'}</div>
-            <div>Pode prosseguir: {canProceed() ? '✅' : '❌'}</div>
-            <div>Loading: {isLoading ? '⏳' : '✅'}</div>
           </div>
         </div>
       )}

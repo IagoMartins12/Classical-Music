@@ -209,9 +209,6 @@ const ProfileStep: React.FC = () => {
             defaultCountry="br"
             showLabel={true}
           />
-          <p className="text-xs text-theme-tertiary mt-1">
-            Seu telefone será formatado automaticamente para o país selecionado
-          </p>
         </div>
 
         {/* Localização */}
@@ -254,50 +251,6 @@ const ProfileStep: React.FC = () => {
             <li>• Você pode alterar essas configurações a qualquer momento</li>
           </ul>
         </div>
-
-        {/* 🐛 Debug Info (apenas em desenvolvimento) */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg max-w-lg mx-auto">
-            <h4 className="text-sm font-medium text-yellow-800 mb-2">
-              🔍 Debug - Dados do ProfileStep:
-            </h4>
-            <div className="text-xs text-yellow-700 space-y-2">
-              <div>
-                <strong>Localização salva:</strong>
-                {data.location?.country && (
-                  <div className="ml-2">
-                    🌍 País: {data.location.country.flag}{' '}
-                    {data.location.country.name} (
-                    {data.location.country.isoCode})
-                  </div>
-                )}
-                {data.location?.state && (
-                  <div className="ml-2">
-                    🗺️ Estado: {data.location.state.name} (
-                    {data.location.state.isoCode})
-                  </div>
-                )}
-                {data.location?.city && (
-                  <div className="ml-2">
-                    🏙️ Cidade: {data.location.city.name}
-                  </div>
-                )}
-                {!data.location?.country && (
-                  <div className="ml-2 text-gray-500">
-                    Nenhuma localização selecionada
-                  </div>
-                )}
-              </div>
-              <div>
-                <strong>Telefone:</strong> {data.phone || 'Não definido'}
-              </div>
-              <div>
-                <strong>Bio:</strong>{' '}
-                {data.bio ? `${data.bio.length} chars` : 'Não definida'}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
