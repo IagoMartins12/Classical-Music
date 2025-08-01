@@ -38,6 +38,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { SiInstagram, SiSpotify, SiTiktok, SiYoutube } from 'react-icons/si';
 import { FaGraduationCap } from 'react-icons/fa';
 import { useAuth } from '@/app/hooks/useAuth';
+import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -239,7 +240,6 @@ const CreateWorkModal = ({
     dedicationComposerLink: '',
     instrumentation: '',
     workType: 'INDIVIDUAL',
-    isPartOfCollection: false,
     movementNumber: '',
     subtitle: '',
     timeSignature: '',
@@ -316,6 +316,59 @@ const CreateWorkModal = ({
     [errors.composerId]
   );
 
+  const originalData = useMemo(() => {
+    if (!editingWork) return null;
+
+    let detectedUrl = '';
+
+    if (editingWork.imslpId || editingWork.imslpPermlink) {
+      setIsEditingExternalSource(true);
+      // Construir URL do IMSLP baseado no ID ou permlink
+      detectedUrl =
+        editingWork.imslpPermlink ||
+        (editingWork.imslpId
+          ? `https://imslp.org/wiki/${editingWork.imslpId}`
+          : '');
+    }
+
+    return {
+      title: editingWork.title || '',
+      composerId: editingWork.composerId || '',
+      instrumentId: editingWork.instrumentId || '',
+      epochId: editingWork.epochId || '',
+      videoUrl: editingWork.videoUrl || '',
+      imslpId: editingWork.imslpId || '',
+      imslpPermlink: editingWork.imslpPermlink || '',
+      opOrCatalog: editingWork.opOrCatalog || '',
+      compositionYear: editingWork.compositionYear || '',
+      firstPublishDate: editingWork.firstPublishDate || '',
+      tone: editingWork.tone || '',
+      mediaDuration: editingWork.mediaDuration || '',
+      workStyle: editingWork.workStyle || '',
+      moviment: editingWork.moviment || '',
+      categoryNames: editingWork.categoryNames || [],
+      workGenresArr: editingWork.workGenresArr || [],
+      dedicateTo: editingWork.dedicateTo || '',
+      dedicationComposerLink: editingWork.dedicationComposerLink || '',
+      instrumentation: editingWork.instrumentation || '',
+      workType: editingWork.workType || 'INDIVIDUAL',
+      movementNumber: editingWork.movementNumber?.toString() || '',
+      subtitle: editingWork.subtitle || '',
+      timeSignature: editingWork.timeSignature || '',
+      tempoMarking: editingWork.tempoMarking || '',
+      movementsDetailed: editingWork.movementsDetailed
+        ? JSON.stringify(editingWork.movementsDetailed)
+        : '',
+      imslpTags: editingWork.imslpTags?.join(', ') || '',
+      difficultyLevel: editingWork.difficultyLevel || '', // 🔧 CORRIGIDO: string vazia
+    };
+  }, [editingWork]);
+
+  const hasChanges = useSmartFormChanges(
+    formData,
+    originalData,
+    ['workType'] // Se null = modo criação, se preenchido = modo edição
+  );
   // Populate form when editing
   useEffect(() => {
     loadFormData();
@@ -356,7 +409,6 @@ const CreateWorkModal = ({
         dedicationComposerLink: editingWork.dedicationComposerLink || '',
         instrumentation: editingWork.instrumentation || '',
         workType: editingWork.workType || 'INDIVIDUAL',
-        isPartOfCollection: editingWork.isPartOfCollection || false,
         movementNumber: editingWork.movementNumber?.toString() || '',
         subtitle: editingWork.subtitle || '',
         timeSignature: editingWork.timeSignature || '',
@@ -715,7 +767,6 @@ const CreateWorkModal = ({
         : prev.workGenresArr,
       difficultyLevel: data.difficultyLevel || prev.difficultyLevel,
       workType: data.workType || prev.workType,
-      isPartOfCollection: data.isPartOfCollection || prev.isPartOfCollection,
       movementNumber: data.movementNumber?.toString() || prev.movementNumber,
       // 🔧 CORRIGIDO: Garantir que sempre temos um ID de compositor válido
       composerId: data.composerId || prev.composerId,
@@ -774,9 +825,18 @@ const CreateWorkModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => {
+        if (editingWork && originalData) {
+          setFormData(originalData);
+        }
+        onClose();
+      }}
       maxWidth="4xl"
       showCloseButton={true}
+      confirmOnClose={true} // Ativa confirmação
+      hasChanges={hasChanges} // Detecta mudanças
+      isProcessing={isSubmitting || duplicateCheck.loading} // Detecta processo
+      processName="criação de peça"
     >
       <AnimatedItem direction="scale" springType="bouncy" className="w-full">
         <div>

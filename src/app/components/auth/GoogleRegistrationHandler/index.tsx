@@ -40,8 +40,6 @@ const GoogleRegistrationHandler: React.FC = () => {
     );
 
     if ((isGoogleRegister || googleRegisterFlag === 'true') && session?.user) {
-      console.log('🔍 Detectando possível retorno de registro Google...');
-
       // Verificar se é realmente um registro novo baseado no timestamp
       const now = Date.now();
       const timestamp = googleRegisterTimestamp
@@ -55,9 +53,6 @@ const GoogleRegistrationHandler: React.FC = () => {
       const isRecentRegistration = timestamp > 0 && timeDiff < 10 * 60 * 1000; // 10 minutos
 
       if (isRecentRegistration || isGoogleRegister) {
-        console.log('✅ Confirmado: registro Google detectado');
-        console.log(`⏰ Tempo desde registro: ${Math.round(timeDiff / 1000)}s`);
-
         // Salvar dados para o modal (se não existirem)
         const existingEmail = sessionStorage.getItem('google-register-email');
         const existingName = sessionStorage.getItem('google-register-name');
@@ -86,18 +81,10 @@ const GoogleRegistrationHandler: React.FC = () => {
 
         // Abrir modal de registro com delay para garantir que tudo carregou
         setTimeout(() => {
-          console.log('🎯 Abrindo modal de registro para usuário Google');
           openRegisterModal();
         }, 800);
       } else {
         // Não é um registro novo - limpar flags antigas
-        console.log('ℹ️ Não é um registro novo - limpando flags antigas');
-        console.log(
-          `⏰ Diferença de tempo: ${Math.round(
-            timeDiff / 1000
-          )}s (limite: 600s)`
-        );
-
         sessionStorage.removeItem('google-register-pending');
         sessionStorage.removeItem('google-register-timestamp');
         sessionStorage.removeItem('google-register-email');
@@ -105,9 +92,6 @@ const GoogleRegistrationHandler: React.FC = () => {
 
         // Se o usuário não completou onboarding, mostrar modal de onboarding
         if (session.user && !session.user.onboardingCompleted) {
-          console.log(
-            '👤 Usuário logado sem onboarding - abrindo modal de onboarding'
-          );
           setTimeout(() => {
             openOnboardingModal();
           }, 500);
@@ -115,7 +99,6 @@ const GoogleRegistrationHandler: React.FC = () => {
       }
     } else if (session?.user && !session.user.onboardingCompleted) {
       // Usuário logado normalmente mas sem onboarding completo
-      console.log('👤 Usuário logado normalmente sem onboarding');
       setTimeout(() => {
         openPromptModal();
       }, 500);

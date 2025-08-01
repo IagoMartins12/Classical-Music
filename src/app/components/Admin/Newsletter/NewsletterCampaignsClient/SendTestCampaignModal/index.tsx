@@ -611,6 +611,8 @@ export default function SendTestCampaignModal({
       onClose={step === 'sending' ? () => {} : handleClose}
       maxWidth="3xl"
       showCloseButton={step !== 'sending'}
+      confirmOnClose
+      withouVerification
     >
       {renderContent()}
     </Modal>

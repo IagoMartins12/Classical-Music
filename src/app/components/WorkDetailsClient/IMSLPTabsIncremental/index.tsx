@@ -1,7 +1,7 @@
 // components/IMSLPTabsIncremental.tsx - VERSÃO HÍBRIDA (Dados Mistos + Tabs/Botões Antigos)
 'use client';
 
-import { useState, useRef, useMemo } from 'react';
+import { useState, useRef, useMemo, act } from 'react';
 import {
   FiMusic,
   FiFileText,
@@ -622,10 +622,6 @@ export default function IMSLPTabsIncremental({
                   const isActive = activeTab === tab.id;
                   const tabData =
                     mixedData[tab.type as keyof typeof mixedData] || [];
-                  const tabCount = tabData.reduce(
-                    (sum, group) => sum + group.scores.length,
-                    0
-                  );
 
                   // ✅ Usar sistema de estatísticas do código antigo
                   const tabStats: TabStatistics = getTabStats
@@ -637,9 +633,9 @@ export default function IMSLPTabsIncremental({
                       );
 
                   console.log('tabStats', {
-                    tabStats,
-                    tabCount,
-                    mixedData,
+                    tab,
+                    activeTabData,
+                    activeTab,
                   });
                   return (
                     <AnimatedItem
@@ -679,7 +675,10 @@ export default function IMSLPTabsIncremental({
                                 : 'bg-theme-elevated text-theme-tertiary border border-theme-secondary'
                             }`}
                           >
-                            {tabStats.loaded}/{tabStats.total}
+                            {tabStats.loaded}/
+                            {tabStats.total < tabStats.loaded
+                              ? tabStats.loaded
+                              : tabStats.total}
                           </span>
 
                           {/* Indicador de progresso e status */}

@@ -5,17 +5,7 @@ import React from 'react';
 import { FiAlertTriangle, FiX, FiSave, FiTrash2 } from 'react-icons/fi';
 import Modal from '..';
 import Button from '../../Common/Button';
-
-export interface ConfirmationConfig {
-  type: 'unsaved-changes' | 'ongoing-process' | 'danger' | 'custom';
-  title?: string;
-  message?: string;
-  processName?: string;
-  confirmLabel?: string;
-  cancelLabel?: string;
-  icon?: React.ReactNode;
-  confirmVariant?: 'primary' | 'danger' | 'warning';
-}
+import { ConfirmationConfig } from '@/app/hooks/useModalConfirmation';
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -167,6 +157,21 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           </div>
         )}
 
+        {config.type === 'general-no-verification' && (
+          <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4 mb-6">
+            <div className="flex items-start space-x-3">
+              <FiSave className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
+              <div>
+                <h4 className="font-medium text-accent-amber mb-1">
+                  Possíveis Alterações Detectadas
+                </h4>
+                <p className="text-sm text-accent-amber/80">
+                  Salve suas alterações antes de fechar para não perdê-las.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Botões */}
         <div className="flex items-center justify-end space-x-3">
           <Button
@@ -194,14 +199,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           >
             {finalConfig.confirmLabel}
           </Button>
-        </div>
-
-        {/* Footer info */}
-        <div className="mt-4 pt-4 border-t border-theme-secondary">
-          <p className="text-xs text-theme-tertiary text-center">
-            💡 <strong>Dica:</strong> Use Ctrl+S (Cmd+S) para salvar rapidamente
-            em formulários
-          </p>
         </div>
       </div>
     </Modal>

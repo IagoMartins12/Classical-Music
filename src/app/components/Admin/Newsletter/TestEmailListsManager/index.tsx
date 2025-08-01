@@ -159,6 +159,8 @@ const CreateEditModal: React.FC<CreateEditModalProps> = ({
       onClose={handleClose}
       maxWidth="2xl"
       showCloseButton={true}
+      confirmOnClose
+      withouVerification
     >
       <div className="space-y-6">
         <div className="text-center">

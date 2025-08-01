@@ -24,6 +24,7 @@ import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import CreateWorkModal from '../CreateWorkModal';
 import { useToast } from '@/app/hooks/useToast';
+import { useProcessChanges } from '@/app/hooks/useFormChanges';
 
 interface DiscoveredWork {
   id: string;
@@ -105,6 +106,8 @@ const BulkInsertWorksModal = ({
   // Estados de edição
   const [editingWork, setEditingWork] = useState<DiscoveredWork | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
+
+  const hasProcess = useProcessChanges(isDiscovering);
 
   // Estados de estatísticas
   const [stats, setStats] = useState({
@@ -384,6 +387,21 @@ const BulkInsertWorksModal = ({
         onClose={handleClose}
         maxWidth="4xl"
         showCloseButton={true}
+        confirmOnClose={true}
+        isProcessing={
+          hasProcess || currentStep === 'process' || currentStep === 'select'
+        }
+        processName={
+          isDiscovering
+            ? 'Descoberta de obras'
+            : currentStep === 'process'
+            ? 'Processamento de obra'
+            : currentStep === 'results'
+            ? 'Resultados de obras'
+            : currentStep === 'select'
+            ? 'Seleção de obras'
+            : 'process'
+        }
       >
         <AnimatedItem direction="scale" springType="bouncy" className="w-full">
           <div className="max-h-[90vh] overflow-hidden flex flex-col">
@@ -653,7 +671,7 @@ const BulkInsertWorksModal = ({
                     {/* Barra de progresso geral */}
                     <div className="w-full bg-theme-secondary rounded-full h-2 mb-2">
                       <div
-                        className="bg-brand-primary h-2 rounded-full transition-all duration-300"
+                        className="bg-gray-500 h-2 rounded-full transition-all duration-300"
                         style={{
                           width: `${
                             (workProgress.filter(
@@ -677,7 +695,7 @@ const BulkInsertWorksModal = ({
                   </div>
 
                   {/* Lista de obras com progresso individual */}
-                  <div className="max-h-96 overflow-y-auto space-y-3">
+                  <div className="max-h-96 overflow-y-auto overflow-x-hidden space-y-3">
                     {workProgress.map((work) => (
                       <div
                         key={work.tempId}
@@ -811,21 +829,21 @@ const BulkInsertWorksModal = ({
                   </div>
 
                   {/* Results list */}
-                  <div className="max-h-80 overflow-y-auto space-y-2">
+                  <div className="max-h-80 flex flex-col gap-2 px-4 py-2 overflow-y-auto overflow-x-hidden space-y-2">
                     {processResults.map((result) => (
                       <div
                         key={result.tempId}
                         className={`border rounded-lg p-3 ${
                           result.status === 'success'
-                            ? 'bg-accent-green/5 border-accent-green/20'
+                            ? 'bg-accent-green/5 border-green-300'
                             : result.status === 'error'
-                            ? 'bg-accent-red/5 border-accent-red/20'
+                            ? 'bg-accent-red/5 border-red-300'
                             : result.status === 'duplicate'
-                            ? 'bg-accent-amber/5 border-accent-amber/20'
+                            ? 'bg-accent-amber/5 border-amber-300'
                             : 'bg-theme-elevated border-theme-secondary'
                         }`}
                       >
-                        <div className="flex items-start space-x-3">
+                        <div className="flex items-center space-x-3">
                           <div className="flex-shrink-0 mt-0.5">
                             {result.status === 'success' && (
                               <FiCheck className="w-4 h-4 text-accent-green" />
@@ -843,7 +861,9 @@ const BulkInsertWorksModal = ({
                               {result.title}
                             </h4>
                             <p className="text-xs text-theme-secondary">
-                              {result.message}
+                              {result.message.includes('__TURBOPACK')
+                                ? 'Erro ao processar obra'
+                                : result.message}
                             </p>
                             {result.details?.finalTitle &&
                               result.details.finalTitle !== result.title && (

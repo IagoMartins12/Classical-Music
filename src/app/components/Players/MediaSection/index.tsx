@@ -79,6 +79,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     removeCustomAudio: false,
   });
   const [isUploading, setIsUploading] = useState(false);
+  const [lastSearch, setLastSearch] = useState(false);
 
   const toast = useToast();
 
@@ -111,15 +112,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
   // 🆕 Inicializar dados da mídia E pré-popular campos de edição
   useEffect(() => {
-    console.log('🎵 [MEDIA-SECTION] Inicializando dados de mídia:', {
-      workId: work.id,
-      hasSpotify: !!work.spotifyTrackId,
-      hasYoutube: !!work.youtubeVideoId,
-      hasCustomAudio: !!(work.customAudioUrl || work.customAudioFile),
-      customAudioSource: work.customAudioSource,
-      spotifyThumbnail: work.spotifyThumbnail,
-    });
-
     const initialData: MediaData = {
       spotify: work.spotifyTrackId
         ? {
@@ -171,32 +163,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       audioFile: null,
       removeCustomAudio: false,
     });
-
-    console.log(
-      '✅ [MEDIA-SECTION] Dados inicializados e campos pré-populados:',
-      {
-        spotify: !!initialData.spotify,
-        youtube: !!initialData.youtube,
-        customAudio: !!initialData.customAudio,
-        customAudioSource: work.customAudioSource,
-        prePopulatedSpotify: !!work.spotifyTrackUrl,
-        prePopulatedYoutube: !!work.youtubeVideoUrl,
-      }
-    );
   }, [work]);
 
-  console.log('work', work);
   // 🆕 Buscar mídia automaticamente (INTEGRADA: Spotify + YouTube + Áudio)
   const searchMedia = async (forceRefresh = false) => {
     setIsSearching(true);
     setSearchError(null);
 
     try {
-      console.log('🔍 [MEDIA-SECTION] Iniciando busca COMPLETA de mídia:', {
-        workId: work.id,
-        forceRefresh,
-      });
-
       const response = await fetch('/api/media-search', {
         method: 'POST',
         headers: {
@@ -215,14 +189,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       }
 
       if (data.success) {
-        console.log('✅ [MEDIA-SECTION] Busca COMPLETA concluída:', {
-          spotify: !!data.spotify,
-          youtube: !!data.youtube,
-          alternativeAudio: data.alternativeAudio?.length || 0,
-          spotifyThumbnail: data.spotify?.thumbnail,
-          audioSaved: data.metadata?.audioSourceSaved || false, // 🆕 Verificar se áudio foi salvo
-        });
-
         // Atualizar dados locais
         setMediaData((prev) => ({
           ...prev,
@@ -392,25 +358,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     try {
       setIsUploading(true);
 
-      console.log('🗑️ [MEDIA-SECTION] Deletando áudio customizado:', {
-        customAudioFile: work.customAudioFile,
-        customAudioSource: work.customAudioSource,
-      });
-
       // 🎯 DELETAR ARQUIVO FÍSICO (se for upload local)
       if (work.customAudioFile && work.customAudioSource === 'upload') {
         const fileName = work.customAudioFile.split('/').pop();
         if (fileName) {
-          const deleteFileResponse = await fetch(
+          await fetch(
             `/api/works/${work.id}/media/upload?fileName=${fileName}&mediaType=audio`,
             { method: 'DELETE' }
           );
-
-          if (!deleteFileResponse.ok) {
-            console.warn('⚠️ [MEDIA-SECTION] Falha ao deletar arquivo físico');
-          } else {
-            console.log('✅ [MEDIA-SECTION] Arquivo físico deletado');
-          }
         }
       }
 
@@ -429,8 +384,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       if (!response.ok) {
         throw new Error(data.error || 'Erro ao deletar');
       }
-
-      console.log('✅ [MEDIA-SECTION] Áudio customizado deletado com sucesso');
 
       // 🎯 LIMPAR INTERFACE
       setMediaData((prev) => ({
@@ -474,13 +427,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     try {
       setIsUploading(true);
 
-      console.log('💾 [MEDIA-SECTION] Salvando mídia manual:', {
-        spotifyUrl: !!editData.spotifyUrl,
-        youtubeUrl: !!editData.youtubeUrl,
-        audioFile: !!editData.audioFile,
-        removeCustomAudio: editData.removeCustomAudio,
-      });
-
       const updateData: any = {};
 
       // Spotify
@@ -519,10 +465,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
       // Upload de áudio
       if (editData.audioFile) {
-        console.log(
-          '📤 [MEDIA-SECTION] Fazendo upload de áudio customizado...'
-        );
-
         const formData = new FormData();
         formData.append('file', editData.audioFile);
         formData.append('mediaType', 'audio');
@@ -541,8 +483,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           throw new Error(uploadData.error || 'Erro no upload');
         }
 
-        console.log('✅ [MEDIA-SECTION] Upload concluído:', uploadData.url);
-
         updateData.customAudioFile = uploadData.url;
         updateData.customAudioUrl = uploadData.url;
         updateData.customAudioSource = 'upload'; // 🆕 Marcar como upload
@@ -558,8 +498,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       updateData.mediaSource = 'manual';
 
       // Salvar no banco
-      console.log('💾 [MEDIA-SECTION] Salvando na base de dados...');
-
       const response = await fetch(`/api/works/${work.id}/media`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -571,8 +509,6 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       if (!response.ok) {
         throw new Error(data.error || 'Erro ao salvar');
       }
-
-      console.log('✅ [MEDIA-SECTION] Dados salvos com sucesso');
 
       // Atualizar interface
       setMediaData((prev) => ({
@@ -768,6 +704,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               Adicionar Mídia Manualmente
             </h3>
 
+            {!work.lastMediaSearch && (
+              <p className="text-sm font-semibold text-center text-theme-primary mb-4">
+                Para adicionar Mídias, primeiramente é necessario carrega-las.
+                Clique no botão de &quot;Carregar Mídia&quot; acima. Logo em
+                seguida, edite a mídia.
+              </p>
+            )}
+
             <div className="space-y-4">
               {/* 🎯 Campo Spotify PRÉ-POPULADO */}
               <Input
@@ -880,7 +824,8 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     (!editData.spotifyUrl &&
                       !editData.youtubeUrl &&
                       !editData.audioFile &&
-                      !editData.removeCustomAudio)
+                      !editData.removeCustomAudio) ||
+                    !work.lastMediaSearch
                   }
                 >
                   {isUploading ? 'Salvando...' : 'Salvar Mídia'}
@@ -914,7 +859,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         {/* Grid de Mídia */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Coluna 1: Áudio */}
-          <div className="space-y-6 flex flex-col justify-between">
+          <div className="space-y-6">
             {/* Link do Spotify */}
             <AnimatedItem direction="up" delay={0.2}>
               <div className="space-y-4">
@@ -945,7 +890,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     }}
                   />
                 ) : (
-                  <div className="bg-theme-elevated rounded-xl p-6 border-2 border-dashed border-theme-secondary text-center">
+                  <div className="bg-theme-elevated rounded-xl p-8 border-2 border-dashed border-theme-secondary text-center">
                     <SiSpotify className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                     <p className="text-theme-secondary text-sm">
                       {isSearching
@@ -1083,16 +1028,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   {mediaData.customAudio && (
                     <div className="flex items-center space-x-1 text-blue-400">
                       <FiMusic className="w-3 h-3" />
-                      <span>
-                        {work.customAudioSource === 'upload'
-                          ? 'Áudio Customizado'
-                          : `Fonte: ${work.customAudioSource}`}
-                      </span>
-                      {mediaData.customAudio.isPersistent && (
-                        <span className="text-xs bg-blue-600 px-1 rounded">
-                          SALVO
-                        </span>
-                      )}
+                      <span>Áudio</span>
                     </div>
                   )}
 

@@ -39,7 +39,6 @@ import Button from '../Common/Button';
 import Select from '../Common/Select';
 import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
 import PaginationControls from '../PaginationControls';
-import BulkUploadModal from './modals/BulkUploadModal';
 import CreateScoreModal from './modals/CreateScoreModal';
 import CreateWorkModal from './modals/CreateWorkModal';
 import CreateComposerModal from './modals/CreateComposerModal';
@@ -143,7 +142,6 @@ const UploadsClient = ({
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [showFilters, setShowFilters] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showBulkModal, setShowBulkModal] = useState(false);
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
   const [createModalType, setCreateModalType] = useState<
     'composer' | 'work' | 'score'
@@ -181,12 +179,12 @@ const UploadsClient = ({
   // Carregar dados do formulário quando necessário
   useEffect(() => {
     if (
-      (showCreateModal || showBulkModal || showBulkInsertModal) &&
+      (showCreateModal || showBulkInsertModal) &&
       formData.roles.length === 0
     ) {
       loadFormData();
     }
-  }, [showCreateModal, showBulkModal, showBulkInsertModal]);
+  }, [showCreateModal, , showBulkInsertModal]);
 
   const loadFormData = async () => {
     setLoadingFormData(true);
@@ -1524,14 +1522,6 @@ const UploadsClient = ({
             works={formData.works}
           />
         </>
-      )}
-
-      {showBulkModal && (
-        <BulkUploadModal
-          isOpen={showBulkModal}
-          onClose={() => setShowBulkModal(false)}
-          type={'score'}
-        />
       )}
 
       {/* Modal de Bulk Insert de Obras */}

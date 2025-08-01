@@ -210,7 +210,13 @@ export default function CreateCampaignModal({
 
   return (
     <>
-      <Modal isOpen onClose={onClose} maxWidth="4xl">
+      <Modal
+        isOpen
+        onClose={onClose}
+        maxWidth="4xl"
+        confirmOnClose
+        withouVerification
+      >
         <div className="rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-theme-secondary">

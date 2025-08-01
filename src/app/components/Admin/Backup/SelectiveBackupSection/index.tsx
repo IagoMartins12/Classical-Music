@@ -3,13 +3,16 @@
 
 import { useState, useEffect } from 'react';
 import {
+  FiDatabase,
   FiDownload,
+  FiUpload,
   FiTrash2,
   FiRefreshCw,
   FiAlertTriangle,
   FiCheckCircle,
   FiActivity,
   FiInfo,
+  FiSettings,
   FiTarget,
   FiCheck,
   FiX,
@@ -26,7 +29,6 @@ import { useSelectiveBackup } from '@/app/hooks/admin/useSelectiveBackup';
 import Button from '@/app/components/Common/Button';
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
-import Select from '@/app/components/Common/Select';
 
 interface SelectiveBackupSectionProps {
   className?: string;
@@ -43,9 +45,11 @@ export default function SelectiveBackupSection({
     loading,
     error,
     isCreatingBackup,
+    isRestoringBackup,
     lastUpdated,
     refreshBackups,
     createSelectiveBackup,
+    restoreSelectiveBackup,
     deleteSelectiveBackup,
     formatBackupDate,
     getBackupAge,
@@ -151,20 +155,13 @@ export default function SelectiveBackupSection({
     return Math.floor((Date.now() - lastUpdated.getTime()) / (1000 * 60));
   };
 
-  const rawCategories = Object.keys(getCollectionsByCategory());
+  const categories = Object.keys(getCollectionsByCategory());
   const filteredCollections = getFilteredCollections();
   const allFilteredSelected =
     filteredCollections.length > 0 &&
     filteredCollections.every((c) => selectedCollections.includes(c.name));
   const finalCollections = getSelectedCollectionsWithDeps();
 
-  const categoryOptions = [
-    { value: 'all', label: 'Todas as Categorias' },
-    ...rawCategories.map((category) => ({
-      value: category,
-      label: category,
-    })),
-  ];
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
@@ -356,17 +353,34 @@ export default function SelectiveBackupSection({
                           </span>
                         </div>
 
-                        <Button
-                          variant="delete"
-                          size="sm"
-                          leftIcon={<FiTrash2 />}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteSelectiveBackup(backup.id);
-                          }}
-                        >
-                          Excluir
-                        </Button>
+                        <div className="flex items-center space-x-2">
+                          {backup.status === 'completed' && (
+                            <Button
+                              variant="secondary"
+                              size="sm"
+                              leftIcon={<FiUpload />}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                restoreSelectiveBackup(backup.id);
+                              }}
+                              disabled={isRestoringBackup}
+                            >
+                              Restaurar
+                            </Button>
+                          )}
+
+                          <Button
+                            variant="delete"
+                            size="sm"
+                            leftIcon={<FiTrash2 />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteSelectiveBackup(backup.id);
+                            }}
+                          >
+                            Excluir
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -379,8 +393,14 @@ export default function SelectiveBackupSection({
 
       {/* Modal de Criação */}
       {showCreateForm && (
-        <Modal isOpen maxWidth="4xl" onClose={() => setShowCreateForm(false)}>
-          <div className="bg-theme-elevated p-6  overflow-y-auto">
+        <Modal
+          isOpen
+          maxWidth="4xl"
+          onClose={() => setShowCreateForm(false)}
+          confirmOnClose
+          withouVerification
+        >
+          <div className="bg-theme-elevated p-6 max-h-[80vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-theme-primary">
                 Criar Backup Seletivo
@@ -452,12 +472,18 @@ export default function SelectiveBackupSection({
                   <label className="block text-sm font-medium text-theme-primary mb-2">
                     Categoria
                   </label>
-                  <Select
+                  <select
                     value={categoryFilter}
-                    options={categoryOptions}
                     onChange={(e) => setCategoryFilter(e.target.value)}
                     className="w-full px-3 py-2 bg-theme-secondary border border-theme-primary rounded-lg text-theme-primary"
-                  />
+                  >
+                    <option value="all">Todas as Categorias</option>
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

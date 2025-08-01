@@ -343,7 +343,7 @@ export default function GroupingSuggestions({
       )}
 
       {/* { Sugestões Inteligentes */}
-      {suggestions.length > 0 && (
+      {/* {suggestions.length > 0 && (
         <div>
           <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
             <FiTarget className="w-4 h-4 text-accent-green" />
@@ -424,7 +424,7 @@ export default function GroupingSuggestions({
             })}
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Opção para Novo Grupo */}
       <div>
@@ -434,7 +434,8 @@ export default function GroupingSuggestions({
         </h4>
 
         <button
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
             const nextIndex =
               Math.max(
                 0,
@@ -473,8 +474,8 @@ export default function GroupingSuggestions({
               </p>
               <p>
                 Partituras do mesmo grupo ficam organizadas juntas, seguindo o
-                padrão do IMSLP. Por exemplo: &quot;Partitura Completa&quot; (índice 0) e
-                &quot;Partes Individuais&quot; (índice 1).
+                padrão do IMSLP. Por exemplo: &quot;Partitura Completa&quot;
+                (índice 0) e &quot;Partes Individuais&quot; (índice 1).
               </p>
             </div>
           </div>

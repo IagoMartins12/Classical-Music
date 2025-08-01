@@ -69,23 +69,10 @@ const OnboardingManager: React.FC = () => {
     const checkAndOpenOnboarding = () => {
       if (hasProgress) {
         // Tem progresso salvo, perguntar se quer continuar
-        console.log('🔄 Progresso do onboarding encontrado, abrindo modal...');
         if (!isPromptModalOpen && !isLoading) {
           openPromptModal();
         }
-      } else {
-        // Não tem progresso, iniciar novo onboarding
-        console.log('🚀 Iniciando novo onboarding para usuário:', user?.id);
-
-        console.log('PROPS', {
-          isAuthenticated,
-          hasCheckedProgress,
-          isLoading,
-        });
-        if (!isAuthenticated && !hasCheckedProgress) return;
-        // openOnboarding();
       }
-
       setHasCheckedProgress(true);
     };
 
@@ -125,10 +112,6 @@ const StoreManager: React.FC = () => {
         await new Promise((resolve) => setTimeout(resolve, 50));
 
         setIsInitialized(true);
-
-        if (process.env.NODE_ENV === 'development') {
-          console.log('💧 Stores hidratados com sucesso');
-        }
       } catch (error) {
         console.error('Erro na hidratação dos stores:', error);
       }

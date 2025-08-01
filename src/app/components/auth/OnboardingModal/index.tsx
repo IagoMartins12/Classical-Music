@@ -327,6 +327,7 @@ const OnboardingModal: React.FC = () => {
     }
   }, [step, data, isLoading, user, phoneValidation, validationErrors]);
 
+  console.log('step', step);
   return (
     <Modal
       ref={modalRef}

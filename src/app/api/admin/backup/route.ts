@@ -274,11 +274,27 @@ export async function GET(request: NextRequest) {
 
         const backups: BackupInfo[] = [];
         for (const dir of backupDirs) {
-          const backupInfo = await getBackupInfo(
-            path.join(backupsDir, dir.name)
-          );
-          if (backupInfo) {
-            backups.push(backupInfo);
+          // NOVO: Filtrar apenas backups gerais (NÃO seletivos)
+          const metadataPath = path.join(backupsDir, dir.name, 'metadata.json');
+          let isGeneralBackup = true;
+
+          try {
+            const metadata = JSON.parse(
+              await fs.readFile(metadataPath, 'utf8')
+            );
+            isGeneralBackup = metadata.type !== 'selective';
+          } catch {
+            // Se não conseguir ler metadados, verificar pelo nome
+            isGeneralBackup = !dir.name.includes('selective-backup-');
+          }
+          // NOVO: Só processar se for backup geral
+          if (isGeneralBackup) {
+            const backupInfo = await getBackupInfo(
+              path.join(backupsDir, dir.name)
+            );
+            if (backupInfo) {
+              backups.push(backupInfo);
+            }
           }
         }
 

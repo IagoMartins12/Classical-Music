@@ -244,7 +244,13 @@ export default function CreateEditTemplateModal({
 
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose} maxWidth="5xl">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        maxWidth="5xl"
+        confirmOnClose
+        withouVerification
+      >
         <div className="rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
@@ -599,7 +605,13 @@ export default function CreateEditTemplateModal({
 
       {/* Preview Modal */}
       {showPreview && previewData && (
-        <Modal isOpen onClose={() => setShowPreview(false)} maxWidth="4xl">
+        <Modal
+          isOpen
+          onClose={() => setShowPreview(false)}
+          maxWidth="4xl"
+          confirmOnClose
+          withouVerification
+        >
           <div className="bg-theme-primary rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
             <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
               <h3 className="text-lg font-bold text-theme-primary">

@@ -69,7 +69,7 @@ interface BackupResult {
 }
 
 // Função para resolver dependências das collections
-function resolveDependencies(collections: string[]): string[] {
+export function resolveDependencies(collections: string[]): string[] {
   const resolved = new Set<string>();
   const toProcess = [...collections];
 
@@ -113,10 +113,11 @@ async function createSelectiveBackupDirectory(name?: string): Promise<string> {
 }
 
 // Executar backup seletivo
-async function performSelectiveBackup(
+export async function performSelectiveBackup(
   options: SelectiveBackupOptions
 ): Promise<BackupResult> {
   const startTime = Date.now();
+  let backupDir = '';
 
   console.log('🎯 Iniciando backup seletivo...');
   console.log(`📋 Collections selecionadas: ${options.collections.join(', ')}`);
@@ -132,7 +133,7 @@ async function performSelectiveBackup(
     );
 
     // Criar diretório de backup
-    const backupDir =
+    backupDir =
       options.outputDir || (await createSelectiveBackupDirectory(options.name));
 
     // Criar metadados iniciais
@@ -344,17 +345,16 @@ async function performSelectiveBackup(
 
     // Salvar erro no diretório se conseguir
     try {
-      const errorPath = path.join(
-        options.outputDir || process.cwd(),
-        'error.json'
-      );
-      const errorData = {
-        error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString(),
-        selectedCollections: options.collections,
-        includeDependencies: options.includeDependencies,
-      };
-      await fs.writeFile(errorPath, JSON.stringify(errorData, null, 2));
+      if (backupDir) {
+        const errorPath = path.join(backupDir, 'error.json');
+        const errorData = {
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: new Date().toISOString(),
+          selectedCollections: options.collections,
+          includeDependencies: options.includeDependencies,
+        };
+        await fs.writeFile(errorPath, JSON.stringify(errorData, null, 2));
+      }
     } catch (saveError) {
       console.error('Erro ao salvar detalhes do erro:', saveError);
     }
@@ -373,7 +373,7 @@ async function performSelectiveBackup(
 }
 
 // Restaurar backup seletivo
-async function restoreSelectiveBackup(
+export async function restoreSelectiveBackup(
   backupPath: string,
   options: {
     collections?: string[];
@@ -579,7 +579,7 @@ function formatBytes(bytes: number): string {
 }
 
 // Listar collections disponíveis
-async function listAvailableCollections(): Promise<{
+export async function listAvailableCollections(): Promise<{
   [key: string]: number;
 }> {
   console.log('📋 Listando collections disponíveis...');
@@ -725,10 +725,3 @@ if (require.main === module) {
     process.exit(1);
   });
 }
-
-export {
-  performSelectiveBackup,
-  restoreSelectiveBackup,
-  listAvailableCollections,
-  resolveDependencies,
-};

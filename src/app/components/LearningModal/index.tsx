@@ -93,8 +93,6 @@ const LearningModal = () => {
           ? getWantToLearnItem(workId || '')
           : getLearnedItem(workId || '');
 
-      console.log('🔍 [LEARNING-MODAL] Item atual encontrado:', currentItem);
-
       // ✅ Se tem partitura vinculada mas modal não tem, aplicar
       if (currentItem?.selectedWorkScore && !selectedWorkScore) {
         console.log(
@@ -139,10 +137,6 @@ const LearningModal = () => {
       !selectedWorkScore &&
       oppositeItem?.selectedWorkScore
     ) {
-      console.log(
-        '💡 [LEARNING-MODAL] Aplicando sugestão do tipo oposto:',
-        oppositeItem.selectedWorkScore.title
-      );
       setSelectedWorkScore({
         id: oppositeItem.selectedWorkScore.id,
         sourceId: oppositeItem.selectedWorkScore.sourceId,
@@ -426,6 +420,13 @@ const LearningModal = () => {
         maxWidth="2xl"
         showCloseButton={true}
         className="max-h-[90vh] overflow-hidden"
+        confirmOnClose
+        withouVerification
+        processName={
+          type === 'learned'
+            ? 'Adicionar peça ao Já aprendi'
+            : 'Adicionar peça ao Quero aprender'
+        }
       >
         {/* Header */}
         <div className="px-6 py-4">

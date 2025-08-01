@@ -215,7 +215,8 @@ function formatBytes(bytes: number): string {
 // Executar comando de backup seletivo
 function executeSelectiveBackup(
   collections: string[],
-  includeDependencies: boolean
+  includeDependencies: boolean,
+  name?: string
 ): Promise<{
   success: boolean;
   output: string;
@@ -229,6 +230,9 @@ function executeSelectiveBackup(
     ];
     if (includeDependencies) {
       args.push('--with-dependencies');
+    }
+    if (name) {
+      args.push(`--name=${name}`);
     }
 
     const backupProcess = spawn('tsx', args, {
@@ -267,6 +271,56 @@ function executeSelectiveBackup(
         success: false,
         output,
         error: 'Timeout: Backup levou mais de 30 minutos',
+      });
+    }, 30 * 60 * 1000);
+  });
+}
+
+// Executar restore de backup seletivo
+function executeSelectiveRestore(backupPath: string): Promise<{
+  success: boolean;
+  output: string;
+  error?: string;
+}> {
+  return new Promise((resolve) => {
+    const args = ['scripts/backup/selective-backup.ts', 'restore', backupPath];
+
+    const restoreProcess = spawn('tsx', args, {
+      cwd: process.cwd(),
+      stdio: 'pipe',
+      env: { ...process.env, NODE_OPTIONS: '--max-old-space-size=4096' },
+    });
+
+    let output = '';
+    let errorOutput = '';
+
+    restoreProcess.stdout?.on('data', (data) => {
+      output += data.toString();
+    });
+
+    restoreProcess.stderr?.on('data', (data) => {
+      errorOutput += data.toString();
+    });
+
+    restoreProcess.on('close', (code) => {
+      if (code === 0) {
+        resolve({ success: true, output });
+      } else {
+        resolve({
+          success: false,
+          output,
+          error: errorOutput || `Processo terminou com código ${code}`,
+        });
+      }
+    });
+
+    // Timeout de 30 minutos
+    setTimeout(() => {
+      restoreProcess.kill();
+      resolve({
+        success: false,
+        output,
+        error: 'Timeout: Restore levou mais de 30 minutos',
       });
     }, 30 * 60 * 1000);
   });
@@ -353,11 +407,31 @@ export async function GET(request: NextRequest) {
 
         for (const dir of entries) {
           if (dir.isDirectory()) {
-            const backupInfo = await getSelectiveBackupInfo(
-              path.join(backupsDir, dir.name)
+            // Filtrar apenas backups seletivos (que contêm 'selective-backup-' no nome OU têm metadata.type === 'selective')
+            const metadataPath = path.join(
+              backupsDir,
+              dir.name,
+              'metadata.json'
             );
-            if (backupInfo && backupInfo.type === 'selective') {
-              backups.push(backupInfo);
+            let isSelectiveBackup = false;
+
+            try {
+              const metadata = JSON.parse(
+                await fs.readFile(metadataPath, 'utf8')
+              );
+              isSelectiveBackup = metadata.type === 'selective';
+            } catch {
+              // Se não conseguir ler metadados, verificar pelo nome
+              isSelectiveBackup = dir.name.includes('selective-backup-');
+            }
+
+            if (isSelectiveBackup) {
+              const backupInfo = await getSelectiveBackupInfo(
+                path.join(backupsDir, dir.name)
+              );
+              if (backupInfo) {
+                backups.push(backupInfo);
+              }
             }
           }
         }
@@ -402,56 +476,117 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    const { collections, includeDependencies } = await request.json();
+    const { action, collections, includeDependencies, name, backupId } =
+      await request.json();
 
-    if (
-      !collections ||
-      !Array.isArray(collections) ||
-      collections.length === 0
-    ) {
-      return NextResponse.json(
-        { error: 'Selecione pelo menos uma tabela para backup' },
-        { status: 400 }
-      );
+    switch (action) {
+      case 'create': {
+        if (
+          !collections ||
+          !Array.isArray(collections) ||
+          collections.length === 0
+        ) {
+          return NextResponse.json(
+            { error: 'Selecione pelo menos uma tabela para backup' },
+            { status: 400 }
+          );
+        }
+
+        // Verificar se as collections são válidas
+        const validCollections = AVAILABLE_COLLECTIONS.map((c) => c.name);
+        const invalidCollections = collections.filter(
+          (c) => !validCollections.includes(c)
+        );
+
+        if (invalidCollections.length > 0) {
+          return NextResponse.json(
+            { error: `Tabelas inválidas: ${invalidCollections.join(', ')}` },
+            { status: 400 }
+          );
+        }
+
+        // Limpar backups seletivos antigos antes de criar novo
+        await cleanupOldSelectiveBackups();
+
+        // Executar backup seletivo
+        const result = await executeSelectiveBackup(
+          collections,
+          includeDependencies || false,
+          name
+        );
+
+        if (result.success) {
+          // Limpar novamente após backup para garantir limite
+          await cleanupOldSelectiveBackups();
+        }
+
+        return NextResponse.json({
+          success: result.success,
+          message: result.success
+            ? 'Backup seletivo criado com sucesso'
+            : 'Erro ao executar backup seletivo',
+          output: result.output,
+          error: result.error,
+          collections: collections,
+          maxBackups: MAX_SELECTIVE_BACKUPS,
+        });
+      }
+
+      case 'restore': {
+        if (!backupId) {
+          return NextResponse.json(
+            { error: 'ID do backup é obrigatório para restauração' },
+            { status: 400 }
+          );
+        }
+
+        const backupPath = path.join(process.cwd(), 'backups', backupId);
+
+        // Verificar se é backup seletivo
+        const metadataPath = path.join(backupPath, 'metadata.json');
+        try {
+          const metadata = JSON.parse(await fs.readFile(metadataPath, 'utf8'));
+          if (metadata.type !== 'selective') {
+            return NextResponse.json(
+              { error: 'Este não é um backup seletivo' },
+              { status: 400 }
+            );
+          }
+        } catch {
+          return NextResponse.json(
+            { error: 'Backup não encontrado ou metadados corrompidos' },
+            { status: 404 }
+          );
+        }
+
+        // Verificar se o backup existe
+        try {
+          await fs.access(backupPath);
+        } catch {
+          return NextResponse.json(
+            { error: 'Backup não encontrado' },
+            { status: 404 }
+          );
+        }
+
+        // Executar restore
+        const result = await executeSelectiveRestore(
+          path.join(backupPath, 'backup.json')
+        );
+
+        return NextResponse.json({
+          success: result.success,
+          message: result.success
+            ? 'Backup seletivo restaurado com sucesso'
+            : 'Erro ao executar restauração',
+          output: result.output,
+          error: result.error,
+        });
+      }
+
+      default:
+        return NextResponse.json({ error: 'Ação inválida' }, { status: 400 });
     }
-
-    // Verificar se as collections são válidas
-    const validCollections = AVAILABLE_COLLECTIONS.map((c) => c.name);
-    const invalidCollections = collections.filter(
-      (c) => !validCollections.includes(c)
-    );
-
-    if (invalidCollections.length > 0) {
-      return NextResponse.json(
-        { error: `Tabelas inválidas: ${invalidCollections.join(', ')}` },
-        { status: 400 }
-      );
-    }
-
-    // Limpar backups seletivos antigos antes de criar novo
-    await cleanupOldSelectiveBackups();
-
-    // Executar backup seletivo
-    const result = await executeSelectiveBackup(
-      collections,
-      includeDependencies || false
-    );
-
-    if (result.success) {
-      // Limpar novamente após backup para garantir limite
-      await cleanupOldSelectiveBackups();
-    }
-
-    return NextResponse.json({
-      success: result.success,
-      message: result.success
-        ? 'Backup seletivo criado com sucesso'
-        : 'Erro ao executar backup seletivo',
-      output: result.output,
-      error: result.error,
-      collections: collections,
-      maxBackups: MAX_SELECTIVE_BACKUPS,
-    });
   } catch (error) {
     console.error('Erro na API de backup seletivo:', error);
     return NextResponse.json(

@@ -324,7 +324,13 @@ export default function MediaUploadModal({
   ] as const;
 
   return (
-    <Modal isOpen={!!ad} onClose={handleModalClose} maxWidth="4xl">
+    <Modal
+      isOpen={!!ad}
+      onClose={handleModalClose}
+      maxWidth="4xl"
+      confirmOnClose
+      withouVerification
+    >
       <div className="w-full">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">

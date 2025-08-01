@@ -33,6 +33,7 @@ interface UseSelectiveBackupReturn {
   loading: boolean;
   error: string | null;
   isCreatingBackup: boolean;
+  isRestoringBackup: boolean;
   lastUpdated: Date | null;
 
   // Actions
@@ -42,6 +43,7 @@ interface UseSelectiveBackupReturn {
     includeDependencies: boolean,
     name?: string
   ) => Promise<void>;
+  restoreSelectiveBackup: (backupId: string) => Promise<void>;
   deleteSelectiveBackup: (backupId: string) => Promise<void>;
   loadAvailableCollections: () => Promise<void>;
 
@@ -66,6 +68,7 @@ export const useSelectiveBackup = (): UseSelectiveBackupReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isCreatingBackup, setIsCreatingBackup] = useState(false);
+  const [isRestoringBackup, setIsRestoringBackup] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const toast = useToast();
@@ -157,6 +160,10 @@ export const useSelectiveBackup = (): UseSelectiveBackupReturn => {
       setIsCreatingBackup(true);
       setError(null);
 
+      const toastId = toast.loading('Criando backup seletivo...', null, {
+        duration: Infinity,
+      });
+
       try {
         const response = await fetch('/api/admin/backup/selective', {
           method: 'POST',
@@ -164,6 +171,7 @@ export const useSelectiveBackup = (): UseSelectiveBackupReturn => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            action: 'create',
             collections,
             includeDependencies,
             name,
@@ -195,6 +203,56 @@ export const useSelectiveBackup = (): UseSelectiveBackupReturn => {
     [isCreatingBackup, fetchSelectiveBackups]
   );
 
+  // Função para restaurar backup seletivo
+  const restoreSelectiveBackup = useCallback(
+    async (backupId: string) => {
+      if (isRestoringBackup) return;
+
+      const confirmed = window.confirm(
+        'Tem certeza que deseja restaurar este backup seletivo? Esta ação pode sobrescrever dados existentes nas tabelas selecionadas.'
+      );
+
+      if (!confirmed) return;
+
+      setIsRestoringBackup(true);
+      setError(null);
+
+      const toastId = toast.loading('Restaurando backup seletivo...', null, {
+        duration: Infinity,
+      });
+
+      try {
+        const response = await fetch('/api/admin/backup/selective', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'restore',
+            backupId,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          toast.success('Backup seletivo restaurado com sucesso!');
+        } else {
+          throw new Error(data.error || 'Erro ao restaurar backup seletivo');
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Erro desconhecido';
+        setError(errorMessage);
+        toast.error(`Erro ao restaurar backup: ${errorMessage}`);
+        console.error('Erro ao restaurar backup seletivo:', err);
+      } finally {
+        setIsRestoringBackup(false);
+      }
+    },
+    [isRestoringBackup]
+  );
+
   // Função para deletar backup seletivo
   const deleteSelectiveBackup = useCallback(
     async (backupId: string) => {
@@ -203,6 +261,8 @@ export const useSelectiveBackup = (): UseSelectiveBackupReturn => {
       );
 
       if (!confirmed) return;
+
+      const toastId = toast.loading('Removendo backup seletivo...');
 
       try {
         const response = await fetch(
@@ -401,11 +461,13 @@ export const useSelectiveBackup = (): UseSelectiveBackupReturn => {
     loading,
     error,
     isCreatingBackup,
+    isRestoringBackup,
     lastUpdated,
 
     // Actions
     refreshBackups,
     createSelectiveBackup,
+    restoreSelectiveBackup,
     deleteSelectiveBackup,
     loadAvailableCollections,
 

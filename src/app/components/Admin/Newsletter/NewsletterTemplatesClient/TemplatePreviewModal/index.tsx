@@ -145,7 +145,13 @@ export default function TemplatePreviewModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} maxWidth="6xl">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      maxWidth="6xl"
+      confirmOnClose
+      withouVerification
+    >
       <div className="bg-theme-primary rounded-lg shadow-xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-secondary">

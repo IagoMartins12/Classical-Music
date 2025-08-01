@@ -331,7 +331,13 @@ export default function EditAdModal({
   };
 
   return (
-    <Modal maxWidth="4xl" isOpen={!!ad} onClose={onClose}>
+    <Modal
+      maxWidth="4xl"
+      isOpen={!!ad}
+      onClose={onClose}
+      confirmOnClose
+      withouVerification
+    >
       <div className="w-full">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-theme-primary">

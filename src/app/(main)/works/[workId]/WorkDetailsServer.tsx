@@ -78,22 +78,11 @@ export default async function WorkDetailsServer({
     const isOwner = work.createdBy === session?.user?.id;
     const canEditMedia = isAdmin || isOwner;
 
+    const canEditVideoAula =
+      isAdmin || isOwner ? true : session?.user.role === 1 ? true : false;
+
     // 🆕 PROCESSAR DADOS DE ÁUDIO DE FORMA ESTRUTURADA
     const audioData: ProcessedAudioData = processAudioData(work, mediaStats);
-
-    console.log('🔐 [SERVER] Permissões e áudio processados:', {
-      userId: session?.user?.id,
-      workCreator: work.createdBy,
-      isAdmin,
-      isOwner,
-      canEditMedia,
-      hasAnyAudio: audioData.hasAnyAudio,
-      hasCustomAudio: !!audioData.customAudio,
-      hasSpotify: !!audioData.spotify,
-      hasYoutube: !!audioData.youtube,
-      audioSource: audioData.customAudio?.source,
-      mediaCompleteness: audioData.completeness,
-    });
 
     return (
       <WorkDetailsClient

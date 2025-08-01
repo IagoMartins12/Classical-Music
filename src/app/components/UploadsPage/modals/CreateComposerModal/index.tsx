@@ -1,7 +1,7 @@
 // CreateComposerModal.tsx - ATUALIZADO COM TOASTS
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   FiUser,
@@ -37,6 +37,10 @@ import {
 
 // 🆕 IMPORTAR O HOOK DE TOAST
 import { useToast } from '@/app/hooks/useToast';
+import {
+  useFormChanges,
+  useSmartFormChanges,
+} from '@/app/hooks/useFormChanges';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -139,6 +143,80 @@ const CreateComposerModal = ({
   const requiredFields = ['name', 'fullName', 'epochId', 'primaryRoleId'];
   const customValidations = composerModalValidations;
 
+  // Função para formatar data para input HTML5 (YYYY-MM-DD)
+  const formatDateForInput = (dateString: string | null): string => {
+    if (!dateString) return '';
+
+    // Se já está em formato ISO, retornar como está
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      return dateString;
+    }
+
+    // Se está em formato dd/mm/yyyy
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
+      const [day, month, year] = dateString.split('/');
+      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+
+    // Tentar extrair data de formato extenso
+    const dateFromText = extractDateFromExtendedFormat(dateString);
+    if (dateFromText) {
+      return dateFromText;
+    }
+
+    // Se só tem ano, usar 1 de janeiro
+    const yearMatch = dateString.match(/(\d{4})/);
+    if (yearMatch) {
+      return `${yearMatch[1]}-01-01`;
+    }
+
+    return '';
+  };
+
+  const originalData = useMemo(() => {
+    if (!editingComposer) return null;
+
+    let detectedSource: DataSource = 'none';
+    let detectedUrl;
+    if (editingComposer.imslpId) {
+      detectedSource = 'imslp';
+      detectedUrl =
+        editingComposer.permLinkImslp ||
+        `https://imslp.org/wiki/${editingComposer.imslpId}`;
+      setIsEditingExternalSource(true);
+    } else if (editingComposer.wikipediaLink) {
+      detectedSource = 'wikipedia';
+      detectedUrl = editingComposer.wikipediaLink;
+      setIsEditingExternalSource(true);
+    }
+
+    return {
+      name: editingComposer.name || '',
+      fullName: editingComposer.fullName || '',
+      otherName: editingComposer.otherName || '',
+      alternativeNames: editingComposer.alternativeNames || '',
+      pseudonyms: editingComposer.pseudonyms || '',
+      birthDate: formatDateForInput(editingComposer.birthDate),
+      deathDate: formatDateForInput(editingComposer.deathDate),
+      portraitUrl: editingComposer.portraitUrl || '',
+      epochId: editingComposer.epochId || '',
+      epochName: editingComposer.epochName || '',
+      bio: editingComposer.bio || '',
+      diverseInfo: editingComposer.diverseInfo || '',
+      externalLinks: editingComposer.externalLinks || '',
+      imslpId: editingComposer.imslpId || '',
+      wikipediaLink: editingComposer.wikipediaLink || '',
+      nationality: editingComposer.nationality || '',
+      instruments: editingComposer.instruments || '',
+      imslpCategories: editingComposer.imslpCategories || '',
+      primaryRoleId: editingComposer.primaryRoleId || '',
+      roles: editingComposer.roles
+        ? editingComposer.roles.split(', ').filter(Boolean)
+        : [],
+      dataSource: detectedSource,
+    };
+  }, [editingComposer]);
+
   const { validateForm } = useFormValidation(
     fieldRefs,
     requiredFields,
@@ -196,35 +274,11 @@ const CreateComposerModal = ({
     }
   }, [editingComposer]);
 
-  // Função para formatar data para input HTML5 (YYYY-MM-DD)
-  const formatDateForInput = (dateString: string | null): string => {
-    if (!dateString) return '';
-
-    // Se já está em formato ISO, retornar como está
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-      return dateString;
-    }
-
-    // Se está em formato dd/mm/yyyy
-    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-      const [day, month, year] = dateString.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    }
-
-    // Tentar extrair data de formato extenso
-    const dateFromText = extractDateFromExtendedFormat(dateString);
-    if (dateFromText) {
-      return dateFromText;
-    }
-
-    // Se só tem ano, usar 1 de janeiro
-    const yearMatch = dateString.match(/(\d{4})/);
-    if (yearMatch) {
-      return `${yearMatch[1]}-01-01`;
-    }
-
-    return '';
-  };
+  const hasChanges = useSmartFormChanges(
+    formData,
+    originalData, // Se null = modo criação, se preenchido = modo edição
+    ['primaryRoleId', 'dataSource']
+  );
 
   // Função para extrair data de formato extenso
   const extractDateFromExtendedFormat = (dateString: string): string | null => {
@@ -735,9 +789,18 @@ const CreateComposerModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => {
+        if (editingComposer && originalData) {
+          setFormData(originalData);
+        }
+        onClose();
+      }}
       maxWidth="4xl"
       showCloseButton={true}
+      confirmOnClose={true} // Ativa confirmação
+      hasChanges={hasChanges} // Detecta mudanças
+      isProcessing={isSubmitting} // Detecta processo
+      processName="criação do compositor"
     >
       <AnimatedItem direction="scale" springType="bouncy" className="w-full">
         <div>

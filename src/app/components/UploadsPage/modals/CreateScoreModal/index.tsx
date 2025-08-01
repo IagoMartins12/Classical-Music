@@ -1,7 +1,7 @@
 // app/components/UploadsPage/modals/CreateScoreModal/index.tsx - COM FILTRO DE COMPOSITOR E AGRUPAMENTO INTELIGENTE
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import {
@@ -44,6 +44,10 @@ import {
 } from '@/app/utils/pdfUtils';
 import { useToast } from '@/app/hooks/useToast';
 import GroupingSuggestions from '../../GroupingSuggestions';
+import {
+  useFormChanges,
+  useSmartFormChanges,
+} from '@/app/hooks/useFormChanges';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -262,7 +266,36 @@ const CreateScoreModal = ({
     customValidations
   );
 
-  // Populate form when editing
+  const originalData = useMemo(() => {
+    if (!editingScore) return null;
+
+    return {
+      workId: editingScore.workId || '',
+      title: editingScore.title || '',
+      downloadUrl: editingScore.downloadUrl || '',
+      fileSize: editingScore.fileSize || '',
+      pageCount: editingScore.pageCount || '',
+      fileFormat: editingScore.fileFormat || 'PDF',
+      editor: editingScore.editor || '',
+      publisher: editingScore.publisher || '',
+      copyright: editingScore.copyright || '',
+      thumbnailUrl: editingScore.thumbnailUrl || '',
+      notes: editingScore.notes || '',
+      type: editingScore.type || 'SCORES',
+      groupIndex: editingScore.groupIndex?.toString() || '0',
+      groupTitle: editingScore.groupTitle || '',
+      rating: editingScore.rating?.toString() || '',
+      ratingsCount: editingScore.ratingsCount?.toString() || '',
+      downloadCount: editingScore.downloadCount?.toString() || '',
+      isCustom: editingScore.isCustom || true,
+      customData: editingScore.customData
+        ? JSON.stringify(editingScore.customData)
+        : '',
+      tempThumbnailPath: '',
+      tempPdfPath: '',
+    };
+  }, [editingScore]);
+
   // Populate form when editing
   useEffect(() => {
     if (editingScore && works.length > 0) {
@@ -748,14 +781,29 @@ const CreateScoreModal = ({
   // 🆕 Determinar se deve desabilitar o filtro de compositor
   const shouldDisableComposerFilter = !!formData.workId && !editingScore;
 
+  const hasChanges = useSmartFormChanges(
+    formData,
+    originalData, // Se null = modo criação, se preenchido = modo edição
+    ['fileFormat', 'isCustom', 'type', 'groupIndex']
+  );
+
   if (!isOpen) return null;
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => {
+        if (editingScore && originalData) {
+          setFormData(originalData);
+        }
+        onClose();
+      }}
       maxWidth="4xl"
       showCloseButton={true}
+      confirmOnClose={true} // Ativa confirmação
+      hasChanges={hasChanges} // Detecta mudanças
+      isProcessing={isSubmitting} // Detecta processo
+      processName="criação de partitura"
     >
       <AnimatedItem direction="scale" springType="bouncy" className="w-full">
         <div>
@@ -1233,6 +1281,7 @@ const CreateScoreModal = ({
                       handleInputChange('fileSize', e.target.value)
                     }
                     placeholder="Ex: 2.5 MB"
+                    disabled
                   />
 
                   <Input
@@ -1370,10 +1419,12 @@ const CreateScoreModal = ({
                         💡 <strong>Exemplo:</strong> Études de Chopin Op.10
                       </p>
                       <p>
-                        • Grupo 0: &quot;Partitura Completa&quot; (todos os 12 études)
+                        • Grupo 0: &quot;Partitura Completa&quot; (todos os 12
+                        études)
                       </p>
                       <p>
-                        • Grupo 1: &quot;Études Individuais&quot; (étude nº 1, 2, 3...)
+                        • Grupo 1: &quot;Études Individuais&quot; (étude nº 1,
+                        2, 3...)
                       </p>
                     </div>
                   </div>

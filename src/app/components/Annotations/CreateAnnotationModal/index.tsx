@@ -1,7 +1,7 @@
 // app/annotations/components/CreateAnnotationModal.tsx - VERSÃO COM SELEÇÃO DE OBRA
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { z } from 'zod';
 import {
   FiMessageSquare,
@@ -30,6 +30,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
+import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 
 interface CreateAnnotationModalProps {
   isOpen: boolean;
@@ -311,8 +312,37 @@ export default function CreateAnnotationModal({
     isPublic: true,
   });
 
+  const originalData = useMemo(() => {
+    if (!editingAnnotation) return null;
+
+    return {
+      workId: editingAnnotation.workId,
+      title: editingAnnotation.title,
+      content: editingAnnotation.content,
+      category: editingAnnotation.category,
+      difficulty: editingAnnotation.difficulty,
+      scope: editingAnnotation.scope,
+      measureStart: editingAnnotation.measureStart?.toString() || '',
+      measureEnd: editingAnnotation.measureEnd?.toString() || '',
+      movement: editingAnnotation.movement || '',
+      section: editingAnnotation.section || '',
+      pageNumber: editingAnnotation.pageNumber?.toString() || '',
+      hand: editingAnnotation.hand || '',
+      voice: editingAnnotation.voice || '',
+      instrument: editingAnnotation.instrument || '',
+      tags: editingAnnotation.tags || [],
+      isPublic: editingAnnotation.isPublic,
+    };
+  }, [editingAnnotation]);
+
   const [newTag, setNewTag] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const hasChanges = useSmartFormChanges(
+    formData,
+    originalData, // Se null = modo criação, se preenchido = modo edição
+    ['category', 'difficulty', 'scope', 'workId', 'isPublic']
+  );
 
   // 🔧 NOVO: Função para buscar obras
   const searchWorks = async (query: string) => {
@@ -613,10 +643,19 @@ export default function CreateAnnotationModal({
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => {
+        if (isEditing && originalData) {
+          setFormData(originalData);
+        }
+        onClose();
+      }}
       maxWidth="2xl"
       showCloseButton={true}
       className="max-h-[90vh] overflow-hidden"
+      confirmOnClose={true} // Ativa confirmação
+      hasChanges={hasChanges} // Detecta mudanças
+      isProcessing={isSubmitting} // Detecta processo
+      processName="Criação de anotação."
     >
       {/* Header */}
       <div className="px-6 py-4 border-b border-theme-secondary">

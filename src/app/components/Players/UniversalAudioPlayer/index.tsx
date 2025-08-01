@@ -82,13 +82,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   const initializeAudioSources = useCallback(() => {
     const sources: AudioSource[] = [];
 
-    console.log('🎵 [AUDIO-PLAYER] Inicializando fontes com prioridades:', {
-      hasCustomAudio: !!customAudio,
-      hasWorkAudioUrl: !!work.customAudioUrl,
-      workAudioSource: work.customAudioSource,
-      alternativeSourcesCount: alternativeAudioSources.length,
-    });
-
     // 🎯 PRIORIDADE 1: Áudio Customizado (UPLOAD) - SEMPRE PRIMEIRO
     if (customAudio?.url || customAudio?.file) {
       sources.push({
@@ -99,7 +92,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
         label: customAudio.title || 'Áudio Personalizado',
         isPersistent: customAudio.isPersistent ?? true,
       });
-      console.log('✅ [AUDIO-PLAYER] Adicionado: Áudio customizado (upload)');
     }
 
     // 🎯 PRIORIDADE 2: Fonte Alternativa SALVA no banco (se não for upload)
@@ -117,10 +109,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
         isPersistent: true,
         metadata: work.customAudioMetadata,
       });
-      console.log(
-        '✅ [AUDIO-PLAYER] Adicionado: Fonte alternativa salva -',
-        work.customAudioSource
-      );
     }
 
     // 🎯 PRIORIDADE 3: Fontes alternativas TEMPORÁRIAS (não salvas) - vindas do MediaSection
@@ -415,17 +403,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
                 <span className="text-xs text-gray-300">
                   {currentSource.label}
                 </span>
-                {currentSource.quality && (
-                  <span className="text-xs bg-gray-600 text-gray-300 px-2 py-1 rounded">
-                    {currentSource.quality}
-                  </span>
-                )}
-                {currentSource.isPersistent && (
-                  <span className="text-xs bg-green-600 text-white px-2 py-1 rounded flex items-center space-x-1">
-                    <FiDatabase className="w-3 h-3" />
-                    <span>Salvo</span>
-                  </span>
-                )}
               </div>
             )}
           </div>

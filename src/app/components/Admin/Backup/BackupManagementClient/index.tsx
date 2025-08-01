@@ -19,6 +19,7 @@ import {
   FiBarChart2,
   FiX,
   FiTarget,
+  FiLayers,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -790,7 +791,13 @@ export default function BackupManagementClient() {
 
       {/* Schedule Form Modal */}
       {showScheduleForm && (
-        <Modal isOpen maxWidth="5xl" onClose={() => setShowScheduleForm(false)}>
+        <Modal
+          isOpen
+          maxWidth="5xl"
+          onClose={() => setShowScheduleForm(false)}
+          confirmOnClose
+          withouVerification
+        >
           <div className="bg-theme-elevated p-6 overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-theme-primary">
