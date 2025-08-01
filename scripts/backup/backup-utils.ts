@@ -2,7 +2,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { PrismaClient } from '@prisma/client';
-import { performBackup, performRestore } from './backup';
+import { performBackup } from './backup';
 import { performSelectiveBackup } from './selective-backup';
 
 const prisma = new PrismaClient();

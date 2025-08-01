@@ -8,7 +8,6 @@ import {
   FiX,
   FiMapPin,
   FiUser,
-  FiPhone,
   FiAlertCircle,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';

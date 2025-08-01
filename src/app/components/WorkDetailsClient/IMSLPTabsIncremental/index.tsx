@@ -13,7 +13,6 @@ import {
   FiDownload,
   FiTarget,
   FiUpload,
-  FiDatabase,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import ScoreCard from '../ScoreCard';

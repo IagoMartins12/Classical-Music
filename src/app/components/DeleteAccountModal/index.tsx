@@ -23,25 +23,7 @@ import Button from '../Common/Button';
 import Input from '../Common/Inputs';
 import { AnimatedCard } from '../animation/AnimatedComponents';
 import { BiBookContent, BiBookOpen } from 'react-icons/bi';
-
-interface CascadeInfo {
-  totalItems: number;
-  composersCount: number;
-  worksCount: number;
-  scoresCount: number;
-  annotationsCount: number;
-  favoritesCount: number;
-  studySessionsCount: number;
-  instrumentsCount: number;
-  favoriteComposersCount: number;
-  learnedWorksCount: number;
-  wantToLearnCount: number;
-  pdfAnnotationsCount: number;
-  bookmarksCount: number;
-  sampleComposers: { id: string; name: string; epochName?: string }[];
-  sampleWorks: { id: string; title: string; composer: { name: string } }[];
-  sampleAnnotations: { id: string; title: string; work: { title: string } }[];
-}
+import { CascadeInfo } from '@/app/hooks/useAccountManagement';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -50,7 +32,7 @@ interface DeleteAccountModalProps {
   onLoadCascadeInfo: () => void;
   isLoading: boolean;
   isCascadeLoading: boolean;
-  cascadeInfo: CascadeInfo | null;
+  cascadeInfo?: CascadeInfo | null | undefined;
   userName: string;
   userEmail: string;
 }

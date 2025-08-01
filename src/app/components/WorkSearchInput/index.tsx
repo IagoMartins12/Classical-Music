@@ -55,7 +55,6 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   filterByComposer = '',
   userSuggestions = [],
   loadingUserSuggestions = false,
-  shoudDisabled = false,
 }) => {
   const [query, setQuery] = useState('');
   const [works, setWorks] = useState<Work[]>([]);

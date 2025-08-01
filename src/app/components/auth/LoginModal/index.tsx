@@ -6,7 +6,7 @@ import { signIn } from 'next-auth/react';
 import { FiMail, FiLock, FiAlertTriangle } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import { toast } from 'react-hot-toast';
 import { useLoginModal } from '@/app/stores/authStore';
@@ -21,7 +21,6 @@ const LoginModal: React.FC = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   // Estado para erro específico de conflito de email
   const [emailConflictError, setEmailConflictError] = useState<string | null>(

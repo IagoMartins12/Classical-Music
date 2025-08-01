@@ -6,7 +6,6 @@ import {
   FiPhone,
   FiChevronDown,
   FiX,
-  FiTrendingUp,
   FiGlobe,
 } from 'react-icons/fi';
 import {

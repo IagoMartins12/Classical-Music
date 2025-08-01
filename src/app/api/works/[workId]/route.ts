@@ -1,4 +1,3 @@
-import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { NextRequest, NextResponse } from 'next/server';
 

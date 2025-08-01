@@ -328,54 +328,54 @@ const MediaSection: React.FC<MediaSectionProps> = ({
   };
 
   // 🆕 Buscar APENAS fontes alternativas adicionais (para botão "Buscar mais fontes")
-  const searchAlternativeAudioSources = async () => {
-    try {
-      console.log(
-        '🔍 [MEDIA-SECTION] Buscando fontes alternativas adicionais...'
-      );
+  // const searchAlternativeAudioSources = async () => {
+  //   try {
+  //     console.log(
+  //       '🔍 [MEDIA-SECTION] Buscando fontes alternativas adicionais...'
+  //     );
 
-      const response = await fetch('/api/alternative-audio-sources', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: work.title,
-          composer: work.composer.fullName,
-        }),
-      });
+  //     const response = await fetch('/api/alternative-audio-sources', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         title: work.title,
+  //         composer: work.composer.fullName,
+  //       }),
+  //     });
 
-      if (!response.ok) {
-        console.error('Erro ao buscar fontes alternativas:', response.status);
-        return;
-      }
+  //     if (!response.ok) {
+  //       console.error('Erro ao buscar fontes alternativas:', response.status);
+  //       return;
+  //     }
 
-      const data = await response.json();
-      const newSources = data.sources || [];
+  //     const data = await response.json();
+  //     const newSources = data.sources || [];
 
-      if (newSources.length > 0) {
-        // 🆕 Adicionar novas fontes temporárias (não salvas no banco)
-        setMediaData((prev) => ({
-          ...prev,
-          alternativeAudio: newSources,
-        }));
+  //     if (newSources.length > 0) {
+  //       // 🆕 Adicionar novas fontes temporárias (não salvas no banco)
+  //       setMediaData((prev) => ({
+  //         ...prev,
+  //         alternativeAudio: newSources,
+  //       }));
 
-        // 🆕 Notificar o parent sobre as novas fontes (opcionalmente)
-        if (onMediaUpdate) {
-          onMediaUpdate({
-            alternativeAudio: newSources,
-          });
-        }
+  //       // 🆕 Notificar o parent sobre as novas fontes (opcionalmente)
+  //       if (onMediaUpdate) {
+  //         onMediaUpdate({
+  //           alternativeAudio: newSources,
+  //         });
+  //       }
 
-        toast.success(
-          `${newSources.length} fonte(s) alternativa(s) temporária(s) encontrada(s)!`
-        );
-      } else {
-        toast.warning('Nenhuma fonte alternativa adicional encontrada');
-      }
-    } catch (error) {
-      console.error('Erro ao buscar fontes alternativas:', error);
-      toast.error('Erro ao buscar fontes alternativas');
-    }
-  };
+  //       toast.success(
+  //         `${newSources.length} fonte(s) alternativa(s) temporária(s) encontrada(s)!`
+  //       );
+  //     } else {
+  //       toast.warning('Nenhuma fonte alternativa adicional encontrada');
+  //     }
+  //   } catch (error) {
+  //     console.error('Erro ao buscar fontes alternativas:', error);
+  //     toast.error('Erro ao buscar fontes alternativas');
+  //   }
+  // };
 
   // 🆕 Função para deletar áudio customizado (física + banco)
   const deleteCustomAudio = async () => {
@@ -673,11 +673,11 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     mediaData.alternativeAudio.length > 0;
 
   // Verificar fonte da mídia
-  const isAutomatic = work.mediaSource === 'auto';
+  // const isAutomatic = work.mediaSource === 'auto';
 
   // Lógica dos botões
   const showLoadMediaButton = !hasAnyMedia && !isSearching;
-  const showRefreshButton = hasAnyMedia && isAutomatic;
+  // const showRefreshButton = hasAnyMedia && isAutomatic;
 
   return (
     <AnimatedCard hover="lift" className="classical-card overflow-hidden">
@@ -849,12 +849,11 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   </p>
                 )}
                 {work.customAudioMetadata &&
-                  //@ts-ignore - Campo existe
-                  work.customAudioMetadata?.title &&
+                  (work.customAudioMetadata as any)?.title &&
                   !editData.audioFile && (
                     <p className="text-sm text-theme-secondary mt-1">
-                      {/* @ts-ignore - Campo existe */}
-                      Arquivo já selecionado {work.customAudioMetadata?.title}
+                      Arquivo já selecionado{' '}
+                      {(work.customAudioMetadata as any).title}
                     </p>
                   )}
                 {editData.removeCustomAudio && (

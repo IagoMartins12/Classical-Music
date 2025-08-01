@@ -13,8 +13,7 @@ import {
   FiX, // ✅ ADICIONADO PARA BOTÃO FECHAR
   FiSave, // ✅ ADICIONADO PARA SALVAR
   FiTrash2, // ✅ ADICIONADO PARA DELETAR
-  FiLoader, // ✅ ADICIONADO PARA LOADING
-  FiCheck,
+  FiLoader,
   FiMusic, // ✅ ADICIONADO PARA CONFIRMAR
 } from 'react-icons/fi';
 import { SiYoutube, SiInstagram, SiTiktok } from 'react-icons/si';
@@ -75,7 +74,6 @@ interface VideoInfo {
 const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   work,
   canEditMedia = false,
-  onOpenEditModal,
 }) => {
   const [isPlayerVisible, setIsPlayerVisible] = useState(false);
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
@@ -95,7 +93,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   const toast = useToast();
 
   // Só renderizar se tiver conteúdo
-  const hasVideoAula = !!(work.videoAulaUrl || work.videoAulaFile);
+  // const hasVideoAula = !!(work.videoAulaUrl || work.videoAulaFile);
 
   // 🎯 EMBED INTELIGENTE COM FALLBACKS - IMPLEMENTAÇÃO COMPLETA
   const detectVideoInfo = async (
@@ -427,7 +425,11 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
     try {
       // Instagram não permite fácil extração de thumbnail
       // Usar placeholder inteligente baseado no tipo
-      return '/images/instagram-placeholder.png';
+      if (url) {
+        return '/images/instagram-placeholder.png';
+      } else {
+        return '/images/instagram-placeholder.png';
+      }
     } catch {
       return null;
     }

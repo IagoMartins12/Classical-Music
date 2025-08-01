@@ -54,13 +54,6 @@ const updateLocationSchema = z.object({
   country: z.string().max(100).optional(),
 });
 
-// 🆕 Schema específico para atualização de telefone
-const updatePhoneSchema = z.object({
-  phone: z.string().optional(),
-  phoneCountryCode: z.string().max(5).optional(),
-  phoneNumber: z.string().optional(),
-});
-
 const updateMusicalPreferencesSchema = z.object({
   favoriteComposerId: z.string().optional(),
   favoriteEpochId: z.string().optional(),
@@ -803,26 +796,6 @@ export async function deleteUserAccount(
     return {
       success: false,
       message: 'Erro ao deletar conta. Tente novamente.',
-    };
-  }
-}
-
-// Update user profile (existing function)
-export async function updateUserProfile(
-  userId: string,
-  data: Partial<OnboardingData>
-): Promise<ProfileResult> {
-  try {
-    // ... (código existente)
-    return {
-      success: true,
-      message: 'Perfil atualizado com sucesso!',
-    };
-  } catch (error) {
-    console.error('Update profile error:', error);
-    return {
-      success: false,
-      message: 'Erro ao atualizar perfil.',
     };
   }
 }

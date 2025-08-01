@@ -101,24 +101,6 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   const defaultConfig = getDefaultConfig(config.type);
   const finalConfig = { ...defaultConfig, ...config };
 
-  // 🎨 VARIANTES DE BOTÃO
-  const getButtonProps = (variant: string) => {
-    switch (variant) {
-      case 'danger':
-        return {
-          className:
-            'bg-gradient-to-r from-accent-red to-accent-red/80 hover:from-accent-red/90 hover:to-accent-red/70 text-white border-accent-red shadow-lg hover:shadow-accent-red/25',
-        };
-      case 'warning':
-        return {
-          className:
-            'bg-gradient-to-r from-accent-amber to-accent-amber/80 hover:from-accent-amber/90 hover:to-accent-amber/70 text-white border-accent-amber shadow-lg hover:shadow-accent-amber/25',
-        };
-      default:
-        return {};
-    }
-  };
-
   return (
     <Modal
       isOpen={isOpen}

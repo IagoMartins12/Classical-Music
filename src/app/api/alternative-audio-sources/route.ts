@@ -626,34 +626,6 @@ async function searchChoralPDL(
   }
 }
 
-async function searchClassicalMusicArchive(
-  title: string,
-  composer: string
-): Promise<AudioSource[]> {
-  try {
-    // Classical Music Archive - implementação simulada
-    if (isClassicalContent(title, composer)) {
-      return [
-        {
-          source: 'Classical Music Archive',
-          audioUrl: `https://classicalmusicarchive.com/search?q=${encodeURIComponent(
-            title + ' ' + composer
-          )}`,
-          duration: 0,
-          quality: 'CD Quality',
-          license: 'Various',
-          title: `${title} - Classical Archive`,
-        },
-      ];
-    }
-
-    return [];
-  } catch (error) {
-    console.error('❌ [CLASSICAL-ARCHIVE] Erro:', error);
-    return [];
-  }
-}
-
 /**
  * Verificar se o conteúdo é música clássica (melhorado)
  */

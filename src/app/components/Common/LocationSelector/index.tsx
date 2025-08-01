@@ -336,7 +336,6 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   disabled = false,
   className = '',
   showLabels = true,
-  variant = 'default',
 }) => {
   // 🌍 Preparar opções de países com flags
   const countryOptions = useMemo(() => {

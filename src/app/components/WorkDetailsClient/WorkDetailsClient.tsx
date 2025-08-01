@@ -17,10 +17,8 @@ import {
   FiMapPin,
   FiClock,
   FiTag,
-  FiX,
   FiCheckCircle,
   FiArrowLeft,
-  FiRefreshCw,
 } from 'react-icons/fi';
 import { useIMSLPScoresIncremental } from '@/app/hooks/useIMSLPScoresIncremental';
 import { useWorkScores } from '@/app/hooks/useWorkScores';
@@ -111,8 +109,7 @@ export default function WorkDetailsClient({
   // Estados seguros para SSR
   const [mounted, setMounted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedScoreForStudy, setSelectedScoreForStudy] =
-    useState<IMSLPScore | null>(null);
+
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [isVerified, setIsVerified] = useState(work.isVerified || false);
 
@@ -236,8 +233,6 @@ export default function WorkDetailsClient({
         selectFromWorkScore(score);
       }
     } else {
-      // Comportamento normal de seleção para estudo
-      setSelectedScoreForStudy(score);
       setSelectedScore(score?.id || null);
     }
   };

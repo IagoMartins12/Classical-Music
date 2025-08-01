@@ -19,7 +19,6 @@ import {
   FiBarChart2,
   FiX,
   FiTarget,
-  FiLayers,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -36,7 +35,6 @@ import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import SelectiveBackupSection from '../SelectiveBackupSection';
-import SelectiveBackupDashboardCard from '../SelectiveBackupDashboardCard';
 
 interface BackupScheduleFormData {
   name: string;

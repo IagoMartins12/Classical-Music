@@ -10,7 +10,6 @@ import {
   FiLoader,
   FiInfo,
   FiTag,
-  FiPlay,
   FiDatabase,
   FiLink,
   FiCheck,

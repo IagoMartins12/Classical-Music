@@ -333,8 +333,3 @@ export function searchPhoneCountries(searchTerm: string): PhoneCountry[] {
       country.code.toLowerCase().includes(lowerSearchTerm)
   );
 }
-
-console.log(`🌍 Total de países carregados: ${ALL_PHONE_COUNTRIES.length}`);
-console.log(
-  `🏆 Países populares: ${ALL_PHONE_COUNTRIES.filter((c) => c.popular).length}`
-);

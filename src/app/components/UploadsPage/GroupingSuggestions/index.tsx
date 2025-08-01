@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiLayers,
   FiMusic,
   FiUsers,
   FiStar,
@@ -343,7 +342,7 @@ export default function GroupingSuggestions({
         </>
       )}
 
-      {/* Sugestões Inteligentes
+      {/* { Sugestões Inteligentes */}
       {suggestions.length > 0 && (
         <div>
           <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
@@ -425,7 +424,7 @@ export default function GroupingSuggestions({
             })}
           </div>
         </div>
-      )} */}
+      )}
 
       {/* Opção para Novo Grupo */}
       <div>
@@ -474,8 +473,8 @@ export default function GroupingSuggestions({
               </p>
               <p>
                 Partituras do mesmo grupo ficam organizadas juntas, seguindo o
-                padrão do IMSLP. Por exemplo: "Partitura Completa" (índice 0) e
-                "Partes Individuais" (índice 1).
+                padrão do IMSLP. Por exemplo: &quot;Partitura Completa&quot; (índice 0) e
+                &quot;Partes Individuais&quot; (índice 1).
               </p>
             </div>
           </div>

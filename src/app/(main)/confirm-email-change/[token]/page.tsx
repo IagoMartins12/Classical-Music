@@ -3,13 +3,12 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useSession, signOut } from 'next-auth/react';
+import { signOut } from 'next-auth/react';
 import {
   FiCheckCircle,
   FiAlertTriangle,
   FiLoader,
   FiMail,
-  FiArrowRight,
   FiRefreshCw,
   FiLogOut,
   FiHome,
@@ -37,7 +36,6 @@ interface ConfirmationResult {
 export default function ConfirmEmailChangePage() {
   const params = useParams();
   const router = useRouter();
-  const { data: session, update: updateSession } = useSession();
   const [result, setResult] = useState<ConfirmationResult | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isResending, setIsResending] = useState(false);

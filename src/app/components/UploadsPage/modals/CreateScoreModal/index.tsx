@@ -1370,10 +1370,10 @@ const CreateScoreModal = ({
                         💡 <strong>Exemplo:</strong> Études de Chopin Op.10
                       </p>
                       <p>
-                        • Grupo 0: "Partitura Completa" (todos os 12 études)
+                        • Grupo 0: &quot;Partitura Completa&quot; (todos os 12 études)
                       </p>
                       <p>
-                        • Grupo 1: "Études Individuais" (étude nº 1, 2, 3...)
+                        • Grupo 1: &quot;Études Individuais&quot; (étude nº 1, 2, 3...)
                       </p>
                     </div>
                   </div>

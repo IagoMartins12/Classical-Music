@@ -13,7 +13,7 @@ import {
 } from '@/app/actions/profile';
 import { useAuth } from './useAuth';
 
-interface CascadeInfo {
+export interface CascadeInfo {
   totalItems: number;
   composersCount: number;
   worksCount: number;
@@ -27,7 +27,7 @@ interface CascadeInfo {
   wantToLearnCount: number;
   pdfAnnotationsCount: number;
   bookmarksCount: number;
-  sampleComposers: { id: string; name: string; epochName?: string }[];
+  sampleComposers: { id: string; name: string; epochName?: string | null }[];
   sampleWorks: { id: string; title: string; composer: { name: string } }[];
   sampleAnnotations: { id: string; title: string; work: { title: string } }[];
 }
@@ -53,7 +53,9 @@ export const useAccountManagement = () => {
   const [isCascadeLoading, setIsCascadeLoading] = useState(false);
 
   // Data states
-  const [cascadeInfo, setCascadeInfo] = useState<CascadeInfo | null>(null);
+  const [cascadeInfo, setCascadeInfo] = useState<
+    CascadeInfo | null | undefined
+  >(null);
 
   // Email change function
   const changeEmail = useCallback(

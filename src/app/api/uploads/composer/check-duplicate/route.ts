@@ -212,12 +212,6 @@ function cleanNameForComparison(name: string): string {
     .trim();
 }
 
-// Função para extrair sobrenome
-function extractLastName(fullName: string): string {
-  const parts = fullName.trim().split(' ');
-  return parts[parts.length - 1];
-}
-
 // Função para verificar se dois nomes são similares
 function isSimilarName(name1: string | null, name2: string | null): boolean {
   if (!name1 || !name2) return false;

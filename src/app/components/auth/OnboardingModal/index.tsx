@@ -90,14 +90,14 @@ const OnboardingModal: React.FC = () => {
         }));
       } else {
         setValidationErrors((prev) => {
-          const { phone, ...rest } = prev;
+          const { _phone, ...rest } = prev;
           return rest;
         });
       }
     } else {
       // Telefone vazio é válido, remover erro
       setValidationErrors((prev) => {
-        const { phone, ...rest } = prev;
+        const { _phone, ...rest } = prev;
         return rest;
       });
     }

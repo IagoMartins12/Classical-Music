@@ -402,7 +402,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    const { collections, includeDependencies, name } = await request.json();
+    const { collections, includeDependencies } = await request.json();
 
     if (
       !collections ||

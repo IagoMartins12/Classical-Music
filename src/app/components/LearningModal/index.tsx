@@ -16,15 +16,13 @@ import {
   FiFileText,
   FiPlus,
   FiEdit3,
-  FiArrowLeft,
   FiArrowRight,
-  FiRefreshCw,
   FiDownload,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useAuth } from '@/app/hooks/useAuth';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   useLearningModalStore,
   type DifficultyLevel,
@@ -956,7 +954,7 @@ const LearningModal = () => {
             </div>
             <div>
               <h3 className="text-lg font-bold text-theme-primary">
-                Transferir para "Já Aprendi"
+                Transferir para &quot;Já Aprendi&quot;
               </h3>
               <p className="text-sm text-theme-secondary">
                 Mover esta obra da lista de estudos

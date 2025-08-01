@@ -47,40 +47,47 @@ function buildWhereClause(search?: string, epochId?: string) {
     },
   ];
 
-  // Caso tenha search OU epochId, os filtros de role vão dentro de AND
-  if ((search && search.trim()) || (epochId && epochId.trim())) {
+  const hasSearch = search && search.trim();
+  const hasEpochId = epochId && epochId.trim();
+
+  if (hasSearch || hasEpochId) {
     where.AND = [
       {
         OR: roleFilter,
       },
     ];
 
-    if (search && search.trim()) {
+    if (hasSearch) {
+      const terms = search.trim().split(/\s+/);
+
       where.AND.push({
         OR: [
           {
-            name: {
-              contains: search.trim(),
-              mode: 'insensitive',
-            },
+            AND: terms.map((term) => ({
+              name: {
+                contains: term,
+                mode: 'insensitive',
+              },
+            })),
           },
           {
-            fullName: {
-              contains: search.trim(),
-              mode: 'insensitive',
-            },
+            AND: terms.map((term) => ({
+              fullName: {
+                contains: term,
+                mode: 'insensitive',
+              },
+            })),
           },
         ],
       });
     }
 
-    if (epochId && epochId.trim()) {
+    if (hasEpochId) {
       where.AND.push({
         epochId: epochId.trim(),
       });
     }
   } else {
-    // Caso não tenha search nem epochId, o filtro de role fica no OR da raiz
     where.OR = roleFilter;
   }
 

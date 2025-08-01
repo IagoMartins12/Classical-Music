@@ -13,9 +13,6 @@ import {
   FiRefreshCw,
   FiAlertCircle,
   FiFileText,
-  FiTarget,
-  FiDownload,
-  FiLayers,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { toast } from 'react-hot-toast';
@@ -153,7 +150,6 @@ const ScoreSelectionModal = ({
     error: workScoresError,
     hasMore: hasMoreWorkScores,
     total: totalWorkScores,
-    loadMore: loadMoreWorkScores,
     loadMoreForType, // ✅ NOVO: Load more específico por tipo
     refetch: refetchWorkScores,
     pagination,

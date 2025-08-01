@@ -9,8 +9,6 @@ export const parsePhoneNumber = (
   number: string;
   country: PhoneCountry;
 } | null => {
-  console.log('📞 Parseando telefone:', phone);
-
   if (!phone || !phone.startsWith('+')) {
     return null;
   }
@@ -24,13 +22,6 @@ export const parsePhoneNumber = (
     if (phone.startsWith(country.dialCode)) {
       const number = phone.slice(country.dialCode.length).replace(/\D/g, '');
 
-      console.log('✅ Telefone parseado:', {
-        countryCode: country.code,
-        dialCode: country.dialCode,
-        number,
-        country: country.name,
-      });
-
       return {
         countryCode: country.code,
         number,
@@ -39,7 +30,6 @@ export const parsePhoneNumber = (
     }
   }
 
-  console.log('❌ Nenhum país encontrado para o telefone:', phone);
   return null;
 };
 
@@ -53,8 +43,6 @@ export interface PhoneValidationResult {
 }
 
 export const validatePhoneNumber = (phone: string): PhoneValidationResult => {
-  console.log('🔍 Validando telefone:', phone);
-
   const result: PhoneValidationResult = {
     isValid: false,
     isEmpty: false,
@@ -65,7 +53,6 @@ export const validatePhoneNumber = (phone: string): PhoneValidationResult => {
 
   // 1. Verificar se está vazio
   if (!phone || phone.trim() === '') {
-    console.log('✅ Telefone vazio - considerado válido');
     return {
       ...result,
       isValid: true, // Vazio é válido!
@@ -75,7 +62,6 @@ export const validatePhoneNumber = (phone: string): PhoneValidationResult => {
 
   // 2. Verificar se começa com +
   if (!phone.startsWith('+')) {
-    console.log('❌ Telefone não começa com +');
     return {
       ...result,
       error: 'Telefone deve começar com +',
@@ -85,7 +71,6 @@ export const validatePhoneNumber = (phone: string): PhoneValidationResult => {
   // 3. Parsear o número
   const parsed = parsePhoneNumber(phone);
   if (!parsed) {
-    console.log('❌ Código de país não reconhecido');
     return {
       ...result,
       error: 'Código de país não reconhecido',
@@ -94,7 +79,6 @@ export const validatePhoneNumber = (phone: string): PhoneValidationResult => {
 
   // 4. Verificar se tem dígitos suficientes
   if (parsed.number.length === 0) {
-    console.log('❌ Nenhum número fornecido');
     return {
       ...result,
       country: parsed.country,
@@ -104,9 +88,6 @@ export const validatePhoneNumber = (phone: string): PhoneValidationResult => {
 
   // 5. Verificar se está completo
   if (parsed.number.length < parsed.country.maxDigits) {
-    console.log(
-      `❌ Telefone incompleto: ${parsed.number.length}/${parsed.country.maxDigits} dígitos`
-    );
     return {
       ...result,
       country: parsed.country,
@@ -116,9 +97,6 @@ export const validatePhoneNumber = (phone: string): PhoneValidationResult => {
 
   // 6. Verificar se não excede o limite
   if (parsed.number.length > parsed.country.maxDigits) {
-    console.log(
-      `❌ Telefone muito longo: ${parsed.number.length}/${parsed.country.maxDigits} dígitos`
-    );
     return {
       ...result,
       country: parsed.country,
@@ -127,7 +105,6 @@ export const validatePhoneNumber = (phone: string): PhoneValidationResult => {
   }
 
   // 7. Tudo certo!
-  console.log('✅ Telefone válido e completo');
   return {
     isValid: true,
     isEmpty: false,
@@ -172,26 +149,4 @@ export const usePhoneValidation = (phone: string) => {
           : null,
     };
   }, [phone]);
-};
-
-// Função para debug (desenvolvimento)
-export const debugPhoneValidation = (phone: string) => {
-  if (process.env.NODE_ENV !== 'development') return;
-
-  const validation = validatePhoneNumber(phone);
-  console.log('🐛 Phone Validation Debug:', {
-    phone,
-    validation,
-    parsed: parsePhoneNumber(phone),
-  });
-};
-
-export default {
-  validatePhoneNumber,
-  parsePhoneNumber,
-  isPhoneComplete,
-  getPhoneValidationMessage,
-  canProceedWithPhone,
-  usePhoneValidation,
-  debugPhoneValidation,
 };

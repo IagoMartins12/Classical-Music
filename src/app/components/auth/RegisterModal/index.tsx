@@ -12,7 +12,6 @@ import {
 } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
-import { useRouter, useSearchParams } from 'next/navigation';
 
 import { registerUser } from '@/app/actions/auth';
 import { toast } from 'react-hot-toast';
@@ -38,8 +37,6 @@ interface RegisterStep {
 const RegisterModal: React.FC = () => {
   const { isOpen, close, switchToLogin } = useRegisterModal();
   const { open: openOnboarding } = useOnboardingModal();
-  const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [registerStep, setRegisterStep] = useState<RegisterStep>({
     step: 'form',
@@ -567,8 +564,8 @@ const RegisterModal: React.FC = () => {
         <div className="text-center pt-4 border-t border-theme-secondary">
           {registerStep.userData?.registrationMethod === 'google' ? (
             <p className="text-xs text-theme-tertiary">
-              🎵 <strong>Dica:</strong> Use "Continuar com Google" para entrar
-              rapidamente nas próximas vezes!
+              🎵 <strong>Dica:</strong> Use &quot;Continuar com Google&quot;
+              para entrar rapidamente nas próximas vezes!
             </p>
           ) : (
             <p className="text-xs text-theme-tertiary">
