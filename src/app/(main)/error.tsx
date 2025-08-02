@@ -11,7 +11,6 @@ import {
   AnimatedItem,
 } from '../components/animation/AnimatedComponents';
 import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
-import Navbar from '../components/Navbar';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -26,7 +25,6 @@ export default function Error({ error, reset }: ErrorProps) {
 
   return (
     <>
-      <Navbar />
       <div className="classical-theme min-h-screen flex items-center justify-center relative overflow-hidden">
         {/* Background Pattern */}
         <AnimatedMusicalNotes />

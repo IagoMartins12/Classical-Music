@@ -160,10 +160,6 @@ export const useSelectiveBackup = (): UseSelectiveBackupReturn => {
       setIsCreatingBackup(true);
       setError(null);
 
-      const toastId = toast.loading('Criando backup seletivo...', null, {
-        duration: Infinity,
-      });
-
       try {
         const response = await fetch('/api/admin/backup/selective', {
           method: 'POST',
@@ -217,10 +213,6 @@ export const useSelectiveBackup = (): UseSelectiveBackupReturn => {
       setIsRestoringBackup(true);
       setError(null);
 
-      const toastId = toast.loading('Restaurando backup seletivo...', null, {
-        duration: Infinity,
-      });
-
       try {
         const response = await fetch('/api/admin/backup/selective', {
           method: 'POST',
@@ -262,7 +254,6 @@ export const useSelectiveBackup = (): UseSelectiveBackupReturn => {
 
       if (!confirmed) return;
 
-      const toastId = toast.loading('Removendo backup seletivo...');
 
       try {
         const response = await fetch(

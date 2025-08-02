@@ -19,7 +19,6 @@ import {
   FiBarChart2,
   FiX,
   FiTarget,
-  FiLayers,
 } from 'react-icons/fi';
 import {
   AnimatedCard,

@@ -319,17 +319,6 @@ const CreateWorkModal = ({
   const originalData = useMemo(() => {
     if (!editingWork) return null;
 
-    let detectedUrl = '';
-
-    if (editingWork.imslpId || editingWork.imslpPermlink) {
-      setIsEditingExternalSource(true);
-      // Construir URL do IMSLP baseado no ID ou permlink
-      detectedUrl =
-        editingWork.imslpPermlink ||
-        (editingWork.imslpId
-          ? `https://imslp.org/wiki/${editingWork.imslpId}`
-          : '');
-    }
 
     return {
       title: editingWork.title || '',

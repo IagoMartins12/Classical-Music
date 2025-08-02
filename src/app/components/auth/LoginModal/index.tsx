@@ -35,9 +35,7 @@ const LoginModal: React.FC = () => {
 
   // 🆕 NOVO: Verificar erros na URL quando o modal abrir
   useEffect(() => {
-    if (isOpen) {
-      checkUrlErrors();
-    }
+    checkUrlErrors();
   }, [isOpen]);
 
   // 🆕 NOVO: Função para verificar e processar erros na URL

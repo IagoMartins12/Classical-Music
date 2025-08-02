@@ -5,6 +5,7 @@ import { useOnboardingModal } from '@/app/stores/authStore';
 import React from 'react';
 import { FiPlus, FiX } from 'react-icons/fi';
 import Select from '../../Common/Select';
+import Checkbox from '../../Common/Checkbox';
 
 interface Instrument {
   id: string;
@@ -131,8 +132,11 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
                     {isNotMusicStudent ? (
-                      <span className="font-medium text-sm text-theme-primary">
-                        Instrumento: {instrument.name}
+                      <span className=" py-1 text-end bg-brand-primary  text-theme-primary classical-subtitle rounded-full">
+                        Instrumento:{' '}
+                        <span className="font-medium text-sm pl-2 text-theme-primary">
+                          {instrument.name}
+                        </span>
                       </span>
                     ) : (
                       <></>
@@ -147,7 +151,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                     ) : (
                       <>
                         {!isNotMusicStudent && (
-                          <span className="font-medium text-sm text-theme-primary">
+                          <span className=" py-1 text-end bg-brand-primary  text-theme-primary classical-subtitle rounded-full">
                             Instrumento:{' '}
                             <span className="font-medium text-sm pl-2 text-theme-primary">
                               {instrument.name}
@@ -187,6 +191,18 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                         />
                         <span>Principal</span>
                       </label>
+
+                      <Checkbox
+                        label="Principal"
+                        type="checkbox"
+                        checked={instrument.isPrimary}
+                        onChange={(e) =>
+                          updateInstrument(instrument.id, {
+                            isPrimary: e.target.checked,
+                          })
+                        }
+                        className="rounded"
+                      />
                     </div>
                   )}
                 </div>

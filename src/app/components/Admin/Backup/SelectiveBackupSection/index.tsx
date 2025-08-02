@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiDatabase,
   FiDownload,
   FiUpload,
   FiTrash2,
@@ -12,7 +11,6 @@ import {
   FiCheckCircle,
   FiActivity,
   FiInfo,
-  FiSettings,
   FiTarget,
   FiCheck,
   FiX,

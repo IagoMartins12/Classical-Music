@@ -78,8 +78,8 @@ export default async function WorkDetailsServer({
     const isOwner = work.createdBy === session?.user?.id;
     const canEditMedia = isAdmin || isOwner;
 
-    const canEditVideoAula =
-      isAdmin || isOwner ? true : session?.user.role === 1 ? true : false;
+    // const canEditVideoAula =
+    //   isAdmin || isOwner ? true : session?.user.role === 1 ? true : false;
 
     // 🆕 PROCESSAR DADOS DE ÁUDIO DE FORMA ESTRUTURADA
     const audioData: ProcessedAudioData = processAudioData(work, mediaStats);

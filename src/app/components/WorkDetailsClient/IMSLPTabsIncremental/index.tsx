@@ -1,7 +1,7 @@
 // components/IMSLPTabsIncremental.tsx - VERSÃO HÍBRIDA (Dados Mistos + Tabs/Botões Antigos)
 'use client';
 
-import { useState, useRef, useMemo, act } from 'react';
+import { useState, useRef, useMemo } from 'react';
 import {
   FiMusic,
   FiFileText,
@@ -620,8 +620,8 @@ export default function IMSLPTabsIncremental({
                 {visibleTabs.map((tab, index) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
-                  const tabData =
-                    mixedData[tab.type as keyof typeof mixedData] || [];
+                  // const tabData =
+                  //   mixedData[tab.type as keyof typeof mixedData] || [];
 
                   // ✅ Usar sistema de estatísticas do código antigo
                   const tabStats: TabStatistics = getTabStats

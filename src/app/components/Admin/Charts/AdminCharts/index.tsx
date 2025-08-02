@@ -278,7 +278,7 @@ export const MetricCard = ({
 }: {
   title: string;
   value: string | number;
-  change?: { value: number; isPositive: boolean };
+  change?: { value: number | string; isPositive: boolean };
   data?: ChartData[];
   icon?: React.ComponentType<any>;
   color?: string;
@@ -302,7 +302,10 @@ export const MetricCard = ({
           >
             <span className="text-sm font-medium">
               {change.isPositive ? '+' : ''}
-              {change.value.toFixed(1)}%
+              {typeof change.value === 'number'
+                ? change.value.toFixed(1)
+                : change.value}
+              %
             </span>
           </div>
         )}

@@ -79,7 +79,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     removeCustomAudio: false,
   });
   const [isUploading, setIsUploading] = useState(false);
-  const [lastSearch, setLastSearch] = useState(false);
+  // const [lastSearch, setLastSearch] = useState(false);
 
   const toast = useToast();
 

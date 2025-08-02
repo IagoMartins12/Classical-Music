@@ -59,8 +59,8 @@ export default function GroupingSuggestions({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasExistingScores, setHasExistingScores] = useState(false);
-  const [selectedSuggestion, setSelectedSuggestion] =
-    useState<GroupSuggestion | null>(null);
+  // const [selectedSuggestion, setSelectedSuggestion] =
+  //   useState<GroupSuggestion | null>(null);
 
   // Carregar grupos existentes quando workId muda
   useEffect(() => {
@@ -96,7 +96,7 @@ export default function GroupingSuggestions({
         );
 
         if (highConfidenceSuggestion && !currentGroupTitle) {
-          setSelectedSuggestion(highConfidenceSuggestion);
+          // setSelectedSuggestion(highConfidenceSuggestion);
           onGroupSelect(
             highConfidenceSuggestion.suggestedIndex,
             highConfidenceSuggestion.suggestedTitle
@@ -123,43 +123,43 @@ export default function GroupingSuggestions({
       group.groupTitle
     );
     onGroupSelect(group.groupIndex, group.groupTitle);
-    setSelectedSuggestion(null);
+    // setSelectedSuggestion(null);
   };
 
-  const handleSuggestionSelect = (suggestion: GroupSuggestion) => {
-    console.log(
-      `💡 [GROUPING] Selecionando sugestão:`,
-      suggestion.suggestedTitle
-    );
-    setSelectedSuggestion(suggestion);
-    onGroupSelect(suggestion.suggestedIndex, suggestion.suggestedTitle);
-  };
+  // const handleSuggestionSelect = (suggestion: GroupSuggestion) => {
+  //   console.log(
+  //     `💡 [GROUPING] Selecionando sugestão:`,
+  //     suggestion.suggestedTitle
+  //   );
+  //   setSelectedSuggestion(suggestion);
+  //   onGroupSelect(suggestion.suggestedIndex, suggestion.suggestedTitle);
+  // };
 
-  const getConfidenceColor = (confidence: string) => {
-    switch (confidence) {
-      case 'high':
-        return 'from-accent-green to-accent-blue';
-      case 'medium':
-        return 'from-accent-blue to-accent-purple';
-      case 'low':
-        return 'from-accent-purple to-accent-red';
-      default:
-        return 'from-theme-primary to-theme-secondary';
-    }
-  };
+  // const getConfidenceColor = (confidence: string) => {
+  //   switch (confidence) {
+  //     case 'high':
+  //       return 'from-accent-green to-accent-blue';
+  //     case 'medium':
+  //       return 'from-accent-blue to-accent-purple';
+  //     case 'low':
+  //       return 'from-accent-purple to-accent-red';
+  //     default:
+  //       return 'from-theme-primary to-theme-secondary';
+  //   }
+  // };
 
-  const getConfidenceIcon = (confidence: string) => {
-    switch (confidence) {
-      case 'high':
-        return FiTarget;
-      case 'medium':
-        return FiTrendingUp;
-      case 'low':
-        return FiInfo;
-      default:
-        return FiInfo;
-    }
-  };
+  // const getConfidenceIcon = (confidence: string) => {
+  //   switch (confidence) {
+  //     case 'high':
+  //       return FiTarget;
+  //     case 'medium':
+  //       return FiTrendingUp;
+  //     case 'low':
+  //       return FiInfo;
+  //     default:
+  //       return FiInfo;
+  //   }
+  // };
 
   const getSourceIcon = (source: string) => {
     switch (source) {
@@ -443,7 +443,7 @@ export default function GroupingSuggestions({
                 ...suggestions.map((s) => s.suggestedIndex)
               ) + 1;
             onGroupSelect(nextIndex, '');
-            setSelectedSuggestion(null);
+            // setSelectedSuggestion(null);
           }}
           className="w-full p-3 rounded-lg border-2 border-dashed border-brand-primary text-brand-primary hover:bg-brand-primary/5 transition-all duration-200 text-left"
         >
