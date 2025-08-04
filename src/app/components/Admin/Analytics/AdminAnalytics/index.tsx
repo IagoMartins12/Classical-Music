@@ -64,10 +64,6 @@ export default function AdminAnalytics() {
         'Tempo Médio de Sessão',
         `${analytics.overview.engagement.avgSessionTime} min`,
       ],
-      [
-        'Total de Horas de Estudo',
-        analytics.overview.engagement.totalStudyTime,
-      ],
     ];
 
     const csvContent = csvData.map((row) => row.join(',')).join('\n');

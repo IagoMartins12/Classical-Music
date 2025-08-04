@@ -125,7 +125,6 @@ const generateUsersReportData = async (startDate: Date, endDate: Date) => {
     usersByType,
     topContributors,
     usersWithInstruments,
-    longestStreaks,
   ] = await Promise.all([
     prisma.user.count(),
 
@@ -164,8 +163,6 @@ const generateUsersReportData = async (startDate: Date, endDate: Date) => {
         lastName: true,
         totalUploads: true,
         uploadScore: true,
-        totalStudyTime: true,
-        currentStreak: true,
       },
       orderBy: { uploadScore: 'desc' },
       take: 10,
@@ -175,20 +172,6 @@ const generateUsersReportData = async (startDate: Date, endDate: Date) => {
       where: {
         instruments: { some: {} },
       },
-    }),
-
-    prisma.user.findMany({
-      where: {
-        longestStreak: { gt: 0 },
-      },
-      select: {
-        firstName: true,
-        lastName: true,
-        longestStreak: true,
-        currentStreak: true,
-      },
-      orderBy: { longestStreak: 'desc' },
-      take: 5,
     }),
   ]);
 
@@ -215,14 +198,6 @@ const generateUsersReportData = async (startDate: Date, endDate: Date) => {
         `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Usuário',
       uploads: user.totalUploads,
       score: user.uploadScore,
-      studyTime: user.totalStudyTime,
-      currentStreak: user.currentStreak,
-    })),
-    longestStreaks: longestStreaks.map((user) => ({
-      name:
-        `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Usuário',
-      longestStreak: user.longestStreak,
-      currentStreak: user.currentStreak,
     })),
   };
 };
@@ -847,7 +822,6 @@ export async function POST(request: NextRequest) {
             filename,
             status: 'generating',
             generatedBy: session.user.id,
-            expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dias
           },
         });
 

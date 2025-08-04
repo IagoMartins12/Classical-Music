@@ -18,7 +18,6 @@ export interface TopUser {
   id: string;
   name: string;
   email?: string;
-  totalStudyTime: number;
   annotationsCount: number;
   uploadsCount: number;
   lastActive: Date;

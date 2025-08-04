@@ -175,9 +175,6 @@ export async function POST(
       clonedAd = await prisma.advertisement.create({
         data: cloneData,
         include: {
-          creator: {
-            select: { id: true, firstName: true, lastName: true, email: true },
-          },
           instrument: {
             select: { id: true, name: true },
           },
@@ -222,7 +219,6 @@ export async function POST(
               where: conflictWhere,
               include: {
                 instrument: { select: { name: true } },
-                creator: { select: { firstName: true, lastName: true } },
               },
             });
 
@@ -239,7 +235,6 @@ export async function POST(
                   conflictingAd.instrument?.name || conflictingAd.instrumentId
                 }\n`;
               }
-              detailedError += `- Criador: ${conflictingAd.creator?.firstName} ${conflictingAd.creator?.lastName}\n`;
             }
           }
         } catch (searchError) {
@@ -327,14 +322,6 @@ export async function POST(
             where: { id: clonedAd.id },
             data: updateData,
             include: {
-              creator: {
-                select: {
-                  id: true,
-                  firstName: true,
-                  lastName: true,
-                  email: true,
-                },
-              },
               instrument: {
                 select: { id: true, name: true },
               },

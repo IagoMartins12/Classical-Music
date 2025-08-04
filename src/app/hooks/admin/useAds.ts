@@ -71,8 +71,6 @@ export interface Advertisement {
   createdAt: Date;
   updatedAt: Date;
 
-  // Relations
-  creator?: any;
   instrument?: any;
 
   // Stats - APENAS CAMPOS EXISTENTES

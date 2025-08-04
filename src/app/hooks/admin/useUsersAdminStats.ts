@@ -168,7 +168,6 @@ export const getColorByValue = (
 export const getUserStatus = (user: {
   lastActive: Date | string;
   onboardingCompleted: boolean;
-  totalStudyTime: number;
 }) => {
   const lastActive =
     typeof user.lastActive === 'string'
@@ -224,16 +223,12 @@ export const getUserStatus = (user: {
 
 // Utilitário para level do usuário baseado em atividade
 export const getUserLevel = (user: {
-  totalStudyTime: number;
   annotationsCount: number;
   uploadsCount: number;
   uploadScore: number;
 }) => {
   const totalScore =
-    user.totalStudyTime +
-    user.annotationsCount * 10 +
-    user.uploadsCount * 5 +
-    user.uploadScore;
+    user.annotationsCount * 10 + user.uploadsCount * 5 + user.uploadScore;
 
   if (totalScore >= 5000) {
     return {

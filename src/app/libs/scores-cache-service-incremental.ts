@@ -279,7 +279,6 @@ export class ScoresCacheServiceIncremental {
 
       // Preparar dados das partituras para WorkScore
       const scoresData = [];
-      let priority = 1000;
 
       for (const [type, groups] of Object.entries(scores.scoresByType)) {
         for (const group of groups) {
@@ -315,10 +314,8 @@ export class ScoresCacheServiceIncremental {
               rating: score.rating,
               ratingsCount: score.ratingsCount,
               downloadCount: score.downloadCount,
-              priority: score.id === priorityScoreId ? 2000 : priority--,
               isActive: true,
               lastVerified: new Date(),
-              cacheVersion: this.CACHE_VERSION,
               imslpTotalCounts: JSON.stringify(scores.totalCounts),
             });
           }

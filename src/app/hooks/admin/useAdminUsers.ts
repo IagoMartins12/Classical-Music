@@ -10,7 +10,6 @@ export interface AdminUser {
   userType?: 'MUSIC_STUDENT' | 'CASUAL_USER' | 'PROFESSIONAL' | 'TEACHER';
   experienceLevel?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
   role?: number; // 0 = usuário, 1 = professor, 2 = super admin
-  totalStudyTime: number;
   annotationsCount: number;
   uploadsCount: number;
   uploadScore: number;
@@ -44,7 +43,6 @@ export interface UserAnalytics {
     totalUploads: number;
     uploadScore: number;
     verifiedUploads: number;
-    totalStudyTime: number;
     annotationsCount: number;
   }>;
   userGrowth: Array<{

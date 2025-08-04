@@ -224,13 +224,6 @@ model User {
   profilePublic Boolean @default(true)
   showLocation  Boolean @default(false)
 
-  practiceReminders Boolean @default(true)
-
-  totalStudyTime Int @default(0)
-  currentStreak  Int @default(0)
-  longestStreak  Int @default(0)
-  studyModeSettings Json?
-
   // Anotações relacionadas
   workAnnotations   WorkAnnotation[]
   annotationVotes   AnnotationHelpfulVote[]
@@ -250,13 +243,17 @@ model User {
   totalUploads    Int @default(0)
   uploadScore     Int @default(0) // Score baseado na qualidade dos uploads
 
-  // Limites de upload
-
   // Relations
   accounts       Account[]
   sessions       Session[]
-
   tokens        UserToken[]
+
+  isTeacher          Boolean @default(false)
+  isStudent          Boolean @default(false)
+
+  // Relações:
+  teacherProfile     Teacher?
+  studentProfile     Student?
 
   // 🔄 RELAÇÕES DE CRIAÇÃO - ATUALIZADAS PARA SetNull
   createdWorks     Work[]      @relation("UserCreatedWorks")
@@ -267,7 +264,6 @@ model User {
   favoriteEpoch    Epoch?    @relation("FavoriteEpoch", fields: [favoriteEpochId], references: [id])
 
   // 🔄 RELAÇÕES DE ANÚNCIOS - ATUALIZADAS PARA SetNull
-  createdAds Advertisement[] @relation("AdCreator")
   adStats    AdStats[]       @relation("AdStatsUser")
 
   // 🔄 RELAÇÕES DE NEWSLETTER - ATUALIZADA COM CASCADE
@@ -346,20 +342,12 @@ model WorkScore {
   uploadedBy String? // ID do usuário que fez upload
   customData Json? // Dados extras específicos
 
-
-  // Tags e categorização
-  qualityTags String[] @default([]) // Tags de qualidade
-  sourceTags  String[] @default([]) // Tags de fonte
-
   // Cache e controle
   isActive     Boolean   @default(true)
   isVerified   Boolean   @default(false)
   lastVerified DateTime  @default(now())
   lastAccessed DateTime  @default(now())
   accessCount  Int       @default(0)
-  priority     Int       @default(0) // Para ordenação
-  expiresAt    DateTime? // TTL do cache
-  cacheVersion String    @default("1.0")
 
   // Campos para sistema incremental
   imslpTotalCounts String? // JSON com totais reais do IMSLP por tipo
@@ -376,18 +364,16 @@ model WorkScore {
 
   // Índices otimizados para performance
   @@unique([workId, sourceId, source], name: "workId_sourceId_source")
-  @@index([workId, isActive, priority])
+  @@index([workId, isActive])
   @@index([workId, type, groupIndex])
   @@index([source, processingStatus])
-  @@index([isActive, expiresAt])
+  @@index([isActive])
   @@index([lastAccessed, isActive])
-  @@index([priority, createdAt])
   @@index([imslpTotalCounts])
   @@index([uploadedBy])
   @@index([dataQuality])
   @@index([verificationStatus])
   @@index([qualityScore])
-  @@index([qualityTags])
   @@map("work_scores")
 }
 
@@ -587,7 +573,6 @@ model Work {
   composerId   String @db.ObjectId
   instrumentId String @db.ObjectId
   epochId      String @db.ObjectId
-
   videoUrl         String?
   imslpPermlink    String
   imslpId          String
@@ -681,9 +666,6 @@ model Work {
   composer   Composer   @relation(fields: [composerId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar compositor
   epoch      Epoch      @relation(fields: [epochId], references: [id])
   instrument Instrument @relation(fields: [instrumentId], references: [id])
-
-
-  // 🔄 TODAS ESSAS RELAÇÕES TERÃO CASCADE QUANDO DELETAR WORK
   favoriteScores     FavoriteScore[]
   scoreFavoriteStats ScoreFavoriteStats[]
 
@@ -693,7 +675,6 @@ model Work {
   learners       Learned[]
 
   workAnnotations WorkAnnotation[]
-  imslpDifficultyHistory IMSLPDifficultyHistory[]
 
   annotationsCount        Int       @default(0)
   helpfulAnnotationsCount Int       @default(0)
@@ -759,35 +740,6 @@ model UserInstrument {
   @@unique([userId, instrumentId])
 }
 
-model IMSLPDifficultyHistory {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  workId      String   @db.ObjectId
-  sourceId    String   // IMSLP sourceId
-  
-  // Dados da dificuldade IMSLP
-  imslpLevel       String   // "1", "2", etc.
-  imslpSystem      String   // "IMSLP", "RCM", etc.
-  imslpRating      String   // "Lvl 1", "RCM Prep B", etc.
-  votes            Int?     // Votos no IMSLP
-  
-  // Mapeamento automático para enum
-  mappedDifficulty DifficultyLevel // BEGINNER/INTERMEDIATE/ADVANCED
-  
-  // Metadados de scraping
-  scrapedAt   DateTime @default(now())
-  scrapedFrom String   // URL de onde veio
-  isActive    Boolean  @default(true)
-  
-  // Relação
-  work        Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
-  
-  // Índices
-  @@index([workId, isActive])
-  @@index([sourceId])
-  @@index([imslpLevel, imslpSystem])
-  @@index([mappedDifficulty])
-  @@map("imslp_difficulty_history")
-}
 
 model Annotation {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -1124,15 +1076,13 @@ model GeneratedReport {
 
   // Controle de acesso e limpeza
   downloadCount Int       @default(0)
-  lastDownload  DateTime?
-  expiresAt     DateTime? // Para limpeza automática
 
   // Relações
   user User @relation("GeneratedReports", fields: [generatedBy], references: [id], onDelete: Cascade)
 
   // Índices
   @@index([type, status])
-  @@index([status, expiresAt])
+  @@index([status])
   @@index([generatedAt])
   @@map("generated_reports")
 }
@@ -1205,8 +1155,6 @@ model Advertisement {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // 🔄 RELAÇÕES ATUALIZADAS PARA SetNull
-  creator     User        @relation("AdCreator", fields: [createdBy], references: [id], onDelete: Cascade)
   instrument  Instrument? @relation(fields: [instrumentId], references: [id])
 
   // 🔄 ESTATÍSTICAS COM CASCADE
@@ -1224,7 +1172,6 @@ model Advertisement {
   @@map("advertisements")
 }
 
-// 🔄 ESTATÍSTICAS DAS PUBLICIDADES ATUALIZADA COM CASCADE E SetNull
 model AdStats {
   id              String @id @default(auto()) @map("_id") @db.ObjectId
   advertisementId String @db.ObjectId
@@ -1336,7 +1283,6 @@ model NewsletterTemplate {
   textContent String // Versão texto alternativa
   
   // Design e personalização
-  designData Json? // Dados do editor visual (se houver)
   variables  String[] @default([]) // Variáveis disponíveis: {{firstName}}, {{newWorks}}, etc.
   
   // Configurações de remetente
@@ -1358,35 +1304,16 @@ model NewsletterTemplate {
   avgOpenRate     Float?  @default(0)
   avgClickRate    Float?  @default(0)
   
-  // NOVOS CAMPOS PARA MELHOR GESTÃO
-  category        String? // Categoria personalizada (ex: "Promocional", "Transacional")
-  priority        Int     @default(0) // Prioridade de exibição
-  
-  // Configurações avançadas
-  trackingEnabled Boolean @default(true) // Se deve rastrear aberturas/cliques
-  autoTextVersion Boolean @default(true) // Se deve gerar versão texto automaticamente
   
   // Dados de qualidade
   qualityScore    Float?  // Score de qualidade calculado (0-100)
   lastQualityCheck DateTime? // Última verificação de qualidade
   
-  // Configurações de uso
-  usageRestrictions Json? // Restrições de uso (ex: apenas para admins, frequência máxima)
-  expiresAt        DateTime? // Data de expiração do template (opcional)
-  
   // Controle de acesso
   lastEditedAt    DateTime?
   
-  // Aprovação (opcional)
-  approvalStatus  String  @default("approved") // "pending", "approved", "rejected"
-  approvedAt      DateTime?
-  approvalNotes   String?
-  
   // Relações
   campaigns       NewsletterCampaign[]
-  
-  // Novos relacionamentos
-  derivedFromId   String?              @db.ObjectId
   
   // Timestamps
   createdAt DateTime @default(now())
@@ -1396,11 +1323,8 @@ model NewsletterTemplate {
   @@index([type, isActive])
   @@index([isDefault, type])
   @@index([tags])
-  @@index([category, priority])
   @@index([qualityScore])
-  @@index([approvalStatus])
   @@index([timesUsed, avgOpenRate])
-  @@index([expiresAt])
   @@map("newsletter_templates")
 }
 
@@ -1453,20 +1377,12 @@ model NewsletterCampaign {
   emailsComplained    Int @default(0) // Quantos marcaram como spam
   emailsUnsubscribed  Int @default(0) // Quantos cancelaram inscrição
   
-  // MÉTRICAS AVANÇADAS
-  uniqueOpens         Int @default(0) // Aberturas únicas
-  uniqueClicks        Int @default(0) // Cliques únicos
-  avgEngagementTime   Float? // Tempo médio de engajamento
-  topClickedLinks     Json? // Links mais clicados
-  deviceStats         Json? // Estatísticas por dispositivo
-  locationStats       Json? // Estatísticas por localização
   
   // Taxas calculadas (cache)
   deliveryRate Float? @default(0) // emailsDelivered / emailsSent
   openRate     Float? @default(0) // emailsOpened / emailsDelivered  
   clickRate    Float? @default(0) // emailsClicked / emailsDelivered
   bounceRate   Float? @default(0) // emailsBounced / emailsSent
-  spamRate     Float? @default(0) // emailsComplained / emailsDelivered
   unsubscribeRate Float? @default(0) // emailsUnsubscribed / emailsDelivered
   
   // Controle de acesso
@@ -1475,12 +1391,7 @@ model NewsletterCampaign {
   // Metadados
   notes        String?
   tags         String[] @default([])
-  
-  // AUDITORIA E COMPLIANCE
-  gdprCompliant    Boolean @default(true) // Se está em conformidade com GDPR
-  retentionPeriod  Int?    // Período de retenção em dias
-  archiveAfter     DateTime? // Data para arquivar automaticamente
-  
+
   // 🔄 RELAÇÕES COM CASCADE
   template     NewsletterTemplate?       @relation(fields: [templateId], references: [id])
   sends        NewsletterCampaignSend[]
@@ -1498,7 +1409,6 @@ model NewsletterCampaign {
   @@index([useCustomTemplate, templateType])
   @@index([priority, scheduledAt])
   @@index([openRate, clickRate])
-  @@index([archiveAfter])
   @@map("newsletter_campaigns")
 }
 
@@ -1511,7 +1421,6 @@ model NewsletterCampaignSend {
   // Status do envio
   status       String    @default("pending") // pending, sent, failed
   sentAt       DateTime?
-  failureReason String?
   
   // Dados do envio
   emailId      String? // ID do provedor de email (SendGrid, etc.)
@@ -1540,11 +1449,6 @@ model NewsletterEmailEvent {
   
   // Dados do evento
   timestamp    DateTime        @default(now())
-  emailId      String?         // ID do provedor de email
-  clickedUrl   String?         // Se foi um click, qual URL
-  userAgent    String?
-  ipAddress    String?
-  location     Json?           // Dados de geolocalização
   
   // Metadata adicional
   eventData    Json?           // Dados específicos do evento
@@ -1561,27 +1465,6 @@ model NewsletterEmailEvent {
   @@map("newsletter_email_events")
 }
 
-// Configurações globais da newsletter
-model NewsletterSettings {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
-  key   String @unique
-  value String
-  
-  // Metadados
-  description String?
-  category    String? // "smtp", "design", "automation", etc.
-  
-  // Controle
-  lastEditedBy String?   @db.ObjectId
-  lastEditedAt DateTime?
-  
-  // Timestamps
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([category])
-  @@map("newsletter_settings")
-}
 
 // Modelo para múltiplas listas de teste de email
 model TestEmailList {
@@ -1640,4 +1523,429 @@ model TemplateFragment {
   @@index([category, isActive])
   @@index([tags])
   @@map("template_fragments")
+}
+
+
+// ENUMS PARA O SISTEMA PROFESSOR-ALUNO
+enum LessonStatus {
+  SCHEDULED    // Agendada
+  COMPLETED    // Concluída
+  CANCELLED    // Cancelada
+  NO_SHOW      // Aluno faltou
+  RESCHEDULED  // Reagendada
+}
+
+enum LessonType {
+  INDIVIDUAL   // Aula individual
+  GROUP        // Aula em grupo
+  THEORY       // Teoria musical
+  PRACTICE     // Aula prática
+  MASTERCLASS  // Masterclass
+}
+
+enum RecurrenceType {
+  WEEKLY       // Semanal
+  BIWEEKLY     // Quinzenal
+  MONTHLY      // Mensal
+  TWICE_WEEKLY // 2x por semana
+  NONE         // Sem recorrência
+}
+
+enum StudentStatus {
+  ACTIVE       // Ativo
+  INACTIVE     // Inativo
+  PAUSED       // Pausado temporariamente
+  TRIAL        // Período de teste
+}
+
+enum TeacherStatus {
+  ACTIVE       // Ativo
+  INACTIVE     // Inativo
+  PENDING      // Aguardando aprovação
+}
+
+enum AssignmentStatus {
+  PENDING      // Pendente
+  IN_PROGRESS  // Em andamento
+  COMPLETED    // Concluída
+  OVERDUE      // Atrasada
+}
+
+// TABELA DE PROFESSORES COMPLETA
+model Teacher {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique @db.ObjectId
+  
+  // Informações básicas
+  bio                String?
+  specialties        String[] @default([]) // ["Piano", "Violão", "Teoria"]
+  instruments        String[] @default([]) // Instrumentos que ensina
+  experience         String?              // "10 anos", "Desde 2015"
+  education          String?              // Formação acadêmica
+  achievements       String?              // Conquistas, prêmios, etc.
+  
+  // Perfil público para "Conheça nossos professores"
+  isPublicProfile    Boolean  @default(false)
+  profileImage       String?
+  website            String?
+  socialMedia        Json?    // {"instagram": "@professor", "youtube": "channel"}
+  publicBio          String?  // Bio específica para o perfil público
+  highlightedWorks   String[] @default([]) // Obras que o professor destaca
+  
+  // Configurações de ensino
+  defaultLessonDuration Int    @default(60)   // Duração padrão em minutos
+  maxStudentsPerWeek   Int    @default(50)    // Limite de aulas por semana
+  timezone             String @default("America/Sao_Paulo")
+  
+  // Metodologia e estilo de ensino
+  teachingMethod       String? // Descrição da metodologia
+  ageGroups           String[] @default([]) // ["Crianças", "Adultos", "Terceira idade"]
+  skillLevels         String[] @default([]) // ["Iniciante", "Intermediário", "Avançado"]
+  
+  // Status e aprovação
+  status            TeacherStatus @default(PENDING)
+  isVerified        Boolean       @default(false)  // Aprovação manual
+  verifiedAt        DateTime?
+  verifiedBy        String?       @db.ObjectId // Admin que aprovou
+  
+  // Configurações de relatórios
+  allowProgressReports Boolean @default(true) // Se pode ver relatórios dos alunos
+  reportPreferences    Json?   // Preferências de relatórios
+  
+  // Métricas e estatísticas
+  totalStudents     Int     @default(0)
+  totalLessons      Int     @default(0)
+  averageRating     Float?  @default(0)
+  totalReviews      Int     @default(0)
+  completionRate    Float?  @default(0) // Taxa de conclusão das aulas
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  students  TeacherStudent[]   @relation("TeacherStudents")
+  lessons   Lesson[]           @relation("TeacherLessons")
+  reviews   TeacherReview[]    @relation("TeacherReviews")
+  
+  // Índices otimizados
+  @@index([status, isVerified])
+  @@index([isPublicProfile])
+  @@index([instruments])
+  @@index([specialties])
+  @@index([ageGroups])
+  @@index([averageRating])
+  @@map("teachers")
+}
+
+// TABELA DE ALUNOS COMPLETA
+model Student {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @unique @db.ObjectId
+  
+  // Informações básicas do aluno
+  level              DifficultyLevel @default(BEGINNER)
+  mainInstrument     String?
+  musicalGoals       String?         // Objetivos musicais
+  preferredGenres    String[] @default([])
+  musicalBackground  String?         // Experiência anterior
+  
+  // Configurações de privacidade e relatórios
+  allowPublicProgress Boolean @default(false) // Se professor pode ver progresso público
+  allowProgressShare  Boolean @default(true)  // Se permite compartilhar progresso
+  profileVisibility   String  @default("teacher_only") // "public", "teacher_only", "private"
+  
+  // Informações de estudo
+  practiceTime       Int?    // Tempo de prática semanal (minutos)
+  practiceSchedule   Json?   // Horários preferidos para estudo
+  learningPace       String? // "slow", "medium", "fast"
+  specialNeeds       String? // Necessidades especiais de aprendizado
+  
+  // Status e datas importantes
+  status             StudentStatus @default(ACTIVE)
+  enrollmentDate     DateTime      @default(now())
+  lastLessonAt       DateTime?
+  lastActiveAt       DateTime?     @default(now())
+  
+  // Configurações de comunicação
+  preferredContact   String @default("whatsapp") // "whatsapp", "email", "both"
+  reminderPreferences Json? // Preferências de lembretes
+  
+  // Métricas de progresso
+  totalLessonsAttended Int     @default(0)
+  totalAssignments     Int     @default(0)
+  completedAssignments Int     @default(0)
+  currentStreak        Int     @default(0) // Sequência de aulas sem faltas
+  longestStreak        Int     @default(0)
+  progressScore        Float?  @default(0) // Score geral de progresso
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teachers    TeacherStudent[]   @relation("StudentTeachers")
+  lessons     Lesson[]           @relation("StudentLessons")
+  reviews     TeacherReview[]    @relation("StudentReviews")
+  assignments Assignment[]       @relation("StudentAssignments")
+  
+  // Índices otimizados
+  @@index([status, lastActiveAt])
+  @@index([level, mainInstrument])
+  @@index([allowPublicProgress])
+  @@index([enrollmentDate])
+  @@map("students")
+}
+
+// RELACIONAMENTO PROFESSOR-ALUNO OTIMIZADO
+model TeacherStudent {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  teacherId String @db.ObjectId
+  studentId String @db.ObjectId
+  
+  // Configurações da relação
+  maxLessonsPerWeek  Int @default(1)    // Limite de aulas por semana
+  lessonDuration     Int @default(60)   // Duração padrão das aulas (min)
+  preferredDays      String[] @default([]) // ["monday", "wednesday", "friday"]
+  preferredTimes     String[] @default([]) // ["09:00", "14:00"]
+  
+  // Status da relação
+  isActive      Boolean   @default(true)
+  startDate     DateTime  @default(now())
+  endDate       DateTime?
+  pausedAt      DateTime? // Se foi pausada temporariamente
+  pauseReason   String?
+  
+  // Planejamento pedagógico
+  learningPlan     String? // Plano de estudos personalizado
+  currentFocus     String[] @default([]) // Foco atual dos estudos
+  nextGoals        String? // Próximos objetivos
+  teacherNotes     String? // Notas privadas do professor
+  studentNotes     String? // Notas que o aluno pode ver
+  
+  // Configurações específicas
+  homeworkFrequency String @default("weekly") // "daily", "weekly", "biweekly"
+  reportFrequency   String @default("monthly") // Frequência de relatórios
+  
+  // Métricas da relação
+  totalLessons     Int @default(0)
+  completedLessons Int @default(0)
+  cancelledLessons Int @default(0)
+  noShowLessons    Int @default(0)
+  relationshipScore Float? @default(0) // Score da qualidade da relação
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  teacher Teacher @relation("TeacherStudents", fields: [teacherId], references: [id], onDelete: Cascade)
+  student Student @relation("StudentTeachers", fields: [studentId], references: [id], onDelete: Cascade)
+  
+  @@unique([teacherId, studentId])
+  @@index([teacherId, isActive])
+  @@index([studentId, isActive])
+  @@index([startDate, endDate])
+  @@map("teacher_students")
+}
+
+// TABELA DE AULAS COMPLETA
+model Lesson {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  teacherId String @db.ObjectId
+  studentId String @db.ObjectId
+  
+  // Informações básicas
+  title       String
+  description String?
+  objectives  String[] @default([]) // Objetivos da aula
+  
+  // Agendamento e duração
+  scheduledAt    DateTime
+  duration       Int           @default(60)  // em minutos
+  actualStartTime DateTime?    // Hora real de início
+  actualEndTime   DateTime?    // Hora real de fim
+  
+  // Status e tipo
+  status         LessonStatus  @default(SCHEDULED)
+  type           LessonType    @default(INDIVIDUAL)
+  location       String?       // "Online", "Estúdio A", "Casa do aluno"
+  
+  // Sistema de recorrência
+  isRecurring    Boolean       @default(false)
+  recurrenceType RecurrenceType @default(NONE)
+  parentLessonId String?       @db.ObjectId  // Aula pai da série
+  recurrenceEnd  DateTime?     // Data fim da recorrência
+  
+  // Conteúdo e materiais da aula
+  workScoreIds   String[] @default([]) @db.ObjectId  // Partituras específicas
+  topics         String[] @default([])               // Tópicos abordados
+  techniques     String[] @default([])               // Técnicas trabalhadas
+  repertoire     String[] @default([])               // Repertório estudado
+  
+  // Homework e tarefas
+  homework       String?  // Lição de casa geral
+  practiceGoals  String[] @default([]) // Metas específicas de prática
+  nextLessonPrep String?  // Preparação para próxima aula
+  
+  // Anotações e feedback
+  teacherNotes   String?       // Notas privadas do professor
+  publicNotes    String?       // Notas visíveis para o aluno
+  studentFeedback String?      // Feedback do aluno sobre a aula
+  lessonSummary  String?       // Resumo da aula
+  
+  // Avaliação e progresso
+  studentProgress Json?   // Progresso específico da aula
+  skillsWorked    String[] @default([]) // Habilidades trabalhadas
+  improvements    String[] @default([]) // Melhorias observadas
+  challenges      String[] @default([]) // Desafios encontrados
+  
+  // Presença e participação
+  studentPresent Boolean?      // null = não marcado
+  punctuality    String?       // "on_time", "late", "early"
+  engagement     Int?          // 1-5 nível de engajamento
+  preparation    Int?          // 1-5 quão preparado estava
+  
+  // Informações de cancelamento/reagendamento
+  cancelledAt    DateTime?
+  cancelReason   String?
+  cancelledBy    String?       // "teacher", "student", "system"
+  rescheduledFrom DateTime?    // Data original se foi reagendada
+  rescheduleReason String?
+  
+  // Mídia e recursos
+  audioRecordings String[] @default([]) // URLs de gravações
+  videoRecordings String[] @default([]) // URLs de vídeos
+  documents       String[] @default([]) // Documentos anexos
+  images          String[] @default([]) // Fotos da aula
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  teacher      Teacher    @relation("TeacherLessons", fields: [teacherId], references: [id], onDelete: Cascade)
+  student      Student    @relation("StudentLessons", fields: [studentId], references: [id], onDelete: Cascade)
+  parentLesson Lesson?    @relation("LessonSeries", fields: [parentLessonId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  childLessons Lesson[]   @relation("LessonSeries")
+  assignments  Assignment[] @relation("LessonAssignments")
+  
+  // Índices otimizados
+  @@index([teacherId, scheduledAt])
+  @@index([studentId, scheduledAt])
+  @@index([scheduledAt, status])
+  @@index([isRecurring, recurrenceType])
+  @@index([status, type])
+  @@index([teacherId, studentId, scheduledAt]) // Para detecção de conflitos
+  @@map("lessons")
+}
+
+// SISTEMA DE TAREFAS/ASSIGNMENTS MELHORADO
+model Assignment {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  lessonId String @db.ObjectId
+  studentId String @db.ObjectId
+  
+  // Informações da tarefa
+  title       String
+  description String
+  type        String @default("practice") // "practice", "theory", "listening", "composition"
+  priority    String @default("medium")   // "low", "medium", "high"
+  
+  // Recursos e materiais
+  workScoreIds String[] @default([]) @db.ObjectId // Partituras para estudar
+  exercises    String[] @default([])             // Exercícios específicos
+  audioFiles   String[] @default([])             // Arquivos de áudio
+  videoFiles   String[] @default([])             // Arquivos de vídeo
+  documents    String[] @default([])             // Documentos anexos
+  
+  // Metas específicas
+  practiceGoals    String[] @default([]) // Metas de prática
+  tempoTargets     Json?    // Metas de tempo/andamento
+  technicalGoals   String[] @default([]) // Objetivos técnicos
+  musicalGoals     String[] @default([]) // Objetivos musicais
+  
+  // Status e prazos
+  status      AssignmentStatus @default(PENDING)
+  dueDate     DateTime?
+  estimatedTime Int?   // Tempo estimado em minutos
+  actualTime    Int?   // Tempo real gasto pelo aluno
+  
+  // Progresso e completion
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+  progress    Float?    @default(0) // 0-100%
+  
+  // Feedback e avaliação
+  teacherFeedback String? // Feedback do professor
+  teacherRating   Int?    // 1-5 avaliação do professor
+  studentNotes    String? // Notas do aluno
+  studentRating   Int?    // 1-5 dificuldade percebida pelo aluno
+  
+  // Submissões do aluno
+  submissions     Json?   // Gravações, fotos, etc. enviadas pelo aluno
+  submissionDate  DateTime?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  lesson  Lesson  @relation("LessonAssignments", fields: [lessonId], references: [id], onDelete: Cascade)
+  student Student @relation("StudentAssignments", fields: [studentId], references: [id], onDelete: Cascade)
+  
+  // Índices otimizados
+  @@index([studentId, status])
+  @@index([studentId, dueDate])
+  @@index([lessonId, status])
+  @@index([status, dueDate])
+  @@index([type, priority])
+  @@map("assignments")
+}
+
+// SISTEMA DE AVALIAÇÕES MELHORADO
+model TeacherReview {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  teacherId String @db.ObjectId
+  studentId String @db.ObjectId
+  
+  // Avaliação básica
+  rating      Int     // 1-5 estrelas
+  comment     String?
+  isPublic    Boolean @default(true)
+  
+  // Avaliações específicas
+  teachingQuality    Int? // 1-5
+  communication      Int? // 1-5  
+  punctuality        Int? // 1-5
+  preparation        Int? // 1-5
+  patience           Int? // 1-5
+  motivation         Int? // 1-5
+  
+  // Informações contextuais
+  relationshipDuration String? // "1 mês", "6 meses", "2 anos"
+  lessonsCount        Int?    // Quantas aulas teve
+  wouldRecommend      Boolean @default(true)
+  
+  // Moderação
+  isModerated    Boolean   @default(false)
+  moderatedBy    String?   @db.ObjectId
+  moderatedAt    DateTime?
+  moderationNote String?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relações
+  teacher Teacher @relation("TeacherReviews", fields: [teacherId], references: [id], onDelete: Cascade)
+  student Student @relation("StudentReviews", fields: [studentId], references: [id], onDelete: Cascade)
+  
+  @@unique([teacherId, studentId]) // Um aluno só pode avaliar um professor uma vez
+  @@index([teacherId, isPublic])
+  @@index([rating, createdAt])
+  @@index([isModerated])
+  @@map("teacher_reviews")
 }

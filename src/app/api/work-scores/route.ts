@@ -366,7 +366,6 @@ export async function POST(request: NextRequest) {
         accessCount: 1,
         lastAccessed: new Date(),
         processingStatus: 'COMPLETED',
-        cacheVersion: '1.0',
         // Campos de qualidade
       },
     });

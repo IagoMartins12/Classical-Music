@@ -19,7 +19,8 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import { AdminUser } from '@/app/hooks/admin/useAdminUsers';
-import { formatNumber, formatDuration } from '@/app/hooks/admin/useAdminStats';
+import { formatNumber
+ } from '@/app/hooks/admin/useAdminStats';
 import Modal from '@/app/components/Modal';
 import LoadingAdminState from '../../Common/LoadingState';
 
@@ -314,15 +315,6 @@ export default function UserDetailsModal({
 
                 {/* Estatísticas Resumidas */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-theme-secondary p-4 rounded-xl text-center">
-                    <div className="text-2xl font-bold text-accent-blue mb-1">
-                      {formatDuration(user.totalStudyTime)}
-                    </div>
-                    <div className="text-sm text-theme-tertiary">
-                      Tempo de Estudo
-                    </div>
-                  </div>
-
                   <div className="bg-theme-secondary p-4 rounded-xl text-center">
                     <div className="text-2xl font-bold text-accent-green mb-1">
                       {formatNumber(user.annotationsCount)}

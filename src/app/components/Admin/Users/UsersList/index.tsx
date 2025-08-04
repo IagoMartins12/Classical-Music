@@ -27,7 +27,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import { useAdminUsers, AdminUser } from '@/app/hooks/admin/useAdminUsers';
-import { formatNumber, formatDuration } from '@/app/hooks/admin/useAdminStats';
+import { formatNumber } from '@/app/hooks/admin/useAdminStats';
 import UserEditModal from '../../Modals/UserEditModal';
 import UserDetailsModal from '../../Modals/UserDetailsModal';
 import Select from '@/app/components/Common/Select';
@@ -59,7 +59,6 @@ const EXPERIENCE_OPTIONS: FilterOption[] = [
 const SORT_OPTIONS: FilterOption[] = [
   { value: 'createdAt', label: 'Data de Cadastro' },
   { value: 'name', label: 'Nome' },
-  { value: 'totalStudyTime', label: 'Tempo de Estudo' },
   { value: 'annotationsCount', label: 'Anotações' },
   { value: 'uploadsCount', label: 'Uploads' },
 ];
@@ -534,15 +533,6 @@ export default function UsersList() {
                     {/* Estatísticas */}
                     <div className="hidden md:flex items-center gap-6 mx-6">
                       <div className="text-center">
-                        <div className="text-lg font-bold text-accent-blue">
-                          {formatDuration(user.totalStudyTime)}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          Estudo
-                        </div>
-                      </div>
-
-                      <div className="text-center">
                         <div className="text-lg font-bold text-accent-green">
                           {formatNumber(user.annotationsCount)}
                         </div>
@@ -586,15 +576,6 @@ export default function UsersList() {
                   {/* Estatísticas Mobile */}
                   <div className="md:hidden mt-4 pt-4 border-t border-theme-primary">
                     <div className="flex justify-around text-center">
-                      <div>
-                        <div className="text-sm font-bold text-accent-blue">
-                          {formatDuration(user.totalStudyTime)}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          Estudo
-                        </div>
-                      </div>
-
                       <div>
                         <div className="text-sm font-bold text-accent-green">
                           {formatNumber(user.annotationsCount)}

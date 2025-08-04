@@ -9,12 +9,7 @@ export interface UserListFilters {
   search?: string;
   userType?: string;
   experienceLevel?: string;
-  sortBy?:
-    | 'name'
-    | 'createdAt'
-    | 'totalStudyTime'
-    | 'annotationsCount'
-    | 'uploadsCount';
+  sortBy?: 'name' | 'createdAt' | 'annotationsCount' | 'uploadsCount';
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;
@@ -48,7 +43,6 @@ interface UserAnalytics {
     email: string;
     totalUploads: number;
     uploadScore: number;
-    totalStudyTime: number;
     annotationsCount: number;
   }>;
   userGrowth: Array<{
@@ -94,7 +88,6 @@ const exportUsersToCSV = async (filters: UserListFilters) => {
       user.userType || '',
       user.experienceLevel || '',
       user.role?.toString() || '0',
-      user.totalStudyTime.toString(),
       user.annotationsCount.toString(),
       user.uploadsCount.toString(),
       user.uploadScore.toString(),
@@ -181,22 +174,13 @@ const getCachedUserAnalytics = unstable_cache(
         email: true,
         totalUploads: true,
         uploadScore: true,
-        totalStudyTime: true,
         totalAnnotationsCount: true,
         role: true,
       },
       where: {
-        OR: [
-          { totalUploads: { gt: 0 } },
-          { totalAnnotationsCount: { gt: 0 } },
-          { totalStudyTime: { gt: 0 } },
-        ],
+        OR: [{ totalUploads: { gt: 0 } }, { totalAnnotationsCount: { gt: 0 } }],
       },
-      orderBy: [
-        { uploadScore: 'desc' },
-        { totalAnnotationsCount: 'desc' },
-        { totalStudyTime: 'desc' },
-      ],
+      orderBy: [{ uploadScore: 'desc' }, { totalAnnotationsCount: 'desc' }],
       take: 10,
     });
 
@@ -271,7 +255,6 @@ const getCachedUserAnalytics = unstable_cache(
         email: user.email || '',
         totalUploads: user.totalUploads,
         uploadScore: user.uploadScore,
-        totalStudyTime: user.totalStudyTime,
         annotationsCount: user.totalAnnotationsCount,
       })),
       userGrowth: userGrowth.reverse(),
@@ -375,7 +358,6 @@ const getUsersList = async (filters: UserListFilters) => {
         username: true,
         userType: true,
         experienceLevel: true,
-        totalStudyTime: true,
         totalAnnotationsCount: true,
         totalUploads: true,
         uploadScore: true,
@@ -410,7 +392,6 @@ const getUsersList = async (filters: UserListFilters) => {
       username: user.username,
       userType: user.userType,
       experienceLevel: user.experienceLevel,
-      totalStudyTime: user.totalStudyTime,
       annotationsCount: user.totalAnnotationsCount,
       uploadsCount: user.totalUploads,
       uploadScore: user.uploadScore,

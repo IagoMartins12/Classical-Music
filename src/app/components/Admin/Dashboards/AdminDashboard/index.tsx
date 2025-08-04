@@ -393,10 +393,6 @@ export default function AdminDashboard() {
                             <p className="font-medium text-theme-primary truncate">
                               {user?.name || 'Usuário desconhecido'}
                             </p>
-                            <p className="text-sm text-theme-tertiary">
-                              {formatDuration(user?.totalStudyTime || 0)} de
-                              estudo
-                            </p>
                           </div>
                           <div className="text-right">
                             <p className="text-sm font-medium text-theme-primary">

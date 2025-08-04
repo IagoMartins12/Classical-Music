@@ -56,11 +56,7 @@ export async function GET(request: NextRequest) {
         workId,
         isActive: true,
       },
-      orderBy: [
-        { groupIndex: 'asc' },
-        { priority: 'desc' },
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ groupIndex: 'asc' }, { createdAt: 'desc' }],
       select: {
         id: true,
         title: true,

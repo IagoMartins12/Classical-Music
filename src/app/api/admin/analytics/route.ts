@@ -62,7 +62,6 @@ interface AnalyticsCharts {
     users: Array<{
       id: string;
       name: string;
-      studyTime: number;
       annotations: number;
     }>;
   };
@@ -211,19 +210,12 @@ const getCachedAnalytics = unstable_cache(
           firstName: true,
           lastName: true,
           email: true,
-          totalStudyTime: true,
           totalAnnotationsCount: true,
         },
         where: {
-          OR: [
-            { totalStudyTime: { gt: 0 } },
-            { totalAnnotationsCount: { gt: 0 } },
-          ],
+          OR: [{ totalAnnotationsCount: { gt: 0 } }],
         },
-        orderBy: [
-          { totalStudyTime: 'desc' },
-          { totalAnnotationsCount: 'desc' },
-        ],
+        orderBy: [{ totalAnnotationsCount: 'desc' }],
         take: 10,
       }),
     ]);
@@ -329,7 +321,6 @@ const getCachedAnalytics = unstable_cache(
             `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
             user.email ||
             'Usuário',
-          studyTime: user.totalStudyTime,
           annotations: user.totalAnnotationsCount,
         })),
       },

@@ -16,7 +16,6 @@ interface AnalyticsOverview {
   };
   engagement: {
     avgSessionTime: number;
-    totalStudyTime: number;
     annotationsPerDay: number;
   };
   system: {

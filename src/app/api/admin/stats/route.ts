@@ -23,7 +23,6 @@ interface AdminStats {
       id: string;
       name: string;
       email: string;
-      totalStudyTime: number;
       annotationsCount: number;
       uploadsCount: number;
       lastActive: Date;
@@ -201,12 +200,11 @@ const getCachedTopUsers = unstable_cache(
         firstName: true,
         lastName: true,
         email: true,
-        totalStudyTime: true,
         totalAnnotationsCount: true,
         totalUploads: true,
         updatedAt: true,
       },
-      orderBy: [{ totalStudyTime: 'desc' }, { totalAnnotationsCount: 'desc' }],
+      orderBy: [{ totalAnnotationsCount: 'desc' }],
       take: 10,
     });
 
@@ -252,7 +250,6 @@ const getCachedTopUsers = unstable_cache(
           user.email ||
           'Usuário',
         email: user.email || '',
-        totalStudyTime: user.totalStudyTime,
         annotationsCount: user.totalAnnotationsCount,
         uploadsCount: user.totalUploads,
         lastActive: user.updatedAt,

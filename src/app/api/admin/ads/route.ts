@@ -50,14 +50,6 @@ export async function GET(request: NextRequest) {
       prisma.advertisement.findMany({
         where,
         include: {
-          creator: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-            },
-          },
           instrument: {
             select: {
               id: true,
@@ -219,13 +211,6 @@ export async function POST(request: NextRequest) {
         createdBy: session.user.id,
       },
       include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
         instrument: {
           select: {
             id: true,
@@ -335,13 +320,6 @@ export async function PUT(request: NextRequest) {
         lastEditedAt: new Date(),
       },
       include: {
-        creator: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-          },
-        },
         instrument: {
           select: {
             id: true,

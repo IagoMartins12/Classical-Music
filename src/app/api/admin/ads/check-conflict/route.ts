@@ -143,7 +143,6 @@ async function checkMainConstraint(
     where,
     include: {
       instrument: { select: { name: true } },
-      creator: { select: { firstName: true, lastName: true } },
     },
   });
 
@@ -168,8 +167,6 @@ async function checkMainConstraint(
         targetType: existingAd.targetType,
         instrumentId: existingAd.instrumentId,
         instrumentName: existingAd.instrument?.name,
-        creatorName:
-          `${existingAd.creator?.firstName} ${existingAd.creator?.lastName}`.trim(),
       },
       affectedFields: ['type', 'placement', 'targetType', 'instrumentId'],
     });
@@ -203,7 +200,6 @@ async function checkActiveConflicts(
     where,
     include: {
       instrument: { select: { name: true } },
-      creator: { select: { firstName: true, lastName: true } },
     },
   });
 
@@ -229,8 +225,6 @@ async function checkActiveConflicts(
           targetType: existingAd.targetType,
           instrumentId: existingAd.instrumentId,
           instrumentName: existingAd.instrument?.name,
-          creatorName:
-            `${existingAd.creator?.firstName} ${existingAd.creator?.lastName}`.trim(),
         },
         affectedFields: [
           'type',
