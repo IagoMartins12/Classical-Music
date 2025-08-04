@@ -7,7 +7,7 @@ import { GiGrandPiano, GiMusicalNotes } from 'react-icons/gi';
 
 const AnimatedMusicalNotes2 = () => {
   return (
-    <div className="absolute hidden md:flex lg:flex  inset-0 pointer-events-none">
+    <div className="absolute  flex lg:flex  inset-0 pointer-events-none">
       <div className="absolute top-6 left-12 text-5xl text-brand-primary/20 animate-float">
         <GiMusicalNotes />
       </div>
@@ -24,13 +24,13 @@ const AnimatedMusicalNotes2 = () => {
         <GiGrandPiano />
       </div>
       <div
-        className="absolute bottom-12 left-24 text-3xl text-accent-blue/20 animate-float"
+        className="absolute bottom-6 sm:bottom-12 left-24 text-3xl text-accent-blue/20 animate-float"
         style={{ animationDelay: '0.5s' }}
       >
         <FiHeadphones />
       </div>
       <div
-        className="absolute top-1/2 left-8 text-2xl text-accent-green/20 animate-float"
+        className="absolute hidden sm:flex top-1/2 left-8 text-2xl text-accent-green/20 animate-float"
         style={{ animationDelay: '1.5s' }}
       >
         <FiBookOpen />

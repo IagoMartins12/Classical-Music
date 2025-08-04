@@ -381,11 +381,13 @@ export const FloatingElement: React.FC<FloatingElementProps> = ({
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg';
   color?: string;
+  classname?: string;
 }
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = 'md',
   color = 'border-brand-primary',
+  classname,
 }) => {
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -395,7 +397,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   return (
     <motion.div
-      className={`${sizeClasses[size]} border-4 ${color} border-t-transparent rounded-full`}
+      className={`${sizeClasses[size]} border-4 ${classname} ${color} border-t-transparent rounded-full`}
       animate={{ rotate: 360 }}
       transition={{
         duration: 1,

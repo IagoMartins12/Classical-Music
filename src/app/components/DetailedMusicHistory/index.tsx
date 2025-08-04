@@ -941,7 +941,7 @@ export function DetailedMusicHistory(): JSX.Element {
   }, []);
 
   return (
-    <div className="w-full bg-gradient-primary py-0 md:py-20 lg:py-20 relative overflow-hidden">
+    <div className="w-full bg-gradient-primary py-4 md:py-20 lg:py-20 relative overflow-hidden">
       {/* Background Pattern Otimizado */}
       <div className="absolute inset-0 pointer-events-none opacity-5 will-change-auto">
         <div className="absolute top-40 left-40 w-96 h-96 bg-brand-gradient rounded-full blur-3xl animate-pulse"></div>

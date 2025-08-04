@@ -31,6 +31,7 @@ import Image from 'next/image';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useRouter } from 'next/navigation';
+import useIsMobile from '@/app/hooks/useIsMobile';
 
 interface NavItem {
   label: string;
@@ -55,6 +56,7 @@ const Navbar: React.FC = () => {
   const { open: openRegister } = useRegisterModal();
   const { open } = useOnboardingModal();
 
+  const isMobile = useIsMobile();
   const toggleMobileMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
@@ -192,7 +194,7 @@ const Navbar: React.FC = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center group">
-            <div className="relative">
+            <div className="relative hidden sm:block">
               <GiGrandPiano className="w-8 h-8 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
             </div>
             <span className="text-xl font-bold text-gradient-brand classical-title">
@@ -282,7 +284,7 @@ const Navbar: React.FC = () => {
           {/* Right Section */}
           <div className="flex items-center space-x-4">
             {/* Theme Toggle */}
-            <ThemeToggle variant="navbar" />
+            <ThemeToggle variant="navbar" className="hidden sm:block" />
 
             {/* Authentication Section */}
             {isLoading ? null : isAuthenticated && user ? (
@@ -321,7 +323,11 @@ const Navbar: React.FC = () => {
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
                   <>
-                    <div className="absolute right-0 top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-20 p-2">
+                    <div
+                      className={`absolute ${
+                        isMobile ? '-right-[5.9rem] ' : 'right-0'
+                      }top-full mt-2 w-64 bg-theme-tertiary rounded-2xl z-20 r p-2`}
+                    >
                       {/* User Info */}
                       <div className="px-3 py-2 border-b border-theme-secondary mb-2">
                         <p className="font-medium text-theme-primary">
@@ -413,7 +419,7 @@ const Navbar: React.FC = () => {
               </div>
             ) : (
               /* Unauthenticated User Buttons */
-              <div className="flex items-center space-x-3">
+              <div className=" items-center hidden sm:flex space-x-3">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -450,15 +456,11 @@ const Navbar: React.FC = () => {
         <div
           className={`
             lg:hidden overflow-hidden transition-all duration-500 ease-in-out
-            ${
-              isMenuOpen
-                ? 'max-h-[600px] opacity-100 mt-4'
-                : 'max-h-0 opacity-0'
-            }
+            ${isMenuOpen ? 'max-h-auto opacity-100 mt-4' : 'max-h-0 opacity-0'}
           `}
           id="mobile-menu"
         >
-          <div className="classical-card p-4">
+          <div className="classical-card p-4 mt-3">
             <ul className="space-y-2">
               {optionsArr.map(({ label, href, active, submenu }, index) => (
                 <li key={label}>
@@ -550,6 +552,11 @@ const Navbar: React.FC = () => {
                   </li>
                 </>
               )}
+
+              <ThemeToggle
+                variant="navbar"
+                className=" flex items-center justify-center  sm:hidden"
+              />
             </ul>
           </div>
         </div>

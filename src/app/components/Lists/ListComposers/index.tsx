@@ -138,18 +138,6 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
           </div>
         )}
       </div>
-
-      {/* Floating stats indicator */}
-      <div className="fixed bottom-6 right-6 z-30 md:hidden">
-        <div className="bg-theme-elevated/90 backdrop-blur-md border border-theme-primary rounded-full px-4 py-2 shadow-theme-glow">
-          <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
-            <span className="text-xs text-theme-secondary font-medium">
-              {visibleComposers.length}/{composers.length}
-            </span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

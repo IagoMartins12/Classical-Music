@@ -44,7 +44,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
           {/* Title and opus */}
           <div className="flex items-start gap-3 mb-1">
             <div className="inline-flex items-center py-0.5">
-              <h3 className="font-bold flex items-center gap-2 ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300 truncate flex-1">
+              <h3 className="font-bold flex items-center gap-2 ml-1 text-theme-primary classical-title group-hover:text-brand-primary transition-colors duration-300  flex-1">
                 {work.title}
                 <VerificationBadge verified={work.isVerified} variant="icon" />
               </h3>
@@ -92,7 +92,7 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
           </div>
 
           {/* Additional details */}
-          <div className="flex items-center gap-4 text-sm text-theme-tertiary">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-theme-tertiary">
             {work.instrument?.name && (
               <div className="flex items-center">
                 <FiMusic className="w-3 h-3 mr-1 text-brand-primary" />

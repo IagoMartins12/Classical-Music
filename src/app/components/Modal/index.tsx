@@ -12,6 +12,7 @@ import { createPortal } from 'react-dom';
 import { FiX } from 'react-icons/fi';
 import ConfirmationModal from './ConfirmationModal';
 import { useModalConfirmation } from '@/app/hooks/useModalConfirmation';
+import useIsMobile from '@/app/hooks/useIsMobile';
 
 interface ModalProps {
   isOpen: boolean;
@@ -59,6 +60,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
     const modalRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
 
+    const isMobile = useIsMobile();
     // 🎯 SÓ USA CONFIRMAÇÃO SE HABILITADA
     const {
       requestClose,
@@ -147,7 +149,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
     const modalContent = (
       <>
         {/* Modal Principal */}
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 ">
           <div
             className="fixed inset-0 modal-overlay animate-fade-in"
             onClick={handleClose}
@@ -156,9 +158,14 @@ const Modal = forwardRef<ModalRef, ModalProps>(
           <div
             ref={modalRef}
             className={`
-              relative w-full ${maxWidthClasses[maxWidth]} 
+              relative 
+              ${
+                isMobile
+                  ? 'w-full !h-[100vh] max-w-full !max-h-[100vh] border-0 rounded-none'
+                  : `w-full ${maxWidthClasses[maxWidth]} max-h-[90vh]`
+              }
               modal-content !overflow-hidden classical-card animate-fade-in-scale
-              shadow-theme-large border-theme-accent max-h-[90vh]
+              shadow-theme-large border-theme-accent
               ${className}
             `}
             role="dialog"
@@ -194,7 +201,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
               className={`overflow-y-auto classical-scrollbar pt-4 flex-1 ${
                 title || showCloseButton ? 'px-6 pb-6' : 'p-6'
               }`}
-              style={{ maxHeight: 'calc(90vh - 100px)' }}
+              style={{ maxHeight: isMobile ? 'calc(90vh - 100px)' : '100vh' }}
             >
               {children}
             </div>

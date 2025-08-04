@@ -192,7 +192,7 @@ export default function ComposersClient({
         {/* Filters Section */}
         <AnimatedItem
           direction="up"
-          className={`classical-card mx-4 p-6 transition-all duration-500 ${
+          className={`classical-card mx-4 !p-6 transition-all duration-500 ${
             isPending ? 'opacity-50' : ''
           }`}
         >
@@ -273,7 +273,7 @@ export default function ComposersClient({
 
           {/* Filter Status and View Toggle */}
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-4 border-t border-theme-secondary">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 justify-between">
               <div className="text-theme-secondary text-sm">
                 <span className="font-medium text-theme-primary">
                   {composers.length}
@@ -304,13 +304,13 @@ export default function ComposersClient({
 
               {isPending && (
                 <div className="flex items-center text-brand-primary text-sm">
-                  <LoadingSpinner size="sm" />
-                  <span className="ml-2">Carregando...</span>
+                  <LoadingSpinner size="sm" classname="" />
+                  <span className="ml-2  hidden sm:flex">Carregando...</span>
                 </div>
               )}
             </div>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 justify-between">
               {/* Clear Filters */}
               {hasActiveFilters && (
                 <button

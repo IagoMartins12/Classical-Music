@@ -610,7 +610,7 @@ body {
 
 @media (max-width: 640px) {
   .section-wrap {
-    padding: 1rem;
+    padding: 1.5rem 1rem;
   }
 }
 
@@ -1307,4 +1307,3 @@ body {
   will-change: transform;
   contain: strict;
 }
-

@@ -35,6 +35,8 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
     return `${birth} - ${death}`;
   };
 
+  console.log('composer', composer);
+
   return (
     <div className="flex items-center justify-between w-full group">
       {/* Left section - Portrait and basic info */}
@@ -99,7 +101,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
       </div>
 
       {/* Center section - External links */}
-      <div className="flex items-center  space-x-2 mx-4">
+      <div className="hidden sm:flex items-center  space-x-2 mx-4">
         {composer.wikipediaLink && (
           <a
             href={composer.wikipediaLink}

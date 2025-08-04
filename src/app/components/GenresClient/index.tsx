@@ -151,7 +151,7 @@ export default function GenresClient({ genres }: GenresClientProps) {
               className="btn-classical-secondary flex items-center space-x-2"
             >
               <FiArrowLeft className="w-4 h-4" />
-              <span>Voltar</span>
+              <span className="">Voltar</span>
             </button>
 
             <div className="flex items-center space-x-4">
@@ -174,12 +174,6 @@ export default function GenresClient({ genres }: GenresClientProps) {
                   )}
                 </button>
               )}
-
-              {/* View Mode Toggle */}
-              <ViewModeToggle
-                viewMode={viewMode}
-                onViewModeChange={setViewMode}
-              />
             </div>
           </div>
 
@@ -227,6 +221,12 @@ export default function GenresClient({ genres }: GenresClientProps) {
                 </>
               )}
             </div>
+
+            {/* View Mode Toggle */}
+            <ViewModeToggle
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+            />
           </div>
         </div>
 
