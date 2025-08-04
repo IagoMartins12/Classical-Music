@@ -41,6 +41,7 @@ import { formatNumber } from '@/app/hooks/admin/useAdminStats';
 import { toast } from 'react-hot-toast';
 import { useAdminScores } from '@/app/hooks/admin/useAdminScores';
 import Image from 'next/image';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface ScoreFilters {
   search: string;
@@ -235,14 +236,7 @@ export default function ScoresManagement() {
   if (loading && !scores.length) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando partituras...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="partituras" />
       </PageContainer>
     );
   }

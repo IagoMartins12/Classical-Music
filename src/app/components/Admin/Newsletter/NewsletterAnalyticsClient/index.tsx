@@ -21,6 +21,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import { useNewsletterAnalytics } from '@/app/hooks/admin/useNewsletterAnalytics';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface MetricCard {
   title: string;
@@ -63,14 +64,7 @@ export default function NewsletterAnalyticsClient() {
   if (loading && !analytics) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando analytics...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="analytics" />
       </PageContainer>
     );
   }

@@ -254,7 +254,6 @@ ${data.subject}
 ${data.message}
 
 ${data.sourceUrl ? `URL de origem: ${data.sourceUrl}` : ''}
-${data.ipAddress ? `IP: ${data.ipAddress}` : ''}
 ${data.userAgent ? `User Agent: ${data.userAgent}` : ''}
 
 Responda este email para entrar em contato diretamente com o usuário.

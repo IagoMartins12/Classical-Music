@@ -31,6 +31,7 @@ import CreateCampaignModal from './CreateCampaignModal';
 import { CampaignStatsModal } from './CampaignStatsModal';
 import { FaFlask } from 'react-icons/fa';
 import SendTestCampaignModal from './SendTestCampaignModal';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface FilterState {
   status: string;
@@ -178,14 +179,7 @@ export default function NewsletterCampaignsClient() {
   if (campaignsLoading && campaigns.length === 0) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando campanhas...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="campanhas" />
       </PageContainer>
     );
   }

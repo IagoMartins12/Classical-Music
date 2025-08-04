@@ -34,6 +34,7 @@ import {
 } from '@/app/components/Admin/Charts/AdminCharts';
 import { useAdminAnalytics } from '@/app/hooks/admin/useAdminAnalytics';
 import { formatNumber, formatDuration } from '@/app/hooks/admin/useAdminStats';
+import LoadingAdminState from '../../Common/LoadingState';
 
 export default function AdminAnalytics() {
   const router = useRouter();
@@ -106,14 +107,7 @@ export default function AdminAnalytics() {
   if (loading && !analytics) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando analytics...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="analytics" />
       </PageContainer>
     );
   }

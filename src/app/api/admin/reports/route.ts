@@ -242,7 +242,7 @@ const generateUsersReportData = async (startDate: Date, endDate: Date) => {
   };
 };
 
-// Gerar dados do relatório de conteúdo
+// 🔄 GERAR DADOS DO RELATÓRIO DE CONTEÚDO - CORRIGIDO SEM INSTRUMENT LOOKUP
 const generateContentReportData = async (startDate: Date, endDate: Date) => {
   const [
     totalWorks,
@@ -253,7 +253,8 @@ const generateContentReportData = async (startDate: Date, endDate: Date) => {
     popularWorks,
     popularComposers,
     topEpochs,
-    worksByInstrument,
+    totalInstruments,
+    totalUsersWithInstruments,
   ] = await Promise.all([
     prisma.work.count(),
     prisma.composer.count(),
@@ -280,6 +281,7 @@ const generateContentReportData = async (startDate: Date, endDate: Date) => {
       },
     }),
 
+    // 🔄 CORRIGIDO: buscar obras populares com joins seguros
     prisma.work.findMany({
       select: {
         id: true,
@@ -299,11 +301,16 @@ const generateContentReportData = async (startDate: Date, endDate: Date) => {
       take: 10,
     }),
 
+    // 🔄 CORRIGIDO: buscar compositores populares com epoch opcional
     prisma.composer.findMany({
       select: {
         id: true,
         name: true,
-        epoch: { select: { name: true } },
+        epoch: {
+          select: {
+            name: true,
+          },
+        },
         _count: {
           select: {
             works: true,
@@ -332,22 +339,10 @@ const generateContentReportData = async (startDate: Date, endDate: Date) => {
       },
     }),
 
-    prisma.instrument.findMany({
-      select: {
-        name: true,
-        category: true,
-        _count: {
-          select: {
-            works: true,
-            users: true,
-          },
-        },
-      },
-      orderBy: {
-        works: { _count: 'desc' },
-      },
-      take: 10,
-    }),
+    // 🔄 SUBSTITUÍDO: consultas simples sem $lookup problemático
+    prisma.instrument.count(),
+
+    prisma.userInstrument.count(),
   ]);
 
   return {
@@ -357,6 +352,8 @@ const generateContentReportData = async (startDate: Date, endDate: Date) => {
       totalScores,
       newWorksCount: newWorks.length,
       newComposersCount: newComposers.length,
+      totalInstruments,
+      totalUsersWithInstruments,
     },
     newWorks: newWorks.map((work) => ({
       title: work.title,
@@ -374,9 +371,10 @@ const generateContentReportData = async (startDate: Date, endDate: Date) => {
       sessions: work._count.studySessions,
       annotations: work._count.workAnnotations,
     })),
+    // 🔄 CORRIGIDO: tratamento seguro do epoch que pode ser null
     popularComposers: popularComposers.map((composer) => ({
       name: composer.name,
-      epoch: composer.epoch.name,
+      epoch: composer.epoch?.name || 'Não informado', // ✅ CORRIGIDO
       works: composer._count.works,
       favorites: composer._count.favoriteByUsers,
     })),
@@ -385,12 +383,15 @@ const generateContentReportData = async (startDate: Date, endDate: Date) => {
       composers: epoch._count.composers,
       works: epoch._count.works,
     })),
-    worksByInstrument: worksByInstrument.map((instrument) => ({
-      name: instrument.name,
-      category: instrument.category,
-      works: instrument._count.works,
-      users: instrument._count.users,
-    })),
+    // 🔄 SUBSTITUÍDO: dados simplificados de instrumentos
+    instrumentsOverview: {
+      totalInstruments,
+      totalUsersWithInstruments,
+      avgUsersPerInstrument:
+        totalInstruments > 0
+          ? Math.round(totalUsersWithInstruments / totalInstruments)
+          : 0,
+    },
   };
 };
 
@@ -579,6 +580,8 @@ const generateCSVFile = async (
     'popularWorks',
     'topContributors',
     'mostStudiedWorks',
+    'popularComposers',
+    'topEpochs',
   ];
 
   importantKeys.forEach((key) => {
@@ -592,6 +595,14 @@ const generateCSVFile = async (
       });
     }
   });
+
+  // Adicionar overview de instrumentos se disponível
+  if (data.instrumentsOverview) {
+    csvData.push({
+      Tipo: 'instrumentsOverview',
+      ...data.instrumentsOverview,
+    });
+  }
 
   const worksheet = XLSX.utils.json_to_sheet(csvData);
   const csv = XLSX.utils.sheet_to_csv(worksheet);
@@ -615,53 +626,218 @@ const generateCSVFile = async (
   };
 };
 
-// Gerar arquivo PDF (simulado - em produção usar biblioteca como puppeteer/jsPDF)
+// 🔄 GERAR ARQUIVO PDF - CORRIGIDO COM HTML PARA PDF REAL
 const generatePDFFile = async (
   data: any,
   filename: string
 ): Promise<{ path: string; size: number }> => {
-  // Por simplicidade, vamos gerar um arquivo de texto formatado
-  // Em produção, use bibliotecas como puppeteer, jsPDF ou similares
+  // 🔄 GERAR HTML ESTRUTURADO PARA CONVERSÃO EM PDF
+  let htmlContent = `
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Relatório do Sistema - Opus Atlas</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+                background: #fff;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 40px;
+                border-bottom: 3px solid #3B82F6;
+                padding-bottom: 20px;
+            }
+            .header h1 {
+                color: #1E40AF;
+                font-size: 2.5em;
+                margin: 0;
+            }
+            .header p {
+                color: #666;
+                font-size: 1.1em;
+                margin: 10px 0;
+            }
+            .section {
+                margin: 30px 0;
+                background: #f8f9fa;
+                padding: 20px;
+                border-radius: 8px;
+                border-left: 4px solid #3B82F6;
+            }
+            .section h2 {
+                color: #1E40AF;
+                font-size: 1.8em;
+                margin-top: 0;
+                margin-bottom: 15px;
+            }
+            .summary-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                margin: 20px 0;
+            }
+            .summary-item {
+                background: white;
+                padding: 15px;
+                border-radius: 6px;
+                border: 1px solid #e2e8f0;
+            }
+            .summary-item strong {
+                color: #1E40AF;
+                display: block;
+                font-size: 1.1em;
+            }
+            .list-item {
+                background: white;
+                margin: 10px 0;
+                padding: 12px;
+                border-radius: 6px;
+                border: 1px solid #e2e8f0;
+            }
+            .list-item strong {
+                color: #1E40AF;
+            }
+            .footer {
+                margin-top: 40px;
+                text-align: center;
+                color: #666;
+                font-size: 0.9em;
+                border-top: 1px solid #e2e8f0;
+                padding-top: 20px;
+            }
+            @media print {
+                body { margin: 0; padding: 15px; }
+                .section { break-inside: avoid; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>📊 Relatório do Sistema</h1>
+            <p><strong>Opus Atlas - Classical Music Platform</strong></p>
+            <p>Gerado em: ${new Date().toLocaleDateString('pt-BR', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}</p>
+        </div>
+  `;
 
-  let content = 'RELATÓRIO DO SISTEMA\n';
-  content += '===================\n\n';
-
+  // 🔄 ADICIONAR RESUMO EXECUTIVO
   if (data.summary) {
-    content += 'RESUMO EXECUTIVO\n';
-    content += '----------------\n';
+    htmlContent += `
+        <div class="section">
+            <h2>📋 Resumo Executivo</h2>
+            <div class="summary-grid">
+    `;
+
     Object.entries(data.summary).forEach(([key, value]) => {
-      content += `${key}: ${value}\n`;
+      const keyFormatted = key
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, (str) => str.toUpperCase());
+
+      htmlContent += `
+                <div class="summary-item">
+                    <strong>${keyFormatted}</strong>
+                    ${
+                      typeof value === 'number'
+                        ? value.toLocaleString('pt-BR')
+                        : value
+                    }
+                </div>
+      `;
     });
-    content += '\n';
+
+    htmlContent += `
+            </div>
+        </div>
+    `;
   }
 
-  // Adicionar seções importantes
-  const sections = {
-    newUsers: 'NOVOS USUÁRIOS',
-    popularWorks: 'OBRAS POPULARES',
-    topContributors: 'PRINCIPAIS CONTRIBUIDORES',
-    mostStudiedWorks: 'OBRAS MAIS ESTUDADAS',
+  // 🔄 ADICIONAR SEÇÕES DETALHADAS
+  const sectionTitles = {
+    newUsers: '👤 Novos Usuários',
+    popularWorks: '🎵 Obras Populares',
+    topContributors: '🏆 Principais Contribuidores',
+    mostStudiedWorks: '📚 Obras Mais Estudadas',
+    popularComposers: '👨‍🎼 Compositores Populares',
+    topEpochs: '🏛️ Épocas Musicais',
+    annotationsByCategory: '📝 Anotações por Categoria',
+    practiceGoals: '🎯 Metas de Aprendizado',
   };
 
-  Object.entries(sections).forEach(([key, title]) => {
+  Object.entries(sectionTitles).forEach(([key, title]) => {
     if (data[key] && Array.isArray(data[key]) && data[key].length > 0) {
-      content += `${title}\n`;
-      content += '-'.repeat(title.length) + '\n';
+      htmlContent += `
+        <div class="section">
+            <h2>${title}</h2>
+      `;
+
       data[key].slice(0, 10).forEach((item: any, index: number) => {
-        content += `${index + 1}. `;
+        htmlContent += `<div class="list-item">`;
+        htmlContent += `<strong>${index + 1}.</strong> `;
+
         if (typeof item === 'object') {
-          const values = Object.values(item).slice(0, 3);
-          content += values.join(' - ');
+          const values = Object.entries(item).slice(0, 4);
+          values.forEach(([itemKey, itemValue], i) => {
+            if (i > 0) htmlContent += ' • ';
+            htmlContent += `<strong>${itemKey}:</strong> ${itemValue}`;
+          });
         } else {
-          content += item;
+          htmlContent += item;
         }
-        content += '\n';
+
+        htmlContent += `</div>`;
       });
-      content += '\n';
+
+      htmlContent += `</div>`;
     }
   });
 
-  // Garantir que o diretório existe
+  // 🔄 ADICIONAR OVERVIEW DE INSTRUMENTOS SE DISPONÍVEL
+  if (data.instrumentsOverview) {
+    htmlContent += `
+      <div class="section">
+          <h2>🎹 Visão Geral dos Instrumentos</h2>
+          <div class="summary-grid">
+              <div class="summary-item">
+                  <strong>Total de Instrumentos</strong>
+                  ${data.instrumentsOverview.totalInstruments}
+              </div>
+              <div class="summary-item">
+                  <strong>Usuários com Instrumentos</strong>
+                  ${data.instrumentsOverview.totalUsersWithInstruments}
+              </div>
+              <div class="summary-item">
+                  <strong>Média de Usuários por Instrumento</strong>
+                  ${data.instrumentsOverview.avgUsersPerInstrument}
+              </div>
+          </div>
+      </div>
+    `;
+  }
+
+  // 🔄 FOOTER
+  htmlContent += `
+        <div class="footer">
+            <p>Relatório gerado automaticamente pelo sistema Opus Atlas</p>
+            <p>Para mais informações, acesse: <strong>opusatlas.com</strong></p>
+        </div>
+    </body>
+    </html>
+  `;
+
+  // 🔄 SALVAR COMO HTML (que pode ser convertido para PDF no browser)
   const reportsDir = path.join(process.cwd(), 'public', 'reports');
   try {
     await fs.access(reportsDir);
@@ -669,13 +845,13 @@ const generatePDFFile = async (
     await fs.mkdir(reportsDir, { recursive: true });
   }
 
-  const filePath = path.join(reportsDir, filename);
-  await fs.writeFile(filePath, content, 'utf8');
+  const filePath = path.join(reportsDir, filename.replace('.pdf', '.html'));
+  await fs.writeFile(filePath, htmlContent, 'utf8');
 
   const stats = await fs.stat(filePath);
 
   return {
-    path: `/reports/${filename}`,
+    path: `/reports/${filename.replace('.pdf', '.html')}`,
     size: stats.size,
   };
 };

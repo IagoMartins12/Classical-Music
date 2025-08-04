@@ -50,7 +50,7 @@ export const ClientThemeWrapper: React.FC<ClientThemeWrapperProps> = ({
   }
 
   return (
-    <div className="classical-theme transition-opacity duration-300 opacity-100">
+    <div className="bg-theme-primary transition-opacity duration-300 opacity-100">
       {children}
     </div>
   );

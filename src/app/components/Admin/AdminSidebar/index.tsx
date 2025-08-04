@@ -3,14 +3,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   FiBarChart2,
   FiUsers,
   FiShield,
   FiFlag,
   FiActivity,
-  FiSettings,
   FiDatabase,
   FiFileText,
   FiMusic,
@@ -27,6 +26,7 @@ import {
 import { useAdminStats } from '@/app/hooks/admin/useAdminStats';
 import { BiTestTube } from 'react-icons/bi';
 import { LuUser } from 'react-icons/lu';
+import { GiBroom } from 'react-icons/gi';
 
 interface SidebarSection {
   title: string;
@@ -44,6 +44,7 @@ interface SidebarItem {
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const params = useSearchParams();
   const { stats, loading } = useAdminStats();
   const [expandedSections, setExpandedSections] = useState<string[]>([
     'Principal',
@@ -71,6 +72,10 @@ export default function AdminSidebar() {
     return badge.toString();
   };
 
+  const isActive = params.get('isActive');
+  const hasAnnotations = params.get('hasAnnotations');
+  const hasUploads = params.get('hasUploads');
+
   // Configurar seções da sidebar com dados reais
   const sidebarSections: SidebarSection[] = [
     {
@@ -91,32 +96,38 @@ export default function AdminSidebar() {
           href: '/admin/users',
           label: 'Usuários',
           icon: FiUsers,
-          isActive: pathname.startsWith('/admin/users'),
+          isActive: pathname === '/admin/users',
         },
         {
           href: '/admin/users/list',
           label: 'Todos',
           icon: LuUser,
           badge: mounted && stats ? stats.overview.totalUsers : undefined,
-          isActive: pathname === '/list',
+          isActive:
+            pathname === '/admin/users/list' &&
+            !hasAnnotations &&
+            !hasUploads &&
+            !isActive,
         },
         {
           href: '/admin/users/list?hasAnnotations=true',
           label: 'Anotadores',
           icon: FiMessageSquare,
-          isActive: pathname === '/admin/users/list?hasAnnotations=true',
+          isActive:
+            pathname === '/admin/users/list' && hasAnnotations ? true : false,
         },
         {
           href: '/admin/users/list?hasUploads=true',
           label: 'Contribuidores',
           icon: FiUpload,
-          isActive: pathname === '/admin/users/list?hasUploads=true',
+          isActive:
+            pathname === '/admin/users/list' && hasUploads ? true : false,
         },
         {
           href: '/admin/users/list?isActive=true',
           label: 'Usuários Ativos',
           icon: FiActivity,
-          isActive: pathname === '/admin/users/list?isActive=true',
+          isActive: pathname === '/admin/users/list' && isActive ? true : false,
         },
       ],
     },
@@ -168,14 +179,14 @@ export default function AdminSidebar() {
           isActive: pathname.startsWith('/uploads/moderation'),
         },
         {
-          href: '/admin/report',
+          href: '/admin/reports-metric',
           label: 'Reports',
           icon: FiFlag,
           badge:
             mounted && stats?.moderation
               ? stats.moderation.totalReports
               : undefined,
-          isActive: pathname.startsWith('/admin/reports'),
+          isActive: pathname.startsWith('/admin/reports-metric'),
         },
       ],
     },
@@ -218,23 +229,10 @@ export default function AdminSidebar() {
           label: 'Listas de Teste',
           href: '/admin/newsletter/test-lists',
           icon: BiTestTube,
-        },
-
-        {
-          href: '/admin/newsletter/backup',
-          label: 'Backup',
-          icon: FiHardDrive,
-          isActive: pathname.startsWith('/admin/newsletter/backup'),
-        },
-        {
-          href: '/admin/newsletter/settings',
-          label: 'Configurações',
-          icon: FiSettings,
-          isActive: pathname.startsWith('/admin/newsletter/settings'),
+          isActive: pathname.startsWith('/admin/newsletter/test-lists'),
         },
       ],
     },
-    // 🆕 NOVA SEÇÃO DE BACKUP
     {
       title: 'Sistema & Backup',
       items: [
@@ -260,8 +258,18 @@ export default function AdminSidebar() {
           href: '/admin/ads',
           label: 'Gerenciar Ads',
           icon: FiTarget, // Adicionar ao imports: FiTarget
-          // badge: mounted && stats ? stats.ads?.totalActive : undefined,
           isActive: pathname.startsWith('/admin/ads'),
+        },
+      ],
+    },
+    {
+      title: 'Limpeza',
+      items: [
+        {
+          href: '/admin/orphan-files',
+          label: 'Limpar Arquivos',
+          icon: GiBroom, // Adicionar ao imports: FiTarget
+          isActive: pathname.startsWith('/admin/orphan-files'),
         },
       ],
     },
@@ -386,32 +394,6 @@ export default function AdminSidebar() {
             </div>
           ))}
         </nav>
-
-        {/* System Status */}
-        <div className="mt-6 lg:mt-8 p-3 lg:p-4 bg-theme-secondary rounded-xl">
-          <h3 className="text-sm font-bold text-theme-primary mb-3 flex items-center space-x-2">
-            <FiActivity className="w-4 h-4 text-accent-green" />
-            <span>Status do Sistema</span>
-          </h3>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-theme-tertiary">API</span>
-              <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-theme-tertiary">Database</span>
-              <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-theme-tertiary">Backup</span>
-              <div className="w-2 h-2 bg-accent-green rounded-full"></div>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-theme-tertiary">Cache</span>
-              <div className="w-2 h-2 bg-accent-amber rounded-full"></div>
-            </div>
-          </div>
-        </div>
       </div>
     </aside>
   );

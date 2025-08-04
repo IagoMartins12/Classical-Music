@@ -14,7 +14,6 @@ import {
   FiCheckCircle,
   FiX,
   FiRefreshCw,
-  FiStar,
   FiMusic,
   FiHeart,
   FiMapPin,
@@ -28,7 +27,6 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
-  LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
@@ -48,6 +46,7 @@ import StatsSkeleton, {
 import Image from 'next/image';
 import { getPeriodLabel } from '@/app/utils/adminUtils';
 import PeriodSelector from '../../Common/PeriodSelector';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface ComposerFilters {
   search: string;
@@ -78,6 +77,8 @@ export default function ComposersManagement() {
     updateComposer,
     deleteComposer,
   } = useAdminComposers();
+
+  console.log('ADMIN', stats);
 
   const [filters, setFilters] = useState<ComposerFilters>({
     search: '',
@@ -229,14 +230,7 @@ export default function ComposersManagement() {
   if (loading && !composers.length) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando compositores...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="compositores" />
       </PageContainer>
     );
   }
@@ -339,7 +333,10 @@ export default function ComposersManagement() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <AnimatedCard className="classical-card p-6">
               <AdminPieChart
-                data={stats.byEpoch}
+                data={stats.byEpoch.map((item) => ({
+                  name: item.epoch,
+                  value: item.count,
+                }))}
                 title="Compositores por Época"
                 subtitle={`Distribuição ${getPeriodLabel(period)}`}
                 height={300}
@@ -801,7 +798,7 @@ export default function ComposersManagement() {
                         size="sm"
                         leftIcon={<FiEdit />}
                         onClick={() =>
-                          router.push(`/uploads/composers/${composer.id}/edit`)
+                          router.push(`/uploads/composer/${composer.id}/edit`)
                         }
                         title="Editar"
                       />

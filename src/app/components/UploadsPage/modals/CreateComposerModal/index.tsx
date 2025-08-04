@@ -76,6 +76,125 @@ interface CreateComposerModalProps {
 
 type DataSource = 'none' | 'imslp' | 'wikipedia';
 
+const extractDateFromExtendedFormat = (dateString: string): string | null => {
+  if (!dateString) return null;
+
+  // Meses em português
+  const monthsMap: Record<string, string> = {
+    janeiro: '01',
+    fevereiro: '02',
+    março: '03',
+    abril: '04',
+    maio: '05',
+    junho: '06',
+    julho: '07',
+    agosto: '08',
+    setembro: '09',
+    outubro: '10',
+    novembro: '11',
+    dezembro: '12',
+    jan: '01',
+    fev: '02',
+    mar: '03',
+    abr: '04',
+    mai: '05',
+    jun: '06',
+    jul: '07',
+    ago: '08',
+    set: '09',
+    out: '10',
+    nov: '11',
+    dez: '12',
+    // Inglês
+    january: '01',
+    february: '02',
+    march: '03',
+    april: '04',
+    may: '05',
+    june: '06',
+    july: '07',
+    august: '08',
+    september: '09',
+    october: '10',
+    november: '11',
+    december: '12',
+  };
+
+  // Padrões para extrair datas
+  const patterns = [
+    // Português: "27 de janeiro de 1756"
+    /(\d{1,2})\s+de\s+(\w+)\s+de\s+(\d{4})/i,
+    // Inglês: "27 January 1756" ou "January 27, 1756"
+    /(\d{1,2})\s+(\w+)\s+(\d{4})/i,
+    /(\w+)\s+(\d{1,2}),?\s+(\d{4})/i,
+  ];
+
+  for (const pattern of patterns) {
+    const match = dateString.match(pattern);
+    if (match) {
+      if (pattern.source.includes('de\\s+')) {
+        // Português
+        const day = match[1];
+        const monthName = match[2].toLowerCase();
+        const year = match[3];
+        const month = monthsMap[monthName];
+        if (month) {
+          return `${year}-${month}-${day.padStart(2, '0')}`;
+        }
+      } else {
+        // Inglês
+        let day, monthName, year;
+        if (/^\d/.test(match[1])) {
+          // Formato: "27 January 1756"
+          day = match[1];
+          monthName = match[2].toLowerCase();
+          year = match[3];
+        } else {
+          // Formato: "January 27, 1756"
+          monthName = match[1].toLowerCase();
+          day = match[2];
+          year = match[3];
+        }
+        const month = monthsMap[monthName];
+        if (month) {
+          return `${year}-${month}-${day.padStart(2, '0')}`;
+        }
+      }
+    }
+  }
+
+  return null;
+};
+
+// Função para formatar data para input HTML5 (YYYY-MM-DD)
+const formatDateForInput = (dateString: string | null): string => {
+  if (!dateString) return '';
+
+  // Se já está em formato ISO, retornar como está
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    return dateString;
+  }
+
+  // Se está em formato dd/mm/yyyy
+  if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
+    const [day, month, year] = dateString.split('/');
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+  }
+
+  // Tentar extrair data de formato extenso
+  const dateFromText = extractDateFromExtendedFormat(dateString);
+  if (dateFromText) {
+    return dateFromText;
+  }
+
+  // Se só tem ano, usar 1 de janeiro
+  const yearMatch = dateString.match(/(\d{4})/);
+  if (yearMatch) {
+    return `${yearMatch[1]}-01-01`;
+  }
+
+  return '';
+};
 const CreateComposerModal = ({
   isOpen,
   onClose,
@@ -142,36 +261,6 @@ const CreateComposerModal = ({
   // 🆕 CONFIGURAR VALIDAÇÃO DE FORMULÁRIO
   const requiredFields = ['name', 'fullName', 'epochId', 'primaryRoleId'];
   const customValidations = composerModalValidations;
-
-  // Função para formatar data para input HTML5 (YYYY-MM-DD)
-  const formatDateForInput = (dateString: string | null): string => {
-    if (!dateString) return '';
-
-    // Se já está em formato ISO, retornar como está
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-      return dateString;
-    }
-
-    // Se está em formato dd/mm/yyyy
-    if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-      const [day, month, year] = dateString.split('/');
-      return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-    }
-
-    // Tentar extrair data de formato extenso
-    const dateFromText = extractDateFromExtendedFormat(dateString);
-    if (dateFromText) {
-      return dateFromText;
-    }
-
-    // Se só tem ano, usar 1 de janeiro
-    const yearMatch = dateString.match(/(\d{4})/);
-    if (yearMatch) {
-      return `${yearMatch[1]}-01-01`;
-    }
-
-    return '';
-  };
 
   const originalData = useMemo(() => {
     if (!editingComposer) return null;
@@ -281,95 +370,6 @@ const CreateComposerModal = ({
   );
 
   // Função para extrair data de formato extenso
-  const extractDateFromExtendedFormat = (dateString: string): string | null => {
-    if (!dateString) return null;
-
-    // Meses em português
-    const monthsMap: Record<string, string> = {
-      janeiro: '01',
-      fevereiro: '02',
-      março: '03',
-      abril: '04',
-      maio: '05',
-      junho: '06',
-      julho: '07',
-      agosto: '08',
-      setembro: '09',
-      outubro: '10',
-      novembro: '11',
-      dezembro: '12',
-      jan: '01',
-      fev: '02',
-      mar: '03',
-      abr: '04',
-      mai: '05',
-      jun: '06',
-      jul: '07',
-      ago: '08',
-      set: '09',
-      out: '10',
-      nov: '11',
-      dez: '12',
-      // Inglês
-      january: '01',
-      february: '02',
-      march: '03',
-      april: '04',
-      may: '05',
-      june: '06',
-      july: '07',
-      august: '08',
-      september: '09',
-      october: '10',
-      november: '11',
-      december: '12',
-    };
-
-    // Padrões para extrair datas
-    const patterns = [
-      // Português: "27 de janeiro de 1756"
-      /(\d{1,2})\s+de\s+(\w+)\s+de\s+(\d{4})/i,
-      // Inglês: "27 January 1756" ou "January 27, 1756"
-      /(\d{1,2})\s+(\w+)\s+(\d{4})/i,
-      /(\w+)\s+(\d{1,2}),?\s+(\d{4})/i,
-    ];
-
-    for (const pattern of patterns) {
-      const match = dateString.match(pattern);
-      if (match) {
-        if (pattern.source.includes('de\\s+')) {
-          // Português
-          const day = match[1];
-          const monthName = match[2].toLowerCase();
-          const year = match[3];
-          const month = monthsMap[monthName];
-          if (month) {
-            return `${year}-${month}-${day.padStart(2, '0')}`;
-          }
-        } else {
-          // Inglês
-          let day, monthName, year;
-          if (/^\d/.test(match[1])) {
-            // Formato: "27 January 1756"
-            day = match[1];
-            monthName = match[2].toLowerCase();
-            year = match[3];
-          } else {
-            // Formato: "January 27, 1756"
-            monthName = match[1].toLowerCase();
-            day = match[2];
-            year = match[3];
-          }
-          const month = monthsMap[monthName];
-          if (month) {
-            return `${year}-${month}-${day.padStart(2, '0')}`;
-          }
-        }
-      }
-    }
-
-    return null;
-  };
 
   // Função para formatar data para salvar (dd/mm/yyyy)
   const formatDateForSave = (dateString: string): string => {

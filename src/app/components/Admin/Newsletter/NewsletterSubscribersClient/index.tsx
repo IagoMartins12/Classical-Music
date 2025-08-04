@@ -32,6 +32,7 @@ import {
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface FilterState {
   status: string;
@@ -155,14 +156,7 @@ export default function NewsletterSubscribersClient() {
   if (loading && subscribers.length === 0) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando subscribers...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="subscribers" />
       </PageContainer>
     );
   }

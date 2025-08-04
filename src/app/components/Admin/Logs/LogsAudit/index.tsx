@@ -733,7 +733,6 @@ export default function LogsAudit() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-theme-secondary mb-3">
                   <div>Usuário: {event.userName}</div>
-                  <div>IP: {event.ipAddress}</div>
                   <div>Sessão: {event.sessionId.slice(0, 8)}...</div>
                   <div>Status: {event.success ? 'Sucesso' : 'Falha'}</div>
                 </div>

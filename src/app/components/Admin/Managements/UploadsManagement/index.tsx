@@ -39,6 +39,7 @@ import {
 import { useAdminUploads } from '@/app/hooks/admin/useAdminUploads';
 import { formatNumber } from '@/app/hooks/admin/useAdminStats';
 import { toast } from 'react-hot-toast';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface UploadFilters {
   search: string;
@@ -219,14 +220,7 @@ export default function UploadsManagement() {
   if (loading && !uploads.length) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando uploads...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="uploads" />
       </PageContainer>
     );
   }

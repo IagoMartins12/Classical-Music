@@ -36,6 +36,7 @@ import {
   LogUtils,
   useSystemMonitoring,
 } from '@/app/hooks/admin/useAdminSystemMonitoring';
+import LoadingAdminState from '../../Common/LoadingState';
 
 export default function SystemPerformance() {
   const {
@@ -146,6 +147,14 @@ export default function SystemPerformance() {
             </Button>
           </div>
         </AnimatedContainer>
+      </PageContainer>
+    );
+  }
+
+  if (loading && !metrics) {
+    return (
+      <PageContainer showBackground={true}>
+        <LoadingAdminState loadingName="metricas do sistema" />
       </PageContainer>
     );
   }

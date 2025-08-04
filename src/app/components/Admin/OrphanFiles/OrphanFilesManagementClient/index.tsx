@@ -173,7 +173,6 @@ const FilePreview = ({
   const [error, setError] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(1);
 
   const fileUrl = `/api/admin/orphan-files/preview?path=${encodeURIComponent(
     file.relativePath
@@ -361,14 +360,6 @@ const FilePreview = ({
               </span>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClose}
-            leftIcon={<FiX />}
-          >
-            Fechar
-          </Button>
         </div>
 
         <div className="mb-6">{renderPreview()}</div>

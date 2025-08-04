@@ -226,45 +226,52 @@ export const AdminPieChart = ({
   subtitle,
   innerRadius = 0,
   showLabels = true,
-}: AdminChartProps & { innerRadius?: number; showLabels?: boolean }) => (
-  <div className="w-full">
-    {(title || subtitle) && (
-      <div className="mb-4 text-center">
-        {title && (
-          <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
-        )}
-        {subtitle && <p className="text-sm text-theme-tertiary">{subtitle}</p>}
-      </div>
-    )}
-    <ResponsiveContainer width="100%" height={height}>
-      <PieChart>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          labelLine={false}
-          label={
-            showLabels
-              ? ({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`
-              : false
-          }
-          outerRadius={80}
-          innerRadius={innerRadius}
-          fill="#8884d8"
-          dataKey="value"
-        >
-          {data.map((entry, index) => (
-            <Cell
-              key={`cell-${index}`}
-              fill={GRADIENT_COLORS[index % GRADIENT_COLORS.length]}
-            />
-          ))}
-        </Pie>
-        <Tooltip content={<CustomTooltip />} />
-      </PieChart>
-    </ResponsiveContainer>
-  </div>
-);
+}: AdminChartProps & { innerRadius?: number; showLabels?: boolean }) => {
+  console.log('DATA', data);
+
+  return (
+    <div className="w-full">
+      {(title || subtitle) && (
+        <div className="mb-4 text-center">
+          {title && (
+            <h3 className="text-lg font-bold text-theme-primary">{title}</h3>
+          )}
+          {subtitle && (
+            <p className="text-sm text-theme-tertiary">{subtitle}</p>
+          )}
+        </div>
+      )}
+      <ResponsiveContainer width="100%" height={height}>
+        <PieChart>
+          <Pie
+            data={data}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={
+              showLabels
+                ? ({ name, percent }) =>
+                    `${name} ${(percent * 100).toFixed(0)}%`
+                : false
+            }
+            outerRadius={80}
+            innerRadius={innerRadius}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {data.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={GRADIENT_COLORS[index % GRADIENT_COLORS.length]}
+              />
+            ))}
+          </Pie>
+          <Tooltip content={<CustomTooltip />} />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
 
 // Componente de métricas rápidas com mini-gráficos
 export const MetricCard = ({

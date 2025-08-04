@@ -368,7 +368,9 @@ export default function ReportsDashboard() {
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => router.push('/admin/users')}
+                onClick={() =>
+                  router.push('/admin/users/list?hasModerations=true')
+                }
               >
                 Ver Usuários
               </Button>

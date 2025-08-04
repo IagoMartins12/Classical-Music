@@ -21,6 +21,9 @@ export default function AdminLayoutClient({
     setSidebarOpen(false);
   }, [pathname]);
 
+  const handleOnMenuClick = () => {
+    setSidebarOpen(true);
+  };
   // Fechar sidebar quando clicar fora (mobile)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

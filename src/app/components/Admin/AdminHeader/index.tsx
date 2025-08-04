@@ -97,11 +97,9 @@ export default function AdminHeader({ onMenuClick }: AdminHeaderProps) {
                 </div>
                 <div className="hidden sm:block">
                   <div className="font-bold text-base lg:text-lg">
-                    Admin Panel
+                    Painel Administrativo
                   </div>
-                  <div className="text-xs text-theme-tertiary">
-                    Classical Music Platform
-                  </div>
+                  <div className="text-xs text-theme-tertiary">Open Atlas</div>
                 </div>
               </Link>
 

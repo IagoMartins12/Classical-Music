@@ -40,6 +40,7 @@ import CloneAdModal from '../CloneAdModal'; // 🆕 Novo modal
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 import Image from 'next/image';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface FilterState {
   status: string;
@@ -236,14 +237,7 @@ export default function AdsManagementClient() {
   if (loading && ads.length === 0) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando anúncios...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="anúncios" />
       </PageContainer>
     );
   }

@@ -21,6 +21,8 @@ import {
   FiCheck,
   FiAlertTriangle,
   FiLoader,
+  FiExternalLink,
+  FiInfo,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -34,6 +36,7 @@ import Select from '@/app/components/Common/Select';
 import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import { useAdminReports } from '@/app/hooks/admin/useAdminReports';
 import { toast } from 'react-hot-toast';
+import LoadingAdminState from '../../Common/LoadingState';
 
 export default function AdvancedReports() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -50,7 +53,7 @@ export default function AdvancedReports() {
   } = useAdminReports();
 
   const [selectedPeriod, setSelectedPeriod] = useState('30d');
-  const [selectedFormat, setSelectedFormat] = useState('pdf');
+  const [selectedFormat, setSelectedFormat] = useState('csv');
   const [generatingReports, setGeneratingReports] = useState<Set<string>>(
     new Set()
   );
@@ -247,17 +250,7 @@ export default function AdvancedReports() {
   if (loading && !stats) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando dados do sistema...
-            </p>
-            <p className="text-theme-secondary mt-2">
-              Buscando estatísticas reais da plataforma
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="estatísticas" />
       </PageContainer>
     );
   }
@@ -368,14 +361,33 @@ export default function AdvancedReports() {
               value={selectedFormat}
               onChange={(e) => setSelectedFormat(e.target.value)}
               options={[
-                { value: 'pdf', label: 'PDF' },
-                { value: 'excel', label: 'Excel' },
                 { value: 'csv', label: 'CSV' },
+                { value: 'excel', label: 'Excel' },
               ]}
               className="input-classical-2"
             />
           </div>
         </div>
+
+        {/* 🔄 AVISO PARA PDF */}
+        {selectedFormat === 'pdf' && (
+          <div className="mb-6 p-4 bg-accent-blue/10 border border-accent-blue/20 rounded-lg">
+            <div className="flex items-start space-x-3">
+              <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+              <div>
+                <h4 className="font-medium text-accent-blue mb-1">
+                  Sobre relatórios PDF
+                </h4>
+                <p className="text-sm text-theme-secondary">
+                  Os relatórios PDF são gerados como páginas HTML otimizadas
+                  para impressão. Após o download, use{' '}
+                  <strong>Ctrl+P → Salvar como PDF</strong> no seu navegador
+                  para obter o arquivo PDF final.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
           {reportTypes.map((type) => {
@@ -472,6 +484,7 @@ export default function AdvancedReports() {
         <div className="space-y-4">
           {results.map((result) => {
             const isDeleting = deletingReports.has(result.id);
+            const isPdf = result.format === 'pdf';
 
             return (
               <AnimatedCard key={result.id} className="classical-card p-4">
@@ -488,6 +501,11 @@ export default function AdvancedReports() {
                     <div className="flex-1">
                       <h4 className="font-medium text-theme-primary">
                         {result.name}
+                        {isPdf && (
+                          <span className="ml-2 text-xs text-accent-blue bg-accent-blue/10 px-2 py-1 rounded">
+                            HTML→PDF
+                          </span>
+                        )}
                       </h4>
                       <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
                         <span>Gerado: {formatDate(result.generatedAt)}</span>
@@ -521,10 +539,10 @@ export default function AdvancedReports() {
                         <Button
                           variant="secondary"
                           size="sm"
-                          leftIcon={<FiDownload />}
+                          leftIcon={isPdf ? <FiExternalLink /> : <FiDownload />}
                           onClick={() => handleDownloadReport(result)}
                         >
-                          Download
+                          {isPdf ? 'Abrir' : 'Download'}
                         </Button>
                         <Button
                           variant="ghost"
@@ -595,16 +613,28 @@ export default function AdvancedReports() {
     </div>
   );
 
+  // 🔄 RENDER DE MÉTRICAS REAIS
   const renderMetrics = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-bold text-theme-primary">
-          Métricas Disponíveis
-        </h3>
-        <p className="text-theme-secondary">
-          {metrics.filter((m) => m.available).length} de {metrics.length}{' '}
-          métricas disponíveis
-        </p>
+        <div>
+          <h3 className="text-xl font-bold text-theme-primary">
+            Métricas do Sistema
+          </h3>
+          <p className="text-theme-secondary">
+            {metrics.filter((m) => m.available).length} de {metrics.length}{' '}
+            métricas ativas • Dados em tempo real
+          </p>
+        </div>
+        <Button
+          variant="secondary"
+          size="sm"
+          leftIcon={<FiRefreshCw />}
+          onClick={refreshData}
+          disabled={loading}
+        >
+          {loading ? 'Atualizando...' : 'Atualizar'}
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -638,13 +668,34 @@ export default function AdvancedReports() {
                     : 'text-theme-tertiary bg-theme-secondary'
                 }`}
               >
-                {metric.available ? 'Disponível' : 'Em desenvolvimento'}
+                {metric.available ? 'Ativa' : 'Em desenvolvimento'}
               </span>
             </div>
 
-            <p className="text-sm text-theme-secondary mb-2">
+            <p className="text-sm text-theme-secondary mb-3">
               {metric.description}
             </p>
+
+            {/* 🔄 MOSTRAR VALOR ATUAL SE DISPONÍVEL */}
+            {metric.available && metric.currentValue && (
+              <div className="mb-3 p-3 bg-theme-secondary rounded-lg">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-theme-primary">
+                    Valor Atual:
+                  </span>
+                  <span className="text-lg font-bold text-accent-blue">
+                    {typeof metric.currentValue === 'number'
+                      ? formatNumber(metric.currentValue)
+                      : metric.currentValue}
+                  </span>
+                </div>
+                {metric.lastUpdated && (
+                  <div className="text-xs text-theme-tertiary mt-1">
+                    Atualizado: {formatDate(metric.lastUpdated)}
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="text-xs text-theme-tertiary">
               Tipo: <span className="capitalize">{metric.type}</span>
@@ -652,6 +703,41 @@ export default function AdvancedReports() {
           </AnimatedCard>
         ))}
       </div>
+
+      {/* 🔄 RESUMO DE MÉTRICAS */}
+      {stats && (
+        <AnimatedCard className="classical-card p-6">
+          <h4 className="text-lg font-bold text-theme-primary mb-4">
+            📊 Resumo das Métricas Principais
+          </h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-accent-blue">
+                {formatNumber(stats.totalUsers)}
+              </div>
+              <div className="text-sm text-theme-secondary">Usuários</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-accent-green">
+                {formatNumber(stats.totalWorks)}
+              </div>
+              <div className="text-sm text-theme-secondary">Obras</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-accent-purple">
+                {formatNumber(stats.studySessions)}
+              </div>
+              <div className="text-sm text-theme-secondary">Sessões (30d)</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-accent-orange">
+                {formatNumber(stats.totalAnnotations)}
+              </div>
+              <div className="text-sm text-theme-secondary">Anotações</div>
+            </div>
+          </div>
+        </AnimatedCard>
+      )}
     </div>
   );
 

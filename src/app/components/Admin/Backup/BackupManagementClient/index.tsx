@@ -35,6 +35,7 @@ import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import SelectiveBackupSection from '../SelectiveBackupSection';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface BackupScheduleFormData {
   name: string;
@@ -178,14 +179,7 @@ export default function BackupManagementClient() {
   if (loading && !stats) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center flex flex-col items-center justify-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando sistema de backup...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="sistema de backup" />
       </PageContainer>
     );
   }

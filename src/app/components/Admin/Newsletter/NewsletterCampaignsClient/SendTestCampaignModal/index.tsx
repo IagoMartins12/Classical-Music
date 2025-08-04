@@ -16,6 +16,7 @@ import Input from '@/app/components/Common/Inputs';
 import Modal from '@/app/components/Modal';
 import { LoadingSpinner } from '@/app/components/animation/AnimatedComponents';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
+import LoadingAdminState from '../../../Common/LoadingState';
 
 interface SendTestCampaignModalProps {
   isOpen: boolean;
@@ -160,14 +161,7 @@ export default function SendTestCampaignModal({
 
   const renderFormStep = () => {
     if (loading) {
-      return (
-        <div className="text-center flex items-center justify-center flex-col py-12">
-          <LoadingSpinner size="lg" />
-          <p className="text-theme-secondary mt-4">
-            Carregando listas de teste...
-          </p>
-        </div>
-      );
+      return <LoadingAdminState loadingName="lista de teste" />;
     }
 
     if (!testInfo || testInfo.testLists.length === 0) {

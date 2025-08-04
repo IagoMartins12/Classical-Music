@@ -33,6 +33,7 @@ import {
   useTestEmailLists,
   useTestEmailSending,
 } from '@/app/hooks/admin/useTestEmailLists';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface CreateEditModalProps {
   isOpen: boolean;
@@ -785,14 +786,7 @@ export default function TestEmailListsManager() {
   if (loading && lists.length === 0) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando listas de teste...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="lista de teste" />
       </PageContainer>
     );
   }

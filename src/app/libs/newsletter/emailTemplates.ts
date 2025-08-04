@@ -1014,7 +1014,6 @@ DETALHES DA MUDANÇA:
 Email atual: {{oldEmail}}
 Novo email: {{newEmail}}
 Data: {{requestDate}}
-IP: {{ipAddress}}
 
 Para confirmar a mudança, acesse:
 {{confirmationUrl}}
@@ -1177,7 +1176,6 @@ DETALHES:
 Email anterior: {{oldEmail}}
 Novo email: {{newEmail}}
 Data: {{changeDate}}
-IP: {{ipAddress}}
 
 NÃO FOI VOCÊ?
 Se não solicitou esta mudança, sua conta pode ter sido comprometida.

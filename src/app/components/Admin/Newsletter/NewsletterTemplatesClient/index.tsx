@@ -32,6 +32,7 @@ import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import { getAllEmailTemplates } from '@/app/libs/newsletter/emailTemplates';
 import CreateEditTemplateModal from './CreateEditTemplateModal';
 import TemplatePreviewModal from './TemplatePreviewModal';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface FilterState {
   type: string;
@@ -197,14 +198,7 @@ export default function NewsletterTemplatesClient() {
   if (templatesLoading && templates.length === 0) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando templates...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="templates" />
       </PageContainer>
     );
   }

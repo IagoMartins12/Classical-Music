@@ -28,6 +28,7 @@ import {
 import { useNewsletterStats } from '@/app/hooks/useNewsletterSubscription';
 import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface QuickAction {
   title: string;
@@ -85,26 +86,12 @@ export default function NewsletterDashboardClient() {
       href: '/admin/newsletter/analytics',
       color: 'from-accent-amber to-accent-red',
     },
-    {
-      title: 'Configurações',
-      description: 'Configurar SMTP e settings',
-      icon: FiSettings,
-      href: '/admin/newsletter/settings',
-      color: 'from-theme-secondary to-accent-amber',
-    },
   ];
 
   if (loading && !stats) {
     return (
       <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando dashboard da newsletter...
-            </p>
-          </div>
-        </div>
+        <LoadingAdminState loadingName="dashboard da newsletter" />
       </PageContainer>
     );
   }
