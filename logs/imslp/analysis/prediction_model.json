@@ -158,8 +158,8 @@
         "imslp.eu"
       ],
       "successRate": 1,
-      "averageTime": 511.85319089889526,
-      "lastSeen": "2025-08-02T22:25:05.446Z",
+      "averageTime": 1850.7132977247238,
+      "lastSeen": "2025-08-02T23:11:24.201Z",
       "confidence": 1
     },
     "c/c9": {
@@ -369,8 +369,8 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 550.360890102294,
-      "lastSeen": "2025-07-31T01:35:18.009Z",
+      "averageTime": 1736.3402225255736,
+      "lastSeen": "2025-08-03T23:52:20.086Z",
       "confidence": 1
     },
     "5/59": {
@@ -697,8 +697,8 @@
         "vmirror.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 535.7145782446727,
-      "lastSeen": "2025-07-31T01:35:19.066Z",
+      "averageTime": 1889.428644561168,
+      "lastSeen": "2025-08-02T23:11:24.265Z",
       "confidence": 1
     },
     "1/1a": {
@@ -1259,8 +1259,8 @@
         "s9.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 528.6333132548527,
-      "lastSeen": "2025-08-02T22:25:26.261Z",
+      "averageTime": 1855.9083283137131,
+      "lastSeen": "2025-08-02T23:11:24.203Z",
       "confidence": 1
     },
     "a/af": {
@@ -1611,9 +1611,9 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 1380.8063049316406,
-      "lastSeen": "2025-07-25T18:49:14.406Z",
-      "confidence": 0.7500000000000001
+      "averageTime": 3500.95157623291,
+      "lastSeen": "2025-08-02T23:12:37.606Z",
+      "confidence": 0.8500000000000002
     },
     "1/1c": {
       "pattern": "1/1c",
@@ -2267,9 +2267,9 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 4127.49951171875,
-      "lastSeen": "2025-08-02T22:25:02.116Z",
-      "confidence": 0.5499999999999999
+      "averageTime": 2831.8748779296875,
+      "lastSeen": "2025-08-02T23:11:24.348Z",
+      "confidence": 0.65
     },
     "7/7d": {
       "pattern": "7/7d",
@@ -2688,15 +2688,15 @@
     }
   },
   "globalStats": {
-    "totalRequests": 9300,
-    "successfulRequests": 9300,
-    "averageResponseTime": 471.00918030744117,
+    "totalRequests": 9312,
+    "successfulRequests": 9312,
+    "averageResponseTime": 2441.061037397536,
     "mostReliableSubdomain": "",
-    "lastUpdated": "2025-08-02T22:25:26.261Z"
+    "lastUpdated": "2025-08-03T23:52:20.086Z"
   },
   "metadata": {
-    "savedAt": "2025-08-02T22:25:31.264Z",
-    "sessionId": "session_1754173477089_dgn4zr0",
+    "savedAt": "2025-08-03T23:52:25.089Z",
+    "sessionId": "session_1754264927896_39ee5f3",
     "version": "2.0"
   }
 }

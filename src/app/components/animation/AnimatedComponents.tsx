@@ -62,6 +62,7 @@ interface AnimatedItemProps extends BaseAnimationProps {
   hover?: HoverEffect;
   onClick?: () => void;
   style?: React.CSSProperties;
+  component?: 'tr' | 'div';
 }
 
 export const AnimatedItem: React.FC<AnimatedItemProps> = ({
@@ -70,6 +71,7 @@ export const AnimatedItem: React.FC<AnimatedItemProps> = ({
   springType = 'smooth',
   hover = 'none',
   className = '',
+  component,
   onClick,
   style,
 }) => {
@@ -78,6 +80,21 @@ export const AnimatedItem: React.FC<AnimatedItemProps> = ({
   // Configuração do hover segura
   const hoverConfig =
     hover !== 'none' && hoverVariants[hover] ? hoverVariants[hover] : {};
+
+  if (component === 'tr') {
+    return (
+      <motion.tr
+        className={className}
+        variants={variants}
+        onClick={onClick}
+        style={style}
+        whileHover={hoverConfig.hover}
+        whileTap={hoverConfig.tap}
+      >
+        {children}
+      </motion.tr>
+    );
+  }
 
   return (
     <motion.div

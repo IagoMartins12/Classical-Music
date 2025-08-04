@@ -20,6 +20,8 @@ import {
   FiMapPin,
   FiCalendar,
   FiShield,
+  FiImage,
+  FiTrendingUp,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -30,6 +32,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
+import Input from '@/app/components/Common/Inputs';
 import {
   MetricCard,
   AdminPieChart,
@@ -37,14 +40,24 @@ import {
 import { formatNumber } from '@/app/hooks/admin/useAdminStats';
 import { toast } from 'react-hot-toast';
 import { useAdminComposers } from '@/app/hooks/admin/useAdminComposers';
+
+import StatsSkeleton, {
+  ChartSkeleton,
+  TopPerformersSkeleton,
+} from '@/app/components/Admin/Skeletons/StatsSkeleton';
 import Image from 'next/image';
-import Input from '@/app/components/Common/Inputs';
+import { getPeriodLabel } from '@/app/utils/adminUtils';
+import PeriodSelector from '../../Common/PeriodSelector';
 
 interface ComposerFilters {
   search: string;
   epoch: string;
   verified: string;
   dataQuality: string;
+  hasImage: string;
+  minWorks: string;
+  maxWorks: string;
+  minFavorites: string;
   sortBy: string;
   sortOrder: string;
   page?: string;
@@ -56,7 +69,10 @@ export default function ComposersManagement() {
     composers,
     stats,
     loading,
+    statsLoading,
     pagination,
+    period,
+    setPeriod,
     fetchComposers,
     refreshStats,
     updateComposer,
@@ -68,6 +84,10 @@ export default function ComposersManagement() {
     epoch: 'all',
     verified: 'all',
     dataQuality: 'all',
+    hasImage: 'all',
+    minWorks: '',
+    maxWorks: '',
+    minFavorites: '',
     sortBy: 'createdAt',
     sortOrder: 'desc',
   });
@@ -77,7 +97,7 @@ export default function ComposersManagement() {
   const [refreshing, setRefreshing] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
-  // Épocas disponíveis (buscar da API ou definir estáticamente)
+  // Épocas disponíveis
   const epochs = [
     { value: 'all', label: 'Todas as Épocas' },
     { value: 'Barroco', label: 'Barroco' },
@@ -101,6 +121,15 @@ export default function ComposersManagement() {
           : undefined,
       dataQuality:
         newFilters.dataQuality !== 'all' ? newFilters.dataQuality : undefined,
+      hasImage:
+        newFilters.hasImage !== 'all'
+          ? newFilters.hasImage === 'true'
+          : undefined,
+      minWorks: newFilters.minWorks ? parseInt(newFilters.minWorks) : undefined,
+      maxWorks: newFilters.maxWorks ? parseInt(newFilters.maxWorks) : undefined,
+      minFavorites: newFilters.minFavorites
+        ? parseInt(newFilters.minFavorites)
+        : undefined,
       sortBy: newFilters.sortBy,
       sortOrder: newFilters.sortOrder,
     };
@@ -229,11 +258,20 @@ export default function ComposersManagement() {
             <p className="text-xl text-theme-secondary classical-subtitle">
               Administre o catálogo de compositores da plataforma
             </p>
+            <div className="flex justify-center mt-6">
+              <PeriodSelector
+                value={period}
+                onChange={setPeriod}
+                className="bg-theme-secondary px-4 py-2 rounded-xl"
+              />
+            </div>
           </div>
         </AnimatedItem>
 
         {/* Stats Overview */}
-        {stats && (
+        {statsLoading ? (
+          <StatsSkeleton count={4} />
+        ) : stats ? (
           <AnimatedItem direction="up" springType="gentle">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <MetricCard
@@ -242,6 +280,7 @@ export default function ComposersManagement() {
                 change={{ value: stats.recentlyAdded, isPositive: true }}
                 icon={FiUsers}
                 color="#3B82F6"
+                subtitle={`nos ${getPeriodLabel(period)}`}
               />
 
               <MetricCard
@@ -254,35 +293,55 @@ export default function ComposersManagement() {
                 }}
                 icon={FiCheckCircle}
                 color="#10B981"
+                subtitle={`${(
+                  (stats.verified / Math.max(stats.total, 1)) *
+                  100
+                ).toFixed(1)}% do total`}
               />
 
               <MetricCard
-                title="Adicionados (7 dias)"
-                value={formatNumber(stats.recentlyAdded)}
-                change={{ value: 15.2, isPositive: true }}
-                icon={FiPlus}
-                color="#F59E0B"
-              />
-
-              <MetricCard
-                title="Mais Popular"
-                value={stats.mostPopular[0]?.favoritesCount || 0}
-                change={{ value: 8.7, isPositive: true }}
-                icon={FiStar}
+                title="Com Imagens"
+                value={formatNumber(stats.withImages)}
+                change={{
+                  value:
+                    stats.total > 0
+                      ? (stats.withImages / stats.total) * 100
+                      : 0,
+                  isPositive: true,
+                }}
+                icon={FiImage}
                 color="#8B5CF6"
+                subtitle={`${(
+                  (stats.withImages / Math.max(stats.total, 1)) *
+                  100
+                ).toFixed(1)}% do total`}
+              />
+
+              <MetricCard
+                title="Média de Obras"
+                value={stats.avgWorksPerComposer.toFixed(1)}
+                change={{ value: 8.7, isPositive: true }}
+                icon={FiMusic}
+                color="#F59E0B"
+                subtitle="por compositor"
               />
             </div>
           </AnimatedItem>
-        )}
+        ) : null}
 
         {/* Charts */}
-        {stats && (
+        {statsLoading ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <ChartSkeleton title="Compositores por Época" />
+            <ChartSkeleton title="Qualidade dos Dados" />
+          </div>
+        ) : stats ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <AnimatedCard className="classical-card p-6">
               <AdminPieChart
                 data={stats.byEpoch}
                 title="Compositores por Época"
-                subtitle="Distribuição por período histórico"
+                subtitle={`Distribuição ${getPeriodLabel(period)}`}
                 height={300}
                 innerRadius={60}
               />
@@ -295,13 +354,102 @@ export default function ComposersManagement() {
                   value: item.count,
                 }))}
                 title="Qualidade dos Dados"
-                subtitle="Distribuição por nível de qualidade"
+                subtitle={`Distribuição ${getPeriodLabel(period)}`}
                 height={300}
                 innerRadius={60}
               />
             </AnimatedCard>
           </div>
-        )}
+        ) : null}
+
+        {/* Top Performers */}
+        {statsLoading ? (
+          <TopPerformersSkeleton />
+        ) : stats &&
+          (stats.mostPopular.length > 0 || stats.topByWorks.length > 0) ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* Mais Populares */}
+            {stats.mostPopular.length > 0 && (
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard className="classical-card p-6">
+                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                    <FiTrendingUp className="w-5 h-5 text-accent-red" />
+                    <span>Mais Favoritados</span>
+                  </h3>
+                  <div className="space-y-3">
+                    {stats.mostPopular.slice(0, 5).map((composer, index) => (
+                      <div
+                        key={composer.id}
+                        className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                      >
+                        <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-amber rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-theme-primary truncate">
+                            {composer.name}
+                          </p>
+                          <p className="text-sm text-theme-tertiary">
+                            {composer.favoritesCount} favoritos •{' '}
+                            {composer.worksCount} obras
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          leftIcon={<FiEye />}
+                          onClick={() =>
+                            router.push(`/composer/${composer.id}`)
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            )}
+
+            {/* Mais Produtivos */}
+            {stats.topByWorks.length > 0 && (
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard className="classical-card p-6">
+                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                    <FiMusic className="w-5 h-5 text-accent-blue" />
+                    <span>Mais Produtivos</span>
+                  </h3>
+                  <div className="space-y-3">
+                    {stats.topByWorks.slice(0, 5).map((composer, index) => (
+                      <div
+                        key={composer.id}
+                        className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                      >
+                        <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-theme-primary truncate">
+                            {composer.name}
+                          </p>
+                          <p className="text-sm text-theme-tertiary">
+                            {composer.worksCount} obras
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          leftIcon={<FiEye />}
+                          onClick={() =>
+                            router.push(`/composer/${composer.id}`)
+                          }
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            )}
+          </div>
+        ) : null}
 
         {/* Filters and Controls */}
         <AnimatedItem direction="up" springType="gentle">
@@ -317,7 +465,7 @@ export default function ComposersManagement() {
                   leftIcon={<FiFilter />}
                   onClick={() => setShowFilters(!showFilters)}
                 >
-                  Filtros
+                  Filtros Avançados
                 </Button>
                 <Button
                   variant="ghost"
@@ -342,8 +490,23 @@ export default function ComposersManagement() {
               </div>
             </div>
 
-            <div className={`space-y-4 mb-6 block`}>
+            {/* Filtros Básicos - sempre visíveis */}
+            <div className="space-y-4 mb-6">
               <div className="flex items-center space-x-4">
+                <div className="relative flex-1">
+                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+                  <Input
+                    type="text"
+                    placeholder="Buscar compositores..."
+                    value={filters.search}
+                    onChange={(e) =>
+                      setFilters({ ...filters, search: e.target.value })
+                    }
+                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                    className="input-classical-2 !pl-10 w-full"
+                  />
+                </div>
+
                 <Select
                   value={filters.sortBy}
                   onChange={(e) => handleFilterChange('sortBy', e.target.value)}
@@ -353,7 +516,7 @@ export default function ComposersManagement() {
                     { value: 'worksCount', label: 'Número de Obras' },
                     { value: 'favoritesCount', label: 'Favoritos' },
                   ]}
-                  className="input-classical-2"
+                  className="input-classical-2 min-w-[160px]"
                 />
 
                 <Select
@@ -365,7 +528,7 @@ export default function ComposersManagement() {
                     { value: 'desc', label: 'Decrescente' },
                     { value: 'asc', label: 'Crescente' },
                   ]}
-                  className="input-classical-2"
+                  className="input-classical-2 min-w-[120px]"
                 />
 
                 <Button
@@ -378,25 +541,12 @@ export default function ComposersManagement() {
                 </Button>
               </div>
             </div>
-            {/* Filtros */}
+
+            {/* Filtros Avançados */}
             <div
               className={`space-y-4 mb-6 ${showFilters ? 'block' : 'hidden'}`}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="relative">
-                  <Input
-                    leftIcon={<FiSearch />}
-                    type="text"
-                    placeholder="Buscar compositores..."
-                    value={filters.search}
-                    onChange={(e) =>
-                      setFilters({ ...filters, search: e.target.value })
-                    }
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    className="input-classical-2 !pl-10 w-full"
-                  />
-                </div>
-
                 <Select
                   value={filters.epoch}
                   onChange={(e) => handleFilterChange('epoch', e.target.value)}
@@ -430,6 +580,70 @@ export default function ComposersManagement() {
                   ]}
                   className="input-classical-2"
                 />
+
+                <Select
+                  value={filters.hasImage}
+                  onChange={(e) =>
+                    handleFilterChange('hasImage', e.target.value)
+                  }
+                  options={[
+                    { value: 'all', label: 'Todos' },
+                    { value: 'true', label: 'Com Imagem' },
+                    { value: 'false', label: 'Sem Imagem' },
+                  ]}
+                  className="input-classical-2"
+                />
+              </div>
+
+              {/* Filtros Numéricos */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    Mínimo de Obras
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="Ex: 5"
+                    value={filters.minWorks}
+                    onChange={(e) =>
+                      setFilters({ ...filters, minWorks: e.target.value })
+                    }
+                    className="input-classical-2"
+                    min="0"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    Máximo de Obras
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="Ex: 100"
+                    value={filters.maxWorks}
+                    onChange={(e) =>
+                      setFilters({ ...filters, maxWorks: e.target.value })
+                    }
+                    className="input-classical-2"
+                    min="0"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    Mínimo de Favoritos
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="Ex: 10"
+                    value={filters.minFavorites}
+                    onChange={(e) =>
+                      setFilters({ ...filters, minFavorites: e.target.value })
+                    }
+                    className="input-classical-2"
+                    min="0"
+                  />
+                </div>
               </div>
             </div>
 
@@ -490,14 +704,18 @@ export default function ComposersManagement() {
                       className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2 mt-1"
                     />
 
-                    {composer.portraitUrl && (
+                    {composer.portraitUrl ? (
                       <Image
-                        width={25}
-                        height={25}
+                        width={64}
+                        height={64}
                         src={composer.portraitUrl}
                         alt={composer.name}
                         className="w-16 h-16 rounded-xl object-cover flex-shrink-0"
                       />
+                    ) : (
+                      <div className="w-16 h-16 rounded-xl bg-theme-primary/20 flex items-center justify-center flex-shrink-0">
+                        <FiUsers className="w-8 h-8 text-theme-tertiary" />
+                      </div>
                     )}
 
                     <div className="flex-1 min-w-0">
@@ -518,6 +736,11 @@ export default function ComposersManagement() {
                             )}`}
                           >
                             {getQualityLabel(composer.dataQuality)}
+                          </span>
+                        )}
+                        {!composer.hasValidImage && (
+                          <span className="text-xs bg-accent-red/10 text-accent-red px-2 py-1 rounded">
+                            Sem imagem
                           </span>
                         )}
                       </div>
@@ -544,7 +767,13 @@ export default function ComposersManagement() {
                         )}
                         <div className="flex items-center space-x-1">
                           <FiMusic className="w-4 h-4" />
-                          <span>{composer.worksCount} obras</span>
+                          <span
+                            className={
+                              composer.worksCount === 0 ? 'text-accent-red' : ''
+                            }
+                          >
+                            {composer.worksCount} obras
+                          </span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <FiHeart className="w-4 h-4" />

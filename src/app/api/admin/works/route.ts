@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
-import { unstable_cache } from 'next/cache';
+import { TimePeriod } from '@/app/components/Admin/Common/PeriodSelector';
+import { getPeriodDate } from '@/app/utils/adminUtils';
 
 interface WorkFilters {
   search?: string;
@@ -12,8 +13,22 @@ interface WorkFilters {
   instrumentId?: string;
   workType?: string;
   difficultyLevel?: string;
-  sortBy?: 'title' | 'createdAt' | 'favoritesCount' | 'annotationsCount';
+  minFavorites?: number;
+  minWantToLearn?: number;
+  minLearned?: number;
+  minScores?: number;
+  maxScores?: number;
+  hasScores?: boolean;
+  sortBy?:
+    | 'title'
+    | 'createdAt'
+    | 'favoritesCount'
+    | 'annotationsCount'
+    | 'wantToLearnCount'
+    | 'learnedCount'
+    | 'scoresCount';
   sortOrder?: 'asc' | 'desc';
+  period?: TimePeriod;
   page?: number;
   limit?: number;
 }
@@ -33,6 +48,7 @@ interface WorkStats {
     count: number;
   }>;
   avgScoresPerWork: number;
+  avgFavoritesPerWork: number;
   mostPopular: Array<{
     id: string;
     title: string;
@@ -40,95 +56,237 @@ interface WorkStats {
     favoritesCount: number;
     annotationsCount: number;
   }>;
+  mostWantedToLearn: Array<{
+    id: string;
+    title: string;
+    composer: string;
+    wantToLearnCount: number;
+  }>;
+  mostLearned: Array<{
+    id: string;
+    title: string;
+    composer: string;
+    learnedCount: number;
+  }>;
   recentlyAdded: number;
+  withoutScores: number;
+  topByScores: Array<{
+    id: string;
+    title: string;
+    composer: string;
+    scoresCount: number;
+  }>;
 }
 
-const getCachedWorkStats = unstable_cache(
-  async (): Promise<WorkStats> => {
-    const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+const getCachedWorkStats = async (
+  period: TimePeriod = '7d'
+): Promise<WorkStats> => {
+  const periodDate = getPeriodDate(period);
+  const whereClause = periodDate ? { createdAt: { gte: periodDate } } : {};
+  const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
 
-    const [
-      total,
-      byEpoch,
-      byInstrument,
-      byDifficulty,
-      totalScores,
-      mostPopular,
-      recentlyAdded,
-    ] = await Promise.all([
-      prisma.work.count(),
-      prisma.work.groupBy({
-        by: ['epochId'],
-        _count: { id: true },
-      }),
-      prisma.work.groupBy({
-        by: ['instrumentId'],
-        _count: { id: true },
-      }),
-      prisma.work.groupBy({
-        by: ['difficultyLevel'],
-        _count: { id: true },
-      }),
-      prisma.workScore.count({ where: { isActive: true } }),
-      prisma.work.findMany({
-        select: {
-          id: true,
-          title: true,
-          composer: { select: { name: true } },
-          _count: {
-            select: {
-              favoriteBy: true,
-              workAnnotations: { where: { isPublic: true } },
-            },
+  const [
+    total,
+    byEpoch,
+    byInstrument,
+    byDifficulty,
+    totalScores,
+    totalFavorites,
+    mostPopular,
+    mostWantedToLearn,
+    mostLearned,
+    recentlyAdded,
+    withoutScores,
+    topByScores,
+  ] = await Promise.all([
+    // Total de obras no período
+    prisma.work.count({ where: whereClause }),
+
+    // Por época
+    prisma.work.groupBy({
+      by: ['epochId'],
+      _count: { id: true },
+      where: whereClause,
+      orderBy: { _count: { id: 'desc' } },
+      take: 10,
+    }),
+
+    // Por instrumento
+    prisma.work.groupBy({
+      by: ['instrumentId'],
+      _count: { id: true },
+      where: whereClause,
+      orderBy: { _count: { id: 'desc' } },
+      take: 10,
+    }),
+
+    // Por dificuldade
+    prisma.work.groupBy({
+      by: ['difficultyLevel'],
+      _count: { id: true },
+      where: whereClause,
+    }),
+
+    // Total de partituras ativas
+    prisma.workScore.count({
+      where: {
+        isActive: true,
+        work: whereClause,
+      },
+    }),
+
+    // Total de favoritos
+    prisma.favoriteWork.count({
+      where: {
+        work: whereClause,
+      },
+    }),
+
+    // Mais populares por favoritos
+    prisma.work.findMany({
+      select: {
+        id: true,
+        title: true,
+        composer: { select: { name: true } },
+        _count: {
+          select: {
+            favoriteBy: true,
+            workAnnotations: { where: { isPublic: true } },
           },
         },
-        orderBy: {
-          favoriteBy: { _count: 'desc' },
+      },
+      where: whereClause,
+      orderBy: {
+        favoriteBy: { _count: 'desc' },
+      },
+      take: 10,
+    }),
+
+    // Mais queridas para aprender
+    prisma.work.findMany({
+      select: {
+        id: true,
+        title: true,
+        composer: { select: { name: true } },
+        _count: {
+          select: {
+            wantToLearners: true,
+          },
         },
-        take: 10,
-      }),
-      prisma.work.count({
-        where: { createdAt: { gte: lastWeek } },
-      }),
-    ]);
+      },
+      where: whereClause,
+      orderBy: {
+        wantToLearners: { _count: 'desc' },
+      },
+      take: 10,
+    }),
 
-    // Buscar nomes das épocas, instrumentos
-    const [epochs, instruments] = await Promise.all([
-      prisma.epoch.findMany({ select: { id: true, name: true } }),
-      prisma.instrument.findMany({ select: { id: true, name: true } }),
-    ]);
+    // Mais aprendidas
+    prisma.work.findMany({
+      select: {
+        id: true,
+        title: true,
+        composer: { select: { name: true } },
+        _count: {
+          select: {
+            learners: true,
+          },
+        },
+      },
+      where: whereClause,
+      orderBy: {
+        learners: { _count: 'desc' },
+      },
+      take: 10,
+    }),
 
-    const epochMap = new Map(epochs.map((e) => [e.id, e.name]));
-    const instrumentMap = new Map(instruments.map((i) => [i.id, i.name]));
+    // Adicionadas na última semana (sempre)
+    prisma.work.count({
+      where: { createdAt: { gte: lastWeek } },
+    }),
 
-    return {
-      total,
-      byEpoch: byEpoch.map((item) => ({
-        epoch: epochMap.get(item.epochId) || 'Desconhecido',
-        count: item._count.id,
-      })),
-      byInstrument: byInstrument.map((item) => ({
-        instrument: instrumentMap.get(item.instrumentId) || 'Desconhecido',
-        count: item._count.id,
-      })),
-      byDifficulty: byDifficulty.map((item) => ({
-        difficulty: item.difficultyLevel || 'Não definido',
-        count: item._count.id,
-      })),
-      avgScoresPerWork: total > 0 ? totalScores / total : 0,
-      mostPopular: mostPopular.map((work) => ({
-        id: work.id,
-        title: work.title,
-        composer: work.composer.name,
-        favoritesCount: work._count.favoriteBy,
-        annotationsCount: work._count.workAnnotations,
-      })),
-      recentlyAdded,
-    };
-  },
-  ['admin-work-stats'],
-  { revalidate: 600 }
-);
+    // Obras sem partituras
+    prisma.work.count({
+      where: {
+        ...whereClause,
+        cachedScores: { none: { isActive: true } },
+      },
+    }),
+
+    // Top por número de partituras
+    prisma.work.findMany({
+      select: {
+        id: true,
+        title: true,
+        composer: { select: { name: true } },
+        _count: {
+          select: {
+            cachedScores: { where: { isActive: true } },
+          },
+        },
+      },
+      where: whereClause,
+      orderBy: {
+        cachedScores: { _count: 'desc' },
+      },
+      take: 10,
+    }),
+  ]);
+
+  // Buscar nomes das épocas e instrumentos
+  const [epochs, instruments] = await Promise.all([
+    prisma.epoch.findMany({ select: { id: true, name: true } }),
+    prisma.instrument.findMany({ select: { id: true, name: true } }),
+  ]);
+
+  const epochMap = new Map(epochs.map((e) => [e.id, e.name]));
+  const instrumentMap = new Map(instruments.map((i) => [i.id, i.name]));
+
+  return {
+    total,
+    byEpoch: byEpoch.map((item) => ({
+      epoch: epochMap.get(item.epochId) || 'Desconhecido',
+      count: item._count.id,
+    })),
+    byInstrument: byInstrument.map((item) => ({
+      instrument: instrumentMap.get(item.instrumentId) || 'Desconhecido',
+      count: item._count.id,
+    })),
+    byDifficulty: byDifficulty.map((item) => ({
+      difficulty: item.difficultyLevel || 'Não definido',
+      count: item._count.id,
+    })),
+    avgScoresPerWork: total > 0 ? totalScores / total : 0,
+    avgFavoritesPerWork: total > 0 ? totalFavorites / total : 0,
+    mostPopular: mostPopular.map((work) => ({
+      id: work.id,
+      title: work.title,
+      composer: work.composer.name,
+      favoritesCount: work._count.favoriteBy,
+      annotationsCount: work._count.workAnnotations,
+    })),
+    mostWantedToLearn: mostWantedToLearn.map((work) => ({
+      id: work.id,
+      title: work.title,
+      composer: work.composer.name,
+      wantToLearnCount: work._count.wantToLearners,
+    })),
+    mostLearned: mostLearned.map((work) => ({
+      id: work.id,
+      title: work.title,
+      composer: work.composer.name,
+      learnedCount: work._count.learners,
+    })),
+    recentlyAdded,
+    withoutScores,
+    topByScores: topByScores.map((work) => ({
+      id: work.id,
+      title: work.title,
+      composer: work.composer.name,
+      scoresCount: work._count.cachedScores,
+    })),
+  };
+};
 
 const getWorksList = async (filters: WorkFilters) => {
   const {
@@ -138,8 +296,15 @@ const getWorksList = async (filters: WorkFilters) => {
     instrumentId,
     workType,
     difficultyLevel,
+    minFavorites,
+    minWantToLearn,
+    minLearned,
+    minScores,
+    maxScores,
+    hasScores,
     sortBy = 'createdAt',
     sortOrder = 'desc',
+    period = '7d',
     page = 1,
     limit = 50,
   } = filters;
@@ -147,11 +312,18 @@ const getWorksList = async (filters: WorkFilters) => {
   const skip = (page - 1) * limit;
   const whereClause: any = {};
 
+  // Aplicar filtro de período
+  const periodDate = getPeriodDate(period);
+  if (periodDate) {
+    whereClause.createdAt = { gte: periodDate };
+  }
+
   if (search) {
     whereClause.OR = [
       { title: { contains: search, mode: 'insensitive' } },
       { opOrCatalog: { contains: search, mode: 'insensitive' } },
       { composer: { name: { contains: search, mode: 'insensitive' } } },
+      { instrumentation: { contains: search, mode: 'insensitive' } },
     ];
   }
 
@@ -175,6 +347,61 @@ const getWorksList = async (filters: WorkFilters) => {
     whereClause.difficultyLevel = difficultyLevel;
   }
 
+  // Filtros por contagens
+  if (
+    minFavorites !== undefined ||
+    minWantToLearn !== undefined ||
+    minLearned !== undefined ||
+    minScores !== undefined ||
+    maxScores !== undefined ||
+    hasScores !== undefined
+  ) {
+    whereClause.AND = [];
+
+    if (minFavorites !== undefined) {
+      whereClause.AND.push({
+        favoriteBy: { _count: { gte: minFavorites } },
+      });
+    }
+
+    if (minWantToLearn !== undefined) {
+      whereClause.AND.push({
+        wantToLearners: { _count: { gte: minWantToLearn } },
+      });
+    }
+
+    if (minLearned !== undefined) {
+      whereClause.AND.push({
+        learners: { _count: { gte: minLearned } },
+      });
+    }
+
+    if (minScores !== undefined || maxScores !== undefined) {
+      const scoresFilter: any = {};
+      if (minScores !== undefined) scoresFilter.gte = minScores;
+      if (maxScores !== undefined) scoresFilter.lte = maxScores;
+
+      whereClause.AND.push({
+        cachedScores: {
+          _count: scoresFilter,
+          where: { isActive: true },
+        },
+      });
+    }
+
+    if (hasScores !== undefined) {
+      if (hasScores) {
+        whereClause.AND.push({
+          cachedScores: { some: { isActive: true } },
+        });
+      } else {
+        whereClause.AND.push({
+          cachedScores: { none: { isActive: true } },
+        });
+      }
+    }
+  }
+
   const [works, totalCount] = await Promise.all([
     prisma.work.findMany({
       where: whereClause,
@@ -191,6 +418,8 @@ const getWorksList = async (filters: WorkFilters) => {
             workAnnotations: { where: { isPublic: true } },
             cachedScores: { where: { isActive: true } },
             studySessions: true,
+            wantToLearners: true,
+            learners: true,
           },
         },
       },
@@ -199,10 +428,21 @@ const getWorksList = async (filters: WorkFilters) => {
           ? 'favoriteBy'
           : sortBy === 'annotationsCount'
           ? 'workAnnotations'
-          : sortBy]:
-          sortBy === 'favoritesCount' || sortBy === 'annotationsCount'
-            ? { _count: sortOrder }
-            : sortOrder,
+          : sortBy === 'scoresCount'
+          ? 'cachedScores'
+          : sortBy === 'wantToLearnCount'
+          ? 'wantToLearners'
+          : sortBy === 'learnedCount'
+          ? 'learners'
+          : sortBy]: [
+          'favoritesCount',
+          'annotationsCount',
+          'scoresCount',
+          'wantToLearnCount',
+          'learnedCount',
+        ].includes(sortBy)
+          ? { _count: sortOrder }
+          : sortOrder,
       },
       skip,
       take: limit,
@@ -225,6 +465,8 @@ const getWorksList = async (filters: WorkFilters) => {
       annotationsCount: work._count.workAnnotations,
       scoresCount: work._count.cachedScores,
       studySessionsCount: work._count.studySessions,
+      wantToLearnCount: work._count.wantToLearners,
+      learnedCount: work._count.learners,
       createdAt: work.createdAt,
       uploader: work.createdByUser
         ? `${work.createdByUser.firstName || ''} ${
@@ -254,10 +496,12 @@ export async function GET(request: NextRequest) {
     const action = searchParams.get('action') || 'list';
 
     if (action === 'stats') {
-      const stats = await getCachedWorkStats();
+      const period = (searchParams.get('period') as TimePeriod) || '7d';
+      const stats = await getCachedWorkStats(period);
       return NextResponse.json({
         success: true,
         stats,
+        period,
         timestamp: new Date().toISOString(),
       });
     }
@@ -270,8 +514,30 @@ export async function GET(request: NextRequest) {
         instrumentId: searchParams.get('instrumentId') || undefined,
         workType: searchParams.get('workType') || undefined,
         difficultyLevel: searchParams.get('difficultyLevel') || undefined,
+        minFavorites: searchParams.get('minFavorites')
+          ? parseInt(searchParams.get('minFavorites')!)
+          : undefined,
+        minWantToLearn: searchParams.get('minWantToLearn')
+          ? parseInt(searchParams.get('minWantToLearn')!)
+          : undefined,
+        minLearned: searchParams.get('minLearned')
+          ? parseInt(searchParams.get('minLearned')!)
+          : undefined,
+        minScores: searchParams.get('minScores')
+          ? parseInt(searchParams.get('minScores')!)
+          : undefined,
+        maxScores: searchParams.get('maxScores')
+          ? parseInt(searchParams.get('maxScores')!)
+          : undefined,
+        hasScores:
+          searchParams.get('hasScores') === 'true'
+            ? true
+            : searchParams.get('hasScores') === 'false'
+            ? false
+            : undefined,
         sortBy: (searchParams.get('sortBy') as any) || 'createdAt',
         sortOrder: (searchParams.get('sortOrder') as any) || 'desc',
+        period: (searchParams.get('period') as TimePeriod) || '7d',
         page: parseInt(searchParams.get('page') || '1'),
         limit: parseInt(searchParams.get('limit') || '50'),
       };
@@ -296,4 +562,4 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Endpoints UPDATE e DELETE similares ao de compositores...
+// Endpoints UPDATE e DELETE permanecem similares...

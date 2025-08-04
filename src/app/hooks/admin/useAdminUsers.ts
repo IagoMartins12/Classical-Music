@@ -1,4 +1,5 @@
 // app/hooks/useAdminUsers.ts
+import { UserListFilters } from '@/app/api/admin/users/route';
 import { useState, useEffect, useCallback } from 'react';
 
 export interface AdminUser {
@@ -6,8 +7,9 @@ export interface AdminUser {
   name: string;
   email: string;
   username?: string;
-  userType?: string;
-  experienceLevel?: string;
+  userType?: 'MUSIC_STUDENT' | 'CASUAL_USER' | 'PROFESSIONAL' | 'TEACHER';
+  experienceLevel?: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+  role?: number; // 0 = usuário, 1 = professor, 2 = super admin
   totalStudyTime: number;
   annotationsCount: number;
   uploadsCount: number;
@@ -16,17 +18,6 @@ export interface AdminUser {
   lastActive: Date;
   isProfilePublic: boolean;
   onboardingCompleted: boolean;
-}
-
-export interface UserFilters {
-  search?: string;
-  userType?: string;
-  experienceLevel?: string;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
-  isActive?: boolean;
-  hasUploads?: boolean;
-  hasAnnotations?: boolean;
 }
 
 export interface UserAnalytics {
@@ -69,6 +60,75 @@ export interface UserAnalytics {
   };
 }
 
+export interface UserDetailsData {
+  profile: {
+    totalFavoriteWorks: number;
+    totalFavoriteComposers: number;
+    totalAnnotations: number;
+    totalStudySessions: number;
+    lastActivity: string;
+    joinedDaysAgo: number;
+  };
+  recentActivity: Array<{
+    type: 'annotation' | 'study' | 'favorite' | 'upload';
+    title: string;
+    subtitle: string;
+    date: string;
+    workTitle?: string;
+    composerName?: string;
+  }>;
+  contributions: {
+    topAnnotations: Array<{
+      id: string;
+      workTitle: string;
+      composerName: string;
+      content: string;
+      helpfulCount: number;
+      createdAt: string;
+    }>;
+    recentUploads: Array<{
+      id: string;
+      type: 'composer' | 'work' | 'score';
+      title: string;
+      status: string;
+      createdAt: string;
+    }>;
+  };
+  studyHabits: {
+    averageSessionDuration: number;
+    mostStudiedComposer: string;
+    mostStudiedWork: string;
+    preferredPracticeTimes: string[];
+    longestStreak: number;
+    currentStreak: number;
+  };
+}
+
+export interface UserEditData {
+  role: number;
+  userType: string;
+  experienceLevel: string;
+  uploadLimitDaily: number;
+  uploadLimitMonthly: number;
+  canUploadComposers: boolean;
+  canUploadWorks: boolean;
+  canUploadScores: boolean;
+}
+
+// Constantes para o sistema
+export const USER_ROLES = {
+  USER: 0,
+  TEACHER: 1,
+  SUPER_ADMIN: 2,
+} as const;
+
+// Labels traduzidos
+export const ROLE_LABELS = {
+  [USER_ROLES.USER]: 'Usuário Comum',
+  [USER_ROLES.TEACHER]: 'Professor',
+  [USER_ROLES.SUPER_ADMIN]: 'Super Admin',
+} as const;
+
 interface UseAdminUsersReturn {
   users: AdminUser[];
   analytics: UserAnalytics | null;
@@ -81,10 +141,11 @@ interface UseAdminUsersReturn {
     pages: number;
     hasMore: boolean;
   } | null;
-  fetchUsers: (filters?: UserFilters, page?: number) => Promise<void>;
+  fetchUsers: (filters?: UserListFilters, page?: number) => Promise<void>;
   fetchAnalytics: () => Promise<void>;
   updateUser: (userId: string, data: any) => Promise<boolean>;
   refreshData: () => Promise<void>;
+  exportUsers: (filters?: UserListFilters) => Promise<void>;
 }
 
 export const useAdminUsers = (): UseAdminUsersReturn => {
@@ -95,7 +156,7 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
   const [pagination, setPagination] = useState<any>(null);
 
   const fetchUsers = useCallback(
-    async (filters: UserFilters = {}, page: number = 1) => {
+    async (filters: UserListFilters = {}, page: number = 1) => {
       if (loading) return;
 
       setLoading(true);
@@ -105,7 +166,7 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
         const searchParams = new URLSearchParams({
           action: 'list',
           page: page.toString(),
-          limit: '50',
+          limit: (filters.limit || 50).toString(),
         });
 
         // Adicionar filtros válidos
@@ -264,6 +325,49 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
     []
   );
 
+  const exportUsers = useCallback(async (filters: UserListFilters = {}) => {
+    try {
+      const searchParams = new URLSearchParams({
+        action: 'export',
+        format: 'csv',
+      });
+
+      // Adicionar filtros para export
+      Object.entries(filters).forEach(([key, value]) => {
+        if (
+          value !== undefined &&
+          value !== null &&
+          value !== '' &&
+          value !== 'all'
+        ) {
+          searchParams.set(key, value.toString());
+        }
+      });
+
+      const response = await fetch(`/api/admin/users?${searchParams}`, {
+        cache: 'no-store',
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao exportar usuários');
+      }
+
+      // Baixar arquivo
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `usuarios-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Erro ao exportar usuários:', err);
+      setError(err instanceof Error ? err.message : 'Erro ao exportar');
+    }
+  }, []);
+
   const refreshData = useCallback(async () => {
     try {
       await Promise.all([fetchUsers(), fetchAnalytics()]);
@@ -272,12 +376,14 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
     }
   }, [fetchUsers, fetchAnalytics]);
 
-  // Carregar dados iniciais
+  // Carregar dados iniciais apenas se não estiverem carregados
   useEffect(() => {
-    refreshData();
+    if (users.length === 0 && !analytics && !loading) {
+      refreshData();
+    }
   }, []);
 
-  // Auto-refresh a cada 10 minutos
+  // Auto-refresh a cada 10 minutos para analytics
   useEffect(() => {
     const interval = setInterval(() => {
       if (!loading) {
@@ -298,5 +404,6 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
     fetchAnalytics,
     updateUser,
     refreshData,
+    exportUsers,
   };
 };

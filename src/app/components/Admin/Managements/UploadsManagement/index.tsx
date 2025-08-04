@@ -54,14 +54,8 @@ interface UploadFilters {
 
 export default function UploadsManagement() {
   const router = useRouter();
-  const {
-    uploads,
-    stats,
-    loading,
-    pagination,
-    fetchUploads,
-    refreshStats,
-  } = useAdminUploads();
+  const { uploads, stats, loading, pagination, fetchUploads, refreshStats } =
+    useAdminUploads();
 
   const [filters, setFilters] = useState<UploadFilters>({
     search: '',

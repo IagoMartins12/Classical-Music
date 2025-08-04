@@ -368,8 +368,6 @@ model WorkScore {
   editHistory  Json? // Histórico de edições
 
   // Campos técnicos melhorados
-  fileMD5         String? // Hash MD5 do arquivo
-  compressionType String? // Tipo de compressão
   qualityScore    Int? // Score de qualidade (1-100)
 
   // Dados customizados (para partituras não-IMSLP)
@@ -377,10 +375,6 @@ model WorkScore {
   uploadedBy String? // ID do usuário que fez upload
   customData Json? // Dados extras específicos
 
-  // Metadados de processamento
-  ocrProcessed Boolean @default(false)
-  ocrText      String? // Texto extraído por OCR
-  ocrAccuracy  Float? // Precisão do OCR (0-1)
 
   // Tags e categorização
   qualityTags String[] @default([]) // Tags de qualidade
@@ -424,7 +418,6 @@ model WorkScore {
   @@index([dataQuality])
   @@index([verificationStatus])
   @@index([qualityScore])
-  @@index([ocrProcessed])
   @@index([qualityTags])
   @@map("work_scores")
 }
@@ -455,8 +448,6 @@ model UserToken {
   @@index([anonymousEmail])
   @@map("user_tokens")
 }
-
-// Models existentes (mantendo todos)
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -673,10 +664,8 @@ model Work {
   tempoMarking      String?
   movementsDetailed Json?
   imslpTags         String[]         @default([])
-  difficultyLevel   DifficultyLevel?
 
   // MÍDIA SIMPLIFICADA E MELHORADA
-  // Spotify (essencial + novos campos)
   spotifyTrackId      String? // ID da track
   spotifyTrackUrl     String? // URL da track
   spotifyDisplayTitle String? // "Frédéric Chopin - Yuja Wang"
@@ -711,6 +700,12 @@ model Work {
   
   // Metadados específicos por tipo
   videoAulaMetadata Json? // { duration?, aspectRatio?, platform?, embedCode? }
+
+   // 🆕 SISTEMA DETALHADO IMSLP (complementar)
+  imslpDifficultyLevel  String?  // "1", "2", "3"... "12" 
+  imslpDifficultySystem String?  // "IMSLP", "RCM", "ABRSM", etc.
+  imslpDifficultyRating String?  // "Lvl 1", "RCM Preparatory B", etc.
+  imslpSourceId         String?  // ID do IMSLP que tem essa dificuldade
   
   // 🔄 VERIFICAÇÃO - ATUALIZADA PARA SetNull
   verificationStatus String? // "verified", "pending", "disputed"
@@ -727,6 +722,12 @@ model Work {
   lastEditedBy String?   @db.ObjectId
   lastEditedAt DateTime?
   editHistory  Json?
+
+ // 🆕 SISTEMA DE DIFICULDADE IMSLP
+  difficultyLevel    String?  // "1", "2", "3"... "12"
+  difficultySystem   String?  // "IMSLP", "RCM", "ABRSM", etc.
+  difficultyRating   String?  // "Lvl 1", "RCM Preparatory B", etc.
+  difficultySourceId String?  // ID do IMSLP que tem essa dificuldade (sourceId do WorkScore)
 
   // 🔄 RELAÇÕES EXISTENTES - ALGUMAS ATUALIZADAS
   composer   Composer   @relation(fields: [composerId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar compositor
@@ -751,6 +752,7 @@ model Work {
   scoreBookmarks ScoreBookmark[]
 
   workAnnotations WorkAnnotation[]
+  imslpDifficultyHistory IMSLPDifficultyHistory[]
 
   annotationsCount        Int       @default(0)
   helpfulAnnotationsCount Int       @default(0)
@@ -792,24 +794,14 @@ model Work {
   @@index([spotifyDisplayTitle])
   @@index([spotifyDuration])
   @@index([spotifyThumbnail])
-}
 
-// Enum para tipos de vídeo aula
-enum VideoAulaType {
-  VIDEO     // Vídeo normal
-  STORY     // Story (vertical, curta duração)
-  REELS     // Reels/Shorts (vertical, música)
-  LIVE      // Live/Transmissão ao vivo
-  TUTORIAL  // Tutorial específico
-}
-
-enum VideoAulaSource {
-  YOUTUBE
-  INSTAGRAM
-  TIKTOK
-  FACEBOOK
-  LOCAL     // Upload local
-  EXTERNAL  // URL externa
+  @@index([difficultyLevel]) // Enum original
+  @@index([imslpDifficultyLevel]) // Níveis IMSLP
+  @@index([imslpDifficultySystem])
+  @@index([difficultyLevel, imslpDifficultyLevel]) // Combinado
+  @@index([instrumentId, difficultyLevel])
+  @@index([instrumentId, imslpDifficultyLevel])
+  @@index([composerId, difficultyLevel])
 }
 
 model UserInstrument {
@@ -826,6 +818,36 @@ model UserInstrument {
   instrument Instrument @relation(fields: [instrumentId], references: [id], onDelete: Cascade)
 
   @@unique([userId, instrumentId])
+}
+
+model IMSLPDifficultyHistory {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  workId      String   @db.ObjectId
+  sourceId    String   // IMSLP sourceId
+  
+  // Dados da dificuldade IMSLP
+  imslpLevel       String   // "1", "2", etc.
+  imslpSystem      String   // "IMSLP", "RCM", etc.
+  imslpRating      String   // "Lvl 1", "RCM Prep B", etc.
+  votes            Int?     // Votos no IMSLP
+  
+  // Mapeamento automático para enum
+  mappedDifficulty DifficultyLevel // BEGINNER/INTERMEDIATE/ADVANCED
+  
+  // Metadados de scraping
+  scrapedAt   DateTime @default(now())
+  scrapedFrom String   // URL de onde veio
+  isActive    Boolean  @default(true)
+  
+  // Relação
+  work        Work     @relation(fields: [workId], references: [id], onDelete: Cascade)
+  
+  // Índices
+  @@index([workId, isActive])
+  @@index([sourceId])
+  @@index([imslpLevel, imslpSystem])
+  @@index([mappedDifficulty])
+  @@map("imslp_difficulty_history")
 }
 
 model Annotation {

@@ -58,7 +58,6 @@ export const useSmartFormChanges = (
   excludeFields: string[] = []
 ) => {
   return useMemo(() => {
-    console.log('originalData', formData);
     // Se tem dados originais = modo edição
     if (originalData) {
       return Object.entries(formData).some(([key, value]) => {

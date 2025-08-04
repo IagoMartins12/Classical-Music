@@ -5,10 +5,11 @@ import Image from 'next/image';
 import FavoriteScoreButton from '../../FavoriteScoreButton';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
 import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
+import { WorkScore } from '@prisma/client';
 // 🆕 Importar apenas o componente de badge, não o hook
 
 interface ScoreCardProps {
-  score: IMSLPScore;
+  score: WorkScore;
   workId: string;
   isSelected: boolean;
   onSelect: () => void;
@@ -105,6 +106,7 @@ const ScoreCard = ({
                 className="w-full h-full object-cover transition-transform duration-500 group-hover/thumbnail:scale-110"
                 width={60}
                 height={60}
+                priority
               />
 
               {/* Overlay com ícone de zoom */}
@@ -143,6 +145,7 @@ const ScoreCard = ({
                     className="w-80 h-96 object-contain rounded-xl"
                     width={80}
                     height={80}
+                    priority
                   />
                 </div>
               </div>
@@ -169,7 +172,6 @@ const ScoreCard = ({
                 size="md"
                 showToast={true}
                 onFavoriteChange={(isFavorited) => {
-                  // Callback opcional para atualizar estado local
                   console.log(
                     `Partitura ${score.title} ${
                       isFavorited ? 'favoritada' : 'desfavoritada'
@@ -179,6 +181,11 @@ const ScoreCard = ({
               />
 
               {/* Download button */}
+
+              <span className="inline-flex items-center px-3 py-2 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium">
+                {score.source === 'IMSLP' ? 'IMSLP' : 'Open Atlas'}
+              </span>
+
               {score.downloadUrl && (
                 <a
                   href={score.downloadUrl}

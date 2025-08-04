@@ -27,6 +27,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
+import LoadingAdminState from '../../Common/LoadingState';
 
 interface ReportStats {
   totalReports: number;
@@ -395,16 +396,7 @@ export default function ReportsDashboard() {
         </AnimatedItem>
 
         {/* Loading State */}
-        {loading && (
-          <div className="fixed inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="classical-card p-8 text-center">
-              <LoadingSpinner size="lg" />
-              <p className="text-theme-primary font-medium mt-4">
-                Carregando estatísticas...
-              </p>
-            </div>
-          </div>
-        )}
+        {loading && <LoadingAdminState loadingName="estatísticas" />}
       </AnimatedContainer>
     </PageContainer>
   );

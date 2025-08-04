@@ -7,7 +7,6 @@ import { NavigationTabs } from '../NavigationTabs';
 import { EpochSection } from '../EpochSection';
 import { ComposersTimeline } from '../ComposerTimeline';
 import { DetailedMusicHistory } from '../DetailedMusicHistory';
-import ErrorFallback from '@/app/(main)/music-history/error';
 
 interface Composer {
   id: string;
@@ -102,10 +101,6 @@ export function MusicHistoryPageClient({
       return finalAIndex - finalBIndex;
     });
   }, [epochs]);
-
-  if (hasError) {
-    return <ErrorFallback />;
-  }
 
   return (
     <div className="w-full  ">

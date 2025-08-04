@@ -26,6 +26,7 @@ import {
 } from 'react-icons/fi';
 import { useAdminStats } from '@/app/hooks/admin/useAdminStats';
 import { BiTestTube } from 'react-icons/bi';
+import { LuUser } from 'react-icons/lu';
 
 interface SidebarSection {
   title: string;
@@ -90,28 +91,32 @@ export default function AdminSidebar() {
           href: '/admin/users',
           label: 'Usuários',
           icon: FiUsers,
-          badge: mounted && stats ? stats.overview.totalUsers : undefined,
           isActive: pathname.startsWith('/admin/users'),
-          children: [
-            {
-              href: '/admin/users/active',
-              label: 'Usuários Ativos',
-              icon: FiActivity,
-              isActive: pathname === '/admin/users/active',
-            },
-            {
-              href: '/admin/users/contributors',
-              label: 'Contribuidores',
-              icon: FiUpload,
-              isActive: pathname === '/admin/users/contributors',
-            },
-            {
-              href: '/admin/users/annotators',
-              label: 'Anotadores',
-              icon: FiMessageSquare,
-              isActive: pathname === '/admin/users/annotators',
-            },
-          ],
+        },
+        {
+          href: '/admin/users/list',
+          label: 'Todos',
+          icon: LuUser,
+          badge: mounted && stats ? stats.overview.totalUsers : undefined,
+          isActive: pathname === '/list',
+        },
+        {
+          href: '/admin/users/list?hasAnnotations=true',
+          label: 'Anotadores',
+          icon: FiMessageSquare,
+          isActive: pathname === '/admin/users/list?hasAnnotations=true',
+        },
+        {
+          href: '/admin/users/list?hasUploads=true',
+          label: 'Contribuidores',
+          icon: FiUpload,
+          isActive: pathname === '/admin/users/list?hasUploads=true',
+        },
+        {
+          href: '/admin/users/list?isActive=true',
+          label: 'Usuários Ativos',
+          icon: FiActivity,
+          isActive: pathname === '/admin/users/list?isActive=true',
         },
       ],
     },
@@ -318,7 +323,7 @@ export default function AdminSidebar() {
               isChild ? 'ml-3 lg:ml-4' : ''
             } ${
               item.isActive
-                ? 'bg-gradient-to-r from-brand-primary to-brand-secondary text-theme-primary shadow-md'
+                ? 'bg-theme-tertiary from-brand-primary to-brand-secondary text-theme-primary shadow-md'
                 : 'text-theme-secondary hover:text-theme-primary hover:bg-theme-secondary'
             }`}
           >

@@ -217,7 +217,7 @@ export default function IMSLPTabsIncremental({
   );
   const previewRef = useRef<HTMLDivElement>(null);
 
-  console.log('scores', workScores);
+  console.log('scores', { imslpData, workScores });
   // Hook para estatísticas de favoritos
   const { getScoreStats } = useScoreFavorites(workId || '');
 

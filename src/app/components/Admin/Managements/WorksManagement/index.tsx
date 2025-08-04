@@ -20,6 +20,8 @@ import {
   FiUser,
   FiTarget,
   FiTrendingUp,
+  FiBookOpen,
+  FiCheckCircle,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -30,6 +32,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
+import Input from '@/app/components/Common/Inputs';
 import {
   MetricCard,
   AdminPieChart,
@@ -39,6 +42,13 @@ import { useAdminWorks } from '@/app/hooks/admin/useAdminWorks';
 import { formatNumber } from '@/app/hooks/admin/useAdminStats';
 import { toast } from 'react-hot-toast';
 
+import StatsSkeleton, {
+  ChartSkeleton,
+  TopPerformersSkeleton,
+} from '@/app/components/Admin/Skeletons/StatsSkeleton';
+import { getPeriodLabel } from '@/app/utils/adminUtils';
+import PeriodSelector from '../../Common/PeriodSelector';
+
 interface WorkFilters {
   search: string;
   composerId: string;
@@ -46,6 +56,12 @@ interface WorkFilters {
   instrumentId: string;
   workType: string;
   difficultyLevel: string;
+  minFavorites: string;
+  minWantToLearn: string;
+  minLearned: string;
+  minScores: string;
+  maxScores: string;
+  hasScores: string;
   sortBy: string;
   sortOrder: string;
   page?: string;
@@ -57,7 +73,10 @@ export default function WorksManagement() {
     works,
     stats,
     loading,
+    statsLoading,
     pagination,
+    period,
+    setPeriod,
     fetchWorks,
     refreshStats,
     deleteWork,
@@ -70,6 +89,12 @@ export default function WorksManagement() {
     instrumentId: 'all',
     workType: 'all',
     difficultyLevel: 'all',
+    minFavorites: '',
+    minWantToLearn: '',
+    minLearned: '',
+    minScores: '',
+    maxScores: '',
+    hasScores: 'all',
     sortBy: 'createdAt',
     sortOrder: 'desc',
   });
@@ -131,6 +156,25 @@ export default function WorksManagement() {
       difficultyLevel:
         newFilters.difficultyLevel !== 'all'
           ? newFilters.difficultyLevel
+          : undefined,
+      minFavorites: newFilters.minFavorites
+        ? parseInt(newFilters.minFavorites)
+        : undefined,
+      minWantToLearn: newFilters.minWantToLearn
+        ? parseInt(newFilters.minWantToLearn)
+        : undefined,
+      minLearned: newFilters.minLearned
+        ? parseInt(newFilters.minLearned)
+        : undefined,
+      minScores: newFilters.minScores
+        ? parseInt(newFilters.minScores)
+        : undefined,
+      maxScores: newFilters.maxScores
+        ? parseInt(newFilters.maxScores)
+        : undefined,
+      hasScores:
+        newFilters.hasScores !== 'all'
+          ? newFilters.hasScores === 'true'
           : undefined,
       sortBy: newFilters.sortBy,
       sortOrder: newFilters.sortOrder,
@@ -221,11 +265,20 @@ export default function WorksManagement() {
             <p className="text-xl text-theme-secondary classical-subtitle">
               Administre o catálogo de obras musicais da plataforma
             </p>
+            <div className="flex justify-center mt-6">
+              <PeriodSelector
+                value={period}
+                onChange={setPeriod}
+                className="bg-theme-secondary px-4 py-2 rounded-xl"
+              />
+            </div>
           </div>
         </AnimatedItem>
 
         {/* Stats Overview */}
-        {stats && (
+        {statsLoading ? (
+          <StatsSkeleton count={4} />
+        ) : stats ? (
           <AnimatedItem direction="up" springType="gentle">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <MetricCard
@@ -234,6 +287,7 @@ export default function WorksManagement() {
                 change={{ value: stats.recentlyAdded, isPositive: true }}
                 icon={FiMusic}
                 color="#10B981"
+                subtitle={`nos ${getPeriodLabel(period)}`}
               />
 
               <MetricCard
@@ -242,35 +296,53 @@ export default function WorksManagement() {
                 change={{ value: 12.4, isPositive: true }}
                 icon={FiFileText}
                 color="#3B82F6"
+                subtitle="média por obra"
               />
 
               <MetricCard
-                title="Mais Popular"
-                value={stats.mostPopular[0]?.favoritesCount || 0}
-                change={{ value: 8.7, isPositive: true }}
-                icon={FiStar}
+                title="Sem Partituras"
+                value={formatNumber(stats.withoutScores)}
+                change={{
+                  value:
+                    stats.total > 0
+                      ? (stats.withoutScores / stats.total) * 100
+                      : 0,
+                  isPositive: false,
+                }}
+                icon={FiTarget}
                 color="#F59E0B"
+                subtitle={`${(
+                  (stats.withoutScores / Math.max(stats.total, 1)) *
+                  100
+                ).toFixed(1)}% do total`}
               />
 
               <MetricCard
-                title="Adicionadas (7 dias)"
-                value={formatNumber(stats.recentlyAdded)}
+                title="Média de Favoritos"
+                value={stats.avgFavoritesPerWork.toFixed(1)}
                 change={{ value: 15.2, isPositive: true }}
-                icon={FiTrendingUp}
+                icon={FiHeart}
                 color="#8B5CF6"
+                subtitle="por obra"
               />
             </div>
           </AnimatedItem>
-        )}
+        ) : null}
 
         {/* Charts */}
-        {stats && (
+        {statsLoading ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <ChartSkeleton title="Obras por Época" />
+            <ChartSkeleton title="Obras por Instrumento" />
+            <ChartSkeleton title="Nível de Dificuldade" />
+          </div>
+        ) : stats ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             <AnimatedCard className="classical-card p-6">
               <AdminPieChart
                 data={stats.byEpoch}
                 title="Obras por Época"
-                subtitle="Distribuição por período histórico"
+                subtitle={`Distribuição ${getPeriodLabel(period)}`}
                 height={300}
                 innerRadius={60}
               />
@@ -280,7 +352,7 @@ export default function WorksManagement() {
               <AdminPieChart
                 data={stats.byInstrument}
                 title="Obras por Instrumento"
-                subtitle="Distribuição por instrumento principal"
+                subtitle={`Distribuição ${getPeriodLabel(period)}`}
                 height={300}
                 innerRadius={60}
               />
@@ -293,63 +365,138 @@ export default function WorksManagement() {
                   value: item.count,
                 }))}
                 title="Nível de Dificuldade"
-                subtitle="Distribuição por dificuldade"
+                subtitle={`Distribuição ${getPeriodLabel(period)}`}
                 color="#8B5CF6"
                 height={300}
               />
             </AnimatedCard>
           </div>
-        )}
+        ) : null}
 
         {/* Top Performers */}
-        {stats && stats.mostPopular.length > 0 && (
-          <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard className="classical-card p-6 mb-8">
-              <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
-                <FiTarget className="w-5 h-5 text-accent-amber" />
-                <span>Obras Mais Populares</span>
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {stats.mostPopular.slice(0, 6).map((work, index) => (
-                  <div
-                    key={work.id}
-                    className="p-4 bg-theme-secondary rounded-xl"
-                  >
-                    <div className="flex items-center space-x-3 mb-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
-                        {index + 1}
+        {statsLoading ? (
+          <TopPerformersSkeleton />
+        ) : stats &&
+          (stats.mostPopular.length > 0 ||
+            stats.mostWantedToLearn.length > 0 ||
+            stats.mostLearned.length > 0) ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            {/* Mais Populares */}
+            {stats.mostPopular.length > 0 && (
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard className="classical-card p-6">
+                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                    <FiStar className="w-5 h-5 text-accent-amber" />
+                    <span>Mais Favoritadas</span>
+                  </h3>
+                  <div className="space-y-3">
+                    {stats.mostPopular.slice(0, 5).map((work, index) => (
+                      <div
+                        key={work.id}
+                        className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                      >
+                        <div className="w-8 h-8 bg-gradient-to-br from-accent-amber to-accent-red rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-theme-primary truncate">
+                            {work.title}
+                          </p>
+                          <p className="text-sm text-theme-tertiary truncate">
+                            {work.composer} • {work.favoritesCount} favoritos
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          leftIcon={<FiEye />}
+                          onClick={() => router.push(`/admin/works/${work.id}`)}
+                        />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-theme-primary truncate">
-                          {work.title}
-                        </p>
-                        <p className="text-sm text-theme-tertiary truncate">
-                          {work.composer}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between text-xs text-theme-secondary">
-                      <span className="flex items-center space-x-1">
-                        <FiHeart className="w-3 h-3" />
-                        <span>{work.favoritesCount}</span>
-                      </span>
-                      <span className="flex items-center space-x-1">
-                        <FiMessageSquare className="w-3 h-3" />
-                        <span>{work.annotationsCount}</span>
-                      </span>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        leftIcon={<FiEye />}
-                        onClick={() => router.push(`/admin/works/${work.id}`)}
-                      />
-                    </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </AnimatedCard>
-          </AnimatedItem>
-        )}
+                </AnimatedCard>
+              </AnimatedItem>
+            )}
+
+            {/* Mais Queridas para Aprender */}
+            {stats.mostWantedToLearn.length > 0 && (
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard className="classical-card p-6">
+                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                    <FiBookOpen className="w-5 h-5 text-accent-blue" />
+                    <span>Mais Queridas</span>
+                  </h3>
+                  <div className="space-y-3">
+                    {stats.mostWantedToLearn.slice(0, 5).map((work, index) => (
+                      <div
+                        key={work.id}
+                        className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                      >
+                        <div className="w-8 h-8 bg-gradient-to-br from-accent-blue to-accent-purple rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-theme-primary truncate">
+                            {work.title}
+                          </p>
+                          <p className="text-sm text-theme-tertiary truncate">
+                            {work.composer} • {work.wantToLearnCount} querem
+                            aprender
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          leftIcon={<FiEye />}
+                          onClick={() => router.push(`/admin/works/${work.id}`)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            )}
+
+            {/* Mais Aprendidas */}
+            {stats.mostLearned.length > 0 && (
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard className="classical-card p-6">
+                  <h3 className="text-xl font-bold text-theme-primary mb-6 flex items-center space-x-2">
+                    <FiCheckCircle className="w-5 h-5 text-accent-green" />
+                    <span>Mais Aprendidas</span>
+                  </h3>
+                  <div className="space-y-3">
+                    {stats.mostLearned.slice(0, 5).map((work, index) => (
+                      <div
+                        key={work.id}
+                        className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                      >
+                        <div className="w-8 h-8 bg-gradient-to-br from-accent-green to-accent-blue rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                          {index + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-theme-primary truncate">
+                            {work.title}
+                          </p>
+                          <p className="text-sm text-theme-tertiary truncate">
+                            {work.composer} • {work.learnedCount} aprenderam
+                          </p>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          leftIcon={<FiEye />}
+                          onClick={() => router.push(`/admin/works/${work.id}`)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            )}
+          </div>
+        ) : null}
 
         {/* Filters and Controls */}
         <AnimatedItem direction="up" hover="none">
@@ -365,7 +512,7 @@ export default function WorksManagement() {
                   leftIcon={<FiFilter />}
                   onClick={() => setShowFilters(!showFilters)}
                 >
-                  Filtros
+                  Filtros Avançados
                 </Button>
                 <Button
                   variant="ghost"
@@ -381,14 +528,12 @@ export default function WorksManagement() {
               </div>
             </div>
 
-            {/* Filtros */}
-            <div
-              className={`space-y-4 mb-6 ${showFilters ? 'block' : 'hidden'}`}
-            >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="relative">
+            {/* Filtros Básicos - sempre visíveis */}
+            <div className="space-y-4 mb-6">
+              <div className="flex items-center space-x-4">
+                <div className="relative flex-1">
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                  <input
+                  <Input
                     type="text"
                     placeholder="Buscar obras..."
                     value={filters.search}
@@ -396,10 +541,53 @@ export default function WorksManagement() {
                       setFilters({ ...filters, search: e.target.value })
                     }
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                    className="input-classical-2 pl-10 w-full"
+                    className="input-classical-2 !pl-10 w-full"
                   />
                 </div>
 
+                <Select
+                  value={filters.sortBy}
+                  onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+                  options={[
+                    { value: 'createdAt', label: 'Data de Criação' },
+                    { value: 'title', label: 'Título' },
+                    { value: 'favoritesCount', label: 'Favoritos' },
+                    { value: 'wantToLearnCount', label: 'Querem Aprender' },
+                    { value: 'learnedCount', label: 'Aprenderam' },
+                    { value: 'scoresCount', label: 'Partituras' },
+                    { value: 'annotationsCount', label: 'Anotações' },
+                  ]}
+                  className="input-classical-2 min-w-[160px]"
+                />
+
+                <Select
+                  value={filters.sortOrder}
+                  onChange={(e) =>
+                    handleFilterChange('sortOrder', e.target.value)
+                  }
+                  options={[
+                    { value: 'desc', label: 'Decrescente' },
+                    { value: 'asc', label: 'Crescente' },
+                  ]}
+                  className="input-classical-2 min-w-[120px]"
+                />
+
+                <Button
+                  variant="primary"
+                  size="sm"
+                  leftIcon={<FiSearch />}
+                  onClick={handleSearch}
+                >
+                  Buscar
+                </Button>
+              </div>
+            </div>
+
+            {/* Filtros Avançados */}
+            <div
+              className={`space-y-4 mb-6 ${showFilters ? 'block' : 'hidden'}`}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Select
                   value={filters.epochId}
                   onChange={(e) =>
@@ -417,9 +605,7 @@ export default function WorksManagement() {
                   options={instruments}
                   className="input-classical-2"
                 />
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Select
                   value={filters.workType}
                   onChange={(e) =>
@@ -437,41 +623,110 @@ export default function WorksManagement() {
                   options={difficultyLevels}
                   className="input-classical-2"
                 />
-
-                <Select
-                  value={filters.sortBy}
-                  onChange={(e) => handleFilterChange('sortBy', e.target.value)}
-                  options={[
-                    { value: 'createdAt', label: 'Data de Criação' },
-                    { value: 'title', label: 'Título' },
-                    { value: 'favoritesCount', label: 'Favoritos' },
-                    { value: 'annotationsCount', label: 'Anotações' },
-                  ]}
-                  className="input-classical-2"
-                />
-
-                <Select
-                  value={filters.sortOrder}
-                  onChange={(e) =>
-                    handleFilterChange('sortOrder', e.target.value)
-                  }
-                  options={[
-                    { value: 'desc', label: 'Decrescente' },
-                    { value: 'asc', label: 'Crescente' },
-                  ]}
-                  className="input-classical-2"
-                />
               </div>
 
-              <div className="flex items-center space-x-4">
-                <Button
-                  variant="primary"
-                  size="sm"
-                  leftIcon={<FiSearch />}
-                  onClick={handleSearch}
-                >
-                  Buscar
-                </Button>
+              {/* Filtros de Popularidade */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    Mínimo de Favoritos
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="Ex: 10"
+                    value={filters.minFavorites}
+                    onChange={(e) =>
+                      setFilters({ ...filters, minFavorites: e.target.value })
+                    }
+                    className="input-classical-2"
+                    min="0"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    Mín. Querem Aprender
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="Ex: 5"
+                    value={filters.minWantToLearn}
+                    onChange={(e) =>
+                      setFilters({ ...filters, minWantToLearn: e.target.value })
+                    }
+                    className="input-classical-2"
+                    min="0"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    Mín. Aprenderam
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="Ex: 3"
+                    value={filters.minLearned}
+                    onChange={(e) =>
+                      setFilters({ ...filters, minLearned: e.target.value })
+                    }
+                    className="input-classical-2"
+                    min="0"
+                  />
+                </div>
+              </div>
+
+              {/* Filtros de Partituras */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    Mínimo de Partituras
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="Ex: 1"
+                    value={filters.minScores}
+                    onChange={(e) =>
+                      setFilters({ ...filters, minScores: e.target.value })
+                    }
+                    className="input-classical-2"
+                    min="0"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    Máximo de Partituras
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="Ex: 10"
+                    value={filters.maxScores}
+                    onChange={(e) =>
+                      setFilters({ ...filters, maxScores: e.target.value })
+                    }
+                    className="input-classical-2"
+                    min="0"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-theme-secondary mb-2">
+                    Tem Partituras?
+                  </label>
+                  <Select
+                    value={filters.hasScores}
+                    onChange={(e) =>
+                      handleFilterChange('hasScores', e.target.value)
+                    }
+                    options={[
+                      { value: 'all', label: 'Todas' },
+                      { value: 'true', label: 'Com Partituras' },
+                      { value: 'false', label: 'Sem Partituras' },
+                    ]}
+                    className="input-classical-2"
+                  />
+                </div>
               </div>
             </div>
 
@@ -543,6 +798,11 @@ export default function WorksManagement() {
                             {work.difficultyLevel}
                           </span>
                         )}
+                        {work.scoresCount === 0 && (
+                          <span className="text-xs bg-accent-red/10 text-accent-red px-2 py-1 rounded">
+                            Sem partituras
+                          </span>
+                        )}
                       </div>
 
                       <div className="text-theme-secondary mb-3">
@@ -565,22 +825,38 @@ export default function WorksManagement() {
                         )}
                       </div>
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-theme-secondary">
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm text-theme-secondary">
                         <div className="flex items-center space-x-1">
                           <FiHeart className="w-4 h-4" />
-                          <span>{work.favoritesCount} favoritos</span>
+                          <span
+                            className={
+                              work.favoritesCount === 0 ? 'text-accent-red' : ''
+                            }
+                          >
+                            {work.favoritesCount} favoritos
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <FiBookOpen className="w-4 h-4" />
+                          <span>{work.wantToLearnCount} querem</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <FiCheckCircle className="w-4 h-4" />
+                          <span>{work.learnedCount} aprenderam</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <FiFileText className="w-4 h-4" />
+                          <span
+                            className={
+                              work.scoresCount === 0 ? 'text-accent-red' : ''
+                            }
+                          >
+                            {work.scoresCount} partituras
+                          </span>
                         </div>
                         <div className="flex items-center space-x-1">
                           <FiMessageSquare className="w-4 h-4" />
                           <span>{work.annotationsCount} anotações</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <FiFileText className="w-4 h-4" />
-                          <span>{work.scoresCount} partituras</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <FiClock className="w-4 h-4" />
-                          <span>{work.studySessionsCount} sessões</span>
                         </div>
                       </div>
 

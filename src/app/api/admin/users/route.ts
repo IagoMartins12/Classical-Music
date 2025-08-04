@@ -5,7 +5,7 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
 
-interface UserListFilters {
+export interface UserListFilters {
   search?: string;
   userType?: string;
   experienceLevel?: string;
@@ -21,6 +21,8 @@ interface UserListFilters {
   isActive?: boolean;
   hasUploads?: boolean;
   hasAnnotations?: boolean;
+  hasModerations?: boolean;
+  role?: number;
 }
 
 interface UserAnalytics {
@@ -62,6 +64,64 @@ interface UserAnalytics {
     averageUploadsPerUser: number;
   };
 }
+
+const exportUsersToCSV = async (filters: UserListFilters) => {
+  try {
+    const result = await getUsersList({ ...filters, limit: 10000 }); // Exportar até 10k usuários
+
+    const csvHeaders = [
+      'ID',
+      'Nome',
+      'Email',
+      'Username',
+      'Tipo de Usuário',
+      'Nível de Experiência',
+      'Role',
+      'Tempo de Estudo (min)',
+      'Anotações',
+      'Uploads',
+      'Score Upload',
+      'Moderações Feitas', // ✅ NOVA COLUNA
+      'Data de Cadastro',
+      'Última Atividade',
+      'Perfil Público',
+      'Onboarding Completo',
+    ];
+
+    const csvRows = result.users.map((user) => [
+      user.id,
+      user.name || '',
+      user.email || '',
+      user.username || '',
+      user.userType || '',
+      user.experienceLevel || '',
+      user.role?.toString() || '0',
+      user.totalStudyTime.toString(),
+      user.annotationsCount.toString(),
+      user.uploadsCount.toString(),
+      user.uploadScore.toString(),
+      user.moderationsCount?.toString() || '0', // ✅ INCLUIR NO CSV
+      user.createdAt.toISOString(),
+      user.lastActive.toISOString(),
+      user.isProfilePublic ? 'Sim' : 'Não',
+      user.onboardingCompleted ? 'Sim' : 'Não',
+    ]);
+
+    const csvContent = [
+      csvHeaders.join(','),
+      ...csvRows.map((row) =>
+        row
+          .map((field) => `"${field.toString().replace(/"/g, '""')}"`)
+          .join(',')
+      ),
+    ].join('\n');
+
+    return csvContent;
+  } catch (error) {
+    console.error('Erro ao exportar usuários:', error);
+    throw new Error('Erro ao gerar exportação');
+  }
+};
 
 // Cache das estatísticas de usuários por 5 minutos
 const getCachedUserAnalytics = unstable_cache(
@@ -126,6 +186,7 @@ const getCachedUserAnalytics = unstable_cache(
         approvedUploads: true,
         totalStudyTime: true,
         totalAnnotationsCount: true,
+        role: true,
       },
       where: {
         OR: [
@@ -247,6 +308,7 @@ const getUsersList = async (filters: UserListFilters) => {
     isActive,
     hasUploads,
     hasAnnotations,
+    hasModerations, // ✅ Filtro para usuários que fizeram reports
   } = filters;
 
   const skip = (page - 1) * limit;
@@ -304,6 +366,12 @@ const getUsersList = async (filters: UserListFilters) => {
     whereClause.totalAnnotationsCount = { gt: 0 };
   }
 
+  if (hasModerations) {
+    whereClause.reportedUploads = {
+      some: {}, // Usuários que têm pelo menos um report feito
+    };
+  }
+
   // Buscar usuários e contagem total em paralelo
   const [users, totalCount] = await Promise.all([
     prisma.user.findMany({
@@ -324,6 +392,12 @@ const getUsersList = async (filters: UserListFilters) => {
         updatedAt: true,
         profilePublic: true,
         onboardingCompleted: true,
+        role: true,
+        _count: {
+          select: {
+            reportedUploads: true, // Contar quantos reports o usuário fez
+          },
+        },
       },
       orderBy: {
         [sortBy]: sortOrder,
@@ -353,6 +427,9 @@ const getUsersList = async (filters: UserListFilters) => {
       lastActive: user.updatedAt,
       isProfilePublic: user.profilePublic,
       onboardingCompleted: user.onboardingCompleted,
+      role: user.role,
+      // ✅ ADICIONAR CONTAGEM DE MODERAÇÕES
+      moderationsCount: user._count?.reportedUploads || 0,
     })),
     pagination: {
       page,
@@ -398,6 +475,44 @@ export async function GET(request: NextRequest) {
       }
     }
 
+    if (action === 'export') {
+      try {
+        const filters: UserListFilters = {
+          search: searchParams.get('search') || undefined,
+          userType: searchParams.get('userType') || undefined,
+          experienceLevel: searchParams.get('experienceLevel') || undefined,
+          sortBy: (searchParams.get('sortBy') as any) || 'createdAt',
+          sortOrder: (searchParams.get('sortOrder') as any) || 'desc',
+          isActive: searchParams.get('isActive') === 'true',
+          hasUploads: searchParams.get('hasUploads') === 'true',
+          hasAnnotations: searchParams.get('hasAnnotations') === 'true',
+          hasModerations: searchParams.get('hasModerations') === 'true',
+        };
+
+        const csvContent = await exportUsersToCSV(filters);
+
+        const headers = new Headers();
+        headers.set('Content-Type', 'text/csv; charset=utf-8');
+        headers.set(
+          'Content-Disposition',
+          `attachment; filename="usuarios-${
+            new Date().toISOString().split('T')[0]
+          }.csv"`
+        );
+
+        return new Response(csvContent, { headers });
+      } catch (error) {
+        console.error('Erro ao exportar usuários:', error);
+        return NextResponse.json(
+          {
+            success: false,
+            error: 'Erro ao exportar usuários',
+          },
+          { status: 500 }
+        );
+      }
+    }
+
     if (action === 'list') {
       try {
         const filters: UserListFilters = {
@@ -411,6 +526,7 @@ export async function GET(request: NextRequest) {
           isActive: searchParams.get('isActive') === 'true',
           hasUploads: searchParams.get('hasUploads') === 'true',
           hasAnnotations: searchParams.get('hasAnnotations') === 'true',
+          hasModerations: searchParams.get('hasModerations') === 'true',
         };
 
         const result = await getUsersList(filters);
@@ -499,7 +615,7 @@ export async function PATCH(request: NextRequest) {
         email: true,
         userType: true,
         experienceLevel: true,
-
+        role: true,
         uploadLimitDaily: true,
         uploadLimitMonthly: true,
       },

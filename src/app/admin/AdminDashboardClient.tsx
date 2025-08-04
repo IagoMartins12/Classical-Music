@@ -31,6 +31,7 @@ import {
 } from '../components/Admin/Charts/AdminCharts';
 import RecentActivity from '../components/Admin/Activity/RecentActivity';
 import BackupDashboardCard from '../components/Admin/Backup/BackupDashboardCard';
+import LoadingAdminState from '../components/Admin/Common/LoadingState';
 
 export default function AdminDashboardClient() {
   const { stats, loading, error, refreshStats } = useAdminStats();
@@ -57,15 +58,8 @@ export default function AdminDashboardClient() {
 
   if (loading && !stats) {
     return (
-      <PageContainer showBackground={true}>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center flex flex-col items-center justify-center">
-            <LoadingSpinner size="lg" />
-            <p className="text-theme-primary font-medium mt-6 text-lg">
-              Carregando dashboard administrativo...
-            </p>
-          </div>
-        </div>
+      <PageContainer showBackground={false}>
+        <LoadingAdminState loadingName="dashboard" />;
       </PageContainer>
     );
   }

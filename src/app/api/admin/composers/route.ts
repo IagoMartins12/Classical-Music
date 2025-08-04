@@ -3,66 +3,140 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
+import { TimePeriod } from '@/app/components/Admin/Common/PeriodSelector';
+import { getPeriodDate } from '@/app/utils/adminUtils';
 
 interface ComposerFilters {
   search?: string;
   epoch?: string;
   verified?: boolean;
   dataQuality?: string;
+  hasImage?: boolean;
+  minWorks?: number;
+  maxWorks?: number;
+  minFavorites?: number;
   sortBy?: 'name' | 'createdAt' | 'worksCount' | 'favoritesCount';
   sortOrder?: 'asc' | 'desc';
+  period?: TimePeriod;
   page?: number;
   limit?: number;
 }
 
-const getCachedComposerStats = async () => {
-  const lastWeek = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+const getCachedComposerStats = async (period: TimePeriod = '7d') => {
+  const periodDate = getPeriodDate(period);
+  const whereClause = periodDate ? { createdAt: { gte: periodDate } } : {};
 
-  const [total, verified, byEpochRaw, byQuality, recentlyAdded, mostPopular] =
-    await Promise.all([
-      prisma.composer.count(),
-      prisma.composer.count({ where: { isVerified: true } }),
-      prisma.composer.groupBy({
-        by: ['epochId'],
-        _count: { id: true },
-      }),
-      prisma.composer.groupBy({
-        by: ['dataQuality'],
-        _count: { id: true },
-      }),
-      prisma.composer.count({
-        where: { createdAt: { gte: lastWeek } },
-      }),
-      prisma.composer.findMany({
-        select: {
-          id: true,
-          name: true,
-          _count: {
-            select: {
-              works: true,
-              favoriteByUsers: true,
-            },
+  const [
+    total,
+    verified,
+    withImages,
+    withoutImages,
+    byEpochRaw,
+    byQuality,
+    recentlyAdded,
+    mostPopular,
+    totalWorks,
+    topByWorks,
+  ] = await Promise.all([
+    // Total de compositores no período
+    prisma.composer.count({ where: whereClause }),
+
+    // Verificados no período
+    prisma.composer.count({
+      where: { ...whereClause, isVerified: true },
+    }),
+
+    // Com imagens válidas
+    prisma.composer.count({
+      where: { ...whereClause, hasValidImage: true },
+    }),
+
+    // Sem imagens válidas
+    prisma.composer.count({
+      where: { ...whereClause, hasValidImage: false },
+    }),
+
+    // Por época
+    prisma.composer.groupBy({
+      by: ['epochId'],
+      _count: { id: true },
+      where: whereClause,
+      orderBy: { _count: { id: 'desc' } },
+      take: 10,
+    }),
+
+    // Por qualidade
+    prisma.composer.groupBy({
+      by: ['dataQuality'],
+      _count: { id: true },
+      where: whereClause,
+    }),
+
+    // Adicionados na última semana (sempre)
+    prisma.composer.count({
+      where: {
+        createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+      },
+    }),
+
+    // Mais populares por favoritos
+    prisma.composer.findMany({
+      select: {
+        id: true,
+        name: true,
+        _count: {
+          select: {
+            works: true,
+            favoriteByUsers: true,
           },
         },
-        orderBy: {
-          favoriteByUsers: { _count: 'desc' },
-        },
-        take: 10,
-      }),
-    ]);
+      },
+      where: whereClause,
+      orderBy: {
+        favoriteByUsers: { _count: 'desc' },
+      },
+      take: 10,
+    }),
 
-  // Buscar os nomes das épocas separadamente
+    // Total de obras para calcular média
+    prisma.work.count({
+      where: periodDate
+        ? {
+            composer: whereClause,
+          }
+        : {},
+    }),
+
+    // Top por número de obras
+    prisma.composer.findMany({
+      select: {
+        id: true,
+        name: true,
+        _count: {
+          select: { works: true },
+        },
+      },
+      where: whereClause,
+      orderBy: {
+        works: { _count: 'desc' },
+      },
+      take: 10,
+    }),
+  ]);
+
+  // Buscar os nomes das épocas
   const epochIds = byEpochRaw.map((e) => e.epochId);
   const epochNames = await prisma.epoch.findMany({
     where: { id: { in: epochIds } },
     select: { id: true, name: true },
   });
-
   const epochMap = new Map(epochNames.map((e) => [e.id, e.name]));
 
   return {
     total,
     verified,
+    withImages,
+    withoutImages,
     byEpoch: byEpochRaw.map((item) => ({
       epoch: epochMap.get(item.epochId) || 'Desconhecido',
       count: item._count.id,
@@ -78,6 +152,12 @@ const getCachedComposerStats = async () => {
       worksCount: composer._count.works,
       favoritesCount: composer._count.favoriteByUsers,
     })),
+    avgWorksPerComposer: total > 0 ? totalWorks / total : 0,
+    topByWorks: topByWorks.map((composer) => ({
+      id: composer.id,
+      name: composer.name,
+      worksCount: composer._count.works,
+    })),
   };
 };
 
@@ -87,8 +167,13 @@ const getComposersList = async (filters: ComposerFilters) => {
     epoch,
     verified,
     dataQuality,
+    hasImage,
+    minWorks,
+    maxWorks,
+    minFavorites,
     sortBy = 'createdAt',
     sortOrder = 'desc',
+    period = '7d',
     page = 1,
     limit = 50,
   } = filters;
@@ -96,11 +181,18 @@ const getComposersList = async (filters: ComposerFilters) => {
   const skip = (page - 1) * limit;
   const whereClause: any = {};
 
+  // Aplicar filtro de período
+  const periodDate = getPeriodDate(period);
+  if (periodDate) {
+    whereClause.createdAt = { gte: periodDate };
+  }
+
   if (search) {
     whereClause.OR = [
       { name: { contains: search, mode: 'insensitive' } },
       { fullName: { contains: search, mode: 'insensitive' } },
       { otherName: { contains: search, mode: 'insensitive' } },
+      { nationality: { contains: search, mode: 'insensitive' } },
     ];
   }
 
@@ -114,6 +206,35 @@ const getComposersList = async (filters: ComposerFilters) => {
 
   if (dataQuality && dataQuality !== 'all') {
     whereClause.dataQuality = dataQuality;
+  }
+
+  if (hasImage !== undefined) {
+    whereClause.hasValidImage = hasImage;
+  }
+
+  // Filtros por contagem de obras e favoritos
+  if (
+    minWorks !== undefined ||
+    maxWorks !== undefined ||
+    minFavorites !== undefined
+  ) {
+    whereClause.AND = [];
+
+    if (minWorks !== undefined || maxWorks !== undefined) {
+      const worksFilter: any = {};
+      if (minWorks !== undefined) worksFilter.gte = minWorks;
+      if (maxWorks !== undefined) worksFilter.lte = maxWorks;
+
+      whereClause.AND.push({
+        works: { _count: worksFilter },
+      });
+    }
+
+    if (minFavorites !== undefined) {
+      whereClause.AND.push({
+        favoriteByUsers: { _count: { gte: minFavorites } },
+      });
+    }
   }
 
   const [composers, totalCount] = await Promise.all([
@@ -165,6 +286,7 @@ const getComposersList = async (filters: ComposerFilters) => {
       worksCount: composer._count.works,
       favoritesCount: composer._count.favoriteByUsers,
       portraitUrl: composer.portraitUrl,
+      hasValidImage: composer.hasValidImage,
       createdAt: composer.createdAt,
       uploader: composer.createdByUser
         ? `${composer.createdByUser.firstName || ''} ${
@@ -194,10 +316,12 @@ export async function GET(request: NextRequest) {
     const action = searchParams.get('action') || 'list';
 
     if (action === 'stats') {
-      const stats = await getCachedComposerStats();
+      const period = (searchParams.get('period') as TimePeriod) || '7d';
+      const stats = await getCachedComposerStats(period);
       return NextResponse.json({
         success: true,
         stats,
+        period,
         timestamp: new Date().toISOString(),
       });
     }
@@ -213,8 +337,24 @@ export async function GET(request: NextRequest) {
             ? false
             : undefined,
         dataQuality: searchParams.get('dataQuality') || undefined,
+        hasImage:
+          searchParams.get('hasImage') === 'true'
+            ? true
+            : searchParams.get('hasImage') === 'false'
+            ? false
+            : undefined,
+        minWorks: searchParams.get('minWorks')
+          ? parseInt(searchParams.get('minWorks')!)
+          : undefined,
+        maxWorks: searchParams.get('maxWorks')
+          ? parseInt(searchParams.get('maxWorks')!)
+          : undefined,
+        minFavorites: searchParams.get('minFavorites')
+          ? parseInt(searchParams.get('minFavorites')!)
+          : undefined,
         sortBy: (searchParams.get('sortBy') as any) || 'createdAt',
         sortOrder: (searchParams.get('sortOrder') as any) || 'desc',
+        period: (searchParams.get('period') as TimePeriod) || '7d',
         page: parseInt(searchParams.get('page') || '1'),
         limit: parseInt(searchParams.get('limit') || '50'),
       };
@@ -239,7 +379,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// Endpoint para atualizar compositor
+// Endpoints UPDATE e DELETE permanecem iguais
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -301,7 +441,6 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// Endpoint para deletar compositor
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
