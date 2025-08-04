@@ -13,7 +13,6 @@ import {
   FiRefreshCw,
   FiBarChart2,
   FiFileText,
-  FiSettings,
   FiAlertCircle,
   FiCheckCircle,
 } from 'react-icons/fi';
@@ -22,7 +21,6 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
-  LoadingSpinner,
   SequentialGrid,
 } from '@/app/components/animation/AnimatedComponents';
 import { useNewsletterStats } from '@/app/hooks/useNewsletterSubscription';

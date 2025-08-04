@@ -17,7 +17,6 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
-  LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import { useNewsletterAnalytics } from '@/app/hooks/admin/useNewsletterAnalytics';

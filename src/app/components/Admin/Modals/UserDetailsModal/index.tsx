@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import {
-  FiX,
   FiUser,
   FiMail,
   FiActivity,
@@ -12,7 +11,6 @@ import {
   FiClock,
   FiTrendingUp,
   FiAward,
-  FiEdit3,
   FiTarget,
   FiMusic,
 } from 'react-icons/fi';
@@ -519,7 +517,7 @@ export default function UserDetailsModal({
                     <div className="space-y-4">
                       {detailsData.contributions.topAnnotations
                         .slice(0, 5)
-                        .map((annotation, index) => (
+                        .map((annotation) => (
                           <div
                             key={annotation.id}
                             className="p-3 bg-theme-secondary rounded-lg"
@@ -579,7 +577,7 @@ export default function UserDetailsModal({
                     <div className="space-y-3">
                       {detailsData.contributions.recentUploads
                         .slice(0, 5)
-                        .map((upload, index) => (
+                        .map((upload) => (
                           <div
                             key={upload.id}
                             className="flex items-center justify-between p-3 bg-theme-secondary rounded-lg"

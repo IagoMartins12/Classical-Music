@@ -201,20 +201,18 @@ export default function DifficultyTable({
                   <div className="flex items-center space-x-2">
                     {work.workScores && work.workScores.length > 0 ? (
                       <>
-                        {work.workScores
-                          .slice(0, 2)
-                          .map((score, scoreIndex) => (
-                            <Link
-                              key={score.id}
-                              href={score.downloadUrl || work.imslpPermlink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs font-medium hover:bg-accent-green/20 transition-all duration-300"
-                            >
-                              <FiDownload className="w-3 h-3 mr-1" />
-                              {score.fileFormat}
-                            </Link>
-                          ))}
+                        {work.workScores.slice(0, 2).map((score) => (
+                          <Link
+                            key={score.id}
+                            href={score.downloadUrl || work.imslpPermlink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs font-medium hover:bg-accent-green/20 transition-all duration-300"
+                          >
+                            <FiDownload className="w-3 h-3 mr-1" />
+                            {score.fileFormat}
+                          </Link>
+                        ))}
                         {work.workScores.length > 2 && (
                           <span className="text-xs text-theme-tertiary">
                             +{work.workScores.length - 2} mais

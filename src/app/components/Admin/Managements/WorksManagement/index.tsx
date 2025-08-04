@@ -16,10 +16,8 @@ import {
   FiHeart,
   FiMessageSquare,
   FiFileText,
-  FiClock,
   FiUser,
   FiTarget,
-  FiTrendingUp,
   FiBookOpen,
   FiCheckCircle,
 } from 'react-icons/fi';
@@ -28,7 +26,6 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
-  LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';

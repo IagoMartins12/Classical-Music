@@ -2,7 +2,6 @@
 
 import { Suspense } from 'react';
 import { unstable_cache } from 'next/cache';
-import DifficultyServer from './DifficultyServer';
 import DifficultyLoading from './loading';
 
 interface DifficultyPageProps {
@@ -68,12 +67,11 @@ export default async function DifficultyPage({
   searchParams,
 }: DifficultyPageProps) {
   const resolvedParams = await searchParams;
+  console.log('resolved', resolvedParams);
 
   return (
     <div className="min-h-screen">
-      <Suspense fallback={<DifficultyLoading />}>
-        <DifficultyServer searchParams={resolvedParams} />
-      </Suspense>
+      <Suspense fallback={<DifficultyLoading />}></Suspense>
     </div>
   );
 }

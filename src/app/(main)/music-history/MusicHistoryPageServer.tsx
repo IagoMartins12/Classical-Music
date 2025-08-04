@@ -37,13 +37,6 @@ export async function MusicHistoryPageServer() {
     console.error('Erro ao carregar dados da história musical:', error);
 
     // Fallback com dados mockados em caso de erro
-    return (
-      <MusicHistoryPageClient
-        epochs={[]}
-        composersTimeline={[]}
-        // epochsHistoricalData={[]}
-        hasError={true}
-      />
-    );
+    return <MusicHistoryPageClient epochs={[]} composersTimeline={[]} />;
   }
 }

@@ -112,7 +112,7 @@ export class OrphanFileScanner {
           const files = await this.scanDirectory(fullPath, category, options);
           allFiles.push(...files);
           scannedDirectories.push(dir);
-        } catch (error) {
+        } catch {
           console.warn(`⚠️ Diretório não encontrado: ${dir}`);
           scannedDirectories.push(`${dir} (não encontrado)`);
         }

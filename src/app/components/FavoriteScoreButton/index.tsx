@@ -17,9 +17,18 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { useLoginModal } from '@/app/stores/authStore';
 import { WorkScore } from '@prisma/client';
 
+interface FavoriteWorkScore {
+  id: string;
+  title: string;
+  type: string;
+  downloadUrl: string;
+  fileSize: string;
+  pageCount: string;
+  fileFormat: string;
+}
 interface FavoriteScoreButtonProps {
   workId: string;
-  score: WorkScore;
+  score: FavoriteWorkScore | WorkScore;
   variant?: 'default' | 'compact' | 'detailed';
   size?: 'sm' | 'md' | 'lg';
   showToast?: boolean;

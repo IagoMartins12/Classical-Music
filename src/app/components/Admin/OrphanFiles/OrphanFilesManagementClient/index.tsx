@@ -16,11 +16,8 @@ import {
   FiAlertTriangle,
   FiHardDrive,
   FiClock,
-  FiBarChart2,
-  FiSettings,
   FiFilter,
   FiX,
-  FiTarget,
   FiDatabase,
   FiInfo,
   FiDownload,
@@ -32,11 +29,6 @@ import {
   FiGrid,
   FiEye,
   FiMaximize2,
-  FiVolumeX,
-  FiVolume2,
-  FiPause,
-  FiSkipBack,
-  FiSkipForward,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -56,6 +48,7 @@ import {
   OrphanFile,
 } from '@/app/libs/orphanFiles/orphanFileScanner';
 import { GiMegaphone } from 'react-icons/gi';
+import Image from 'next/image';
 
 const getFileTypeColor = (file: OrphanFile): string => {
   if (file.isImage) return 'text-blue-500';
@@ -171,8 +164,6 @@ const FilePreview = ({
 }: FilePreviewProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
 
   const fileUrl = `/api/admin/orphan-files/preview?path=${encodeURIComponent(
     file.relativePath
@@ -218,7 +209,9 @@ const FilePreview = ({
               <LoadingSpinner size="lg" />
             </div>
           )}
-          <img
+          <Image
+            height={150}
+            width={150}
             src={fileUrl}
             alt={file.name}
             className="max-w-full max-h-96 mx-auto rounded-lg shadow-lg"
@@ -246,7 +239,6 @@ const FilePreview = ({
             onLoadedData={handleLoad}
             onError={handleError}
             style={{ display: isLoading ? 'none' : 'block' }}
-            muted={isMuted}
           >
             Seu navegador não suporta reprodução de vídeo.
           </video>
@@ -279,8 +271,6 @@ const FilePreview = ({
             onLoadedData={handleLoad}
             onError={handleError}
             style={{ display: isLoading ? 'none' : 'block' }}
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
           >
             Seu navegador não suporta reprodução de áudio.
           </audio>

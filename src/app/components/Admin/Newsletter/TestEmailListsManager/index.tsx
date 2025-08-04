@@ -22,7 +22,6 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
-  LoadingSpinner,
   SequentialGrid,
 } from '@/app/components/animation/AnimatedComponents';
 

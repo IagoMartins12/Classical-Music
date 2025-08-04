@@ -37,10 +37,7 @@ import {
 
 // 🆕 IMPORTAR O HOOK DE TOAST
 import { useToast } from '@/app/hooks/useToast';
-import {
-  useFormChanges,
-  useSmartFormChanges,
-} from '@/app/hooks/useFormChanges';
+import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -266,16 +263,12 @@ const CreateComposerModal = ({
     if (!editingComposer) return null;
 
     let detectedSource: DataSource = 'none';
-    let detectedUrl;
     if (editingComposer.imslpId) {
       detectedSource = 'imslp';
-      detectedUrl =
-        editingComposer.permLinkImslp ||
-        `https://imslp.org/wiki/${editingComposer.imslpId}`;
+
       setIsEditingExternalSource(true);
     } else if (editingComposer.wikipediaLink) {
       detectedSource = 'wikipedia';
-      detectedUrl = editingComposer.wikipediaLink;
       setIsEditingExternalSource(true);
     }
 

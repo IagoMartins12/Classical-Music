@@ -6,7 +6,6 @@ import {
   FiUsers,
   FiSearch,
   FiFilter,
-  FiUser,
   FiEye,
   FiEdit3,
   FiActivity,
@@ -14,12 +13,9 @@ import {
   FiFileText,
   FiClock,
   FiMail,
-  FiPhone,
-  FiMapPin,
   FiRefreshCw,
   FiDownload,
   FiMoreHorizontal,
-  FiChevronDown,
   FiX,
   FiShield,
 } from 'react-icons/fi';
@@ -28,7 +24,6 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
-  LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import { useAdminUsers, AdminUser } from '@/app/hooks/admin/useAdminUsers';
@@ -472,7 +467,7 @@ export default function UsersList() {
           </AnimatedCard>
         ) : (
           <div className="space-y-4">
-            {users.map((user, index) => (
+            {users.map((user) => (
               <AnimatedCard
                 key={user.id}
                 className="classical-card hover:shadow-theme-glow transition-all duration-300"
@@ -674,7 +669,7 @@ export default function UsersList() {
           user={editingUser}
           isOpen={!!editingUser}
           onClose={() => setEditingUser(null)}
-          onSave={(updatedUser) => {
+          onSave={() => {
             // TODO: Atualizar usuário na lista local
             setEditingUser(null);
             refreshData();

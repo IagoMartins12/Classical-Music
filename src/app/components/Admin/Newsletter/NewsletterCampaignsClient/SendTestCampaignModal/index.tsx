@@ -14,7 +14,6 @@ import {
 import Button from '@/app/components/Common/Button';
 import Input from '@/app/components/Common/Inputs';
 import Modal from '@/app/components/Modal';
-import { LoadingSpinner } from '@/app/components/animation/AnimatedComponents';
 import { useNewsletterAdmin } from '@/app/hooks/admin/useNewsletterAdmin';
 import LoadingAdminState from '../../../Common/LoadingState';
 

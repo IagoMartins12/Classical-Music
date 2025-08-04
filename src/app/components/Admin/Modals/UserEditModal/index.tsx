@@ -2,11 +2,9 @@
 
 import { useState } from 'react';
 import {
-  FiX,
   FiSave,
   FiUser,
   FiAward,
-  FiUpload,
   FiShield,
   FiSettings,
   FiAlertTriangle,

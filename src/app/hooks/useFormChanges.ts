@@ -65,7 +65,7 @@ export const useSmartFormChanges = (
 
         const originalValue = originalData[key];
 
-        if (value === originalValue) false;
+        if (value === originalValue) return false;
 
         if (Array.isArray(value) && Array.isArray(originalValue)) {
           return JSON.stringify(value) !== JSON.stringify(originalValue);

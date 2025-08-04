@@ -26,7 +26,6 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
-  LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 
 import toast from 'react-hot-toast';

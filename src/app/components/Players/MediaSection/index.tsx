@@ -646,9 +646,9 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   <p className="text-amber-400 text-sm mt-1">
                     Para adicionar mídias manualmente, é necessário primeiro
                     realizar uma busca automática. Clique no botão{' '}
-                    <strong>"Carregar Mídia"</strong> acima para buscar conteúdo
-                    disponível e depois você poderá editar ou adicionar suas
-                    próprias mídias.
+                    <strong>&quot;Carregar Mídia&quot;</strong> acima para
+                    buscar conteúdo disponível e depois você poderá editar ou
+                    adicionar suas próprias mídias.
                   </p>
                 </div>
               </div>

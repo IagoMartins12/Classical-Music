@@ -6,12 +6,10 @@ import {
   FiMusic,
   FiUsers,
   FiStar,
-  FiTrendingUp,
   FiRefreshCw,
   FiCheck,
   FiPlus,
   FiInfo,
-  FiTarget,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 

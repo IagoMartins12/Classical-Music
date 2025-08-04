@@ -76,7 +76,6 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
 }) => {
   const [isPlayerVisible, setIsPlayerVisible] = useState(false);
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
-  const [loadingEmbed, setLoadingEmbed] = useState(false);
 
   // Estados para modo de edição
   const [showEditMode, setShowEditMode] = useState(false);
@@ -799,13 +798,15 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   ]);
 
   // Loading state
-  if (loadingEmbed) {
+  if (!videoInfo?.embedUrl) {
     return (
       <AnimatedCard hover="lift" className="classical-card">
         <div className="p-6 text-center">
           <div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
           <p className="text-theme-secondary">
-            {loadingEmbed ? 'Carregando embed...' : 'Carregando video aula...'}
+            {!videoInfo?.embedUrl
+              ? 'Carregando embed...'
+              : 'Carregando video aula...'}
           </p>
         </div>
       </AnimatedCard>
@@ -1334,7 +1335,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     </div>
                   )}
 
-                  {loadingEmbed && (
+                  {!videoInfo.embedUrl && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                       <div className="text-center text-white">
                         <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-2"></div>

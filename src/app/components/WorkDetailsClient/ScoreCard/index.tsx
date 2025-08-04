@@ -3,7 +3,6 @@ import { FiClock, FiDownload, FiFileText, FiUser } from 'react-icons/fi';
 import { useState } from 'react';
 import Image from 'next/image';
 import FavoriteScoreButton from '../../FavoriteScoreButton';
-import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
 import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 import { WorkScore } from '@prisma/client';
 // 🆕 Importar apenas o componente de badge, não o hook

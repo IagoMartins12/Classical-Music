@@ -55,15 +55,13 @@ interface Props {
   epochs: EpochComposers[];
   composersTimeline: ComposerTimeline[];
   // epochsHistoricalData: EpochData[];
-  hasError?: boolean;
 }
 
 export function MusicHistoryPageClient({
   epochs,
   composersTimeline,
-  // epochsHistoricalData,
-  hasError = false,
-}: Props) {
+}: // epochsHistoricalData,
+Props) {
   const [activeTab, setActiveTab] = useState<'history' | 'timeline'>('history');
 
   // Ordena as épocas cronologicamente

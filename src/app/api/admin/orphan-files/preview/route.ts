@@ -278,7 +278,7 @@ export async function HEAD(request: NextRequest) {
     }
 
     return new NextResponse(null, { status: 200, headers });
-  } catch (error) {
+  } catch {
     return new NextResponse(null, { status: 500 });
   }
 }
