@@ -797,22 +797,6 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
     work.title,
   ]);
 
-  // Loading state
-  if (!videoInfo?.embedUrl) {
-    return (
-      <AnimatedCard hover="lift" className="classical-card">
-        <div className="p-6 text-center">
-          <div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-theme-secondary">
-            {!videoInfo?.embedUrl
-              ? 'Carregando embed...'
-              : 'Carregando video aula...'}
-          </p>
-        </div>
-      </AnimatedCard>
-    );
-  }
-
   // ✅ ESTADO VAZIO - SEM VIDEO AULA
   if (!hasVideoAula) {
     return (
@@ -1331,15 +1315,6 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                         <span className="text-white text-xs font-bold">
                           EXTERNO
                         </span>
-                      </div>
-                    </div>
-                  )}
-
-                  {!videoInfo.embedUrl && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <div className="text-center text-white">
-                        <div className="animate-spin w-8 h-8 border-2 border-white border-t-transparent rounded-full mx-auto mb-2"></div>
-                        <p className="text-sm">Carregando embed...</p>
                       </div>
                     </div>
                   )}

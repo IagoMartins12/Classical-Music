@@ -108,7 +108,6 @@ export async function POST(request: NextRequest) {
         id: true,
         name: true,
         fullName: true,
-        otherName: true,
         alternativeNames: true,
         portraitUrl: true,
         permLinkImslp: true,
@@ -151,7 +150,7 @@ export async function POST(request: NextRequest) {
       else if (
         fullName &&
         (isSimilarName(existingComposer.fullName, fullName) ||
-          isSimilarName(existingComposer.otherName, fullName) ||
+          isSimilarName(existingComposer.alternativeNames, fullName) ||
           existingComposer.alternativeNames
             ?.toLowerCase()
             .includes(fullName.toLowerCase()))

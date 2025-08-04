@@ -124,16 +124,6 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
         </div>
       </div>
 
-      {/* Center section - Badges */}
-      <div className="flex items-center space-x-2 mx-4 flex-shrink-0">
-        {work.isPartOfCollection && (
-          <span className="inline-flex items-center px-2 py-1 bg-accent-blue/10 border border-accent-blue/20 text-accent-blue rounded-md text-xs font-medium">
-            <FiBookOpen className="w-2.5 h-2.5 mr-1" />
-            Coleção
-          </span>
-        )}
-      </div>
-
       {/* Right section - Action indicator */}
       <div className="flex items-center space-x-3 flex-shrink-0">
         {/* Action hint */}

@@ -33,9 +33,7 @@ interface AdminStats {
     topContributors: Array<{
       id: string;
       name: string;
-      uploadsCount: number;
       qualityScore: number;
-      verifiedUploads: number;
     }>;
     topAnnotators: Array<{
       id: string;
@@ -93,7 +91,6 @@ interface AdminStats {
     }>;
   };
   quality: {
-    uploadApprovalRate: number;
     avgUploadQuality: number;
     verifiedContent: {
       composers: number;
@@ -241,12 +238,10 @@ const getCachedTopUsers = unstable_cache(
         lastName: true,
         totalUploads: true,
         uploadScore: true,
-        approvedUploads: true,
       },
       where: {
         totalUploads: { gt: 0 },
       },
-      orderBy: [{ uploadScore: 'desc' }, { approvedUploads: 'desc' }],
       take: 10,
     });
 
@@ -288,7 +283,6 @@ const getCachedTopUsers = unstable_cache(
           `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Usuário',
         uploadsCount: user.totalUploads,
         qualityScore: user.uploadScore,
-        verifiedUploads: user.approvedUploads,
       })),
       topAnnotators: topAnnotators.map((user) => ({
         id: user.id,
@@ -590,8 +584,6 @@ export async function GET(request: NextRequest) {
       section === 'all' || section === 'quality'
         ? await (async () => {
             const [
-              totalUploads,
-              approvedUploads,
               avgQuality,
               verifiedComposers,
               verifiedWorks,
@@ -600,11 +592,9 @@ export async function GET(request: NextRequest) {
               worksWithScores,
               avgScoresPerWork,
             ] = await Promise.all([
-              prisma.uploadHistory.count({ where: { action: 'create' } }),
-              prisma.user.aggregate({ _sum: { approvedUploads: true } }),
               prisma.user.aggregate({ _avg: { uploadScore: true } }),
               prisma.composer.count({ where: { isVerified: true } }),
-              prisma.work.count(), // Ajustar se tiver campo isVerified
+              prisma.work.count({ where: { isVerified: true } }), // Ajustar se tiver campo isVerified
               prisma.workScore.count({ where: { isVerified: true } }),
               prisma.composer.count({ where: { bio: { not: null } } }),
               prisma.work.count({
@@ -631,12 +621,6 @@ export async function GET(request: NextRequest) {
             ]);
 
             return {
-              uploadApprovalRate:
-                totalUploads > 0
-                  ? ((approvedUploads._sum.approvedUploads || 0) /
-                      totalUploads) *
-                    100
-                  : 0,
               avgUploadQuality: avgQuality._avg.uploadScore || 0,
               verifiedContent: {
                 composers: verifiedComposers,

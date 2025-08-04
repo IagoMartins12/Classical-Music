@@ -71,7 +71,6 @@ interface WorkData {
     | 'COMPOSITION'
     | 'COLLECTED_WORKS'
     | 'COLLECTIONS_WITH';
-  isPartOfCollection: boolean;
   parentWorkId: string | null;
   movementNumber: number | null;
   categories: string[];
@@ -1270,39 +1269,7 @@ class WorkScraper {
         workGenres
       );
 
-      // Determinar se é parte de uma coleção
-      workDetails.isPartOfCollection =
-        workDetails.workType === 'INDIVIDUAL' &&
-        (workDetails.opOrCatalog?.includes('No.') ||
-          workDetails.title.includes('No.'));
 
-      // Buscar trabalho pai se for parte de uma coleção
-      if (workDetails.isPartOfCollection) {
-        const baseTitle = workDetails.title
-          .replace(/No\.\s*\d+.*$/i, '')
-          .trim();
-        if (baseTitle !== workDetails.title) {
-          try {
-            const parentWork = await prisma.work.findFirst({
-              where: {
-                title: { contains: baseTitle, mode: 'insensitive' },
-                composerId: composerData.id,
-                workType: 'COMPLETE_WORK',
-              },
-            });
-
-            if (parentWork) {
-              workDetails.parentWorkId = parentWork.id;
-            }
-          } catch (error) {
-            console.log(
-              `⚠️ Erro ao buscar trabalho pai para ${workDetails.title}`
-            );
-          }
-        }
-      } else {
-        workDetails.parentWorkId = null;
-      }
 
       // Tentar identificar instrumento principal
       let primaryInstrument = null;
@@ -1470,7 +1437,6 @@ class WorkScraper {
         imslpTags: workDetails.imslpTags || [],
         difficultyLevel: workDetails.difficultyLevel,
         workType: workDetails.workType,
-        isPartOfCollection: workDetails.isPartOfCollection || false,
         parentWorkId: workDetails.parentWorkId || null,
         movementNumber: workDetails.movementNumber || null,
         categories: workDetails.categories || [],
@@ -1570,8 +1536,6 @@ class WorkScraper {
             compositionYear: workData.compositionYear,
             firstPublishDate: workData.firstPublishDate,
             tone: workData.tone,
-            timeSignature: workData.timeSignature,
-            tempoMarking: workData.tempoMarking,
             mediaDuration: workData.mediaDuration,
             workStyle: workData.workStyle,
             moviment: workData.moviment,
@@ -1583,7 +1547,6 @@ class WorkScraper {
             imslpTags: workData.imslpTags,
             difficultyLevel: workData.difficultyLevel,
             workType: workData.workType,
-            isPartOfCollection: workData.isPartOfCollection,
             parentWorkId: workData.parentWorkId,
             movementNumber: workData.movementNumber,
             categoryNames: workData.categoryNames,

@@ -123,12 +123,6 @@ export async function POST(request: NextRequest) {
         movementNumber: body.movementNumber
           ? parseInt(body.movementNumber)
           : null,
-        // Converter JSON
-        movementsDetailed: body.movementsDetailed
-          ? typeof body.movementsDetailed === 'string'
-            ? JSON.parse(body.movementsDetailed)
-            : body.movementsDetailed
-          : null,
       },
       include: {
         composer: { select: { name: true, fullName: true } },

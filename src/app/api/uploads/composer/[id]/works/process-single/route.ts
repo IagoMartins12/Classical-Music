@@ -187,7 +187,6 @@ export async function POST(
       compositionYear: scrapedData.compositionYear,
       firstPublishDate: scrapedData.firstPublishDate,
       tone: scrapedData.tone,
-      timeSignature: scrapedData.timeSignature,
       tempoMarking: scrapedData.tempoMarking,
       mediaDuration: scrapedData.mediaDuration,
       workStyle: scrapedData.workStyle,
@@ -203,7 +202,6 @@ export async function POST(
 
       // Metadados
       workType: scrapedData.workType || 'INDIVIDUAL',
-      isPartOfCollection: scrapedData.isPartOfCollection || false,
       movementNumber: scrapedData.movementNumber,
       difficultyLevel: scrapedData.difficultyLevel,
 
@@ -345,7 +343,6 @@ async function scrapeIMSLPWorkDirect(url: string, composer: any) {
     compositionYear: workDetails.compositionYear,
     firstPublishDate: workDetails.firstPublishDate,
     tone: translateMusicKey(workDetails.tone),
-    timeSignature: workDetails.timeSignature,
     tempoMarking: workDetails.tempoMarking,
     mediaDuration: workDetails.mediaDuration,
     workStyle: workDetails.workStyle,
@@ -358,9 +355,7 @@ async function scrapeIMSLPWorkDirect(url: string, composer: any) {
     imslpTags,
     difficultyLevel,
     workType,
-    isPartOfCollection:
-      workType === 'INDIVIDUAL' &&
-      (workDetails.opOrCatalog?.includes('No.') || title.includes('No.')),
+
     movementNumber: extractMovementNumber(title, workDetails.opOrCatalog),
     epochName,
     primaryInstrument,
@@ -457,9 +452,7 @@ function extractWorkDetails($: cheerio.CheerioAPI) {
       case header.includes('dedication'):
         details.dedicateTo = value;
         break;
-      case header.includes('time signature') || header.includes('meter'):
-        details.timeSignature = value;
-        break;
+
       case header.includes('tempo'):
         details.tempoMarking = value;
         break;

@@ -25,7 +25,6 @@ const MODELS_ORDER = [
   // Obras (dependem de composer, epoch, instrument)
   'work',
 
-
   // Partituras e processamento (dependem de work)
   'workScore',
 
@@ -37,8 +36,6 @@ const MODELS_ORDER = [
   'studySession',
   'wantToLearn',
   'learned',
-  'userSelectedScore',
-  'learningGoal',
   'favoriteWork',
   'favoriteComposer',
   'favoriteScore',
@@ -59,7 +56,6 @@ const MODELS_ORDER = [
 
   // Sistema de newsletter
   'newsletterSubscriber', // 🆕 Inscritos na newsletter
-  'newsletterSettings', // 🆕 Configurações globais
   'testEmailList', // 🆕 Listas de teste de email
   'templateFragment', // 🆕 Fragmentos reutilizáveis
   'newsletterTemplate', // 🆕 Templates de email

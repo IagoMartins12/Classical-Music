@@ -270,7 +270,6 @@ async function processIndividualWork(
       compositionYear: workData.compositionYear,
       firstPublishDate: workData.firstPublishDate,
       tone: workData.tone,
-      timeSignature: workData.timeSignature,
       tempoMarking: workData.tempoMarking,
       mediaDuration: workData.mediaDuration,
       workStyle: workData.workStyle,
@@ -286,9 +285,7 @@ async function processIndividualWork(
 
       // Metadados
       workType: workData.workType || 'INDIVIDUAL',
-      isPartOfCollection: workData.isPartOfCollection || false,
       movementNumber: workData.movementNumber,
-      movementsDetailed: workData.movementsDetailed,
       difficultyLevel: workData.difficultyLevel,
 
       // Controle

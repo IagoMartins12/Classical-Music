@@ -191,7 +191,6 @@ const getComposersList = async (filters: ComposerFilters) => {
     whereClause.OR = [
       { name: { contains: search, mode: 'insensitive' } },
       { fullName: { contains: search, mode: 'insensitive' } },
-      { otherName: { contains: search, mode: 'insensitive' } },
       { nationality: { contains: search, mode: 'insensitive' } },
     ];
   }

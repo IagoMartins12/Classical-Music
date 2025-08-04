@@ -361,11 +361,7 @@ export async function POST(request: NextRequest) {
       downloadCount: body.downloadCount ? parseInt(body.downloadCount) : null,
       isCustom: body.isCustom !== false, // Default true para uploads customizados
       uploadedBy: userId,
-      customData: body.customData
-        ? typeof body.customData === 'string'
-          ? JSON.parse(body.customData)
-          : body.customData
-        : null,
+
       processingStatus: ProcessingStatus.COMPLETED,
       isActive: true,
       isVerified: false,

@@ -109,12 +109,7 @@ export async function PUT(
       dedicationComposerLink: currentWork.dedicationComposerLink,
       instrumentation: currentWork.instrumentation,
       workType: currentWork.workType,
-      isPartOfCollection: currentWork.isPartOfCollection,
-      parentWorkId: currentWork.parentWorkId,
       movementNumber: currentWork.movementNumber,
-      timeSignature: currentWork.timeSignature,
-      tempoMarking: currentWork.tempoMarking,
-      movementsDetailed: currentWork.movementsDetailed,
       imslpTags: currentWork.imslpTags,
       difficultyLevel: currentWork.difficultyLevel,
       // 🆕 Dados de mídia antigos
@@ -215,11 +210,6 @@ export async function PUT(
           ? parseInt(body.movementNumber)
           : null,
         // Converter JSON
-        movementsDetailed: body.movementsDetailed
-          ? typeof body.movementsDetailed === 'string'
-            ? JSON.parse(body.movementsDetailed)
-            : body.movementsDetailed
-          : null,
       },
       include: {
         composer: { select: { name: true, fullName: true } },
@@ -269,12 +259,7 @@ export async function PUT(
         dedicationComposerLink: updatedWork.dedicationComposerLink,
         instrumentation: updatedWork.instrumentation,
         workType: updatedWork.workType,
-        isPartOfCollection: updatedWork.isPartOfCollection,
-        parentWorkId: updatedWork.parentWorkId,
         movementNumber: updatedWork.movementNumber,
-        timeSignature: updatedWork.timeSignature,
-        tempoMarking: updatedWork.tempoMarking,
-        movementsDetailed: updatedWork.movementsDetailed,
         imslpTags: updatedWork.imslpTags,
         difficultyLevel: updatedWork.difficultyLevel,
         // 🆕 Dados de mídia novos

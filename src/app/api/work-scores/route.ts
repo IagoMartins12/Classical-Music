@@ -56,11 +56,7 @@ export async function GET(request: NextRequest) {
           source: source as any,
           isActive: true,
         },
-        orderBy: [
-          { priority: 'desc' },
-          { accessCount: 'desc' },
-          { createdAt: 'desc' },
-        ],
+        orderBy: [{ accessCount: 'desc' }, { createdAt: 'desc' }],
       });
 
       if (workScore) {
@@ -105,11 +101,7 @@ export async function GET(request: NextRequest) {
       // ✅ PRIMEIRO: Buscar TODOS os WorkScores para classificar por tipo
       const allWorkScores = await prisma.workScore.findMany({
         where: baseWhere,
-        orderBy: [
-          { priority: 'desc' },
-          { accessCount: 'desc' },
-          { createdAt: 'desc' },
-        ],
+        orderBy: [{ accessCount: 'desc' }, { createdAt: 'desc' }],
       });
 
       console.log(
@@ -227,11 +219,7 @@ export async function GET(request: NextRequest) {
     const [workScores, totalCount] = await Promise.all([
       prisma.workScore.findMany({
         where: whereClause,
-        orderBy: [
-          { priority: 'desc' },
-          { accessCount: 'desc' },
-          { createdAt: 'desc' },
-        ],
+        orderBy: [{ accessCount: 'desc' }, { createdAt: 'desc' }],
         take: limit,
         skip: offset,
       }),
@@ -375,14 +363,11 @@ export async function POST(request: NextRequest) {
         notes: notes,
         // Campos de controle
         isActive: true,
-        priority: 0,
         accessCount: 1,
         lastAccessed: new Date(),
         processingStatus: 'COMPLETED',
         cacheVersion: '1.0',
         // Campos de qualidade
-        dataQuality: 'high',
-        verificationStatus: 'pending',
       },
     });
 

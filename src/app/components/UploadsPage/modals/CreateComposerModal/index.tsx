@@ -46,7 +46,6 @@ interface DuplicateCheckState {
     id: string;
     name: string;
     fullName: string;
-    otherName?: string;
     alternativeNames?: string;
     portraitUrl?: string;
     imslpId?: string;
@@ -232,17 +231,13 @@ const CreateComposerModal = ({
   const [formData, setFormData] = useState({
     name: '',
     fullName: '',
-    otherName: '',
     alternativeNames: '',
-    pseudonyms: '',
     birthDate: '',
     deathDate: '',
     portraitUrl: '',
     epochId: '',
     epochName: '',
     bio: '',
-    diverseInfo: '',
-    externalLinks: '',
     imslpId: '',
     wikipediaLink: '',
     nationality: '',
@@ -275,17 +270,13 @@ const CreateComposerModal = ({
     return {
       name: editingComposer.name || '',
       fullName: editingComposer.fullName || '',
-      otherName: editingComposer.otherName || '',
       alternativeNames: editingComposer.alternativeNames || '',
-      pseudonyms: editingComposer.pseudonyms || '',
       birthDate: formatDateForInput(editingComposer.birthDate),
       deathDate: formatDateForInput(editingComposer.deathDate),
       portraitUrl: editingComposer.portraitUrl || '',
       epochId: editingComposer.epochId || '',
       epochName: editingComposer.epochName || '',
       bio: editingComposer.bio || '',
-      diverseInfo: editingComposer.diverseInfo || '',
-      externalLinks: editingComposer.externalLinks || '',
       imslpId: editingComposer.imslpId || '',
       wikipediaLink: editingComposer.wikipediaLink || '',
       nationality: editingComposer.nationality || '',
@@ -330,9 +321,7 @@ const CreateComposerModal = ({
       setFormData({
         name: editingComposer.name || '',
         fullName: editingComposer.fullName || '',
-        otherName: editingComposer.otherName || '',
         alternativeNames: editingComposer.alternativeNames || '',
-        pseudonyms: editingComposer.pseudonyms || '',
         birthDate: formatDateForInput(editingComposer.birthDate),
         deathDate: formatDateForInput(editingComposer.deathDate),
         portraitUrl: editingComposer.portraitUrl || '',
@@ -340,8 +329,6 @@ const CreateComposerModal = ({
         epochName: editingComposer.epochName || '',
 
         bio: editingComposer.bio || '',
-        diverseInfo: editingComposer.diverseInfo || '',
-        externalLinks: editingComposer.externalLinks || '',
         imslpId: editingComposer.imslpId || '',
         wikipediaLink: editingComposer.wikipediaLink || '',
         nationality: editingComposer.nationality || '',
@@ -690,16 +677,12 @@ const CreateComposerModal = ({
       ...prev,
       name: cleanName(data.name || prev.name),
       fullName: cleanName(data.fullName || prev.fullName),
-      otherName: data.otherName || prev.otherName,
       alternativeNames: data.alternativeNames || prev.alternativeNames,
-      pseudonyms: data.pseudonyms || prev.pseudonyms,
       // As datas já vêm em formato YYYY-MM-DD do scraper melhorado
       birthDate: data.birthDate || prev.birthDate,
       deathDate: data.deathDate || prev.deathDate,
       portraitUrl: data.portraitUrl || prev.portraitUrl,
       bio: data.bio || prev.bio,
-      diverseInfo: data.diverseInfo || prev.diverseInfo,
-      externalLinks: data.externalLinks || prev.externalLinks,
       imslpId: data.imslpId || prev.imslpId,
       wikipediaLink: data.wikipediaLink || prev.wikipediaLink,
       nationality: data.nationality || prev.nationality,
@@ -1017,14 +1000,13 @@ const CreateComposerModal = ({
                     error={errors.fullName}
                     placeholder="Wolfgang Amadeus Mozart"
                   />
-
                   <Input
-                    label="Nome Alternativo"
-                    value={formData.otherName}
+                    label="Nomes Alternativos"
+                    value={formData.alternativeNames}
                     onChange={(e) =>
-                      handleInputChange('otherName', e.target.value)
+                      handleInputChange('alternativeNames', e.target.value)
                     }
-                    placeholder="Outro nome conhecido"
+                    placeholder="Separados por vírgula"
                   />
 
                   {/* COMPONENTE DE NACIONALIDADE CORRIGIDO */}
@@ -1039,24 +1021,6 @@ const CreateComposerModal = ({
                       placeholder="Selecione a nacionalidade..."
                     />
                   </div>
-
-                  <Input
-                    label="Nomes Alternativos"
-                    value={formData.alternativeNames}
-                    onChange={(e) =>
-                      handleInputChange('alternativeNames', e.target.value)
-                    }
-                    placeholder="Separados por vírgula"
-                  />
-
-                  <Input
-                    label="Pseudônimos"
-                    value={formData.pseudonyms}
-                    onChange={(e) =>
-                      handleInputChange('pseudonyms', e.target.value)
-                    }
-                    placeholder="Separados por vírgula"
-                  />
                 </div>
               </AnimatedCard>
 
@@ -1273,17 +1237,6 @@ const CreateComposerModal = ({
                     placeholder="https://en.wikipedia.org/wiki/..."
                     leftIcon={<FiExternalLink />}
                   />
-
-                  <div className="md:col-span-2">
-                    <Input
-                      label="Links Externos"
-                      value={formData.externalLinks}
-                      onChange={(e) =>
-                        handleInputChange('externalLinks', e.target.value)
-                      }
-                      placeholder="Links separados por vírgula"
-                    />
-                  </div>
                 </div>
               </AnimatedCard>
 
@@ -1305,21 +1258,6 @@ const CreateComposerModal = ({
                       rows={7}
                       className="input-classical-2 w-full resize-none"
                       placeholder="Breve biografia do compositor..."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Informações Detalhadas
-                    </label>
-                    <textarea
-                      value={formData.diverseInfo}
-                      onChange={(e) =>
-                        handleInputChange('diverseInfo', e.target.value)
-                      }
-                      rows={3}
-                      className="input-classical-2 w-full resize-none"
-                      placeholder="Informações detalhadas e diversas..."
                     />
                   </div>
                 </div>

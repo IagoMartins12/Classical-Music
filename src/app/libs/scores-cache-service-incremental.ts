@@ -95,12 +95,7 @@ export class ScoresCacheServiceIncremental {
               }
             : {}),
         },
-        orderBy: [
-          { type: 'asc' },
-          { groupIndex: 'asc' },
-          { priority: 'desc' },
-          { createdAt: 'asc' },
-        ],
+        orderBy: [{ type: 'asc' }, { groupIndex: 'asc' }, { createdAt: 'asc' }],
       });
 
       if (!cachedScores || cachedScores.length === 0) {

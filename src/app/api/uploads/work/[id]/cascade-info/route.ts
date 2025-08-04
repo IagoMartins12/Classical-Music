@@ -31,19 +31,6 @@ export async function GET(
             source: true,
           },
         },
-        childWorks: {
-          select: {
-            id: true,
-            title: true,
-            cachedScores: {
-              select: {
-                id: true,
-                title: true,
-                source: true,
-              },
-            },
-          },
-        },
       },
     });
 
@@ -63,13 +50,7 @@ export async function GET(
     }
 
     // Calcular totais
-    const directScores = work.cachedScores.length;
-    const childWorksScores = work.childWorks.reduce(
-      (sum, childWork) => sum + childWork.cachedScores.length,
-      0
-    );
-    const totalScores = directScores + childWorksScores;
-    const totalChildWorks = work.childWorks.length;
+    const totalScores = work.cachedScores.length;
 
     // Mapear todas as partituras (diretas + das obras filhas)
     const allScores = [
@@ -78,29 +59,11 @@ export async function GET(
         title: score.title,
         source: 'main' as const,
       })),
-      ...work.childWorks.flatMap((childWork) =>
-        childWork.cachedScores.map((score) => ({
-          id: score.id,
-          title: `${score.title} (${childWork.title})`,
-          source: 'child' as const,
-        }))
-      ),
     ];
-
-    // Mapear obras filhas com contagem de partituras
-    const childWorksWithScores = work.childWorks.map((childWork) => ({
-      id: childWork.id,
-      title: childWork.title,
-      scoresCount: childWork.cachedScores.length,
-    }));
 
     return NextResponse.json({
       scores: allScores,
-      childWorks: childWorksWithScores,
       totalScores,
-      totalChildWorks,
-      directScores,
-      childWorksScores,
     });
   } catch (error) {
     console.error('Erro ao buscar informações de cascata da obra:', error);

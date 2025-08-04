@@ -201,7 +201,6 @@ const getScoresList = async (filters: ScoreFilters) => {
       thumbnailUrl: score.thumbnailUrl,
       isActive: score.isActive,
       accessCount: score.accessCount,
-      qualityScore: score.qualityScore,
       createdAt: score.createdAt,
       uploader: score.createdByUser
         ? `${score.createdByUser.firstName || ''} ${

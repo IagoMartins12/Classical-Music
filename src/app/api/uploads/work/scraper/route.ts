@@ -30,7 +30,6 @@ interface ScrapedWorkData {
   compositionYear: string | null;
   firstPublishDate: string | null;
   tone: string | null;
-  timeSignature: string | null;
   tempoMarking: string | null;
   mediaDuration: string | null;
   workStyle: string | null;
@@ -51,7 +50,6 @@ interface ScrapedWorkData {
     | 'COMPOSITION'
     | 'COLLECTED_WORKS'
     | 'COLLECTIONS_WITH';
-  isPartOfCollection: boolean;
   movementNumber: number | null;
   epochName: string | null;
   primaryInstrument: string | null;
@@ -561,7 +559,6 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
       compositionYear: workDetails.compositionYear,
       firstPublishDate: workDetails.firstPublishDate,
       tone: translateMusicKey(workDetails.tone),
-      timeSignature: workDetails.timeSignature,
       tempoMarking: workDetails.tempoMarking,
       mediaDuration: workDetails.mediaDuration,
       workStyle: workDetails.workStyle,
@@ -574,9 +571,7 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
       imslpTags,
       difficultyLevel,
       workType,
-      isPartOfCollection:
-        workType === 'INDIVIDUAL' &&
-        (workDetails.opOrCatalog?.includes('No.') || title.includes('No.')),
+
       movementNumber: extractMovementNumber(title, workDetails.opOrCatalog),
       epochName,
       primaryInstrument,
@@ -697,9 +692,7 @@ function extractWorkDetails($: cheerio.CheerioAPI) {
       case header.includes('dedication'):
         details.dedicateTo = value;
         break;
-      case header.includes('time signature') || header.includes('meter'):
-        details.timeSignature = value;
-        break;
+
       case header.includes('tempo'):
         details.tempoMarking = value;
         break;

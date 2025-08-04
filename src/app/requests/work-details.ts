@@ -20,11 +20,7 @@ export interface WorkDetails {
   dedicationComposerLink?: string;
   instrumentation?: string;
   workType: string;
-  isPartOfCollection: boolean;
-  parentWorkId?: string;
   movementNumber?: number;
-  tempoMarking?: string;
-  movementsDetailed?: any;
   difficultyLevel?: string | null;
   createdAt: Date;
   isVerified: boolean;
@@ -75,7 +71,6 @@ export interface WorkListItem {
   tone?: string;
   mediaDuration?: string;
   workType: string;
-  isPartOfCollection: boolean;
   isVerified: boolean;
   epoch?: {
     id?: string;
@@ -211,7 +206,6 @@ const getCachedWorksDefault = unstable_cache(
           tone: true,
           mediaDuration: true,
           workType: true,
-          isPartOfCollection: true,
           difficultyLevel: true,
           isVerified: true,
           composerId: true,
@@ -247,7 +241,6 @@ const getCachedWorksDefault = unstable_cache(
         tone: work.tone || undefined,
         mediaDuration: work.mediaDuration || undefined,
         workType: work.workType,
-        isPartOfCollection: work.isPartOfCollection,
         isVerified: work.isVerified,
         composer: composerMap.get(work.composerId) || {
           id: '',
@@ -382,7 +375,6 @@ const getCachedWorksSimpleFilter = unstable_cache(
               tone: 1,
               mediaDuration: 1,
               workType: 1,
-              isPartOfCollection: 1,
               isVerified: 1,
               composer: {
                 id: '$composer._id',
@@ -428,7 +420,6 @@ const getCachedWorksSimpleFilter = unstable_cache(
         tone: work.tone || undefined,
         mediaDuration: work.mediaDuration || undefined,
         workType: work.workType,
-        isPartOfCollection: work.isPartOfCollection,
         isVerified: work.isVerified,
         composer: work.composer,
         instrument: work.instrument,
@@ -543,7 +534,6 @@ const getCachedWorksWithSearch = unstable_cache(
               tone: 1,
               mediaDuration: 1,
               workType: 1,
-              isPartOfCollection: 1,
               isVerified: 1,
               composer: {
                 id: '$composer._id',
@@ -623,7 +613,6 @@ const getCachedWorksWithSearch = unstable_cache(
         tone: work.tone || undefined,
         mediaDuration: work.mediaDuration || undefined,
         workType: work.workType,
-        isPartOfCollection: work.isPartOfCollection,
         isVerified: work.isVerified,
         composer: work.composer,
         instrument: work.instrument,
@@ -817,7 +806,6 @@ const fallbackPrismaQuery = async (
         tone: true,
         mediaDuration: true,
         workType: true,
-        isPartOfCollection: true,
         isVerified: true,
         composer: {
           select: {
@@ -856,7 +844,6 @@ const fallbackPrismaQuery = async (
       tone: work.tone || undefined,
       mediaDuration: work.mediaDuration || undefined,
       workType: work.workType,
-      isPartOfCollection: work.isPartOfCollection,
       isVerified: work.isVerified,
       composer: {
         id: work.composer.id,
@@ -1081,11 +1068,7 @@ export const getWorkById = async (
       dedicationComposerLink: work.dedicationComposerLink || undefined,
       instrumentation: work.instrumentation || undefined,
       workType: work.workType,
-      isPartOfCollection: work.isPartOfCollection,
-      parentWorkId: work.parentWorkId || undefined,
       movementNumber: work.movementNumber || undefined,
-      tempoMarking: work.tempoMarking || undefined,
-      movementsDetailed: work.movementsDetailed || undefined,
       difficultyLevel: work.difficultyLevel || undefined,
       createdAt: work.createdAt,
       composer: work.composer,

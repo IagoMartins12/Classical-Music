@@ -404,7 +404,6 @@ const generateEngagementReportData = async (startDate: Date, endDate: Date) => {
     activeUsers,
     mostStudiedWorks,
     annotationsByCategory,
-    practiceGoalsData,
   ] = await Promise.all([
     prisma.studySession.count({
       where: {
@@ -457,23 +456,6 @@ const generateEngagementReportData = async (startDate: Date, endDate: Date) => {
       },
       _count: { id: true },
     }),
-
-    prisma.learningGoal.findMany({
-      where: {
-        createdAt: { gte: startDate, lte: endDate },
-      },
-      select: {
-        title: true,
-        isCompleted: true,
-        targetDate: true,
-        user: {
-          select: {
-            firstName: true,
-            lastName: true,
-          },
-        },
-      },
-    }),
   ]);
 
   const studiedWorks = mostStudiedWorks
@@ -496,20 +478,11 @@ const generateEngagementReportData = async (startDate: Date, endDate: Date) => {
       totalAnnotations,
       avgSessionDuration: Math.round(avgSessionDuration._avg.durationMin || 0),
       activeUsers,
-      completedGoals: practiceGoalsData.filter((g) => g.isCompleted).length,
     },
     mostStudiedWorks: studiedWorks,
     annotationsByCategory: annotationsByCategory.map((item) => ({
       category: item.category,
       count: item._count.id,
-    })),
-    practiceGoals: practiceGoalsData.map((goal) => ({
-      title: goal.title,
-      isCompleted: goal.isCompleted,
-      user:
-        `${goal.user.firstName || ''} ${goal.user.lastName || ''}`.trim() ||
-        'Usuário',
-      targetDate: goal.targetDate?.toISOString(),
     })),
   };
 };

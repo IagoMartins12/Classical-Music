@@ -7,15 +7,11 @@ import { findNationalityByText } from '@/app/data/nationalities';
 interface ScrapedComposerData {
   name: string;
   fullName: string;
-  otherName: string | null;
   alternativeNames: string | null;
-  pseudonyms: string | null;
   birthDate: string | null; // Formato YYYY-MM-DD para input date
   deathDate: string | null; // Formato YYYY-MM-DD para input date
   portraitUrl: string | null;
   bio: string | null;
-  diverseInfo: string | null;
-  externalLinks: string | null;
   imslpId: string | null;
   wikipediaLink: string | null;
   nationality: string | null; // Traduzida para português
@@ -136,15 +132,11 @@ async function scrapeWikipedia(url: string): Promise<ScrapedComposerData> {
     return {
       name,
       fullName,
-      otherName: null,
       alternativeNames: null,
-      pseudonyms: null,
       birthDate: dateInfo.birthDate,
       deathDate: dateInfo.deathDate,
       portraitUrl,
       bio: bio || null,
-      diverseInfo: null,
-      externalLinks: null,
       imslpId: null,
       wikipediaLink: url,
       nationality, // Traduzida para português
@@ -908,20 +900,6 @@ function extractNationalityIMSLP($: cheerio.CheerioAPI): string | null {
       }
     }
 
-    // 3. Buscar em informações diversas
-    const diverseInfo = extractDiverseInfoIMSLP($);
-    if (diverseInfo) {
-      console.log(`📋 Informações diversas: "${diverseInfo}"`);
-
-      const foundNationality = findNationalityByText(diverseInfo);
-      if (foundNationality) {
-        console.log(
-          `✅ Nacionalidade encontrada nas informações diversas: ${foundNationality}`
-        );
-        return foundNationality;
-      }
-    }
-
     // 4. Buscar em links externos
     const externalLinks = extractExternalLinksIMSLP($);
     if (externalLinks) {
@@ -1293,7 +1271,6 @@ async function scrapeIMSLP(url: string): Promise<ScrapedComposerData> {
     const nameInfo = extractNameAndFullNameIMSLP(imslpId, $);
 
     // Extrair nome alternativo (contentSub)
-    const otherName = extractOtherNameIMSLP($);
 
     // Extrair nomes alternativos
     const alternativeNamesInfo = extractAlternativeNamesIMSLP($);
@@ -1305,8 +1282,6 @@ async function scrapeIMSLP(url: string): Promise<ScrapedComposerData> {
     const portraitUrl = extractPortraitUrlIMSLP($);
 
     // Extrair informações detalhadas
-    const diverseInfo = extractDiverseInfoIMSLP($);
-    const externalLinks = extractExternalLinksIMSLP($);
     const nationality = extractNationalityIMSLP($); // Traduzida para português
     const instruments = extractInstrumentsIMSLP($);
     const imslpCategories = extractCategoriesIMSLP($);
@@ -1324,15 +1299,11 @@ async function scrapeIMSLP(url: string): Promise<ScrapedComposerData> {
     return {
       name: nameInfo.name,
       fullName: nameInfo.fullName,
-      otherName,
       alternativeNames: alternativeNamesInfo.alternativeNames,
-      pseudonyms: alternativeNamesInfo.pseudonyms,
       birthDate: dateInfo.birthDate, // Formato ISO com mês e dia corretos
       deathDate: dateInfo.deathDate, // Formato ISO com mês e dia corretos
       portraitUrl,
       bio: null,
-      diverseInfo,
-      externalLinks,
       imslpId,
       wikipediaLink,
       nationality, // Traduzida para português
@@ -1351,36 +1322,16 @@ async function scrapeIMSLP(url: string): Promise<ScrapedComposerData> {
   }
 }
 
-// Função para extrair nome alternativo do IMSLP (contentSub)
-function extractOtherNameIMSLP($: cheerio.CheerioAPI): string | null {
-  try {
-    const contentSubDiv = $('#contentSub');
-    if (contentSubDiv.length === 0) return null;
-
-    const otherName = contentSubDiv.text().trim();
-    if (otherName && otherName.length > 0) {
-      console.log(`👤 Nome alternativo encontrado: "${otherName}"`);
-      return otherName;
-    }
-    return null;
-  } catch (error) {
-    console.error('❌ Erro ao extrair nome alternativo:', error);
-    return null;
-  }
-}
-
 // Função para extrair nomes alternativos do IMSLP
 function extractAlternativeNamesIMSLP($: cheerio.CheerioAPI): {
   alternativeNames: string | null;
-  pseudonyms: string | null;
 } {
   try {
     const mainLinksDiv = $('.cp_mainlinks');
     let alternativeNames: string | null = null;
-    let pseudonyms: string | null = null;
 
     if (mainLinksDiv.length === 0) {
-      return { alternativeNames, pseudonyms };
+      return { alternativeNames };
     }
 
     mainLinksDiv.find('span[style="font-weight:normal"]').each((_, element) => {
@@ -1391,8 +1342,6 @@ function extractAlternativeNamesIMSLP($: cheerio.CheerioAPI): {
         'Alternative Names/Transliterations:',
       ];
 
-      const pseudonymsLabels = ['Pseudônimos:', 'Pseudonyms:'];
-
       if (alternativeNamesLabels.some((label) => spanText.includes(label))) {
         alternativeNames = spanText;
         alternativeNamesLabels.forEach((label) => {
@@ -1401,21 +1350,12 @@ function extractAlternativeNamesIMSLP($: cheerio.CheerioAPI): {
         alternativeNames = alternativeNames.trim();
         console.log(`📝 Nomes alternativos encontrados: "${alternativeNames}"`);
       }
-
-      if (pseudonymsLabels.some((label) => spanText.includes(label))) {
-        pseudonyms = spanText;
-        pseudonymsLabels.forEach((label) => {
-          pseudonyms = (pseudonyms || '').replace(label, '');
-        });
-        pseudonyms = pseudonyms.trim();
-        console.log(`🎭 Pseudônimos encontrados: "${pseudonyms}"`);
-      }
     });
 
-    return { alternativeNames, pseudonyms };
+    return { alternativeNames };
   } catch (error) {
     console.error('❌ Erro ao extrair nomes alternativos:', error);
-    return { alternativeNames: null, pseudonyms: null };
+    return { alternativeNames: null };
   }
 }
 
@@ -1429,31 +1369,6 @@ function extractPortraitUrlIMSLP($: cheerio.CheerioAPI): string | null {
     }
   }
   return null;
-}
-
-// Função para extrair informações diversas do IMSLP
-function extractDiverseInfoIMSLP($: cheerio.CheerioAPI): string | null {
-  try {
-    const diverseHeader = $('h2')
-      .find('span[id*="Informa"], span[id*="diversa"]')
-      .first();
-
-    if (diverseHeader.length === 0) return null;
-
-    const diverseSection = diverseHeader.closest('h2').next('.cp_links');
-    if (diverseSection.length === 0) return null;
-
-    const diverseText = diverseSection
-      .find('li')
-      .map((_, el) => $(el).text().trim())
-      .get()
-      .join(' ');
-
-    return diverseText && diverseText.length > 10 ? diverseText : null;
-  } catch (error) {
-    console.error('❌ Erro ao extrair informação diversa:', error);
-    return null;
-  }
 }
 
 // Função para extrair links externos do IMSLP

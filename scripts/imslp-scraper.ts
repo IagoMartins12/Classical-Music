@@ -1538,17 +1538,11 @@ class IMSLPScraper {
           imslpId: composerData.imslpId,
 
           // 🆕 NOMES ALTERNATIVOS
-          otherName: composerData.otherName,
           alternativeNames: composerData.alternativeNames,
-          pseudonyms: composerData.pseudonyms,
 
           // 🆕 DATAS MELHORADAS
           birthDate: composerData.birthDate,
           deathDate: composerData.deathDate,
-
-          // 🆕 INFORMAÇÕES DETALHADAS
-          diverseInfo: composerData.diverseInfo,
-          externalLinks: composerData.externalLinks,
 
           // 🆕 DADOS GEOGRÁFICOS E TÉCNICOS (mantidos)
           nationality: composerData.nationality,
@@ -1558,8 +1552,6 @@ class IMSLPScraper {
           imslpCategories: composerData.imslpCategories,
 
           // 🆕 METADADOS DA PÁGINA
-          lastModifiedImslp: composerData.lastModifiedImslp,
-          pageStatus: composerData.pageStatus,
           pageQuality: composerData.pageQuality,
           dataCompleteness: composerData.dataCompleteness,
           hasValidImage: composerData.hasValidImage,
@@ -1676,130 +1668,6 @@ class IMSLPScraper {
     }
 
     return { processed: processedCount, added: addedCount };
-  }
-
-  // 🆕 Método para obter estatísticas do banco de dados
-  async getDatabaseStats(): Promise<{
-    totalComposers: number;
-    withValidImage: number;
-    withOtherName: number;
-    withAlternativeNames: number; // 🆕 Adicionado
-    withPseudonyms: number; // 🆕 Adicionado
-    withDiverseInfo: number; // 🆕 Adicionado
-    withExternalLinks: number; // 🆕 Adicionado
-    withImslpCategories: number; // 🆕 Adicionado
-    withNationality: number;
-    withBirthDate: number; // 🔄 Corrigido (era withBirthYear)
-    withWikipedia: number;
-    avgCompleteness: number;
-    topNationalities: Array<{ nationality: string; count: number }>;
-    epochDistribution: Array<{ epochName: string; count: number }>;
-  }> {
-    try {
-      // Estatísticas básicas
-      const totalComposers = await prisma.composer.count();
-      const withValidImage = await prisma.composer.count({
-        where: { hasValidImage: true },
-      });
-      const withOtherName = await prisma.composer.count({
-        where: { otherName: { not: null } },
-      }); // 🆕
-      const withNationality = await prisma.composer.count({
-        where: { nationality: { not: null } },
-      });
-
-      const withAlternativeNames = await prisma.composer.count({
-        where: { alternativeNames: { not: null } },
-      });
-      const withBirthDate = await prisma.composer.count({
-        where: { birthDate: { not: null } },
-      });
-
-      const withDiverseInfo = await prisma.composer.count({
-        where: { diverseInfo: { not: null } },
-      });
-      const withExternalLinks = await prisma.composer.count({
-        where: { externalLinks: { not: null } },
-      });
-      const withImslpCategories = await prisma.composer.count({
-        where: { imslpCategories: { not: null } },
-      });
-
-      const withPseudonyms = await prisma.composer.count({
-        where: { pseudonyms: { not: null } },
-      });
-      const withWikipedia = await prisma.composer.count({
-        where: { wikipediaLink: { not: null } },
-      });
-
-      // Completude média
-      const completenessResult = await prisma.composer.aggregate({
-        _avg: { dataCompleteness: true },
-        where: { dataCompleteness: { not: null } },
-      });
-      const avgCompleteness = completenessResult._avg.dataCompleteness || 0;
-
-      // Top nacionalidades
-      const nationalityGroups = await prisma.composer.groupBy({
-        by: ['nationality'],
-        _count: { nationality: true },
-        where: { nationality: { not: null } },
-        orderBy: { _count: { nationality: 'desc' } },
-      });
-
-      const topNationalities = nationalityGroups.map((group) => ({
-        nationality: group.nationality || 'Desconhecida',
-        count: group._count.nationality,
-      }));
-
-      // Distribuição por época
-      const epochGroups = await prisma.composer.groupBy({
-        by: ['epochName'],
-        _count: { epochName: true },
-        where: { epochName: { not: null } },
-        orderBy: { _count: { epochName: 'desc' } },
-      });
-
-      const epochDistribution = epochGroups.map((group) => ({
-        epochName: group.epochName || 'Desconhecida',
-        count: group._count.epochName,
-      }));
-
-      return {
-        totalComposers,
-        withValidImage,
-        withOtherName, // 🆕
-        withNationality,
-        withWikipedia,
-        avgCompleteness,
-        topNationalities,
-        epochDistribution,
-        withAlternativeNames,
-        withBirthDate,
-        withDiverseInfo,
-        withExternalLinks,
-        withImslpCategories,
-        withPseudonyms,
-      };
-    } catch (error) {
-      console.error('❌ Erro ao calcular estatísticas:', error);
-      return {
-        totalComposers: 0,
-        withValidImage: 0,
-        withAlternativeNames: 0,
-        withBirthDate: 0,
-        withDiverseInfo: 0,
-        withExternalLinks: 0,
-        withImslpCategories: 0,
-        withPseudonyms: 0,
-        withOtherName: 0, // 🆕
-        withNationality: 0,
-        withWikipedia: 0,
-        avgCompleteness: 0,
-        topNationalities: [],
-        epochDistribution: [],
-      };
-    }
   }
 
   // Executar scraper principal
@@ -1983,92 +1851,6 @@ class IMSLPScraper {
         ).toFixed(2);
         console.log(`   - Velocidade média: ${itemsPerSecond} items/s`);
       }
-    }
-
-    // 🆕 Estatísticas do banco de dados
-    try {
-      const dbStats = await this.getDatabaseStats();
-      console.log('\n📈 Estatísticas do Banco de Dados:');
-      console.log(`   - Total de compositores: ${dbStats.totalComposers}`);
-      console.log(
-        `   - Com imagem válida: ${dbStats.withValidImage} (${(
-          (dbStats.withValidImage / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com nome alternativo: ${dbStats.withOtherName} (${(
-          (dbStats.withOtherName / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com nomes alternativos: ${dbStats.withAlternativeNames} (${(
-          (dbStats.withAlternativeNames / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-
-      console.log(
-        `   - Com pseudônimos: ${dbStats.withPseudonyms} (${(
-          (dbStats.withPseudonyms / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com informação diversa: ${dbStats.withDiverseInfo} (${(
-          (dbStats.withDiverseInfo / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com links externos: ${dbStats.withExternalLinks} (${(
-          (dbStats.withExternalLinks / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com categorias IMSLP: ${dbStats.withImslpCategories} (${(
-          (dbStats.withImslpCategories / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Com nacionalidade: ${dbStats.withNationality} (${(
-          (dbStats.withNationality / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-
-      console.log(
-        `   - Com link Wikipedia: ${dbStats.withWikipedia} (${(
-          (dbStats.withWikipedia / dbStats.totalComposers) *
-          100
-        ).toFixed(1)}%)`
-      );
-      console.log(
-        `   - Completude média: ${dbStats.avgCompleteness.toFixed(1)}%`
-      );
-
-      if (dbStats.topNationalities.length > 0) {
-        console.log('\n🌍 Top 5 Nacionalidades:');
-        dbStats.topNationalities.forEach((nat, index) => {
-          console.log(
-            `   ${index + 1}. ${nat.nationality}: ${nat.count} compositores`
-          );
-        });
-      }
-
-      if (dbStats.epochDistribution.length > 0) {
-        console.log('\n🎼 Distribuição por Época:');
-        dbStats.epochDistribution.forEach((epoch, index) => {
-          console.log(
-            `   ${index + 1}. ${epoch.epochName}: ${epoch.count} compositores`
-          );
-        });
-      }
-    } catch (error) {
-      console.error('❌ Erro ao obter estatísticas do banco:', error);
     }
   }
 

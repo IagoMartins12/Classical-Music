@@ -92,7 +92,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             value={finalValue || ''}
             className={`
               input-classical w-full !pr-10 !pl-6 appearance-none cursor-pointer
-              ${error ? 'border-accent-red focus:border-accent-red' : ''}
+              ${error ? '!border-red-500 focus:border-accent-red' : ''}
               ${className}
             `}
             {...props}

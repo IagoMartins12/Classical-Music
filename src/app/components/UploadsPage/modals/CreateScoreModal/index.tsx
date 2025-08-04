@@ -44,9 +44,7 @@ import {
 } from '@/app/utils/pdfUtils';
 import { useToast } from '@/app/hooks/useToast';
 import GroupingSuggestions from '../../GroupingSuggestions';
-import {
-  useSmartFormChanges,
-} from '@/app/hooks/useFormChanges';
+import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 
 interface CreateScoreModalProps {
   isOpen: boolean;
@@ -148,7 +146,6 @@ const CreateScoreModal = ({
     ratingsCount: '',
     downloadCount: '',
     isCustom: true,
-    customData: '',
     // 🔧 CORRIGIDO: Definir tipos corretos para evitar erro TypeScript
     tempThumbnailPath: '', // sempre string, não string | null
     tempPdfPath: '',
@@ -287,9 +284,7 @@ const CreateScoreModal = ({
       ratingsCount: editingScore.ratingsCount?.toString() || '',
       downloadCount: editingScore.downloadCount?.toString() || '',
       isCustom: editingScore.isCustom || true,
-      customData: editingScore.customData
-        ? JSON.stringify(editingScore.customData)
-        : '',
+
       tempThumbnailPath: '',
       tempPdfPath: '',
     };
@@ -352,9 +347,7 @@ const CreateScoreModal = ({
         ratingsCount: editingScore.ratingsCount?.toString() || '',
         downloadCount: editingScore.downloadCount?.toString() || '',
         isCustom: editingScore.isCustom || true,
-        customData: editingScore.customData
-          ? JSON.stringify(editingScore.customData)
-          : '',
+
         tempThumbnailPath: '',
         tempPdfPath: '',
       });
@@ -719,9 +712,7 @@ const CreateScoreModal = ({
         downloadCount: formData.downloadCount
           ? parseInt(formData.downloadCount)
           : null,
-        customData: formData.customData
-          ? JSON.parse(formData.customData)
-          : null,
+
         source: uploadMode === 'file' ? 'UPLOAD' : 'CUSTOM',
         isCustom: true,
         hasTemporaryFiles: !!(
@@ -1450,21 +1441,6 @@ const CreateScoreModal = ({
                       rows={3}
                       className="input-classical-2 w-full resize-none"
                       placeholder="Notas sobre a partitura, origem, qualidade, etc..."
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Dados Customizados (JSON)
-                    </label>
-                    <textarea
-                      value={formData.customData}
-                      onChange={(e) =>
-                        handleInputChange('customData', e.target.value)
-                      }
-                      rows={3}
-                      className="input-classical-2 w-full resize-none font-mono text-sm"
-                      placeholder='{"qualidade": "alta", "fonte": "digitalização própria", "instrumento": "piano"}'
                     />
                   </div>
                 </div>

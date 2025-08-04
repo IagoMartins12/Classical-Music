@@ -115,9 +115,9 @@
         "vmirror.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 856.9241943359375,
-      "lastSeen": "2025-07-31T01:25:26.420Z",
-      "confidence": 0.7000000000000001
+      "averageTime": 601.2310485839844,
+      "lastSeen": "2025-08-04T18:10:28.161Z",
+      "confidence": 0.8000000000000002
     },
     "4/45": {
       "pattern": "4/45",
@@ -209,8 +209,8 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 479.99666368080375,
-      "lastSeen": "2025-08-02T22:25:23.766Z",
+      "averageTime": 463.49916592020094,
+      "lastSeen": "2025-08-04T18:10:29.072Z",
       "confidence": 1
     },
     "f/fe": {
@@ -507,8 +507,8 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 1237.1238382458687,
-      "lastSeen": "2025-08-02T22:25:03.528Z",
+      "averageTime": 1286.7809595614672,
+      "lastSeen": "2025-08-04T18:10:29.302Z",
       "confidence": 1
     },
     "e/ec": {
@@ -623,8 +623,8 @@
         "vmirror.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 1042.7424678216478,
-      "lastSeen": "2025-08-02T18:55:06.517Z",
+      "averageTime": 618.4356169554119,
+      "lastSeen": "2025-08-04T18:10:28.094Z",
       "confidence": 1
     },
     "e/e3": {
@@ -988,8 +988,8 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 474.3761330641006,
-      "lastSeen": "2025-08-02T22:25:18.947Z",
+      "averageTime": 505.3440332660251,
+      "lastSeen": "2025-08-04T18:10:28.158Z",
       "confidence": 1
     },
     "8/81": {
@@ -1031,8 +1031,8 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 534.8825986173955,
-      "lastSeen": "2025-07-31T01:35:27.271Z",
+      "averageTime": 714.9706496543489,
+      "lastSeen": "2025-08-04T18:12:26.376Z",
       "confidence": 1
     },
     "8/82": {
@@ -1103,8 +1103,8 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 470.1281347042073,
-      "lastSeen": "2025-08-02T18:55:21.590Z",
+      "averageTime": 474.0320336760518,
+      "lastSeen": "2025-08-04T18:10:28.096Z",
       "confidence": 1
     },
     "d/d2": {
@@ -1280,8 +1280,8 @@
         "imslp.eu"
       ],
       "successRate": 1,
-      "averageTime": 391.649301469326,
-      "lastSeen": "2025-08-02T22:25:07.357Z",
+      "averageTime": 519.9123253673315,
+      "lastSeen": "2025-08-04T18:10:28.605Z",
       "confidence": 1
     },
     "3/36": {
@@ -1301,8 +1301,8 @@
         "imslp.eu"
       ],
       "successRate": 1,
-      "averageTime": 463.64135685307366,
-      "lastSeen": "2025-08-02T22:25:17.956Z",
+      "averageTime": 646.3525848033171,
+      "lastSeen": "2025-08-04T18:12:27.158Z",
       "confidence": 1
     },
     "3/3d": {
@@ -1798,9 +1798,9 @@
         "ks15.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 484.9522705078125,
-      "lastSeen": "2025-08-02T22:25:24.725Z",
-      "confidence": 0.65
+      "averageTime": 451.7380676269531,
+      "lastSeen": "2025-08-04T18:10:29.051Z",
+      "confidence": 0.7500000000000001
     },
     "4/47": {
       "pattern": "4/47",
@@ -2029,10 +2029,10 @@
       "subdomains": [
         "ks15.imslp.org"
       ],
-      "successRate": 0.6,
-      "averageTime": 517.796875,
-      "lastSeen": "2025-08-02T18:55:02.554Z",
-      "confidence": 0.3
+      "successRate": 0.7999999999999999,
+      "averageTime": 489.94921875,
+      "lastSeen": "2025-08-04T18:10:28.106Z",
+      "confidence": 0.39999999999999997
     },
     "e/e8": {
       "pattern": "e/e8",
@@ -2688,15 +2688,15 @@
     }
   },
   "globalStats": {
-    "totalRequests": 9312,
-    "successfulRequests": 9312,
-    "averageResponseTime": 2441.061037397536,
+    "totalRequests": 9336,
+    "successfulRequests": 9336,
+    "averageResponseTime": 728.1403397358082,
     "mostReliableSubdomain": "",
-    "lastUpdated": "2025-08-03T23:52:20.086Z"
+    "lastUpdated": "2025-08-04T18:12:27.158Z"
   },
   "metadata": {
-    "savedAt": "2025-08-03T23:52:25.089Z",
-    "sessionId": "session_1754264927896_39ee5f3",
+    "savedAt": "2025-08-04T18:12:32.230Z",
+    "sessionId": "session_1754331017908_74xho3g",
     "version": "2.0"
   }
 }

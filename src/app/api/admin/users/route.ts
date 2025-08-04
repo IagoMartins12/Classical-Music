@@ -48,7 +48,6 @@ interface UserAnalytics {
     email: string;
     totalUploads: number;
     uploadScore: number;
-    verifiedUploads: number;
     totalStudyTime: number;
     annotationsCount: number;
   }>;
@@ -183,7 +182,6 @@ const getCachedUserAnalytics = unstable_cache(
         email: true,
         totalUploads: true,
         uploadScore: true,
-        approvedUploads: true,
         totalStudyTime: true,
         totalAnnotationsCount: true,
         role: true,
@@ -278,7 +276,6 @@ const getCachedUserAnalytics = unstable_cache(
         email: user.email || '',
         totalUploads: user.totalUploads,
         uploadScore: user.uploadScore,
-        verifiedUploads: user.approvedUploads,
         totalStudyTime: user.totalStudyTime,
         annotationsCount: user.totalAnnotationsCount,
       })),
@@ -616,8 +613,6 @@ export async function PATCH(request: NextRequest) {
         userType: true,
         experienceLevel: true,
         role: true,
-        uploadLimitDaily: true,
-        uploadLimitMonthly: true,
       },
     });
 

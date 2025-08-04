@@ -148,13 +148,6 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
                 {work.epoch.name}
               </span>
             )}
-
-            {work.isPartOfCollection && (
-              <span className="inline-flex items-center px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-xs font-medium">
-                <FiBookOpen className="w-2.5 h-2.5 mr-1" />
-                Coleção
-              </span>
-            )}
           </div>
 
           {/* Action Section */}

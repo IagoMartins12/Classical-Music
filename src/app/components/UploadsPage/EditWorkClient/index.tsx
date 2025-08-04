@@ -338,23 +338,6 @@ const EditWorkClient = ({
                       </div>
                     )}
 
-                    {/* Time Signature */}
-                    {work.timeSignature && (
-                      <div className="flex items-start space-x-3 group">
-                        <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
-                          <FiActivity className="w-4 h-4 text-theme-primary" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-theme-tertiary">
-                            Fórmula de Compasso
-                          </p>
-                          <p className="text-theme-primary font-semibold">
-                            {work.timeSignature}
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
                     {/* Tempo Marking */}
                     {work.tempoMarking && (
                       <div className="flex items-start space-x-3 group">

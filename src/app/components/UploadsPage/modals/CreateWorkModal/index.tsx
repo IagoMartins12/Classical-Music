@@ -242,9 +242,6 @@ const CreateWorkModal = ({
     workType: 'INDIVIDUAL',
     movementNumber: '',
     subtitle: '',
-    timeSignature: '',
-    tempoMarking: '',
-    movementsDetailed: '',
     imslpTags: '',
     difficultyLevel: '', // 🔧 CORRIGIDO: string vazia ao invés de null
   });
@@ -319,7 +316,6 @@ const CreateWorkModal = ({
   const originalData = useMemo(() => {
     if (!editingWork) return null;
 
-
     return {
       title: editingWork.title || '',
       composerId: editingWork.composerId || '',
@@ -343,11 +339,7 @@ const CreateWorkModal = ({
       workType: editingWork.workType || 'INDIVIDUAL',
       movementNumber: editingWork.movementNumber?.toString() || '',
       subtitle: editingWork.subtitle || '',
-      timeSignature: editingWork.timeSignature || '',
-      tempoMarking: editingWork.tempoMarking || '',
-      movementsDetailed: editingWork.movementsDetailed
-        ? JSON.stringify(editingWork.movementsDetailed)
-        : '',
+
       imslpTags: editingWork.imslpTags?.join(', ') || '',
       difficultyLevel: editingWork.difficultyLevel || '', // 🔧 CORRIGIDO: string vazia
     };
@@ -400,11 +392,7 @@ const CreateWorkModal = ({
         workType: editingWork.workType || 'INDIVIDUAL',
         movementNumber: editingWork.movementNumber?.toString() || '',
         subtitle: editingWork.subtitle || '',
-        timeSignature: editingWork.timeSignature || '',
-        tempoMarking: editingWork.tempoMarking || '',
-        movementsDetailed: editingWork.movementsDetailed
-          ? JSON.stringify(editingWork.movementsDetailed)
-          : '',
+
         imslpTags: editingWork.imslpTags?.join(', ') || '',
         difficultyLevel: editingWork.difficultyLevel || '', // 🔧 CORRIGIDO: string vazia
       });
@@ -556,6 +544,7 @@ const CreateWorkModal = ({
 
   // 🆕 FUNÇÃO DE VALIDAÇÃO MELHORADA
   const handleValidation = () => {
+    console.log('valiou');
     const { isValid, errors: validationErrors } = validateForm(formData);
     setErrors(validationErrors);
     return isValid;
@@ -593,10 +582,7 @@ const CreateWorkModal = ({
         movementNumber: formData.movementNumber
           ? parseInt(formData.movementNumber)
           : null,
-        movementsDetailed: formData.movementsDetailed
-          ? JSON.parse(formData.movementsDetailed)
-          : null,
-        // 🔧 CORRIGIDO: Certificar que difficultyLevel é null quando vazio
+
         difficultyLevel: formData.difficultyLevel || null,
         ...(includeMedia && {
           // Spotify
@@ -737,8 +723,6 @@ const CreateWorkModal = ({
       compositionYear: data.compositionYear || prev.compositionYear,
       firstPublishDate: data.firstPublishDate || prev.firstPublishDate,
       tone: data.tone || prev.tone,
-      timeSignature: data.timeSignature || prev.timeSignature,
-      tempoMarking: data.tempoMarking || prev.tempoMarking,
       mediaDuration: data.mediaDuration || prev.mediaDuration,
       workStyle: data.workStyle || prev.workStyle,
       moviment: data.moviment || prev.moviment,
@@ -1142,24 +1126,6 @@ const CreateWorkModal = ({
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label="Compasso"
-                    value={formData.timeSignature}
-                    onChange={(e) =>
-                      handleInputChange('timeSignature', e.target.value)
-                    }
-                    placeholder="4/4"
-                  />
-
-                  <Input
-                    label="Andamento"
-                    value={formData.tempoMarking}
-                    onChange={(e) =>
-                      handleInputChange('tempoMarking', e.target.value)
-                    }
-                    placeholder="Allegro molto"
-                  />
-
                   <Input
                     label="Estilo"
                     value={formData.workStyle}

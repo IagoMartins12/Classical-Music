@@ -19,8 +19,6 @@ export interface WorkDetails {
   dedicationComposerLink?: string;
   instrumentation?: string;
   workType: string;
-  isPartOfCollection: boolean;
-  parentWorkId?: string;
   movementNumber?: number;
   createdAt: Date;
   composer: {
@@ -51,7 +49,6 @@ export interface WorkListItem {
   tone?: string;
   mediaDuration?: string;
   workType: string;
-  isPartOfCollection: boolean;
   composer: {
     id: string;
     name: string;
@@ -95,8 +92,6 @@ const getCachedWorkData = unstable_cache(
           dedicationComposerLink: true,
           instrumentation: true,
           workType: true,
-          isPartOfCollection: true,
-          parentWorkId: true,
           movementNumber: true,
           createdAt: true,
           instrumentId: true,
@@ -177,8 +172,6 @@ export const getWorkById = async (
       dedicationComposerLink: work.dedicationComposerLink || undefined,
       instrumentation: work.instrumentation || undefined,
       workType: work.workType,
-      isPartOfCollection: work.isPartOfCollection,
-      parentWorkId: work.parentWorkId || undefined,
       movementNumber: work.movementNumber || undefined,
       createdAt: work.createdAt,
       composer: work.composer,
@@ -229,7 +222,6 @@ export const getRelatedWorks = unstable_cache(
           tone: true,
           mediaDuration: true,
           workType: true,
-          isPartOfCollection: true,
           instrumentId: true,
           composer: {
             select: {
@@ -268,7 +260,6 @@ export const getRelatedWorks = unstable_cache(
         tone: work.tone || undefined,
         mediaDuration: work.mediaDuration || undefined,
         workType: work.workType,
-        isPartOfCollection: work.isPartOfCollection,
         composer: work.composer,
         instrument: work.instrumentId
           ? instrumentMap.get(work.instrumentId) || null
@@ -303,7 +294,6 @@ export const hasScoresInCache = unstable_cache(
         where: {
           workId,
           isActive: true,
-          OR: [{ expiresAt: { gt: new Date() } }, { expiresAt: null }],
         },
         select: {
           type: true,

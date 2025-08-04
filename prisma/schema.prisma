@@ -142,13 +142,6 @@ enum AdUserLevel {
   TEACHER // Apenas professores (role 1)
 }
 
-enum MediaType {
-  IMAGE
-  VIDEO
-  AUDIO
-  DOCUMENT
-}
-
 enum SubscriptionStatus {
   PENDING     // Aguardando confirmação (double opt-in)
   ACTIVE      // Inscrito ativo
@@ -206,8 +199,6 @@ model User {
   hashedPassword String?
   image          String?
   bio            String?
-  gender         String?
-  birthday       DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
@@ -219,7 +210,6 @@ model User {
   city    String?
   state   String?
   country String?
-
    // 🆕 CAMPOS DE TELEFONE
   phone            String? // Telefone completo em formato E.164 (+5511999999999)
   phoneCountryCode String? // Código do país (BR, US, etc.)
@@ -235,17 +225,11 @@ model User {
   showLocation  Boolean @default(false)
 
   practiceReminders Boolean @default(true)
-  progressTracking  Boolean @default(true)
-  publicProgress    Boolean @default(false)
 
   totalStudyTime Int @default(0)
   currentStreak  Int @default(0)
   longestStreak  Int @default(0)
-
   studyModeSettings Json?
-
-  // Configurações de publicidade
-  showAds       Boolean @default(true) // Usuário quer ver ads?
 
   // Anotações relacionadas
   workAnnotations   WorkAnnotation[]
@@ -255,7 +239,6 @@ model User {
   // Estatísticas de contribuição
   helpfulAnnotationsCount Int      @default(0) // Cache de anotações úteis
   totalAnnotationsCount   Int      @default(0) // Cache total de anotações
-  expertInstruments       String[] @default([]) // Instrumentos que o usuário é expert
 
   // 🔄 RELAÇÕES DE MODERAÇÃO - ATUALIZADAS COM CASCADE
   reportedUploads  UploadModeration[] @relation("ReportedUploads")
@@ -265,20 +248,13 @@ model User {
 
   // Estatísticas de upload
   totalUploads    Int @default(0)
-  approvedUploads Int @default(0)
   uploadScore     Int @default(0) // Score baseado na qualidade dos uploads
 
   // Limites de upload
-  uploadLimitDaily      Int      @default(50)
-  uploadLimitMonthly    Int      @default(1000)
-  currentDailyUploads   Int      @default(0)
-  currentMonthlyUploads Int      @default(0)
-  lastUploadReset       DateTime @default(now())
 
   // Relations
   accounts       Account[]
   sessions       Session[]
-  selectedScores UserSelectedScore[]
 
   tokens        UserToken[]
 
@@ -292,7 +268,6 @@ model User {
 
   // 🔄 RELAÇÕES DE ANÚNCIOS - ATUALIZADAS PARA SetNull
   createdAds Advertisement[] @relation("AdCreator")
-  editedAds  Advertisement[] @relation("AdEditor")
   adStats    AdStats[]       @relation("AdStatsUser")
 
   // 🔄 RELAÇÕES DE NEWSLETTER - ATUALIZADA COM CASCADE
@@ -307,7 +282,6 @@ model User {
   wantToLearn       WantToLearn[]
   learned           Learned[]
   studySessions     StudySession[]
-  learningGoals     LearningGoal[]
 
   pdfAnnotations PdfAnnotation[]
   scoreBookmarks ScoreBookmark[]
@@ -392,7 +366,6 @@ model WorkScore {
 
   // Campos para sistema incremental
   imslpTotalCounts String? // JSON com totais reais do IMSLP por tipo
-  lastIMSLPSync    DateTime? // Última sincronização completa com IMSLP
 
   // Status de processamento
   processingStatus ProcessingStatus @default(PENDING)
@@ -412,7 +385,6 @@ model WorkScore {
   @@index([isActive, expiresAt])
   @@index([lastAccessed, isActive])
   @@index([priority, createdAt])
-  @@index([lastIMSLPSync])
   @@index([imslpTotalCounts])
   @@index([uploadedBy])
   @@index([dataQuality])
@@ -480,12 +452,9 @@ model Composer {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   fullName  String
-  otherName String? // Nome alternativo (contentSub)
 
   // Nomes alternativos da página IMSLP
   alternativeNames  String? // Nomes alternativos/Transliterações
-  namesInOtherLangs String? // Nome em outras línguas  
-  pseudonyms        String? // Pseudônimos
 
   // Datas melhoradas - podem conter dia/mês/ano
   birthDate String? // Ex: "31 de janeiro de 1797", "1797", "January 31, 1797"
@@ -495,10 +464,6 @@ model Composer {
   epochId     String  @db.ObjectId
   epochName   String?
   bio         String?
-
-  // Informações detalhadas da página IMSLP
-  diverseInfo   String? // Informação diversa (biografia detalhada)
-  externalLinks String? // Links externos úteis
 
   // Dados IMSLP
   permLinkImslp String?
@@ -513,8 +478,6 @@ model Composer {
   imslpCategories String? // Categorias do IMSLP (ex: "Romantic composers, German composers, Pianists")
 
   // Metadados da página IMSLP
-  lastModifiedImslp String? // Data da última modificação no IMSLP
-  pageStatus        String? // Status da página: "complete", "stub", "needs_work"
   pageQuality       String? // Qualidade da página: "high", "medium", "low"
 
   // Dados de cache e verificação
@@ -522,9 +485,7 @@ model Composer {
   dataCompleteness Float? // Porcentagem de completude dos dados (0-100)
   hasValidImage    Boolean  @default(false) // Se tem imagem válida (não placeholder)
 
-  // 🔄 CAMPOS PARA RASTREAMENTO DE UPLOADS - ATUALIZADOS PARA SetNull
   createdBy     String? @db.ObjectId
-  createdByUser User?   @relation("UserCreatedComposers", fields: [createdBy], references: [id], onDelete: SetNull)
   isCustom      Boolean @default(false)
 
   // Campos de qualidade e verificação
@@ -541,14 +502,11 @@ model Composer {
   lastEditedAt DateTime?
   editHistory  Json? // Histórico de edições
 
-  // Campos específicos do IMSLP melhorados
-  imslpScore      Int? // Score/ranking no IMSLP
-  imslpWorkCount  Int? // Número de obras no IMSLP
-  imslpPopularity Int? // Popularidade no IMSLP
-
   // Campos existentes
   primaryRoleId String   @db.ObjectId
   primaryRole   Role     @relation("PrimaryRole", fields: [primaryRoleId], references: [id])
+  createdByUser User?   @relation("UserCreatedComposers", fields: [createdBy], references: [id], onDelete: Cascade)
+
   roles         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -565,7 +523,6 @@ model Composer {
   @@index([name])
   @@index([epochId])
   @@index([fullName])
-  @@index([otherName])
   @@index([verifiedBy])
   @@index([isVerified])
   @@index([alternativeNames])
@@ -652,17 +609,13 @@ model Work {
   instrumentation        String?
   workType               WorkType @default(INDIVIDUAL)
 
-  isPartOfCollection Boolean @default(false)
-  parentWorkId       String? @db.ObjectId
   movementNumber     Int?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   subtitle          String?
-  timeSignature     String?
-  tempoMarking      String?
-  movementsDetailed Json?
+
   imslpTags         String[]         @default([])
 
   // MÍDIA SIMPLIFICADA E MELHORADA
@@ -734,8 +687,6 @@ model Work {
   epoch      Epoch      @relation(fields: [epochId], references: [id])
   instrument Instrument @relation(fields: [instrumentId], references: [id])
 
-  parentWork Work?  @relation("WorkHierarchy", fields: [parentWorkId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  childWorks Work[] @relation("WorkHierarchy")
 
   // 🔄 TODAS ESSAS RELAÇÕES TERÃO CASCADE QUANDO DELETAR WORK
   favoriteScores     FavoriteScore[]
@@ -746,7 +697,6 @@ model Work {
   wantToLearners WantToLearn[]
   learners       Learned[]
   studySessions  StudySession[]
-  selectedScores UserSelectedScore[]
 
   pdfAnnotations PdfAnnotation[]
   scoreBookmarks ScoreBookmark[]
@@ -771,8 +721,6 @@ model Work {
   @@index([title, createdAt])
   @@index([composerId, createdAt])
   @@index([workType])
-  @@index([parentWorkId])
-  @@index([isPartOfCollection])
   @@index([composerId, instrumentId])
   @@index([composerId, epochId])
   @@index([instrumentId, epochId])
@@ -1051,72 +999,6 @@ model Learned {
   @@index([learnedAt])
   @@index([lastPracticed])
   @@index([selectedWorkScoreId])
-}
-
-model UserSelectedScore {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  userId String
-  workId String
-
-  imslpScoreId String
-  title        String
-  downloadUrl  String
-  fileSize     String?
-  pageCount    String?
-  fileFormat   String  @default("PDF")
-
-  editor       String?
-  publisher    String?
-  copyright    String?
-  thumbnailUrl String?
-  uploadDate   String?
-  uploader     String?
-  notes        String?
-
-  type       IMSLPScoreType @default(SCORES)
-  groupIndex Int?
-  groupTitle String?
-
-  rating        Float?
-  ratingsCount  Int?
-  downloadCount Int?
-
-  lastVerified DateTime @default(now())
-  isActive     Boolean  @default(true)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([userId, workId, imslpScoreId])
-  @@index([userId, workId])
-  @@index([workId])
-  @@map("user_selected_scores")
-}
-
-model LearningGoal {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  userId      String    @db.ObjectId
-  title       String
-  description String?
-  targetDate  DateTime?
-  isCompleted Boolean   @default(false)
-  completedAt DateTime?
-
-  workIds String[] @default([]) @db.ObjectId
-
-  progressNotes String?
-  milestones    String[] @default([])
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId, targetDate])
-  @@index([isCompleted])
 }
 
 model FavoriteWork {
@@ -1460,7 +1342,6 @@ model Advertisement {
 
   // 🔄 RELAÇÕES ATUALIZADAS PARA SetNull
   creator     User        @relation("AdCreator", fields: [createdBy], references: [id], onDelete: Cascade)
-  editor      User?       @relation("AdEditor", fields: [lastEditedBy], references: [id], onDelete: SetNull)
   instrument  Instrument? @relation(fields: [instrumentId], references: [id])
 
   // 🔄 ESTATÍSTICAS COM CASCADE

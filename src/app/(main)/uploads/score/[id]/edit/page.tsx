@@ -70,7 +70,7 @@ export default async function EditScorePage({ params }: EditScorePageProps) {
   }
 
   const isAdmin = session.user.role === 2;
-  const isOwner = score.uploadedBy === session.user.id;
+  const isOwner = score.uploader === session.user.id;
 
   if (!isAdmin && !isOwner) {
     redirect('/');

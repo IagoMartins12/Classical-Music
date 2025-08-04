@@ -31,7 +31,6 @@ export interface TopContributor {
   name: string;
   uploadsCount: number;
   qualityScore: number;
-  verifiedUploads: number;
 }
 
 export interface TopAnnotator {

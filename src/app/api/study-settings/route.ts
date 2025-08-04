@@ -20,8 +20,6 @@ export async function GET() {
         experienceLevel: true,
         practiceTimePerWeek: true,
         practiceReminders: true,
-        progressTracking: true,
-        publicProgress: true,
       },
     });
 
@@ -68,8 +66,6 @@ export async function GET() {
         experienceLevel: user.experienceLevel,
         practiceTimePerWeek: user.practiceTimePerWeek,
         practiceReminders: user.practiceReminders,
-        progressTracking: user.progressTracking,
-        publicProgress: user.publicProgress,
       },
     });
   } catch (error) {
@@ -168,8 +164,6 @@ export async function PATCH(request: NextRequest) {
         experienceLevel: true,
         practiceTimePerWeek: true,
         practiceReminders: true,
-        progressTracking: true,
-        publicProgress: true,
       },
     });
 
@@ -185,8 +179,6 @@ export async function PATCH(request: NextRequest) {
         experienceLevel: updatedUser.experienceLevel,
         practiceTimePerWeek: updatedUser.practiceTimePerWeek,
         practiceReminders: updatedUser.practiceReminders,
-        progressTracking: updatedUser.progressTracking,
-        publicProgress: updatedUser.publicProgress,
       },
       message: 'Configurações atualizadas com sucesso',
     });

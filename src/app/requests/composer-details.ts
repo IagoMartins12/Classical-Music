@@ -6,11 +6,9 @@ export interface ComposerDetails {
   id: string;
   name: string;
   fullName: string;
-  otherName?: string; // Existing
 
   // 🆕 New name properties
   alternativeNames?: string;
-  pseudonyms?: string;
 
   // Enhanced date properties (can contain full dates now)
   birthDate?: string;
@@ -35,15 +33,12 @@ export interface ComposerDetails {
   verificationNotes?: string;
 
   // 🆕 New detailed information properties
-  diverseInfo?: string;
-  externalLinks?: string;
   nationality?: string;
   instruments?: string;
   imslpCategories?: string;
 
   // 🆕 New metadata properties
   lastModifiedImslp?: string;
-  pageStatus?: string;
   pageQuality?: string;
   lastVerified?: Date;
   dataCompleteness?: number;
@@ -66,15 +61,11 @@ export interface ComposerWork {
     name: string;
   };
   workType: string;
-  isPartOfCollection: boolean;
-  parentWorkId?: string;
   workGenresArr?: string[];
   categoryNames?: string[];
   isVerified: boolean;
 
   // 🆕 New work properties
-  timeSignature?: string;
-  tempoMarking?: string;
   difficultyLevel?: string;
   imslpTags?: string[];
 }
@@ -187,14 +178,10 @@ export const getComposerWorksWithFilters = async (
           imslpPermlink: true,
           videoUrl: true,
           workType: true,
-          isPartOfCollection: true,
-          parentWorkId: true,
           workGenresArr: true,
           categoryNames: true,
           isVerified: true,
           // 🆕 New properties
-          timeSignature: true,
-          tempoMarking: true,
           difficultyLevel: true,
           imslpTags: true,
 
@@ -231,16 +218,11 @@ export const getComposerWorksWithFilters = async (
         mediaDuration: work.mediaDuration || undefined,
         imslpPermlink: work.imslpPermlink,
         videoUrl: work.videoUrl || undefined,
-        instrument: work.instrument,
         workType: work.workType,
-        isPartOfCollection: work.isPartOfCollection,
-        parentWorkId: work.parentWorkId || undefined,
         workGenresArr: work.workGenresArr,
         categoryNames: work.categoryNames,
         isVerified: work.isVerified,
         // 🆕 New properties
-        timeSignature: work.timeSignature || undefined,
-        tempoMarking: work.tempoMarking || undefined,
         difficultyLevel: work.difficultyLevel || undefined,
         imslpTags: work.imslpTags || undefined,
       })),
@@ -383,11 +365,9 @@ const getCachedComposerData = unstable_cache(
           id: true,
           name: true,
           fullName: true,
-          otherName: true, // Existing
 
           // 🆕 New name properties
           alternativeNames: true,
-          pseudonyms: true,
 
           // Enhanced date properties
           birthDate: true,
@@ -403,8 +383,6 @@ const getCachedComposerData = unstable_cache(
           createdAt: true,
 
           // 🆕 New detailed information properties
-          diverseInfo: true,
-          externalLinks: true,
           nationality: true,
           instruments: true,
           imslpCategories: true,
@@ -416,8 +394,6 @@ const getCachedComposerData = unstable_cache(
           verificationNotes: true,
 
           // 🆕 New metadata properties
-          lastModifiedImslp: true,
-          pageStatus: true,
           pageQuality: true,
           lastVerified: true,
           dataCompleteness: true,
@@ -468,11 +444,9 @@ const getCachedComposerData = unstable_cache(
         id: composer.id,
         name: composer.name,
         fullName: composer.fullName,
-        otherName: composer.otherName || undefined,
 
         // 🆕 New name properties
         alternativeNames: composer.alternativeNames || undefined,
-        pseudonyms: composer.pseudonyms || undefined,
 
         // Enhanced date properties
         birthDate: composer.birthDate || undefined,
@@ -498,15 +472,11 @@ const getCachedComposerData = unstable_cache(
         verificationNotes: composer.verificationNotes || undefined,
 
         // 🆕 New detailed information properties
-        diverseInfo: composer.diverseInfo || undefined,
-        externalLinks: composer.externalLinks || undefined,
         nationality: composer.nationality || undefined,
         instruments: composer.instruments || undefined,
         imslpCategories: composer.imslpCategories || undefined,
 
         // 🆕 New metadata properties
-        lastModifiedImslp: composer.lastModifiedImslp || undefined,
-        pageStatus: composer.pageStatus || undefined,
         pageQuality: composer.pageQuality || undefined,
         lastVerified: composer.lastVerified || undefined,
         dataCompleteness: composer.dataCompleteness || undefined,
