@@ -362,25 +362,18 @@ class DatabaseMonitor {
   private async getPrismaStats(): Promise<any> {
     try {
       // Métricas básicas do Prisma
-      const [
-        userCount,
-        workCount,
-        composerCount,
-        sessionCount,
-        annotationCount,
-      ] = await Promise.all([
-        prisma.user.count(),
-        prisma.work.count(),
-        prisma.composer.count(),
-        prisma.studySession.count(),
-        prisma.workAnnotation.count(),
-      ]);
+      const [userCount, workCount, composerCount, annotationCount] =
+        await Promise.all([
+          prisma.user.count(),
+          prisma.work.count(),
+          prisma.composer.count(),
+          prisma.workAnnotation.count(),
+        ]);
 
       return {
         users: userCount,
         works: workCount,
         composers: composerCount,
-        sessions: sessionCount,
         annotations: annotationCount,
       };
     } catch (error) {

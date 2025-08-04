@@ -12,8 +12,6 @@ interface AdminStats {
     totalWorks: number;
     totalScores: number;
     totalAnnotations: number;
-    totalStudySessions: number;
-    averageSessionDuration: number;
     growthRate: {
       users: number;
       works: number;
@@ -50,7 +48,6 @@ interface AdminStats {
       composer: string;
       favoritesCount: number;
       annotationsCount: number;
-      studySessionsCount: number;
       scoreCount: number;
     }>;
     popularComposers: Array<{
@@ -58,7 +55,6 @@ interface AdminStats {
       name: string;
       worksCount: number;
       totalFavorites: number;
-      totalStudySessions: number;
       avgWorksPerUser: number;
     }>;
     recentUploads: Array<{
@@ -75,15 +71,8 @@ interface AdminStats {
     dailyActiveUsers: number;
     weeklyActiveUsers: number;
     monthlyActiveUsers: number;
-    avgSessionsPerUser: number;
     avgAnnotationsPerWork: number;
-    mostStudiedWorks: Array<{
-      workId: string;
-      title: string;
-      composer: string;
-      totalMinutes: number;
-      uniqueUsers: number;
-    }>;
+
     annotationsTrends: Array<{
       date: string;
       count: number;
@@ -108,13 +97,11 @@ interface AdminStats {
       newUsers: number;
       newAnnotations: number;
       newUploads: number;
-      studyMinutes: number;
     };
     last7Days: {
       newUsers: number;
       newAnnotations: number;
       newUploads: number;
-      studyMinutes: number;
     };
     userRetention: {
       day1: number;
@@ -133,18 +120,12 @@ const getCachedOverviewStats = unstable_cache(
       totalWorks,
       totalScores,
       totalAnnotations,
-      totalStudySessions,
-      avgSessionDuration,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.composer.count(),
       prisma.work.count(),
       prisma.workScore.count({ where: { isActive: true } }),
       prisma.workAnnotation.count({ where: { isPublic: true } }),
-      prisma.studySession.count(),
-      prisma.studySession.aggregate({
-        _avg: { durationMin: true },
-      }),
     ]);
 
     // Calcular taxas de crescimento (último mês vs mês anterior)
@@ -195,8 +176,7 @@ const getCachedOverviewStats = unstable_cache(
       totalWorks,
       totalScores,
       totalAnnotations,
-      totalStudySessions,
-      averageSessionDuration: avgSessionDuration._avg.durationMin || 0,
+
       growthRate: {
         users: calculateGrowthRate(newUsersLastMonth, newUsersMonthBefore),
         works: calculateGrowthRate(newWorksLastMonth, newWorksMonthBefore),
@@ -316,7 +296,6 @@ const getCachedPopularContent = unstable_cache(
           select: {
             favoriteBy: true,
             workAnnotations: true,
-            studySessions: true,
             cachedScores: true,
           },
         },
@@ -425,7 +404,6 @@ const getCachedPopularContent = unstable_cache(
         composer: work.composer.name,
         favoritesCount: work._count.favoriteBy,
         annotationsCount: work._count.workAnnotations,
-        studySessionsCount: work._count.studySessions,
         scoreCount: work._count.cachedScores,
       })),
       popularComposers: popularComposers.map((composer) => ({
@@ -433,7 +411,6 @@ const getCachedPopularContent = unstable_cache(
         name: composer.name,
         worksCount: composer._count.works,
         totalFavorites: composer._count.favoriteByUsers,
-        totalStudySessions: 0, // Calcular se necessário
         avgWorksPerUser:
           composer._count.favoriteByUsers > 0
             ? composer._count.works / composer._count.favoriteByUsers
@@ -458,7 +435,6 @@ const getCachedEngagementStats = unstable_cache(
       dailyActiveUsers,
       weeklyActiveUsers,
       monthlyActiveUsers,
-      avgSessionsPerUser,
       avgAnnotationsPerWork,
     ] = await Promise.all([
       prisma.user.count({
@@ -470,44 +446,12 @@ const getCachedEngagementStats = unstable_cache(
       prisma.user.count({
         where: { updatedAt: { gte: oneMonthAgo } },
       }),
-      prisma.studySession.count().then(async (total) => {
-        const totalUsers = await prisma.user.count();
-        return totalUsers > 0 ? total / totalUsers : 0;
-      }),
+
       prisma.workAnnotation.count().then(async (total) => {
         const totalWorks = await prisma.work.count();
         return totalWorks > 0 ? total / totalWorks : 0;
       }),
     ]);
-
-    // Obras mais estudadas
-    const mostStudiedWorks = await prisma.work.findMany({
-      select: {
-        id: true,
-        title: true,
-        composer: { select: { name: true } },
-        studySessions: {
-          select: {
-            durationMin: true,
-            userId: true,
-          },
-        },
-      },
-      take: 10,
-    });
-
-    const studiedWorksStats = mostStudiedWorks
-      .map((work) => ({
-        workId: work.id,
-        title: work.title,
-        composer: work.composer.name,
-        totalMinutes: work.studySessions.reduce(
-          (sum, session) => sum + session.durationMin,
-          0
-        ),
-        uniqueUsers: new Set(work.studySessions.map((s) => s.userId)).size,
-      }))
-      .sort((a, b) => b.totalMinutes - a.totalMinutes);
 
     // Tendências de anotações (últimos 7 dias)
     const annotationsTrends = await Promise.all(
@@ -543,9 +487,7 @@ const getCachedEngagementStats = unstable_cache(
       dailyActiveUsers,
       weeklyActiveUsers,
       monthlyActiveUsers,
-      avgSessionsPerUser,
       avgAnnotationsPerWork,
-      mostStudiedWorks: studiedWorksStats,
       annotationsTrends: annotationsTrends.reverse(),
     };
   },
@@ -650,11 +592,9 @@ export async function GET(request: NextRequest) {
               newUsers30d,
               newAnnotations30d,
               newUploads30d,
-              studyMinutes30d,
               newUsers7d,
               newAnnotations7d,
               newUploads7d,
-              studyMinutes7d,
             ] = await Promise.all([
               prisma.user.count({ where: { createdAt: { gte: last30Days } } }),
               prisma.workAnnotation.count({
@@ -666,10 +606,7 @@ export async function GET(request: NextRequest) {
                   action: 'create',
                 },
               }),
-              prisma.studySession.aggregate({
-                where: { date: { gte: last30Days } },
-                _sum: { durationMin: true },
-              }),
+
               prisma.user.count({ where: { createdAt: { gte: last7Days } } }),
               prisma.workAnnotation.count({
                 where: { createdAt: { gte: last7Days } },
@@ -680,10 +617,6 @@ export async function GET(request: NextRequest) {
                   action: 'create',
                 },
               }),
-              prisma.studySession.aggregate({
-                where: { date: { gte: last7Days } },
-                _sum: { durationMin: true },
-              }),
             ]);
 
             return {
@@ -691,13 +624,11 @@ export async function GET(request: NextRequest) {
                 newUsers: newUsers30d,
                 newAnnotations: newAnnotations30d,
                 newUploads: newUploads30d,
-                studyMinutes: studyMinutes30d._sum.durationMin || 0,
               },
               last7Days: {
                 newUsers: newUsers7d,
                 newAnnotations: newAnnotations7d,
                 newUploads: newUploads7d,
-                studyMinutes: studyMinutes7d._sum.durationMin || 0,
               },
               userRetention: {
                 day1: 0, // Implementar se necessário

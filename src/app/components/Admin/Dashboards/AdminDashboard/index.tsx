@@ -7,7 +7,6 @@ import {
   FiUsers,
   FiMusic,
   FiFileText,
-  FiClock,
   FiHeart,
   FiMessageSquare,
   FiUpload,
@@ -344,32 +343,6 @@ export default function AdminDashboard() {
                           </>
                         );
                       })()}
-                    </div>
-                  </div>
-                </AnimatedCard>
-
-                {/* Sessão Média */}
-                <AnimatedCard className="classical-card p-6 text-center relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-accent-purple/20 to-accent-blue/20 rounded-full -mr-10 -mt-10" />
-                  <div className="relative">
-                    <div className="flex items-center justify-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center">
-                        <FiClock className="w-6 h-6 text-theme-primary" />
-                      </div>
-                    </div>
-                    <div className="text-3xl font-bold text-theme-primary mb-2">
-                      {formatDuration(
-                        safeGet(stats, 'overview.averageSessionDuration', 0)
-                      )}
-                    </div>
-                    <div className="text-sm text-theme-tertiary mb-2">
-                      Sessão Média
-                    </div>
-                    <div className="text-xs text-theme-tertiary">
-                      {formatNumber(
-                        safeGet(stats, 'overview.totalStudySessions', 0)
-                      )}{' '}
-                      sessões
                     </div>
                   </div>
                 </AnimatedCard>

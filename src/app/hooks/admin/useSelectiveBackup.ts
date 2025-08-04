@@ -254,7 +254,6 @@ export const useSelectiveBackup = (): UseSelectiveBackupReturn => {
 
       if (!confirmed) return;
 
-
       try {
         const response = await fetch(
           `/api/admin/backup/selective?id=${backupId}`,
@@ -343,11 +342,7 @@ export const useSelectiveBackup = (): UseSelectiveBackupReturn => {
         categories['Sistema Base'].push(collection);
       } else if (['composer', 'work', 'workScore'].includes(collection.name)) {
         categories['Conteúdo Musical'].push(collection);
-      } else if (
-        ['userInstrument', 'studySession', 'learningGoal'].includes(
-          collection.name
-        )
-      ) {
+      } else if (['userInstrument', 'learningGoal'].includes(collection.name)) {
         categories['Dados dos Usuários'].push(collection);
       } else if (
         [

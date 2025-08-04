@@ -36,7 +36,6 @@ interface ScrapedWorkData {
   moviment: string | null;
   instrumentation: string | null;
   dedicateTo: string | null;
-  dedicationComposerLink: string | null;
   categoryNames: string[];
   workGenresArr: string[];
   imslpTags: string[];
@@ -565,7 +564,6 @@ async function scrapeIMSLPWork(url: string): Promise<ScrapedWorkData> {
       moviment: workDetails.moviment,
       instrumentation: translateInstrumentation(workDetails.instrumentation),
       dedicateTo: workDetails.dedicateTo,
-      dedicationComposerLink: workDetails.dedicationComposerLink,
       categoryNames: validCategories,
       workGenresArr: validWorkGenres, // 🆕 USAR GÊNEROS SEM DUPLICATAS
       imslpTags,

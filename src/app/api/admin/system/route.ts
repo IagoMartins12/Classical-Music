@@ -38,8 +38,8 @@ interface SystemMetrics {
   };
   application: {
     users: { active: number; peak: number; concurrent: number };
-    sessions: { total: number; avg_duration: number; bounce_rate: number };
-    features: { uploads: number; annotations: number; studies: number };
+    sessions: { total: number; bounce_rate: number };
+    features: { uploads: number; annotations: number };
     errors: { count: number; rate: number; critical: number };
     performance: { avgResponseTime: number; slowQueries: number };
   };
@@ -352,13 +352,11 @@ async function getSystemMetrics(): Promise<SystemMetrics> {
         },
         sessions: {
           total: appMetrics.sessions.total,
-          avg_duration: appMetrics.sessions.avg_duration,
           bounce_rate: appMetrics.sessions.bounce_rate,
         },
         features: {
           uploads: appMetrics.features.uploads,
           annotations: appMetrics.features.annotations,
-          studies: appMetrics.features.studies,
         },
         errors: {
           count: appMetrics.errors.count,

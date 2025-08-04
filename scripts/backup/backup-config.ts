@@ -77,7 +77,6 @@ export const DEFAULT_BACKUP_CONFIG: BackupConfig = {
     workScore: ['work'],
     userInstrument: ['user', 'instrument'],
     annotation: ['user', 'work'],
-    pdfAnnotation: ['user', 'work'],
     favoriteWork: ['user', 'work'],
     favoriteComposer: ['user', 'composer'],
     newsletterSubscriber: ['user'],

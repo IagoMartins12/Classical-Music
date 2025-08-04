@@ -281,10 +281,7 @@ model User {
   favoriteComposers FavoriteComposer[]
   wantToLearn       WantToLearn[]
   learned           Learned[]
-  studySessions     StudySession[]
 
-  pdfAnnotations PdfAnnotation[]
-  scoreBookmarks ScoreBookmark[]
 
   @@index([userType])
   @@index([onboardingCompleted])
@@ -605,7 +602,6 @@ model Work {
   workGenresArr    String[] @default([])
 
   dedicateTo             String?
-  dedicationComposerLink String?
   instrumentation        String?
   workType               WorkType @default(INDIVIDUAL)
 
@@ -615,7 +611,6 @@ model Work {
   updatedAt DateTime @updatedAt
 
   subtitle          String?
-
   imslpTags         String[]         @default([])
 
   // MÍDIA SIMPLIFICADA E MELHORADA
@@ -696,10 +691,6 @@ model Work {
   favoriteBy     FavoriteWork[]
   wantToLearners WantToLearn[]
   learners       Learned[]
-  studySessions  StudySession[]
-
-  pdfAnnotations PdfAnnotation[]
-  scoreBookmarks ScoreBookmark[]
 
   workAnnotations WorkAnnotation[]
   imslpDifficultyHistory IMSLPDifficultyHistory[]
@@ -811,132 +802,6 @@ model Annotation {
   work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
 }
 
-model PdfAnnotation {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  userId  String @db.ObjectId
-  workId  String @db.ObjectId
-  scoreId String
-
-  type    AnnotationType
-  content String?
-
-  page   Int
-  x      Float
-  y      Float
-  width  Float?
-  height Float?
-
-  color       String?
-  fontSize    Int?
-  strokeWidth Float?
-  drawing     Json?
-
-  measure Int?
-  beat    Float?
-  voice   Int?
-
-  isPublic Boolean  @default(false)
-  tags     String[] @default([])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
-
-  @@index([userId, workId, scoreId])
-  @@index([workId, scoreId, page])
-  @@index([type])
-}
-
-model ScoreBookmark {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  userId  String @db.ObjectId
-  workId  String @db.ObjectId
-  scoreId String
-
-  title       String
-  description String?
-  color       String  @default("#3B82F6")
-
-  page    Int
-  measure Int?
-  system  Int?
-
-  x Float?
-  y Float?
-
-  sortOrder Int @default(0)
-
-  isPublic Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
-
-  @@index([userId, workId, scoreId])
-  @@index([workId, scoreId])
-  @@index([sortOrder])
-}
-
-model StudySession {
-  id      String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId  String  @db.ObjectId
-  workId  String  @db.ObjectId
-  scoreId String?
-
-  date        DateTime @default(now())
-  durationMin Int
-
-  metronomeUsed Boolean       @default(false)
-  tempoMarking  String?
-  focus         PracticeFocus
-  notes         String?
-  rating        Int?
-
-  sectionsWorked String[] @default([])
-  challenges     String?
-  breakthroughs  String?
-
-  instrument String?
-  location   String?
-  mood       Int?
-  energy     Int?
-
-  metronomeSettings Json?
-  selectedScore     Json?
-  studyNotes        String?
-  practiceGoals     String[] @default([])
-  technicalFocus    String[] @default([])
-  expressiveFocus   String[] @default([])
-  precisionFocus    String[] @default([])
-
-  postPracticeRating Int?
-  postPracticeNotes  String?
-  nextSessionGoals   String[] @default([])
-
-  pauseCount       Int   @default(0)
-  restartCount     Int   @default(0)
-  sectionsRepeated Json?
-
-  pagesViewed        Int[] @default([])
-  annotationsCreated Int   @default(0)
-  bookmarksCreated   Int   @default(0)
-  pdfZoomChanges     Int   @default(0)
-
-  pdfSettings  Json?
-  windowLayout Json?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  work Work @relation(fields: [workId], references: [id], onDelete: Cascade) // 🔄 CASCADE quando deletar work
-
-  @@index([userId, date])
-  @@index([workId, date])
-  @@index([userId, workId])
-  @@index([scoreId])
-}
 
 model WantToLearn {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId

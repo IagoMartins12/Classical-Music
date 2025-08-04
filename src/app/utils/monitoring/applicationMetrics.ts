@@ -14,14 +14,11 @@ export interface ApplicationMetrics {
   sessions: {
     total: number;
     active: number;
-    avg_duration: number;
     bounce_rate: number;
-    newToday: number;
   };
   features: {
     uploads: number;
     annotations: number;
-    studies: number;
     favorites: number;
     searches: number;
   };
@@ -231,45 +228,28 @@ class ApplicationMonitor {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      const [totalSessions, activeSessions, todaySessions, avgDuration] =
-        await Promise.all([
-          prisma.session.count(),
-          prisma.session.count({
-            where: {
-              expires: {
-                gt: new Date(),
-              },
+      const [totalSessions, activeSessions] = await Promise.all([
+        prisma.session.count(),
+        prisma.session.count({
+          where: {
+            expires: {
+              gt: new Date(),
             },
-          }),
-          prisma.studySession.count({
-            where: {
-              date: {
-                gte: today,
-              },
-            },
-          }),
-          prisma.studySession.aggregate({
-            _avg: {
-              durationMin: true,
-            },
-          }),
-        ]);
+          },
+        }),
+      ]);
 
       return {
         total: totalSessions,
         active: activeSessions,
-        avg_duration: avgDuration._avg.durationMin || 0,
         bounce_rate: Math.random() * 30 + 15, // Simular bounce rate
-        newToday: todaySessions,
       };
     } catch (error) {
       console.error('Erro ao obter métricas de sessões:', error);
       return {
         total: 0,
         active: 0,
-        avg_duration: 0,
         bounce_rate: 0,
-        newToday: 0,
       };
     }
   }
@@ -280,7 +260,7 @@ class ApplicationMonitor {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      const [uploads, annotations, studies, favorites] = await Promise.all([
+      const [uploads, annotations, favorites] = await Promise.all([
         prisma.uploadHistory.count({
           where: {
             createdAt: {
@@ -295,13 +275,7 @@ class ApplicationMonitor {
             },
           },
         }),
-        prisma.studySession.count({
-          where: {
-            date: {
-              gte: today,
-            },
-          },
-        }),
+
         prisma.favoriteScore.count({
           where: {
             createdAt: {
@@ -314,7 +288,6 @@ class ApplicationMonitor {
       return {
         uploads,
         annotations,
-        studies,
         favorites,
         searches: Math.floor(Math.random() * 1000) + 500, // Simular buscas
       };
@@ -323,7 +296,6 @@ class ApplicationMonitor {
       return {
         uploads: 0,
         annotations: 0,
-        studies: 0,
         favorites: 0,
         searches: 0,
       };
@@ -531,14 +503,11 @@ class ApplicationMonitor {
         sessions: {
           total: 0,
           active: 0,
-          avg_duration: 0,
           bounce_rate: 0,
-          newToday: 0,
         },
         features: {
           uploads: 0,
           annotations: 0,
-          studies: 0,
           favorites: 0,
           searches: 0,
         },

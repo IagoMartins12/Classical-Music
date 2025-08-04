@@ -54,7 +54,6 @@ export interface UserAnalytics {
     totalUsers: number;
   }>;
   engagementMetrics: {
-    averageSessionDuration: number;
     averageAnnotationsPerUser: number;
     averageUploadsPerUser: number;
   };
@@ -65,7 +64,6 @@ export interface UserDetailsData {
     totalFavoriteWorks: number;
     totalFavoriteComposers: number;
     totalAnnotations: number;
-    totalStudySessions: number;
     lastActivity: string;
     joinedDaysAgo: number;
   };
@@ -93,14 +91,6 @@ export interface UserDetailsData {
       status: string;
       createdAt: string;
     }>;
-  };
-  studyHabits: {
-    averageSessionDuration: number;
-    mostStudiedComposer: string;
-    mostStudiedWork: string;
-    preferredPracticeTimes: string[];
-    longestStreak: number;
-    currentStreak: number;
   };
 }
 
@@ -258,8 +248,6 @@ export const useAdminUsers = (): UseAdminUsersReturn => {
           topContributors: data.analytics?.topContributors || [],
           userGrowth: data.analytics?.userGrowth || [],
           engagementMetrics: {
-            averageSessionDuration:
-              data.analytics?.engagementMetrics?.averageSessionDuration || 0,
             averageAnnotationsPerUser:
               data.analytics?.engagementMetrics?.averageAnnotationsPerUser || 0,
             averageUploadsPerUser:

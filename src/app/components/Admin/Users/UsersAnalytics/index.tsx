@@ -6,7 +6,6 @@ import {
   FiUsers,
   FiActivity,
   FiUpload,
-  FiClock,
   FiTrendingUp,
   FiTarget,
   FiAward,
@@ -27,7 +26,7 @@ import {
   AdminBarChart,
   MetricCard,
 } from '@/app/components/Admin/Charts/AdminCharts';
-import { formatNumber, formatDuration } from '@/app/hooks/admin/useAdminStats';
+import { formatNumber } from '@/app/hooks/admin/useAdminStats';
 import { useAdminUsers } from '@/app/hooks/admin/useAdminUsers';
 
 export default function UsersAnalytics() {
@@ -118,7 +117,7 @@ export default function UsersAnalytics() {
         {/* Overview Metrics */}
         {analytics && (
           <AnimatedItem direction="up" springType="gentle">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 mb-8">
               <MetricCard
                 title="Total de Usuários"
                 value={analytics.totalUsers}
@@ -164,16 +163,6 @@ export default function UsersAnalytics() {
                 }}
                 icon={FiTrendingUp}
                 color="#F59E0B"
-              />
-
-              <MetricCard
-                title="Tempo Médio"
-                value={formatDuration(
-                  analytics.engagementMetrics.averageSessionDuration
-                )}
-                change={{ value: 5.2, isPositive: true }}
-                icon={FiClock}
-                color="#8B5CF6"
               />
             </div>
           </AnimatedItem>
@@ -326,19 +315,6 @@ export default function UsersAnalytics() {
                 <span>Métricas de Engajamento</span>
               </h3>
               <div className="space-y-4">
-                <div className="p-3 bg-theme-secondary rounded-xl">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-theme-tertiary">
-                      Sessão Média
-                    </span>
-                    <span className="font-bold text-accent-green">
-                      {formatDuration(
-                        analytics.engagementMetrics.averageSessionDuration
-                      )}
-                    </span>
-                  </div>
-                </div>
-
                 <div className="p-3 bg-theme-secondary rounded-xl">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-theme-tertiary">

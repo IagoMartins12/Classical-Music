@@ -58,7 +58,6 @@ interface UserAnalytics {
     totalUsers: number;
   }>;
   engagementMetrics: {
-    averageSessionDuration: number;
     averageAnnotationsPerUser: number;
     averageUploadsPerUser: number;
   };
@@ -241,18 +240,14 @@ const getCachedUserAnalytics = unstable_cache(
     );
 
     // Métricas de engajamento reais
-    const [avgSessionDuration, avgAnnotationsPerUser, avgUploadsPerUser] =
-      await Promise.all([
-        prisma.studySession.aggregate({
-          _avg: { durationMin: true },
-        }),
-        prisma.user.aggregate({
-          _avg: { totalAnnotationsCount: true },
-        }),
-        prisma.user.aggregate({
-          _avg: { totalUploads: true },
-        }),
-      ]);
+    const [avgAnnotationsPerUser, avgUploadsPerUser] = await Promise.all([
+      prisma.user.aggregate({
+        _avg: { totalAnnotationsCount: true },
+      }),
+      prisma.user.aggregate({
+        _avg: { totalUploads: true },
+      }),
+    ]);
 
     return {
       totalUsers,
@@ -281,7 +276,6 @@ const getCachedUserAnalytics = unstable_cache(
       })),
       userGrowth: userGrowth.reverse(),
       engagementMetrics: {
-        averageSessionDuration: avgSessionDuration._avg.durationMin || 0,
         averageAnnotationsPerUser:
           avgAnnotationsPerUser._avg.totalAnnotationsCount || 0,
         averageUploadsPerUser: avgUploadsPerUser._avg.totalUploads || 0,

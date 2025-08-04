@@ -92,13 +92,10 @@ export interface CascadeInfoResult {
     scoresCount: number;
     annotationsCount: number;
     favoritesCount: number;
-    studySessionsCount: number;
     instrumentsCount: number;
     favoriteComposersCount: number;
     learnedWorksCount: number;
     wantToLearnCount: number;
-    pdfAnnotationsCount: number;
-    bookmarksCount: number;
     sampleComposers: { id: string; name: string; epochName?: string | null }[];
     sampleWorks: { id: string; title: string; composer: { name: string } }[];
     sampleAnnotations: { id: string; title: string; work: { title: string } }[];
@@ -595,13 +592,10 @@ export async function getAccountCascadeInfo(
       scoresCount,
       annotationsCount,
       favoritesCount,
-      studySessionsCount,
       instrumentsCount,
       favoriteComposersCount,
       learnedWorksCount,
       wantToLearnCount,
-      pdfAnnotationsCount,
-      bookmarksCount,
       sampleComposers,
       sampleWorks,
       sampleAnnotations,
@@ -616,8 +610,6 @@ export async function getAccountCascadeInfo(
       prisma.workAnnotation.count({ where: { userId } }),
       // Favorite works
       prisma.favoriteWork.count({ where: { userId } }),
-      // Study sessions
-      prisma.studySession.count({ where: { userId } }),
       // User instruments
       prisma.userInstrument.count({ where: { userId } }),
       // Favorite composers
@@ -626,10 +618,7 @@ export async function getAccountCascadeInfo(
       prisma.learned.count({ where: { userId } }),
       // Want to learn
       prisma.wantToLearn.count({ where: { userId } }),
-      // PDF annotations
-      prisma.pdfAnnotation.count({ where: { userId } }),
-      // Score bookmarks
-      prisma.scoreBookmark.count({ where: { userId } }),
+
       // Sample composers (first 3)
       prisma.composer.findMany({
         where: { createdBy: userId },
@@ -653,13 +642,10 @@ export async function getAccountCascadeInfo(
       scoresCount +
       annotationsCount +
       favoritesCount +
-      studySessionsCount +
       instrumentsCount +
       favoriteComposersCount +
       learnedWorksCount +
-      wantToLearnCount +
-      pdfAnnotationsCount +
-      bookmarksCount;
+      wantToLearnCount;
 
     return {
       success: true,
@@ -671,13 +657,11 @@ export async function getAccountCascadeInfo(
         scoresCount,
         annotationsCount,
         favoritesCount,
-        studySessionsCount,
         instrumentsCount,
         favoriteComposersCount,
         learnedWorksCount,
         wantToLearnCount,
-        pdfAnnotationsCount,
-        bookmarksCount,
+
         sampleComposers,
         sampleWorks,
         sampleAnnotations,
@@ -929,13 +913,11 @@ export async function getUserProfileStats(
       instrumentsCount,
       favoriteWorksCount,
       favoriteComposersCount,
-      studySessionsCount,
       learnedWorksCount,
     ] = await Promise.all([
       prisma.userInstrument.count({ where: { userId } }),
       prisma.favoriteWork.count({ where: { userId } }),
       prisma.favoriteComposer.count({ where: { userId } }),
-      prisma.studySession.count({ where: { userId } }),
       prisma.learned.count({ where: { userId } }),
     ]);
 
@@ -943,7 +925,6 @@ export async function getUserProfileStats(
       instrumentsCount,
       favoriteWorksCount,
       favoriteComposersCount,
-      studySessionsCount,
       learnedWorksCount,
     };
 

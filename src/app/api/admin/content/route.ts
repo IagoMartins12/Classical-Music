@@ -16,7 +16,6 @@ interface ContentMetrics {
     title: string;
     composer: string;
     favoritesCount: number;
-    studySessionsCount: number;
     annotationsCount: number;
     scoresCount: number;
   }>;
@@ -25,7 +24,6 @@ interface ContentMetrics {
     name: string;
     worksCount: number;
     totalFavorites: number;
-    totalStudySessions: number;
     epoch: string;
   }>;
   contentByEpoch: Array<{
@@ -87,7 +85,6 @@ const getCachedContentMetrics = unstable_cache(
         _count: {
           select: {
             favoriteBy: true,
-            studySessions: true,
             workAnnotations: true,
             cachedScores: { where: { isActive: true } },
           },
@@ -252,7 +249,6 @@ const getCachedContentMetrics = unstable_cache(
         title: work.title,
         composer: work.composer.name,
         favoritesCount: work._count.favoriteBy,
-        studySessionsCount: work._count.studySessions,
         annotationsCount: work._count.workAnnotations,
         scoresCount: work._count.cachedScores,
       })),
@@ -261,7 +257,6 @@ const getCachedContentMetrics = unstable_cache(
         name: composer.name,
         worksCount: composer._count.works,
         totalFavorites: composer._count.favoriteByUsers,
-        totalStudySessions: 0, // Calcular se necessário
         epoch: composer.epoch?.name || 'Não definido',
       })),
       contentByEpoch: epochWithScores,

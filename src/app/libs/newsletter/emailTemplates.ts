@@ -1213,9 +1213,7 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
           <p style="margin: 0 0 15px 0;">
             <strong>Obras contribuídas:</strong> {{worksCount}}
           </p>
-          <p style="margin: 0 0 15px 0;">
-            <strong>Sessões de estudo:</strong> {{studySessionsCount}}
-          </p>
+         
           <p style="margin: 0 0 15px 0;">
             <strong>Horas de prática registradas:</strong> {{totalStudyHours}}h
           </p>
@@ -1272,7 +1270,6 @@ SUA JORNADA MUSICAL:
 - Tempo na comunidade: {{accountAge}} dias
 - Compositores adicionados: {{composersCount}}
 - Obras contribuídas: {{worksCount}}
-- Sessões de estudo: {{studySessionsCount}}
 - Horas de prática: {{totalStudyHours}}h
 
 DADOS REMOVIDOS:
@@ -1299,7 +1296,6 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
       'accountAge',
       'composersCount',
       'worksCount',
-      'studySessionsCount',
       'totalStudyHours',
       'deletionDate',
       'siteUrl',

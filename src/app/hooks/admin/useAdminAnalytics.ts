@@ -15,7 +15,6 @@ interface AnalyticsOverview {
     annotations: number;
   };
   engagement: {
-    studySessions: number;
     avgSessionTime: number;
     totalStudyTime: number;
     annotationsPerDay: number;

@@ -19,9 +19,6 @@ interface AnalyticsOverview {
     annotations: number;
   };
   engagement: {
-    studySessions: number;
-    avgSessionTime: number;
-    totalStudyTime: number;
     annotationsPerDay: number;
   };
   system: {
@@ -55,7 +52,6 @@ interface AnalyticsCharts {
       title: string;
       composer: string;
       favorites: number;
-      sessions: number;
     }>;
     composers: Array<{
       id: string;
@@ -107,9 +103,7 @@ const getCachedAnalytics = unstable_cache(
       totalWorks,
       totalScores,
       totalAnnotations,
-      studySessions,
-      avgSessionTime,
-      totalStudyTime,
+
       pendingModeration,
       recentUploads,
     ] = await Promise.all([
@@ -124,17 +118,7 @@ const getCachedAnalytics = unstable_cache(
       prisma.work.count(),
       prisma.workScore.count({ where: { isActive: true } }),
       prisma.workAnnotation.count({ where: { isPublic: true } }),
-      prisma.studySession.count({
-        where: { date: { gte: lastMonth } },
-      }),
-      prisma.studySession.aggregate({
-        _avg: { durationMin: true },
-        where: { date: { gte: lastMonth } },
-      }),
-      prisma.studySession.aggregate({
-        _sum: { durationMin: true },
-        where: { date: { gte: lastMonth } },
-      }),
+
       prisma.uploadModeration.count({
         where: { status: 'pending' },
       }),
@@ -201,7 +185,6 @@ const getCachedAnalytics = unstable_cache(
           _count: {
             select: {
               favoriteBy: true,
-              studySessions: { where: { date: { gte: lastMonth } } },
             },
           },
         },
@@ -273,21 +256,6 @@ const getCachedAnalytics = unstable_cache(
     // Métricas de engajamento
     const engagementMetrics = [
       {
-        metric: 'Sessões de Estudo',
-        value: studySessions,
-        trend: 15.2, // Calcular baseado em dados históricos
-      },
-      {
-        metric: 'Tempo Médio (min)',
-        value: Math.round(avgSessionTime._avg.durationMin || 0),
-        trend: -2.1,
-      },
-      {
-        metric: 'Total de Horas',
-        value: Math.round((totalStudyTime._sum.durationMin || 0) / 60),
-        trend: 8.7,
-      },
-      {
         metric: 'Anotações/Dia',
         value: Math.round(totalAnnotations / 30),
         trend: 12.4,
@@ -314,15 +282,6 @@ const getCachedAnalytics = unstable_cache(
       });
     }
 
-    if ((avgSessionTime._avg.durationMin || 0) < 15) {
-      recommendations.push({
-        type: 'info' as const,
-        title: 'Engajamento Baixo',
-        description: 'Sessões de estudo estão muito curtas',
-        action: 'Melhorar experiência',
-      });
-    }
-
     const overview: AnalyticsOverview = {
       users: {
         total: totalUsers,
@@ -337,9 +296,6 @@ const getCachedAnalytics = unstable_cache(
         annotations: totalAnnotations,
       },
       engagement: {
-        studySessions,
-        avgSessionTime: Math.round(avgSessionTime._avg.durationMin || 0),
-        totalStudyTime: Math.round((totalStudyTime._sum.durationMin || 0) / 60),
         annotationsPerDay: Math.round(totalAnnotations / 30),
       },
       system: {
@@ -360,7 +316,6 @@ const getCachedAnalytics = unstable_cache(
           title: work.title,
           composer: work.composer.name,
           favorites: work._count.favoriteBy,
-          sessions: work._count.studySessions,
         })),
         composers: topComposers.map((composer) => ({
           id: composer.id,

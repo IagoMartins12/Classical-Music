@@ -282,14 +282,6 @@ export default function AdvancedReports() {
             icon={FiFileText}
             color="#F59E0B"
           />
-
-          <MetricCard
-            title="Sessões de Estudo (30d)"
-            value={formatNumber(stats.studySessions)}
-            change={{ value: 15.7, isPositive: true }}
-            icon={FiActivity}
-            color="#8B5CF6"
-          />
         </div>
       )}
 
@@ -722,12 +714,7 @@ export default function AdvancedReports() {
               </div>
               <div className="text-sm text-theme-secondary">Obras</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-accent-purple">
-                {formatNumber(stats.studySessions)}
-              </div>
-              <div className="text-sm text-theme-secondary">Sessões (30d)</div>
-            </div>
+
             <div className="text-center">
               <div className="text-2xl font-bold text-accent-orange">
                 {formatNumber(stats.totalAnnotations)}

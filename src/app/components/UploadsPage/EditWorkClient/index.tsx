@@ -19,7 +19,6 @@ import {
   FiTarget,
   FiTag,
   FiLayers,
-  FiActivity,
   FiBookOpen,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiMetronome } from 'react-icons/gi';

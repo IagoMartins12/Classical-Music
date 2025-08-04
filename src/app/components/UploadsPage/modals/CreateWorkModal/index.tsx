@@ -237,7 +237,6 @@ const CreateWorkModal = ({
     categoryNames: [] as string[],
     workGenresArr: [] as string[],
     dedicateTo: '',
-    dedicationComposerLink: '',
     instrumentation: '',
     workType: 'INDIVIDUAL',
     movementNumber: '',
@@ -334,7 +333,6 @@ const CreateWorkModal = ({
       categoryNames: editingWork.categoryNames || [],
       workGenresArr: editingWork.workGenresArr || [],
       dedicateTo: editingWork.dedicateTo || '',
-      dedicationComposerLink: editingWork.dedicationComposerLink || '',
       instrumentation: editingWork.instrumentation || '',
       workType: editingWork.workType || 'INDIVIDUAL',
       movementNumber: editingWork.movementNumber?.toString() || '',
@@ -387,7 +385,6 @@ const CreateWorkModal = ({
         categoryNames: editingWork.categoryNames || [],
         workGenresArr: editingWork.workGenresArr || [],
         dedicateTo: editingWork.dedicateTo || '',
-        dedicationComposerLink: editingWork.dedicationComposerLink || '',
         instrumentation: editingWork.instrumentation || '',
         workType: editingWork.workType || 'INDIVIDUAL',
         movementNumber: editingWork.movementNumber?.toString() || '',
@@ -728,8 +725,7 @@ const CreateWorkModal = ({
       moviment: data.moviment || prev.moviment,
       instrumentation: data.instrumentation || prev.instrumentation,
       dedicateTo: data.dedicateTo || prev.dedicateTo,
-      dedicationComposerLink:
-        data.dedicationComposerLink || prev.dedicationComposerLink,
+
       categoryNames: data.categoryNames
         ? filterValidCategories(data.categoryNames)
         : prev.categoryNames,

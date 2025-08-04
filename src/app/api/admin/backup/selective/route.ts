@@ -96,12 +96,7 @@ const AVAILABLE_COLLECTIONS = [
     dependencies: ['user', 'work'],
     description: 'Partituras marcadas como favoritas',
   },
-  {
-    name: 'studySession',
-    displayName: 'Sessões de Estudo',
-    dependencies: ['user', 'work'],
-    description: 'Registros de sessões de estudo',
-  },
+
   {
     name: 'userInstrument',
     displayName: 'Instrumentos dos Usuários',

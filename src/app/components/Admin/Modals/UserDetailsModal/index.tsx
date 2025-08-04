@@ -8,7 +8,6 @@ import {
   FiFileText,
   FiUpload,
   FiHeart,
-  FiClock,
   FiTrendingUp,
   FiAward,
   FiTarget,
@@ -35,12 +34,11 @@ interface UserDetailsData {
     totalFavoriteWorks: number;
     totalFavoriteComposers: number;
     totalAnnotations: number;
-    totalStudySessions: number;
     lastActivity: string;
     joinedDaysAgo: number;
   };
   recentActivity: Array<{
-    type: 'annotation' | 'study' | 'favorite' | 'upload';
+    type: 'annotation' | 'favorite' | 'upload';
     title: string;
     subtitle: string;
     date: string;
@@ -63,14 +61,6 @@ interface UserDetailsData {
       status: string;
       createdAt: string;
     }>;
-  };
-  studyHabits: {
-    averageSessionDuration: number;
-    mostStudiedComposer: string;
-    mostStudiedWork: string;
-    preferredPracticeTimes: string[];
-    longestStreak: number;
-    currentStreak: number;
   };
 }
 
@@ -443,8 +433,6 @@ export default function UserDetailsModal({
                               className={`w-8 h-8 rounded-full flex items-center justify-center ${
                                 activity.type === 'annotation'
                                   ? 'bg-accent-green/20 text-accent-green'
-                                  : activity.type === 'study'
-                                  ? 'bg-accent-blue/20 text-accent-blue'
                                   : activity.type === 'favorite'
                                   ? 'bg-accent-red/20 text-accent-red'
                                   : 'bg-accent-purple/20 text-accent-purple'
@@ -453,9 +441,7 @@ export default function UserDetailsModal({
                               {activity.type === 'annotation' && (
                                 <FiFileText className="w-4 h-4" />
                               )}
-                              {activity.type === 'study' && (
-                                <FiClock className="w-4 h-4" />
-                              )}
+
                               {activity.type === 'favorite' && (
                                 <FiHeart className="w-4 h-4" />
                               )}
@@ -655,113 +641,6 @@ export default function UserDetailsModal({
                     <LoadingSpinner />
                   )}
                 </AnimatedCard>
-              </div>
-            )}
-
-            {/* Study Tab */}
-            {activeTab === 'study' && (
-              <div className="space-y-6">
-                {detailsData?.studyHabits ? (
-                  <>
-                    {/* Hábitos de Estudo */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-theme-secondary p-4 rounded-xl text-center">
-                        <div className="text-2xl font-bold text-accent-blue mb-1">
-                          {formatDuration(
-                            detailsData.studyHabits.averageSessionDuration
-                          )}
-                        </div>
-                        <div className="text-sm text-theme-tertiary">
-                          Sessão Média
-                        </div>
-                      </div>
-
-                      <div className="bg-theme-secondary p-4 rounded-xl text-center">
-                        <div className="text-2xl font-bold text-accent-green mb-1">
-                          {detailsData.studyHabits.currentStreak}
-                        </div>
-                        <div className="text-sm text-theme-tertiary">
-                          Sequência Atual
-                        </div>
-                      </div>
-
-                      <div className="bg-theme-secondary p-4 rounded-xl text-center">
-                        <div className="text-2xl font-bold text-accent-purple mb-1">
-                          {detailsData.studyHabits.longestStreak}
-                        </div>
-                        <div className="text-sm text-theme-tertiary">
-                          Maior Sequência
-                        </div>
-                      </div>
-
-                      <div className="bg-theme-secondary p-4 rounded-xl text-center">
-                        <div className="text-lg font-bold text-accent-amber mb-1">
-                          {detailsData.profile.totalStudySessions}
-                        </div>
-                        <div className="text-sm text-theme-tertiary">
-                          Total de Sessões
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Preferências de Estudo */}
-                    <AnimatedCard className="classical-card p-4">
-                      <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
-                        <FiTarget className="w-5 h-5 text-accent-blue" />
-                        Preferências de Estudo
-                      </h3>
-
-                      <div className="space-y-4">
-                        {detailsData.studyHabits.mostStudiedComposer && (
-                          <div className="flex items-center justify-between">
-                            <span className="text-theme-tertiary">
-                              Compositor Favorito:
-                            </span>
-                            <span className="text-theme-primary font-medium">
-                              {detailsData.studyHabits.mostStudiedComposer}
-                            </span>
-                          </div>
-                        )}
-
-                        {detailsData.studyHabits.mostStudiedWork && (
-                          <div className="flex items-center justify-between">
-                            <span className="text-theme-tertiary">
-                              Obra Mais Estudada:
-                            </span>
-                            <span className="text-theme-primary font-medium">
-                              {detailsData.studyHabits.mostStudiedWork}
-                            </span>
-                          </div>
-                        )}
-
-                        {detailsData.studyHabits.preferredPracticeTimes.length >
-                          0 && (
-                          <div>
-                            <span className="text-theme-tertiary">
-                              Horários Preferidos:
-                            </span>
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {detailsData.studyHabits.preferredPracticeTimes.map(
-                                (time, index) => (
-                                  <span
-                                    key={index}
-                                    className="px-2 py-1 bg-accent-blue/20 text-accent-blue rounded-full text-sm"
-                                  >
-                                    {time}
-                                  </span>
-                                )
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </AnimatedCard>
-                  </>
-                ) : (
-                  <div className="text-center py-8">
-                    <LoadingSpinner />
-                  </div>
-                )}
               </div>
             )}
           </>

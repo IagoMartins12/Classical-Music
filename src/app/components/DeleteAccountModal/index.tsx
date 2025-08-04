@@ -14,9 +14,7 @@ import {
   FiMusic,
   FiFileText,
   FiHeart,
-  FiClock,
   FiEdit3,
-  FiBookmark,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import Button from '../Common/Button';
@@ -135,24 +133,14 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
       count: cascadeInfo?.favoritesCount || 0,
       color: 'from-accent-red to-accent-purple',
     },
-    {
-      icon: FiClock,
-      label: 'Sessões de Estudo',
-      count: cascadeInfo?.studySessionsCount || 0,
-      color: 'from-accent-purple to-accent-blue',
-    },
+
     {
       icon: GiMusicalNotes,
       label: 'Instrumentos',
       count: cascadeInfo?.instrumentsCount || 0,
       color: 'from-accent-blue to-accent-green',
     },
-    {
-      icon: FiBookmark,
-      label: 'Marcadores',
-      count: cascadeInfo?.bookmarksCount || 0,
-      color: 'from-accent-green to-accent-amber',
-    },
+
     {
       icon: BiBookOpen,
       label: 'Peças aprendidas',

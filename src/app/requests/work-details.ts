@@ -17,7 +17,6 @@ export interface WorkDetails {
   workStyle?: string;
   moviment?: string;
   dedicateTo?: string;
-  dedicationComposerLink?: string;
   instrumentation?: string;
   workType: string;
   movementNumber?: number;
@@ -1065,7 +1064,6 @@ export const getWorkById = async (
       workStyle: work.workStyle || undefined,
       moviment: work.moviment || undefined,
       dedicateTo: work.dedicateTo || undefined,
-      dedicationComposerLink: work.dedicationComposerLink || undefined,
       instrumentation: work.instrumentation || undefined,
       workType: work.workType,
       movementNumber: work.movementNumber || undefined,

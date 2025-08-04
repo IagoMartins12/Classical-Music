@@ -276,7 +276,6 @@ async function processIndividualWork(
       moviment: workData.moviment,
       instrumentation: workData.instrumentation,
       dedicateTo: workData.dedicateTo,
-      dedicationComposerLink: workData.dedicationComposerLink,
 
       // Arrays
       categoryNames: workData.categoryNames || [],

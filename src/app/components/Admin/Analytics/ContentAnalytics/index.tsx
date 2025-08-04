@@ -17,7 +17,6 @@ import {
   FiEye,
   FiEdit,
   FiBarChart2,
-  FiActivity,
   FiTarget,
   FiDatabase,
 } from 'react-icons/fi';
@@ -47,7 +46,6 @@ interface ContentMetrics {
     title: string;
     composer: string;
     favoritesCount: number;
-    studySessionsCount: number;
     annotationsCount: number;
     scoresCount: number;
   }>;
@@ -56,7 +54,6 @@ interface ContentMetrics {
     name: string;
     worksCount: number;
     totalFavorites: number;
-    totalStudySessions: number;
     epoch: string;
   }>;
   contentByEpoch: Array<{
@@ -106,7 +103,6 @@ export default function ContentAnalytics() {
         title: 'Für Elise',
         composer: 'Ludwig van Beethoven',
         favoritesCount: 1234,
-        studySessionsCount: 5678,
         annotationsCount: 234,
         scoresCount: 12,
       },
@@ -115,7 +111,6 @@ export default function ContentAnalytics() {
         title: 'Canon in D',
         composer: 'Johann Pachelbel',
         favoritesCount: 1098,
-        studySessionsCount: 4523,
         annotationsCount: 189,
         scoresCount: 8,
       },
@@ -124,7 +119,6 @@ export default function ContentAnalytics() {
         title: 'Clair de Lune',
         composer: 'Claude Debussy',
         favoritesCount: 987,
-        studySessionsCount: 3456,
         annotationsCount: 167,
         scoresCount: 6,
       },
@@ -135,7 +129,6 @@ export default function ContentAnalytics() {
         name: 'Ludwig van Beethoven',
         worksCount: 234,
         totalFavorites: 8756,
-        totalStudySessions: 23456,
         epoch: 'Clássico',
       },
       {
@@ -143,7 +136,6 @@ export default function ContentAnalytics() {
         name: 'Johann Sebastian Bach',
         worksCount: 312,
         totalFavorites: 7234,
-        totalStudySessions: 19876,
         epoch: 'Barroco',
       },
       {
@@ -151,7 +143,6 @@ export default function ContentAnalytics() {
         name: 'Wolfgang Amadeus Mozart',
         worksCount: 187,
         totalFavorites: 6789,
-        totalStudySessions: 18234,
         epoch: 'Clássico',
       },
     ],
@@ -465,12 +456,7 @@ export default function ContentAnalytics() {
                               {work.favoritesCount}
                             </span>
                           </div>
-                          <div className="flex items-center space-x-1">
-                            <FiActivity className="w-3 h-3 text-accent-green" />
-                            <span className="text-xs text-theme-tertiary">
-                              {work.studySessionsCount}
-                            </span>
-                          </div>
+
                           <div className="flex items-center space-x-1">
                             <FiMessageSquare className="w-3 h-3 text-accent-blue" />
                             <span className="text-xs text-theme-tertiary">
@@ -521,9 +507,6 @@ export default function ContentAnalytics() {
                         <div className="flex items-center space-x-3 mt-1">
                           <span className="text-xs text-accent-red">
                             {formatNumber(composer.totalFavorites)} favoritos
-                          </span>
-                          <span className="text-xs text-accent-green">
-                            {formatNumber(composer.totalStudySessions)} sessões
                           </span>
                         </div>
                       </div>

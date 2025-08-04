@@ -58,7 +58,6 @@ interface WorkData {
   moviment: string | null;
   movementsDetailed: MovementDetail[];
   dedicateTo: string | null;
-  dedicationComposerLink: string | null;
   instrumentation: string | null;
   imslpTags: string[];
   difficultyLevel: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | null;
@@ -670,9 +669,9 @@ class WorkScraper {
   extractDedicationInfo(
     dedicationText: string,
     $: cheerio.CheerioAPI
-  ): { dedicateTo: string | null; dedicationComposerLink: string | null } {
+  ): { dedicateTo: string | null } {
     if (!dedicationText) {
-      return { dedicateTo: null, dedicationComposerLink: null };
+      return { dedicateTo: null };
     }
 
     // Procurar por links na seção de dedicação
@@ -694,7 +693,6 @@ class WorkScraper {
           : `https://imslp.org${composerLink}`;
         return {
           dedicateTo: composerName,
-          dedicationComposerLink: fullLink,
         };
       }
     }
@@ -702,7 +700,6 @@ class WorkScraper {
     // Se não é compositor, apenas salvar o texto
     return {
       dedicateTo: dedicationText.trim(),
-      dedicationComposerLink: null,
     };
   }
 
@@ -1246,8 +1243,6 @@ class WorkScraper {
             if (value && value !== '-' && value.length > 0) {
               const dedicationInfo = this.extractDedicationInfo(value, $);
               workDetails.dedicateTo = dedicationInfo.dedicateTo;
-              workDetails.dedicationComposerLink =
-                dedicationInfo.dedicationComposerLink;
             }
             break;
         }
@@ -1268,8 +1263,6 @@ class WorkScraper {
         workDetails.opOrCatalog,
         workGenres
       );
-
-
 
       // Tentar identificar instrumento principal
       let primaryInstrument = null;
@@ -1432,7 +1425,6 @@ class WorkScraper {
         moviment: workDetails.moviment || null,
         movementsDetailed: workDetails.movementsDetailed || [],
         dedicateTo: workDetails.dedicateTo || null,
-        dedicationComposerLink: workDetails.dedicationComposerLink || null,
         instrumentation: workDetails.instrumentation || null,
         imslpTags: workDetails.imslpTags || [],
         difficultyLevel: workDetails.difficultyLevel,
@@ -1539,15 +1531,11 @@ class WorkScraper {
             mediaDuration: workData.mediaDuration,
             workStyle: workData.workStyle,
             moviment: workData.moviment,
-            //@ts-ignore
-            movementsDetailed: workData.movementsDetailed,
             dedicateTo: workData.dedicateTo,
-            dedicationComposerLink: workData.dedicationComposerLink,
             instrumentation: workData.instrumentation,
             imslpTags: workData.imslpTags,
             difficultyLevel: workData.difficultyLevel,
             workType: workData.workType,
-            parentWorkId: workData.parentWorkId,
             movementNumber: workData.movementNumber,
             categoryNames: workData.categoryNames,
             workGenresArr: workData.workGenresArr,

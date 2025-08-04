@@ -215,60 +215,6 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // 4. Sessões de estudo recentes
-    if (type === 'all' || type === 'study_session') {
-      const recentSessions = await prisma.studySession.findMany({
-        where: {
-          date: { gte: last24Hours },
-        },
-        include: {
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-            },
-          },
-          work: {
-            select: {
-              id: true,
-              title: true,
-            },
-          },
-        },
-        orderBy: { date: 'desc' },
-        take: Math.floor(limit / 4),
-      });
-
-      recentSessions.forEach((session) => {
-        activities.push({
-          id: `session_${session.id}`,
-          type: 'study_session',
-          user: {
-            id: session.user.id,
-            name:
-              `${session.user.firstName || ''} ${
-                session.user.lastName || ''
-              }`.trim() || 'Usuário',
-            email: session.user.email || '',
-          },
-          action: 'estudou',
-          target: {
-            type: 'work',
-            id: session.work.id,
-            name: session.work.title,
-          },
-          timestamp: session.date,
-          status: 'success',
-          metadata: {
-            duration: session.durationMin,
-            focus: session.focus,
-          },
-        });
-      });
-    }
-
     // Ordenar por timestamp e aplicar paginação
     const sortedActivities = activities
       .sort(

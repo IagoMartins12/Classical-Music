@@ -15,7 +15,6 @@ interface ReportStats {
   totalAnnotations: number;
   activeUsers: number;
   newUsers: number;
-  studySessions: number;
   uploads: number;
   totalScores: number;
 }
@@ -35,7 +34,6 @@ const getCachedReportStats = unstable_cache(
         totalAnnotations,
         activeUsers,
         newUsers,
-        studySessions,
         uploads,
         totalScores,
       ] = await Promise.all([
@@ -49,9 +47,7 @@ const getCachedReportStats = unstable_cache(
         prisma.user.count({
           where: { createdAt: { gte: sevenDaysAgo } },
         }),
-        prisma.studySession.count({
-          where: { date: { gte: thirtyDaysAgo } },
-        }),
+
         prisma.uploadHistory.count({
           where: {
             createdAt: { gte: thirtyDaysAgo },
@@ -68,7 +64,6 @@ const getCachedReportStats = unstable_cache(
         totalAnnotations,
         activeUsers,
         newUsers,
-        studySessions,
         uploads,
         totalScores,
       };
@@ -81,7 +76,6 @@ const getCachedReportStats = unstable_cache(
         totalAnnotations: 0,
         activeUsers: 0,
         newUsers: 0,
-        studySessions: 0,
         uploads: 0,
         totalScores: 0,
       };
@@ -128,7 +122,6 @@ const generateUsersReportData = async (startDate: Date, endDate: Date) => {
     totalUsers,
     newUsers,
     activeUsers,
-    avgSessionDuration,
     usersByType,
     topContributors,
     usersWithInstruments,
@@ -154,13 +147,6 @@ const generateUsersReportData = async (startDate: Date, endDate: Date) => {
       where: {
         updatedAt: { gte: startDate, lte: endDate },
       },
-    }),
-
-    prisma.studySession.aggregate({
-      where: {
-        date: { gte: startDate, lte: endDate },
-      },
-      _avg: { durationMin: true },
     }),
 
     prisma.user.groupBy({
@@ -211,7 +197,6 @@ const generateUsersReportData = async (startDate: Date, endDate: Date) => {
       totalUsers,
       newUsersCount: newUsers.length,
       activeUsers,
-      avgSessionDuration: Math.round(avgSessionDuration._avg.durationMin || 0),
       usersWithInstruments,
     },
     newUsers: newUsers.map((user) => ({
@@ -290,7 +275,6 @@ const generateContentReportData = async (startDate: Date, endDate: Date) => {
         _count: {
           select: {
             favoriteBy: true,
-            studySessions: true,
             workAnnotations: { where: { isPublic: true } },
           },
         },
@@ -368,7 +352,6 @@ const generateContentReportData = async (startDate: Date, endDate: Date) => {
       title: work.title,
       composer: work.composer.name,
       favorites: work._count.favoriteBy,
-      sessions: work._count.studySessions,
       annotations: work._count.workAnnotations,
     })),
     // 🔄 CORRIGIDO: tratamento seguro do epoch que pode ser null
@@ -397,89 +380,36 @@ const generateContentReportData = async (startDate: Date, endDate: Date) => {
 
 // Gerar dados do relatório de engajamento
 const generateEngagementReportData = async (startDate: Date, endDate: Date) => {
-  const [
-    totalSessions,
-    totalAnnotations,
-    avgSessionDuration,
-    activeUsers,
-    mostStudiedWorks,
-    annotationsByCategory,
-  ] = await Promise.all([
-    prisma.studySession.count({
-      where: {
-        date: { gte: startDate, lte: endDate },
-      },
-    }),
-
-    prisma.workAnnotation.count({
-      where: {
-        createdAt: { gte: startDate, lte: endDate },
-        isPublic: true,
-      },
-    }),
-
-    prisma.studySession.aggregate({
-      where: {
-        date: { gte: startDate, lte: endDate },
-      },
-      _avg: { durationMin: true },
-    }),
-
-    prisma.user.count({
-      where: {
-        updatedAt: { gte: startDate, lte: endDate },
-      },
-    }),
-
-    prisma.work.findMany({
-      select: {
-        title: true,
-        composer: { select: { name: true } },
-        studySessions: {
-          where: {
-            date: { gte: startDate, lte: endDate },
-          },
-          select: {
-            durationMin: true,
-            userId: true,
-          },
+  const [totalAnnotations, activeUsers, annotationsByCategory] =
+    await Promise.all([
+      prisma.workAnnotation.count({
+        where: {
+          createdAt: { gte: startDate, lte: endDate },
+          isPublic: true,
         },
-      },
-      take: 20,
-    }),
+      }),
 
-    prisma.workAnnotation.groupBy({
-      by: ['category'],
-      where: {
-        createdAt: { gte: startDate, lte: endDate },
-        isPublic: true,
-      },
-      _count: { id: true },
-    }),
-  ]);
+      prisma.user.count({
+        where: {
+          updatedAt: { gte: startDate, lte: endDate },
+        },
+      }),
 
-  const studiedWorks = mostStudiedWorks
-    .map((work) => ({
-      title: work.title,
-      composer: work.composer.name,
-      totalMinutes: work.studySessions.reduce(
-        (sum, s) => sum + s.durationMin,
-        0
-      ),
-      uniqueUsers: new Set(work.studySessions.map((s) => s.userId)).size,
-    }))
-    .filter((w) => w.totalMinutes > 0)
-    .sort((a, b) => b.totalMinutes - a.totalMinutes)
-    .slice(0, 10);
+      prisma.workAnnotation.groupBy({
+        by: ['category'],
+        where: {
+          createdAt: { gte: startDate, lte: endDate },
+          isPublic: true,
+        },
+        _count: { id: true },
+      }),
+    ]);
 
   return {
     summary: {
-      totalSessions,
       totalAnnotations,
-      avgSessionDuration: Math.round(avgSessionDuration._avg.durationMin || 0),
       activeUsers,
     },
-    mostStudiedWorks: studiedWorks,
     annotationsByCategory: annotationsByCategory.map((item) => ({
       category: item.category,
       count: item._count.id,

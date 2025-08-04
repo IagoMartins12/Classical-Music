@@ -60,7 +60,6 @@ export default function AdminAnalytics() {
       ['Total de Obras', analytics.overview.content.works],
       ['Total de Partituras', analytics.overview.content.scores],
       ['Total de Anotações', analytics.overview.content.annotations],
-      ['Sessões de Estudo', analytics.overview.engagement.studySessions],
       [
         'Tempo Médio de Sessão',
         `${analytics.overview.engagement.avgSessionTime} min`,
@@ -237,17 +236,6 @@ export default function AdminAnalytics() {
               }}
               icon={FiDatabase}
               color="#F59E0B"
-            />
-
-            <MetricCard
-              title="Sessões de Estudo"
-              value={formatNumber(analytics.overview.engagement.studySessions)}
-              change={{
-                value: 12.4,
-                isPositive: true,
-              }}
-              icon={FiZap}
-              color="#8B5CF6"
             />
           </div>
         </AnimatedItem>

@@ -193,7 +193,6 @@ export async function POST(
       moviment: scrapedData.moviment,
       instrumentation: scrapedData.instrumentation,
       dedicateTo: scrapedData.dedicateTo,
-      dedicationComposerLink: scrapedData.dedicationComposerLink,
 
       // Arrays
       categoryNames: scrapedData.categoryNames || [],
@@ -349,7 +348,6 @@ async function scrapeIMSLPWorkDirect(url: string, composer: any) {
     moviment: workDetails.moviment,
     instrumentation: translateInstrumentation(workDetails.instrumentation),
     dedicateTo: workDetails.dedicateTo,
-    dedicationComposerLink: workDetails.dedicationComposerLink,
     categoryNames: validCategories,
     workGenresArr: validWorkGenres,
     imslpTags,

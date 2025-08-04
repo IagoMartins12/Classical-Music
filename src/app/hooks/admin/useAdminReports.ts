@@ -34,7 +34,6 @@ export interface ReportStats {
   totalAnnotations: number;
   activeUsers: number;
   newUsers: number;
-  studySessions: number;
   uploads: number;
   totalScores: number;
 }
@@ -180,18 +179,6 @@ export const useAdminReports = (): UseAdminReportsReturn => {
           lastUpdated: now,
         },
 
-        // 🎯 MÉTRICAS DE ENGAJAMENTO - TODAS REAIS
-        {
-          id: 'total_study_sessions',
-          name: 'Sessões de Estudo (30d)',
-          description:
-            'Número total de sessões de estudo registradas nos últimos 30 dias',
-          category: 'engagement',
-          type: 'count',
-          available: true,
-          currentValue: statsData.studySessions,
-          lastUpdated: now,
-        },
         {
           id: 'total_annotations',
           name: 'Anotações Públicas',

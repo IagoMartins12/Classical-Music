@@ -7,8 +7,6 @@ export interface AdminOverviewStats {
   totalWorks: number;
   totalScores: number;
   totalAnnotations: number;
-  totalStudySessions: number;
-  averageSessionDuration: number;
   growthRate: {
     users: number;
     works: number;
@@ -47,7 +45,6 @@ export interface PopularWork {
   composer: string;
   favoritesCount: number;
   annotationsCount: number;
-  studySessionsCount: number;
   scoreCount: number;
 }
 
@@ -56,7 +53,6 @@ export interface PopularComposer {
   name: string;
   worksCount: number;
   totalFavorites: number;
-  totalStudySessions: number;
   avgWorksPerUser: number;
 }
 
@@ -209,10 +205,7 @@ export const useAdminStats = (): UseAdminStatsReturn => {
                 totalScores: statsData.stats.overview?.totalScores || 0,
                 totalAnnotations:
                   statsData.stats.overview?.totalAnnotations || 0,
-                totalStudySessions:
-                  statsData.stats.overview?.totalStudySessions || 0,
-                averageSessionDuration:
-                  statsData.stats.overview?.averageSessionDuration || 0,
+
                 growthRate: {
                   users: statsData.stats.overview?.growthRate?.users || 0,
                   works: statsData.stats.overview?.growthRate?.works || 0,

@@ -20,13 +20,10 @@ export interface CascadeInfo {
   scoresCount: number;
   annotationsCount: number;
   favoritesCount: number;
-  studySessionsCount: number;
   instrumentsCount: number;
   favoriteComposersCount: number;
   learnedWorksCount: number;
   wantToLearnCount: number;
-  pdfAnnotationsCount: number;
-  bookmarksCount: number;
   sampleComposers: { id: string; name: string; epochName?: string | null }[];
   sampleWorks: { id: string; title: string; composer: { name: string } }[];
   sampleAnnotations: { id: string; title: string; work: { title: string } }[];

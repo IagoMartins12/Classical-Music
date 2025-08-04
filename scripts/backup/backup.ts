@@ -31,9 +31,6 @@ const MODELS_ORDER = [
   // Dados do usuário relacionados a obras
   'userInstrument',
   'annotation',
-  'pdfAnnotation',
-  'scoreBookmark',
-  'studySession',
   'wantToLearn',
   'learned',
   'favoriteWork',

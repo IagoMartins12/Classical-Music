@@ -31,7 +31,6 @@ import {
   getTabStatistics,
   TabStatistics,
 } from '@/app/utils/type-utils';
-import StudyModeButton from '../../StudyModePage/StudyModeButton';
 
 // ✅ Interface unificada para dados mistos
 interface MixedScoreData {
@@ -602,13 +601,6 @@ export default function IMSLPTabsIncremental({
                           </span>
                         </div>
                       </div>
-                      <StudyModeButton
-                        workId={workId}
-                        workTitle={workTitle}
-                        composerName={composerName}
-                        selectedScore={selectedScore as any}
-                        variant="compact"
-                      />
                     </div>
                   )}
               </div>
@@ -903,17 +895,6 @@ export default function IMSLPTabsIncremental({
                       {!isSelectionMode && (
                         <div className="mt-4 pt-4 border-t border-theme-secondary">
                           <div className="flex flex-wrap gap-3">
-                            {workId && workTitle && composerName && (
-                              <StudyModeButton
-                                workId={workId}
-                                workTitle={workTitle}
-                                composerName={composerName}
-                                selectedScore={selectedScore as any}
-                                variant="default"
-                                className="flex-1 min-w-[200px]"
-                              />
-                            )}
-
                             <button
                               onClick={() => handleScoreSelect(selectedScore)}
                               className="btn-classical-secondary flex items-center space-x-2"

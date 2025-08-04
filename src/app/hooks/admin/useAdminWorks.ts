@@ -15,7 +15,6 @@ export interface WorkItem {
   favoritesCount: number;
   annotationsCount: number;
   scoresCount: number;
-  studySessionsCount: number;
   wantToLearnCount: number;
   learnedCount: number;
   createdAt: Date;

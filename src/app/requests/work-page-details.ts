@@ -18,7 +18,6 @@ export interface WorkDetails {
   workStyle?: string;
   moviment?: string;
   dedicateTo?: string;
-  dedicationComposerLink?: string;
   instrumentation?: string;
   workType: string;
   parentWorkId?: string;
@@ -129,7 +128,6 @@ const getCachedWorkData = unstable_cache(
           workStyle: true,
           moviment: true,
           dedicateTo: true,
-          dedicationComposerLink: true,
           instrumentation: true,
           workType: true,
           movementNumber: true,
@@ -244,7 +242,6 @@ export const getWorkById = async (
       workStyle: work.workStyle || undefined,
       moviment: work.moviment || undefined,
       dedicateTo: work.dedicateTo || undefined,
-      dedicationComposerLink: work.dedicationComposerLink || undefined,
       instrumentation: work.instrumentation || undefined,
       workType: work.workType,
       movementNumber: work.movementNumber || undefined,

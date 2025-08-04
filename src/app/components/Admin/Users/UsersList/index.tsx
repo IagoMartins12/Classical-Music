@@ -267,7 +267,11 @@ export default function UsersList() {
                   leftIcon={<FiFilter />}
                   rightIcon={
                     activeFiltersCount > 0 && (
-                      <span className="text-black px-2 py-0.5 rounded-full text-xs font-bold">
+                      <span
+                        className={`${
+                          showFilters ? 'text-black' : 'text-white'
+                        } px-2 py-0.5 rounded-full text-xs font-bold`}
+                      >
                         {activeFiltersCount}
                       </span>
                     )
