@@ -1,0 +1,486 @@
+// app/api/teacher/profile/route.ts
+// app/api/lessons/works/route.ts
+// app/api/overview/route.ts
+// app/api/analytics/individual/route.ts
+// app/api/stats/system/route.ts
+// app/api/reviews/route.ts
+// app/api/student/profile/route.ts
+// app/api/public/teachers/[id]/route.ts
+// app/api/public/teachers/route.ts
+// app/api/assignments/route.ts
+// app/api/lessons/[id]/route.ts
+// app/api/student/calendar/route.ts
+// app/api/student/dashboard/route.ts
+// app/api/teacher/calendar/route.ts
+// app/api/teacher/dashboard/route.ts
+// app/api/lessons/route.ts
+// app/api/teacher/students/route.ts
+// app/api/teacher/students/search/route.ts
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/libs/auth';
+import prisma from '@/app/libs/prismadb';
+
+interface TeacherProfileData {
+  id: string;
+  userId: string;
+
+  // Informações básicas
+  bio?: string;
+  specialties: string[];
+  instruments: string[];
+  experience?: string;
+  education?: string;
+  achievements?: string;
+
+  // Perfil público
+  isPublicProfile: boolean;
+  profileImage?: string;
+  website?: string;
+  socialMedia?: any;
+  publicBio?: string;
+  highlightedWorks: string[];
+
+  // Configurações de ensino
+  defaultLessonDuration: number;
+  maxStudentsPerWeek: number;
+  timezone: string;
+
+  // Metodologia
+  teachingMethod?: string;
+  ageGroups: string[];
+  skillLevels: string[];
+
+  // Status e verificação
+  status: string;
+  isVerified: boolean;
+  verifiedAt?: Date;
+
+  // Configurações de relatórios
+  allowProgressReports: boolean;
+  reportPreferences?: any;
+
+  // Métricas
+  totalStudents: number;
+  totalLessons: number;
+  averageRating?: number;
+  totalReviews: number;
+  completionRate?: number;
+
+  // User data
+  user: {
+    firstName?: string | null;
+    lastName?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    city?: string | null;
+    state?: string | null;
+    country?: string | null;
+    image?: string | null;
+  };
+
+  // Timestamps
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// GET - Buscar perfil do professor
+export async function GET(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id || session.user.role !== 1) {
+      return NextResponse.json(
+        { error: 'Acesso negado - Apenas professores' },
+        { status: 403 }
+      );
+    }
+
+    console.log(
+      `👨‍🏫 [TEACHER-PROFILE] Buscando perfil do professor ${session.user.id}`
+    );
+
+    // Buscar perfil do professor
+    const teacherProfile = await prisma.teacher.findUnique({
+      where: { userId: session.user.id },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            city: true,
+            state: true,
+            country: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    if (!teacherProfile) {
+      // Se não existe, criar perfil básico
+      console.log(
+        `🆕 [TEACHER-PROFILE] Criando perfil básico para professor ${session.user.id}`
+      );
+
+      const newTeacherProfile = await prisma.teacher.create({
+        data: {
+          userId: session.user.id,
+          specialties: [],
+          instruments: [],
+          ageGroups: [],
+          skillLevels: [],
+          highlightedWorks: [],
+          status: 'PENDING',
+          isVerified: false,
+          isPublicProfile: false,
+          allowProgressReports: true,
+          defaultLessonDuration: 60,
+          maxStudentsPerWeek: 50,
+          timezone: 'America/Sao_Paulo',
+        },
+        include: {
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              email: true,
+              phone: true,
+              city: true,
+              state: true,
+              country: true,
+              image: true,
+            },
+          },
+        },
+      });
+
+      const profileData: TeacherProfileData = {
+        id: newTeacherProfile.id,
+        userId: newTeacherProfile.userId,
+        bio: newTeacherProfile.bio || undefined,
+        specialties: newTeacherProfile.specialties,
+        instruments: newTeacherProfile.instruments,
+        experience: newTeacherProfile.experience || undefined,
+        education: newTeacherProfile.education || undefined,
+        achievements: newTeacherProfile.achievements || undefined,
+        isPublicProfile: newTeacherProfile.isPublicProfile,
+        profileImage: newTeacherProfile.profileImage || undefined,
+        website: newTeacherProfile.website || undefined,
+        socialMedia: newTeacherProfile.socialMedia,
+        publicBio: newTeacherProfile.publicBio || undefined,
+        highlightedWorks: newTeacherProfile.highlightedWorks,
+        defaultLessonDuration: newTeacherProfile.defaultLessonDuration,
+        maxStudentsPerWeek: newTeacherProfile.maxStudentsPerWeek,
+        timezone: newTeacherProfile.timezone,
+        teachingMethod: newTeacherProfile.teachingMethod || undefined,
+        ageGroups: newTeacherProfile.ageGroups,
+        skillLevels: newTeacherProfile.skillLevels,
+        status: newTeacherProfile.status,
+        isVerified: newTeacherProfile.isVerified,
+        verifiedAt: newTeacherProfile.verifiedAt || undefined,
+        allowProgressReports: newTeacherProfile.allowProgressReports,
+        reportPreferences: newTeacherProfile.reportPreferences,
+        totalStudents: newTeacherProfile.totalStudents,
+        totalLessons: newTeacherProfile.totalLessons,
+        averageRating: newTeacherProfile.averageRating || undefined,
+        totalReviews: newTeacherProfile.totalReviews,
+        completionRate: newTeacherProfile.completionRate || undefined,
+        user: newTeacherProfile.user,
+        createdAt: newTeacherProfile.createdAt,
+        updatedAt: newTeacherProfile.updatedAt,
+      };
+
+      return NextResponse.json({
+        success: true,
+        profile: profileData,
+        isNew: true,
+      });
+    }
+
+    // Formatar perfil existente
+    const profileData: TeacherProfileData = {
+      id: teacherProfile.id,
+      userId: teacherProfile.userId,
+      bio: teacherProfile.bio || undefined,
+      specialties: teacherProfile.specialties,
+      instruments: teacherProfile.instruments,
+      experience: teacherProfile.experience || undefined,
+      education: teacherProfile.education || undefined,
+      achievements: teacherProfile.achievements || undefined,
+      isPublicProfile: teacherProfile.isPublicProfile,
+      profileImage: teacherProfile.profileImage || undefined,
+      website: teacherProfile.website || undefined,
+      socialMedia: teacherProfile.socialMedia,
+      publicBio: teacherProfile.publicBio || undefined,
+      highlightedWorks: teacherProfile.highlightedWorks,
+      defaultLessonDuration: teacherProfile.defaultLessonDuration,
+      maxStudentsPerWeek: teacherProfile.maxStudentsPerWeek,
+      timezone: teacherProfile.timezone,
+      teachingMethod: teacherProfile.teachingMethod || undefined,
+      ageGroups: teacherProfile.ageGroups,
+      skillLevels: teacherProfile.skillLevels,
+      status: teacherProfile.status,
+      isVerified: teacherProfile.isVerified,
+      verifiedAt: teacherProfile.verifiedAt || undefined,
+      allowProgressReports: teacherProfile.allowProgressReports,
+      reportPreferences: teacherProfile.reportPreferences,
+      totalStudents: teacherProfile.totalStudents,
+      totalLessons: teacherProfile.totalLessons,
+      averageRating: teacherProfile.averageRating || undefined,
+      totalReviews: teacherProfile.totalReviews,
+      completionRate: teacherProfile.completionRate || undefined,
+      user: teacherProfile.user,
+      createdAt: teacherProfile.createdAt,
+      updatedAt: teacherProfile.updatedAt,
+    };
+
+    console.log(`✅ [TEACHER-PROFILE] Perfil do professor carregado`);
+
+    return NextResponse.json({
+      success: true,
+      profile: profileData,
+      isNew: false,
+    });
+  } catch (error) {
+    console.error('❌ [TEACHER-PROFILE] Erro ao buscar perfil:', error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}
+
+// PUT - Atualizar perfil do professor
+export async function PUT(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id || session.user.role !== 1) {
+      return NextResponse.json(
+        { error: 'Acesso negado - Apenas professores' },
+        { status: 403 }
+      );
+    }
+
+    const body = await request.json();
+    const { userData, teacherData } = body;
+
+    console.log(
+      `👨‍🏫✏️ [TEACHER-PROFILE] Atualizando perfil do professor ${session.user.id}`
+    );
+
+    // Verificar se perfil existe
+    const existingProfile = await prisma.teacher.findUnique({
+      where: { userId: session.user.id },
+      select: { id: true },
+    });
+
+    if (!existingProfile) {
+      return NextResponse.json(
+        { error: 'Perfil de professor não encontrado' },
+        { status: 404 }
+      );
+    }
+
+    // Atualizar dados do usuário se fornecidos
+    if (userData) {
+      const allowedUserFields = [
+        'firstName',
+        'lastName',
+        'phone',
+        'city',
+        'state',
+        'country',
+        'image',
+      ];
+      const userUpdateData: any = {};
+
+      Object.keys(userData).forEach((key) => {
+        if (allowedUserFields.includes(key)) {
+          userUpdateData[key] = userData[key];
+        }
+      });
+
+      if (Object.keys(userUpdateData).length > 0) {
+        await prisma.user.update({
+          where: { id: session.user.id },
+          data: userUpdateData,
+        });
+        console.log('📝 [TEACHER-PROFILE] Dados do usuário atualizados');
+      }
+    }
+
+    // Atualizar dados do professor se fornecidos
+    if (teacherData) {
+      const allowedTeacherFields = [
+        'bio',
+        'specialties',
+        'instruments',
+        'experience',
+        'education',
+        'achievements',
+        'isPublicProfile',
+        'profileImage',
+        'website',
+        'socialMedia',
+        'publicBio',
+        'highlightedWorks',
+        'defaultLessonDuration',
+        'maxStudentsPerWeek',
+        'timezone',
+        'teachingMethod',
+        'ageGroups',
+        'skillLevels',
+        'allowProgressReports',
+        'reportPreferences',
+      ];
+
+      const teacherUpdateData: any = {};
+
+      Object.keys(teacherData).forEach((key) => {
+        if (allowedTeacherFields.includes(key)) {
+          teacherUpdateData[key] = teacherData[key];
+        }
+      });
+
+      if (Object.keys(teacherUpdateData).length > 0) {
+        await prisma.teacher.update({
+          where: { id: existingProfile.id },
+          data: teacherUpdateData,
+        });
+        console.log('📝 [TEACHER-PROFILE] Dados do professor atualizados');
+      }
+    }
+
+    // Buscar perfil atualizado
+    const updatedProfile = await prisma.teacher.findUnique({
+      where: { userId: session.user.id },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            city: true,
+            state: true,
+            country: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    console.log(`✅ [TEACHER-PROFILE] Perfil atualizado com sucesso`);
+
+    return NextResponse.json({
+      success: true,
+      profile: updatedProfile,
+      message: 'Perfil atualizado com sucesso',
+    });
+  } catch (error) {
+    console.error('❌ [TEACHER-PROFILE] Erro ao atualizar perfil:', error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH - Atualização parcial (campos específicos)
+export async function PATCH(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id || session.user.role !== 1) {
+      return NextResponse.json(
+        { error: 'Acesso negado - Apenas professores' },
+        { status: 403 }
+      );
+    }
+
+    const body = await request.json();
+    const { field, value, action } = body; // action: 'set', 'add', 'remove'
+
+    if (!field) {
+      return NextResponse.json(
+        { error: 'Campo é obrigatório' },
+        { status: 400 }
+      );
+    }
+
+    console.log(
+      `👨‍🏫🔧 [TEACHER-PROFILE] Atualizando campo ${field} - Ação: ${action}`
+    );
+
+    // Verificar se perfil existe
+    const existingProfile = await prisma.teacher.findUnique({
+      where: { userId: session.user.id },
+    });
+
+    if (!existingProfile) {
+      return NextResponse.json(
+        { error: 'Perfil de professor não encontrado' },
+        { status: 404 }
+      );
+    }
+
+    let updateData: any = {};
+
+    // Campos array que suportam add/remove
+    const arrayFields = [
+      'specialties',
+      'instruments',
+      'ageGroups',
+      'skillLevels',
+      'highlightedWorks',
+    ];
+
+    if (arrayFields.includes(field) && action) {
+      const currentArray = (existingProfile as any)[field] || [];
+
+      switch (action) {
+        case 'add':
+          if (!currentArray.includes(value)) {
+            updateData[field] = [...currentArray, value];
+          }
+          break;
+        case 'remove':
+          updateData[field] = currentArray.filter(
+            (item: string) => item !== value
+          );
+          break;
+        case 'set':
+          updateData[field] = Array.isArray(value) ? value : [value];
+          break;
+      }
+    } else {
+      // Atualização simples
+      updateData[field] = value;
+    }
+
+    // Atualizar perfil
+    const updatedProfile = await prisma.teacher.update({
+      where: { id: existingProfile.id },
+      data: updateData,
+    });
+
+    console.log(`✅ [TEACHER-PROFILE] Campo ${field} atualizado`);
+
+    return NextResponse.json({
+      success: true,
+      profile: updatedProfile,
+      message: `Campo ${field} atualizado com sucesso`,
+    });
+  } catch (error) {
+    console.error('❌ [TEACHER-PROFILE] Erro ao atualizar campo:', error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}

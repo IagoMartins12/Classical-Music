@@ -1,0 +1,546 @@
+// app/api/lessons/[id]/route.ts
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/libs/auth';
+import prisma from '@/app/libs/prismadb';
+
+interface LessonDetails {
+  id: string;
+  title: string;
+  description?: string;
+  scheduledAt: Date;
+  duration: number;
+  actualStartTime?: Date;
+  actualEndTime?: Date;
+  status: string;
+  type: string;
+  location?: string;
+
+  // Recorrência
+  isRecurring: boolean;
+  recurrenceType?: string;
+  parentLessonId?: string;
+  recurrenceEnd?: Date;
+
+  // Conteúdo da aula
+  objectives: string[];
+  workScoreIds: string[];
+  topics: string[];
+  techniques: string[];
+  repertoire: string[];
+  homework?: string;
+  practiceGoals: string[];
+  nextLessonPrep?: string;
+
+  // Anotações (baseadas no role do usuário)
+  teacherNotes?: string; // Só professor vê
+  publicNotes?: string; // Ambos veem
+  studentFeedback?: string; // Ambos veem
+  lessonSummary?: string; // Ambos veem
+
+  // Avaliação e progresso
+  studentProgress?: any;
+  skillsWorked: string[];
+  improvements: string[];
+  challenges: string[];
+
+  // Presença e participação
+  studentPresent?: boolean;
+  punctuality?: string;
+  engagement?: number;
+  preparation?: number;
+
+  // Dados do professor e aluno
+  teacher: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string;
+  };
+  student: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string;
+    level: string;
+  };
+
+  // Informações contextuais
+  relationship: {
+    totalLessons: number;
+    completedLessons: number;
+    relationshipDuration: string;
+  };
+
+  // WorkScores relacionados (se houver)
+  workScores?: Array<{
+    id: string;
+    title: string;
+    composer: string;
+    workTitle: string;
+    type: string;
+    downloadUrl?: string;
+  }>;
+
+  // Assignments relacionados
+  assignments?: Array<{
+    id: string;
+    title: string;
+    description: string;
+    dueDate?: Date;
+    status: string;
+    isCompleted: boolean;
+  }>;
+
+  // Aulas relacionadas (série/recorrência)
+  relatedLessons?: Array<{
+    id: string;
+    title: string;
+    scheduledAt: Date;
+    status: string;
+  }>;
+
+  // Timestamps
+  createdAt: Date;
+  updatedAt: Date;
+
+  // Permissões baseadas no role
+  permissions: {
+    canEdit: boolean;
+    canCancel: boolean;
+    canReschedule: boolean;
+    canViewTeacherNotes: boolean;
+    canAddFeedback: boolean;
+    canMarkAttendance: boolean;
+  };
+}
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (
+      !session?.user?.id ||
+      (session.user.role !== 1 && session.user.role !== 0)
+    ) {
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
+    }
+
+    const lessonId = params.id;
+
+    if (!lessonId) {
+      return NextResponse.json(
+        { error: 'ID da aula é obrigatório' },
+        { status: 400 }
+      );
+    }
+
+    console.log(
+      `🔍 [LESSON-DETAILS] Buscando detalhes da aula ${lessonId} para usuário ${session.user.id}`
+    );
+
+    // Buscar perfis do usuário
+    let userTeacherProfile = null;
+    let userStudentProfile = null;
+
+    if (session.user.role === 1) {
+      userTeacherProfile = await prisma.teacher.findUnique({
+        where: { userId: session.user.id },
+        select: { id: true },
+      });
+    } else {
+      userStudentProfile = await prisma.student.findUnique({
+        where: { userId: session.user.id },
+        select: { id: true },
+      });
+    }
+
+    // Buscar aula com todos os detalhes
+    const lesson = await prisma.lesson.findFirst({
+      where: {
+        id: lessonId,
+        // Verificar se o usuário tem acesso à aula
+        OR: [
+          { teacherId: userTeacherProfile?.id },
+          { studentId: userStudentProfile?.id },
+        ],
+      },
+      include: {
+        teacher: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                image: true,
+              },
+            },
+          },
+        },
+        student: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                firstName: true,
+                lastName: true,
+                email: true,
+                image: true,
+              },
+            },
+          },
+        },
+        assignments: {
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+    });
+
+    if (!lesson) {
+      return NextResponse.json(
+        { error: 'Aula não encontrada ou sem permissão de acesso' },
+        { status: 404 }
+      );
+    }
+
+    // Buscar estatísticas do relacionamento
+    const [totalLessons, completedLessons, teacherStudentRel] =
+      await Promise.all([
+        prisma.lesson.count({
+          where: {
+            teacherId: lesson.teacherId,
+            studentId: lesson.studentId,
+          },
+        }),
+        prisma.lesson.count({
+          where: {
+            teacherId: lesson.teacherId,
+            studentId: lesson.studentId,
+            status: 'COMPLETED',
+          },
+        }),
+        prisma.teacherStudent.findFirst({
+          where: {
+            teacherId: lesson.teacherId,
+            studentId: lesson.studentId,
+          },
+          select: { startDate: true },
+        }),
+      ]);
+
+    // Calcular duração do relacionamento
+    const relationshipStart = teacherStudentRel?.startDate || lesson.createdAt;
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - relationshipStart.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    let relationshipDuration = '';
+    if (diffDays < 30) {
+      relationshipDuration = `${diffDays} dias`;
+    } else if (diffDays < 365) {
+      const months = Math.floor(diffDays / 30);
+      relationshipDuration = `${months} ${months === 1 ? 'mês' : 'meses'}`;
+    } else {
+      const years = Math.floor(diffDays / 365);
+      const remainingMonths = Math.floor((diffDays % 365) / 30);
+      relationshipDuration = `${years} ${years === 1 ? 'ano' : 'anos'}`;
+      if (remainingMonths > 0) {
+        relationshipDuration += ` e ${remainingMonths} ${
+          remainingMonths === 1 ? 'mês' : 'meses'
+        }`;
+      }
+    }
+
+    // Buscar WorkScores se houver IDs
+    let workScores: any[] = [];
+    if (lesson.workScoreIds.length > 0) {
+      workScores = await prisma.workScore.findMany({
+        where: {
+          id: { in: lesson.workScoreIds },
+        },
+        include: {
+          work: {
+            include: {
+              composer: {
+                select: { name: true },
+              },
+            },
+          },
+        },
+      });
+    }
+
+    // Buscar aulas relacionadas (se for série recorrente)
+    let relatedLessons: any[] = [];
+    if (lesson.isRecurring) {
+      const parentId = lesson.parentLessonId || lesson.id;
+      relatedLessons = await prisma.lesson.findMany({
+        where: {
+          OR: [{ id: parentId }, { parentLessonId: parentId }],
+          id: { not: lesson.id }, // Excluir a aula atual
+        },
+        select: {
+          id: true,
+          title: true,
+          scheduledAt: true,
+          status: true,
+        },
+        orderBy: { scheduledAt: 'asc' },
+        take: 10,
+      });
+    }
+
+    // Definir permissões baseadas no role
+    const isTeacher =
+      session.user.role === 1 && userTeacherProfile?.id === lesson.teacherId;
+    const isStudent =
+      session.user.role === 0 && userStudentProfile?.id === lesson.studentId;
+
+    const permissions = {
+      canEdit: isTeacher,
+      canCancel: isTeacher,
+      canReschedule: isTeacher,
+      canViewTeacherNotes: isTeacher,
+      canAddFeedback: isStudent && lesson.status === 'COMPLETED',
+      canMarkAttendance: isTeacher,
+    };
+
+    // Montar resposta detalhada
+    const lessonDetails: LessonDetails = {
+      id: lesson.id,
+      title: lesson.title,
+      description: lesson.description || undefined,
+      scheduledAt: lesson.scheduledAt,
+      duration: lesson.duration,
+      actualStartTime: lesson.actualStartTime || undefined,
+      actualEndTime: lesson.actualEndTime || undefined,
+      status: lesson.status,
+      type: lesson.type,
+      location: lesson.location || undefined,
+
+      // Recorrência
+      isRecurring: lesson.isRecurring,
+      recurrenceType: lesson.recurrenceType || undefined,
+      parentLessonId: lesson.parentLessonId || undefined,
+      recurrenceEnd: lesson.recurrenceEnd || undefined,
+
+      // Conteúdo
+      objectives: lesson.objectives,
+      workScoreIds: lesson.workScoreIds,
+      topics: lesson.topics,
+      techniques: lesson.techniques,
+      repertoire: lesson.repertoire,
+      homework: lesson.homework || undefined,
+      practiceGoals: lesson.practiceGoals,
+      nextLessonPrep: lesson.nextLessonPrep || undefined,
+
+      // Anotações (filtradas por permissão)
+      teacherNotes: permissions.canViewTeacherNotes
+        ? lesson.teacherNotes || undefined
+        : undefined,
+      publicNotes: lesson.publicNotes || undefined,
+      studentFeedback: lesson.studentFeedback || undefined,
+      lessonSummary: lesson.lessonSummary || undefined,
+
+      // Avaliação
+      studentProgress: lesson.studentProgress,
+      skillsWorked: lesson.skillsWorked,
+      improvements: lesson.improvements,
+      challenges: lesson.challenges,
+
+      // Presença
+      studentPresent: lesson.studentPresent || undefined,
+      punctuality: lesson.punctuality || undefined,
+      engagement: lesson.engagement || undefined,
+      preparation: lesson.preparation || undefined,
+
+      // Pessoas
+      teacher: {
+        id: lesson.teacher.user.id,
+        name: `${lesson.teacher.user.firstName} ${lesson.teacher.user.lastName}`.trim(),
+        email: lesson.teacher.user.email || '',
+        image: lesson.teacher.user.image || undefined,
+      },
+      student: {
+        id: lesson.student.user.id,
+        name: `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim(),
+        email: lesson.student.user.email || '',
+        image: lesson.student.user.image || undefined,
+        level: lesson.student.level,
+      },
+
+      // Contexto
+      relationship: {
+        totalLessons,
+        completedLessons,
+        relationshipDuration,
+      },
+
+      // WorkScores
+      workScores: workScores.map((ws) => ({
+        id: ws.id,
+        title: ws.title,
+        composer: ws.work.composer.name,
+        workTitle: ws.work.title,
+        type: ws.type,
+        downloadUrl: ws.downloadUrl || undefined,
+      })),
+
+      // Assignments
+      assignments: lesson.assignments.map((assignment) => ({
+        id: assignment.id,
+        title: assignment.title,
+        description: assignment.description,
+        dueDate: assignment.dueDate || undefined,
+        status: assignment.status,
+        isCompleted: assignment.isCompleted,
+      })),
+
+      // Aulas relacionadas
+      relatedLessons: relatedLessons.map((rl) => ({
+        id: rl.id,
+        title: rl.title,
+        scheduledAt: rl.scheduledAt,
+        status: rl.status,
+      })),
+
+      // Timestamps
+      createdAt: lesson.createdAt,
+      updatedAt: lesson.updatedAt,
+
+      // Permissões
+      permissions,
+    };
+
+    console.log(
+      `✅ [LESSON-DETAILS] Detalhes da aula carregados para ${
+        isTeacher ? 'professor' : 'aluno'
+      }`
+    );
+
+    return NextResponse.json({
+      success: true,
+      lesson: lessonDetails,
+      userRole: session.user.role,
+      isTeacher,
+      isStudent,
+    });
+  } catch (error) {
+    console.error(
+      '❌ [LESSON-DETAILS] Erro ao buscar detalhes da aula:',
+      error
+    );
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH - Atualizar aula (professor) ou adicionar feedback (aluno)
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (
+      !session?.user?.id ||
+      (session.user.role !== 1 && session.user.role !== 0)
+    ) {
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
+    }
+
+    const lessonId = params.id;
+    const body = await request.json();
+
+    console.log(
+      `📝 [LESSON-DETAILS] Atualizando aula ${lessonId} - Role: ${session.user.role}`
+    );
+
+    // Buscar perfis
+    let userTeacherProfile = null;
+    let userStudentProfile = null;
+
+    if (session.user.role === 1) {
+      userTeacherProfile = await prisma.teacher.findUnique({
+        where: { userId: session.user.id },
+        select: { id: true },
+      });
+    } else {
+      userStudentProfile = await prisma.student.findUnique({
+        where: { userId: session.user.id },
+        select: { id: true },
+      });
+    }
+
+    // Verificar acesso à aula
+    const lesson = await prisma.lesson.findFirst({
+      where: {
+        id: lessonId,
+        OR: [
+          { teacherId: userTeacherProfile?.id },
+          { studentId: userStudentProfile?.id },
+        ],
+      },
+    });
+
+    if (!lesson) {
+      return NextResponse.json(
+        { error: 'Aula não encontrada' },
+        { status: 404 }
+      );
+    }
+
+    // Separar atualizações por role
+    let updateData: any = {};
+
+    if (session.user.role === 1) {
+      // Professor pode atualizar tudo
+      updateData = { ...body };
+    } else {
+      // Aluno só pode adicionar feedback
+      const { studentFeedback } = body;
+      if (studentFeedback && lesson.status === 'COMPLETED') {
+        updateData.studentFeedback = studentFeedback;
+      } else {
+        return NextResponse.json(
+          {
+            error: 'Aluno só pode adicionar feedback em aulas concluídas',
+          },
+          { status: 403 }
+        );
+      }
+    }
+
+    // Atualizar aula
+    const updatedLesson = await prisma.lesson.update({
+      where: { id: lessonId },
+      data: updateData,
+    });
+
+    console.log(`✅ [LESSON-DETAILS] Aula ${lessonId} atualizada`);
+
+    return NextResponse.json({
+      success: true,
+      lesson: updatedLesson,
+      message:
+        session.user.role === 1
+          ? 'Aula atualizada com sucesso'
+          : 'Feedback adicionado com sucesso',
+    });
+  } catch (error) {
+    console.error('❌ [LESSON-DETAILS] Erro ao atualizar aula:', error);
+    return NextResponse.json(
+      { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}
