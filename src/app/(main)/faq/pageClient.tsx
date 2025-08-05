@@ -26,6 +26,7 @@ import {
   AnimatedCard,
   FloatingElement,
 } from '../../components/animation/AnimatedComponents';
+import Input from '@/app/components/Common/Inputs';
 
 interface FAQItem {
   id: string;
@@ -200,7 +201,7 @@ export default function FAQPage() {
               <AnimatedCard hover="lift" className="classical-card p-6 mb-8">
                 <div className="relative">
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
-                  <input
+                  <Input
                     type="text"
                     placeholder="Buscar perguntas..."
                     value={searchTerm}

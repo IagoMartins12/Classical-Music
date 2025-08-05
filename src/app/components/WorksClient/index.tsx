@@ -36,6 +36,7 @@ import {
   SequentialGrid,
 } from '../animation/AnimatedComponents';
 import { useComposerName } from '@/app/hooks/useComposerName';
+import Select from '../Common/Select';
 
 interface WorksClientProps {
   worksData: WorksListResponse;
@@ -662,36 +663,21 @@ const WorksClient = memo(
                       </label>
                       <div className="relative">
                         <FiMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-                        <select
+                        <Select
+                          options={[
+                            { label: 'Todos os instrumentos', value: '' }, // opção extra
+                            ...filterOptions.instruments.map((instrument) => ({
+                              label: instrument.name,
+                              value: instrument.id,
+                            })),
+                          ]}
                           value={selectedInstrument}
                           onChange={(e) =>
                             handleInstrumentFilter(e.target.value)
                           }
                           className="input-classical pl-11 w-full appearance-none"
                           disabled={isPending}
-                        >
-                          <option value="">Todos os instrumentos</option>
-                          {filterOptions.instruments.map((instrument) => (
-                            <option key={instrument.id} value={instrument.id}>
-                              {instrument.name}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                          <svg
-                            className="w-4 h-4 text-theme-tertiary"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </div>
+                        />
                       </div>
                     </div>
 
@@ -702,34 +688,19 @@ const WorksClient = memo(
                       </label>
                       <div className="relative">
                         <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-                        <select
+                        <Select
+                          options={[
+                            { label: 'Todos os períodos', value: '' }, // opção extra
+                            ...filterOptions.epochs.map((epoch) => ({
+                              label: epoch.name,
+                              value: epoch.id,
+                            })),
+                          ]}
                           value={selectedEpoch}
                           onChange={(e) => handleEpochFilter(e.target.value)}
                           className="input-classical pl-11 w-full appearance-none"
                           disabled={isPending}
-                        >
-                          <option value="">Todos os períodos</option>
-                          {filterOptions.epochs.map((epoch) => (
-                            <option key={epoch.id} value={epoch.id}>
-                              {epoch.name}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                          <svg
-                            className="w-4 h-4 text-theme-tertiary"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </div>
+                        />
                       </div>
                     </div>
 

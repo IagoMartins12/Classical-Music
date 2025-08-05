@@ -20,6 +20,7 @@ import {
   SequentialGrid, // ✅ NOVO - Para animação sequencial
   LoadingSpinner,
 } from '../animation/AnimatedComponents';
+import Select from '../Common/Select';
 
 export interface ComposerImslp {
   epochName: string;
@@ -240,18 +241,18 @@ export default function ComposersClient({
               </label>
               <div className="relative mt-2">
                 <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
-                <select
+                <Select
+                  options={[
+                    { label: 'Todos os períodos', value: '' },
+                    ...epochs.map((epoch) => ({
+                      label: epoch.name,
+                      value: epoch.id,
+                    })),
+                  ]}
                   value={selectedEpoch}
                   onChange={(e) => handleEpochChange(e.target.value)}
                   className="input-classical pl-12 w-full appearance-none"
-                >
-                  <option value="">Todos os períodos</option>
-                  {epochs.map((epoch) => (
-                    <option key={epoch.id} value={epoch.id}>
-                      {epoch.name}
-                    </option>
-                  ))}
-                </select>
+                />
                 <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                   <svg
                     className="w-4 h-4 text-theme-tertiary"

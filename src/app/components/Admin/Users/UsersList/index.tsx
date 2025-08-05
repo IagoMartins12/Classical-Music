@@ -18,6 +18,7 @@ import {
   FiMoreHorizontal,
   FiX,
   FiShield,
+  FiAward,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -484,12 +485,32 @@ export default function UsersList() {
                         {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
                       </div>
 
-                      {/* Dados Básicos */}
+                      {/* Dados Básicos - VERSÃO ATUALIZADA COM TEACHER BADGE */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <h3 className="font-bold text-theme-primary truncate">
                             {user.name || 'Usuário Sem Nome'}
                           </h3>
+
+                          {/* 🆕 BADGE DE ROLE (PROFESSOR/ADMIN) */}
+                          {user.role === 1 && (
+                            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-accent-blue/20 text-accent-blue flex items-center gap-1">
+                              <FiAward className="w-3 h-3" />
+                              Professor
+                              {user.teacherProfile?.isVerified && (
+                                <span className="text-accent-green">✓</span>
+                              )}
+                            </span>
+                          )}
+
+                          {user.role === 2 && (
+                            <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-accent-red/20 text-accent-red flex items-center gap-1">
+                              <FiShield className="w-3 h-3" />
+                              Admin
+                            </span>
+                          )}
+
+                          {/* BADGE DE USER TYPE */}
                           {user.userType && (
                             <span
                               className={`px-2 py-0.5 rounded-full text-xs font-medium ${
@@ -513,6 +534,26 @@ export default function UsersList() {
                                 : user.userType}
                             </span>
                           )}
+
+                          {/* 🆕 STATUS DO TEACHER PROFILE SE APLICÁVEL */}
+                          {user.isTeacher && user.teacherProfile && (
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                                user.teacherProfile.status === 'ACTIVE'
+                                  ? 'bg-accent-green/20 text-accent-green'
+                                  : user.teacherProfile.status === 'PENDING'
+                                  ? 'bg-accent-yellow/20 text-accent-yellow'
+                                  : 'bg-theme-secondary text-theme-tertiary'
+                              }`}
+                            >
+                              {user.teacherProfile.status === 'ACTIVE' &&
+                                'Ativo'}
+                              {user.teacherProfile.status === 'PENDING' &&
+                                'Pendente'}
+                              {user.teacherProfile.status === 'INACTIVE' &&
+                                'Inativo'}
+                            </span>
+                          )}
                         </div>
 
                         <div className="flex items-center gap-4 text-sm text-theme-tertiary">
@@ -526,6 +567,27 @@ export default function UsersList() {
                               'pt-BR'
                             )}
                           </span>
+
+                          {/* 🆕 INFORMAÇÕES ADICIONAIS PARA PROFESSORES */}
+                          {user.isTeacher && user.teacherProfile && (
+                            <>
+                              {user.teacherProfile.instruments &&
+                                user.teacherProfile.instruments.length > 0 && (
+                                  <span className="flex items-center gap-1 text-accent-blue">
+                                    <FiAward className="w-4 h-4" />
+                                    {user.teacherProfile.instruments
+                                      .slice(0, 2)
+                                      .join(', ')}
+                                    {user.teacherProfile.instruments.length >
+                                      2 &&
+                                      ` +${
+                                        user.teacherProfile.instruments.length -
+                                        2
+                                      }`}
+                                  </span>
+                                )}
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>

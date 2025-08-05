@@ -107,6 +107,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 key={option.key ? option.key : option.value}
                 value={option.value}
                 disabled={option.disabled}
+                className="capitalize"
               >
                 {option.label}
               </option>

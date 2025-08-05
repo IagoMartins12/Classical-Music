@@ -1036,7 +1036,7 @@ const CreateComposerModal = ({
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
                       Data de Nascimento
                     </label>
-                    <input
+                    <Input
                       ref={fieldRefs.birthDate}
                       type="date"
                       value={formData.birthDate}
@@ -1053,7 +1053,7 @@ const CreateComposerModal = ({
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
                       Data de Morte
                     </label>
-                    <input
+                    <Input
                       ref={fieldRefs.deathDate}
                       type="date"
                       value={formData.deathDate}
@@ -1174,7 +1174,7 @@ const CreateComposerModal = ({
                           key={role.id}
                           className="flex items-center space-x-2"
                         >
-                          <input
+                          <Input
                             type="checkbox"
                             id={`role-${role.id}`}
                             checked={formData.roles.includes(role.id)}

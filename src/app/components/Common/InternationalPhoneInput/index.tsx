@@ -2,12 +2,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import {
-  FiPhone,
-  FiChevronDown,
-  FiX,
-  FiGlobe,
-} from 'react-icons/fi';
+import { FiPhone, FiChevronDown, FiX, FiGlobe } from 'react-icons/fi';
 import {
   ALL_PHONE_COUNTRIES,
   PhoneCountry,
@@ -74,7 +69,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
   error,
   placeholder,
   showLabel = true,
-  defaultCountry = 'BR',
+  defaultCountry = '+55',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -83,6 +78,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
     useState(defaultCountry);
   const [warningMessage, setWarningMessage] = useState<string>('');
 
+  console.log('selected', selectedCountryCode);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 

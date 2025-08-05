@@ -11,6 +11,7 @@ import {
   AnimatedItem,
   AnimatedCard,
 } from '../../../components/animation/AnimatedComponents';
+import Input from '@/app/components/Common/Inputs';
 
 const unsubscribeReasons = [
   { id: 'too_frequent', label: 'Emails muito frequentes' },
@@ -229,7 +230,7 @@ export default function UnsubscribePage() {
                             key={reasonOption.id}
                             className="flex items-center space-x-3 p-3 rounded-lg border border-theme-secondary cursor-pointer hover:bg-theme-secondary transition-colors"
                           >
-                            <input
+                            <Input
                               type="radio"
                               name="reason"
                               value={reasonOption.id}

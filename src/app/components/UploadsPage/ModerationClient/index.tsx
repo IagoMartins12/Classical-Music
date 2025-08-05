@@ -34,6 +34,7 @@ import { REPORT_REASONS } from '@/app/utils/reportHelpers';
 import BulkReportActions from '../../Report/BulkReportActions';
 import ReportPriorityBadge from '../../Report/ReportPriorityBadge';
 import { useToast } from '@/app/hooks/useToast';
+import Input from '../../Common/Inputs';
 
 interface ModerationClientProps {
   page: number;
@@ -303,7 +304,7 @@ const ModerationClient = ({
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <label className="flex items-center space-x-2 cursor-pointer">
-                    <input
+                    <Input
                       type="checkbox"
                       checked={selectAll}
                       onChange={(e) => handleSelectAll(e.target.checked)}

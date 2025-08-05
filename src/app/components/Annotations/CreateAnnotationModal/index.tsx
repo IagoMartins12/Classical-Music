@@ -31,6 +31,7 @@ import Modal from '@/app/components/Modal';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
+import Input from '../../Common/Inputs';
 
 interface CreateAnnotationModalProps {
   isOpen: boolean;
@@ -701,7 +702,7 @@ export default function CreateAnnotationModal({
               </span>
             </div>
             <div className="relative">
-              <input
+              <Input
                 type="text"
                 placeholder="Busque por título da obra ou compositor..."
                 value={workSearchTerm}
@@ -749,7 +750,7 @@ export default function CreateAnnotationModal({
           <label className="block text-sm font-medium text-theme-primary mb-2">
             Título da Anotação *
           </label>
-          <input
+          <Input
             ref={fieldRefs.title}
             type="text"
             value={formData.title}
@@ -838,7 +839,7 @@ export default function CreateAnnotationModal({
               <label className="block text-sm font-medium text-theme-primary mb-2">
                 Compasso Inicial *
               </label>
-              <input
+              <Input
                 ref={fieldRefs.measureStart}
                 type="number"
                 min="1"
@@ -864,7 +865,7 @@ export default function CreateAnnotationModal({
               <label className="block text-sm font-medium text-theme-primary mb-2">
                 Compasso Final (opcional)
               </label>
-              <input
+              <Input
                 ref={fieldRefs.measureEnd}
                 type="number"
                 min="1"
@@ -894,7 +895,7 @@ export default function CreateAnnotationModal({
             <label className="block text-sm font-medium text-theme-primary mb-2">
               Nome do Movimento *
             </label>
-            <input
+            <Input
               ref={fieldRefs.movement}
               type="text"
               value={formData.movement}
@@ -917,7 +918,7 @@ export default function CreateAnnotationModal({
             <label className="block text-sm font-medium text-theme-primary mb-2">
               Nome da Seção *
             </label>
-            <input
+            <Input
               ref={fieldRefs.section}
               type="text"
               value={formData.section}
@@ -955,7 +956,7 @@ export default function CreateAnnotationModal({
             <label className="block text-sm font-medium text-theme-primary mb-2">
               Página da Partitura
             </label>
-            <input
+            <Input
               type="number"
               min="1"
               value={formData.pageNumber}

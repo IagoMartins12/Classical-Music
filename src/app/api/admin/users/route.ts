@@ -270,6 +270,7 @@ const getCachedUserAnalytics = unstable_cache(
 );
 
 // Buscar lista de usuários com filtros otimizada
+// Buscar lista de usuários com filtros otimizada - ATUALIZADA
 const getUsersList = async (filters: UserListFilters) => {
   const {
     search,
@@ -282,7 +283,7 @@ const getUsersList = async (filters: UserListFilters) => {
     isActive,
     hasUploads,
     hasAnnotations,
-    hasModerations, // ✅ Filtro para usuários que fizeram reports
+    hasModerations,
   } = filters;
 
   const skip = (page - 1) * limit;
@@ -342,7 +343,7 @@ const getUsersList = async (filters: UserListFilters) => {
 
   if (hasModerations) {
     whereClause.reportedUploads = {
-      some: {}, // Usuários que têm pelo menos um report feito
+      some: {},
     };
   }
 
@@ -366,9 +367,23 @@ const getUsersList = async (filters: UserListFilters) => {
         profilePublic: true,
         onboardingCompleted: true,
         role: true,
+        isTeacher: true, // 🆕 INCLUIR isTeacher
+
+        // 🆕 INCLUIR TEACHER PROFILE
+        teacherProfile: {
+          select: {
+            id: true,
+            status: true,
+            isVerified: true,
+            specialties: true,
+            instruments: true,
+            isPublicProfile: true,
+          },
+        },
+
         _count: {
           select: {
-            reportedUploads: true, // Contar quantos reports o usuário fez
+            reportedUploads: true,
           },
         },
       },
@@ -400,8 +415,23 @@ const getUsersList = async (filters: UserListFilters) => {
       isProfilePublic: user.profilePublic,
       onboardingCompleted: user.onboardingCompleted,
       role: user.role,
-      // ✅ ADICIONAR CONTAGEM DE MODERAÇÕES
+      isTeacher: user.isTeacher, // 🆕 INCLUIR isTeacher
       moderationsCount: user._count?.reportedUploads || 0,
+
+      // 🆕 INCLUIR TEACHER PROFILE SE EXISTIR
+      teacherProfile: user.teacherProfile
+        ? {
+            id: user.teacherProfile.id,
+            status: user.teacherProfile.status as
+              | 'ACTIVE'
+              | 'INACTIVE'
+              | 'PENDING',
+            isVerified: user.teacherProfile.isVerified,
+            specialties: user.teacherProfile.specialties,
+            instruments: user.teacherProfile.instruments,
+            isPublicProfile: user.teacherProfile.isPublicProfile,
+          }
+        : undefined,
     })),
     pagination: {
       page,
@@ -553,13 +583,8 @@ export async function PATCH(request: NextRequest) {
 
     // Campos que o admin pode editar
     const allowedFields = [
+      'role', // ✅ ADICIONADO
       'userType',
-      'experienceLevel',
-      'canUploadComposers',
-      'canUploadWorks',
-      'canUploadScores',
-      'uploadLimitDaily',
-      'uploadLimitMonthly',
     ];
 
     const updateData: any = {};
@@ -577,6 +602,89 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    // 🆕 VERIFICAR SE O USUÁRIO EXISTE E PEGAR ROLE ATUAL
+    const currentUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        role: true,
+        isTeacher: true,
+
+        teacherProfile: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+
+    if (!currentUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // 🆕 LÓGICA PARA GERENCIAR TEACHER PROFILE
+    const newRole = updateData.role;
+    const currentRole = currentUser.role || 0;
+
+    // Se o role está sendo alterado para 1 (professor) e não tinha esse role antes
+    if (newRole === 1 && currentRole !== 1) {
+      // Atualizar isTeacher para true
+      updateData.isTeacher = true;
+
+      // Verificar se já existe um Teacher profile
+      if (!currentUser.teacherProfile) {
+        // Criar Teacher profile com dados padrão
+        await prisma.teacher.create({
+          data: {
+            userId: userId,
+            specialties: [],
+            instruments: [],
+            experience: null,
+            education: null,
+            achievements: null,
+            isPublicProfile: false,
+            profileImage: null,
+            website: null,
+            socialMedia: null,
+            publicBio: null,
+            highlightedWorks: [],
+            defaultLessonDuration: 60,
+            maxStudentsPerWeek: 50,
+            timezone: 'America/Sao_Paulo',
+            teachingMethod: null,
+            ageGroups: [],
+            skillLevels: [],
+            status: 'PENDING',
+            isVerified: false,
+            allowProgressReports: true,
+            reportPreferences: null,
+          },
+        });
+      }
+    }
+
+    // Se o role está sendo alterado para diferente de 1 e antes era 1 (deixou de ser professor)
+    if (newRole !== 1 && currentRole === 1) {
+      // Atualizar isTeacher para false
+      updateData.isTeacher = false;
+
+      // OPCIONAL: Você pode escolher se quer deletar o Teacher profile ou apenas desativá-lo
+      // Para manter histórico, vamos apenas desativar:
+      if (currentUser.teacherProfile) {
+        await prisma.teacher.update({
+          where: { userId: userId },
+          data: {
+            status: 'INACTIVE',
+            isVerified: false,
+          },
+        });
+      }
+
+      // OU se preferir deletar completamente (descomente a linha abaixo):
+      // await prisma.teacher.delete({ where: { userId: userId } });
+    }
+
+    // 🔄 ATUALIZAR O USUÁRIO
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: updateData,
@@ -588,6 +696,15 @@ export async function PATCH(request: NextRequest) {
         userType: true,
         experienceLevel: true,
         role: true,
+        isTeacher: true, // ✅ INCLUIR NO SELECT
+        teacherProfile: {
+          // ✅ INCLUIR TEACHER PROFILE
+          select: {
+            id: true,
+            status: true,
+            isVerified: true,
+          },
+        },
       },
     });
 
@@ -599,17 +716,39 @@ export async function PATCH(request: NextRequest) {
         entityId: userId,
         action: 'update',
         changes: updateData,
-        reason: 'Admin update',
+        reason: `Admin update - Role changed from ${currentRole} to ${newRole}`,
       },
     });
 
-    return NextResponse.json({
+    // 🆕 RESPOSTA APRIMORADA COM INFO DO TEACHER
+    const responseData = {
       success: true,
       user: updatedUser,
-      message: 'Usuário atualizado com sucesso',
-    });
+      message:
+        newRole === 1 && currentRole !== 1
+          ? 'Usuário atualizado com sucesso e perfil de professor criado'
+          : newRole !== 1 && currentRole === 1
+          ? 'Usuário atualizado com sucesso e perfil de professor desativado'
+          : 'Usuário atualizado com sucesso',
+      teacherProfileCreated: newRole === 1 && currentRole !== 1,
+      teacherProfileDeactivated: newRole !== 1 && currentRole === 1,
+    };
+
+    return NextResponse.json(responseData);
   } catch (error) {
     console.error('Erro ao atualizar usuário:', error);
+
+    // 🆕 TRATAMENTO DE ERRO ESPECÍFICO PARA TEACHER
+    if (error instanceof Error && error.message.includes('Teacher')) {
+      return NextResponse.json(
+        {
+          error: 'Erro ao gerenciar perfil de professor',
+          details: error.message,
+        },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

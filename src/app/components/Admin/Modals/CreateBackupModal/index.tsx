@@ -11,6 +11,7 @@ import {
 } from 'react-icons/fi';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
+import Input from '@/app/components/Common/Inputs';
 
 interface CreateBackupModalProps {
   isOpen: boolean;
@@ -100,7 +101,7 @@ export default function CreateBackupModal({
               <label className="block text-sm font-medium text-theme-primary mb-2">
                 Nome do Backup
               </label>
-              <input
+              <Input
                 type="text"
                 value={config.name}
                 onChange={(e) =>
@@ -145,7 +146,7 @@ export default function CreateBackupModal({
 
             <div className="grid grid-cols-2 gap-4">
               <label className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer">
-                <input
+                <Input
                   type="checkbox"
                   checked={config.includeDatabase}
                   onChange={(e) =>
@@ -166,7 +167,7 @@ export default function CreateBackupModal({
               </label>
 
               <label className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl hover:bg-theme-primary/50 transition-all cursor-pointer">
-                <input
+                <Input
                   type="checkbox"
                   checked={config.includeFiles}
                   onChange={(e) =>
@@ -194,7 +195,7 @@ export default function CreateBackupModal({
 
             <div className="grid grid-cols-2 gap-4">
               <label className="flex items-center space-x-3">
-                <input
+                <Input
                   type="checkbox"
                   checked={config.compression}
                   onChange={(e) =>
@@ -209,7 +210,7 @@ export default function CreateBackupModal({
               </label>
 
               <label className="flex items-center space-x-3">
-                <input
+                <Input
                   type="checkbox"
                   checked={config.encryption}
                   onChange={(e) =>
@@ -228,7 +229,7 @@ export default function CreateBackupModal({
               <label className="block text-sm font-medium text-theme-primary mb-2">
                 Retenção (dias)
               </label>
-              <input
+              <Input
                 type="number"
                 value={config.retentionDays}
                 onChange={(e) =>
@@ -277,7 +278,7 @@ export default function CreateBackupModal({
                 <label className="block text-sm font-medium text-theme-primary mb-2">
                   Horário
                 </label>
-                <input
+                <Input
                   type="time"
                   value={config.scheduleTime || '03:00'}
                   onChange={(e) =>

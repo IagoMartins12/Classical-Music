@@ -158,16 +158,11 @@ const Modal = forwardRef<ModalRef, ModalProps>(
           <div
             ref={modalRef}
             className={`
-              relative 
-              ${
-                isMobile
-                  ? 'w-full !h-[100vh] max-w-full !max-h-[100vh] border-0 rounded-none'
-                  : `w-full ${maxWidthClasses[maxWidth]} max-h-[90vh]`
-              }
-              modal-content !overflow-hidden classical-card animate-fade-in-scale
-              shadow-theme-large border-theme-accent
-              ${className}
-            `}
+          relative w-full ${maxWidthClasses[maxWidth]} 
+          modal-content !overflow-hidden classical-card animate-fade-in-scale
+          shadow-theme-large border-theme-accent max-h-[90vh]
+          ${className}
+        `}
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? 'modal-title' : undefined}
@@ -198,10 +193,11 @@ const Modal = forwardRef<ModalRef, ModalProps>(
             {/* Content */}
             <div
               ref={contentRef}
-              className={`overflow-y-auto classical-scrollbar pt-4 flex-1 ${
-                title || showCloseButton ? 'px-6 pb-6' : 'p-6'
-              }`}
-              style={{ maxHeight: isMobile ? 'calc(90vh - 100px)' : '100vh' }}
+              className={`
+            overflow-y-auto  classical-scrollbar pt-4  flex-1
+            ${title || showCloseButton ? 'px-6 pb-6' : 'p-6'}
+          `}
+              style={{ maxHeight: 'calc(90vh - 100px)' }}
             >
               {children}
             </div>

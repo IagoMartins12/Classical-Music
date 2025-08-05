@@ -33,6 +33,8 @@ import StarRating from './StarRating';
 import FormField from './FormField';
 import { WorkScore } from '@/app/hooks/useWorkScores';
 import ScoreSelectionModal from './ScoreSelectionModal';
+import Input from '../Common/Inputs';
+import Select from '../Common/Select';
 
 const LearningModal = () => {
   const { user } = useAuth();
@@ -527,7 +529,13 @@ const LearningModal = () => {
               </div>
 
               <FormField label="Dificuldade Estimada" icon={FiTrendingUp}>
-                <select
+                <Select
+                  options={[
+                    ...difficultyOptions.map((option) => ({
+                      label: option.label,
+                      value: option.value,
+                    })),
+                  ]}
                   value={wantToLearnForm.difficulty || ''}
                   onChange={(e) =>
                     updateWantToLearnForm({
@@ -536,13 +544,7 @@ const LearningModal = () => {
                     })
                   }
                   className="w-full input-classical-2"
-                >
-                  {difficultyOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                />
               </FormField>
 
               <FormField
@@ -550,7 +552,7 @@ const LearningModal = () => {
                 icon={FiUsers}
                 description="Onde você pretende tocar esta obra?"
               >
-                <input
+                <Input
                   type="text"
                   value={wantToLearnForm.context || ''}
                   onChange={(e) =>
@@ -622,7 +624,13 @@ const LearningModal = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField label="Dificuldade Real" icon={FiTrendingUp}>
-                  <select
+                  <Select
+                    options={difficultyOptions.map((option) => {
+                      return {
+                        label: option.label,
+                        value: option.value,
+                      };
+                    })}
                     value={learnedForm.difficulty || ''}
                     onChange={(e) =>
                       updateLearnedForm({
@@ -631,13 +639,7 @@ const LearningModal = () => {
                       })
                     }
                     className="w-full input-classical-2"
-                  >
-                    {difficultyOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </FormField>
 
                 <div className="space-y-2">
@@ -692,7 +694,7 @@ const LearningModal = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center space-x-3">
-                  <input
+                  <Input
                     type="checkbox"
                     id="wouldRecommend"
                     checked={learnedForm.wouldRecommend}
@@ -710,7 +712,7 @@ const LearningModal = () => {
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <input
+                  <Input
                     type="checkbox"
                     id="publicPerformance"
                     checked={learnedForm.publicPerformance}

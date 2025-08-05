@@ -29,6 +29,8 @@ import {
 } from '../../components/animation/AnimatedComponents';
 import AnimatedMusicalNotes from '@/app/components/AnimatedMusicalNotes';
 import { useContactForm } from '@/app/hooks/useContactForm';
+import Input from '@/app/components/Common/Inputs';
+import Select from '@/app/components/Common/Select';
 
 interface ContactOption {
   icon: React.ComponentType<{ className?: string }>;
@@ -324,7 +326,7 @@ export default function ContactPageClient() {
                       <label className="block text-sm font-medium text-theme-secondary mb-2">
                         Nome *
                       </label>
-                      <input
+                      <Input
                         type="text"
                         name="name"
                         value={formData.name}
@@ -340,7 +342,7 @@ export default function ContactPageClient() {
                       <label className="block text-sm font-medium text-theme-secondary mb-2">
                         Email *
                       </label>
-                      <input
+                      <Input
                         type="email"
                         name="email"
                         value={formData.email}
@@ -357,7 +359,7 @@ export default function ContactPageClient() {
                     <label className="block text-sm font-medium text-theme-secondary mb-2">
                       Assunto *
                     </label>
-                    <input
+                    <Input
                       type="text"
                       name="subject"
                       value={formData.subject}
@@ -373,18 +375,19 @@ export default function ContactPageClient() {
                     <label className="block text-sm font-medium text-theme-secondary mb-2">
                       Prioridade
                     </label>
-                    <select
+                    <Select
+                      options={[
+                        { value: 'baixa', label: 'Baixa' },
+                        { value: 'normal', label: 'Normal' },
+                        { value: 'alta', label: 'Alta' },
+                        { value: 'urgente', label: 'Urgente' },
+                      ]}
                       name="priority"
                       value={formData.priority}
                       onChange={handleInputChange}
                       disabled={loading || success}
                       className="input-classical-2 w-full disabled:opacity-50"
-                    >
-                      <option value="baixa">Baixa</option>
-                      <option value="normal">Normal</option>
-                      <option value="alta">Alta</option>
-                      <option value="urgente">Urgente</option>
-                    </select>
+                    />
                   </div>
 
                   <div>
@@ -405,7 +408,7 @@ export default function ContactPageClient() {
 
                   {/* Newsletter Subscription Option */}
                   <div className="flex items-start space-x-3 p-4 bg-theme-secondary rounded-lg">
-                    <input
+                    <Input
                       type="checkbox"
                       name="subscribeNewsletter"
                       checked={formData.subscribeNewsletter}

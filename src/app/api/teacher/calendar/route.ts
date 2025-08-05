@@ -62,7 +62,12 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
+    console.log('SESSION', session);
+    // 🐛 CORREÇÃO: Mudança de >= 1 para !== 1
     if (!session?.user?.id || session.user.role !== 1) {
+      console.log(
+        `❌ [TEACHER-CALENDAR] Acesso negado. UserID: ${session?.user?.id}, Role: ${session?.user?.role}`
+      );
       return NextResponse.json(
         { error: 'Acesso negado - Apenas professores' },
         { status: 403 }
@@ -86,7 +91,7 @@ export async function GET(request: NextRequest) {
     }
 
     console.log(
-      `📅 [TEACHER-CALENDAR] Carregando calendário: ${startDate} a ${endDate}`
+      `📅 [TEACHER-CALENDAR] Carregando calendário: ${startDate} a ${endDate} para professor ${session.user.id}`
     );
 
     // Verificar se professor existe
@@ -96,6 +101,9 @@ export async function GET(request: NextRequest) {
     });
 
     if (!teacherProfile) {
+      console.log(
+        `❌ [TEACHER-CALENDAR] Perfil de professor não encontrado para user ${session.user.id}`
+      );
       return NextResponse.json(
         { error: 'Perfil de professor não encontrado' },
         { status: 404 }
@@ -105,6 +113,8 @@ export async function GET(request: NextRequest) {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const teacherId = teacherProfile.id;
+
+    console.log(`🎯 [TEACHER-CALENDAR] Teacher ID: ${teacherId}`);
 
     // Buscar aulas no período
     const lessons = await prisma.lesson.findMany({

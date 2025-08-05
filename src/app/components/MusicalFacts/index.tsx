@@ -11,6 +11,7 @@ import {
   getRandomFacts,
   musicalFacts,
 } from '@/app/requests/utils';
+import Select from '../Common/Select';
 
 interface MusicalFact {
   id: string;
@@ -284,19 +285,19 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
             <FiFilter className="w-4 h-4" />
             <span className="text-sm font-medium">Filtrar por período:</span>
           </div>
-          <select
+          <Select
+            options={[
+              { label: 'Todos os Períodos', value: 'all' }, // opção extra
+              ...categories.map((categories) => ({
+                label: categories,
+                value: categories,
+              })),
+            ]}
             value={selectedCategory}
             onChange={(e) => handleCategoryChange(e.target.value)}
             className="input-classical text-sm !py-2 !px-3 min-w-[150px]"
             disabled={isLoading}
-          >
-            <option value="all">Todos os Períodos</option>
-            {categories.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         {/* Refresh Button */}

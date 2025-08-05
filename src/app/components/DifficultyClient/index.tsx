@@ -17,6 +17,7 @@ import {
   AnimatedItem,
   AnimatedCard,
 } from '../animation/AnimatedComponents';
+import Select from '../Common/Select';
 
 interface DifficultyClientProps {
   difficultyData: DifficultyResponse;
@@ -224,18 +225,16 @@ export default function DifficultyClient({
               <span className="text-sm font-medium text-theme-secondary">
                 Sistema:
               </span>
-              <select
+              <Select
+                options={difficultyData.systems.map((system) => ({
+                  value: system.system,
+                  label: `${system.system} (${system.count})`,
+                }))}
                 value={selectedSystem}
                 onChange={(e) => handleSystemChange(e.target.value)}
                 className="input-classical-2 text-sm min-w-[120px]"
                 disabled={isPending}
-              >
-                {difficultyData.systems.map((system) => (
-                  <option key={system.system} value={system.system}>
-                    {system.system} ({system.count})
-                  </option>
-                ))}
-              </select>
+              />
             </div>
           </div>
 

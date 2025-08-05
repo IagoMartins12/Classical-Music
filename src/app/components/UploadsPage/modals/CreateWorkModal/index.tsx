@@ -1224,7 +1224,7 @@ const CreateWorkModal = ({
                   </div>
 
                   <label className="flex items-center space-x-2 cursor-pointer">
-                    <input
+                    <Input
                       type="checkbox"
                       checked={includeMedia}
                       onChange={(e) => setIncludeMedia(e.target.checked)}
@@ -1294,7 +1294,7 @@ const CreateWorkModal = ({
                         <label className="block text-sm font-medium text-theme-tertiary mb-2">
                           Upload de Arquivo de Áudio
                         </label>
-                        <input
+                        <Input
                           type="file"
                           accept="audio/*"
                           onChange={(e) => {
@@ -1338,7 +1338,7 @@ const CreateWorkModal = ({
                           </div>
 
                           <label className="flex items-center space-x-2 cursor-pointer">
-                            <input
+                            <Input
                               type="checkbox"
                               checked={mediaData.hasVideoAula}
                               onChange={(e) =>
@@ -1441,7 +1441,7 @@ const CreateWorkModal = ({
                                 <label className="block text-sm font-medium text-theme-tertiary mb-2">
                                   Upload de Video Aula
                                 </label>
-                                <input
+                                <Input
                                   type="file"
                                   accept="video/*"
                                   onChange={(e) => {

@@ -17,6 +17,18 @@ export interface AdminUser {
   lastActive: Date;
   isProfilePublic: boolean;
   onboardingCompleted: boolean;
+  moderationsCount?: number; // 🆕 ADICIONADO
+
+  // 🆕 INFORMAÇÕES DO TEACHER PROFILE (se aplicável)
+  isTeacher?: boolean;
+  teacherProfile?: {
+    id: string;
+    status: 'ACTIVE' | 'INACTIVE' | 'PENDING';
+    isVerified: boolean;
+    specialties?: string[];
+    instruments?: string[];
+    isPublicProfile?: boolean;
+  };
 }
 
 export interface UserAnalytics {
@@ -96,11 +108,6 @@ export interface UserEditData {
   role: number;
   userType: string;
   experienceLevel: string;
-  uploadLimitDaily: number;
-  uploadLimitMonthly: number;
-  canUploadComposers: boolean;
-  canUploadWorks: boolean;
-  canUploadScores: boolean;
 }
 
 // Constantes para o sistema

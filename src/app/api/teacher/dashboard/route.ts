@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
-import { unstable_cache } from 'next/cache';
 
 interface DashboardStats {
   totalStudents: number;

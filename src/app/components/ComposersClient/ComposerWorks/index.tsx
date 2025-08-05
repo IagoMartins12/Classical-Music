@@ -42,6 +42,7 @@ import {
   SkeletonCard,
 } from '../../animation/AnimatedComponents';
 import VerificationBadge from '../../Verification/VerificationBadge';
+import Select from '../../Common/Select';
 
 interface ComposerWorksProps {
   composerId: string;
@@ -624,23 +625,19 @@ export default function ComposerWorks({
                   </label>
                   <div className="relative">
                     <FiMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-                    <select
+                    <Select
+                      options={[
+                        { label: 'Todos os instrumentos', value: '' },
+                        ...filterOptions.instruments.map((instrument) => ({
+                          label: instrument.name,
+                          value: instrument.id,
+                        })),
+                      ]}
                       value={selectedInstrument}
                       onChange={(e) => handleInstrumentChange(e.target.value)}
                       className="input-classical w-full appearance-none pl-11"
                       disabled={loading}
-                    >
-                      <option value="">Todos os instrumentos</option>
-                      {filterOptions.instruments.map((instrument) => (
-                        <option
-                          key={instrument.id}
-                          value={instrument.id}
-                          className="capitalize"
-                        >
-                          {instrument.name}
-                        </option>
-                      ))}
-                    </select>
+                    />
                     <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                       <svg
                         className="w-4 h-4 text-theme-tertiary"
@@ -666,23 +663,19 @@ export default function ComposerWorks({
                   </label>
                   <div className="relative">
                     <MdLibraryMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-                    <select
+                    <Select
+                      options={[
+                        { label: 'Todos os gêneros', value: '' },
+                        ...filterOptions.workGenres.map((genre) => ({
+                          label: genre,
+                          value: genre,
+                        })),
+                      ]}
                       value={selectedGenre}
                       onChange={(e) => handleGenreChange(e.target.value)}
                       className="input-classical capitalize w-full appearance-none pl-11"
                       disabled={loading}
-                    >
-                      <option value="">Todos os gêneros</option>
-                      {filterOptions.workGenres.map((genre) => (
-                        <option
-                          key={genre}
-                          value={genre}
-                          className="capitalize"
-                        >
-                          {genre}
-                        </option>
-                      ))}
-                    </select>
+                    />
                     <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                       <svg
                         className="w-4 h-4 text-theme-tertiary"
@@ -708,23 +701,19 @@ export default function ComposerWorks({
                   </label>
                   <div className="relative">
                     <FiBookOpen className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
-                    <select
+                    <Select
+                      options={[
+                        { label: 'Todos as categorias', value: '' },
+                        ...filterOptions.categories.map((category) => ({
+                          label: category,
+                          value: category,
+                        })),
+                      ]}
                       value={selectedCategory}
                       onChange={(e) => handleCategoryChange(e.target.value)}
                       className="input-classical w-full appearance-none pl-11"
                       disabled={loading}
-                    >
-                      <option value="">Todas as categorias</option>
-                      {filterOptions.categories.map((category) => (
-                        <option
-                          key={category}
-                          value={category}
-                          className="capitalize"
-                        >
-                          {category}
-                        </option>
-                      ))}
-                    </select>
+                    />
                     <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
                       <svg
                         className="w-4 h-4 text-theme-tertiary"

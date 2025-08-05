@@ -1,0 +1,1253 @@
+// app/teacher/calendar/pageClient.tsx - Client Component para Calendário do Professor
+'use client';
+
+import { useState, useMemo, useCallback, useEffect } from 'react';
+import {
+  FiCalendar,
+  FiClock,
+  FiUser,
+  FiPlus,
+  FiChevronLeft,
+  FiChevronRight,
+  FiEye,
+  FiEdit3,
+  FiX,
+  FiCheck,
+  FiAlertCircle,
+  FiRefreshCw,
+  FiMapPin,
+  FiBookOpen,
+} from 'react-icons/fi';
+import {
+  AnimatedContainer,
+  AnimatedCard,
+  AnimatedItem,
+  PageContainer,
+  SequentialGrid,
+} from '../../../components/animation/AnimatedComponents';
+import { TeacherCalendarData, CalendarEvent } from './pageServer';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useTeacherCalendar } from '@/app/hooks/useTeacherCalendar';
+import Select from '@/app/components/Common/Select';
+
+interface TeacherProfile {
+  id: string;
+  name: string;
+  email: string;
+  image?: string | null;
+  role: number;
+}
+
+interface TeacherCalendarPageClientProps {
+  initialData: TeacherCalendarData;
+  teacherProfile: TeacherProfile;
+  errorMessage?: string;
+}
+
+type CalendarView = 'month' | 'week' | 'day';
+type EventFilter = 'all' | 'scheduled' | 'completed' | 'cancelled';
+
+// Helper functions
+const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const MONTHS = [
+  'Janeiro',
+  'Fevereiro',
+  'Março',
+  'Abril',
+  'Maio',
+  'Junho',
+  'Julho',
+  'Agosto',
+  'Setembro',
+  'Outubro',
+  'Novembro',
+  'Dezembro',
+];
+
+export default function TeacherCalendarPageClient({
+  initialData,
+  teacherProfile,
+  errorMessage,
+}: TeacherCalendarPageClientProps) {
+  // Initialize hook with server data
+  const {
+    // State do hook
+    events,
+    stats,
+    conflicts,
+    hasConflicts,
+    loading,
+    error,
+
+    // Actions do hook
+    refreshCalendar,
+    createQuickLesson,
+    moveLesson,
+    setInitialData,
+    clearError,
+    fetchCalendar,
+  } = useTeacherCalendar(initialData);
+
+  // Local UI states (não relacionados aos dados do calendário)
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [viewMode, setViewMode] = useState<CalendarView>('month');
+  const [eventFilter, setEventFilter] = useState<EventFilter>('all');
+  const [selectedStudent, setSelectedStudent] = useState<string>('all');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
+  );
+  const [showEventModal, setShowEventModal] = useState(false);
+
+  // Initialize hook data on mount
+  useEffect(() => {
+    if (initialData && initialData.events.length > 0) {
+      setInitialData({
+        events: initialData.events,
+        stats: initialData.stats,
+        conflicts: initialData.conflicts,
+        hasConflicts: initialData.hasConflicts,
+      });
+    }
+  }, [initialData, setInitialData]);
+
+  // Calendar navigation
+  const navigateMonth = useCallback((direction: 'prev' | 'next') => {
+    setCurrentDate((prev) => {
+      const newDate = new Date(prev);
+      if (direction === 'prev') {
+        newDate.setMonth(newDate.getMonth() - 1);
+      } else {
+        newDate.setMonth(newDate.getMonth() + 1);
+      }
+      return newDate;
+    });
+  }, []);
+
+  const navigateWeek = useCallback((direction: 'prev' | 'next') => {
+    setCurrentDate((prev) => {
+      const newDate = new Date(prev);
+      if (direction === 'prev') {
+        newDate.setDate(newDate.getDate() - 7);
+      } else {
+        newDate.setDate(newDate.getDate() + 7);
+      }
+      return newDate;
+    });
+  }, []);
+
+  const goToToday = useCallback(() => {
+    setCurrentDate(new Date());
+  }, []);
+
+  // Handle calendar refresh
+  const handleRefreshCalendar = useCallback(async () => {
+    const startDate = new Date(currentDate);
+    startDate.setDate(1);
+
+    const endDate = new Date(currentDate);
+    endDate.setMonth(endDate.getMonth() + 2);
+    endDate.setDate(0);
+
+    await refreshCalendar(startDate, endDate, viewMode);
+  }, [currentDate, viewMode, refreshCalendar]);
+
+  // Filter events using hook data
+  const filteredEvents = useMemo(() => {
+    let filtered = [...events];
+
+    // Filter by status
+    if (eventFilter !== 'all') {
+      filtered = filtered.filter((event) => {
+        switch (eventFilter) {
+          case 'scheduled':
+            return event.status === 'SCHEDULED';
+          case 'completed':
+            return event.status === 'COMPLETED';
+          case 'cancelled':
+            return event.status === 'CANCELLED';
+          default:
+            return true;
+        }
+      });
+    }
+
+    // Filter by student
+    if (selectedStudent !== 'all') {
+      filtered = filtered.filter(
+        (event) => event.student?.id === selectedStudent
+      );
+    }
+
+    return filtered;
+  }, [events, eventFilter, selectedStudent]);
+
+  const SelectedStudentsOptions = initialData.students.map((student) => {
+    return {
+      label: student.name,
+      value: student.id,
+    };
+  });
+
+  const stateOptions = [
+    { value: 'all', label: 'Todos' },
+    { value: 'scheduled', label: 'Agendadas' },
+    { value: 'completed', label: 'Concluídas' },
+    { value: 'cancelled', label: 'Canceladas' },
+  ];
+
+  // Get calendar days for month view
+  const getCalendarDays = useCallback(() => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+    const days = [];
+    const currentDay = new Date(startDate);
+
+    for (let i = 0; i < 42; i++) {
+      days.push(new Date(currentDay));
+      currentDay.setDate(currentDay.getDate() + 1);
+    }
+
+    return days;
+  }, [currentDate]);
+
+  // Get events for specific day
+  const getEventsForDay = useCallback(
+    (date: Date) => {
+      const dateStr = date.toDateString();
+      return filteredEvents.filter(
+        (event) => new Date(event.start).toDateString() === dateStr
+      );
+    },
+    [filteredEvents]
+  );
+
+  // Get week days for week view
+  const getWeekDays = useCallback(() => {
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
+
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(startOfWeek);
+      day.setDate(startOfWeek.getDate() + i);
+      days.push(day);
+    }
+
+    return days;
+  }, [currentDate]);
+
+  // Format functions
+  const formatTime = (date: Date | string) => {
+    return new Date(date).toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const formatDate = (date: Date | string) => {
+    return new Date(date).toLocaleDateString('pt-BR');
+  };
+
+  const formatEventTime = (start: Date | string, end: Date | string) => {
+    const startTime = formatTime(start);
+    const endTime = formatTime(end);
+    return `${startTime} - ${endTime}`;
+  };
+
+  // Event status color
+  const getEventStatusColor = (status: string) => {
+    switch (status) {
+      case 'COMPLETED':
+        return 'bg-accent-green/10 border-accent-green/30 text-accent-green';
+      case 'CANCELLED':
+        return 'bg-accent-red/10 border-accent-red/30 text-accent-red';
+      case 'NO_SHOW':
+        return 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow';
+      case 'RESCHEDULED':
+        return 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple';
+      default:
+        return 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue';
+    }
+  };
+
+  // Create quick event using hook
+  const handleCreateQuickEvent = useCallback(
+    async (
+      date: Date,
+      studentId: string,
+      title: string,
+      duration: number = 60
+    ) => {
+      const success = await createQuickLesson({
+        studentUserId: studentId,
+        title,
+        start: date.toISOString(),
+        duration,
+        objectives: [],
+      });
+
+      if (success) {
+        setShowCreateModal(false);
+        console.log('Aula criada com sucesso!');
+      }
+    },
+    [createQuickLesson]
+  );
+
+  // Statistics for current view
+  const viewStats = useMemo(() => {
+    const now = new Date();
+    const eventsInView = filteredEvents.filter((event) => {
+      const eventDate = new Date(event.start);
+
+      if (viewMode === 'month') {
+        return (
+          eventDate.getMonth() === currentDate.getMonth() &&
+          eventDate.getFullYear() === currentDate.getFullYear()
+        );
+      } else if (viewMode === 'week') {
+        const weekStart = new Date(currentDate);
+        weekStart.setDate(currentDate.getDate() - currentDate.getDay());
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+        return eventDate >= weekStart && eventDate <= weekEnd;
+      } else {
+        return eventDate.toDateString() === currentDate.toDateString();
+      }
+    });
+
+    return {
+      total: eventsInView.length,
+      scheduled: eventsInView.filter((e) => e.status === 'SCHEDULED').length,
+      completed: eventsInView.filter((e) => e.status === 'COMPLETED').length,
+      cancelled: eventsInView.filter((e) => e.status === 'CANCELLED').length,
+      today: filteredEvents.filter(
+        (e) => new Date(e.start).toDateString() === now.toDateString()
+      ).length,
+    };
+  }, [filteredEvents, viewMode, currentDate]);
+
+  // Render error state
+  if ((error || errorMessage) && events.length === 0) {
+    return (
+      <PageContainer showBackground={true}>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="classical-card p-8 text-center max-w-md">
+            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-purple rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <FiCalendar className="w-8 h-8 text-theme-primary" />
+            </div>
+            <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
+              Erro ao Carregar Calendário
+            </h1>
+            <p className="text-theme-secondary classical-subtitle mb-6">
+              {error || errorMessage}
+            </p>
+            <div className="space-y-3">
+              <button
+                onClick={handleRefreshCalendar}
+                disabled={loading.calendar}
+                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+              >
+                <FiRefreshCw
+                  className={`w-4 h-4 ${
+                    loading.calendar ? 'animate-spin' : ''
+                  }`}
+                />
+                <span>
+                  {loading.calendar ? 'Carregando...' : 'Tentar Novamente'}
+                </span>
+              </button>
+              {error && (
+                <button
+                  onClick={clearError}
+                  className="btn-classical-secondary w-full"
+                >
+                  Limpar Erro
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </PageContainer>
+    );
+  }
+
+  return (
+    <PageContainer showBackground={true}>
+      <AnimatedContainer delay={0.1} staggerSpeed="normal">
+        {/* Header */}
+        <AnimatedItem direction="up" springType="gentle">
+          <div className="text-center mb-8 py-8">
+            <div className="flex items-center justify-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center shadow-theme-glow">
+                <FiCalendar className="w-8 h-8 text-theme-primary" />
+              </div>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
+              Calendário de Aulas
+            </h1>
+            <p className="text-xl text-theme-secondary classical-subtitle">
+              Gerencie sua agenda e visualize suas aulas de forma organizada
+            </p>
+          </div>
+        </AnimatedItem>
+
+        {/* Stats Cards */}
+        <AnimatedItem direction="up" springType="gentle">
+          <div className="grid grid-cols-5 space-x-8 space-y-8">
+            <AnimatedCard
+              hover="scale"
+              className="classical-card p-6 text-center"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
+                <FiCalendar className="w-6 h-6 text-theme-primary" />
+              </div>
+              <div className="text-2xl font-bold text-theme-primary mb-1">
+                {viewStats.total}
+              </div>
+              <div className="text-sm text-theme-tertiary">
+                Total no{' '}
+                {viewMode === 'month'
+                  ? 'Mês'
+                  : viewMode === 'week'
+                  ? 'Semana'
+                  : 'Dia'}
+              </div>
+            </AnimatedCard>
+
+            <AnimatedCard
+              hover="scale"
+              className="classical-card p-6 text-center"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
+                <FiClock className="w-6 h-6 text-theme-primary" />
+              </div>
+              <div className="text-2xl font-bold text-theme-primary mb-1">
+                {viewStats.scheduled}
+              </div>
+              <div className="text-sm text-theme-tertiary">Agendadas</div>
+            </AnimatedCard>
+
+            <AnimatedCard
+              hover="scale"
+              className="classical-card p-6 text-center"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
+                <FiCheck className="w-6 h-6 text-theme-primary" />
+              </div>
+              <div className="text-2xl font-bold text-theme-primary mb-1">
+                {viewStats.completed}
+              </div>
+              <div className="text-sm text-theme-tertiary">Concluídas</div>
+            </AnimatedCard>
+
+            <AnimatedCard
+              hover="scale"
+              className="classical-card p-6 text-center"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
+                <FiX className="w-6 h-6 text-theme-primary" />
+              </div>
+              <div className="text-2xl font-bold text-theme-primary mb-1">
+                {viewStats.cancelled}
+              </div>
+              <div className="text-sm text-theme-tertiary">Canceladas</div>
+            </AnimatedCard>
+
+            <AnimatedCard
+              hover="scale"
+              className="classical-card p-6 text-center"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
+                <FiAlertCircle className="w-6 h-6 text-theme-primary" />
+              </div>
+              <div className="text-2xl font-bold text-theme-primary mb-1">
+                {viewStats.today}
+              </div>
+              <div className="text-sm text-theme-tertiary">Hoje</div>
+            </AnimatedCard>
+          </div>
+        </AnimatedItem>
+
+        {/* Calendar Controls */}
+        <AnimatedItem direction="up" springType="gentle">
+          <AnimatedCard hover="none" className="classical-card p-6">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              {/* Navigation */}
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() =>
+                      viewMode === 'month'
+                        ? navigateMonth('prev')
+                        : navigateWeek('prev')
+                    }
+                    disabled={loading.calendar}
+                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
+                  >
+                    <FiChevronLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                  </button>
+
+                  <div className="text-center min-w-48">
+                    <div className="text-lg font-bold text-theme-primary">
+                      {viewMode === 'month' &&
+                        `${
+                          MONTHS[currentDate.getMonth()]
+                        } ${currentDate.getFullYear()}`}
+                      {viewMode === 'week' &&
+                        `Semana de ${formatDate(getWeekDays()[0])}`}
+                      {viewMode === 'day' && formatDate(currentDate)}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      viewMode === 'month'
+                        ? navigateMonth('next')
+                        : navigateWeek('next')
+                    }
+                    disabled={loading.calendar}
+                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
+                  >
+                    <FiChevronRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                  </button>
+                </div>
+
+                <button
+                  onClick={goToToday}
+                  disabled={loading.calendar}
+                  className="btn-classical-secondary text-sm disabled:opacity-50"
+                >
+                  Hoje
+                </button>
+
+                <button
+                  onClick={handleRefreshCalendar}
+                  disabled={loading.calendar}
+                  className="btn-classical-secondary text-sm flex items-center space-x-2 disabled:opacity-50"
+                >
+                  <FiRefreshCw
+                    className={`w-4 h-4 ${
+                      loading.calendar ? 'animate-spin' : ''
+                    }`}
+                  />
+                  <span>Atualizar</span>
+                </button>
+              </div>
+
+              {/* View Mode and Filters */}
+              <div className="flex items-center space-x-4">
+                {/* View Mode Toggle */}
+                <div className="flex bg-theme-secondary rounded-lg p-1">
+                  <button
+                    onClick={() => setViewMode('month')}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      viewMode === 'month'
+                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                        : 'text-theme-tertiary hover:text-theme-primary'
+                    }`}
+                  >
+                    Mês
+                  </button>
+                  <button
+                    onClick={() => setViewMode('week')}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      viewMode === 'week'
+                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                        : 'text-theme-tertiary hover:text-theme-primary'
+                    }`}
+                  >
+                    Semana
+                  </button>
+                  <button
+                    onClick={() => setViewMode('day')}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                      viewMode === 'day'
+                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                        : 'text-theme-tertiary hover:text-theme-primary'
+                    }`}
+                  >
+                    Dia
+                  </button>
+                </div>
+
+                {/* Student Filter */}
+                <Select
+                  value={selectedStudent}
+                  options={SelectedStudentsOptions}
+                  onChange={(e) => setSelectedStudent(e.target.value)}
+                  className="input-classical-2 w-auto min-w-48"
+                />
+                {/* Status Filter */}
+                <Select
+                  options={stateOptions}
+                  value={eventFilter}
+                  onChange={(e) =>
+                    setEventFilter(e.target.value as EventFilter)
+                  }
+                  className="input-classical-2 w-auto min-w-40"
+                />
+
+                {/* Create Button */}
+                <Link
+                  href="/teacher/lessons/create"
+                  className="btn-classical-primary flex items-center space-x-2"
+                >
+                  <FiPlus className="w-4 h-4" />
+                  <span>Nova Aula</span>
+                </Link>
+              </div>
+            </div>
+          </AnimatedCard>
+        </AnimatedItem>
+
+        {/* Loading State */}
+        {loading.calendar && (
+          <AnimatedItem direction="up" springType="gentle">
+            <div className="text-center py-8">
+              <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+              <p className="text-theme-secondary">Carregando calendário...</p>
+            </div>
+          </AnimatedItem>
+        )}
+
+        {/* Calendar Content */}
+        {!loading.calendar && (
+          <AnimatedItem direction="up" springType="gentle">
+            <AnimatedCard hover="none" className="classical-card p-6">
+              {viewMode === 'month' && (
+                <MonthView
+                  days={getCalendarDays()}
+                  currentDate={currentDate}
+                  getEventsForDay={getEventsForDay}
+                  onEventClick={(event) => {
+                    setSelectedEvent(event);
+                    setShowEventModal(true);
+                  }}
+                  formatTime={formatTime}
+                  getEventStatusColor={getEventStatusColor}
+                />
+              )}
+
+              {viewMode === 'week' && (
+                <WeekView
+                  days={getWeekDays()}
+                  getEventsForDay={getEventsForDay}
+                  onEventClick={(event) => {
+                    setSelectedEvent(event);
+                    setShowEventModal(true);
+                  }}
+                  formatTime={formatTime}
+                  formatEventTime={formatEventTime}
+                  getEventStatusColor={getEventStatusColor}
+                />
+              )}
+
+              {viewMode === 'day' && (
+                <DayView
+                  date={currentDate}
+                  events={getEventsForDay(currentDate)}
+                  onEventClick={(event) => {
+                    setSelectedEvent(event);
+                    setShowEventModal(true);
+                  }}
+                  formatTime={formatTime}
+                  formatEventTime={formatEventTime}
+                  getEventStatusColor={getEventStatusColor}
+                />
+              )}
+            </AnimatedCard>
+          </AnimatedItem>
+        )}
+
+        {/* Conflicts Warning */}
+        {hasConflicts && conflicts && conflicts.length > 0 && (
+          <AnimatedItem direction="up" springType="gentle">
+            <AnimatedCard
+              hover="lift"
+              className="classical-card p-6 border-l-4 border-accent-red"
+            >
+              <div className="flex items-start space-x-4">
+                <div className="w-10 h-10 bg-accent-red/10 rounded-full flex items-center justify-center">
+                  <FiAlertCircle className="w-5 h-5 text-accent-red" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-accent-red mb-2">
+                    Conflitos de Horário Detectados
+                  </h3>
+                  <p className="text-theme-secondary text-sm mb-4">
+                    Foram encontrados {conflicts.length} conflito(s) em sua
+                    agenda.
+                  </p>
+
+                  <div className="space-y-2">
+                    {conflicts.slice(0, 3).map((conflict, index) => (
+                      <div key={index} className="classical-card-2 p-3">
+                        <div className="font-medium text-theme-primary text-sm">
+                          {formatDate(conflict.date)}
+                        </div>
+                        <div className="text-xs text-theme-tertiary">
+                          {conflict.conflicts.length} aulas conflitantes
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {conflicts.length > 3 && (
+                    <p className="text-xs text-theme-tertiary mt-2">
+                      E mais {conflicts.length - 3} conflito(s)...
+                    </p>
+                  )}
+                </div>
+              </div>
+            </AnimatedCard>
+          </AnimatedItem>
+        )}
+      </AnimatedContainer>
+
+      {/* Event Details Modal */}
+      {showEventModal && selectedEvent && (
+        <EventDetailsModal
+          event={selectedEvent}
+          onClose={() => {
+            setShowEventModal(false);
+            setSelectedEvent(null);
+          }}
+          formatTime={formatTime}
+          formatDate={formatDate}
+          getEventStatusColor={getEventStatusColor}
+        />
+      )}
+    </PageContainer>
+  );
+}
+
+// Month View Component
+interface MonthViewProps {
+  days: Date[];
+  currentDate: Date;
+  getEventsForDay: (date: Date) => CalendarEvent[];
+  onEventClick: (event: CalendarEvent) => void;
+  formatTime: (date: Date | string) => string;
+  getEventStatusColor: (status: string) => string;
+}
+
+function MonthView({
+  days,
+  currentDate,
+  getEventsForDay,
+  onEventClick,
+  formatTime,
+  getEventStatusColor,
+}: MonthViewProps) {
+  const today = new Date();
+  const currentMonth = currentDate.getMonth();
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="grid grid-cols-7 gap-1 mb-2">
+        {WEEKDAYS.map((day) => (
+          <div
+            key={day}
+            className="p-3 text-center font-semibold text-theme-tertiary text-sm"
+          >
+            {day}
+          </div>
+        ))}
+      </div>
+
+      {/* Calendar Grid */}
+      <div className="grid grid-cols-7 gap-1">
+        {days.map((day, index) => {
+          const isToday = day.toDateString() === today.toDateString();
+          const isCurrentMonth = day.getMonth() === currentMonth;
+          const events = getEventsForDay(day);
+
+          return (
+            <div
+              key={index}
+              className={`min-h-24 p-2 border border-theme-secondary/50 rounded-lg transition-all hover:border-brand-primary/30 ${
+                isToday
+                  ? 'bg-brand-primary/5 border-brand-primary/30'
+                  : isCurrentMonth
+                  ? 'bg-theme-elevated/50'
+                  : 'bg-theme-secondary/20 opacity-60'
+              }`}
+            >
+              <div
+                className={`text-sm font-medium mb-1 ${
+                  isToday
+                    ? 'text-brand-primary'
+                    : isCurrentMonth
+                    ? 'text-theme-primary'
+                    : 'text-theme-tertiary'
+                }`}
+              >
+                {day.getDate()}
+              </div>
+
+              <div className="space-y-1">
+                {events.slice(0, 2).map((event) => (
+                  <button
+                    key={event.id}
+                    onClick={() => onEventClick(event)}
+                    className={`w-full text-left p-1 rounded text-xs font-medium transition-all hover:scale-105 ${getEventStatusColor(
+                      event.status
+                    )}`}
+                  >
+                    <div className="truncate">
+                      {formatTime(event.start)} {event.title}
+                    </div>
+                  </button>
+                ))}
+
+                {events.length > 2 && (
+                  <div className="text-xs text-theme-tertiary">
+                    +{events.length - 2} mais
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Week View Component
+interface WeekViewProps {
+  days: Date[];
+  getEventsForDay: (date: Date) => CalendarEvent[];
+  onEventClick: (event: CalendarEvent) => void;
+  formatTime: (date: Date | string) => string;
+  formatEventTime: (start: Date | string, end: Date | string) => string;
+  getEventStatusColor: (status: string) => string;
+}
+
+function WeekView({
+  days,
+  getEventsForDay,
+  onEventClick,
+  formatTime,
+  formatEventTime,
+  getEventStatusColor,
+}: WeekViewProps) {
+  const today = new Date();
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="grid grid-cols-7 gap-4 mb-4">
+        {days.map((day, index) => {
+          const isToday = day.toDateString() === today.toDateString();
+
+          return (
+            <div
+              key={index}
+              className={`text-center p-3 rounded-lg ${
+                isToday
+                  ? 'bg-brand-primary/10 border border-brand-primary/30'
+                  : 'bg-theme-elevated'
+              }`}
+            >
+              <div className="text-sm text-theme-tertiary">
+                {WEEKDAYS[index]}
+              </div>
+              <div
+                className={`text-lg font-bold ${
+                  isToday ? 'text-brand-primary' : 'text-theme-primary'
+                }`}
+              >
+                {day.getDate()}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Events */}
+      <div className="grid grid-cols-7 gap-4">
+        {days.map((day, index) => {
+          const events = getEventsForDay(day);
+
+          return (
+            <div key={index} className="space-y-2 min-h-96">
+              {events.map((event) => (
+                <button
+                  key={event.id}
+                  onClick={() => onEventClick(event)}
+                  className={`w-full text-left p-3 rounded-lg transition-all hover:scale-105 ${getEventStatusColor(
+                    event.status
+                  )}`}
+                >
+                  <div className="font-medium text-sm truncate">
+                    {event.title}
+                  </div>
+                  <div className="text-xs opacity-75">
+                    {formatEventTime(event.start, event.end)}
+                  </div>
+                  {event.student && (
+                    <div className="text-xs opacity-75 truncate">
+                      {event.student.name}
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// Day View Component
+interface DayViewProps {
+  date: Date;
+  events: CalendarEvent[];
+  onEventClick: (event: CalendarEvent) => void;
+  formatTime: (date: Date | string) => string;
+  formatEventTime: (start: Date | string, end: Date | string) => string;
+  getEventStatusColor: (status: string) => string;
+}
+
+function DayView({
+  date,
+  events,
+  onEventClick,
+  formatTime,
+  formatEventTime,
+  getEventStatusColor,
+}: DayViewProps) {
+  const sortedEvents = [...events].sort(
+    (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+  );
+
+  return (
+    <div>
+      <div className="text-center mb-6">
+        <div className="text-2xl font-bold text-theme-primary">
+          {date.toLocaleDateString('pt-BR', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        {sortedEvents.length === 0 ? (
+          <div className="text-center py-12">
+            <FiCalendar className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-theme-primary mb-2">
+              Nenhuma aula agendada
+            </h3>
+            <p className="text-theme-tertiary">
+              Você não tem aulas marcadas para este dia.
+            </p>
+          </div>
+        ) : (
+          sortedEvents.map((event) => (
+            <button
+              key={event.id}
+              onClick={() => onEventClick(event)}
+              className={`w-full text-left p-6 rounded-lg transition-all hover:scale-105 ${getEventStatusColor(
+                event.status
+              )}`}
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h3 className="font-bold text-lg mb-2">{event.title}</h3>
+
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center space-x-2">
+                      <FiClock className="w-4 h-4" />
+                      <span>{formatEventTime(event.start, event.end)}</span>
+                    </div>
+
+                    {event.student && (
+                      <div className="flex items-center space-x-2">
+                        <FiUser className="w-4 h-4" />
+                        <span>{event.student.name}</span>
+                      </div>
+                    )}
+
+                    {event.location && (
+                      <div className="flex items-center space-x-2">
+                        <FiMapPin className="w-4 h-4" />
+                        <span>{event.location}</span>
+                      </div>
+                    )}
+
+                    {event.objectives && event.objectives.length > 0 && (
+                      <div className="flex items-start space-x-2">
+                        <FiBookOpen className="w-4 h-4 mt-0.5" />
+                        <div className="flex flex-wrap gap-1">
+                          {event.objectives
+                            .slice(0, 3)
+                            .map((objective, index) => (
+                              <span
+                                key={index}
+                                className="px-2 py-1 bg-theme-elevated rounded text-xs"
+                              >
+                                {objective}
+                              </span>
+                            ))}
+                          {event.objectives.length > 3 && (
+                            <span className="text-xs opacity-75">
+                              +{event.objectives.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="ml-4">
+                  <FiEye className="w-5 h-5 opacity-50" />
+                </div>
+              </div>
+            </button>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Event Details Modal
+interface EventDetailsModalProps {
+  event: CalendarEvent;
+  onClose: () => void;
+  formatTime: (date: Date | string) => string;
+  formatDate: (date: Date | string) => string;
+  getEventStatusColor: (status: string) => string;
+}
+
+function EventDetailsModal({
+  event,
+  onClose,
+  formatTime,
+  formatDate,
+  getEventStatusColor,
+}: EventDetailsModalProps) {
+  return (
+    <div className="fixed inset-0 bg-bg-overlay backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <AnimatedCard
+        hover="none"
+        className="classical-card w-full max-w-2xl max-h-[80vh] overflow-y-auto"
+      >
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-theme-primary classical-title">
+                {event.title}
+              </h2>
+              <div className="flex items-center space-x-3 mt-2">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${getEventStatusColor(
+                    event.status
+                  )}`}
+                >
+                  {event.status === 'SCHEDULED'
+                    ? 'Agendada'
+                    : event.status === 'COMPLETED'
+                    ? 'Concluída'
+                    : event.status === 'CANCELLED'
+                    ? 'Cancelada'
+                    : event.status === 'NO_SHOW'
+                    ? 'Faltou'
+                    : event.status === 'RESCHEDULED'
+                    ? 'Reagendada'
+                    : event.status}
+                </span>
+                {event.details?.isRecurring && (
+                  <span className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
+                    Recorrente
+                  </span>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
+            >
+              <FiX className="w-4 h-4 text-theme-tertiary" />
+            </button>
+          </div>
+
+          <div className="space-y-6">
+            {/* Basic Info */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                  Data e Hora
+                </label>
+                <div className="text-theme-primary">
+                  <div>{formatDate(event.start)}</div>
+                  <div>
+                    {formatTime(event.start)} - {formatTime(event.end)}
+                  </div>
+                </div>
+              </div>
+
+              {event.student && (
+                <div>
+                  <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                    Aluno
+                  </label>
+                  <div className="flex items-center space-x-3">
+                    {event.student.image ? (
+                      <div className="w-8 h-8 relative rounded-full overflow-hidden">
+                        <Image
+                          src={event.student.image}
+                          alt={event.student.name}
+                          fill
+                          sizes="32px"
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                        <FiUser className="w-4 h-4 text-theme-primary" />
+                      </div>
+                    )}
+                    <div>
+                      <div className="text-theme-primary font-medium">
+                        {event.student.name}
+                      </div>
+                      <div className="text-sm text-theme-tertiary">
+                        Nível: {event.student.level}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Location */}
+            {event.location && (
+              <div>
+                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                  Local
+                </label>
+                <div className="text-theme-primary">{event.location}</div>
+              </div>
+            )}
+
+            {/* Description */}
+            {event.description && (
+              <div>
+                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                  Descrição
+                </label>
+                <div className="text-theme-primary">{event.description}</div>
+              </div>
+            )}
+
+            {/* Objectives */}
+            {event.objectives && event.objectives.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                  Objetivos
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {event.objectives.map((objective, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm"
+                    >
+                      {objective}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Topics */}
+            {event.details?.topics && event.details.topics.length > 0 && (
+              <div>
+                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                  Tópicos
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {event.details.topics.map((topic, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-theme-elevated text-theme-secondary rounded-full text-sm"
+                    >
+                      {topic}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Homework */}
+            {event.details?.homework && (
+              <div>
+                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                  Tarefa de Casa
+                </label>
+                <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
+                  <div className="text-theme-primary">
+                    {event.details.homework}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Teacher Notes */}
+            {event.details?.teacherNotes && (
+              <div>
+                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                  Anotações do Professor
+                </label>
+                <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
+                  <div className="text-theme-primary whitespace-pre-wrap">
+                    {event.details.teacherNotes}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex items-center justify-between pt-6 border-t border-theme-secondary">
+              <Link
+                href={`/teacher/lessons/${event.id}`}
+                className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
+              >
+                <FiEye className="w-4 h-4" />
+                <span>Ver Detalhes Completos</span>
+              </Link>
+
+              <div className="flex items-center space-x-3">
+                {event.status === 'SCHEDULED' && (
+                  <Link
+                    href={`/teacher/lessons/${event.id}/edit`}
+                    className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
+                  >
+                    <FiEdit3 className="w-4 h-4" />
+                    <span>Editar</span>
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </AnimatedCard>
+    </div>
+  );
+}

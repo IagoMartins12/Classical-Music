@@ -28,11 +28,6 @@ interface UserEditData {
   role: number;
   userType: string;
   experienceLevel: string;
-  uploadLimitDaily: number;
-  uploadLimitMonthly: number;
-  canUploadComposers: boolean;
-  canUploadWorks: boolean;
-  canUploadScores: boolean;
 }
 
 const ROLE_OPTIONS = [
@@ -72,11 +67,6 @@ export default function UserEditModal({
     role: user.role || 0,
     userType: user.userType || 'CASUAL_USER',
     experienceLevel: user.experienceLevel || 'BEGINNER',
-    uploadLimitDaily: 50, // Valor padrão do schema
-    uploadLimitMonthly: 1000, // Valor padrão do schema
-    canUploadComposers: true,
-    canUploadWorks: true,
-    canUploadScores: true,
   });
 
   console.log('user', user);
@@ -94,11 +84,6 @@ export default function UserEditModal({
         role: user.role || 0,
         userType: user.userType || 'CASUAL_USER',
         experienceLevel: user.experienceLevel || 'BEGINNER',
-        uploadLimitDaily: 50,
-        uploadLimitMonthly: 1000,
-        canUploadComposers: true,
-        canUploadWorks: true,
-        canUploadScores: true,
       };
 
       const hasChanged = Object.keys(newData).some(
