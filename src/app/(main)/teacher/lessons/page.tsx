@@ -1,31 +1,31 @@
-// app/teacher/profile/page.tsx - Página do Perfil do Professor
+// app/teacher/lessons/page.tsx - Página de Gerenciamento de Aulas
 
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
-import NotFound from '../../not-found';
-import TeacherProfilePageServer from './pageServer';
+import { notFound } from 'next/navigation';
+import TeacherLessonsPageServer from './pageServer';
 
 export const metadata: Metadata = {
-  title: 'Meu Perfil | Professor - Opus Atlas',
+  title: 'Gerenciar Aulas | Professor - Opus Atlas',
   description:
-    'Gerencie seu perfil de professor, especialidades, experiência e configurações de ensino',
+    'Gerencie todas suas aulas, visualize agendamentos, edite informações e acompanhe o progresso dos alunos',
   keywords:
-    'perfil professor, especialidades musicais, experiência, configurações ensino, dados pessoais',
+    'gerenciar aulas professor, aulas agendadas, cronograma ensino, gestão alunos, aulas música',
   openGraph: {
-    title: 'Perfil do Professor - Opus Atlas',
+    title: 'Gerenciamento de Aulas - Professor | Opus Atlas',
     description:
-      'Configure seu perfil profissional e destaque suas especialidades musicais',
+      'Controle total sobre suas aulas: agendamentos, progresso dos alunos e planejamento pedagógico',
     type: 'website',
   },
 };
 
-export default async function TeacherProfilePage() {
+export default async function TeacherLessonsPage() {
   const session = await getServerSession(authOptions);
 
   // Verificar se está logado
   if (!session?.user?.id) {
-    return <NotFound />;
+    return notFound();
   }
 
   // Verificar se tem role de professor (role 1)
@@ -66,5 +66,15 @@ export default async function TeacherProfilePage() {
     );
   }
 
-  return <TeacherProfilePageServer />;
+  return (
+    <TeacherLessonsPageServer
+      userId={session.user.id}
+      userEmail={session.user.email || ''}
+      userName={`${session.user.firstName || ''} ${
+        session.user.lastName || ''
+      }`.trim()}
+      userImage={session.user.image}
+      userRole={session.user.role}
+    />
+  );
 }

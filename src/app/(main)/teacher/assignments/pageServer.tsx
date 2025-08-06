@@ -1,9 +1,9 @@
 // app/teacher/assignments/pageServer.tsx - Server Component para Tarefas do Professor
 
-import { getServerSession } from 'next-auth';
-import { notFound } from 'next/navigation';
-import { authOptions } from '@/app/libs/auth';
-import { getTeacherStudents } from '@/app/requests/teacher-request';
+import {
+  getTeacherStudentsData,
+  getTeacherAssignmentsData,
+} from '@/app/requests/teacher-request';
 import TeacherAssignmentsPageClient from './pageClient';
 
 export interface TeacherAssignment {
@@ -22,24 +22,24 @@ export interface TeacherAssignment {
   technicalGoals: string[];
   musicalGoals: string[];
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
-  dueDate?: Date;
-  estimatedTime?: number;
-  actualTime?: number;
+  dueDate?: Date | null;
+  estimatedTime?: number | null;
+  actualTime?: number | null;
   isOverdue: boolean;
-  daysUntilDue?: number;
+  daysUntilDue?: number | null;
   isCompleted: boolean;
-  completedAt?: Date;
-  progress?: number;
-  teacherFeedback?: string;
-  teacherRating?: number;
-  studentNotes?: string;
-  studentRating?: number;
+  completedAt?: Date | null;
+  progress?: number | null;
+  teacherFeedback?: string | null;
+  teacherRating?: number | null;
+  studentNotes?: string | null;
+  studentRating?: number | null;
   submissions?: any;
-  submissionDate?: Date;
+  submissionDate?: Date | null;
   student: {
     id: string;
     name: string;
-    image?: string;
+    image?: string | null;
   };
   lesson: {
     id: string;
@@ -47,7 +47,7 @@ export interface TeacherAssignment {
     scheduledAt: Date;
     teacher: {
       name: string;
-      image?: string;
+      image?: string | null;
     };
   };
   createdAt: Date;
@@ -70,7 +70,7 @@ export interface TeacherAssignmentsData {
   students: Array<{
     id: string;
     name: string;
-    image?: string;
+    image?: string | null;
     level: string;
     isActive: boolean;
   }>;
@@ -90,30 +90,32 @@ export interface TeacherProfile {
   role: number;
 }
 
-export default async function TeacherAssignmentsPageServer() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id || session.user.role !== 1) {
-    notFound();
-  }
+export default async function TeacherAssignmentsPageServer({
+  userId,
+  userEmail,
+  userName,
+  userImage,
+  userRole,
+}: {
+  userId: string;
+  userEmail: string;
+  userName: string;
+  userImage?: string | null;
+  userRole: number;
+}) {
+  console.log(
+    `📋 [TEACHER-ASSIGNMENTS-PAGE-SERVER] Loading for user ${userId}`
+  );
 
   try {
     // Buscar dados em paralelo
     const [assignmentsResponse, studentsData] = await Promise.all([
-      fetch(`${process.env.NEXTAUTH_URL}/api/assignments?limit=50&offset=0`, {
-        cache: 'no-store',
-      }),
-      getTeacherStudents('active', 100, 0),
+      getTeacherAssignmentsData(userId, undefined, undefined, undefined, 50, 0),
+      getTeacherStudentsData(userId, 'active', 100, 0),
     ]);
 
-    if (!assignmentsResponse.ok) {
+    if (!assignmentsResponse || !assignmentsResponse.success) {
       throw new Error('Falha ao carregar tarefas');
-    }
-
-    const assignmentsData = await assignmentsResponse.json();
-
-    if (!assignmentsData.success) {
-      throw new Error(assignmentsData.error || 'Erro ao carregar tarefas');
     }
 
     // Preparar lista de alunos
@@ -127,29 +129,35 @@ export default async function TeacherAssignmentsPageServer() {
       })) || [];
 
     const teacherAssignmentsData: TeacherAssignmentsData = {
-      assignments: assignmentsData.assignments,
-      stats: assignmentsData.stats,
+      assignments: assignmentsResponse.assignments,
+      stats: assignmentsResponse.stats,
       students: activeStudents,
-      pagination: assignmentsData.pagination,
+      pagination: assignmentsResponse.pagination,
     };
+
+    console.log(
+      `✅ [TEACHER-ASSIGNMENTS-PAGE-SERVER] Data loaded successfully - ${assignmentsResponse.assignments.length} assignments, ${activeStudents.length} students`
+    );
 
     return (
       <TeacherAssignmentsPageClient
         initialData={teacherAssignmentsData}
         teacherProfile={{
-          id: session.user.id,
-          name: `${session.user.firstName || ''} ${
-            session.user.lastName || ''
-          }`.trim(),
-          email: session.user.email || '',
-          image: session.user.image,
-          role: session.user.role,
+          id: userId,
+          name: userName,
+          email: userEmail,
+          image: userImage,
+          role: userRole,
         }}
       />
     );
   } catch (error) {
-    console.error('❌ Erro crítico na página de tarefas:', error);
+    console.error(
+      '❌ [TEACHER-ASSIGNMENTS-PAGE-SERVER] Critical error:',
+      error
+    );
 
+    // Fallback com dados vazios
     return (
       <TeacherAssignmentsPageClient
         initialData={{
@@ -172,13 +180,11 @@ export default async function TeacherAssignmentsPageServer() {
           },
         }}
         teacherProfile={{
-          id: session.user.id,
-          name: `${session.user.firstName || ''} ${
-            session.user.lastName || ''
-          }`.trim(),
-          email: session.user.email || '',
-          image: session.user.image,
-          role: session.user.role,
+          id: userId,
+          name: userName,
+          email: userEmail,
+          image: userImage,
+          role: userRole,
         }}
         errorMessage="Erro ao carregar dados das tarefas. Tente recarregar a página."
       />

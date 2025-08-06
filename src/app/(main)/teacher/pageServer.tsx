@@ -1,10 +1,10 @@
-import TeacherPageClient from '@/app/components/TeacherPageClient';
 import {
   getTeacherCalendarData,
   getTeacherDashboardData,
   getTeacherProfile,
   getTeacherStudentsData,
 } from '@/app/requests/teacher-request';
+import TeacherPageClient from './pageClient';
 
 export default async function TeacherPageServer({
   userId,

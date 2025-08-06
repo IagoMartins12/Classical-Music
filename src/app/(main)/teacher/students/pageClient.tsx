@@ -37,6 +37,7 @@ import { TeacherStudentsServerData } from '@/app/(main)/teacher/students/pageSer
 import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
+import { useTeacherStudents } from '@/app/hooks/lessonsSystem/useTeacherStudents';
 
 interface TeacherProfile {
   id: string;
@@ -60,41 +61,61 @@ type SortOption =
   | 'nextLesson'
   | 'completionRate';
 
-interface StudentSearchResult {
-  id: string;
-  name: string;
-  email: string;
-  image?: string;
-  location?: string;
-  experienceLevel?: string;
-  mainInstrument?: string;
-  studentLevel?: string;
-  isAlreadyStudent: boolean;
-  relationshipId?: string;
-  hasStudentProfile: boolean;
-}
-
 export default function TeacherStudentsPageClient({
   initialData,
   teacherProfile,
   errorMessage,
 }: TeacherStudentsPageClientProps) {
-  // States
-  const [data, setData] = useState(initialData);
-  const [loading, setLoading] = useState(false);
+  // Initialize hook with server data
+  const {
+    // State do hook
+    students,
+    summary,
+    loading,
+    error,
+    searchResults,
+
+    // Actions do hook
+    refreshStudents,
+    setInitialData,
+    searchStudents,
+    addStudent,
+    updateStudentRelationship,
+    toggleStudentStatus,
+    clearError,
+    clearSearchResults,
+  } = useTeacherStudents(initialData);
+
+  // Local UI states (não relacionados aos dados dos alunos)
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('name');
   const [showAddStudent, setShowAddStudent] = useState(false);
-  const [searchResults, setSearchResults] = useState<StudentSearchResult[]>([]);
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState(errorMessage);
+
+  // Initialize hook data on mount
+  useEffect(() => {
+    if (initialData && initialData.students.length > 0) {
+      setInitialData(initialData);
+    }
+  }, [initialData, setInitialData]);
+
+  // Handle search input change (debounced)
+  useEffect(() => {
+    const delayedSearch = setTimeout(() => {
+      if (showAddStudent && searchQuery.trim()) {
+        searchStudents(searchQuery.trim());
+      } else {
+        clearSearchResults();
+      }
+    }, 300);
+
+    return () => clearTimeout(delayedSearch);
+  }, [searchQuery, searchStudents, showAddStudent, clearSearchResults]);
 
   // Filter and sort students
   const filteredAndSortedStudents = useMemo(() => {
-    let filtered = [...data.students];
+    let filtered = [...students];
 
     // Filter by tab
     switch (activeTab) {
@@ -156,7 +177,7 @@ export default function TeacherStudentsPageClient({
     });
 
     return filtered;
-  }, [data.students, activeTab, searchQuery, sortBy]);
+  }, [students, activeTab, searchQuery, sortBy]);
 
   // Statistics for filtered data
   const filteredStats = useMemo(() => {
@@ -193,157 +214,27 @@ export default function TeacherStudentsPageClient({
     };
   }, [filteredAndSortedStudents]);
 
-  // Search students function
-  const searchStudents = useCallback(async (email: string) => {
-    if (email.length < 3) {
-      setSearchResults([]);
-      return;
-    }
+  // Add student function using hook
+  const handleAddStudent = useCallback(
+    async (studentUserId: string) => {
+      const success = await addStudent(studentUserId);
 
-    setSearchLoading(true);
-    try {
-      const response = await fetch(
-        `/api/teacher/students/search?email=${encodeURIComponent(
-          email
-        )}&limit=10`
-      );
-
-      if (!response.ok) {
-        throw new Error('Erro na busca');
-      }
-
-      const searchData = await response.json();
-
-      if (searchData.success) {
-        setSearchResults(searchData.students || []);
-      } else {
-        setSearchResults([]);
-      }
-    } catch (error) {
-      console.error('Erro ao buscar alunos:', error);
-      setSearchResults([]);
-    } finally {
-      setSearchLoading(false);
-    }
-  }, []);
-
-  // Handle search input change
-  useEffect(() => {
-    const delayedSearch = setTimeout(() => {
-      if (showAddStudent && searchQuery.trim()) {
-        searchStudents(searchQuery.trim());
-      } else {
-        setSearchResults([]);
-      }
-    }, 300);
-
-    return () => clearTimeout(delayedSearch);
-  }, [searchQuery, searchStudents, showAddStudent]);
-
-  // Add student function
-  const addStudent = useCallback(async (studentUserId: string) => {
-    setLoading(true);
-    try {
-      const response = await fetch('/api/teacher/students', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          studentUserId,
-          maxLessonsPerWeek: 1,
-          lessonDuration: 60,
-          preferredDays: [],
-          preferredTimes: [],
-          learningPlan: '',
-          currentFocus: [],
-          teacherNotes: '',
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro ao adicionar aluno');
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        // Refresh data
-        await refreshData();
+      if (success) {
         setSearchQuery('');
-        setSearchResults([]);
+        clearSearchResults();
         setShowAddStudent(false);
-
         console.log('Aluno adicionado com sucesso!');
       }
-    } catch (error) {
-      console.error('Erro ao adicionar aluno:', error);
-      setError('Erro ao adicionar aluno. Tente novamente.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Refresh data function
-  const refreshData = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      // Simulate refresh - in real app, you'd fetch new data
-      setTimeout(() => {
-        setRefreshing(false);
-      }, 1000);
-    } catch (error) {
-      console.error('Erro ao atualizar dados:', error);
-      setRefreshing(false);
-    }
-  }, []);
-
-  // Pause/Resume student
-  const toggleStudentStatus = useCallback(
-    async (relationshipId: string, isPaused: boolean) => {
-      try {
-        const response = await fetch('/api/teacher/students', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            relationshipId,
-            pausedAt: isPaused ? null : new Date(),
-            pauseReason: isPaused ? null : 'Pausado pelo professor',
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error('Erro ao atualizar status');
-        }
-
-        const result = await response.json();
-
-        if (result.success) {
-          // Update local state
-          setData((prev) => ({
-            ...prev,
-            students: prev.students.map((student) =>
-              student.relationshipId === relationshipId
-                ? {
-                    ...student,
-                    relationship: {
-                      ...student.relationship,
-                      pausedAt: isPaused ? null : new Date(),
-                      pauseReason: isPaused ? null : 'Pausado pelo professor',
-                    },
-                  }
-                : student
-            ),
-          }));
-        }
-      } catch (error) {
-        console.error('Erro ao atualizar status:', error);
-        setError('Erro ao atualizar status do aluno.');
-      }
     },
-    []
+    [addStudent, clearSearchResults]
+  );
+
+  // Toggle student status using hook
+  const handleToggleStudentStatus = useCallback(
+    async (relationshipId: string, isPaused: boolean) => {
+      await toggleStudentStatus(relationshipId, isPaused);
+    },
+    [toggleStudentStatus]
   );
 
   // Format functions
@@ -359,7 +250,7 @@ export default function TeacherStudentsPageClient({
   };
 
   // Render error state
-  if (error && data.students.length === 0) {
+  if ((error || errorMessage) && students.length === 0) {
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
@@ -371,15 +262,32 @@ export default function TeacherStudentsPageClient({
               Erro ao Carregar Alunos
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
-              {error}
+              {error || errorMessage}
             </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="btn-classical-primary flex items-center space-x-2"
-            >
-              <FiRefreshCw className="w-4 h-4" />
-              <span>Recarregar Página</span>
-            </button>
+            <div className="space-y-3">
+              <button
+                onClick={refreshStudents}
+                disabled={loading.students}
+                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+              >
+                <FiRefreshCw
+                  className={`w-4 h-4 ${
+                    loading.students ? 'animate-spin' : ''
+                  }`}
+                />
+                <span>
+                  {loading.students ? 'Carregando...' : 'Tentar Novamente'}
+                </span>
+              </button>
+              {error && (
+                <button
+                  onClick={clearError}
+                  className="btn-classical-secondary w-full"
+                >
+                  Limpar Erro
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </PageContainer>
@@ -422,11 +330,11 @@ export default function TeacherStudentsPageClient({
                 <FiUsers className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
-                {data.summary.total}
+                {summary.total}
               </div>
               <div className="text-sm text-theme-tertiary">Total de Alunos</div>
               <div className="text-xs text-accent-green mt-1">
-                {data.summary.active} ativos
+                {summary.active} ativos
               </div>
             </AnimatedCard>
 
@@ -496,7 +404,7 @@ export default function TeacherStudentsPageClient({
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Todos ({data.summary.total})
+                    Todos ({summary.total})
                   </button>
                   <button
                     onClick={() => setActiveTab('active')}
@@ -541,13 +449,13 @@ export default function TeacherStudentsPageClient({
                   </button>
 
                   <button
-                    onClick={refreshData}
-                    disabled={refreshing}
+                    onClick={refreshStudents}
+                    disabled={loading.students}
                     className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
                   >
                     <FiRefreshCw
                       className={`w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all ${
-                        refreshing ? 'animate-spin' : ''
+                        loading.students ? 'animate-spin' : ''
                       }`}
                     />
                   </button>
@@ -591,63 +499,75 @@ export default function TeacherStudentsPageClient({
           </AnimatedCard>
         </AnimatedItem>
 
+        {/* Loading State */}
+        {loading.students && (
+          <AnimatedItem direction="up" springType="gentle">
+            <div className="text-center py-8">
+              <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+              <p className="text-theme-secondary">Carregando alunos...</p>
+            </div>
+          </AnimatedItem>
+        )}
+
         {/* Students List */}
-        <AnimatedItem direction="up" springType="gentle">
-          {filteredAndSortedStudents.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FiUsers className="w-8 h-8 text-theme-tertiary" />
+        {!loading.students && (
+          <AnimatedItem direction="up" springType="gentle">
+            {filteredAndSortedStudents.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <FiUsers className="w-8 h-8 text-theme-tertiary" />
+                </div>
+                <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
+                  {searchQuery || activeTab !== 'all'
+                    ? 'Nenhum aluno encontrado'
+                    : 'Você ainda não tem alunos'}
+                </h3>
+                <p className="text-theme-secondary max-w-md mx-auto mb-6">
+                  {searchQuery || activeTab !== 'all'
+                    ? 'Tente ajustar os filtros ou termos de busca.'
+                    : 'Comece adicionando seus primeiros alunos para começar a usar a plataforma.'}
+                </p>
+                {!searchQuery && activeTab === 'all' && (
+                  <button
+                    onClick={() => setShowAddStudent(true)}
+                    className="btn-classical-primary flex items-center space-x-2 mx-auto"
+                  >
+                    <FiUserPlus className="w-4 h-4" />
+                    <span>Adicionar Primeiro Aluno</span>
+                  </button>
+                )}
               </div>
-              <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-                {searchQuery || activeTab !== 'all'
-                  ? 'Nenhum aluno encontrado'
-                  : 'Você ainda não tem alunos'}
-              </h3>
-              <p className="text-theme-secondary max-w-md mx-auto mb-6">
-                {searchQuery || activeTab !== 'all'
-                  ? 'Tente ajustar os filtros ou termos de busca.'
-                  : 'Comece adicionando seus primeiros alunos para começar a usar a plataforma.'}
-              </p>
-              {!searchQuery && activeTab === 'all' && (
-                <button
-                  onClick={() => setShowAddStudent(true)}
-                  className="btn-classical-primary flex items-center space-x-2 mx-auto"
-                >
-                  <FiUserPlus className="w-4 h-4" />
-                  <span>Adicionar Primeiro Aluno</span>
-                </button>
-              )}
-            </div>
-          ) : (
-            <div
-              className={
-                viewMode === 'cards'
-                  ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-                  : 'space-y-4'
-              }
-            >
-              {filteredAndSortedStudents.map((studentRel, index) => (
-                <AnimatedItem
-                  key={studentRel.relationshipId}
-                  direction={viewMode === 'cards' ? 'up' : 'left'}
-                  hover="lift"
-                  style={{
-                    animationDelay: `${index * 0.1}s`,
-                    animationFillMode: 'backwards',
-                  }}
-                >
-                  <StudentCard
-                    studentRelationship={studentRel}
-                    viewMode={viewMode}
-                    onToggleStatus={toggleStudentStatus}
-                    formatDate={formatDate}
-                    formatTime={formatTime}
-                  />
-                </AnimatedItem>
-              ))}
-            </div>
-          )}
-        </AnimatedItem>
+            ) : (
+              <div
+                className={
+                  viewMode === 'cards'
+                    ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                    : 'space-y-4'
+                }
+              >
+                {filteredAndSortedStudents.map((studentRel, index) => (
+                  <AnimatedItem
+                    key={studentRel.relationshipId}
+                    direction={viewMode === 'cards' ? 'up' : 'left'}
+                    hover="lift"
+                    style={{
+                      animationDelay: `${index * 0.1}s`,
+                      animationFillMode: 'backwards',
+                    }}
+                  >
+                    <StudentCard
+                      studentRelationship={studentRel}
+                      viewMode={viewMode}
+                      onToggleStatus={handleToggleStudentStatus}
+                      formatDate={formatDate}
+                      formatTime={formatTime}
+                    />
+                  </AnimatedItem>
+                ))}
+              </div>
+            )}
+          </AnimatedItem>
+        )}
       </AnimatedContainer>
 
       {/* Add Student Modal */}
@@ -656,21 +576,21 @@ export default function TeacherStudentsPageClient({
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           searchResults={searchResults}
-          searchLoading={searchLoading}
-          loading={loading}
+          searchLoading={loading.searchStudents}
+          loading={loading.addStudent}
           onClose={() => {
             setShowAddStudent(false);
             setSearchQuery('');
-            setSearchResults([]);
+            clearSearchResults();
           }}
-          onAddStudent={addStudent}
+          onAddStudent={handleAddStudent}
         />
       )}
     </PageContainer>
   );
 }
 
-// Student Card Component
+// Student Card Component (unchanged)
 interface StudentCardProps {
   studentRelationship: TeacherStudentsServerData['students'][0];
   viewMode: ViewMode;
@@ -907,11 +827,25 @@ function StudentCard({
   );
 }
 
-// Add Student Modal Component
+// Add Student Modal Component (unchanged)
+interface SearchStudentResult {
+  id: string;
+  name: string;
+  email?: string | null;
+  image?: string;
+  location?: string | null;
+  experienceLevel?: string | null;
+  mainInstrument?: string | null;
+  studentLevel?: string | null;
+  isAlreadyStudent: boolean;
+  relationshipId?: string | null;
+  hasStudentProfile: boolean;
+}
+
 interface AddStudentModalProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  searchResults: StudentSearchResult[];
+  searchResults: SearchStudentResult[];
   searchLoading: boolean;
   loading: boolean;
   onClose: () => void;

@@ -1,8 +1,6 @@
 // app/teacher/students/[studentId]/pageServer.tsx - Server Component para Detalhes do Aluno
 
-import { getServerSession } from 'next-auth';
 import { notFound } from 'next/navigation';
-import { authOptions } from '@/app/libs/auth';
 import TeacherStudentDetailPageClient from './pageClient';
 import { getTeacherStudentDetailData } from '@/app/requests/teacher-request';
 

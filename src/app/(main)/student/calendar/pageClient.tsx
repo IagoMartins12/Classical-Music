@@ -1,7 +1,7 @@
 // app/student/calendar/pageClient.tsx - Client Component para Calendário do Aluno
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   FiCalendar,
   FiClock,
@@ -30,6 +30,7 @@ import { StudentCalendarData } from './pageServer';
 import Link from 'next/link';
 import Image from 'next/image';
 import Select from '@/app/components/Common/Select';
+import { useStudentCalendar } from '@/app/hooks/lessonsSystem/useStudentCalendar';
 
 interface StudentProfile {
   id: string;
@@ -70,8 +71,22 @@ export default function StudentCalendarPageClient({
   studentProfile,
   errorMessage,
 }: StudentCalendarPageClientProps) {
-  // States
-  const [data, setData] = useState(initialData);
+  // Initialize hook with server data
+  const {
+    // State do hook
+    calendarData,
+    loading,
+    error,
+
+    // Actions do hook
+    refreshCalendar,
+    addFeedbackToLesson,
+    updateEventInState,
+    setInitialData,
+    clearError,
+  } = useStudentCalendar(initialData);
+
+  // Local UI states (não relacionados aos dados do calendário)
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<CalendarView>('month');
   const [eventFilter, setEventFilter] = useState<EventFilter>('all');
@@ -80,10 +95,13 @@ export default function StudentCalendarPageClient({
   const [showEventModal, setShowEventModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [feedbackText, setFeedbackText] = useState('');
-  const [feedbackLoading, setFeedbackLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState(errorMessage);
+
+  // Initialize hook data on mount
+  useEffect(() => {
+    if (initialData) {
+      setInitialData(initialData);
+    }
+  }, [initialData, setInitialData]);
 
   // Calendar navigation
   const navigateMonth = useCallback((direction: 'prev' | 'next') => {
@@ -114,11 +132,23 @@ export default function StudentCalendarPageClient({
     setCurrentDate(new Date());
   }, []);
 
-  // Filter events
-  const filteredEvents = useMemo(() => {
-    if (!data) return [];
+  // Handle calendar refresh
+  const handleRefreshCalendar = useCallback(async () => {
+    const startDate = new Date(currentDate);
+    startDate.setDate(1);
 
-    let filtered = [...data.events];
+    const endDate = new Date(currentDate);
+    endDate.setMonth(endDate.getMonth() + 1);
+    endDate.setDate(0);
+
+    await refreshCalendar(startDate, endDate, viewMode);
+  }, [currentDate, viewMode, refreshCalendar]);
+
+  // Filter events using hook data
+  const filteredEvents = useMemo(() => {
+    if (!calendarData) return [];
+
+    let filtered = [...calendarData.events];
 
     // Filter by status
     if (eventFilter !== 'all') {
@@ -144,7 +174,7 @@ export default function StudentCalendarPageClient({
     }
 
     return filtered;
-  }, [data, eventFilter, selectedTeacher]);
+  }, [calendarData, eventFilter, selectedTeacher]);
 
   // Get calendar days for month view
   const getCalendarDays = useCallback(() => {
@@ -229,73 +259,33 @@ export default function StudentCalendarPageClient({
   };
 
   // Add feedback to lesson
-  const addFeedback = useCallback(async () => {
+  const handleAddFeedback = useCallback(async () => {
     if (!selectedEvent || !feedbackText.trim()) return;
 
-    setFeedbackLoading(true);
-    try {
-      const response = await fetch('/api/student/calendar', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+    const success = await addFeedbackToLesson(
+      selectedEvent.id,
+      feedbackText.trim()
+    );
+
+    if (success) {
+      setSelectedEvent((prev: any) => ({
+        ...prev,
+        details: {
+          ...prev.details,
+          studentFeedback: feedbackText.trim(),
+          canProvideFeedback: false,
         },
-        body: JSON.stringify({
-          lessonId: selectedEvent.id,
-          feedback: feedbackText.trim(),
-        }),
-      });
+      }));
 
-      if (!response.ok) {
-        throw new Error('Erro ao adicionar feedback');
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        // Update local state
-        setData((prev) => {
-          if (!prev) return prev;
-          return {
-            ...prev,
-            events: prev.events.map((event) =>
-              event.id === selectedEvent.id
-                ? {
-                    ...event,
-                    details: {
-                      ...event.details,
-                      studentFeedback: feedbackText.trim(),
-                      canProvideFeedback: false,
-                    },
-                  }
-                : event
-            ),
-          };
-        });
-
-        setSelectedEvent((prev: any) => ({
-          ...prev,
-          details: {
-            ...prev.details,
-            studentFeedback: feedbackText.trim(),
-            canProvideFeedback: false,
-          },
-        }));
-
-        setShowFeedbackModal(false);
-        setFeedbackText('');
-        console.log('Feedback adicionado com sucesso!');
-      }
-    } catch (error) {
-      console.error('Erro ao adicionar feedback:', error);
-      setError('Erro ao adicionar feedback. Tente novamente.');
-    } finally {
-      setFeedbackLoading(false);
+      setShowFeedbackModal(false);
+      setFeedbackText('');
+      console.log('Feedback adicionado com sucesso!');
     }
-  }, [selectedEvent, feedbackText]);
+  }, [selectedEvent, feedbackText, addFeedbackToLesson]);
 
   // Statistics for current view
   const viewStats = useMemo(() => {
-    if (!data)
+    if (!calendarData)
       return { total: 0, scheduled: 0, completed: 0, cancelled: 0, today: 0 };
 
     const now = new Date();
@@ -327,10 +317,10 @@ export default function StudentCalendarPageClient({
         (e) => new Date(e.start).toDateString() === now.toDateString()
       ).length,
     };
-  }, [filteredEvents, viewMode, currentDate, data]);
+  }, [filteredEvents, viewMode, currentDate, calendarData]);
 
   // Render estado sem professores
-  if (error === 'no_teachers') {
+  if (error === 'no_teachers' || errorMessage === 'no_teachers') {
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
@@ -364,7 +354,12 @@ export default function StudentCalendarPageClient({
   }
 
   // Render error state
-  if (error && error !== 'no_teachers' && !data) {
+  if (
+    (error || errorMessage) &&
+    error !== 'no_teachers' &&
+    errorMessage !== 'no_teachers' &&
+    !calendarData
+  ) {
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
@@ -376,15 +371,32 @@ export default function StudentCalendarPageClient({
               Erro ao Carregar Calendário
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
-              {error}
+              {error || errorMessage}
             </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="btn-classical-primary flex items-center space-x-2"
-            >
-              <FiRefreshCw className="w-4 h-4" />
-              <span>Recarregar Página</span>
-            </button>
+            <div className="space-y-3">
+              <button
+                onClick={handleRefreshCalendar}
+                disabled={loading.refreshing}
+                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+              >
+                <FiRefreshCw
+                  className={`w-4 h-4 ${
+                    loading.refreshing ? 'animate-spin' : ''
+                  }`}
+                />
+                <span>
+                  {loading.refreshing ? 'Carregando...' : 'Tentar Novamente'}
+                </span>
+              </button>
+              {error && (
+                <button
+                  onClick={clearError}
+                  className="btn-classical-secondary w-full"
+                >
+                  Limpar Erro
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </PageContainer>
@@ -506,7 +518,8 @@ export default function StudentCalendarPageClient({
                         ? navigateMonth('prev')
                         : navigateWeek('prev')
                     }
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                    disabled={loading.refreshing}
+                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
                   >
                     <FiChevronLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                   </button>
@@ -529,7 +542,8 @@ export default function StudentCalendarPageClient({
                         ? navigateMonth('next')
                         : navigateWeek('next')
                     }
-                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                    disabled={loading.refreshing}
+                    className="w-10 h-10 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group disabled:opacity-50"
                   >
                     <FiChevronRight className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                   </button>
@@ -537,9 +551,23 @@ export default function StudentCalendarPageClient({
 
                 <button
                   onClick={goToToday}
-                  className="btn-classical-secondary text-sm"
+                  disabled={loading.refreshing}
+                  className="btn-classical-secondary text-sm disabled:opacity-50"
                 >
                   Hoje
+                </button>
+
+                <button
+                  onClick={handleRefreshCalendar}
+                  disabled={loading.refreshing}
+                  className="btn-classical-secondary text-sm flex items-center space-x-2 disabled:opacity-50"
+                >
+                  <FiRefreshCw
+                    className={`w-4 h-4 ${
+                      loading.refreshing ? 'animate-spin' : ''
+                    }`}
+                  />
+                  <span>Atualizar</span>
                 </button>
               </div>
 
@@ -580,11 +608,11 @@ export default function StudentCalendarPageClient({
                 </div>
 
                 {/* Teacher Filter */}
-                {data && data.teachers.length > 1 && (
+                {calendarData && calendarData.teachers.length > 1 && (
                   <Select
                     options={[
                       { value: 'all', label: 'Todos os Professores' },
-                      ...data.teachers.map((teacher) => ({
+                      ...calendarData.teachers.map((teacher) => ({
                         value: teacher.id,
                         label: `Prof. ${teacher.name}`,
                       })),
@@ -686,12 +714,12 @@ export default function StudentCalendarPageClient({
           event={selectedEvent}
           feedbackText={feedbackText}
           setFeedbackText={setFeedbackText}
-          onSubmit={addFeedback}
+          onSubmit={handleAddFeedback}
           onClose={() => {
             setShowFeedbackModal(false);
             setFeedbackText('');
           }}
-          loading={feedbackLoading}
+          loading={loading.addingFeedback}
         />
       )}
     </PageContainer>

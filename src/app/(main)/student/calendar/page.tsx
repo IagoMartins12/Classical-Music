@@ -3,7 +3,7 @@
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
-import NotFound from '../../not-found';
+import { notFound } from 'next/navigation';
 import StudentCalendarPageServer from './pageServer';
 
 export const metadata: Metadata = {
@@ -25,7 +25,7 @@ export default async function StudentCalendarPage() {
 
   // Verificar se está logado
   if (!session?.user?.id) {
-    return <NotFound />;
+    return notFound();
   }
 
   // Verificar se tem role de aluno (role 0)
@@ -66,5 +66,15 @@ export default async function StudentCalendarPage() {
     );
   }
 
-  return <StudentCalendarPageServer />;
+  return (
+    <StudentCalendarPageServer
+      userId={session.user.id}
+      userEmail={session.user.email || ''}
+      userName={`${session.user.firstName || ''} ${
+        session.user.lastName || ''
+      }`.trim()}
+      userImage={session.user.image}
+      userRole={session.user.role}
+    />
+  );
 }

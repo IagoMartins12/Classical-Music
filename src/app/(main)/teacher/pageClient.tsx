@@ -30,12 +30,13 @@ import {
   AnimatedItem,
   PageContainer,
   SequentialGrid,
-} from '../animation/AnimatedComponents';
+} from '../../components/animation/AnimatedComponents';
 import {
   TeacherDashboardData,
   TeacherStudentsData,
 } from '@/app/requests/teacher-request';
-import Modal from '../Modal';
+import Modal from '../../components/Modal';
+import Input from '../../components/Common/Inputs';
 
 interface TeacherProfile {
   id: string;
@@ -818,7 +819,7 @@ export default function TeacherPageClient({
                 {/* Search Input */}
                 <div className="relative mb-6">
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                  <input
+                  <Input
                     type="email"
                     placeholder="Digite o email completo do aluno..."
                     value={searchQuery}

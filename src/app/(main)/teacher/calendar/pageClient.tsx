@@ -23,7 +23,6 @@ import {
   AnimatedCard,
   AnimatedItem,
   PageContainer,
-  SequentialGrid,
 } from '../../../components/animation/AnimatedComponents';
 import { TeacherCalendarData, CalendarEvent } from './pageServer';
 import Link from 'next/link';

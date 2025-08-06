@@ -20,6 +20,7 @@ import {
   FiAward,
   FiUserCheck,
   FiHeart,
+  FiHome,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -28,7 +29,8 @@ import {
   PageContainer,
   SequentialGrid,
 } from '../../components/animation/AnimatedComponents';
-import { StudentDashboardData } from '@/app/(main)/student/pageServer';
+import { StudentDashboardData } from './pageServer';
+import { useStudentDashboard } from '@/app/hooks/lessonsSystem/useStudentDashboard';
 
 interface StudentProfile {
   id: string;
@@ -51,11 +53,25 @@ export default function StudentPageClient({
   teachersInfo = [],
   errorMessage,
 }: StudentPageClientProps) {
-  // States
-  const [dashboardData, setDashboardData] = useState(initialDashboardData);
-  const [loading, setLoading] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const [error, setError] = useState(errorMessage);
+  // Initialize hook with server data
+  const {
+    // State do hook
+    dashboardData,
+    loading,
+    error,
+
+    // Actions do hook
+    refreshDashboard,
+    setInitialData,
+    clearError,
+  } = useStudentDashboard(initialDashboardData);
+
+  // Initialize hook data on mount
+  useEffect(() => {
+    if (initialDashboardData) {
+      setInitialData(initialDashboardData);
+    }
+  }, [initialDashboardData, setInitialData]);
 
   // Computed values
   const stats = useMemo(() => {
@@ -101,18 +117,9 @@ export default function StudentPageClient({
   }, [dashboardData, teachersInfo]);
 
   // Function to refresh data
-  const refreshData = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      // Implementar refresh das APIs aqui se necessário
-      setTimeout(() => {
-        setRefreshing(false);
-      }, 1000);
-    } catch (error) {
-      console.error('Erro ao atualizar dados:', error);
-      setRefreshing(false);
-    }
-  }, []);
+  const handleRefreshData = useCallback(async () => {
+    await refreshDashboard();
+  }, [refreshDashboard]);
 
   // Format functions
   const formatTime = (date: Date | string) => {
@@ -139,7 +146,7 @@ export default function StudentPageClient({
   };
 
   // Render estado sem professores
-  if (error === 'no_teachers') {
+  if (error === 'no_teachers' || errorMessage === 'no_teachers') {
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
@@ -184,7 +191,12 @@ export default function StudentPageClient({
   }
 
   // Render estado de erro
-  if (error && error !== 'no_teachers' && !dashboardData) {
+  if (
+    (error || errorMessage) &&
+    error !== 'no_teachers' &&
+    errorMessage !== 'no_teachers' &&
+    !dashboardData
+  ) {
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
@@ -196,15 +208,32 @@ export default function StudentPageClient({
               Erro ao Carregar Dashboard
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
-              {error}
+              {error || errorMessage}
             </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="btn-classical-primary flex items-center space-x-2"
-            >
-              <FiRefreshCw className="w-4 h-4" />
-              <span>Recarregar Página</span>
-            </button>
+            <div className="space-y-3">
+              <button
+                onClick={handleRefreshData}
+                disabled={loading.refreshing}
+                className="btn-classical-primary flex items-center space-x-2 w-full justify-center"
+              >
+                <FiRefreshCw
+                  className={`w-4 h-4 ${
+                    loading.refreshing ? 'animate-spin' : ''
+                  }`}
+                />
+                <span>
+                  {loading.refreshing ? 'Carregando...' : 'Tentar Novamente'}
+                </span>
+              </button>
+              {error && (
+                <button
+                  onClick={clearError}
+                  className="btn-classical-secondary w-full"
+                >
+                  Limpar Erro
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </PageContainer>
@@ -328,13 +357,13 @@ export default function StudentPageClient({
                     </div>
                   </div>
                   <button
-                    onClick={refreshData}
-                    disabled={refreshing}
+                    onClick={handleRefreshData}
+                    disabled={loading.refreshing}
                     className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
                   >
                     <FiRefreshCw
                       className={`w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all ${
-                        refreshing ? 'animate-spin' : ''
+                        loading.refreshing ? 'animate-spin' : ''
                       }`}
                     />
                   </button>

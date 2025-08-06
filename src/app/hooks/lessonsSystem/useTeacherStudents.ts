@@ -3,8 +3,9 @@
 import { TeacherStudentsServerData } from '@/app/(main)/teacher/students/pageServer';
 import {
   addStudentAPI,
-  searchStudentsAPI,
+  searchStudentsData,
 } from '@/app/requests/teacher-request';
+
 import { useState, useCallback } from 'react';
 
 type StudentRelationship = TeacherStudentsServerData['students'][0];
@@ -157,7 +158,7 @@ export function useTeacherStudents(
       setError(null);
 
       try {
-        const results = await searchStudentsAPI(email, 10);
+        const results = await searchStudentsData(email, 10);
         setState((prev) => ({ ...prev, searchResults: results }));
       } catch (error) {
         console.error('Erro ao buscar alunos:', error);

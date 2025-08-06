@@ -1,3 +1,5 @@
+// app/requests/teacher-request.ts - Refatorado com queries diretas ao banco
+
 import { unstable_cache } from 'next/cache';
 import prisma from '@/app/libs/prismadb';
 import {
@@ -691,74 +693,8 @@ export const getTeacherProfile = unstable_cache(
 );
 
 // ====================================
-// 🔄 CLIENT-SIDE API FUNCTIONS (mantendo as existentes para hooks)
+// 🔄 QUERIES DIRETAS PARA CALENDÁRIO AVANÇADO
 // ====================================
-
-// Buscar alunos via API (para manipulações client-side)
-export const searchStudentsAPI = async (
-  email: string,
-  limit: number = 10
-): Promise<any[]> => {
-  try {
-    if (email.length < 3) return [];
-
-    const response = await fetch(
-      `/api/teacher/students/search?email=${encodeURIComponent(
-        email
-      )}&limit=${limit}`
-    );
-
-    if (!response.ok) {
-      throw new Error(`Search API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.success ? data.students : [];
-  } catch (error) {
-    console.error('❌ Error searching students:', error);
-    return [];
-  }
-};
-
-// Adicionar aluno via API
-export const addStudentAPI = async (
-  studentUserId: string,
-  options: any = {}
-): Promise<{ success: boolean; relationship?: any; error?: string }> => {
-  try {
-    const response = await fetch('/api/teacher/students', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        studentUserId,
-        maxLessonsPerWeek: options.maxLessonsPerWeek || 1,
-        lessonDuration: options.lessonDuration || 60,
-        preferredDays: options.preferredDays || [],
-        preferredTimes: options.preferredTimes || [],
-        learningPlan: options.learningPlan || '',
-        currentFocus: options.currentFocus || [],
-        teacherNotes: options.teacherNotes || '',
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || `Error ${response.status}`,
-      };
-    }
-
-    return { success: data.success, relationship: data.relationship };
-  } catch (error) {
-    console.error('❌ Error adding student:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-};
 
 export const getTeacherCalendarDataDirect = unstable_cache(
   async (
@@ -1018,122 +954,67 @@ export const getTeacherCalendarDataDirect = unstable_cache(
   }
 );
 
-// Buscar dados do calendário via API (para manipulações client-side)
-export const getTeacherCalendarAPI = async (
-  startDate: Date,
-  endDate: Date,
-  view: string = 'month',
-  includeStats: boolean = false,
-  detectConflicts: boolean = false
-): Promise<{
-  events: CalendarEvent[];
-  stats?: CalendarStats;
-  conflicts?: CalendarConflict[];
-  hasConflicts?: boolean;
-} | null> => {
-  try {
-    const params = new URLSearchParams({
-      start: startDate.toISOString(),
-      end: endDate.toISOString(),
-      view,
-      stats: includeStats.toString(),
-      conflicts: detectConflicts.toString(),
-    });
+// ====================================
+// 🔄 QUERIES DIRETAS PARA BUSCA DE ALUNOS
+// ====================================
 
-    const response = await fetch(`/api/teacher/calendar?${params}`);
+export const searchStudentsData = unstable_cache(
+  async (email: string, limit: number = 10): Promise<any[]> => {
+    try {
+      if (email.length < 3) return [];
 
-    if (!response.ok) {
-      throw new Error(`Calendar API error: ${response.status}`);
+      console.log(`🔍 [SEARCH-STUDENTS] Searching for: ${email}`);
+
+      const students = await prisma.user.findMany({
+        where: {
+          email: {
+            contains: email,
+            mode: 'insensitive',
+          },
+          role: 0, // Apenas alunos
+        },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          image: true,
+          experienceLevel: true,
+          studentProfile: {
+            select: {
+              id: true,
+              level: true,
+              mainInstrument: true,
+              status: true,
+            },
+          },
+        },
+        take: limit,
+      });
+
+      console.log(`✅ [SEARCH-STUDENTS] Found ${students.length} students`);
+
+      return students.map((student) => ({
+        id: student.id,
+        name: `${student.firstName || ''} ${student.lastName || ''}`.trim(),
+        email: student.email,
+        image: student.image,
+        experienceLevel: student.experienceLevel,
+        level: student.studentProfile?.level || 'BEGINNER',
+        mainInstrument: student.studentProfile?.mainInstrument,
+        status: student.studentProfile?.status || 'ACTIVE',
+      }));
+    } catch (error) {
+      console.error('❌ [SEARCH-STUDENTS] Error searching students:', error);
+      return [];
     }
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error('Calendar API returned error');
-    }
-
-    return {
-      events: data.events,
-      stats: data.stats,
-      conflicts: data.conflicts,
-      hasConflicts: data.hasConflicts,
-    };
-  } catch (error) {
-    console.error('❌ Error fetching teacher calendar:', error);
-    return null;
+  },
+  ['search-students-data'],
+  {
+    revalidate: 60, // 1 minuto
+    tags: ['search-students'],
   }
-};
-
-// Criar aula rápida via API
-export const createQuickLessonAPI = async (data: {
-  studentUserId: string;
-  title: string;
-  start: string;
-  duration?: number;
-  location?: string;
-  objectives?: string[];
-}): Promise<{ success: boolean; event?: CalendarEvent; error?: string }> => {
-  try {
-    const response = await fetch('/api/teacher/calendar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: result.error || `Error ${response.status}`,
-      };
-    }
-
-    return { success: result.success, event: result.event };
-  } catch (error) {
-    console.error('❌ Error creating quick lesson:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-};
-
-// Mover aula via API (drag & drop)
-export const moveLessonAPI = async (
-  lessonId: string,
-  newStart: string,
-  newDuration?: number
-): Promise<{ success: boolean; lesson?: any; error?: string }> => {
-  try {
-    const response = await fetch('/api/teacher/calendar', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        lessonId,
-        newStart,
-        newDuration,
-      }),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: result.error || `Error ${response.status}`,
-      };
-    }
-
-    return { success: result.success, lesson: result.lesson };
-  } catch (error) {
-    console.error('❌ Error moving lesson:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-};
+);
 
 export const getTeacherStudentDetailData = unstable_cache(
   async (
@@ -1430,8 +1311,9 @@ export const getTeacherStudentDetailData = unstable_cache(
       };
 
       console.log(
-        `✅ [TEACHER-STUDENT-DETAIL] Student detail data loaded successfully`
+        `✅ [TEACHER-STUDENT-DETAIL] Student detail data loaded successfully.`
       );
+
       return studentDetailData;
     } catch (error) {
       console.error(
@@ -1449,19 +1331,1601 @@ export const getTeacherStudentDetailData = unstable_cache(
 );
 
 // ====================================
-// CACHE INVALIDATION
+// 🔄 CLIENT-SIDE API FUNCTIONS (mantendo as existentes para hooks)
 // ====================================
+
+// Adicionar aluno via API (MANTIDA - É MUTAÇÃO)
+export const addStudentAPI = async (
+  studentUserId: string,
+  options: any = {}
+): Promise<{ success: boolean; relationship?: any; error?: string }> => {
+  try {
+    const response = await fetch('/api/teacher/students', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        studentUserId,
+        maxLessonsPerWeek: options.maxLessonsPerWeek || 1,
+        lessonDuration: options.lessonDuration || 60,
+        preferredDays: options.preferredDays || [],
+        preferredTimes: options.preferredTimes || [],
+        learningPlan: options.learningPlan || '',
+        currentFocus: options.currentFocus || [],
+        teacherNotes: options.teacherNotes || '',
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: data.error || `Error ${response.status}`,
+      };
+    }
+
+    return { success: data.success, relationship: data.relationship };
+  } catch (error) {
+    console.error('❌ Error adding student:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+};
+
+// Buscar dados do calendário via API (MANTIDA PARA COMPATIBILIDADE)
+export const getTeacherCalendarAPI = async (
+  startDate: Date,
+  endDate: Date,
+  view: string = 'month',
+  includeStats: boolean = false,
+  detectConflicts: boolean = false
+): Promise<{
+  events: CalendarEvent[];
+  stats?: CalendarStats;
+  conflicts?: CalendarConflict[];
+  hasConflicts?: boolean;
+} | null> => {
+  try {
+    const params = new URLSearchParams({
+      start: startDate.toISOString(),
+      end: endDate.toISOString(),
+      view,
+      stats: includeStats.toString(),
+      conflicts: detectConflicts.toString(),
+    });
+
+    const response = await fetch(`/api/teacher/calendar?${params}`);
+
+    if (!response.ok) {
+      throw new Error(`Calendar API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!data.success) {
+      throw new Error('Calendar API returned error');
+    }
+
+    return {
+      events: data.events,
+      stats: data.stats,
+      conflicts: data.conflicts,
+      hasConflicts: data.hasConflicts,
+    };
+  } catch (error) {
+    console.error('❌ Error fetching teacher calendar:', error);
+    return null;
+  }
+};
+
+// Criar aula rápida via API (MANTIDA - É MUTAÇÃO)
+export const createQuickLessonAPI = async (data: {
+  studentUserId: string;
+  title: string;
+  start: string;
+  duration?: number;
+  location?: string;
+  objectives?: string[];
+}): Promise<{ success: boolean; event?: CalendarEvent; error?: string }> => {
+  try {
+    const response = await fetch('/api/teacher/calendar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: result.error || `Error ${response.status}`,
+      };
+    }
+
+    return { success: result.success, event: result.event };
+  } catch (error) {
+    console.error('❌ Error creating quick lesson:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+};
+
+// Mover aula via API (MANTIDA - É MUTAÇÃO)
+export const moveLessonAPI = async (
+  lessonId: string,
+  newStart: string,
+  newDuration?: number
+): Promise<{ success: boolean; lesson?: any; error?: string }> => {
+  try {
+    const response = await fetch('/api/teacher/calendar', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        lessonId,
+        newStart,
+        newDuration,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      return {
+        success: false,
+        error: result.error || `Error ${response.status}`,
+      };
+    }
+
+    return { success: result.success, lesson: result.lesson };
+  } catch (error) {
+    console.error('❌ Error moving lesson:', error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+    };
+  }
+}; // CACHE INVALIDATION
+// ====================================
+
+export interface TeacherAssignmentData {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  priority: string;
+  workScoreIds: string[];
+  exercises: string[];
+  audioFiles: string[];
+  videoFiles: string[];
+  documents: string[];
+  practiceGoals: string[];
+  tempoTargets?: any;
+  technicalGoals: string[];
+  musicalGoals: string[];
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
+  dueDate?: Date | null;
+  estimatedTime?: number | null;
+  actualTime?: number | null;
+  isOverdue: boolean;
+  daysUntilDue?: number | null;
+  isCompleted: boolean;
+  completedAt?: Date | null;
+  progress?: number | null;
+  teacherFeedback?: string | null;
+  teacherRating?: number | null;
+  studentNotes?: string | null;
+  studentRating?: number | null;
+  submissions?: any;
+  submissionDate?: Date | null;
+  student: {
+    id: string;
+    name: string;
+    image?: string | null;
+  };
+  lesson: {
+    id: string;
+    title: string;
+    scheduledAt: Date;
+    teacher: {
+      name: string;
+      image?: string | null;
+    };
+  };
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TeacherAssignmentStats {
+  total: number;
+  pending: number;
+  inProgress: number;
+  completed: number;
+  overdue: number;
+  completionRate: number;
+  averageTime: number;
+}
+
+export interface TeacherAssignmentsResponse {
+  success: boolean;
+  assignments: TeacherAssignmentData[];
+  stats: TeacherAssignmentStats;
+  pagination: {
+    offset: number;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+  };
+}
+
+// Buscar assignments do professor - DIRETO DO BANCO
+export const getTeacherAssignmentsData = unstable_cache(
+  async (
+    userId: string,
+    studentUserId?: string,
+    status?: string,
+    lessonId?: string,
+    limit: number = 50,
+    offset: number = 0
+  ): Promise<TeacherAssignmentsResponse | null> => {
+    try {
+      console.log(
+        `📋 [TEACHER-ASSIGNMENTS] Loading assignments for user ${userId}`
+      );
+
+      // 1. Verificar se professor existe
+      const teacherProfile = await prisma.teacher.findUnique({
+        where: { userId },
+        select: { id: true },
+      });
+
+      if (!teacherProfile) {
+        console.log(
+          `❌ [TEACHER-ASSIGNMENTS] Teacher profile not found for user ${userId}`
+        );
+        return null;
+      }
+
+      const teacherId = teacherProfile.id;
+
+      // 2. Montar where clause
+      let whereClause: any = {
+        lesson: {
+          teacherId,
+        },
+      };
+
+      // Filtro por aluno específico
+      if (studentUserId) {
+        const studentProfile = await prisma.student.findUnique({
+          where: { userId: studentUserId },
+          select: { id: true },
+        });
+        if (studentProfile) {
+          whereClause.studentId = studentProfile.id;
+        }
+      }
+
+      // Filtro por aula específica
+      if (lessonId) {
+        whereClause.lessonId = lessonId;
+      }
+
+      // Filtro por status
+      if (status) {
+        if (status === 'OVERDUE') {
+          // Assignments atrasados: status PENDING ou IN_PROGRESS com dueDate no passado
+          whereClause.AND = [
+            {
+              OR: [{ status: 'PENDING' }, { status: 'IN_PROGRESS' }],
+            },
+            {
+              dueDate: {
+                lt: new Date(),
+              },
+            },
+          ];
+        } else {
+          whereClause.status = status;
+        }
+      }
+
+      // 3. Buscar assignments
+      const [assignments, totalCount] = await Promise.all([
+        prisma.assignment.findMany({
+          where: whereClause,
+          include: {
+            student: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    image: true,
+                  },
+                },
+              },
+            },
+            lesson: {
+              select: {
+                id: true,
+                title: true,
+                scheduledAt: true,
+                teacher: {
+                  include: {
+                    user: {
+                      select: {
+                        firstName: true,
+                        lastName: true,
+                        image: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          orderBy: [{ dueDate: 'asc' }, { createdAt: 'desc' }],
+          take: limit,
+          skip: offset,
+        }),
+        prisma.assignment.count({ where: whereClause }),
+      ]);
+
+      console.log(
+        `📊 [TEACHER-ASSIGNMENTS] Found ${assignments.length} assignments`
+      );
+
+      // 4. Formatar assignments
+      const now = new Date();
+      const assignmentsFormatted: TeacherAssignmentData[] = assignments.map(
+        (assignment) => {
+          const isOverdue =
+            assignment.dueDate &&
+            assignment.dueDate < now &&
+            !assignment.isCompleted;
+
+          const daysUntilDue = assignment.dueDate
+            ? Math.ceil(
+                (assignment.dueDate.getTime() - now.getTime()) /
+                  (1000 * 60 * 60 * 24)
+              )
+            : undefined;
+
+          return {
+            id: assignment.id,
+            title: assignment.title,
+            description: assignment.description,
+            type: assignment.type,
+            priority: assignment.priority,
+
+            // Recursos
+            workScoreIds: assignment.workScoreIds,
+            exercises: assignment.exercises,
+            audioFiles: assignment.audioFiles,
+            videoFiles: assignment.videoFiles,
+            documents: assignment.documents,
+
+            // Metas
+            practiceGoals: assignment.practiceGoals,
+            tempoTargets: assignment.tempoTargets,
+            technicalGoals: assignment.technicalGoals,
+            musicalGoals: assignment.musicalGoals,
+
+            // Status e prazos
+            status: isOverdue ? 'OVERDUE' : (assignment.status as any),
+            dueDate: assignment.dueDate,
+            estimatedTime: assignment.estimatedTime,
+            actualTime: assignment.actualTime,
+            isOverdue: !!isOverdue,
+            daysUntilDue,
+
+            // Progresso
+            isCompleted: assignment.isCompleted,
+            completedAt: assignment.completedAt,
+            progress: assignment.progress,
+
+            // Feedback
+            teacherFeedback: assignment.teacherFeedback,
+            teacherRating: assignment.teacherRating,
+            studentNotes: assignment.studentNotes,
+            studentRating: assignment.studentRating,
+
+            // Submissões
+            submissions: assignment.submissions,
+            submissionDate: assignment.submissionDate,
+
+            // Relacionamentos
+            student: {
+              id: assignment.student.user.id,
+              name: `${assignment.student.user.firstName} ${assignment.student.user.lastName}`.trim(),
+              image: assignment.student.user.image,
+            },
+            lesson: {
+              id: assignment.lesson.id,
+              title: assignment.lesson.title,
+              scheduledAt: assignment.lesson.scheduledAt,
+              teacher: {
+                name: `${assignment.lesson.teacher.user.firstName} ${assignment.lesson.teacher.user.lastName}`.trim(),
+                image: assignment.lesson.teacher.user.image,
+              },
+            },
+
+            // Timestamps
+            createdAt: assignment.createdAt,
+            updatedAt: assignment.updatedAt,
+          };
+        }
+      );
+
+      // 5. Calcular estatísticas
+      const completedAssignments = assignmentsFormatted.filter(
+        (a) => a.isCompleted
+      );
+      const pendingAssignments = assignmentsFormatted.filter(
+        (a) => a.status === 'PENDING'
+      );
+      const inProgressAssignments = assignmentsFormatted.filter(
+        (a) => a.status === 'IN_PROGRESS'
+      );
+      const overdueAssignments = assignmentsFormatted.filter(
+        (a) => a.isOverdue
+      );
+
+      const totalActualTime = completedAssignments.reduce(
+        (sum, a) => sum + (a.actualTime || 0),
+        0
+      );
+      const averageTime =
+        completedAssignments.length > 0
+          ? totalActualTime / completedAssignments.length
+          : 0;
+
+      const completionRate =
+        totalCount > 0 ? (completedAssignments.length / totalCount) * 100 : 0;
+
+      const stats: TeacherAssignmentStats = {
+        total: totalCount,
+        pending: pendingAssignments.length,
+        inProgress: inProgressAssignments.length,
+        completed: completedAssignments.length,
+        overdue: overdueAssignments.length,
+        completionRate: Math.round(completionRate * 10) / 10,
+        averageTime: Math.round(averageTime * 10) / 10,
+      };
+
+      console.log(
+        `✅ [TEACHER-ASSIGNMENTS] Assignments loaded successfully - Stats: ${stats.total} total, ${stats.completed} completed`
+      );
+
+      return {
+        success: true,
+        assignments: assignmentsFormatted,
+        stats,
+        pagination: {
+          offset,
+          limit,
+          total: totalCount,
+          hasMore: offset + assignmentsFormatted.length < totalCount,
+        },
+      };
+    } catch (error) {
+      console.error(
+        '❌ [TEACHER-ASSIGNMENTS] Error loading assignments:',
+        error
+      );
+      return null;
+    }
+  },
+  ['teacher-assignments-data'],
+  {
+    revalidate: 180, // 3 minutos
+    tags: ['teacher-assignments'],
+  }
+);
+
+export interface TeacherReviewData {
+  id: string;
+  rating: number;
+  comment?: string;
+  isPublic: boolean;
+
+  // Avaliações específicas
+  teachingQuality?: number;
+  communication?: number;
+  punctuality?: number;
+  preparation?: number;
+  patience?: number;
+  motivation?: number;
+
+  // Contexto
+  relationshipDuration?: string;
+  lessonsCount?: number;
+  wouldRecommend: boolean;
+
+  // Dados do aluno (anonimizados se público)
+  student: {
+    id: string;
+    name: string;
+    image?: string;
+  };
+
+  // Moderação
+  isModerated: boolean;
+  moderatedBy?: string;
+  moderatedAt?: Date;
+  moderationNote?: string;
+
+  // Timestamps
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TeacherReviewsStats {
+  total: number;
+  averageRating: number;
+  ratingDistribution: {
+    1: number;
+    2: number;
+    3: number;
+    4: number;
+    5: number;
+  };
+  specificAverages: {
+    teachingQuality: number;
+    communication: number;
+    punctuality: number;
+    preparation: number;
+    patience: number;
+    motivation: number;
+  };
+  recommendationRate: number;
+  publicReviews: number;
+  privateReviews: number;
+  recentReviews: number; // últimos 30 dias
+  thisMonthCount: number;
+  lastMonthCount: number;
+}
+
+export interface TeacherReviewsResponse {
+  success: boolean;
+  reviews: TeacherReviewData[];
+  stats: TeacherReviewsStats;
+  pagination: {
+    offset: number;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+  };
+}
+
+export interface TeacherProfileExtended {
+  id: string;
+  userId: string;
+  averageRating: number;
+  totalReviews: number;
+  isPublicProfile: boolean;
+  bio?: string | null;
+  specialties: string[];
+  experience?: string | null;
+  education?: string | null;
+  status: string;
+  isVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  user: {
+    id: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    email: string | null;
+    image?: string | null;
+    phone?: string | null;
+    city?: string | null;
+    state?: string | null;
+  };
+}
+
+// Buscar reviews do professor - DIRETO DO BANCO
+export const getTeacherReviewsData = unstable_cache(
+  async (
+    userId: string,
+    includePrivate: boolean = false,
+    includeModerated: boolean = false,
+    limit: number = 20,
+    offset: number = 0
+  ): Promise<TeacherReviewsResponse | null> => {
+    try {
+      console.log(`⭐ [TEACHER-REVIEWS] Loading reviews for user ${userId}`);
+
+      // 1. Verificar se professor existe
+      const teacherProfile = await prisma.teacher.findUnique({
+        where: { userId },
+        select: { id: true },
+      });
+
+      if (!teacherProfile) {
+        console.log(
+          `❌ [TEACHER-REVIEWS] Teacher profile not found for user ${userId}`
+        );
+        return null;
+      }
+
+      const teacherId = teacherProfile.id;
+
+      // 2. Montar where clause para reviews
+      let whereClause: any = {
+        teacherId,
+      };
+
+      // Se não incluir privados, filtrar apenas públicos
+      if (!includePrivate) {
+        whereClause.isPublic = true;
+      }
+
+      // Filtro de moderação
+      if (!includeModerated) {
+        whereClause.isModerated = false;
+      }
+
+      // 3. Buscar reviews com contagem total
+      const [reviews, totalCount] = await Promise.all([
+        prisma.teacherReview.findMany({
+          where: whereClause,
+          include: {
+            student: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    image: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+          take: limit,
+          skip: offset,
+        }),
+        prisma.teacherReview.count({ where: whereClause }),
+      ]);
+
+      console.log(`📊 [TEACHER-REVIEWS] Found ${reviews.length} reviews`);
+
+      // 4. Formatar reviews
+      const reviewsFormatted: TeacherReviewData[] = reviews.map((review) => ({
+        id: review.id,
+        rating: review.rating,
+        comment: review.comment || undefined,
+        isPublic: review.isPublic,
+
+        // Avaliações específicas
+        teachingQuality: review.teachingQuality || undefined,
+        communication: review.communication || undefined,
+        punctuality: review.punctuality || undefined,
+        preparation: review.preparation || undefined,
+        patience: review.patience || undefined,
+        motivation: review.motivation || undefined,
+
+        // Contexto
+        relationshipDuration: review.relationshipDuration || undefined,
+        lessonsCount: review.lessonsCount || undefined,
+        wouldRecommend: review.wouldRecommend,
+
+        // Dados do aluno (anonimizar se público)
+        student: {
+          id: review.student.user.id,
+          name: review.isPublic
+            ? `${review.student.user.firstName?.charAt(0)}${'*'.repeat(
+                Math.max(2, review.student.user.firstName?.length ?? 0 - 1)
+              )}` // Anonimizar em reviews públicos
+            : `${review.student.user.firstName} ${review.student.user.lastName}`.trim(),
+          image: review.isPublic
+            ? undefined
+            : review.student.user.image || undefined,
+        },
+
+        // Moderação
+        isModerated: review.isModerated,
+        moderatedBy: review.moderatedBy || undefined,
+        moderatedAt: review.moderatedAt || undefined,
+        moderationNote: review.moderationNote || undefined,
+
+        // Timestamps
+        createdAt: review.createdAt,
+        updatedAt: review.updatedAt,
+      }));
+
+      // 5. Calcular estatísticas completas
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      const startOfLastMonth = new Date(
+        now.getFullYear(),
+        now.getMonth() - 1,
+        1
+      );
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+      // Buscar todas as reviews do professor para estatísticas completas
+      const allReviews = await prisma.teacherReview.findMany({
+        where: { teacherId },
+        select: {
+          rating: true,
+          teachingQuality: true,
+          communication: true,
+          punctuality: true,
+          preparation: true,
+          patience: true,
+          motivation: true,
+          wouldRecommend: true,
+          isPublic: true,
+          isModerated: true,
+          createdAt: true,
+        },
+      });
+
+      // Calcular distribuição de ratings
+      const ratingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+      allReviews.forEach((review) => {
+        if (review.rating >= 1 && review.rating <= 5) {
+          ratingDistribution[
+            review.rating as keyof typeof ratingDistribution
+          ]++;
+        }
+      });
+
+      // Calcular médias específicas
+      const specificAverages = {
+        teachingQuality: 0,
+        communication: 0,
+        punctuality: 0,
+        preparation: 0,
+        patience: 0,
+        motivation: 0,
+      };
+
+      if (allReviews.length > 0) {
+        const validReviews = allReviews.filter(
+          (r) => r.teachingQuality !== null
+        );
+        if (validReviews.length > 0) {
+          specificAverages.teachingQuality =
+            validReviews.reduce((sum, r) => sum + (r.teachingQuality || 0), 0) /
+            validReviews.length;
+          specificAverages.communication =
+            validReviews.reduce((sum, r) => sum + (r.communication || 0), 0) /
+            validReviews.length;
+          specificAverages.punctuality =
+            validReviews.reduce((sum, r) => sum + (r.punctuality || 0), 0) /
+            validReviews.length;
+          specificAverages.preparation =
+            validReviews.reduce((sum, r) => sum + (r.preparation || 0), 0) /
+            validReviews.length;
+          specificAverages.patience =
+            validReviews.reduce((sum, r) => sum + (r.patience || 0), 0) /
+            validReviews.length;
+          specificAverages.motivation =
+            validReviews.reduce((sum, r) => sum + (r.motivation || 0), 0) /
+            validReviews.length;
+        }
+      }
+
+      // Calcular outras estatísticas
+      const averageRating =
+        allReviews.length > 0
+          ? allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length
+          : 0;
+
+      const recommendationRate =
+        allReviews.length > 0
+          ? (allReviews.filter((r) => r.wouldRecommend).length /
+              allReviews.length) *
+            100
+          : 0;
+
+      const publicReviews = allReviews.filter((r) => r.isPublic).length;
+      const privateReviews = allReviews.length - publicReviews;
+
+      const recentReviews = allReviews.filter(
+        (r) => r.createdAt >= thirtyDaysAgo
+      ).length;
+      const thisMonthCount = allReviews.filter(
+        (r) => r.createdAt >= startOfMonth
+      ).length;
+      const lastMonthCount = allReviews.filter(
+        (r) => r.createdAt >= startOfLastMonth && r.createdAt < startOfMonth
+      ).length;
+
+      const stats: TeacherReviewsStats = {
+        total: allReviews.length,
+        averageRating: Math.round(averageRating * 10) / 10,
+        ratingDistribution,
+        specificAverages: {
+          teachingQuality:
+            Math.round(specificAverages.teachingQuality * 10) / 10,
+          communication: Math.round(specificAverages.communication * 10) / 10,
+          punctuality: Math.round(specificAverages.punctuality * 10) / 10,
+          preparation: Math.round(specificAverages.preparation * 10) / 10,
+          patience: Math.round(specificAverages.patience * 10) / 10,
+          motivation: Math.round(specificAverages.motivation * 10) / 10,
+        },
+        recommendationRate: Math.round(recommendationRate * 10) / 10,
+        publicReviews,
+        privateReviews,
+        recentReviews,
+        thisMonthCount,
+        lastMonthCount,
+      };
+
+      console.log(
+        `✅ [TEACHER-REVIEWS] Reviews loaded successfully - Stats: ${stats.total} total, ${stats.averageRating} avg rating`
+      );
+
+      return {
+        success: true,
+        reviews: reviewsFormatted,
+        stats,
+        pagination: {
+          offset,
+          limit,
+          total: totalCount,
+          hasMore: offset + reviewsFormatted.length < totalCount,
+        },
+      };
+    } catch (error) {
+      console.error('❌ [TEACHER-REVIEWS] Error loading reviews:', error);
+      return null;
+    }
+  },
+  ['teacher-reviews-data'],
+  {
+    revalidate: 300, // 5 minutos
+    tags: ['teacher-reviews'],
+  }
+);
+
+// Buscar perfil estendido do professor - DIRETO DO BANCO
+export const getTeacherProfileExtended = unstable_cache(
+  async (userId: string): Promise<TeacherProfileExtended | null> => {
+    try {
+      console.log(
+        `👨‍🏫 [TEACHER-PROFILE-EXTENDED] Loading profile for user ${userId}`
+      );
+
+      const teacherProfile = await prisma.teacher.findUnique({
+        where: { userId },
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              image: true,
+              phone: true,
+              city: true,
+              state: true,
+            },
+          },
+        },
+      });
+
+      if (!teacherProfile) {
+        console.log(
+          `❌ [TEACHER-PROFILE-EXTENDED] Teacher profile not found for user ${userId}`
+        );
+        return null;
+      }
+
+      // Buscar estatísticas de reviews atualizadas
+      const reviewStats = await prisma.teacherReview.aggregate({
+        where: { teacherId: teacherProfile.id },
+        _avg: { rating: true },
+        _count: { id: true },
+      });
+
+      console.log(`✅ [TEACHER-PROFILE-EXTENDED] Profile loaded successfully`);
+
+      return {
+        id: teacherProfile.id,
+        userId: teacherProfile.userId,
+        averageRating: reviewStats._avg.rating || 0,
+        totalReviews: reviewStats._count.id,
+        isPublicProfile: teacherProfile.isPublicProfile,
+        bio: teacherProfile.bio,
+        specialties: teacherProfile.specialties || [],
+        experience: teacherProfile.experience,
+        education: teacherProfile.education,
+        status: teacherProfile.status,
+        isVerified: teacherProfile.isVerified,
+        createdAt: teacherProfile.createdAt,
+        updatedAt: teacherProfile.updatedAt,
+        user: teacherProfile.user,
+      };
+    } catch (error) {
+      console.error(
+        '❌ [TEACHER-PROFILE-EXTENDED] Error loading profile:',
+        error
+      );
+      return null;
+    }
+  },
+  ['teacher-profile-extended-data'],
+  {
+    revalidate: 600, // 10 minutos
+    tags: ['teacher-profile-extended'],
+  }
+);
+
+// Reaproveitando as interfaces dos pageServers existentes
+export interface TeacherLessonsStats {
+  total: number;
+  scheduled: number;
+  completed: number;
+  cancelled: number;
+  noShow: number;
+  today: number;
+  thisWeek: number;
+  thisMonth: number;
+  averageDuration: number;
+  completionRate: number;
+}
+
+export interface TeacherLessonsResponse {
+  success: boolean;
+  lessons: any[]; // Usando any para compatibilidade com as interfaces existentes
+  stats: TeacherLessonsStats;
+  pagination: {
+    offset: number;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+  };
+}
+
+export interface TeacherLessonDetailsResponse {
+  success: boolean;
+  lesson: any; // Interface compatível com pageServer existente
+  userRole: number;
+  isTeacher: boolean;
+  isStudent: boolean;
+}
+
+// Buscar lessons do professor - DIRETO DO BANCO
+export const getTeacherLessonsData = unstable_cache(
+  async (
+    userId: string,
+    studentId?: string,
+    status?: string,
+    dateFrom?: Date,
+    dateTo?: Date,
+    limit: number = 50,
+    offset: number = 0,
+    includeStats: boolean = true
+  ): Promise<TeacherLessonsResponse | null> => {
+    try {
+      console.log(`📚 [TEACHER-LESSONS] Loading lessons for user ${userId}`);
+
+      // 1. Verificar se professor existe
+      const teacherProfile = await prisma.teacher.findUnique({
+        where: { userId },
+        select: { id: true },
+      });
+
+      if (!teacherProfile) {
+        console.log(
+          `❌ [TEACHER-LESSONS] Teacher profile not found for user ${userId}`
+        );
+        return null;
+      }
+
+      const teacherId = teacherProfile.id;
+
+      // 2. Montar where clause
+      let whereClause: any = {
+        teacherId,
+      };
+
+      // Filtros adicionais
+      if (studentId) {
+        whereClause.studentId = studentId;
+      }
+
+      if (status) {
+        whereClause.status = status;
+      }
+
+      if (dateFrom || dateTo) {
+        whereClause.scheduledAt = {};
+        if (dateFrom) {
+          whereClause.scheduledAt.gte = dateFrom;
+        }
+        if (dateTo) {
+          whereClause.scheduledAt.lte = dateTo;
+        }
+      }
+
+      // 3. Buscar lessons
+      const [lessons, totalCount] = await Promise.all([
+        prisma.lesson.findMany({
+          where: whereClause,
+          include: {
+            teacher: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    image: true,
+                  },
+                },
+              },
+            },
+            student: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    image: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: {
+            scheduledAt: 'asc',
+          },
+          take: limit,
+          skip: offset,
+        }),
+        prisma.lesson.count({ where: whereClause }),
+      ]);
+
+      console.log(`📊 [TEACHER-LESSONS] Found ${lessons.length} lessons`);
+
+      // 4. Formatar lessons (usando formato compatível com a API existente)
+      const lessonsFormatted = lessons.map((lesson) => ({
+        id: lesson.id,
+        title: lesson.title,
+        description: lesson.description,
+        scheduledAt: lesson.scheduledAt,
+        duration: lesson.duration,
+        actualStartTime: lesson.actualStartTime,
+        actualEndTime: lesson.actualEndTime,
+        status: lesson.status,
+        type: lesson.type,
+        location: lesson.location,
+
+        // Recorrência
+        isRecurring: lesson.isRecurring,
+        recurrenceType: lesson.recurrenceType,
+        parentLessonId: lesson.parentLessonId,
+
+        // Conteúdo
+        objectives: lesson.objectives,
+        workScoreIds: lesson.workScoreIds,
+        topics: lesson.topics,
+        techniques: lesson.techniques,
+        repertoire: lesson.repertoire,
+        homework: lesson.homework,
+        practiceGoals: lesson.practiceGoals,
+
+        // Notas
+        teacherNotes: lesson.teacherNotes,
+        publicNotes: lesson.publicNotes,
+        studentFeedback: lesson.studentFeedback,
+        lessonSummary: lesson.lessonSummary,
+
+        // Avaliação
+        studentProgress: lesson.studentProgress,
+        skillsWorked: lesson.skillsWorked,
+        improvements: lesson.improvements,
+        challenges: lesson.challenges,
+
+        // Presença
+        studentPresent: lesson.studentPresent,
+        punctuality: lesson.punctuality,
+        engagement: lesson.engagement,
+        preparation: lesson.preparation,
+
+        // Dados do aluno (formato compatível com interface existente)
+        student: {
+          id: lesson.student.user.id,
+          name: `${lesson.student.user.firstName || ''} ${
+            lesson.student.user.lastName || ''
+          }`.trim(),
+          email: lesson.student.user.email || '',
+          image: lesson.student.user.image,
+          level: lesson.student.level,
+        },
+
+        // Timestamps
+        createdAt: lesson.createdAt,
+        updatedAt: lesson.updatedAt,
+      }));
+
+      // 5. Calcular estatísticas se solicitado
+      let stats: TeacherLessonsStats = {
+        total: 0,
+        scheduled: 0,
+        completed: 0,
+        cancelled: 0,
+        noShow: 0,
+        today: 0,
+        thisWeek: 0,
+        thisMonth: 0,
+        averageDuration: 60,
+        completionRate: 0,
+      };
+
+      if (includeStats) {
+        console.log('📈 Calculating lesson statistics...');
+
+        const now = new Date();
+        const startOfToday = new Date(now);
+        startOfToday.setHours(0, 0, 0, 0);
+        const endOfToday = new Date(startOfToday);
+        endOfToday.setDate(startOfToday.getDate() + 1);
+
+        const startOfWeek = new Date(now);
+        startOfWeek.setDate(now.getDate() - now.getDay());
+        startOfWeek.setHours(0, 0, 0, 0);
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 7);
+
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+        // Buscar estatísticas completas
+        const [allLessons, todayLessons, weekLessons, monthLessons] =
+          await Promise.all([
+            prisma.lesson.findMany({
+              where: { teacherId },
+              select: {
+                status: true,
+                duration: true,
+                scheduledAt: true,
+              },
+            }),
+            prisma.lesson.count({
+              where: {
+                teacherId,
+                scheduledAt: {
+                  gte: startOfToday,
+                  lt: endOfToday,
+                },
+              },
+            }),
+            prisma.lesson.count({
+              where: {
+                teacherId,
+                scheduledAt: {
+                  gte: startOfWeek,
+                  lt: endOfWeek,
+                },
+              },
+            }),
+            prisma.lesson.count({
+              where: {
+                teacherId,
+                scheduledAt: {
+                  gte: startOfMonth,
+                  lt: endOfMonth,
+                },
+              },
+            }),
+          ]);
+
+        // Calcular estatísticas por status
+        const statusCounts = allLessons.reduce((acc, lesson) => {
+          acc[lesson.status] = (acc[lesson.status] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>);
+
+        // Calcular duração média
+        const totalDuration = allLessons.reduce(
+          (sum, lesson) => sum + lesson.duration,
+          0
+        );
+        const averageDuration =
+          allLessons.length > 0 ? totalDuration / allLessons.length : 60;
+
+        // Calcular taxa de conclusão
+        const completedCount = statusCounts['COMPLETED'] || 0;
+        const totalCount = allLessons.length;
+        const completionRate =
+          totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
+
+        stats = {
+          total: totalCount,
+          scheduled: statusCounts['SCHEDULED'] || 0,
+          completed: completedCount,
+          cancelled: statusCounts['CANCELLED'] || 0,
+          noShow: statusCounts['NO_SHOW'] || 0,
+          today: todayLessons,
+          thisWeek: weekLessons,
+          thisMonth: monthLessons,
+          averageDuration: Math.round(averageDuration),
+          completionRate: Math.round(completionRate * 10) / 10,
+        };
+      }
+
+      console.log(
+        `✅ [TEACHER-LESSONS] Lessons loaded successfully - Stats: ${stats.total} total, ${stats.completed} completed`
+      );
+
+      return {
+        success: true,
+        lessons: lessonsFormatted,
+        stats,
+        pagination: {
+          offset,
+          limit,
+          total: totalCount,
+          hasMore: offset + lessonsFormatted.length < totalCount,
+        },
+      };
+    } catch (error) {
+      console.error('❌ [TEACHER-LESSONS] Error loading lessons:', error);
+      return null;
+    }
+  },
+  ['teacher-lessons-data'],
+  {
+    revalidate: 180, // 3 minutos
+    tags: ['teacher-lessons'],
+  }
+);
+
+// Buscar detalhes de lesson específico - DIRETO DO BANCO
+export const getTeacherLessonDetailsData = unstable_cache(
+  async (
+    lessonId: string,
+    userId: string,
+    userRole: number = 1
+  ): Promise<TeacherLessonDetailsResponse | null> => {
+    try {
+      console.log(
+        `📖 [TEACHER-LESSON-DETAILS] Loading lesson ${lessonId} for user ${userId}`
+      );
+
+      // 1. Buscar perfis do usuário
+      let userTeacherProfile = null;
+      let userStudentProfile = null;
+
+      if (userRole === 1) {
+        userTeacherProfile = await prisma.teacher.findUnique({
+          where: { userId },
+          select: { id: true },
+        });
+      } else {
+        userStudentProfile = await prisma.student.findUnique({
+          where: { userId },
+          select: { id: true },
+        });
+      }
+
+      // 2. Buscar aula com todos os detalhes
+      const lesson = await prisma.lesson.findFirst({
+        where: {
+          id: lessonId,
+          // Verificar se o usuário tem acesso à aula
+          OR: [
+            { teacherId: userTeacherProfile?.id },
+            { studentId: userStudentProfile?.id },
+          ],
+        },
+        include: {
+          teacher: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          student: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          assignments: {
+            orderBy: { createdAt: 'desc' },
+          },
+        },
+      });
+
+      if (!lesson) {
+        console.log(
+          `❌ [TEACHER-LESSON-DETAILS] Lesson ${lessonId} not found or access denied`
+        );
+        return null;
+      }
+
+      // 3. Buscar estatísticas do relacionamento
+      const [totalLessons, completedLessons, teacherStudentRel] =
+        await Promise.all([
+          prisma.lesson.count({
+            where: {
+              teacherId: lesson.teacherId,
+              studentId: lesson.studentId,
+            },
+          }),
+          prisma.lesson.count({
+            where: {
+              teacherId: lesson.teacherId,
+              studentId: lesson.studentId,
+              status: 'COMPLETED',
+            },
+          }),
+          prisma.teacherStudent.findFirst({
+            where: {
+              teacherId: lesson.teacherId,
+              studentId: lesson.studentId,
+            },
+            select: { startDate: true },
+          }),
+        ]);
+
+      // 4. Calcular duração do relacionamento
+      const relationshipStart =
+        teacherStudentRel?.startDate || lesson.createdAt;
+      const now = new Date();
+      const diffTime = Math.abs(now.getTime() - relationshipStart.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      let relationshipDuration = '';
+      if (diffDays < 30) {
+        relationshipDuration = `${diffDays} dias`;
+      } else if (diffDays < 365) {
+        const months = Math.floor(diffDays / 30);
+        relationshipDuration = `${months} ${months === 1 ? 'mês' : 'meses'}`;
+      } else {
+        const years = Math.floor(diffDays / 365);
+        const remainingMonths = Math.floor((diffDays % 365) / 30);
+        relationshipDuration = `${years} ${years === 1 ? 'ano' : 'anos'}`;
+        if (remainingMonths > 0) {
+          relationshipDuration += ` e ${remainingMonths} ${
+            remainingMonths === 1 ? 'mês' : 'meses'
+          }`;
+        }
+      }
+
+      // 5. Buscar WorkScores se houver IDs
+      let workScores: any[] = [];
+      if (lesson.workScoreIds.length > 0) {
+        workScores = await prisma.workScore.findMany({
+          where: {
+            id: { in: lesson.workScoreIds },
+          },
+          include: {
+            work: {
+              include: {
+                composer: {
+                  select: { name: true },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // 6. Buscar aulas relacionadas (se for série recorrente)
+      let relatedLessons: any[] = [];
+      if (lesson.isRecurring) {
+        const parentId = lesson.parentLessonId || lesson.id;
+        relatedLessons = await prisma.lesson.findMany({
+          where: {
+            OR: [{ id: parentId }, { parentLessonId: parentId }],
+            id: { not: lesson.id }, // Excluir a aula atual
+          },
+          select: {
+            id: true,
+            title: true,
+            scheduledAt: true,
+            status: true,
+          },
+          orderBy: { scheduledAt: 'asc' },
+          take: 10,
+        });
+      }
+
+      // 7. Definir permissões baseadas no role
+      const isTeacher =
+        userRole === 1 && userTeacherProfile?.id === lesson.teacherId;
+      const isStudent =
+        userRole === 0 && userStudentProfile?.id === lesson.studentId;
+
+      const permissions = {
+        canEdit: isTeacher,
+        canCancel: isTeacher,
+        canReschedule: isTeacher,
+        canViewTeacherNotes: isTeacher,
+        canAddFeedback: isStudent && lesson.status === 'COMPLETED',
+        canMarkAttendance: isTeacher,
+      };
+
+      // 8. Montar resposta detalhada (formato compatível com interface existente)
+      const lessonDetails = {
+        id: lesson.id,
+        title: lesson.title,
+        description: lesson.description || undefined,
+        scheduledAt: lesson.scheduledAt,
+        duration: lesson.duration,
+        actualStartTime: lesson.actualStartTime || undefined,
+        actualEndTime: lesson.actualEndTime || undefined,
+        status: lesson.status,
+        type: lesson.type,
+        location: lesson.location || undefined,
+
+        // Recorrência
+        isRecurring: lesson.isRecurring,
+        recurrenceType: lesson.recurrenceType || undefined,
+        parentLessonId: lesson.parentLessonId || undefined,
+        recurrenceEnd: lesson.recurrenceEnd || undefined,
+
+        // Conteúdo
+        objectives: lesson.objectives,
+        workScoreIds: lesson.workScoreIds,
+        topics: lesson.topics,
+        techniques: lesson.techniques,
+        repertoire: lesson.repertoire,
+        homework: lesson.homework || undefined,
+        practiceGoals: lesson.practiceGoals,
+        nextLessonPrep: lesson.nextLessonPrep || undefined,
+
+        // Anotações (filtradas por permissão)
+        teacherNotes: permissions.canViewTeacherNotes
+          ? lesson.teacherNotes || undefined
+          : undefined,
+        publicNotes: lesson.publicNotes || undefined,
+        studentFeedback: lesson.studentFeedback || undefined,
+        lessonSummary: lesson.lessonSummary || undefined,
+
+        // Avaliação
+        studentProgress: lesson.studentProgress,
+        skillsWorked: lesson.skillsWorked,
+        improvements: lesson.improvements,
+        challenges: lesson.challenges,
+
+        // Presença
+        studentPresent: lesson.studentPresent || undefined,
+        punctuality: lesson.punctuality || undefined,
+        engagement: lesson.engagement || undefined,
+        preparation: lesson.preparation || undefined,
+
+        // Pessoas
+        teacher: {
+          id: lesson.teacher.user.id,
+          name: `${lesson.teacher.user.firstName} ${lesson.teacher.user.lastName}`.trim(),
+          email: lesson.teacher.user.email || '',
+          image: lesson.teacher.user.image || undefined,
+        },
+        student: {
+          id: lesson.student.user.id,
+          name: `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim(),
+          email: lesson.student.user.email || '',
+          image: lesson.student.user.image || undefined,
+          level: lesson.student.level,
+        },
+
+        // Contexto
+        relationship: {
+          totalLessons,
+          completedLessons,
+          relationshipDuration,
+        },
+
+        // WorkScores
+        workScores: workScores.map((ws) => ({
+          id: ws.id,
+          title: ws.title,
+          composer: ws.work.composer.name,
+          workTitle: ws.work.title,
+          type: ws.type,
+          downloadUrl: ws.downloadUrl || undefined,
+        })),
+
+        // Assignments
+        assignments: lesson.assignments.map((assignment) => ({
+          id: assignment.id,
+          title: assignment.title,
+          description: assignment.description,
+          dueDate: assignment.dueDate || undefined,
+          status: assignment.status,
+          isCompleted: assignment.isCompleted,
+        })),
+
+        // Aulas relacionadas
+        relatedLessons: relatedLessons.map((rl) => ({
+          id: rl.id,
+          title: rl.title,
+          scheduledAt: rl.scheduledAt,
+          status: rl.status,
+        })),
+
+        // Timestamps
+        createdAt: lesson.createdAt,
+        updatedAt: lesson.updatedAt,
+
+        // Permissões
+        permissions,
+      };
+
+      console.log(
+        `✅ [TEACHER-LESSON-DETAILS] Lesson details loaded for ${
+          isTeacher ? 'teacher' : 'student'
+        }`
+      );
+
+      return {
+        success: true,
+        lesson: lessonDetails,
+        userRole,
+        isTeacher,
+        isStudent,
+      };
+    } catch (error) {
+      console.error(
+        '❌ [TEACHER-LESSON-DETAILS] Error loading lesson details:',
+        error
+      );
+      return null;
+    }
+  },
+  ['teacher-lesson-details-data'],
+  {
+    revalidate: 300, // 5 minutos
+    tags: ['teacher-lesson-details'],
+  }
+);
 
 export async function revalidateTeacherCache(userId?: string) {
   const { revalidateTag } = await import('next/cache');
 
   revalidateTag('teacher-dashboard');
+  revalidateTag('teacher-dashboard-data');
   revalidateTag('teacher-students');
+  revalidateTag('teacher-students-data');
   revalidateTag('teacher-calendar');
-  revalidateTag('teacher-calendar-data-direct'); // 🆕 Nova tag
+  revalidateTag('teacher-calendar-data');
+  revalidateTag('teacher-calendar-data-direct');
   revalidateTag('teacher-profile');
+  revalidateTag('teacher-profile-data');
+  revalidateTag('teacher-profile-extended-data');
   revalidateTag('teacher-student-detail-data');
   revalidateTag('teacher-student-detail');
+  revalidateTag('teacher-assignments');
+  revalidateTag('teacher-assignments-data');
+  revalidateTag('teacher-reviews');
+  revalidateTag('teacher-reviews-data');
+  revalidateTag('search-students');
+  revalidateTag('search-students-data');
 
   if (userId) {
     revalidateTag(`teacher-${userId}`);

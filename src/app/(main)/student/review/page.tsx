@@ -1,35 +1,35 @@
-// app/teacher/profile/page.tsx - Página do Perfil do Professor
+// app/student/reviews/page.tsx - Página de Avaliações dos Professores (Aluno)
 
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
-import NotFound from '../../not-found';
-import TeacherProfilePageServer from './pageServer';
+import { notFound } from 'next/navigation';
+import StudentReviewsPageServer from './pageServer';
 
 export const metadata: Metadata = {
-  title: 'Meu Perfil | Professor - Opus Atlas',
+  title: 'Avaliar Professores | Aluno - Opus Atlas',
   description:
-    'Gerencie seu perfil de professor, especialidades, experiência e configurações de ensino',
+    'Avalie seus professores e compartilhe sua experiência sobre as aulas de música',
   keywords:
-    'perfil professor, especialidades musicais, experiência, configurações ensino, dados pessoais',
+    'avaliar professor, feedback aula, experiência musical, qualidade ensino, satisfação aluno',
   openGraph: {
-    title: 'Perfil do Professor - Opus Atlas',
+    title: 'Avaliar Professores - Opus Atlas',
     description:
-      'Configure seu perfil profissional e destaque suas especialidades musicais',
+      'Compartilhe sua experiência e ajude outros alunos a encontrar os melhores professores',
     type: 'website',
   },
 };
 
-export default async function TeacherProfilePage() {
+export default async function StudentReviewsPage() {
   const session = await getServerSession(authOptions);
 
   // Verificar se está logado
   if (!session?.user?.id) {
-    return <NotFound />;
+    return notFound();
   }
 
-  // Verificar se tem role de professor (role 1)
-  if (session.user.role !== 1) {
+  // Verificar se tem role de aluno (role 0)
+  if (session.user.role !== 0) {
     return (
       <div className="bg-gradient-primary min-h-screen">
         <div className="section-wrap">
@@ -54,9 +54,9 @@ export default async function TeacherProfilePage() {
                 Acesso Restrito
               </h1>
               <p className="text-theme-secondary classical-subtitle mb-6">
-                Esta área é exclusiva para professores.
+                Esta área é exclusiva para alunos.
               </p>
-              <a href="/teacher" className="btn-classical-primary">
+              <a href="/student" className="btn-classical-primary">
                 Voltar ao Dashboard
               </a>
             </div>
@@ -66,5 +66,15 @@ export default async function TeacherProfilePage() {
     );
   }
 
-  return <TeacherProfilePageServer />;
+  return (
+    <StudentReviewsPageServer
+      userId={session.user.id}
+      userEmail={session.user.email || ''}
+      userName={`${session.user.firstName || ''} ${
+        session.user.lastName || ''
+      }`.trim()}
+      userImage={session.user.image}
+      userRole={session.user.role}
+    />
+  );
 }

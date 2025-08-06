@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { FiShare2, FiCopy, FiCheck, FiX } from 'react-icons/fi';
 import { FaWhatsapp, FaTwitter, FaTelegram, FaFacebook } from 'react-icons/fa';
+import Input from '../Common/Inputs';
 
 interface ShareButtonProps {
   url?: string;
@@ -162,7 +163,7 @@ export default function ShareButton({
                 Copiar Link
               </label>
               <div className="flex items-center space-x-2">
-                <input
+                <Input
                   type="text"
                   value={shareUrl}
                   readOnly

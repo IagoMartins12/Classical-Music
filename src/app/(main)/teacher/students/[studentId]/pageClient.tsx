@@ -1,7 +1,7 @@
 // app/teacher/students/[studentId]/pageClient.tsx - Client Component para Detalhes do Aluno
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -33,6 +33,7 @@ import {
   FiChevronRight,
   FiStar,
   FiTrendingDown,
+  FiX,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -42,6 +43,7 @@ import {
   SequentialGrid,
 } from '../../../../components/animation/AnimatedComponents';
 import { StudentDetailData } from '@/app/(main)/teacher/students/[studentId]/pageServer';
+import { useTeacherStudentDetail } from '@/app/hooks/lessonsSystem/useTeacherStudentDetail';
 
 interface TeacherProfile {
   id: string;
@@ -60,13 +62,38 @@ export default function TeacherStudentDetailPageClient({
   studentData,
   teacherProfile,
 }: TeacherStudentDetailPageClientProps) {
-  // States
-  const [loading, setLoading] = useState(false);
+  // Initialize hook with server data
+  const {
+    // State do hook
+    studentData: currentStudentData,
+    loading,
+    error,
+
+    // Actions do hook
+    refreshStudentData,
+    setInitialData,
+    updateTeacherNotes,
+    toggleStudentStatus,
+    updateRelationship,
+    updateStudentDataInState,
+    clearError,
+  } = useTeacherStudentDetail(studentData);
+
+  // Local UI states (não relacionados aos dados do aluno)
   const [editingNotes, setEditingNotes] = useState(false);
   const [teacherNotes, setTeacherNotes] = useState(
     studentData.relationship.teacherNotes || ''
   );
-  const [refreshing, setRefreshing] = useState(false);
+
+  // Initialize hook data on mount
+  useEffect(() => {
+    setInitialData(studentData);
+  }, [studentData, setInitialData]);
+
+  // Update local notes when studentData changes
+  useEffect(() => {
+    setTeacherNotes(currentStudentData.relationship.teacherNotes || '');
+  }, [currentStudentData.relationship.teacherNotes]);
 
   const {
     student,
@@ -76,7 +103,7 @@ export default function TeacherStudentDetailPageClient({
     recentLessons,
     upcomingLessons,
     assignments,
-  } = studentData;
+  } = currentStudentData;
 
   // Status helpers
   const isActive = relationship.isActive && !relationship.pausedAt;
@@ -95,69 +122,24 @@ export default function TeacherStudentDetailPageClient({
     return 'Inativo';
   };
 
-  // Update teacher notes
-  const updateTeacherNotes = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await fetch('/api/teacher/students', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          relationshipId: relationship.relationshipId,
-          teacherNotes,
-        }),
-      });
+  // Update teacher notes using hook
+  const handleUpdateTeacherNotes = useCallback(async () => {
+    const success = await updateTeacherNotes(teacherNotes);
 
-      if (!response.ok) {
-        throw new Error('Erro ao atualizar anotações');
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        setEditingNotes(false);
-        console.log('Anotações atualizadas com sucesso!');
-      }
-    } catch (error) {
-      console.error('Erro ao atualizar anotações:', error);
-    } finally {
-      setLoading(false);
+    if (success) {
+      setEditingNotes(false);
+      console.log('Anotações atualizadas com sucesso!');
     }
-  }, [relationship.relationshipId, teacherNotes]);
+  }, [teacherNotes, updateTeacherNotes]);
 
-  // Toggle student status
-  const toggleStudentStatus = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await fetch('/api/teacher/students', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          relationshipId: relationship.relationshipId,
-          pausedAt: isPaused ? null : new Date(),
-          pauseReason: isPaused ? null : 'Pausado pelo professor',
-        }),
-      });
+  // Toggle student status using hook
+  const handleToggleStudentStatus = useCallback(async () => {
+    const success = await toggleStudentStatus();
 
-      if (!response.ok) {
-        throw new Error('Erro ao atualizar status');
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-        window.location.reload(); // Simplificado - idealmente atualizaria o estado local
-      }
-    } catch (error) {
-      console.error('Erro ao atualizar status:', error);
-    } finally {
-      setLoading(false);
+    if (success) {
+      console.log('Status do aluno atualizado com sucesso!');
     }
-  }, [relationship.relationshipId, isPaused]);
+  }, [toggleStudentStatus]);
 
   // Format functions
   const formatDate = (date: Date | string) => {
@@ -237,20 +219,28 @@ export default function TeacherStudentDetailPageClient({
                 {getStatusText()}
               </span>
               <button
-                onClick={toggleStudentStatus}
-                disabled={loading}
+                onClick={handleToggleStudentStatus}
+                disabled={loading.toggleStatus}
                 className={`btn-classical-secondary flex items-center space-x-2 ${
                   isPaused
                     ? 'hover:bg-accent-green/10 hover:border-accent-green/30 hover:text-accent-green'
                     : 'hover:bg-accent-yellow/10 hover:border-accent-yellow/30 hover:text-accent-yellow'
                 }`}
               >
-                {isPaused ? (
+                {loading.toggleStatus ? (
+                  <FiRefreshCw className="w-4 h-4 animate-spin" />
+                ) : isPaused ? (
                   <FiPlay className="w-4 h-4" />
                 ) : (
                   <FiPause className="w-4 h-4" />
                 )}
-                <span>{isPaused ? 'Reativar' : 'Pausar'}</span>
+                <span>
+                  {loading.toggleStatus
+                    ? 'Aguarde...'
+                    : isPaused
+                    ? 'Reativar'
+                    : 'Pausar'}
+                </span>
               </button>
               <Link
                 href={`/teacher/lessons/create?studentId=${student.id}`}
@@ -262,6 +252,29 @@ export default function TeacherStudentDetailPageClient({
             </div>
           </div>
         </AnimatedItem>
+
+        {/* Error Message */}
+        {error && (
+          <AnimatedItem direction="up" springType="gentle">
+            <AnimatedCard
+              hover="lift"
+              className="classical-card p-4 border-l-4 border-accent-red mb-6"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <FiXCircle className="w-5 h-5 text-accent-red" />
+                  <span className="text-accent-red font-medium">{error}</span>
+                </div>
+                <button
+                  onClick={clearError}
+                  className="text-accent-red hover:text-accent-red/80 transition-colors"
+                >
+                  <FiX className="w-4 h-4" />
+                </button>
+              </div>
+            </AnimatedCard>
+          </AnimatedItem>
+        )}
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -386,20 +399,14 @@ export default function TeacherStudentDetailPageClient({
 
                 {/* Musical Goals */}
                 {studentProfile.musicalGoals &&
+                  typeof studentProfile.musicalGoals === 'string' &&
                   studentProfile.musicalGoals.length > 0 && (
                     <div className="mt-6 pt-6 border-t border-theme-secondary">
                       <label className="text-sm font-medium text-theme-tertiary block mb-3">
                         Objetivos Musicais
                       </label>
-                      <div className="flex flex-wrap gap-2">
-                        {studentProfile.musicalGoals.map((goal, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm"
-                          >
-                            {goal}
-                          </span>
-                        ))}
+                      <div className="text-theme-primary">
+                        {studentProfile.musicalGoals}
                       </div>
                     </div>
                   )}
@@ -623,9 +630,14 @@ export default function TeacherStudentDetailPageClient({
 
                   <button
                     onClick={() => setEditingNotes(!editingNotes)}
+                    disabled={loading.updateNotes}
                     className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center"
                   >
-                    <FiEdit3 className="w-4 h-4 text-theme-tertiary hover:text-brand-primary transition-colors" />
+                    {loading.updateNotes ? (
+                      <FiRefreshCw className="w-4 h-4 animate-spin text-theme-tertiary" />
+                    ) : (
+                      <FiEdit3 className="w-4 h-4 text-theme-tertiary hover:text-brand-primary transition-colors" />
+                    )}
                   </button>
                 </div>
 
@@ -636,20 +648,27 @@ export default function TeacherStudentDetailPageClient({
                       onChange={(e) => setTeacherNotes(e.target.value)}
                       placeholder="Adicione suas observações sobre o aluno, progresso, dificuldades, pontos fortes..."
                       className="input-classical-2 w-full h-32 resize-none"
+                      disabled={loading.updateNotes}
                     />
                     <div className="flex items-center space-x-3">
                       <button
-                        onClick={updateTeacherNotes}
-                        disabled={loading}
-                        className="btn-classical-primary text-sm"
+                        onClick={handleUpdateTeacherNotes}
+                        disabled={loading.updateNotes}
+                        className="btn-classical-primary text-sm flex items-center space-x-2"
                       >
-                        {loading ? 'Salvando...' : 'Salvar'}
+                        {loading.updateNotes && (
+                          <FiRefreshCw className="w-4 h-4 animate-spin" />
+                        )}
+                        <span>
+                          {loading.updateNotes ? 'Salvando...' : 'Salvar'}
+                        </span>
                       </button>
                       <button
                         onClick={() => {
                           setEditingNotes(false);
                           setTeacherNotes(relationship.teacherNotes || '');
                         }}
+                        disabled={loading.updateNotes}
                         className="btn-classical-secondary text-sm"
                       >
                         Cancelar
@@ -891,6 +910,22 @@ export default function TeacherStudentDetailPageClient({
                   </Link>
                 </div>
               </AnimatedCard>
+            </AnimatedItem>
+
+            {/* Refresh Button */}
+            <AnimatedItem direction="up" springType="gentle">
+              <button
+                onClick={refreshStudentData}
+                disabled={loading.refresh}
+                className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
+              >
+                <FiRefreshCw
+                  className={`w-4 h-4 ${loading.refresh ? 'animate-spin' : ''}`}
+                />
+                <span>
+                  {loading.refresh ? 'Atualizando...' : 'Atualizar Dados'}
+                </span>
+              </button>
             </AnimatedItem>
           </div>
         </div>

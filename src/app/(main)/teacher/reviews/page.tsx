@@ -1,31 +1,31 @@
-// app/teacher/profile/page.tsx - Página do Perfil do Professor
+// app/teacher/reviews/page.tsx - Página de Avaliações Recebidas
 
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
-import NotFound from '../../not-found';
-import TeacherProfilePageServer from './pageServer';
+import { notFound } from 'next/navigation';
+import TeacherReviewsPageServer from './pageServer';
 
 export const metadata: Metadata = {
-  title: 'Meu Perfil | Professor - Opus Atlas',
+  title: 'Avaliações Recebidas | Professor - Opus Atlas',
   description:
-    'Gerencie seu perfil de professor, especialidades, experiência e configurações de ensino',
+    'Visualize todas as avaliações e feedbacks recebidos dos seus alunos, acompanhe sua reputação como professor',
   keywords:
-    'perfil professor, especialidades musicais, experiência, configurações ensino, dados pessoais',
+    'avaliações professor, feedback alunos, reputação ensino, reviews professores, qualidade ensino',
   openGraph: {
-    title: 'Perfil do Professor - Opus Atlas',
+    title: 'Avaliações do Professor - Opus Atlas',
     description:
-      'Configure seu perfil profissional e destaque suas especialidades musicais',
+      'Acompanhe seu desempenho através das avaliações dos alunos e feedback recebido',
     type: 'website',
   },
 };
 
-export default async function TeacherProfilePage() {
+export default async function TeacherReviewsPage() {
   const session = await getServerSession(authOptions);
 
   // Verificar se está logado
   if (!session?.user?.id) {
-    return <NotFound />;
+    return notFound();
   }
 
   // Verificar se tem role de professor (role 1)
@@ -66,5 +66,15 @@ export default async function TeacherProfilePage() {
     );
   }
 
-  return <TeacherProfilePageServer />;
+  return (
+    <TeacherReviewsPageServer
+      userId={session.user.id}
+      userEmail={session.user.email || ''}
+      userName={`${session.user.firstName || ''} ${
+        session.user.lastName || ''
+      }`.trim()}
+      userImage={session.user.image}
+      userRole={session.user.role}
+    />
+  );
 }

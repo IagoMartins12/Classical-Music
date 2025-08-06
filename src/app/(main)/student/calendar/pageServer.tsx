@@ -1,11 +1,8 @@
 // app/student/calendar/pageServer.tsx - Server Component para Calendário do Aluno
 
-import { getServerSession } from 'next-auth';
-import { notFound } from 'next/navigation';
-import { authOptions } from '@/app/libs/auth';
 import {
-  getStudentCalendar,
-  getStudentProfile,
+  getStudentCalendarForPageServer,
+  getStudentProfileForPageServer,
 } from '@/app/requests/student-requests';
 import StudentCalendarPageClient from './pageClient';
 
@@ -74,13 +71,30 @@ export interface StudentCalendarData {
   }>;
 }
 
-// Função para verificar se aluno tem professores vinculados
-async function checkStudentHasTeachers(): Promise<{
+interface StudentProfile {
+  id: string;
+  name: string;
+  email: string;
+  image?: string | null;
+  role: number;
+}
+
+interface StudentCalendarPageServerProps {
+  userId: string;
+  userEmail: string;
+  userName: string;
+  userImage?: string | null;
+  userRole: number;
+}
+
+// 🔧 CORRIGIDO: Função local que recebe userId como parâmetro
+async function checkStudentHasTeachers(userId: string): Promise<{
   hasTeachers: boolean;
   teachers: any[];
 }> {
   try {
-    const profileData = await getStudentProfile();
+    // ✅ CORRIGIDO: Passando userId para a função
+    const profileData = await getStudentProfileForPageServer(userId);
 
     if (!profileData || !profileData.profile) {
       return { hasTeachers: false, teachers: [] };
@@ -100,25 +114,33 @@ async function checkStudentHasTeachers(): Promise<{
   }
 }
 
-// Função para buscar dados do calendário do aluno
-async function fetchStudentCalendar(): Promise<StudentCalendarData | null> {
+// 🔧 CORRIGIDO: Função agora recebe userId como parâmetro
+async function fetchStudentCalendar(
+  userId: string
+): Promise<StudentCalendarData | null> {
   try {
     // Buscar calendário do mês atual
     const now = new Date();
     const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-    const calendarData = await getStudentCalendar(startDate, endDate, {
-      view: 'month',
-      includeStats: true,
-    });
+    // ✅ CORRIGIDO: Usando a função que recebe userId
+    const calendarData = await getStudentCalendarForPageServer(
+      userId,
+      startDate,
+      endDate,
+      {
+        view: 'month',
+        includeStats: true,
+      }
+    );
 
     if (!calendarData) {
       throw new Error('Falha ao carregar dados do calendário');
     }
 
-    // Buscar lista de professores para filtros
-    const teachersCheck = await checkStudentHasTeachers();
+    // ✅ CORRIGIDO: Passando userId para checkStudentHasTeachers
+    const teachersCheck = await checkStudentHasTeachers(userId);
 
     const teachers = teachersCheck.teachers.map((teacher) => ({
       id: teacher.teacherId,
@@ -139,75 +161,75 @@ async function fetchStudentCalendar(): Promise<StudentCalendarData | null> {
   }
 }
 
-export default async function StudentCalendarPageServer() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id || session.user.role !== 0) {
-    notFound();
-  }
+export default async function StudentCalendarPageServer({
+  userId,
+  userEmail,
+  userName,
+  userImage,
+  userRole,
+}: StudentCalendarPageServerProps) {
+  console.log(`📅 [STUDENT-CALENDAR-PAGE-SERVER] Loading for user ${userId}`);
 
   try {
     // VERIFICAÇÃO CRÍTICA: Aluno deve ter pelo menos 1 professor ativo
     console.log('🔍 Verificando se aluno tem professores vinculados...');
-    const teacherCheck = await checkStudentHasTeachers();
+    // ✅ CORRIGIDO: Passando userId para checkStudentHasTeachers
+    const teacherCheck = await checkStudentHasTeachers(userId);
 
     if (!teacherCheck.hasTeachers) {
-      // Aluno não tem professores - redirecionar para dashboard
+      // Aluno não tem professores - mostrar página especial
       return (
         <StudentCalendarPageClient
           initialData={null}
           studentProfile={{
-            id: session.user.id,
-            name: `${session.user.firstName || ''} ${
-              session.user.lastName || ''
-            }`.trim(),
-            email: session.user.email || '',
-            image: session.user.image,
-            role: session.user.role,
+            id: userId,
+            name: userName,
+            email: userEmail,
+            image: userImage,
+            role: userRole,
           }}
           errorMessage="no_teachers"
         />
       );
     }
 
-    // OTIMIZAÇÃO: Buscar dados do calendário em paralelo
+    // OTIMIZAÇÃO: Buscar dados do calendário
     console.log('📅 Carregando calendário do aluno...');
-    const calendarData = await fetchStudentCalendar();
+    // ✅ CORRIGIDO: Passando userId para fetchStudentCalendar
+    const calendarData = await fetchStudentCalendar(userId);
 
     // Se não conseguir buscar dados críticos, mostrar erro
     if (!calendarData) {
       throw new Error('Falha ao carregar dados do calendário');
     }
 
+    console.log(`✅ [STUDENT-CALENDAR-PAGE-SERVER] Data loaded successfully`);
+
     return (
       <StudentCalendarPageClient
         initialData={calendarData}
         studentProfile={{
-          id: session.user.id,
-          name: `${session.user.firstName || ''} ${
-            session.user.lastName || ''
-          }`.trim(),
-          email: session.user.email || '',
-          image: session.user.image,
-          role: session.user.role,
+          id: userId,
+          name: userName,
+          email: userEmail,
+          image: userImage,
+          role: userRole,
         }}
       />
     );
   } catch (error) {
-    console.error('❌ Erro crítico no calendário do aluno:', error);
+    console.error('❌ [STUDENT-CALENDAR-PAGE-SERVER] Critical error:', error);
 
     // Fallback com dados vazios para não quebrar a UI
     return (
       <StudentCalendarPageClient
         initialData={null}
         studentProfile={{
-          id: session.user.id,
-          name: `${session.user.firstName || ''} ${
-            session.user.lastName || ''
-          }`.trim(),
-          email: session.user.email || '',
-          image: session.user.image,
-          role: session.user.role,
+          id: userId,
+          name: userName,
+          email: userEmail,
+          image: userImage,
+          role: userRole,
         }}
         errorMessage="Erro ao carregar dados do calendário. Tente recarregar a página."
       />

@@ -1,11 +1,11 @@
-// app/student/pageServer.tsx - Servidor do Dashboard do Aluno
+// app/student/pageServer.tsx - Server Component para Dashboard do Aluno
 
-import { getServerSession } from 'next-auth';
-import { notFound } from 'next/navigation';
-import { authOptions } from '@/app/libs/auth';
+import {
+  getStudentDashboardForPageServer,
+  getStudentProfileForPageServer,
+} from '@/app/requests/student-requests';
 import StudentPageClient from './pageClient';
 
-// Interfaces para tipagem dos dados
 export interface StudentDashboardData {
   dashboard: {
     stats: {
@@ -110,69 +110,38 @@ export interface StudentDashboardData {
   timestamp: string;
 }
 
-// Função para buscar dados do dashboard do aluno
-async function fetchStudentDashboard(): Promise<StudentDashboardData | null> {
-  try {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/student/dashboard`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        next: {
-          revalidate: 300, // 5 minutos
-          tags: ['student-dashboard'],
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Dashboard API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error('Dashboard API returned error');
-    }
-
-    return data;
-  } catch (error) {
-    console.error('❌ Erro ao buscar dashboard do aluno:', error);
-    return null;
-  }
+interface StudentProfile {
+  id: string;
+  name: string;
+  email: string;
+  image?: string | null;
+  role: number;
 }
 
-// Função para verificar se aluno tem professores vinculados
-async function checkStudentTeachers(): Promise<{
+interface StudentPageServerProps {
+  userId: string;
+  userEmail: string;
+  userName: string;
+  userImage?: string | null;
+  userRole: number;
+}
+
+// 🔧 CORRIGIDO: Função agora recebe userId como parâmetro
+export async function checkStudentHasTeachers(userId: string): Promise<{
   hasTeachers: boolean;
   teachers: any[];
 }> {
   try {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/student/profile`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        next: {
-          revalidate: 180, // 3 minutos
-          tags: ['student-profile'],
-        },
-      }
-    );
+    // ✅ CORRIGIDO: Passando userId para a função
+    const profileData = await getStudentProfileForPageServer(userId);
 
-    if (!response.ok) {
-      throw new Error(`Profile API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (!data.success) {
+    if (!profileData || !profileData.profile) {
       return { hasTeachers: false, teachers: [] };
     }
 
-    const activeTeachers = data.profile.teachers.filter((t: any) => t.isActive);
+    const activeTeachers = profileData.profile.teachers.filter(
+      (t) => t.isActive
+    );
 
     return {
       hasTeachers: activeTeachers.length > 0,
@@ -184,17 +153,20 @@ async function checkStudentTeachers(): Promise<{
   }
 }
 
-export default async function StudentPageServer() {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.id || session.user.role !== 0) {
-    notFound();
-  }
+export default async function StudentPageServer({
+  userId,
+  userEmail,
+  userName,
+  userImage,
+  userRole,
+}: StudentPageServerProps) {
+  console.log(`👨‍🎓 [STUDENT-PAGE-SERVER] Loading for user ${userId}`);
 
   try {
     // VERIFICAÇÃO CRÍTICA: Aluno deve ter pelo menos 1 professor ativo
     console.log('🔍 Verificando se aluno tem professores vinculados...');
-    const teacherCheck = await checkStudentTeachers();
+    // ✅ CORRIGIDO: Passando userId para checkStudentHasTeachers
+    const teacherCheck = await checkStudentHasTeachers(userId);
 
     if (!teacherCheck.hasTeachers) {
       // Aluno não tem professores - mostrar página especial
@@ -202,13 +174,11 @@ export default async function StudentPageServer() {
         <StudentPageClient
           initialDashboardData={null}
           studentProfile={{
-            id: session.user.id,
-            name: `${session.user.firstName || ''} ${
-              session.user.lastName || ''
-            }`.trim(),
-            email: session.user.email || '',
-            image: session.user.image,
-            role: session.user.role,
+            id: userId,
+            name: userName,
+            email: userEmail,
+            image: userImage,
+            role: userRole,
           }}
           errorMessage="no_teachers"
         />
@@ -217,43 +187,48 @@ export default async function StudentPageServer() {
 
     // OTIMIZAÇÃO: Buscar dados do dashboard
     console.log('📊 Carregando dashboard do aluno...');
-    const dashboardData = await fetchStudentDashboard();
+    // ✅ CORRIGIDO: Usando a função que recebe userId
+    const dashboardData = await getStudentDashboardForPageServer(userId);
 
     // Se não conseguir buscar dados críticos, mostrar erro
     if (!dashboardData) {
       throw new Error('Falha ao carregar dados do dashboard');
     }
 
+    const studentDashboardData: StudentDashboardData = {
+      dashboard: dashboardData,
+      timestamp: new Date().toISOString(),
+    };
+
+    console.log('DATA', { studentDashboardData, teacherCheck });
+    console.log(`✅ [STUDENT-PAGE-SERVER] Data loaded successfully.`);
+
     return (
       <StudentPageClient
-        initialDashboardData={dashboardData}
+        initialDashboardData={studentDashboardData}
         studentProfile={{
-          id: session.user.id,
-          name: `${session.user.firstName || ''} ${
-            session.user.lastName || ''
-          }`.trim(),
-          email: session.user.email || '',
-          image: session.user.image,
-          role: session.user.role,
+          id: userId,
+          name: userName,
+          email: userEmail,
+          image: userImage,
+          role: userRole,
         }}
         teachersInfo={teacherCheck.teachers}
       />
     );
   } catch (error) {
-    console.error('❌ Erro crítico no servidor do aluno:', error);
+    console.error('❌ [STUDENT-PAGE-SERVER] Critical error:', error);
 
     // Fallback com dados vazios para não quebrar a UI
     return (
       <StudentPageClient
         initialDashboardData={null}
         studentProfile={{
-          id: session.user.id,
-          name: `${session.user.firstName || ''} ${
-            session.user.lastName || ''
-          }`.trim(),
-          email: session.user.email || '',
-          image: session.user.image,
-          role: session.user.role,
+          id: userId,
+          name: userName,
+          email: userEmail,
+          image: userImage,
+          role: userRole,
         }}
         errorMessage="Erro ao carregar dados. Tente recarregar a página."
       />

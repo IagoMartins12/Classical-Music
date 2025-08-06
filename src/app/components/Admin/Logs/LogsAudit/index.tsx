@@ -1,7 +1,7 @@
 // app/components/Admin/Logs/LogsAudit.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   FiFileText,
   FiShield,
@@ -22,12 +22,16 @@ import {
   FiArchive,
   FiBarChart2,
   FiTarget,
+  FiRefreshCw,
+  FiFilter,
+  FiMoreVertical,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
+  LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
@@ -35,517 +39,294 @@ import {
   AdminBarChart,
   MetricCard,
 } from '@/app/components/Admin/Charts/AdminCharts';
-
-interface LogEntry {
-  id: string;
-  timestamp: Date;
-  level: 'error' | 'warn' | 'info' | 'debug' | 'trace';
-  category: 'system' | 'security' | 'audit' | 'performance' | 'user' | 'api';
-  service: string;
-  action: string;
-  message: string;
-  userId?: string;
-  userName?: string;
-  ipAddress?: string;
-  userAgent?: string;
-  endpoint?: string;
-  statusCode?: number;
-  duration?: number;
-  details?: any;
-  sessionId?: string;
-  traceId?: string;
-}
-
-interface AuditEvent {
-  id: string;
-  timestamp: Date;
-  userId: string;
-  userName: string;
-  action: string;
-  resource: string;
-  resourceId?: string;
-  changes?: {
-    before: any;
-    after: any;
-  };
-  ipAddress: string;
-  userAgent: string;
-  sessionId: string;
-  success: boolean;
-  errorMessage?: string;
-  metadata?: any;
-}
-
-interface LogStats {
-  total: number;
-  byLevel: Record<string, number>;
-  byCategory: Record<string, number>;
-  byService: Record<string, number>;
-  last24h: number;
-  errorRate: number;
-  topErrors: Array<{
-    message: string;
-    count: number;
-    lastSeen: Date;
-  }>;
-  performanceMetrics: {
-    avgResponseTime: number;
-    slowQueries: number;
-    failedRequests: number;
-  };
-}
+import { useAdminLogs } from '@/app/hooks/admin/useAdminLogs';
+import { formatNumber } from '@/app/hooks/admin/useAdminStats';
+import toast from 'react-hot-toast';
+import LoadingAdminState from '../../Common/LoadingState';
 
 export default function LogsAudit() {
+  const {
+    logs,
+    auditEvents,
+    stats,
+    loading,
+    error,
+    filters,
+    selectedLogs,
+    pagination,
+    refreshLogs,
+    setFilters,
+    toggleLogSelection,
+    selectAllLogs,
+    clearSelection,
+    exportLogs,
+    archiveLogs,
+    deleteLogs,
+    loadMoreLogs,
+    getFilteredLogs,
+    getLevelColor,
+    getLevelIcon,
+    getCategoryIcon,
+    formatTimestamp,
+    getRelativeTime,
+  } = useAdminLogs();
+
   const [activeTab, setActiveTab] = useState('system');
-  const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [auditEvents, setAuditEvents] = useState<AuditEvent[]>([]);
-  const [stats, setStats] = useState<LogStats | null>(null);
-  const [filters, setFilters] = useState({
-    level: 'all',
-    category: 'all',
-    service: 'all',
-    timeRange: '24h',
-    search: '',
-    userId: '',
-  });
-  const [selectedLogs, setSelectedLogs] = useState<Set<string>>(new Set());
   const [showDetails, setShowDetails] = useState<string | null>(null);
+  const [bulkActionOpen, setBulkActionOpen] = useState(false);
 
-  // Mock data
-  const mockLogs: LogEntry[] = [
-    {
-      id: '1',
-      timestamp: new Date(Date.now() - 5 * 60 * 1000),
-      level: 'error',
-      category: 'system',
-      service: 'api',
-      action: 'upload_file',
-      message: 'Failed to upload file: disk space full',
-      userId: 'user123',
-      userName: 'João Silva',
-      ipAddress: '192.168.1.100',
-      endpoint: '/api/upload',
-      statusCode: 500,
-      duration: 5420,
-      details: {
-        fileName: 'score.pdf',
-        fileSize: '2.4MB',
-        error: 'ENOSPC: no space left on device',
-      },
-      sessionId: 'sess_abc123',
-      traceId: 'trace_xyz789',
-    },
-    {
-      id: '2',
-      timestamp: new Date(Date.now() - 15 * 60 * 1000),
-      level: 'warn',
-      category: 'performance',
-      service: 'database',
-      action: 'slow_query',
-      message: 'Slow query detected: SELECT * FROM works WHERE...',
-      duration: 2350,
-      details: {
-        query: 'SELECT * FROM works WHERE composer_id = ? AND epoch_id = ?',
-        params: ['comp123', 'epoch456'],
-        executionTime: 2350,
-        rowsExamined: 15000,
-      },
-      traceId: 'trace_slow123',
-    },
-    {
-      id: '3',
-      timestamp: new Date(Date.now() - 30 * 60 * 1000),
-      level: 'info',
-      category: 'audit',
-      service: 'auth',
-      action: 'user_login',
-      message: 'User login successful',
-      userId: 'user456',
-      userName: 'Maria Santos',
-      ipAddress: '192.168.1.101',
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-      details: {
-        loginMethod: 'email',
-        rememberMe: true,
-        location: 'São Paulo, BR',
-      },
-      sessionId: 'sess_def456',
-    },
-    {
-      id: '4',
-      timestamp: new Date(Date.now() - 45 * 60 * 1000),
-      level: 'error',
-      category: 'security',
-      service: 'auth',
-      action: 'failed_login',
-      message: 'Failed login attempt: invalid password',
-      ipAddress: '192.168.1.99',
-      userAgent: 'curl/7.68.0',
-      details: {
-        email: 'admin@site.com',
-        attempts: 5,
-        blocked: true,
-        reason: 'brute_force_protection',
-      },
-      traceId: 'trace_security789',
-    },
-    {
-      id: '5',
-      timestamp: new Date(Date.now() - 60 * 60 * 1000),
-      level: 'info',
-      category: 'user',
-      service: 'app',
-      action: 'create_annotation',
-      message: 'User created new annotation',
-      userId: 'user789',
-      userName: 'Pedro Costa',
-      ipAddress: '192.168.1.102',
-      details: {
-        workId: 'work123',
-        annotationType: 'technical',
-        length: 245,
-      },
-      sessionId: 'sess_ghi789',
-    },
-  ];
-
-  const mockAuditEvents: AuditEvent[] = [
-    {
-      id: '1',
-      timestamp: new Date(Date.now() - 10 * 60 * 1000),
-      userId: 'admin123',
-      userName: 'Admin User',
-      action: 'update_user_permissions',
-      resource: 'user',
-      resourceId: 'user456',
-      changes: {
-        before: { canUpload: false, role: 'user' },
-        after: { canUpload: true, role: 'contributor' },
-      },
-      ipAddress: '192.168.1.50',
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-      sessionId: 'admin_sess_123',
-      success: true,
-    },
-    {
-      id: '2',
-      timestamp: new Date(Date.now() - 25 * 60 * 1000),
-      userId: 'user123',
-      userName: 'João Silva',
-      action: 'upload_composer',
-      resource: 'composer',
-      resourceId: 'comp789',
-      ipAddress: '192.168.1.100',
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
-      sessionId: 'sess_abc123',
-      success: true,
-      metadata: {
-        composerName: 'Claude Debussy',
-        epoch: 'Impressionist',
-        uploadSize: '1.2MB',
-      },
-    },
-    {
-      id: '3',
-      timestamp: new Date(Date.now() - 40 * 60 * 1000),
-      userId: 'mod456',
-      userName: 'Moderator',
-      action: 'reject_upload',
-      resource: 'work',
-      resourceId: 'work456',
-      ipAddress: '192.168.1.75',
-      userAgent: 'Mozilla/5.0 (Ubuntu; Linux x86_64)',
-      sessionId: 'mod_sess_456',
-      success: true,
-      metadata: {
-        reason: 'insufficient_metadata',
-        uploaderUserId: 'user789',
-      },
-    },
-  ];
-
-  const mockStats: LogStats = {
-    total: 15647,
-    byLevel: {
-      error: 234,
-      warn: 567,
-      info: 12456,
-      debug: 2156,
-      trace: 234,
-    },
-    byCategory: {
-      system: 4567,
-      security: 234,
-      audit: 1234,
-      performance: 567,
-      user: 8234,
-      api: 811,
-    },
-    byService: {
-      api: 5678,
-      database: 2345,
-      auth: 1234,
-      cache: 567,
-      upload: 789,
-      others: 5034,
-    },
-    last24h: 2456,
-    errorRate: 1.5,
-    topErrors: [
-      {
-        message: 'Database connection timeout',
-        count: 45,
-        lastSeen: new Date(Date.now() - 2 * 60 * 1000),
-      },
-      {
-        message: 'File upload failed: size limit exceeded',
-        count: 32,
-        lastSeen: new Date(Date.now() - 15 * 60 * 1000),
-      },
-      {
-        message: 'Authentication token expired',
-        count: 28,
-        lastSeen: new Date(Date.now() - 8 * 60 * 1000),
-      },
-    ],
-    performanceMetrics: {
-      avgResponseTime: 245,
-      slowQueries: 12,
-      failedRequests: 89,
-    },
-  };
-
-  useEffect(() => {
-    setLogs(mockLogs);
-    setAuditEvents(mockAuditEvents);
-    setStats(mockStats);
-  }, []);
-
-  const getLevelColor = (level: string) => {
-    switch (level) {
-      case 'error':
-        return 'text-accent-red bg-accent-red/10';
-      case 'warn':
-        return 'text-accent-amber bg-accent-amber/10';
-      case 'info':
-        return 'text-accent-blue bg-accent-blue/10';
-      case 'debug':
-        return 'text-accent-purple bg-accent-purple/10';
-      case 'trace':
-        return 'text-theme-tertiary bg-theme-secondary';
-      default:
-        return 'text-theme-tertiary bg-theme-secondary';
+  const handleExportLogs = async (format: 'csv' | 'json') => {
+    try {
+      await exportLogs(format);
+      toast.success(`Logs exportados em formato ${format.toUpperCase()}!`);
+    } catch (error) {
+      toast.error('Erro ao exportar logs');
     }
   };
 
-  const getLevelIcon = (level: string) => {
-    switch (level) {
-      case 'error':
-        return FiAlertTriangle;
-      case 'warn':
-        return FiAlertTriangle;
-      case 'info':
-        return FiInfo;
-      case 'debug':
-        return FiSettings;
-      case 'trace':
-        return FiActivity;
-      default:
-        return FiInfo;
+  const handleBulkArchive = async () => {
+    try {
+      await archiveLogs(Array.from(selectedLogs));
+      toast.success(`${selectedLogs.size} logs arquivados com sucesso!`);
+      setBulkActionOpen(false);
+    } catch (error) {
+      toast.error('Erro ao arquivar logs');
     }
   };
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'system':
-        return FiServer;
-      case 'security':
-        return FiShield;
-      case 'audit':
-        return FiFileText;
-      case 'performance':
-        return FiActivity;
-      case 'user':
-        return FiUser;
-      case 'api':
-        return FiDatabase;
-      default:
-        return FiActivity;
-    }
-  };
-
-  const filterLogs = (logList: LogEntry[]) => {
-    return logList.filter((log) => {
-      if (filters.level !== 'all' && log.level !== filters.level) return false;
-      if (filters.category !== 'all' && log.category !== filters.category)
-        return false;
-      if (filters.service !== 'all' && log.service !== filters.service)
-        return false;
-      if (filters.userId && log.userId !== filters.userId) return false;
-      if (
-        filters.search &&
-        !log.message.toLowerCase().includes(filters.search.toLowerCase())
+  const handleBulkDelete = async () => {
+    if (
+      window.confirm(
+        `Tem certeza que deseja deletar ${selectedLogs.size} logs? Esta ação não pode ser desfeita.`
       )
-        return false;
-
-      // Time range filter
-      const now = new Date();
-      const logTime = new Date(log.timestamp);
-      const timeDiff = now.getTime() - logTime.getTime();
-
-      switch (filters.timeRange) {
-        case '1h':
-          return timeDiff <= 60 * 60 * 1000;
-        case '24h':
-          return timeDiff <= 24 * 60 * 60 * 1000;
-        case '7d':
-          return timeDiff <= 7 * 24 * 60 * 60 * 1000;
-        case '30d':
-          return timeDiff <= 30 * 24 * 60 * 60 * 1000;
-        default:
-          return true;
+    ) {
+      try {
+        await deleteLogs(Array.from(selectedLogs));
+        toast.success(`${selectedLogs.size} logs deletados com sucesso!`);
+        setBulkActionOpen(false);
+      } catch (error) {
+        toast.error('Erro ao deletar logs');
       }
-    });
+    }
   };
 
-  const handleExportLogs = () => {
-    const selectedLogData =
-      selectedLogs.size > 0
-        ? logs.filter((log) => selectedLogs.has(log.id))
-        : filterLogs(logs);
-
-    const csvContent = [
-      'Timestamp,Level,Category,Service,Action,Message,User,IP,Status',
-      ...selectedLogData.map(
-        (log) =>
-          `${log.timestamp.toISOString()},${log.level},${log.category},${
-            log.service
-          },${log.action},"${log.message}",${log.userName || ''},${
-            log.ipAddress || ''
-          },${log.statusCode || ''}`
-      ),
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `logs_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const handleRefresh = async () => {
+    try {
+      await refreshLogs();
+      toast.success('Logs atualizados com sucesso!');
+    } catch (error) {
+      toast.error('Erro ao atualizar logs');
+    }
   };
 
-  const renderSystemLogs = () => {
-    const filteredLogs = filterLogs(logs);
+  const getIconComponent = (iconName: string) => {
+    const iconMap: Record<string, any> = {
+      FiAlertTriangle,
+      FiInfo,
+      FiSettings,
+      FiActivity,
+      FiCheckCircle,
+      FiServer,
+      FiShield,
+      FiFileText,
+      FiUser,
+      FiDatabase,
+    };
+    return iconMap[iconName] || FiInfo;
+  };
 
-    return (
-      <div className="space-y-6">
-        {/* Filters */}
-        <div className="flex flex-wrap items-center gap-4 p-4 bg-theme-secondary rounded-xl">
-          <div className="relative flex-1 min-w-64">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Buscar nos logs..."
-              value={filters.search}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, search: e.target.value }))
-              }
-              className="input-classical-2 pl-10 w-full"
-            />
-          </div>
+  const filteredLogs = getFilteredLogs();
 
-          <Select
-            value={filters.level}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, level: e.target.value }))
-            }
-            options={[
-              { value: 'all', label: 'Todos os Níveis' },
-              { value: 'error', label: 'Errors' },
-              { value: 'warn', label: 'Warnings' },
-              { value: 'info', label: 'Info' },
-              { value: 'debug', label: 'Debug' },
-            ]}
-            className="input-classical-2"
+  const renderSystemLogs = () => (
+    <div className="space-y-6">
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-4 p-4 bg-theme-secondary rounded-xl">
+        <div className="relative flex-1 min-w-64">
+          <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
+          <input
+            type="text"
+            placeholder="Buscar nos logs..."
+            value={filters.search}
+            onChange={(e) => setFilters({ search: e.target.value })}
+            className="input-classical-2 pl-10 w-full"
           />
-
-          <Select
-            value={filters.category}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, category: e.target.value }))
-            }
-            options={[
-              { value: 'all', label: 'Todas as Categorias' },
-              { value: 'system', label: 'Sistema' },
-              { value: 'security', label: 'Segurança' },
-              { value: 'audit', label: 'Auditoria' },
-              { value: 'performance', label: 'Performance' },
-              { value: 'user', label: 'Usuário' },
-              { value: 'api', label: 'API' },
-            ]}
-            className="input-classical-2"
-          />
-
-          <Select
-            value={filters.timeRange}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, timeRange: e.target.value }))
-            }
-            options={[
-              { value: '1h', label: 'Última hora' },
-              { value: '24h', label: 'Últimas 24h' },
-              { value: '7d', label: 'Últimos 7 dias' },
-              { value: '30d', label: 'Últimos 30 dias' },
-              { value: 'all', label: 'Todos' },
-            ]}
-            className="input-classical-2"
-          />
-
-          <Button
-            variant="secondary"
-            size="sm"
-            leftIcon={<FiDownload />}
-            onClick={handleExportLogs}
-          >
-            Exportar
-          </Button>
         </div>
 
-        {/* Selection Actions */}
-        {selectedLogs.size > 0 && (
-          <div className="flex items-center justify-between p-4 bg-accent-blue/10 border border-accent-blue rounded-xl">
-            <span className="text-accent-blue font-medium">
-              {selectedLogs.size} logs selecionados
-            </span>
-            <div className="flex items-center space-x-2">
-              <Button variant="secondary" size="sm" leftIcon={<FiArchive />}>
-                Arquivar
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                leftIcon={<FiTrash2 />}
-                className="text-accent-red hover:bg-accent-red/10"
-              >
-                Deletar
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSelectedLogs(new Set())}
-              >
-                Limpar Seleção
-              </Button>
-            </div>
-          </div>
-        )}
+        <Select
+          value={filters.level}
+          onChange={(e) => setFilters({ level: e.target.value })}
+          options={[
+            { value: 'all', label: 'Todos os Níveis' },
+            { value: 'error', label: 'Errors' },
+            { value: 'warn', label: 'Warnings' },
+            { value: 'info', label: 'Info' },
+            { value: 'debug', label: 'Debug' },
+            { value: 'trace', label: 'Trace' },
+          ]}
+          className="input-classical-2"
+        />
 
-        {/* Logs List */}
+        <Select
+          value={filters.category}
+          onChange={(e) => setFilters({ category: e.target.value })}
+          options={[
+            { value: 'all', label: 'Todas as Categorias' },
+            { value: 'system', label: 'Sistema' },
+            { value: 'security', label: 'Segurança' },
+            { value: 'audit', label: 'Auditoria' },
+            { value: 'performance', label: 'Performance' },
+            { value: 'user', label: 'Usuário' },
+            { value: 'api', label: 'API' },
+          ]}
+          className="input-classical-2"
+        />
+
+        <Select
+          value={filters.timeRange}
+          onChange={(e) => setFilters({ timeRange: e.target.value })}
+          options={[
+            { value: '1h', label: 'Última hora' },
+            { value: '24h', label: 'Últimas 24h' },
+            { value: '7d', label: 'Últimos 7 dias' },
+            { value: '30d', label: 'Últimos 30 dias' },
+            { value: 'all', label: 'Todos' },
+          ]}
+          className="input-classical-2"
+        />
+
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            leftIcon={<FiRefreshCw className={loading ? 'animate-spin' : ''} />}
+            onClick={handleRefresh}
+            disabled={loading}
+          >
+            {loading ? 'Atualizando...' : 'Atualizar'}
+          </Button>
+
+          <div className="relative">
+            <Button
+              variant="secondary"
+              size="sm"
+              leftIcon={<FiDownload />}
+              onClick={() => setBulkActionOpen(!bulkActionOpen)}
+            >
+              Exportar
+            </Button>
+
+            {bulkActionOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-theme-elevated border border-theme-secondary rounded-xl shadow-lg z-10">
+                <div className="p-2">
+                  <button
+                    onClick={() => handleExportLogs('csv')}
+                    className="w-full text-left px-3 py-2 text-sm text-theme-primary hover:bg-theme-secondary rounded-lg"
+                  >
+                    Exportar como CSV
+                  </button>
+                  <button
+                    onClick={() => handleExportLogs('json')}
+                    className="w-full text-left px-3 py-2 text-sm text-theme-primary hover:bg-theme-secondary rounded-lg"
+                  >
+                    Exportar como JSON
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Selection Actions */}
+      {selectedLogs.size > 0 && (
+        <div className="flex items-center justify-between p-4 bg-accent-blue/10 border border-accent-blue rounded-xl">
+          <span className="text-accent-blue font-medium">
+            {selectedLogs.size} logs selecionados
+          </span>
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              leftIcon={<FiArchive />}
+              onClick={handleBulkArchive}
+              disabled={loading}
+            >
+              Arquivar
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              leftIcon={<FiTrash2 />}
+              className="text-accent-red hover:bg-accent-red/10"
+              onClick={handleBulkDelete}
+              disabled={loading}
+            >
+              Deletar
+            </Button>
+            <Button variant="ghost" size="sm" onClick={clearSelection}>
+              Limpar Seleção
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Bulk Selection */}
+      {filteredLogs.length > 0 && (
+        <div className="flex items-center justify-between p-3 bg-theme-secondary/50 rounded-lg">
+          <div className="flex items-center space-x-3">
+            <input
+              type="checkbox"
+              checked={
+                selectedLogs.size === filteredLogs.length &&
+                filteredLogs.length > 0
+              }
+              onChange={(e) => {
+                if (e.target.checked) {
+                  selectAllLogs();
+                } else {
+                  clearSelection();
+                }
+              }}
+              className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2"
+            />
+            <span className="text-sm text-theme-primary font-medium">
+              Selecionar todos os logs visíveis ({filteredLogs.length})
+            </span>
+          </div>
+
+          <div className="text-sm text-theme-tertiary">
+            Mostrando {filteredLogs.length} de {pagination.total} logs
+          </div>
+        </div>
+      )}
+
+      {/* Logs List */}
+      {loading && filteredLogs.length === 0 ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <LoadingSpinner size="lg" />
+            <p className="text-theme-primary font-medium mt-4">
+              Carregando logs...
+            </p>
+          </div>
+        </div>
+      ) : filteredLogs.length === 0 ? (
+        <div className="text-center py-12">
+          <FiFileText className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-theme-primary mb-2">
+            Nenhum log encontrado
+          </h3>
+          <p className="text-theme-secondary">
+            Ajuste os filtros para encontrar os logs desejados.
+          </p>
+        </div>
+      ) : (
         <div className="space-y-3">
           {filteredLogs.map((log) => {
-            const LevelIcon = getLevelIcon(log.level);
-            const CategoryIcon = getCategoryIcon(log.category);
+            const LevelIcon = getIconComponent(getLevelIcon(log.level));
+            const CategoryIcon = getIconComponent(
+              getCategoryIcon(log.category)
+            );
 
             return (
               <div
@@ -556,15 +337,7 @@ export default function LogsAudit() {
                   <input
                     type="checkbox"
                     checked={selectedLogs.has(log.id)}
-                    onChange={(e) => {
-                      const newSelected = new Set(selectedLogs);
-                      if (e.target.checked) {
-                        newSelected.add(log.id);
-                      } else {
-                        newSelected.delete(log.id);
-                      }
-                      setSelectedLogs(newSelected);
-                    }}
+                    onChange={() => toggleLogSelection(log.id)}
                     className="w-4 h-4 text-brand-primary bg-theme-secondary border-theme-primary rounded focus:ring-brand-primary focus:ring-2 mt-1"
                   />
 
@@ -593,11 +366,11 @@ export default function LogsAudit() {
                         {log.service}
                       </span>
                       <span className="text-xs text-theme-tertiary">
-                        {log.timestamp.toLocaleString('pt-BR')}
+                        {getRelativeTime(log.timestamp)}
                       </span>
                       {log.traceId && (
-                        <span className="text-xs text-theme-tertiary font-mono">
-                          {log.traceId}
+                        <span className="text-xs text-theme-tertiary font-mono bg-theme-primary px-1 rounded">
+                          {log.traceId.slice(0, 8)}
                         </span>
                       )}
                     </div>
@@ -609,6 +382,7 @@ export default function LogsAudit() {
                     <div className="flex flex-wrap items-center gap-4 text-sm text-theme-secondary">
                       {log.userName && <span>Usuário: {log.userName}</span>}
                       {log.ipAddress && <span>IP: {log.ipAddress}</span>}
+                      {log.endpoint && <span>Endpoint: {log.endpoint}</span>}
                       {log.statusCode && (
                         <span
                           className={
@@ -639,43 +413,61 @@ export default function LogsAudit() {
 
                     {log.details && showDetails === log.id && (
                       <div className="mt-3 p-3 bg-theme-primary rounded-lg">
-                        <pre className="text-xs text-theme-secondary font-mono overflow-x-auto">
+                        <pre className="text-xs text-theme-secondary font-mono overflow-x-auto whitespace-pre-wrap">
                           {JSON.stringify(log.details, null, 2)}
                         </pre>
                       </div>
                     )}
                   </div>
 
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    leftIcon={<FiEye />}
-                    onClick={() =>
-                      setShowDetails(showDetails === log.id ? null : log.id)
-                    }
-                  >
-                    {showDetails === log.id ? 'Ocultar' : 'Detalhes'}
-                  </Button>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      leftIcon={<FiEye />}
+                      onClick={() =>
+                        setShowDetails(showDetails === log.id ? null : log.id)
+                      }
+                    >
+                      {showDetails === log.id ? 'Ocultar' : 'Detalhes'}
+                    </Button>
+
+                    <div className="relative">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        leftIcon={<FiMoreVertical />}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             );
           })}
-        </div>
 
-        {filteredLogs.length === 0 && (
-          <div className="text-center py-12">
-            <FiFileText className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-theme-primary mb-2">
-              Nenhum log encontrado
-            </h3>
-            <p className="text-theme-secondary">
-              Ajuste os filtros para encontrar os logs desejados.
-            </p>
-          </div>
-        )}
-      </div>
-    );
-  };
+          {/* Load More Button */}
+          {pagination.hasMore && (
+            <div className="text-center pt-6">
+              <Button
+                variant="secondary"
+                onClick={loadMoreLogs}
+                disabled={loading}
+                leftIcon={
+                  loading ? <FiRefreshCw className="animate-spin" /> : undefined
+                }
+              >
+                {loading
+                  ? 'Carregando...'
+                  : `Carregar mais logs (${
+                      pagination.total - filteredLogs.length
+                    } restantes)`}
+              </Button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
 
   const renderAuditEvents = () => (
     <div className="space-y-6">
@@ -688,106 +480,126 @@ export default function LogsAudit() {
             type="text"
             placeholder="Filtrar por usuário..."
             value={filters.userId}
-            onChange={(e) =>
-              setFilters((prev) => ({ ...prev, userId: e.target.value }))
-            }
+            onChange={(e) => setFilters({ userId: e.target.value })}
             className="input-classical-2"
           />
-          <Button variant="secondary" size="sm" leftIcon={<FiDownload />}>
+          <Button
+            variant="secondary"
+            size="sm"
+            leftIcon={<FiDownload />}
+            onClick={() => handleExportLogs('json')}
+          >
             Exportar Auditoria
           </Button>
         </div>
       </div>
 
-      <div className="space-y-3">
-        {auditEvents.map((event) => (
-          <div key={event.id} className="p-4 bg-theme-secondary rounded-xl">
-            <div className="flex items-start space-x-4">
-              <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                  event.success
-                    ? 'text-accent-green bg-accent-green/10'
-                    : 'text-accent-red bg-accent-red/10'
-                }`}
-              >
-                {event.success ? (
-                  <FiCheckCircle className="w-5 h-5" />
-                ) : (
-                  <FiX className="w-5 h-5" />
-                )}
-              </div>
-
-              <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <h4 className="font-medium text-theme-primary">
-                    {event.action}
-                  </h4>
-                  <span className="text-sm text-theme-tertiary">
-                    {event.resource}{' '}
-                    {event.resourceId && `(${event.resourceId})`}
-                  </span>
-                  <span className="text-xs text-theme-tertiary">
-                    {event.timestamp.toLocaleString('pt-BR')}
-                  </span>
+      {auditEvents.length === 0 ? (
+        <div className="text-center py-12">
+          <FiShield className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-theme-primary mb-2">
+            Nenhum evento de auditoria
+          </h3>
+          <p className="text-theme-secondary">
+            Eventos de auditoria aparecerão aqui conforme as atividades do
+            sistema.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {auditEvents.map((event) => (
+            <div key={event.id} className="p-4 bg-theme-secondary rounded-xl">
+              <div className="flex items-start space-x-4">
+                <div
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                    event.success
+                      ? 'text-accent-green bg-accent-green/10'
+                      : 'text-accent-red bg-accent-red/10'
+                  }`}
+                >
+                  {event.success ? (
+                    <FiCheckCircle className="w-5 h-5" />
+                  ) : (
+                    <FiX className="w-5 h-5" />
+                  )}
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-theme-secondary mb-3">
-                  <div>Usuário: {event.userName}</div>
-                  <div>Sessão: {event.sessionId.slice(0, 8)}...</div>
-                  <div>Status: {event.success ? 'Sucesso' : 'Falha'}</div>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h4 className="font-medium text-theme-primary">
+                      {event.action
+                        .replace(/_/g, ' ')
+                        .replace(/\b\w/g, (l) => l.toUpperCase())}
+                    </h4>
+                    <span className="text-sm text-theme-tertiary">
+                      {event.resource}{' '}
+                      {event.resourceId &&
+                        `(${event.resourceId.slice(0, 8)}...)`}
+                    </span>
+                    <span className="text-xs text-theme-tertiary">
+                      {formatTimestamp(new Date(event.timestamp))}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-theme-secondary mb-3">
+                    <div>Usuário: {event.userName}</div>
+                    <div>Sessão: {event.sessionId.slice(0, 8)}...</div>
+                    <div>IP: {event.ipAddress}</div>
+                    <div>Status: {event.success ? 'Sucesso' : 'Falha'}</div>
+                  </div>
+
+                  {event.changes && (
+                    <div className="grid grid-cols-2 gap-4 mt-3">
+                      <div>
+                        <p className="text-xs font-medium text-theme-primary mb-1">
+                          Antes:
+                        </p>
+                        <pre className="text-xs text-theme-secondary bg-theme-primary p-2 rounded overflow-x-auto">
+                          {JSON.stringify(event.changes.before, null, 2)}
+                        </pre>
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-theme-primary mb-1">
+                          Depois:
+                        </p>
+                        <pre className="text-xs text-theme-secondary bg-theme-primary p-2 rounded overflow-x-auto">
+                          {JSON.stringify(event.changes.after, null, 2)}
+                        </pre>
+                      </div>
+                    </div>
+                  )}
+
+                  {event.metadata && (
+                    <div className="mt-3">
+                      <p className="text-xs font-medium text-theme-primary mb-1">
+                        Metadata:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {Object.entries(event.metadata).map(([key, value]) => (
+                          <span
+                            key={key}
+                            className="text-xs bg-theme-primary px-2 py-1 rounded text-theme-secondary"
+                          >
+                            {key}: {String(value)}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {event.errorMessage && (
+                    <div className="mt-3 p-2 bg-accent-red/10 border border-accent-red rounded">
+                      <p className="text-sm text-accent-red">
+                        {event.errorMessage}
+                      </p>
+                    </div>
+                  )}
                 </div>
-
-                {event.changes && (
-                  <div className="grid grid-cols-2 gap-4 mt-3">
-                    <div>
-                      <p className="text-xs font-medium text-theme-primary mb-1">
-                        Antes:
-                      </p>
-                      <pre className="text-xs text-theme-secondary bg-theme-primary p-2 rounded">
-                        {JSON.stringify(event.changes.before, null, 2)}
-                      </pre>
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium text-theme-primary mb-1">
-                        Depois:
-                      </p>
-                      <pre className="text-xs text-theme-secondary bg-theme-primary p-2 rounded">
-                        {JSON.stringify(event.changes.after, null, 2)}
-                      </pre>
-                    </div>
-                  </div>
-                )}
-
-                {event.metadata && (
-                  <div className="mt-3">
-                    <p className="text-xs font-medium text-theme-primary mb-1">
-                      Metadata:
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {Object.entries(event.metadata).map(([key, value]) => (
-                        <span
-                          key={key}
-                          className="text-xs bg-theme-primary px-2 py-1 rounded text-theme-secondary"
-                        >
-                          {key}: {String(value)}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {event.errorMessage && (
-                  <div className="mt-3 p-2 bg-accent-red/10 border border-accent-red rounded">
-                    <p className="text-sm text-accent-red">
-                      {event.errorMessage}
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 
@@ -797,113 +609,185 @@ export default function LogsAudit() {
         Estatísticas dos Logs
       </h3>
 
-      {/* Overview Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard
-          title="Total de Logs"
-          value={stats?.total || 0}
-          change={{ value: 15.2, isPositive: true }}
-          icon={FiFileText}
-          color="#3B82F6"
-        />
-
-        <MetricCard
-          title="Logs (24h)"
-          value={stats?.last24h || 0}
-          change={{ value: 8.7, isPositive: true }}
-          icon={FiClock}
-          color="#10B981"
-        />
-
-        <MetricCard
-          title="Taxa de Erro"
-          value={`${stats?.errorRate.toFixed(1)}%`}
-          change={{ value: -2.3, isPositive: true }}
-          icon={FiAlertTriangle}
-          color="#F59E0B"
-        />
-
-        <MetricCard
-          title="Tempo Médio"
-          value={`${stats?.performanceMetrics.avgResponseTime}ms`}
-          change={{ value: -12.1, isPositive: true }}
-          icon={FiActivity}
-          color="#8B5CF6"
-        />
-      </div>
-
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <AnimatedCard className="classical-card p-6">
-          <AdminBarChart
-            data={Object.entries(stats?.byLevel || {}).map(
-              ([level, count]) => ({
-                name: level.toUpperCase(),
-                value: count,
-              })
-            )}
-            title="Logs por Nível"
-            subtitle="Distribuição dos logs por severidade"
-            color="#3B82F6"
-            height={300}
-          />
-        </AnimatedCard>
-
-        <AnimatedCard className="classical-card p-6">
-          <AdminBarChart
-            data={Object.entries(stats?.byCategory || {}).map(
-              ([category, count]) => ({
-                name: category,
-                value: count,
-              })
-            )}
-            title="Logs por Categoria"
-            subtitle="Distribuição dos logs por categoria"
-            color="#10B981"
-            height={300}
-          />
-        </AnimatedCard>
-      </div>
-
-      {/* Top Errors */}
-      <AnimatedCard className="classical-card p-6">
-        <h4 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
-          <FiTarget className="w-5 h-5 text-accent-red" />
-          <span>Principais Erros</span>
-        </h4>
-
-        <div className="space-y-3">
-          {stats?.topErrors.map((error, index) => (
-            <div
-              key={index}
-              className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
-            >
-              <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-amber rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
-                {index + 1}
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-theme-primary">
-                  {error.message}
-                </p>
-                <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
-                  <span>{error.count} ocorrências</span>
-                  <span>Último: {error.lastSeen.toLocaleString('pt-BR')}</span>
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                leftIcon={<FiSearch />}
-                onClick={() =>
-                  setFilters((prev) => ({ ...prev, search: error.message }))
-                }
-              >
-                Buscar
-              </Button>
-            </div>
-          ))}
+      {!stats ? (
+        <div className="text-center py-12">
+          <LoadingSpinner size="lg" />
+          <p className="text-theme-primary font-medium mt-4">
+            Calculando estatísticas...
+          </p>
         </div>
-      </AnimatedCard>
+      ) : (
+        <>
+          {/* Overview Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <MetricCard
+              title="Total de Logs"
+              value={formatNumber(stats.total)}
+              change={{ value: 15.2, isPositive: true }}
+              icon={FiFileText}
+              color="#3B82F6"
+            />
+
+            <MetricCard
+              title="Logs (24h)"
+              value={formatNumber(stats.last24h)}
+              change={{ value: 8.7, isPositive: true }}
+              icon={FiClock}
+              color="#10B981"
+            />
+
+            <MetricCard
+              title="Taxa de Erro"
+              value={`${stats.errorRate.toFixed(1)}%`}
+              change={{ value: -2.3, isPositive: true }}
+              icon={FiAlertTriangle}
+              color="#F59E0B"
+            />
+
+            <MetricCard
+              title="Tempo Médio"
+              value={`${stats.performanceMetrics.avgResponseTime}ms`}
+              change={{ value: -12.1, isPositive: true }}
+              icon={FiActivity}
+              color="#8B5CF6"
+            />
+          </div>
+
+          {/* Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <AnimatedCard className="classical-card p-6">
+              <AdminBarChart
+                data={Object.entries(stats.byLevel).map(([level, count]) => ({
+                  name: level.toUpperCase(),
+                  value: count,
+                }))}
+                title="Logs por Nível"
+                subtitle="Distribuição dos logs por severidade"
+                color="#3B82F6"
+                height={300}
+              />
+            </AnimatedCard>
+
+            <AnimatedCard className="classical-card p-6">
+              <AdminBarChart
+                data={Object.entries(stats.byCategory).map(
+                  ([category, count]) => ({
+                    name: category.charAt(0).toUpperCase() + category.slice(1),
+                    value: count,
+                  })
+                )}
+                title="Logs por Categoria"
+                subtitle="Distribuição dos logs por categoria"
+                color="#10B981"
+                height={300}
+              />
+            </AnimatedCard>
+          </div>
+
+          {/* Activity by Hour */}
+          <AnimatedCard className="classical-card p-6">
+            <AdminBarChart
+              data={stats.activityByHour.map(({ hour, count }) => ({
+                name: `${hour.toString().padStart(2, '0')}h`,
+                value: count,
+              }))}
+              title="Atividade por Hora"
+              subtitle="Distribuição dos logs ao longo do dia"
+              color="#8B5CF6"
+              height={250}
+            />
+          </AnimatedCard>
+
+          {/* Top Errors */}
+          <AnimatedCard className="classical-card p-6">
+            <h4 className="text-lg font-bold text-theme-primary mb-4 flex items-center space-x-2">
+              <FiTarget className="w-5 h-5 text-accent-red" />
+              <span>Principais Erros</span>
+            </h4>
+
+            {stats.topErrors.length === 0 ? (
+              <div className="text-center py-8">
+                <FiCheckCircle className="w-12 h-12 text-accent-green mx-auto mb-4" />
+                <p className="text-theme-secondary">
+                  Nenhum erro frequente detectado!
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {stats.topErrors.map((error, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-3 p-3 bg-theme-secondary rounded-xl"
+                  >
+                    <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-amber rounded-lg flex items-center justify-center text-sm font-bold text-theme-primary">
+                      {index + 1}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-medium text-theme-primary">
+                        {error.message}
+                      </p>
+                      <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
+                        <span>{error.count} ocorrências</span>
+                        <span>Último: {getRelativeTime(error.lastSeen)}</span>
+                        <span
+                          className={`px-2 py-1 rounded text-xs ${getLevelColor(
+                            error.level
+                          )}`}
+                        >
+                          {error.level.toUpperCase()}
+                        </span>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      leftIcon={<FiSearch />}
+                      onClick={() =>
+                        setFilters({ search: error.message.slice(0, 20) })
+                      }
+                    >
+                      Buscar
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </AnimatedCard>
+
+          {/* Performance Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <AnimatedCard className="classical-card p-6 text-center">
+              <div className="text-3xl font-bold text-accent-blue mb-2">
+                {formatNumber(stats.performanceMetrics.slowQueries)}
+              </div>
+              <div className="text-theme-tertiary">Consultas Lentas</div>
+              <div className="text-xs text-theme-secondary mt-1">
+                Acima de 1000ms
+              </div>
+            </AnimatedCard>
+
+            <AnimatedCard className="classical-card p-6 text-center">
+              <div className="text-3xl font-bold text-accent-amber mb-2">
+                {formatNumber(stats.performanceMetrics.failedRequests)}
+              </div>
+              <div className="text-theme-tertiary">Requisições Falhadas</div>
+              <div className="text-xs text-theme-secondary mt-1">
+                Status 4xx/5xx
+              </div>
+            </AnimatedCard>
+
+            <AnimatedCard className="classical-card p-6 text-center">
+              <div className="text-3xl font-bold text-accent-green mb-2">
+                {stats.performanceMetrics.avgResponseTime}ms
+              </div>
+              <div className="text-theme-tertiary">Tempo Médio</div>
+              <div className="text-xs text-theme-secondary mt-1">
+                Todas as requisições
+              </div>
+            </AnimatedCard>
+          </div>
+        </>
+      )}
     </div>
   );
 
@@ -912,6 +796,39 @@ export default function LogsAudit() {
     { id: 'audit', label: 'Auditoria', icon: FiShield },
     { id: 'stats', label: 'Estatísticas', icon: FiBarChart2 },
   ];
+
+  if (error) {
+    return (
+      <PageContainer showBackground={true}>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <AnimatedCard className="classical-card p-8 text-center max-w-md">
+            <div className="w-16 h-16 bg-gradient-to-br from-accent-red to-accent-amber rounded-3xl flex items-center justify-center mx-auto mb-4">
+              <FiAlertTriangle className="w-8 h-8 text-theme-primary" />
+            </div>
+            <h3 className="text-xl font-bold text-theme-primary mb-2">
+              Erro ao Carregar Logs
+            </h3>
+            <p className="text-theme-secondary mb-4">{error}</p>
+            <Button
+              variant="primary"
+              onClick={handleRefresh}
+              leftIcon={<FiRefreshCw />}
+            >
+              Tentar Novamente
+            </Button>
+          </AnimatedCard>
+        </div>
+      </PageContainer>
+    );
+  }
+
+  if (loading) {
+    return (
+      <PageContainer showBackground>
+        <LoadingAdminState loadingName="logs" />
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer showBackground={true}>
@@ -927,9 +844,47 @@ export default function LogsAudit() {
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Logs & Auditoria
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
-              Monitoramento e rastreamento de atividades
+            <p className="text-xl text-theme-secondary classical-subtitle mb-6">
+              Monitoramento completo de atividades do sistema
             </p>
+
+            {/* Status Summary */}
+            {stats && (
+              <div className="flex items-center justify-center space-x-8 mt-6">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-theme-primary">
+                    {formatNumber(stats.total)}
+                  </div>
+                  <div className="text-sm text-theme-tertiary">
+                    Total de Logs
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <div
+                    className={`text-2xl font-bold ${
+                      stats.errorRate < 5
+                        ? 'text-accent-green'
+                        : stats.errorRate < 15
+                        ? 'text-accent-amber'
+                        : 'text-accent-red'
+                    }`}
+                  >
+                    {stats.errorRate.toFixed(1)}%
+                  </div>
+                  <div className="text-sm text-theme-tertiary">
+                    Taxa de Erro
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-accent-blue">
+                    {formatNumber(stats.last24h)}
+                  </div>
+                  <div className="text-sm text-theme-tertiary">Últimas 24h</div>
+                </div>
+              </div>
+            )}
           </div>
         </AnimatedItem>
 

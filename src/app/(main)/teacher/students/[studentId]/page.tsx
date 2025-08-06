@@ -20,8 +20,12 @@ export const metadata: Metadata = {
   },
 };
 
+interface ComposerParams {
+  studentId: string;
+}
+
 interface TeacherStudentDetailPageProps {
-  params: { studentId: string };
+  params: Promise<ComposerParams>;
 }
 
 export default async function TeacherStudentDetailPage({
@@ -29,6 +33,7 @@ export default async function TeacherStudentDetailPage({
 }: TeacherStudentDetailPageProps) {
   const session = await getServerSession(authOptions);
 
+  const paramsId = await params;
   // Verificar se está logado
   if (!session?.user?.id) {
     return notFound();
@@ -74,7 +79,7 @@ export default async function TeacherStudentDetailPage({
 
   return (
     <TeacherStudentDetailPageServer
-      studentId={params.studentId}
+      studentId={paramsId.studentId}
       userId={session.user.id}
       userEmail={session.user.email || ''}
       userName={`${session.user.firstName || ''} ${
