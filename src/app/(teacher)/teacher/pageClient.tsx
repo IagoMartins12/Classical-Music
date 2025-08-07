@@ -459,6 +459,63 @@ export default function TeacherPageClient({
                       </div>
                     </div>
                   </Link>
+
+                  <Link
+                    href="/teacher/assignments"
+                    className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <FiCalendar className="w-4 h-4 text-theme-primary" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
+                          Adicionar lições
+                        </div>
+                        <div className="text-sm text-theme-tertiary">
+                          Passe lições de casa para alunos.
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href="/teacher/profile"
+                    className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <FiCalendar className="w-4 h-4 text-theme-primary" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
+                          Ver perfil
+                        </div>
+                        <div className="text-sm text-theme-tertiary">
+                          Veja e altere dados do seu perfil.
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <Link
+                    href="/teacher/reviews"
+                    className="classical-card-2 p-4 text-left hover:border-brand-primary transition-all group"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <FiCalendar className="w-4 h-4 text-theme-primary" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
+                          Reviews
+                        </div>
+                        <div className="text-sm text-theme-tertiary">
+                          Veja seus reviews.
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
               </AnimatedCard>
             </AnimatedItem>

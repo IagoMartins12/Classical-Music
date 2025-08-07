@@ -1,29 +1,31 @@
+// app/teacher/profile/page.tsx - Página do Perfil do Professor
+
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
-import { notFound } from 'next/navigation';
-import TeacherCalendarPageServer from './pageServer';
+import TeacherProfilePageServer from './pageServer';
+import NotFound from '@/app/not-found';
 
 export const metadata: Metadata = {
-  title: 'Calendário de Aulas | Professor - Opus Atlas',
+  title: 'Meu Perfil | Professor - Opus Atlas',
   description:
-    'Visualize e gerencie sua agenda de aulas, horários disponíveis e cronograma de ensino',
+    'Gerencie seu perfil de professor, especialidades, experiência e configurações de ensino',
   keywords:
-    'calendário professor, agenda de aulas, horários, cronograma musical, gestão de tempo',
+    'perfil professor, especialidades musicais, experiência, configurações ensino, dados pessoais',
   openGraph: {
-    title: 'Calendário do Professor - Opus Atlas',
+    title: 'Perfil do Professor - Opus Atlas',
     description:
-      'Organize sua agenda de aulas e gerencie seu tempo de ensino de forma eficiente',
+      'Configure seu perfil profissional e destaque suas especialidades musicais',
     type: 'website',
   },
 };
 
-export default async function TeacherCalendarPage() {
+export default async function TeacherProfilePage() {
   const session = await getServerSession(authOptions);
 
   // Verificar se está logado
   if (!session?.user?.id) {
-    return notFound();
+    return <NotFound />;
   }
 
   // Verificar se tem role de professor (role 1)
@@ -64,15 +66,5 @@ export default async function TeacherCalendarPage() {
     );
   }
 
-  return (
-    <TeacherCalendarPageServer
-      userId={session.user.id}
-      userEmail={session.user.email || ''}
-      userName={`${session.user.firstName || ''} ${
-        session.user.lastName || ''
-      }`.trim()}
-      userImage={session.user.image}
-      userRole={session.user.role}
-    />
-  );
+  return <TeacherProfilePageServer />;
 }

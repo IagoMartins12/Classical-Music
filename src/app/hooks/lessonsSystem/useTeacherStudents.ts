@@ -1,6 +1,6 @@
 // app/hooks/useTeacherStudents.ts - Hook específico para gestão de alunos
 
-import { TeacherStudentsServerData } from '@/app/(main)/teacher/students/pageServer';
+import { TeacherStudentsServerData } from '@/app/(teacher)/teacher/students/pageServer';
 import {
   addStudentAPI,
   searchStudentsData,

@@ -1,6 +1,6 @@
 // app/hooks/useStudentProfile.ts - Hook para gerenciar perfil do aluno
 
-import { StudentProfileData } from '@/app/(main)/student/profile/pageServer';
+import { StudentProfileData } from '@/app/(student)/student/profile/pageServer';
 import { useState, useCallback } from 'react';
 
 interface UpdateProfileData {

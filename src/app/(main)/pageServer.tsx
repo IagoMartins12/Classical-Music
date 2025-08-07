@@ -1,4 +1,4 @@
-// app/page.tsx - Enhanced Home Page
+// app/pageServer.tsx - Enhanced Home Page
 import HeroMainPage from '../components/HeroMainPage';
 import PopularComposers from '../components/PopularComposers';
 import EssentialComposers from '../components/EssentialComposers';

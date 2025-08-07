@@ -1,6 +1,6 @@
 // app/hooks/lessonsSystem/useStudentAssignments.ts - Hook para gerenciar tarefas do aluno
 
-import { StudentAssignmentsData } from '@/app/(main)/student/assignments/pageServer';
+import { StudentAssignmentsData } from '@/app/(student)/student/assignments/pageServer';
 import { useState, useCallback } from 'react';
 
 interface UseStudentAssignmentsState {

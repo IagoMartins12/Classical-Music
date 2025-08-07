@@ -1,9 +1,6 @@
 // app/teacher/assignments/[id]/edit/pageServer.tsx - Server Component para Editar Tarefa
 
-import {
-  getTeacherStudentsData,
-  getTeacherLessonsData,
-} from '@/app/requests/teacher-request';
+import { getTeacherAssignmentEditData } from '@/app/requests/teacher-request';
 import EditAssignmentPageClient from './pageClient';
 
 export interface EditAssignmentData {
@@ -98,53 +95,24 @@ export default async function EditAssignmentPageServer({
   );
 
   try {
-    // Buscar dados do assignment via API interna
-    const assignmentResponse = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/assignments/${assignmentId}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          // TODO: Adicionar headers de autenticação se necessário
-        },
-      }
+    // Buscar dados da tarefa diretamente do banco
+    const assignmentData = await getTeacherAssignmentEditData(
+      assignmentId,
+      userId
     );
 
-    if (!assignmentResponse.ok) {
-      if (assignmentResponse.status === 404) {
-        throw new Error('Tarefa não encontrada');
-      } else if (assignmentResponse.status === 403) {
-        throw new Error('Acesso negado');
-      } else {
-        throw new Error('Falha ao carregar tarefa');
-      }
-    }
-
-    const assignmentData = await assignmentResponse.json();
-
-    if (!assignmentData.success || !assignmentData.assignment) {
-      throw new Error('Dados da tarefa inválidos');
-    }
-
-    const assignment = assignmentData.assignment;
-
-    // Buscar dados dos alunos para possível troca
-    const studentsData = await getTeacherStudentsData(userId, 'active', 100, 0);
-
-    if (!studentsData || !studentsData.success) {
-      console.warn(
-        '⚠️ [EDIT-ASSIGNMENT-PAGE-SERVER] Could not load students data'
+    if (
+      !assignmentData ||
+      !assignmentData.success ||
+      !assignmentData.assignment
+    ) {
+      throw new Error(
+        assignmentData?.error || 'Falha ao carregar dados da tarefa'
       );
     }
 
-    // Preparar lista de alunos
-    const students =
-      studentsData?.students?.map((studentRel) => ({
-        id: studentRel.student.id,
-        name: studentRel.student.name,
-        image: studentRel.student.image,
-        level: studentRel.student.level,
-        isActive: studentRel.relationship.isActive,
-      })) || [];
+    const assignment = assignmentData.assignment;
+    const students = assignmentData.students || [];
 
     const editAssignmentData: EditAssignmentData = {
       assignment: {
@@ -153,7 +121,7 @@ export default async function EditAssignmentPageServer({
         description: assignment.description,
         type: assignment.type,
         priority: assignment.priority,
-        dueDate: assignment.dueDate ? new Date(assignment.dueDate) : null,
+        dueDate: assignment.dueDate,
         estimatedTime: assignment.estimatedTime,
         workScoreIds: assignment.workScoreIds || [],
         exercises: assignment.exercises || [],
@@ -170,8 +138,8 @@ export default async function EditAssignmentPageServer({
         lesson: assignment.lesson,
         workScores: assignment.workScores || [],
         permissions: assignment.permissions,
-        createdAt: new Date(assignment.createdAt),
-        updatedAt: new Date(assignment.updatedAt),
+        createdAt: assignment.createdAt,
+        updatedAt: assignment.updatedAt,
       },
       students,
       assignmentTypes: [
@@ -226,7 +194,7 @@ export default async function EditAssignmentPageServer({
     };
 
     console.log(
-      `✅ [EDIT-ASSIGNMENT-PAGE-SERVER] Data loaded successfully - Assignment: ${assignment.title}`
+      `✅ [EDIT-ASSIGNMENT-PAGE-SERVER] Data loaded successfully - Assignment: ${assignment.title}, Students: ${students.length}`
     );
 
     return (

@@ -1,6 +1,6 @@
 // app/hooks/useTeacherStudentDetail.ts - Hook específico para detalhes do aluno
 
-import { StudentDetailData } from '@/app/(main)/teacher/students/[studentId]/pageServer';
+import { StudentDetailData } from '@/app/(teacher)/teacher/students/[studentId]/pageServer';
 import { useState, useCallback } from 'react';
 
 interface UseTeacherStudentDetailState {

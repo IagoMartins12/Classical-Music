@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import {
   TeacherAssignmentsData,
   TeacherAssignment,
-} from '@/app/(main)/teacher/assignments/pageServer';
+} from '@/app/(teacher)/teacher/assignments/pageServer';
 
 interface UseTeacherAssignmentsState {
   assignments: TeacherAssignment[];

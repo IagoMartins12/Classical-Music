@@ -4,7 +4,7 @@ import {
   LessonData,
   LessonsStats,
   TeacherLessonsData,
-} from '@/app/(main)/teacher/lessons/pageServer';
+} from '@/app/(teacher)/teacher/lessons/pageServer';
 import { useState, useCallback } from 'react';
 
 interface UseTeacherLessonsState {

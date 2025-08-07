@@ -1,6 +1,6 @@
 // app/hooks/useStudentCalendar.ts - Hook específico para calendário do aluno
 
-import { StudentCalendarData } from '@/app/(main)/student/calendar/pageServer';
+import { StudentCalendarData } from '@/app/(student)/student/calendar/pageServer';
 import { useState, useCallback } from 'react';
 
 interface StudentCalendarEvent {

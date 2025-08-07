@@ -1,6 +1,6 @@
 // app/hooks/useLessonDetails.ts - Hook para gerenciar detalhes de aula individual
 
-import { LessonDetailsData } from '@/app/(main)/teacher/lessons/[id]/pageServer';
+import { LessonDetailsData } from '@/app/(teacher)/teacher/lessons/[id]/pageServer';
 import { useState, useCallback } from 'react';
 
 interface UseLessonDetailsState {

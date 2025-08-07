@@ -55,37 +55,6 @@ export interface TeacherProfile {
   role: number;
 }
 
-// Função para buscar detalhes da tarefa (precisa ser implementada no teacher-request.ts)
-async function getTeacherAssignmentDetailsData(
-  assignmentId: string,
-  userId: string
-): Promise<{ success: boolean; assignment?: any; error?: string }> {
-  try {
-    // Esta função deve ser implementada no teacher-request.ts
-    // Por agora, vou simular a estrutura
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/assignments/${assignmentId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          // Aqui deveria ter autenticação server-side
-        },
-      }
-    );
-
-    if (!response.ok) {
-      return { success: false, error: 'Tarefa não encontrada' };
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching assignment details:', error);
-    return { success: false, error: 'Erro ao carregar tarefa' };
-  }
-}
-
 export default async function AssignmentDetailsPageServer({
   assignmentId,
   userId,
@@ -106,21 +75,29 @@ export default async function AssignmentDetailsPageServer({
   );
 
   try {
-    // Buscar detalhes da tarefa
+    // Buscar detalhes da tarefa diretamente do banco
     const assignmentData = await getTeacherAssignmentDetailsData(
       assignmentId,
-      userId
+      userId,
+      userRole
     );
 
-    if (!assignmentData || !assignmentData.success) {
-      throw new Error('Tarefa não encontrada ou sem permissão de acesso');
+    if (
+      !assignmentData ||
+      !assignmentData.success ||
+      !assignmentData.assignment
+    ) {
+      throw new Error(
+        assignmentData?.error ||
+          'Tarefa não encontrada ou sem permissão de acesso'
+      );
     }
 
     const assignment = assignmentData.assignment;
 
-    // Verificar permissões
-    const canEdit = assignment.status !== 'COMPLETED';
-    const canGiveFeedback = true; // Professor sempre pode dar feedback
+    // Verificar permissões baseadas no assignment carregado
+    const canEdit = assignment.permissions.canEdit;
+    const canGiveFeedback = userRole === 1; // Professor sempre pode dar feedback
 
     const assignmentDetailsData: AssignmentDetailsData = {
       assignment: {
@@ -134,7 +111,7 @@ export default async function AssignmentDetailsPageServer({
         practiceGoals: assignment.practiceGoals || [],
         technicalGoals: assignment.technicalGoals || [],
         musicalGoals: assignment.musicalGoals || [],
-        status: assignment.isOverdue ? 'OVERDUE' : assignment.status,
+        status: assignment.status,
         dueDate: assignment.dueDate,
         estimatedTime: assignment.estimatedTime,
         actualTime: assignment.actualTime,

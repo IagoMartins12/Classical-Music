@@ -4,7 +4,7 @@ import {
   ReviewData,
   ReviewsStats,
   TeacherReviewsData,
-} from '@/app/(main)/teacher/reviews/pageServer';
+} from '@/app/(teacher)/teacher/reviews/pageServer';
 import { useState, useCallback } from 'react';
 
 interface UseTeacherReviewsState {

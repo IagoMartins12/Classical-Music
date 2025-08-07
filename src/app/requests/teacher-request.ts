@@ -6,7 +6,7 @@ import {
   CalendarConflict,
   CalendarEvent,
   CalendarStats,
-} from '../(main)/teacher/calendar/pageServer';
+} from '../(teacher)/teacher/calendar/pageServer';
 
 // ====================================
 // TYPES (mantendo os existentes)
@@ -2905,9 +2905,593 @@ export const getTeacherLessonDetailsData = unstable_cache(
   }
 );
 
+// Adicionar esta função no teacher-request.ts
+
+export interface TeacherAssignmentDetailsData {
+  assignment: {
+    id: string;
+    title: string;
+    description: string;
+    type: string;
+    priority: string;
+    workScoreIds: string[];
+    exercises: string[];
+    audioFiles: string[];
+    videoFiles: string[];
+    documents: string[];
+    practiceGoals: string[];
+    tempoTargets?: any;
+    technicalGoals: string[];
+    musicalGoals: string[];
+    status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
+    dueDate?: Date | null;
+    estimatedTime?: number | null;
+    actualTime?: number | null;
+    isOverdue: boolean;
+    daysUntilDue?: number | null;
+    isCompleted: boolean;
+    completedAt?: Date | null;
+    progress?: number | null;
+    teacherFeedback?: string | null;
+    teacherRating?: number | null;
+    studentNotes?: string | null;
+    studentRating?: number | null;
+    submissions?: any;
+    submissionDate?: Date | null;
+    student: {
+      id: string;
+      name: string;
+      image?: string | null;
+    };
+    lesson: {
+      id: string;
+      title: string;
+      scheduledAt: Date;
+      teacher: {
+        name: string;
+        image?: string | null;
+      };
+    };
+    workScores: Array<{
+      id: string;
+      title: string;
+      composer: string;
+      workTitle: string;
+      type: string;
+      downloadUrl?: string;
+    }>;
+    permissions: {
+      canEdit: boolean;
+      canDelete: boolean;
+      canComplete: boolean;
+      canAddFeedback: boolean;
+      canAddSubmission: boolean;
+    };
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  userRole: number;
+}
+
+export interface TeacherAssignmentDetailsResponse {
+  success: boolean;
+  assignment?: TeacherAssignmentDetailsData['assignment'];
+  userRole?: number;
+  error?: string;
+}
+
+// Buscar detalhes de assignment específico - DIRETO DO BANCO
+export const getTeacherAssignmentDetailsData = unstable_cache(
+  async (
+    assignmentId: string,
+    userId: string,
+    userRole: number = 1
+  ): Promise<TeacherAssignmentDetailsResponse> => {
+    try {
+      console.log(
+        `📋👁️ [TEACHER-ASSIGNMENT-DETAILS] Loading assignment ${assignmentId} for user ${userId}`
+      );
+
+      // 1. Buscar perfis do usuário
+      let userTeacherProfile = null;
+      let userStudentProfile = null;
+
+      if (userRole === 1) {
+        userTeacherProfile = await prisma.teacher.findUnique({
+          where: { userId },
+          select: { id: true },
+        });
+      } else {
+        userStudentProfile = await prisma.student.findUnique({
+          where: { userId },
+          select: { id: true },
+        });
+      }
+
+      // 2. Buscar assignment com verificação de acesso
+      const assignment = await prisma.assignment.findFirst({
+        where: {
+          id: assignmentId,
+          OR: [
+            // Professor: deve ser dono da aula
+            {
+              lesson: {
+                teacherId: userTeacherProfile?.id,
+              },
+            },
+            // Aluno: deve ser dono do assignment
+            {
+              studentId: userStudentProfile?.id,
+            },
+          ],
+        },
+        include: {
+          student: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          lesson: {
+            include: {
+              teacher: {
+                include: {
+                  user: {
+                    select: {
+                      firstName: true,
+                      lastName: true,
+                      image: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!assignment) {
+        console.log(
+          `❌ [TEACHER-ASSIGNMENT-DETAILS] Assignment ${assignmentId} not found or access denied`
+        );
+        return {
+          success: false,
+          error: 'Assignment não encontrado ou acesso negado',
+        };
+      }
+
+      // 3. Buscar WorkScores se houver IDs
+      let workScores: any[] = [];
+      if (assignment.workScoreIds.length > 0) {
+        workScores = await prisma.workScore.findMany({
+          where: {
+            id: { in: assignment.workScoreIds },
+          },
+          include: {
+            work: {
+              include: {
+                composer: {
+                  select: { name: true },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // 4. Calcular status atual
+      const now = new Date();
+      const isOverdue =
+        assignment.dueDate &&
+        assignment.dueDate < now &&
+        !assignment.isCompleted;
+
+      const daysUntilDue = assignment.dueDate
+        ? Math.ceil(
+            (assignment.dueDate.getTime() - now.getTime()) /
+              (1000 * 60 * 60 * 24)
+          )
+        : null;
+
+      // 5. Definir permissões
+      const permissions = {
+        canEdit: userRole === 1 && assignment.status !== 'COMPLETED',
+        canDelete: userRole === 1,
+        canComplete: userRole === 0 && !assignment.isCompleted,
+        canAddFeedback: userRole === 0,
+        canAddSubmission: userRole === 0 && !assignment.isCompleted,
+      };
+
+      // 6. Formatar assignment completo
+      const assignmentDetail = {
+        id: assignment.id,
+        title: assignment.title,
+        description: assignment.description,
+        type: assignment.type,
+        priority: assignment.priority,
+
+        // Recursos
+        workScoreIds: assignment.workScoreIds,
+        exercises: assignment.exercises,
+        audioFiles: assignment.audioFiles,
+        videoFiles: assignment.videoFiles,
+        documents: assignment.documents,
+
+        // Metas
+        practiceGoals: assignment.practiceGoals,
+        tempoTargets: assignment.tempoTargets,
+        technicalGoals: assignment.technicalGoals,
+        musicalGoals: assignment.musicalGoals,
+
+        // Status e prazos
+        status: (isOverdue ? 'OVERDUE' : assignment.status) as any,
+        dueDate: assignment.dueDate,
+        estimatedTime: assignment.estimatedTime,
+        actualTime: assignment.actualTime,
+        isOverdue: !!isOverdue,
+        daysUntilDue,
+
+        // Progresso
+        isCompleted: assignment.isCompleted,
+        completedAt: assignment.completedAt,
+        progress: assignment.progress,
+
+        // Feedback
+        teacherFeedback: assignment.teacherFeedback,
+        teacherRating: assignment.teacherRating,
+        studentNotes: assignment.studentNotes,
+        studentRating: assignment.studentRating,
+
+        // Submissões
+        submissions: assignment.submissions,
+        submissionDate: assignment.submissionDate,
+
+        // Relacionamentos
+        student: {
+          id: assignment.student.user.id,
+          name: `${assignment.student.user.firstName} ${assignment.student.user.lastName}`.trim(),
+          image: assignment.student.user.image,
+        },
+        lesson: {
+          id: assignment.lesson.id,
+          title: assignment.lesson.title,
+          scheduledAt: assignment.lesson.scheduledAt,
+          teacher: {
+            name: `${assignment.lesson.teacher.user.firstName} ${assignment.lesson.teacher.user.lastName}`.trim(),
+            image: assignment.lesson.teacher.user.image,
+          },
+        },
+
+        // WorkScores
+        workScores: workScores.map((ws) => ({
+          id: ws.id,
+          title: ws.title,
+          composer: ws.work.composer.name,
+          workTitle: ws.work.title,
+          type: ws.type,
+          downloadUrl: ws.downloadUrl || undefined,
+        })),
+
+        // Permissões
+        permissions,
+
+        // Timestamps
+        createdAt: assignment.createdAt,
+        updatedAt: assignment.updatedAt,
+      };
+
+      console.log(
+        `✅ [TEACHER-ASSIGNMENT-DETAILS] Assignment details loaded successfully - ${assignment.title}`
+      );
+
+      return {
+        success: true,
+        assignment: assignmentDetail,
+        userRole,
+      };
+    } catch (error) {
+      console.error(
+        '❌ [TEACHER-ASSIGNMENT-DETAILS] Error loading assignment details:',
+        error
+      );
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : 'Erro interno do servidor',
+      };
+    }
+  },
+  ['teacher-assignment-details-data'],
+  {
+    revalidate: 300, // 5 minutos
+    tags: ['teacher-assignment-details'],
+  }
+);
+
+// Adicionar esta função também no teacher-request.ts
+
+export interface TeacherAssignmentEditData {
+  assignment: {
+    id: string;
+    title: string;
+    description: string;
+    type: string;
+    priority: string;
+    dueDate?: Date | null;
+    estimatedTime?: number | null;
+    workScoreIds: string[];
+    exercises: string[];
+    audioFiles: string[];
+    videoFiles: string[];
+    documents: string[];
+    practiceGoals: string[];
+    tempoTargets?: any;
+    technicalGoals: string[];
+    musicalGoals: string[];
+    status: string;
+    isCompleted: boolean;
+    student: {
+      id: string;
+      name: string;
+      image?: string | null;
+    };
+    lesson: {
+      id: string;
+      title: string;
+      scheduledAt: Date;
+    };
+    workScores: Array<{
+      id: string;
+      title: string;
+      composer: string;
+      workTitle: string;
+      type: string;
+      downloadUrl?: string;
+    }>;
+    permissions: {
+      canEdit: boolean;
+      canDelete: boolean;
+    };
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  students: Array<{
+    id: string;
+    name: string;
+    image?: string | null;
+    level: string;
+    isActive: boolean;
+  }>;
+}
+
+export interface TeacherAssignmentEditResponse {
+  success: boolean;
+  assignment?: TeacherAssignmentEditData['assignment'];
+  students?: TeacherAssignmentEditData['students'];
+  error?: string;
+}
+
+// Buscar dados para editar assignment - DIRETO DO BANCO
+export const getTeacherAssignmentEditData = unstable_cache(
+  async (
+    assignmentId: string,
+    userId: string
+  ): Promise<TeacherAssignmentEditResponse> => {
+    try {
+      console.log(
+        `📋✏️ [TEACHER-ASSIGNMENT-EDIT] Loading edit data for assignment ${assignmentId} - user ${userId}`
+      );
+
+      // 1. Verificar se professor existe
+      const teacherProfile = await prisma.teacher.findUnique({
+        where: { userId },
+        select: { id: true },
+      });
+
+      if (!teacherProfile) {
+        console.log(
+          `❌ [TEACHER-ASSIGNMENT-EDIT] Teacher profile not found for user ${userId}`
+        );
+        return {
+          success: false,
+          error: 'Perfil de professor não encontrado',
+        };
+      }
+
+      // 2. Buscar assignment com verificação de acesso (apenas professores podem editar)
+      const assignment = await prisma.assignment.findFirst({
+        where: {
+          id: assignmentId,
+          lesson: {
+            teacherId: teacherProfile.id,
+          },
+        },
+        include: {
+          student: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          lesson: {
+            select: {
+              id: true,
+              title: true,
+              scheduledAt: true,
+            },
+          },
+        },
+      });
+
+      if (!assignment) {
+        console.log(
+          `❌ [TEACHER-ASSIGNMENT-EDIT] Assignment ${assignmentId} not found or access denied`
+        );
+        return {
+          success: false,
+          error: 'Tarefa não encontrada ou acesso negado',
+        };
+      }
+
+      // 3. Buscar WorkScores se houver IDs
+      let workScores: any[] = [];
+      if (assignment.workScoreIds.length > 0) {
+        workScores = await prisma.workScore.findMany({
+          where: {
+            id: { in: assignment.workScoreIds },
+          },
+          include: {
+            work: {
+              include: {
+                composer: {
+                  select: { name: true },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // 4. Buscar alunos do professor para possível troca
+      const teacherStudents = await prisma.teacherStudent.findMany({
+        where: {
+          teacherId: teacherProfile.id,
+          isActive: true,
+        },
+        include: {
+          student: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: [
+          { isActive: 'desc' },
+          { student: { user: { firstName: 'asc' } } },
+        ],
+        take: 100, // Limite de 100 alunos ativos
+      });
+
+      // 5. Formatar dados
+      const assignmentEdit = {
+        id: assignment.id,
+        title: assignment.title,
+        description: assignment.description,
+        type: assignment.type,
+        priority: assignment.priority,
+        dueDate: assignment.dueDate,
+        estimatedTime: assignment.estimatedTime,
+
+        // Recursos
+        workScoreIds: assignment.workScoreIds,
+        exercises: assignment.exercises,
+        audioFiles: assignment.audioFiles,
+        videoFiles: assignment.videoFiles,
+        documents: assignment.documents,
+
+        // Metas
+        practiceGoals: assignment.practiceGoals,
+        tempoTargets: assignment.tempoTargets,
+        technicalGoals: assignment.technicalGoals,
+        musicalGoals: assignment.musicalGoals,
+
+        // Status
+        status: assignment.status,
+        isCompleted: assignment.isCompleted,
+
+        // Relacionamentos
+        student: {
+          id: assignment.student.user.id,
+          name: `${assignment.student.user.firstName} ${assignment.student.user.lastName}`.trim(),
+          image: assignment.student.user.image,
+        },
+        lesson: {
+          id: assignment.lesson.id,
+          title: assignment.lesson.title,
+          scheduledAt: assignment.lesson.scheduledAt,
+        },
+
+        // WorkScores
+        workScores: workScores.map((ws) => ({
+          id: ws.id,
+          title: ws.title,
+          composer: ws.work.composer.name,
+          workTitle: ws.work.title,
+          type: ws.type,
+          downloadUrl: ws.downloadUrl || undefined,
+        })),
+
+        // Permissões
+        permissions: {
+          canEdit: assignment.status !== 'COMPLETED',
+          canDelete: true,
+        },
+
+        // Timestamps
+        createdAt: assignment.createdAt,
+        updatedAt: assignment.updatedAt,
+      };
+
+      // Formatar alunos
+      const students = teacherStudents.map((rel) => ({
+        id: rel.student.user.id,
+        name: `${rel.student.user.firstName} ${rel.student.user.lastName}`.trim(),
+        image: rel.student.user.image,
+        level: rel.student.level,
+        isActive: rel.isActive,
+      }));
+
+      console.log(
+        `✅ [TEACHER-ASSIGNMENT-EDIT] Edit data loaded successfully - ${assignment.title}, ${students.length} students`
+      );
+
+      return {
+        success: true,
+        assignment: assignmentEdit,
+        students,
+      };
+    } catch (error) {
+      console.error(
+        '❌ [TEACHER-ASSIGNMENT-EDIT] Error loading edit data:',
+        error
+      );
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : 'Erro interno do servidor',
+      };
+    }
+  },
+  ['teacher-assignment-edit-data'],
+  {
+    revalidate: 300, // 5 minutos
+    tags: ['teacher-assignment-edit'],
+  }
+);
+
 export async function revalidateTeacherCache(userId?: string) {
   const { revalidateTag } = await import('next/cache');
 
+  // Tags existentes
   revalidateTag('teacher-dashboard');
   revalidateTag('teacher-dashboard-data');
   revalidateTag('teacher-students');
@@ -2924,8 +3508,16 @@ export async function revalidateTeacherCache(userId?: string) {
   revalidateTag('teacher-assignments-data');
   revalidateTag('teacher-reviews');
   revalidateTag('teacher-reviews-data');
+  revalidateTag('teacher-lessons-data');
+  revalidateTag('teacher-lesson-details-data');
   revalidateTag('search-students');
   revalidateTag('search-students-data');
+
+  // Novas tags para assignments
+  revalidateTag('teacher-assignment-details');
+  revalidateTag('teacher-assignment-details-data');
+  revalidateTag('teacher-assignment-edit');
+  revalidateTag('teacher-assignment-edit-data');
 
   if (userId) {
     revalidateTag(`teacher-${userId}`);

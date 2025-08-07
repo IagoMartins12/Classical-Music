@@ -1,46 +1,182 @@
-// app/error.tsx
+// app/error.tsx - Página de erro inteligente com navegação contextual
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { FiAlertTriangle, FiHome, FiRefreshCw, FiMusic } from 'react-icons/fi';
-import { GiMusicalNotes } from 'react-icons/gi';
+import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
-} from '../components/animation/AnimatedComponents';
-import AnimatedMusicalNotes from '../components/AnimatedMusicalNotes';
+} from './components/animation/AnimatedComponents';
+import AnimatedMusicalNotes from './components/AnimatedMusicalNotes';
+
+// Importar navegações específicas
+import TeacherNavigation from './components/TeacherSystem/TeacherNavigation';
+import StudentNavigation from './components/TeacherSystem/StudentNavigation';
+import Navbar from './components/Navbar';
+import AdminHeader from './components/Admin/AdminHeader';
+import AdminSidebar from './components/Admin/AdminSidebar';
 
 interface ErrorProps {
   error: Error & { digest?: string };
   reset: () => void;
 }
 
+type AreaType = 'main' | 'teacher' | 'student' | 'admin';
+
 export default function Error({ error, reset }: ErrorProps) {
+  const pathname = usePathname();
+  const { data: session } = useSession();
+  const [currentArea, setCurrentArea] = useState<AreaType>('main');
+  const [showAdminSidebar, setShowAdminSidebar] = useState(false);
+
   useEffect(() => {
-    // Log do erro para debugging
     console.error('Erro na aplicação:', error);
   }, [error]);
 
+  // Detectar área atual baseada na URL
+  useEffect(() => {
+    if (pathname.startsWith('/teacher')) {
+      setCurrentArea('teacher');
+    } else if (pathname.startsWith('/student')) {
+      setCurrentArea('student');
+    } else if (pathname.startsWith('/admin')) {
+      setCurrentArea('admin');
+    } else {
+      setCurrentArea('main');
+    }
+  }, [pathname]);
+
+  const renderNavigation = () => {
+    switch (currentArea) {
+      case 'teacher':
+        return session?.user ? <TeacherNavigation user={session.user} /> : null;
+
+      case 'student':
+        return session?.user ? <StudentNavigation user={session.user} /> : null;
+
+      case 'admin':
+        return (
+          <>
+            <AdminHeader onMenuClick={() => setShowAdminSidebar(true)} />
+            <div className="flex">
+              {/* Desktop Sidebar */}
+              <div className="hidden lg:block">
+                <AdminSidebar />
+              </div>
+
+              {/* Mobile Sidebar */}
+              <div
+                className={`lg:hidden fixed inset-y-0 left-0 z-50 w-72 bg-theme-elevated border-r border-theme-primary transform transition-transform duration-300 ease-in-out ${
+                  showAdminSidebar ? 'translate-x-0' : '-translate-x-full'
+                }`}
+                style={{ top: '80px' }}
+              >
+                <div className="h-full overflow-y-auto">
+                  <AdminSidebar />
+                </div>
+              </div>
+
+              {/* Mobile Overlay */}
+              {showAdminSidebar && (
+                <div
+                  className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+                  style={{ top: '80px' }}
+                  onClick={() => setShowAdminSidebar(false)}
+                />
+              )}
+            </div>
+          </>
+        );
+
+      case 'main':
+      default:
+        return <Navbar />;
+    }
+  };
+
+  const getHomeLink = () => {
+    switch (currentArea) {
+      case 'teacher':
+        return '/teacher';
+      case 'student':
+        return '/student';
+      case 'admin':
+        return '/admin';
+      default:
+        return '/';
+    }
+  };
+
+  const getAreaTitle = () => {
+    switch (currentArea) {
+      case 'teacher':
+        return 'Área do Professor';
+      case 'student':
+        return 'Área do Estudante';
+      case 'admin':
+        return 'Painel Administrativo';
+      default:
+        return 'Opus Atlas';
+    }
+  };
+
   return (
     <>
-      <div className="classical-theme min-h-screen flex items-center justify-center relative overflow-hidden">
+      {/* Renderizar navegação apropriada */}
+      {renderNavigation()}
+
+      {/* Conteúdo principal da página de erro */}
+      <div
+        className={`classical-theme min-h-screen flex items-center justify-center relative overflow-hidden ${
+          currentArea === 'admin' ? 'lg:ml-72' : ''
+        }`}
+      >
         {/* Background Pattern */}
         <AnimatedMusicalNotes />
+        <div className="absolute inset-0 pointer-events-none opacity-5">
+          <div className="absolute top-20 left-20 w-64 h-64 bg-brand-gradient rounded-full blur-3xl"></div>
+          <div className="absolute bottom-40 right-32 w-48 h-48 bg-accent-red/30 rounded-full blur-2xl"></div>
+          <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-accent-blue/20 rounded-full blur-xl"></div>
+        </div>
+
         <div className="section-wrap relative z-10">
           <AnimatedContainer
             staggerSpeed="normal"
             className="max-w-4xl mx-auto text-center"
           >
-            {/* Main Error Icon */}
+            {/* Logo (apenas se não for admin) */}
+            {currentArea !== 'admin' && (
+              <AnimatedItem direction="scale" springType="bouncy">
+                <div className="mb-8">
+                  <Link
+                    href={getHomeLink()}
+                    className="inline-flex items-center group"
+                  >
+                    <GiGrandPiano className="w-12 h-12 mr-4 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
+                    <div className="text-left">
+                      <span className="text-2xl font-bold text-gradient-brand classical-title">
+                        Opus Atlas
+                      </span>
+                      <div className="text-sm text-theme-tertiary">
+                        {getAreaTitle()}
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              </AnimatedItem>
+            )}
+
+            {/* Error Icon */}
             <AnimatedItem direction="scale" springType="bouncy">
               <div className="relative mb-8">
                 <div className="w-32 h-32 mx-auto bg-gradient-to-br from-accent-red/20 to-accent-purple/20 rounded-full flex items-center justify-center classical-card border-2 border-accent-red/30 shadow-theme-glow">
                   <FiAlertTriangle className="w-16 h-16 text-accent-red" />
                 </div>
-
-                {/* Decorative Ring */}
               </div>
             </AnimatedItem>
 
@@ -57,34 +193,6 @@ export default function Error({ error, reset }: ErrorProps) {
                 A sinfonia encontrou uma nota fora do tom 🎵
               </p>
             </AnimatedItem>
-
-            {/* Error Details */}
-            {/* <AnimatedCard
-            hover="lift"
-            className="classical-card p-8 mb-8 max-w-2xl mx-auto"
-          >
-            <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-red/20 to-accent-purple/20 rounded-xl flex items-center justify-center flex-shrink-0">
-                <FiHelpCircle className="w-6 h-6 text-accent-red" />
-              </div>
-              <div className="text-left flex-1">
-                <h3 className="text-lg font-bold text-theme-primary mb-3 classical-title">
-                  Detalhes do Erro
-                </h3>
-                <div className="space-y-2">
-                  <p className="text-theme-secondary">
-                    <strong className="text-brand-primary">Mensagem:</strong>{' '}
-                    {error.message || 'Erro interno da aplicação'}
-                  </p>
-                  {error.digest && (
-                    <p className="text-theme-tertiary text-sm">
-                      <strong>ID do Erro:</strong> {error.digest}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </AnimatedCard> */}
 
             {/* Action Buttons */}
             <AnimatedContainer
@@ -103,11 +211,11 @@ export default function Error({ error, reset }: ErrorProps) {
 
               <AnimatedItem hover="scale" springType="bouncy">
                 <Link
-                  href="/"
+                  href={getHomeLink()}
                   className="btn-classical-secondary flex items-center space-x-3 group text-lg px-8 py-4"
                 >
                   <FiHome className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Voltar ao Início</span>
+                  <span>Voltar ao {getAreaTitle()}</span>
                 </Link>
               </AnimatedItem>
             </AnimatedContainer>
@@ -115,7 +223,7 @@ export default function Error({ error, reset }: ErrorProps) {
             {/* Helpful Tips */}
             <AnimatedCard
               hover="lift"
-              className="classical-card p-6 max-w-3xl mx-auto"
+              className="classical-card p-6 max-w-3xl mx-auto mb-8"
             >
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue/20 to-accent-green/20 rounded-xl flex items-center justify-center">
@@ -151,7 +259,7 @@ export default function Error({ error, reset }: ErrorProps) {
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
-                      Explorar outros compositores
+                      Voltar à página anterior
                     </span>
                   </div>
                 </div>
@@ -160,7 +268,7 @@ export default function Error({ error, reset }: ErrorProps) {
 
             {/* Quote */}
             <AnimatedItem direction="up" springType="gentle">
-              <div className="mt-12 p-6 classical-card-simple max-w-2xl mx-auto">
+              <div className="p-6 classical-card-simple max-w-2xl mx-auto">
                 <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
                   &quot;A música pode dar nome ao inominável e comunicar o
                   desconhecido.&quot;

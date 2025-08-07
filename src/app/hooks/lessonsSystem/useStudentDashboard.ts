@@ -1,6 +1,6 @@
 // app/hooks/useStudentDashboard.ts - Hook específico para dashboard do aluno
 
-import { StudentDashboardData } from '@/app/(main)/student/pageServer';
+import { StudentDashboardData } from '@/app/(student)/student/pageServer';
 import { useState, useCallback } from 'react';
 
 interface UseStudentDashboardState {

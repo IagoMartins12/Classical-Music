@@ -1,31 +1,31 @@
-// app/teacher/profile/page.tsx - Página do Perfil do Professor
+// app/teacher/calendar/page.tsx - Página de Calendario de aulas (professor)
 
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
-import NotFound from '../../not-found';
-import TeacherProfilePageServer from './pageServer';
+import { notFound } from 'next/navigation';
+import TeacherCalendarPageServer from './pageServer';
 
 export const metadata: Metadata = {
-  title: 'Meu Perfil | Professor - Opus Atlas',
+  title: 'Calendário de Aulas | Professor - Opus Atlas',
   description:
-    'Gerencie seu perfil de professor, especialidades, experiência e configurações de ensino',
+    'Visualize e gerencie sua agenda de aulas, horários disponíveis e cronograma de ensino',
   keywords:
-    'perfil professor, especialidades musicais, experiência, configurações ensino, dados pessoais',
+    'calendário professor, agenda de aulas, horários, cronograma musical, gestão de tempo',
   openGraph: {
-    title: 'Perfil do Professor - Opus Atlas',
+    title: 'Calendário do Professor - Opus Atlas',
     description:
-      'Configure seu perfil profissional e destaque suas especialidades musicais',
+      'Organize sua agenda de aulas e gerencie seu tempo de ensino de forma eficiente',
     type: 'website',
   },
 };
 
-export default async function TeacherProfilePage() {
+export default async function TeacherCalendarPage() {
   const session = await getServerSession(authOptions);
 
   // Verificar se está logado
   if (!session?.user?.id) {
-    return <NotFound />;
+    return notFound();
   }
 
   // Verificar se tem role de professor (role 1)
@@ -66,5 +66,15 @@ export default async function TeacherProfilePage() {
     );
   }
 
-  return <TeacherProfilePageServer />;
+  return (
+    <TeacherCalendarPageServer
+      userId={session.user.id}
+      userEmail={session.user.email || ''}
+      userName={`${session.user.firstName || ''} ${
+        session.user.lastName || ''
+      }`.trim()}
+      userImage={session.user.image}
+      userRole={session.user.role}
+    />
+  );
 }

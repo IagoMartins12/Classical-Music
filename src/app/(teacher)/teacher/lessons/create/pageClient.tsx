@@ -556,7 +556,7 @@ export default function CreateLessonPageClient({
                     </button>
 
                     {showAdvanced && (
-                      <div className="space-y-6 p-4 bg-theme-secondary/5 border border-theme-secondary/20 rounded-lg">
+                      <div className="space-y-6 p-4 bg-theme-secondary/5 rounded-lg">
                         {/* Topics */}
                         <div>
                           <div className="flex items-center justify-between mb-2">

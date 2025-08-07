@@ -482,6 +482,8 @@ export const SequentialGrid: React.FC<SequentialGridProps> = ({
         return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
       case 4:
         return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+      case 5:
+        return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5';
       default:
         return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
     }

@@ -7,7 +7,7 @@ import {
   CalendarConflict,
   CalendarEvent,
   CalendarStats,
-} from '../(main)/teacher/calendar/pageServer';
+} from '../(teacher)/teacher/calendar/pageServer';
 import {
   createQuickLessonAPI,
   getTeacherCalendarAPI,

@@ -1,4 +1,4 @@
-// app/components/Admin/AdminLayoutClient.tsx
+// app/(admin)/AdminLayoutClient.tsx - Ajustado para nova estrutura
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -24,6 +24,7 @@ export default function AdminLayoutClient({
   const handleOnMenuClick = () => {
     setSidebarOpen(true);
   };
+
   // Fechar sidebar quando clicar fora (mobile)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -46,7 +47,7 @@ export default function AdminLayoutClient({
   }, [sidebarOpen]);
 
   return (
-    <div className="bg-theme-primary">
+    <>
       {/* Header */}
       <AdminHeader onMenuClick={handleOnMenuClick} />
 
@@ -83,6 +84,6 @@ export default function AdminLayoutClient({
           <div className="w-full">{children}</div>
         </main>
       </div>
-    </div>
+    </>
   );
 }

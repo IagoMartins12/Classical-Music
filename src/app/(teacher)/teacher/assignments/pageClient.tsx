@@ -38,6 +38,7 @@ import Image from 'next/image';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { useTeacherAssignments } from '@/app/hooks/lessonsSystem/useTeacherAssignments';
+import Modal from '@/app/components/Modal';
 
 interface TeacherAssignmentsPageClientProps {
   initialData: TeacherAssignmentsData;
@@ -973,11 +974,8 @@ function CreateAssignmentModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-bg-overlay backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <AnimatedCard
-        hover="none"
-        className="classical-card w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-      >
+    <Modal maxWidth="4xl" isOpen onClose={onClose}>
+      <AnimatedCard hover="none">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-theme-primary classical-title">
@@ -1252,7 +1250,7 @@ function CreateAssignmentModal({
           </div>
         </div>
       </AnimatedCard>
-    </div>
+    </Modal>
   );
 }
 

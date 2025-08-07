@@ -1,23 +1,17 @@
-//layout-main
-import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
-import '../globals.css';
-import { ClientThemeWrapper } from '../components/ClientThemeWrapper';
+// app/(main)/layout.tsx - SEM html, head, body
+import type { Metadata } from 'next';
+import { Toaster } from 'react-hot-toast';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import AuthProvider from '../providers/AuthProvider';
 import { FavoritesProvider } from '../providers/FavoritesProvider';
-import { Toaster } from 'react-hot-toast';
-import Footer from '../components/Footer';
 import AdsProvider from '../components/Ads/AdsProvider';
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-
 export const metadata: Metadata = {
-  title: 'Opus Atlas - Enciclopédia de Música Clássica',
+  title: {
+    template: '%s | Opus Atlas',
+    default: 'Opus Atlas - Enciclopédia de Música Clássica',
+  },
   description:
     'Explore, aprenda e pratique música clássica com nossa enciclopédia interativa. Descubra compositores, obras e desenvolva suas habilidades musicais.',
   keywords: [
@@ -49,103 +43,75 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-};
-
-export default function RootLayout({
+export default function MainLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <head>
-        <meta name="color-scheme" content="dark light" />
-        <meta
-          name="theme-color"
-          media="(prefers-color-scheme: light)"
-          content="#ffffff"
-        />
-        <meta
-          name="theme-color"
-          media="(prefers-color-scheme: dark)"
-          content="#0a0a0a"
-        />
-      </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
-        <ClientThemeWrapper>
-          <AuthProvider>
-            <AdsProvider>
-              <FavoritesProvider>
-                <Navbar />
-                <main>{children}</main>
+    <AdsProvider>
+      <FavoritesProvider>
+        <div className="min-h-screen">
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
 
-                <Footer />
-                {/* Notificações toast otimizadas */}
-                <Toaster
-                  position="top-center"
-                  containerClassName="toast-container"
-                  toastOptions={{
-                    duration: 4000,
-                    className: 'toast-item',
-                    style: {
-                      background: 'var(--bg-elevated)',
-                      color: 'var(--text-primary)',
-                      border: '1px solid var(--border-primary)',
-                      borderRadius: '0.75rem',
-                      fontSize: '0.875rem',
-                      fontWeight: '500',
-                      boxShadow:
-                        '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-                      backdropFilter: 'blur(8px)',
-                      maxWidth: '400px',
-                    },
-
-                    success: {
-                      iconTheme: {
-                        primary: 'var(--accent-green)',
-                        secondary: 'white',
-                      },
-                      style: {
-                        border: '1px solid var(--accent-green)',
-                        background:
-                          'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(34, 197, 94, 0.05) 100%)',
-                      },
-                    },
-
-                    error: {
-                      iconTheme: {
-                        primary: 'var(--accent-red)',
-                        secondary: 'white',
-                      },
-                      style: {
-                        border: '1px solid var(--accent-red)',
-                        background:
-                          'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(239, 68, 68, 0.05) 100%)',
-                      },
-                    },
-
-                    loading: {
-                      iconTheme: {
-                        primary: 'var(--brand-primary)',
-                        secondary: 'white',
-                      },
-                      style: {
-                        border: '1px solid var(--brand-primary)',
-                        background:
-                          'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(99, 102, 241, 0.05) 100%)',
-                      },
-                    },
-                  }}
-                />
-              </FavoritesProvider>
-            </AdsProvider>
-          </AuthProvider>
-        </ClientThemeWrapper>
-      </body>
-    </html>
+          {/* Toaster para área pública */}
+          <Toaster
+            position="top-center"
+            containerClassName="toast-container"
+            toastOptions={{
+              duration: 4000,
+              className: 'toast-item',
+              style: {
+                background: 'var(--bg-elevated)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-primary)',
+                borderRadius: '0.75rem',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                boxShadow:
+                  '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                backdropFilter: 'blur(8px)',
+                maxWidth: '400px',
+              },
+              success: {
+                iconTheme: {
+                  primary: 'var(--accent-green)',
+                  secondary: 'white',
+                },
+                style: {
+                  border: '1px solid var(--accent-green)',
+                  background:
+                    'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(34, 197, 94, 0.05) 100%)',
+                },
+              },
+              error: {
+                iconTheme: {
+                  primary: 'var(--accent-red)',
+                  secondary: 'white',
+                },
+                style: {
+                  border: '1px solid var(--accent-red)',
+                  background:
+                    'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(239, 68, 68, 0.05) 100%)',
+                },
+              },
+              loading: {
+                iconTheme: {
+                  primary: 'var(--brand-primary)',
+                  secondary: 'white',
+                },
+                style: {
+                  border: '1px solid var(--brand-primary)',
+                  background:
+                    'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(99, 102, 241, 0.05) 100%)',
+                },
+              },
+            }}
+          />
+        </div>
+      </FavoritesProvider>
+    </AdsProvider>
   );
 }
