@@ -450,7 +450,7 @@ export default function TeacherLessonsPageClient({
                     placeholder="Buscar aulas, alunos..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="input-classical-2 pl-10"
+                    className="input-classical-2 !pl-10"
                   />
                 </div>
               </div>

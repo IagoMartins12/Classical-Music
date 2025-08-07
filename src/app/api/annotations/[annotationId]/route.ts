@@ -1,11 +1,11 @@
-// app/api/annotations/[annotationId]/route.ts - ARQUIVO OBRIGATÓRIO
+// app/api/annotations/[annotationId]/route.ts - COM REVALIDAÇÃO DE CACHE APRIMORADA
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 
-// 🔧 PATCH - Atualizar anotação
+// PATCH - Atualizar anotação
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ annotationId: string }> }
@@ -119,10 +119,20 @@ export async function PATCH(
       },
     });
 
-    // Invalidar caches
+    // 🔄 REVALIDAÇÃO DE CACHE AMPLIADA
     revalidateTag(`work-annotations-${updatedAnnotation.workId}`);
     revalidateTag(`user-annotations-${session.user.id}`);
     revalidateTag('user-annotations');
+
+    // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
+    revalidateTag('student-profile-data');
+    revalidateTag(`student-profile-${session.user.id}`);
+    revalidateTag('student-dashboard-data');
+    revalidateTag(`student-dashboard-${session.user.id}`);
+
+    console.log(
+      `🔄 Cache revalidated for annotation UPDATE - User: ${session.user.id}, Work: ${updatedAnnotation.workId}`
+    );
 
     // Formatar resposta corretamente
     const formattedAnnotation = {
@@ -170,7 +180,7 @@ export async function PATCH(
   }
 }
 
-// 🔧 DELETE - Deletar anotação
+// DELETE - Deletar anotação
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ annotationId: string }> }
@@ -225,10 +235,20 @@ export async function DELETE(
       }),
     ]);
 
-    // Invalidar caches
+    // 🔄 REVALIDAÇÃO DE CACHE AMPLIADA
     revalidateTag(`work-annotations-${existingAnnotation.workId}`);
     revalidateTag(`user-annotations-${session.user.id}`);
     revalidateTag('user-annotations');
+
+    // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
+    revalidateTag('student-profile-data');
+    revalidateTag(`student-profile-${session.user.id}`);
+    revalidateTag('student-dashboard-data');
+    revalidateTag(`student-dashboard-${session.user.id}`);
+
+    console.log(
+      `🔄 Cache revalidated for annotation DELETE - User: ${session.user.id}, Work: ${existingAnnotation.workId}`
+    );
 
     console.log('✅ Anotação deletada com sucesso:', annotationId);
 
@@ -242,7 +262,7 @@ export async function DELETE(
   }
 }
 
-// 🔧 GET - Buscar anotação específica
+// GET - Buscar anotação específica
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ annotationId: string }> }

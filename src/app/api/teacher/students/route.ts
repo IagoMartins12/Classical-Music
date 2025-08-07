@@ -4,8 +4,43 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
+import { revalidateTag } from 'next/cache';
 
-// GET - Listar alunos do professor
+// Função auxiliar para revalidar cache de teacher students
+async function revalidateTeacherStudentsData(
+  teacherUserId: string,
+  studentUserId?: string
+) {
+  console.log(`🔄 [CACHE] Revalidating teacher students data`);
+
+  // Tags específicas de teacher students
+  revalidateTag('teacher-students');
+  revalidateTag('teacher-students-data');
+  revalidateTag('teacher-student-detail');
+  revalidateTag('teacher-student-detail-data');
+  revalidateTag('teacher-dashboard');
+  revalidateTag('teacher-dashboard-data');
+  revalidateTag('teacher-calendar');
+  revalidateTag('teacher-calendar-data');
+
+  // Tag específica do professor
+  revalidateTag(`teacher-${teacherUserId}`);
+
+  // Se tiver studentUserId, revalidar tags do aluno também
+  if (studentUserId) {
+    revalidateTag('student-dashboard');
+    revalidateTag('student-lessons');
+    revalidateTag(`student-${studentUserId}`);
+  }
+
+  console.log(
+    `✅ [CACHE] Teacher students cache revalidated for teacher ${teacherUserId}${
+      studentUserId ? ` and student ${studentUserId}` : ''
+    }`
+  );
+}
+
+// GET - Listar alunos do professor (sem mudanças - sem revalidação)
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -200,7 +235,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Vincular novo aluno
+// POST - Vincular novo aluno COM REVALIDAÇÃO
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -332,8 +367,11 @@ export async function POST(request: NextRequest) {
           },
         });
 
+        // 🔥 REVALIDAR CACHE APÓS REATIVAR
+        await revalidateTeacherStudentsData(session.user.id, studentUserId);
+
         console.log(
-          `✅ [TEACHER-STUDENTS] Relacionamento reativado: ${reactivatedRelationship.id}`
+          `✅ [TEACHER-STUDENTS] Relacionamento reativado e cache revalidado: ${reactivatedRelationship.id}`
         );
 
         return NextResponse.json({
@@ -374,8 +412,11 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // 🔥 REVALIDAR CACHE APÓS CRIAR
+    await revalidateTeacherStudentsData(session.user.id, studentUserId);
+
     console.log(
-      `✅ [TEACHER-STUDENTS] Novo relacionamento criado: ${newRelationship.id}`
+      `✅ [TEACHER-STUDENTS] Novo relacionamento criado e cache revalidado: ${newRelationship.id}`
     );
 
     return NextResponse.json({
@@ -393,7 +434,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PATCH - Atualizar relacionamento
+// PATCH - Atualizar relacionamento COM REVALIDAÇÃO
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -430,6 +471,11 @@ export async function PATCH(request: NextRequest) {
         id: relationshipId,
         teacherId: teacherProfile?.id,
       },
+      include: {
+        student: {
+          select: { userId: true },
+        },
+      },
     });
 
     if (!relationship) {
@@ -458,8 +504,12 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
+    // 🔥 REVALIDAR CACHE APÓS ATUALIZAR
+    const studentUserId = relationship.student.userId;
+    await revalidateTeacherStudentsData(session.user.id, studentUserId);
+
     console.log(
-      `✅ [TEACHER-STUDENTS] Relacionamento atualizado: ${relationshipId}`
+      `✅ [TEACHER-STUDENTS] Relacionamento atualizado e cache revalidado: ${relationshipId}`
     );
 
     return NextResponse.json({
@@ -479,7 +529,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// DELETE - Desativar relacionamento (não deletar)
+// DELETE - Desativar relacionamento (não deletar) COM REVALIDAÇÃO
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -517,6 +567,11 @@ export async function DELETE(request: NextRequest) {
         id: relationshipId,
         teacherId: teacherProfile?.id,
       },
+      include: {
+        student: {
+          select: { userId: true },
+        },
+      },
     });
 
     if (!relationship) {
@@ -543,6 +598,7 @@ export async function DELETE(request: NextRequest) {
         relationshipId,
       });
     }
+
     // Cancelar aulas futuras
     await prisma.lesson.updateMany({
       where: {
@@ -561,8 +617,12 @@ export async function DELETE(request: NextRequest) {
       },
     });
 
+    // 🔥 REVALIDAR CACHE APÓS DESATIVAR
+    const studentUserId = relationship.student.userId;
+    await revalidateTeacherStudentsData(session.user.id, studentUserId);
+
     console.log(
-      `✅ [TEACHER-STUDENTS] Relacionamento desativado: ${relationshipId}`
+      `✅ [TEACHER-STUDENTS] Relacionamento desativado e cache revalidado: ${relationshipId}`
     );
 
     return NextResponse.json({

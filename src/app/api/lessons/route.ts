@@ -4,7 +4,29 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
+import { revalidateTag } from 'next/cache';
 import { Lesson } from '@prisma/client';
+
+// Função auxiliar para revalidar cache do professor
+async function revalidateTeacherData(userId: string) {
+  console.log(`🔄 [CACHE] Revalidating teacher data for user ${userId}`);
+
+  // Tags principais do professor
+  revalidateTag('teacher-dashboard');
+  revalidateTag('teacher-dashboard-data');
+  revalidateTag('teacher-students');
+  revalidateTag('teacher-students-data');
+  revalidateTag('teacher-calendar');
+  revalidateTag('teacher-calendar-data');
+  revalidateTag('teacher-calendar-data-direct');
+  revalidateTag('teacher-lessons-data');
+  revalidateTag('teacher-lesson-details-data');
+
+  // Tag específica do usuário
+  revalidateTag(`teacher-${userId}`);
+
+  console.log(`✅ [CACHE] Teacher cache revalidated for user ${userId}`);
+}
 
 // Função para calcular datas de recorrência
 function calculateRecurrenceDates(
@@ -101,7 +123,7 @@ async function checkScheduleConflicts(
   });
 }
 
-// GET - Listar aulas
+// GET - Listar aulas (sem mudanças)
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -116,7 +138,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const teacherId = searchParams.get('teacherId');
     const studentId = searchParams.get('studentId');
-    const status = searchParams.get('status'); // SCHEDULED, COMPLETED, CANCELLED, etc.
+    const status = searchParams.get('status');
     const dateFrom = searchParams.get('dateFrom');
     const dateTo = searchParams.get('dateTo');
     const limit = parseInt(searchParams.get('limit') || '50');
@@ -145,7 +167,6 @@ export async function GET(request: NextRequest) {
 
       whereClause.teacherId = teacherProfile.id;
 
-      // Se especificou studentId, filtrar também
       if (studentId) {
         whereClause.studentId = studentId;
       }
@@ -165,7 +186,6 @@ export async function GET(request: NextRequest) {
 
       whereClause.studentId = studentProfile.id;
 
-      // Se especificou teacherId, filtrar também
       if (teacherId) {
         whereClause.teacherId = teacherId;
       }
@@ -237,13 +257,9 @@ export async function GET(request: NextRequest) {
       status: lesson.status,
       type: lesson.type,
       location: lesson.location,
-
-      // Recorrência
       isRecurring: lesson.isRecurring,
       recurrenceType: lesson.recurrenceType,
       parentLessonId: lesson.parentLessonId,
-
-      // Conteúdo
       objectives: lesson.objectives,
       workScoreIds: lesson.workScoreIds,
       topics: lesson.topics,
@@ -251,26 +267,18 @@ export async function GET(request: NextRequest) {
       repertoire: lesson.repertoire,
       homework: lesson.homework,
       practiceGoals: lesson.practiceGoals,
-
-      // Notas
       teacherNotes: lesson.teacherNotes,
       publicNotes: lesson.publicNotes,
       studentFeedback: lesson.studentFeedback,
       lessonSummary: lesson.lessonSummary,
-
-      // Avaliação
       studentProgress: lesson.studentProgress,
       skillsWorked: lesson.skillsWorked,
       improvements: lesson.improvements,
       challenges: lesson.challenges,
-
-      // Presença
       studentPresent: lesson.studentPresent,
       punctuality: lesson.punctuality,
       engagement: lesson.engagement,
       preparation: lesson.preparation,
-
-      // Dados do professor e aluno
       teacher: {
         id: lesson.teacher.user.id,
         name: `${lesson.teacher.user.firstName || ''} ${
@@ -287,8 +295,6 @@ export async function GET(request: NextRequest) {
         email: lesson.student.user.email,
         image: lesson.student.user.image,
       },
-
-      // Timestamps
       createdAt: lesson.createdAt,
       updatedAt: lesson.updatedAt,
     }));
@@ -314,7 +320,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Criar nova aula (com recorrência)
+// POST - Criar nova aula (com revalidação do cache)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -508,7 +514,6 @@ export async function POST(request: NextRequest) {
           teacherNotes,
           publicNotes,
           status: 'SCHEDULED',
-          // Recorrência
           isRecurring: lessonDates.length > 1,
           recurrenceType: lessonDates.length > 1 ? recurrenceType : 'NONE',
           parentLessonId: i === 0 ? null : parentLessonId,
@@ -547,7 +552,12 @@ export async function POST(request: NextRequest) {
       createdLessons.push(lesson);
     }
 
-    console.log(`✅ [LESSONS] ${createdLessons.length} aula(s) criada(s)`);
+    // 🔥 REVALIDAR CACHE APÓS CRIAÇÃO
+    await revalidateTeacherData(session.user.id);
+
+    console.log(
+      `✅ [LESSONS] ${createdLessons.length} aula(s) criada(s) e cache revalidado`
+    );
 
     return NextResponse.json({
       success: true,
@@ -565,7 +575,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PATCH - Atualizar aula
+// PATCH - Atualizar aula (com revalidação do cache)
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -669,7 +679,10 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    console.log(`✅ [LESSONS] Aula atualizada: ${lessonId}`);
+    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
+    await revalidateTeacherData(session.user.id);
+
+    console.log(`✅ [LESSONS] Aula atualizada e cache revalidado: ${lessonId}`);
 
     return NextResponse.json({
       success: true,
@@ -685,7 +698,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// DELETE - Cancelar aula
+// DELETE - Cancelar aula (com revalidação do cache)
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -768,7 +781,12 @@ export async function DELETE(request: NextRequest) {
       });
     }
 
-    console.log(`✅ [LESSONS] ${cancelledLessons} aula(s) cancelada(s)`);
+    // 🔥 REVALIDAR CACHE APÓS CANCELAMENTO
+    await revalidateTeacherData(session.user.id);
+
+    console.log(
+      `✅ [LESSONS] ${cancelledLessons} aula(s) cancelada(s) e cache revalidado`
+    );
 
     return NextResponse.json({
       success: true,

@@ -16,7 +16,7 @@ import {
   FiSettings,
   FiChevronDown,
 } from 'react-icons/fi';
-import { GiGrandPiano } from 'react-icons/gi';
+import { GiGrandPiano, GiTeacher } from 'react-icons/gi';
 import { ThemeToggle } from '../ThemeToggle';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
@@ -32,6 +32,8 @@ import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useRouter } from 'next/navigation';
 import useIsMobile from '@/app/hooks/useIsMobile';
+import { LuGraduationCap } from 'react-icons/lu';
+import { FaGraduationCap } from 'react-icons/fa';
 
 interface NavItem {
   label: string;
@@ -393,6 +395,17 @@ const Navbar: React.FC = () => {
                         <FiUpload className="w-4 h-4" />
                         <span>Uploads</span>
                       </Link>
+
+                      {user.role === 1 && (
+                        <Link
+                          href="/teacher"
+                          className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FaGraduationCap className="w-4 h-4" />
+                          <span>Painel do professor</span>
+                        </Link>
+                      )}
 
                       {user.role === 2 && (
                         <Link

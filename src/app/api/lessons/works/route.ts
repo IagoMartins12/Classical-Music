@@ -4,6 +4,36 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
+import { revalidateTag } from 'next/cache';
+
+// Função auxiliar para revalidar cache de lesson works
+async function revalidateLessonWorksData(
+  teacherUserId: string,
+  studentUserId?: string
+) {
+  console.log(`🔄 [CACHE] Revalidating lesson works data`);
+
+  // Tags específicas de lessons e works
+  revalidateTag('teacher-lessons-data');
+  revalidateTag('teacher-lesson-details-data');
+  revalidateTag('teacher-calendar');
+  revalidateTag('teacher-calendar-data');
+
+  // Tag específica do professor
+  revalidateTag(`teacher-${teacherUserId}`);
+
+  // Se tiver studentUserId, revalidar tags do aluno também
+  if (studentUserId) {
+    revalidateTag('student-lessons');
+    revalidateTag(`student-${studentUserId}`);
+  }
+
+  console.log(
+    `✅ [CACHE] Lesson works cache revalidated for teacher ${teacherUserId}${
+      studentUserId ? ` and student ${studentUserId}` : ''
+    }`
+  );
+}
 
 interface LessonWorkData {
   workId: string;
@@ -40,7 +70,7 @@ interface StudentWorkProgress {
   nextGoals: string[];
 }
 
-// GET - Buscar obras vinculadas a aulas
+// GET - Buscar obras vinculadas a aulas (sem mudanças)
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -443,7 +473,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Vincular obras a uma aula
+// POST - Vincular obras a uma aula COM REVALIDAÇÃO
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -486,6 +516,11 @@ export async function POST(request: NextRequest) {
       where: {
         id: lessonId,
         teacherId: teacherProfile?.id,
+      },
+      include: {
+        student: {
+          select: { userId: true },
+        },
       },
     });
 
@@ -553,10 +588,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Adicionar às listas pessoais do aluno se ainda não estiver
-    const studentUserId = await prisma.student.findUnique({
-      where: { id: lesson.studentId },
-      select: { userId: true },
-    });
+    const studentUserId = lesson.student.userId;
 
     if (studentUserId) {
       // Para cada obra, verificar se está na lista "Quero Aprender"
@@ -564,7 +596,7 @@ export async function POST(request: NextRequest) {
         const existingWantToLearn = await prisma.wantToLearn.findUnique({
           where: {
             userId_workId: {
-              userId: studentUserId.userId,
+              userId: studentUserId,
               workId: workScore.work.id,
             },
           },
@@ -574,7 +606,7 @@ export async function POST(request: NextRequest) {
           // Adicionar à lista "Quero Aprender" automaticamente
           await prisma.wantToLearn.create({
             data: {
-              userId: studentUserId.userId,
+              userId: studentUserId,
               workId: workScore.work.id,
               selectedWorkScoreId: workScore.id,
               notes: `Adicionado automaticamente pela aula: ${lesson.title}`,
@@ -585,6 +617,9 @@ export async function POST(request: NextRequest) {
         }
       }
     }
+
+    // 🔥 REVALIDAR CACHE APÓS ADICIONAR OBRAS
+    await revalidateLessonWorksData(session.user.id, studentUserId);
 
     // Preparar resposta com detalhes das obras
     const worksDetails = existingWorkScores.map((ws) => ({
@@ -597,7 +632,7 @@ export async function POST(request: NextRequest) {
     }));
 
     console.log(
-      `✅ [LESSON-WORKS] ${workScoreIds.length} obras vinculadas à aula ${lessonId}`
+      `✅ [LESSON-WORKS] ${workScoreIds.length} obras vinculadas à aula ${lessonId} e cache revalidado`
     );
 
     return NextResponse.json({
@@ -615,7 +650,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE - Remover obras de uma aula
+// DELETE - Remover obras de uma aula COM REVALIDAÇÃO
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -655,6 +690,11 @@ export async function DELETE(request: NextRequest) {
         id: lessonId,
         teacherId: teacherProfile?.id,
       },
+      include: {
+        student: {
+          select: { userId: true },
+        },
+      },
     });
 
     if (!lesson) {
@@ -679,8 +719,11 @@ export async function DELETE(request: NextRequest) {
 
     const removedCount = currentWorkScoreIds.length - newWorkScoreIds.length;
 
+    // 🔥 REVALIDAR CACHE APÓS REMOVER OBRAS
+    await revalidateLessonWorksData(session.user.id, lesson.student.userId);
+
     console.log(
-      `✅ [LESSON-WORKS] ${removedCount} obras removidas da aula ${lessonId}`
+      `✅ [LESSON-WORKS] ${removedCount} obras removidas da aula ${lessonId} e cache revalidado`
     );
 
     return NextResponse.json({

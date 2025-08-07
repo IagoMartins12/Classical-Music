@@ -1,7 +1,7 @@
-// app/teacher/pageClient.tsx - Dashboard Completo do Professor
+// app/teacher/pageClient.tsx - Dashboard Completo do Professor (sem estados de data)
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -37,6 +37,7 @@ import {
 } from '@/app/requests/teacher-request';
 import Modal from '../../components/Modal';
 import Input from '../../components/Common/Inputs';
+import AddStudentModal from '@/app/components/TeacherSystem/AddStudentModal';
 
 interface TeacherProfile {
   id: string;
@@ -54,7 +55,7 @@ interface TeacherPageClientProps {
   errorMessage?: string;
 }
 
-interface StudentSearchResult {
+export interface StudentSearchResult {
   id: string;
   name: string;
   email: string;
@@ -75,49 +76,30 @@ export default function TeacherPageClient({
   teacherProfile,
   errorMessage,
 }: TeacherPageClientProps) {
-  // States
-  const [dashboardData, setDashboardData] = useState(initialDashboardData);
-  const [studentsData, setStudentsData] = useState(initialStudentsData);
-  const [calendarData, setCalendarData] = useState(initialCalendarData);
-  const [loading, setLoading] = useState(false);
+  // Estados apenas para UI e search
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<StudentSearchResult[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [showAddStudent, setShowAddStudent] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-
-  // Error state
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(errorMessage);
 
-  // Computed values
-  const stats = useMemo(() => {
-    if (!dashboardData?.dashboard?.stats) {
-      return {
-        totalStudents: 0,
-        activeStudents: 0,
-        lessonsThisWeek: 0,
-        completionRate: 0,
-        avgLessonsPerWeek: 0,
-      };
-    }
-    return dashboardData.dashboard.stats;
-  }, [dashboardData]);
+  // Dados vem direto do servidor - sem estado local
+  const stats = initialDashboardData?.dashboard?.stats || {
+    totalStudents: 0,
+    activeStudents: 0,
+    lessonsThisWeek: 0,
+    completionRate: 0,
+    avgLessonsPerWeek: 0,
+  };
 
-  const todayLessons = useMemo(() => {
-    return dashboardData?.dashboard?.todayLessons || [];
-  }, [dashboardData]);
-
-  const upcomingLessons = useMemo(() => {
-    return dashboardData?.dashboard?.upcomingLessons?.slice(0, 5) || [];
-  }, [dashboardData]);
-
-  const activeStudents = useMemo(() => {
-    return studentsData?.students?.filter((s) => s.relationship.isActive) || [];
-  }, [studentsData]);
-
-  const recentActivities = useMemo(() => {
-    return dashboardData?.dashboard?.recentActivities?.slice(0, 5) || [];
-  }, [dashboardData]);
+  const todayLessons = initialDashboardData?.dashboard?.todayLessons || [];
+  const upcomingLessons =
+    initialDashboardData?.dashboard?.upcomingLessons?.slice(0, 5) || [];
+  const activeStudents =
+    initialStudentsData?.students?.filter((s) => s.relationship.isActive) || [];
+  const recentActivities =
+    initialDashboardData?.dashboard?.recentActivities?.slice(0, 5) || [];
 
   // Function to search students
   const searchStudents = useCallback(async (email: string) => {
@@ -153,18 +135,24 @@ export default function TeacherPageClient({
     }
   }, []);
 
-  // Handle search input change
-  useEffect(() => {
-    const delayedSearch = setTimeout(() => {
-      if (searchQuery.trim()) {
-        searchStudents(searchQuery.trim());
-      } else {
-        setSearchResults([]);
-      }
-    }, 300);
+  // Handle search input change with debounce
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setSearchQuery(value);
 
-    return () => clearTimeout(delayedSearch);
-  }, [searchQuery, searchStudents]);
+      // Simple debounce
+      const timeoutId = setTimeout(() => {
+        if (value.trim()) {
+          searchStudents(value.trim());
+        } else {
+          setSearchResults([]);
+        }
+      }, 300);
+
+      return () => clearTimeout(timeoutId);
+    },
+    [searchStudents]
+  );
 
   // Function to add student
   const addStudent = useCallback(async (studentUserId: string) => {
@@ -194,34 +182,14 @@ export default function TeacherPageClient({
       const data = await response.json();
 
       if (data.success) {
-        // Refresh students data
-        await refreshData();
-        setSearchQuery('');
-        setSearchResults([]);
-        setShowAddStudent(false);
-
-        // Show success message (você pode implementar um toast aqui)
-        console.log('Aluno adicionado com sucesso!');
+        // Após adicionar, refresh a página para carregar novos dados
+        window.location.reload();
       }
     } catch (error) {
       console.error('Erro ao adicionar aluno:', error);
       setError('Erro ao adicionar aluno. Tente novamente.');
     } finally {
       setLoading(false);
-    }
-  }, []);
-
-  // Function to refresh data
-  const refreshData = useCallback(async () => {
-    setRefreshing(true);
-    try {
-      // Você pode implementar refresh das APIs aqui
-      setTimeout(() => {
-        setRefreshing(false);
-      }, 1000);
-    } catch (error) {
-      console.error('Erro ao atualizar dados:', error);
-      setRefreshing(false);
     }
   }, []);
 
@@ -241,8 +209,14 @@ export default function TeacherPageClient({
     });
   };
 
+  const onCloseModal = () => {
+    setShowAddStudent(false);
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
   // Render error state
-  if (error && !dashboardData) {
+  if (error && !initialDashboardData) {
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
@@ -390,15 +364,10 @@ export default function TeacherPageClient({
                     </div>
                   </div>
                   <button
-                    onClick={refreshData}
-                    disabled={refreshing}
+                    onClick={() => window.location.reload()}
                     className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
                   >
-                    <FiRefreshCw
-                      className={`w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all ${
-                        refreshing ? 'animate-spin' : ''
-                      }`}
-                    />
+                    <FiRefreshCw className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all" />
                   </button>
                 </div>
 
@@ -466,14 +435,14 @@ export default function TeacherPageClient({
                   >
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <FiCalendar className="w-4 h-4 text-theme-primary" />
+                        <FiEdit3 className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Adicionar lições
+                          Gerenciar Tarefas
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Passe lições de casa para alunos.
+                          Criar e acompanhar tarefas
                         </div>
                       </div>
                     </div>
@@ -485,14 +454,14 @@ export default function TeacherPageClient({
                   >
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <FiCalendar className="w-4 h-4 text-theme-primary" />
+                        <FiUser className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Ver perfil
+                          Ver Perfil
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Veja e altere dados do seu perfil.
+                          Gerenciar dados do perfil
                         </div>
                       </div>
                     </div>
@@ -504,14 +473,14 @@ export default function TeacherPageClient({
                   >
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <FiCalendar className="w-4 h-4 text-theme-primary" />
+                        <FiBarChart2 className="w-4 h-4 text-theme-primary" />
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
                           Reviews
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Veja seus reviews.
+                          Visualizar avaliações
                         </div>
                       </div>
                     </div>
@@ -706,7 +675,7 @@ export default function TeacherPageClient({
                             {formatTime(lesson.scheduledAt)}
                           </div>
                           <div className="text-xs text-theme-tertiary">
-                            {lesson.student.name}
+                            {lesson.student?.name}
                           </div>
                           <div className="text-xs text-accent-blue">
                             {lesson.duration}min
@@ -766,7 +735,7 @@ export default function TeacherPageClient({
                     >
                       <div>
                         <div className="text-sm font-medium text-theme-primary">
-                          {lesson.student.name}
+                          {lesson.student?.name}
                         </div>
                         <div className="text-xs text-theme-tertiary">
                           {formatDate(lesson.scheduledAt)} •{' '}
@@ -848,165 +817,18 @@ export default function TeacherPageClient({
             </AnimatedItem>
           </div>
         </div>
-
-        {/* Add Student Modal */}
-        {showAddStudent && (
-          <Modal
-            maxWidth="3xl"
-            isOpen={showAddStudent}
-            onClose={() => {
-              setShowAddStudent(false);
-              setSearchQuery('');
-              setSearchResults([]);
-            }}
-          >
-            <AnimatedCard hover="none">
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Adicionar Novo Aluno
-                    </h2>
-                    <p className="text-theme-tertiary">
-                      Busque o aluno pelo email completo
-                    </p>
-                  </div>
-                </div>
-
-                {/* Search Input */}
-                <div className="relative mb-6">
-                  <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-                  <Input
-                    type="email"
-                    placeholder="Digite o email completo do aluno..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="input-classical w-full"
-                  />
-                  {searchLoading && (
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <div className="w-4 h-4 border-2 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Search Results */}
-                {searchResults.length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="font-semibold text-theme-primary">
-                      Resultados da busca ({searchResults.length})
-                    </h3>
-
-                    {searchResults.map((student) => (
-                      <div
-                        key={student.id}
-                        className="classical-card-simple p-4"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            {/* Avatar */}
-                            <div className="relative w-10 h-10">
-                              {student.image ? (
-                                <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-brand-primary/20">
-                                  <Image
-                                    src={student.image}
-                                    alt={student.name}
-                                    fill
-                                    sizes="40px"
-                                    className="object-cover"
-                                  />
-                                </div>
-                              ) : (
-                                <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20">
-                                  <FiUser className="w-5 h-5 text-theme-primary" />
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Info */}
-                            <div>
-                              <div className="font-semibold text-theme-primary">
-                                {student.name}
-                              </div>
-                              <div className="text-sm text-theme-tertiary">
-                                {student.email}
-                              </div>
-                              {student.location && (
-                                <div className="text-xs text-theme-tertiary flex items-center">
-                                  <FiMapPin className="w-3 h-3 mr-1" />
-                                  {student.location}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Action Button */}
-                          <div>
-                            {student.isAlreadyStudent ? (
-                              <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
-                                Já é seu aluno
-                              </span>
-                            ) : (
-                              <button
-                                onClick={() => addStudent(student.id)}
-                                disabled={loading}
-                                className="btn-classical-primary text-sm px-4 py-2 flex items-center space-x-2"
-                              >
-                                {loading ? (
-                                  <>
-                                    <div className="w-4 h-4 border-2 border-theme-primary/30 border-t-theme-primary rounded-full animate-spin"></div>
-                                    <span>Adicionando...</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <FiPlus className="w-4 h-4" />
-                                    <span>Adicionar</span>
-                                  </>
-                                )}
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Empty State */}
-                {searchQuery.length >= 3 &&
-                  searchResults.length === 0 &&
-                  !searchLoading && (
-                    <div className="text-center py-8">
-                      <FiSearch className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
-                      <h3 className="font-semibold text-theme-primary mb-2">
-                        Nenhum aluno encontrado
-                      </h3>
-                      <p className="text-theme-tertiary text-sm">
-                        Verifique se o email está correto ou se o usuário já se
-                        cadastrou na plataforma.
-                      </p>
-                    </div>
-                  )}
-
-                {/* Instructions */}
-                {searchQuery.length < 3 && (
-                  <div className="text-center py-8">
-                    <FiUserPlus className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
-                    <h3 className="font-semibold text-theme-primary mb-2">
-                      Como adicionar um aluno
-                    </h3>
-                    <div className="text-theme-tertiary text-sm space-y-2">
-                      <p>1. Digite o email completo do aluno no campo acima</p>
-                      <p>2. O aluno deve estar cadastrado na plataforma</p>
-                      <p>3. Clique em "Adicionar" quando encontrar o aluno</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </AnimatedCard>
-          </Modal>
-        )}
       </AnimatedContainer>
+
+      <AddStudentModal
+        addStudent={addStudent}
+        handleSearchChange={handleSearchChange}
+        isOpen={showAddStudent}
+        loading={loading}
+        onClose={onCloseModal}
+        searchLoading={searchLoading}
+        searchQuery={searchQuery}
+        searchResults={searchResults}
+      />
     </PageContainer>
   );
 }

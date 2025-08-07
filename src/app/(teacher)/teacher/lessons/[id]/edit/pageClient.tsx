@@ -1,4 +1,4 @@
-// app/teacher/lessons/[id]/edit/pageClient.tsx - Client Component para Editar Aula
+// app/teacher/lessons/[id]/edit/pageClient.tsx - Client Component para Editar Aula (CORRIGIDO)
 
 'use client';
 
@@ -78,6 +78,13 @@ const statusOptions = [
   { value: 'RESCHEDULED', label: 'Reagendada' },
 ];
 
+// 🔧 FUNÇÃO HELPER PARA FORMATO CORRETO DE DATETIME
+const formatDatetimeForInput = (date: Date | string): string => {
+  const d = new Date(date);
+  // Formato: YYYY-MM-DDTHH:MM:SS (necessário para Prisma)
+  return d.toISOString().slice(0, 19);
+};
+
 export default function EditLessonPageClient({
   initialData,
   teacherProfile,
@@ -120,7 +127,8 @@ export default function EditLessonPageClient({
       setFormData({
         title: lesson.title,
         description: lesson.description || '',
-        scheduledAt: new Date(lesson.scheduledAt).toISOString().slice(0, 16),
+        // 🔧 CORREÇÃO: Usar formatDatetimeForInput ao invés de slice(0, 16)
+        scheduledAt: formatDatetimeForInput(lesson.scheduledAt),
         duration: lesson.duration,
         type: lesson.type as LessonType,
         location: lesson.location || '',
@@ -208,6 +216,10 @@ export default function EditLessonPageClient({
         objectives: formData.objectives.filter((obj) => obj.trim()),
         topics: formData.topics.filter((topic) => topic.trim()),
         techniques: formData.techniques.filter((tech) => tech.trim()),
+        // 🔧 CORREÇÃO: Garantir formato correto de datetime ao enviar
+        scheduledAt:
+          formData.scheduledAt +
+          (formData.scheduledAt.length === 16 ? ':00' : ''),
       };
 
       const success = await updateLesson(initialData.lesson.id, cleanData);
@@ -814,16 +826,6 @@ export default function EditLessonPageClient({
                     <FiBookOpen className="w-4 h-4" />
                     <span>Ver Detalhes</span>
                   </Link>
-
-                  {lesson.status === 'SCHEDULED' && (
-                    <Link
-                      href={`/teacher/lessons/${lesson.id}/reschedule`}
-                      className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
-                    >
-                      <FiRotateCcw className="w-4 h-4" />
-                      <span>Reagendar</span>
-                    </Link>
-                  )}
                 </div>
               </AnimatedCard>
             </AnimatedItem>

@@ -1,4 +1,4 @@
-// app/api/learning/learned/route.ts - CORRIGIDO COM WORKSCORE
+// app/api/learning/learned/route.ts - COM REVALIDAÇÃO DE CACHE APRIMORADA
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       enjoyment,
       technicalChallenges,
       musicalInsights,
-      // ✅ CAMPO CORRIGIDO COM WORKSCORE
+      // Campo corrigido com WorkScore
       selectedWorkScoreId,
     } = body;
 
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ✅ VALIDAR WORKSCORE SE FORNECIDO
+    // Validar WorkScore se fornecido
     if (selectedWorkScoreId) {
       const workScoreExists = await prisma.workScore.findFirst({
         where: {
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
         dataToSave.technicalChallenges = technicalChallenges;
       if (musicalInsights) dataToSave.musicalInsights = musicalInsights;
 
-      // ✅ ADICIONAR WORKSCORE SE FORNECIDO
+      // Adicionar WorkScore se fornecido
       if (selectedWorkScoreId)
         dataToSave.selectedWorkScoreId = selectedWorkScoreId;
 
@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
               },
             },
           },
-          // ✅ INCLUIR DADOS DO WORKSCORE
+          // Incluir dados do WorkScore
           selectedWorkScore: {
             select: {
               id: true,
@@ -160,11 +160,21 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Invalidar caches relacionados
+      // 🔄 REVALIDAÇÃO DE CACHE AMPLIADA
       revalidateTag(`user-learning-${session.user.id}`);
       revalidateTag(`work-learning-${workId}`);
       revalidateTag('user-learning');
       revalidateTag('learning-stats');
+
+      // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
+      revalidateTag('student-profile-data');
+      revalidateTag(`student-profile-${session.user.id}`);
+      revalidateTag('student-dashboard-data');
+      revalidateTag(`student-dashboard-${session.user.id}`);
+
+      console.log(
+        `🔄 Cache revalidated for learned ADD - User: ${session.user.id}, Work: ${workId}`
+      );
 
       return NextResponse.json({
         success: true,
@@ -184,7 +194,7 @@ export async function POST(request: NextRequest) {
           enjoyment: learnedItem.enjoyment,
           technicalChallenges: learnedItem.technicalChallenges,
           musicalInsights: learnedItem.musicalInsights,
-          // ✅ INCLUIR WORKSCORE NA RESPOSTA
+          // Incluir WorkScore na resposta
           selectedWorkScoreId: learnedItem.selectedWorkScoreId,
           selectedWorkScore: learnedItem.selectedWorkScore,
           work: learnedItem.work,
@@ -199,11 +209,21 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Invalidar caches relacionados
+      // 🔄 REVALIDAÇÃO DE CACHE AMPLIADA
       revalidateTag(`user-learning-${session.user.id}`);
       revalidateTag(`work-learning-${workId}`);
       revalidateTag('user-learning');
       revalidateTag('learning-stats');
+
+      // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
+      revalidateTag('student-profile-data');
+      revalidateTag(`student-profile-${session.user.id}`);
+      revalidateTag('student-dashboard-data');
+      revalidateTag(`student-dashboard-${session.user.id}`);
+
+      console.log(
+        `🔄 Cache revalidated for learned REMOVE - User: ${session.user.id}, Work: ${workId}`
+      );
 
       return NextResponse.json({
         success: true,
@@ -243,7 +263,7 @@ export async function PATCH(request: NextRequest) {
       enjoyment,
       technicalChallenges,
       musicalInsights,
-      // ✅ CAMPO CORRIGIDO COM WORKSCORE
+      // Campo corrigido com WorkScore
       selectedWorkScoreId,
     } = body;
 
@@ -251,7 +271,7 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Dados inválidos' }, { status: 400 });
     }
 
-    // ✅ VALIDAR WORKSCORE SE FORNECIDO
+    // Validar WorkScore se fornecido
     if (selectedWorkScoreId) {
       const workScoreExists = await prisma.workScore.findFirst({
         where: {
@@ -301,7 +321,7 @@ export async function PATCH(request: NextRequest) {
     if (musicalInsights !== undefined)
       dataToUpdate.musicalInsights = musicalInsights;
 
-    // ✅ ATUALIZAR WORKSCORE SE FORNECIDO
+    // Atualizar WorkScore se fornecido
     if (selectedWorkScoreId !== undefined)
       dataToUpdate.selectedWorkScoreId = selectedWorkScoreId;
 
@@ -341,7 +361,7 @@ export async function PATCH(request: NextRequest) {
             },
           },
         },
-        // ✅ INCLUIR DADOS DO WORKSCORE
+        // Incluir dados do WorkScore
         selectedWorkScore: {
           select: {
             id: true,
@@ -365,10 +385,16 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // Invalidar caches
+    // 🔄 REVALIDAR CACHE
     revalidateTag(`user-learning-${session.user.id}`);
     revalidateTag('user-learning');
     revalidateTag('learning-stats');
+
+    // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
+    revalidateTag('student-profile-data');
+    revalidateTag(`student-profile-${session.user.id}`);
+    revalidateTag('student-dashboard-data');
+    revalidateTag(`student-dashboard-${session.user.id}`);
 
     return NextResponse.json({
       success: true,
@@ -388,7 +414,7 @@ export async function PATCH(request: NextRequest) {
             enjoyment: updatedItem.enjoyment,
             technicalChallenges: updatedItem.technicalChallenges,
             musicalInsights: updatedItem.musicalInsights,
-            // ✅ INCLUIR WORKSCORE NA RESPOSTA
+            // Incluir WorkScore na resposta
             selectedWorkScoreId: updatedItem.selectedWorkScoreId,
             selectedWorkScore: updatedItem.selectedWorkScore,
             work: updatedItem.work,
@@ -436,7 +462,7 @@ export async function GET(request: NextRequest) {
               },
             },
           },
-          // ✅ INCLUIR DADOS DO WORKSCORE
+          // Incluir dados do WorkScore
           selectedWorkScore: {
             select: {
               id: true,
@@ -478,7 +504,7 @@ export async function GET(request: NextRequest) {
               enjoyment: learnedItem.enjoyment,
               technicalChallenges: learnedItem.technicalChallenges,
               musicalInsights: learnedItem.musicalInsights,
-              // ✅ INCLUIR WORKSCORE NA RESPOSTA
+              // Incluir WorkScore na resposta
               selectedWorkScoreId: learnedItem.selectedWorkScoreId,
               selectedWorkScore: learnedItem.selectedWorkScore,
               work: learnedItem.work,
@@ -506,7 +532,7 @@ export async function GET(request: NextRequest) {
             },
           },
         },
-        // ✅ INCLUIR DADOS DO WORKSCORE
+        // Incluir dados do WorkScore
         selectedWorkScore: {
           select: {
             id: true,
@@ -547,7 +573,7 @@ export async function GET(request: NextRequest) {
         enjoyment: item.enjoyment,
         technicalChallenges: item.technicalChallenges,
         musicalInsights: item.musicalInsights,
-        // ✅ INCLUIR WORKSCORE NA RESPOSTA
+        // Incluir WorkScore na resposta
         selectedWorkScoreId: item.selectedWorkScoreId,
         selectedWorkScore: item.selectedWorkScore,
         work: item.work,

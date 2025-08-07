@@ -1,4 +1,4 @@
-// app/hooks/lessonsSystem/useEditLesson.ts - Hook para editar aula
+// app/hooks/lessonsSystem/useEditLesson.ts - Hook para editar aula (CORRIGIDO)
 
 import { useState, useCallback } from 'react';
 
@@ -31,6 +31,32 @@ interface UseEditLessonActions {
   cancelLesson: (lessonId: string, reason?: string) => Promise<boolean>;
   clearError: () => void;
 }
+
+// 🔧 FUNÇÃO HELPER PARA GARANTIR FORMATO CORRETO DE DATETIME
+const ensureFullDatetime = (dateStr: string): string => {
+  // Se a string tem apenas 16 caracteres (YYYY-MM-DDTHH:MM), adicionar segundos
+  if (dateStr.length === 16) {
+    return dateStr + ':00';
+  }
+
+  // Se tem 19 caracteres (YYYY-MM-DDTHH:MM:SS), está correto
+  if (dateStr.length === 19) {
+    return dateStr;
+  }
+
+  // Se é uma data ISO completa, usar slice para pegar até os segundos
+  if (dateStr.includes('Z') || dateStr.includes('+')) {
+    return new Date(dateStr).toISOString().slice(0, 19);
+  }
+
+  // Fallback: tentar criar uma data válida
+  try {
+    return new Date(dateStr).toISOString().slice(0, 19);
+  } catch (error) {
+    console.warn('⚠️ [DATETIME] Data inválida recebida:', dateStr);
+    return dateStr; // Retorna como estava
+  }
+};
 
 export function useEditLesson(): UseEditLessonState & UseEditLessonActions {
   const [state, setState] = useState<UseEditLessonState>({
@@ -70,6 +96,24 @@ export function useEditLesson(): UseEditLessonState & UseEditLessonActions {
       setError(null);
 
       try {
+        // 🔧 CORREÇÃO: Garantir formato correto de datetime antes de enviar
+        const cleanData = {
+          ...data,
+          // Garantir que scheduledAt tenha formato completo se estiver presente
+          ...(data.scheduledAt && {
+            scheduledAt: ensureFullDatetime(data.scheduledAt),
+          }),
+          objectives: data.objectives?.filter((obj) => obj.trim()) || [],
+          topics: data.topics?.filter((topic) => topic.trim()) || [],
+          techniques: data.techniques?.filter((tech) => tech.trim()) || [],
+        };
+
+        console.log('📅✏️ [LESSONS] Enviando dados para atualização:', {
+          lessonId,
+          scheduledAt: cleanData.scheduledAt,
+          // outros campos...
+        });
+
         const response = await fetch('/api/lessons', {
           method: 'PATCH',
           headers: {
@@ -77,10 +121,7 @@ export function useEditLesson(): UseEditLessonState & UseEditLessonActions {
           },
           body: JSON.stringify({
             lessonId,
-            ...data,
-            objectives: data.objectives?.filter((obj) => obj.trim()) || [],
-            topics: data.topics?.filter((topic) => topic.trim()) || [],
-            techniques: data.techniques?.filter((tech) => tech.trim()) || [],
+            ...cleanData,
           }),
         });
 

@@ -31,6 +31,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Select from '@/app/components/Common/Select';
 import { useStudentCalendar } from '@/app/hooks/lessonsSystem/useStudentCalendar';
+import Modal from '@/app/components/Modal';
 
 interface StudentProfile {
   id: string;
@@ -1042,11 +1043,8 @@ function StudentEventDetailsModal({
   getEventStatusColor,
 }: StudentEventDetailsModalProps) {
   return (
-    <div className="fixed inset-0 bg-bg-overlay backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <AnimatedCard
-        hover="none"
-        className="classical-card w-full max-w-2xl max-h-[80vh] overflow-y-auto"
-      >
+    <Modal isOpen onClose={onClose} maxWidth="4xl">
+      <AnimatedCard hover="none">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -1279,7 +1277,7 @@ function StudentEventDetailsModal({
           </div>
         </div>
       </AnimatedCard>
-    </div>
+    </Modal>
   );
 }
 

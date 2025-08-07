@@ -91,18 +91,7 @@ export default async function TeacherStudentsPageServer({
 
     console.log(`✅ [TEACHER-STUDENTS-PAGE-SERVER] Data loaded successfully`);
 
-    return (
-      <TeacherStudentsPageClient
-        initialData={serverData}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <TeacherStudentsPageClient initialData={serverData} />;
   } catch (error) {
     console.error('❌ [TEACHER-STUDENTS-PAGE-SERVER] Critical error:', error);
 
@@ -113,13 +102,6 @@ export default async function TeacherStudentsPageServer({
           students: [],
           pagination: { offset: 0, limit: 100, total: 0, hasMore: false },
           summary: { total: 0, active: 0, inactive: 0 },
-        }}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
         }}
         errorMessage="Erro ao carregar dados dos alunos. Tente recarregar a página."
       />

@@ -4,8 +4,40 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
+import { revalidateTag } from 'next/cache';
 
-// GET - Buscar assignment específico
+// Função auxiliar para revalidar cache de assignment details
+async function revalidateAssignmentDetailsData(
+  teacherUserId: string,
+  studentUserId: string
+) {
+  console.log(`🔄 [CACHE] Revalidating assignment details data`);
+
+  // Tags específicas de assignments
+  revalidateTag('teacher-assignments');
+  revalidateTag('teacher-assignments-data');
+  revalidateTag('teacher-assignment-details');
+  revalidateTag('teacher-assignment-details-data');
+  revalidateTag('teacher-assignment-edit');
+  revalidateTag('teacher-assignment-edit-data');
+  revalidateTag('teacher-student-detail-data');
+  revalidateTag('teacher-lessons-data');
+  revalidateTag('teacher-lesson-details-data');
+  revalidateTag('teacher-dashboard');
+  revalidateTag('teacher-dashboard-data');
+
+  // Tags específicas dos usuários
+  revalidateTag(`teacher-${teacherUserId}`);
+  revalidateTag('student-assignments');
+  revalidateTag('student-dashboard');
+  revalidateTag(`student-${studentUserId}`);
+
+  console.log(
+    `✅ [CACHE] Assignment details cache revalidated for teacher ${teacherUserId} and student ${studentUserId}`
+  );
+}
+
+// GET - Buscar assignment específico (sem mudanças)
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -225,7 +257,7 @@ export async function GET(
   }
 }
 
-// PUT - Atualizar assignment (Professor)
+// PUT - Atualizar assignment (Professor) COM REVALIDAÇÃO
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -266,6 +298,11 @@ export async function PUT(
         id: assignmentId,
         lesson: {
           teacherId: teacherProfile.id,
+        },
+      },
+      include: {
+        student: {
+          select: { userId: true },
         },
       },
     });
@@ -345,7 +382,13 @@ export async function PUT(
       },
     });
 
-    console.log(`✅ [ASSIGNMENT-DETAIL] Assignment ${assignmentId} atualizado`);
+    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
+    const studentUserId = assignment.student.userId;
+    await revalidateAssignmentDetailsData(session.user.id, studentUserId);
+
+    console.log(
+      `✅ [ASSIGNMENT-DETAIL] Assignment ${assignmentId} atualizado e cache revalidado`
+    );
 
     return NextResponse.json({
       success: true,

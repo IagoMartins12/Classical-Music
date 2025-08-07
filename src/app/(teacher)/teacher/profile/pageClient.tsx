@@ -1,7 +1,7 @@
-// app/teacher/profile/pageClient.tsx - Client Component para Perfil do Professor
+// app/teacher/profile/pageClient.tsx - Client Component CORRIGIDO
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   FiUser,
   FiSave,
@@ -24,6 +24,7 @@ import {
   FiMail,
   FiPhone,
   FiSettings,
+  FiAlertCircle,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -33,7 +34,20 @@ import {
   SequentialGrid,
 } from '../../../components/animation/AnimatedComponents';
 import { TeacherProfileData, TeacherProfile } from './pageServer';
-import Image from 'next/image';
+import LocationSelector, {
+  LocationData,
+} from '../../../components/Common/LocationSelector';
+import InternationalPhoneInput from '../../../components/Common/InternationalPhoneInput';
+import {
+  validatePhoneNumber,
+  canProceedWithPhone,
+  usePhoneValidation,
+} from '@/app/utils/phones_and_location/phoneValidation';
+import {
+  convertDatabaseToLocationData,
+  convertLocationDataToDatabase,
+  isLocationDataComplete,
+} from '@/app/utils/locationUtils';
 
 interface TeacherProfilePageClientProps {
   initialData: TeacherProfileData | null;
@@ -110,27 +124,33 @@ export default function TeacherProfilePageClient({
   const [error, setError] = useState(errorMessage);
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Form states
-  const [personalForm, setPersonalForm] = useState({
+  console.log('DEBUG INFO', {
+    initialData,
+    teacherProfile,
+  });
+  // 🔧 INICIALIZAÇÃO CORRETA DOS FORMS COM DADOS COMPLETOS
+  const [personalForm, setPersonalForm] = useState(() => ({
     firstName: teacherProfile.name.split(' ')[0] || '',
     lastName: teacherProfile.name.split(' ').slice(1).join(' ') || '',
     email: teacherProfile.email,
     phone: data?.user.phone || '',
-    city: data?.user.city || '',
-    state: data?.user.state || '',
-    country: data?.user.country || 'Brasil',
-  });
+    location: convertDatabaseToLocationData({
+      country: data?.user.country,
+      state: data?.user.state,
+      city: data?.user.city,
+    }),
+  }));
 
-  const [professionalForm, setProfessionalForm] = useState({
+  const [professionalForm, setProfessionalForm] = useState(() => ({
     bio: data?.bio || '',
     experience: data?.experience || '',
     education: data?.education || '',
     achievements: data?.achievements || '',
     website: data?.website || '',
     socialMedia: data?.socialMedia || {},
-  });
+  }));
 
-  const [teachingForm, setTeachingForm] = useState({
+  const [teachingForm, setTeachingForm] = useState(() => ({
     instruments: data?.instruments || [],
     specialties: data?.specialties || [],
     teachingMethod: data?.teachingMethod || '',
@@ -139,13 +159,58 @@ export default function TeacherProfilePageClient({
     defaultLessonDuration: data?.defaultLessonDuration || 60,
     maxStudentsPerWeek: data?.maxStudentsPerWeek || 50,
     timezone: data?.timezone || 'America/Sao_Paulo',
-  });
+  }));
 
-  const [publicForm, setPublicForm] = useState({
+  const [publicForm, setPublicForm] = useState(() => ({
     isPublicProfile: data?.isPublicProfile || false,
     publicBio: data?.publicBio || '',
     highlightedWorks: data?.highlightedWorks || [],
-  });
+  }));
+
+  // 🆕 VALIDAÇÃO DE TELEFONE EM TEMPO REAL
+  const phoneValidation = usePhoneValidation(personalForm.phone);
+  const [phoneError, setPhoneError] = useState<string>('');
+
+  // 🔄 SINCRONIZAR FORMS QUANDO DATA MUDAR
+  useEffect(() => {
+    if (data) {
+      setPersonalForm((prev) => ({
+        ...prev,
+        phone: data.user.phone || '',
+        location: convertDatabaseToLocationData({
+          country: data.user.country,
+          state: data.user.state,
+          city: data.user.city,
+        }),
+      }));
+
+      setProfessionalForm({
+        bio: data.bio || '',
+        experience: data.experience || '',
+        education: data.education || '',
+        achievements: data.achievements || '',
+        website: data.website || '',
+        socialMedia: data.socialMedia || {},
+      });
+
+      setTeachingForm({
+        instruments: data.instruments || [],
+        specialties: data.specialties || [],
+        teachingMethod: data.teachingMethod || '',
+        ageGroups: data.ageGroups || [],
+        skillLevels: data.skillLevels || [],
+        defaultLessonDuration: data.defaultLessonDuration || 60,
+        maxStudentsPerWeek: data.maxStudentsPerWeek || 50,
+        timezone: data.timezone || 'America/Sao_Paulo',
+      });
+
+      setPublicForm({
+        isPublicProfile: data.isPublicProfile || false,
+        publicBio: data.publicBio || '',
+        highlightedWorks: data.highlightedWorks || [],
+      });
+    }
+  }, [data]);
 
   // Helper functions
   const showSuccess = (message: string) => {
@@ -158,19 +223,74 @@ export default function TeacherProfilePageClient({
     setTimeout(() => setError(''), 8000);
   };
 
-  // Save functions
+  // 🔧 HANDLERS PARA TELEFONE E LOCALIZAÇÃO
+  const handlePhoneChange = (phone: string) => {
+    setPersonalForm((prev) => ({ ...prev, phone }));
+    setPhoneError('');
+  };
+
+  const handleLocationChange = (location: LocationData) => {
+    console.log('📍 Localização alterada:', location);
+    setPersonalForm((prev) => ({ ...prev, location }));
+  };
+
+  // 🔧 VALIDAÇÃO MELHORADA
+  const validatePersonalForm = () => {
+    const errors: string[] = [];
+
+    if (!personalForm.firstName.trim()) {
+      errors.push('Nome é obrigatório');
+    }
+
+    // Validação de telefone
+    if (personalForm.phone && personalForm.phone.trim() !== '') {
+      const phoneValidationResult = validatePhoneNumber(personalForm.phone);
+      if (!phoneValidationResult.isValid && !phoneValidationResult.isEmpty) {
+        errors.push(phoneValidationResult.error || 'Telefone inválido');
+        setPhoneError(phoneValidationResult.error || 'Telefone inválido');
+      }
+    }
+
+    if (errors.length > 0) {
+      showError(errors.join('; '));
+      return false;
+    }
+
+    return true;
+  };
+
+  // 🔧 FUNÇÃO SALVAR DADOS PESSOAIS CORRIGIDA
   const savePersonalData = useCallback(async () => {
+    if (!validatePersonalForm()) {
+      return;
+    }
+
     setSaving(true);
     setError('');
 
     try {
+      const locationForDatabase = convertLocationDataToDatabase(
+        personalForm.location
+      );
+
+      const userData = {
+        firstName: personalForm.firstName,
+        lastName: personalForm.lastName,
+        phone: personalForm.phone,
+        city: locationForDatabase.city,
+        state: locationForDatabase.state,
+        country: locationForDatabase.country,
+      };
+
+      console.log('💾 Enviando dados pessoais:', userData);
+
       const response = await fetch('/api/teacher/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userData: personalForm,
+          userData,
         }),
       });
 
@@ -187,7 +307,7 @@ export default function TeacherProfilePageClient({
         showSuccess('Dados pessoais salvos com sucesso!');
       }
     } catch (error) {
-      console.error('Erro ao salvar dados pessoais:', error);
+      console.error('❌ Erro ao salvar dados pessoais:', error);
       showError(
         error instanceof Error ? error.message : 'Erro ao salvar dados pessoais'
       );
@@ -196,11 +316,14 @@ export default function TeacherProfilePageClient({
     }
   }, [personalForm]);
 
+  // 🔧 FUNÇÃO SALVAR DADOS PROFISSIONAIS CORRIGIDA
   const saveProfessionalData = useCallback(async () => {
     setSaving(true);
     setError('');
 
     try {
+      console.log('💾 Enviando dados profissionais:', professionalForm);
+
       const response = await fetch('/api/teacher/profile', {
         method: 'PUT',
         headers: {
@@ -226,7 +349,7 @@ export default function TeacherProfilePageClient({
         showSuccess('Dados profissionais salvos com sucesso!');
       }
     } catch (error) {
-      console.error('Erro ao salvar dados profissionais:', error);
+      console.error('❌ Erro ao salvar dados profissionais:', error);
       showError(
         error instanceof Error
           ? error.message
@@ -237,11 +360,14 @@ export default function TeacherProfilePageClient({
     }
   }, [professionalForm]);
 
+  // 🔧 FUNÇÃO SALVAR DADOS DE ENSINO CORRIGIDA
   const saveTeachingData = useCallback(async () => {
     setSaving(true);
     setError('');
 
     try {
+      console.log('💾 Enviando dados de ensino:', teachingForm);
+
       const response = await fetch('/api/teacher/profile', {
         method: 'PUT',
         headers: {
@@ -265,7 +391,7 @@ export default function TeacherProfilePageClient({
         showSuccess('Configurações de ensino salvas com sucesso!');
       }
     } catch (error) {
-      console.error('Erro ao salvar dados de ensino:', error);
+      console.error('❌ Erro ao salvar dados de ensino:', error);
       showError(
         error instanceof Error
           ? error.message
@@ -276,11 +402,14 @@ export default function TeacherProfilePageClient({
     }
   }, [teachingForm]);
 
+  // 🔧 FUNÇÃO SALVAR PERFIL PÚBLICO CORRIGIDA
   const savePublicData = useCallback(async () => {
     setSaving(true);
     setError('');
 
     try {
+      console.log('💾 Enviando dados públicos:', publicForm);
+
       const response = await fetch('/api/teacher/profile', {
         method: 'PUT',
         headers: {
@@ -304,7 +433,7 @@ export default function TeacherProfilePageClient({
         showSuccess('Perfil público atualizado com sucesso!');
       }
     } catch (error) {
-      console.error('Erro ao salvar perfil público:', error);
+      console.error('❌ Erro ao salvar perfil público:', error);
       showError(
         error instanceof Error ? error.message : 'Erro ao salvar perfil público'
       );
@@ -428,82 +557,9 @@ export default function TeacherProfilePageClient({
           </AnimatedItem>
         )}
 
-        {/* Profile Stats */}
-        {data && (
-          <AnimatedItem direction="up" springType="gentle">
-            <SequentialGrid
-              cols={4}
-              gap={6}
-              delayBetweenItems={0.1}
-              className="mb-8"
-            >
-              <AnimatedCard
-                hover="scale"
-                className="classical-card p-6 text-center"
-              >
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiUsers className="w-6 h-6 text-theme-primary" />
-                </div>
-                <div className="text-2xl font-bold text-theme-primary mb-1">
-                  {data.totalStudents}
-                </div>
-                <div className="text-sm text-theme-tertiary">
-                  Total de Alunos
-                </div>
-              </AnimatedCard>
-
-              <AnimatedCard
-                hover="scale"
-                className="classical-card p-6 text-center"
-              >
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiBookOpen className="w-6 h-6 text-theme-primary" />
-                </div>
-                <div className="text-2xl font-bold text-theme-primary mb-1">
-                  {data.totalLessons}
-                </div>
-                <div className="text-sm text-theme-tertiary">Aulas Dadas</div>
-              </AnimatedCard>
-
-              <AnimatedCard
-                hover="scale"
-                className="classical-card p-6 text-center"
-              >
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiStar className="w-6 h-6 text-theme-primary" />
-                </div>
-                <div className="text-2xl font-bold text-theme-primary mb-1">
-                  {data.averageRating?.toFixed(1) || '0.0'}
-                </div>
-                <div className="text-sm text-theme-tertiary">
-                  Avaliação Média
-                </div>
-              </AnimatedCard>
-
-              <AnimatedCard
-                hover="scale"
-                className="classical-card p-6 text-center"
-              >
-                <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
-                  <FiAward className="w-6 h-6 text-theme-primary" />
-                </div>
-                <div className="text-2xl font-bold text-theme-primary mb-1">
-                  {data.isVerified ? 'Sim' : 'Não'}
-                </div>
-                <div className="text-sm text-theme-tertiary">Verificado</div>
-              </AnimatedCard>
-            </SequentialGrid>
-          </AnimatedItem>
-        )}
-
         {/* Profile Sections */}
-        <SequentialGrid
-          cols={1}
-          gap={8}
-          delayBetweenItems={0.2}
-          className="space-y-8"
-        >
-          {/* Personal Information */}
+        <div className="space-y-8">
+          {/* 🔧 Personal Information - SEÇÃO CORRIGIDA COM LOCATION E TELEFONE */}
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -542,7 +598,7 @@ export default function TeacherProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Nome
+                        Nome *
                       </label>
                       <input
                         type="text"
@@ -555,6 +611,7 @@ export default function TeacherProfilePageClient({
                         }
                         className="input-classical w-full"
                         placeholder="Seu primeiro nome"
+                        required
                       />
                     </div>
 
@@ -578,75 +635,69 @@ export default function TeacherProfilePageClient({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Email
+                        Email (não editável)
                       </label>
                       <input
                         type="email"
                         value={personalForm.email}
-                        onChange={(e) =>
-                          setPersonalForm((prev) => ({
-                            ...prev,
-                            email: e.target.value,
-                          }))
-                        }
-                        className="input-classical w-full"
-                        placeholder="seu@email.com"
+                        disabled
+                        className="input-classical w-full opacity-50 cursor-not-allowed"
                       />
+                    </div>
+                  </div>
+
+                  {/* 🆕 TELEFONE COM COMPONENTE INTERNACIONAL */}
+                  <div>
+                    <InternationalPhoneInput
+                      value={personalForm.phone}
+                      onChange={handlePhoneChange}
+                      disabled={saving}
+                      label="Telefone/WhatsApp"
+                      placeholder="Digite seu número"
+                      defaultCountry="+55"
+                      showLabel={true}
+                      error={phoneError}
+                    />
+
+                    {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE */}
+                    {phoneError &&
+                      phoneValidation.showError &&
+                      phoneValidation.error && (
+                        <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-3 mt-4">
+                          <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <h4 className="text-sm font-medium text-red-800">
+                              Telefone inválido
+                            </h4>
+                            <p className="text-sm text-red-700 mt-1">
+                              {phoneValidation.error}
+                            </p>
+                            {phoneValidation.progressMessage && (
+                              <p className="text-xs text-red-600 mt-1">
+                                {phoneValidation.progressMessage}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                  </div>
+
+                  {/* 🆕 LOCALIZAÇÃO COM COMPONENTE LOCATION SELECTOR */}
+                  <div>
+                    <div className="flex items-center space-x-2 mb-4">
+                      <FiMapPin className="w-4 h-4 text-brand-primary" />
+                      <h4 className="font-medium text-theme-primary">
+                        Localização
+                      </h4>
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Telefone/WhatsApp
-                      </label>
-                      <input
-                        type="tel"
-                        value={personalForm.phone}
-                        onChange={(e) =>
-                          setPersonalForm((prev) => ({
-                            ...prev,
-                            phone: e.target.value,
-                          }))
-                        }
-                        className="input-classical w-full"
-                        placeholder="(11) 99999-9999"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Cidade
-                      </label>
-                      <input
-                        type="text"
-                        value={personalForm.city}
-                        onChange={(e) =>
-                          setPersonalForm((prev) => ({
-                            ...prev,
-                            city: e.target.value,
-                          }))
-                        }
-                        className="input-classical w-full"
-                        placeholder="São Paulo"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Estado
-                      </label>
-                      <input
-                        type="text"
-                        value={personalForm.state}
-                        onChange={(e) =>
-                          setPersonalForm((prev) => ({
-                            ...prev,
-                            state: e.target.value,
-                          }))
-                        }
-                        className="input-classical w-full"
-                        placeholder="SP"
-                      />
-                    </div>
+                    <LocationSelector
+                      value={personalForm.location}
+                      onChange={handleLocationChange}
+                      disabled={saving}
+                      showLabels={false}
+                      className="space-y-3"
+                    />
                   </div>
 
                   <div className="flex items-center justify-end space-x-3 pt-4 border-t border-theme-secondary">
@@ -659,8 +710,15 @@ export default function TeacherProfilePageClient({
                     </button>
                     <button
                       onClick={savePersonalData}
-                      disabled={saving}
+                      disabled={
+                        saving || !canProceedWithPhone(personalForm.phone)
+                      }
                       className="btn-classical-primary flex items-center space-x-2"
+                      title={
+                        phoneError
+                          ? `Não é possível salvar: ${phoneError}`
+                          : undefined
+                      }
                     >
                       {saving ? (
                         <FiRefreshCw className="w-4 h-4 animate-spin" />
@@ -714,7 +772,7 @@ export default function TeacherProfilePageClient({
                         <span>
                           {data?.user.city && data?.user.state
                             ? `${data.user.city}, ${data.user.state}`
-                            : 'Não informado'}
+                            : data?.user.country || 'Não informado'}
                         </span>
                       </div>
                     </div>
@@ -801,6 +859,7 @@ export default function TeacherProfilePageClient({
                       rows={4}
                       className="input-classical w-full"
                       placeholder="Conte um pouco sobre você, sua paixão pela música e sua trajetória..."
+                      disabled={saving}
                     />
                   </div>
 
@@ -820,6 +879,7 @@ export default function TeacherProfilePageClient({
                         rows={3}
                         className="input-classical w-full"
                         placeholder="Ex: 10 anos ensinando piano, participação em orquestras..."
+                        disabled={saving}
                       />
                     </div>
 
@@ -838,6 +898,7 @@ export default function TeacherProfilePageClient({
                         rows={3}
                         className="input-classical w-full"
                         placeholder="Ex: Bacharelado em Música pela USP, Mestrado em Performance..."
+                        disabled={saving}
                       />
                     </div>
                   </div>
@@ -857,6 +918,7 @@ export default function TeacherProfilePageClient({
                       rows={3}
                       className="input-classical w-full"
                       placeholder="Ex: 1º lugar no Concurso Nacional de Piano 2020..."
+                      disabled={saving}
                     />
                   </div>
 
@@ -876,6 +938,7 @@ export default function TeacherProfilePageClient({
                         }
                         className="input-classical w-full"
                         placeholder="https://seusite.com"
+                        disabled={saving}
                       />
                     </div>
                   </div>
@@ -1048,6 +1111,7 @@ export default function TeacherProfilePageClient({
                               removeFromArray('instruments', instrument)
                             }
                             className="text-accent-blue/70 hover:text-accent-red transition-colors"
+                            disabled={saving}
                           >
                             <FiX className="w-3 h-3" />
                           </button>
@@ -1067,7 +1131,8 @@ export default function TeacherProfilePageClient({
                               COMMON_INSTRUMENTS
                             )
                           }
-                          className="px-3 py-1 bg-theme-elevated hover:bg-interactive-hover border border-theme-secondary hover:border-brand-primary text-theme-secondary hover:text-brand-primary rounded-full text-sm transition-all"
+                          disabled={saving}
+                          className="px-3 py-1 bg-theme-elevated hover:bg-interactive-hover border border-theme-secondary hover:border-brand-primary text-theme-secondary hover:text-brand-primary rounded-full text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           + {instrument}
                         </button>
@@ -1091,6 +1156,7 @@ export default function TeacherProfilePageClient({
                               removeFromArray('specialties', specialty)
                             }
                             className="text-accent-purple/70 hover:text-accent-red transition-colors"
+                            disabled={saving}
                           >
                             <FiX className="w-3 h-3" />
                           </button>
@@ -1110,7 +1176,8 @@ export default function TeacherProfilePageClient({
                               COMMON_SPECIALTIES
                             )
                           }
-                          className="px-3 py-1 bg-theme-elevated hover:bg-interactive-hover border border-theme-secondary hover:border-brand-primary text-theme-secondary hover:text-brand-primary rounded-full text-sm transition-all"
+                          disabled={saving}
+                          className="px-3 py-1 bg-theme-elevated hover:bg-interactive-hover border border-theme-secondary hover:border-brand-primary text-theme-secondary hover:text-brand-primary rounded-full text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           + {specialty}
                         </button>
@@ -1133,6 +1200,7 @@ export default function TeacherProfilePageClient({
                       rows={3}
                       className="input-classical w-full"
                       placeholder="Descreva sua abordagem e metodologia de ensino..."
+                      disabled={saving}
                     />
                   </div>
 
@@ -1159,7 +1227,8 @@ export default function TeacherProfilePageClient({
                                   removeFromArray('ageGroups', ageGroup);
                                 }
                               }}
-                              className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-brand-primary"
+                              disabled={saving}
+                              className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-brand-primary disabled:opacity-50"
                             />
                             <span className="text-theme-primary text-sm">
                               {ageGroup}
@@ -1195,7 +1264,8 @@ export default function TeacherProfilePageClient({
                                   removeFromArray('skillLevels', skillLevel);
                                 }
                               }}
-                              className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-brand-primary"
+                              disabled={saving}
+                              className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-brand-primary disabled:opacity-50"
                             />
                             <span className="text-theme-primary text-sm">
                               {skillLevel}
@@ -1220,6 +1290,7 @@ export default function TeacherProfilePageClient({
                           }))
                         }
                         className="input-classical w-full"
+                        disabled={saving}
                       >
                         <option value={30}>30 minutos</option>
                         <option value={45}>45 minutos</option>
@@ -1243,8 +1314,9 @@ export default function TeacherProfilePageClient({
                           }))
                         }
                         min={1}
-                        max={100}
+                        max={200}
                         className="input-classical w-full"
+                        disabled={saving}
                       />
                     </div>
 
@@ -1261,6 +1333,7 @@ export default function TeacherProfilePageClient({
                           }))
                         }
                         className="input-classical w-full"
+                        disabled={saving}
                       >
                         <option value="America/Sao_Paulo">
                           São Paulo (UTC-3)
@@ -1538,9 +1611,10 @@ export default function TeacherProfilePageClient({
                             isPublicProfile: e.target.checked,
                           }))
                         }
+                        disabled={saving}
                         className="sr-only peer"
                       />
-                      <div className="w-11 h-6 bg-theme-secondary peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary"></div>
+                      <div className="w-11 h-6 bg-theme-secondary peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-brand-primary/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-primary peer-disabled:opacity-50 peer-disabled:cursor-not-allowed"></div>
                     </label>
                   </div>
 
@@ -1560,6 +1634,7 @@ export default function TeacherProfilePageClient({
                         rows={4}
                         className="input-classical w-full"
                         placeholder="Escreva uma biografia específica para o perfil público, destacando seus diferenciais como professor..."
+                        disabled={saving}
                       />
                       <div className="text-xs text-theme-tertiary mt-1">
                         Se deixar em branco, será usada sua biografia principal
@@ -1686,7 +1761,7 @@ export default function TeacherProfilePageClient({
               )}
             </div>
           </AnimatedCard>
-        </SequentialGrid>
+        </div>
       </AnimatedContainer>
     </PageContainer>
   );

@@ -29,6 +29,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useTeacherCalendar } from '@/app/hooks/useTeacherCalendar';
 import Select from '@/app/components/Common/Select';
+import Modal from '@/app/components/Modal';
 
 interface TeacherProfile {
   id: string;
@@ -1043,11 +1044,8 @@ function EventDetailsModal({
   getEventStatusColor,
 }: EventDetailsModalProps) {
   return (
-    <div className="fixed inset-0 bg-bg-overlay backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <AnimatedCard
-        hover="none"
-        className="classical-card w-full max-w-2xl max-h-[80vh] overflow-y-auto"
-      >
+    <Modal isOpen onClose={onClose} maxWidth="3xl">
+      <AnimatedCard hover="none">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -1079,12 +1077,6 @@ function EventDetailsModal({
                 )}
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
-            >
-              <FiX className="w-4 h-4 text-theme-tertiary" />
-            </button>
           </div>
 
           <div className="space-y-6">
@@ -1247,6 +1239,6 @@ function EventDetailsModal({
           </div>
         </div>
       </AnimatedCard>
-    </div>
+    </Modal>
   );
 }

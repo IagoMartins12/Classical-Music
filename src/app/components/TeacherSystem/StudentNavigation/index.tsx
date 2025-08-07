@@ -107,12 +107,6 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
           description: 'Visualização em calendário',
           icon: FiCalendar,
         },
-        {
-          label: 'Histórico de Aulas',
-          href: '/student/lessons/history',
-          description: 'Aulas anteriores e registros',
-          icon: FiClock,
-        },
       ],
     },
     {

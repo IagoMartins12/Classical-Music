@@ -1,7 +1,8 @@
-// app/student/profile/pageServer.tsx - Server Component para Perfil do Aluno
+// app/student/profile/pageServer.tsx - Server Component com queries diretas
 
 import { getStudentProfileForPageServer } from '@/app/requests/student-requests';
 import StudentProfilePageClient from './pageClient';
+import prisma from '@/app/libs/prismadb';
 
 export interface StudentProfileData {
   profile: {
@@ -95,6 +96,36 @@ export interface UserProfile {
   role: number;
 }
 
+// 🔧 TIPOS ESPECÍFICOS PARA OS DADOS
+interface WantToLearnItem {
+  workId: string;
+  title: string;
+  composer: string;
+  addedAt: Date;
+  difficulty?: string | null;
+  selectedScore?: {
+    title: string;
+    type: string;
+  };
+}
+
+interface LearnedItem {
+  workId: string;
+  title: string;
+  composer: string;
+  learnedAt: Date;
+  mastery: number;
+  wouldRecommend: boolean;
+}
+
+interface AnnotationItem {
+  id: string;
+  workTitle: string;
+  title: string;
+  category: string;
+  createdAt: Date;
+}
+
 export default async function StudentProfilePageServer({
   userId,
   userEmail,
@@ -119,59 +150,115 @@ export default async function StudentProfilePageServer({
       throw new Error('Falha ao carregar perfil do aluno');
     }
 
-    // Buscar dados de estudo (Quero Aprender/Já Aprendi)
+    // 📚 BUSCAR DADOS DE ESTUDO - QUERIES DIRETAS
     console.log('📚 Carregando dados de estudo...');
 
-    // Fetch das obras que quer aprender
-    const wantToLearnResponse = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/want-to-learn?userId=${userId}&limit=10`,
-      { next: { revalidate: 300 } }
-    );
-
-    // Fetch das obras já aprendidas
-    const learnedResponse = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/learned?userId=${userId}&limit=10`,
-      { next: { revalidate: 300 } }
-    );
-
-    // Fetch das anotações recentes
-    const annotationsResponse = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/annotations?userId=${userId}&limit=5&public=true`,
-      { next: { revalidate: 300 } }
-    );
-
-    // Processar respostas (fallback para arrays vazios se falhar)
-    let wantToLearnData = [];
-    let learnedData = [];
-    let annotationsData = [];
-
+    // 1. Query direta: Obras que quer aprender
+    let wantToLearnData: WantToLearnItem[] = [];
     try {
-      if (wantToLearnResponse.ok) {
-        const wantToLearnJson = await wantToLearnResponse.json();
-        wantToLearnData = wantToLearnJson.works || [];
-      }
+      const wantToLearnItems = await prisma.wantToLearn.findMany({
+        where: { userId },
+        include: {
+          work: {
+            include: {
+              composer: {
+                select: { name: true },
+              },
+            },
+          },
+          selectedWorkScore: {
+            select: {
+              title: true,
+              type: true,
+            },
+          },
+        },
+        orderBy: { addedAt: 'desc' },
+        take: 10,
+      });
+
+      wantToLearnData = wantToLearnItems.map((item) => ({
+        workId: item.work.id,
+        title: item.work.title,
+        composer: item.work.composer.name,
+        addedAt: item.addedAt,
+        difficulty: item.difficulty,
+        selectedScore: item.selectedWorkScore
+          ? {
+              title: item.selectedWorkScore.title,
+              type: item.selectedWorkScore.type,
+            }
+          : undefined,
+      }));
+
+      console.log(`✅ Want-to-learn: ${wantToLearnData.length} items`);
     } catch (error) {
       console.warn('⚠️ Error loading want-to-learn data:', error);
     }
 
+    // 2. Query direta: Obras já aprendidas
+    let learnedData: LearnedItem[] = [];
     try {
-      if (learnedResponse.ok) {
-        const learnedJson = await learnedResponse.json();
-        learnedData = learnedJson.works || [];
-      }
+      const learnedItems = await prisma.learned.findMany({
+        where: { userId },
+        include: {
+          work: {
+            include: {
+              composer: {
+                select: { name: true },
+              },
+            },
+          },
+        },
+        orderBy: { learnedAt: 'desc' },
+        take: 10,
+      });
+
+      learnedData = learnedItems.map((item) => ({
+        workId: item.work.id,
+        title: item.work.title,
+        composer: item.work.composer.name,
+        learnedAt: item.learnedAt,
+        mastery: item.mastery,
+        wouldRecommend: item.wouldRecommend,
+      }));
+
+      console.log(`✅ Learned: ${learnedData.length} items`);
     } catch (error) {
       console.warn('⚠️ Error loading learned data:', error);
     }
 
+    // 3. Query direta: Anotações recentes
+    let annotationsData: AnnotationItem[] = [];
     try {
-      if (annotationsResponse.ok) {
-        const annotationsJson = await annotationsResponse.json();
-        annotationsData = annotationsJson.annotations || [];
-      }
+      const recentAnnotations = await prisma.workAnnotation.findMany({
+        where: {
+          userId,
+          isPublic: true,
+        },
+        include: {
+          work: {
+            select: { title: true },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+      });
+
+      annotationsData = recentAnnotations.map((annotation) => ({
+        id: annotation.id,
+        workTitle: annotation.work.title,
+        title: annotation.title,
+        category: annotation.category,
+        createdAt: annotation.createdAt,
+      }));
+
+      console.log(`✅ Annotations: ${annotationsData.length} items`);
     } catch (error) {
       console.warn('⚠️ Error loading annotations data:', error);
     }
 
+    // Montar dados finais
     const studentProfileData: StudentProfileData = {
       profile: profileData.profile,
       studyData: {
@@ -183,7 +270,7 @@ export default async function StudentProfilePageServer({
     };
 
     console.log(
-      `✅ [STUDENT-PROFILE-PAGE-SERVER] Data loaded successfully - ${profileData.profile.teachers.length} teachers, ${wantToLearnData.length} want-to-learn, ${learnedData.length} learned`
+      `✅ [STUDENT-PROFILE-PAGE-SERVER] Data loaded successfully - ${profileData.profile.teachers.length} teachers, ${wantToLearnData.length} want-to-learn, ${learnedData.length} learned, ${annotationsData.length} annotations`
     );
 
     return (

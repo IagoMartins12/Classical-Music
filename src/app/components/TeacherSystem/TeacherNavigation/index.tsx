@@ -93,26 +93,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
       label: 'Alunos',
       icon: FiUsers,
       active: pathname.startsWith('/teacher/students'),
-      submenu: [
-        {
-          label: 'Todos os Alunos',
-          href: '/teacher/students',
-          description: 'Visualizar e gerenciar todos os alunos',
-          icon: FiUsers,
-        },
-        {
-          label: 'Adicionar Aluno',
-          href: '/teacher/students/add',
-          description: 'Vincular novo aluno',
-          icon: FiPlus,
-        },
-        {
-          label: 'Relatórios',
-          href: '/teacher/students/reports',
-          description: 'Relatórios de progresso',
-          icon: FiBarChart2,
-        },
-      ],
+      href: '/teacher/students',
     },
     {
       label: 'Aulas',

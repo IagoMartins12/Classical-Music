@@ -99,7 +99,7 @@ function getPremiumOpusAtlasLayout(content: string): string {
         body { 
             font-family: 'Georgia', 'Times New Roman', serif;
             line-height: 1.7;
-            color: #e5e7eb;
+            color: #ffffff;
             background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #1a1a1a 100%);
             margin: 0;
             padding: 0;

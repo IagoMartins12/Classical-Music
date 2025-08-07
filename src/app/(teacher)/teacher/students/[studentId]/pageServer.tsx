@@ -113,7 +113,7 @@ export default async function TeacherStudentDetailPageServer({
       console.log(
         `❌ [TEACHER-STUDENT-DETAIL-PAGE-SERVER] Student not found or no access`
       );
-      return notFound();
+      return;
     }
 
     console.log(

@@ -1,4 +1,4 @@
-// app/hooks/useStudentProfile.ts - Hook para gerenciar perfil do aluno
+// app/hooks/useStudentProfile.ts - Hook atualizado para melhor integração
 
 import { StudentProfileData } from '@/app/(student)/student/profile/pageServer';
 import { useState, useCallback } from 'react';
@@ -230,32 +230,75 @@ export function useStudentProfile(
     }
   }, [setLoading, setError]);
 
-  // Refresh study data
+  // 🔄 REFRESH STUDY DATA OTIMIZADO - Usar APIs corretas
   const refreshStudyData = useCallback(async () => {
     setLoading('refreshStudyData', true);
     setError(null);
 
     try {
-      // Fetch want-to-learn, learned, and annotations in parallel
+      console.log('🔄 Refreshing study data...');
+
+      // ✅ Buscar dados usando as APIs corretas (não as antigas)
       const [wantToLearnResponse, learnedResponse, annotationsResponse] =
         await Promise.all([
-          fetch('/api/want-to-learn?limit=10'),
-          fetch('/api/learned?limit=10'),
+          fetch('/api/learning/want-to-learn'),
+          fetch('/api/learning/learned'),
           fetch('/api/annotations?limit=5&public=true'),
         ]);
 
-      const wantToLearnData = wantToLearnResponse.ok
-        ? (await wantToLearnResponse.json()).works || []
-        : [];
+      // Processar want-to-learn
+      let wantToLearnData = [];
+      if (wantToLearnResponse.ok) {
+        const wantToLearnJson = await wantToLearnResponse.json();
+        wantToLearnData = (wantToLearnJson.items || [])
+          .slice(0, 10)
+          .map((item: any) => ({
+            workId: item.workId,
+            title: item.work.title,
+            composer: item.work.composer.name,
+            addedAt: new Date(item.addedAt),
+            difficulty: item.difficulty,
+            selectedScore: item.selectedWorkScore
+              ? {
+                  title: item.selectedWorkScore.title,
+                  type: item.selectedWorkScore.type,
+                }
+              : undefined,
+          }));
+      }
 
-      const learnedData = learnedResponse.ok
-        ? (await learnedResponse.json()).works || []
-        : [];
+      // Processar learned
+      let learnedData = [];
+      if (learnedResponse.ok) {
+        const learnedJson = await learnedResponse.json();
+        learnedData = (learnedJson.items || [])
+          .slice(0, 10)
+          .map((item: any) => ({
+            workId: item.workId,
+            title: item.work.title,
+            composer: item.work.composer.name,
+            learnedAt: new Date(item.learnedAt),
+            mastery: item.mastery,
+            wouldRecommend: item.wouldRecommend,
+          }));
+      }
 
-      const annotationsData = annotationsResponse.ok
-        ? (await annotationsResponse.json()).annotations || []
-        : [];
+      // Processar annotations
+      let annotationsData = [];
+      if (annotationsResponse.ok) {
+        const annotationsJson = await annotationsResponse.json();
+        annotationsData = (annotationsJson.annotations || [])
+          .slice(0, 5)
+          .map((annotation: any) => ({
+            id: annotation.id,
+            workTitle: annotation.work.title,
+            title: annotation.title,
+            category: annotation.category,
+            createdAt: new Date(annotation.createdAt),
+          }));
+      }
 
+      // Atualizar estado
       setState((prev) => ({
         ...prev,
         studyData: {
@@ -265,7 +308,9 @@ export function useStudentProfile(
         },
       }));
 
-      console.log('✅ Dados de estudo recarregados com sucesso!');
+      console.log(
+        `✅ Dados de estudo recarregados com sucesso! Want-to-learn: ${wantToLearnData.length}, Learned: ${learnedData.length}, Annotations: ${annotationsData.length}`
+      );
     } catch (error) {
       console.error('❌ Erro ao recarregar dados de estudo:', error);
       setError(error instanceof Error ? error.message : 'Erro desconhecido');

@@ -1,4 +1,4 @@
-// app/api/annotations/route.ts - VERSÃO CORRIGIDA (apenas GET e POST)
+// app/api/annotations/route.ts - VERSÃO COM REVALIDAÇÃO DE CACHE APRIMORADA
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -138,13 +138,23 @@ export async function POST(request: NextRequest) {
       }),
     ]);
 
-    // Invalidar caches
+    // 🔄 REVALIDAÇÃO DE CACHE AMPLIADA
     revalidateTag(`work-annotations-${workId}`);
     revalidateTag(`user-annotations-${session.user.id}`);
     revalidateTag('annotations-popular');
     revalidateTag('annotation-stats');
 
-    // 🔧 CORREÇÃO: Retornar dados formatados corretamente
+    // ✅ REVALIDAR CACHE DO PERFIL DO ESTUDANTE
+    revalidateTag('student-profile-data');
+    revalidateTag(`student-profile-${session.user.id}`);
+    revalidateTag('student-dashboard-data');
+    revalidateTag(`student-dashboard-${session.user.id}`);
+
+    console.log(
+      `🔄 Cache revalidated for annotation creation - User: ${session.user.id}, Work: ${workId}`
+    );
+
+    // Retornar dados formatados corretamente
     const formattedAnnotation = {
       id: annotation.id,
       userId: annotation.userId,
@@ -274,7 +284,7 @@ export async function GET(request: NextRequest) {
       prisma.workAnnotation.count({ where }),
     ]);
 
-    // 🔧 CORREÇÃO: Buscar votos do usuário atual (se logado) para todas as anotações
+    // Buscar votos do usuário atual (se logado) para todas as anotações
     const session = await getServerSession(authOptions);
     let userVotes: any[] = [];
 
@@ -299,7 +309,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // 🔧 CORREÇÃO: Formatar anotações com informações de voto do usuário
+    // Formatar anotações com informações de voto do usuário
     const formattedAnnotations = annotations.map((annotation) => {
       const userVote = userVotes.find(
         (vote) => vote.annotationId === annotation.id
@@ -332,7 +342,7 @@ export async function GET(request: NextRequest) {
         user: annotation.user,
         work: annotation.work,
         _count: annotation._count,
-        userVote: userVote ? userVote.isHelpful : null, // 🔧 CORREÇÃO: Incluir voto do usuário
+        userVote: userVote ? userVote.isHelpful : null,
       };
     });
 

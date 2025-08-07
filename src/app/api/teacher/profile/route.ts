@@ -1,12 +1,10 @@
-// app/api/teacher/profile/route.ts
+// app/api/teacher/profile/route.ts - VERSÃO CORRIGIDA
 // app/api/lessons/works/route.ts
 // app/api/overview/route.ts
 // app/api/analytics/individual/route.ts
 // app/api/stats/system/route.ts
 // app/api/reviews/route.ts
 // app/api/student/profile/route.ts
-// app/api/public/teachers/[id]/route.ts
-// app/api/public/teachers/route.ts
 // app/api/assignments/route.ts
 // app/api/lessons/[id]/route.ts
 // app/api/student/calendar/route.ts
@@ -16,11 +14,32 @@
 // app/api/lessons/route.ts
 // app/api/teacher/students/route.ts
 // app/api/teacher/students/search/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
+import { revalidateTag } from 'next/cache';
+
+// Função auxiliar para revalidar cache de teacher profile
+async function revalidateTeacherProfileData(userId: string) {
+  console.log(
+    `🔄 [CACHE] Revalidating teacher profile data for user ${userId}`
+  );
+
+  // Tags específicas de teacher profile
+  revalidateTag('teacher-profile');
+  revalidateTag('teacher-profile-data');
+  revalidateTag('teacher-profile-extended-data');
+  revalidateTag('teacher-dashboard');
+  revalidateTag('teacher-dashboard-data');
+
+  // Tag específica do usuário
+  revalidateTag(`teacher-${userId}`);
+
+  console.log(
+    `✅ [CACHE] Teacher profile cache revalidated for user ${userId}`
+  );
+}
 
 interface TeacherProfileData {
   id: string;
@@ -85,7 +104,7 @@ interface TeacherProfileData {
   updatedAt: Date;
 }
 
-// GET - Buscar perfil do professor
+// GET - Buscar perfil do professor (sem mudanças - sem revalidação)
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -254,7 +273,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PUT - Atualizar perfil do professor
+// PUT - Atualizar perfil do professor COM REVALIDAÇÃO E VALIDAÇÃO MELHORADA
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -270,7 +289,8 @@ export async function PUT(request: NextRequest) {
     const { userData, teacherData } = body;
 
     console.log(
-      `👨‍🏫✏️ [TEACHER-PROFILE] Atualizando perfil do professor ${session.user.id}`
+      `👨‍🏫✏️ [TEACHER-PROFILE] Atualizando perfil do professor ${session.user.id}`,
+      { userData, teacherData }
     );
 
     // Verificar se perfil existe
@@ -286,35 +306,97 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Atualizar dados do usuário se fornecidos
+    // 🔧 ATUALIZAR DADOS DO USUÁRIO COM VALIDAÇÃO MELHORADA
     if (userData) {
       const allowedUserFields = [
         'firstName',
         'lastName',
         'phone',
+        'phoneCountryCode', // 🆕 Novo campo
+        'phoneNumber', // 🆕 Novo campo
         'city',
         'state',
         'country',
         'image',
       ];
+
       const userUpdateData: any = {};
 
       Object.keys(userData).forEach((key) => {
-        if (allowedUserFields.includes(key)) {
-          userUpdateData[key] = userData[key];
+        if (allowedUserFields.includes(key) && userData[key] !== undefined) {
+          // 🔧 Tratamento especial para campos que podem ser null
+          if (
+            userData[key] === '' &&
+            ['phone', 'city', 'state', 'country'].includes(key)
+          ) {
+            userUpdateData[key] = null;
+          } else {
+            userUpdateData[key] = userData[key];
+          }
         }
       });
 
+      // 🆕 PROCESSAMENTO DE TELEFONE MELHORADO
+      if (userData.phone !== undefined) {
+        if (userData.phone && userData.phone.trim()) {
+          // Se há telefone, processar para extrair componentes
+          const phone = userData.phone.trim();
+
+          // Se começar com +, é um número internacional
+          if (phone.startsWith('+')) {
+            userUpdateData.phone = phone;
+
+            // Extrair código do país (primeiros 2-3 dígitos após +)
+            const match = phone.match(/^\+(\d{1,3})/);
+            if (match) {
+              const countryCodeNum = match[1];
+
+              // Mapear códigos numéricos para códigos ISO (básico)
+              const countryCodeMap: { [key: string]: string } = {
+                '55': 'BR',
+                '1': 'US',
+                '44': 'GB',
+                '33': 'FR',
+                '49': 'DE',
+                '39': 'IT',
+                '34': 'ES',
+              };
+
+              userUpdateData.phoneCountryCode =
+                countryCodeMap[countryCodeNum] || 'BR';
+              userUpdateData.phoneNumber = phone.substring(match[0].length);
+            }
+          } else {
+            // Se não tem +, assumir que é brasileiro
+            userUpdateData.phone = phone.startsWith('+55')
+              ? phone
+              : `+55${phone.replace(/\D/g, '')}`;
+            userUpdateData.phoneCountryCode = 'BR';
+            userUpdateData.phoneNumber = phone.replace(/\D/g, '');
+          }
+        } else {
+          // Se telefone está vazio, limpar todos os campos relacionados
+          userUpdateData.phone = null;
+          userUpdateData.phoneCountryCode = null;
+          userUpdateData.phoneNumber = null;
+        }
+      }
+
       if (Object.keys(userUpdateData).length > 0) {
+        console.log(
+          '📝 [TEACHER-PROFILE] Atualizando dados do usuário:',
+          userUpdateData
+        );
+
         await prisma.user.update({
           where: { id: session.user.id },
           data: userUpdateData,
         });
-        console.log('📝 [TEACHER-PROFILE] Dados do usuário atualizados');
+        console.log('✅ [TEACHER-PROFILE] Dados do usuário atualizados');
       }
     }
 
-    // Atualizar dados do professor se fornecidos
+    // 🔧 ATUALIZAR DADOS DO PROFESSOR COM VALIDAÇÃO MELHORADA
     if (teacherData) {
       const allowedTeacherFields = [
         'bio',
@@ -342,17 +424,90 @@ export async function PUT(request: NextRequest) {
       const teacherUpdateData: any = {};
 
       Object.keys(teacherData).forEach((key) => {
-        if (allowedTeacherFields.includes(key)) {
-          teacherUpdateData[key] = teacherData[key];
+        if (
+          allowedTeacherFields.includes(key) &&
+          teacherData[key] !== undefined
+        ) {
+          // 🔧 Validação específica por campo
+          const value = teacherData[key];
+
+          switch (key) {
+            case 'defaultLessonDuration':
+              // Validar duração da aula
+              if (typeof value === 'number' && value >= 15 && value <= 240) {
+                teacherUpdateData[key] = value;
+              }
+              break;
+
+            case 'maxStudentsPerWeek':
+              // Validar máximo de alunos por semana
+              if (typeof value === 'number' && value >= 1 && value <= 200) {
+                teacherUpdateData[key] = value;
+              }
+              break;
+
+            case 'specialties':
+            case 'instruments':
+            case 'ageGroups':
+            case 'skillLevels':
+            case 'highlightedWorks':
+              // Validar arrays
+              if (Array.isArray(value)) {
+                teacherUpdateData[key] = value;
+              }
+              break;
+
+            case 'timezone':
+              // Validar timezone
+              if (typeof value === 'string' && value.trim()) {
+                teacherUpdateData[key] = value;
+              }
+              break;
+
+            case 'isPublicProfile':
+            case 'allowProgressReports':
+              // Validar booleans
+              if (typeof value === 'boolean') {
+                teacherUpdateData[key] = value;
+              }
+              break;
+
+            case 'website':
+              // Validar URL (opcional)
+              if (!value || value.trim() === '') {
+                teacherUpdateData[key] = null;
+              } else if (typeof value === 'string') {
+                // Adicionar protocolo se não tiver
+                let url = value.trim();
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                  url = `https://${url}`;
+                }
+                teacherUpdateData[key] = url;
+              }
+              break;
+
+            default:
+              // Para outros campos de string
+              if (typeof value === 'string') {
+                teacherUpdateData[key] = value.trim() || null;
+              } else {
+                teacherUpdateData[key] = value;
+              }
+          }
         }
       });
 
       if (Object.keys(teacherUpdateData).length > 0) {
+        console.log(
+          '📝 [TEACHER-PROFILE] Atualizando dados do professor:',
+          teacherUpdateData
+        );
+
         await prisma.teacher.update({
           where: { id: existingProfile.id },
           data: teacherUpdateData,
         });
-        console.log('📝 [TEACHER-PROFILE] Dados do professor atualizados');
+        console.log('✅ [TEACHER-PROFILE] Dados do professor atualizados');
       }
     }
 
@@ -366,6 +521,8 @@ export async function PUT(request: NextRequest) {
             lastName: true,
             email: true,
             phone: true,
+            phoneCountryCode: true, // 🆕 Novo campo
+            phoneNumber: true, // 🆕 Novo campo
             city: true,
             state: true,
             country: true,
@@ -375,7 +532,12 @@ export async function PUT(request: NextRequest) {
       },
     });
 
-    console.log(`✅ [TEACHER-PROFILE] Perfil atualizado com sucesso`);
+    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
+    await revalidateTeacherProfileData(session.user.id);
+
+    console.log(
+      `✅ [TEACHER-PROFILE] Perfil atualizado com sucesso e cache revalidado`
+    );
 
     return NextResponse.json({
       success: true,
@@ -385,13 +547,16 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('❌ [TEACHER-PROFILE] Erro ao atualizar perfil:', error);
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido',
+      },
       { status: 500 }
     );
   }
 }
 
-// PATCH - Atualização parcial (campos específicos)
+// PATCH - Atualização parcial (campos específicos) COM REVALIDAÇÃO
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -414,7 +579,8 @@ export async function PATCH(request: NextRequest) {
     }
 
     console.log(
-      `👨‍🏫🔧 [TEACHER-PROFILE] Atualizando campo ${field} - Ação: ${action}`
+      `👨‍🏫🔧 [TEACHER-PROFILE] Atualizando campo ${field} - Ação: ${action} - Valor:`,
+      value
     );
 
     // Verificar se perfil existe
@@ -459,8 +625,21 @@ export async function PATCH(request: NextRequest) {
           break;
       }
     } else {
-      // Atualização simples
-      updateData[field] = value;
+      // Atualização simples com validação
+      switch (field) {
+        case 'defaultLessonDuration':
+          if (typeof value === 'number' && value >= 15 && value <= 240) {
+            updateData[field] = value;
+          }
+          break;
+        case 'maxStudentsPerWeek':
+          if (typeof value === 'number' && value >= 1 && value <= 200) {
+            updateData[field] = value;
+          }
+          break;
+        default:
+          updateData[field] = value;
+      }
     }
 
     // Atualizar perfil
@@ -469,7 +648,12 @@ export async function PATCH(request: NextRequest) {
       data: updateData,
     });
 
-    console.log(`✅ [TEACHER-PROFILE] Campo ${field} atualizado`);
+    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
+    await revalidateTeacherProfileData(session.user.id);
+
+    console.log(
+      `✅ [TEACHER-PROFILE] Campo ${field} atualizado e cache revalidado`
+    );
 
     return NextResponse.json({
       success: true,

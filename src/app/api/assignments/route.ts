@@ -4,6 +4,47 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
+import { revalidateTag } from 'next/cache';
+
+// Função auxiliar para revalidar cache do professor e aluno
+async function revalidateTeacherAndStudentData(
+  teacherUserId: string,
+  studentUserId?: string
+) {
+  console.log(`🔄 [CACHE] Revalidating teacher and student data`);
+
+  // Tags do professor
+  revalidateTag('teacher-dashboard');
+  revalidateTag('teacher-dashboard-data');
+  revalidateTag('teacher-students');
+  revalidateTag('teacher-students-data');
+  revalidateTag('teacher-assignments');
+  revalidateTag('teacher-assignments-data');
+  revalidateTag('teacher-assignment-details');
+  revalidateTag('teacher-assignment-details-data');
+  revalidateTag('teacher-assignment-edit');
+  revalidateTag('teacher-assignment-edit-data');
+  revalidateTag('teacher-student-detail-data');
+  revalidateTag('teacher-lessons-data');
+  revalidateTag('teacher-lesson-details-data');
+
+  // Tag específica do professor
+  revalidateTag(`teacher-${teacherUserId}`);
+
+  // Se tiver studentUserId, revalidar tags do aluno também
+  if (studentUserId) {
+    revalidateTag('student-dashboard');
+    revalidateTag('student-assignments');
+    revalidateTag('student-lessons');
+    revalidateTag(`student-${studentUserId}`);
+  }
+
+  console.log(
+    `✅ [CACHE] Cache revalidated for teacher ${teacherUserId}${
+      studentUserId ? ` and student ${studentUserId}` : ''
+    }`
+  );
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -291,7 +332,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Criar novo assignment (apenas professor)
+// POST - Criar novo assignment (com revalidação do cache)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -428,7 +469,12 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    console.log(`✅ [ASSIGNMENTS] Assignment criado: ${assignment.id}`);
+    // 🔥 REVALIDAR CACHE APÓS CRIAÇÃO
+    await revalidateTeacherAndStudentData(session.user.id, studentUserId);
+
+    console.log(
+      `✅ [ASSIGNMENTS] Assignment criado e cache revalidado: ${assignment.id}`
+    );
 
     return NextResponse.json({
       success: true,
@@ -444,7 +490,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PATCH - Atualizar assignment
+// PATCH - Atualizar assignment (com revalidação do cache)
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -502,6 +548,22 @@ export async function PATCH(request: NextRequest) {
             studentId: userStudentProfile?.id,
           },
         ],
+      },
+      include: {
+        lesson: {
+          include: {
+            teacher: {
+              select: {
+                userId: true,
+              },
+            },
+          },
+        },
+        student: {
+          select: {
+            userId: true,
+          },
+        },
       },
     });
 
@@ -582,7 +644,14 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    console.log(`✅ [ASSIGNMENTS] Assignment ${assignmentId} atualizado`);
+    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
+    const teacherUserId = assignment.lesson.teacher.userId;
+    const studentUserId = assignment.student.userId;
+    await revalidateTeacherAndStudentData(teacherUserId, studentUserId);
+
+    console.log(
+      `✅ [ASSIGNMENTS] Assignment ${assignmentId} atualizado e cache revalidado`
+    );
 
     return NextResponse.json({
       success: true,
@@ -598,7 +667,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// DELETE - Deletar assignment (apenas professor)
+// DELETE - Deletar assignment (com revalidação do cache)
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -635,6 +704,13 @@ export async function DELETE(request: NextRequest) {
           teacherId: teacherProfile?.id,
         },
       },
+      include: {
+        student: {
+          select: {
+            userId: true,
+          },
+        },
+      },
     });
 
     if (!assignment) {
@@ -644,12 +720,20 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
+    // Guardar studentUserId antes de deletar
+    const studentUserId = assignment.student.userId;
+
     // Deletar assignment
     await prisma.assignment.delete({
       where: { id: assignmentId },
     });
 
-    console.log(`✅ [ASSIGNMENTS] Assignment ${assignmentId} deletado`);
+    // 🔥 REVALIDAR CACHE APÓS EXCLUSÃO
+    await revalidateTeacherAndStudentData(session.user.id, studentUserId);
+
+    console.log(
+      `✅ [ASSIGNMENTS] Assignment ${assignmentId} deletado e cache revalidado`
+    );
 
     return NextResponse.json({
       success: true,

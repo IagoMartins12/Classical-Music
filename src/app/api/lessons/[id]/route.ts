@@ -4,6 +4,39 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
+import { revalidateTag } from 'next/cache';
+
+// Função auxiliar para revalidar cache de lesson details
+async function revalidateLessonDetailsData(
+  teacherUserId: string,
+  studentUserId?: string
+) {
+  console.log(`🔄 [CACHE] Revalidating lesson details data`);
+
+  // Tags específicas de lessons
+  revalidateTag('teacher-lessons-data');
+  revalidateTag('teacher-lesson-details-data');
+  revalidateTag('teacher-calendar');
+  revalidateTag('teacher-calendar-data');
+  revalidateTag('teacher-dashboard');
+  revalidateTag('teacher-dashboard-data');
+
+  // Tag específica do professor
+  revalidateTag(`teacher-${teacherUserId}`);
+
+  // Se tiver studentUserId, revalidar tags do aluno também
+  if (studentUserId) {
+    revalidateTag('student-lessons');
+    revalidateTag('student-dashboard');
+    revalidateTag(`student-${studentUserId}`);
+  }
+
+  console.log(
+    `✅ [CACHE] Lesson details cache revalidated for teacher ${teacherUserId}${
+      studentUserId ? ` and student ${studentUserId}` : ''
+    }`
+  );
+}
 
 interface LessonDetails {
   id: string;
@@ -443,7 +476,7 @@ export async function GET(
   }
 }
 
-// PATCH - Atualizar aula (professor) ou adicionar feedback (aluno)
+// PATCH - Atualizar aula (professor) ou adicionar feedback (aluno) COM REVALIDAÇÃO
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -490,6 +523,14 @@ export async function PATCH(
           { studentId: userStudentProfile?.id },
         ],
       },
+      include: {
+        teacher: {
+          select: { userId: true },
+        },
+        student: {
+          select: { userId: true },
+        },
+      },
     });
 
     if (!lesson) {
@@ -526,7 +567,14 @@ export async function PATCH(
       data: updateData,
     });
 
-    console.log(`✅ [LESSON-DETAILS] Aula ${lessonId} atualizada`);
+    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
+    const teacherUserId = lesson.teacher.userId;
+    const studentUserId = lesson.student.userId;
+    await revalidateLessonDetailsData(teacherUserId, studentUserId);
+
+    console.log(
+      `✅ [LESSON-DETAILS] Aula ${lessonId} atualizada e cache revalidado`
+    );
 
     return NextResponse.json({
       success: true,
