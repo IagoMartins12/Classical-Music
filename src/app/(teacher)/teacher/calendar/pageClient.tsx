@@ -1,4 +1,5 @@
-// app/teacher/calendar/pageClient.tsx - Client Component para Calendário do Professor
+// app/teacher/calendar/pageClient.tsx - Client Component para Calendário do Professor com Modal de Aulas
+
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
@@ -17,6 +18,8 @@ import {
   FiRefreshCw,
   FiMapPin,
   FiBookOpen,
+  FiTrash2,
+  FiExternalLink,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -93,12 +96,18 @@ export default function TeacherCalendarPageClient({
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<CalendarView>('month');
   const [eventFilter, setEventFilter] = useState<EventFilter>('all');
-  const [selectedStudent, setSelectedStudent] = useState<string>('all');
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<string>('all'); // MUDANÇA: padrão é 'all'
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null
   );
   const [showEventModal, setShowEventModal] = useState(false);
+
+  // NOVO: Estados para Modal de todas as aulas do dia
+  const [selectedDayEvents, setSelectedDayEvents] = useState<CalendarEvent[]>(
+    []
+  );
+  const [selectedDayDate, setSelectedDayDate] = useState<Date | null>(null);
+  const [showDayEventsModal, setShowDayEventsModal] = useState(false);
 
   // Initialize hook data on mount
   useEffect(() => {
@@ -173,7 +182,7 @@ export default function TeacherCalendarPageClient({
       });
     }
 
-    // Filter by student
+    // Filter by student - MUDANÇA: 'all' não filtra
     if (selectedStudent !== 'all') {
       filtered = filtered.filter(
         (event) => event.student?.id === selectedStudent
@@ -183,12 +192,14 @@ export default function TeacherCalendarPageClient({
     return filtered;
   }, [events, eventFilter, selectedStudent]);
 
-  const SelectedStudentsOptions = initialData.students.map((student) => {
-    return {
+  // MUDANÇA: Opções do select com "Todos os alunos" em primeiro
+  const SelectedStudentsOptions = [
+    { value: 'all', label: 'Todos os alunos' }, // NOVO: opção padrão
+    ...initialData.students.map((student) => ({
       label: student.name,
       value: student.id,
-    };
-  });
+    })),
+  ];
 
   const stateOptions = [
     { value: 'all', label: 'Todos' },
@@ -244,6 +255,44 @@ export default function TeacherCalendarPageClient({
     return days;
   }, [currentDate]);
 
+  // NOVO: Handler para abrir modal com todas as aulas do dia
+  const handleShowDayEvents = useCallback(
+    (date: Date, events: CalendarEvent[]) => {
+      setSelectedDayDate(date);
+      setSelectedDayEvents(events);
+      setShowDayEventsModal(true);
+    },
+    []
+  );
+
+  // NOVO: Handler para cancelar aula rapidamente
+  const handleQuickCancelLesson = useCallback(
+    async (lessonId: string) => {
+      if (confirm('Tem certeza que deseja cancelar esta aula?')) {
+        try {
+          const response = await fetch(`/api/lessons?id=${lessonId}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            // Refresh calendar
+            await handleRefreshCalendar();
+            setShowDayEventsModal(false);
+          } else {
+            alert('Erro ao cancelar aula');
+          }
+        } catch (error) {
+          console.error('Erro ao cancelar aula:', error);
+          alert('Erro ao cancelar aula');
+        }
+      }
+    },
+    [handleRefreshCalendar]
+  );
+
   // Format functions
   const formatTime = (date: Date | string) => {
     return new Date(date).toLocaleTimeString('pt-BR', {
@@ -295,7 +344,6 @@ export default function TeacherCalendarPageClient({
       });
 
       if (success) {
-        setShowCreateModal(false);
         console.log('Aula criada com sucesso!');
       }
     },
@@ -632,6 +680,7 @@ export default function TeacherCalendarPageClient({
                     setSelectedEvent(event);
                     setShowEventModal(true);
                   }}
+                  onShowDayEvents={handleShowDayEvents} // NOVO: prop para mostrar todas as aulas
                   formatTime={formatTime}
                   getEventStatusColor={getEventStatusColor}
                 />
@@ -726,16 +775,39 @@ export default function TeacherCalendarPageClient({
           getEventStatusColor={getEventStatusColor}
         />
       )}
+
+      {/* NOVO: Modal de Todas as Aulas do Dia */}
+      {showDayEventsModal && selectedDayDate && (
+        <DayEventsModal
+          date={selectedDayDate}
+          events={selectedDayEvents}
+          onClose={() => {
+            setShowDayEventsModal(false);
+            setSelectedDayDate(null);
+            setSelectedDayEvents([]);
+          }}
+          onEventClick={(event) => {
+            setShowDayEventsModal(false);
+            setSelectedEvent(event);
+            setShowEventModal(true);
+          }}
+          onCancelEvent={handleQuickCancelLesson}
+          formatTime={formatTime}
+          formatEventTime={formatEventTime}
+          getEventStatusColor={getEventStatusColor}
+        />
+      )}
     </PageContainer>
   );
 }
 
-// Month View Component
+// Month View Component - MODIFICADO para mostrar "3+"
 interface MonthViewProps {
   days: Date[];
   currentDate: Date;
   getEventsForDay: (date: Date) => CalendarEvent[];
   onEventClick: (event: CalendarEvent) => void;
+  onShowDayEvents: (date: Date, events: CalendarEvent[]) => void; // NOVO: prop para mostrar todas
   formatTime: (date: Date | string) => string;
   getEventStatusColor: (status: string) => string;
 }
@@ -745,6 +817,7 @@ function MonthView({
   currentDate,
   getEventsForDay,
   onEventClick,
+  onShowDayEvents, // NOVO
   formatTime,
   getEventStatusColor,
 }: MonthViewProps) {
@@ -771,6 +844,7 @@ function MonthView({
           const isToday = day.toDateString() === today.toDateString();
           const isCurrentMonth = day.getMonth() === currentMonth;
           const events = getEventsForDay(day);
+          const hasMoreThan3 = events.length > 3; // NOVO: verificar se tem mais de 3
 
           return (
             <div
@@ -796,7 +870,8 @@ function MonthView({
               </div>
 
               <div className="space-y-1">
-                {events.slice(0, 2).map((event) => (
+                {/* MUDANÇA: Mostrar apenas as primeiras 3 aulas */}
+                {events.slice(0, 3).map((event) => (
                   <button
                     key={event.id}
                     onClick={() => onEventClick(event)}
@@ -810,10 +885,17 @@ function MonthView({
                   </button>
                 ))}
 
-                {events.length > 2 && (
-                  <div className="text-xs text-theme-tertiary">
-                    +{events.length - 2} mais
-                  </div>
+                {/* NOVO: Mostrar "+X" quando houver mais de 3 aulas */}
+                {hasMoreThan3 && (
+                  <button
+                    onClick={() => onShowDayEvents(day, events)}
+                    className="w-full text-left p-1 rounded text-xs font-medium bg-theme-elevated hover:bg-brand-primary/10 text-theme-tertiary hover:text-brand-primary transition-all border border-dashed border-theme-secondary hover:border-brand-primary/30"
+                  >
+                    <div className="truncate">
+                      +{events.length - 3} aula
+                      {events.length - 3 !== 1 ? 's' : ''}
+                    </div>
+                  </button>
                 )}
               </div>
             </div>
@@ -824,7 +906,7 @@ function MonthView({
   );
 }
 
-// Week View Component
+// Week View Component (sem mudanças)
 interface WeekViewProps {
   days: Date[];
   getEventsForDay: (date: Date) => CalendarEvent[];
@@ -911,7 +993,7 @@ function WeekView({
   );
 }
 
-// Day View Component
+// Day View Component (sem mudanças)
 interface DayViewProps {
   date: Date;
   events: CalendarEvent[];
@@ -1027,7 +1109,7 @@ function DayView({
   );
 }
 
-// Event Details Modal
+// Event Details Modal (sem mudanças na estrutura)
 interface EventDetailsModalProps {
   event: CalendarEvent;
   onClose: () => void;
@@ -1236,6 +1318,186 @@ function EventDetailsModal({
                 )}
               </div>
             </div>
+          </div>
+        </div>
+      </AnimatedCard>
+    </Modal>
+  );
+}
+
+// NOVO: Modal para todas as aulas do dia
+interface DayEventsModalProps {
+  date: Date;
+  events: CalendarEvent[];
+  onClose: () => void;
+  onEventClick: (event: CalendarEvent) => void;
+  onCancelEvent: (lessonId: string) => void;
+  formatTime: (date: Date | string) => string;
+  formatEventTime: (start: Date | string, end: Date | string) => string;
+  getEventStatusColor: (status: string) => string;
+}
+
+function DayEventsModal({
+  date,
+  events,
+  onClose,
+  onEventClick,
+  onCancelEvent,
+  formatTime,
+  formatEventTime,
+  getEventStatusColor,
+}: DayEventsModalProps) {
+  const sortedEvents = [...events].sort(
+    (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+  );
+
+  return (
+    <Modal isOpen onClose={onClose} maxWidth="4xl">
+      <AnimatedCard hover="none">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-theme-primary classical-title">
+                Aulas do Dia
+              </h2>
+              <p className="text-theme-secondary">
+                {date.toLocaleDateString('pt-BR', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}{' '}
+                • {events.length} aula{events.length !== 1 ? 's' : ''}
+              </p>
+            </div>
+            <button
+              onClick={onClose}
+              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-theme-secondary transition-colors flex items-center justify-center"
+            >
+              <FiX className="w-4 h-4 text-theme-tertiary" />
+            </button>
+          </div>
+
+          <div className="space-y-4 max-h-96 overflow-y-auto">
+            {sortedEvents.map((event) => (
+              <div
+                key={event.id}
+                className={`p-4 rounded-lg border transition-all ${getEventStatusColor(
+                  event.status
+                )}`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-2">
+                      <h3 className="font-bold text-lg">{event.title}</h3>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${getEventStatusColor(
+                          event.status
+                        )}`}
+                      >
+                        {event.status === 'SCHEDULED'
+                          ? 'Agendada'
+                          : event.status === 'COMPLETED'
+                          ? 'Concluída'
+                          : event.status === 'CANCELLED'
+                          ? 'Cancelada'
+                          : event.status}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center space-x-2">
+                          <FiClock className="w-4 h-4" />
+                          <span>{formatEventTime(event.start, event.end)}</span>
+                        </div>
+
+                        {event.student && (
+                          <div className="flex items-center space-x-2">
+                            <FiUser className="w-4 h-4" />
+                            <span>{event.student.name}</span>
+                          </div>
+                        )}
+
+                        {event.location && (
+                          <div className="flex items-center space-x-2">
+                            <FiMapPin className="w-4 h-4" />
+                            <span>{event.location}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {event.objectives && event.objectives.length > 0 && (
+                        <div>
+                          <label className="text-xs font-medium text-theme-tertiary block mb-1">
+                            Objetivos
+                          </label>
+                          <div className="flex flex-wrap gap-1">
+                            {event.objectives
+                              .slice(0, 2)
+                              .map((objective, index) => (
+                                <span
+                                  key={index}
+                                  className="px-2 py-1 bg-theme-elevated rounded text-xs"
+                                >
+                                  {objective}
+                                </span>
+                              ))}
+                            {event.objectives.length > 2 && (
+                              <span className="text-xs opacity-75">
+                                +{event.objectives.length - 2}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Ações Rápidas */}
+                    <div className="flex items-center space-x-3">
+                      <button
+                        onClick={() => onEventClick(event)}
+                        className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
+                      >
+                        <FiEye className="w-4 h-4" />
+                        <span>Ver Detalhes</span>
+                      </button>
+
+                      {event.status === 'SCHEDULED' && (
+                        <>
+                          <Link
+                            href={`/teacher/lessons/${event.id}/edit`}
+                            className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
+                          >
+                            <FiEdit3 className="w-4 h-4" />
+                            <span>Editar</span>
+                            <FiExternalLink className="w-3 h-3" />
+                          </Link>
+
+                          <button
+                            onClick={() => onCancelEvent(event.id)}
+                            className="text-accent-red hover:text-accent-red/80 text-sm font-medium transition-colors flex items-center space-x-1"
+                          >
+                            <FiTrash2 className="w-4 h-4" />
+                            <span>Cancelar</span>
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-end pt-6 border-t border-theme-secondary">
+            <Link
+              href="/teacher/lessons/create"
+              className="btn-classical-primary flex items-center space-x-2"
+            >
+              <FiPlus className="w-4 h-4" />
+              <span>Nova Aula</span>
+            </Link>
           </div>
         </div>
       </AnimatedCard>

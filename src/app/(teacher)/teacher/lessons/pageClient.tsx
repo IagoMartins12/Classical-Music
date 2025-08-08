@@ -304,6 +304,9 @@ export default function TeacherLessonsPageClient({
     }
   };
 
+  useEffect(() => {
+    handleRefresh();
+  }, []);
   // Render error state
   if ((error || errorMessage) && lessons.length === 0) {
     return (
@@ -746,13 +749,17 @@ export default function TeacherLessonsPageClient({
                                   : 'text-accent-red'
                               }`}
                             >
-                              {lesson.studentPresent ? (
+                              {lesson.status === 'COMPLETED' &&
+                              lesson.studentPresent ? (
                                 <FiCheck className="w-4 h-4" />
                               ) : (
                                 <FiX className="w-4 h-4" />
                               )}
                               <span>
-                                {lesson.studentPresent ? 'Presente' : 'Faltou'}
+                                {lesson.status === 'COMPLETED' &&
+                                lesson.studentPresent
+                                  ? 'Presente'
+                                  : 'Faltou'}
                               </span>
                             </div>
                           )}

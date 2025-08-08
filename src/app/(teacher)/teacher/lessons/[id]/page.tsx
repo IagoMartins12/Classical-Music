@@ -1,21 +1,22 @@
 // app/teacher/lessons/[id]/page.tsx - Página de Detalhes da Aula
 
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
+
 import { notFound } from 'next/navigation';
 import TeacherLessonDetailsPageServer from './pageServer';
 import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 
-interface PageProps {
-  params: {
-    id: string;
-  };
+interface lessonProps {
+  id: string;
+}
+
+interface LessonIdProps {
+  params: Promise<lessonProps>;
 }
 
 export async function generateMetadata({
   params,
-}: PageProps): Promise<Metadata> {
+}: LessonIdProps): Promise<Metadata> {
   return {
     title: `Detalhes da Aula | Professor - Opus Atlas`,
     description:
@@ -31,8 +32,12 @@ export async function generateMetadata({
   };
 }
 
-export default async function TeacherLessonDetailsPage({ params }: PageProps) {
-  const lessonId = params.id;
+export default async function TeacherLessonDetailsPage({
+  params,
+}: LessonIdProps) {
+  const resolvedParams = await params;
+
+  const lessonId = resolvedParams.id;
 
   const session = await getRequiredServerSession();
 

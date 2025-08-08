@@ -1,4 +1,4 @@
-// app/api/lessons/[id]/route.ts
+// app/api/lessons/[id]/route.ts - ATUALIZADO COM DELETE
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -479,7 +479,7 @@ export async function GET(
 // PATCH - Atualizar aula (professor) ou adicionar feedback (aluno) COM REVALIDAÇÃO
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -491,7 +491,8 @@ export async function PATCH(
       return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
     }
 
-    const lessonId = params.id;
+    const { id } = await params;
+    const lessonId = id;
     const body = await request.json();
 
     console.log(
@@ -588,6 +589,269 @@ export async function PATCH(
     console.error('❌ [LESSON-DETAILS] Erro ao atualizar aula:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
+      { status: 500 }
+    );
+  }
+}
+
+// 🗑️ DELETE - NOVA FUNCIONALIDADE para cancelar/deletar aula específica
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session?.user?.id || session.user.role !== 1) {
+      return NextResponse.json(
+        { error: 'Acesso negado - Apenas professores' },
+        { status: 403 }
+      );
+    }
+
+    const { id } = await params;
+    const lessonId = id;
+
+    // Parâmetros da query
+    const { searchParams } = new URL(request.url);
+    const reason = searchParams.get('reason') || 'Apagada pelo professor';
+    const deleteAll = searchParams.get('deleteAll') === 'true';
+    const futureOnly = searchParams.get('futureOnly') === 'true';
+
+    console.log(
+      `🗑️ [LESSON-DELETE] Apagando aula ${lessonId} - User: ${session.user.id} - DeleteAll: ${deleteAll}`
+    );
+
+    // Verificar se professor é dono da aula
+    const teacherProfile = await prisma.teacher.findUnique({
+      where: { userId: session.user.id },
+      select: { id: true },
+    });
+
+    if (!teacherProfile) {
+      return NextResponse.json(
+        { error: 'Perfil de professor não encontrado' },
+        { status: 404 }
+      );
+    }
+
+    const lesson = await prisma.lesson.findFirst({
+      where: {
+        id: lessonId,
+        teacherId: teacherProfile.id,
+      },
+      include: {
+        teacher: { select: { userId: true } },
+        student: { select: { userId: true } },
+      },
+    });
+
+    if (!lesson) {
+      return NextResponse.json(
+        { error: 'Aula não encontrada ou sem permissão' },
+        { status: 404 }
+      );
+    }
+
+    let deletedLessons = 0;
+    const deletedDetails = [];
+
+    if (deleteAll && (lesson.parentLessonId || lesson.isRecurring)) {
+      // 🔄 APAGAR SÉRIE DE AULAS RECORRENTES COM TRANSAÇÃO
+      const parentId = lesson.parentLessonId || lesson.id;
+
+      const whereCondition: any = {
+        OR: [{ id: parentId }, { parentLessonId: parentId }],
+      };
+
+      if (futureOnly) {
+        whereCondition.scheduledAt = {
+          gte: new Date(),
+        };
+      }
+
+      // Usar transação para apagar de forma segura
+      const deleteResult = await prisma.$transaction(async (tx) => {
+        // 1. Buscar todas as aulas que serão apagadas (para retornar detalhes)
+        const lessonsToDelete = await tx.lesson.findMany({
+          where: whereCondition,
+          include: {
+            student: {
+              include: {
+                user: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                  },
+                },
+              },
+            },
+          },
+          orderBy: { scheduledAt: 'asc' },
+        });
+
+        // 2. Primeiro, quebrar todas as relações de parentLessonId
+        await tx.lesson.updateMany({
+          where: {
+            parentLessonId: { in: lessonsToDelete.map((l) => l.id) },
+          },
+          data: {
+            parentLessonId: null,
+          },
+        });
+
+        // 3. Depois, apagar todas as aulas
+        const deleteResult = await tx.lesson.deleteMany({
+          where: {
+            id: { in: lessonsToDelete.map((l) => l.id) },
+          },
+        });
+
+        return {
+          deletedCount: deleteResult.count,
+          lessonsDetails: lessonsToDelete,
+        };
+      });
+
+      deletedLessons = deleteResult.deletedCount;
+
+      // Detalhes das aulas apagadas
+      deletedDetails.push(
+        ...deleteResult.lessonsDetails.map((l) => ({
+          id: l.id,
+          title: l.title,
+          scheduledAt: l.scheduledAt,
+          studentName:
+            `${l.student.user.firstName} ${l.student.user.lastName}`.trim(),
+        }))
+      );
+
+      console.log(`✅ [LESSON-DELETE] Série apagada: ${deletedLessons} aulas`);
+    } else if (lesson.isRecurring && !deleteAll) {
+      // 🔄 APAGAR APENAS UMA AULA DE UMA SÉRIE - LÓGICA ESPECIAL
+      const parentId = lesson.parentLessonId || lesson.id;
+
+      // Se esta é a aula pai, precisamos promover a próxima
+      if (!lesson.parentLessonId) {
+        console.log(
+          '📝 [LESSON-DELETE] Apagando aula pai - promovendo próxima...'
+        );
+
+        // Buscar a próxima aula da série
+        const nextLesson = await prisma.lesson.findFirst({
+          where: {
+            parentLessonId: parentId,
+            id: { not: lessonId },
+            scheduledAt: { gte: new Date() },
+          },
+          orderBy: { scheduledAt: 'asc' },
+        });
+
+        if (nextLesson) {
+          // 🔄 PROMOVER A PRÓXIMA AULA PARA SER A NOVA PAI
+          await prisma.$transaction(async (tx) => {
+            // 1. Tornar a próxima aula a nova pai
+            await tx.lesson.update({
+              where: { id: nextLesson.id },
+              data: {
+                parentLessonId: null, // Remove parent, torna-se pai
+                isRecurring: true,
+              },
+            });
+
+            // 2. Atualizar todas as outras aulas para apontar para a nova pai
+            await tx.lesson.updateMany({
+              where: {
+                parentLessonId: parentId,
+                id: { not: nextLesson.id },
+              },
+              data: {
+                parentLessonId: nextLesson.id,
+              },
+            });
+
+            // 3. Apagar a aula original
+            await tx.lesson.delete({
+              where: { id: lessonId },
+            });
+          });
+
+          console.log(
+            `✅ [LESSON-DELETE] Aula pai apagada e ${nextLesson.id} promovida para nova pai`
+          );
+        } else {
+          // Não há próxima aula, apenas apagar esta
+          await prisma.lesson.delete({
+            where: { id: lessonId },
+          });
+
+          console.log(
+            `✅ [LESSON-DELETE] Última aula da série apagada: ${lessonId}`
+          );
+        }
+      } else {
+        // Esta é uma aula filha, apenas apagar
+        await prisma.lesson.delete({
+          where: { id: lessonId },
+        });
+
+        console.log(`✅ [LESSON-DELETE] Aula filha apagada: ${lessonId}`);
+      }
+
+      deletedLessons = 1;
+      deletedDetails.push({
+        id: lesson.id,
+        title: lesson.title,
+        scheduledAt: lesson.scheduledAt,
+        // studentName:
+        //   `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim(),
+      });
+    } else {
+      // 🔄 APAGAR AULA INDIVIDUAL (NÃO RECORRENTE)
+      await prisma.lesson.delete({
+        where: { id: lessonId },
+      });
+
+      deletedLessons = 1;
+      deletedDetails.push({
+        id: lesson.id,
+        title: lesson.title,
+        scheduledAt: lesson.scheduledAt,
+        // studentName:
+        //   `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim(),
+      });
+
+      console.log(`✅ [LESSON-DELETE] Aula individual apagada: ${lessonId}`);
+    }
+
+    // 🔥 REVALIDAR CACHE APÓS APAGAR
+    const teacherUserId = lesson.teacher.userId;
+    const studentUserId = lesson.student.userId;
+    await revalidateLessonDetailsData(teacherUserId, studentUserId);
+
+    console.log(`✅ [LESSON-DELETE] Cache revalidado após apagar`);
+
+    return NextResponse.json({
+      success: true,
+      message: `${deletedLessons} aula(s) apagada(s) permanentemente`,
+      deletedCount: deletedLessons,
+      deletedDetails,
+      reason,
+      operation: deleteAll
+        ? futureOnly
+          ? 'delete_future_series'
+          : 'delete_entire_series'
+        : lesson.isRecurring
+        ? 'delete_single_from_series'
+        : 'delete_individual',
+    });
+  } catch (error) {
+    console.error('❌ [LESSON-DELETE] Erro ao apagar aula:', error);
+    return NextResponse.json(
+      {
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido',
+      },
       { status: 500 }
     );
   }

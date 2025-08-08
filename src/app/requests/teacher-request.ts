@@ -383,7 +383,6 @@ export const getTeacherStudentsData = unstable_cache(
         prisma.teacherStudent.count({ where: whereClause }),
       ]);
 
-      console.log('relationships', relationships);
       // Formatar dados dos alunos
       const studentsFormatted = await Promise.all(
         relationships.map(async (rel) => {

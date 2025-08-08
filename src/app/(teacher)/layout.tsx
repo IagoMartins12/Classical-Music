@@ -61,7 +61,6 @@ export default async function TeacherLayout({
     redirect('/access-denied');
   }
 
-  console.log('session', session);
   return (
     <AdsProvider>
       <FavoritesProvider>

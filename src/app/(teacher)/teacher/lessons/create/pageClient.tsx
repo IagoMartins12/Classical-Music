@@ -1,4 +1,4 @@
-// app/teacher/lessons/create/pageClient.tsx - Client Component para Criar Nova Aula
+// app/teacher/lessons/create/pageClient.tsx - Client Component para Criar Nova Aula com Recorrência Melhorada
 
 'use client';
 
@@ -14,6 +14,9 @@ import {
   FiAlertCircle,
   FiRefreshCw,
   FiArrowLeft,
+  FiCalendar,
+  FiCheckCircle,
+  FiInfo,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -28,6 +31,7 @@ import Select from '@/app/components/Common/Select';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTeacherLessons } from '@/app/hooks/lessonsSystem/useTeacherLessons';
+import Modal from '@/app/components/Modal';
 
 interface CreateLessonPageClientProps {
   initialData: CreateLessonData;
@@ -64,6 +68,42 @@ const lessonTypeOptions = [
   { value: 'MASTERCLASS', label: 'Masterclass' },
 ];
 
+// Função para calcular data máxima (3 meses)
+const getMaxRecurrenceDate = (startDate: string): string => {
+  if (!startDate) return '';
+  const start = new Date(startDate);
+  const maxDate = new Date(start);
+  maxDate.setMonth(maxDate.getMonth() + 3);
+  return maxDate.toISOString().split('T')[0];
+};
+
+// Função para calcular quantas aulas serão criadas
+const calculateLessonCount = (
+  startDate: string,
+  endDate: string,
+  recurrenceType: RecurrenceType
+): number => {
+  if (!startDate || !endDate || recurrenceType === 'NONE') return 1;
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const diffTime = end.getTime() - start.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  switch (recurrenceType) {
+    case 'WEEKLY':
+      return Math.floor(diffDays / 7) + 1;
+    case 'BIWEEKLY':
+      return Math.floor(diffDays / 14) + 1;
+    case 'TWICE_WEEKLY':
+      return Math.floor((diffDays / 7) * 2) + 1;
+    case 'MONTHLY':
+      return Math.floor(diffDays / 30) + 1;
+    default:
+      return 1;
+  }
+};
+
 export default function CreateLessonPageClient({
   initialData,
   teacherProfile,
@@ -87,7 +127,7 @@ export default function CreateLessonPageClient({
     homework: '',
     teacherNotes: '',
     publicNotes: '',
-    // Recorrência
+    // Recorrência melhorada
     isRecurring: false,
     recurrenceType: 'NONE' as RecurrenceType,
     recurrenceEnd: '',
@@ -98,6 +138,8 @@ export default function CreateLessonPageClient({
   >(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [conflicts, setConflicts] = useState<any[]>([]);
+  const [showConflictModal, setShowConflictModal] = useState(false);
+  const [pendingSubmission, setPendingSubmission] = useState(false);
 
   // Update selected student when form changes
   useEffect(() => {
@@ -114,6 +156,22 @@ export default function CreateLessonPageClient({
       }));
     }
   }, [formData.studentUserId, initialData.students]);
+
+  // Update recurrence end date when start date or recurrence type changes
+  useEffect(() => {
+    if (formData.isRecurring && formData.scheduledAt) {
+      const maxDate = getMaxRecurrenceDate(formData.scheduledAt);
+      if (
+        !formData.recurrenceEnd ||
+        new Date(formData.recurrenceEnd) > new Date(maxDate)
+      ) {
+        setFormData((prev) => ({
+          ...prev,
+          recurrenceEnd: maxDate,
+        }));
+      }
+    }
+  }, [formData.scheduledAt, formData.recurrenceType, formData.isRecurring]);
 
   // Form handlers
   const updateFormData = useCallback((field: string, value: any) => {
@@ -168,6 +226,15 @@ export default function CreateLessonPageClient({
     }
   }, [selectedStudent, formData.scheduledAt, formData.title, updateFormData]);
 
+  // Calculate lesson preview
+  const lessonCount = formData.isRecurring
+    ? calculateLessonCount(
+        formData.scheduledAt,
+        formData.recurrenceEnd,
+        formData.recurrenceType
+      )
+    : 1;
+
   // Submit handler
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -176,6 +243,11 @@ export default function CreateLessonPageClient({
 
       // Validation
       if (!formData.studentUserId || !formData.title || !formData.scheduledAt) {
+        return;
+      }
+
+      // Validate recurrence end date
+      if (formData.isRecurring && !formData.recurrenceEnd) {
         return;
       }
 
@@ -195,6 +267,28 @@ export default function CreateLessonPageClient({
     },
     [formData, createLesson, clearError, router]
   );
+
+  // Handle conflicts confirmation
+  const handleConflictConfirmation = useCallback(async () => {
+    setShowConflictModal(false);
+    setPendingSubmission(true);
+
+    // Force submit despite conflicts
+    const cleanData = {
+      ...formData,
+      objectives: formData.objectives.filter((obj) => obj.trim()),
+      topics: formData.topics.filter((topic) => topic.trim()),
+      techniques: formData.techniques.filter((tech) => tech.trim()),
+      forceCreate: true, // Flag to ignore conflicts
+    };
+
+    const success = await createLesson(cleanData);
+    setPendingSubmission(false);
+
+    if (success) {
+      router.push('/teacher/lessons');
+    }
+  }, [formData, createLesson, router]);
 
   // Render error state
   if (errorMessage && initialData.students.length === 0) {
@@ -415,7 +509,7 @@ export default function CreateLessonPageClient({
                       </div>
                     </div>
 
-                    {/* Recurrence */}
+                    {/* Recurrence - MELHORADO */}
                     <div className="space-y-4">
                       <div className="flex items-center space-x-3">
                         <input
@@ -429,42 +523,129 @@ export default function CreateLessonPageClient({
                         />
                         <label
                           htmlFor="isRecurring"
-                          className="text-theme-primary font-medium"
+                          className="text-theme-primary font-medium flex items-center space-x-2"
                         >
-                          Aula recorrente
+                          <FiRepeat className="w-4 h-4" />
+                          <span>Aula recorrente</span>
                         </label>
                       </div>
 
                       {formData.isRecurring && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
-                          <div>
-                            <label className="block text-sm font-medium text-theme-primary mb-2">
-                              Frequência
-                            </label>
-                            <Select
-                              options={recurrenceOptions.filter(
-                                (opt) => opt.value !== 'NONE'
-                              )}
-                              value={formData.recurrenceType}
-                              onChange={(e) =>
-                                updateFormData('recurrenceType', e.target.value)
-                              }
-                              className="input-classical w-full"
-                            />
+                        <div className="space-y-4 p-6 bg-gradient-to-br from-brand-primary/5 to-brand-secondary/5 border border-brand-primary/20 rounded-lg">
+                          <div className="flex items-center space-x-3 mb-4">
+                            <FiInfo className="w-5 h-5 text-brand-primary" />
+                            <div className="text-sm text-theme-secondary">
+                              <p className="font-medium">
+                                Sistema de Recorrência Inteligente
+                              </p>
+                              <p>
+                                Criamos aulas por até 3 meses. Após esse
+                                período, você pode renovar facilmente!
+                              </p>
+                            </div>
                           </div>
 
-                          <div>
-                            <label className="block text-sm font-medium text-theme-primary mb-2">
-                              Até quando
-                            </label>
-                            <Input
-                              type="date"
-                              value={formData.recurrenceEnd}
-                              onChange={(e) =>
-                                updateFormData('recurrenceEnd', e.target.value)
-                              }
-                              className="input-classical w-full"
-                            />
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="block text-sm font-medium text-theme-primary mb-2">
+                                Frequência *
+                              </label>
+                              <Select
+                                options={recurrenceOptions.filter(
+                                  (opt) => opt.value !== 'NONE'
+                                )}
+                                value={formData.recurrenceType || 'WEEKLY'}
+                                onChange={(e) =>
+                                  updateFormData(
+                                    'recurrenceType',
+                                    e.target.value
+                                  )
+                                }
+                                className="input-classical w-full"
+                                required
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-sm font-medium text-theme-primary mb-2">
+                                Até quando *
+                              </label>
+                              <Input
+                                type="date"
+                                value={formData.recurrenceEnd}
+                                onChange={(e) =>
+                                  updateFormData(
+                                    'recurrenceEnd',
+                                    e.target.value
+                                  )
+                                }
+                                min={
+                                  formData.scheduledAt
+                                    ? formData.scheduledAt.split('T')[0]
+                                    : ''
+                                }
+                                max={
+                                  formData.scheduledAt
+                                    ? getMaxRecurrenceDate(formData.scheduledAt)
+                                    : ''
+                                }
+                                className="input-classical w-full"
+                                required
+                              />
+                              <p className="text-xs text-theme-tertiary mt-1">
+                                Máximo:{' '}
+                                {formData.scheduledAt
+                                  ? getMaxRecurrenceDate(formData.scheduledAt)
+                                  : 'Selecione uma data'}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Preview de aulas */}
+                          {formData.scheduledAt &&
+                            formData.recurrenceEnd &&
+                            formData.recurrenceType !== 'NONE' && (
+                              <div className="bg-theme-elevated/50 rounded-lg p-4 border border-theme-secondary/30">
+                                <div className="flex items-center space-x-3">
+                                  <FiCalendar className="w-5 h-5 text-brand-primary" />
+                                  <div>
+                                    <p className="font-medium text-theme-primary">
+                                      Será criado:{' '}
+                                      <span className="text-brand-primary">
+                                        {lessonCount} aula
+                                        {lessonCount !== 1 ? 's' : ''}
+                                      </span>
+                                    </p>
+                                    <p className="text-sm text-theme-tertiary">
+                                      De{' '}
+                                      {new Date(
+                                        formData.scheduledAt
+                                      ).toLocaleDateString('pt-BR')}{' '}
+                                      até{' '}
+                                      {new Date(
+                                        formData.recurrenceEnd
+                                      ).toLocaleDateString('pt-BR')}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+
+                          {/* Renovação fácil info */}
+                          <div className="bg-accent-green/10 border border-accent-green/30 rounded-lg p-4">
+                            <div className="flex items-start space-x-3">
+                              <FiCheckCircle className="w-5 h-5 text-accent-green mt-0.5" />
+                              <div className="text-sm">
+                                <p className="font-medium text-accent-green mb-1">
+                                  Renovação Simplificada
+                                </p>
+                                <p className="text-theme-secondary">
+                                  Ao final do período, você receberá uma
+                                  notificação para renovar com apenas 1 clique!
+                                  Nada de remarcar aula por aula.
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -689,24 +870,28 @@ export default function CreateLessonPageClient({
                       type="submit"
                       disabled={
                         loading.createLesson ||
+                        pendingSubmission ||
                         !formData.studentUserId ||
                         !formData.title ||
-                        !formData.scheduledAt
+                        !formData.scheduledAt ||
+                        (formData.isRecurring && !formData.recurrenceEnd)
                       }
                       className="btn-classical-primary flex items-center space-x-2"
                     >
-                      {loading.createLesson ? (
+                      {loading.createLesson || pendingSubmission ? (
                         <FiRefreshCw className="w-4 h-4 animate-spin" />
                       ) : (
                         <FiSave className="w-4 h-4" />
                       )}
                       <span>
-                        {loading.createLesson
+                        {loading.createLesson || pendingSubmission
                           ? formData.isRecurring
                             ? 'Criando Série...'
                             : 'Criando Aula...'
                           : formData.isRecurring
-                          ? 'Criar Série de Aulas'
+                          ? `Criar ${lessonCount} Aula${
+                              lessonCount !== 1 ? 's' : ''
+                            }`
                           : 'Criar Aula'}
                       </span>
                     </button>
@@ -810,12 +995,101 @@ export default function CreateLessonPageClient({
                     <FiClock className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>Respeite os limites de aulas por semana do aluno</p>
                   </div>
+                  <div className="flex items-start space-x-2">
+                    <FiCalendar className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <p>
+                      Recorrência funciona por 3 meses - renovação é automática!
+                    </p>
+                  </div>
                 </div>
               </AnimatedCard>
             </AnimatedItem>
           </div>
         </div>
       </AnimatedContainer>
+
+      {/* Conflict Modal */}
+      {showConflictModal && (
+        <Modal
+          isOpen
+          onClose={() => setShowConflictModal(false)}
+          maxWidth="2xl"
+        >
+          <div className="p-6">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-12 h-12 bg-accent-red/10 rounded-full flex items-center justify-center">
+                <FiAlertCircle className="w-6 h-6 text-accent-red" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-theme-primary">
+                  Conflitos de Horário Detectados
+                </h2>
+                <p className="text-theme-secondary">
+                  Algumas aulas podem entrar em conflito com horários já
+                  agendados
+                </p>
+              </div>
+            </div>
+
+            {conflicts.length > 0 && (
+              <div className="space-y-3 mb-6">
+                {conflicts.map((conflict, index) => (
+                  <div
+                    key={index}
+                    className="bg-accent-red/5 border border-accent-red/20 rounded-lg p-4"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-accent-red">
+                          {conflict.title}
+                        </p>
+                        <p className="text-sm text-theme-tertiary">
+                          {new Date(conflict.scheduledAt).toLocaleString(
+                            'pt-BR'
+                          )}{' '}
+                          - {conflict.studentName}
+                        </p>
+                      </div>
+                      <FiAlertCircle className="w-5 h-5 text-accent-red" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg p-4 mb-6">
+              <div className="flex items-start space-x-3">
+                <FiInfo className="w-5 h-5 text-accent-yellow mt-0.5" />
+                <div className="text-sm">
+                  <p className="font-medium text-accent-yellow mb-1">
+                    O que acontece ao continuar?
+                  </p>
+                  <p className="text-theme-secondary">
+                    As aulas serão criadas mesmo com conflitos. Você pode
+                    reorganizar posteriormente ou cancelar as aulas
+                    conflitantes.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end space-x-3">
+              <button
+                onClick={() => setShowConflictModal(false)}
+                className="btn-classical-secondary"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleConflictConfirmation}
+                className="btn-classical-primary bg-accent-red hover:bg-accent-red/80"
+              >
+                Criar Mesmo Assim
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </PageContainer>
   );
 }

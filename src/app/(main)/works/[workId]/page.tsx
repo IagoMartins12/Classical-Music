@@ -174,7 +174,5 @@ export default async function WorkDetailsPage({
     notFound();
   }
 
-  console.log('session', session?.user);
-
   return <WorkDetailsServer workId={resolvedParams.workId} />;
 }

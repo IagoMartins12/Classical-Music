@@ -1,4 +1,4 @@
-// app/api/lessons/route.ts
+// app/api/lessons/route.ts - API melhorada com sistema de recorrência e detecção de conflitos
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -28,7 +28,7 @@ async function revalidateTeacherData(userId: string) {
   console.log(`✅ [CACHE] Teacher cache revalidated for user ${userId}`);
 }
 
-// Função para calcular datas de recorrência
+// Função para calcular datas de recorrência com limite de 3 meses
 function calculateRecurrenceDates(
   startDate: Date,
   recurrenceType: string,
@@ -37,11 +37,20 @@ function calculateRecurrenceDates(
   const dates: Date[] = [];
   let currentDate = new Date(startDate);
 
-  // Limitar a 52 semanas (1 ano) para evitar loops infinitos
-  const maxIterations = 52;
+  // NOVO: Verificar limite de 3 meses
+  const maxDate = new Date(startDate);
+  maxDate.setMonth(maxDate.getMonth() + 3);
+  const actualEndDate = endDate > maxDate ? maxDate : endDate;
+
+  // Limitar iterações para evitar loops infinitos
+  const maxIterations = 100;
   let iterations = 0;
 
-  while (currentDate <= endDate && iterations < maxIterations) {
+  console.log(
+    `🔄 [RECURRENCE] Calculating dates from ${startDate.toISOString()} to ${actualEndDate.toISOString()}`
+  );
+
+  while (currentDate <= actualEndDate && iterations < maxIterations) {
     dates.push(new Date(currentDate));
 
     switch (recurrenceType) {
@@ -66,18 +75,27 @@ function calculateRecurrenceDates(
     iterations++;
   }
 
+  console.log(`✅ [RECURRENCE] Generated ${dates.length} dates`);
   return dates;
 }
 
-// Função para verificar conflitos de horário
+// Função melhorada para verificar conflitos de horário
 async function checkScheduleConflicts(
   teacherId: string,
   scheduledAt: Date,
   duration: number,
   excludeLessonId?: string
-): Promise<any[]> {
+): Promise<{
+  hasConflicts: boolean;
+  conflicts: any[];
+  warnings: string[];
+}> {
   const startTime = new Date(scheduledAt);
   const endTime = new Date(startTime.getTime() + duration * 60000);
+
+  console.log(
+    `🔍 [CONFLICTS] Checking conflicts for ${startTime.toISOString()} - ${endTime.toISOString()}`
+  );
 
   const conflictingLessons = await prisma.lesson.findMany({
     where: {
@@ -93,7 +111,7 @@ async function checkScheduleConflicts(
         {
           // scheduledAt + duration > startTime
           scheduledAt: {
-            gte: new Date(startTime.getTime() - 120 * 60000), // 2h buffer para busca
+            gte: new Date(startTime.getTime() - 240 * 60000), // 4h buffer para busca
           },
         },
       ],
@@ -114,13 +132,51 @@ async function checkScheduleConflicts(
   });
 
   // Filtrar conflitos reais (sobreposição de horários)
-  return conflictingLessons.filter((lesson) => {
+  const realConflicts = conflictingLessons.filter((lesson) => {
     const lessonStart = new Date(lesson.scheduledAt);
     const lessonEnd = new Date(lessonStart.getTime() + lesson.duration * 60000);
 
     // Verificar se há sobreposição
     return startTime < lessonEnd && endTime > lessonStart;
   });
+
+  // Gerar avisos
+  const warnings: string[] = [];
+  if (realConflicts.length > 0) {
+    warnings.push(`${realConflicts.length} aula(s) em conflito de horário`);
+  }
+
+  // Verificar se é muito tarde/cedo
+  const hour = startTime.getHours();
+  if (hour < 7 || hour > 22) {
+    warnings.push('Horário fora do expediente normal (7h-22h)');
+  }
+
+  // Verificar final de semana
+  const dayOfWeek = startTime.getDay();
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    warnings.push('Aula agendada para final de semana');
+  }
+
+  console.log(
+    `${realConflicts.length > 0 ? '⚠️' : '✅'} [CONFLICTS] Found ${
+      realConflicts.length
+    } conflicts, ${warnings.length} warnings`
+  );
+
+  return {
+    hasConflicts: realConflicts.length > 0,
+    conflicts: realConflicts.map((lesson) => ({
+      id: lesson.id,
+      title: lesson.title,
+      scheduledAt: lesson.scheduledAt,
+      duration: lesson.duration,
+      studentName:
+        `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim(),
+      studentEmail: lesson.student.user.email,
+    })),
+    warnings,
+  };
 }
 
 // GET - Listar aulas (sem mudanças)
@@ -320,7 +376,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Criar nova aula (com revalidação do cache)
+// POST - Criar nova aula (MELHORADO com sistema de recorrência e conflitos)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -350,10 +406,12 @@ export async function POST(request: NextRequest) {
       practiceGoals = [],
       teacherNotes,
       publicNotes,
-      // Recorrência
+      // Recorrência melhorada
       isRecurring = false,
       recurrenceType = 'NONE',
       recurrenceEnd,
+      // NOVO: Flag para forçar criação mesmo com conflitos
+      forceCreate = false,
     } = body;
 
     if (!studentUserId || !title || !scheduledAt) {
@@ -365,7 +423,41 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`📅➕ [LESSONS] Criando aula: ${title} - ${scheduledAt}`);
+    // NOVO: Validação melhorada de recorrência
+    if (isRecurring) {
+      if (!recurrenceEnd || recurrenceType === 'NONE') {
+        return NextResponse.json(
+          {
+            error:
+              'Para aulas recorrentes, recurrenceEnd e recurrenceType são obrigatórios',
+          },
+          { status: 400 }
+        );
+      }
+
+      // Verificar limite de 3 meses
+      const startDate = new Date(scheduledAt);
+      const endDate = new Date(recurrenceEnd);
+      const maxDate = new Date(startDate);
+      maxDate.setMonth(maxDate.getMonth() + 3);
+
+      if (endDate > maxDate) {
+        return NextResponse.json(
+          {
+            error:
+              'Recorrência limitada a 3 meses. Use a renovação automática após esse período.',
+            maxDate: maxDate.toISOString().split('T')[0],
+          },
+          { status: 400 }
+        );
+      }
+    }
+
+    console.log(
+      `📅➕ [LESSONS] Criando aula: ${title} - ${scheduledAt} ${
+        isRecurring ? '(Recorrente)' : ''
+      }`
+    );
 
     // Verificar se professor existe
     const teacherProfile = await prisma.teacher.findUnique({
@@ -410,7 +502,62 @@ export async function POST(request: NextRequest) {
     const relationship = studentProfile.teachers[0];
     const lessonStart = new Date(scheduledAt);
 
-    // Verificar limite de aulas por semana
+    // Calcular datas de recorrência
+    let lessonDates = [lessonStart];
+    if (isRecurring && recurrenceType !== 'NONE' && recurrenceEnd) {
+      lessonDates = calculateRecurrenceDates(
+        lessonStart,
+        recurrenceType,
+        new Date(recurrenceEnd)
+      );
+    }
+
+    // NOVO: Verificar conflitos para todas as datas se não forçando criação
+    const allConflicts: any[] = [];
+    const allWarnings: string[] = [];
+
+    if (!forceCreate) {
+      console.log(
+        `🔍 [CONFLICTS] Verificando conflitos para ${lessonDates.length} aulas...`
+      );
+
+      for (const date of lessonDates.slice(0, 10)) {
+        // Verificar apenas as primeiras 10 para performance
+        const conflictCheck = await checkScheduleConflicts(
+          teacherProfile.id,
+          date,
+          duration
+        );
+
+        if (conflictCheck.hasConflicts) {
+          allConflicts.push(
+            ...conflictCheck.conflicts.map((c) => ({
+              ...c,
+              plannedDate: date,
+            }))
+          );
+        }
+
+        allWarnings.push(...conflictCheck.warnings);
+      }
+
+      // Se há conflitos e não está forçando, retornar erro com detalhes
+      if (allConflicts.length > 0) {
+        return NextResponse.json(
+          {
+            error: 'Conflitos de horário detectados',
+            conflicts: allConflicts,
+            warnings: Array.from(new Set(allWarnings)), // Remove duplicatas
+            totalLessonsPlanned: lessonDates.length,
+            message:
+              'Algumas aulas entrarão em conflito com horários já agendados. Deseja criar mesmo assim?',
+          },
+          { status: 409 }
+        );
+      }
+    }
+
+    // Verificar limite de aulas por semana (apenas para primeira aula)
     const weekStart = new Date(lessonStart);
     weekStart.setDate(lessonStart.getDate() - lessonStart.getDay());
     weekStart.setHours(0, 0, 0, 0);
@@ -439,137 +586,122 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar conflitos de horário
-    const conflicts = await checkScheduleConflicts(
-      teacherProfile.id,
-      lessonStart,
-      duration
-    );
-
-    if (conflicts.length > 0) {
-      return NextResponse.json(
-        {
-          error: 'Conflito de horário detectado',
-          conflicts: conflicts.map((c) => ({
-            id: c.id,
-            title: c.title,
-            scheduledAt: c.scheduledAt,
-            duration: c.duration,
-            studentName:
-              `${c.student.user.firstName} ${c.student.user.lastName}`.trim(),
-          })),
-        },
-        { status: 409 }
-      );
-    }
-
-    // Calcular datas de recorrência se necessário
-    let lessonDates = [lessonStart];
-    if (isRecurring && recurrenceType !== 'NONE' && recurrenceEnd) {
-      lessonDates = calculateRecurrenceDates(
-        lessonStart,
-        recurrenceType,
-        new Date(recurrenceEnd)
-      );
-    }
-
     // Criar aulas
     const createdLessons = [];
+    const skippedLessons = [];
     let parentLessonId: string | null = null;
+
+    console.log(`📝 [LESSONS] Criando ${lessonDates.length} aula(s)...`);
 
     for (let i = 0; i < lessonDates.length; i++) {
       const lessonDate = lessonDates[i];
 
-      // Para aulas recorrentes, verificar conflitos individualmente
-      if (i > 0) {
-        const conflicts = await checkScheduleConflicts(
-          teacherProfile.id,
-          lessonDate,
-          duration
-        );
+      try {
+        // CORREÇÃO: Remover a condição problemática que impedia criação das outras aulas
+        const lesson: Lesson = await prisma.lesson.create({
+          data: {
+            teacherId: teacherProfile.id,
+            studentId: studentProfile.id,
+            title: lessonDates.length > 1 ? `${title} (${i + 1})` : title,
+            description,
+            scheduledAt: lessonDate,
+            duration,
+            type,
+            location,
+            objectives,
+            workScoreIds,
+            topics,
+            techniques,
+            repertoire,
+            homework,
+            practiceGoals,
+            teacherNotes,
+            publicNotes,
+            status: 'SCHEDULED',
+            isRecurring: lessonDates.length > 1,
+            recurrenceType: lessonDates.length > 1 ? recurrenceType : 'NONE',
+            parentLessonId: i === 0 ? null : parentLessonId,
+            recurrenceEnd: isRecurring ? new Date(recurrenceEnd) : null,
+          },
+          include: {
+            teacher: {
+              include: {
+                user: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                  },
+                },
+              },
+            },
+            student: {
+              include: {
+                user: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                  },
+                },
+              },
+            },
+          },
+        });
 
-        if (conflicts.length > 0) {
-          console.log(`⚠️ [LESSONS] Pulando aula ${lessonDate} por conflito`);
-          continue;
+        // Definir o parentLessonId na primeira iteração
+        if (i === 0) {
+          parentLessonId = lesson.id;
         }
+
+        createdLessons.push(lesson);
+        console.log(
+          `✅ [LESSONS] Aula ${i + 1} criada: ${lessonDate.toISOString()}`
+        );
+      } catch (error) {
+        console.log(`⚠️ [LESSONS] Erro ao criar aula ${i + 1}: ${error}`);
+        skippedLessons.push({
+          date: lessonDate,
+          reason: 'Erro na criação',
+          error: error instanceof Error ? error.message : 'Erro desconhecido',
+        });
       }
-
-      const lesson: Lesson = await prisma.lesson.create({
-        data: {
-          teacherId: teacherProfile.id,
-          studentId: studentProfile.id,
-          title: lessonDates.length > 1 ? `${title} (${i + 1})` : title,
-          description,
-          scheduledAt: lessonDate,
-          duration,
-          type,
-          location,
-          objectives,
-          workScoreIds,
-          topics,
-          techniques,
-          repertoire,
-          homework,
-          practiceGoals,
-          teacherNotes,
-          publicNotes,
-          status: 'SCHEDULED',
-          isRecurring: lessonDates.length > 1,
-          recurrenceType: lessonDates.length > 1 ? recurrenceType : 'NONE',
-          parentLessonId: i === 0 ? null : parentLessonId,
-          recurrenceEnd: isRecurring ? new Date(recurrenceEnd) : null,
-        },
-        include: {
-          teacher: {
-            include: {
-              user: {
-                select: {
-                  firstName: true,
-                  lastName: true,
-                  email: true,
-                },
-              },
-            },
-          },
-          student: {
-            include: {
-              user: {
-                select: {
-                  firstName: true,
-                  lastName: true,
-                  email: true,
-                },
-              },
-            },
-          },
-        },
-      });
-
-      if (i === 0) {
-        parentLessonId = lesson.id;
-      }
-
-      createdLessons.push(lesson);
     }
 
     // 🔥 REVALIDAR CACHE APÓS CRIAÇÃO
     await revalidateTeacherData(session.user.id);
 
-    console.log(
-      `✅ [LESSONS] ${createdLessons.length} aula(s) criada(s) e cache revalidado`
-    );
-
-    return NextResponse.json({
+    const response = {
       success: true,
       lessons: createdLessons,
       message: `${createdLessons.length} aula(s) criada(s) com sucesso`,
       isRecurring: lessonDates.length > 1,
-      skippedDates: lessonDates.length - createdLessons.length,
-    });
+      totalPlanned: lessonDates.length,
+      created: createdLessons.length,
+      skipped: skippedLessons.length,
+      skippedDetails: skippedLessons,
+      // NOVO: Info sobre renovação
+      renewalInfo: isRecurring
+        ? {
+            canRenewAt: new Date(recurrenceEnd).toISOString(),
+            renewalMessage:
+              'Você receberá uma notificação próximo ao final do período para renovar facilmente!',
+          }
+        : null,
+    };
+
+    console.log(
+      `✅ [LESSONS] Criação concluída: ${createdLessons.length}/${lessonDates.length} aulas criadas`
+    );
+
+    return NextResponse.json(response);
   } catch (error) {
     console.error('❌ [LESSONS] Erro ao criar aula:', error);
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido',
+      },
       { status: 500 }
     );
   }
@@ -624,25 +756,19 @@ export async function PATCH(request: NextRequest) {
       updateData.scheduledAt &&
       updateData.scheduledAt !== lesson.scheduledAt.toISOString()
     ) {
-      const conflicts = await checkScheduleConflicts(
+      const conflictCheck = await checkScheduleConflicts(
         teacherProfile!.id,
         new Date(updateData.scheduledAt),
         updateData.duration || lesson.duration,
         lessonId
       );
 
-      if (conflicts.length > 0) {
+      if (conflictCheck.hasConflicts) {
         return NextResponse.json(
           {
             error: 'Conflito de horário detectado',
-            conflicts: conflicts.map((c) => ({
-              id: c.id,
-              title: c.title,
-              scheduledAt: c.scheduledAt,
-              duration: c.duration,
-              studentName:
-                `${c.student.user.firstName} ${c.student.user.lastName}`.trim(),
-            })),
+            conflicts: conflictCheck.conflicts,
+            warnings: conflictCheck.warnings,
           },
           { status: 409 }
         );
@@ -698,7 +824,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// DELETE - Cancelar aula (com revalidação do cache)
+// DELETE - Cancelar aula (MELHORADO com opções avançadas)
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -714,6 +840,7 @@ export async function DELETE(request: NextRequest) {
     const lessonId = searchParams.get('id');
     const reason = searchParams.get('reason') || 'Cancelada pelo professor';
     const cancelRecurringSeries = searchParams.get('cancelSeries') === 'true';
+    const cancelFutureOnly = searchParams.get('futureOnly') === 'true'; // NOVO: cancelar apenas futuras
 
     if (!lessonId) {
       return NextResponse.json(
@@ -722,7 +849,11 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    console.log(`📅❌ [LESSONS] Cancelando aula ${lessonId}`);
+    console.log(
+      `📅❌ [LESSONS] Cancelando aula ${lessonId} ${
+        cancelRecurringSeries ? '(série completa)' : ''
+      }`
+    );
 
     // Verificar se professor é dono da aula
     const teacherProfile = await prisma.teacher.findUnique({
@@ -745,20 +876,47 @@ export async function DELETE(request: NextRequest) {
     }
 
     let cancelledLessons = 1;
+    const cancelledDetails = [];
 
-    if (cancelRecurringSeries && lesson.parentLessonId) {
-      // Cancelar toda a série
-      const updateResult = await prisma.lesson.updateMany({
-        where: {
-          OR: [
-            { id: lesson.parentLessonId },
-            { parentLessonId: lesson.parentLessonId },
-          ],
-          status: 'SCHEDULED',
-          scheduledAt: {
-            gte: new Date(),
+    if (
+      cancelRecurringSeries &&
+      (lesson.parentLessonId || lesson.isRecurring)
+    ) {
+      // Cancelar série de aulas
+      const parentId = lesson.parentLessonId || lesson.id;
+
+      // NOVO: Opção de cancelar apenas futuras
+      const whereCondition: any = {
+        OR: [{ id: parentId }, { parentLessonId: parentId }],
+        status: 'SCHEDULED',
+      };
+
+      if (cancelFutureOnly) {
+        whereCondition.scheduledAt = {
+          gte: new Date(),
+        };
+      }
+
+      // Buscar aulas para cancelar
+      const lessonsToCancel = await prisma.lesson.findMany({
+        where: whereCondition,
+        include: {
+          student: {
+            include: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                },
+              },
+            },
           },
         },
+      });
+
+      // Cancelar em lote
+      const updateResult = await prisma.lesson.updateMany({
+        where: whereCondition,
         data: {
           status: 'CANCELLED',
           cancelReason: reason,
@@ -768,6 +926,19 @@ export async function DELETE(request: NextRequest) {
       });
 
       cancelledLessons = updateResult.count;
+
+      // Detalhes das aulas canceladas
+      cancelledDetails.push(
+        ...lessonsToCancel.map((l) => ({
+          id: l.id,
+          title: l.title,
+          scheduledAt: l.scheduledAt,
+          studentName:
+            `${l.student.user.firstName} ${l.student.user.lastName}`.trim(),
+        }))
+      );
+
+      console.log(`✅ [LESSONS] Série cancelada: ${cancelledLessons} aulas`);
     } else {
       // Cancelar apenas esta aula
       await prisma.lesson.update({
@@ -779,19 +950,32 @@ export async function DELETE(request: NextRequest) {
           cancelledAt: new Date(),
         },
       });
+
+      cancelledDetails.push({
+        id: lesson.id,
+        title: lesson.title,
+        scheduledAt: lesson.scheduledAt,
+      });
+
+      console.log(`✅ [LESSONS] Aula individual cancelada: ${lessonId}`);
     }
 
     // 🔥 REVALIDAR CACHE APÓS CANCELAMENTO
     await revalidateTeacherData(session.user.id);
 
-    console.log(
-      `✅ [LESSONS] ${cancelledLessons} aula(s) cancelada(s) e cache revalidado`
-    );
+    console.log(`✅ [LESSONS] Cache revalidado após cancelamento`);
 
     return NextResponse.json({
       success: true,
       message: `${cancelledLessons} aula(s) cancelada(s) com sucesso`,
       cancelledCount: cancelledLessons,
+      cancelledDetails,
+      reason,
+      // NOVO: Sugestão de reagendamento
+      suggestion:
+        cancelledLessons === 1
+          ? 'Deseja reagendar esta aula para outro horário?'
+          : 'Deseja reagendar alguma dessas aulas?',
     });
   } catch (error) {
     console.error('❌ [LESSONS] Erro ao cancelar aula:', error);

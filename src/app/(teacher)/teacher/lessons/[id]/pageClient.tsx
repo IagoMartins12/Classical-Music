@@ -1,4 +1,4 @@
-// app/teacher/lessons/[id]/pageClient.tsx - Client Component para Detalhes da Aula
+// app/teacher/lessons/[id]/pageClient.tsx - Client Component UNIFICADO (Detalhes + Edição)
 
 'use client';
 
@@ -25,6 +25,9 @@ import {
   FiPlus,
   FiTrash2,
   FiDownload,
+  FiRepeat,
+  FiInfo,
+  FiAlertTriangle,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -36,6 +39,10 @@ import { LessonDetailsData } from './pageServer';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useLessonDetails } from '@/app/hooks/lessonsSystem/useLessonDetails';
+import { useRouter } from 'next/navigation';
+import Input from '@/app/components/Common/Inputs';
+import Select from '@/app/components/Common/Select';
+import Modal from '@/app/components/Modal';
 
 interface TeacherProfile {
   id: string;
@@ -51,11 +58,48 @@ interface TeacherLessonDetailsPageClientProps {
   errorMessage?: string;
 }
 
+type LessonType =
+  | 'INDIVIDUAL'
+  | 'GROUP'
+  | 'THEORY'
+  | 'PRACTICE'
+  | 'MASTERCLASS';
+
+const lessonTypeOptions = [
+  { value: 'INDIVIDUAL', label: 'Individual' },
+  { value: 'GROUP', label: 'Grupo' },
+  { value: 'THEORY', label: 'Teoria' },
+  { value: 'PRACTICE', label: 'Prática' },
+  { value: 'MASTERCLASS', label: 'Masterclass' },
+];
+
+const statusOptions = [
+  { value: 'SCHEDULED', label: 'Agendada' },
+  { value: 'COMPLETED', label: 'Concluída' },
+  { value: 'CANCELLED', label: 'Cancelada' },
+  { value: 'NO_SHOW', label: 'Falta do aluno' },
+  { value: 'RESCHEDULED', label: 'Reagendada' },
+];
+
+// 🆕 TIPOS PARA OS MODAIS DE CONFIRMAÇÃO
+type QuickActionType = 'present' | 'absent' | 'complete' | 'cancel';
+
+// Função helper para formato correto de datetime
+const formatDatetimeForInput = (date: Date | string): string => {
+  const d = new Date(date);
+  // Obter timezone local para manter o horário correto
+  const offset = d.getTimezoneOffset();
+  const localDate = new Date(d.getTime() - offset * 60 * 1000);
+  return localDate.toISOString().slice(0, 16); // Retorna formato YYYY-MM-DDTHH:mm
+};
+
 export default function TeacherLessonDetailsPageClient({
   lessonData,
   teacherProfile,
   errorMessage,
 }: TeacherLessonDetailsPageClientProps) {
+  const router = useRouter();
+
   // Initialize hook
   const {
     lesson,
@@ -71,23 +115,24 @@ export default function TeacherLessonDetailsPageClient({
     updatePublicNotes,
     updateLessonSummary,
     updateHomework,
-    updateProgress,
     markAttendance,
     completeLesson,
     cancelLesson,
-    rescheduleLesson,
-    createAssignment,
+    deleteLesson, // 🆕 NOVA FUNÇÃO
     setEditMode,
-    clearError,
   } = useLessonDetails(lessonData);
 
-  // Local edit states
+  // 🆕 NOVOS ESTADOS PARA EDIÇÃO COMPLETA
   const [editingBasicInfo, setEditingBasicInfo] = useState({
     title: '',
     description: '',
-    location: '',
+    scheduledAt: '',
     duration: 60,
+    type: 'INDIVIDUAL' as LessonType,
+    location: '',
+    status: 'SCHEDULED',
   });
+
   const [editingObjectives, setEditingObjectives] = useState<string[]>([]);
   const [editingTopics, setEditingTopics] = useState<string[]>([]);
   const [editingTechniques, setEditingTechniques] = useState<string[]>([]);
@@ -97,9 +142,24 @@ export default function TeacherLessonDetailsPageClient({
     summary: '',
     homework: '',
   });
+
+  // 🆕 ESTADOS PARA ADICIONAR NOVOS ITEMS
   const [newObjective, setNewObjective] = useState('');
   const [newTopic, setNewTopic] = useState('');
   const [newTechnique, setNewTechnique] = useState('');
+
+  // 🆕 ESTADOS PARA MODAL DE DELETE/APAGAR
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteReason, setDeleteReason] = useState('');
+  const [deleteRecurringSeries, setDeleteRecurringSeries] = useState(false);
+  const [deleteFutureOnly, setDeleteFutureOnly] = useState(false);
+
+  // 🆕 ESTADOS PARA MODAL DE QUICK ACTIONS
+  const [showQuickActionModal, setShowQuickActionModal] = useState(false);
+  const [quickActionType, setQuickActionType] =
+    useState<QuickActionType>('present');
+  const [quickActionReason, setQuickActionReason] = useState('');
+  const [loadingQuickAction, setLoadingQuickAction] = useState(false);
 
   // Initialize lesson data
   useEffect(() => {
@@ -114,8 +174,11 @@ export default function TeacherLessonDetailsPageClient({
       setEditingBasicInfo({
         title: lesson.title,
         description: lesson.description || '',
-        location: lesson.location || '',
+        scheduledAt: formatDatetimeForInput(lesson.scheduledAt),
         duration: lesson.duration,
+        type: lesson.type as LessonType,
+        location: lesson.location || '',
+        status: lesson.status,
       });
     }
   }, [lesson, isEditing.basicInfo]);
@@ -136,6 +199,14 @@ export default function TeacherLessonDetailsPageClient({
       });
     }
   }, [lesson, isEditing.notes]);
+
+  // 🆕 INICIALIZAR EDIÇÃO DE TÓPICOS E TÉCNICAS
+  useEffect(() => {
+    if (lesson) {
+      setEditingTopics([...lesson.topics]);
+      setEditingTechniques([...lesson.techniques]);
+    }
+  }, [lesson]);
 
   // Format functions
   const formatDateTime = (date: Date | string) => {
@@ -189,20 +260,113 @@ export default function TeacherLessonDetailsPageClient({
     }
   };
 
+  // 🆕 VERIFICAR SE PODE EDITAR (AULAS CANCELADAS NÃO PODEM SER EDITADAS)
+  const canEditLesson =
+    lesson?.status !== 'CANCELLED' && lesson?.permissions.canEdit;
+
+  // 🆕 HANDLERS PARA ARRAYS (TÓPICOS, TÉCNICAS, OBJETIVOS)
+  const addArrayField = useCallback((field: string) => {
+    if (field === 'objectives') {
+      setEditingObjectives((prev) => [...prev, '']);
+    } else if (field === 'topics') {
+      setEditingTopics((prev) => [...prev, '']);
+    } else if (field === 'techniques') {
+      setEditingTechniques((prev) => [...prev, '']);
+    }
+  }, []);
+
+  const updateArrayField = useCallback(
+    (field: string, index: number, value: string) => {
+      if (field === 'objectives') {
+        setEditingObjectives((prev) =>
+          prev.map((item, i) => (i === index ? value : item))
+        );
+      } else if (field === 'topics') {
+        setEditingTopics((prev) =>
+          prev.map((item, i) => (i === index ? value : item))
+        );
+      } else if (field === 'techniques') {
+        setEditingTechniques((prev) =>
+          prev.map((item, i) => (i === index ? value : item))
+        );
+      }
+    },
+    []
+  );
+
+  const removeArrayField = useCallback((field: string, index: number) => {
+    if (field === 'objectives') {
+      setEditingObjectives((prev) => prev.filter((_, i) => i !== index));
+    } else if (field === 'topics') {
+      setEditingTopics((prev) => prev.filter((_, i) => i !== index));
+    } else if (field === 'techniques') {
+      setEditingTechniques((prev) => prev.filter((_, i) => i !== index));
+    }
+  }, []);
+
   // Edit handlers
   const handleSaveBasicInfo = useCallback(async () => {
-    const success = await updateBasicInfo(editingBasicInfo);
+    // Converter a data para ISO string completo
+    let scheduledAtISO = editingBasicInfo.scheduledAt;
+
+    // Se não tem segundos, adicionar
+    if (scheduledAtISO.length === 16) {
+      scheduledAtISO += ':00';
+    }
+
+    // Criar objeto Date e converter para ISO string completo
+    const scheduledDate = new Date(scheduledAtISO);
+
+    // Verificar se a data é válida
+    if (isNaN(scheduledDate.getTime())) {
+      console.error('❌ Data inválida:', scheduledAtISO);
+      return false;
+    }
+
+    const success = await updateBasicInfo({
+      ...editingBasicInfo,
+      scheduledAt: scheduledDate.toISOString(), // Enviar como ISO string completo
+    });
+
     if (success) {
       setEditMode('basicInfo', false);
     }
   }, [editingBasicInfo, updateBasicInfo, setEditMode]);
-
   const handleSaveObjectives = useCallback(async () => {
-    const success = await updateObjectives(editingObjectives);
+    const cleanObjectives = editingObjectives.filter((obj) => obj.trim());
+    const success = await updateObjectives(cleanObjectives);
     if (success) {
       setEditMode('objectives', false);
     }
   }, [editingObjectives, updateObjectives, setEditMode]);
+
+  // 🆕 HANDLER PARA SALVAR TÓPICOS E TÉCNICAS
+  const handleSaveTopicsAndTechniques = useCallback(async () => {
+    const cleanTopics = editingTopics.filter((topic) => topic.trim());
+    const cleanTechniques = editingTechniques.filter((tech) => tech.trim());
+
+    const success = await updateTopicsAndTechniques({
+      topics: cleanTopics,
+      techniques: cleanTechniques,
+    });
+
+    if (success) {
+      // Atualizar estado local
+      if (lesson) {
+        setLesson({
+          ...lesson,
+          topics: cleanTopics,
+          techniques: cleanTechniques,
+        });
+      }
+    }
+  }, [
+    editingTopics,
+    editingTechniques,
+    updateTopicsAndTechniques,
+    lesson,
+    setLesson,
+  ]);
 
   const handleSaveNotes = useCallback(async () => {
     const promises = [];
@@ -234,26 +398,98 @@ export default function TeacherLessonDetailsPageClient({
     setEditMode,
   ]);
 
-  // Attendance handlers
-  const handleMarkPresent = useCallback(async () => {
-    await markAttendance({
-      studentPresent: true,
-      punctuality: 'on_time',
-      actualStartTime: new Date(),
-    });
-  }, [markAttendance]);
+  // 🆕 HANDLERS PARA QUICK ACTIONS COM MODAL
+  const handleQuickAction = useCallback((actionType: QuickActionType) => {
+    setQuickActionType(actionType);
+    setQuickActionReason('');
+    setShowQuickActionModal(true);
+  }, []);
 
-  const handleMarkAbsent = useCallback(async () => {
-    await markAttendance({
-      studentPresent: false,
-    });
-  }, [markAttendance]);
+  const executeQuickAction = useCallback(async () => {
+    if (!lesson?.id) return;
 
-  // Quick actions
-  const handleCompleteLesson = useCallback(async () => {
-    const summary = lesson?.lessonSummary || 'Aula concluída com sucesso.';
-    await completeLesson(summary);
-  }, [completeLesson, lesson?.lessonSummary]);
+    setLoadingQuickAction(true);
+
+    try {
+      let success = false;
+
+      switch (quickActionType) {
+        case 'present':
+          success = await markAttendance({
+            studentPresent: true,
+            punctuality: 'on_time',
+            actualStartTime: new Date(),
+          });
+          break;
+
+        case 'absent':
+          success = await markAttendance({
+            studentPresent: false,
+          });
+          break;
+
+        case 'complete':
+          const summary =
+            lesson?.lessonSummary || 'Aula concluída com sucesso.';
+          success = await completeLesson(summary);
+          break;
+
+        case 'cancel':
+          success = await cancelLesson(
+            quickActionReason || 'Cancelada pelo professor'
+          );
+          break;
+      }
+
+      if (success) {
+        setShowQuickActionModal(false);
+        await refreshLesson();
+      }
+    } catch (error) {
+      console.error('❌ Erro na ação rápida:', error);
+    } finally {
+      setLoadingQuickAction(false);
+    }
+  }, [
+    quickActionType,
+    quickActionReason,
+    lesson,
+    markAttendance,
+    completeLesson,
+    cancelLesson,
+    refreshLesson,
+  ]);
+
+  // 🆕 HANDLER PARA DELETE/APAGAR REAL DA AULA
+  const handleDeleteLesson = useCallback(async () => {
+    if (!lesson?.id) return;
+
+    try {
+      const success = await deleteLesson({
+        reason: deleteReason || undefined,
+        deleteAll: deleteRecurringSeries,
+        futureOnly: deleteFutureOnly,
+      });
+
+      if (success) {
+        console.log('✅ Aula(s) apagada(s) com sucesso!');
+        setShowDeleteModal(false);
+
+        // 🔄 REDIRECIONAR PARA LISTA DE AULAS
+        router.push('/teacher/lessons');
+      }
+    } catch (error) {
+      console.error('❌ Erro ao apagar aula:', error);
+      // O erro já é tratado pelo hook
+    }
+  }, [
+    lesson?.id,
+    deleteReason,
+    deleteRecurringSeries,
+    deleteFutureOnly,
+    deleteLesson,
+    router,
+  ]);
 
   // Render error state
   if ((error || errorMessage) && !lesson) {
@@ -311,6 +547,8 @@ export default function TeacherLessonDetailsPageClient({
     );
   }
 
+  const canDelete = lesson.permissions.canCancel; // Pode sempre apagar se tiver permissão
+
   return (
     <PageContainer showBackground={true}>
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
@@ -342,6 +580,18 @@ export default function TeacherLessonDetailsPageClient({
               >
                 {getStatusLabel(lesson.status)}
               </span>
+
+              {/* 🆕 BOTÃO DE APAGAR */}
+              {canDelete && (
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10 flex items-center space-x-2"
+                >
+                  <FiTrash2 className="w-4 h-4" />
+                  <span>Apagar</span>
+                </button>
+              )}
+
               <button
                 onClick={refreshLesson}
                 disabled={loading.update}
@@ -360,7 +610,7 @@ export default function TeacherLessonDetailsPageClient({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Info */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Basic Info */}
+            {/* Basic Info - MELHORADO COM VERIFICAÇÃO DE CANCELAMENTO */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
@@ -368,7 +618,7 @@ export default function TeacherLessonDetailsPageClient({
                     <FiCalendar className="w-5 h-5" />
                     <span>Informações Básicas</span>
                   </h2>
-                  {!isEditing.basicInfo ? (
+                  {canEditLesson && !isEditing.basicInfo ? (
                     <button
                       onClick={() => setEditMode('basicInfo', true)}
                       className="btn-classical-secondary flex items-center space-x-1 text-sm"
@@ -376,7 +626,7 @@ export default function TeacherLessonDetailsPageClient({
                       <FiEdit3 className="w-3 h-3" />
                       <span>Editar</span>
                     </button>
-                  ) : (
+                  ) : canEditLesson && isEditing.basicInfo ? (
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={handleSaveBasicInfo}
@@ -394,27 +644,121 @@ export default function TeacherLessonDetailsPageClient({
                         <span>Cancelar</span>
                       </button>
                     </div>
-                  )}
+                  ) : null}
                 </div>
 
                 {isEditing.basicInfo ? (
                   <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Título
-                      </label>
-                      <input
-                        type="text"
-                        value={editingBasicInfo.title}
-                        onChange={(e) =>
-                          setEditingBasicInfo((prev) => ({
-                            ...prev,
-                            title: e.target.value,
-                          }))
-                        }
-                        className="input-classical-2 w-full"
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                          Título *
+                        </label>
+                        <Input
+                          type="text"
+                          value={editingBasicInfo.title}
+                          onChange={(e) =>
+                            setEditingBasicInfo((prev) => ({
+                              ...prev,
+                              title: e.target.value,
+                            }))
+                          }
+                          className="input-classical-2 w-full"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                          Status
+                        </label>
+                        <Select
+                          options={statusOptions}
+                          value={editingBasicInfo.status}
+                          onChange={(e) =>
+                            setEditingBasicInfo((prev) => ({
+                              ...prev,
+                              status: e.target.value,
+                            }))
+                          }
+                          className="input-classical-2 w-full"
+                        />
+                      </div>
                     </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                          Tipo de Aula
+                        </label>
+                        <Select
+                          options={lessonTypeOptions}
+                          value={editingBasicInfo.type}
+                          onChange={(e) =>
+                            setEditingBasicInfo((prev) => ({
+                              ...prev,
+                              type: e.target.value as LessonType,
+                            }))
+                          }
+                          className="input-classical-2 w-full"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                          Local
+                        </label>
+                        <Input
+                          type="text"
+                          value={editingBasicInfo.location}
+                          onChange={(e) =>
+                            setEditingBasicInfo((prev) => ({
+                              ...prev,
+                              location: e.target.value,
+                            }))
+                          }
+                          className="input-classical-2 w-full"
+                          placeholder="Ex: Online, Estúdio A"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                          Data e Hora *
+                        </label>
+                        <Input
+                          type="datetime-local"
+                          value={editingBasicInfo.scheduledAt}
+                          onChange={(e) =>
+                            setEditingBasicInfo((prev) => ({
+                              ...prev,
+                              scheduledAt: e.target.value,
+                            }))
+                          }
+                          className="input-classical-2 w-full"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
+                          Duração (min)
+                        </label>
+                        <Input
+                          type="number"
+                          value={editingBasicInfo.duration}
+                          onChange={(e) =>
+                            setEditingBasicInfo((prev) => ({
+                              ...prev,
+                              duration: parseInt(e.target.value) || 60,
+                            }))
+                          }
+                          min="30"
+                          max="240"
+                          className="input-classical-2 w-full"
+                        />
+                      </div>
+                    </div>
+
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
                         Descrição
@@ -430,43 +774,6 @@ export default function TeacherLessonDetailsPageClient({
                         className="input-classical-2 w-full h-20"
                         placeholder="Descrição da aula..."
                       />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          Local
-                        </label>
-                        <input
-                          type="text"
-                          value={editingBasicInfo.location}
-                          onChange={(e) =>
-                            setEditingBasicInfo((prev) => ({
-                              ...prev,
-                              location: e.target.value,
-                            }))
-                          }
-                          className="input-classical-2 w-full"
-                          placeholder="Local da aula"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          Duração (min)
-                        </label>
-                        <input
-                          type="number"
-                          value={editingBasicInfo.duration}
-                          onChange={(e) =>
-                            setEditingBasicInfo((prev) => ({
-                              ...prev,
-                              duration: parseInt(e.target.value) || 60,
-                            }))
-                          }
-                          className="input-classical-2 w-full"
-                          min="30"
-                          max="240"
-                        />
-                      </div>
                     </div>
                   </div>
                 ) : (
@@ -497,12 +804,41 @@ export default function TeacherLessonDetailsPageClient({
                         <span>{lesson.location}</span>
                       </div>
                     )}
+
+                    {/* Recurrence Info */}
+                    {lesson.isRecurring && (
+                      <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4">
+                        <div className="flex items-center space-x-2 text-accent-blue mb-2">
+                          <FiRepeat className="w-4 h-4" />
+                          <span className="font-medium">Aula Recorrente</span>
+                        </div>
+                        <p className="text-sm text-theme-secondary">
+                          Esta aula faz parte de uma série recorrente.
+                          {lesson.parentLessonId
+                            ? ' Esta é uma aula filha da série.'
+                            : ' Esta é a aula pai da série.'}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Aviso se aula foi cancelada */}
+                    {lesson.status === 'CANCELLED' && (
+                      <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
+                        <div className="flex items-center space-x-2 text-accent-red mb-2">
+                          <FiAlertTriangle className="w-4 h-4" />
+                          <span className="font-medium">Aula Cancelada</span>
+                        </div>
+                        <p className="text-sm text-theme-secondary">
+                          Esta aula foi cancelada e não pode mais ser editada.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* Objectives */}
+            {/* Objectives - MANTIDO COM VERIFICAÇÃO DE CANCELAMENTO */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
@@ -510,7 +846,7 @@ export default function TeacherLessonDetailsPageClient({
                     <FiTarget className="w-5 h-5" />
                     <span>Objetivos da Aula</span>
                   </h2>
-                  {!isEditing.objectives ? (
+                  {canEditLesson && !isEditing.objectives ? (
                     <button
                       onClick={() => setEditMode('objectives', true)}
                       className="btn-classical-secondary flex items-center space-x-1 text-sm"
@@ -518,7 +854,7 @@ export default function TeacherLessonDetailsPageClient({
                       <FiEdit3 className="w-3 h-3" />
                       <span>Editar</span>
                     </button>
-                  ) : (
+                  ) : canEditLesson && isEditing.objectives ? (
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={handleSaveObjectives}
@@ -536,30 +872,27 @@ export default function TeacherLessonDetailsPageClient({
                         <span>Cancelar</span>
                       </button>
                     </div>
-                  )}
+                  ) : null}
                 </div>
 
                 {isEditing.objectives ? (
                   <div className="space-y-3">
                     {editingObjectives.map((objective, index) => (
                       <div key={index} className="flex items-center space-x-2">
-                        <input
+                        <Input
                           type="text"
                           value={objective}
                           onChange={(e) => {
-                            const newObjectives = [...editingObjectives];
-                            newObjectives[index] = e.target.value;
-                            setEditingObjectives(newObjectives);
+                            updateArrayField(
+                              'objectives',
+                              index,
+                              e.target.value
+                            );
                           }}
                           className="input-classical-2 flex-1"
                         />
                         <button
-                          onClick={() => {
-                            const newObjectives = editingObjectives.filter(
-                              (_, i) => i !== index
-                            );
-                            setEditingObjectives(newObjectives);
-                          }}
+                          onClick={() => removeArrayField('objectives', index)}
                           className="w-8 h-8 rounded-lg bg-accent-red/10 hover:bg-accent-red/20 transition-colors flex items-center justify-center"
                         >
                           <FiTrash2 className="w-4 h-4 text-accent-red" />
@@ -568,7 +901,7 @@ export default function TeacherLessonDetailsPageClient({
                     ))}
 
                     <div className="flex items-center space-x-2">
-                      <input
+                      <Input
                         type="text"
                         value={newObjective}
                         onChange={(e) => setNewObjective(e.target.value)}
@@ -621,7 +954,7 @@ export default function TeacherLessonDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* Topics & Techniques */}
+            {/* 🆕 Topics & Techniques - MANTIDO COM VERIFICAÇÃO DE CANCELAMENTO */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
@@ -629,57 +962,227 @@ export default function TeacherLessonDetailsPageClient({
                     <FiBookOpen className="w-5 h-5" />
                     <span>Tópicos e Técnicas</span>
                   </h2>
+                  {canEditLesson && (
+                    <button
+                      onClick={handleSaveTopicsAndTechniques}
+                      disabled={loading.update}
+                      className="btn-classical-secondary flex items-center space-x-1 text-sm"
+                    >
+                      <FiSave className="w-3 h-3" />
+                      <span>Salvar Alterações</span>
+                    </button>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <h3 className="font-medium text-theme-primary mb-3">
-                      Tópicos Abordados
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {lesson.topics.length > 0 ? (
-                        lesson.topics.map((topic, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm"
-                          >
-                            {topic}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-theme-tertiary italic text-sm">
-                          Nenhum tópico registrado
-                        </span>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-medium text-theme-primary">
+                        Tópicos Abordados
+                      </h3>
+                      {canEditLesson && (
+                        <button
+                          onClick={() => addArrayField('topics')}
+                          className="text-brand-primary text-sm flex items-center space-x-1"
+                        >
+                          <FiPlus className="w-3 h-3" />
+                          <span>Adicionar</span>
+                        </button>
                       )}
                     </div>
+
+                    {canEditLesson ? (
+                      <div className="space-y-2">
+                        {editingTopics.map((topic, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center space-x-2"
+                          >
+                            <Input
+                              type="text"
+                              value={topic}
+                              onChange={(e) =>
+                                updateArrayField(
+                                  'topics',
+                                  index,
+                                  e.target.value
+                                )
+                              }
+                              className="input-classical-2 flex-1"
+                              placeholder="Ex: Escala de Dó maior"
+                            />
+                            {editingTopics.length > 1 && (
+                              <button
+                                onClick={() =>
+                                  removeArrayField('topics', index)
+                                }
+                                className="w-6 h-6 rounded bg-accent-red/10 hover:bg-accent-red/20 transition-colors flex items-center justify-center"
+                              >
+                                <FiX className="w-3 h-3 text-accent-red" />
+                              </button>
+                            )}
+                          </div>
+                        ))}
+
+                        <div className="flex items-center space-x-2">
+                          <Input
+                            type="text"
+                            value={newTopic}
+                            onChange={(e) => setNewTopic(e.target.value)}
+                            placeholder="Novo tópico..."
+                            className="input-classical-2 flex-1"
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter' && newTopic.trim()) {
+                                setEditingTopics([
+                                  ...editingTopics,
+                                  newTopic.trim(),
+                                ]);
+                                setNewTopic('');
+                              }
+                            }}
+                          />
+                          <button
+                            onClick={() => {
+                              if (newTopic.trim()) {
+                                setEditingTopics([
+                                  ...editingTopics,
+                                  newTopic.trim(),
+                                ]);
+                                setNewTopic('');
+                              }
+                            }}
+                            className="w-6 h-6 rounded bg-brand-primary/10 hover:bg-brand-primary/20 transition-colors flex items-center justify-center"
+                          >
+                            <FiPlus className="w-3 h-3 text-brand-primary" />
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap gap-2">
+                        {lesson.topics.length > 0 ? (
+                          lesson.topics.map((topic, index) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm"
+                            >
+                              {topic}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-theme-tertiary italic text-sm">
+                            Nenhum tópico registrado
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div>
-                    <h3 className="font-medium text-theme-primary mb-3">
-                      Técnicas Trabalhadas
-                    </h3>
-                    <div className="flex flex-wrap gap-2">
-                      {lesson.techniques.length > 0 ? (
-                        lesson.techniques.map((technique, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm"
-                          >
-                            {technique}
-                          </span>
-                        ))
-                      ) : (
-                        <span className="text-theme-tertiary italic text-sm">
-                          Nenhuma técnica registrada
-                        </span>
+                    <div className="flex items-center justify-between mb-3">
+                      <h3 className="font-medium text-theme-primary">
+                        Técnicas Trabalhadas
+                      </h3>
+                      {canEditLesson && (
+                        <button
+                          onClick={() => addArrayField('techniques')}
+                          className="text-brand-primary text-sm flex items-center space-x-1"
+                        >
+                          <FiPlus className="w-3 h-3" />
+                          <span>Adicionar</span>
+                        </button>
                       )}
                     </div>
+
+                    {canEditLesson ? (
+                      <div className="space-y-2">
+                        {editingTechniques.map((technique, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center space-x-2"
+                          >
+                            <Input
+                              type="text"
+                              value={technique}
+                              onChange={(e) =>
+                                updateArrayField(
+                                  'techniques',
+                                  index,
+                                  e.target.value
+                                )
+                              }
+                              className="input-classical-2 flex-1"
+                              placeholder="Ex: Staccato"
+                            />
+                            {editingTechniques.length > 1 && (
+                              <button
+                                onClick={() =>
+                                  removeArrayField('techniques', index)
+                                }
+                                className="w-6 h-6 rounded bg-accent-red/10 hover:bg-accent-red/20 transition-colors flex items-center justify-center"
+                              >
+                                <FiX className="w-3 h-3 text-accent-red" />
+                              </button>
+                            )}
+                          </div>
+                        ))}
+
+                        <div className="flex items-center space-x-2">
+                          <Input
+                            type="text"
+                            value={newTechnique}
+                            onChange={(e) => setNewTechnique(e.target.value)}
+                            placeholder="Nova técnica..."
+                            className="input-classical-2 flex-1"
+                            onKeyPress={(e) => {
+                              if (e.key === 'Enter' && newTechnique.trim()) {
+                                setEditingTechniques([
+                                  ...editingTechniques,
+                                  newTechnique.trim(),
+                                ]);
+                                setNewTechnique('');
+                              }
+                            }}
+                          />
+                          <button
+                            onClick={() => {
+                              if (newTechnique.trim()) {
+                                setEditingTechniques([
+                                  ...editingTechniques,
+                                  newTechnique.trim(),
+                                ]);
+                                setNewTechnique('');
+                              }
+                            }}
+                            className="w-6 h-6 rounded bg-brand-primary/10 hover:bg-brand-primary/20 transition-colors flex items-center justify-center"
+                          >
+                            <FiPlus className="w-3 h-3 text-brand-primary" />
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap gap-2">
+                        {lesson.techniques.length > 0 ? (
+                          lesson.techniques.map((technique, index) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm"
+                            >
+                              {technique}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-theme-tertiary italic text-sm">
+                            Nenhuma técnica registrada
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* Notes Section */}
+            {/* Notes Section - MANTIDO COM VERIFICAÇÃO DE CANCELAMENTO */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
@@ -687,7 +1190,7 @@ export default function TeacherLessonDetailsPageClient({
                     <FiMessageSquare className="w-5 h-5" />
                     <span>Notas e Observações</span>
                   </h2>
-                  {!isEditing.notes ? (
+                  {canEditLesson && !isEditing.notes ? (
                     <button
                       onClick={() => setEditMode('notes', true)}
                       className="btn-classical-secondary flex items-center space-x-1 text-sm"
@@ -695,7 +1198,7 @@ export default function TeacherLessonDetailsPageClient({
                       <FiEdit3 className="w-3 h-3" />
                       <span>Editar</span>
                     </button>
-                  ) : (
+                  ) : canEditLesson && isEditing.notes ? (
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={handleSaveNotes}
@@ -713,7 +1216,7 @@ export default function TeacherLessonDetailsPageClient({
                         <span>Cancelar</span>
                       </button>
                     </div>
-                  )}
+                  ) : null}
                 </div>
 
                 {isEditing.notes ? (
@@ -916,7 +1419,7 @@ export default function TeacherLessonDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* Quick Actions */}
+            {/* 🆕 Quick Actions COM MODAL DE CONFIRMAÇÃO */}
             {lesson.status === 'SCHEDULED' && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
@@ -926,7 +1429,7 @@ export default function TeacherLessonDetailsPageClient({
 
                   <div className="space-y-3">
                     <button
-                      onClick={handleMarkPresent}
+                      onClick={() => handleQuickAction('present')}
                       disabled={loading.attendance}
                       className="btn-classical-primary w-full flex items-center justify-center space-x-2"
                     >
@@ -935,7 +1438,7 @@ export default function TeacherLessonDetailsPageClient({
                     </button>
 
                     <button
-                      onClick={handleMarkAbsent}
+                      onClick={() => handleQuickAction('absent')}
                       disabled={loading.attendance}
                       className="w-full px-4 py-2 bg-accent-yellow/10 border border-accent-yellow/30 text-accent-yellow rounded-lg hover:bg-accent-yellow/20 transition-colors flex items-center justify-center space-x-2"
                     >
@@ -944,7 +1447,7 @@ export default function TeacherLessonDetailsPageClient({
                     </button>
 
                     <button
-                      onClick={handleCompleteLesson}
+                      onClick={() => handleQuickAction('complete')}
                       disabled={loading.update}
                       className="w-full px-4 py-2 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-lg hover:bg-accent-green/20 transition-colors flex items-center justify-center space-x-2"
                     >
@@ -953,7 +1456,7 @@ export default function TeacherLessonDetailsPageClient({
                     </button>
 
                     <button
-                      onClick={() => cancelLesson('Cancelada pelo professor')}
+                      onClick={() => handleQuickAction('cancel')}
                       disabled={loading.update}
                       className="w-full px-4 py-2 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-lg hover:bg-accent-red/20 transition-colors flex items-center justify-center space-x-2"
                     >
@@ -1042,6 +1545,254 @@ export default function TeacherLessonDetailsPageClient({
           </div>
         </div>
       </AnimatedContainer>
+
+      {/* 🆕 MODAL DE CONFIRMAÇÃO PARA QUICK ACTIONS */}
+      {showQuickActionModal && (
+        <Modal
+          isOpen
+          onClose={() => setShowQuickActionModal(false)}
+          maxWidth="md"
+        >
+          <div className="p-6">
+            <div className="flex items-center space-x-3 mb-6">
+              <div
+                className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                  quickActionType === 'present'
+                    ? 'bg-accent-green/10'
+                    : quickActionType === 'absent'
+                    ? 'bg-accent-yellow/10'
+                    : quickActionType === 'complete'
+                    ? 'bg-accent-green/10'
+                    : 'bg-accent-red/10'
+                }`}
+              >
+                {quickActionType === 'present' && (
+                  <FiUserCheck className="w-6 h-6 text-accent-green" />
+                )}
+                {quickActionType === 'absent' && (
+                  <FiUserX className="w-6 h-6 text-accent-yellow" />
+                )}
+                {quickActionType === 'complete' && (
+                  <FiCheck className="w-6 h-6 text-accent-green" />
+                )}
+                {quickActionType === 'cancel' && (
+                  <FiX className="w-6 h-6 text-accent-red" />
+                )}
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-theme-primary">
+                  Confirmar Ação
+                </h2>
+                <p className="text-theme-secondary">
+                  {quickActionType === 'present' && 'Marcar presença do aluno'}
+                  {quickActionType === 'absent' && 'Marcar falta do aluno'}
+                  {quickActionType === 'complete' && 'Concluir esta aula'}
+                  {quickActionType === 'cancel' && 'Cancelar esta aula'}
+                </p>
+              </div>
+            </div>
+
+            {quickActionType === 'cancel' && (
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-theme-primary mb-2">
+                  Motivo (opcional)
+                </label>
+                <textarea
+                  value={quickActionReason}
+                  onChange={(e) => setQuickActionReason(e.target.value)}
+                  rows={3}
+                  className="input-classical-2 w-full"
+                  placeholder="Ex: Indisponibilidade do professor..."
+                />
+              </div>
+            )}
+
+            <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 mb-6">
+              <div className="flex items-start space-x-3">
+                <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+                <div className="text-sm">
+                  <p className="font-medium text-accent-blue mb-1">
+                    Confirmação
+                  </p>
+                  <p className="text-theme-secondary">
+                    {quickActionType === 'present' &&
+                      'O aluno será marcado como presente e a aula será iniciada automaticamente.'}
+                    {quickActionType === 'absent' &&
+                      'O aluno será marcado como ausente e a aula ficará como "Falta do aluno".'}
+                    {quickActionType === 'complete' &&
+                      'A aula será marcada como concluída e o status será atualizado.'}
+                    {quickActionType === 'cancel' &&
+                      'A aula será cancelada e o aluno será notificado.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end space-x-3">
+              <button
+                onClick={() => setShowQuickActionModal(false)}
+                className="btn-classical-secondary"
+                disabled={loadingQuickAction}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={executeQuickAction}
+                disabled={loadingQuickAction}
+                className={`btn-classical-primary flex items-center space-x-2 ${
+                  quickActionType === 'cancel'
+                    ? 'bg-accent-red border-accent-red hover:bg-accent-red/90'
+                    : ''
+                }`}
+              >
+                {loadingQuickAction ? (
+                  <FiRefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    {quickActionType === 'present' && (
+                      <FiUserCheck className="w-4 h-4" />
+                    )}
+                    {quickActionType === 'absent' && (
+                      <FiUserX className="w-4 h-4" />
+                    )}
+                    {quickActionType === 'complete' && (
+                      <FiCheck className="w-4 h-4" />
+                    )}
+                    {quickActionType === 'cancel' && (
+                      <FiX className="w-4 h-4" />
+                    )}
+                  </>
+                )}
+                <span>
+                  {loadingQuickAction ? 'Processando...' : 'Confirmar'}
+                </span>
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* 🆕 MODAL DE APAGAR/DELETE REAL */}
+      {showDeleteModal && (
+        <Modal isOpen onClose={() => setShowDeleteModal(false)} maxWidth="2xl">
+          <div className="p-6">
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="w-12 h-12 bg-accent-red/10 rounded-full flex items-center justify-center">
+                <FiTrash2 className="w-6 h-6 text-accent-red" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-theme-primary">
+                  Apagar Aula
+                </h2>
+                <p className="text-theme-secondary">
+                  Esta ação irá <strong>apagar permanentemente</strong> a aula
+                  do banco de dados
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-theme-primary mb-2">
+                  Motivo (opcional)
+                </label>
+                <textarea
+                  value={deleteReason}
+                  onChange={(e) => setDeleteReason(e.target.value)}
+                  rows={3}
+                  className="input-classical-2 w-full"
+                  placeholder="Ex: Aula criada por engano..."
+                />
+              </div>
+
+              {lesson.isRecurring && (
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <input
+                      type="checkbox"
+                      id="deleteAll"
+                      checked={deleteRecurringSeries}
+                      onChange={(e) =>
+                        setDeleteRecurringSeries(e.target.checked)
+                      }
+                      className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-brand-primary"
+                    />
+                    <label htmlFor="deleteAll" className="text-theme-primary">
+                      Apagar toda a série de aulas recorrentes
+                    </label>
+                  </div>
+
+                  {deleteRecurringSeries && (
+                    <div className="flex items-center space-x-3 ml-7">
+                      <input
+                        type="checkbox"
+                        id="futureOnly"
+                        checked={deleteFutureOnly}
+                        onChange={(e) => setDeleteFutureOnly(e.target.checked)}
+                        className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-brand-primary"
+                      />
+                      <label
+                        htmlFor="futureOnly"
+                        className="text-theme-secondary text-sm"
+                      >
+                        Apagar apenas as aulas futuras (manter histórico)
+                      </label>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4 mb-6">
+              <div className="flex items-start space-x-3">
+                <FiAlertTriangle className="w-5 h-5 text-accent-red mt-0.5" />
+                <div className="text-sm">
+                  <p className="font-medium text-accent-red mb-1">
+                    ⚠️ Ação Irreversível
+                  </p>
+                  <p className="text-theme-secondary">
+                    {deleteRecurringSeries
+                      ? `Esta ação irá APAGAR PERMANENTEMENTE ${
+                          deleteFutureOnly
+                            ? 'todas as aulas futuras'
+                            : 'toda a série'
+                        } da recorrência do banco de dados.`
+                      : 'Esta ação irá APAGAR PERMANENTEMENTE esta aula do banco de dados.'}{' '}
+                    Não será possível recuperar os dados após a exclusão.
+                    {lesson.isRecurring &&
+                      !deleteRecurringSeries &&
+                      ' A próxima aula da série se tornará a nova aula pai.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end space-x-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="btn-classical-secondary"
+                disabled={loading.delete}
+              >
+                Manter Aula
+              </button>
+              <button
+                onClick={handleDeleteLesson}
+                disabled={loading.delete}
+                className="btn-classical-primary bg-accent-red border-accent-red hover:bg-accent-red/90 flex items-center space-x-2"
+              >
+                {loading.delete ? (
+                  <FiRefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <FiTrash2 className="w-4 h-4" />
+                )}
+                <span>
+                  {loading.delete ? 'Apagando...' : 'Apagar Permanentemente'}
+                </span>
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </PageContainer>
   );
 }

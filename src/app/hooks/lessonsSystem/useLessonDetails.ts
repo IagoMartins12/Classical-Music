@@ -1,4 +1,4 @@
-// app/hooks/useLessonDetails.ts - Hook para gerenciar detalhes de aula individual
+// app/hooks/useLessonDetails.ts - Hook ATUALIZADO com função DELETE real
 
 import { LessonDetailsData } from '@/app/(teacher)/teacher/lessons/[id]/pageServer';
 import { useState, useCallback } from 'react';
@@ -10,6 +10,7 @@ interface UseLessonDetailsState {
     attendance: boolean;
     notes: boolean;
     assignments: boolean;
+    delete: boolean; // 🆕 NOVO LOADING PARA DELETE
   };
   error: string | null;
   isEditing: {
@@ -33,6 +34,7 @@ interface UseLessonDetailsActions {
     duration?: number;
     location?: string;
     type?: string;
+    status?: string; // 🆕 PERMITIR ATUALIZAR STATUS
   }) => Promise<boolean>;
 
   updateObjectives: (objectives: string[]) => Promise<boolean>;
@@ -75,6 +77,13 @@ interface UseLessonDetailsActions {
   cancelLesson: (reason?: string) => Promise<boolean>;
   rescheduleLesson: (newDate: Date, reason?: string) => Promise<boolean>;
 
+  // 🆕 DELETE REAL DA AULA
+  deleteLesson: (options?: {
+    reason?: string;
+    deleteAll?: boolean;
+    futureOnly?: boolean;
+  }) => Promise<boolean>;
+
   // Assignments
   createAssignment: (data: {
     title: string;
@@ -106,6 +115,7 @@ export function useLessonDetails(
       attendance: false,
       notes: false,
       assignments: false,
+      delete: false, // 🆕 NOVO LOADING
     },
     error: null,
     isEditing: {
@@ -237,6 +247,7 @@ export function useLessonDetails(
       duration?: number;
       location?: string;
       type?: string;
+      status?: string; // 🆕 PERMITIR ATUALIZAR STATUS
     }): Promise<boolean> => {
       return await updateLesson(updates);
     },
@@ -344,7 +355,7 @@ export function useLessonDetails(
     [updateLesson]
   );
 
-  // Cancel lesson
+  // Cancel lesson (ATUALIZADO para usar PATCH, não DELETE)
   const cancelLesson = useCallback(
     async (reason?: string): Promise<boolean> => {
       const updates: any = {
@@ -372,6 +383,69 @@ export function useLessonDetails(
       return await updateLesson(updates);
     },
     [updateLesson, state.lesson?.scheduledAt]
+  );
+
+  // 🆕 DELETE LESSON - APAGAR REAL DO BANCO DE DADOS
+  const deleteLesson = useCallback(
+    async (options?: {
+      reason?: string;
+      deleteAll?: boolean;
+      futureOnly?: boolean;
+    }): Promise<boolean> => {
+      if (!state.lesson?.id) return false;
+
+      setLoading('delete', true);
+      setError(null);
+
+      try {
+        const params = new URLSearchParams();
+
+        if (options?.reason) {
+          params.append('reason', options.reason);
+        }
+        if (options?.deleteAll) {
+          params.append('deleteAll', 'true');
+        }
+        if (options?.futureOnly) {
+          params.append('futureOnly', 'true');
+        }
+
+        const url = `/api/lessons/${state.lesson.id}${
+          params.toString() ? `?${params.toString()}` : ''
+        }`;
+
+        const response = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao apagar aula');
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Erro ao apagar aula');
+        }
+
+        console.log(
+          '✅ [useLessonDetails] Aula apagada com sucesso:',
+          data.message
+        );
+
+        return true;
+      } catch (error) {
+        console.error('❌ [useLessonDetails] Erro ao apagar aula:', error);
+        setError(error instanceof Error ? error.message : 'Erro desconhecido');
+        return false;
+      } finally {
+        setLoading('delete', false);
+      }
+    },
+    [state.lesson?.id, setLoading, setError]
   );
 
   // Create assignment
@@ -529,6 +603,7 @@ export function useLessonDetails(
     completeLesson,
     cancelLesson,
     rescheduleLesson,
+    deleteLesson, // 🆕 NOVA FUNÇÃO
     createAssignment,
     updateAssignment,
     setEditMode,
