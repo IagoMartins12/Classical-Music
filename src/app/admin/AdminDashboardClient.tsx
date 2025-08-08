@@ -98,10 +98,9 @@ export default function AdminDashboardClient() {
     })) || [];
 
   const contentDistributionData = [
-    { name: 'Usuários Ativos', value: stats.engagement.dailyActiveUsers || 0 },
-    { name: 'Obras', value: stats.overview.totalWorks || 0 },
-    { name: 'Compositores', value: stats.overview.totalComposers || 0 },
-    { name: 'Partituras', value: stats.overview.totalScores || 0 },
+    { name: 'Obras', value: stats.overview.totalWorks },
+    { name: 'Compositores', value: stats.overview.totalComposers },
+    { name: 'Partituras', value: stats.overview.totalScores },
   ];
 
   const engagementData = [
@@ -227,7 +226,7 @@ export default function AdminDashboardClient() {
                 data={contentDistributionData}
                 title="Distribuição de Conteúdo"
                 subtitle="Visão geral da plataforma"
-                height={280}
+                height={350}
                 innerRadius={60}
               />
             </AnimatedCard>

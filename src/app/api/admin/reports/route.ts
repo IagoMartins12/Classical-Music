@@ -1,4 +1,4 @@
-// app/api/admin/reports/route.ts
+// app/api/admin/reports/route.ts - VERSÃO COMPLETA OTIMIZADA
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -19,7 +19,7 @@ interface ReportStats {
   totalScores: number;
 }
 
-// Cache das estatísticas por 5 minutos
+// Cache das estatísticas por 5 minutos - OTIMIZADO
 const getCachedReportStats = unstable_cache(
   async (): Promise<ReportStats> => {
     const now = new Date();
@@ -27,6 +27,7 @@ const getCachedReportStats = unstable_cache(
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
     try {
+      // 🚀 CONSULTAS OTIMIZADAS SEM JOINS PESADOS
       const [
         totalUsers,
         totalWorks,
@@ -47,7 +48,6 @@ const getCachedReportStats = unstable_cache(
         prisma.user.count({
           where: { createdAt: { gte: sevenDaysAgo } },
         }),
-
         prisma.uploadHistory.count({
           where: {
             createdAt: { gte: thirtyDaysAgo },
@@ -116,252 +116,34 @@ const formatFileSize = (bytes: number): string => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
-// Gerar dados do relatório de usuários
+// 🚀 RELATÓRIO DE USUÁRIOS - OTIMIZADO
 const generateUsersReportData = async (startDate: Date, endDate: Date) => {
-  const [
-    totalUsers,
-    newUsers,
-    activeUsers,
-    usersByType,
-    topContributors,
-    usersWithInstruments,
-  ] = await Promise.all([
-    prisma.user.count(),
-
-    prisma.user.findMany({
-      where: {
-        createdAt: { gte: startDate, lte: endDate },
-      },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        createdAt: true,
-        userType: true,
-        experienceLevel: true,
-      },
-    }),
-
-    prisma.user.count({
-      where: {
-        updatedAt: { gte: startDate, lte: endDate },
-      },
-    }),
-
-    prisma.user.groupBy({
-      by: ['userType'],
-      _count: { id: true },
-    }),
-
-    prisma.user.findMany({
-      where: {
-        totalUploads: { gt: 0 },
-      },
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        totalUploads: true,
-        uploadScore: true,
-      },
-      orderBy: { uploadScore: 'desc' },
-      take: 10,
-    }),
-
-    prisma.user.count({
-      where: {
-        instruments: { some: {} },
-      },
-    }),
-  ]);
-
-  return {
-    summary: {
+  try {
+    const [
       totalUsers,
-      newUsersCount: newUsers.length,
+      newUsers,
       activeUsers,
+      usersByType,
+      topContributors,
       usersWithInstruments,
-    },
-    newUsers: newUsers.map((user) => ({
-      name:
-        `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Usuário',
-      createdAt: user.createdAt.toISOString(),
-      userType: user.userType || 'CASUAL_USER',
-      experienceLevel: user.experienceLevel,
-    })),
-    usersByType: usersByType.map((item) => ({
-      type: item.userType || 'CASUAL_USER',
-      count: item._count.id,
-    })),
-    topContributors: topContributors.map((user) => ({
-      name:
-        `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Usuário',
-      uploads: user.totalUploads,
-      score: user.uploadScore,
-    })),
-  };
-};
+    ] = await Promise.all([
+      prisma.user.count(),
 
-// 🔄 GERAR DADOS DO RELATÓRIO DE CONTEÚDO - CORRIGIDO SEM INSTRUMENT LOOKUP
-const generateContentReportData = async (startDate: Date, endDate: Date) => {
-  const [
-    totalWorks,
-    totalComposers,
-    totalScores,
-    newWorks,
-    newComposers,
-    popularWorks,
-    popularComposers,
-    topEpochs,
-    totalInstruments,
-    totalUsersWithInstruments,
-  ] = await Promise.all([
-    prisma.work.count(),
-    prisma.composer.count(),
-    prisma.workScore.count({ where: { isActive: true } }),
-
-    prisma.work.findMany({
-      where: {
-        createdAt: { gte: startDate, lte: endDate },
-      },
-      select: {
-        title: true,
-        composer: { select: { name: true } },
-        createdAt: true,
-      },
-    }),
-
-    prisma.composer.findMany({
-      where: {
-        createdAt: { gte: startDate, lte: endDate },
-      },
-      select: {
-        name: true,
-        createdAt: true,
-      },
-    }),
-
-    // 🔄 CORRIGIDO: buscar obras populares com joins seguros
-    prisma.work.findMany({
-      select: {
-        id: true,
-        title: true,
-        composer: { select: { name: true } },
-        _count: {
-          select: {
-            favoriteBy: true,
-            workAnnotations: { where: { isPublic: true } },
-          },
-        },
-      },
-      orderBy: {
-        favoriteBy: { _count: 'desc' },
-      },
-      take: 10,
-    }),
-
-    // 🔄 CORRIGIDO: buscar compositores populares com epoch opcional
-    prisma.composer.findMany({
-      select: {
-        id: true,
-        name: true,
-        epoch: {
-          select: {
-            name: true,
-          },
-        },
-        _count: {
-          select: {
-            works: true,
-            favoriteByUsers: true,
-          },
-        },
-      },
-      orderBy: {
-        favoriteByUsers: { _count: 'desc' },
-      },
-      take: 10,
-    }),
-
-    prisma.epoch.findMany({
-      select: {
-        name: true,
-        _count: {
-          select: {
-            composers: true,
-            works: true,
-          },
-        },
-      },
-      orderBy: {
-        works: { _count: 'desc' },
-      },
-    }),
-
-    // 🔄 SUBSTITUÍDO: consultas simples sem $lookup problemático
-    prisma.instrument.count(),
-
-    prisma.userInstrument.count(),
-  ]);
-
-  return {
-    summary: {
-      totalWorks,
-      totalComposers,
-      totalScores,
-      newWorksCount: newWorks.length,
-      newComposersCount: newComposers.length,
-      totalInstruments,
-      totalUsersWithInstruments,
-    },
-    newWorks: newWorks.map((work) => ({
-      title: work.title,
-      composer: work.composer.name,
-      createdAt: work.createdAt.toISOString(),
-    })),
-    newComposers: newComposers.map((composer) => ({
-      name: composer.name,
-      createdAt: composer.createdAt.toISOString(),
-    })),
-    popularWorks: popularWorks.map((work) => ({
-      title: work.title,
-      composer: work.composer.name,
-      favorites: work._count.favoriteBy,
-      annotations: work._count.workAnnotations,
-    })),
-    // 🔄 CORRIGIDO: tratamento seguro do epoch que pode ser null
-    popularComposers: popularComposers.map((composer) => ({
-      name: composer.name,
-      epoch: composer.epoch?.name || 'Não informado', // ✅ CORRIGIDO
-      works: composer._count.works,
-      favorites: composer._count.favoriteByUsers,
-    })),
-    topEpochs: topEpochs.map((epoch) => ({
-      name: epoch.name,
-      composers: epoch._count.composers,
-      works: epoch._count.works,
-    })),
-    // 🔄 SUBSTITUÍDO: dados simplificados de instrumentos
-    instrumentsOverview: {
-      totalInstruments,
-      totalUsersWithInstruments,
-      avgUsersPerInstrument:
-        totalInstruments > 0
-          ? Math.round(totalUsersWithInstruments / totalInstruments)
-          : 0,
-    },
-  };
-};
-
-// Gerar dados do relatório de engajamento
-const generateEngagementReportData = async (startDate: Date, endDate: Date) => {
-  const [totalAnnotations, activeUsers, annotationsByCategory] =
-    await Promise.all([
-      prisma.workAnnotation.count({
+      // 🔄 LIMITE nos novos usuários para evitar sobrecarga
+      prisma.user.findMany({
         where: {
           createdAt: { gte: startDate, lte: endDate },
-          isPublic: true,
         },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          createdAt: true,
+          userType: true,
+          experienceLevel: true,
+        },
+        take: 500, // 🚀 LIMITE para evitar problemas de memória
+        orderBy: { createdAt: 'desc' },
       }),
 
       prisma.user.count({
@@ -370,29 +152,398 @@ const generateEngagementReportData = async (startDate: Date, endDate: Date) => {
         },
       }),
 
-      prisma.workAnnotation.groupBy({
-        by: ['category'],
-        where: {
-          createdAt: { gte: startDate, lte: endDate },
-          isPublic: true,
-        },
+      // 🚀 AGREGAÇÃO SIMPLES SEM JOINS
+      prisma.user.groupBy({
+        by: ['userType'],
         _count: { id: true },
+      }),
+
+      // 🔄 LIMITE nos contribuidores
+      prisma.user.findMany({
+        where: {
+          totalUploads: { gt: 0 },
+        },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          totalUploads: true,
+          uploadScore: true,
+        },
+        orderBy: { uploadScore: 'desc' },
+        take: 20, // 🚀 LIMITE reduzido
+      }),
+
+      prisma.user.count({
+        where: {
+          instruments: { some: {} },
+        },
       }),
     ]);
 
-  return {
-    summary: {
-      totalAnnotations,
-      activeUsers,
-    },
-    annotationsByCategory: annotationsByCategory.map((item) => ({
-      category: item.category,
-      count: item._count.id,
-    })),
-  };
+    return {
+      summary: {
+        totalUsers,
+        newUsersCount: newUsers.length,
+        activeUsers,
+        usersWithInstruments,
+      },
+      newUsers: newUsers.map((user) => ({
+        name:
+          `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Usuário',
+        createdAt: user.createdAt.toISOString(),
+        userType: user.userType || 'CASUAL_USER',
+        experienceLevel: user.experienceLevel,
+      })),
+      usersByType: usersByType.map((item) => ({
+        type: item.userType || 'CASUAL_USER',
+        count: item._count.id,
+      })),
+      topContributors: topContributors.map((user) => ({
+        name:
+          `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Usuário',
+        uploads: user.totalUploads,
+        score: user.uploadScore,
+      })),
+    };
+  } catch (error) {
+    console.error('Erro em generateUsersReportData:', error);
+
+    // Fallback com dados básicos
+    const totalUsers = await prisma.user.count().catch(() => 0);
+
+    return {
+      summary: {
+        totalUsers,
+        newUsersCount: 0,
+        activeUsers: 0,
+        usersWithInstruments: 0,
+      },
+      newUsers: [],
+      usersByType: [],
+      topContributors: [],
+      error:
+        'Alguns dados podem estar incompletos devido a limitações de consulta',
+    };
+  }
 };
 
-// Gerar arquivo Excel
+// 🚀 RELATÓRIO DE CONTEÚDO - COMPLETAMENTE REESCRITO E OTIMIZADO
+const generateContentReportData = async (startDate: Date, endDate: Date) => {
+  try {
+    // 🚀 CONSULTAS BÁSICAS SEM JOINS PESADOS
+    const [totalWorks, totalComposers, totalScores, newWorks, newComposers] =
+      await Promise.all([
+        // Contagens simples sem JOINs
+        prisma.work.count(),
+        prisma.composer.count(),
+        prisma.workScore.count({ where: { isActive: true } }),
+
+        // Novos works com dados mínimos
+        prisma.work.findMany({
+          where: {
+            createdAt: { gte: startDate, lte: endDate },
+          },
+          select: {
+            title: true,
+            createdAt: true,
+            composer: { select: { name: true } }, // JOIN simples
+          },
+          take: 100, // 🚀 LIMITE para evitar sobrecarga
+          orderBy: { createdAt: 'desc' },
+        }),
+
+        // Novos composers sem JOINs complexos
+        prisma.composer.findMany({
+          where: {
+            createdAt: { gte: startDate, lte: endDate },
+          },
+          select: {
+            name: true,
+            createdAt: true,
+          },
+          take: 50, // 🚀 LIMITE
+          orderBy: { createdAt: 'desc' },
+        }),
+      ]);
+
+    // 🚀 OBRAS POPULARES - CONSULTA OTIMIZADA SEM JOINS PESADOS
+    const popularWorks = await prisma.work.findMany({
+      select: {
+        id: true,
+        title: true,
+        composer: { select: { name: true } }, // JOIN simples
+      },
+      take: 10, // 🚀 LIMITE PEQUENO
+      orderBy: { createdAt: 'desc' }, // 🔄 MUDANÇA: ordenar por data ao invés de favorites
+    });
+
+    // 🚀 COMPOSITORES POPULARES - SEM _count PROBLEMÁTICO
+    const popularComposers = await prisma.composer.findMany({
+      select: {
+        id: true,
+        name: true,
+        epoch: {
+          select: { name: true },
+        },
+      },
+      take: 10, // 🚀 LIMITE PEQUENO
+      orderBy: { createdAt: 'desc' }, // 🔄 MUDANÇA: ordenar por data
+    });
+
+    // 🚀 ÉPOCAS - CONSULTA SIMPLIFICADA SEM _count PROBLEMÁTICO
+    const epochsBasic = await prisma.epoch.findMany({
+      select: {
+        id: true,
+        name: true,
+      },
+      take: 20, // 🚀 LIMITE
+    });
+
+    // 🚀 CONTAR MANUALMENTE ÉPOCAS (mais eficiente)
+    const epochStats = await Promise.all(
+      epochsBasic.map(async (epoch) => {
+        try {
+          // Consultas simples separadas
+          const [composersCount, worksCount] = await Promise.all([
+            prisma.composer.count({
+              where: { epochId: epoch.id },
+            }),
+            prisma.work.count({
+              where: { epochId: epoch.id },
+            }),
+          ]);
+
+          return {
+            name: epoch.name,
+            composers: composersCount,
+            works: worksCount,
+          };
+        } catch (error) {
+          console.warn(`Erro ao contar dados para época ${epoch.name}:`, error);
+          return {
+            name: epoch.name,
+            composers: 0,
+            works: 0,
+          };
+        }
+      })
+    );
+
+    // 🚀 DADOS DE INSTRUMENTOS - SIMPLIFICADOS
+    const [totalInstruments, totalUsersWithInstruments] = await Promise.all([
+      prisma.instrument.count(),
+      prisma.userInstrument.count(),
+    ]);
+
+    // 🚀 CALCULAR FAVORITES MANUALMENTE (mais seguro)
+    const popularWorksWithFavorites = await Promise.all(
+      popularWorks.map(async (work) => {
+        try {
+          const [favoritesCount, annotationsCount] = await Promise.all([
+            prisma.favoriteWork.count({
+              where: { workId: work.id },
+            }),
+            prisma.workAnnotation.count({
+              where: { workId: work.id, isPublic: true },
+            }),
+          ]);
+
+          return {
+            title: work.title,
+            composer: work.composer.name,
+            favorites: favoritesCount,
+            annotations: annotationsCount,
+          };
+        } catch (error) {
+          console.warn(
+            `Erro ao contar favorites para obra ${work.title}:`,
+            error
+          );
+          return {
+            title: work.title,
+            composer: work.composer.name,
+            favorites: 0,
+            annotations: 0,
+          };
+        }
+      })
+    );
+
+    // 🚀 CALCULAR DADOS DOS COMPOSITORES MANUALMENTE
+    const popularComposersWithStats = await Promise.all(
+      popularComposers.map(async (composer) => {
+        try {
+          const [worksCount, favoritesCount] = await Promise.all([
+            prisma.work.count({
+              where: { composerId: composer.id },
+            }),
+            prisma.favoriteComposer.count({
+              where: { composerId: composer.id },
+            }),
+          ]);
+
+          return {
+            name: composer.name,
+            epoch: composer.epoch?.name || 'Não informado',
+            works: worksCount,
+            favorites: favoritesCount,
+          };
+        } catch (error) {
+          console.warn(
+            `Erro ao contar dados para compositor ${composer.name}:`,
+            error
+          );
+          return {
+            name: composer.name,
+            epoch: composer.epoch?.name || 'Não informado',
+            works: 0,
+            favorites: 0,
+          };
+        }
+      })
+    );
+
+    // 🚀 ORDENAR RESULTADOS POR RELEVÂNCIA
+    const topEpochs = epochStats
+      .sort((a, b) => b.works + b.composers - (a.works + a.composers))
+      .slice(0, 10);
+
+    const topWorksWithFavorites = popularWorksWithFavorites
+      .sort(
+        (a, b) => b.favorites + b.annotations - (a.favorites + a.annotations)
+      )
+      .slice(0, 10);
+
+    const topComposersWithStats = popularComposersWithStats
+      .sort((a, b) => b.works + b.favorites - (a.works + a.favorites))
+      .slice(0, 10);
+
+    // 🚀 RETORNAR DADOS OTIMIZADOS
+    return {
+      summary: {
+        totalWorks,
+        totalComposers,
+        totalScores,
+        newWorksCount: newWorks.length,
+        newComposersCount: newComposers.length,
+        totalInstruments,
+        totalUsersWithInstruments,
+      },
+      newWorks: newWorks.map((work) => ({
+        title: work.title,
+        composer: work.composer.name,
+        createdAt: work.createdAt.toISOString(),
+      })),
+      newComposers: newComposers.map((composer) => ({
+        name: composer.name,
+        createdAt: composer.createdAt.toISOString(),
+      })),
+      popularWorks: topWorksWithFavorites,
+      popularComposers: topComposersWithStats,
+      topEpochs: topEpochs,
+      // 🔄 DADOS SIMPLIFICADOS DE INSTRUMENTOS
+      instrumentsOverview: {
+        totalInstruments,
+        totalUsersWithInstruments,
+        avgUsersPerInstrument:
+          totalInstruments > 0
+            ? Math.round(totalUsersWithInstruments / totalInstruments)
+            : 0,
+      },
+    };
+  } catch (error) {
+    console.error('Erro detalhado em generateContentReportData:', error);
+
+    // 🚀 FALLBACK COM DADOS MÍNIMOS
+    const [totalWorks, totalComposers, totalScores] = await Promise.all([
+      prisma.work.count().catch(() => 0),
+      prisma.composer.count().catch(() => 0),
+      prisma.workScore.count().catch(() => 0),
+    ]);
+
+    return {
+      summary: {
+        totalWorks,
+        totalComposers,
+        totalScores,
+        newWorksCount: 0,
+        newComposersCount: 0,
+        totalInstruments: 0,
+        totalUsersWithInstruments: 0,
+      },
+      newWorks: [],
+      newComposers: [],
+      popularWorks: [],
+      popularComposers: [],
+      topEpochs: [],
+      instrumentsOverview: {
+        totalInstruments: 0,
+        totalUsersWithInstruments: 0,
+        avgUsersPerInstrument: 0,
+      },
+      error:
+        'Alguns dados podem estar incompletos devido a limitações de consulta',
+    };
+  }
+};
+
+// 🚀 RELATÓRIO DE ENGAJAMENTO - OTIMIZADO
+const generateEngagementReportData = async (startDate: Date, endDate: Date) => {
+  try {
+    const [totalAnnotations, activeUsers, annotationsByCategory] =
+      await Promise.all([
+        prisma.workAnnotation.count({
+          where: {
+            createdAt: { gte: startDate, lte: endDate },
+            isPublic: true,
+          },
+        }),
+
+        prisma.user.count({
+          where: {
+            updatedAt: { gte: startDate, lte: endDate },
+          },
+        }),
+
+        // 🚀 AGREGAÇÃO SIMPLES SEM JOINS
+        prisma.workAnnotation.groupBy({
+          by: ['category'],
+          where: {
+            createdAt: { gte: startDate, lte: endDate },
+            isPublic: true,
+          },
+          _count: { id: true },
+        }),
+      ]);
+
+    return {
+      summary: {
+        totalAnnotations,
+        activeUsers,
+      },
+      annotationsByCategory: annotationsByCategory.map((item) => ({
+        category: item.category,
+        count: item._count.id,
+      })),
+    };
+  } catch (error) {
+    console.error('Erro em generateEngagementReportData:', error);
+
+    // Fallback com dados básicos
+    return {
+      summary: {
+        totalAnnotations: 0,
+        activeUsers: 0,
+      },
+      annotationsByCategory: [],
+      error:
+        'Alguns dados podem estar incompletos devido a limitações de consulta',
+    };
+  }
+};
+
+// Gerar arquivo Excel (mantendo original)
 const generateExcelFile = async (
   data: any,
   filename: string
@@ -408,7 +559,10 @@ const generateExcelFile = async (
   // Adicionar outras planilhas baseadas nos dados disponíveis
   const dataKeys = Object.keys(data).filter(
     (key) =>
-      key !== 'summary' && Array.isArray(data[key]) && data[key].length > 0
+      key !== 'summary' &&
+      key !== 'error' &&
+      Array.isArray(data[key]) &&
+      data[key].length > 0
   );
 
   dataKeys.forEach((key) => {
@@ -440,7 +594,7 @@ const generateExcelFile = async (
   };
 };
 
-// Gerar arquivo CSV
+// Gerar arquivo CSV (mantendo original, mas com tratamento de erro)
 const generateCSVFile = async (
   data: any,
   filename: string
@@ -482,6 +636,14 @@ const generateCSVFile = async (
     });
   }
 
+  // Adicionar informação sobre erro se houver
+  if (data.error) {
+    csvData.push({
+      Tipo: 'error_info',
+      message: data.error,
+    });
+  }
+
   const worksheet = XLSX.utils.json_to_sheet(csvData);
   const csv = XLSX.utils.sheet_to_csv(worksheet);
 
@@ -504,7 +666,7 @@ const generateCSVFile = async (
   };
 };
 
-// 🔄 GERAR ARQUIVO PDF - CORRIGIDO COM HTML PARA PDF REAL
+// 🔄 GERAR ARQUIVO PDF - MELHORADO COM TRATAMENTO DE ERRO
 const generatePDFFile = async (
   data: any,
   filename: string
@@ -583,6 +745,13 @@ const generatePDFFile = async (
             .list-item strong {
                 color: #1E40AF;
             }
+            .error-notice {
+                background: #fef3c7;
+                border: 1px solid #f59e0b;
+                padding: 15px;
+                border-radius: 6px;
+                margin: 20px 0;
+            }
             .footer {
                 margin-top: 40px;
                 text-align: center;
@@ -610,6 +779,17 @@ const generatePDFFile = async (
             })}</p>
         </div>
   `;
+
+  // 🔄 ADICIONAR AVISO DE ERRO SE HOUVER
+  if (data.error) {
+    htmlContent += `
+        <div class="error-notice">
+            <h3>⚠️ Aviso Importante</h3>
+            <p><strong>Atenção:</strong> ${data.error}</p>
+            <p>O sistema gerou o relatório com os dados disponíveis, mas alguns valores podem estar limitados devido ao volume de dados.</p>
+        </div>
+    `;
+  }
 
   // 🔄 ADICIONAR RESUMO EXECUTIVO
   if (data.summary) {
@@ -710,6 +890,11 @@ const generatePDFFile = async (
         <div class="footer">
             <p>Relatório gerado automaticamente pelo sistema Opus Atlas</p>
             <p>Para mais informações, acesse: <strong>opusatlas.com</strong></p>
+            ${
+              data.error
+                ? '<p><em>* Relatório gerado com limitações de dados devido ao volume do banco.</em></p>'
+                : ''
+            }
         </div>
     </body>
     </html>
@@ -734,6 +919,7 @@ const generatePDFFile = async (
   };
 };
 
+// GET - Manter original
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -793,6 +979,7 @@ export async function GET() {
   }
 }
 
+// 🚀 POST - MELHORADO COM TRATAMENTO DE ERRO ROBUSTO
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -829,6 +1016,10 @@ export async function POST(request: NextRequest) {
         let reportData: any;
 
         try {
+          console.log(
+            `🚀 Iniciando geração de relatório: ${type} para período ${period}`
+          );
+
           switch (type) {
             case 'users-overview':
               reportData = await generateUsersReportData(startDate, endDate);
@@ -845,6 +1036,8 @@ export async function POST(request: NextRequest) {
             default:
               throw new Error('Tipo de relatório inválido');
           }
+
+          console.log(`✅ Dados do relatório gerados com sucesso`);
 
           // Gerar arquivo baseado no formato
           let fileResult: { path: string; size: number };
@@ -863,6 +1056,8 @@ export async function POST(request: NextRequest) {
               throw new Error('Formato inválido');
           }
 
+          console.log(`✅ Arquivo gerado: ${fileResult.path}`);
+
           // Atualizar registro com dados do arquivo
           await prisma.generatedReport.update({
             where: { id: report.id },
@@ -877,7 +1072,9 @@ export async function POST(request: NextRequest) {
 
           return NextResponse.json({
             success: true,
-            message: 'Relatório gerado com sucesso',
+            message: reportData.error
+              ? 'Relatório gerado com algumas limitações de dados'
+              : 'Relatório gerado com sucesso',
             result: {
               id: report.id,
               name: report.name,
@@ -889,8 +1086,11 @@ export async function POST(request: NextRequest) {
               size: formatFileSize(fileResult.size),
               downloadUrl: fileResult.path,
             },
+            warning: reportData.error ? reportData.error : null,
           });
         } catch (error) {
+          console.error('Erro ao gerar relatório:', error);
+
           // Marcar relatório como falhou
           await prisma.generatedReport.update({
             where: { id: report.id },
@@ -928,6 +1128,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// DELETE - Manter original
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

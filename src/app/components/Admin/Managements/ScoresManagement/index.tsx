@@ -36,7 +36,7 @@ import {
   AdminPieChart,
   AdminBarChart,
 } from '@/app/components/Admin/Charts/AdminCharts';
-import { formatNumber } from '@/app/hooks/admin/useAdminStats';
+import { formatNumber } from '../../Utils';
 import { toast } from 'react-hot-toast';
 import { useAdminScores } from '@/app/hooks/admin/useAdminScores';
 import Image from 'next/image';

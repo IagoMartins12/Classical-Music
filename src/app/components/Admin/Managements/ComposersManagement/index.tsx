@@ -35,7 +35,7 @@ import {
   MetricCard,
   AdminPieChart,
 } from '@/app/components/Admin/Charts/AdminCharts';
-import { formatNumber } from '@/app/hooks/admin/useAdminStats';
+import { formatNumber } from '../../Utils';
 import { toast } from 'react-hot-toast';
 import { useAdminComposers } from '@/app/hooks/admin/useAdminComposers';
 

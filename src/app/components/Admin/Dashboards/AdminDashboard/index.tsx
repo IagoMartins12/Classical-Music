@@ -21,13 +21,7 @@ import {
   FiDatabase,
   FiBarChart2,
 } from 'react-icons/fi';
-import {
-  useAdminStats,
-  formatNumber,
-  formatDuration,
-  formatPercentage,
-  formatGrowthRate,
-} from '@/app/hooks/admin/useAdminStats';
+
 import {
   AnimatedCard,
   AnimatedContainer,
@@ -37,6 +31,13 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
+import { useAdminStats } from '@/app/hooks/admin/useAdminStats';
+import {
+  formatDuration,
+  formatGrowthRate,
+  formatNumber,
+  formatPercentage,
+} from '../../Utils';
 
 // Tipos para melhor type safety
 type TimeFrame = '7d' | '30d' | '90d' | '1y';

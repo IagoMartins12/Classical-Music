@@ -25,7 +25,7 @@ import {
   AdminBarChart,
   MetricCard,
 } from '@/app/components/Admin/Charts/AdminCharts';
-import { formatNumber } from '@/app/hooks/admin/useAdminStats';
+import { formatNumber } from '../../Utils';
 import { useAdminUsers } from '@/app/hooks/admin/useAdminUsers';
 import LoadingAdminState from '../../Common/LoadingState';
 

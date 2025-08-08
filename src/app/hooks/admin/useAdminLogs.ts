@@ -1,521 +1,400 @@
 // app/hooks/admin/useAdminLogs.ts
 import { useState, useEffect, useCallback } from 'react';
+import { LogCategory, LogLevel } from '@/app/libs/logging/systemLogger';
 
+// Interfaces dos tipos de log
 export interface LogEntry {
   id: string;
-  timestamp: Date;
-  level: 'error' | 'warn' | 'info' | 'debug' | 'trace';
-  category: 'system' | 'security' | 'audit' | 'performance' | 'user' | 'api';
-  service: string;
-  action: string;
+  timestamp: string;
+  level: LogLevel;
+  category: LogCategory;
   message: string;
+  traceId?: string;
   userId?: string;
   userName?: string;
+  sessionId?: string;
   ipAddress?: string;
   userAgent?: string;
-  endpoint?: string;
+  method?: string;
+  path?: string;
   statusCode?: number;
   duration?: number;
-  details?: any;
-  sessionId?: string;
-  traceId?: string;
-}
-
-export interface AuditEvent {
-  id: string;
-  timestamp: Date;
-  userId: string;
-  userName: string;
-  action: string;
-  resource: string;
-  resourceId?: string;
-  changes?: {
-    before: any;
-    after: any;
+  error?: {
+    message: string;
+    stack?: string;
+    code?: string;
   };
-  ipAddress: string;
-  userAgent: string;
-  sessionId: string;
-  success: boolean;
-  errorMessage?: string;
-  metadata?: any;
+  query?: {
+    model: string;
+    operation: string;
+    duration?: number;
+    sql?: string;
+  };
+  metadata?: Record<string, any>;
 }
 
 export interface LogStats {
-  total: number;
-  byLevel: Record<string, number>;
-  byCategory: Record<string, number>;
-  byService: Record<string, number>;
-  last24h: number;
-  errorRate: number;
-  topErrors: Array<{
-    message: string;
-    count: number;
-    lastSeen: Date;
-    level: string;
-  }>;
-  performanceMetrics: {
-    avgResponseTime: number;
+  overview: {
+    totalLogs: number;
+    errorRate: number;
+    avgDuration: number;
     slowQueries: number;
-    failedRequests: number;
+    byLevel: Record<LogLevel, number>;
+    byCategory: Record<LogCategory, number>;
+    topErrors: Array<{
+      message: string;
+      count: number;
+      lastSeen: string;
+    }>;
   };
-  activityByHour: Array<{
-    hour: number;
-    count: number;
-  }>;
+  queryPerformance?: {
+    slowQueries: number;
+    avgDuration: number;
+    topSlowModels: Array<{
+      model: string;
+      avgDuration: number;
+      count: number;
+    }>;
+    topSlowOperations: Array<{
+      operation: string;
+      avgDuration: number;
+      count: number;
+    }>;
+    hourlyStats: Array<{
+      hour: number;
+      count: number;
+      avgDuration: number;
+    }>;
+  };
+  availableDates: string[];
+  searchedDates: string[];
 }
 
 export interface LogFilters {
-  level: string;
-  category: string;
-  service: string;
-  timeRange: string;
-  search: string;
-  userId: string;
-  startDate?: Date;
-  endDate?: Date;
+  level?: LogLevel;
+  category?: LogCategory;
+  search?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  userId?: string;
 }
 
-interface UseAdminLogsReturn {
-  // Data
-  logs: LogEntry[];
-  auditEvents: AuditEvent[];
-  stats: LogStats | null;
-
-  // State
-  loading: boolean;
-  error: string | null;
-  filters: LogFilters;
-  selectedLogs: Set<string>;
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    hasMore: boolean;
-  };
-
-  // Actions
-  refreshLogs: () => Promise<void>;
-  setFilters: (filters: Partial<LogFilters>) => void;
-  toggleLogSelection: (logId: string) => void;
-  selectAllLogs: () => void;
-  clearSelection: () => void;
-  exportLogs: (format: 'csv' | 'json') => Promise<void>;
-  archiveLogs: (logIds: string[]) => Promise<void>;
-  deleteLogs: (logIds: string[]) => Promise<void>;
-  loadMoreLogs: () => Promise<void>;
-
-  // Utilities
-  getFilteredLogs: () => LogEntry[];
-  getLevelColor: (level: string) => string;
-  getLevelIcon: (level: string) => string;
-  getCategoryIcon: (category: string) => string;
-  formatTimestamp: (date: Date) => string;
-  getRelativeTime: (date: Date) => string;
+export interface LogPagination {
+  page: number;
+  limit: number;
+  total: number;
+  hasMore: boolean;
 }
 
-const DEFAULT_FILTERS: LogFilters = {
-  level: 'all',
-  category: 'all',
-  service: 'all',
-  timeRange: '24h',
-  search: '',
-  userId: '',
-};
+// Tipos de retorno para as operações
+export interface DeleteLogsResult {
+  deletedCount: number;
+  errors: string[];
+}
 
-export const useAdminLogs = (): UseAdminLogsReturn => {
+export interface CleanupResult {
+  deletedCount: number;
+  errors: string[];
+}
+
+export interface TestLoggingResult {
+  traceId: string;
+  message: string;
+}
+
+export function useAdminLogs() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [auditEvents, setAuditEvents] = useState<AuditEvent[]>([]);
   const [stats, setStats] = useState<LogStats | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFiltersState] = useState<LogFilters>(DEFAULT_FILTERS);
-  const [selectedLogs, setSelectedLogs] = useState<Set<string>>(new Set());
-  const [pagination, setPagination] = useState({
+  const [filters, setFiltersState] = useState<LogFilters>({});
+  const [pagination, setPagination] = useState<LogPagination>({
     page: 1,
     limit: 50,
     total: 0,
     hasMore: false,
   });
 
-  // Fetch logs with current filters and pagination
+  // Função para buscar logs
   const fetchLogs = useCallback(
-    async (isLoadMore = false) => {
-      if (loading) return;
-
-      setLoading(true);
-      if (!isLoadMore) {
-        setError(null);
-      }
-
+    async (reset = false) => {
       try {
-        const queryParams = new URLSearchParams({
-          page: isLoadMore ? (pagination.page + 1).toString() : '1',
-          limit: pagination.limit.toString(),
-          level: filters.level,
-          category: filters.category,
-          service: filters.service,
-          timeRange: filters.timeRange,
-          search: filters.search,
-          userId: filters.userId,
-        });
+        setLoading(true);
+        setError(null);
 
-        if (filters.startDate) {
-          queryParams.append('startDate', filters.startDate.toISOString());
-        }
-        if (filters.endDate) {
-          queryParams.append('endDate', filters.endDate.toISOString());
-        }
+        const params = new URLSearchParams();
+        params.set('page', reset ? '1' : pagination.page.toString());
+        params.set('limit', pagination.limit.toString());
 
-        const response = await fetch(`/api/admin/logs?${queryParams}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          cache: 'no-store',
-        });
+        if (filters.level) params.set('level', filters.level);
+        if (filters.category) params.set('category', filters.category);
+        if (filters.search) params.set('search', filters.search);
+        if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
+        if (filters.dateTo) params.set('dateTo', filters.dateTo);
+        if (filters.userId) params.set('userId', filters.userId);
 
+        const response = await fetch(`/api/admin/logs?${params}`);
         if (!response.ok) {
-          if (response.status === 401) {
-            throw new Error('Acesso não autorizado');
-          }
-          throw new Error(`Erro ${response.status}: ${response.statusText}`);
+          throw new Error(`Erro ao buscar logs: ${response.statusText}`);
         }
 
         const data = await response.json();
 
-        if (data.success) {
-          if (isLoadMore) {
-            setLogs((prev) => [...prev, ...data.logs]);
-            setPagination((prev) => ({
-              ...prev,
-              page: prev.page + 1,
-              hasMore: data.pagination.hasMore,
-            }));
-          } else {
-            setLogs(data.logs);
-            setAuditEvents(data.auditEvents || []);
-            setStats(data.stats);
-            setPagination({
-              page: 1,
-              limit: pagination.limit,
-              total: data.pagination.total,
-              hasMore: data.pagination.hasMore,
-            });
-          }
+        if (reset) {
+          setLogs(data.logs);
+          setPagination({
+            page: 1,
+            limit: pagination.limit,
+            total: data.total,
+            hasMore: data.hasMore,
+          });
         } else {
-          throw new Error(data.error || 'Erro ao carregar logs');
+          setLogs((prev) => [...prev, ...data.logs]);
+          setPagination((prev) => ({
+            ...prev,
+            page: prev.page + 1,
+            hasMore: data.hasMore,
+          }));
         }
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Erro desconhecido';
-        setError(errorMessage);
-        console.error('Erro ao buscar logs:', err);
+        setError(err instanceof Error ? err.message : 'Erro desconhecido');
       } finally {
         setLoading(false);
       }
     },
-    [loading, filters, pagination.limit, pagination.page]
+    [filters, pagination.page, pagination.limit]
   );
 
-  // Export logs
-  const exportLogs = useCallback(
-    async (format: 'csv' | 'json') => {
-      try {
-        const selectedLogData =
-          selectedLogs.size > 0
-            ? logs.filter((log) => selectedLogs.has(log.id))
-            : logs;
-
-        if (format === 'csv') {
-          const csvContent = [
-            'Timestamp,Level,Category,Service,Action,Message,User,IP,Status',
-            ...selectedLogData.map(
-              (log) =>
-                `${log.timestamp.toISOString()},${log.level},${log.category},${
-                  log.service
-                },${log.action},"${log.message}",${log.userName || ''},${
-                  log.ipAddress || ''
-                },${log.statusCode || ''}`
-            ),
-          ].join('\n');
-
-          const blob = new Blob([csvContent], { type: 'text/csv' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `logs_${new Date().toISOString().split('T')[0]}.csv`;
-          a.click();
-          URL.revokeObjectURL(url);
-        } else if (format === 'json') {
-          const jsonContent = JSON.stringify(selectedLogData, null, 2);
-          const blob = new Blob([jsonContent], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `logs_${new Date().toISOString().split('T')[0]}.json`;
-          a.click();
-          URL.revokeObjectURL(url);
-        }
-      } catch (err) {
-        console.error('Erro ao exportar logs:', err);
-        setError('Erro ao exportar logs');
-      }
-    },
-    [logs, selectedLogs]
-  );
-
-  // Archive logs
-  const archiveLogs = useCallback(async (logIds: string[]) => {
+  // Função para buscar estatísticas
+  const fetchStats = useCallback(async () => {
     try {
-      const response = await fetch('/api/admin/logs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          action: 'archive',
-          logIds,
-        }),
-      });
+      const params = new URLSearchParams();
+      if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
+      if (filters.dateTo) params.set('dateTo', filters.dateTo);
+
+      const response = await fetch(`/api/admin/logs/stats?${params}`);
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar estatísticas: ${response.statusText}`);
+      }
 
       const data = await response.json();
-
-      if (data.success) {
-        // Remove archived logs from current view
-        setLogs((prev) => prev.filter((log) => !logIds.includes(log.id)));
-        setSelectedLogs(new Set());
-      } else {
-        throw new Error(data.error || 'Erro ao arquivar logs');
-      }
+      setStats(data);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMessage);
+      console.error('Erro ao buscar estatísticas:', err);
     }
-  }, []);
+  }, [filters.dateFrom, filters.dateTo]);
 
-  // Delete logs
-  const deleteLogs = useCallback(async (logIds: string[]) => {
-    try {
-      const response = await fetch('/api/admin/logs', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          logIds,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Remove deleted logs from current view
-        setLogs((prev) => prev.filter((log) => !logIds.includes(log.id)));
-        setSelectedLogs(new Set());
-      } else {
-        throw new Error(data.error || 'Erro ao deletar logs');
-      }
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMessage);
-    }
-  }, []);
-
-  // Load more logs (pagination)
-  const loadMoreLogs = useCallback(async () => {
-    if (pagination.hasMore && !loading) {
-      await fetchLogs(true);
-    }
-  }, [fetchLogs, pagination.hasMore, loading]);
-
-  // Set filters and reset pagination
+  // Função para definir filtros e reiniciar busca
   const setFilters = useCallback((newFilters: Partial<LogFilters>) => {
     setFiltersState((prev) => ({ ...prev, ...newFilters }));
     setPagination((prev) => ({ ...prev, page: 1 }));
-    setSelectedLogs(new Set());
   }, []);
 
-  // Selection utilities
-  const toggleLogSelection = useCallback((logId: string) => {
-    setSelectedLogs((prev) => {
-      const newSelected = new Set(prev);
-      if (newSelected.has(logId)) {
-        newSelected.delete(logId);
-      } else {
-        newSelected.add(logId);
-      }
-      return newSelected;
-    });
-  }, []);
-
-  const selectAllLogs = useCallback(() => {
-    setSelectedLogs(new Set(logs.map((log) => log.id)));
-  }, [logs]);
-
-  const clearSelection = useCallback(() => {
-    setSelectedLogs(new Set());
-  }, []);
-
-  // Refresh logs
+  // Função para recarregar logs
   const refreshLogs = useCallback(async () => {
-    setPagination((prev) => ({ ...prev, page: 1 }));
-    return fetchLogs();
-  }, [fetchLogs]);
+    await Promise.all([fetchLogs(true), fetchStats()]);
+  }, [fetchLogs, fetchStats]);
 
-  // Get filtered logs (client-side filtering for search)
-  const getFilteredLogs = useCallback(() => {
-    if (!filters.search) return logs;
+  // Função para carregar mais logs
+  const loadMoreLogs = useCallback(async () => {
+    if (!pagination.hasMore || loading) return;
+    await fetchLogs(false);
+  }, [fetchLogs, pagination.hasMore, loading]);
 
-    const searchLower = filters.search.toLowerCase();
-    return logs.filter(
-      (log) =>
-        log.message.toLowerCase().includes(searchLower) ||
-        log.userName?.toLowerCase().includes(searchLower) ||
-        log.service.toLowerCase().includes(searchLower) ||
-        log.action.toLowerCase().includes(searchLower)
-    );
-  }, [logs, filters.search]);
+  // Função para deletar logs
+  const deleteLogs = useCallback(
+    async (dates: string[]): Promise<DeleteLogsResult> => {
+      try {
+        const response = await fetch('/api/admin/logs/cleanup', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dates }),
+        });
 
-  // Utility functions
-  const getLevelColor = useCallback((level: string): string => {
-    switch (level) {
-      case 'error':
-        return 'text-accent-red bg-accent-red/10';
-      case 'warn':
-        return 'text-accent-amber bg-accent-amber/10';
-      case 'info':
-        return 'text-accent-blue bg-accent-blue/10';
-      case 'debug':
-        return 'text-accent-purple bg-accent-purple/10';
-      case 'trace':
-        return 'text-theme-tertiary bg-theme-secondary';
-      default:
-        return 'text-theme-tertiary bg-theme-secondary';
-    }
-  }, []);
+        if (!response.ok) {
+          throw new Error(`Erro ao deletar logs: ${response.statusText}`);
+        }
 
-  const getLevelIcon = useCallback((level: string): string => {
-    switch (level) {
-      case 'error':
-        return 'FiAlertTriangle';
-      case 'warn':
-        return 'FiAlertTriangle';
-      case 'info':
-        return 'FiInfo';
-      case 'debug':
-        return 'FiSettings';
-      case 'trace':
-        return 'FiActivity';
-      default:
-        return 'FiInfo';
-    }
-  }, []);
-
-  const getCategoryIcon = useCallback((category: string): string => {
-    switch (category) {
-      case 'system':
-        return 'FiServer';
-      case 'security':
-        return 'FiShield';
-      case 'audit':
-        return 'FiFileText';
-      case 'performance':
-        return 'FiActivity';
-      case 'user':
-        return 'FiUser';
-      case 'api':
-        return 'FiDatabase';
-      default:
-        return 'FiActivity';
-    }
-  }, []);
-
-  const formatTimestamp = useCallback((date: Date): string => {
-    return date.toLocaleString('pt-BR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
-  }, []);
-
-  const getRelativeTime = useCallback(
-    (date: Date): string => {
-      const now = new Date();
-      const diff = now.getTime() - date.getTime();
-      const minutes = Math.floor(diff / 60000);
-      const hours = Math.floor(minutes / 60);
-      const days = Math.floor(hours / 24);
-
-      if (minutes < 1) return 'Agora mesmo';
-      if (minutes < 60) return `${minutes}min atrás`;
-      if (hours < 24) return `${hours}h atrás`;
-      if (days < 7) return `${days}d atrás`;
-
-      return formatTimestamp(date);
+        const result = await response.json();
+        await refreshLogs(); // Atualizar logs após deletar
+        return result;
+      } catch (err) {
+        throw new Error(
+          err instanceof Error ? err.message : 'Erro desconhecido'
+        );
+      }
     },
-    [formatTimestamp]
+    [refreshLogs]
   );
 
-  // Load logs when filters change
-  useEffect(() => {
-    fetchLogs();
-  }, [
-    filters.level,
-    filters.category,
-    filters.service,
-    filters.timeRange,
-    filters.userId,
-  ]);
+  // Função para limpeza automática
+  const cleanupOldLogs = useCallback(
+    async (days: number): Promise<CleanupResult> => {
+      try {
+        const response = await fetch('/api/admin/logs/cleanup/auto', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ days }),
+        });
 
-  // Auto-refresh every 30 seconds for recent logs
-  useEffect(() => {
-    if (filters.timeRange === '1h' || filters.timeRange === '24h') {
-      const interval = setInterval(() => {
-        if (!loading && pagination.page === 1) {
-          fetchLogs();
+        if (!response.ok) {
+          throw new Error(`Erro na limpeza automática: ${response.statusText}`);
         }
-      }, 30000);
 
-      return () => clearInterval(interval);
+        const result = await response.json();
+        await refreshLogs(); // Atualizar logs após limpeza
+        return result;
+      } catch (err) {
+        throw new Error(
+          err instanceof Error ? err.message : 'Erro desconhecido'
+        );
+      }
+    },
+    [refreshLogs]
+  );
+
+  // Função para exportar logs
+  const exportLogs = useCallback(
+    async (format: 'csv' | 'json') => {
+      try {
+        const params = new URLSearchParams();
+        params.set('format', format);
+        if (filters.level) params.set('level', filters.level);
+        if (filters.category) params.set('category', filters.category);
+        if (filters.search) params.set('search', filters.search);
+        if (filters.dateFrom) params.set('dateFrom', filters.dateFrom);
+        if (filters.dateTo) params.set('dateTo', filters.dateTo);
+
+        const response = await fetch(`/api/admin/logs/export?${params}`);
+        if (!response.ok) {
+          throw new Error(`Erro ao exportar logs: ${response.statusText}`);
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `logs-${
+          new Date().toISOString().split('T')[0]
+        }.${format}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } catch (err) {
+        throw new Error(
+          err instanceof Error ? err.message : 'Erro desconhecido'
+        );
+      }
+    },
+    [filters]
+  );
+
+  // Função para teste de logging
+  const testLogging = useCallback(async (): Promise<TestLoggingResult> => {
+    try {
+      const response = await fetch('/api/admin/logs/test', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Erro ao criar log de teste: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      await refreshLogs(); // Atualizar logs após criar teste
+      return result;
+    } catch (err) {
+      throw new Error(err instanceof Error ? err.message : 'Erro desconhecido');
     }
-  }, [fetchLogs, loading, pagination.page, filters.timeRange]);
+  }, [refreshLogs]);
+
+  // Funções utilitárias para UI
+  const getLevelIcon = (level: LogLevel) => {
+    const icons = {
+      [LogLevel.ERROR]: 'FiAlertTriangle',
+      [LogLevel.WARN]: 'FiInfo',
+      [LogLevel.INFO]: 'FiCheckCircle',
+      [LogLevel.DEBUG]: 'FiSettings',
+      [LogLevel.TRACE]: 'FiActivity',
+    };
+    return icons[level] || 'FiInfo';
+  };
+
+  const getLevelColor = (level: LogLevel) => {
+    const colors = {
+      [LogLevel.ERROR]: 'text-accent-red border-accent-red bg-accent-red/10',
+      [LogLevel.WARN]:
+        'text-accent-amber border-accent-amber bg-accent-amber/10',
+      [LogLevel.INFO]: 'text-accent-blue border-accent-blue bg-accent-blue/10',
+      [LogLevel.DEBUG]:
+        'text-accent-purple border-accent-purple bg-accent-purple/10',
+      [LogLevel.TRACE]:
+        'text-theme-tertiary border-theme-tertiary bg-theme-secondary',
+    };
+    return colors[level] || colors[LogLevel.INFO];
+  };
+
+  const getCategoryIcon = (category: LogCategory) => {
+    const icons = {
+      [LogCategory.API]: 'FiGlobe',
+      [LogCategory.DATABASE]: 'FiDatabase',
+      [LogCategory.AUTH]: 'FiLock',
+      [LogCategory.SECURITY]: 'FiShield',
+      [LogCategory.PERFORMANCE]: 'FiZap',
+      [LogCategory.ADMIN]: 'FiSettings',
+      [LogCategory.SYSTEM]: 'FiServer',
+      [LogCategory.AUDIT]: 'FiFileText',
+    };
+    return icons[category] || 'FiInfo';
+  };
+
+  const getRelativeTime = (timestamp: string) => {
+    const now = new Date();
+    const time = new Date(timestamp);
+    const diff = now.getTime() - time.getTime();
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `${days}d atrás`;
+    if (hours > 0) return `${hours}h atrás`;
+    if (minutes > 0) return `${minutes}m atrás`;
+    return `${seconds}s atrás`;
+  };
+
+  const formatDuration = (duration: number) => {
+    if (duration < 1000) return `${duration}ms`;
+    if (duration < 60000) return `${(duration / 1000).toFixed(1)}s`;
+    return `${(duration / 60000).toFixed(1)}m`;
+  };
+
+  // Efeito para carregar dados iniciais
+  useEffect(() => {
+    refreshLogs();
+  }, [filters]);
 
   return {
-    // Data
     logs,
-    auditEvents,
     stats,
-
-    // State
     loading,
     error,
     filters,
-    selectedLogs,
     pagination,
-
-    // Actions
-    refreshLogs,
     setFilters,
-    toggleLogSelection,
-    selectAllLogs,
-    clearSelection,
-    exportLogs,
-    archiveLogs,
-    deleteLogs,
+    refreshLogs,
     loadMoreLogs,
-
-    // Utilities
-    getFilteredLogs,
-    getLevelColor,
+    deleteLogs,
+    cleanupOldLogs,
+    exportLogs,
+    testLogging,
     getLevelIcon,
+    getLevelColor,
     getCategoryIcon,
-    formatTimestamp,
     getRelativeTime,
+    formatDuration,
   };
-};
+}

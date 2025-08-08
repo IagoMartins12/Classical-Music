@@ -36,7 +36,7 @@ import {
   AdminBarChart,
 } from '@/app/components/Admin/Charts/AdminCharts';
 import { useAdminWorks } from '@/app/hooks/admin/useAdminWorks';
-import { formatNumber } from '@/app/hooks/admin/useAdminStats';
+import { formatNumber } from '../../Utils';
 import { toast } from 'react-hot-toast';
 
 import StatsSkeleton, {

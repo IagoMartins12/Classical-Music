@@ -23,7 +23,6 @@ import {
   FiSend,
   FiMail, // Nova importação para backup
 } from 'react-icons/fi';
-import { useAdminStats } from '@/app/hooks/admin/useAdminStats';
 import { BiTestTube } from 'react-icons/bi';
 import { LuUser } from 'react-icons/lu';
 import { GiBroom } from 'react-icons/gi';
@@ -45,7 +44,6 @@ interface SidebarItem {
 export default function AdminSidebar() {
   const pathname = usePathname();
   const params = useSearchParams();
-  const { stats, loading } = useAdminStats();
   const [expandedSections, setExpandedSections] = useState<string[]>([
     'Principal',
   ]);
@@ -102,7 +100,6 @@ export default function AdminSidebar() {
           href: '/admin/users/list',
           label: 'Todos',
           icon: LuUser,
-          badge: mounted && stats ? stats.overview.totalUsers : undefined,
           isActive:
             pathname === '/admin/users/list' &&
             !hasAnnotations &&
@@ -138,29 +135,24 @@ export default function AdminSidebar() {
           href: '/admin/composers',
           label: 'Compositores',
           icon: FiUsers,
-          badge: mounted && stats ? stats.overview.totalComposers : undefined,
           isActive: pathname.startsWith('/admin/composers'),
         },
         {
           href: '/admin/works',
           label: 'Obras',
           icon: FiMusic,
-          badge: mounted && stats ? stats.overview.totalWorks : undefined,
           isActive: pathname.startsWith('/admin/works'),
         },
         {
           href: '/admin/scores',
           label: 'Partituras',
           icon: FiFileText,
-          badge: mounted && stats ? stats.overview.totalScores : undefined,
           isActive: pathname.startsWith('/admin/scores'),
         },
         {
           href: '/admin/uploads',
           label: 'Uploads',
           icon: FiUpload,
-          badge:
-            mounted && stats ? stats.trends.last7Days.newUploads : undefined,
           isActive: pathname.startsWith('/admin/uploads'),
         },
       ],
@@ -172,20 +164,14 @@ export default function AdminSidebar() {
           href: '/admin/moderation',
           label: 'Moderação',
           icon: FiShield,
-          badge:
-            mounted && stats?.moderation
-              ? stats.moderation.pendingItems
-              : undefined,
+
           isActive: pathname.startsWith('/uploads/moderation'),
         },
         {
           href: '/admin/reports-metric',
           label: 'Reports',
           icon: FiFlag,
-          badge:
-            mounted && stats?.moderation
-              ? stats.moderation.totalReports
-              : undefined,
+
           isActive: pathname.startsWith('/admin/reports-metric'),
         },
       ],
@@ -312,11 +298,6 @@ export default function AdminSidebar() {
             <div className="flex items-center space-x-2 lg:space-x-3 min-w-0">
               <item.icon className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
               <span className="font-medium truncate">{item.label}</span>
-              {item.badge && mounted && !loading && (
-                <span className="px-1.5 lg:px-2 py-0.5 bg-accent-red text-theme-primary text-xs font-bold rounded-full flex-shrink-0">
-                  {formatBadge(item.badge)}
-                </span>
-              )}
             </div>
             {isExpanded ? (
               <FiChevronDown className="w-3 h-3 lg:w-4 lg:h-4 flex-shrink-0" />
@@ -339,11 +320,6 @@ export default function AdminSidebar() {
               <item.icon className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
               <span className="font-medium truncate">{item.label}</span>
             </div>
-            {item.badge && mounted && !loading && (
-              <span className="px-1.5 lg:px-2 py-0.5 bg-accent-red text-theme-primary text-xs font-bold rounded-full flex-shrink-0">
-                {formatBadge(item.badge)}
-              </span>
-            )}
           </Link>
         )}
 

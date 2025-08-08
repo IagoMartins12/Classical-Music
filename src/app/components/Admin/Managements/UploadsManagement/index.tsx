@@ -36,7 +36,7 @@ import {
   MultiLineChart,
 } from '@/app/components/Admin/Charts/AdminCharts';
 import { useAdminUploads } from '@/app/hooks/admin/useAdminUploads';
-import { formatNumber } from '@/app/hooks/admin/useAdminStats';
+import { formatNumber } from '../../Utils';
 import { toast } from 'react-hot-toast';
 import LoadingAdminState from '../../Common/LoadingState';
 

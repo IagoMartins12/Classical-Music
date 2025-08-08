@@ -28,7 +28,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import { useAdminUsers, AdminUser } from '@/app/hooks/admin/useAdminUsers';
-import { formatNumber } from '@/app/hooks/admin/useAdminStats';
+import { formatNumber } from '../../Utils';
 import UserEditModal from '../../Modals/UserEditModal';
 import UserDetailsModal from '../../Modals/UserDetailsModal';
 import Select from '@/app/components/Common/Select';

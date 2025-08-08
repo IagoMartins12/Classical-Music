@@ -19,10 +19,10 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import { AdminUser } from '@/app/hooks/admin/useAdminUsers';
-import { formatNumber
- } from '@/app/hooks/admin/useAdminStats';
+
 import Modal from '@/app/components/Modal';
 import LoadingAdminState from '../../Common/LoadingState';
+import { formatNumber } from '../../Utils';
 
 interface UserDetailsModalProps {
   user: AdminUser;

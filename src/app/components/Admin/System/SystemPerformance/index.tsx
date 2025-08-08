@@ -904,15 +904,6 @@ export default function SystemPerformance() {
                   </div>
                   <div className="text-xs text-theme-tertiary">Online</div>
                 </div>
-                <div className="text-center p-2 bg-theme-secondary rounded-lg">
-                  <div className="text-lg font-bold text-accent-green">
-                    {metrics?.application.sessions.avg_duration.toFixed(1) || 0}
-                    m
-                  </div>
-                  <div className="text-xs text-theme-tertiary">
-                    Sessão Média
-                  </div>
-                </div>
               </div>
 
               <div className="space-y-3">

@@ -32,8 +32,8 @@ import {
   MetricCard,
 } from '@/app/components/Admin/Charts/AdminCharts';
 import { useAdminAnalytics } from '@/app/hooks/admin/useAdminAnalytics';
-import { formatNumber, formatDuration } from '@/app/hooks/admin/useAdminStats';
 import LoadingAdminState from '../../Common/LoadingState';
+import { formatDuration, formatNumber } from '../../Utils';
 
 export default function AdminAnalytics() {
   const router = useRouter();

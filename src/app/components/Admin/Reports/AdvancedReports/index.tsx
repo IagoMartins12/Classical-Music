@@ -36,6 +36,7 @@ import { MetricCard } from '@/app/components/Admin/Charts/AdminCharts';
 import { useAdminReports } from '@/app/hooks/admin/useAdminReports';
 import { toast } from 'react-hot-toast';
 import LoadingAdminState from '../../Common/LoadingState';
+import { BiPencil } from 'react-icons/bi';
 
 export default function AdvancedReports() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -254,17 +255,19 @@ export default function AdvancedReports() {
     );
   }
 
+  console.log('stats', stats);
+
   const renderOverview = () => (
     <div className="space-y-8">
       {/* Real Stats */}
       {stats && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
           <MetricCard
-            title="Total de Usuários"
-            value={formatNumber(stats.totalUsers)}
-            change={{ value: 12.5, isPositive: true }}
-            icon={FiUsers}
-            color="#3B82F6"
+            title="Relatórios Gerados"
+            value={results.length}
+            change={{ value: results.length > 0 ? 100 : 0, isPositive: true }}
+            icon={FiFileText}
+            color="#F59E0B"
           />
 
           <MetricCard
@@ -276,11 +279,19 @@ export default function AdvancedReports() {
           />
 
           <MetricCard
-            title="Relatórios Gerados"
-            value={results.length}
+            title="Total de compositores"
+            value={formatNumber(stats.totalComposers)}
             change={{ value: results.length > 0 ? 100 : 0, isPositive: true }}
-            icon={FiFileText}
+            icon={BiPencil}
             color="#F59E0B"
+          />
+
+          <MetricCard
+            title="Total de Partituras"
+            value={formatNumber(stats.totalScores)}
+            change={{ value: 4.8, isPositive: true }}
+            icon={FiFileText}
+            color="#EF4444"
           />
         </div>
       )}
@@ -288,6 +299,14 @@ export default function AdvancedReports() {
       {/* Additional Stats Row */}
       {stats && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          <MetricCard
+            title="Total de Usuários"
+            value={formatNumber(stats.totalUsers)}
+            change={{ value: 12.5, isPositive: true }}
+            icon={FiUsers}
+            color="#3B82F6"
+          />
+
           <MetricCard
             title="Usuários Ativos (30d)"
             value={formatNumber(stats.activeUsers)}
@@ -302,14 +321,6 @@ export default function AdvancedReports() {
             change={{ value: 23.1, isPositive: true }}
             icon={FiTrendingUp}
             color="#84CC16"
-          />
-
-          <MetricCard
-            title="Total de Partituras"
-            value={formatNumber(stats.totalScores)}
-            change={{ value: 4.8, isPositive: true }}
-            icon={FiFileText}
-            color="#EF4444"
           />
 
           <MetricCard
