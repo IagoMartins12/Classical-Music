@@ -80,7 +80,7 @@ export default function ConfirmTeacherInvitePage() {
         // Redirecionar após sucesso (com delay para mostrar mensagem)
         setTimeout(() => {
           router.push('/teacher/profile');
-        }, 4000);
+        }, 10000);
       } else {
         setState({
           status: 'error',

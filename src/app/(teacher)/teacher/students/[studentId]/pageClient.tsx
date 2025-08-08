@@ -42,8 +42,9 @@ import {
   PageContainer,
   SequentialGrid,
 } from '../../../../components/animation/AnimatedComponents';
-import { StudentDetailData } from '@/app/(main)/teacher/students/[studentId]/pageServer';
 import { useTeacherStudentDetail } from '@/app/hooks/lessonsSystem/useTeacherStudentDetail';
+import { StudentDetailData } from './pageServer';
+import { translateNivel } from '../../pageClient';
 
 interface TeacherProfile {
   id: string;
@@ -341,7 +342,7 @@ export default function TeacherStudentDetailPageClient({
                         Nível Musical
                       </label>
                       <p className="text-theme-primary font-semibold">
-                        {studentProfile.level}
+                        {translateNivel(studentProfile.level)}
                       </p>
                     </div>
                     {studentProfile.mainInstrument && (
@@ -360,7 +361,7 @@ export default function TeacherStudentDetailPageClient({
                           Experiência
                         </label>
                         <p className="text-theme-primary font-semibold">
-                          {student.experienceLevel}
+                          {translateNivel(student.experienceLevel)}
                         </p>
                       </div>
                     )}

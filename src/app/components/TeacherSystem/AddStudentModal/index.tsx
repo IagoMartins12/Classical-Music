@@ -78,6 +78,7 @@ const TIME_SLOTS = [
 ];
 
 const PRACTICE_FREQUENCY_OPTIONS = [
+  { value: '', label: 'Selecione a frequencia' },
   { value: 'daily', label: 'Diariamente' },
   { value: 'weekdays', label: 'Dias úteis' },
   { value: 'alternate', label: 'Dias alternados' },
@@ -86,6 +87,8 @@ const PRACTICE_FREQUENCY_OPTIONS = [
 ];
 
 const HOMEWORK_EXPECTATION_OPTIONS = [
+  { value: '', label: 'Selecione a quantidade de exercícios' },
+
   { value: 'light', label: 'Leve (1-2 exercícios)' },
   { value: 'moderate', label: 'Moderada (3-4 exercícios)' },
   { value: 'intensive', label: 'Intensiva (5+ exercícios)' },
@@ -127,8 +130,8 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
     preferredDays: [],
     preferredTimes: [],
     currentFocus: [],
-    practiceFrequency: 'weekdays',
-    homeworkExpectation: 'moderate',
+    practiceFrequency: '',
+    homeworkExpectation: '',
   });
 
   // 🆕 NOVO: Handlers para o plano de estudos

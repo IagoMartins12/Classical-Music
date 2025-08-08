@@ -1,9 +1,6 @@
 // app/teacher/reviews/page.tsx - Página de Avaliações Recebidas
 
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
-import { notFound } from 'next/navigation';
 import TeacherReviewsPageServer from './pageServer';
 import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 

@@ -94,7 +94,7 @@ export default function DeclineStudentInvitePage() {
         // Redirecionar após sucesso
         setTimeout(() => {
           router.push('/');
-        }, 5000);
+        }, 10000);
       } else {
         setState({
           status: 'error',

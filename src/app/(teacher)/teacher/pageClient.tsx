@@ -1,7 +1,7 @@
-// app/teacher/pageClient.tsx - Dashboard Completo do Professor (sem estados de data)
+// app/teacher/pageClient.tsx - Dashboard Completo do Professor (COM REFRESH)
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -39,6 +39,8 @@ import {
 import AddStudentModal from '@/app/components/TeacherSystem/AddStudentModal';
 import StudentInviteStatusBadge from '@/app/components/TeacherSystem/StudentInviteStatusBadge';
 import { useToast } from '@/app/hooks/useToast';
+import { useTeacherData } from '@/app/hooks/lessonsSystem/useTeacherData';
+import RefreshIndicator from '@/app/components/Common/RefreshIndicator';
 
 interface TeacherProfile {
   id: string;
@@ -70,6 +72,18 @@ export interface StudentSearchResult {
   hasStudentProfile: boolean;
 }
 
+export const translateNivel = (nivel: string) => {
+  if (nivel === 'BEGINNER') {
+    return 'Iniciante';
+  } else if (nivel === 'INTERMEDIATE') {
+    return 'Intermediário';
+  } else if (nivel === 'ADVANCED') {
+    return 'Avançado';
+  } else {
+    return 'Não definido';
+  }
+};
+
 export default function TeacherPageClient({
   initialDashboardData,
   initialStudentsData,
@@ -77,7 +91,26 @@ export default function TeacherPageClient({
   teacherProfile,
   errorMessage,
 }: TeacherPageClientProps) {
-  // Estados apenas para UI e search
+  // ===== USAR O HOOK PERSONALIZADO =====
+  const {
+    data: {
+      dashboard: dashboardData,
+      students: studentsData,
+      calendar: calendarData,
+    },
+    refreshing,
+    error: dataError,
+    refreshData,
+    clearError,
+  } = useTeacherData({
+    initialData: {
+      dashboard: initialDashboardData,
+      students: initialStudentsData,
+      calendar: initialCalendarData,
+    },
+  });
+
+  // Estados para UI e busca
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<StudentSearchResult[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -89,6 +122,10 @@ export default function TeacherPageClient({
   );
 
   const toast = useToast();
+
+  // Combinar erros
+  const currentError = error || dataError;
+
   const handleResendInvite = async (
     studentId: string,
     studentEmail?: string | null
@@ -125,8 +162,8 @@ export default function TeacherPageClient({
     }
   };
 
-  // Dados vem direto do servidor - sem estado local
-  const stats = initialDashboardData?.dashboard?.stats || {
+  // Usar dados do estado local ao invés de props diretas
+  const stats = dashboardData?.dashboard?.stats || {
     totalStudents: 0,
     activeStudents: 0,
     lessonsThisWeek: 0,
@@ -134,13 +171,17 @@ export default function TeacherPageClient({
     avgLessonsPerWeek: 0,
   };
 
-  const todayLessons = initialDashboardData?.dashboard?.todayLessons || [];
+  useEffect(() => {
+    refreshData(false);
+  }, []);
+
+  const todayLessons = dashboardData?.dashboard?.todayLessons || [];
   const upcomingLessons =
-    initialDashboardData?.dashboard?.upcomingLessons?.slice(0, 5) || [];
+    dashboardData?.dashboard?.upcomingLessons?.slice(0, 5) || [];
   const activeStudents =
-    initialStudentsData?.students?.filter((s) => s.relationship.isActive) || [];
+    studentsData?.students?.filter((s) => s.relationship.isActive) || [];
   const recentActivities =
-    initialDashboardData?.dashboard?.recentActivities?.slice(0, 5) || [];
+    dashboardData?.dashboard?.recentActivities?.slice(0, 5) || [];
 
   // Function to search students
   const searchStudents = useCallback(async (email: string) => {
@@ -195,44 +236,59 @@ export default function TeacherPageClient({
     [searchStudents]
   );
 
-  // Function to add student
-  const addStudent = useCallback(async (studentUserId: string) => {
-    setLoading(true);
-    try {
-      const response = await fetch('/api/teacher/students', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          studentUserId,
-          maxLessonsPerWeek: 1,
-          lessonDuration: 60,
-          preferredDays: [],
-          preferredTimes: [],
-          learningPlan: '',
-          currentFocus: [],
-          teacherNotes: '',
-        }),
-      });
+  // ===== FUNÇÃO ATUALIZADA DE ADICIONAR ALUNO (SEM RELOAD) =====
+  const addStudent = useCallback(
+    async (studentUserId: string) => {
+      setLoading(true);
+      setError(undefined);
+      clearError(); // Limpar erros do hook também
 
-      if (!response.ok) {
-        throw new Error('Erro ao adicionar aluno');
+      try {
+        const response = await fetch('/api/teacher/students', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            studentUserId,
+            maxLessonsPerWeek: 1,
+            lessonDuration: 60,
+            preferredDays: [],
+            preferredTimes: [],
+            learningPlan: '',
+            currentFocus: [],
+            teacherNotes: '',
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao adicionar aluno');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          toast.success('Aluno adicionado com sucesso!');
+
+          // Fechar modal
+          setShowAddStudent(false);
+          setSearchQuery('');
+          setSearchResults([]);
+
+          // Atualizar dados sem reload
+          await refreshData(false);
+        }
+      } catch (error) {
+        console.error('Erro ao adicionar aluno:', error);
+        const message = 'Erro ao adicionar aluno. Tente novamente.';
+        setError(message);
+        toast.error(message);
+      } finally {
+        setLoading(false);
       }
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Após adicionar, refresh a página para carregar novos dados
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('Erro ao adicionar aluno:', error);
-      setError('Erro ao adicionar aluno. Tente novamente.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    [refreshData, toast, clearError]
+  );
 
   // Format time
   const formatTime = (date: Date | string) => {
@@ -257,7 +313,7 @@ export default function TeacherPageClient({
   };
 
   // Render error state
-  if (error && !initialDashboardData) {
+  if (currentError && !dashboardData) {
     return (
       <PageContainer showBackground={true}>
         <div className="flex items-center justify-center min-h-screen">
@@ -269,15 +325,35 @@ export default function TeacherPageClient({
               Erro ao Carregar Dashboard
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
-              {error}
+              {currentError}
             </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="btn-classical-primary flex items-center space-x-2"
-            >
-              <FiRefreshCw className="w-4 h-4" />
-              <span>Recarregar Página</span>
-            </button>
+            <div className="flex flex-col items-center space-y-3">
+              <button
+                onClick={() => {
+                  refreshData(true);
+                }}
+                disabled={refreshing}
+                className="btn-classical-primary flex justify-center items-center space-x-2"
+              >
+                <FiRefreshCw
+                  className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`}
+                />
+                <span>
+                  {refreshing ? 'Atualizando...' : 'Tentar Novamente'}
+                </span>
+              </button>
+              {currentError !== errorMessage && (
+                <button
+                  onClick={() => {
+                    setError(undefined);
+                    clearError();
+                  }}
+                  className="btn-classical-secondary text-sm"
+                >
+                  Fechar Erro
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </PageContainer>
@@ -298,10 +374,22 @@ export default function TeacherPageClient({
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
               Dashboard do Professor
             </h1>
-            <p className="text-xl text-theme-secondary classical-subtitle">
-              Bem-vindo de volta, {teacherProfile.name}! Gerencie seus alunos e
-              aulas
-            </p>
+            <div className="flex items-center justify-center space-x-4">
+              <p className="text-xl text-theme-secondary classical-subtitle">
+                Bem-vindo de volta, {teacherProfile.name}! Gerencie seus alunos
+                e aulas
+              </p>
+
+              {/* ===== INDICADOR DE ATUALIZAÇÃO MELHORADO ===== */}
+              <RefreshIndicator
+                isRefreshing={refreshing}
+                onRefresh={refreshData}
+                error={dataError}
+                size="md"
+                showLastUpdated={true}
+                className="ml-4"
+              />
+            </div>
           </div>
         </AnimatedItem>
 
@@ -404,12 +492,6 @@ export default function TeacherPageClient({
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => window.location.reload()}
-                    className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
-                  >
-                    <FiRefreshCw className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-all" />
-                  </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -594,7 +676,10 @@ export default function TeacherPageClient({
                               {studentRel.student.name}
                             </h3>
                             <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
-                              <span>Nível: {studentRel.student.level}</span>
+                              <span>
+                                Nível:{' '}
+                                {translateNivel(studentRel.student.level)}
+                              </span>
                               {studentRel.student.mainInstrument && (
                                 <span>
                                   • {studentRel.student.mainInstrument}

@@ -1,9 +1,6 @@
 // app/teacher/students/page.tsx - Página de Gerenciamento de Alunos
 
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
-import { notFound } from 'next/navigation';
 import TeacherStudentsPageServer from './pageServer';
 import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 

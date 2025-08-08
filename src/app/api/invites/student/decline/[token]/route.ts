@@ -158,6 +158,17 @@ export async function GET(
           isStudent: false, // 🔄 Remover flag de estudante se não tem mais professores
         },
       });
+
+      await prisma.teacherStudent.update({
+        where: {
+          id: relationship.id,
+        },
+        data: {
+          inviteStatus: 'DECLINED',
+          inviteAcceptedAt: new Date(),
+          inviteDeclinedAt: null,
+        },
+      });
     }
 
     // Marcar token como usado

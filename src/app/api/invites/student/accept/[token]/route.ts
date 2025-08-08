@@ -169,6 +169,17 @@ export async function GET(
       },
     });
 
+    await prisma.teacherStudent.update({
+      where: {
+        id: relationship.id,
+      },
+      data: {
+        inviteStatus: 'ACCEPTED',
+        inviteAcceptedAt: new Date(),
+        inviteDeclinedAt: null,
+      },
+    });
+
     // Marcar token como usado
     await markTokenAsUsed(token);
 
@@ -243,7 +254,7 @@ export async function POST(
       where: { token },
     });
 
-    if (!tokenRecord) {
+    if (!tokenRecord || tokenRecord.userId === null) {
       return NextResponse.json(
         { success: false, error: 'Token não encontrado' },
         { status: 404 }
@@ -251,6 +262,7 @@ export async function POST(
     }
 
     // Buscar usuário
+
     const user = await prisma.user.findUnique({
       where: { id: tokenRecord.userId },
       select: {

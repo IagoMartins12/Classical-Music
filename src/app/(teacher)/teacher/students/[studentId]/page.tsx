@@ -1,9 +1,6 @@
 // app/teacher/students/[studentId]/page.tsx - Página de Detalhes do Aluno
 
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
-import { notFound } from 'next/navigation';
 import TeacherStudentDetailPageServer from './pageServer';
 import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 

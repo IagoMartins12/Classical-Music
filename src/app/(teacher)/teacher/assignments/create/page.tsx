@@ -1,9 +1,6 @@
 // app/teacher/assignments/create/page.tsx - Página de Criar Nova Tarefa
 
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
-import { notFound } from 'next/navigation';
 import CreateAssignmentPageServer from './pageServer';
 import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 

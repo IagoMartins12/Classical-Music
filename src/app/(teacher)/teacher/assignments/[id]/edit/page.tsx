@@ -1,9 +1,6 @@
 // app/teacher/assignments/[id]/edit/page.tsx - Página de Editar Tarefa
 
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
-import { notFound } from 'next/navigation';
 import EditAssignmentPageServer from './pageServer';
 import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 

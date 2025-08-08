@@ -89,7 +89,7 @@ export default function DeclineTeacherInvitePage() {
         // Redirecionar após sucesso
         setTimeout(() => {
           router.push('/');
-        }, 5000);
+        }, 10000);
       } else {
         setState({
           status: 'error',
@@ -133,7 +133,7 @@ export default function DeclineTeacherInvitePage() {
                 <strong>Se você recusar este convite:</strong>
               </p>
               <ul className="text-sm space-y-2 ml-4">
-                <li>• Seu status voltará para usuário comum (role 0)</li>
+                <li>• Você voltará a ser um usuário comum.</li>
                 <li>• Você perderá acesso às funcionalidades de professor</li>
                 <li>
                   • Será necessário um novo convite do administrador para se
@@ -217,7 +217,7 @@ export default function DeclineTeacherInvitePage() {
                 <p className="text-theme-secondary opacity-80">
                   Sua conta voltou ao status de usuário comum. Você pode
                   continuar aproveitando todos os recursos do Opus Atlas como
-                  estudante de música clássica.
+                  entusiasta de música clássica.
                 </p>
               </div>
             )}

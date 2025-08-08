@@ -100,7 +100,7 @@ export default function ConfirmStudentInvitePage() {
         // Redirecionar após sucesso (com delay para mostrar mensagem)
         setTimeout(() => {
           router.push('/student/profile');
-        }, 4000);
+        }, 10000);
       } else {
         setState({
           status: 'error',
@@ -201,7 +201,7 @@ export default function ConfirmStudentInvitePage() {
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && state.teacher && (
-              <div className="bg-accent-green bg-opacity-10 border border-accent-green rounded-xl p-6 mb-8">
+              <div className="bg-accent-green bg-opacity-10 rounded-xl p-6 mb-8">
                 <div className="flex items-center justify-center mb-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-4">
                     <FiBookOpen className="w-8 h-8 text-theme-primary" />
@@ -219,7 +219,7 @@ export default function ConfirmStudentInvitePage() {
 
                 {state.relationship && (
                   <div className="grid md:grid-cols-2 gap-4 mt-6">
-                    <div className="bg-theme-primary bg-opacity-10 rounded-lg p-4">
+                    <div className="classical-card-simple bg-opacity-10 rounded-lg p-4">
                       <h4 className="font-medium text-accent-green mb-2">
                         📚 Seu Plano de Estudos
                       </h4>
@@ -245,7 +245,7 @@ export default function ConfirmStudentInvitePage() {
                         )}
                       </ul>
                     </div>
-                    <div className="bg-theme-primary bg-opacity-10 rounded-lg p-4">
+                    <div className="classical-card-simple bg-opacity-10 rounded-lg p-4">
                       <h4 className="font-medium text-accent-green mb-2">
                         ⚡ Próximos Passos
                       </h4>

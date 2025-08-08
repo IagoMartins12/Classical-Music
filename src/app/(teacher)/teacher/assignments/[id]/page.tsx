@@ -1,9 +1,6 @@
 // app/teacher/assignments/[id]/page.tsx - Página de Detalhes da Tarefa
 
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
-import { notFound } from 'next/navigation';
 import AssignmentDetailsPageServer from './pageServer';
 import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 

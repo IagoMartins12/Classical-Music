@@ -8,7 +8,7 @@ export async function getRequiredServerSession(): Promise<Session> {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    redirect('/not-authenticad');
+    redirect('/not-authenticated');
   }
 
   return session; // Aqui o TypeScript já sabe que não é null

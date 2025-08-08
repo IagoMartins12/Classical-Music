@@ -1,10 +1,7 @@
 // app/teacher/profile/page.tsx - Página do Perfil do Professor
 
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
 import TeacherProfilePageServer from './pageServer';
-import NotFound from '@/app/not-found';
 
 export const metadata: Metadata = {
   title: 'Meu Perfil | Professor - Opus Atlas',

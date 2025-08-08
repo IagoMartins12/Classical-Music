@@ -53,7 +53,7 @@ export default async function StudentLayout({
 
   // Verificar se está logado
   if (!session?.user?.id) {
-    redirect('/not-authenticad');
+    redirect('/not-authenticated');
   }
 
   // Verificar se tem role de professor (role 1)
