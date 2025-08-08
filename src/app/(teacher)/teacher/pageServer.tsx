@@ -19,7 +19,9 @@ export default async function TeacherPageServer({
   userImage?: string | null;
   userRole: number;
 }) {
-  console.log(`🎯 [TEACHER-PAGE-SERVER] Loading for user ${userId}`);
+  console.log(`🎯 [TEACHER-PAGE-SERVER] Loading for user ${userRole}`);
+
+  if (userRole !== 1) return;
 
   try {
     // Buscar dados iniciais em paralelo - DIRETO DO BANCO

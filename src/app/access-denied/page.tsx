@@ -130,13 +130,13 @@ export default function AccessDenied() {
       case 'admin':
         return 'Painel Administrativo';
       default:
-        return 'Opus Atlas';
+        return 'esta pagina.';
     }
   };
 
   const getContextualTitle = () => {
     if (!session?.user) {
-      return `Acesso Restrito - ${getAreaTitle()}`;
+      return `Acesso Restrito`;
     }
 
     const userRole = session.user.role;
@@ -157,7 +157,7 @@ export default function AccessDenied() {
         return 'Acesso Negado';
 
       default:
-        return `Acesso Restrito - ${getAreaTitle()}`;
+        return `Acesso Restrito `;
     }
   };
 
@@ -381,9 +381,6 @@ export default function AccessDenied() {
                       <span className="text-2xl font-bold text-gradient-brand classical-title">
                         Opus Atlas
                       </span>
-                      <div className="text-sm text-theme-tertiary">
-                        {getAreaTitle()}
-                      </div>
                     </div>
                   </Link>
                 </div>

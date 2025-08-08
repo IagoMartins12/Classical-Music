@@ -1,6 +1,5 @@
 // app/(teacher)/layout.tsx - SEM html, head, body
 import type { Metadata } from 'next';
-import AuthProvider from '../providers/AuthProvider';
 import { FavoritesProvider } from '../providers/FavoritesProvider';
 import { Toaster } from 'react-hot-toast';
 import AdsProvider from '../components/Ads/AdsProvider';
@@ -54,14 +53,15 @@ export default async function TeacherLayout({
 
   // Verificar se está logado
   if (!session?.user?.id) {
-    redirect('/api/auth/signin');
+    redirect('/not-authenticad');
   }
 
   // Verificar se tem role de professor (role 1)
-  if (session.user.role !== 1) {
+  if (!session.user.isTeacher || session.user.role !== 1) {
     redirect('/access-denied');
   }
 
+  console.log('session', session);
   return (
     <AdsProvider>
       <FavoritesProvider>

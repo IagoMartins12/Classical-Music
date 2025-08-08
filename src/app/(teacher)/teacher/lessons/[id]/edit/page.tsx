@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { notFound } from 'next/navigation';
 import EditLessonPageServer from './pageServer';
+import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 
 interface EditLessonPageProps {
   params: {
@@ -24,17 +25,7 @@ export async function generateMetadata({
 }
 
 export default async function EditLessonPage({ params }: EditLessonPageProps) {
-  const session = await getServerSession(authOptions);
-
-  // Verificar se está logado
-  if (!session?.user?.id) {
-    return notFound();
-  }
-
-  // Verificar se tem role de professor (role 1)
-  if (session.user.role !== 1) {
-    return notFound();
-  }
+  const session = await getRequiredServerSession();
 
   return (
     <EditLessonPageServer

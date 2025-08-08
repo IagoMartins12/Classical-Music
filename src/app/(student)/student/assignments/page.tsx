@@ -1,10 +1,9 @@
 // app/student/assignments/page.tsx - Página de Tarefas do Aluno
 
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
-import { notFound } from 'next/navigation';
+
 import StudentAssignmentsPageServer from './pageServer';
+import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 
 export const metadata: Metadata = {
   title: 'Minhas Tarefas | Aluno - Opus Atlas',
@@ -21,17 +20,7 @@ export const metadata: Metadata = {
 };
 
 export default async function StudentAssignmentsPage() {
-  const session = await getServerSession(authOptions);
-
-  // Verificar se está logado
-  if (!session?.user?.id) {
-    return notFound();
-  }
-
-  // Verificar se tem role de aluno (role 0)
-  if (session.user.role !== 0) {
-    return notFound();
-  }
+  const session = await getRequiredServerSession();
 
   return (
     <StudentAssignmentsPageServer

@@ -110,14 +110,6 @@ export interface StudentDashboardData {
   timestamp: string;
 }
 
-interface StudentProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
 interface StudentPageServerProps {
   userId: string;
   userEmail: string;

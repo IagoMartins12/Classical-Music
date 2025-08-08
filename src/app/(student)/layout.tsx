@@ -1,6 +1,5 @@
 // app/(student)/layout.tsx - SEM html, head, body
 import type { Metadata } from 'next';
-import AuthProvider from '../providers/AuthProvider';
 import { FavoritesProvider } from '../providers/FavoritesProvider';
 import { Toaster } from 'react-hot-toast';
 import AdsProvider from '../components/Ads/AdsProvider';
@@ -54,14 +53,13 @@ export default async function StudentLayout({
 
   // Verificar se está logado
   if (!session?.user?.id) {
-    redirect('/api/auth/signin');
+    redirect('/not-authenticad');
   }
 
-  // Verificar se tem role de estudante (role 0)
-  if (session.user.role !== 0) {
+  // Verificar se tem role de professor (role 1)
+  if (!session.user.isStudent) {
     redirect('/access-denied');
   }
-
   return (
     <AdsProvider>
       <FavoritesProvider>

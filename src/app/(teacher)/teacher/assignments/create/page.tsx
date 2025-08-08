@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { notFound } from 'next/navigation';
 import CreateAssignmentPageServer from './pageServer';
+import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 
 export const metadata: Metadata = {
   title: 'Criar Nova Tarefa | Professor - Opus Atlas',
@@ -21,17 +22,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CreateAssignmentPage() {
-  const session = await getServerSession(authOptions);
-
-  // Verificar se está logado
-  if (!session?.user?.id) {
-    return notFound();
-  }
-
-  // Verificar se tem role de professor (role 1)
-  if (session.user.role !== 1) {
-    return notFound();
-  }
+  const session = await getRequiredServerSession();
 
   return (
     <CreateAssignmentPageServer
