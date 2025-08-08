@@ -407,6 +407,16 @@ const Navbar: React.FC = () => {
                         </Link>
                       )}
 
+                      {user.isStudent && (
+                        <Link
+                          href="/student"
+                          className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FaGraduationCap className="w-4 h-4" />
+                          <span>Painel do aluno</span>
+                        </Link>
+                      )}
                       {user.role === 2 && (
                         <Link
                           href="/admin"
@@ -417,6 +427,7 @@ const Navbar: React.FC = () => {
                           <span>Admin</span>
                         </Link>
                       )}
+
                       <hr className="my-2 border-theme-secondary" />
 
                       <button

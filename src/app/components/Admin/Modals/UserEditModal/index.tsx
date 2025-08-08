@@ -69,8 +69,6 @@ export default function UserEditModal({
     experienceLevel: user.experienceLevel || 'BEGINNER',
   });
 
-  console.log('user', user);
-
   const [loading, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasChanges, setHasChanges] = useState(false);

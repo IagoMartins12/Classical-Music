@@ -19,6 +19,9 @@ export interface AdminUser {
   onboardingCompleted: boolean;
   moderationsCount?: number; // 🆕 ADICIONADO
 
+  teacherInviteStatus?: 'pending' | 'accepted' | 'declined' | null;
+  teacherInviteAcceptedAt?: Date;
+
   // 🆕 INFORMAÇÕES DO TEACHER PROFILE (se aplicável)
   isTeacher?: boolean;
   teacherProfile?: {

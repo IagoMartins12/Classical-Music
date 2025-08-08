@@ -41,6 +41,7 @@ export default function AdminAnalytics() {
     useAdminAnalytics();
   const [refreshing, setRefreshing] = useState(false);
 
+  console.log('ANALYTICS', analytics);
   const handleRefresh = async () => {
     setRefreshing(true);
     await refreshAnalytics();

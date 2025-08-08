@@ -146,12 +146,6 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
       icon: FiUser,
       active: pathname === '/teacher/profile',
     },
-    {
-      label: 'Avaliações',
-      href: '/teacher/reviews',
-      icon: FiStar,
-      active: pathname === '/teacher/reviews',
-    },
   ];
 
   const getUserDisplayName = () => {

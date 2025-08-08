@@ -5,6 +5,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
+import { sendTemplateEmail } from '@/app/libs/newsletter/email';
+import { createToken } from '@/app/libs/tokenUtils';
 
 // Função auxiliar para revalidar cache de teacher students
 async function revalidateTeacherStudentsData(
@@ -158,6 +160,16 @@ export async function GET(request: NextRequest) {
             duration: true,
           },
         });
+        let inviteStatus = rel.inviteStatus || 'PENDING';
+
+        if (!rel.inviteStatus) {
+          const studentUser = await prisma.user.findUnique({
+            where: { id: rel.student.userId },
+            select: { isStudent: true },
+          });
+
+          inviteStatus = studentUser?.isStudent ? 'ACCEPTED' : 'PENDING';
+        }
 
         return {
           relationshipId: rel.id,
@@ -178,6 +190,11 @@ export async function GET(request: NextRequest) {
             mainInstrument: rel.student.mainInstrument,
             musicalGoals: rel.student.musicalGoals,
             practiceTime: rel.student.practiceTime,
+
+            // 🆕 NOVO: Status do convite
+            inviteStatus,
+            inviteAcceptedAt: rel.inviteAcceptedAt,
+            inviteDeclinedAt: rel.inviteDeclinedAt,
           },
           relationship: {
             isActive: rel.isActive,
@@ -257,6 +274,11 @@ export async function POST(request: NextRequest) {
       learningPlan,
       currentFocus = [],
       teacherNotes,
+      // 🆕 NOVOS CAMPOS OPCIONAIS PARA PLANO DE ESTUDOS
+      studyGoals,
+      practiceFrequency,
+      homeworkExpectation,
+      specialInstructions,
     } = body;
 
     if (!studentUserId) {
@@ -270,10 +292,14 @@ export async function POST(request: NextRequest) {
       `🔗 [TEACHER-STUDENTS] Vinculando aluno ${studentUserId} ao professor ${session.user.id}`
     );
 
-    // Verificar se professor existe
+    // Verificar se professor existe e buscar dados do professor
     const teacherProfile = await prisma.teacher.findUnique({
       where: { userId: session.user.id },
-      select: { id: true },
+      select: {
+        id: true,
+        specialties: true,
+        experience: true,
+      },
     });
 
     if (!teacherProfile) {
@@ -289,7 +315,12 @@ export async function POST(request: NextRequest) {
         id: studentUserId,
         role: 0, // Apenas alunos
       },
-      select: { id: true, email: true },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+      },
     });
 
     if (!studentUser) {
@@ -298,6 +329,20 @@ export async function POST(request: NextRequest) {
         { status: 404 }
       );
     }
+
+    // Buscar dados do professor atual (user) para o email
+    const teacherUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        firstName: true,
+        lastName: true,
+      },
+    });
+
+    const teacherName = teacherUser
+      ? `${teacherUser.firstName || ''} ${teacherUser.lastName || ''}`.trim() ||
+        'Professor'
+      : 'Professor';
 
     // Criar ou buscar perfil de Student
     let studentProfile = await prisma.student.findUnique({
@@ -367,7 +412,7 @@ export async function POST(request: NextRequest) {
           },
         });
 
-        // 🔥 REVALIDAR CACHE APÓS REATIVAR
+        // Revalidar cache
         await revalidateTeacherStudentsData(session.user.id, studentUserId);
 
         console.log(
@@ -412,7 +457,76 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // 🔥 REVALIDAR CACHE APÓS CRIAR
+    // 🆕 NOVO: Enviar email de convite para o aluno
+    if (studentUser.email) {
+      try {
+        // Criar tokens para aceitar/recusar convite
+        const acceptToken = await createToken({
+          userId: studentUserId,
+          type: 'STUDENT_INVITATION_ACCEPT',
+          expiresInHours: 24 * 30, // 30 dias
+          ipAddress: request.headers.get('x-forwarded-for') || undefined,
+          userAgent: request.headers.get('user-agent') || undefined,
+          metadata: {
+            teacherId: session.user.id,
+            relationshipId: newRelationship.id,
+          },
+        });
+
+        const declineToken = await createToken({
+          userId: studentUserId,
+          type: 'STUDENT_INVITATION_DECLINE',
+          expiresInHours: 24 * 30, // 30 dias
+          ipAddress: request.headers.get('x-forwarded-for') || undefined,
+          userAgent: request.headers.get('user-agent') || undefined,
+          metadata: {
+            teacherId: session.user.id,
+            relationshipId: newRelationship.id,
+          },
+        });
+
+        const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+
+        const acceptUrl = `${baseUrl}/confirm-student-invite/${acceptToken}`;
+        const declineUrl = `${baseUrl}/decline-student-invite/${declineToken}`;
+
+        // Preparar dados do plano de estudos para o email
+        const studyPlan: any = {};
+        if (maxLessonsPerWeek > 0)
+          studyPlan.maxLessonsPerWeek = maxLessonsPerWeek;
+        if (lessonDuration > 0) studyPlan.lessonDuration = lessonDuration;
+        if (preferredDays.length > 0)
+          studyPlan.preferredDays = preferredDays.join(', ');
+        if (currentFocus.length > 0) studyPlan.focus = currentFocus.join(', ');
+
+        // Enviar email de convite
+        await sendTemplateEmail(studentUser.email, {
+          type: 'STUDENT_INVITATION',
+          variables: {
+            firstName: studentUser.firstName || 'Estudante',
+            teacherName,
+            teacherSpecialties: teacherProfile.specialties?.join(', ') || null,
+            teacherExperience: teacherProfile.experience || null,
+            acceptUrl,
+            declineUrl,
+            studyPlan: Object.keys(studyPlan).length > 0 ? studyPlan : null,
+            siteUrl: baseUrl,
+          },
+        });
+
+        console.log(
+          `✅ [TEACHER-STUDENTS] Email de convite para aluno enviado para ${studentUser.email}`
+        );
+      } catch (emailError) {
+        console.error(
+          '❌ [TEACHER-STUDENTS] Erro ao enviar email de convite:',
+          emailError
+        );
+        // Não falhar a operação por causa do email
+      }
+    }
+
+    // Revalidar cache
     await revalidateTeacherStudentsData(session.user.id, studentUserId);
 
     console.log(
@@ -422,8 +536,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       relationship: newRelationship,
-      message: 'Aluno vinculado com sucesso',
+      message: 'Aluno adicionado com sucesso. Email de convite enviado!',
       created: true,
+      inviteEmailSent: !!studentUser.email,
     });
   } catch (error) {
     console.error('❌ [TEACHER-STUDENTS] Erro ao vincular aluno:', error);

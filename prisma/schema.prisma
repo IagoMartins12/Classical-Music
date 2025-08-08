@@ -186,7 +186,64 @@ enum TokenType {
   EMAIL_CONFIRMATION
   PASSWORD_RESET
   NEWSLETTER_CONFIRMATION
-  EMAIL_CHANGE // 🆕 Para mudança de email
+  EMAIL_CHANGE
+  TEACHER_INVITATION_ACCEPT
+  TEACHER_INVITATION_DECLINE
+  STUDENT_INVITATION_ACCEPT
+  STUDENT_INVITATION_DECLINE
+  STUDENT_INVITATION
+}
+
+enum StudentInviteStatus {
+  PENDING     // Convite enviado, aguardando resposta
+  ACCEPTED    // Convite aceito
+  DECLINED    // Convite recusado
+  EXPIRED     // Convite expirado
+}
+
+// ENUMS PARA O SISTEMA PROFESSOR-ALUNO
+enum LessonStatus {
+  SCHEDULED    // Agendada
+  COMPLETED    // Concluída
+  CANCELLED    // Cancelada
+  NO_SHOW      // Aluno faltou
+  RESCHEDULED  // Reagendada
+}
+
+enum LessonType {
+  INDIVIDUAL   // Aula individual
+  GROUP        // Aula em grupo
+  THEORY       // Teoria musical
+  PRACTICE     // Aula prática
+  MASTERCLASS  // Masterclass
+}
+
+enum RecurrenceType {
+  WEEKLY       // Semanal
+  BIWEEKLY     // Quinzenal
+  MONTHLY      // Mensal
+  TWICE_WEEKLY // 2x por semana
+  NONE         // Sem recorrência
+}
+
+enum StudentStatus {
+  ACTIVE       // Ativo
+  INACTIVE     // Inativo
+  PAUSED       // Pausado temporariamente
+  TRIAL        // Período de teste
+}
+
+enum TeacherStatus {
+  ACTIVE       // Ativo
+  INACTIVE     // Inativo
+  PENDING      // Aguardando aprovação
+}
+
+enum AssignmentStatus {
+  PENDING      // Pendente
+  IN_PROGRESS  // Em andamento
+  COMPLETED    // Concluída
+  OVERDUE      // Atrasada
 }
 
 model User {
@@ -1525,52 +1582,6 @@ model TemplateFragment {
   @@map("template_fragments")
 }
 
-
-// ENUMS PARA O SISTEMA PROFESSOR-ALUNO
-enum LessonStatus {
-  SCHEDULED    // Agendada
-  COMPLETED    // Concluída
-  CANCELLED    // Cancelada
-  NO_SHOW      // Aluno faltou
-  RESCHEDULED  // Reagendada
-}
-
-enum LessonType {
-  INDIVIDUAL   // Aula individual
-  GROUP        // Aula em grupo
-  THEORY       // Teoria musical
-  PRACTICE     // Aula prática
-  MASTERCLASS  // Masterclass
-}
-
-enum RecurrenceType {
-  WEEKLY       // Semanal
-  BIWEEKLY     // Quinzenal
-  MONTHLY      // Mensal
-  TWICE_WEEKLY // 2x por semana
-  NONE         // Sem recorrência
-}
-
-enum StudentStatus {
-  ACTIVE       // Ativo
-  INACTIVE     // Inativo
-  PAUSED       // Pausado temporariamente
-  TRIAL        // Período de teste
-}
-
-enum TeacherStatus {
-  ACTIVE       // Ativo
-  INACTIVE     // Inativo
-  PENDING      // Aguardando aprovação
-}
-
-enum AssignmentStatus {
-  PENDING      // Pendente
-  IN_PROGRESS  // Em andamento
-  COMPLETED    // Concluída
-  OVERDUE      // Atrasada
-}
-
 // TABELA DE PROFESSORES COMPLETA
 model Teacher {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
@@ -1736,6 +1747,10 @@ model TeacherStudent {
   noShowLessons    Int @default(0)
   relationshipScore Float? @default(0) // Score da qualidade da relação
   
+  inviteStatus StudentInviteStatus @default(PENDING)
+  inviteAcceptedAt DateTime?
+  inviteDeclinedAt DateTime?
+
   // Timestamps
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

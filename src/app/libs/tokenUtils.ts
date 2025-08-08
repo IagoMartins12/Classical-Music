@@ -6,7 +6,12 @@ export type TokenType =
   | 'EMAIL_CONFIRMATION'
   | 'PASSWORD_RESET'
   | 'NEWSLETTER_CONFIRMATION'
-  | 'EMAIL_CHANGE';
+  | 'EMAIL_CHANGE'
+  | 'TEACHER_INVITATION_ACCEPT'
+  | 'TEACHER_INVITATION_DECLINE'
+  | 'STUDENT_INVITATION_ACCEPT'
+  | 'STUDENT_INVITATION_DECLINE'
+  | 'STUDENT_INVITATION';
 
 interface CreateTokenOptions {
   userId?: string; // 🆕 OPCIONAL agora
@@ -276,6 +281,27 @@ export const TOKEN_CONFIG = {
   EMAIL_CHANGE: {
     expiresInHours: 48,
     description: 'Confirmação de mudança de Email',
+  },
+  TEACHER_INVITATION_ACCEPT: {
+    expiresInHours: 48,
+    description: 'Confirmação de convite para professor',
+  },
+  TEACHER_INVITATION_DECLINE: {
+    expiresInHours: 48,
+    description: 'Declinio de convite para professor',
+  },
+  STUDENT_INVITATION_ACCEPT: {
+    expiresInHours: 48,
+    description: 'Confirmação de convite para aluno',
+  },
+
+  STUDENT_INVITATION_DECLINE: {
+    expiresInHours: 48,
+    description: 'Declinio de convite para aluno',
+  },
+  STUDENT_INVITATION: {
+    expiresInHours: 48,
+    description: 'Convite para aluno.',
   },
 } as const;
 

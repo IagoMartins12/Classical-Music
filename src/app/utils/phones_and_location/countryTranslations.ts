@@ -355,15 +355,6 @@ export const PHONE_COUNTRIES_UPDATED: PhoneCountry[] = [
     popular: true,
   },
   {
-    code: 'CA',
-    name: 'Canadá',
-    flag: '🇨🇦',
-    dialCode: '+1',
-    format: '(XXX) XXX-XXXX',
-    maxDigits: 10, // 10 dígitos no total
-    popular: true,
-  },
-  {
     code: 'GB',
     name: 'Reino Unido',
     flag: '🇬🇧',

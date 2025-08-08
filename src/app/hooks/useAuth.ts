@@ -62,6 +62,8 @@ export function useAuth() {
             practiceTimePerWeek: session.user.practiceTimePerWeek,
             profilePublic: session.user.profilePublic,
             showLocation: session.user.showLocation,
+            isStudent: session.user.isStudent,
+            isTeacher: session.user.isTeacher,
           });
         }
       } else {

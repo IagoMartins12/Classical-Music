@@ -38,6 +38,8 @@ export interface User {
   practiceTimePerWeek?: number | null;
   profilePublic: boolean;
   showLocation: boolean;
+  isTeacher: boolean;
+  isStudent: boolean;
 }
 
 interface UserState {

@@ -35,9 +35,10 @@ import {
   TeacherDashboardData,
   TeacherStudentsData,
 } from '@/app/requests/teacher-request';
-import Modal from '../../components/Modal';
-import Input from '../../components/Common/Inputs';
+
 import AddStudentModal from '@/app/components/TeacherSystem/AddStudentModal';
+import StudentInviteStatusBadge from '@/app/components/TeacherSystem/StudentInviteStatusBadge';
+import { useToast } from '@/app/hooks/useToast';
 
 interface TeacherProfile {
   id: string;
@@ -83,6 +84,46 @@ export default function TeacherPageClient({
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(errorMessage);
+  const [resendingInvites, setResendingInvites] = useState<Set<string>>(
+    new Set()
+  );
+
+  const toast = useToast();
+  const handleResendInvite = async (
+    studentId: string,
+    studentEmail?: string | null
+  ) => {
+    setResendingInvites((prev) => new Set(prev).add(studentId));
+
+    if (!studentEmail) {
+      toast.error('Estudante não possui email.');
+      return;
+    }
+    try {
+      const response = await fetch(
+        `/api/teacher/students/${studentId}/resend-invite`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+
+      if (response.ok) {
+        toast.success(`Novo convite enviado para ${studentEmail}`);
+      } else {
+        throw new Error('Erro ao enviar convite');
+      }
+    } catch (error) {
+      toast.error('Erro ao reenviar convite');
+      console.error('Erro:', error);
+    } finally {
+      setResendingInvites((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(studentId);
+        return newSet;
+      });
+    }
+  };
 
   // Dados vem direto do servidor - sem estado local
   const stats = initialDashboardData?.dashboard?.stats || {
@@ -147,7 +188,7 @@ export default function TeacherPageClient({
         } else {
           setSearchResults([]);
         }
-      }, 300);
+      }, 600);
 
       return () => clearTimeout(timeoutId);
     },
@@ -560,6 +601,29 @@ export default function TeacherPageClient({
                                 </span>
                               )}
                             </div>
+                          </div>
+
+                          <div className="mt-2">
+                            <StudentInviteStatusBadge
+                              status={studentRel.relationship.inviteStatus}
+                              acceptedAt={
+                                studentRel.relationship.inviteAcceptedAt
+                              }
+                              declinedAt={
+                                studentRel.relationship.inviteDeclinedAt
+                              }
+                              studentEmail={studentRel.student.email}
+                              onResendInvite={() =>
+                                handleResendInvite(
+                                  studentRel.student.id,
+                                  studentRel.student.email
+                                )
+                              }
+                              isResending={resendingInvites.has(
+                                studentRel.student.id
+                              )}
+                              compact={true}
+                            />
                           </div>
 
                           {/* Status Badge */}

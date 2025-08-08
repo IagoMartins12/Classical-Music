@@ -99,7 +99,7 @@ function getPremiumOpusAtlasLayout(content: string): string {
         body { 
             font-family: 'Georgia', 'Times New Roman', serif;
             line-height: 1.7;
-            color: #ffffff;
+            color: #ffffff !important;
             background: linear-gradient(135deg, #000000 0%, #0a0a0a 50%, #1a1a1a 100%);
             margin: 0;
             padding: 0;
@@ -187,7 +187,7 @@ function getPremiumOpusAtlasLayout(content: string): string {
         .content { 
             padding: 40px 30px; 
             background: linear-gradient(180deg, #0a0a0a 0%, #000000 100%);
-            color: #e5e7eb;
+            color: #ffffff !important;
         }
 
         /* Premium Cards */
@@ -336,7 +336,7 @@ function getPremiumOpusAtlasLayout(content: string): string {
         }
 
         .security-text, .warning-text { 
-            color: #e5e7eb; 
+            color: #ffffff !important; 
             line-height: 1.7; 
         }
 
@@ -505,7 +505,7 @@ export const emailTemplates: Record<string, EmailTemplate> = {
         <h3 style="color: #d4af37; margin-bottom: 20px; font-size: 22px; text-align: center;">
           Sua jornada musical começa agora!
         </h3>
-        <div style="text-align: left; color: #e5e7eb;">
+        <div style="text-align: left; color: #ffffff !important;">
           <div style="margin-bottom: 12px;">✨ Newsletter  com conteúdo exclusivo</div>
           <div style="margin-bottom: 12px;">🎵 Descobertas sobre compositores e obras clássicas</div>
           <div style="margin-bottom: 12px;">📚 Recursos avançados de estudo musical</div>
@@ -523,7 +523,7 @@ export const emailTemplates: Record<string, EmailTemplate> = {
       
       <p style="margin-top: 30px; text-align: center;">
         <strong style="color: #d4af37;">Harmoniosamente,</strong><br>
-        <span style="color: #e5e7eb;">Equipe ${OPUS_ATLAS_CONFIG.BRAND_NAME}</span>
+        <span style="color: #ffffff !important;">Equipe ${OPUS_ATLAS_CONFIG.BRAND_NAME}</span>
       </p>
     `
     ),
@@ -555,7 +555,7 @@ Para cancelar: {{unsubscribeUrl}}`,
         Olá {{firstName}}! 👋
       </p>
       
-      <p style="color: #e5e7eb; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+      <p style="color: #ffffff !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
         Que alegria ter você conosco! Sua conta foi criada com sucesso, mas precisamos confirmar 
         seu email para garantir a segurança e liberar todas as funcionalidades.
       </p>
@@ -564,7 +564,7 @@ Para cancelar: {{unsubscribeUrl}}`,
         <h3 style="color: #d4af37; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
           🚀 Sua jornada começa agora!
         </h3>
-        <p style="color: #e5e7eb; margin: 0; line-height: 1.7; text-align: center;">
+        <p style="color: #ffffff !important; margin: 0; line-height: 1.7; text-align: center;">
           Após confirmar sua conta, você terá acesso completo à nossa plataforma 
           de música clássica, com recursos exclusivos e conteúdo de alta qualidade.
         </p>
@@ -647,7 +647,7 @@ ${OPUS_ATLAS_CONFIG.CONTACT_EMAIL}`,
         Olá {{firstName}},
       </p>
       
-      <p style="color: #e5e7eb; line-height: 1.7; margin-bottom: 25px; text-align: center;">
+      <p style="color: #ffffff !important; line-height: 1.7; margin-bottom: 25px; text-align: center;">
         Recebemos uma solicitação para redefinir a senha da sua conta no ${OPUS_ATLAS_CONFIG.BRAND_NAME}.
       </p>
       
@@ -655,7 +655,7 @@ ${OPUS_ATLAS_CONFIG.CONTACT_EMAIL}`,
         <h3 style="color: #d4af37; margin: 0 0 20px 0; font-size: 20px; text-align: center;">
           📧 Detalhes da Solicitação
         </h3>
-        <div style="text-align: center; color: #e5e7eb;">
+        <div style="text-align: center; color: #ffffff !important;">
           <p style="margin: 0 0 10px 0;">
             <strong>Email:</strong> {{email}}
           </p>
@@ -666,7 +666,7 @@ ${OPUS_ATLAS_CONFIG.CONTACT_EMAIL}`,
         </div>
       </div>
       
-      <p style="color: #e5e7eb; line-height: 1.7; margin: 25px 0; text-align: center;">
+      <p style="color: #ffffff !important; line-height: 1.7; margin: 25px 0; text-align: center;">
         Se foi você quem solicitou esta mudança, clique no botão abaixo para criar uma nova senha:
       </p>
       
@@ -678,7 +678,7 @@ ${OPUS_ATLAS_CONFIG.CONTACT_EMAIL}`,
       
       <div class="premium-card">
         <h4 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">💡 Dicas para uma Senha Segura:</h4>
-        <div style="color: #e5e7eb; text-align: left;">
+        <div style="color: #ffffff !important; text-align: left;">
           <div style="margin-bottom: 8px;">• Use pelo menos 8 caracteres</div>
           <div style="margin-bottom: 8px;">• Combine letras maiúsculas e minúsculas</div>
           <div style="margin-bottom: 8px;">• Inclua números e símbolos especiais</div>
@@ -752,19 +752,19 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px; text-align: center;">
           <div>
             <strong style="font-size: 28px; color: #d4af37; display: block;">{{newComposers}}</strong>
-            <span style="color: #e5e7eb; font-size: 14px;">Novos Compositores</span>
+            <span style="color: #ffffff !important; font-size: 14px;">Novos Compositores</span>
           </div>
           <div>
             <strong style="font-size: 28px; color: #fbbf24; display: block;">{{newWorks}}</strong>
-            <span style="color: #e5e7eb; font-size: 14px;">Novas Obras</span>
+            <span style="color: #ffffff !important; font-size: 14px;">Novas Obras</span>
           </div>
           <div>
             <strong style="font-size: 28px; color: #d4af37; display: block;">{{newScores}}</strong>
-            <span style="color: #e5e7eb; font-size: 14px;">Partituras</span>
+            <span style="color: #ffffff !important; font-size: 14px;">Partituras</span>
           </div>
           <div>
             <strong style="font-size: 28px; color: #fbbf24; display: block;">{{activeUsers}}</strong>
-            <span style="color: #e5e7eb; font-size: 14px;">Usuários Ativos</span>
+            <span style="color: #ffffff !important; font-size: 14px;">Usuários Ativos</span>
           </div>
         </div>
       </div>
@@ -772,9 +772,9 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
       {{#if featuredComposer}}
       <div class="composer-card">
         <h3 style="color: #d4af37; margin-bottom: 20px; text-align: center;">🎭 Compositor em Destaque</h3>
-        <h4 style="margin-bottom: 10px; color: #e5e7eb; text-align: center; font-size: 22px;">{{featuredComposer.name}}</h4>
+        <h4 style="margin-bottom: 10px; color: #ffffff !important; text-align: center; font-size: 22px;">{{featuredComposer.name}}</h4>
         <p style="color: #b0b0b0; margin-bottom: 15px; text-align: center;">{{featuredComposer.period}}</p>
-        <p style="margin-bottom: 20px; color: #e5e7eb; text-align: center;">{{featuredComposer.description}}</p>
+        <p style="margin-bottom: 20px; color: #ffffff !important; text-align: center;">{{featuredComposer.description}}</p>
         <div style="text-align: center;">
           <a href="{{featuredComposer.url}}" class="btn-premium">Conhecer Compositor</a>
         </div>
@@ -785,7 +785,7 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
       <h3 style="color: #d4af37; margin: 40px 0 25px 0; text-align: center;">🎵 Obras Populares da Semana</h3>
       {{#each popularWorks}}
       <div class="work-item">
-        <h4 style="margin-bottom: 8px; color: #e5e7eb;">{{title}}</h4>
+        <h4 style="margin-bottom: 8px; color: #ffffff !important;">{{title}}</h4>
         <p style="color: #d4af37; margin-bottom: 8px; font-weight: bold;">{{composer}} - {{instrument}}</p>
         <p style="color: #b0b0b0; margin-bottom: 12px;">{{description}}</p>
         <a href="{{url}}" style="color: #fbbf24; text-decoration: none; font-weight: bold;">Estudar obra →</a>
@@ -796,8 +796,8 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
       {{#if studyTip}}
       <div class="premium-card">
         <h3 style="color: #d4af37; margin-bottom: 20px; text-align: center;">💡 Dica da Semana</h3>
-        <h4 style="margin-bottom: 15px; color: #e5e7eb; text-align: center;">{{studyTip.title}}</h4>
-        <p style="color: #e5e7eb; text-align: center;">{{studyTip.content}}</p>
+        <h4 style="margin-bottom: 15px; color: #ffffff !important; text-align: center;">{{studyTip.title}}</h4>
+        <p style="color: #ffffff !important; text-align: center;">{{studyTip.content}}</p>
       </div>
       {{/if}}
       
@@ -863,16 +863,16 @@ Cancelar: {{unsubscribeUrl}}`,
       <div class="composer-card">
         <h3 style="color: #d4af37; margin-bottom: 20px; text-align: center; font-size: 24px;">🎭 {{composerName}}</h3>
         <div style="text-align: center; margin-bottom: 20px;">
-          <p style="color: #e5e7eb; margin-bottom: 8px;"><strong>Período:</strong> {{composerPeriod}}</p>
-          <p style="color: #e5e7eb; margin-bottom: 20px;"><strong>Nacionalidade:</strong> {{composerNationality}}</p>
+          <p style="color: #ffffff !important; margin-bottom: 8px;"><strong>Período:</strong> {{composerPeriod}}</p>
+          <p style="color: #ffffff !important; margin-bottom: 20px;"><strong>Nacionalidade:</strong> {{composerNationality}}</p>
         </div>
-        <p style="margin-bottom: 25px; color: #e5e7eb; text-align: center; line-height: 1.7;">{{composerBio}}</p>
+        <p style="margin-bottom: 25px; color: #ffffff !important; text-align: center; line-height: 1.7;">{{composerBio}}</p>
         
         {{#if works}}
         <h4 style="color: #d4af37; margin-bottom: 20px; text-align: center;">Principais Obras:</h4>
         {{#each works}}
         <div style="margin-bottom: 15px; padding: 15px; background: linear-gradient(135deg, #1a1a1a, #0a0a0a); border-radius: 8px; border: 1px solid rgba(212, 175, 55, 0.2);">
-          <strong style="color: #e5e7eb;">{{title}}</strong> - <span style="color: #d4af37;">{{instrument}}</span>
+          <strong style="color: #ffffff !important;">{{title}}</strong> - <span style="color: #d4af37;">{{instrument}}</span>
           {{#if year}}<span style="color: #b0b0b0;"> ({{year}})</span>{{/if}}
         </div>
         {{/each}}
@@ -885,7 +885,7 @@ Cancelar: {{unsubscribeUrl}}`,
       
       <div class="premium-card">
         <h3 style="color: #d4af37; margin-bottom: 20px; text-align: center;">🎵 Curiosidade Musical</h3>
-        <p style="color: #e5e7eb; text-align: center;">{{musicalFact}}</p>
+        <p style="color: #ffffff !important; text-align: center;">{{musicalFact}}</p>
       </div>
       
       <p style="margin-top: 30px; text-align: center; color: #b0b0b0;">
@@ -956,7 +956,7 @@ Cancelar: {{unsubscribeUrl}}`,
         Olá {{firstName}}! 📧
       </p>
       
-      <p style="color: #e5e7eb; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+      <p style="color: #ffffff !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
         Você solicitou a alteração do email da sua conta no ${OPUS_ATLAS_CONFIG.BRAND_NAME}.
       </p>
       
@@ -964,7 +964,7 @@ Cancelar: {{unsubscribeUrl}}`,
         <h3 style="color: #d4af37; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
           📧 Detalhes da Mudança
         </h3>
-        <div style="text-align: center; color: #e5e7eb;">
+        <div style="text-align: center; color: #ffffff !important;">
           <p style="margin: 0 0 10px 0;">
             <strong>Email atual:</strong> {{oldEmail}}
           </p>
@@ -975,7 +975,7 @@ Cancelar: {{unsubscribeUrl}}`,
         </div>
       </div>
       
-      <p style="color: #e5e7eb; line-height: 1.7; margin: 25px 0; text-align: center;">
+      <p style="color: #ffffff !important; line-height: 1.7; margin: 25px 0; text-align: center;">
         Para confirmar esta mudança e ativar seu novo email, clique no botão abaixo:
       </p>
       
@@ -1036,7 +1036,6 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
     description: 'Email de confirmação para mudança de email',
   },
 
-  // 🆕 NEW TEMPLATE: Email Change Success
   EMAIL_CHANGE_SUCCESS: {
     subject: `Email alterado com sucesso - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
     htmlContent: getPremiumOpusAtlasLayout(
@@ -1049,14 +1048,14 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
         <h3 style="color: #d4af37; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
           🎉 Email alterado com sucesso!
         </h3>
-        <p style="color: #e5e7eb; margin: 0; line-height: 1.7; text-align: center;">
+        <p style="color: #ffffff !important; margin: 0; line-height: 1.7; text-align: center;">
           Seu email foi alterado com sucesso e sua conta está totalmente funcional novamente.
         </p>
       </div>
       
       <div class="premium-card">
         <h3 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">📧 Resumo da Alteração</h3>
-        <div style="text-align: center; color: #e5e7eb;">
+        <div style="text-align: center; color: #ffffff !important;">
           <p style="margin: 0 0 10px 0;">
             <strong>Email anterior:</strong> {{oldEmail}}
           </p>
@@ -1071,7 +1070,7 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
       
       <div class="premium-card">
         <h4 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">✨ Funcionalidades Restauradas:</h4>
-        <div style="color: #e5e7eb; text-align: left;">
+        <div style="color: #ffffff !important; text-align: left;">
           <div style="margin-bottom: 8px;">✅ Upload de compositores e obras</div>
           <div style="margin-bottom: 8px;">✅ Upload de partituras</div>
           <div style="margin-bottom: 8px;">✅ Acesso completo à plataforma</div>
@@ -1118,7 +1117,6 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
     description: 'Email de confirmação após mudança bem-sucedida',
   },
 
-  // 🆕 NEW TEMPLATE: Email Changed Notification (to old email)
   EMAIL_CHANGED_NOTIFICATION: {
     subject: `Seu email foi alterado - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
     htmlContent: getPremiumOpusAtlasLayout(
@@ -1127,13 +1125,13 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
         Olá {{firstName}}! 📧
       </p>
       
-      <p style="color: #e5e7eb; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+      <p style="color: #ffffff !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
         Este é um aviso de que o email da sua conta ${OPUS_ATLAS_CONFIG.BRAND_NAME} foi alterado.
       </p>
       
       <div class="premium-card">
         <h3 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">📧 Detalhes da Alteração</h3>
-        <div style="text-align: center; color: #e5e7eb;">
+        <div style="text-align: center; color: #ffffff !important;">
           <p style="margin: 0 0 10px 0;">
             <strong>Email anterior:</strong> {{oldEmail}}
           </p>
@@ -1161,7 +1159,7 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
         </div>
       </div>
       
-      <p style="color: #e5e7eb; text-align: center; margin-top: 30px;">
+      <p style="color: #ffffff !important; text-align: center; margin-top: 30px;">
         A partir de agora, todas as comunicações serão enviadas para o novo email.
       </p>
     `
@@ -1187,7 +1185,6 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
     description: 'Notificação para o email antigo sobre mudança',
   },
 
-  // 🆕 NEW TEMPLATE: Account Farewell
   ACCOUNT_FAREWELL: {
     subject: `Sentiremos sua falta - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
     htmlContent: getPremiumOpusAtlasLayout(
@@ -1196,14 +1193,14 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
         Adeus, {{firstName}} 💔
       </p>
       
-      <p style="color: #e5e7eb; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
+      <p style="color: #ffffff !important; line-height: 1.8; font-size: 16px; margin-bottom: 30px; text-align: center;">
         Sua conta ${OPUS_ATLAS_CONFIG.BRAND_NAME} foi excluída conforme solicitado. 
         Sentiremos muito sua falta em nossa comunidade musical.
       </p>
       
       <div class="premium-card">
         <h3 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">📊 Sua Jornada Musical</h3>
-        <div style="text-align: center; color: #e5e7eb;">
+        <div style="text-align: center; color: #ffffff !important;">
           <p style="margin: 0 0 15px 0;">
             <strong>Tempo na comunidade:</strong> {{accountAge}} dias
           </p>
@@ -1220,17 +1217,17 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
         </div>
       </div>
       
-      <p style="color: #e5e7eb; line-height: 1.7; margin: 25px 0; text-align: center;">
+      <p style="color: #ffffff !important; line-height: 1.7; margin: 25px 0; text-align: center;">
         Obrigado por fazer parte da nossa comunidade e por contribuir para tornar 
         a música clássica mais acessível a todos.
       </p>
       
       <div class="premium-card">
         <h4 style="color: #d4af37; margin: 0 0 20px 0; text-align: center;">🗑️ Dados Removidos</h4>
-        <p style="color: #e5e7eb; text-align: center; margin-bottom: 20px;">
+        <p style="color: #ffffff !important; text-align: center; margin-bottom: 20px;">
           Conforme solicitado, todos os seus dados foram permanentemente removidos:
         </p>
-        <div style="color: #e5e7eb; text-align: left;">
+        <div style="color: #ffffff !important; text-align: left;">
           <div style="margin-bottom: 8px;">🗂️ Informações pessoais e de perfil</div>
           <div style="margin-bottom: 8px;">🎼 Compositores e obras criados</div>
           <div style="margin-bottom: 8px;">📝 Anotações e comentários</div>
@@ -1241,11 +1238,11 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
         </div>
       </div>
       
-      <p style="color: #e5e7eb; line-height: 1.7; margin: 30px 0; text-align: center; font-style: italic;">
+      <p style="color: #ffffff !important; line-height: 1.7; margin: 30px 0; text-align: center; font-style: italic;">
         "A música é a revelação mais alta que toda filosofia" - Beethoven
       </p>
       
-      <p style="color: #e5e7eb; text-align: center; margin-top: 30px;">
+      <p style="color: #ffffff !important; text-align: center; margin-top: 30px;">
         Se um dia quiser retornar, estaremos aqui. A música clássica sempre tem um lugar 
         para os que a amam.
       </p>
@@ -1301,6 +1298,271 @@ ${OPUS_ATLAS_CONFIG.LOCATION}`,
       'siteUrl',
     ],
     description: 'Email de despedida após exclusão da conta',
+  },
+  TEACHER_INVITATION: {
+    subject: `🎓 Convite para ser Professor - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
+    htmlContent: getPremiumOpusAtlasLayout(
+      `
+      <h2 style="color: #d4af37; margin-bottom: 25px; font-size: 28px; text-align: center;">Você foi convidado para ser Professor!</h2>
+      
+      <p style="font-size: 18px; text-align: center; margin-bottom: 30px;">
+        Olá, {{firstName}}! Temos uma oportunidade especial para você.
+      </p>
+      
+      <div class="welcome-message">
+        <h3 style="color: #d4af37; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+          🎼 Convite para Ensinar no ${OPUS_ATLAS_CONFIG.BRAND_NAME}
+        </h3>
+        <p style="color: #ffffff !important; margin: 0; line-height: 1.7; text-align: center;">
+          Você foi selecionado para se tornar professor em nossa plataforma! 
+          Agora você pode compartilhar seu conhecimento musical e guiar alunos 
+          em sua jornada na música clássica.
+        </p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">👨‍🎓</div>
+          <div class="feature-title">Ensine Alunos</div>
+          <div class="feature-desc">Adicione e gerencie seus alunos, criando planos de estudo personalizados</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📅</div>
+          <div class="feature-title">Agende Aulas</div>
+          <div class="feature-desc">Sistema completo de agendamento com recorrência e controle de presença</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <div class="feature-title">Acompanhe Progresso</div>
+          <div class="feature-desc">Relatórios detalhados do desenvolvimento de cada aluno</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💼</div>
+          <div class="feature-title">Perfil Profissional</div>
+          <div class="feature-desc">Crie seu perfil público e seja encontrado por novos alunos</div>
+        </div>
+      </div>
+      
+      <div class="premium-card">
+        <h3 style="color: #d4af37; margin: 0 0 20px 0; font-size: 20px; text-align: center;">
+          🚀 Próximos Passos
+        </h3>
+        <div style="text-align: center; color: #ffffff !important;">
+          <p style="margin: 0 0 20px 0; line-height: 1.6;">
+            Para ativar sua conta de professor, você precisa:
+          </p>
+          <div style="text-align: left; margin: 0 auto; display: inline-block;">
+            <div style="margin-bottom: 10px;">1️⃣ Aceitar este convite</div>
+            <div style="margin-bottom: 10px;">2️⃣ Completar seu perfil de professor</div>
+            <div style="margin-bottom: 10px;">3️⃣ Definir suas especialidades e instrumentos</div>
+            <div>4️⃣ Começar a ensinar! 🎉</div>
+          </div>
+        </div>
+      </div>
+      
+      <div style="text-align: center; margin: 40px 0;">
+        <a href="{{acceptUrl}}" class="btn-premium">
+          ✅ Aceitar Convite
+        </a>
+        <br><br>
+        <a href="{{declineUrl}}" class="">
+          ❌ Recusar Convite
+        </a>
+      </div>
+      
+      <div class="warning-box">
+        <div class="warning-icon">⏰</div>
+        <div class="warning-text">
+          <strong>Importante:</strong> Este convite é válido por 7 dias. 
+          Após aceitar, você terá acesso completo às ferramentas de ensino 
+          e poderá começar a adicionar seus alunos imediatamente.
+        </div>
+      </div>
+      
+      <p style="color: #888; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
+        Se você não esperava este convite ou tem dúvidas, entre em contato conosco em 
+        <a href="mailto:${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}" style="color: #d4af37;">${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}</a>
+      </p>
+    `
+    ),
+    textContent: `CONVITE PARA SER PROFESSOR - ${OPUS_ATLAS_CONFIG.BRAND_NAME}
+
+Olá {{firstName}},
+
+🎓 Você foi convidado para se tornar professor no ${OPUS_ATLAS_CONFIG.BRAND_NAME}!
+
+COMO PROFESSOR VOCÊ PODERÁ:
+👨‍🎓 Ensinar e gerenciar alunos
+📅 Agendar aulas com sistema avançado
+📊 Acompanhar progresso dos alunos
+💼 Ter um perfil profissional público
+
+PRÓXIMOS PASSOS:
+1️⃣ Aceitar este convite
+2️⃣ Completar seu perfil de professor
+3️⃣ Definir especialidades e instrumentos
+4️⃣ Começar a ensinar!
+
+ACEITAR CONVITE: {{acceptUrl}}
+RECUSAR CONVITE: {{declineUrl}}
+
+⏰ Convite válido por 7 dias.
+
+Dúvidas? ${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}
+
+${OPUS_ATLAS_CONFIG.BRAND_NAME} - Compartilhe seu conhecimento musical
+${OPUS_ATLAS_CONFIG.LOCATION}`,
+    variables: ['firstName', 'acceptUrl', 'declineUrl', 'invitedBy'],
+    description: 'Convite para usuário se tornar professor',
+  },
+
+  STUDENT_INVITATION: {
+    subject: `🎵 Você foi adicionado como aluno - ${OPUS_ATLAS_CONFIG.BRAND_NAME}`,
+    htmlContent: getPremiumOpusAtlasLayout(
+      `
+    <h2 style="color: #d4af37 !important; margin-bottom: 25px; font-size: 28px; text-align: center;">Você tem um novo professor!</h2>
+    
+    <p style="font-size: 18px; text-align: center; margin-bottom: 30px;">
+      Olá, {{firstName}}! {{teacherName}} adicionou você como aluno.
+    </p>
+    
+    <div class="welcome-message">
+      <h3 style="color: #d4af37 !important; margin: 0 0 20px 0; font-size: 22px; text-align: center;">
+        🎼 Sua Jornada Musical Começa Agora!
+      </h3>
+      <p style="color: #ffffff !important; margin: 0; line-height: 1.7; text-align: center;">
+        Você foi adicionado como aluno de <strong style="color: #d4af37 !important;">{{teacherName}}</strong> 
+        no ${OPUS_ATLAS_CONFIG.BRAND_NAME}. Prepare-se para uma experiência de aprendizado 
+        musical única e personalizada!
+      </p>
+    </div>
+    
+    <div class="premium-card">
+      <h3 style="color: #d4af37 !important; margin: 0 0 20px 0; text-align: center;">👨‍🏫 Sobre Seu Professor</h3>
+      <div style="text-align: center; color: #ffffff !important;">
+        <p style="margin: 0 0 10px 0;">
+          <strong>Professor:</strong> {{teacherName}}
+        </p>
+        {{#if teacherSpecialties}}
+        <p style="margin: 0 0 10px 0;">
+          <strong>Especialidades:</strong> {{teacherSpecialties}}
+        </p>
+        {{/if}}
+        {{#if teacherExperience}}
+        <p style="margin: 0 0 10px 0;">
+          <strong>Experiência:</strong> {{teacherExperience}}
+        </p>
+        {{/if}}
+      </div>
+    </div>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📚</div>
+        <div class="feature-title">Aulas Personalizadas</div>
+        <div class="feature-desc">Plano de estudos criado especificamente para você</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <div class="feature-title">Aulas Agendadas</div>
+        <div class="feature-desc">Sistema organizado de horários e lembretes</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Progresso Visível</div>
+        <div class="feature-desc">Acompanhe sua evolução musical em tempo real</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-title">Tarefas & Metas</div>
+        <div class="feature-desc">Exercícios direcionados e objetivos claros</div>
+      </div>
+    </div>
+    
+    <div class="premium-card">
+      <h3 style="color: #d4af37 !important; margin: 0 0 20px 0; font-size: 20px; text-align: center;">
+        🚀 Próximos Passos
+      </h3>
+      <div style="text-align: center; color: #ffffff !important;">
+        <p style="margin: 0 0 20px 0; line-height: 1.6; color: #ffffff !important;">
+          Para começar suas aulas, você precisa:
+        </p>
+        <div style="text-align: left; margin: 0 auto; display: inline-block; color: #ffffff !important;">
+          <div style="margin-bottom: 10px; color: #ffffff !important;">1️⃣ Aceitar este convite</div>
+          <div style="margin-bottom: 10px; color: #ffffff !important;">2️⃣ Completar seu perfil de aluno</div>
+          <div style="margin-bottom: 10px; color: #ffffff !important;">3️⃣ Definir seus objetivos musicais</div>
+          <div style="color: #ffffff !important;">4️⃣ Aguardar o agendamento da primeira aula! 🎉</div>
+        </div>
+      </div>
+    </div>
+    
+    <div style="text-align: center; margin: 40px 0;">
+      <a href="{{acceptUrl}}" class="btn-premium">
+        ✅ Aceitar Convite
+      </a>
+      <br><br>
+      <a href="{{declineUrl}}" class="">
+        ❌ Recusar Convite
+      </a>
+    </div>
+    
+    <div class="warning-box">
+      <div class="warning-icon">⏰</div>
+      <div class="warning-text">
+        <strong>Importante:</strong> Este convite é válido por 30 dias. 
+        Se você não aceitar dentro deste prazo, será necessário que 
+        {{teacherName}} envie um novo convite.
+      </div>
+    </div>
+    
+    <p style="color: #888888 !important; font-size: 14px; line-height: 1.6; margin-top: 30px; text-align: center;">
+      Se você não conhece {{teacherName}} ou tem dúvidas sobre este convite, 
+      entre em contato conosco em 
+      <a href="mailto:${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}" style="color: #d4af37 !important;">${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}</a>
+    </p>
+  `
+    ),
+    textContent: `VOCÊ FOI ADICIONADO COMO ALUNO - ${OPUS_ATLAS_CONFIG.BRAND_NAME}
+
+Olá {{firstName}},
+
+🎵 {{teacherName}} adicionou você como aluno no ${OPUS_ATLAS_CONFIG.BRAND_NAME}!
+
+SOBRE SEU PROFESSOR:
+👨‍🏫 {{teacherName}}
+{{#if teacherSpecialties}}🎼 Especialidades: {{teacherSpecialties}}{{/if}}
+{{#if teacherExperience}}📚 Experiência: {{teacherExperience}}{{/if}}
+
+COMO ALUNO VOCÊ TERÁ:
+📚 Aulas personalizadas
+📅 Sistema de agendamento
+📊 Acompanhamento de progresso
+🎯 Tarefas e metas direcionadas
+
+PRÓXIMOS PASSOS:
+1️⃣ Aceitar este convite
+2️⃣ Completar seu perfil de aluno
+3️⃣ Definir objetivos musicais
+4️⃣ Aguardar primeira aula!
+
+ACEITAR CONVITE: {{acceptUrl}}
+RECUSAR CONVITE: {{declineUrl}}
+
+⏰ Convite válido por 30 dias.
+
+Dúvidas? ${OPUS_ATLAS_CONFIG.SUPPORT_EMAIL}
+
+${OPUS_ATLAS_CONFIG.BRAND_NAME} - Sua jornada musical começa agora!
+${OPUS_ATLAS_CONFIG.LOCATION}`,
+    variables: [
+      'firstName',
+      'teacherName',
+      'teacherSpecialties',
+      'teacherExperience',
+      'acceptUrl',
+      'declineUrl',
+    ],
+    description: 'Convite para usuário se tornar aluno de um professor',
   },
 };
 
@@ -1409,7 +1671,7 @@ export function previewTemplate(
     musicalFact: 'Mozart compôs mais de 600 obras durante sua curta vida.',
     customSubject: 'Assunto Personalizado',
     customContent:
-      '<h3 style="color: #d4af37;">Conteúdo personalizado da campanha</h3><p style="color: #e5e7eb;">Este é um exemplo de conteúdo customizado.</p>',
+      '<h3 style="color: #d4af37;">Conteúdo personalizado da campanha</h3><p style="color: #ffffff !important;">Este é um exemplo de conteúdo customizado.</p>',
     customTextContent: 'Conteúdo personalizado da campanha em texto simples.',
   };
 

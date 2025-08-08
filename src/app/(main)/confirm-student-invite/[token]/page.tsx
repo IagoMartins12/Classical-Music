@@ -1,4 +1,4 @@
-// app/confirm-account/[token]/page.tsx
+// app/confirm-student-invite/[token]/page.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -9,32 +9,48 @@ import {
   FiLoader,
   FiArrowRight,
   FiRefreshCw,
+  FiBookOpen,
 } from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
 import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
-import { useOnboardingModal } from '@/app/stores/authStore';
+import { toast } from 'react-hot-toast';
+import {
+  getErrorDescription,
+  getErrorTitle,
+} from '../../confirm-teacher-invite/[token]/page';
 
 interface ConfirmationState {
-  status: 'loading' | 'success' | 'error' | 'already-confirmed';
+  status: 'loading' | 'success' | 'error' | 'already-accepted';
   message: string;
   user?: {
     firstName: string;
+    lastName: string;
     email: string;
-    onboardingCompleted: boolean;
+    isStudent: boolean;
+  };
+  teacher?: {
+    name: string;
+  };
+  relationship?: {
+    id: string;
+    maxLessonsPerWeek: number;
+    lessonDuration: number;
+    preferredDays: string[];
+    preferredTimes: string[];
   };
   errorCode?: string;
   canResend?: boolean;
 }
 
-export default function ConfirmAccountPage() {
+export default function ConfirmStudentInvitePage() {
   const params = useParams();
   const router = useRouter();
   const token = params.token as string;
 
   const [state, setState] = useState<ConfirmationState>({
     status: 'loading',
-    message: 'Processando confirmação...',
+    message: 'Processando convite...',
   });
 
   const [resendLoading, setResendLoading] = useState(false);
@@ -44,72 +60,79 @@ export default function ConfirmAccountPage() {
     if (!token) {
       setState({
         status: 'error',
-        message: 'Token de confirmação não fornecido',
+        message: 'Token de convite não fornecido',
         errorCode: 'NO_TOKEN',
       });
       return;
     }
 
-    confirmAccount();
+    acceptInvite();
   }, [token]);
 
-  const { open, isOpen } = useOnboardingModal();
-
-  const confirmAccount = async () => {
+  const acceptInvite = async () => {
     try {
       setState({
         status: 'loading',
-        message: 'Confirmando sua conta...',
+        message: 'Processando seu convite de aluno...',
       });
 
-      const response = await fetch(`/api/auth/confirm-account/${token}`);
+      const response = await fetch(`/api/invites/student/accept/${token}`);
       const result = await response.json();
 
       if (result.success) {
         setState({
-          status: result.alreadyConfirmed ? 'already-confirmed' : 'success',
+          status: result.alreadyAccepted ? 'already-accepted' : 'success',
           message: result.message,
           user: result.user,
+          teacher: result.teacher,
+          relationship: result.relationship,
         });
+
+        // Toast de sucesso
+        if (!result.alreadyAccepted) {
+          toast.success(
+            `🎉 Parabéns! Você agora é aluno de ${
+              result.teacher?.name || 'seu professor'
+            }!`
+          );
+        }
 
         // Redirecionar após sucesso (com delay para mostrar mensagem)
         setTimeout(() => {
-          if (result.user?.onboardingCompleted) {
-            if (isOpen) return;
-            router.push('/');
-          } else {
-            if (isOpen) return;
-
-            // Redirecionar para onboarding se não completado
-            router.push('/?onboarding=true');
-          }
-        }, 6000);
+          router.push('/student/profile');
+        }, 4000);
       } else {
         setState({
           status: 'error',
           message: result.error,
           errorCode: result.errorCode,
-          canResend: result.errorCode === 'EXPIRED_TOKEN',
+          canResend: ['EXPIRED_TOKEN', 'CONNECTION_ERROR'].includes(
+            result.errorCode
+          ),
         });
+
+        toast.error(result.error);
       }
     } catch (error) {
-      console.error('Erro na confirmação:', error);
+      console.error('Erro na aceitação:', error);
       setState({
         status: 'error',
         message: 'Erro de conexão. Tente novamente.',
         errorCode: 'CONNECTION_ERROR',
+        canResend: true,
       });
+      toast.error('Erro de conexão');
     }
   };
 
-  const handleResendConfirmation = async () => {
+  const handleResendInvite = async () => {
     if (!token) return;
 
     setResendLoading(true);
     setResendSuccess(false);
 
     try {
-      const response = await fetch(`/api/auth/confirm-account/${token}`, {
+      const response = await fetch(`/api/invites/student/accept/${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,21 +147,23 @@ export default function ConfirmAccountPage() {
         setState((prev) => ({
           ...prev,
           message:
-            'Novo email de confirmação enviado! Verifique sua caixa de entrada.',
+            'Novo email de convite enviado! Verifique sua caixa de entrada.',
         }));
+        toast.success('Email reenviado!');
       } else {
         setState((prev) => ({
           ...prev,
-          message: result.error || 'Erro ao reenviar confirmação',
+          message: result.error || 'Erro ao reenviar convite',
         }));
+        toast.error(result.error);
       }
     } catch (error) {
-      console.log('error', error);
-
+      console.error('Erro ao reenviar:', error);
       setState((prev) => ({
         ...prev,
         message: 'Erro de conexão ao reenviar email',
       }));
+      toast.error('Erro de conexão');
     } finally {
       setResendLoading(false);
     }
@@ -150,10 +175,10 @@ export default function ConfirmAccountPage() {
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-brand-primary to-accent-purple rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-pulse">
-              <FiLoader className="w-10 h-10 text-white animate-spin" />
+              <FiLoader className="w-10 h-10 text-theme-primary animate-spin" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              Confirmando sua conta...
+              Processando convite...
             </h1>
             <p className="text-theme-secondary text-lg">{state.message}</p>
             <div className="mt-8">
@@ -168,24 +193,71 @@ export default function ConfirmAccountPage() {
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-accent-green to-accent-blue rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow animate-bounce">
-              <FiCheckCircle className="w-10 h-10 text-white" />
+              <FiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              🎉 Conta Confirmada!
+              🎉 Convite Aceito!
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
-            {state.user && (
+            {state.user && state.teacher && (
               <div className="bg-accent-green bg-opacity-10 border border-accent-green rounded-xl p-6 mb-8">
-                <h3 className="text-xl font-semibold text-accent-green mb-2">
-                  Bem-vindo, {state.user.firstName}! 🎼
-                </h3>
-                <p className="text-accent-green opacity-80">
-                  Sua conta <strong>{state.user.email}</strong> foi confirmada
-                  com sucesso.
-                  {!state.user.onboardingCompleted &&
-                    ' Vamos completar seu perfil!'}
-                </p>
+                <div className="flex items-center justify-center mb-4">
+                  <div className="w-16 h-16 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mr-4">
+                    <FiBookOpen className="w-8 h-8 text-theme-primary" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-semibold text-accent-green">
+                      Bem-vindo, {state.user.firstName}! 🎼
+                    </h3>
+                    <p className="text-accent-green opacity-80">
+                      Você agora é aluno de{' '}
+                      <strong>{state.teacher.name}</strong>
+                    </p>
+                  </div>
+                </div>
+
+                {state.relationship && (
+                  <div className="grid md:grid-cols-2 gap-4 mt-6">
+                    <div className="bg-theme-primary bg-opacity-10 rounded-lg p-4">
+                      <h4 className="font-medium text-accent-green mb-2">
+                        📚 Seu Plano de Estudos
+                      </h4>
+                      <ul className="text-sm text-accent-green opacity-90 space-y-1 text-left">
+                        <li>
+                          • {state.relationship.maxLessonsPerWeek} aula(s) por
+                          semana
+                        </li>
+                        <li>
+                          • {state.relationship.lessonDuration} minutos por aula
+                        </li>
+                        {state.relationship.preferredDays?.length > 0 && (
+                          <li>
+                            • Dias:{' '}
+                            {state.relationship.preferredDays.join(', ')}
+                          </li>
+                        )}
+                        {state.relationship.preferredTimes?.length > 0 && (
+                          <li>
+                            • Horários:{' '}
+                            {state.relationship.preferredTimes.join(', ')}
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                    <div className="bg-theme-primary bg-opacity-10 rounded-lg p-4">
+                      <h4 className="font-medium text-accent-green mb-2">
+                        ⚡ Próximos Passos
+                      </h4>
+                      <ul className="text-sm text-accent-green opacity-90 space-y-1 text-left">
+                        <li>• Complete seu perfil de aluno</li>
+                        <li>• Defina seus objetivos musicais</li>
+                        <li>• Aguarde o agendamento da primeira aula</li>
+                        <li>• Prepare-se para aprender!</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -194,58 +266,46 @@ export default function ConfirmAccountPage() {
                 variant="primary"
                 size="lg"
                 rightIcon={<FiArrowRight />}
-                onClick={() => {
-                  if (state.user?.onboardingCompleted) {
-                    router.push('/');
-                  } else {
-                    open();
-                  }
-                }}
+                onClick={() => router.push('/student/profile')}
                 className="animate-pulse"
               >
-                {state.user?.onboardingCompleted
-                  ? 'Ir para o Site'
-                  : 'Completar Perfil'}
+                Completar Perfil
               </Button>
 
               <Button
                 variant="ghost"
                 size="lg"
-                onClick={() => router.push('/')}
+                onClick={() => router.push('/student')}
               >
-                Explorar Opus Atlas
+                Área do Aluno
               </Button>
             </div>
 
             <div className="mt-8 text-sm text-theme-tertiary">
-              {!isOpen && (
-                <span>
-                  Redirecionando automaticamente em alguns segundos...
-                </span>
-              )}
+              <span>Redirecionando para o perfil em alguns segundos...</span>
             </div>
           </div>
         );
 
-      case 'already-confirmed':
+      case 'already-accepted':
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-accent-blue to-accent-purple rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
-              <FiCheckCircle className="w-10 h-10 text-white" />
+              <FiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              ✅ Já Confirmado
+              ✅ Já é Aluno
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
-            {state.user && (
+            {state.user && state.teacher && (
               <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-xl p-6 mb-8">
                 <h3 className="text-xl font-semibold text-accent-blue mb-2">
                   Olá, {state.user.firstName}! 👋
                 </h3>
                 <p className="text-accent-blue opacity-80">
-                  Sua conta já estava confirmada. Você pode fazer login
-                  normalmente.
+                  Você já é aluno de <strong>{state.teacher.name}</strong>.
+                  Acesse sua área para acompanhar suas aulas e progresso.
                 </p>
               </div>
             )}
@@ -255,17 +315,17 @@ export default function ConfirmAccountPage() {
                 variant="primary"
                 size="lg"
                 rightIcon={<FiArrowRight />}
-                onClick={() => router.push('/')}
+                onClick={() => router.push('/student')}
               >
-                Fazer Login
+                Área do Aluno
               </Button>
 
               <Button
                 variant="ghost"
                 size="lg"
-                onClick={() => router.push('/')}
+                onClick={() => router.push('/student/profile')}
               >
-                Ir para o Site
+                Editar Perfil
               </Button>
             </div>
           </div>
@@ -275,10 +335,10 @@ export default function ConfirmAccountPage() {
         return (
           <div className="text-center">
             <div className="w-20 h-20 bg-gradient-to-br from-accent-red to-accent-amber rounded-full flex items-center justify-center mx-auto mb-6 shadow-theme-glow">
-              <FiAlertCircle className="w-10 h-10 text-white" />
+              <FiAlertCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              ❌ Erro na Confirmação
+              ❌ Erro no Convite
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
@@ -300,12 +360,12 @@ export default function ConfirmAccountPage() {
                   variant="primary"
                   size="lg"
                   leftIcon={resendSuccess ? <FiCheckCircle /> : <FiRefreshCw />}
-                  onClick={handleResendConfirmation}
+                  onClick={handleResendInvite}
                   isLoading={resendLoading}
                   disabled={resendSuccess}
                   className="w-full"
                 >
-                  {resendSuccess ? 'Email Enviado!' : 'Reenviar Confirmação'}
+                  {resendSuccess ? 'Email Enviado!' : 'Reenviar Convite'}
                 </Button>
               )}
 
@@ -322,7 +382,7 @@ export default function ConfirmAccountPage() {
                   variant="outline"
                   size="lg"
                   leftIcon={<FiRefreshCw />}
-                  onClick={confirmAccount}
+                  onClick={acceptInvite}
                 >
                   Tentar Novamente
                 </Button>
@@ -358,6 +418,9 @@ export default function ConfirmAccountPage() {
                 Opus Atlas
               </span>
             </Link>
+            <div className="text-sm text-theme-tertiary mb-4">
+              Convite de Aluno
+            </div>
           </div>
 
           {/* Content */}
@@ -379,39 +442,4 @@ export default function ConfirmAccountPage() {
       </div>
     </div>
   );
-}
-
-// Funções auxiliares para mensagens de erro
-function getErrorTitle(errorCode?: string): string {
-  switch (errorCode) {
-    case 'EXPIRED_TOKEN':
-      return 'Token Expirado';
-    case 'USED_TOKEN':
-      return 'Link Já Utilizado';
-    case 'INVALID_TOKEN':
-      return 'Token Inválido';
-    case 'NO_TOKEN':
-      return 'Token Não Fornecido';
-    case 'CONNECTION_ERROR':
-      return 'Erro de Conexão';
-    default:
-      return 'Erro Desconhecido';
-  }
-}
-
-function getErrorDescription(errorCode?: string): string {
-  switch (errorCode) {
-    case 'EXPIRED_TOKEN':
-      return 'O link de confirmação expirou. Você pode solicitar um novo link abaixo.';
-    case 'USED_TOKEN':
-      return 'Este link de confirmação já foi utilizado anteriormente.';
-    case 'INVALID_TOKEN':
-      return 'O link de confirmação é inválido ou foi corrompido.';
-    case 'NO_TOKEN':
-      return 'Nenhum token de confirmação foi fornecido na URL.';
-    case 'CONNECTION_ERROR':
-      return 'Não foi possível conectar ao servidor. Verifique sua conexão.';
-    default:
-      return 'Ocorreu um erro inesperado durante a confirmação.';
-  }
 }

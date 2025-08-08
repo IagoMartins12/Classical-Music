@@ -4,18 +4,14 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import {
-  FiCalendar,
   FiClock,
   FiUser,
   FiSave,
   FiX,
   FiPlus,
-  FiMapPin,
   FiTarget,
-  FiBookOpen,
   FiRepeat,
   FiAlertCircle,
-  FiCheck,
   FiRefreshCw,
   FiArrowLeft,
 } from 'react-icons/fi';

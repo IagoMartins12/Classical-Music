@@ -55,7 +55,8 @@ export const authOptions: NextAuthOptions = {
             phone: true,
             phoneCountryCode: true,
             phoneNumber: true,
-
+            isStudent: true,
+            isTeacher: true,
             favoriteComposerId: true,
             favoriteEpochId: true,
             experienceLevel: true,
@@ -99,6 +100,8 @@ export const authOptions: NextAuthOptions = {
           // 🆕 CAMPOS DE TELEFONE
           phone: user.phone,
           phoneCountryCode: user.phoneCountryCode,
+          isStudent: user.isStudent,
+          isTeacher: user.isTeacher,
           phoneNumber: user.phoneNumber,
 
           favoriteComposerId: user.favoriteComposerId,
@@ -152,6 +155,8 @@ export const authOptions: NextAuthOptions = {
             // 🆕 CAMPOS DE TELEFONE
             phone: true,
             phoneCountryCode: true,
+            isStudent: true,
+            isTeacher: true,
             phoneNumber: true,
 
             favoriteComposerId: true,
@@ -184,6 +189,8 @@ export const authOptions: NextAuthOptions = {
             phone: fullUser.phone,
             phoneCountryCode: fullUser.phoneCountryCode,
             phoneNumber: fullUser.phoneNumber,
+            isStudent: user.isStudent,
+            isTeacher: user.isTeacher,
 
             favoriteComposerId: fullUser.favoriteComposerId,
             favoriteEpochId: fullUser.favoriteEpochId,
@@ -223,7 +230,8 @@ export const authOptions: NextAuthOptions = {
             phone: true,
             phoneCountryCode: true,
             phoneNumber: true,
-
+            isStudent: true,
+            isTeacher: true,
             favoriteComposerId: true,
             favoriteEpochId: true,
             experienceLevel: true,
@@ -253,7 +261,8 @@ export const authOptions: NextAuthOptions = {
             phone: freshUser.phone,
             phoneCountryCode: freshUser.phoneCountryCode,
             phoneNumber: freshUser.phoneNumber,
-
+            isStudent: user?.isStudent,
+            isTeacher: user?.isTeacher,
             favoriteComposerId: freshUser.favoriteComposerId,
             favoriteEpochId: freshUser.favoriteEpochId,
             experienceLevel: freshUser.experienceLevel,
@@ -294,6 +303,8 @@ export const authOptions: NextAuthOptions = {
             phone: true,
             phoneCountryCode: true,
             phoneNumber: true,
+            isStudent: true,
+            isTeacher: true,
 
             favoriteComposerId: true,
             favoriteEpochId: true,
@@ -327,7 +338,8 @@ export const authOptions: NextAuthOptions = {
             phone: user.phone,
             phoneCountryCode: user.phoneCountryCode,
             phoneNumber: user.phoneNumber,
-
+            isStudent: user.isStudent,
+            isTeacher: user.isTeacher,
             favoriteComposerId: user.favoriteComposerId,
             favoriteEpochId: user.favoriteEpochId,
             experienceLevel: user.experienceLevel,

@@ -27,7 +27,8 @@ declare module 'next-auth' {
       phone?: string | null; // Telefone completo (+5511999999999)
       phoneCountryCode?: string | null; // Código do país (BR, US, etc.)
       phoneNumber?: string | null; // Apenas o número (11999999999)
-
+      isStudent: boolean;
+      isTeacher: boolean;
       // Campos existentes
       favoriteComposerId?: string | null;
       favoriteEpochId?: string | null;
@@ -61,7 +62,8 @@ declare module 'next-auth' {
     phone?: string | null; // Telefone completo (+5511999999999)
     phoneCountryCode?: string | null; // Código do país (BR, US, etc.)
     phoneNumber?: string | null; // Apenas o número (11999999999)
-
+    isStudent: boolean;
+    isTeacher: boolean;
     // Campos existentes
     favoriteComposerId?: string | null;
     favoriteEpochId?: string | null;
@@ -104,7 +106,8 @@ declare module 'next-auth/jwt' {
     phone?: string | null; // Telefone completo (+5511999999999)
     phoneCountryCode?: string | null; // Código do país (BR, US, etc.)
     phoneNumber?: string | null; // Apenas o número (11999999999)
-
+    isStudent: boolean;
+    isTeacher: boolean;
     // Campos existentes
     favoriteComposerId?: string | null;
     favoriteEpochId?: string | null;

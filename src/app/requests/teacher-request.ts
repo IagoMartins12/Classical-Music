@@ -7,6 +7,7 @@ import {
   CalendarEvent,
   CalendarStats,
 } from '../(teacher)/teacher/calendar/pageServer';
+import { StudentInviteStatus } from '@prisma/client';
 
 // ====================================
 // TYPES (mantendo os existentes)
@@ -102,6 +103,9 @@ export interface TeacherStudentsData {
       learningPlan?: string | null;
       currentFocus?: string[];
       teacherNotes?: string | null;
+      inviteStatus?: StudentInviteStatus | null;
+      inviteAcceptedAt?: Date | null;
+      inviteDeclinedAt?: Date | null;
     };
     stats: {
       totalLessons: number;
@@ -379,6 +383,7 @@ export const getTeacherStudentsData = unstable_cache(
         prisma.teacherStudent.count({ where: whereClause }),
       ]);
 
+      console.log('relationships', relationships);
       // Formatar dados dos alunos
       const studentsFormatted = await Promise.all(
         relationships.map(async (rel) => {
@@ -455,6 +460,9 @@ export const getTeacherStudentsData = unstable_cache(
               learningPlan: rel.learningPlan,
               currentFocus: rel.currentFocus,
               teacherNotes: rel.teacherNotes,
+              inviteStatus: rel.inviteStatus,
+              inviteAcceptedAt: rel.inviteAcceptedAt,
+              inviteDeclinedAt: rel.inviteDeclinedAt,
             },
             stats: {
               totalLessons,

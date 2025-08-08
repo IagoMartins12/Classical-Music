@@ -347,7 +347,24 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       originalName: country.name, // Manter nome original para debug
     }));
   }, []);
-  console.log('countr', countryOptions);
+
+  useEffect(() => {
+    if (!value.country) {
+      const br = Country.getCountryByCode('BR');
+      if (br) {
+        onChange({
+          country: {
+            isoCode: br.isoCode,
+            name: br.name,
+            flag: br.flag,
+          },
+          state: undefined,
+          city: undefined,
+        });
+      }
+    }
+  }, [value.country, onChange]);
+
   // 🗺️ Preparar opções de estados (dependente do país selecionado)
   const stateOptions = useMemo(() => {
     if (!value.country?.isoCode) return [];
@@ -486,20 +503,6 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       city: undefined,
     });
   };
-
-  // 🐛 Debug melhorado
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔍 LocationSelector Value:', {
-        country: value.country,
-        state: value.state,
-        city: value.city,
-        countryOptions: countryOptions.length,
-        stateOptions: stateOptions.length,
-        cityOptions: cityOptions.length,
-      });
-    }
-  }, [value, countryOptions.length, stateOptions.length, cityOptions.length]);
 
   return (
     <div className={`space-y-4 ${className}`}>

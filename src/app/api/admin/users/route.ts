@@ -4,6 +4,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { unstable_cache } from 'next/cache';
+import { sendTemplateEmail } from '@/app/libs/newsletter/email';
+import { createToken } from '@/app/libs/tokenUtils';
 
 export interface UserListFilters {
   search?: string;
@@ -582,10 +584,7 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
 
     // Campos que o admin pode editar
-    const allowedFields = [
-      'role', // ✅ ADICIONADO
-      'userType',
-    ];
+    const allowedFields = ['role', 'userType'];
 
     const updateData: any = {};
 
@@ -602,14 +601,16 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // 🆕 VERIFICAR SE O USUÁRIO EXISTE E PEGAR ROLE ATUAL
+    // Verificar se o usuário existe e pegar dados atuais
     const currentUser = await prisma.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
         role: true,
         isTeacher: true,
-
         teacherProfile: {
           select: {
             id: true,
@@ -622,14 +623,17 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // 🆕 LÓGICA PARA GERENCIAR TEACHER PROFILE
+    // Lógica existente para gerenciar Teacher profile
     const newRole = updateData.role;
     const currentRole = currentUser.role || 0;
 
+    // 🆕 NOVO: Variável para controlar envio de email
+    let shouldSendTeacherInvite = false;
+
     // Se o role está sendo alterado para 1 (professor) e não tinha esse role antes
     if (newRole === 1 && currentRole !== 1) {
-      // Atualizar isTeacher para true
       updateData.isTeacher = true;
+      shouldSendTeacherInvite = true; // 🆕 NOVO: Marcar para enviar email
 
       // Verificar se já existe um Teacher profile
       if (!currentUser.teacherProfile) {
@@ -654,8 +658,8 @@ export async function PATCH(request: NextRequest) {
             teachingMethod: null,
             ageGroups: [],
             skillLevels: [],
-            status: 'PENDING',
-            isVerified: false,
+            status: 'PENDING', // 🔄 IMPORTANTE: Fica PENDING até aceitar o convite
+            isVerified: false, // 🔄 IMPORTANTE: Não verificado até aceitar
             allowProgressReports: true,
             reportPreferences: null,
           },
@@ -665,11 +669,9 @@ export async function PATCH(request: NextRequest) {
 
     // Se o role está sendo alterado para diferente de 1 e antes era 1 (deixou de ser professor)
     if (newRole !== 1 && currentRole === 1) {
-      // Atualizar isTeacher para false
       updateData.isTeacher = false;
 
-      // OPCIONAL: Você pode escolher se quer deletar o Teacher profile ou apenas desativá-lo
-      // Para manter histórico, vamos apenas desativar:
+      // Desativar o Teacher profile
       if (currentUser.teacherProfile) {
         await prisma.teacher.update({
           where: { userId: userId },
@@ -679,12 +681,9 @@ export async function PATCH(request: NextRequest) {
           },
         });
       }
-
-      // OU se preferir deletar completamente (descomente a linha abaixo):
-      // await prisma.teacher.delete({ where: { userId: userId } });
     }
 
-    // 🔄 ATUALIZAR O USUÁRIO
+    // Atualizar o usuário
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: updateData,
@@ -696,9 +695,8 @@ export async function PATCH(request: NextRequest) {
         userType: true,
         experienceLevel: true,
         role: true,
-        isTeacher: true, // ✅ INCLUIR NO SELECT
+        isTeacher: true,
         teacherProfile: {
-          // ✅ INCLUIR TEACHER PROFILE
           select: {
             id: true,
             status: true,
@@ -708,7 +706,67 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // Log da ação admin
+    // 🆕 NOVO: Enviar email de convite para professor
+    if (shouldSendTeacherInvite && updatedUser.email) {
+      try {
+        // Criar token para aceitar/recusar convite
+        const acceptToken = await createToken({
+          userId: userId,
+          type: 'TEACHER_INVITATION_ACCEPT',
+          expiresInHours: 24 * 7, // 7 dias
+          ipAddress: request.headers.get('x-forwarded-for') || undefined,
+          userAgent: request.headers.get('user-agent') || undefined,
+        });
+
+        const declineToken = await createToken({
+          userId: userId,
+          type: 'TEACHER_INVITATION_DECLINE',
+          expiresInHours: 24 * 7, // 7 dias
+          ipAddress: request.headers.get('x-forwarded-for') || undefined,
+          userAgent: request.headers.get('user-agent') || undefined,
+        });
+
+        const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+
+        const acceptUrl = `${baseUrl}/confirm-teacher-invite/${acceptToken}`;
+        const declineUrl = `${baseUrl}/decline-teacher-invite/${declineToken}`;
+
+        // Buscar info do admin que fez o convite
+        const adminUser = await prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { firstName: true, lastName: true },
+        });
+
+        const adminName = adminUser
+          ? `${adminUser.firstName || ''} ${adminUser.lastName || ''}`.trim() ||
+            'Admin'
+          : 'Admin';
+
+        // Enviar email de convite
+        await sendTemplateEmail(updatedUser.email, {
+          type: 'TEACHER_INVITATION',
+          variables: {
+            firstName: updatedUser.firstName || 'Usuário',
+            acceptUrl,
+            declineUrl,
+            invitedBy: adminName,
+            siteUrl: baseUrl,
+          },
+        });
+
+        console.log(
+          `✅ [ADMIN-USERS] Email de convite para professor enviado para ${updatedUser.email}`
+        );
+      } catch (emailError) {
+        console.error(
+          '❌ [ADMIN-USERS] Erro ao enviar email de convite:',
+          emailError
+        );
+        // Não falhar a operação por causa do email, mas logar o erro
+      }
+    }
+
+    // Log da ação admin (existente)
     await prisma.uploadHistory.create({
       data: {
         userId: session.user.id,
@@ -720,25 +778,25 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // 🆕 RESPOSTA APRIMORADA COM INFO DO TEACHER
+    // Resposta aprimorada
     const responseData = {
       success: true,
       user: updatedUser,
       message:
         newRole === 1 && currentRole !== 1
-          ? 'Usuário atualizado com sucesso e perfil de professor criado'
+          ? 'Usuário promovido a professor. Email de convite enviado!'
           : newRole !== 1 && currentRole === 1
-          ? 'Usuário atualizado com sucesso e perfil de professor desativado'
+          ? 'Usuário removido do cargo de professor'
           : 'Usuário atualizado com sucesso',
       teacherProfileCreated: newRole === 1 && currentRole !== 1,
       teacherProfileDeactivated: newRole !== 1 && currentRole === 1,
+      inviteEmailSent: shouldSendTeacherInvite,
     };
 
     return NextResponse.json(responseData);
   } catch (error) {
     console.error('Erro ao atualizar usuário:', error);
 
-    // 🆕 TRATAMENTO DE ERRO ESPECÍFICO PARA TEACHER
     if (error instanceof Error && error.message.includes('Teacher')) {
       return NextResponse.json(
         {
