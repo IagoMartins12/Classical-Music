@@ -153,12 +153,12 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
       icon: FiUser,
       active: pathname === '/student/profile',
     },
-    {
-      label: 'Avaliações',
-      href: '/student/reviews',
-      icon: FiStar,
-      active: pathname === '/student/reviews',
-    },
+    // {
+    //   label: 'Avaliações',
+    //   href: '/student/reviews',
+    //   icon: FiStar,
+    //   active: pathname === '/student/reviews',
+    // },
   ];
 
   const getUserDisplayName = () => {
@@ -317,7 +317,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
                       {/* Desktop Submenu */}
                       {activeSubmenu === item.label && (
-                        <div className="absolute top-full left-0 mt-2 w-80 bg-theme-elevated/95 backdrop-blur-xl rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
+                        <div className="absolute top-full left-0 mt-2 w-80 bg-theme-secondary backdrop-blur-xl rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
                           <div className="p-2">
                             {item.submenu.map((subItem) => (
                               <Link
@@ -420,7 +420,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-elevated/95 backdrop-blur-xl rounded-2xl shadow-xl border border-theme-secondary z-50 p-2">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-secondary  rounded-2xl shadow-xl border border-theme-secondary z-50 p-2">
                     {/* User Info */}
                     <div className="px-3 py-2 border-b border-theme-secondary mb-2">
                       <p className="font-medium text-theme-primary">

@@ -15,6 +15,7 @@ async function revalidateLessonDetailsData(
 
   // Tags específicas de lessons
   revalidateTag('teacher-lessons-data');
+  revalidateTag('teacher-lesson-details');
   revalidateTag('teacher-lesson-details-data');
   revalidateTag('teacher-calendar');
   revalidateTag('teacher-calendar-data');
@@ -151,7 +152,7 @@ interface LessonDetails {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -162,8 +163,9 @@ export async function GET(
     ) {
       return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
     }
+    const { id } = await params;
 
-    const lessonId = params.id;
+    const lessonId = id;
 
     if (!lessonId) {
       return NextResponse.json(

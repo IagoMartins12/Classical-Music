@@ -3516,6 +3516,7 @@ export async function revalidateTeacherCache(userId?: string) {
   revalidateTag('teacher-reviews');
   revalidateTag('teacher-reviews-data');
   revalidateTag('teacher-lessons-data');
+  revalidateTag('teacher-lesson-details');
   revalidateTag('teacher-lesson-details-data');
   revalidateTag('search-students');
   revalidateTag('search-students-data');

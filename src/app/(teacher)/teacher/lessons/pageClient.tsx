@@ -1,4 +1,4 @@
-// app/teacher/lessons/pageClient.tsx - Client Component para Gerenciamento de Aulas
+// app/teacher/lessons/pageClient.tsx - Client Component para Gerenciamento de Aulas - CORRIGIDO
 
 'use client';
 
@@ -76,20 +76,22 @@ export default function TeacherLessonsPageClient({
     clearError,
   } = useTeacherLessons(initialData);
 
-  // Local UI state
+  // 🔄 MUDANÇA: Filtro padrão agora é 'week'
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
-  const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>('week'); // 🆕 MUDADO de 'all' para 'week'
   const [selectedStudent, setSelectedStudent] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState<LessonData | null>(null);
   const [showQuickActions, setShowQuickActions] = useState<string | null>(null);
 
-  // Initialize hook data on mount
+  // Initialize hook data on mount and apply default filter
   useEffect(() => {
     if (initialData && initialData.lessons.length > 0) {
       setInitialData(initialData);
     }
+    // 🆕 APLICAR FILTRO PADRÃO 'week' AO MONTAR O COMPONENTE
+    handleFilterChange();
   }, [initialData, setInitialData]);
 
   // Filter options
@@ -117,7 +119,7 @@ export default function TeacherLessonsPageClient({
     })),
   ];
 
-  // Filter lessons
+  // 🔄 MUDANÇA: Filter lessons com ordenação cronológica melhorada
   const filteredLessons = useMemo(() => {
     let filtered = [...lessons];
     const now = new Date();
@@ -174,10 +176,28 @@ export default function TeacherLessonsPageClient({
       );
     }
 
-    return filtered.sort(
-      (a, b) =>
-        new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime()
-    );
+    // 🆕 ORDENAÇÃO CRONOLÓGICA: Mais próximas primeiro, mas separando passadas das futuras
+    const now_timestamp = now.getTime();
+
+    return filtered.sort((a, b) => {
+      const aTime = new Date(a.scheduledAt).getTime();
+      const bTime = new Date(b.scheduledAt).getTime();
+
+      // Separar aulas futuras das passadas
+      const aIsFuture = aTime >= now_timestamp;
+      const bIsFuture = bTime >= now_timestamp;
+
+      if (aIsFuture && !bIsFuture) return -1; // Futuras primeiro
+      if (!aIsFuture && bIsFuture) return 1; // Futuras primeiro
+
+      if (aIsFuture && bIsFuture) {
+        // Ambas futuras: mais próximas primeiro
+        return aTime - bTime;
+      } else {
+        // Ambas passadas: mais recentes primeiro
+        return bTime - aTime;
+      }
+    });
   }, [lessons, statusFilter, timeFilter, selectedStudent, searchQuery]);
 
   // Handle refresh
@@ -185,7 +205,7 @@ export default function TeacherLessonsPageClient({
     await refreshLessons();
   }, [refreshLessons]);
 
-  // Handle filter change
+  // 🆕 MELHORADO: Handle filter change com revalidação de cache
   const handleFilterChange = useCallback(async () => {
     const filters: any = {};
 
@@ -219,8 +239,21 @@ export default function TeacherLessonsPageClient({
       }
     }
 
+    // 🆕 FORÇA RECALCULO DOS STATS
+    filters.includeStats = true;
+    filters.forceRefresh = true;
+
     await fetchLessons(filters);
   }, [statusFilter, selectedStudent, timeFilter, fetchLessons]);
+
+  // 🆕 APLICAR FILTROS QUANDO MUDAREM
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      handleFilterChange();
+    }, 300); // Debounce de 300ms
+
+    return () => clearTimeout(timeoutId);
+  }, [statusFilter, timeFilter, selectedStudent]);
 
   // Quick actions
   const handleQuickAttendance = useCallback(
@@ -232,9 +265,13 @@ export default function TeacherLessonsPageClient({
 
       if (success) {
         setShowQuickActions(null);
+        // 🆕 FORÇA REFRESH DOS STATS APÓS AÇÃO
+        setTimeout(() => {
+          handleRefresh();
+        }, 500);
       }
     },
-    [markAttendance]
+    [markAttendance, handleRefresh]
   );
 
   const handleQuickCancel = useCallback(
@@ -242,9 +279,13 @@ export default function TeacherLessonsPageClient({
       const success = await cancelLesson(lessonId, 'Cancelada pelo professor');
       if (success) {
         setShowQuickActions(null);
+        // 🆕 FORÇA REFRESH DOS STATS APÓS AÇÃO
+        setTimeout(() => {
+          handleRefresh();
+        }, 500);
       }
     },
-    [cancelLesson]
+    [cancelLesson, handleRefresh]
   );
 
   // Format functions
@@ -304,9 +345,31 @@ export default function TeacherLessonsPageClient({
     }
   };
 
+  // 🆕 FORÇA REFRESH INICIAL E QUANDO VOLTAR À PÁGINA
   useEffect(() => {
-    handleRefresh();
-  }, []);
+    // Listener para quando a página ganha foco (usuário volta à aba)
+    const handleFocus = () => {
+      console.log('🔄 Página ganhou foco, atualizando dados...');
+      handleRefresh();
+    };
+
+    // Listener para visibilidade da página
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        console.log('🔄 Página ficou visível, atualizando dados...');
+        handleRefresh();
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [handleRefresh]);
+
   // Render error state
   if ((error || errorMessage) && lessons.length === 0) {
     return (
@@ -749,17 +812,13 @@ export default function TeacherLessonsPageClient({
                                   : 'text-accent-red'
                               }`}
                             >
-                              {lesson.status === 'COMPLETED' &&
-                              lesson.studentPresent ? (
+                              {lesson.studentPresent ? (
                                 <FiCheck className="w-4 h-4" />
                               ) : (
                                 <FiX className="w-4 h-4" />
                               )}
                               <span>
-                                {lesson.status === 'COMPLETED' &&
-                                lesson.studentPresent
-                                  ? 'Presente'
-                                  : 'Faltou'}
+                                {lesson.studentPresent ? 'Presente' : 'Faltou'}
                               </span>
                             </div>
                           )}

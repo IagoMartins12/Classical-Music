@@ -1,4 +1,4 @@
-// app/api/lessons/route.ts - API melhorada com sistema de recorrência e detecção de conflitos
+// app/api/lessons/route.ts - API melhorada com ordenação cronológica e cache - CORRIGIDO
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -7,25 +7,115 @@ import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 import { Lesson } from '@prisma/client';
 
-// Função auxiliar para revalidar cache do professor
-async function revalidateTeacherData(userId: string) {
+// 🆕 FUNÇÃO MELHORADA PARA REVALIDAR CACHE
+async function revalidateTeacherData(userId: string, studentUserId?: string) {
   console.log(`🔄 [CACHE] Revalidating teacher data for user ${userId}`);
 
-  // Tags principais do professor
-  revalidateTag('teacher-dashboard');
-  revalidateTag('teacher-dashboard-data');
-  revalidateTag('teacher-students');
-  revalidateTag('teacher-students-data');
-  revalidateTag('teacher-calendar');
-  revalidateTag('teacher-calendar-data');
-  revalidateTag('teacher-calendar-data-direct');
-  revalidateTag('teacher-lessons-data');
-  revalidateTag('teacher-lesson-details-data');
+  try {
+    // Tags principais do professor
+    revalidateTag('teacher-dashboard');
+    revalidateTag('teacher-dashboard-data');
+    revalidateTag('teacher-students');
+    revalidateTag('teacher-students-data');
+    revalidateTag('teacher-calendar');
+    revalidateTag('teacher-calendar-data');
+    revalidateTag('teacher-calendar-data-direct');
+    revalidateTag('teacher-lessons-data');
+    revalidateTag('teacher-lesson-details-data');
+    revalidateTag('teacher-profile-data');
+    revalidateTag('teacher-profile-extended-data');
 
-  // Tag específica do usuário
-  revalidateTag(`teacher-${userId}`);
+    // Tag específica do usuário
+    revalidateTag(`teacher-${userId}`);
 
-  console.log(`✅ [CACHE] Teacher cache revalidated for user ${userId}`);
+    // Se tiver studentUserId, revalidar também
+    if (studentUserId) {
+      revalidateTag('student-lessons');
+      revalidateTag('student-dashboard');
+      revalidateTag(`student-${studentUserId}`);
+    }
+
+    // Revalidar tags gerais que podem estar sendo usadas
+    revalidateTag('lessons');
+    revalidateTag('teacher-data');
+
+    console.log(`✅ [CACHE] Teacher cache revalidated for user ${userId}`);
+  } catch (error) {
+    console.error('❌ [CACHE] Error revalidating cache:', error);
+  }
+}
+
+// 🆕 FUNÇÃO PARA CALCULAR STATS EM TEMPO REAL
+async function calculateLessonsStats(teacherId: string) {
+  const now = new Date();
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay());
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 7);
+
+  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+  const [
+    totalLessons,
+    scheduledLessons,
+    completedLessons,
+    cancelledLessons,
+    noShowLessons,
+    todayLessons,
+    weekLessons,
+    monthLessons,
+    avgDurationResult,
+  ] = await Promise.all([
+    prisma.lesson.count({ where: { teacherId } }),
+    prisma.lesson.count({ where: { teacherId, status: 'SCHEDULED' } }),
+    prisma.lesson.count({ where: { teacherId, status: 'COMPLETED' } }),
+    prisma.lesson.count({ where: { teacherId, status: 'CANCELLED' } }),
+    prisma.lesson.count({ where: { teacherId, status: 'NO_SHOW' } }),
+    prisma.lesson.count({
+      where: {
+        teacherId,
+        scheduledAt: { gte: today, lt: tomorrow },
+      },
+    }),
+    prisma.lesson.count({
+      where: {
+        teacherId,
+        scheduledAt: { gte: startOfWeek, lt: endOfWeek },
+      },
+    }),
+    prisma.lesson.count({
+      where: {
+        teacherId,
+        scheduledAt: { gte: startOfMonth, lte: endOfMonth },
+      },
+    }),
+    prisma.lesson.aggregate({
+      where: { teacherId },
+      _avg: { duration: true },
+    }),
+  ]);
+
+  const completionRate =
+    totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+
+  return {
+    total: totalLessons,
+    scheduled: scheduledLessons,
+    completed: completedLessons,
+    cancelled: cancelledLessons,
+    noShow: noShowLessons,
+    today: todayLessons,
+    thisWeek: weekLessons,
+    thisMonth: monthLessons,
+    averageDuration: Math.round(avgDurationResult._avg.duration || 60),
+    completionRate: Math.round(completionRate * 10) / 10,
+  };
 }
 
 // Função para calcular datas de recorrência com limite de 3 meses
@@ -179,7 +269,7 @@ async function checkScheduleConflicts(
   };
 }
 
-// GET - Listar aulas (sem mudanças)
+// GET - Listar aulas com ordenação cronológica melhorada
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -199,6 +289,7 @@ export async function GET(request: NextRequest) {
     const dateTo = searchParams.get('dateTo');
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');
+    const includeStats = searchParams.get('includeStats') === 'true';
 
     console.log(
       `📅 [LESSONS] Listando aulas - User: ${session.user.id}, Role: ${session.user.role}`
@@ -206,6 +297,7 @@ export async function GET(request: NextRequest) {
 
     // Montar where clause baseado no role
     let whereClause: any = {};
+    let userTeacherId: string | null = null;
 
     if (session.user.role === 1) {
       // Professor: buscar por teacherId
@@ -221,6 +313,7 @@ export async function GET(request: NextRequest) {
         );
       }
 
+      userTeacherId = teacherProfile.id;
       whereClause.teacherId = teacherProfile.id;
 
       if (studentId) {
@@ -262,10 +355,17 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Buscar aulas
-    const [lessons, totalCount] = await Promise.all([
+    // 🆕 ORDENAÇÃO CRONOLÓGICA MELHORADA: Separar futuras das passadas
+    const now = new Date();
+
+    // Buscar aulas futuras e passadas separadamente
+    const [futureLessons, pastLessons, totalCount] = await Promise.all([
+      // Aulas futuras: ordenar por data crescente (mais próximas primeiro)
       prisma.lesson.findMany({
-        where: whereClause,
+        where: {
+          ...whereClause,
+          scheduledAt: { gte: now },
+        },
         include: {
           teacher: {
             include: {
@@ -294,14 +394,53 @@ export async function GET(request: NextRequest) {
             },
           },
         },
-        orderBy: {
-          scheduledAt: 'asc',
+        orderBy: { scheduledAt: 'asc' },
+        take: Math.floor(limit / 2), // Metade do limite para futuras
+        skip: Math.floor(offset / 2),
+      }),
+      // Aulas passadas: ordenar por data decrescente (mais recentes primeiro)
+      prisma.lesson.findMany({
+        where: {
+          ...whereClause,
+          scheduledAt: { lt: now },
         },
-        take: limit,
-        skip: offset,
+        include: {
+          teacher: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          student: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: { scheduledAt: 'desc' },
+        take: Math.ceil(limit / 2), // Outra metade para passadas
+        skip: Math.ceil(offset / 2),
       }),
       prisma.lesson.count({ where: whereClause }),
     ]);
+
+    // Combinar as listas: futuras primeiro, depois passadas
+    const lessons = [...futureLessons, ...pastLessons];
 
     // Formatar aulas
     const lessonsFormatted = lessons.map((lesson) => ({
@@ -350,16 +489,25 @@ export async function GET(request: NextRequest) {
         }`.trim(),
         email: lesson.student.user.email,
         image: lesson.student.user.image,
+        level: lesson.student.level,
       },
       createdAt: lesson.createdAt,
       updatedAt: lesson.updatedAt,
     }));
+
+    // 🆕 CALCULAR STATS EM TEMPO REAL SE SOLICITADO
+    let stats = null;
+    if (includeStats && userTeacherId) {
+      stats = await calculateLessonsStats(userTeacherId);
+      console.log('📊 Stats calculados em tempo real:', stats);
+    }
 
     console.log(`✅ [LESSONS] Retornando ${lessonsFormatted.length} aulas`);
 
     return NextResponse.json({
       success: true,
       lessons: lessonsFormatted,
+      stats,
       pagination: {
         offset,
         limit,
@@ -376,7 +524,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Criar nova aula (MELHORADO com sistema de recorrência e conflitos)
+// POST - Criar nova aula (MELHORADO com validações)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -414,43 +562,60 @@ export async function POST(request: NextRequest) {
       forceCreate = false,
     } = body;
 
-    if (!studentUserId || !title || !scheduledAt) {
+    // 🆕 VALIDAÇÃO ROBUSTA DE CAMPOS OBRIGATÓRIOS
+    const errors: string[] = [];
+
+    if (!studentUserId) errors.push('Aluno é obrigatório');
+    if (!title?.trim()) errors.push('Título é obrigatório');
+    if (!scheduledAt) errors.push('Data e hora são obrigatórias');
+
+    // Validar data futura
+    const scheduledDate = new Date(scheduledAt);
+    if (isNaN(scheduledDate.getTime())) {
+      errors.push('Data e hora inválidas');
+    } else if (scheduledDate < new Date()) {
+      errors.push('Data e hora devem ser no futuro');
+    }
+
+    // Validar duração
+    if (duration < 15 || duration > 300) {
+      errors.push('Duração deve estar entre 15 e 300 minutos');
+    }
+
+    // Validar recorrência
+    if (isRecurring) {
+      if (!recurrenceEnd || recurrenceType === 'NONE') {
+        errors.push(
+          'Para aulas recorrentes, data final e tipo de recorrência são obrigatórios'
+        );
+      }
+
+      if (recurrenceEnd) {
+        const endDate = new Date(recurrenceEnd);
+        if (isNaN(endDate.getTime())) {
+          errors.push('Data final da recorrência inválida');
+        } else if (endDate <= scheduledDate) {
+          errors.push('Data final deve ser posterior à data da primeira aula');
+        }
+
+        // Limite de 3 meses
+        const maxDate = new Date(scheduledDate);
+        maxDate.setMonth(maxDate.getMonth() + 3);
+        if (endDate > maxDate) {
+          errors.push('Recorrência limitada a 3 meses máximo');
+        }
+      }
+    }
+
+    if (errors.length > 0) {
       return NextResponse.json(
         {
-          error: 'studentUserId, title e scheduledAt são obrigatórios',
+          error: 'Erros de validação encontrados',
+          validationErrors: errors,
+          details: errors.join('; '),
         },
         { status: 400 }
       );
-    }
-
-    // NOVO: Validação melhorada de recorrência
-    if (isRecurring) {
-      if (!recurrenceEnd || recurrenceType === 'NONE') {
-        return NextResponse.json(
-          {
-            error:
-              'Para aulas recorrentes, recurrenceEnd e recurrenceType são obrigatórios',
-          },
-          { status: 400 }
-        );
-      }
-
-      // Verificar limite de 3 meses
-      const startDate = new Date(scheduledAt);
-      const endDate = new Date(recurrenceEnd);
-      const maxDate = new Date(startDate);
-      maxDate.setMonth(maxDate.getMonth() + 3);
-
-      if (endDate > maxDate) {
-        return NextResponse.json(
-          {
-            error:
-              'Recorrência limitada a 3 meses. Use a renovação automática após esse período.',
-            maxDate: maxDate.toISOString().split('T')[0],
-          },
-          { status: 400 }
-        );
-      }
     }
 
     console.log(
@@ -597,7 +762,6 @@ export async function POST(request: NextRequest) {
       const lessonDate = lessonDates[i];
 
       try {
-        // CORREÇÃO: Remover a condição problemática que impedia criação das outras aulas
         const lesson: Lesson = await prisma.lesson.create({
           data: {
             teacherId: teacherProfile.id,
@@ -669,7 +833,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 🔥 REVALIDAR CACHE APÓS CRIAÇÃO
-    await revalidateTeacherData(session.user.id);
+    await revalidateTeacherData(session.user.id, studentUserId);
 
     const response = {
       success: true,
@@ -742,6 +906,11 @@ export async function PATCH(request: NextRequest) {
         id: lessonId,
         teacherId: teacherProfile?.id,
       },
+      include: {
+        student: {
+          select: { userId: true },
+        },
+      },
     });
 
     if (!lesson) {
@@ -806,7 +975,7 @@ export async function PATCH(request: NextRequest) {
     });
 
     // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
-    await revalidateTeacherData(session.user.id);
+    await revalidateTeacherData(session.user.id, lesson.student.userId);
 
     console.log(`✅ [LESSONS] Aula atualizada e cache revalidado: ${lessonId}`);
 
@@ -865,6 +1034,11 @@ export async function DELETE(request: NextRequest) {
       where: {
         id: lessonId,
         teacherId: teacherProfile?.id,
+      },
+      include: {
+        student: {
+          select: { userId: true },
+        },
       },
     });
 
@@ -961,7 +1135,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // 🔥 REVALIDAR CACHE APÓS CANCELAMENTO
-    await revalidateTeacherData(session.user.id);
+    await revalidateTeacherData(session.user.id, lesson.student.userId);
 
     console.log(`✅ [LESSONS] Cache revalidado após cancelamento`);
 

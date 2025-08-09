@@ -12,6 +12,14 @@ interface StudentLessonDetailPageProps {
   };
 }
 
+interface lessonProps {
+  id: string;
+}
+
+interface LessonIdProps {
+  params: Promise<lessonProps>;
+}
+
 export async function generateMetadata({
   params,
 }: StudentLessonDetailPageProps): Promise<Metadata> {
@@ -31,17 +39,20 @@ export async function generateMetadata({
 
 export default async function StudentLessonDetailPage({
   params,
-}: StudentLessonDetailPageProps) {
+}: LessonIdProps) {
+  const resolvedParams = await params;
+  const lessonId = resolvedParams.id;
+
   const session = await getRequiredServerSession();
 
   // Validar ID da aula
-  if (!params.id || typeof params.id !== 'string') {
+  if (!lessonId || lessonId.length !== 24) {
     return notFound();
   }
 
   return (
     <StudentLessonDetailPageServer
-      lessonId={params.id}
+      lessonId={lessonId}
       userId={session.user.id}
       userEmail={session.user.email || ''}
       userName={`${session.user.firstName || ''} ${

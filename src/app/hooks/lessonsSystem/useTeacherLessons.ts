@@ -1,4 +1,4 @@
-// app/hooks/useTeacherLessons.ts - Hook para gerenciar aulas do professor
+// app/hooks/useTeacherLessons.ts - Hook para gerenciar aulas do professor - CORRIGIDO
 
 import {
   LessonData,
@@ -34,6 +34,8 @@ interface UseTeacherLessonsActions {
     dateTo?: Date;
     limit?: number;
     offset?: number;
+    includeStats?: boolean;
+    forceRefresh?: boolean;
   }) => Promise<void>;
 
   refreshLessons: () => Promise<void>;
@@ -96,6 +98,61 @@ interface UseTeacherLessonsActions {
   clearError: () => void;
 }
 
+// 🆕 FUNÇÃO PARA RECALCULAR STATS LOCALMENTE
+function calculateStatsFromLessons(lessons: LessonData[]): LessonsStats {
+  const now = new Date();
+  const today = new Date(now);
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay());
+
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 7);
+
+  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+  const stats = {
+    total: lessons.length,
+    scheduled: lessons.filter((l) => l.status === 'SCHEDULED').length,
+    completed: lessons.filter((l) => l.status === 'COMPLETED').length,
+    cancelled: lessons.filter((l) => l.status === 'CANCELLED').length,
+    noShow: lessons.filter((l) => l.status === 'NO_SHOW').length,
+    today: lessons.filter((l) => {
+      const lessonDate = new Date(l.scheduledAt);
+      return lessonDate >= today && lessonDate < tomorrow;
+    }).length,
+    thisWeek: lessons.filter((l) => {
+      const lessonDate = new Date(l.scheduledAt);
+      return lessonDate >= startOfWeek && lessonDate < endOfWeek;
+    }).length,
+    thisMonth: lessons.filter((l) => {
+      const lessonDate = new Date(l.scheduledAt);
+      return lessonDate >= startOfMonth && lessonDate <= endOfMonth;
+    }).length,
+    averageDuration:
+      lessons.length > 0
+        ? Math.round(
+            lessons.reduce((sum, l) => sum + l.duration, 0) / lessons.length
+          )
+        : 60,
+    completionRate:
+      lessons.length > 0
+        ? Math.round(
+            (lessons.filter((l) => l.status === 'COMPLETED').length /
+              lessons.length) *
+              100 *
+              10
+          ) / 10
+        : 0,
+  };
+
+  return stats;
+}
+
 export function useTeacherLessons(
   initialData?: TeacherLessonsData
 ): UseTeacherLessonsState & UseTeacherLessonsActions {
@@ -150,6 +207,16 @@ export function useTeacherLessons(
     }));
   }, []);
 
+  // 🆕 FUNÇÃO PARA RECALCULAR E ATUALIZAR STATS
+  const recalculateStats = useCallback((lessons: LessonData[]) => {
+    const newStats = calculateStatsFromLessons(lessons);
+    setState((prev) => ({
+      ...prev,
+      stats: newStats,
+    }));
+    console.log('📊 Stats recalculados:', newStats);
+  }, []);
+
   // Set initial data
   const setInitialData = useCallback((data: TeacherLessonsData) => {
     setState((prev) => ({
@@ -169,6 +236,8 @@ export function useTeacherLessons(
       dateTo?: Date;
       limit?: number;
       offset?: number;
+      includeStats?: boolean;
+      forceRefresh?: boolean;
     }) => {
       setLoading('lessons', true);
       setError(null);
@@ -184,13 +253,22 @@ export function useTeacherLessons(
           params.append('dateTo', filters.dateTo.toISOString());
         params.append('limit', (filters?.limit || 20).toString());
         params.append('offset', (filters?.offset || 0).toString());
-        params.append('includeStats', 'true');
+        params.append('includeStats', 'true'); // 🆕 SEMPRE INCLUIR STATS
+
+        // 🆕 HEADER PARA FORÇAR REFRESH DO CACHE
+        const headers: HeadersInit = {
+          'Content-Type': 'application/json',
+        };
+
+        if (filters?.forceRefresh) {
+          headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+          headers['Pragma'] = 'no-cache';
+          headers['Expires'] = '0';
+        }
 
         const response = await fetch(`/api/lessons?${params}`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers,
         });
 
         if (!response.ok) {
@@ -208,9 +286,13 @@ export function useTeacherLessons(
           lessons: filters?.offset
             ? [...prev.lessons, ...data.lessons]
             : data.lessons,
-          stats: data.stats || prev.stats,
+          stats: data.stats || calculateStatsFromLessons(data.lessons), // 🆕 FALLBACK LOCAL
           pagination: data.pagination,
         }));
+
+        console.log(
+          `✅ Lessons carregadas: ${data.lessons?.length}, Stats atualizados`
+        );
       } catch (error) {
         console.error('Erro ao buscar aulas:', error);
         setError(error instanceof Error ? error.message : 'Erro desconhecido');
@@ -223,7 +305,12 @@ export function useTeacherLessons(
 
   // Refresh lessons
   const refreshLessons = useCallback(async () => {
-    await fetchLessons({ limit: state.pagination.limit, offset: 0 });
+    await fetchLessons({
+      limit: state.pagination.limit,
+      offset: 0,
+      includeStats: true,
+      forceRefresh: true,
+    });
   }, [fetchLessons, state.pagination.limit]);
 
   // Load more lessons
@@ -233,6 +320,7 @@ export function useTeacherLessons(
     await fetchLessons({
       limit: state.pagination.limit,
       offset: state.pagination.offset + state.pagination.limit,
+      includeStats: true,
     });
   }, [fetchLessons, state.pagination, state.loading.lessons]);
 
@@ -254,6 +342,60 @@ export function useTeacherLessons(
       setLoading('createLesson', true);
       setError(null);
 
+      // 🆕 VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS
+      const errors: string[] = [];
+
+      if (!data.studentUserId) errors.push('Aluno é obrigatório');
+      if (!data.title?.trim()) errors.push('Título é obrigatório');
+      if (!data.scheduledAt) errors.push('Data e hora são obrigatórias');
+
+      // Validar data futura
+      const scheduledDate = new Date(data.scheduledAt);
+      if (isNaN(scheduledDate.getTime())) {
+        errors.push('Data e hora inválidas');
+      } else if (scheduledDate < new Date()) {
+        errors.push('Data e hora devem ser no futuro');
+      }
+
+      // Validar duração
+      if (data.duration && (data.duration < 15 || data.duration > 300)) {
+        errors.push('Duração deve estar entre 15 e 300 minutos');
+      }
+
+      // Validar recorrência
+      if (data.isRecurring) {
+        if (!data.recurrenceType || data.recurrenceType === 'NONE') {
+          errors.push(
+            'Tipo de recorrência é obrigatório para aulas recorrentes'
+          );
+        }
+        if (!data.recurrenceEnd) {
+          errors.push('Data final é obrigatória para aulas recorrentes');
+        }
+
+        if (data.recurrenceEnd) {
+          const endDate = new Date(data.recurrenceEnd);
+          if (endDate <= scheduledDate) {
+            errors.push(
+              'Data final deve ser posterior à data da primeira aula'
+            );
+          }
+
+          // Limite de 3 meses
+          const maxDate = new Date(scheduledDate);
+          maxDate.setMonth(maxDate.getMonth() + 3);
+          if (endDate > maxDate) {
+            errors.push('Recorrência limitada a 3 meses máximo');
+          }
+        }
+      }
+
+      if (errors.length > 0) {
+        setError(`Erros de validação:\n• ${errors.join('\n• ')}`);
+        setLoading('createLesson', false);
+        return false;
+      }
+
       try {
         const response = await fetch('/api/lessons', {
           method: 'POST',
@@ -264,7 +406,8 @@ export function useTeacherLessons(
         });
 
         if (!response.ok) {
-          throw new Error('Erro ao criar aula');
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Erro ao criar aula');
         }
 
         const result = await response.json();
@@ -273,17 +416,26 @@ export function useTeacherLessons(
           throw new Error(result.error || 'Erro ao criar aula');
         }
 
-        // Add new lessons to state
+        // 🆕 ATUALIZAR STATE E RECALCULAR STATS
         if (result.lessons && Array.isArray(result.lessons)) {
-          setState((prev) => ({
-            ...prev,
-            lessons: [...result.lessons, ...prev.lessons],
-            stats: {
-              ...prev.stats,
-              total: prev.stats.total + result.lessons.length,
-              scheduled: prev.stats.scheduled + result.lessons.length,
-            },
-          }));
+          setState((prev) => {
+            const updatedLessons = [...result.lessons, ...prev.lessons];
+            const newStats = calculateStatsFromLessons(updatedLessons);
+
+            console.log(
+              `✅ ${result.lessons.length} aula(s) criada(s), stats recalculados`
+            );
+
+            return {
+              ...prev,
+              lessons: updatedLessons,
+              stats: newStats,
+              pagination: {
+                ...prev.pagination,
+                total: prev.pagination.total + result.lessons.length,
+              },
+            };
+          });
         }
 
         return true;
@@ -326,13 +478,21 @@ export function useTeacherLessons(
           throw new Error(result.error || 'Erro ao atualizar aula');
         }
 
-        // Update lesson in state
-        setState((prev) => ({
-          ...prev,
-          lessons: prev.lessons.map((lesson) =>
+        // 🆕 ATUALIZAR STATE E RECALCULAR STATS
+        setState((prev) => {
+          const updatedLessons = prev.lessons.map((lesson) =>
             lesson.id === lessonId ? { ...lesson, ...updates } : lesson
-          ),
-        }));
+          );
+          const newStats = calculateStatsFromLessons(updatedLessons);
+
+          console.log('✅ Aula atualizada, stats recalculados');
+
+          return {
+            ...prev,
+            lessons: updatedLessons,
+            stats: newStats,
+          };
+        });
 
         return true;
       } catch (error) {
@@ -377,20 +537,23 @@ export function useTeacherLessons(
           throw new Error(result.error || 'Erro ao cancelar aula');
         }
 
-        // Update lessons in state
-        setState((prev) => ({
-          ...prev,
-          lessons: prev.lessons.map((lesson) =>
+        // 🆕 ATUALIZAR STATE E RECALCULAR STATS
+        setState((prev) => {
+          const updatedLessons = prev.lessons.map((lesson) =>
             lesson.id === lessonId
               ? { ...lesson, status: 'CANCELLED' as const }
               : lesson
-          ),
-          stats: {
-            ...prev.stats,
-            scheduled: Math.max(0, prev.stats.scheduled - 1),
-            cancelled: prev.stats.cancelled + 1,
-          },
-        }));
+          );
+          const newStats = calculateStatsFromLessons(updatedLessons);
+
+          console.log('✅ Aula cancelada, stats recalculados');
+
+          return {
+            ...prev,
+            lessons: updatedLessons,
+            stats: newStats,
+          };
+        });
 
         return true;
       } catch (error) {
@@ -415,7 +578,14 @@ export function useTeacherLessons(
         preparation?: number;
       }
     ): Promise<boolean> => {
-      return await updateLesson(lessonId, attendance);
+      const success = await updateLesson(lessonId, attendance);
+
+      // Se foi marcar presença, também atualizar status para COMPLETED
+      if (success && attendance.studentPresent) {
+        await updateLesson(lessonId, { status: 'COMPLETED' });
+      }
+
+      return success;
     },
     [updateLesson]
   );
@@ -442,39 +612,58 @@ export function useTeacherLessons(
   // Update lesson in state
   const updateLessonInState = useCallback(
     (lessonId: string, updates: Partial<LessonData>) => {
-      setState((prev) => ({
-        ...prev,
-        lessons: prev.lessons.map((lesson) =>
+      setState((prev) => {
+        const updatedLessons = prev.lessons.map((lesson) =>
           lesson.id === lessonId ? { ...lesson, ...updates } : lesson
-        ),
-      }));
+        );
+        const newStats = calculateStatsFromLessons(updatedLessons);
+
+        return {
+          ...prev,
+          lessons: updatedLessons,
+          stats: newStats,
+        };
+      });
     },
     []
   );
 
   // Add lesson to state
   const addLessonToState = useCallback((lesson: LessonData) => {
-    setState((prev) => ({
-      ...prev,
-      lessons: [lesson, ...prev.lessons],
-      stats: {
-        ...prev.stats,
-        total: prev.stats.total + 1,
-        scheduled: prev.stats.scheduled + 1,
-      },
-    }));
+    setState((prev) => {
+      const updatedLessons = [lesson, ...prev.lessons];
+      const newStats = calculateStatsFromLessons(updatedLessons);
+
+      return {
+        ...prev,
+        lessons: updatedLessons,
+        stats: newStats,
+        pagination: {
+          ...prev.pagination,
+          total: prev.pagination.total + 1,
+        },
+      };
+    });
   }, []);
 
   // Remove lesson from state
   const removeLessonFromState = useCallback((lessonId: string) => {
-    setState((prev) => ({
-      ...prev,
-      lessons: prev.lessons.filter((lesson) => lesson.id !== lessonId),
-      stats: {
-        ...prev.stats,
-        total: Math.max(0, prev.stats.total - 1),
-      },
-    }));
+    setState((prev) => {
+      const updatedLessons = prev.lessons.filter(
+        (lesson) => lesson.id !== lessonId
+      );
+      const newStats = calculateStatsFromLessons(updatedLessons);
+
+      return {
+        ...prev,
+        lessons: updatedLessons,
+        stats: newStats,
+        pagination: {
+          ...prev.pagination,
+          total: Math.max(0, prev.pagination.total - 1),
+        },
+      };
+    });
   }, []);
 
   // Clear error

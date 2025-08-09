@@ -407,7 +407,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
                 {/* Profile Dropdown */}
                 {isProfileOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-elevated/95 backdrop-blur-xl rounded-2xl shadow-xl border border-theme-secondary z-50 p-2">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-theme-secondary backdrop-blur-xl rounded-2xl shadow-xl border border-theme-secondary z-50 p-2">
                     {/* User Info */}
                     <div className="px-3 py-2 border-b border-theme-secondary mb-2">
                       <p className="font-medium text-theme-primary">
