@@ -54,6 +54,8 @@ interface UseTeacherLessonsActions {
     isRecurring?: boolean;
     recurrenceType?: string;
     recurrenceEnd?: string;
+    workScoreIds?: string[]; // 🆕 PARTITURAS VINCULADAS
+    workIds?: string[]; // 🆕 OBRAS VINCULADAS (para referência futura)
   }) => Promise<boolean>;
 
   updateLesson: (

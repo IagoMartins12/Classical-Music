@@ -1309,7 +1309,7 @@ function EventDetailsModal({
               <div className="flex items-center space-x-3">
                 {event.status === 'SCHEDULED' && (
                   <Link
-                    href={`/teacher/lessons/${event.id}/edit`}
+                    href={`/teacher/lessons/${event.id}`}
                     className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
                   >
                     <FiEdit3 className="w-4 h-4" />
@@ -1466,7 +1466,7 @@ function DayEventsModal({
                       {event.status === 'SCHEDULED' && (
                         <>
                           <Link
-                            href={`/teacher/lessons/${event.id}/edit`}
+                            href={`/teacher/lessons/${event.id}`}
                             className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
                           >
                             <FiEdit3 className="w-4 h-4" />

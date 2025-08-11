@@ -547,6 +547,7 @@ export async function POST(request: NextRequest) {
       location,
       objectives = [],
       workScoreIds = [],
+      workIds = [], // 🆕 NOVO CAMPO PARA IDs DAS OBRAS
       topics = [],
       techniques = [],
       repertoire = [],

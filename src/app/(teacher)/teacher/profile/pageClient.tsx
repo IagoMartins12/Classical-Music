@@ -678,21 +678,8 @@ export default function TeacherProfilePageClient({
                         placeholder="Seu sobrenome"
                       />
                     </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Email (não editável)
-                      </label>
-                      <input
-                        type="email"
-                        value={personalForm.email}
-                        disabled
-                        className="input-classical w-full opacity-50 cursor-not-allowed"
-                      />
-                    </div>
                   </div>
 
-                  {/* 🆕 TELEFONE COM COMPONENTE INTERNACIONAL */}
                   <div>
                     <InternationalPhoneInput
                       value={personalForm.phone}

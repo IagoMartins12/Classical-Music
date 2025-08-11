@@ -1,4 +1,4 @@
-// app/teacher/lessons/[id]/pageClient.tsx - Client Component UNIFICADO (Detalhes + Edição)
+// app/teacher/lessons/[id]/pageClient.tsx - Client Component UNIFICADO (Detalhes + Edição) com Peças Musicais
 
 'use client';
 
@@ -28,6 +28,7 @@ import {
   FiRepeat,
   FiInfo,
   FiAlertTriangle,
+  FiMusic,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -43,6 +44,9 @@ import { useRouter } from 'next/navigation';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
+import WorkSelectionSection, {
+  LessonWork,
+} from '@/app/components/TeacherSystem/WorkSelectionSection';
 
 interface TeacherProfile {
   id: string;
@@ -93,6 +97,58 @@ const formatDatetimeForInput = (date: Date | string): string => {
   return localDate.toISOString().slice(0, 16); // Retorna formato YYYY-MM-DDTHH:mm
 };
 
+// 🆕 FUNÇÃO PARA CONVERTER WORKSCOREIDS EM LESSONWORK
+const convertWorkScoreIdsToLessonWorks = async (
+  workScoreIds: string[]
+): Promise<LessonWork[]> => {
+  if (!workScoreIds || workScoreIds.length === 0) return [];
+
+  try {
+    console.log('🔄 Convertendo workScoreIds para LessonWork:', workScoreIds);
+
+    const lessonWorks: LessonWork[] = [];
+
+    // Para cada workScoreId, buscar dados da partitura e obra
+    for (const scoreId of workScoreIds) {
+      try {
+        // Buscar dados da partitura
+        const response = await fetch(`/api/work-scores/${scoreId}`);
+        if (!response.ok) continue;
+
+        const scoreData = await response.json();
+
+        // Buscar dados da obra
+        const workResponse = await fetch(`/api/works/${scoreData.workId}`);
+        if (!workResponse.ok) continue;
+
+        const workData = await workResponse.json();
+
+        const lessonWork: LessonWork = {
+          workId: workData.id,
+          workTitle: workData.title,
+          composerName: workData.composer.fullName || workData.composer.name,
+          composerId: workData.composer.id,
+          scoreId: scoreData.id,
+          scoreTitle: scoreData.title,
+          scoreUrl: scoreData.downloadUrl,
+          scoreType: scoreData.type,
+          scoreSource: scoreData.source,
+        };
+
+        lessonWorks.push(lessonWork);
+        console.log('✅ Peça convertida:', lessonWork.workTitle);
+      } catch (error) {
+        console.warn('⚠️ Erro ao converter scoreId:', scoreId, error);
+      }
+    }
+
+    return lessonWorks;
+  } catch (error) {
+    console.error('❌ Erro na conversão:', error);
+    return [];
+  }
+};
+
 export default function TeacherLessonDetailsPageClient({
   lessonData,
   teacherProfile,
@@ -118,7 +174,7 @@ export default function TeacherLessonDetailsPageClient({
     markAttendance,
     completeLesson,
     cancelLesson,
-    deleteLesson, // 🆕 NOVA FUNÇÃO
+    deleteLesson,
     setEditMode,
   } = useLessonDetails(lessonData);
 
@@ -142,6 +198,10 @@ export default function TeacherLessonDetailsPageClient({
     summary: '',
     homework: '',
   });
+
+  // 🆕 ESTADO PARA PEÇAS MUSICAIS
+  const [editingWorks, setEditingWorks] = useState<LessonWork[]>([]);
+  const [loadingWorks, setLoadingWorks] = useState(false);
 
   // 🆕 ESTADOS PARA ADICIONAR NOVOS ITEMS
   const [newObjective, setNewObjective] = useState('');
@@ -167,6 +227,28 @@ export default function TeacherLessonDetailsPageClient({
       setLesson(lessonData);
     }
   }, [lessonData, setLesson]);
+
+  // 🆕 CARREGAR PEÇAS MUSICAIS QUANDO A AULA FOR CARREGADA
+  useEffect(() => {
+    const loadLessonWorks = async () => {
+      if (lesson && lesson.workScoreIds && lesson.workScoreIds.length > 0) {
+        setLoadingWorks(true);
+        try {
+          const works = await convertWorkScoreIdsToLessonWorks(
+            lesson.workScoreIds
+          );
+          setEditingWorks(works);
+          console.log('✅ Peças musicais carregadas:', works.length);
+        } catch (error) {
+          console.error('❌ Erro ao carregar peças musicais:', error);
+        } finally {
+          setLoadingWorks(false);
+        }
+      }
+    };
+
+    loadLessonWorks();
+  }, [lesson]);
 
   // Initialize edit states when editing starts
   useEffect(() => {
@@ -207,6 +289,60 @@ export default function TeacherLessonDetailsPageClient({
       setEditingTechniques([...lesson.techniques]);
     }
   }, [lesson]);
+
+  // 🆕 HANDLER PARA MUDANÇAS NAS PEÇAS MUSICAIS
+  const handleWorksChange = useCallback((works: LessonWork[]) => {
+    console.log('🎵 Peças musicais atualizadas:', works);
+    setEditingWorks(works);
+  }, []);
+
+  // 🆕 FUNÇÃO PARA SALVAR PEÇAS MUSICAIS
+  const handleSaveWorks = useCallback(async () => {
+    if (!lesson?.id) return false;
+
+    try {
+      console.log('💾 Salvando peças musicais...');
+
+      // Converter LessonWork[] para workScoreIds[]
+      const workScoreIds = editingWorks
+        .filter((work) => work.scoreId)
+        .map((work) => work.scoreId!);
+
+      const workIds = editingWorks.map((work) => work.workId);
+
+      const response = await fetch(`/api/lessons/${lesson.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          workScoreIds,
+          workIds, // Para referência futura
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Erro ao atualizar peças musicais');
+      }
+
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.error || 'Erro ao atualizar peças musicais');
+      }
+
+      // Atualizar o estado local
+      setLesson({
+        ...lesson,
+        workScoreIds,
+      });
+
+      console.log('✅ Peças musicais salvas com sucesso');
+      return true;
+    } catch (error) {
+      console.error('❌ Erro ao salvar peças musicais:', error);
+      return false;
+    }
+  }, [editingWorks, lesson, setLesson]);
 
   // Format functions
   const formatDateTime = (date: Date | string) => {
@@ -332,6 +468,7 @@ export default function TeacherLessonDetailsPageClient({
       setEditMode('basicInfo', false);
     }
   }, [editingBasicInfo, updateBasicInfo, setEditMode]);
+
   const handleSaveObjectives = useCallback(async () => {
     const cleanObjectives = editingObjectives.filter((obj) => obj.trim());
     const success = await updateObjectives(cleanObjectives);
@@ -838,6 +975,105 @@ export default function TeacherLessonDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
+            {/* 🆕 SEÇÃO DE PEÇAS MUSICAIS */}
+            <AnimatedItem direction="up" springType="gentle">
+              <AnimatedCard hover="none" className="classical-card p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
+                    <FiMusic className="w-5 h-5" />
+                    <span>Peças Musicais</span>
+                  </h2>
+                  {canEditLesson && (
+                    <button
+                      onClick={handleSaveWorks}
+                      disabled={loading.update || loadingWorks}
+                      className="btn-classical-secondary flex items-center space-x-1 text-sm"
+                    >
+                      {loading.update || loadingWorks ? (
+                        <FiRefreshCw className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <FiSave className="w-3 h-3" />
+                      )}
+                      <span>
+                        {loading.update || loadingWorks
+                          ? 'Salvando...'
+                          : 'Salvar Peças'}
+                      </span>
+                    </button>
+                  )}
+                </div>
+
+                {loadingWorks ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="flex items-center space-x-3">
+                      <FiRefreshCw className="w-5 h-5 animate-spin text-brand-primary" />
+                      <span className="text-theme-secondary">
+                        Carregando peças musicais...
+                      </span>
+                    </div>
+                  </div>
+                ) : canEditLesson ? (
+                  <WorkSelectionSection
+                    selectedWorks={editingWorks}
+                    onWorksChange={handleWorksChange}
+                    maxWorks={4}
+                    disabled={loading.update}
+                  />
+                ) : editingWorks.length > 0 ? (
+                  <div className="space-y-3">
+                    <h4 className="text-sm font-medium text-theme-primary">
+                      Peças vinculadas à aula ({editingWorks.length})
+                    </h4>
+                    <div className="space-y-2">
+                      {editingWorks.map((work, index) => (
+                        <div
+                          key={work.workId}
+                          className="bg-theme-elevated border border-theme-secondary rounded-lg p-4"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <FiMusic className="w-4 h-4 text-accent-blue" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center space-x-2">
+                                <h5 className="font-medium text-theme-primary">
+                                  {work.workTitle}
+                                </h5>
+                                <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-0.5 rounded">
+                                  #{index + 1}
+                                </span>
+                              </div>
+                              <p className="text-sm text-theme-tertiary">
+                                {work.composerName}
+                              </p>
+                              {work.scoreId && (
+                                <div className="mt-2 flex items-center space-x-2">
+                                  <div className="flex items-center space-x-1 text-xs text-accent-green">
+                                    <FiCheck className="w-3 h-3" />
+                                    <span>Partitura: {work.scoreTitle}</span>
+                                  </div>
+                                  <span className="text-xs text-theme-tertiary">
+                                    ({work.scoreSource})
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <FiMusic className="w-12 h-12 text-theme-tertiary mx-auto mb-4 opacity-50" />
+                    <p className="text-theme-secondary">
+                      Nenhuma peça musical vinculada a esta aula
+                    </p>
+                  </div>
+                )}
+              </AnimatedCard>
+            </AnimatedItem>
+
             {/* Objectives - MANTIDO COM VERIFICAÇÃO DE CANCELAMENTO */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
@@ -954,7 +1190,7 @@ export default function TeacherLessonDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* 🆕 Topics & Techniques - MANTIDO COM VERIFICAÇÃO DE CANCELAMENTO */}
+            {/* Topics & Techniques - MANTIDO COM VERIFICAÇÃO DE CANCELAMENTO */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">

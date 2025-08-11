@@ -708,7 +708,7 @@ export default function TeacherLessonsPageClient({
                                     </button>
 
                                     <Link
-                                      href={`/teacher/lessons/${lesson.id}/edit`}
+                                      href={`/teacher/lessons/${lesson.id}`}
                                       className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-theme-primary"
                                     >
                                       <FiEdit3 className="w-4 h-4" />
