@@ -9,15 +9,15 @@ import { getTeacherProfile } from '@/app/requests/teacher-request';
 export interface TeacherProfileData {
   id: string;
   userId: string;
-  bio?: string;
+  bio?: string | null;
   specialties: string[];
   instruments: string[];
-  experience?: string;
-  education?: string;
-  achievements?: string;
+  experience?: string | null;
+  education?: string | null;
+  achievements?: string | null;
   isPublicProfile: boolean;
   profileImage?: string;
-  website?: string;
+  website?: string | null;
   socialMedia?: any;
   publicBio?: string;
   highlightedWorks: string[];
@@ -30,13 +30,6 @@ export interface TeacherProfileData {
   status: string;
   isVerified: boolean;
   verifiedAt?: Date;
-  allowProgressReports: boolean;
-  reportPreferences?: any;
-  totalStudents: number;
-  totalLessons: number;
-  averageRating?: number;
-  totalReviews: number;
-  completionRate?: number;
   user: {
     firstName?: string | null;
     lastName?: string | null;

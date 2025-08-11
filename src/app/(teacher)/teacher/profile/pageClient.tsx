@@ -33,7 +33,7 @@ import {
   PageContainer,
   SequentialGrid,
 } from '../../../components/animation/AnimatedComponents';
-import { TeacherProfileData, TeacherProfile } from './pageServer';
+import { TeacherProfileData, TeacherProfile } from './pageServer'; // ✅ Importar enum
 import LocationSelector, {
   LocationData,
 } from '../../../components/Common/LocationSelector';
@@ -48,6 +48,7 @@ import {
   convertLocationDataToDatabase,
   isLocationDataComplete,
 } from '@/app/utils/locationUtils';
+import { TeacherStatus } from '@prisma/client';
 
 interface TeacherProfilePageClientProps {
   initialData: TeacherProfileData | null;
@@ -124,10 +125,6 @@ export default function TeacherProfilePageClient({
   const [error, setError] = useState(errorMessage);
   const [successMessage, setSuccessMessage] = useState('');
 
-  console.log('DEBUG INFO', {
-    initialData,
-    teacherProfile,
-  });
   // 🔧 INICIALIZAÇÃO CORRETA DOS FORMS COM DADOS COMPLETOS
   const [personalForm, setPersonalForm] = useState(() => ({
     firstName: teacherProfile.name.split(' ')[0] || '',
@@ -230,7 +227,6 @@ export default function TeacherProfilePageClient({
   };
 
   const handleLocationChange = (location: LocationData) => {
-    console.log('📍 Localização alterada:', location);
     setPersonalForm((prev) => ({ ...prev, location }));
   };
 
@@ -259,7 +255,7 @@ export default function TeacherProfilePageClient({
     return true;
   };
 
-  // 🔧 FUNÇÃO SALVAR DADOS PESSOAIS CORRIGIDA
+  // 🔧 FUNÇÃO SALVAR DADOS PESSOAIS CORRIGIDA SEM RELOAD FORÇADO
   const savePersonalData = useCallback(async () => {
     if (!validatePersonalForm()) {
       return;
@@ -282,8 +278,6 @@ export default function TeacherProfilePageClient({
         country: locationForDatabase.country,
       };
 
-      console.log('💾 Enviando dados pessoais:', userData);
-
       const response = await fetch('/api/teacher/profile', {
         method: 'PUT',
         headers: {
@@ -302,9 +296,21 @@ export default function TeacherProfilePageClient({
       const result = await response.json();
 
       if (result.success) {
+        // ✅ ATUALIZAR ESTADO IMEDIATAMENTE SEM RELOAD
         setData(result.profile);
         setEditingSection(null);
         showSuccess('Dados pessoais salvos com sucesso!');
+
+        // ✅ ATUALIZAR FORMS COM OS NOVOS DADOS
+        setPersonalForm((prev) => ({
+          ...prev,
+          phone: result.profile.user.phone || '',
+          location: convertDatabaseToLocationData({
+            country: result.profile.user.country,
+            state: result.profile.user.state,
+            city: result.profile.user.city,
+          }),
+        }));
       }
     } catch (error) {
       console.error('❌ Erro ao salvar dados pessoais:', error);
@@ -316,14 +322,12 @@ export default function TeacherProfilePageClient({
     }
   }, [personalForm]);
 
-  // 🔧 FUNÇÃO SALVAR DADOS PROFISSIONAIS CORRIGIDA
+  // 🔧 FUNÇÃO SALVAR DADOS PROFISSIONAIS CORRIGIDA SEM RELOAD
   const saveProfessionalData = useCallback(async () => {
     setSaving(true);
     setError('');
 
     try {
-      console.log('💾 Enviando dados profissionais:', professionalForm);
-
       const response = await fetch('/api/teacher/profile', {
         method: 'PUT',
         headers: {
@@ -344,9 +348,20 @@ export default function TeacherProfilePageClient({
       const result = await response.json();
 
       if (result.success) {
+        // ✅ ATUALIZAR ESTADO IMEDIATAMENTE
         setData(result.profile);
         setEditingSection(null);
         showSuccess('Dados profissionais salvos com sucesso!');
+
+        // ✅ SINCRONIZAR FORM COM DADOS ATUALIZADOS
+        setProfessionalForm({
+          bio: result.profile.bio || '',
+          experience: result.profile.experience || '',
+          education: result.profile.education || '',
+          achievements: result.profile.achievements || '',
+          website: result.profile.website || '',
+          socialMedia: result.profile.socialMedia || {},
+        });
       }
     } catch (error) {
       console.error('❌ Erro ao salvar dados profissionais:', error);
@@ -360,14 +375,12 @@ export default function TeacherProfilePageClient({
     }
   }, [professionalForm]);
 
-  // 🔧 FUNÇÃO SALVAR DADOS DE ENSINO CORRIGIDA
+  // 🔧 FUNÇÃO SALVAR DADOS DE ENSINO CORRIGIDA SEM RELOAD
   const saveTeachingData = useCallback(async () => {
     setSaving(true);
     setError('');
 
     try {
-      console.log('💾 Enviando dados de ensino:', teachingForm);
-
       const response = await fetch('/api/teacher/profile', {
         method: 'PUT',
         headers: {
@@ -386,9 +399,22 @@ export default function TeacherProfilePageClient({
       const result = await response.json();
 
       if (result.success) {
+        // ✅ ATUALIZAR ESTADO IMEDIATAMENTE
         setData(result.profile);
         setEditingSection(null);
         showSuccess('Configurações de ensino salvas com sucesso!');
+
+        // ✅ SINCRONIZAR FORM COM DADOS ATUALIZADOS
+        setTeachingForm({
+          instruments: result.profile.instruments || [],
+          specialties: result.profile.specialties || [],
+          teachingMethod: result.profile.teachingMethod || '',
+          ageGroups: result.profile.ageGroups || [],
+          skillLevels: result.profile.skillLevels || [],
+          defaultLessonDuration: result.profile.defaultLessonDuration || 60,
+          maxStudentsPerWeek: result.profile.maxStudentsPerWeek || 50,
+          timezone: result.profile.timezone || 'America/Sao_Paulo',
+        });
       }
     } catch (error) {
       console.error('❌ Erro ao salvar dados de ensino:', error);
@@ -402,14 +428,12 @@ export default function TeacherProfilePageClient({
     }
   }, [teachingForm]);
 
-  // 🔧 FUNÇÃO SALVAR PERFIL PÚBLICO CORRIGIDA
+  // 🔧 FUNÇÃO SALVAR PERFIL PÚBLICO CORRIGIDA SEM RELOAD
   const savePublicData = useCallback(async () => {
     setSaving(true);
     setError('');
 
     try {
-      console.log('💾 Enviando dados públicos:', publicForm);
-
       const response = await fetch('/api/teacher/profile', {
         method: 'PUT',
         headers: {
@@ -428,9 +452,17 @@ export default function TeacherProfilePageClient({
       const result = await response.json();
 
       if (result.success) {
+        // ✅ ATUALIZAR ESTADO IMEDIATAMENTE
         setData(result.profile);
         setEditingSection(null);
         showSuccess('Perfil público atualizado com sucesso!');
+
+        // ✅ SINCRONIZAR FORM COM DADOS ATUALIZADOS
+        setPublicForm({
+          isPublicProfile: result.profile.isPublicProfile || false,
+          publicBio: result.profile.publicBio || '',
+          highlightedWorks: result.profile.highlightedWorks || [],
+        });
       }
     } catch (error) {
       console.error('❌ Erro ao salvar perfil público:', error);
@@ -465,6 +497,20 @@ export default function TeacherProfilePageClient({
     }));
   };
 
+  // ✅ HELPER PARA EXIBIR STATUS DO PROFESSOR
+  const getStatusDisplay = (status: TeacherStatus) => {
+    switch (status) {
+      case TeacherStatus.ACTIVE:
+        return { label: 'Ativo', color: 'accent-green' };
+      case TeacherStatus.PENDING:
+        return { label: 'Pendente', color: 'accent-yellow' };
+      case TeacherStatus.INACTIVE:
+        return { label: 'Inativo', color: 'accent-red' };
+      default:
+        return { label: status || 'Desconhecido', color: 'theme-tertiary' };
+    }
+  };
+
   // Render error state
   if (error && !data) {
     return (
@@ -482,7 +528,7 @@ export default function TeacherProfilePageClient({
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="btn-classical-primary flex items-center space-x-2"
+              className="btn-classical-primary flex mx-auto items-center space-x-2"
             >
               <FiRefreshCw className="w-4 h-4" />
               <span>Recarregar Página</span>
@@ -559,7 +605,7 @@ export default function TeacherProfilePageClient({
 
         {/* Profile Sections */}
         <div className="space-y-8">
-          {/* 🔧 Personal Information - SEÇÃO CORRIGIDA COM LOCATION E TELEFONE */}
+          {/* 🔧 Personal Information - SEÇÃO CORRIGIDA */}
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -682,7 +728,7 @@ export default function TeacherProfilePageClient({
                       )}
                   </div>
 
-                  {/* 🆕 LOCALIZAÇÃO COM COMPONENTE LOCATION SELECTOR */}
+                  {/* 🆕 LOCALIZAÇÃO */}
                   <div>
                     <div className="flex items-center space-x-2 mb-4">
                       <FiMapPin className="w-4 h-4 text-brand-primary" />
@@ -792,14 +838,29 @@ export default function TeacherProfilePageClient({
                       <label className="text-sm text-theme-tertiary">
                         Status
                       </label>
-                      <div
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                          data?.status === 'ACTIVE'
-                            ? 'bg-accent-green/10 text-accent-green'
-                            : 'bg-accent-yellow/10 text-accent-yellow'
-                        }`}
-                      >
-                        {data?.status === 'ACTIVE' ? 'Ativo' : data?.status}
+                      <div className="flex items-center space-x-2">
+                        {data?.status && (
+                          <div
+                            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-${
+                              getStatusDisplay(data.status as TeacherStatus)
+                                .color
+                            }/10 text-${
+                              getStatusDisplay(data.status as TeacherStatus)
+                                .color
+                            }`}
+                          >
+                            {
+                              getStatusDisplay(data.status as TeacherStatus)
+                                .label
+                            }
+                          </div>
+                        )}
+                        {data?.isVerified && (
+                          <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent-green/10 text-accent-green">
+                            <FiCheck className="w-3 h-3 mr-1" />
+                            Verificado
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -807,6 +868,8 @@ export default function TeacherProfilePageClient({
               )}
             </div>
           </AnimatedCard>
+
+          {/* O resto das seções - Professional, Teaching e Public */}
 
           {/* Professional Information */}
           <AnimatedCard hover="lift" className="classical-card">
@@ -1509,6 +1572,10 @@ export default function TeacherProfilePageClient({
                       <div className="text-theme-primary font-medium mt-1">
                         {data?.timezone === 'America/Sao_Paulo'
                           ? 'São Paulo (UTC-3)'
+                          : data?.timezone === 'America/Rio_Branco'
+                          ? 'Rio Branco (UTC-5)'
+                          : data?.timezone === 'America/Manaus'
+                          ? 'Manaus (UTC-4)'
                           : data?.timezone}
                       </div>
                     </div>

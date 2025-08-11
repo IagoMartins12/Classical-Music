@@ -23,11 +23,6 @@ const HeroMainPage = () => {
 
           {/* Conteúdo sobreposto */}
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-            <div className="mb-2">
-              <span className="inline-block px-3 py-1 bg-blue-600/90 rounded-full text-sm font-medium mb-3">
-                📚 Artigo em Destaque
-              </span>
-            </div>
             <h2 className="text-2xl lg:text-3xl font-bold mb-3 leading-tight">
               História da Música Clássica
             </h2>
@@ -75,11 +70,11 @@ const HeroMainPage = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-              <div className="mb-2">
+              {/* <div className="mb-2">
                 <span className="inline-block px-2 py-1 bg-purple-600/90 rounded-full text-xs font-medium mb-2">
                   🎻 Instrumentos
                 </span>
-              </div>
+              </div> */}
               <h3 className="text-lg font-bold mb-2">
                 Instrumentação Clássica
               </h3>
@@ -124,11 +119,11 @@ const HeroMainPage = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-              <div className="mb-2">
+              {/* <div className="mb-2">
                 <span className="inline-block px-2 py-1 bg-green-600/90 rounded-full text-xs font-medium mb-2">
                   🎼 Sobre Nós
                 </span>
-              </div>
+              </div> */}
               <h3 className="text-lg font-bold mb-2">Nossa Missão</h3>
               <p className="text-gray-200 text-sm mb-3 leading-snug">
                 Democratizar o acesso à música clássica através de uma

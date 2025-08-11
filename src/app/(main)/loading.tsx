@@ -11,7 +11,6 @@ import {
   FiClock,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano, GiTreasureMap } from 'react-icons/gi';
-import Navbar from '../components/Navbar';
 
 export default function HomeLoading() {
   return (

@@ -62,6 +62,7 @@ export interface ThemeColors {
 
 // config/theme.ts
 export const THEME_CONFIG: Record<ThemeMode, ThemeColors> = {
+  // DARK MODE - MANTIDO EXATAMENTE COMO ESTAVA
   dark: {
     background: {
       primary: '#0a0a0a',
@@ -108,72 +109,76 @@ export const THEME_CONFIG: Record<ThemeMode, ThemeColors> = {
     },
   },
 
+  // LIGHT MODE - APRIMORADO E MAIS ELEGANTE
   light: {
     background: {
-      primary: '#ffffff',
-      secondary: '#f8fafc',
-      tertiary: '#f1f5f9',
-      elevated: '#ffffff',
-      overlay: 'rgba(0, 0, 0, 0.4)',
+      primary: '#faf9f6', // Cream muito suave em vez de branco puro
+      secondary: '#f4f1eb', // Tom de papel antigo
+      tertiary: '#ede8df', // Pergaminho suave
+      elevated: '#ffffff', // Branco para elementos elevados
+      overlay: 'rgba(45, 42, 35, 0.75)', // Overlay mais elegante
     },
     text: {
-      primary: '#1e293b',
-      secondary: '#475569',
-      tertiary: '#64748b',
-      inverse: '#ffffff',
+      primary: '#2d2a23', // Marrom escuro elegante em vez de preto
+      secondary: '#4a453c', // Tom intermediário aquecido
+      tertiary: '#6b6358', // Cinza aquecido
+      inverse: '#faf9f6', // Cream para texto em backgrounds escuros
     },
     brand: {
-      primary: '#c49b3d',
-      secondary: '#d97706',
-      gradient: 'linear-gradient(135deg, #c49b3d 0%, #d97706 100%)',
+      primary: '#b8941f', // Dourado mais profundo e elegante
+      secondary: '#d4af37', // Dourado clássico
+      gradient:
+        'linear-gradient(135deg, #b8941f 0%, #d4af37 50%, #e6c554 100%)',
     },
     accent: {
-      gold: '#c49b3d',
-      amber: '#d97706',
-      purple: '#7c3aed',
-      blue: '#2563eb',
-      green: '#059669',
-      red: '#dc2626',
+      gold: '#b8941f',
+      amber: '#d4af37',
+      purple: '#5b21b6', // Roxo mais profundo
+      blue: '#1e40af', // Azul mais elegante
+      green: '#059669', // Verde mais sofisticado
+      red: '#dc2626', // Vermelho mais refinado
     },
     border: {
-      primary: 'rgba(196, 155, 61, 0.3)',
-      secondary: 'rgba(71, 85, 105, 0.2)',
-      accent: '#c49b3d',
+      primary: 'rgba(184, 148, 31, 0.25)', // Dourado suave
+      secondary: 'rgba(107, 99, 88, 0.15)', // Cinza aquecido muito suave
+      accent: '#b8941f', // Dourado para acentos
     },
     interactive: {
-      hover: 'rgba(196, 155, 61, 0.1)',
-      active: 'rgba(196, 155, 61, 0.2)',
-      focus: 'rgba(196, 155, 61, 0.3)',
-      disabled: 'rgba(100, 116, 139, 0.3)',
+      hover: 'rgba(184, 148, 31, 0.08)', // Hover dourado muito suave
+      active: 'rgba(184, 148, 31, 0.15)', // Active um pouco mais visível
+      focus: 'rgba(184, 148, 31, 0.25)', // Focus bem visível
+      disabled: 'rgba(107, 99, 88, 0.25)', // Disabled cinza aquecido
     },
     shadow: {
-      small: '0 1px 3px rgba(0, 0, 0, 0.1)',
-      medium: '0 4px 12px rgba(0, 0, 0, 0.1)',
-      large: '0 8px 25px rgba(0, 0, 0, 0.15)',
-      glow: '0 4px 20px rgba(196, 155, 61, 0.25)',
+      small: '0 2px 8px rgba(45, 42, 35, 0.08)',
+      medium: '0 8px 24px rgba(45, 42, 35, 0.12)',
+      large: '0 16px 40px rgba(45, 42, 35, 0.15)',
+      glow: '0 8px 32px rgba(184, 148, 31, 0.15)',
     },
   },
 };
 
 // Gradients específicos para cada tema
 export const THEME_GRADIENTS = {
+  // DARK MODE - MANTIDO EXATAMENTE COMO ESTAVA
   dark: {
     primary: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)',
     card: 'linear-gradient(135deg, rgba(45, 55, 72, 0.6) 0%, rgba(26, 26, 46, 0.6) 100%)',
     card2:
       'linear-gradient(90deg, rgba(51, 65, 85, 0.3) 0%, rgba(30, 41, 59, 0.3) 50%, rgba(51, 65, 85, 0.3) 100%)',
-
     hero: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%)',
     overlay:
       'linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%)',
   },
+
+  // LIGHT MODE - GRADIENTES ELEGANTES E CREMOSOS
   light: {
-    primary: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%)',
-    card: 'linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(255, 255, 255, 0.9) 100%)',
+    primary: 'linear-gradient(135deg, #faf9f6 0%, #f4f1eb 50%, #ede8df 100%)',
+    card: 'linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(244, 241, 235, 0.6) 100%)',
     card2:
-      'linear-gradient(90deg, rgba(241, 245, 249, 0.3) 0%, rgba(226, 232, 240, 0.3) 50%, rgba(241, 245, 249, 0.3) 100%)',
-    hero: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
+      'linear-gradient(90deg, rgba(255, 255, 255, 0.4) 0%, rgba(244, 241, 235, 0.4) 50%, rgba(255, 255, 255, 0.4) 100%)',
+    hero: 'linear-gradient(135deg, #faf9f6 0%, #f4f1eb 100%)',
     overlay:
-      'linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 100%)',
+      'linear-gradient(to bottom, transparent 0%, rgba(45, 42, 35, 0.4) 100%)',
   },
 };

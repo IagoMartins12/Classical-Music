@@ -90,7 +90,6 @@ export default async function WorkDetailsServer({
         audioData={audioData} // 🆕 Dados de áudio processados
         isAdmin={isAdmin}
         canEditMedia={canEditMedia}
-        relatedWorks={relatedWorks}
         learningData={{ wantToLearn: [], learned: [] }}
       />
     );

@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import { Toaster } from 'react-hot-toast';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import AuthProvider from '../providers/AuthProvider';
 import { FavoritesProvider } from '../providers/FavoritesProvider';
 import AdsProvider from '../components/Ads/AdsProvider';
 

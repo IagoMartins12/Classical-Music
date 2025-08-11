@@ -41,7 +41,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
             <div className="relative w-24 h-24 md:w-28 md:h-28">
               {/* Loading skeleton */}
               {!imageLoaded && !imageError && (
-                <div className="absolute inset-0 loading-skeleton rounded-full"></div>
+                <div className="absolute  loading-skeleton rounded-full"></div>
               )}
 
               {/* Portrait image or fallback */}
@@ -57,8 +57,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
                     }`}
                     onLoad={() => setImageLoaded(true)}
                     onError={() => setImageError(true)}
-                    priority={false}
-                    loading="lazy"
+                    priority
                   />
 
                   {/* Overlay gradient */}

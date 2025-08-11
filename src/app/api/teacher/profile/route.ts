@@ -1,44 +1,54 @@
-// app/api/teacher/profile/route.ts - VERSÃO CORRIGIDA
-// app/api/lessons/works/route.ts
-// app/api/overview/route.ts
-// app/api/analytics/individual/route.ts
-// app/api/stats/system/route.ts
-// app/api/reviews/route.ts
-// app/api/student/profile/route.ts
-// app/api/assignments/route.ts
-// app/api/lessons/[id]/route.ts
-// app/api/student/calendar/route.ts
-// app/api/student/dashboard/route.ts
-// app/api/teacher/calendar/route.ts
-// app/api/teacher/dashboard/route.ts
-// app/api/lessons/route.ts
-// app/api/teacher/students/route.ts
-// app/api/teacher/students/search/route.ts
+// app/api/teacher/profile/route.ts - VERSÃO CORRIGIDA COM CACHE E VALIDAÇÃO
+
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
-import { revalidateTag } from 'next/cache';
+import { revalidateTag, revalidatePath } from 'next/cache';
 
-// Função auxiliar para revalidar cache de teacher profile
+// Função auxiliar para revalidar cache de teacher profile - MELHORADA
 async function revalidateTeacherProfileData(userId: string) {
   console.log(
     `🔄 [CACHE] Revalidating teacher profile data for user ${userId}`
   );
 
-  // Tags específicas de teacher profile
-  revalidateTag('teacher-profile');
-  revalidateTag('teacher-profile-data');
-  revalidateTag('teacher-profile-extended-data');
-  revalidateTag('teacher-dashboard');
-  revalidateTag('teacher-dashboard-data');
+  try {
+    // Tags específicas de teacher profile
+    revalidateTag('teacher-profile');
+    revalidateTag('teacher-profile-data');
+    revalidateTag('teacher-profile-extended-data');
+    revalidateTag('teacher-dashboard');
+    revalidateTag('teacher-dashboard-data');
 
-  // Tag específica do usuário
-  revalidateTag(`teacher-${userId}`);
+    // Tag específica do usuário
+    revalidateTag(`teacher-${userId}`);
+    revalidateTag(`user-${userId}`);
 
-  console.log(
-    `✅ [CACHE] Teacher profile cache revalidated for user ${userId}`
-  );
+    // Paths específicos
+    revalidatePath('/teacher/profile');
+    revalidatePath('/teacher/dashboard');
+    revalidatePath('/api/teacher/profile');
+
+    // Tags adicionais para páginas que podem usar dados de teacher
+    revalidateTag('public-teachers');
+    revalidateTag('teachers-list');
+
+    console.log(
+      `✅ [CACHE] Teacher profile cache revalidated for user ${userId}`
+    );
+  } catch (error) {
+    console.error(
+      `❌ [CACHE] Error revalidating cache for user ${userId}:`,
+      error
+    );
+  }
+}
+
+// Enum para status do teacher (baseado no schema)
+enum TeacherStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+  PENDING = 'PENDING',
 }
 
 interface TeacherProfileData {
@@ -72,9 +82,10 @@ interface TeacherProfileData {
   skillLevels: string[];
 
   // Status e verificação
-  status: string;
+  status: TeacherStatus;
   isVerified: boolean;
   verifiedAt?: Date;
+  verifiedBy?: string; // ✅ Adicionado conforme schema
 
   // Configurações de relatórios
   allowProgressReports: boolean;
@@ -87,12 +98,14 @@ interface TeacherProfileData {
   totalReviews: number;
   completionRate?: number;
 
-  // User data
+  // User data - ✅ CORRIGIDO COM CAMPOS DE TELEFONE
   user: {
     firstName?: string | null;
     lastName?: string | null;
     email?: string | null;
     phone?: string | null;
+    phoneCountryCode?: string | null; // ✅ Novo campo conforme schema
+    phoneNumber?: string | null; // ✅ Novo campo conforme schema
     city?: string | null;
     state?: string | null;
     country?: string | null;
@@ -104,7 +117,7 @@ interface TeacherProfileData {
   updatedAt: Date;
 }
 
-// GET - Buscar perfil do professor (sem mudanças - sem revalidação)
+// GET - Buscar perfil do professor (MANTIDO IGUAL)
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -130,6 +143,8 @@ export async function GET(request: NextRequest) {
             lastName: true,
             email: true,
             phone: true,
+            phoneCountryCode: true, // ✅ Incluído
+            phoneNumber: true, // ✅ Incluído
             city: true,
             state: true,
             country: true,
@@ -153,7 +168,7 @@ export async function GET(request: NextRequest) {
           ageGroups: [],
           skillLevels: [],
           highlightedWorks: [],
-          status: 'PENDING',
+          status: TeacherStatus.PENDING,
           isVerified: false,
           isPublicProfile: false,
           allowProgressReports: true,
@@ -168,6 +183,8 @@ export async function GET(request: NextRequest) {
               lastName: true,
               email: true,
               phone: true,
+              phoneCountryCode: true,
+              phoneNumber: true,
               city: true,
               state: true,
               country: true,
@@ -198,9 +215,10 @@ export async function GET(request: NextRequest) {
         teachingMethod: newTeacherProfile.teachingMethod || undefined,
         ageGroups: newTeacherProfile.ageGroups,
         skillLevels: newTeacherProfile.skillLevels,
-        status: newTeacherProfile.status,
+        status: newTeacherProfile.status as TeacherStatus,
         isVerified: newTeacherProfile.isVerified,
         verifiedAt: newTeacherProfile.verifiedAt || undefined,
+        verifiedBy: newTeacherProfile.verifiedBy || undefined, // ✅ Incluído
         allowProgressReports: newTeacherProfile.allowProgressReports,
         reportPreferences: newTeacherProfile.reportPreferences,
         totalStudents: newTeacherProfile.totalStudents,
@@ -220,33 +238,34 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Formatar perfil existente
+    // ✅ Formatar perfil existente COM TODOS OS CAMPOS
     const profileData: TeacherProfileData = {
       id: teacherProfile.id,
       userId: teacherProfile.userId,
       bio: teacherProfile.bio || undefined,
-      specialties: teacherProfile.specialties,
-      instruments: teacherProfile.instruments,
+      specialties: teacherProfile.specialties || [],
+      instruments: teacherProfile.instruments || [],
       experience: teacherProfile.experience || undefined,
       education: teacherProfile.education || undefined,
       achievements: teacherProfile.achievements || undefined,
       isPublicProfile: teacherProfile.isPublicProfile,
       profileImage: teacherProfile.profileImage || undefined,
       website: teacherProfile.website || undefined,
-      socialMedia: teacherProfile.socialMedia,
+      socialMedia: teacherProfile.socialMedia || {},
       publicBio: teacherProfile.publicBio || undefined,
-      highlightedWorks: teacherProfile.highlightedWorks,
+      highlightedWorks: teacherProfile.highlightedWorks || [],
       defaultLessonDuration: teacherProfile.defaultLessonDuration,
       maxStudentsPerWeek: teacherProfile.maxStudentsPerWeek,
       timezone: teacherProfile.timezone,
       teachingMethod: teacherProfile.teachingMethod || undefined,
-      ageGroups: teacherProfile.ageGroups,
-      skillLevels: teacherProfile.skillLevels,
-      status: teacherProfile.status,
+      ageGroups: teacherProfile.ageGroups || [],
+      skillLevels: teacherProfile.skillLevels || [],
+      status: teacherProfile.status as TeacherStatus,
       isVerified: teacherProfile.isVerified,
       verifiedAt: teacherProfile.verifiedAt || undefined,
+      verifiedBy: teacherProfile.verifiedBy || undefined,
       allowProgressReports: teacherProfile.allowProgressReports,
-      reportPreferences: teacherProfile.reportPreferences,
+      reportPreferences: teacherProfile.reportPreferences || {},
       totalStudents: teacherProfile.totalStudents,
       totalLessons: teacherProfile.totalLessons,
       averageRating: teacherProfile.averageRating || undefined,
@@ -273,7 +292,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PUT - Atualizar perfil do professor COM REVALIDAÇÃO E VALIDAÇÃO MELHORADA
+// PUT - Atualizar perfil do professor COM REVALIDAÇÃO MELHORADA
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -312,8 +331,8 @@ export async function PUT(request: NextRequest) {
         'firstName',
         'lastName',
         'phone',
-        'phoneCountryCode', // 🆕 Novo campo
-        'phoneNumber', // 🆕 Novo campo
+        'phoneCountryCode', // ✅ Novo campo
+        'phoneNumber', // ✅ Novo campo
         'city',
         'state',
         'country',
@@ -327,7 +346,14 @@ export async function PUT(request: NextRequest) {
           // 🔧 Tratamento especial para campos que podem ser null
           if (
             userData[key] === '' &&
-            ['phone', 'city', 'state', 'country'].includes(key)
+            [
+              'phone',
+              'phoneCountryCode',
+              'phoneNumber',
+              'city',
+              'state',
+              'country',
+            ].includes(key)
           ) {
             userUpdateData[key] = null;
           } else {
@@ -396,7 +422,8 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    // 🔧 ATUALIZAR DADOS DO PROFESSOR COM VALIDAÇÃO MELHORADA
+    // 🔧 ATUALIZAR DADOS DO PROFESSOR COM VALIDAÇÃO CORRIGIDA
+    console.log('TEACHER DATA', teacherData);
     if (teacherData) {
       const allowedTeacherFields = [
         'bio',
@@ -428,7 +455,6 @@ export async function PUT(request: NextRequest) {
           allowedTeacherFields.includes(key) &&
           teacherData[key] !== undefined
         ) {
-          // 🔧 Validação específica por campo
           const value = teacherData[key];
 
           switch (key) {
@@ -451,7 +477,7 @@ export async function PUT(request: NextRequest) {
             case 'ageGroups':
             case 'skillLevels':
             case 'highlightedWorks':
-              // Validar arrays
+              // ✅ CORREÇÃO: Validar arrays e garantir que arrays vazios também sejam salvos
               if (Array.isArray(value)) {
                 teacherUpdateData[key] = value;
               }
@@ -473,7 +499,7 @@ export async function PUT(request: NextRequest) {
               break;
 
             case 'website':
-              // Validar URL (opcional)
+              // ✅ CORREÇÃO: Validar URL corretamente e permitir strings vazias
               if (!value || value.trim() === '') {
                 teacherUpdateData[key] = null;
               } else if (typeof value === 'string') {
@@ -486,8 +512,23 @@ export async function PUT(request: NextRequest) {
               }
               break;
 
+            case 'teachingMethod':
+              // ✅ CORREÇÃO: Permitir strings vazias e converter para null se vazio
+              if (typeof value === 'string') {
+                teacherUpdateData[key] = value.trim() || null;
+              } else {
+                teacherUpdateData[key] = value;
+              }
+              break;
+
+            case 'socialMedia':
+            case 'reportPreferences':
+              // ✅ CORREÇÃO: Permitir objetos JSON
+              teacherUpdateData[key] = value || {};
+              break;
+
             default:
-              // Para outros campos de string
+              // ✅ CORREÇÃO: Para outros campos de string, permitir strings vazias
               if (typeof value === 'string') {
                 teacherUpdateData[key] = value.trim() || null;
               } else {
@@ -511,7 +552,10 @@ export async function PUT(request: NextRequest) {
       }
     }
 
-    // Buscar perfil atualizado
+    // 🔥 REVALIDAR CACHE ANTES DE BUSCAR OS DADOS ATUALIZADOS
+    await revalidateTeacherProfileData(session.user.id);
+
+    // ✅ Buscar perfil atualizado COM TODOS OS CAMPOS
     const updatedProfile = await prisma.teacher.findUnique({
       where: { userId: session.user.id },
       include: {
@@ -521,8 +565,8 @@ export async function PUT(request: NextRequest) {
             lastName: true,
             email: true,
             phone: true,
-            phoneCountryCode: true, // 🆕 Novo campo
-            phoneNumber: true, // 🆕 Novo campo
+            phoneCountryCode: true,
+            phoneNumber: true,
             city: true,
             state: true,
             country: true,
@@ -532,8 +576,43 @@ export async function PUT(request: NextRequest) {
       },
     });
 
-    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
-    await revalidateTeacherProfileData(session.user.id);
+    // ✅ FORMATAR RESPOSTA COMPLETA
+    const formattedProfile = {
+      id: updatedProfile!.id,
+      userId: updatedProfile!.userId,
+      bio: updatedProfile!.bio,
+      specialties: updatedProfile!.specialties || [],
+      instruments: updatedProfile!.instruments || [],
+      experience: updatedProfile!.experience,
+      education: updatedProfile!.education,
+      achievements: updatedProfile!.achievements,
+      isPublicProfile: updatedProfile!.isPublicProfile,
+      profileImage: updatedProfile!.profileImage,
+      website: updatedProfile!.website,
+      socialMedia: updatedProfile!.socialMedia || {},
+      publicBio: updatedProfile!.publicBio,
+      highlightedWorks: updatedProfile!.highlightedWorks || [],
+      defaultLessonDuration: updatedProfile!.defaultLessonDuration,
+      maxStudentsPerWeek: updatedProfile!.maxStudentsPerWeek,
+      timezone: updatedProfile!.timezone,
+      teachingMethod: updatedProfile!.teachingMethod,
+      ageGroups: updatedProfile!.ageGroups || [],
+      skillLevels: updatedProfile!.skillLevels || [],
+      status: updatedProfile!.status,
+      isVerified: updatedProfile!.isVerified,
+      verifiedAt: updatedProfile!.verifiedAt,
+      verifiedBy: updatedProfile!.verifiedBy,
+      allowProgressReports: updatedProfile!.allowProgressReports,
+      reportPreferences: updatedProfile!.reportPreferences || {},
+      totalStudents: updatedProfile!.totalStudents,
+      totalLessons: updatedProfile!.totalLessons,
+      averageRating: updatedProfile!.averageRating,
+      totalReviews: updatedProfile!.totalReviews,
+      completionRate: updatedProfile!.completionRate,
+      user: updatedProfile!.user,
+      createdAt: updatedProfile!.createdAt,
+      updatedAt: updatedProfile!.updatedAt,
+    };
 
     console.log(
       `✅ [TEACHER-PROFILE] Perfil atualizado com sucesso e cache revalidado`
@@ -541,7 +620,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      profile: updatedProfile,
+      profile: formattedProfile,
       message: 'Perfil atualizado com sucesso',
     });
   } catch (error) {
@@ -556,7 +635,7 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// PATCH - Atualização parcial (campos específicos) COM REVALIDAÇÃO
+// PATCH - Atualização parcial (campos específicos) COM REVALIDAÇÃO MELHORADA
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

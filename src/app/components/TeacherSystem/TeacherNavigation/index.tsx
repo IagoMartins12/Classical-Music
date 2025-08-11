@@ -304,7 +304,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
                       {/* Desktop Submenu */}
                       {activeSubmenu === item.label && (
-                        <div className="absolute top-full left-0 mt-2 w-80 bg-theme-elevated/95 backdrop-blur-xl rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
+                        <div className="absolute top-full left-0 mt-2 w-80 bg-theme-tertiary rounded-2xl shadow-xl border border-theme-secondary z-50 overflow-hidden">
                           <div className="p-2">
                             {item.submenu.map((subItem) => (
                               <Link

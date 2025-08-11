@@ -37,15 +37,15 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             className={`
               w-5 h-5 rounded border border-gray-400 
               flex items-center justify-center
-              peer-checked:transparent peer-checked:transparent
-              transition-colors
+              peer-checked:bg-brand-primary peer-checked:border-brand-primary
+              transition-colors duration-200
             `}
           >
             <FiCheck
               className={`
                 text-white text-sm 
                 opacity-0 peer-checked:opacity-100 
-                transition-opacity
+                transition-opacity duration-200
               `}
               strokeWidth={3}
               size={16}

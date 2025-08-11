@@ -32,7 +32,6 @@ import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useRouter } from 'next/navigation';
 import useIsMobile from '@/app/hooks/useIsMobile';
-import { LuGraduationCap } from 'react-icons/lu';
 import { FaGraduationCap } from 'react-icons/fa';
 
 interface NavItem {

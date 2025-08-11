@@ -1937,8 +1937,8 @@
         "vmirror.imslp.org"
       ],
       "successRate": 1,
-      "averageTime": 581.4469184312304,
-      "lastSeen": "2025-08-02T22:25:22.761Z",
+      "averageTime": 494.1117296078076,
+      "lastSeen": "2025-08-10T21:41:46.505Z",
       "confidence": 1
     },
     "c/cd": {
@@ -2688,15 +2688,15 @@
     }
   },
   "globalStats": {
-    "totalRequests": 9336,
-    "successfulRequests": 9336,
-    "averageResponseTime": 728.1403397358082,
+    "totalRequests": 9338,
+    "successfulRequests": 9338,
+    "averageResponseTime": 530.785084933952,
     "mostReliableSubdomain": "",
-    "lastUpdated": "2025-08-04T18:12:27.158Z"
+    "lastUpdated": "2025-08-10T21:41:46.505Z"
   },
   "metadata": {
-    "savedAt": "2025-08-04T18:12:32.230Z",
-    "sessionId": "session_1754331017908_74xho3g",
+    "savedAt": "2025-08-10T21:41:51.508Z",
+    "sessionId": "session_1754862102482_61guae4",
     "version": "2.0"
   }
 }

@@ -8,6 +8,7 @@ import {
   CalendarStats,
 } from '../(teacher)/teacher/calendar/pageServer';
 import { StudentInviteStatus } from '@prisma/client';
+import { TeacherProfileData } from '../(teacher)/teacher/profile/pageServer';
 
 // ====================================
 // TYPES (mantendo os existentes)
@@ -642,7 +643,7 @@ export const getTeacherCalendarData = unstable_cache(
 
 // Buscar perfil do professor - DIRETO DO BANCO
 export const getTeacherProfile = unstable_cache(
-  async (userId: string): Promise<TeacherProfile | null> => {
+  async (userId: string): Promise<TeacherProfileData | null> => {
     try {
       console.log(`👨‍🏫 [TEACHER-PROFILE] Loading profile for user ${userId}`);
 
@@ -659,6 +660,7 @@ export const getTeacherProfile = unstable_cache(
               phone: true,
               city: true,
               state: true,
+              country: true,
             },
           },
         },
@@ -686,6 +688,15 @@ export const getTeacherProfile = unstable_cache(
         createdAt: teacherProfile.createdAt,
         updatedAt: teacherProfile.updatedAt,
         user: teacherProfile.user,
+        ageGroups: teacherProfile.ageGroups,
+        defaultLessonDuration: teacherProfile.defaultLessonDuration,
+        instruments: teacherProfile.instruments,
+        timezone: teacherProfile.timezone,
+        skillLevels: teacherProfile.skillLevels,
+        highlightedWorks: teacherProfile.highlightedWorks,
+        maxStudentsPerWeek: teacherProfile.maxStudentsPerWeek,
+        website: teacherProfile.website,
+        achievements: teacherProfile.achievements,
       };
     } catch (error) {
       console.error('❌ [TEACHER-PROFILE] Error loading profile:', error);

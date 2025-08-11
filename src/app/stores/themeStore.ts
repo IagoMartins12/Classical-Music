@@ -119,8 +119,6 @@ export const useThemeInitializer = () => {
   // Apply theme on mount
   React.useEffect(() => {
     applyTheme(mode);
-
-     
   }, []);
 
   // Handle system theme preference

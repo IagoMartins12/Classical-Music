@@ -1,7 +1,8 @@
 @import 'tailwindcss';
 
-/* CSS Custom Properties - inicializadas com tema escuro por padrão */
+/* CSS Custom Properties - Tema escuro (padrão) e claro aprimorado */
 :root {
+  /* ===== TEMA ESCURO (PADRÃO) ===== */
   /* Background colors */
   --bg-primary: #0a0a0a;
   --bg-secondary: #1a1a2e;
@@ -69,7 +70,91 @@
     transparent 0%,
     rgba(0, 0, 0, 0.7) 100%
   );
+}
 
+/* ===== TEMA CLARO APRIMORADO ===== */
+[data-theme='light'] {
+  /* Background colors - Tons cremosos e elegantes */
+  --bg-primary: #faf9f6; /* Cream muito suave em vez de branco puro */
+  --bg-secondary: #f4f1eb; /* Tom de papel antigo */
+  --bg-tertiary: #ede8df; /* Pergaminho suave */
+  --bg-elevated: #ffffff; /* Branco para elementos elevados */
+  --bg-overlay: rgba(45, 42, 35, 0.75); /* Overlay mais escuro e elegante */
+
+  /* Text colors - Contraste suave mas legível */
+  --text-primary: #2d2a23; /* Marrom escuro elegante em vez de preto */
+  --text-secondary: #4a453c; /* Tom intermediário aquecido */
+  --text-tertiary: #6b6358; /* Cinza aquecido */
+  --text-inverse: #faf9f6; /* Cream para texto em backgrounds escuros */
+
+  /* Brand colors - Dourado mais refinado no tema claro */
+  --brand-primary: #b8941f; /* Dourado mais profundo e elegante */
+  --brand-secondary: #d4af37; /* Dourado clássico */
+  --brand-gradient: linear-gradient(
+    135deg,
+    #b8941f 0%,
+    #d4af37 50%,
+    #e6c554 100%
+  );
+
+  /* Accent colors ajustados para o tema claro */
+  --accent-gold: #b8941f;
+  --accent-amber: #d4af37;
+  --accent-purple: #5b21b6; /* Roxo mais profundo */
+  --accent-blue: #1e40af; /* Azul mais elegante */
+  --accent-green: #059669; /* Verde mais sofisticado */
+  --accent-red: #dc2626; /* Vermelho mais refinado */
+
+  /* Border colors - Bordas sutis mas visíveis */
+  --border-primary: rgba(184, 148, 31, 0.25); /* Dourado suave */
+  --border-secondary: rgba(107, 99, 88, 0.15); /* Cinza aquecido muito suave */
+  --border-accent: #b8941f; /* Dourado para acentos */
+
+  /* Interactive states - Estados interativos elegantes */
+  --interactive-hover: rgba(184, 148, 31, 0.08); /* Hover dourado muito suave */
+  --interactive-active: rgba(
+    184,
+    148,
+    31,
+    0.15
+  ); /* Active um pouco mais visível */
+  --interactive-focus: rgba(184, 148, 31, 0.25); /* Focus bem visível */
+  --interactive-disabled: rgba(107, 99, 88, 0.25); /* Disabled cinza aquecido */
+
+  /* Shadows - Sombras suaves e elegantes */
+  --shadow-small: 0 2px 8px rgba(45, 42, 35, 0.08);
+  --shadow-medium: 0 8px 24px rgba(45, 42, 35, 0.12);
+  --shadow-large: 0 16px 40px rgba(45, 42, 35, 0.15);
+  --shadow-glow: 0 8px 32px rgba(184, 148, 31, 0.15);
+
+  /* Gradients elegantes para o tema claro */
+  --gradient-primary: linear-gradient(
+    135deg,
+    #faf9f6 0%,
+    #f4f1eb 50%,
+    #ede8df 100%
+  );
+  --gradient-card: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(244, 241, 235, 0.6) 100%
+  );
+  --gradient-card-2: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(244, 241, 235, 0.4) 50%,
+    rgba(255, 255, 255, 0.4) 100%
+  );
+  --gradient-hero: linear-gradient(135deg, #faf9f6 0%, #f4f1eb 100%);
+  --gradient-overlay: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(45, 42, 35, 0.4) 100%
+  );
+}
+
+/* ===== TRANSIÇÕES E ANIMAÇÕES TEMÁTICAS ===== */
+:root {
   /* Transitions */
   --transition-theme: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-fast: all 0.15s ease-out;
@@ -118,6 +203,18 @@
   --ad-transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ===== AJUSTES ESPECÍFICOS PARA PUBLICIDADE NO TEMA CLARO ===== */
+[data-theme='light'] {
+  --ad-elegant-shadow: 0 10px 40px rgba(45, 42, 35, 0.15);
+  --ad-glow-shadow: 0 0 30px rgba(184, 148, 31, 0.2);
+  --ad-soft-shadow: rgba(184, 148, 31, 0.15);
+  --ad-gradient-overlay: linear-gradient(
+    135deg,
+    rgba(45, 42, 35, 0.7) 0%,
+    rgba(45, 42, 35, 0.3) 100%
+  );
+}
+
 /* Base styles */
 * {
   transition: var(--transition-theme);
@@ -154,24 +251,13 @@ body {
 
 .classical-card-2 {
   background: var(--gradient-card-2);
-  border: 1px solid rgba(100, 116, 139, 0.25); /* border mais sutil */
-  backdrop-filter: blur(8px); /* blur reduzido */
-  border-radius: 1rem; /* border-radius menor que o pai */
+  border: 1px solid var(--border-secondary);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
   transition: var(--transition-smooth);
 }
 
-.classical-card-2:hover {
-  border-color: rgba(212, 175, 55, 0.4); /* accent color com menos opacidade */
-  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.1); /* shadow mais sutil */
-  transform: translateY(-1px); /* movimento menor */
-}
-
-.classical-card:hover {
-  border-color: var(--border-accent);
-  box-shadow: var(--shadow-glow);
-  transform: translateY(-2px);
-}
-
+.classical-card:hover,
 .classical-card-2:hover {
   border-color: var(--border-accent);
   box-shadow: var(--shadow-glow);
@@ -203,6 +289,15 @@ body {
   cursor: pointer;
 }
 
+.btn-classical-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-large);
+}
+
+.btn-classical-primary:active {
+  transform: translateY(0);
+}
+
 .btn-classical-delete {
   background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
@@ -223,15 +318,6 @@ body {
 }
 
 .btn-classical-delete:active {
-  transform: translateY(0);
-}
-
-.btn-classical-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-large);
-}
-
-.btn-classical-primary:active {
   transform: translateY(0);
 }
 
@@ -523,7 +609,6 @@ body {
 .bg-theme-elevated {
   background: var(--bg-elevated);
 }
-
 .bg-theme-classical {
   background: var(--gradient-card);
   border: 1px solid var(--border-primary);
@@ -532,7 +617,6 @@ body {
 .text-theme-primary {
   color: var(--text-primary);
 }
-
 .text-theme-secondary {
   color: var(--text-secondary);
 }
@@ -593,10 +677,7 @@ body {
     padding: 1rem 1.5rem;
   }
 
-  .classical-card {
-    padding: 1rem;
-  }
-
+  .classical-card,
   .classical-card-2 {
     padding: 1rem;
   }
@@ -630,11 +711,7 @@ body {
     color: black !important;
   }
 
-  .classical-card {
-    border: 1px solid #ccc !important;
-    background: white !important;
-  }
-
+  .classical-card,
   .classical-card-2 {
     border: 1px solid #ccc !important;
     background: white !important;
@@ -651,6 +728,8 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ===== ESTILOS PREMIUM PARA PUBLICIDADE (mantidos do original) ===== */
 .ad-premium-container {
   position: relative;
   overflow: hidden;
