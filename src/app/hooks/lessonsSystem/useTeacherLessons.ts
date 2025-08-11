@@ -209,7 +209,6 @@ export function useTeacherLessons(
     }));
   }, []);
 
-
   // Set initial data
   const setInitialData = useCallback((data: TeacherLessonsData) => {
     setState((prev) => ({
@@ -317,7 +316,6 @@ export function useTeacherLessons(
     });
   }, [fetchLessons, state.pagination, state.loading.lessons]);
 
-  // Create lesson
   const createLesson = useCallback(
     async (data: {
       studentUserId: string;
@@ -331,14 +329,24 @@ export function useTeacherLessons(
       isRecurring?: boolean;
       recurrenceType?: string;
       recurrenceEnd?: string;
+      worksIds?: string[];
+      workScoreIds?: string[];
     }): Promise<boolean> => {
+      console.log('🚀 [USE-TEACHER-LESSONS] Iniciando createLesson...', {
+        title: data.title,
+        studentId: data.studentUserId,
+        isRecurring: data.isRecurring,
+        worksCount: data.worksIds?.length || 0,
+        scoresCount: data.workScoreIds?.length || 0,
+      });
+
       setLoading('createLesson', true);
       setError(null);
 
-      // 🆕 VALIDAÇÃO DE CAMPOS OBRIGATÓRIOS
+      // 🔥 VALIDAÇÃO ROBUSTA
       const errors: string[] = [];
 
-      if (!data.studentUserId) errors.push('Aluno é obrigatório');
+      if (!data.studentUserId?.trim()) errors.push('Aluno é obrigatório');
       if (!data.title?.trim()) errors.push('Título é obrigatório');
       if (!data.scheduledAt) errors.push('Data e hora são obrigatórias');
 
@@ -384,12 +392,16 @@ export function useTeacherLessons(
       }
 
       if (errors.length > 0) {
-        setError(`Erros de validação:\n• ${errors.join('\n• ')}`);
+        const errorMessage = `Erros de validação:\n• ${errors.join('\n• ')}`;
+        console.log('❌ [USE-TEACHER-LESSONS] Validação falhou:', errors);
+        setError(errorMessage);
         setLoading('createLesson', false);
         return false;
       }
 
       try {
+        console.log('📤 [USE-TEACHER-LESSONS] Enviando requisição para API...');
+
         const response = await fetch('/api/lessons', {
           method: 'POST',
           headers: {
@@ -398,9 +410,16 @@ export function useTeacherLessons(
           body: JSON.stringify(data),
         });
 
+        console.log('📥 [USE-TEACHER-LESSONS] Resposta da API:', {
+          status: response.status,
+          ok: response.ok,
+        });
+
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Erro ao criar aula');
+          const errorData = await response.json().catch(() => ({}));
+          const errorMessage =
+            errorData.error || `Erro HTTP ${response.status}`;
+          throw new Error(errorMessage);
         }
 
         const result = await response.json();
@@ -409,15 +428,21 @@ export function useTeacherLessons(
           throw new Error(result.error || 'Erro ao criar aula');
         }
 
-        // 🆕 ATUALIZAR STATE E RECALCULAR STATS
+        console.log('✅ [USE-TEACHER-LESSONS] Aula(s) criada(s) com sucesso:', {
+          lessonsCreated: result.lessons?.length || 1,
+          message: result.message,
+        });
+
+        // 🔥 ATUALIZAR ESTADO LOCAL
         if (result.lessons && Array.isArray(result.lessons)) {
           setState((prev) => {
             const updatedLessons = [...result.lessons, ...prev.lessons];
             const newStats = calculateStatsFromLessons(updatedLessons);
 
-            console.log(
-              `✅ ${result.lessons.length} aula(s) criada(s), stats recalculados`
-            );
+            console.log('📊 [USE-TEACHER-LESSONS] Estado atualizado:', {
+              totalLessons: updatedLessons.length,
+              newStats: newStats,
+            });
 
             return {
               ...prev,
@@ -433,8 +458,10 @@ export function useTeacherLessons(
 
         return true;
       } catch (error) {
-        console.error('Erro ao criar aula:', error);
-        setError(error instanceof Error ? error.message : 'Erro desconhecido');
+        const errorMessage =
+          error instanceof Error ? error.message : 'Erro desconhecido';
+        console.error('❌ [USE-TEACHER-LESSONS] Erro ao criar aula:', error);
+        setError(errorMessage);
         return false;
       } finally {
         setLoading('createLesson', false);

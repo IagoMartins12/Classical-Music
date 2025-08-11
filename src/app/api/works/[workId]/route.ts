@@ -1,34 +1,67 @@
-//api/works/[workId]/route.ts
+//api/works/[workId]/route.ts - CORRIGIDO
 import prisma from '@/app/libs/prismadb';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { workId: string } } // 🔥 PEGAR DOS PARAMS, NÃO SEARCHPARAMS
+) {
   try {
-    const { searchParams } = new URL(request.url);
-    const workId = searchParams.get('workId');
-
-    console.log('workid', workId);
+    let workId: string | null = params.workId; // 🔥 AQUI ESTÁ O workId CORRETO
 
     if (!workId) {
-      return NextResponse.json({ error: 'Id é obrigatorio.' }, { status: 500 });
+      const { searchParams } = new URL(request.url);
+      workId = searchParams.get('workId');
     }
-    // Verificar se um compositor específico está favoritado
+
+    console.log('🔍 [API-WORKS] workId recebido:', workId);
+
+    if (!workId) {
+      console.log('❌ [API-WORKS] workId não fornecido');
+      return NextResponse.json(
+        { error: 'ID da obra é obrigatório.' },
+        { status: 400 }
+      );
+    }
+
+    // 🔥 BUSCAR DADOS COMPLETOS DA OBRA
     const work = await prisma.work.findFirst({
       where: {
         id: workId,
       },
       select: {
+        id: true,
+        title: true,
         imslpPermlink: true,
+        composer: {
+          select: {
+            id: true,
+            name: true,
+            fullName: true,
+          },
+        },
+        // Adicione outros campos que você precisa
+        createdAt: true,
+        updatedAt: true,
       },
     });
 
+    if (!work) {
+      console.log('❌ [API-WORKS] Obra não encontrada:', workId);
+      return NextResponse.json(
+        { error: 'Obra não encontrada.' },
+        { status: 404 }
+      );
+    }
+
+    console.log('✅ [API-WORKS] Obra encontrada:', work.title);
+
     return NextResponse.json({
       success: true,
-      work: work,
+      ...work, // 🔥 RETORNAR DADOS COMPLETOS DA OBRA
     });
-    // Buscar todos os compositores favoritos do usuário
   } catch (error) {
-    console.error('Erro ao buscar favoritos de compositores:', error);
+    console.error('❌ [API-WORKS] Erro ao buscar obra:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

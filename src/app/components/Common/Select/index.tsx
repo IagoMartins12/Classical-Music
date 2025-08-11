@@ -1,7 +1,7 @@
-// components/ui/Select.tsx
+// components/ui/Select.tsx - VERSÃO CORRIGIDA SEM HYDRATION MISMATCH
 'use client';
 
-import React, { forwardRef, useMemo } from 'react';
+import React, { forwardRef, useId, useMemo } from 'react';
 import { FiAlertCircle, FiChevronDown } from 'react-icons/fi';
 
 interface SelectOption {
@@ -18,7 +18,7 @@ interface SelectProps
   options: SelectOption[];
   placeholder?: string;
   containerClassName?: string;
-  defaultValue?: string; // Pode ser o label ou value da opção
+  defaultValue?: string;
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
@@ -37,32 +37,37 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
     },
     ref
   ) => {
-    const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
+    // 🔥 USAR useId PARA ID ESTÁVEL E CONSISTENTE (SSR SAFE)
+    const selectId = useId();
+    const finalId = id || selectId;
 
-    // Encontrar o value correto baseado no defaultValue
+    // 🔥 MEMOIZAR OPÇÕES PARA EVITAR RE-RENDERS
+    const memoizedOptions = useMemo(() => options, [options]);
+
+    // 🔥 RESOLVER defaultValue DE FORMA ESTÁVEL E MEMOIZADA
     const resolvedDefaultValue = useMemo(() => {
-      if (!defaultValue || (value && value !== '')) {
-        return undefined; // Se já tem value controlado, não usar defaultValue
+      if (!defaultValue || (value !== undefined && value !== '')) {
+        return undefined;
       }
 
-      // Primeiro, tentar encontrar por value exato
-      const optionByValue = options.find(
+      // Tentar encontrar por value exato primeiro
+      const optionByValue = memoizedOptions.find(
         (option) => option.value === defaultValue
       );
       if (optionByValue) {
         return optionByValue.value;
       }
 
-      // Depois, tentar encontrar por label (case-insensitive)
-      const optionByLabel = options.find(
+      // Depois tentar por label (case-insensitive)
+      const optionByLabel = memoizedOptions.find(
         (option) => option.label.toLowerCase() === defaultValue.toLowerCase()
       );
       if (optionByLabel) {
         return optionByLabel.value;
       }
 
-      // Tentar encontrar por label que contenha o defaultValue
-      const optionByPartialLabel = options.find((option) =>
+      // Por último, busca parcial no label
+      const optionByPartialLabel = memoizedOptions.find((option) =>
         option.label.toLowerCase().includes(defaultValue.toLowerCase())
       );
       if (optionByPartialLabel) {
@@ -70,29 +75,41 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
       }
 
       return undefined;
-    }, [defaultValue, options, value]);
+    }, [defaultValue, memoizedOptions, value]);
 
-    // Determinar o value final a ser usado
+    // 🔥 DETERMINAR VALUE FINAL DE FORMA ESTÁVEL
     const finalValue = value !== undefined ? value : resolvedDefaultValue;
 
     return (
       <div className={`relative ${containerClassName}`}>
         {label && (
           <label
-            htmlFor={selectId}
+            htmlFor={finalId}
             className="block text-sm font-medium text-theme-secondary mb-2"
           >
             {label}
           </label>
         )}
+
         <div className="relative">
           <select
             ref={ref}
-            id={selectId}
+            id={finalId}
             value={finalValue || ''}
             className={`
               input-classical w-full !pr-10 !pl-6 appearance-none cursor-pointer
-              ${error ? '!border-red-500 focus:border-accent-red' : ''}
+              focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary
+              transition-all duration-200
+              ${
+                error
+                  ? '!border-red-500 focus:ring-red-500 focus:border-red-500'
+                  : ''
+              }
+              ${
+                props.disabled
+                  ? 'opacity-50 cursor-not-allowed bg-theme-secondary/20'
+                  : ''
+              }
               ${className}
             `}
             {...props}
@@ -102,9 +119,10 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
                 {placeholder}
               </option>
             )}
-            {options.map((option) => (
+
+            {memoizedOptions.map((option, index) => (
               <option
-                key={option.key ? option.key : option.value}
+                key={option.key || `${option.value}-${index}`}
                 value={option.value}
                 disabled={option.disabled}
                 className="capitalize"
@@ -114,26 +132,22 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             ))}
           </select>
 
+          {/* Seta customizada */}
           <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <FiChevronDown className="w-4 h-4 text-theme-tertiary" />
+            <FiChevronDown
+              className={`w-4 h-4 transition-colors duration-200 ${
+                props.disabled ? 'text-theme-tertiary' : 'text-theme-secondary'
+              }`}
+            />
           </div>
         </div>
 
+        {/* Mensagem de erro */}
         {error && (
           <p className="text-red-500 text-sm font-medium flex items-center space-x-1 mt-1 gap-2">
             <FiAlertCircle className="w-4 h-4" />
-            {error}
+            <span>{error}</span>
           </p>
-        )}
-
-        {/* Debug info em desenvolvimento */}
-        {process.env.NODE_ENV === 'development' && defaultValue && (
-          <div className="mt-1 text-xs text-gray-500">
-            Default: &quot;{defaultValue}&quot; →{' '}
-            {resolvedDefaultValue
-              ? `"${resolvedDefaultValue}"`
-              : 'não encontrado'}
-          </div>
         )}
       </div>
     );

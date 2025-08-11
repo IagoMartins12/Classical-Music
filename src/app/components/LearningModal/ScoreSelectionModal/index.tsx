@@ -1,7 +1,7 @@
-// components/ScoreSelectionModal/ScoreSelectionModal.tsx - VERSÃO FINAL CORRIGIDA
+// components/ScoreSelectionModal/ScoreSelectionModal.tsx - VERSÃO CORRIGIDA SEM LOOPS INFINITOS
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import {
   FiMusic,
   FiArrowLeft,
@@ -27,7 +27,7 @@ import Modal from '../../Modal';
 import ScorePreview from '../../WorkDetailsClient/ScorePreview';
 import ScoreCard from '../../WorkDetailsClient/ScoreCard';
 
-// ✅ Interface para dados unificados
+// Interface para dados unificados
 interface MixedScoreData {
   id: string;
   title: string;
@@ -59,7 +59,7 @@ interface MixedScoreGroup {
   source: 'WORKSCORE';
 }
 
-// ✅ TABS para categorias
+// TABS para categorias
 const SCORE_TABS = [
   {
     id: 'scores',
@@ -141,35 +141,58 @@ const ScoreSelectionModal = ({
     null
   );
   const [isConverting, setIsConverting] = useState(false);
-  const [hasAutoSelected, setHasAutoSelected] = useState(false);
 
-  // ✅ Hook corrigido com limitPerType
+  // 🔥 USAR REF PARA CONTROLAR AUTO-SELEÇÃO SEM CAUSAR RE-RENDERS
+  const hasAutoSelectedRef = useRef(false);
+  const initializedRef = useRef(false);
+
+  // 🔥 Hook com configuração estável usando useRef para evitar mudanças desnecessárias
+  const hookOptions = useMemo(
+    () => ({
+      workId,
+      limitPerType: 20,
+      enabled: isOpen && !!workId,
+    }),
+    [workId, isOpen]
+  );
+
   const {
     workScores,
     loading: loadingWorkScores,
     error: workScoresError,
     hasMore: hasMoreWorkScores,
     total: totalWorkScores,
-    loadMoreForType, // ✅ NOVO: Load more específico por tipo
+    loadMoreForType,
     refetch: refetchWorkScores,
     pagination,
-  } = useWorkScores({
-    workId,
-    limitPerType: 20, // ✅ 20 por tipo
-    enabled: isOpen,
-  });
+  } = useWorkScores(hookOptions);
 
-  console.log('🔍 [SCORE-SELECTION-MODAL] Dados do hook:', {
-    totalWorkScores,
-    hasMoreWorkScores,
-    workScoresLength: workScores?.length,
-    totalByType: pagination.totalByType,
-    loadedByType: pagination.loadedByType,
-    pagination,
-  });
+  // 🔥 MEMOIZAR workScores de forma mais estável
+  const stableWorkScores = useMemo(() => {
+    if (!workScores || workScores.length === 0) return [];
+    return workScores;
+  }, [workScores?.length, workScores?.map((ws) => ws.id).join(',')]);
 
-  // ✅ Processar dados com contadores corretos da API
+  // 🔥 MEMOIZAR pagination de forma mais estável
+  const stablePagination = useMemo(() => {
+    if (!pagination) return { totalByType: {}, loadedByType: {} };
+    return {
+      totalByType: pagination.totalByType || {},
+      loadedByType: pagination.loadedByType || {},
+    };
+  }, [
+    JSON.stringify(pagination?.totalByType || {}),
+    JSON.stringify(pagination?.loadedByType || {}),
+  ]);
+
+  // 🔥 PROCESSAR DADOS COM CONTADORES CORRETOS - MEMOIZADO ULTRA ESTÁVEL
   const { mixedData, visibleTabs, tabStats } = useMemo(() => {
+    console.log('🔄 [SCORE-SELECTION-MODAL] Recalculando mixedData...', {
+      workScoresCount: stableWorkScores.length,
+      totalByType: stablePagination.totalByType,
+      loadedByType: stablePagination.loadedByType,
+    });
+
     const processed = {
       scores: [] as MixedScoreGroup[],
       parts: [] as MixedScoreGroup[],
@@ -178,71 +201,74 @@ const ScoreSelectionModal = ({
       others: [] as MixedScoreGroup[],
     };
 
-    // ✅ Usar dados da API
-    const apiTotalByType = pagination.totalByType || {};
-    const apiLoadedByType = pagination.loadedByType || {};
-
-    console.log('📊 [SCORE-SELECTION-MODAL] Dados da API:', {
-      apiTotalByType,
-      apiLoadedByType,
-    });
-
     const stats = {
       scores: {
-        loaded: apiLoadedByType.scores || 0,
-        total: apiTotalByType.scores || 0,
-        hasMore: (apiLoadedByType.scores || 0) < (apiTotalByType.scores || 0),
+        loaded: stablePagination.loadedByType.scores || 0,
+        total: stablePagination.totalByType.scores || 0,
+        hasMore:
+          (stablePagination.loadedByType.scores || 0) <
+          (stablePagination.totalByType.scores || 0),
         remaining: Math.max(
           0,
-          (apiTotalByType.scores || 0) - (apiLoadedByType.scores || 0)
+          (stablePagination.totalByType.scores || 0) -
+            (stablePagination.loadedByType.scores || 0)
         ),
       },
       parts: {
-        loaded: apiLoadedByType.parts || 0,
-        total: apiTotalByType.parts || 0,
-        hasMore: (apiLoadedByType.parts || 0) < (apiTotalByType.parts || 0),
+        loaded: stablePagination.loadedByType.parts || 0,
+        total: stablePagination.totalByType.parts || 0,
+        hasMore:
+          (stablePagination.loadedByType.parts || 0) <
+          (stablePagination.totalByType.parts || 0),
         remaining: Math.max(
           0,
-          (apiTotalByType.parts || 0) - (apiLoadedByType.parts || 0)
+          (stablePagination.totalByType.parts || 0) -
+            (stablePagination.loadedByType.parts || 0)
         ),
       },
       arrangements: {
-        loaded: apiLoadedByType.arrangements || 0,
-        total: apiTotalByType.arrangements || 0,
+        loaded: stablePagination.loadedByType.arrangements || 0,
+        total: stablePagination.totalByType.arrangements || 0,
         hasMore:
-          (apiLoadedByType.arrangements || 0) <
-          (apiTotalByType.arrangements || 0),
+          (stablePagination.loadedByType.arrangements || 0) <
+          (stablePagination.totalByType.arrangements || 0),
         remaining: Math.max(
           0,
-          (apiTotalByType.arrangements || 0) -
-            (apiLoadedByType.arrangements || 0)
+          (stablePagination.totalByType.arrangements || 0) -
+            (stablePagination.loadedByType.arrangements || 0)
         ),
       },
       uploads: {
-        loaded: apiLoadedByType.uploads || 0,
-        total: apiTotalByType.uploads || 0,
-        hasMore: (apiLoadedByType.uploads || 0) < (apiTotalByType.uploads || 0),
+        loaded: stablePagination.loadedByType.uploads || 0,
+        total: stablePagination.totalByType.uploads || 0,
+        hasMore:
+          (stablePagination.loadedByType.uploads || 0) <
+          (stablePagination.totalByType.uploads || 0),
         remaining: Math.max(
           0,
-          (apiTotalByType.uploads || 0) - (apiLoadedByType.uploads || 0)
+          (stablePagination.totalByType.uploads || 0) -
+            (stablePagination.loadedByType.uploads || 0)
         ),
       },
       others: {
-        loaded: apiLoadedByType.others || 0,
-        total: apiTotalByType.others || 0,
-        hasMore: (apiLoadedByType.others || 0) < (apiTotalByType.others || 0),
+        loaded: stablePagination.loadedByType.others || 0,
+        total: stablePagination.totalByType.others || 0,
+        hasMore:
+          (stablePagination.loadedByType.others || 0) <
+          (stablePagination.totalByType.others || 0),
         remaining: Math.max(
           0,
-          (apiTotalByType.others || 0) - (apiLoadedByType.others || 0)
+          (stablePagination.totalByType.others || 0) -
+            (stablePagination.loadedByType.others || 0)
         ),
       },
     };
 
-    // ✅ Organizar WorkScores por tipo
-    if (workScores && workScores.length > 0) {
+    // Organizar WorkScores por tipo apenas se há dados
+    if (stableWorkScores.length > 0) {
       const workScoreGroups: { [key: string]: WorkScore[] } = {};
 
-      workScores.forEach((ws) => {
+      stableWorkScores.forEach((ws) => {
         let key = 'others';
         if (ws.source === 'UPLOAD' || ws.source === 'CUSTOM') {
           key = 'uploads';
@@ -298,19 +324,11 @@ const ScoreSelectionModal = ({
           };
 
           processed[type as keyof typeof processed].push(group);
-
-          console.log(`📊 [SCORE-SELECTION-MODAL] Tipo ${type}:`, {
-            loaded: stats[type as keyof typeof stats].loaded,
-            total: stats[type as keyof typeof stats].total,
-            hasMore: stats[type as keyof typeof stats].hasMore,
-            remaining: stats[type as keyof typeof stats].remaining,
-            actualScores: scores.length,
-          });
         }
       });
     }
 
-    // ✅ Tabs visíveis (que têm conteúdo)
+    // Tabs visíveis (que têm conteúdo)
     const visible = SCORE_TABS.filter((tab) => {
       const tabStat = stats[tab.type as keyof typeof stats];
       return tabStat.total > 0;
@@ -321,93 +339,109 @@ const ScoreSelectionModal = ({
       visibleTabs: visible,
       tabStats: stats,
     };
-  }, [workScores, pagination]);
+  }, [stableWorkScores, stablePagination]);
 
-  // ✅ Auto-seleção corrigida (não interfere com desmarcação manual)
+  // 🔥 RESETAR ESTADO QUANDO MODAL ABRE/FECHA - SEM LOOPS
   useEffect(() => {
+    if (isOpen && !initializedRef.current) {
+      console.log('🔄 [SCORE-SELECTION-MODAL] Inicializando modal...');
+
+      if (!isEditing) {
+        setSelectedScore(null);
+        hasAutoSelectedRef.current = false;
+      }
+
+      if (visibleTabs.length > 0 && !isEditing) {
+        setActiveTab(visibleTabs[0].id);
+      }
+
+      initializedRef.current = true;
+    } else if (!isOpen) {
+      initializedRef.current = false;
+      hasAutoSelectedRef.current = false;
+    }
+  }, [isOpen, isEditing, visibleTabs.length]);
+
+  // 🔥 AUTO-SELEÇÃO ULTRA CONTROLADA - EXECUTAR APENAS UMA VEZ
+  useEffect(() => {
+    // 🔥 CONDIÇÕES ULTRA RESTRITIVAS
     if (
-      isOpen &&
-      isEditing &&
-      currentSelectedScore &&
-      !selectedScore &&
-      !hasAutoSelected
+      !isOpen ||
+      !isEditing ||
+      !currentSelectedScore ||
+      selectedScore ||
+      hasAutoSelectedRef.current ||
+      stableWorkScores.length === 0 ||
+      !initializedRef.current
     ) {
+      return;
+    }
+
+    console.log(
+      '🎯 [SCORE-SELECTION-MODAL] Executando auto-seleção única:',
+      currentSelectedScore.title
+    );
+
+    const allScores = Object.values(mixedData).flatMap((groups) =>
+      groups.flatMap((group) => group.scores)
+    );
+
+    const matchingScore = allScores.find(
+      (score) =>
+        score.id === currentSelectedScore.id ||
+        score.sourceId === currentSelectedScore.sourceId
+    );
+
+    if (matchingScore) {
       console.log(
-        '🎯 [SCORE-SELECTION-MODAL] Auto-selecionando partitura para edição:',
-        currentSelectedScore.title
+        '✅ [SCORE-SELECTION-MODAL] Auto-selecionando:',
+        matchingScore.title
       );
+      setSelectedScore(matchingScore);
+      hasAutoSelectedRef.current = true;
 
-      const allScores = Object.values(mixedData).flatMap((groups) =>
-        groups.flatMap((group) => group.scores)
-      );
+      // Auto-navegar para a tab correta
+      const scoreType = Object.entries(mixedData).find(([_, groups]) =>
+        groups.some((group) =>
+          group.scores.some((score) => score.id === matchingScore.id)
+        )
+      )?.[0];
 
-      const matchingScore = allScores.find(
-        (score) =>
-          score.id === currentSelectedScore.id ||
-          score.sourceId === currentSelectedScore.sourceId
-      );
-
-      if (matchingScore) {
-        setSelectedScore(matchingScore);
-        setHasAutoSelected(true);
-
-        // Auto-navegar para a tab correta
-        const scoreType = Object.entries(mixedData).find(([_, groups]) =>
-          groups.some((group) =>
-            group.scores.some((score) => score.id === matchingScore.id)
-          )
-        )?.[0];
-
-        if (scoreType) {
-          setActiveTab(scoreType);
-        }
+      if (scoreType) {
+        setActiveTab(scoreType);
       }
     }
   }, [
     isOpen,
     isEditing,
-    currentSelectedScore,
-    mixedData,
-    selectedScore,
-    hasAutoSelected,
+    currentSelectedScore?.id, // Apenas o ID
+    stableWorkScores.length, // Apenas o length
+    mixedData, // Este já é memoizado corretamente
   ]);
 
-  // ✅ Reset quando modal abre/fecha
-  useEffect(() => {
-    if (isOpen) {
-      if (!isEditing) {
+  // 🔥 HANDLERS ESTÁVEIS
+  const handleScoreSelect = useCallback(
+    (score: MixedScoreData) => {
+      if (selectedScore?.id === score.id) {
+        console.log(
+          '❌ [SCORE-SELECTION-MODAL] Desmarcando partitura:',
+          score.title
+        );
         setSelectedScore(null);
-        setHasAutoSelected(false);
+        hasAutoSelectedRef.current = false;
+      } else {
+        console.log(
+          '✅ [SCORE-SELECTION-MODAL] Selecionando partitura:',
+          score.title
+        );
+        setSelectedScore(score);
+        hasAutoSelectedRef.current = true;
       }
-      if (visibleTabs.length > 0 && !isEditing) {
-        setActiveTab(visibleTabs[0].id);
-      }
-    } else {
-      setHasAutoSelected(false);
-    }
-  }, [isOpen, visibleTabs, isEditing]);
+    },
+    [selectedScore?.id]
+  );
 
-  // ✅ Seleção/desmarcação corrigida
-  const handleScoreSelect = (score: MixedScoreData) => {
-    if (selectedScore?.id === score.id) {
-      console.log(
-        '❌ [SCORE-SELECTION-MODAL] Desmarcando partitura:',
-        score.title
-      );
-      setSelectedScore(null);
-      setHasAutoSelected(false);
-    } else {
-      console.log(
-        '✅ [SCORE-SELECTION-MODAL] Selecionando partitura:',
-        score.title
-      );
-      setSelectedScore(score);
-      setHasAutoSelected(true);
-    }
-  };
-
-  // ✅ Confirmação
-  const handleConfirmSelection = async () => {
+  const handleConfirmSelection = useCallback(async () => {
     if (!selectedScore) {
       console.log(
         '⚪ [SCORE-SELECTION-MODAL] Confirmando sem partitura selecionada'
@@ -417,10 +451,7 @@ const ScoreSelectionModal = ({
         isEditing
           ? 'Partitura removida com sucesso!'
           : 'Configuração salva sem partitura!',
-        {
-          icon: isEditing ? '🗑️' : '✅',
-          duration: 3000,
-        }
+        { icon: isEditing ? '🗑️' : '✅', duration: 3000 }
       );
       onClose();
       return;
@@ -452,10 +483,7 @@ const ScoreSelectionModal = ({
         isEditing
           ? 'Partitura atualizada com sucesso!'
           : 'Partitura selecionada com sucesso!',
-        {
-          icon: isEditing ? '✏️' : '🎼',
-          duration: 3000,
-        }
+        { icon: isEditing ? '✏️' : '🎼', duration: 3000 }
       );
       onClose();
     } catch (error) {
@@ -464,27 +492,36 @@ const ScoreSelectionModal = ({
     } finally {
       setIsConverting(false);
     }
-  };
+  }, [selectedScore, onScoreSelected, isEditing, onClose]);
 
-  // ✅ Load more funcional específico por tipo
-  const handleLoadMoreForTab = async (tabType: string) => {
-    console.log(
-      `📊 [SCORE-SELECTION-MODAL] Carregando mais para tab: ${tabType}`
-    );
+  const handleLoadMoreForTab = useCallback(
+    async (tabType: string) => {
+      console.log(
+        `📊 [SCORE-SELECTION-MODAL] Carregando mais para tab: ${tabType}`
+      );
+      try {
+        await loadMoreForType(tabType);
+        console.log(
+          '✅ [SCORE-SELECTION-MODAL] Load more executado com sucesso'
+        );
+      } catch (error) {
+        console.error('❌ [SCORE-SELECTION-MODAL] Erro no load more:', error);
+        toast.error('Erro ao carregar mais partituras');
+      }
+    },
+    [loadMoreForType]
+  );
 
-    try {
-      await loadMoreForType(tabType);
-      console.log('✅ [SCORE-SELECTION-MODAL] Load more executado com sucesso');
-    } catch (error) {
-      console.error('❌ [SCORE-SELECTION-MODAL] Erro no load more:', error);
-      toast.error('Erro ao carregar mais partituras');
-    }
-  };
+  // Dados da tab ativa - memoizados
+  const activeTabData = useMemo(
+    () => mixedData[activeTab as keyof typeof mixedData] || [],
+    [mixedData, activeTab]
+  );
 
-  const activeTabData = mixedData[activeTab as keyof typeof mixedData] || [];
-  const activeTabStat = tabStats[activeTab as keyof typeof tabStats];
-  const isLoading = loadingWorkScores;
-  const hasError = workScoresError;
+  const activeTabStat = useMemo(
+    () => tabStats[activeTab as keyof typeof tabStats],
+    [tabStats, activeTab]
+  );
 
   return (
     <Modal
@@ -576,7 +613,7 @@ const ScoreSelectionModal = ({
           </div>
         </div>
 
-        {/* ✅ Tabs Navigation com contadores corretos */}
+        {/* Tabs Navigation */}
         {visibleTabs.length > 0 && (
           <nav className="flex scrollbar-hide px-6" aria-label="Tabs">
             {visibleTabs.map((tab, index) => {
@@ -588,14 +625,11 @@ const ScoreSelectionModal = ({
                 <AnimatedItem key={tab.id} hover="scale" springType="bouncy">
                   <button
                     onClick={() => setActiveTab(tab.id)}
-                    className={`
-                      flex items-center gap-3 px-6 py-4 cursor-pointer text-sm font-medium border-b-2 transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up relative
-                      ${
-                        isActive
-                          ? 'border-brand-primary text-brand-primary bg-gradient-to-t from-brand-primary/10 to-transparent'
-                          : 'border-transparent text-theme-tertiary hover:text-theme-primary hover:border-theme-primary hover:bg-interactive-hover'
-                      }
-                    `}
+                    className={`flex items-center gap-3 px-6 py-4 cursor-pointer text-sm font-medium border-b-2 transition-all duration-300 whitespace-nowrap flex-shrink-0 animate-fade-in-up relative ${
+                      isActive
+                        ? 'border-brand-primary text-brand-primary bg-gradient-to-t from-brand-primary/10 to-transparent'
+                        : 'border-transparent text-theme-tertiary hover:text-theme-primary hover:border-theme-primary hover:bg-interactive-hover'
+                    }`}
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
                     <div
@@ -609,7 +643,7 @@ const ScoreSelectionModal = ({
                     </div>
                     <span className="font-semibold">{tab.label}</span>
 
-                    {/* ✅ Contadores corretos */}
+                    {/* Contadores corretos */}
                     <div className="flex items-center space-x-1">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
@@ -648,10 +682,13 @@ const ScoreSelectionModal = ({
         {/* Scores List */}
         <div className="flex-1 overflow-y-auto">
           <div className="p-6">
-            {isLoading && activeTabData.length === 0 ? (
+            {loadingWorkScores && activeTabData.length === 0 ? (
               <LoadingState />
-            ) : hasError ? (
-              <ErrorState error={hasError} onRefetch={refetchWorkScores} />
+            ) : workScoresError ? (
+              <ErrorState
+                error={workScoresError}
+                onRefetch={refetchWorkScores}
+              />
             ) : activeTabData.length === 0 ? (
               <EmptyState />
             ) : (
@@ -680,7 +717,7 @@ const ScoreSelectionModal = ({
                   ))}
                 </AnimatedContainer>
 
-                {/* ✅ Botões de Load More */}
+                {/* Load More Buttons */}
                 {activeTabStat.hasMore && (
                   <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
                     <div className="text-center">
@@ -688,7 +725,7 @@ const ScoreSelectionModal = ({
                         Mais partituras disponíveis
                       </h3>
                       <p className="text-theme-secondary text-sm mb-4">
-                        {isLoading
+                        {loadingWorkScores
                           ? 'Carregando mais partituras...'
                           : `Mostrando ${activeTabStat.loaded} de ${activeTabStat.total} partituras`}
                       </p>
@@ -697,10 +734,10 @@ const ScoreSelectionModal = ({
                     <div className="flex flex-wrap gap-4 justify-center">
                       <button
                         onClick={() => handleLoadMoreForTab(activeTab)}
-                        disabled={isLoading}
+                        disabled={loadingWorkScores}
                         className="btn-classical-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {isLoading ? (
+                        {loadingWorkScores ? (
                           <>
                             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                             <span>Carregando...</span>
@@ -723,7 +760,7 @@ const ScoreSelectionModal = ({
           </div>
         </div>
 
-        {/* ✅ Preview Panel Condicional */}
+        {/* Preview Panel Condicional */}
         {selectedScore && (
           <div className="w-96 border-l border-theme-secondary bg-theme-elevated overflow-y-auto">
             <div className="p-6">
@@ -738,7 +775,6 @@ const ScoreSelectionModal = ({
                   <FiX className="w-4 h-4 text-theme-primary hover:text-accent-red" />
                 </button>
               </div>
-
               <ScorePreview score={selectedScore as any} />
             </div>
           </div>
@@ -786,7 +822,7 @@ const ScoreSelectionModal = ({
   );
 };
 
-// === COMPONENTES AUXILIARES ===
+// COMPONENTES AUXILIARES
 function LoadingState() {
   return (
     <div className="flex items-center justify-center py-12">

@@ -14,8 +14,8 @@ import {
 } from 'react-icons/fi';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import ComposerSearchInput from '../../ComposerSearchInput';
-import WorkSearchInput from '../../WorkSearchInput';
 import ScoreSelectionModal from '../../LearningModal/ScoreSelectionModal';
+import SimpleWorkSearchInput from '../../SimpleWorkSearchInput';
 
 // 🆕 Interface para dados das peças vinculadas
 export interface LessonWork {
@@ -65,7 +65,6 @@ export default function WorkSelectionSection({
   const [selectedComposer, setSelectedComposer] = useState('');
   const [selectedWorkId, setSelectedWorkId] = useState('');
   const [popularComposers, setPopularComposers] = useState<Composer[]>([]);
-  const [popularWorks, setPopularWorks] = useState<Work[]>([]);
 
   // Estados para modal de partitura
   const [showScoreModal, setShowScoreModal] = useState(false);
@@ -78,13 +77,10 @@ export default function WorkSelectionSection({
 
   // Estados para loading
   const [loadingComposers, setLoadingComposers] = useState(false);
-  const [loadingWorks, setLoadingWorks] = useState(false);
 
-  console.log('loading', { loadingComposers, loadingWorks });
   // 🆕 Carregar compositores populares ao inicializar
   useEffect(() => {
     loadPopularComposers();
-    loadPopularWorks();
   }, []);
 
   const loadPopularComposers = async () => {
@@ -108,27 +104,11 @@ export default function WorkSelectionSection({
     }
   };
 
-  const loadPopularWorks = async () => {
-    setLoadingWorks(true);
-    try {
-      const response = await fetch('/api/works/search?q=&limit=50');
-
-      if (response.ok) {
-        const data = await response.json();
-        setPopularWorks(data.works || []);
-        console.log('✅ Obras populares carregadas:', data.works?.length);
-      }
-    } catch (error) {
-      console.error('❌ Erro ao carregar obras:', error);
-    } finally {
-      setLoadingWorks(false);
-    }
-  };
-
   // 🆕 Adicionar nova peça
   const handleAddWork = useCallback(async () => {
     if (!selectedWorkId || selectedWorks.length >= maxWorks) return;
 
+    console.log('selectedWorkId', selectedWorkId);
     try {
       // Buscar dados completos da obra
       const response = await fetch(`/api/works/${selectedWorkId}`);
@@ -251,7 +231,7 @@ export default function WorkSelectionSection({
     selectedWorkId && selectedWorkId.trim() !== '' ? true : false;
 
   return (
-    <AnimatedCard className="classical-card p-6">
+    <AnimatedCard className="classical-card p-6 relative z-10">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -457,10 +437,9 @@ export default function WorkSelectionSection({
                     </div>
                   </label>
 
-                  <WorkSearchInput
+                  <SimpleWorkSearchInput
                     selectedWork={selectedWorkId}
                     onWorkSelect={setSelectedWorkId}
-                    popularWorks={popularWorks}
                     filterByComposer={selectedComposer}
                     placeholder="Digite para buscar uma obra..."
                   />

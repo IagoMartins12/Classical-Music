@@ -1,5 +1,11 @@
-// app/components/WorkSearchInput.tsx - VERSÃO CORRIGIDA COM FILTRO DE COMPOSITOR
-import React, { useState, useEffect, useRef } from 'react';
+// app/components/WorkSearchInput.tsx - VERSÃO CORRIGIDA SEM LOOPS INFINITOS
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import {
   FiSearch,
   FiMusic,
@@ -39,8 +45,8 @@ interface WorkSearchInputProps {
   placeholder?: string;
   error?: string;
   disabled?: boolean;
-  filterByComposer?: string; // ID do compositor para filtrar
-  userSuggestions?: UserWork[]; // Obras do usuário
+  filterByComposer?: string;
+  userSuggestions?: UserWork[];
   loadingUserSuggestions?: boolean;
   shoudDisabled?: boolean;
 }
@@ -61,106 +67,226 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedWorkData, setSelectedWorkData] = useState<Work | null>(null);
-  const [composerWorks, setComposerWorks] = useState<Work[]>([]); // 🆕 Cache de obras do compositor
+  const [composerWorks, setComposerWorks] = useState<Work[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const searchTimeoutRef = useRef<NodeJS.Timeout>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const lastComposerRef = useRef<string>('');
+  const lastQueryRef = useRef<string>('');
 
-  // 🆕 EFFECT PARA CARREGAR OBRAS DO COMPOSITOR AUTOMATICAMENTE
-  useEffect(() => {
-    const loadComposerWorks = async () => {
-      if (filterByComposer && filterByComposer.trim() !== '') {
-        console.log('🎼 Carregando obras do compositor:', filterByComposer);
+  // 🔥 MEMOIZAR PROPS ESTÁVEIS PARA EVITAR RE-RENDERS
+  const stableFilterByComposer = useMemo(
+    () => filterByComposer,
+    [filterByComposer]
+  );
+  const stableUserSuggestions = useMemo(
+    () => userSuggestions,
+    [userSuggestions]
+  );
+  const stablePopularWorks = useMemo(() => popularWorks, [popularWorks]);
 
-        try {
-          setIsLoading(true);
+  console.log('work selection');
 
-          const params = new URLSearchParams({
-            q: '', // Query vazia para pegar sugestões do compositor
-            composer: filterByComposer,
-            limit: '20',
-          });
-
-          const response = await fetch(
-            `/api/works/search?${params.toString()}`
-          );
-
-          if (response.ok) {
-            const data = await response.json();
-            setComposerWorks(data.works || []);
-            console.log(
-              '✅ Obras do compositor carregadas:',
-              data.works?.length || 0
-            );
-          } else {
-            console.error(
-              '❌ Erro ao carregar obras do compositor:',
-              response.status
-            );
-            setComposerWorks([]);
-          }
-        } catch (error) {
-          console.error('❌ Erro ao buscar obras do compositor:', error);
-          setComposerWorks([]);
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setComposerWorks([]);
-      }
-    };
-
-    loadComposerWorks();
-  }, [filterByComposer]);
-
-  // 🆕 EFFECT PARA BUSCA COM QUERY - MELHORADO
-  useEffect(() => {
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-
-    // Se não há query, usar sugestões locais
-    if (query.trim().length < 2) {
-      const suggestions = getLocalSuggestions();
-      setWorks(suggestions);
-      setIsLoading(false);
+  // 🔥 FUNÇÃO PARA CARREGAR OBRAS DO COMPOSITOR - MEMOIZADA E ESTÁVEL
+  const loadComposerWorks = useCallback(async (composerId: string) => {
+    // Evitar chamadas duplicadas
+    if (
+      !composerId ||
+      composerId.trim() === '' ||
+      lastComposerRef.current === composerId
+    ) {
       return;
     }
 
-    setIsLoading(true);
+    console.log('🎼 Carregando obras do compositor:', composerId);
+    lastComposerRef.current = composerId;
 
-    searchTimeoutRef.current = setTimeout(async () => {
+    try {
+      setIsLoading(true);
+
+      const params = new URLSearchParams({
+        q: '',
+        composer: composerId,
+        limit: '20',
+      });
+
+      const response = await fetch(`/api/works/search?${params.toString()}`);
+
+      if (response.ok) {
+        const data = await response.json();
+        setComposerWorks(data.works || []);
+        console.log(
+          '✅ Obras do compositor carregadas:',
+          data.works?.length || 0
+        );
+      } else {
+        console.error(
+          '❌ Erro ao carregar obras do compositor:',
+          response.status
+        );
+        setComposerWorks([]);
+      }
+    } catch (error) {
+      console.error('❌ Erro ao buscar obras do compositor:', error);
+      setComposerWorks([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // 🔥 EFFECT PARA CARREGAR OBRAS DO COMPOSITOR - SEM LOOPS
+  useEffect(() => {
+    if (stableFilterByComposer && stableFilterByComposer.trim() !== '') {
+      // Só carrega se realmente mudou
+      if (lastComposerRef.current !== stableFilterByComposer) {
+        loadComposerWorks(stableFilterByComposer);
+      }
+    } else {
+      // Limpar obras do compositor se não há filtro
+      if (composerWorks.length > 0) {
+        setComposerWorks([]);
+        lastComposerRef.current = '';
+      }
+    }
+  }, [stableFilterByComposer, loadComposerWorks, composerWorks.length]);
+
+  // 🔥 FUNÇÃO PARA PRIORIZAR OBRAS DO USUÁRIO - MEMOIZADA
+  const prioritizeUserWorks = useCallback(
+    (apiWorks: Work[]): Work[] => {
+      const userWorksFiltered = stableUserSuggestions.filter((userWork) => {
+        const matchesQuery =
+          query.length < 2 ||
+          userWork.title.toLowerCase().includes(query.toLowerCase()) ||
+          userWork.composer.name.toLowerCase().includes(query.toLowerCase()) ||
+          userWork.composer.fullName
+            .toLowerCase()
+            .includes(query.toLowerCase());
+
+        const matchesComposer =
+          !stableFilterByComposer ||
+          stableFilterByComposer.trim() === '' ||
+          userWork.composer.id === stableFilterByComposer;
+
+        return matchesQuery && matchesComposer;
+      });
+
+      const apiWorksFiltered = apiWorks.filter(
+        (apiWork) =>
+          !userWorksFiltered.some((userWork) => userWork.id === apiWork.id)
+      );
+
+      return [...userWorksFiltered, ...apiWorksFiltered];
+    },
+    [query, stableFilterByComposer, stableUserSuggestions]
+  );
+
+  // 🔥 FUNÇÃO PARA SUGESTÕES LOCAIS - MEMOIZADA E ESTÁVEL
+  const getLocalSuggestions = useCallback((): Work[] => {
+    console.log('💡 Obtendo sugestões locais...');
+
+    // 1. SEMPRE priorizar obras do usuário se existirem
+    if (stableUserSuggestions.length > 0) {
+      let userWorksToShow = stableUserSuggestions;
+
+      // Filtrar por compositor se selecionado
+      if (stableFilterByComposer && stableFilterByComposer.trim() !== '') {
+        userWorksToShow = stableUserSuggestions.filter(
+          (work) => work.composer.id === stableFilterByComposer
+        );
+
+        if (userWorksToShow.length === 0) {
+          console.log(
+            '🔄 Nenhuma obra do usuário para este compositor, usando obras gerais'
+          );
+          return composerWorks.slice(0, 8);
+        }
+      }
+
+      console.log(`⭐ Mostrando obras do usuário: ${userWorksToShow.length}`);
+      return userWorksToShow.slice(0, 8);
+    }
+
+    // 2. Se há compositor selecionado, mostrar obras dele
+    if (
+      stableFilterByComposer &&
+      stableFilterByComposer.trim() !== '' &&
+      composerWorks.length > 0
+    ) {
+      console.log(`🎼 Mostrando obras do compositor: ${composerWorks.length}`);
+      return composerWorks.slice(0, 8);
+    }
+
+    // 3. Filtrar obras populares por compositor se selecionado
+    if (stableFilterByComposer && stableFilterByComposer.trim() !== '') {
+      const popularFiltered = stablePopularWorks.filter((work) => {
+        return (
+          (work.composer.id && work.composer.id === stableFilterByComposer) ||
+          work.composer.name === stableFilterByComposer ||
+          work.composer.fullName === stableFilterByComposer
+        );
+      });
+
+      if (popularFiltered.length > 0) {
+        console.log(
+          `📊 Obras populares filtradas por compositor: ${popularFiltered.length}`
+        );
+        return popularFiltered.slice(0, 8);
+      }
+    }
+
+    // 4. Fallback: obras populares gerais (apenas se não há filtro de compositor)
+    if (!stableFilterByComposer || stableFilterByComposer.trim() === '') {
+      console.log(
+        `🌟 Mostrando obras populares gerais: ${stablePopularWorks.length}`
+      );
+      return stablePopularWorks.slice(0, 8);
+    }
+
+    console.log('❌ Nenhuma obra encontrada para as condições atuais');
+    return [];
+  }, [
+    stableUserSuggestions,
+    stableFilterByComposer,
+    composerWorks,
+    stablePopularWorks,
+  ]);
+
+  // 🔥 FUNCTION PARA BUSCA - MEMOIZADA E COM DEBOUNCE MELHOR
+  const performSearch = useCallback(
+    async (searchQuery: string, composerFilter: string) => {
+      // Evitar buscas duplicadas
+      const searchKey = `${searchQuery}:${composerFilter}`;
+      if (lastQueryRef.current === searchKey) {
+        return;
+      }
+      lastQueryRef.current = searchKey;
+
       try {
         const startTime = Date.now();
-
         const params = new URLSearchParams({
-          q: query,
+          q: searchQuery,
           limit: '12',
         });
 
-        console.log('trim', filterByComposer.trim() !== '');
-        console.log('filter', filterByComposer === '');
-        // 🔧 SEMPRE incluir filtro de compositor se estiver selecionado
-        if (filterByComposer && filterByComposer.trim() !== '') {
-          params.append('composer', filterByComposer);
-        } else {
-          params.delete('composer');
+        if (composerFilter && composerFilter.trim() !== '') {
+          params.append('composer', composerFilter);
         }
 
-        console.log('🔍 Buscando obras:', { query, filterByComposer, params });
+        console.log('🔍 Buscando obras:', {
+          query: searchQuery,
+          filterByComposer: composerFilter,
+        });
 
         const response = await fetch(`/api/works/search?${params.toString()}`);
-
         const endTime = Date.now();
+
         console.log(`⏱️ Busca completada em ${endTime - startTime}ms`);
 
         if (response.ok) {
           const data = await response.json();
-
-          // 🆕 PRIORIZAÇÃO CORRIGIDA: SEMPRE obras do usuário primeiro
           const combinedWorks = prioritizeUserWorks(data.works || []);
-
           setWorks(combinedWorks);
           console.log(
             '✅ Obras encontradas e priorizadas:',
@@ -176,6 +302,29 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
       } finally {
         setIsLoading(false);
       }
+    },
+    [prioritizeUserWorks]
+  );
+
+  // 🔥 EFFECT PARA BUSCA COM QUERY - SEM LOOPS E COM DEBOUNCE MELHOR
+  useEffect(() => {
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Se não há query, usar sugestões locais
+    if (query.trim().length < 2) {
+      const suggestions = getLocalSuggestions();
+      setWorks(suggestions);
+      setIsLoading(false);
+      setIsInitialized(true);
+      return;
+    }
+
+    setIsLoading(true);
+
+    searchTimeoutRef.current = setTimeout(() => {
+      performSearch(query, stableFilterByComposer);
     }, 400);
 
     return () => {
@@ -183,127 +332,47 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
         clearTimeout(searchTimeoutRef.current);
       }
     };
-  }, [query, filterByComposer, userSuggestions, composerWorks]);
+  }, [query, stableFilterByComposer, getLocalSuggestions, performSearch]);
 
-  // 🆕 FUNÇÃO PARA PRIORIZAR OBRAS DO USUÁRIO
-  const prioritizeUserWorks = (apiWorks: Work[]): Work[] => {
-    // 1. Filtrar obras do usuário que correspondem à busca
-    const userWorksFiltered = userSuggestions.filter((userWork) => {
-      const matchesQuery =
-        query.length < 2 ||
-        userWork.title.toLowerCase().includes(query.toLowerCase()) ||
-        userWork.composer.name.toLowerCase().includes(query.toLowerCase()) ||
-        userWork.composer.fullName.toLowerCase().includes(query.toLowerCase());
-
-      const matchesComposer =
-        !filterByComposer ||
-        filterByComposer.trim() === '' ||
-        userWork.composer.id === filterByComposer;
-
-      return matchesQuery && matchesComposer;
-    });
-
-    // 2. Filtrar obras da API que não estão nas obras do usuário
-    const apiWorksFiltered = apiWorks.filter(
-      (apiWork) =>
-        !userWorksFiltered.some((userWork) => userWork.id === apiWork.id)
-    );
-
-    // 3. Combinar: obras do usuário primeiro, depois da API
-    return [...userWorksFiltered, ...apiWorksFiltered];
-  };
-
-  // 🆕 FUNÇÃO PARA SUGESTÕES LOCAIS (SEM QUERY)
-  const getLocalSuggestions = (): Work[] => {
-    console.log('💡 Obtendo sugestões locais...');
-
-    // 1. SEMPRE priorizar obras do usuário se existirem
-    if (userSuggestions.length > 0) {
-      let userWorksToShow = userSuggestions;
-
-      // Filtrar por compositor se selecionado
-      if (filterByComposer && filterByComposer.trim() !== '') {
-        userWorksToShow = userSuggestions.filter(
-          (work) => work.composer.id === filterByComposer
-        );
-        console.log(
-          `🎯 Obras do usuário filtradas por compositor: ${userWorksToShow.length}`
-        );
-
-        // Se o usuário tem obras mas nenhuma do compositor selecionado,
-        // mostrar obras do compositor das fontes gerais
-        if (userWorksToShow.length === 0) {
-          console.log(
-            '🔄 Nenhuma obra do usuário para este compositor, usando obras gerais'
-          );
-          return composerWorks.slice(0, 8);
-        }
-      }
-
-      console.log(`⭐ Mostrando obras do usuário: ${userWorksToShow.length}`);
-      return userWorksToShow.slice(0, 8);
-    }
-
-    // 2. Se há compositor selecionado, mostrar obras dele
-    if (
-      filterByComposer &&
-      filterByComposer.trim() !== '' &&
-      composerWorks.length > 0
-    ) {
-      console.log(`🎼 Mostrando obras do compositor: ${composerWorks.length}`);
-      return composerWorks.slice(0, 8);
-    }
-
-    // 3. Filtrar obras populares por compositor se selecionado
-    if (filterByComposer && filterByComposer.trim() !== '') {
-      const popularFiltered = popularWorks.filter((work) => {
-        return (
-          (work.composer.id && work.composer.id === filterByComposer) ||
-          work.composer.name === filterByComposer ||
-          work.composer.fullName === filterByComposer
-        );
-      });
-
-      if (popularFiltered.length > 0) {
-        console.log(
-          `📊 Obras populares filtradas por compositor: ${popularFiltered.length}`
-        );
-        return popularFiltered.slice(0, 8);
-      }
-    }
-
-    // 4. Fallback: obras populares gerais (apenas se não há filtro de compositor)
-    if (!filterByComposer || filterByComposer.trim() === '') {
-      console.log(
-        `🌟 Mostrando obras populares gerais: ${popularWorks.length}`
-      );
-      return popularWorks.slice(0, 8);
-    }
-
-    // 5. Se há filtro mas nenhuma obra encontrada
-    console.log('❌ Nenhuma obra encontrada para as condições atuais');
-    return [];
-  };
-
-  // Buscar dados da obra selecionada
+  // 🔥 EFFECT PARA INICIALIZAÇÃO - APENAS UMA VEZ
   useEffect(() => {
-    if (selectedWork) {
-      const work = [
-        ...userSuggestions,
-        ...composerWorks,
-        ...popularWorks,
-        ...works,
-      ].find((w) => w.id === selectedWork);
-      if (work) {
-        setSelectedWorkData(work);
-        setQuery(''); // Limpar query quando uma obra é selecionada
-      }
-    } else {
-      setSelectedWorkData(null);
+    if (!isInitialized && query.length < 2) {
+      const suggestions = getLocalSuggestions();
+      setWorks(suggestions);
+      setIsInitialized(true);
     }
-  }, [selectedWork, userSuggestions, composerWorks, popularWorks, works]);
+  }, [isInitialized, query.length, getLocalSuggestions]);
 
-  // Fechar dropdown ao clicar fora
+  // 🔥 BUSCAR DADOS DA OBRA SELECIONADA - MEMOIZADO
+  const findSelectedWorkData = useCallback(() => {
+    if (!selectedWork) return null;
+
+    const allWorks = [
+      ...stableUserSuggestions,
+      ...composerWorks,
+      ...stablePopularWorks,
+      ...works,
+    ];
+
+    return allWorks.find((w) => w.id === selectedWork) || null;
+  }, [
+    selectedWork,
+    stableUserSuggestions,
+    composerWorks,
+    stablePopularWorks,
+    works,
+  ]);
+
+  // Effect para atualizar dados da obra selecionada
+  useEffect(() => {
+    const workData = findSelectedWorkData();
+    setSelectedWorkData(workData);
+    if (workData && query !== '') {
+      setQuery(''); // Limpar query quando uma obra é selecionada
+    }
+  }, [selectedWork, findSelectedWorkData, query]);
+
+  // 🔥 FECHAR DROPDOWN AO CLICAR FORA - MEMOIZADO
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -322,96 +391,107 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
     };
   }, []);
 
-  const handleWorkSelect = (work: Work) => {
-    console.log('🎯 Obra selecionada:', work.title);
-    onWorkSelect(work.id);
-    setSelectedWorkData(work);
-    setQuery('');
-    setIsOpen(false);
-  };
+  // 🔥 HANDLERS MEMOIZADOS
+  const handleWorkSelect = useCallback(
+    (work: Work) => {
+      console.log('🎯 Obra selecionada:', work.title);
+      onWorkSelect(work.id);
+      setSelectedWorkData(work);
+      setQuery('');
+      setIsOpen(false);
+    },
+    [onWorkSelect]
+  );
 
-  const handleClearSelection = () => {
+  const handleClearSelection = useCallback(() => {
     console.log('🗑️ Limpando seleção de obra');
     onWorkSelect('');
     setSelectedWorkData(null);
     setQuery('');
     setIsOpen(false);
-  };
+  }, [onWorkSelect]);
 
-  const handleInputChange = (value: string) => {
-    setQuery(value);
-    setIsOpen(value.length > 0 || !selectedWorkData);
+  const handleInputChange = useCallback(
+    (value: string) => {
+      setQuery(value);
+      setIsOpen(value.length > 0 || !selectedWorkData);
 
-    // Se limpar o input, limpar seleção
-    if (value.length === 0 && selectedWorkData) {
-      handleClearSelection();
-    }
-  };
-
-  // 🆕 LABEL INTELIGENTE PARA SUGESTÕES
-  const getSuggestionsLabel = () => {
-    if (query.length >= 2) {
-      return filterByComposer && filterByComposer.trim() !== ''
-        ? 'Resultados filtrados por compositor'
-        : 'Resultados da busca';
-    }
-
-    // Se usuário tem uploads e há compositor selecionado
-    if (
-      userSuggestions.length > 0 &&
-      filterByComposer &&
-      filterByComposer.trim() !== ''
-    ) {
-      const userComposerWorks = userSuggestions.filter(
-        (w) => w.composer.id === filterByComposer
-      );
-      if (userComposerWorks.length > 0) {
-        return `Suas obras de ${
-          userComposerWorks[0].composer.fullName ||
-          userComposerWorks[0].composer.name
-        }`;
+      // Se limpar o input, limpar seleção
+      if (value.length === 0 && selectedWorkData) {
+        handleClearSelection();
       }
-    }
+    },
+    [selectedWorkData, handleClearSelection]
+  );
 
-    // Se usuário tem uploads (geral)
-    if (
-      userSuggestions.length > 0 &&
-      (!filterByComposer || filterByComposer.trim() === '')
-    ) {
-      return 'Suas obras recentes';
-    }
+  // 🔥 LABELS E CORES MEMOIZADOS
+  const { suggestionsLabel, iconAndColor } = useMemo(() => {
+    const getSuggestionsLabel = () => {
+      if (query.length >= 2) {
+        return stableFilterByComposer && stableFilterByComposer.trim() !== ''
+          ? 'Resultados filtrados por compositor'
+          : 'Resultados da busca';
+      }
 
-    // Se há compositor selecionado mas usuário não tem obras dele
-    if (filterByComposer && filterByComposer.trim() !== '') {
-      return 'Obras do compositor selecionado';
-    }
+      if (
+        stableUserSuggestions.length > 0 &&
+        stableFilterByComposer &&
+        stableFilterByComposer.trim() !== ''
+      ) {
+        const userComposerWorks = stableUserSuggestions.filter(
+          (w) => w.composer.id === stableFilterByComposer
+        );
+        if (userComposerWorks.length > 0) {
+          return `Suas obras de ${
+            userComposerWorks[0].composer.fullName ||
+            userComposerWorks[0].composer.name
+          }`;
+        }
+      }
 
-    return 'Obras populares';
-  };
+      if (
+        stableUserSuggestions.length > 0 &&
+        (!stableFilterByComposer || stableFilterByComposer.trim() === '')
+      ) {
+        return 'Suas obras recentes';
+      }
 
-  // 🆕 DETERMINAR COR DO ÍCONE BASEADO NO TIPO DE SUGESTÃO
-  const getIconAndColor = () => {
-    const hasUserWorks = userSuggestions.length > 0;
-    const hasComposerFilter =
-      filterByComposer && filterByComposer.trim() !== '';
+      if (stableFilterByComposer && stableFilterByComposer.trim() !== '') {
+        return 'Obras do compositor selecionado';
+      }
 
-    if (
-      hasUserWorks &&
-      (!hasComposerFilter ||
-        userSuggestions.some((w) => w.composer.id === filterByComposer))
-    ) {
-      return { icon: FiUser, color: 'text-accent-purple' };
-    }
+      return 'Obras populares';
+    };
 
-    if (hasComposerFilter) {
-      return { icon: FiFilter, color: 'text-accent-blue' };
-    }
+    const getIconAndColor = () => {
+      const hasUserWorks = stableUserSuggestions.length > 0;
+      const hasComposerFilter =
+        stableFilterByComposer && stableFilterByComposer.trim() !== '';
 
-    return { icon: FiTrendingUp, color: 'text-brand-primary' };
-  };
+      if (
+        hasUserWorks &&
+        (!hasComposerFilter ||
+          stableUserSuggestions.some(
+            (w) => w.composer.id === stableFilterByComposer
+          ))
+      ) {
+        return { icon: FiUser, color: 'text-accent-purple' };
+      }
 
-  const suggestionsLabel = getSuggestionsLabel();
-  const { icon: SuggestionIcon, color: iconColor } = getIconAndColor();
+      if (hasComposerFilter) {
+        return { icon: FiFilter, color: 'text-accent-blue' };
+      }
+
+      return { icon: FiTrendingUp, color: 'text-brand-primary' };
+    };
+
+    return {
+      suggestionsLabel: getSuggestionsLabel(),
+      iconAndColor: getIconAndColor(),
+    };
+  }, [query.length, stableFilterByComposer, stableUserSuggestions]);
+
+  const { icon: SuggestionIcon, color: iconColor } = iconAndColor;
 
   return (
     <div className="relative">
@@ -500,14 +580,13 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                   )}
 
                   {works.map((work, i) => {
-                    // 🆕 VERIFICAR SE É OBRA DO USUÁRIO
-                    const isUserWork = userSuggestions.some(
+                    const isUserWork = stableUserSuggestions.some(
                       (uw) => uw.id === work.id
                     );
 
                     return (
                       <button
-                        key={i}
+                        key={`${work.id}-${i}`}
                         type="button"
                         onClick={() => handleWorkSelect(work)}
                         className="w-full text-left p-3 rounded-lg hover:bg-theme-secondary transition-colors group"
@@ -555,14 +634,16 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
                   <p className="text-sm">
                     {query.length >= 2
                       ? `Nenhuma obra encontrada para "${query}"`
-                      : filterByComposer && filterByComposer.trim() !== ''
+                      : stableFilterByComposer &&
+                        stableFilterByComposer.trim() !== ''
                       ? 'Nenhuma obra encontrada para este compositor'
                       : 'Nenhuma obra disponível'}
                   </p>
                   {query.length >= 2 && (
                     <p className="text-xs mt-1">
                       Tente termos diferentes
-                      {filterByComposer && filterByComposer.trim() !== ''
+                      {stableFilterByComposer &&
+                      stableFilterByComposer.trim() !== ''
                         ? ' ou remova o filtro de compositor'
                         : ''}
                     </p>
@@ -584,20 +665,20 @@ const WorkSearchInput: React.FC<WorkSearchInputProps> = ({
         </div>
       )}
 
-      {/* 🆕 Informação sobre o estado atual */}
+      {/* Informação sobre o estado atual */}
       {!selectedWorkData && (
         <div className="mt-1 flex items-center justify-between text-xs text-theme-tertiary">
           <div className="flex items-center space-x-2">
-            {filterByComposer && filterByComposer.trim() !== '' && (
+            {stableFilterByComposer && stableFilterByComposer.trim() !== '' && (
               <span className="flex items-center space-x-1">
                 <FiFilter className="w-3 h-3" />
                 <span>Filtrado por compositor</span>
               </span>
             )}
-            {userSuggestions.length > 0 && (
+            {stableUserSuggestions.length > 0 && (
               <span className="flex items-center space-x-1">
                 <FiUser className="w-3 h-3 text-accent-purple" />
-                <span>{userSuggestions.length} obra(s) sua(s)</span>
+                <span>{stableUserSuggestions.length} obra(s) sua(s)</span>
               </span>
             )}
           </div>

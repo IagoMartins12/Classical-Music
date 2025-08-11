@@ -296,7 +296,7 @@ export default function TeacherLessonDetailsPageClient({
         .filter((work) => work.scoreId)
         .map((work) => work.scoreId!);
 
-      const workIds = editingWorks.map((work) => work.workId);
+      const worksIds = editingWorks.map((work) => work.workId);
 
       const response = await fetch(`/api/lessons/${lesson.id}`, {
         method: 'PATCH',
@@ -305,7 +305,7 @@ export default function TeacherLessonDetailsPageClient({
         },
         body: JSON.stringify({
           workScoreIds,
-          workIds, // Para referência futura
+          worksIds, // Para referência futura
         }),
       });
 

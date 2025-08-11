@@ -1,5 +1,5 @@
-// hooks/useWorkScores.ts - Hook COMPLETO com loadMoreForType
-import { useState, useEffect, useCallback } from 'react';
+// hooks/useWorkScores.ts - Hook CORRIGIDO SEM LOOPS INFINITOS
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 
 export interface WorkScore {
   id: string;
@@ -33,8 +33,8 @@ export interface WorkScore {
 interface UseWorkScoresOptions {
   workId: string;
   source?: 'IMSLP' | 'CUSTOM' | 'UPLOAD';
-  limit?: number; // ✅ ANTIGO: limite total
-  limitPerType?: number; // ✅ NOVO: limite por tipo de partitura
+  limit?: number;
+  limitPerType?: number;
   enabled?: boolean;
   autoRefetch?: boolean;
   refetchInterval?: number;
@@ -48,7 +48,7 @@ interface UseWorkScoresReturn {
   hasMore: boolean;
   refetch: () => Promise<void>;
   loadMore: () => Promise<void>;
-  loadMoreForType: (scoreType: string) => Promise<void>; // ✅ NOVO: Load more específico por tipo
+  loadMoreForType: (scoreType: string) => Promise<void>;
   findWorkScore: (
     sourceId: string,
     source?: string
@@ -58,8 +58,8 @@ interface UseWorkScoresReturn {
     offset: number;
     hasNext: boolean;
     hasPrev: boolean;
-    totalByType?: { [key: string]: number }; // ✅ NOVO: Total por tipo
-    loadedByType?: { [key: string]: number }; // ✅ NOVO: Carregado por tipo
+    totalByType?: { [key: string]: number };
+    loadedByType?: { [key: string]: number };
   };
 }
 
@@ -70,60 +70,97 @@ export const useWorkScores = (
     workId,
     source,
     limit = 50,
-    limitPerType, // ✅ NOVO: limite por tipo
+    limitPerType,
     enabled = true,
     autoRefetch = false,
     refetchInterval = 0,
   } = options;
 
+  // 🔥 ESTADOS ESTÁVEIS
   const [workScores, setWorkScores] = useState<WorkScore[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [offset, setOffset] = useState(0);
-  const [pagination, setPagination] = useState({
+
+  // 🔥 ESTADO DE PAGINAÇÃO SIMPLIFICADO
+  const [pagination, setPagination] = useState(() => ({
     limit: limitPerType || limit,
     offset: 0,
     hasNext: false,
     hasPrev: false,
     totalByType: {} as { [key: string]: number },
     loadedByType: {} as { [key: string]: number },
-  });
+  }));
 
-  // ✅ Função para buscar WorkScores com limite por tipo
+  // 🔥 USAR REFS PARA CONTROLE DE CHAMADAS E EVITAR LOOPS
+  const loadingRef = useRef(false);
+  const lastWorkIdRef = useRef<string>('');
+  const hasInitializedRef = useRef(false);
+  const autoRefetchIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 🔥 MEMOIZAR OPÇÕES DE FORMA ULTRA ESTÁVEL
+  const stableOptions = useMemo(
+    () => ({
+      workId: workId || '',
+      source: source || undefined,
+      limit: limit || 50,
+      limitPerType: limitPerType || undefined,
+      enabled: enabled !== false,
+    }),
+    [workId, source, limit, limitPerType, enabled]
+  );
+
+  // 🔥 FUNÇÃO PARA BUSCAR WORK SCORES - ULTRA CONTROLADA
   const fetchWorkScores = useCallback(
     async (resetOffset = true) => {
-      if (!enabled || !workId) return;
+      // 🔥 VERIFICAÇÕES MÚLTIPLAS PARA EVITAR CHAMADAS DESNECESSÁRIAS
+      if (
+        !stableOptions.enabled ||
+        !stableOptions.workId ||
+        loadingRef.current
+      ) {
+        console.log('🔍 [USE-WORK-SCORES] Busca ignorada:', {
+          enabled: stableOptions.enabled,
+          workId: !!stableOptions.workId,
+          loading: loadingRef.current,
+        });
+        return;
+      }
 
-      console.log(
-        `🔍 [USE-WORK-SCORES] Buscando WorkScores para obra: ${workId}`,
-        { limitPerType, limit, resetOffset }
-      );
+      console.log('🚀 [USE-WORK-SCORES] Carregando dados iniciais...');
 
+      loadingRef.current = true;
       setLoading(true);
       setError(null);
 
       try {
         const currentOffset = resetOffset ? 0 : offset;
         const params = new URLSearchParams({
-          workId,
+          workId: stableOptions.workId,
           offset: currentOffset.toString(),
         });
 
-        // ✅ NOVO: Usar limitPerType se fornecido
-        if (limitPerType) {
-          params.append('limitPerType', limitPerType.toString());
-          console.log(
-            `📊 [USE-WORK-SCORES] Usando limitPerType: ${limitPerType}`
-          );
+        console.log(
+          '🔍 [USE-WORK-SCORES] Buscando WorkScores para obra:',
+          stableOptions.workId,
+          {
+            limitPerType: stableOptions.limitPerType,
+            limit: stableOptions.limit,
+            resetOffset,
+          }
+        );
+
+        // Usar limitPerType se fornecido
+        if (stableOptions.limitPerType) {
+          params.append('limitPerType', stableOptions.limitPerType.toString());
         } else {
-          params.append('limit', limit.toString());
-          console.log(`📊 [USE-WORK-SCORES] Usando limit total: ${limit}`);
+          params.append('limit', stableOptions.limit.toString());
         }
 
-        if (source) {
-          params.append('source', source);
+        if (stableOptions.source) {
+          params.append('source', stableOptions.source);
         }
 
         const response = await fetch(`/api/work-scores?${params.toString()}`);
@@ -141,7 +178,7 @@ export const useWorkScores = (
             setWorkScores(newWorkScores);
             setOffset(newWorkScores.length);
           } else {
-            // ✅ INCREMENTAL: Adicionar sem duplicar
+            // INCREMENTAL: Adicionar sem duplicar
             setWorkScores((prev) => {
               const existingIds = new Set(prev.map((ws) => ws.id));
               const uniqueNew = newWorkScores.filter(
@@ -149,33 +186,50 @@ export const useWorkScores = (
               );
               return [...prev, ...uniqueNew];
             });
-
-            // ✅ CORRIGIDO: Para limitPerType, incrementar o offset baseado na quantidade atual
             setOffset((prev) => prev + newWorkScores.length);
           }
 
           setTotal(result.total || 0);
           setHasMore(result.hasMore || false);
 
-          // ✅ NOVO: Atualizar paginação com dados por tipo corretos
-          setPagination({
-            limit: limitPerType || limit,
-            offset: currentOffset,
-            hasNext: result.hasMore || false,
-            hasPrev: currentOffset > 0,
-            totalByType:
-              result.totalByType || result.pagination?.totalByType || {},
-            loadedByType:
-              result.loadedByType || result.pagination?.loadedByType || {},
+          // 🔥 ATUALIZAR PAGINAÇÃO DE FORMA MAIS ESTÁVEL
+          setPagination((prev) => {
+            const newTotalByType =
+              result.totalByType || result.pagination?.totalByType || {};
+            const newLoadedByType =
+              result.loadedByType || result.pagination?.loadedByType || {};
+
+            // Só atualizar se realmente mudou
+            const hasChanged =
+              JSON.stringify(prev.totalByType) !==
+                JSON.stringify(newTotalByType) ||
+              JSON.stringify(prev.loadedByType) !==
+                JSON.stringify(newLoadedByType);
+
+            if (!hasChanged && !resetOffset) {
+              return prev; // Manter objeto existente se não houve mudanças
+            }
+
+            return {
+              limit: stableOptions.limitPerType || stableOptions.limit,
+              offset: currentOffset,
+              hasNext: result.hasMore || false,
+              hasPrev: currentOffset > 0,
+              totalByType: newTotalByType,
+              loadedByType: newLoadedByType,
+            };
           });
 
           console.log(
-            `✅ [USE-WORK-SCORES] Carregados ${newWorkScores.length}/${result.total} WorkScores`,
+            '✅ [USE-WORK-SCORES] Carregados',
+            newWorkScores.length,
+            '/',
+            result.total,
+            'WorkScores',
             {
               totalByType: result.totalByType,
               loadedByType: result.loadedByType,
               hasMore: result.hasMore,
-              pagination: result.pagination,
             }
           );
         } else {
@@ -185,37 +239,41 @@ export const useWorkScores = (
         console.error('❌ [USE-WORK-SCORES] Erro:', error);
         setError(error instanceof Error ? error.message : 'Erro desconhecido');
       } finally {
+        loadingRef.current = false;
         setLoading(false);
       }
     },
-    [workId, source, limit, limitPerType, enabled, offset]
+    [stableOptions, offset]
   );
 
-  // ✅ Função para recarregar do início
+  // 🔥 FUNÇÃO PARA RECARREGAR DO INÍCIO - MEMOIZADA E ESTÁVEL
   const refetch = useCallback(async () => {
+    console.log('🔄 [USE-WORK-SCORES] Refetch solicitado');
+    hasInitializedRef.current = false; // Permitir nova inicialização
     await fetchWorkScores(true);
+    hasInitializedRef.current = true;
   }, [fetchWorkScores]);
 
-  // ✅ Função para carregar mais (INCREMENTAL)
+  // 🔥 FUNÇÃO PARA CARREGAR MAIS - MEMOIZADA E ESTÁVEL
   const loadMore = useCallback(async () => {
-    if (!hasMore || loading) {
+    if (!hasMore || loadingRef.current) {
       console.log('⚠️ [USE-WORK-SCORES] LoadMore cancelado:', {
         hasMore,
-        loading,
+        loading: loadingRef.current,
       });
       return;
     }
     console.log('📈 [USE-WORK-SCORES] Carregando mais...');
     await fetchWorkScores(false);
-  }, [hasMore, loading, fetchWorkScores]);
+  }, [hasMore, fetchWorkScores]);
 
-  // ✅ NOVO: Função para carregar mais de um tipo específico
+  // 🔥 FUNÇÃO PARA CARREGAR MAIS DE UM TIPO ESPECÍFICO - MEMOIZADA E ESTÁVEL
   const loadMoreForType = useCallback(
     async (scoreType: string) => {
-      if (!hasMore || loading) {
+      if (!hasMore || loadingRef.current) {
         console.log('⚠️ [USE-WORK-SCORES] LoadMoreForType cancelado:', {
           hasMore,
-          loading,
+          loading: loadingRef.current,
           scoreType,
         });
         return;
@@ -224,21 +282,18 @@ export const useWorkScores = (
       console.log(
         `📈 [USE-WORK-SCORES] Carregando mais para tipo: ${scoreType}`
       );
-
-      // Para limitPerType, o loadMore normal já funciona incrementalmente
-      // A API gerencia automaticamente os tipos
       await fetchWorkScores(false);
     },
-    [hasMore, loading, fetchWorkScores]
+    [hasMore, fetchWorkScores]
   );
 
-  // ✅ Função para buscar WorkScore específico
+  // 🔥 FUNÇÃO PARA BUSCAR WORK SCORE ESPECÍFICO - MEMOIZADA E ESTÁVEL
   const findWorkScore = useCallback(
     async (
       sourceId: string,
       scoreSource?: string
     ): Promise<WorkScore | null> => {
-      if (!workId || !sourceId) return null;
+      if (!stableOptions.workId || !sourceId) return null;
 
       console.log(
         `🎯 [USE-WORK-SCORES] Buscando WorkScore específico: ${sourceId}`
@@ -246,7 +301,7 @@ export const useWorkScores = (
 
       try {
         const params = new URLSearchParams({
-          workId,
+          workId: stableOptions.workId,
           sourceId,
         });
 
@@ -281,61 +336,138 @@ export const useWorkScores = (
         return null;
       }
     },
-    [workId]
+    [stableOptions.workId]
   );
 
-  // ✅ Carregar dados iniciais
+  // 🔥 EFFECT PARA CARREGAR DADOS INICIAIS - ULTRA CONTROLADO
   useEffect(() => {
-    if (enabled && workId) {
+    // Verificar se workId mudou
+    const workIdChanged = lastWorkIdRef.current !== stableOptions.workId;
+
+    if (workIdChanged) {
+      console.log('🔄 [USE-WORK-SCORES] WorkId mudou, resetando estado...', {
+        anterior: lastWorkIdRef.current,
+        novo: stableOptions.workId,
+      });
+
+      // Reset completo do estado
+      setWorkScores([]);
+      setError(null);
+      setTotal(0);
+      setHasMore(false);
+      setOffset(0);
+      setPagination({
+        limit: stableOptions.limitPerType || stableOptions.limit,
+        offset: 0,
+        hasNext: false,
+        hasPrev: false,
+        totalByType: {},
+        loadedByType: {},
+      });
+
+      lastWorkIdRef.current = stableOptions.workId;
+      hasInitializedRef.current = false;
+      loadingRef.current = false;
+    }
+
+    // Carregar dados se habilitado e não inicializado
+    if (
+      stableOptions.enabled &&
+      stableOptions.workId &&
+      !hasInitializedRef.current &&
+      !loadingRef.current
+    ) {
+      console.log(
+        '🚀 [USE-WORK-SCORES] Inicializando carregamento de dados...'
+      );
+      hasInitializedRef.current = true;
       fetchWorkScores(true);
     }
-  }, [workId, source, enabled, limitPerType, limit, fetchWorkScores]);
+  }, [stableOptions.workId, stableOptions.enabled, fetchWorkScores]);
 
-  // ✅ Auto-refetch (se habilitado)
+  // 🔥 AUTO-REFETCH (SE HABILITADO) - EFFECT ULTRA CONTROLADO
   useEffect(() => {
+    // Limpar interval anterior se existir
+    if (autoRefetchIntervalRef.current) {
+      clearInterval(autoRefetchIntervalRef.current);
+      autoRefetchIntervalRef.current = null;
+    }
+
     if (!autoRefetch || !refetchInterval || refetchInterval <= 0) return;
 
-    const interval = setInterval(() => {
-      if (enabled && workId) {
+    console.log(
+      `⏰ [USE-WORK-SCORES] Auto-refetch habilitado: ${refetchInterval}ms`
+    );
+
+    autoRefetchIntervalRef.current = setInterval(() => {
+      if (
+        stableOptions.enabled &&
+        stableOptions.workId &&
+        !loadingRef.current
+      ) {
+        console.log('🔄 [USE-WORK-SCORES] Auto-refetch executando...');
         refetch();
       }
     }, refetchInterval);
 
-    return () => clearInterval(interval);
-  }, [autoRefetch, refetchInterval, enabled, workId, refetch]);
-
-  // ✅ Reset quando workId muda
-  useEffect(() => {
-    setWorkScores([]);
-    setError(null);
-    setTotal(0);
-    setHasMore(false);
-    setOffset(0);
-    setPagination({
-      limit: limitPerType || limit,
-      offset: 0,
-      hasNext: false,
-      hasPrev: false,
-      totalByType: {},
-      loadedByType: {},
-    });
-  }, [workId, limitPerType, limit]);
-
-  return {
-    workScores,
-    loading,
-    error,
-    total,
-    hasMore,
+    return () => {
+      if (autoRefetchIntervalRef.current) {
+        console.log('🛑 [USE-WORK-SCORES] Limpando auto-refetch');
+        clearInterval(autoRefetchIntervalRef.current);
+        autoRefetchIntervalRef.current = null;
+      }
+    };
+  }, [
+    autoRefetch,
+    refetchInterval,
+    stableOptions.enabled,
+    stableOptions.workId,
     refetch,
-    loadMore,
-    loadMoreForType, // ✅ NOVO: Função para load more por tipo
-    findWorkScore,
-    pagination,
-  };
+  ]);
+
+  // 🔥 CLEANUP EFFECT
+  useEffect(() => {
+    return () => {
+      if (autoRefetchIntervalRef.current) {
+        clearInterval(autoRefetchIntervalRef.current);
+        autoRefetchIntervalRef.current = null;
+      }
+      loadingRef.current = false;
+    };
+  }, []);
+
+  // 🔥 MEMOIZAR RETORNO PARA EVITAR RE-RENDERS DESNECESSÁRIOS
+  const returnValue = useMemo(
+    () => ({
+      workScores,
+      loading,
+      error,
+      total,
+      hasMore,
+      refetch,
+      loadMore,
+      loadMoreForType,
+      findWorkScore,
+      pagination,
+    }),
+    [
+      workScores,
+      loading,
+      error,
+      total,
+      hasMore,
+      refetch,
+      loadMore,
+      loadMoreForType,
+      findWorkScore,
+      pagination,
+    ]
+  );
+
+  return returnValue;
 };
 
-// ✅ Hook simplificado para buscar um WorkScore específico (mantido igual)
+// Hook simplificado para buscar um WorkScore específico (mantido igual)
 export const useWorkScore = (
   workId: string,
   sourceId: string,
@@ -387,10 +519,15 @@ export const useWorkScore = (
     fetchWorkScore();
   }, [fetchWorkScore]);
 
-  return {
-    workScore,
-    loading,
-    error,
-    refetch: fetchWorkScore,
-  };
+  const returnValue = useMemo(
+    () => ({
+      workScore,
+      loading,
+      error,
+      refetch: fetchWorkScore,
+    }),
+    [workScore, loading, error, fetchWorkScore]
+  );
+
+  return returnValue;
 };

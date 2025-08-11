@@ -5,7 +5,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
-import { Lesson } from '@prisma/client';
+import { Lesson, LessonStatus } from '@prisma/client';
 
 // 🆕 FUNÇÃO MELHORADA PARA REVALIDAR CACHE
 async function revalidateTeacherData(userId: string, studentUserId?: string) {
@@ -546,8 +546,9 @@ export async function POST(request: NextRequest) {
       type = 'INDIVIDUAL',
       location,
       objectives = [],
-      workScoreIds = [],
-      worksIds = [], // 🆕 NOVO CAMPO PARA IDs DAS OBRAS
+      // 🔥 CAMPOS DE PEÇAS MUSICAIS
+      worksIds = [], // 🆕 IDs das obras
+      workScoreIds = [], // 🆕 IDs das partituras
       topics = [],
       techniques = [],
       repertoire = [],
@@ -555,22 +556,20 @@ export async function POST(request: NextRequest) {
       practiceGoals = [],
       teacherNotes,
       publicNotes,
-      // Recorrência melhorada
+      // Recorrência
       isRecurring = false,
       recurrenceType = 'NONE',
       recurrenceEnd,
-      // NOVO: Flag para forçar criação mesmo com conflitos
       forceCreate = false,
     } = body;
 
-    // 🆕 VALIDAÇÃO ROBUSTA DE CAMPOS OBRIGATÓRIOS
+    // Validação básica (mantida)
     const errors: string[] = [];
 
     if (!studentUserId) errors.push('Aluno é obrigatório');
     if (!title?.trim()) errors.push('Título é obrigatório');
     if (!scheduledAt) errors.push('Data e hora são obrigatórias');
 
-    // Validar data futura
     const scheduledDate = new Date(scheduledAt);
     if (isNaN(scheduledDate.getTime())) {
       errors.push('Data e hora inválidas');
@@ -578,52 +577,38 @@ export async function POST(request: NextRequest) {
       errors.push('Data e hora devem ser no futuro');
     }
 
-    // Validar duração
     if (duration < 15 || duration > 300) {
       errors.push('Duração deve estar entre 15 e 300 minutos');
     }
 
-    // Validar recorrência
-    if (isRecurring) {
-      if (!recurrenceEnd || recurrenceType === 'NONE') {
-        errors.push(
-          'Para aulas recorrentes, data final e tipo de recorrência são obrigatórios'
-        );
-      }
-
-      if (recurrenceEnd) {
-        const endDate = new Date(recurrenceEnd);
-        if (isNaN(endDate.getTime())) {
-          errors.push('Data final da recorrência inválida');
-        } else if (endDate <= scheduledDate) {
-          errors.push('Data final deve ser posterior à data da primeira aula');
-        }
-
-        // Limite de 3 meses
-        const maxDate = new Date(scheduledDate);
-        maxDate.setMonth(maxDate.getMonth() + 3);
-        if (endDate > maxDate) {
-          errors.push('Recorrência limitada a 3 meses máximo');
-        }
-      }
+    // 🔥 VALIDAÇÃO DE PEÇAS MUSICAIS
+    if (worksIds && worksIds.length > 4) {
+      errors.push('Máximo de 4 obras por aula');
     }
+
+    if (workScoreIds && workScoreIds.length > 4) {
+      errors.push('Máximo de 4 partituras por aula');
+    }
+
+    // 🔥 LOG DOS DADOS DE PEÇAS MUSICAIS
+    console.log('🎼 [LESSONS] Dados de peças musicais recebidos:', {
+      worksIds: worksIds || [],
+      workScoreIds: workScoreIds || [],
+      totalWorks: worksIds?.length || 0,
+      totalScores: workScoreIds?.length || 0,
+    });
 
     if (errors.length > 0) {
       return NextResponse.json(
         {
           error: 'Erros de validação encontrados',
           validationErrors: errors,
-          details: errors.join('; '),
         },
         { status: 400 }
       );
     }
 
-    console.log(
-      `📅➕ [LESSONS] Criando aula: ${title} - ${scheduledAt} ${
-        isRecurring ? '(Recorrente)' : ''
-      }`
-    );
+    console.log(`📅➕ [LESSONS] Criando aula: ${title} - ${scheduledAt}`);
 
     // Verificar se professor existe
     const teacherProfile = await prisma.teacher.findUnique({
@@ -638,7 +623,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verificar se aluno existe e está vinculado
+    // Verificar se aluno existe
     const studentProfile = await prisma.student.findUnique({
       where: { userId: studentUserId },
       select: {
@@ -665,6 +650,89 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // 🔥 VALIDAR IDs DAS WORKS (se fornecidas)
+    if (worksIds && worksIds.length > 0) {
+      console.log('🔍 [LESSONS] Validando IDs das obras:', worksIds);
+
+      try {
+        const validWorks = await prisma.work.findMany({
+          where: { id: { in: worksIds } },
+          select: { id: true, title: true },
+        });
+
+        if (validWorks.length !== worksIds.length) {
+          const foundIds = validWorks.map((w) => w.id);
+          const invalidIds = worksIds.filter(
+            (id: string) => !foundIds.includes(id)
+          );
+          console.warn('⚠️ [LESSONS] Obras inválidas encontradas:', invalidIds);
+
+          return NextResponse.json(
+            {
+              error: `Obras inválidas: ${invalidIds.join(', ')}`,
+              validWorks: foundIds,
+              invalidWorks: invalidIds,
+            },
+            { status: 400 }
+          );
+        }
+
+        console.log(
+          '✅ [LESSONS] Todas as obras são válidas:',
+          validWorks.map((w) => w.title)
+        );
+      } catch (error) {
+        console.error('❌ [LESSONS] Erro ao validar obras:', error);
+        return NextResponse.json(
+          { error: 'Erro ao validar obras selecionadas' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // 🔥 VALIDAR IDs DAS WORK SCORES (se fornecidas)
+    if (workScoreIds && workScoreIds.length > 0) {
+      console.log('🔍 [LESSONS] Validando IDs das partituras:', workScoreIds);
+
+      try {
+        const validScores = await prisma.workScore.findMany({
+          where: { id: { in: workScoreIds } },
+          select: { id: true, title: true },
+        });
+
+        if (validScores.length !== workScoreIds.length) {
+          const foundIds = validScores.map((s) => s.id);
+          const invalidIds = workScoreIds.filter(
+            (id: string) => !foundIds.includes(id)
+          );
+          console.warn(
+            '⚠️ [LESSONS] Partituras inválidas encontradas:',
+            invalidIds
+          );
+
+          return NextResponse.json(
+            {
+              error: `Partituras inválidas: ${invalidIds.join(', ')}`,
+              validScores: foundIds,
+              invalidScores: invalidIds,
+            },
+            { status: 400 }
+          );
+        }
+
+        console.log(
+          '✅ [LESSONS] Todas as partituras são válidas:',
+          validScores.map((s) => s.title)
+        );
+      } catch (error) {
+        console.error('❌ [LESSONS] Erro ao validar partituras:', error);
+        return NextResponse.json(
+          { error: 'Erro ao validar partituras selecionadas' },
+          { status: 400 }
+        );
+      }
+    }
+
     const relationship = studentProfile.teachers[0];
     const lessonStart = new Date(scheduledAt);
 
@@ -678,83 +746,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // NOVO: Verificar conflitos para todas as datas se não forçando criação
-    const allConflicts: any[] = [];
-    const allWarnings: string[] = [];
-
+    // Verificar conflitos se não forçando criação
     if (!forceCreate) {
-      console.log(
-        `🔍 [CONFLICTS] Verificando conflitos para ${lessonDates.length} aulas...`
+      const conflictCheck = await checkScheduleConflicts(
+        teacherProfile.id,
+        lessonStart,
+        duration
       );
 
-      for (const date of lessonDates.slice(0, 10)) {
-        // Verificar apenas as primeiras 10 para performance
-        const conflictCheck = await checkScheduleConflicts(
-          teacherProfile.id,
-          date,
-          duration
-        );
-
-        if (conflictCheck.hasConflicts) {
-          allConflicts.push(
-            ...conflictCheck.conflicts.map((c) => ({
-              ...c,
-              plannedDate: date,
-            }))
-          );
-        }
-
-        allWarnings.push(...conflictCheck.warnings);
-      }
-
-      // Se há conflitos e não está forçando, retornar erro com detalhes
-      if (allConflicts.length > 0) {
+      if (conflictCheck.hasConflicts) {
         return NextResponse.json(
           {
             error: 'Conflitos de horário detectados',
-            conflicts: allConflicts,
-            warnings: Array.from(new Set(allWarnings)), // Remove duplicatas
-            totalLessonsPlanned: lessonDates.length,
-            message:
-              'Algumas aulas entrarão em conflito com horários já agendados. Deseja criar mesmo assim?',
+            conflicts: conflictCheck.conflicts,
+            warnings: conflictCheck.warnings,
           },
           { status: 409 }
         );
       }
     }
 
-    // Verificar limite de aulas por semana (apenas para primeira aula)
-    const weekStart = new Date(lessonStart);
-    weekStart.setDate(lessonStart.getDate() - lessonStart.getDay());
-    weekStart.setHours(0, 0, 0, 0);
-
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekStart.getDate() + 7);
-
-    const lessonsThisWeek = await prisma.lesson.count({
-      where: {
-        teacherId: teacherProfile.id,
-        studentId: studentProfile.id,
-        status: 'SCHEDULED',
-        scheduledAt: {
-          gte: weekStart,
-          lt: weekEnd,
-        },
-      },
-    });
-
-    if (lessonsThisWeek >= relationship.maxLessonsPerWeek) {
-      return NextResponse.json(
-        {
-          error: `Limite de ${relationship.maxLessonsPerWeek} aula(s) por semana atingido`,
-        },
-        { status: 400 }
-      );
-    }
-
     // Criar aulas
     const createdLessons = [];
-    const skippedLessons = [];
     let parentLessonId: string | null = null;
 
     console.log(`📝 [LESSONS] Criando ${lessonDates.length} aula(s)...`);
@@ -763,32 +776,42 @@ export async function POST(request: NextRequest) {
       const lessonDate = lessonDates[i];
 
       try {
+        // 🔥 DADOS DA AULA COM PEÇAS MUSICAIS
+        const lessonData = {
+          teacherId: teacherProfile.id,
+          studentId: studentProfile.id,
+          title: lessonDates.length > 1 ? `${title} (${i + 1})` : title,
+          description,
+          scheduledAt: lessonDate,
+          duration,
+          type,
+          location,
+          objectives,
+          // 🔥 CAMPOS DE PEÇAS MUSICAIS CORRETOS
+          worksIds: worksIds || [], // IDs das obras
+          workScoreIds: workScoreIds || [], // IDs das partituras
+          topics,
+          techniques,
+          repertoire,
+          homework,
+          practiceGoals,
+          teacherNotes,
+          publicNotes,
+          status: 'SCHEDULED' as LessonStatus,
+          isRecurring: lessonDates.length > 1,
+          recurrenceType: lessonDates.length > 1 ? recurrenceType : 'NONE',
+          parentLessonId: i === 0 ? null : parentLessonId,
+          recurrenceEnd: isRecurring ? new Date(recurrenceEnd) : null,
+        };
+
+        console.log(`🔥 [LESSONS] Criando aula ${i + 1} com dados:`, {
+          worksIds: lessonData.worksIds,
+          workScoreIds: lessonData.workScoreIds,
+          title: lessonData.title,
+        });
+
         const lesson: Lesson = await prisma.lesson.create({
-          data: {
-            teacherId: teacherProfile.id,
-            studentId: studentProfile.id,
-            title: lessonDates.length > 1 ? `${title} (${i + 1})` : title,
-            description,
-            scheduledAt: lessonDate,
-            duration,
-            type,
-            location,
-            objectives,
-            workScoreIds,
-            worksIds,
-            topics,
-            techniques,
-            repertoire,
-            homework,
-            practiceGoals,
-            teacherNotes,
-            publicNotes,
-            status: 'SCHEDULED',
-            isRecurring: lessonDates.length > 1,
-            recurrenceType: lessonDates.length > 1 ? recurrenceType : 'NONE',
-            parentLessonId: i === 0 ? null : parentLessonId,
-            recurrenceEnd: isRecurring ? new Date(recurrenceEnd) : null,
-          },
+          data: lessonData,
           include: {
             teacher: {
               include: {
@@ -821,20 +844,33 @@ export async function POST(request: NextRequest) {
         }
 
         createdLessons.push(lesson);
-        console.log(
-          `✅ [LESSONS] Aula ${i + 1} criada: ${lessonDate.toISOString()}`
-        );
-      } catch (error) {
-        console.log(`⚠️ [LESSONS] Erro ao criar aula ${i + 1}: ${error}`);
-        skippedLessons.push({
-          date: lessonDate,
-          reason: 'Erro na criação',
-          error: error instanceof Error ? error.message : 'Erro desconhecido',
+
+        console.log(`✅ [LESSONS] Aula ${i + 1} criada com sucesso:`, {
+          id: lesson.id,
+          worksIds: lesson.worksIds,
+          workScoreIds: lesson.workScoreIds,
+          scheduledAt: lesson.scheduledAt,
         });
+      } catch (error) {
+        console.error(`❌ [LESSONS] Erro ao criar aula ${i + 1}:`, error);
+
+        return NextResponse.json(
+          {
+            error: 'Erro ao criar aula',
+            details:
+              error instanceof Error ? error.message : 'Erro desconhecido',
+            partialSuccess: createdLessons.length > 0,
+            createdLessons: createdLessons.map((l) => ({
+              id: l.id,
+              title: l.title,
+            })),
+          },
+          { status: 500 }
+        );
       }
     }
 
-    // 🔥 REVALIDAR CACHE APÓS CRIAÇÃO
+    // Revalidar cache
     await revalidateTeacherData(session.user.id, studentUserId);
 
     const response = {
@@ -844,9 +880,13 @@ export async function POST(request: NextRequest) {
       isRecurring: lessonDates.length > 1,
       totalPlanned: lessonDates.length,
       created: createdLessons.length,
-      skipped: skippedLessons.length,
-      skippedDetails: skippedLessons,
-      // NOVO: Info sobre renovação
+      // 🔥 INFORMAÇÕES SOBRE PEÇAS MUSICAIS
+      musicalPieces: {
+        worksCount: worksIds?.length || 0,
+        scoresCount: workScoreIds?.length || 0,
+        worksIds: worksIds || [],
+        workScoreIds: workScoreIds || [],
+      },
       renewalInfo: isRecurring
         ? {
             canRenewAt: new Date(recurrenceEnd).toISOString(),
@@ -856,13 +896,15 @@ export async function POST(request: NextRequest) {
         : null,
     };
 
-    console.log(
-      `✅ [LESSONS] Criação concluída: ${createdLessons.length}/${lessonDates.length} aulas criadas`
-    );
+    console.log(`🎉 [LESSONS] Criação concluída com peças musicais:`, {
+      totalLessons: createdLessons.length,
+      worksPerLesson: worksIds?.length || 0,
+      scoresPerLesson: workScoreIds?.length || 0,
+    });
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('❌ [LESSONS] Erro ao criar aula:', error);
+    console.error('❌ [LESSONS] Erro geral ao criar aula:', error);
     return NextResponse.json(
       {
         error: 'Erro interno do servidor',

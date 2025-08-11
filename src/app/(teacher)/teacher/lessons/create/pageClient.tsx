@@ -1,4 +1,4 @@
-// app/teacher/lessons/create/pageClient.tsx - Client Component para Criar Nova Aula com Recorrência Melhorada
+// app/teacher/lessons/create/pageClient.tsx - Client Component para Criar Nova Aula com Sistema de Peças Musicais
 
 'use client';
 
@@ -17,6 +17,7 @@ import {
   FiCalendar,
   FiCheckCircle,
   FiInfo,
+  FiMusic,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -32,6 +33,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTeacherLessons } from '@/app/hooks/lessonsSystem/useTeacherLessons';
 import Modal from '@/app/components/Modal';
+import WorkSelectionSection, {
+  LessonWork,
+} from '@/app/components/TeacherSystem/WorkSelectionSection';
 
 interface CreateLessonPageClientProps {
   initialData: CreateLessonData;
@@ -110,6 +114,7 @@ export default function CreateLessonPageClient({
   const router = useRouter();
   const { createLesson, loading, error, clearError } = useTeacherLessons();
 
+  console.log('paginaaaa');
   // Form state
   const [formData, setFormData] = useState({
     studentUserId: '',
@@ -130,6 +135,11 @@ export default function CreateLessonPageClient({
     recurrenceType: 'NONE' as RecurrenceType,
     recurrenceEnd: '',
   });
+
+  // 🆕 ESTADOS PARA PEÇAS MUSICAIS
+  const [selectedWorks, setSelectedWorks] = useState<LessonWork[]>([]);
+  const [worksIds, setWorksIds] = useState<string[]>([]);
+  const [workScoreIds, setWorkScoreIds] = useState<string[]>([]);
 
   const [selectedStudent, setSelectedStudent] = useState<
     (typeof initialData.students)[0] | null
@@ -170,6 +180,28 @@ export default function CreateLessonPageClient({
       }
     }
   }, [formData.scheduledAt, formData.recurrenceType, formData.isRecurring]);
+
+  // 🆕 HANDLER PARA MUDANÇAS NAS PEÇAS MUSICAIS
+  const handleWorksChange = useCallback((works: LessonWork[]) => {
+    console.log('🎵 Peças musicais atualizadas:', works);
+    setSelectedWorks(works);
+
+    // 🔥 EXTRAIR worksIds e workScoreIds CORRETAMENTE
+    const newWorksIds = works.map((work) => work.workId);
+    const newWorkScoreIds = works
+      .filter((work) => work.scoreId)
+      .map((work) => work.scoreId!);
+
+    setWorksIds(newWorksIds);
+    setWorkScoreIds(newWorkScoreIds);
+
+    console.log('📊 IDs extraídos:', {
+      worksIds: newWorksIds,
+      workScoreIds: newWorkScoreIds,
+      totalPecas: works.length,
+      totalPartituras: newWorkScoreIds.length,
+    });
+  }, []);
 
   // Form handlers
   const updateFormData = useCallback((field: string, value: any) => {
@@ -255,7 +287,16 @@ export default function CreateLessonPageClient({
         objectives: formData.objectives.filter((obj) => obj.trim()),
         topics: formData.topics.filter((topic) => topic.trim()),
         techniques: formData.techniques.filter((tech) => tech.trim()),
+        // 🆕 INCLUIR PEÇAS MUSICAIS
+        worksIds: worksIds, // IDs das obras
+        workScoreIds: workScoreIds, // IDs das partituras
       };
+
+      console.log('🚀 Enviando dados da aula:', {
+        ...cleanData,
+        totalPecas: worksIds.length,
+        totalPartituras: workScoreIds.length,
+      });
 
       const success = await createLesson(cleanData);
 
@@ -263,7 +304,7 @@ export default function CreateLessonPageClient({
         router.push('/teacher/lessons');
       }
     },
-    [formData, createLesson, clearError, router]
+    [formData, worksIds, workScoreIds, createLesson, clearError, router]
   );
 
   // Handle conflicts confirmation
@@ -277,6 +318,9 @@ export default function CreateLessonPageClient({
       objectives: formData.objectives.filter((obj) => obj.trim()),
       topics: formData.topics.filter((topic) => topic.trim()),
       techniques: formData.techniques.filter((tech) => tech.trim()),
+      // 🆕 INCLUIR PEÇAS MUSICAIS
+      worksIds: worksIds,
+      workScoreIds: workScoreIds,
       forceCreate: false, // Flag to ignore conflicts
     };
 
@@ -288,7 +332,7 @@ export default function CreateLessonPageClient({
     } else {
       setConflicts(['Erro ao criar aula']);
     }
-  }, [formData, createLesson, router]);
+  }, [formData, worksIds, workScoreIds, createLesson, router]);
 
   // Render error state
   if (errorMessage && initialData.students.length === 0) {
@@ -652,6 +696,26 @@ export default function CreateLessonPageClient({
                     </div>
                   </div>
 
+                  {/* 🆕 SEÇÃO DE PEÇAS MUSICAIS */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
+                        <FiMusic className="w-5 h-5" />
+                        <span>Peças Musicais</span>
+                      </h3>
+                      <div className="text-sm text-theme-secondary">
+                        {selectedWorks.length}/4 peças
+                      </div>
+                    </div>
+
+                    <WorkSelectionSection
+                      selectedWorks={selectedWorks}
+                      onWorksChange={handleWorksChange}
+                      maxWorks={4}
+                      disabled={loading.createLesson || pendingSubmission}
+                    />
+                  </div>
+
                   {/* Objectives */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
@@ -976,6 +1040,62 @@ export default function CreateLessonPageClient({
               </AnimatedItem>
             )}
 
+            {/* 🆕 RESUMO DAS PEÇAS SELECIONADAS */}
+            {selectedWorks.length > 0 && (
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard hover="none" className="classical-card p-6 ">
+                  <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                    <FiMusic className="w-5 h-5" />
+                    <span>Peças Selecionadas</span>
+                  </h3>
+
+                  <div className="space-y-3">
+                    {selectedWorks.map((work, index) => (
+                      <div
+                        key={work.workId}
+                        className="flex items-center space-x-3 p-3 bg-theme-elevated/50 rounded-lg"
+                      >
+                        <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FiMusic className="w-4 h-4 text-accent-blue" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-theme-primary text-sm truncate">
+                            {work.workTitle}
+                          </p>
+                          <p className="text-xs text-theme-tertiary truncate">
+                            {work.composerName}
+                          </p>
+                          {work.scoreId && (
+                            <p className="text-xs text-accent-green">
+                              ✓ Com partitura
+                            </p>
+                          )}
+                        </div>
+                        <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-1 rounded">
+                          #{index + 1}
+                        </span>
+                      </div>
+                    ))}
+
+                    <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
+                      <div className="text-xs text-theme-secondary">
+                        <div className="flex justify-between">
+                          <span>Total de peças:</span>
+                          <span className="font-medium">{worksIds.length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Com partituras:</span>
+                          <span className="font-medium">
+                            {workScoreIds.length}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            )}
+
             {/* Tips */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
@@ -986,6 +1106,10 @@ export default function CreateLessonPageClient({
                   <div className="flex items-start space-x-2">
                     <FiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>Defina objetivos claros para cada aula</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <FiMusic className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <p>Vincule peças musicais para organizar o repertório</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiRepeat className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
