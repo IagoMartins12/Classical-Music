@@ -15,11 +15,8 @@ import {
   FiMusic,
   FiStar,
   FiClock,
-  FiAward,
-  FiHeart,
   FiMessageCircle,
   FiMail,
-  FiPhone,
   FiCheckCircle,
   FiInfo,
   FiTrendingUp,
@@ -34,7 +31,6 @@ import {
   AnimatedCard,
   AnimatedItem,
   SequentialGrid,
-  PageContainer,
 } from '../../../components/animation/AnimatedComponents';
 
 interface PublicTeacherDetailsPageClientProps {
@@ -85,7 +81,7 @@ export default function PublicTeacherDetailsPageClient({
     if (navigator.share) {
       try {
         await navigator.share(shareData);
-      } catch (error) {
+      } catch  {
         // Fallback para clipboard
         navigator.clipboard.writeText(window.location.href);
       }
@@ -648,7 +644,7 @@ export default function PublicTeacherDetailsPageClient({
                         </div>
 
                         <p className="text-theme-secondary mb-3 leading-relaxed">
-                          "{review.comment}"
+                          &quot;{review.comment}&quot;
                         </p>
 
                         {review.wouldRecommend && (

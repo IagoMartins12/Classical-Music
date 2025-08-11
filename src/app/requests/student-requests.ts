@@ -920,7 +920,6 @@ export const getStudentCalendar = unstable_cache(
         }
 
         // Se a aula é hoje e ainda não começou, destacar
-        const now = new Date();
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
@@ -1087,7 +1086,7 @@ export const getStudentLessons = unstable_cache(
       const offset = filters.offset || 0;
 
       // Montar where clause
-      let whereClause: any = {
+      const whereClause: any = {
         studentId,
       };
 
@@ -1575,7 +1574,7 @@ export const getStudentAssignments = unstable_cache(
       const offset = filters.offset || 0;
 
       // Montar where clause
-      let whereClause: any = {
+      const whereClause: any = {
         studentId,
       };
 
@@ -1870,7 +1869,7 @@ export const getStudentLessonWorks = unstable_cache(
       }
 
       // Busca geral (todas as obras das aulas do usuário)
-      let whereClause: any = {
+      const whereClause: any = {
         studentId: studentId,
         workScoreIds: { isEmpty: false },
       };

@@ -16,7 +16,7 @@ import {
   FiSettings,
   FiChevronDown,
 } from 'react-icons/fi';
-import { GiGrandPiano, GiTeacher } from 'react-icons/gi';
+import { GiGrandPiano } from 'react-icons/gi';
 import { ThemeToggle } from '../ThemeToggle';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';

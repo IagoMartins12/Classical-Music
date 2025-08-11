@@ -6,16 +6,13 @@ import { useState, useCallback, useEffect } from 'react';
 import {
   FiStar,
   FiUser,
-  FiCalendar,
   FiClock,
-  FiMessageSquare,
   FiRefreshCw,
   FiCheck,
   FiX,
   FiEdit3,
   FiHeart,
   FiThumbsUp,
-  FiAward,
   FiEye,
 } from 'react-icons/fi';
 import {
@@ -31,17 +28,9 @@ import {
   useStudentReviews,
 } from '@/app/hooks/lessonsSystem/useStudentReviews';
 
-interface StudentProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
 
 interface StudentReviewsPageClientProps {
   initialData: any | null;
-  studentProfile: StudentProfile;
   errorMessage?: string;
 }
 
@@ -71,7 +60,6 @@ const initialFormData: ReviewFormData = {
 
 export default function StudentReviewsPageClient({
   initialData,
-  studentProfile,
   errorMessage,
 }: StudentReviewsPageClientProps) {
   // Initialize hook with server data
@@ -429,7 +417,7 @@ export default function StudentReviewsPageClient({
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {displayTeachers.map((teacher, index) => (
+              {displayTeachers.map((teacher: any, index: number) => (
                 <AnimatedCard
                   key={teacher.teacherId}
                   hover="lift"

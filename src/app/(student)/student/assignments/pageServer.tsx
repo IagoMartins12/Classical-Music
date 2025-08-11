@@ -70,28 +70,13 @@ export interface StudentAssignmentsData {
   }>;
 }
 
-interface StudentProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
 
 interface StudentAssignmentsPageServerProps {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }
 
 export default async function StudentAssignmentsPageServer({
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: StudentAssignmentsPageServerProps) {
   console.log(
     `📋 [STUDENT-ASSIGNMENTS-PAGE-SERVER] Loading for user ${userId}`
@@ -116,13 +101,6 @@ export default async function StudentAssignmentsPageServer({
       return (
         <StudentAssignmentsPageClient
           initialData={null}
-          studentProfile={{
-            id: userId,
-            name: userName,
-            email: userEmail,
-            image: userImage,
-            role: userRole,
-          }}
           errorMessage="no_teachers"
         />
       );
@@ -160,16 +138,7 @@ export default async function StudentAssignmentsPageServer({
     );
 
     return (
-      <StudentAssignmentsPageClient
-        initialData={studentAssignmentsData}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
+      <StudentAssignmentsPageClient initialData={studentAssignmentsData} />
     );
   } catch (error) {
     console.error(
@@ -181,13 +150,6 @@ export default async function StudentAssignmentsPageServer({
     return (
       <StudentAssignmentsPageClient
         initialData={null}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
         errorMessage="Erro ao carregar tarefas. Tente recarregar a página."
       />
     );

@@ -92,16 +92,8 @@ export interface TeacherProfile {
 
 export default async function TeacherAssignmentsPageServer({
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }) {
   console.log(
     `📋 [TEACHER-ASSIGNMENTS-PAGE-SERVER] Loading for user ${userId}`
@@ -140,16 +132,7 @@ export default async function TeacherAssignmentsPageServer({
     );
 
     return (
-      <TeacherAssignmentsPageClient
-        initialData={teacherAssignmentsData}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
+      <TeacherAssignmentsPageClient initialData={teacherAssignmentsData} />
     );
   } catch (error) {
     console.error(
@@ -178,13 +161,6 @@ export default async function TeacherAssignmentsPageServer({
             total: 0,
             hasMore: false,
           },
-        }}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
         }}
         errorMessage="Erro ao carregar dados das tarefas. Tente recarregar a página."
       />

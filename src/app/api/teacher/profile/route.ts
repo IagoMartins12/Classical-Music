@@ -118,7 +118,7 @@ interface TeacherProfileData {
 }
 
 // GET - Buscar perfil do professor (MANTIDO IGUAL)
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
 
@@ -674,7 +674,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    let updateData: any = {};
+    const updateData: any = {};
 
     // Campos array que suportam add/remove
     const arrayFields = [

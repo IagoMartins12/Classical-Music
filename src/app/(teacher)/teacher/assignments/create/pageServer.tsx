@@ -45,16 +45,8 @@ export interface TeacherProfile {
 
 export default async function CreateAssignmentPageServer({
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }) {
   console.log(
     `📋➕ [CREATE-ASSIGNMENT-PAGE-SERVER] Loading for user ${userId}`
@@ -159,18 +151,7 @@ export default async function CreateAssignmentPageServer({
       `✅ [CREATE-ASSIGNMENT-PAGE-SERVER] Data loaded successfully - ${students.length} students, ${recentLessons.length} recent lessons`
     );
 
-    return (
-      <CreateAssignmentPageClient
-        initialData={createAssignmentData}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <CreateAssignmentPageClient initialData={createAssignmentData} />;
   } catch (error) {
     console.error('❌ [CREATE-ASSIGNMENT-PAGE-SERVER] Critical error:', error);
 
@@ -198,13 +179,6 @@ export default async function CreateAssignmentPageServer({
             { value: 'medium', label: 'Média', color: 'text-accent-yellow' },
             { value: 'high', label: 'Alta', color: 'text-accent-red' },
           ],
-        }}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
         }}
         errorMessage="Erro ao carregar dados. Tente recarregar a página."
       />

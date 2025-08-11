@@ -24,7 +24,7 @@ import {
   AnimatedItem,
   PageContainer,
 } from '../../../../components/animation/AnimatedComponents';
-import { CreateLessonData, TeacherProfile } from './pageServer';
+import { CreateLessonData } from './pageServer';
 import Image from 'next/image';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
@@ -35,7 +35,6 @@ import Modal from '@/app/components/Modal';
 
 interface CreateLessonPageClientProps {
   initialData: CreateLessonData;
-  teacherProfile: TeacherProfile;
   errorMessage?: string;
 }
 
@@ -106,7 +105,6 @@ const calculateLessonCount = (
 
 export default function CreateLessonPageClient({
   initialData,
-  teacherProfile,
   errorMessage,
 }: CreateLessonPageClientProps) {
   const router = useRouter();
@@ -279,7 +277,7 @@ export default function CreateLessonPageClient({
       objectives: formData.objectives.filter((obj) => obj.trim()),
       topics: formData.topics.filter((topic) => topic.trim()),
       techniques: formData.techniques.filter((tech) => tech.trim()),
-      forceCreate: true, // Flag to ignore conflicts
+      forceCreate: false, // Flag to ignore conflicts
     };
 
     const success = await createLesson(cleanData);
@@ -287,6 +285,8 @@ export default function CreateLessonPageClient({
 
     if (success) {
       router.push('/teacher/lessons');
+    } else {
+      setConflicts(['Erro ao criar aula']);
     }
   }, [formData, createLesson, router]);
 

@@ -6,6 +6,8 @@ import {
   getFilterData,
   getUserUploads,
 } from '@/app/requests/upload';
+import { Suspense } from 'react';
+import UploadsPageLoading from './loading';
 
 const ITEMS_PER_PAGE = 24;
 
@@ -62,30 +64,32 @@ export default async function UploadsPageServer({
   }
 
   return (
-    <UploadsClient
-      uploads={uploadsData.items}
-      composers={uploadsData.composers}
-      works={uploadsData.works}
-      scores={uploadsData.scores}
-      epochs={epochsData} // 🆕 Usar épocas filtradas
-      filterComposers={filterData.composers} // 🆕 Dados para filtros
-      filterWorks={filterData.works} // 🆕 Dados para filtros
-      currentPage={page}
-      totalPages={totalPages}
-      totalCount={uploadsData.totalCount}
-      composerCount={uploadsData.composerCount} // 🆕 Contadores específicos
-      workCount={uploadsData.workCount} // 🆕
-      scoreCount={uploadsData.scoreCount} // 🆕
-      hasMoreComposers={uploadsData.hasMoreComposers} // 🆕 Indicadores "ver mais"
-      hasMoreWorks={uploadsData.hasMoreWorks} // 🆕
-      hasMoreScores={uploadsData.hasMoreScores} // 🆕
-      searchTerm={search}
-      selectedType={type}
-      selectedEpoch={epochId}
-      selectedComposer={composerId || ''} // 🆕 Estado do filtro
-      selectedWork={workId || ''} // 🆕 Estado do filtro
-      isAdmin={isAdmin}
-      userId={userId}
-    />
+    <Suspense fallback={<UploadsPageLoading />}>
+      <UploadsClient
+        uploads={uploadsData.items}
+        composers={uploadsData.composers}
+        works={uploadsData.works}
+        scores={uploadsData.scores}
+        epochs={epochsData} // 🆕 Usar épocas filtradas
+        filterComposers={filterData.composers} // 🆕 Dados para filtros
+        filterWorks={filterData.works} // 🆕 Dados para filtros
+        currentPage={page}
+        totalPages={totalPages}
+        totalCount={uploadsData.totalCount}
+        composerCount={uploadsData.composerCount} // 🆕 Contadores específicos
+        workCount={uploadsData.workCount} // 🆕
+        scoreCount={uploadsData.scoreCount} // 🆕
+        hasMoreComposers={uploadsData.hasMoreComposers} // 🆕 Indicadores "ver mais"
+        hasMoreWorks={uploadsData.hasMoreWorks} // 🆕
+        hasMoreScores={uploadsData.hasMoreScores} // 🆕
+        searchTerm={search}
+        selectedType={type}
+        selectedEpoch={epochId}
+        selectedComposer={composerId || ''} // 🆕 Estado do filtro
+        selectedWork={workId || ''} // 🆕 Estado do filtro
+        isAdmin={isAdmin}
+        userId={userId}
+      />
+    </Suspense>
   );
 }

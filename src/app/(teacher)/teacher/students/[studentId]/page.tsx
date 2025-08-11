@@ -37,12 +37,6 @@ export default async function TeacherStudentDetailPage({
     <TeacherStudentDetailPageServer
       studentId={paramsId.studentId}
       userId={session.user.id}
-      userEmail={session.user.email || ''}
-      userName={`${session.user.firstName || ''} ${
-        session.user.lastName || ''
-      }`.trim()}
-      userImage={session.user.image}
-      userRole={session.user.role}
     />
   );
 }

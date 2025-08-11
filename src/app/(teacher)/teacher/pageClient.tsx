@@ -9,8 +9,6 @@ import {
   FiCalendar,
   FiPlus,
   FiClock,
-  FiSearch,
-  FiMapPin,
   FiTrendingUp,
   FiCheckCircle,
   FiXCircle,
@@ -96,7 +94,6 @@ export default function TeacherPageClient({
     data: {
       dashboard: dashboardData,
       students: studentsData,
-      calendar: calendarData,
     },
     refreshing,
     error: dataError,
@@ -815,7 +812,7 @@ export default function TeacherPageClient({
                 </div>
 
                 <div className="space-y-3">
-                  {todayLessons.slice(0, 4).map((lesson, index) => (
+                  {todayLessons.slice(0, 4).map((lesson) => (
                     <div key={lesson.id} className="classical-card-2 p-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
@@ -877,7 +874,7 @@ export default function TeacherPageClient({
                 </div>
 
                 <div className="space-y-2">
-                  {upcomingLessons.map((lesson, index) => (
+                  {upcomingLessons.map((lesson) => (
                     <div
                       key={lesson.id}
                       className="flex items-center justify-between py-2 border-b border-theme-secondary last:border-0"
@@ -924,7 +921,7 @@ export default function TeacherPageClient({
                 </div>
 
                 <div className="space-y-3">
-                  {recentActivities.map((activity, index) => (
+                  {recentActivities.map((activity) => (
                     <div
                       key={activity.id}
                       className="flex items-center space-x-3"

@@ -12,7 +12,6 @@ import {
   FiEdit3,
   FiX,
   FiCheck,
-  FiAlertCircle,
   FiRefreshCw,
   FiMapPin,
   FiBookOpen,
@@ -30,23 +29,14 @@ import {
   AnimatedItem,
   PageContainer,
 } from '../../../components/animation/AnimatedComponents';
-import { TeacherLessonsData, LessonData } from './pageServer';
+import { TeacherLessonsData } from './pageServer';
 import Link from 'next/link';
 import Image from 'next/image';
 import Select from '@/app/components/Common/Select';
 import { useTeacherLessons } from '@/app/hooks/lessonsSystem/useTeacherLessons';
 
-interface TeacherProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
 interface TeacherLessonsPageClientProps {
   initialData: TeacherLessonsData;
-  teacherProfile: TeacherProfile;
   errorMessage?: string;
 }
 
@@ -55,7 +45,6 @@ type TimeFilter = 'all' | 'today' | 'week' | 'month' | 'past';
 
 export default function TeacherLessonsPageClient({
   initialData,
-  teacherProfile,
   errorMessage,
 }: TeacherLessonsPageClientProps) {
   // Initialize hook with server data
@@ -68,10 +57,8 @@ export default function TeacherLessonsPageClient({
     fetchLessons,
     refreshLessons,
     loadMoreLessons,
-    updateLesson,
     cancelLesson,
     markAttendance,
-    addLessonNotes,
     setInitialData,
     clearError,
   } = useTeacherLessons(initialData);
@@ -82,7 +69,6 @@ export default function TeacherLessonsPageClient({
   const [selectedStudent, setSelectedStudent] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedLesson, setSelectedLesson] = useState<LessonData | null>(null);
   const [showQuickActions, setShowQuickActions] = useState<string | null>(null);
 
   // Initialize hook data on mount and apply default filter
@@ -294,13 +280,6 @@ export default function TeacherLessonsPageClient({
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
-    });
-  };
-
-  const formatTime = (date: Date | string) => {
-    return new Date(date).toLocaleTimeString('pt-BR', {
-      hour: '2-digit',
-      minute: '2-digit',
     });
   };
 

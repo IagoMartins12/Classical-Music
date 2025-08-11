@@ -35,16 +35,8 @@ export interface TeacherProfile {
 
 export default async function CreateLessonPageServer({
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }) {
   console.log(`📅➕ [CREATE-LESSON-PAGE-SERVER] Loading for user ${userId}`);
 
@@ -104,18 +96,7 @@ export default async function CreateLessonPageServer({
       `✅ [CREATE-LESSON-PAGE-SERVER] Data loaded successfully - ${students.length} students`
     );
 
-    return (
-      <CreateLessonPageClient
-        initialData={createLessonData}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <CreateLessonPageClient initialData={createLessonData} />;
   } catch (error) {
     console.error('❌ [CREATE-LESSON-PAGE-SERVER] Critical error:', error);
 
@@ -136,13 +117,6 @@ export default async function CreateLessonPageServer({
             ],
             availableTimes: ['09:00', '14:00', '16:00', '18:00'],
           },
-        }}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
         }}
         errorMessage="Erro ao carregar dados. Tente recarregar a página."
       />

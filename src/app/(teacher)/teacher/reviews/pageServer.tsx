@@ -90,16 +90,8 @@ export interface TeacherReviewsData {
 
 export default async function TeacherReviewsPageServer({
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }) {
   console.log(`⭐ [TEACHER-REVIEWS-PAGE-SERVER] Loading for user ${userId}`);
 
@@ -138,18 +130,7 @@ export default async function TeacherReviewsPageServer({
       `✅ [TEACHER-REVIEWS-PAGE-SERVER] Data loaded successfully - ${reviewsData.reviews.length} reviews, avg rating: ${teacherReviewsData.teacherProfile.averageRating}`
     );
 
-    return (
-      <TeacherReviewsPageClient
-        initialData={teacherReviewsData}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <TeacherReviewsPageClient initialData={teacherReviewsData} />;
   } catch (error) {
     console.error('❌ [TEACHER-REVIEWS-PAGE-SERVER] Critical error:', error);
 
@@ -190,13 +171,6 @@ export default async function TeacherReviewsPageServer({
             isPublicProfile: false,
             specialties: [],
           },
-        }}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
         }}
         errorMessage="Erro ao carregar dados das avaliações. Tente recarregar a página."
       />

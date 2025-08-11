@@ -11,9 +11,6 @@ import {
   FiMapPin,
   FiCalendar,
   FiClock,
-  FiMusic,
-  FiTarget,
-  FiTrendingUp,
   FiCheckCircle,
   FiXCircle,
   FiPause,
@@ -24,15 +21,12 @@ import {
   FiArrowLeft,
   FiPlus,
   FiEye,
-  FiAward,
   FiActivity,
   FiMessageSquare,
   FiFileText,
   FiSettings,
   FiRefreshCw,
   FiChevronRight,
-  FiStar,
-  FiTrendingDown,
   FiX,
 } from 'react-icons/fi';
 import {
@@ -46,22 +40,12 @@ import { useTeacherStudentDetail } from '@/app/hooks/lessonsSystem/useTeacherStu
 import { StudentDetailData } from './pageServer';
 import { translateNivel } from '../../pageClient';
 
-interface TeacherProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
 interface TeacherStudentDetailPageClientProps {
   studentData: StudentDetailData;
-  teacherProfile: TeacherProfile;
 }
 
 export default function TeacherStudentDetailPageClient({
   studentData,
-  teacherProfile,
 }: TeacherStudentDetailPageClientProps) {
   // Initialize hook with server data
   const {
@@ -75,8 +59,7 @@ export default function TeacherStudentDetailPageClient({
     setInitialData,
     updateTeacherNotes,
     toggleStudentStatus,
-    updateRelationship,
-    updateStudentDataInState,
+
     clearError,
   } = useTeacherStudentDetail(studentData);
 
@@ -109,7 +92,6 @@ export default function TeacherStudentDetailPageClient({
   // Status helpers
   const isActive = relationship.isActive && !relationship.pausedAt;
   const isPaused = relationship.isActive && !!relationship.pausedAt;
-  const isInactive = !relationship.isActive;
 
   const getStatusColor = () => {
     if (isActive) return 'accent-green';
@@ -526,7 +508,7 @@ export default function TeacherStudentDetailPageClient({
                 </div>
 
                 <div className="space-y-4">
-                  {recentLessons.slice(0, 5).map((lesson, index) => (
+                  {recentLessons.slice(0, 5).map((lesson) => (
                     <div key={lesson.id} className="classical-card-2 p-4">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">

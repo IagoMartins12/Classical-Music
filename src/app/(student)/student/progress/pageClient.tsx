@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   FiTrendingUp,
   FiBookOpen,
@@ -32,8 +32,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  BarChart,
-  Bar,
 } from 'recharts';
 import {
   AnimatedContainer,
@@ -57,23 +55,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FaFire } from 'react-icons/fa';
 
-interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
 
 interface StudentProgressPageClientProps {
   initialData: StudentProgressResponse | null;
-  userProfile: UserProfile;
   errorMessage?: string;
 }
 
 export default function StudentProgressPageClient({
   initialData,
-  userProfile,
   errorMessage,
 }: StudentProgressPageClientProps) {
   const {

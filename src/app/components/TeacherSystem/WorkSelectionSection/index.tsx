@@ -6,14 +6,11 @@ import {
   FiMusic,
   FiPlus,
   FiTrash2,
-  FiFileText,
   FiUser,
-  FiFilter,
   FiBookOpen,
   FiCheck,
   FiX,
   FiInfo,
-  FiAlertCircle,
 } from 'react-icons/fi';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import ComposerSearchInput from '../../ComposerSearchInput';
@@ -83,6 +80,7 @@ export default function WorkSelectionSection({
   const [loadingComposers, setLoadingComposers] = useState(false);
   const [loadingWorks, setLoadingWorks] = useState(false);
 
+  console.log('loading', { loadingComposers, loadingWorks });
   // 🆕 Carregar compositores populares ao inicializar
   useEffect(() => {
     loadPopularComposers();
@@ -222,7 +220,14 @@ export default function WorkSelectionSection({
           ...workWithoutScore
         } = updatedWorks[workIndex];
         updatedWorks[workIndex] = workWithoutScore;
-        console.log('🗑️ Partitura removida da peça');
+        const _object = {
+          scoreId,
+          scoreTitle,
+          scoreUrl,
+          scoreType,
+          scoreSource,
+        };
+        console.log('🗑️ Partitura removida da peça', _object);
       }
 
       onWorksChange(updatedWorks);

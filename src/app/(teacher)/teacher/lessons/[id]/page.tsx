@@ -14,9 +14,7 @@ interface LessonIdProps {
   params: Promise<lessonProps>;
 }
 
-export async function generateMetadata({
-  params,
-}: LessonIdProps): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `Detalhes da Aula | Professor - Opus Atlas`,
     description:
@@ -50,11 +48,6 @@ export default async function TeacherLessonDetailsPage({
     <TeacherLessonDetailsPageServer
       lessonId={lessonId}
       userId={session.user.id}
-      userEmail={session.user.email || ''}
-      userName={`${session.user.firstName || ''} ${
-        session.user.lastName || ''
-      }`.trim()}
-      userImage={session.user.image}
       userRole={session.user.role}
     />
   );

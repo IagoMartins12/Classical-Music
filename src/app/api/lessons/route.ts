@@ -125,7 +125,7 @@ function calculateRecurrenceDates(
   endDate: Date
 ): Date[] {
   const dates: Date[] = [];
-  let currentDate = new Date(startDate);
+  const currentDate = new Date(startDate);
 
   // NOVO: Verificar limite de 3 meses
   const maxDate = new Date(startDate);
@@ -296,7 +296,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Montar where clause baseado no role
-    let whereClause: any = {};
+    const whereClause: any = {};
     let userTeacherId: string | null = null;
 
     if (session.user.role === 1) {
@@ -547,7 +547,7 @@ export async function POST(request: NextRequest) {
       location,
       objectives = [],
       workScoreIds = [],
-      workIds = [], // 🆕 NOVO CAMPO PARA IDs DAS OBRAS
+      worksIds = [], // 🆕 NOVO CAMPO PARA IDs DAS OBRAS
       topics = [],
       techniques = [],
       repertoire = [],
@@ -775,6 +775,7 @@ export async function POST(request: NextRequest) {
             location,
             objectives,
             workScoreIds,
+            worksIds,
             topics,
             techniques,
             repertoire,

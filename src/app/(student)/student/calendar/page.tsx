@@ -22,15 +22,5 @@ export const metadata: Metadata = {
 export default async function StudentCalendarPage() {
   const session = await getRequiredServerSession();
 
-  return (
-    <StudentCalendarPageServer
-      userId={session.user.id}
-      userEmail={session.user.email || ''}
-      userName={`${session.user.firstName || ''} ${
-        session.user.lastName || ''
-      }`.trim()}
-      userImage={session.user.image}
-      userRole={session.user.role}
-    />
-  );
+  return <StudentCalendarPageServer userId={session.user.id} />;
 }

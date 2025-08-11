@@ -524,7 +524,6 @@ async function analyzeStudySessionPatterns() {
     });
 
     const peakHour = hourCounts.indexOf(Math.max(...hourCounts));
-    const peakWeekday = weekdayCounts.indexOf(Math.max(...weekdayCounts));
 
     const weekdays = [
       'Domingo',
@@ -773,13 +772,11 @@ async function analyzeUserSegments() {
 
   try {
     const [
-      totalUsers,
       casualUsers,
       studentUsers,
       teacherUsers,
       professionalUsers,
     ] = await Promise.all([
-      prisma.user.count(),
       prisma.user.count({ where: { userType: 'CASUAL_USER' } }),
       prisma.user.count({ where: { userType: 'MUSIC_STUDENT' } }),
       prisma.user.count({ where: { userType: 'TEACHER' } }),
@@ -1434,6 +1431,7 @@ function getSeasonalityFactor(): number {
 async function predictEngagementTrends(
   timeframes: any
 ): Promise<PredictionInsight> {
+  console.log('timeframes', timeframes)
   const [favorites30d, favorites60d] = await Promise.all([
     prisma.favoriteWork.count({ where: { id: { not: undefined } } }),
     prisma.favoriteComposer.count({ where: { id: { not: undefined } } }),
@@ -1505,7 +1503,6 @@ async function detectAdvancedAnomalies(
   return await detectAnomalies(
     now,
     timeframes.last7Days,
-    timeframes.last30Days
   );
 }
 
@@ -1713,7 +1710,6 @@ async function analyzeBehaviorPatterns(
 async function detectAnomalies(
   now: Date,
   last7Days: Date,
-  last30Days: Date
 ): Promise<AnomalyDetection[]> {
   // ... (implementação original mantida com melhorias)
   const anomalies: AnomalyDetection[] = [];
@@ -1923,7 +1919,6 @@ async function analyzeFeatureUsage(last30Days: Date): Promise<FeatureUsage[]> {
   try {
     const [
       annotationUsers,
-      favoriteUsers,
       wantToLearnUsers,
       learnedUsers,
       totalActiveUsers,
@@ -1933,14 +1928,7 @@ async function analyzeFeatureUsage(last30Days: Date): Promise<FeatureUsage[]> {
           workAnnotations: { some: { createdAt: { gte: last30Days } } },
         },
       }),
-      prisma.user.count({
-        where: {
-          OR: [
-            { favoriteWorks: { some: {} } },
-            { favoriteComposers: { some: {} } },
-          ],
-        },
-      }),
+     
       prisma.user.count({
         where: { wantToLearn: { some: { addedAt: { gte: last30Days } } } },
       }),
@@ -2011,6 +1999,7 @@ async function analyzeContentPerformance(
   last30Days: Date
 ): Promise<ContentPerformance> {
   // ... (implementação original mantida com melhorias significativas)
+  console.log('last30days', last30Days)
   try {
     const [topWorks, topComposers, contentOptimization] = await Promise.all([
       getTopPerformingWorks(),

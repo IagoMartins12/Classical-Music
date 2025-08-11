@@ -14,37 +14,22 @@ import {
   FiCalendar,
   FiBookOpen,
   FiUser,
-  FiStar,
   FiSettings,
   FiLogOut,
   FiChevronDown,
   FiChevronRight,
   FiPlus,
-  FiBarChart2,
 } from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
 import {
   useAuthStore,
-  useLoginModal,
   useOnboardingModal,
-  useRegisterModal,
 } from '@/app/stores/authStore';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
-import useIsMobile from '@/app/hooks/useIsMobile';
 import { ThemeToggle } from '../../ThemeToggle';
-
-interface User {
-  id: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  image?: string;
-  role: number;
-  onboardingCompleted?: boolean;
-}
 
 interface TeacherNavigationProps {
   user: any;
@@ -71,7 +56,6 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const isMobile = useIsMobile();
 
   const { logout: authLogout } = useAuthStore();
   const { logout } = useAuth();

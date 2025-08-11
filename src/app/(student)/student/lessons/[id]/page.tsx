@@ -6,12 +6,6 @@ import { notFound } from 'next/navigation';
 import StudentLessonDetailPageServer from './pageServer';
 import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 
-interface StudentLessonDetailPageProps {
-  params: {
-    id: string;
-  };
-}
-
 interface lessonProps {
   id: string;
 }
@@ -20,9 +14,7 @@ interface LessonIdProps {
   params: Promise<lessonProps>;
 }
 
-export async function generateMetadata({
-  params,
-}: StudentLessonDetailPageProps): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `Detalhes da Aula | Aluno - Opus Atlas`,
     description:
@@ -54,12 +46,6 @@ export default async function StudentLessonDetailPage({
     <StudentLessonDetailPageServer
       lessonId={lessonId}
       userId={session.user.id}
-      userEmail={session.user.email || ''}
-      userName={`${session.user.firstName || ''} ${
-        session.user.lastName || ''
-      }`.trim()}
-      userImage={session.user.image}
-      userRole={session.user.role}
     />
   );
 }

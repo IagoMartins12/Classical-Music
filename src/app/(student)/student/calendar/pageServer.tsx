@@ -71,20 +71,8 @@ export interface StudentCalendarData {
   }>;
 }
 
-interface StudentProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
 interface StudentCalendarPageServerProps {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }
 
 // 🔧 CORRIGIDO: Função local que recebe userId como parâmetro
@@ -163,10 +151,6 @@ async function fetchStudentCalendar(
 
 export default async function StudentCalendarPageServer({
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: StudentCalendarPageServerProps) {
   console.log(`📅 [STUDENT-CALENDAR-PAGE-SERVER] Loading for user ${userId}`);
 
@@ -181,13 +165,6 @@ export default async function StudentCalendarPageServer({
       return (
         <StudentCalendarPageClient
           initialData={null}
-          studentProfile={{
-            id: userId,
-            name: userName,
-            email: userEmail,
-            image: userImage,
-            role: userRole,
-          }}
           errorMessage="no_teachers"
         />
       );
@@ -205,18 +182,7 @@ export default async function StudentCalendarPageServer({
 
     console.log(`✅ [STUDENT-CALENDAR-PAGE-SERVER] Data loaded successfully`);
 
-    return (
-      <StudentCalendarPageClient
-        initialData={calendarData}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <StudentCalendarPageClient initialData={calendarData} />;
   } catch (error) {
     console.error('❌ [STUDENT-CALENDAR-PAGE-SERVER] Critical error:', error);
 
@@ -224,13 +190,6 @@ export default async function StudentCalendarPageServer({
     return (
       <StudentCalendarPageClient
         initialData={null}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
         errorMessage="Erro ao carregar dados do calendário. Tente recarregar a página."
       />
     );

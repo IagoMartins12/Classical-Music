@@ -1,7 +1,6 @@
 // app/work/[workId]/WorkDetailsServer.tsx - ATUALIZADO COM DADOS DE ÁUDIO PROCESSADOS
 import { notFound } from 'next/navigation';
 import {
-  getRelatedWorks,
   getWorkById,
   getWorkMediaStats,
 } from '@/app/requests/work-page-details';
@@ -59,9 +58,8 @@ export default async function WorkDetailsServer({
     const startTime = Date.now();
 
     // Carregar dados da obra, obras relacionadas e estatísticas de mídia em paralelo
-    const [work, relatedWorks, mediaStats] = await Promise.all([
+    const [work, mediaStats] = await Promise.all([
       getWorkById(workId),
-      getRelatedWorks(workId, 6),
       getWorkMediaStats(workId), // 🆕 Estatísticas de mídia
     ]);
 

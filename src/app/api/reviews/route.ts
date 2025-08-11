@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Montar where clause
-    let whereClause: any = {};
+    const whereClause: any = {};
 
     // Filtro por professor
     if (teacherUserId) {

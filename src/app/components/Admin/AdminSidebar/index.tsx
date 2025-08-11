@@ -1,7 +1,7 @@
 // app/components/Admin/AdminSidebar.tsx - SEÇÃO ATUALIZADA
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
@@ -47,11 +47,6 @@ export default function AdminSidebar() {
   const [expandedSections, setExpandedSections] = useState<string[]>([
     'Principal',
   ]);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const toggleSection = (sectionTitle: string) => {
     setExpandedSections((prev) =>
@@ -59,15 +54,6 @@ export default function AdminSidebar() {
         ? prev.filter((s) => s !== sectionTitle)
         : [...prev, sectionTitle]
     );
-  };
-
-  // Função segura para formatação de badges
-  const formatBadge = (badge: number | string | undefined): string => {
-    if (!badge || !mounted) return '';
-    if (typeof badge === 'string') return badge;
-    if (badge >= 1000000) return `${(badge / 1000000).toFixed(1)}M`;
-    if (badge >= 1000) return `${(badge / 1000).toFixed(1)}K`;
-    return badge.toString();
   };
 
   const isActive = params.get('isActive');

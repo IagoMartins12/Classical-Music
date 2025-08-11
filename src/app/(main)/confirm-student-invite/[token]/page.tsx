@@ -15,10 +15,7 @@ import { GiGrandPiano } from 'react-icons/gi';
 import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
-import {
-  getErrorDescription,
-  getErrorTitle,
-} from '../../confirm-teacher-invite/[token]/page';
+import { getErrorDescription, getErrorTitle } from '@/app/utils';
 
 interface ConfirmationState {
   status: 'loading' | 'success' | 'error' | 'already-accepted';

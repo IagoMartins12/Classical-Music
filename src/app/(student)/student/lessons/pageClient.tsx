@@ -30,17 +30,8 @@ import Link from 'next/link';
 import { useStudentLessons } from '@/app/hooks/lessonsSystem/useStudentLessons';
 import Select from '@/app/components/Common/Select';
 
-interface StudentProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
 interface StudentLessonsPageClientProps {
   initialData: StudentLessonsData | null;
-  studentProfile: StudentProfile;
   errorMessage?: string;
 }
 
@@ -55,20 +46,11 @@ type TimeFilter =
 
 export default function StudentLessonsPageClient({
   initialData,
-  studentProfile,
   errorMessage,
 }: StudentLessonsPageClientProps) {
   // Initialize hook with server data
-  const {
-    lessons,
-    loading,
-    error,
-    pagination,
-    fetchLessons,
-    addLessonFeedback,
-    refreshLessons,
-    clearError,
-  } = useStudentLessons();
+  const { lessons, loading, error, fetchLessons, refreshLessons, clearError } =
+    useStudentLessons();
 
   // Local UI states
   const [searchTerm, setSearchTerm] = useState('');
@@ -90,17 +72,6 @@ export default function StudentLessonsPageClient({
     }
   }, [initialData, errorMessage, fetchLessons]);
 
-  // Handle lesson feedback
-  const handleAddFeedback = useCallback(
-    async (lessonId: string, feedback: string) => {
-      const success = await addLessonFeedback(lessonId, feedback);
-      if (success) {
-        console.log('✅ Feedback adicionado com sucesso!');
-      }
-    },
-    [addLessonFeedback]
-  );
-
   // Handle refresh
   const handleRefresh = useCallback(async () => {
     await refreshLessons();
@@ -108,7 +79,6 @@ export default function StudentLessonsPageClient({
 
   // Use initial data or hook data
   const displayLessons = initialData?.lessons || lessons;
-  const displayPagination = initialData?.pagination || pagination;
   const teachersOptions = initialData?.teachers || [];
 
   // Filter lessons
@@ -562,7 +532,7 @@ export default function StudentLessonsPageClient({
                 const isToday =
                   new Date(lesson.scheduledAt).toDateString() ===
                   new Date().toDateString();
-                const isPast = new Date(lesson.scheduledAt) < new Date();
+                // const isPast = new Date(lesson.scheduledAt) < new Date();
 
                 return (
                   <AnimatedCard

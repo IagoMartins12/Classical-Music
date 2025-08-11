@@ -1,5 +1,5 @@
 // app/api/teacher/refresh/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import {
@@ -9,7 +9,7 @@ import {
   revalidateTeacherCache,
 } from '@/app/requests/teacher-request';
 
-export async function POST(req: NextRequest) {
+export async function POST() {
   try {
     console.log('🔄 [REFRESH-API] Starting teacher data refresh...');
 

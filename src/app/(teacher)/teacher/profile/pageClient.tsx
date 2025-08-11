@@ -6,24 +6,19 @@ import {
   FiUser,
   FiSave,
   FiEdit3,
-  FiCamera,
   FiGlobe,
   FiAward,
-  FiBookOpen,
   FiMusic,
   FiClock,
   FiUsers,
-  FiStar,
   FiEye,
   FiEyeOff,
-  FiPlus,
   FiX,
   FiCheck,
   FiRefreshCw,
   FiMapPin,
   FiMail,
   FiPhone,
-  FiSettings,
   FiAlertCircle,
 } from 'react-icons/fi';
 import {
@@ -31,7 +26,6 @@ import {
   AnimatedCard,
   AnimatedItem,
   PageContainer,
-  SequentialGrid,
 } from '../../../components/animation/AnimatedComponents';
 import { TeacherProfileData, TeacherProfile } from './pageServer'; // ✅ Importar enum
 import LocationSelector, {
@@ -46,7 +40,6 @@ import {
 import {
   convertDatabaseToLocationData,
   convertLocationDataToDatabase,
-  isLocationDataComplete,
 } from '@/app/utils/locationUtils';
 import { TeacherStatus } from '@prisma/client';
 
@@ -120,7 +113,6 @@ export default function TeacherProfilePageClient({
   const [editingSection, setEditingSection] = useState<EditingSection>(
     isNew ? 'personal' : null
   );
-  const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(errorMessage);
   const [successMessage, setSuccessMessage] = useState('');
@@ -478,7 +470,7 @@ export default function TeacherProfilePageClient({
   const addToArray = (
     field: keyof typeof teachingForm,
     value: string,
-    options: string[]
+    _options: string[]
   ) => {
     const currentArray = teachingForm[field] as string[];
     if (!currentArray.includes(value)) {
@@ -1605,8 +1597,8 @@ export default function TeacherProfilePageClient({
                       Perfil Público
                     </h2>
                     <p className="text-theme-tertiary text-sm">
-                      Configure sua visibilidade na página "Conheça Nossos
-                      Professores"
+                      Configure sua visibilidade na página &quot;Conheça Nossos
+                      Professores&quot;
                     </p>
                   </div>
                 </div>
@@ -1778,8 +1770,8 @@ export default function TeacherProfilePageClient({
                           </div>
                         </div>
                         <div className="text-sm text-theme-secondary mb-3">
-                          Os alunos podem encontrar você na página "Conheça
-                          Nossos Professores"
+                          Os alunos podem encontrar você na página &quot;Conheça
+                          Nossos Professores&quot;
                         </div>
                         <a
                           href={`/teachers/${teacherProfile.id}`}

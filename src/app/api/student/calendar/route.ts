@@ -174,7 +174,6 @@ export async function GET(request: NextRequest) {
       }
 
       // Se a aula é hoje e ainda não começou, destacar
-      const now = new Date();
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
@@ -314,7 +313,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { lessonId, feedback, rating } = body; // rating: 1-5
+    const { lessonId, feedback } = body; // rating: 1-5
 
     if (!lessonId || !feedback) {
       return NextResponse.json(

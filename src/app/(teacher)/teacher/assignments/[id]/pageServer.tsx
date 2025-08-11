@@ -58,16 +58,11 @@ export interface TeacherProfile {
 export default async function AssignmentDetailsPageServer({
   assignmentId,
   userId,
-  userEmail,
-  userName,
-  userImage,
   userRole,
 }: {
   assignmentId: string;
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
+
   userRole: number;
 }) {
   console.log(
@@ -147,18 +142,7 @@ export default async function AssignmentDetailsPageServer({
       `✅ [ASSIGNMENT-DETAILS-PAGE-SERVER] Assignment loaded successfully - ${assignment.title}`
     );
 
-    return (
-      <AssignmentDetailsPageClient
-        initialData={assignmentDetailsData}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <AssignmentDetailsPageClient initialData={assignmentDetailsData} />;
   } catch (error) {
     console.error('❌ [ASSIGNMENT-DETAILS-PAGE-SERVER] Critical error:', error);
 
@@ -166,13 +150,6 @@ export default async function AssignmentDetailsPageServer({
     return (
       <AssignmentDetailsPageClient
         initialData={null}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
         errorMessage={
           error instanceof Error
             ? error.message

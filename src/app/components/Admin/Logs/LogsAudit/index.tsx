@@ -15,23 +15,17 @@ import {
   FiX,
   FiDownload,
   FiSearch,
-  FiClock,
   FiEye,
   FiSettings,
   FiTrash2,
-  FiArchive,
   FiBarChart2,
   FiTarget,
   FiRefreshCw,
   FiFilter,
-  FiMoreVertical,
   FiGlobe,
   FiLock,
   FiZap,
   FiLoader,
-  FiCalendar,
-  FiTrendingUp,
-  FiPieChart,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -85,7 +79,7 @@ export default function LogsAudit() {
       await exportLogs(format);
       toast.success(`Logs exportados em formato ${format.toUpperCase()}!`);
       setBulkActionOpen(false);
-    } catch (error) {
+    } catch {
       toast.error('Erro ao exportar logs');
     }
   };
@@ -94,7 +88,7 @@ export default function LogsAudit() {
     try {
       await refreshLogs();
       toast.success('Logs atualizados com sucesso!');
-    } catch (error) {
+    } catch {
       toast.error('Erro ao atualizar logs');
     }
   };
@@ -103,7 +97,7 @@ export default function LogsAudit() {
     try {
       const result: TestLoggingResult = await testLogging();
       toast.success(`Log de teste criado! Trace ID: ${result.traceId}`);
-    } catch (error) {
+    } catch {
       toast.error('Erro ao criar log de teste');
     }
   };

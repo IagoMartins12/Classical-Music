@@ -89,17 +89,9 @@ export interface StudentDetailData {
 export default async function TeacherStudentDetailPageServer({
   studentId,
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: {
   studentId: string;
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }) {
   console.log(
     `👨‍🎓 [TEACHER-STUDENT-DETAIL-PAGE-SERVER] Loading student ${studentId} for teacher ${userId}`
@@ -120,18 +112,7 @@ export default async function TeacherStudentDetailPageServer({
       `✅ [TEACHER-STUDENT-DETAIL-PAGE-SERVER] Data loaded successfully`
     );
 
-    return (
-      <TeacherStudentDetailPageClient
-        studentData={studentData}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <TeacherStudentDetailPageClient studentData={studentData} />;
   } catch (error) {
     console.error(
       '❌ [TEACHER-STUDENT-DETAIL-PAGE-SERVER] Critical error:',

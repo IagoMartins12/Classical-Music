@@ -54,28 +54,12 @@ export interface StudentLessonsData {
   }>;
 }
 
-interface StudentProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
 interface StudentLessonsPageServerProps {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }
 
 export default async function StudentLessonsPageServer({
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: StudentLessonsPageServerProps) {
   console.log(`📚 [STUDENT-LESSONS-PAGE-SERVER] Loading for user ${userId}`);
 
@@ -98,13 +82,6 @@ export default async function StudentLessonsPageServer({
       return (
         <StudentLessonsPageClient
           initialData={null}
-          studentProfile={{
-            id: userId,
-            name: userName,
-            email: userEmail,
-            image: userImage,
-            role: userRole,
-          }}
           errorMessage="no_teachers"
         />
       );
@@ -148,18 +125,7 @@ export default async function StudentLessonsPageServer({
       `✅ [STUDENT-LESSONS-PAGE-SERVER] Data loaded successfully - ${lessonsData.lessons.length} aulas`
     );
 
-    return (
-      <StudentLessonsPageClient
-        initialData={studentLessonsData}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <StudentLessonsPageClient initialData={studentLessonsData} />;
   } catch (error) {
     console.error('❌ [STUDENT-LESSONS-PAGE-SERVER] Critical error:', error);
 
@@ -167,13 +133,6 @@ export default async function StudentLessonsPageServer({
     return (
       <StudentLessonsPageClient
         initialData={null}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
         errorMessage="Erro ao carregar aulas. Tente recarregar a página."
       />
     );

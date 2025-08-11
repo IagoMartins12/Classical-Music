@@ -235,6 +235,7 @@ export async function loggingMiddleware(
     logCategory = LogCategory.API;
   }
 
+  console.log('LOGS', { logLevel, logCategory });
   // Log especial para rotas de autenticação
   if (context.isAuth) {
     const success = statusCode < 400;

@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 };
 
 interface PublicTeachersPageProps {
-  searchParams: {
+  searchParams?: Promise<{
     instrument?: string;
     specialty?: string;
     skillLevel?: string;
@@ -40,22 +40,22 @@ interface PublicTeachersPageProps {
     verified?: string;
     sortBy?: string;
     page?: string;
-  };
+  }>;
 }
 
 export default async function PublicTeachersPage({
   searchParams,
 }: PublicTeachersPageProps) {
-  // Parse search params
+  const resolvedSearchParams = await searchParams;
   const filters = {
-    instrument: searchParams.instrument,
-    specialty: searchParams.specialty,
-    skillLevel: searchParams.skillLevel,
-    ageGroup: searchParams.ageGroup,
-    location: searchParams.location,
-    verified: searchParams.verified === 'true',
-    sortBy: searchParams.sortBy || 'rating',
-    page: parseInt(searchParams.page || '1'),
+    instrument: resolvedSearchParams?.instrument,
+    specialty: resolvedSearchParams?.specialty,
+    skillLevel: resolvedSearchParams?.skillLevel,
+    ageGroup: resolvedSearchParams?.ageGroup,
+    location: resolvedSearchParams?.location,
+    verified: resolvedSearchParams?.verified === 'true',
+    sortBy: resolvedSearchParams?.sortBy || 'rating',
+    page: parseInt(resolvedSearchParams?.page || '1'),
   };
 
   return <PublicTeachersPageServer filters={filters} />;

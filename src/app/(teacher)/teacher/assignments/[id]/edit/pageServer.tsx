@@ -78,17 +78,9 @@ export interface TeacherProfile {
 export default async function EditAssignmentPageServer({
   assignmentId,
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: {
   assignmentId: string;
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }) {
   console.log(
     `📋✏️ [EDIT-ASSIGNMENT-PAGE-SERVER] Loading for assignment ${assignmentId} - user ${userId}`
@@ -197,18 +189,7 @@ export default async function EditAssignmentPageServer({
       `✅ [EDIT-ASSIGNMENT-PAGE-SERVER] Data loaded successfully - Assignment: ${assignment.title}, Students: ${students.length}`
     );
 
-    return (
-      <EditAssignmentPageClient
-        initialData={editAssignmentData}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <EditAssignmentPageClient initialData={editAssignmentData} />;
   } catch (error) {
     console.error('❌ [EDIT-ASSIGNMENT-PAGE-SERVER] Critical error:', error);
 
@@ -216,13 +197,6 @@ export default async function EditAssignmentPageServer({
     return (
       <EditAssignmentPageClient
         initialData={null}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
         errorMessage={
           error instanceof Error ? error.message : 'Erro ao carregar tarefa'
         }

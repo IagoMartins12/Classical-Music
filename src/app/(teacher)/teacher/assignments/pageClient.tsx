@@ -32,7 +32,6 @@ import {
 import {
   TeacherAssignmentsData,
   TeacherAssignment,
-  TeacherProfile,
 } from './pageServer';
 import Image from 'next/image';
 import Input from '@/app/components/Common/Inputs';
@@ -42,7 +41,6 @@ import Modal from '@/app/components/Modal';
 
 interface TeacherAssignmentsPageClientProps {
   initialData: TeacherAssignmentsData;
-  teacherProfile: TeacherProfile;
   errorMessage?: string;
 }
 
@@ -101,7 +99,6 @@ const priorityOptions = [
 
 export default function TeacherAssignmentsPageClient({
   initialData,
-  teacherProfile,
   errorMessage,
 }: TeacherAssignmentsPageClientProps) {
   // Initialize hook with server data
@@ -119,10 +116,7 @@ export default function TeacherAssignmentsPageClient({
     setInitialData,
     createAssignment,
     updateAssignment,
-    deleteAssignment,
-    updateAssignmentInState,
-    addAssignmentToState,
-    removeAssignmentFromState,
+
     clearError,
   } = useTeacherAssignments(initialData);
 
@@ -567,7 +561,7 @@ export default function TeacherAssignmentsPageClient({
                   </span>
                   {searchTerm && (
                     <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary rounded">
-                      "{searchTerm}"
+                      &quot;{searchTerm}&quot;
                     </span>
                   )}
                 </div>

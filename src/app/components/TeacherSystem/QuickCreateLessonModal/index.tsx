@@ -4,8 +4,6 @@
 
 import { useState, useCallback } from 'react';
 import {
-  FiCalendar,
-  FiClock,
   FiUser,
   FiSave,
   FiX,

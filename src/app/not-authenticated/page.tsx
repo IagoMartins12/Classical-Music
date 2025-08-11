@@ -47,7 +47,6 @@ export default function NotAuthenticated() {
   const { open: openRegister } = useRegisterModal();
   const [currentArea, setCurrentArea] = useState<AreaType>('main');
   const [suggestions, setSuggestions] = useState<SuggestionCard[]>([]);
-  const [returnUrl, setReturnUrl] = useState<string>('/');
 
   // Redirecionar usuários autenticados
   useEffect(() => {
@@ -60,7 +59,6 @@ export default function NotAuthenticated() {
   // Detectar área atual e URL de retorno
   useEffect(() => {
     const callbackUrl = searchParams.get('callbackUrl') || pathname;
-    setReturnUrl(callbackUrl);
 
     if (callbackUrl.startsWith('/teacher')) {
       setCurrentArea('teacher');

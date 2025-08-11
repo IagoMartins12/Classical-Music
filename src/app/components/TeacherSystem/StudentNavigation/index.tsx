@@ -14,15 +14,11 @@ import {
   FiBookOpen,
   FiUser,
   FiTrendingUp,
-  FiStar,
-  FiSettings,
   FiLogOut,
   FiChevronDown,
   FiChevronRight,
   FiMusic,
   FiHeart,
-  FiClock,
-  FiTarget,
   FiAward,
   FiFile,
 } from 'react-icons/fi';
@@ -32,18 +28,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { useAuthStore, useOnboardingModal } from '@/app/stores/authStore';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
-import useIsMobile from '@/app/hooks/useIsMobile';
 import { ThemeToggle } from '../../ThemeToggle';
-
-interface User {
-  id: string;
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  image?: string;
-  role: number;
-  onboardingCompleted?: boolean;
-}
 
 interface StudentNavigationProps {
   user: any;
@@ -70,7 +55,6 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const isMobile = useIsMobile();
 
   const { logout: authLogout } = useAuthStore();
   const { logout } = useAuth();

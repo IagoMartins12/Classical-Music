@@ -62,16 +62,8 @@ export interface TeacherStudentsServerData {
 
 export default async function TeacherStudentsPageServer({
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }) {
   console.log(`📋 [TEACHER-STUDENTS-PAGE-SERVER] Loading for user ${userId}`);
 

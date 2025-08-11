@@ -719,7 +719,6 @@ export const getTeacherCalendarDataDirect = unstable_cache(
     userId: string,
     startDate: Date,
     endDate: Date,
-    view: string = 'month',
     includeStats: boolean = false,
     detectConflicts: boolean = false
   ): Promise<{
@@ -1611,7 +1610,7 @@ export const getTeacherAssignmentsData = unstable_cache(
       const teacherId = teacherProfile.id;
 
       // 2. Montar where clause
-      let whereClause: any = {
+      const whereClause: any = {
         lesson: {
           teacherId,
         },
@@ -1976,7 +1975,7 @@ export const getTeacherReviewsData = unstable_cache(
       const teacherId = teacherProfile.id;
 
       // 2. Montar where clause para reviews
-      let whereClause: any = {
+      const whereClause: any = {
         teacherId,
       };
 
@@ -2347,7 +2346,7 @@ export const getTeacherLessonsData = unstable_cache(
       const teacherId = teacherProfile.id;
 
       // 2. Montar where clause
-      let whereClause: any = {
+      const whereClause: any = {
         teacherId,
       };
 

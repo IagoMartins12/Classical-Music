@@ -568,7 +568,6 @@ export const getStudentProgressData = unstable_cache(
       console.log('🔥 Generating streak history...');
 
       const streakHistory = [];
-      const last30Days = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
       for (let i = 29; i >= 0; i--) {
         const day = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);

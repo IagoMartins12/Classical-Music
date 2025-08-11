@@ -113,30 +113,14 @@ export interface StudentLessonDetail {
   };
 }
 
-interface StudentProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
 interface StudentLessonDetailPageServerProps {
   lessonId: string;
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }
 
 export default async function StudentLessonDetailPageServer({
   lessonId,
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: StudentLessonDetailPageServerProps) {
   console.log(
     `📖 [STUDENT-LESSON-DETAIL-PAGE-SERVER] Loading lesson ${lessonId} for user ${userId}`
@@ -152,13 +136,6 @@ export default async function StudentLessonDetailPageServer({
       return (
         <StudentLessonDetailPageClient
           initialData={null}
-          studentProfile={{
-            id: userId,
-            name: userName,
-            email: userEmail,
-            image: userImage,
-            role: userRole,
-          }}
           errorMessage="Aula não encontrada ou você não tem permissão para visualizá-la."
         />
       );
@@ -172,18 +149,7 @@ export default async function StudentLessonDetailPageServer({
       `✅ [STUDENT-LESSON-DETAIL-PAGE-SERVER] Lesson data loaded successfully`
     );
 
-    return (
-      <StudentLessonDetailPageClient
-        initialData={studentLessonDetail}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <StudentLessonDetailPageClient initialData={studentLessonDetail} />;
   } catch (error) {
     console.error(
       '❌ [STUDENT-LESSON-DETAIL-PAGE-SERVER] Critical error:',
@@ -194,13 +160,6 @@ export default async function StudentLessonDetailPageServer({
     return (
       <StudentLessonDetailPageClient
         initialData={null}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
         errorMessage="Erro ao carregar detalhes da aula. Tente recarregar a página."
       />
     );

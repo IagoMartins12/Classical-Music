@@ -15,16 +15,13 @@ import {
   FiMapPin,
   FiBookOpen,
   FiMessageSquare,
-  FiFileText,
   FiTarget,
-  FiTrendingUp,
-  FiAlertCircle,
+
   FiRefreshCw,
   FiUserCheck,
   FiUserX,
   FiPlus,
   FiTrash2,
-  FiDownload,
   FiRepeat,
   FiInfo,
   FiAlertTriangle,
@@ -48,17 +45,9 @@ import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 
-interface TeacherProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
 
 interface TeacherLessonDetailsPageClientProps {
   lessonData: LessonDetailsData | null;
-  teacherProfile: TeacherProfile;
   errorMessage?: string;
 }
 
@@ -151,7 +140,6 @@ const convertWorkScoreIdsToLessonWorks = async (
 
 export default function TeacherLessonDetailsPageClient({
   lessonData,
-  teacherProfile,
   errorMessage,
 }: TeacherLessonDetailsPageClientProps) {
   const router = useRouter();

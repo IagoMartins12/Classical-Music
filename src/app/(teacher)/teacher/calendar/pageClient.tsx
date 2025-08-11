@@ -34,17 +34,9 @@ import { useTeacherCalendar } from '@/app/hooks/useTeacherCalendar';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 
-interface TeacherProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
 
 interface TeacherCalendarPageClientProps {
   initialData: TeacherCalendarData;
-  teacherProfile: TeacherProfile;
   errorMessage?: string;
 }
 
@@ -70,14 +62,12 @@ const MONTHS = [
 
 export default function TeacherCalendarPageClient({
   initialData,
-  teacherProfile,
   errorMessage,
 }: TeacherCalendarPageClientProps) {
   // Initialize hook with server data
   const {
     // State do hook
     events,
-    stats,
     conflicts,
     hasConflicts,
     loading,
@@ -85,11 +75,8 @@ export default function TeacherCalendarPageClient({
 
     // Actions do hook
     refreshCalendar,
-    createQuickLesson,
-    moveLesson,
     setInitialData,
     clearError,
-    fetchCalendar,
   } = useTeacherCalendar(initialData);
 
   // Local UI states (não relacionados aos dados do calendário)
@@ -214,7 +201,6 @@ export default function TeacherCalendarPageClient({
     const month = currentDate.getMonth();
 
     const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
 
@@ -327,28 +313,6 @@ export default function TeacherCalendarPageClient({
     }
   };
 
-  // Create quick event using hook
-  const handleCreateQuickEvent = useCallback(
-    async (
-      date: Date,
-      studentId: string,
-      title: string,
-      duration: number = 60
-    ) => {
-      const success = await createQuickLesson({
-        studentUserId: studentId,
-        title,
-        start: date.toISOString(),
-        duration,
-        objectives: [],
-      });
-
-      if (success) {
-        console.log('Aula criada com sucesso!');
-      }
-    },
-    [createQuickLesson]
-  );
 
   // Statistics for current view
   const viewStats = useMemo(() => {
@@ -920,7 +884,6 @@ function WeekView({
   days,
   getEventsForDay,
   onEventClick,
-  formatTime,
   formatEventTime,
   getEventStatusColor,
 }: WeekViewProps) {
@@ -1007,7 +970,6 @@ function DayView({
   date,
   events,
   onEventClick,
-  formatTime,
   formatEventTime,
   getEventStatusColor,
 }: DayViewProps) {
@@ -1343,7 +1305,6 @@ function DayEventsModal({
   onClose,
   onEventClick,
   onCancelEvent,
-  formatTime,
   formatEventTime,
   getEventStatusColor,
 }: DayEventsModalProps) {

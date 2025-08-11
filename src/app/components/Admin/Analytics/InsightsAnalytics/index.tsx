@@ -21,7 +21,6 @@ import {
   FiShield,
   FiTrendingUp as FiGrowth,
   FiDollarSign,
-  FiLayers,
   FiCpu,
   FiHeart,
   FiAward,
@@ -34,7 +33,6 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
-  LoadingSpinner,
 } from '@/app/components/animation/AnimatedComponents';
 import Button from '@/app/components/Common/Button';
 import Select from '@/app/components/Common/Select';
@@ -56,21 +54,6 @@ const getSeverityColor = (severity: string) => {
       return 'text-accent-blue bg-accent-blue/10 border-accent-blue';
     default:
       return 'text-theme-tertiary bg-theme-secondary border-theme-secondary';
-  }
-};
-
-const getRiskColor = (level: string) => {
-  switch (level) {
-    case 'critical':
-      return 'text-accent-red bg-accent-red/10';
-    case 'high':
-      return 'text-accent-amber bg-accent-amber/10';
-    case 'medium':
-      return 'text-accent-blue bg-accent-blue/10';
-    case 'low':
-      return 'text-accent-green bg-accent-green/10';
-    default:
-      return 'text-theme-tertiary bg-theme-secondary';
   }
 };
 
@@ -134,7 +117,7 @@ export default function AdvancedInsightsAnalytics() {
     try {
       await refreshInsights();
       toast.success('Insights atualizados com sucesso!');
-    } catch (error) {
+    } catch {
       toast.error('Erro ao atualizar insights');
     }
   };
@@ -143,7 +126,7 @@ export default function AdvancedInsightsAnalytics() {
     try {
       await refreshModule(module);
       toast.success(`Módulo ${module} atualizado!`);
-    } catch (error) {
+    } catch {
       toast.error(`Erro ao atualizar ${module}`);
     }
   };
@@ -152,7 +135,7 @@ export default function AdvancedInsightsAnalytics() {
     try {
       await generatePrediction(metric, timeframe);
       toast.success('Previsão gerada com sucesso!');
-    } catch (error) {
+    } catch {
       toast.error('Erro ao gerar previsão');
     }
   };
@@ -161,7 +144,7 @@ export default function AdvancedInsightsAnalytics() {
     try {
       await exportInsights();
       toast.success('Insights exportados com sucesso!');
-    } catch (error) {
+    } catch {
       toast.error('Erro ao exportar insights');
     }
   };

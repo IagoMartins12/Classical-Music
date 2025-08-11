@@ -1,9 +1,6 @@
 // app/public/teachers/pageServer.tsx - Server Component para Professores Públicos
 
-import {
-  getPublicTeachers,
-  PublicTeachersResponse,
-} from '@/app/requests/public-teachers-requests';
+import { getPublicTeachers } from '@/app/requests/public-teachers-requests';
 import PublicTeachersPageClient from './pageClient';
 
 interface PublicTeachersPageServerProps {

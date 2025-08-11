@@ -4,20 +4,18 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import PublicTeacherDetailsPageServer from './pageServer';
 
+interface TeacherPubParams {
+  id: string;
+}
+
 interface TeacherDetailsPageProps {
-  params: {
-    id: string;
-  };
+  params: Promise<TeacherPubParams>;
 }
 
 // Gerar metadata dinâmica
-export async function generateMetadata({
-  params,
-}: TeacherDetailsPageProps): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   // Buscar dados básicos do professor para metadata
   try {
-    const teacherId = params.id;
-
     return {
       title: `Professor | Opus Atlas`,
       description: `Conheça nosso professor de música, suas especialidades, experiência e avaliações de alunos.`,
@@ -42,7 +40,7 @@ export async function generateMetadata({
         description: 'Conheça nosso professor especialista em música',
       },
     };
-  } catch (error) {
+  } catch {
     return {
       title: 'Professor | Opus Atlas',
       description: 'Perfil do professor de música',
@@ -53,11 +51,11 @@ export async function generateMetadata({
 export default async function TeacherDetailsPage({
   params,
 }: TeacherDetailsPageProps) {
-  const teacherId = params.id;
+  const resolvedParams = await params;
 
-  if (!teacherId) {
+  if (!resolvedParams.id) {
     notFound();
   }
 
-  return <PublicTeacherDetailsPageServer teacherId={teacherId} />;
+  return <PublicTeacherDetailsPageServer teacherId={resolvedParams.id} />;
 }

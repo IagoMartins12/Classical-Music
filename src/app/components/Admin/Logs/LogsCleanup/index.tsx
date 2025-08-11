@@ -12,7 +12,6 @@ import {
   FiX,
   FiLoader,
   FiFilter,
-  FiArchive,
 } from 'react-icons/fi';
 import {
   useAdminLogs,
@@ -30,11 +29,9 @@ interface LogsCleanupProps {
 export default function LogsCleanup({ onClose }: LogsCleanupProps) {
   const {
     stats,
-    loading,
     deleteLogs,
     cleanupOldLogs,
     exportLogs,
-    refreshLogs,
   } = useAdminLogs();
 
   const [selectedDates, setSelectedDates] = useState<Set<string>>(new Set());

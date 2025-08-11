@@ -52,7 +52,7 @@ const ensureFullDatetime = (dateStr: string): string => {
   // Fallback: tentar criar uma data válida
   try {
     return new Date(dateStr).toISOString().slice(0, 19);
-  } catch (error) {
+  } catch  {
     console.warn('⚠️ [DATETIME] Data inválida recebida:', dateStr);
     return dateStr; // Retorna como estava
   }

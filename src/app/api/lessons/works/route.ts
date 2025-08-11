@@ -35,27 +35,6 @@ async function revalidateLessonWorksData(
   );
 }
 
-interface LessonWorkData {
-  workId: string;
-  workTitle: string;
-  composer: string;
-  workScoreIds: string[]; // IDs dos WorkScores específicos
-  selectedScores: Array<{
-    id: string;
-    title: string;
-    type: string;
-    downloadUrl?: string;
-    pageCount?: string;
-  }>;
-  studyFocus: string[]; // Aspectos específicos a estudar
-  difficulty: string;
-  estimatedStudyTime?: number; // em minutos
-  notes?: string;
-  status: 'assigned' | 'studying' | 'completed' | 'on_hold';
-  progress?: number; // 0-100%
-  assignedAt: Date;
-  completedAt?: Date;
-}
 
 interface StudentWorkProgress {
   workId: string;
@@ -85,7 +64,6 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const lessonId = searchParams.get('lessonId');
     const studentUserId = searchParams.get('studentUserId'); // Para professor ver progresso do aluno
-    const teacherUserId = searchParams.get('teacherUserId'); // Para aluno ver de professor específico
     const includeProgress = searchParams.get('includeProgress') === 'true';
     const status = searchParams.get('status'); // assigned, studying, completed
     const limit = parseInt(searchParams.get('limit') || '50');
@@ -97,7 +75,6 @@ export async function GET(request: NextRequest) {
     // Buscar perfis
     let userTeacherProfile = null;
     let userStudentProfile = null;
-    let targetStudentProfile = null;
 
     if (session.user.role === 1) {
       userTeacherProfile = await prisma.teacher.findUnique({
@@ -365,7 +342,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Busca geral (todas as obras das aulas do usuário)
-    let whereClause: any = {};
+    const whereClause: any = {};
 
     if (session.user.role === 1) {
       whereClause.teacherId = userTeacherProfile?.id;

@@ -1,7 +1,7 @@
 // app/student/pageClient.tsx - Dashboard Completo do Aluno
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import {  useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -20,7 +20,6 @@ import {
   FiAward,
   FiUserCheck,
   FiHeart,
-  FiHome,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -619,7 +618,7 @@ export default function StudentPageClient({
                     <div className="space-y-2">
                       {studyProgress.currentWorks
                         .slice(0, 4)
-                        .map((work, index) => (
+                        .map((work) => (
                           <div
                             key={work.workId}
                             className="classical-card-2 p-3"
@@ -657,7 +656,7 @@ export default function StudentPageClient({
                     <div className="space-y-2">
                       {studyProgress.learnedWorks
                         .slice(0, 4)
-                        .map((work, index) => (
+                        .map((work) => (
                           <div
                             key={work.workId}
                             className="classical-card-2 p-3"
@@ -712,7 +711,7 @@ export default function StudentPageClient({
                 </div>
 
                 <div className="space-y-3">
-                  {todayLessons.slice(0, 4).map((lesson, index) => (
+                  {todayLessons.slice(0, 4).map((lesson) => (
                     <div key={lesson.id} className="classical-card-2 p-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-2 h-12 bg-brand-primary rounded-full"></div>
@@ -774,7 +773,7 @@ export default function StudentPageClient({
                 </div>
 
                 <div className="space-y-2">
-                  {upcomingLessons.map((lesson, index) => (
+                  {upcomingLessons.map((lesson) => (
                     <div
                       key={lesson.id}
                       className="flex items-center justify-between py-2 border-b border-theme-secondary last:border-0"
@@ -823,7 +822,7 @@ export default function StudentPageClient({
                 </div>
 
                 <div className="space-y-3">
-                  {teachers.map((teacher, index) => (
+                  {teachers.map((teacher) => (
                     <div
                       key={teacher.teacherId}
                       className="classical-card-2 p-3"

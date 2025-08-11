@@ -565,9 +565,7 @@ export async function GET(request: NextRequest) {
             id: targetTeacherProfile.user.id,
             name: `${targetTeacherProfile.user.firstName} ${targetTeacherProfile.user.lastName}`.trim(),
             image: targetTeacherProfile.user.image || undefined,
-            relationshipStart:
-              targetStudentProfile.teachers[0]?.startDate ||
-              targetStudentProfile.enrollmentDate,
+            relationshipStart: targetStudentProfile.enrollmentDate,
           }
         : undefined,
 

@@ -29,10 +29,8 @@ function logRequestMetrics(
   status: number,
   userAgent?: string,
   userId?: string,
-  userName?: string,
   ip?: string,
-  error?: string,
-  traceId?: string
+  error?: string
 ) {
   const key = `${method}:${path}`;
   const current = requestMetrics.get(key) || {
@@ -266,7 +264,6 @@ export default withAuth(
             429,
             userAgent || undefined,
             userId as string | undefined,
-            userName as string | undefined,
             ip,
             suspiciousCheck.reason
           );
@@ -286,7 +283,6 @@ export default withAuth(
             401,
             userAgent || undefined,
             userId as string | undefined,
-            userName as string | undefined,
             ip,
             'Unauthorized admin access'
           );

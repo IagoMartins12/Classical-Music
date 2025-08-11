@@ -49,18 +49,18 @@ export async function GET(request: NextRequest) {
     const stats = await systemLogger.getStats(7); // Últimos 7 dias
 
     // Análise de performance de queries (últimos logs de database)
-    const dbLogs = result.logs
-      .filter(
-        (log) =>
-          log.category === LogCategory.DATABASE &&
-          log.query?.duration !== undefined
-      )
-      .map((log) => ({
-        model: log.query!.model || 'unknown',
-        operation: log.query!.operation || 'unknown',
-        duration: log.query!.duration!,
-        timestamp: log.timestamp,
-      }));
+    // const dbLogs = result.logs
+    //   .filter(
+    //     (log) =>
+    //       log.category === LogCategory.DATABASE &&
+    //       log.query?.duration !== undefined
+    //   )
+    //   .map((log) => ({
+    //     model: log.query!.model || 'unknown',
+    //     operation: log.query!.operation || 'unknown',
+    //     duration: log.query!.duration!,
+    //     timestamp: log.timestamp,
+    //   }));
 
 
     // Datas disponíveis

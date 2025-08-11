@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   FiStar,
   FiUser,
@@ -16,11 +16,8 @@ import {
   FiThumbsUp,
   FiThumbsDown,
   FiMessageSquare,
-  FiCalendar,
   FiAward,
-  FiHeart,
   FiTarget,
-  FiClock,
   FiUsers,
   FiBarChart2,
 } from 'react-icons/fi';
@@ -30,28 +27,18 @@ import {
   AnimatedItem,
   PageContainer,
 } from '../../../components/animation/AnimatedComponents';
-import { TeacherReviewsData, ReviewData } from './pageServer';
+import { TeacherReviewsData } from './pageServer';
 import Image from 'next/image';
 import Select from '@/app/components/Common/Select';
 import { useTeacherReviews } from '@/app/hooks/lessonsSystem/useTeacherReviews';
 
-interface TeacherProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
 interface TeacherReviewsPageClientProps {
   initialData: TeacherReviewsData;
-  teacherProfile: TeacherProfile;
   errorMessage?: string;
 }
 
 export default function TeacherReviewsPageClient({
   initialData,
-  teacherProfile,
   errorMessage,
 }: TeacherReviewsPageClientProps) {
   // Initialize hook
@@ -77,8 +64,6 @@ export default function TeacherReviewsPageClient({
 
   // Local UI state
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedReview, setSelectedReview] = useState<ReviewData | null>(null);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   // Initialize hook data on mount
   useEffect(() => {
@@ -645,7 +630,7 @@ export default function TeacherReviewsPageClient({
                   {review.comment && (
                     <div className="mb-4">
                       <p className="text-theme-secondary italic">
-                        "{review.comment}"
+                        &quot;{review.comment}&quot;
                       </p>
                     </div>
                   )}

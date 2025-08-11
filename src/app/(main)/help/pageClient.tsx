@@ -8,7 +8,6 @@ import {
   FiUpload,
   FiSearch,
   FiPlay,
-  FiSettings,
   FiMessageCircle,
   FiDownload,
   FiStar,
@@ -16,13 +15,10 @@ import {
   FiBookOpen,
   FiHelpCircle,
   FiHeart,
-  FiMusic,
   FiUserCheck,
   FiFlag,
   FiMail,
-  FiGlobe,
   FiTarget,
-  FiLayers,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
 import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';

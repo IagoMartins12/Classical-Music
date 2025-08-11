@@ -33,17 +33,9 @@ import Select from '@/app/components/Common/Select';
 import { useStudentCalendar } from '@/app/hooks/lessonsSystem/useStudentCalendar';
 import Modal from '@/app/components/Modal';
 
-interface StudentProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
 
 interface StudentCalendarPageClientProps {
   initialData: StudentCalendarData | null;
-  studentProfile: StudentProfile;
   errorMessage?: string;
 }
 
@@ -69,7 +61,6 @@ const MONTHS = [
 
 export default function StudentCalendarPageClient({
   initialData,
-  studentProfile,
   errorMessage,
 }: StudentCalendarPageClientProps) {
   // Initialize hook with server data
@@ -82,7 +73,6 @@ export default function StudentCalendarPageClient({
     // Actions do hook
     refreshCalendar,
     addFeedbackToLesson,
-    updateEventInState,
     setInitialData,
     clearError,
   } = useStudentCalendar(initialData);
@@ -183,7 +173,6 @@ export default function StudentCalendarPageClient({
     const month = currentDate.getMonth();
 
     const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
 
@@ -835,7 +824,6 @@ function WeekView({
   days,
   getEventsForDay,
   onEventClick,
-  formatTime,
   formatEventTime,
   getEventStatusColor,
 }: WeekViewProps) {
@@ -922,7 +910,6 @@ function DayView({
   date,
   events,
   onEventClick,
-  formatTime,
   formatEventTime,
   getEventStatusColor,
 }: DayViewProps) {

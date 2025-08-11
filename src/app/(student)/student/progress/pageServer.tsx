@@ -3,28 +3,12 @@
 import { getStudentProgressData } from '@/app/requests/student-progress-requests';
 import StudentProgressPageClient from './pageClient';
 
-interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
 interface StudentProgressPageServerProps {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }
 
 export default async function StudentProgressPageServer({
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: StudentProgressPageServerProps) {
   console.log(`📊 [STUDENT-PROGRESS-PAGE-SERVER] Loading for user ${userId}`);
 
@@ -41,18 +25,7 @@ export default async function StudentProgressPageServer({
       `✅ [STUDENT-PROGRESS-PAGE-SERVER] Data loaded successfully - ${progressData.stats.completedLessons} lessons, ${progressData.stats.learnedWorks} works`
     );
 
-    return (
-      <StudentProgressPageClient
-        initialData={progressData}
-        userProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <StudentProgressPageClient initialData={progressData} />;
   } catch (error) {
     console.error('❌ [STUDENT-PROGRESS-PAGE-SERVER] Critical error:', error);
 
@@ -60,13 +33,6 @@ export default async function StudentProgressPageServer({
     return (
       <StudentProgressPageClient
         initialData={null}
-        userProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
         errorMessage="Erro ao carregar dados de progresso. Tente recarregar a página."
       />
     );

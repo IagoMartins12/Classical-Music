@@ -6,16 +6,13 @@ import { useState, useCallback, useEffect } from 'react';
 import {
   FiStar,
   FiUser,
-  FiCalendar,
   FiClock,
-  FiMessageSquare,
   FiRefreshCw,
   FiCheck,
   FiX,
   FiEdit3,
   FiHeart,
   FiThumbsUp,
-  FiAward,
   FiEye,
 } from 'react-icons/fi';
 import {
@@ -29,17 +26,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useStudentReviews } from '@/app/hooks/lessonsSystem/useStudentReviews';
 
-interface StudentProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
 
 interface StudentReviewsPageClientProps {
   initialData: StudentReviewsData | null;
-  studentProfile: StudentProfile;
   errorMessage?: string;
 }
 
@@ -69,7 +58,6 @@ const initialFormData: ReviewFormData = {
 
 export default function StudentReviewsPageClient({
   initialData,
-  studentProfile,
   errorMessage,
 }: StudentReviewsPageClientProps) {
   // Initialize hook with server data

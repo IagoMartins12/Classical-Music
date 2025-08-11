@@ -5,7 +5,6 @@ import {
   validateToken,
   markTokenAsUsed,
   logSecurityEvent,
-  createTokenUrl,
   checkTokenRateLimit,
   createToken,
 } from '@/app/libs/tokenUtils';
@@ -189,7 +188,7 @@ export async function POST(
       where: { token },
     });
 
-    if (!tokenRecord || tokenRecord.userId) {
+    if (!tokenRecord || !tokenRecord.userId) {
       return NextResponse.json(
         { success: false, error: 'Token não encontrado' },
         { status: 404 }

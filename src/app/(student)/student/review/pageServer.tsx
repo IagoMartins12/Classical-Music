@@ -39,20 +39,8 @@ export interface StudentReviewsData {
   };
 }
 
-interface StudentProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
 interface StudentReviewsPageServerProps {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }
 
 // Helper function to calculate relationship duration
@@ -83,10 +71,6 @@ function calculateRelationshipDuration(startDate: Date): string {
 
 export default async function StudentReviewsPageServer({
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: StudentReviewsPageServerProps) {
   console.log(`⭐ [STUDENT-REVIEWS-PAGE-SERVER] Loading for user ${userId}`);
 
@@ -109,13 +93,6 @@ export default async function StudentReviewsPageServer({
       return (
         <StudentReviewsPageClient
           initialData={null}
-          studentProfile={{
-            id: userId,
-            name: userName,
-            email: userEmail,
-            image: userImage,
-            role: userRole,
-          }}
           errorMessage="no_teachers"
         />
       );
@@ -165,18 +142,7 @@ export default async function StudentReviewsPageServer({
       `✅ [STUDENT-REVIEWS-PAGE-SERVER] Data loaded successfully - ${teachersToReview.length} professores`
     );
 
-    return (
-      <StudentReviewsPageClient
-        initialData={studentReviewsData}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <StudentReviewsPageClient initialData={studentReviewsData} />;
   } catch (error) {
     console.error('❌ [STUDENT-REVIEWS-PAGE-SERVER] Critical error:', error);
 
@@ -184,13 +150,6 @@ export default async function StudentReviewsPageServer({
     return (
       <StudentReviewsPageClient
         initialData={null}
-        studentProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
         errorMessage="Erro ao carregar dados. Tente recarregar a página."
       />
     );

@@ -1,3 +1,4 @@
+//api/works/[workId]/route.ts
 import prisma from '@/app/libs/prismadb';
 import { NextRequest, NextResponse } from 'next/server';
 

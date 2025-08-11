@@ -25,9 +25,7 @@ import {
   FiAlertTriangle,
   FiStar,
   FiUpload,
-  FiMessageSquare,
   FiTrendingUp,
-  FiPlayCircle,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -41,17 +39,8 @@ import { useStudentAssignments } from '@/app/hooks/lessonsSystem/useStudentAssig
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
 
-interface StudentProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
 interface StudentAssignmentsPageClientProps {
   initialData: StudentAssignmentsData | null;
-  studentProfile: StudentProfile;
   errorMessage?: string;
 }
 
@@ -80,7 +69,6 @@ const priorityColors = {
 
 export default function StudentAssignmentsPageClient({
   initialData,
-  studentProfile,
   errorMessage,
 }: StudentAssignmentsPageClientProps) {
   // Initialize hook with server data
@@ -89,12 +77,10 @@ export default function StudentAssignmentsPageClient({
     stats,
     loading,
     error,
-    pagination,
     setInitialData,
     refreshAssignments,
     completeAssignment,
     updateProgress,
-    addSubmission,
     clearError,
   } = useStudentAssignments();
 
@@ -190,7 +176,7 @@ export default function StudentAssignmentsPageClient({
       weekEnd.setDate(now.getDate() + 7);
 
       filtered = filtered.filter((assignment) => {
-        if (!assignment.dueDate) return timeFilter === 'all';
+        if (!assignment.dueDate) return setTimeFilter('all');
 
         const dueDate = new Date(assignment.dueDate);
 

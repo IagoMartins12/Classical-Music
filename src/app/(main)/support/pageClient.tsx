@@ -7,7 +7,6 @@ import {
   FiHeadphones,
   FiAlertCircle,
   FiRefreshCw,
-  FiDownload,
   FiSettings,
   FiMessageCircle,
   FiMail,
@@ -19,14 +18,11 @@ import {
   FiUpload,
   FiUser,
   FiGlobe,
-  FiPlay,
   FiUserCheck,
   FiHeart,
-  FiBookOpen,
   FiArrowRight,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano, GiScrollQuill } from 'react-icons/gi';
-import { BiBug } from 'react-icons/bi';
 import { LuComputer } from 'react-icons/lu';
 import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
 import Link from 'next/link';

@@ -236,7 +236,6 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const period = searchParams.get('period') || '6months'; // 1month, 3months, 6months, 1year, all
-    const forceRefresh = searchParams.get('refresh') === 'true';
 
     console.log(
       `📊 [ANALYTICS] Carregando analytics individuais - User: ${session.user.id}, Role: ${session.user.role}`
@@ -586,7 +585,6 @@ async function calculateStudentAnalytics(
 
   const studentId = studentProfile.id;
   const now = new Date();
-  const sixMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 6, 1);
 
   // 1. OVERVIEW
   const [

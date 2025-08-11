@@ -4,7 +4,6 @@
 
 import { useState, useCallback } from 'react';
 import {
-  FiClipboard,
   FiUser,
   FiStar,
   FiX,
@@ -18,12 +17,6 @@ import {
   FiBookOpen,
   FiEdit3,
   FiSave,
-  FiMessageSquare,
-  FiUpload,
-  FiDownload,
-  FiPlay,
-  FiPause,
-  FiVolume2,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -31,7 +24,7 @@ import {
   AnimatedItem,
   PageContainer,
 } from '../../../../components/animation/AnimatedComponents';
-import { AssignmentDetailsData, TeacherProfile } from './pageServer';
+import { AssignmentDetailsData } from './pageServer';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -39,7 +32,6 @@ import { useAssignmentDetails } from '@/app/hooks/lessonsSystem/useAssignmentDet
 
 interface AssignmentDetailsPageClientProps {
   initialData: AssignmentDetailsData | null;
-  teacherProfile: TeacherProfile;
   errorMessage?: string;
 }
 
@@ -66,7 +58,6 @@ const PRIORITY_LABELS = {
 
 export default function AssignmentDetailsPageClient({
   initialData,
-  teacherProfile,
   errorMessage,
 }: AssignmentDetailsPageClientProps) {
   const router = useRouter();
@@ -146,7 +137,7 @@ export default function AssignmentDetailsPageClient({
   };
 
   // Get status info
-  const getStatusColor = (assignment: typeof initialData.assignment) => {
+  const getStatusColor = (assignment: any) => {
     if (!assignment) return '';
 
     if (assignment.isOverdue)
@@ -158,7 +149,7 @@ export default function AssignmentDetailsPageClient({
     return 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow';
   };
 
-  const getStatusText = (assignment: typeof initialData.assignment) => {
+  const getStatusText = (assignment: any) => {
     if (!assignment) return '';
 
     if (assignment.isOverdue) return 'Atrasada';
@@ -296,14 +287,14 @@ export default function AssignmentDetailsPageClient({
                               className={`text-sm ${
                                 assignment.isOverdue
                                   ? 'text-accent-red'
-                                  : assignment.daysUntilDue <= 1
+                                  : assignment.daysUntilDue ?? 0 <= 1
                                   ? 'text-accent-yellow'
                                   : 'text-theme-tertiary'
                               }`}
                             >
                               {assignment.isOverdue
                                 ? `${Math.abs(
-                                    assignment.daysUntilDue
+                                    assignment.daysUntilDue ?? 0
                                   )} dias atrasada`
                                 : assignment.daysUntilDue === 0
                                 ? 'Vence hoje'

@@ -8,7 +8,9 @@ let path: any = null;
 // Só importar fs e path no servidor
 if (typeof window === 'undefined') {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     fs = require('fs/promises');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     path = require('path');
   } catch (error) {
     console.warn('Failed to import fs/promises or path:', error);

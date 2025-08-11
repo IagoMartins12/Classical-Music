@@ -1,9 +1,6 @@
 // app/teacher/assignments/page.tsx - Página de Gerenciamento de Tarefas do Professor
 
 import { Metadata } from 'next';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
-import { notFound } from 'next/navigation';
 import TeacherAssignmentsPageServer from './pageServer';
 import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 
@@ -24,15 +21,5 @@ export const metadata: Metadata = {
 export default async function TeacherAssignmentsPage() {
   const session = await getRequiredServerSession();
 
-  return (
-    <TeacherAssignmentsPageServer
-      userId={session.user.id}
-      userEmail={session.user.email || ''}
-      userName={`${session.user.firstName || ''} ${
-        session.user.lastName || ''
-      }`.trim()}
-      userImage={session.user.image}
-      userRole={session.user.role}
-    />
-  );
+  return <TeacherAssignmentsPageServer userId={session.user.id} />;
 }

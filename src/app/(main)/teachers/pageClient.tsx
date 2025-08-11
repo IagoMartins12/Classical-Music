@@ -195,7 +195,7 @@ export default function PublicTeachersPageClient({
     );
   }
 
-  const { teachers, filters, stats, pagination } = initialData;
+  const { filters, stats, pagination } = initialData;
   const hasActiveFilters = Object.values(currentFilters).some(
     (v) => v && v !== '' && v !== 1
   );
@@ -732,7 +732,7 @@ function TeacherCard({
                     </div>
                     {review.comment && (
                       <p className="text-theme-secondary line-clamp-2">
-                        "{review.comment}"
+                        &quot;{review.comment}&quot;
                       </p>
                     )}
                   </div>

@@ -7,10 +7,7 @@ import {
   FiUser,
   FiUserPlus,
   FiCalendar,
-  FiClock,
-  FiTarget,
   FiBookOpen,
-  FiRepeat,
 } from 'react-icons/fi';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import Input from '../../Common/Inputs';
@@ -341,7 +338,10 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                   <div className="text-theme-tertiary text-sm space-y-2">
                     <p>1. Digite o email completo do aluno no campo acima</p>
                     <p>2. O aluno deve estar cadastrado na plataforma</p>
-                    <p>3. Escolha "Adicionar Rápido" ou "Com Plano"</p>
+                    <p>
+                      3. Escolha &quot;Adicionar Rápido&quot; ou &quot;Com
+                      Plano&quot;
+                    </p>
                     <p>4. Configure o plano de estudos (opcional)</p>
                   </div>
                 </div>

@@ -57,7 +57,7 @@ export default async function StudentLayout({
   }
 
   // Verificar se tem role de professor (role 1)
-  if (!session.user.isStudent) {
+  if (!session.user?.isStudent) {
     redirect('/access-denied');
   }
   return (

@@ -86,13 +86,6 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
     const hasFilters = hasComplexFilters(searchParams);
     const cacheKey = generateCacheKey(searchParams);
 
-    console.log('📊 Query analysis:', {
-      page,
-      hasFilters,
-      cacheKey: cacheKey || 'default',
-      params: searchParams,
-    });
-
     // 🚀 ESTRATÉGIA 2: Carregamento otimizado baseado no tipo
     let worksPromise;
     let filtersPromise;

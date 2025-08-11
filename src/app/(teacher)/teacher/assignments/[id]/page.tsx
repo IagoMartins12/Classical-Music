@@ -4,15 +4,15 @@ import { Metadata } from 'next';
 import AssignmentDetailsPageServer from './pageServer';
 import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 
-interface AssignmentDetailsPageProps {
-  params: {
-    id: string;
-  };
+interface serverProps {
+  id: string;
 }
 
-export async function generateMetadata({
-  params,
-}: AssignmentDetailsPageProps): Promise<Metadata> {
+interface AssignmentDetailsPageProps {
+  params: Promise<serverProps>;
+}
+
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Detalhes da Tarefa | Professor - Opus Atlas',
     description:
@@ -26,16 +26,12 @@ export default async function AssignmentDetailsPage({
   params,
 }: AssignmentDetailsPageProps) {
   const session = await getRequiredServerSession();
+  const resolvedParams = await params;
 
   return (
     <AssignmentDetailsPageServer
-      assignmentId={params.id}
+      assignmentId={resolvedParams.id}
       userId={session.user.id}
-      userEmail={session.user.email || ''}
-      userName={`${session.user.firstName || ''} ${
-        session.user.lastName || ''
-      }`.trim()}
-      userImage={session.user.image}
       userRole={session.user.role}
     />
   );

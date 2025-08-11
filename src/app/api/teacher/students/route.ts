@@ -274,11 +274,6 @@ export async function POST(request: NextRequest) {
       learningPlan,
       currentFocus = [],
       teacherNotes,
-      // 🆕 NOVOS CAMPOS OPCIONAIS PARA PLANO DE ESTUDOS
-      studyGoals,
-      practiceFrequency,
-      homeworkExpectation,
-      specialInstructions,
     } = body;
 
     if (!studentUserId) {
@@ -697,7 +692,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Desativar relacionamento (não deletar)
-    const deactivatedRelationship = await prisma.teacherStudent.update({
+    await prisma.teacherStudent.update({
       where: { id: relationshipId },
       data: {
         isActive: false,

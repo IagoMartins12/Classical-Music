@@ -101,7 +101,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Montar where clause
-    let whereClause: any = {};
+    const whereClause: any = {};
 
     if (session.user.role === 1) {
       // Professor: buscar assignments de suas aulas

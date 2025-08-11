@@ -81,16 +81,8 @@ export interface TeacherCalendarData {
 
 export default async function TeacherCalendarPageServer({
   userId,
-  userEmail,
-  userName,
-  userImage,
-  userRole,
 }: {
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
-  userRole: number;
 }) {
   console.log(`📅 [TEACHER-CALENDAR-PAGE-SERVER] Loading for user ${userId}`);
 
@@ -105,14 +97,7 @@ export default async function TeacherCalendarPageServer({
 
     // 🚀 Buscar dados iniciais direto do banco
     const [calendarData, studentsData] = await Promise.all([
-      getTeacherCalendarDataDirect(
-        userId,
-        startDate,
-        endDate,
-        'month',
-        true,
-        true
-      ),
+      getTeacherCalendarDataDirect(userId, startDate, endDate, true, true),
       getTeacherStudentsData(userId, 'active', 100, 0),
     ]);
 
@@ -150,18 +135,7 @@ export default async function TeacherCalendarPageServer({
 
     console.log(`✅ [TEACHER-CALENDAR-PAGE-SERVER] Data loaded successfully`);
 
-    return (
-      <TeacherCalendarPageClient
-        initialData={teacherCalendarData}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <TeacherCalendarPageClient initialData={teacherCalendarData} />;
   } catch (error) {
     console.error('❌ [TEACHER-CALENDAR-PAGE-SERVER] Critical error:', error);
 
@@ -177,13 +151,6 @@ export default async function TeacherCalendarPageServer({
           period: { start: startDate, end: endDate, view: 'month' },
           metadata: { totalEvents: 0, lessonCount: 0 },
           students: [],
-        }}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
         }}
         errorMessage="Erro ao carregar dados do calendário. Tente recarregar a página."
       />

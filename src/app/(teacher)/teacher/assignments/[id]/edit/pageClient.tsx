@@ -2,24 +2,16 @@
 
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import {
-  FiClipboard,
   FiUser,
   FiSave,
   FiX,
   FiPlus,
-  FiTarget,
-  FiBookOpen,
   FiAlertCircle,
   FiRefreshCw,
   FiArrowLeft,
   FiCalendar,
-  FiClock,
-  FiMusic,
-  FiHeadphones,
-  FiEdit3,
-  FiMic,
   FiTrash2,
 } from 'react-icons/fi';
 import {
@@ -28,7 +20,7 @@ import {
   AnimatedItem,
   PageContainer,
 } from '../../../../../components/animation/AnimatedComponents';
-import { EditAssignmentData, TeacherProfile } from './pageServer';
+import { EditAssignmentData } from './pageServer';
 import Image from 'next/image';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
@@ -38,22 +30,11 @@ import { useEditAssignment } from '@/app/hooks/lessonsSystem/useEditAssignment';
 
 interface EditAssignmentPageClientProps {
   initialData: EditAssignmentData | null;
-  teacherProfile: TeacherProfile;
   errorMessage?: string;
 }
 
-const typeIcons = {
-  practice: FiTarget,
-  theory: FiBookOpen,
-  listening: FiHeadphones,
-  composition: FiEdit3,
-  performance: FiMic,
-  reading: FiMusic,
-};
-
 export default function EditAssignmentPageClient({
   initialData,
-  teacherProfile,
   errorMessage,
 }: EditAssignmentPageClientProps) {
   const router = useRouter();
@@ -838,8 +819,8 @@ export default function EditAssignmentPageClient({
                   Confirmar Exclusão
                 </h2>
                 <p className="text-theme-secondary mb-6">
-                  Tem certeza que deseja deletar a tarefa "{assignment.title}"?
-                  Esta ação não pode ser desfeita.
+                  Tem certeza que deseja deletar a tarefa &quot;
+                  {assignment.title}&quot;? Esta ação não pode ser desfeita.
                 </p>
                 <div className="flex space-x-3">
                   <button

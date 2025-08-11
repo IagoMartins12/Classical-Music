@@ -209,15 +209,6 @@ export function useTeacherLessons(
     }));
   }, []);
 
-  // 🆕 FUNÇÃO PARA RECALCULAR E ATUALIZAR STATS
-  const recalculateStats = useCallback((lessons: LessonData[]) => {
-    const newStats = calculateStatsFromLessons(lessons);
-    setState((prev) => ({
-      ...prev,
-      stats: newStats,
-    }));
-    console.log('📊 Stats recalculados:', newStats);
-  }, []);
 
   // Set initial data
   const setInitialData = useCallback((data: TeacherLessonsData) => {

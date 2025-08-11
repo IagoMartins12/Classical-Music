@@ -2,8 +2,6 @@
 import { notFound } from 'next/navigation';
 import WorkDetailsServer from './WorkDetailsServer';
 import { getWorkById } from '@/app/requests/work-page-details';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/libs/auth';
 
 interface WorkParams {
   workId: string;
@@ -162,7 +160,6 @@ export default async function WorkDetailsPage({
   params,
 }: WorkDetailsPageProps) {
   const resolvedParams = await params;
-  const session = await getServerSession(authOptions);
 
   // Verificação otimizada de ID (ObjectId do MongoDB)
   if (

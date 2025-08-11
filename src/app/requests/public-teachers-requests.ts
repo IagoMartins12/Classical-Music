@@ -161,7 +161,7 @@ export const getPublicTeachers = unstable_cache(
       } = filters;
 
       // Build where clause
-      let whereClause: any = {
+      const whereClause: any = {
         isPublicProfile: true,
         status: 'ACTIVE',
       };

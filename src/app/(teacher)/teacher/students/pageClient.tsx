@@ -3,34 +3,20 @@
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import {
   FiUsers,
   FiSearch,
   FiPlus,
-  FiEye,
-  FiClock,
-  FiCalendar,
-  FiMail,
   FiMapPin,
-  FiMusic,
-  FiTarget,
-  FiTrendingUp,
-  FiCheckCircle,
   FiXCircle,
-  FiPause,
-  FiPlay,
-  FiBarChart2,
   FiUserPlus,
   FiRefreshCw,
-  FiX,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
   PageContainer,
-  SequentialGrid,
 } from '../../../components/animation/AnimatedComponents';
 import ViewModeToggle, { ViewMode } from '../../../components/ViewModeToggle';
 import Modal from '@/app/components/Modal';
@@ -71,7 +57,6 @@ export default function TeacherStudentsPageClient({
     setInitialData,
     searchStudents,
     addStudent,
-    updateStudentRelationship,
     toggleStudentStatus,
     clearError,
     clearSearchResults,
@@ -756,7 +741,9 @@ function AddStudentModal({
               <div className="text-theme-tertiary text-sm space-y-2">
                 <p>1. Digite o email completo do aluno no campo acima</p>
                 <p>2. O aluno deve estar cadastrado na plataforma</p>
-                <p>3. Clique em "Adicionar" quando encontrar o aluno</p>
+                <p>
+                  3. Clique em &quot;Adicionar&quot; quando encontrar o aluno
+                </p>
               </div>
             </div>
           )}

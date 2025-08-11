@@ -12,7 +12,6 @@ import { createPortal } from 'react-dom';
 import { FiX } from 'react-icons/fi';
 import ConfirmationModal from './ConfirmationModal';
 import { useModalConfirmation } from '@/app/hooks/useModalConfirmation';
-import useIsMobile from '@/app/hooks/useIsMobile';
 
 interface ModalProps {
   isOpen: boolean;
@@ -60,7 +59,6 @@ const Modal = forwardRef<ModalRef, ModalProps>(
     const modalRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
 
-    const isMobile = useIsMobile();
     // 🎯 SÓ USA CONFIRMAÇÃO SE HABILITADA
     const {
       requestClose,

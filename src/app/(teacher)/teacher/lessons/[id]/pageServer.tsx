@@ -118,16 +118,12 @@ export interface LessonDetailsData {
 export default async function TeacherLessonDetailsPageServer({
   lessonId,
   userId,
-  userEmail,
-  userName,
-  userImage,
+
   userRole,
 }: {
   lessonId: string;
   userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
+
   userRole: number;
 }) {
   console.log(
@@ -155,18 +151,7 @@ export default async function TeacherLessonDetailsPageServer({
       `✅ [TEACHER-LESSON-DETAILS-PAGE-SERVER] Lesson data loaded successfully`
     );
 
-    return (
-      <TeacherLessonDetailsPageClient
-        lessonData={lessonData}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
-      />
-    );
+    return <TeacherLessonDetailsPageClient lessonData={lessonData} />;
   } catch (error) {
     console.error(
       '❌ [TEACHER-LESSON-DETAILS-PAGE-SERVER] Critical error:',
@@ -185,13 +170,6 @@ export default async function TeacherLessonDetailsPageServer({
     return (
       <TeacherLessonDetailsPageClient
         lessonData={null}
-        teacherProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-          image: userImage,
-          role: userRole,
-        }}
         errorMessage="Erro ao carregar dados da aula. Tente recarregar a página."
       />
     );

@@ -30,6 +30,7 @@ import StudentNavigation from '../components/TeacherSystem/StudentNavigation';
 import Navbar from '../components/Navbar';
 import AdminHeader from '../components/Admin/AdminHeader';
 import AdminSidebar from '../components/Admin/AdminSidebar';
+import Image from 'next/image';
 
 interface SuggestionCard {
   title: string;
@@ -418,7 +419,9 @@ export default function AccessDenied() {
               >
                 <div className="flex items-center space-x-4">
                   {session.user.image ? (
-                    <img
+                    <Image
+                      width={20}
+                      height={20}
                       src={session.user.image}
                       alt={getUserDisplayName()}
                       className="w-12 h-12 rounded-full object-cover border-2 border-brand-primary/20"

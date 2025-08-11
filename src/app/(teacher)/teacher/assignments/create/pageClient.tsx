@@ -4,7 +4,6 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import {
-  FiClipboard,
   FiUser,
   FiSave,
   FiX,
@@ -27,7 +26,7 @@ import {
   AnimatedItem,
   PageContainer,
 } from '../../../../components/animation/AnimatedComponents';
-import { CreateAssignmentData, TeacherProfile } from './pageServer';
+import { CreateAssignmentData } from './pageServer';
 import Image from 'next/image';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
@@ -37,7 +36,6 @@ import { useTeacherAssignments } from '@/app/hooks/lessonsSystem/useTeacherAssig
 
 interface CreateAssignmentPageClientProps {
   initialData: CreateAssignmentData;
-  teacherProfile: TeacherProfile;
   errorMessage?: string;
 }
 
@@ -52,7 +50,6 @@ const typeIcons = {
 
 export default function CreateAssignmentuseCreateAssignmentPageClient({
   initialData,
-  teacherProfile,
   errorMessage,
 }: CreateAssignmentPageClientProps) {
   const router = useRouter();
@@ -84,6 +81,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
   >(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
+  console.log('selectedLesson', selectedLesson);
   // Update selected student and lesson when form changes
   useEffect(() => {
     const student = initialData.students.find(

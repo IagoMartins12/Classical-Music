@@ -40,7 +40,7 @@ async function revalidateAssignmentDetailsData(
 // GET - Buscar assignment específico (sem mudanças)
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -51,8 +51,9 @@ export async function GET(
     ) {
       return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
     }
+    const { id } = await params;
 
-    const assignmentId = params.id;
+    const assignmentId = id;
 
     console.log(
       `📋🔍 [ASSIGNMENT-DETAIL] Buscando assignment ${assignmentId} - User: ${session.user.id}`
@@ -260,7 +261,7 @@ export async function GET(
 // PUT - Atualizar assignment (Professor) COM REVALIDAÇÃO
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -272,7 +273,9 @@ export async function PUT(
       );
     }
 
-    const assignmentId = params.id;
+    const { id } = await params;
+
+    const assignmentId = id;
     const body = await request.json();
 
     console.log(
