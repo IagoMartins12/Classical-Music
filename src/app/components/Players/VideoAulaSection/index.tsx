@@ -970,8 +970,8 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
           /* ✅ ESTADO VAZIO - CONTEÚDO PRINCIPAL */
           <div className="p-6">
             <div className="text-center py-12">
-              <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <FaGraduationCap className="w-12 h-12 text-blue-400" />
+              <div className="w-24 h-24 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <FaGraduationCap className="w-12 h-12 text-theme-primary" />
               </div>
 
               <h3 className="text-xl font-semibold text-theme-primary mb-2">

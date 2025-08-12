@@ -1,7 +1,7 @@
-// components/IMSLPTabsIncremental.tsx - VERSÃO HÍBRIDA (Dados Mistos + Tabs/Botões Antigos)
+// components/IMSLPTabsIncremental.tsx - REFATORADO COM BADGES E SEM TAB UPLOADS
 'use client';
 
-import { useState, useRef, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   FiMusic,
   FiFileText,
@@ -12,7 +12,6 @@ import {
   FiLayers,
   FiDownload,
   FiTarget,
-  FiUpload,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import ScoreCard from '../ScoreCard';
@@ -32,7 +31,7 @@ import {
   TabStatistics,
 } from '@/app/utils/type-utils';
 
-// ✅ Interface unificada para dados mistos
+// ✅ INTERFACE UNIFICADA SIMPLIFICADA
 interface MixedScoreData {
   id: string;
   title: string;
@@ -48,7 +47,6 @@ interface MixedScoreData {
   uploadDate?: string;
   uploader?: string;
   notes?: string;
-  // Campos específicos do WorkScore
   priority?: number;
   accessCount?: number;
   lastAccessed?: string;
@@ -56,7 +54,6 @@ interface MixedScoreData {
   workId?: string;
   sourceId?: string;
   fileFormat?: string;
-  // Campos específicos do IMSLPScore
   rating?: number;
   ratingsCount?: number;
   downloadCount?: number;
@@ -70,9 +67,7 @@ interface MixedScoreGroup {
   source: 'IMSLP' | 'WORKSCORE';
 }
 
-// ✅ Props atualizadas para suportar dados mistos
 interface IMSLPTabsIncrementalProps {
-  // Props IMSLP (opcionais - só se tiver link IMSLP)
   imslpData?: IMSLPWorkScoresIncremental | null;
   imslpLoading?: boolean;
   imslpLoadingMore?: boolean;
@@ -81,8 +76,6 @@ interface IMSLPTabsIncrementalProps {
   onImslpLoadMore?: (amount?: number, specificType?: string) => void;
   onImslpLoadMoreForTab?: (tabType: string, amount?: number) => void;
   onImslpLoadAll?: () => void;
-
-  // Props WorkScores (sempre disponíveis)
   workScores?: WorkScore[];
   workScoresLoading?: boolean;
   workScoresError?: string | null;
@@ -90,44 +83,21 @@ interface IMSLPTabsIncrementalProps {
   workScoresTotal?: number;
   onWorkScoresLoadMore?: () => void;
   onWorkScoresRefetch?: () => void;
-
-  // Props comuns
   onScoreSelect?: (score: MixedScoreData) => void;
   workId?: string;
   workTitle?: string;
   composerName?: string;
-
-  // Estados de carregamento incremental IMSLP
   hasMore?: boolean;
   totalAvailable?: number;
   currentLoaded?: number;
-  backgroundCaching?: boolean;
-  cacheProgress?: number;
   getTabStats?: (tabType: string) => TabStatistics;
-
-  // Props de favoritos
-  mostFavoritedScoreId?: string | null;
-  mostFavoritedSource?: string;
-  hasMostFavorited?: boolean;
-  loadingMostFavorited?: boolean;
   isScoreMostFavorited?: (scoreId: string, scoreSource?: string) => boolean;
-
-  // Props para modo de seleção
   isSelectionMode?: boolean;
-  selectionType?: 'want-to-learn' | 'learned' | null;
   tempSelectedWorkScore?: { id: string; title: string; source: string } | null;
 }
 
-// ✅ USAR O SISTEMA DE TABS DO CÓDIGO ANTIGO (SEM "TODAS")
-interface TabInfo {
-  id: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  type: string;
-  gradient: string;
-}
-
-const TABS: TabInfo[] = [
+// ✅ TABS SEM UPLOADS - INTEGRADOS NAS TABS APROPRIADAS
+const TABS = [
   {
     id: 'scores',
     label: 'Partituras',
@@ -150,13 +120,6 @@ const TABS: TabInfo[] = [
     gradient: 'from-accent-green to-accent-blue',
   },
   {
-    id: 'uploads',
-    label: 'Open Atlas',
-    icon: FiUpload,
-    type: 'uploads',
-    gradient: 'from-accent-purple to-accent-red',
-  },
-  {
     id: 'librettos',
     label: 'Libretos',
     icon: FiFileText,
@@ -177,56 +140,78 @@ const TABS: TabInfo[] = [
     type: 'sources',
     gradient: 'from-accent-purple to-accent-blue',
   },
-];
+] as const;
 
-export default function IMSLPTabsIncremental({
-  // IMSLP props
-  imslpData,
-  imslpLoading,
-  imslpLoadingMore,
-  imslpError,
-  onImslpRefetch,
-  onImslpLoadMoreForTab,
-  onImslpLoadAll,
-  // WorkScores props
-  workScores = [],
-  workScoresLoading,
-  workScoresError,
-  workScoresHasMore,
-  workScoresTotal = 0,
-  onWorkScoresLoadMore,
-  onWorkScoresRefetch,
-  // Common props
-  onScoreSelect,
-  workId,
-  workTitle,
-  composerName,
-  // IMSLP specific props
-  totalAvailable = 0,
-  currentLoaded = 0,
-  getTabStats,
-  // Selection props
-  isSelectionMode = false,
-  tempSelectedWorkScore,
-  // Favorites props
-  isScoreMostFavorited,
-}: IMSLPTabsIncrementalProps) {
-  const [selectedScore, setSelectedScore] = useState<MixedScoreData | null>(
-    null
-  );
-  const previewRef = useRef<HTMLDivElement>(null);
+// ✅ COMPONENTE BADGE DE FONTE
+const SourceBadge = React.memo(
+  ({ source }: { source: 'IMSLP' | 'UPLOAD' | 'CUSTOM' }) => {
+    if (source === 'IMSLP') {
+      return (
+        <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+          <FiBookOpen className="w-3 h-3 mr-1" />
+          IMSLP
+        </div>
+      );
+    }
 
-  console.log('scores', { imslpData, workScores });
-  // Hook para estatísticas de favoritos
-  const { getScoreStats } = useScoreFavorites(workId || '');
+    return (
+      <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+        <FiTarget className="w-3 h-3 mr-1" />
+        Open Atlas
+      </div>
+    );
+  }
+);
+SourceBadge.displayName = 'SourceBadge';
 
-  // ✅ Processar e organizar dados mistos (SEM tab "all")
-  const { mixedData, visibleTabs, activeTabDefault } = useMemo(() => {
+// ✅ COMPONENTE SCORECARD OTIMIZADO COM BADGE
+const ScoreCardWithBadge = React.memo(
+  ({
+    score,
+    workId,
+    isSelected,
+    onSelect,
+    isLastInGroup,
+    groupSize,
+    showFavoriteStats,
+    showMostFavoritedBadge,
+    isMostFavorited,
+    favoriteStats,
+    isSelectionMode,
+    isTempSelected,
+    tempSelectedWorkScore,
+  }: any) => (
+    <div className="relative">
+      <ScoreCard
+        score={score}
+        workId={workId}
+        isSelected={isSelected}
+        onSelect={onSelect}
+        isLastInGroup={isLastInGroup}
+        groupSize={groupSize}
+        showFavoriteStats={showFavoriteStats}
+        showMostFavoritedBadge={showMostFavoritedBadge}
+        isMostFavorited={isMostFavorited}
+        favoriteStats={favoriteStats}
+        isSelectionMode={isSelectionMode}
+        isTempSelected={isTempSelected}
+        tempSelectedWorkScore={tempSelectedWorkScore}
+      />
+      <div className="absolute top-2 right-2">
+        <SourceBadge source={score.source} />
+      </div>
+    </div>
+  )
+);
+ScoreCardWithBadge.displayName = 'ScoreCardWithBadge';
+
+// ✅ PROCESSAMENTO DE DADOS MEMOIZADO
+const useProcessedData = (imslpData: any, workScores: WorkScore[]) => {
+  return useMemo(() => {
     const processed = {
       scores: [] as MixedScoreGroup[],
       parts: [] as MixedScoreGroup[],
       arrangements: [] as MixedScoreGroup[],
-      uploads: [] as MixedScoreGroup[],
       librettos: [] as MixedScoreGroup[],
       others: [] as MixedScoreGroup[],
       sources: [] as MixedScoreGroup[],
@@ -236,111 +221,86 @@ export default function IMSLPTabsIncremental({
       scores: 0,
       parts: 0,
       arrangements: 0,
-      uploads: 0,
       librettos: 0,
       others: 0,
       sources: 0,
     };
 
-    // ✅ 1. Processar dados IMSLP (se disponíveis)
+    // ✅ 1. Processar dados IMSLP
     if (imslpData) {
-      Object.entries(imslpData.scoresByType).forEach(([type, groups]) => {
-        if (groups && groups.length > 0) {
-          const processedGroups = groups.map((group: any) => ({
-            groupIndex: group.groupIndex,
-            groupTitle: `${group.groupTitle || 'IMSLP'} (IMSLP)`,
-            source: 'IMSLP' as const,
-            scores: group.scores.map(
-              (score: any): MixedScoreData => ({
-                id: score.id,
-                title: score.title,
-                downloadUrl: score.downloadUrl,
-                fileSize: score.fileSize,
-                pageCount: score.pageCount,
-                thumbnailUrl: score.thumbnailUrl,
-                type: score.type,
-                source: 'IMSLP',
-                editor: score.editor,
-                publisher: score.publisher,
-                copyright: score.copyright,
-                uploadDate: score.uploadDate,
-                uploader: score.uploader,
-                notes: score.notes,
-                rating: score.rating,
-                ratingsCount: score.ratingsCount,
-                downloadCount: score.downloadCount,
-                groupIndex: score.groupIndex,
-              })
-            ),
-          }));
+      Object.entries(imslpData.scoresByType).forEach(
+        ([type, groups]: [string, any[]]) => {
+          if (groups && groups.length > 0) {
+            const processedGroups = groups.map((group: any) => ({
+              groupIndex: group.groupIndex,
+              groupTitle: `${group.groupTitle || 'IMSLP'} (IMSLP)`,
+              source: 'IMSLP' as const,
+              scores: group.scores.map(
+                (score: any): MixedScoreData => ({
+                  id: score.id,
+                  title: score.title,
+                  downloadUrl: score.downloadUrl,
+                  fileSize: score.fileSize,
+                  pageCount: score.pageCount,
+                  thumbnailUrl: score.thumbnailUrl,
+                  type: score.type,
+                  source: 'IMSLP',
+                  editor: score.editor,
+                  publisher: score.publisher,
+                  copyright: score.copyright,
+                  uploadDate: score.uploadDate,
+                  uploader: score.uploader,
+                  notes: score.notes,
+                  rating: score.rating,
+                  ratingsCount: score.ratingsCount,
+                  downloadCount: score.downloadCount,
+                  groupIndex: score.groupIndex,
+                })
+              ),
+            }));
 
-          // Mapear tipos IMSLP para as tabs do sistema antigo
-          if (type === 'scores') {
-            processed.scores.push(...processedGroups);
-            counts.scores += processedGroups.reduce(
-              (sum: number, g: MixedScoreGroup) => sum + g.scores.length,
-              0
-            );
-          } else if (type === 'parts') {
-            processed.parts.push(...processedGroups);
-            counts.parts += processedGroups.reduce(
-              (sum: number, g: MixedScoreGroup) => sum + g.scores.length,
-              0
-            );
-          } else if (type === 'arrangements') {
-            processed.arrangements.push(...processedGroups);
-            counts.arrangements += processedGroups.reduce(
-              (sum: number, g: MixedScoreGroup) => sum + g.scores.length,
-              0
-            );
-          } else if (type === 'librettos') {
-            processed.librettos.push(...processedGroups);
-            counts.librettos += processedGroups.reduce(
-              (sum: number, g: MixedScoreGroup) => sum + g.scores.length,
-              0
-            );
-          } else if (type === 'sources') {
-            processed.sources.push(...processedGroups);
-            counts.sources += processedGroups.reduce(
-              (sum: number, g: MixedScoreGroup) => sum + g.scores.length,
-              0
-            );
-          } else {
-            processed.others.push(...processedGroups);
-            counts.others += processedGroups.reduce(
-              (sum: number, g: MixedScoreGroup) => sum + g.scores.length,
-              0
-            );
+            // Mapear para tabs corretas
+            const targetTab = type as keyof typeof processed;
+            if (targetTab in processed) {
+              processed[targetTab].push(...processedGroups);
+              counts[targetTab] += processedGroups.reduce(
+                (sum: number, g: MixedScoreGroup) => sum + g.scores.length,
+                0
+              );
+            }
           }
         }
-      });
+      );
     }
 
-    // ✅ 2. Processar WorkScores (uploads/custom)
+    // ✅ 2. Processar WorkScores e integrar nas tabs apropriadas
     if (workScores && workScores.length > 0) {
-      // Agrupar por tipo e fonte
-      const workScoreGroups: { [key: string]: WorkScore[] } = {};
+      const workScoresByType: { [key: string]: WorkScore[] } = {};
 
       workScores.forEach((ws) => {
-        let key = 'others';
-        if (ws.source === 'UPLOAD' || ws.source === 'CUSTOM') {
-          key = 'uploads';
-        } else if (ws.type.toLowerCase().includes('score')) {
-          key = 'scores';
+        let targetType = 'others';
+
+        // Mapear tipo do WorkScore para tab apropriada
+        if (ws.type.toLowerCase().includes('score')) {
+          targetType = 'scores';
         } else if (ws.type.toLowerCase().includes('part')) {
-          key = 'parts';
+          targetType = 'parts';
         } else if (ws.type.toLowerCase().includes('arrangement')) {
-          key = 'arrangements';
+          targetType = 'arrangements';
+        } else if (ws.type.toLowerCase().includes('libretto')) {
+          targetType = 'librettos';
+        } else if (ws.type.toLowerCase().includes('source')) {
+          targetType = 'sources';
         }
 
-        if (!workScoreGroups[key]) {
-          workScoreGroups[key] = [];
+        if (!workScoresByType[targetType]) {
+          workScoresByType[targetType] = [];
         }
-        workScoreGroups[key].push(ws);
+        workScoresByType[targetType].push(ws);
       });
 
-      // Converter para grupos mistos
-      Object.entries(workScoreGroups).forEach(([type, scores]) => {
+      // Adicionar WorkScores às tabs apropriadas
+      Object.entries(workScoresByType).forEach(([type, scores]) => {
         if (scores.length > 0) {
           const group: MixedScoreGroup = {
             groupIndex: 999, // Sempre por último
@@ -373,35 +333,71 @@ export default function IMSLPTabsIncremental({
             ),
           };
 
-          if (type === 'uploads') {
-            processed.uploads.push(group);
-            counts.uploads += scores.length;
-          } else {
-            processed[type as keyof typeof processed].push(group);
-            counts[type as keyof typeof counts] += scores.length;
+          const targetTab = type as keyof typeof processed;
+          if (targetTab in processed) {
+            processed[targetTab].push(group);
+            counts[targetTab] += scores.length;
           }
         }
       });
     }
 
-    // ✅ 3. Determinar tabs visíveis (usar sistema do código antigo)
-    const visible = TABS.filter(
+    // Determinar tabs visíveis
+    const visibleTabs = TABS.filter(
       (tab) => counts[tab.type as keyof typeof counts] > 0
     );
 
-    // ✅ 4. Tab ativa padrão (primeira tab com conteúdo)
-    const defaultTab = visible.length > 0 ? visible[0].id : 'scores';
+    // Tab ativa padrão
+    const activeTabDefault =
+      visibleTabs.length > 0 ? visibleTabs[0].id : 'scores';
 
     return {
       mixedData: processed,
-      visibleTabs: visible,
-      activeTabDefault: defaultTab,
+      visibleTabs,
+      activeTabDefault,
       counts,
     };
   }, [imslpData, workScores]);
+};
+
+// ✅ COMPONENTE PRINCIPAL REFATORADO
+export default function IMSLPTabsIncremental({
+  imslpData,
+  imslpLoading,
+  imslpLoadingMore,
+  imslpError,
+  onImslpRefetch,
+  onImslpLoadMoreForTab,
+  onImslpLoadAll,
+  workScores = [],
+  workScoresLoading,
+  workScoresError,
+  workScoresHasMore,
+  workScoresTotal = 0,
+  onWorkScoresLoadMore,
+  onWorkScoresRefetch,
+  onScoreSelect,
+  workId,
+  workTitle,
+  composerName,
+  totalAvailable = 0,
+  currentLoaded = 0,
+  getTabStats,
+  isSelectionMode = false,
+  tempSelectedWorkScore,
+  isScoreMostFavorited,
+}: IMSLPTabsIncrementalProps) {
+  const [selectedScore, setSelectedScore] = useState<MixedScoreData | null>(
+    null
+  );
+
+  // ✅ PROCESSAR DADOS COM HOOK CUSTOMIZADO
+  const { mixedData, visibleTabs, activeTabDefault } = useProcessedData(
+    imslpData,
+    workScores
+  );
 
   const [activeTab, setActiveTab] = useState<string>(() => {
-    // ✅ Lógica do código antigo para tab inicial
     if (!imslpData && (!workScores || workScores.length === 0)) return 'scores';
     const firstTabWithContent = visibleTabs.find(
       (tab) => mixedData[tab.type as keyof typeof mixedData]?.length > 0
@@ -409,30 +405,41 @@ export default function IMSLPTabsIncremental({
     return firstTabWithContent?.id || activeTabDefault;
   });
 
-  // Obter dados da tab ativa
-  const activeTabData = mixedData[activeTab as keyof typeof mixedData] || [];
+  // ✅ DADOS DA TAB ATIVA MEMOIZADOS
+  const activeTabData = useMemo(
+    () => mixedData[activeTab as keyof typeof mixedData] || [],
+    [mixedData, activeTab]
+  );
 
-  const handleScoreSelect = (score: MixedScoreData) => {
-    if (selectedScore?.id === score.id) {
-      setSelectedScore(null);
-      onScoreSelect?.(null as any);
-    } else {
-      setSelectedScore(score);
-      onScoreSelect?.(score);
-    }
-  };
+  // ✅ ESTATÍSTICAS DA TAB MEMOIZADAS
+  const activeTabStats: TabStatistics = useMemo(() => {
+    return getTabStats
+      ? getTabStats(activeTab)
+      : getTabStatistics(
+          activeTab,
+          imslpData?.loadedCounts || {},
+          imslpData?.totalCounts || {}
+        );
+  }, [getTabStats, activeTab, imslpData?.loadedCounts, imslpData?.totalCounts]);
 
-  // ✅ USAR OS BOTÕES DE LOADMORE DO CÓDIGO ANTIGO
-  const activeTabStats: TabStatistics = getTabStats
-    ? getTabStats(activeTab)
-    : getTabStatistics(
-        activeTab,
-        imslpData?.loadedCounts || {},
-        imslpData?.totalCounts || {}
-      );
+  // ✅ HOOK PARA FAVORITOS OTIMIZADO
+  const { getScoreStats } = useScoreFavorites(workId || '');
 
-  // ✅ Função para renderizar botões dinâmicos específicos da tab (do código antigo)
-  const renderTabSpecificButtons = () => {
+  // ✅ CALLBACKS OTIMIZADOS
+  const handleScoreSelect = useCallback(
+    (score: MixedScoreData) => {
+      if (selectedScore?.id === score.id) {
+        setSelectedScore(null);
+        onScoreSelect?.(null as any);
+      } else {
+        setSelectedScore(score);
+        onScoreSelect?.(score);
+      }
+    },
+    [selectedScore?.id, onScoreSelect]
+  );
+
+  const renderTabSpecificButtons = useCallback(() => {
     if (!activeTabStats.hasMore) {
       return (
         <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
@@ -454,18 +461,12 @@ export default function IMSLPTabsIncremental({
 
     const buttons = [];
 
-    // ✅ Botão "Carregar Mais" específico da tab
     if (activeTabStats.remaining >= 1) {
       const loadAmount = Math.min(20, activeTabStats.remaining);
       buttons.push(
         <button
           key="load-more-tab"
-          onClick={() => {
-            console.log(
-              `🎯 [COMPONENT] Clicando "Carregar Mais" para tab: "${activeTab}", amount: ${loadAmount}`
-            );
-            onImslpLoadMoreForTab?.(activeTab, loadAmount);
-          }}
+          onClick={() => onImslpLoadMoreForTab?.(activeTab, loadAmount)}
           disabled={imslpLoadingMore}
           className="btn-classical-primary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -478,8 +479,7 @@ export default function IMSLPTabsIncremental({
             <>
               <FiMoreHorizontal className="w-4 h-4" />
               <span>
-                Carregar Mais {getTabLabel(activeTab)} (
-                {Math.min(20, activeTabStats.remaining)})
+                Carregar Mais {getTabLabel(activeTab)} ({loadAmount})
               </span>
             </>
           )}
@@ -487,17 +487,13 @@ export default function IMSLPTabsIncremental({
       );
     }
 
-    // ✅ Botão "Carregar Todas desta Tab"
     if (activeTabStats.remaining > 20) {
       buttons.push(
         <button
           key="load-all-tab"
-          onClick={() => {
-            console.log(
-              `🎯 [COMPONENT] Clicando "Carregar Todas desta Tab" para: "${activeTab}", amount: ${activeTabStats.remaining}`
-            );
-            onImslpLoadMoreForTab?.(activeTab, activeTabStats.remaining);
-          }}
+          onClick={() =>
+            onImslpLoadMoreForTab?.(activeTab, activeTabStats.remaining)
+          }
           disabled={imslpLoadingMore}
           className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -510,18 +506,12 @@ export default function IMSLPTabsIncremental({
       );
     }
 
-    // ✅ Botão "Carregar Todas as Partituras"
     const globalRemaining = totalAvailable - currentLoaded;
     if (globalRemaining > activeTabStats.remaining && globalRemaining > 0) {
       buttons.push(
         <button
           key="load-all-global"
-          onClick={() => {
-            console.log(
-              `🎯 [COMPONENT] Clicando "Carregar Todas as Partituras", amount: ${globalRemaining}`
-            );
-            onImslpLoadAll?.();
-          }}
+          onClick={() => onImslpLoadAll?.()}
           disabled={imslpLoadingMore}
           className="btn-classical-accent flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -534,13 +524,20 @@ export default function IMSLPTabsIncremental({
     }
 
     return buttons;
-  };
+  }, [
+    activeTabStats,
+    activeTab,
+    imslpLoadingMore,
+    onImslpLoadMoreForTab,
+    onImslpLoadAll,
+    totalAvailable,
+    currentLoaded,
+  ]);
 
-  // Loading state
+  // ✅ ESTADOS DE CARREGAMENTO
   const isLoading = imslpLoading || workScoresLoading;
   const hasError = imslpError || workScoresError;
 
-  // ✅ Estados de carregamento
   if (isLoading && activeTabData.length === 0) {
     return <LoadingState />;
   }
@@ -586,7 +583,6 @@ export default function IMSLPTabsIncremental({
                   </div>
                 </div>
 
-                {/* Action buttons */}
                 {selectedScore &&
                   workId &&
                   workTitle &&
@@ -612,10 +608,6 @@ export default function IMSLPTabsIncremental({
                 {visibleTabs.map((tab, index) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
-                  // const tabData =
-                  //   mixedData[tab.type as keyof typeof mixedData] || [];
-
-                  // ✅ Usar sistema de estatísticas do código antigo
                   const tabStats: TabStatistics = getTabStats
                     ? getTabStats(tab.id)
                     : getTabStatistics(
@@ -624,11 +616,6 @@ export default function IMSLPTabsIncremental({
                         imslpData?.totalCounts || {}
                       );
 
-                  console.log('tabStats', {
-                    tab,
-                    activeTabData,
-                    activeTab,
-                  });
                   return (
                     <AnimatedItem
                       key={tab.id}
@@ -658,7 +645,6 @@ export default function IMSLPTabsIncremental({
                         </div>
                         <span className="font-semibold">{tab.label}</span>
 
-                        {/* ✅ Contador com progresso do código antigo */}
                         <div className="flex items-center space-x-1">
                           <span
                             className={`px-2 py-1 rounded-full text-xs font-bold transition-all duration-300 ${
@@ -673,7 +659,6 @@ export default function IMSLPTabsIncremental({
                               : tabStats.total}
                           </span>
 
-                          {/* Indicador de progresso e status */}
                           {tabStats.hasMore ? (
                             <div className="flex items-center space-x-1">
                               <div className="w-1 h-1 bg-accent-blue rounded-full animate-pulse"></div>
@@ -737,8 +722,8 @@ export default function IMSLPTabsIncremental({
                               className="space-y-2"
                               key={score.id}
                             >
-                              <ScoreCard
-                                score={score as any}
+                              <ScoreCardWithBadge
+                                score={score}
                                 workId={workId || ''}
                                 isSelected={selectedScore?.id === score.id}
                                 onSelect={() => handleScoreSelect(score)}
@@ -772,7 +757,7 @@ export default function IMSLPTabsIncremental({
                     </div>
                   ))}
 
-                  {/* ✅ USAR OS BOTÕES DE LOADMORE DO CÓDIGO ANTIGO */}
+                  {/* Botões de Load More */}
                   {activeTabStats.hasMore && (
                     <div className="flex flex-col items-center space-y-6 py-8 border-t border-theme-secondary">
                       <div className="text-center">
@@ -792,16 +777,14 @@ export default function IMSLPTabsIncremental({
                               ).toLowerCase()} disponíveis`}
                         </p>
                       </div>
-
-                      {/* ✅ Botões dinâmicos específicos da tab (do código antigo) */}
                       <div className="flex flex-wrap gap-4 justify-center">
                         {renderTabSpecificButtons()}
                       </div>
                     </div>
                   )}
 
-                  {/* ✅ Load More para WorkScores na tab uploads */}
-                  {activeTab === 'uploads' && workScoresHasMore && (
+                  {/* Load More para WorkScores */}
+                  {activeTab === 'scores' && workScoresHasMore && (
                     <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
                       <div className="text-center">
                         <h3 className="text-lg font-semibold text-theme-primary mb-2">
@@ -815,7 +798,6 @@ export default function IMSLPTabsIncremental({
                               } de ${workScoresTotal} partituras`}
                         </p>
                       </div>
-
                       <button
                         onClick={onWorkScoresLoadMore}
                         disabled={workScoresLoading}
@@ -835,59 +817,18 @@ export default function IMSLPTabsIncremental({
                       </button>
                     </div>
                   )}
-
-                  {/* ✅ Mensagem quando todas as partituras da tab foram carregadas (do código antigo) */}
-                  {!activeTabStats.hasMore && activeTabStats.total > 0 && (
-                    <div
-                      className={` ${
-                        totalAvailable > currentLoaded
-                          ? 'space-y-4 flex flex-col items-center py-8 border-t border-theme-secondary'
-                          : ''
-                      }  `}
-                    >
-                      <div className="text-center">
-                        {/* Botão para carregar todas as outras tabs se ainda há partituras globais */}
-                        {totalAvailable > currentLoaded && (
-                          <div className="mt-4">
-                            <button
-                              onClick={onImslpLoadAll}
-                              disabled={imslpLoadingMore}
-                              className="btn-classical-accent flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              <FiLayers className="w-4 h-4" />
-                              <span>
-                                Carregar Todas as Outras Partituras (
-                                {totalAvailable - currentLoaded} restantes)
-                              </span>
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 {/* Preview Panel */}
                 {selectedScore && (
-                  <div
-                    ref={previewRef}
-                    className="lg:sticky lg:top-6 animate-fade-in-up scroll-mt-4"
-                  >
+                  <div className="lg:sticky lg:top-6 animate-fade-in-up scroll-mt-4">
                     <div className="classical-card-2 p-6">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
                           <FiBookOpen className="w-5 h-5 text-accent-blue" />
                           <span>Preview da Partitura</span>
                         </h3>
-
-                        <div className="flex items-center space-x-2 text-sm">
-                          <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
-                          <span className="text-theme-secondary">
-                            {isSelectionMode
-                              ? 'Selecionada'
-                              : 'Selecionada para estudo'}
-                          </span>
-                        </div>
+                        <SourceBadge source={selectedScore.source} />
                       </div>
 
                       <ScorePreview score={selectedScore as any} />
@@ -919,55 +860,44 @@ export default function IMSLPTabsIncremental({
   );
 }
 
-// === COMPONENTES AUXILIARES (permanecem iguais) ===
-
-function LoadingState() {
-  return (
-    <div className="classical-card overflow-hidden animate-fade-in-up">
-      <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
-            <FiMusic className="w-6 h-6 text-theme-primary" />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold text-theme-primary classical-title">
-              Partituras Disponíveis
-            </h2>
-            <p className="text-theme-secondary classical-subtitle">
-              Carregando recursos disponíveis...
-            </p>
-          </div>
+// ✅ COMPONENTES AUXILIARES OTIMIZADOS
+const LoadingState = React.memo(() => (
+  <div className="classical-card overflow-hidden animate-fade-in-up">
+    <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
+      <div className="flex items-center space-x-3">
+        <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-2xl flex items-center justify-center">
+          <FiMusic className="w-6 h-6 text-theme-primary" />
         </div>
-      </div>
-      <div className="p-8">
-        <div className="flex items-center justify-center space-x-3 py-12">
-          <div className="relative">
-            <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
-            <div
-              className="absolute inset-0 w-8 h-8 border-4 border-transparent border-r-brand-secondary rounded-full animate-spin"
-              style={{
-                animationDirection: 'reverse',
-                animationDuration: '1.5s',
-              }}
-            ></div>
-          </div>
-          <span className="text-theme-primary font-medium">
-            Carregando partituras...
-          </span>
+        <div>
+          <h2 className="text-2xl font-bold text-theme-primary classical-title">
+            Partituras Disponíveis
+          </h2>
+          <p className="text-theme-secondary classical-subtitle">
+            Carregando recursos disponíveis...
+          </p>
         </div>
       </div>
     </div>
-  );
-}
+    <div className="p-8">
+      <div className="flex items-center justify-center space-x-3 py-12">
+        <div className="relative">
+          <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
+          <div
+            className="absolute inset-0 w-8 h-8 border-4 border-transparent border-r-brand-secondary rounded-full animate-spin"
+            style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}
+          ></div>
+        </div>
+        <span className="text-theme-primary font-medium">
+          Carregando partituras...
+        </span>
+      </div>
+    </div>
+  </div>
+));
+LoadingState.displayName = 'LoadingState';
 
-function ErrorState({
-  error,
-  onRefetch,
-}: {
-  error: string;
-  onRefetch?: () => void;
-}) {
-  return (
+const ErrorState = React.memo(
+  ({ error, onRefetch }: { error: string; onRefetch?: () => void }) => (
     <div className="classical-card overflow-hidden animate-fade-in-up">
       <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
         <div className="flex items-center space-x-3">
@@ -1006,40 +936,39 @@ function ErrorState({
         </div>
       </div>
     </div>
-  );
-}
+  )
+);
+ErrorState.displayName = 'ErrorState';
 
-function EmptyState() {
-  return (
-    <div className="classical-card p-8">
-      <div className="text-center py-16">
-        <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <FiMusic className="w-8 h-8 text-theme-tertiary" />
-        </div>
-        <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-          Nenhuma partitura encontrada
-        </h3>
-        <p className="text-theme-secondary max-w-md mx-auto">
-          Não foram encontradas partituras para esta obra no momento.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function EmptyTabState() {
-  return (
+const EmptyState = React.memo(() => (
+  <div className="classical-card p-8">
     <div className="text-center py-16">
       <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
         <FiMusic className="w-8 h-8 text-theme-tertiary" />
       </div>
       <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-        Nenhuma partitura disponível
+        Nenhuma partitura encontrada
       </h3>
       <p className="text-theme-secondary max-w-md mx-auto">
-        Não foram encontradas partituras desta categoria para esta obra no
-        momento.
+        Não foram encontradas partituras para esta obra no momento.
       </p>
     </div>
-  );
-}
+  </div>
+));
+EmptyState.displayName = 'EmptyState';
+
+const EmptyTabState = React.memo(() => (
+  <div className="text-center py-16">
+    <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+      <FiMusic className="w-8 h-8 text-theme-tertiary" />
+    </div>
+    <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
+      Nenhuma partitura disponível
+    </h3>
+    <p className="text-theme-secondary max-w-md mx-auto">
+      Não foram encontradas partituras desta categoria para esta obra no
+      momento.
+    </p>
+  </div>
+));
+EmptyTabState.displayName = 'EmptyTabState';

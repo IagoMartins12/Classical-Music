@@ -477,21 +477,14 @@ export default function WorkDetailsClient({
                   workTitle={work.title}
                   composerName={work.composer.fullName}
                   // Props de favoritos
-                  mostFavoritedScoreId={mostFavoritedScoreId}
-                  mostFavoritedSource={mostFavoritedSource}
-                  hasMostFavorited={hasMostFavorited}
-                  loadingMostFavorited={loadingMostFavorited}
                   isScoreMostFavorited={isScoreMostFavorited}
                   // Props para modo seleção
                   isSelectionMode={true}
-                  selectionType={activeType}
                   tempSelectedWorkScore={tempSelectedWorkScore}
                   // Props IMSLP específicas
                   hasMore={hasMore}
                   totalAvailable={totalAvailable}
                   currentLoaded={currentLoaded}
-                  backgroundCaching={backgroundCaching}
-                  cacheProgress={cacheProgress}
                   getTabStats={getTabStats}
                 />
               </AnimatedCard>
@@ -1185,21 +1178,14 @@ export default function WorkDetailsClient({
               workTitle={work.title}
               composerName={work.composer.fullName}
               // Props de favoritos
-              mostFavoritedScoreId={mostFavoritedScoreId}
-              mostFavoritedSource={mostFavoritedSource}
-              hasMostFavorited={hasMostFavorited}
-              loadingMostFavorited={loadingMostFavorited}
               isScoreMostFavorited={isScoreMostFavorited}
               // Props para modo normal
               isSelectionMode={false}
-              selectionType={null}
               tempSelectedWorkScore={null}
               // Props IMSLP específicas (se disponível)
               hasMore={hasMore}
               totalAvailable={totalAvailable}
               currentLoaded={currentLoaded}
-              backgroundCaching={backgroundCaching}
-              cacheProgress={cacheProgress}
               getTabStats={getTabStats}
             />
           </AnimatedCard>

@@ -571,8 +571,8 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     mediaData.alternativeAudio.length > 0;
 
   // Lógica dos botões
-  // const showLoadMediaButton = !hasAnyMedia;
-  const showLoadMediaButton = true;
+  const showLoadMediaButton = !hasAnyMedia;
+  // const showLoadMediaButton = true;
 
   return (
     <AnimatedCard hover="lift" className="classical-card overflow-hidden">
