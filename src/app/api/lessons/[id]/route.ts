@@ -51,6 +51,7 @@ interface LessonDetails {
   type: string;
   location?: string;
 
+  musicalPieces?: any;
   // Recorrência
   isRecurring: boolean;
   recurrenceType?: string;
@@ -116,7 +117,7 @@ interface LessonDetails {
     type: string;
     downloadUrl?: string;
   }>;
-
+  worksIds?: string[] | null;
   // Assignments relacionados
   assignments?: Array<{
     id: string;
@@ -292,10 +293,35 @@ export async function GET(
       }
     }
 
-    // Buscar WorkScores se houver IDs
-    let workScores: any[] = [];
-    if (lesson.workScoreIds.length > 0) {
-      workScores = await prisma.workScore.findMany({
+    // 🆕 Buscar dados completos das OBRAS (worksIds)
+    let linkedWorks: any[] = [];
+    if (lesson.worksIds && lesson.worksIds.length > 0) {
+      console.log('🔍 [LESSON-API] Buscando obras:', lesson.worksIds);
+
+      linkedWorks = await prisma.work.findMany({
+        where: {
+          id: { in: lesson.worksIds },
+        },
+        include: {
+          composer: {
+            select: {
+              id: true,
+              name: true,
+              fullName: true,
+            },
+          },
+        },
+      });
+
+      console.log('✅ [LESSON-API] Obras encontradas:', linkedWorks.length);
+    }
+
+    // 🆕 Buscar dados completos das PARTITURAS (workScoreIds)
+    let linkedWorkScores: any[] = [];
+    if (lesson.workScoreIds && lesson.workScoreIds.length > 0) {
+      console.log('🔍 [LESSON-API] Buscando partituras:', lesson.workScoreIds);
+
+      linkedWorkScores = await prisma.workScore.findMany({
         where: {
           id: { in: lesson.workScoreIds },
         },
@@ -303,13 +329,65 @@ export async function GET(
           work: {
             include: {
               composer: {
-                select: { name: true },
+                select: {
+                  id: true,
+                  name: true,
+                  fullName: true,
+                },
               },
             },
           },
         },
       });
+
+      console.log(
+        '✅ [LESSON-API] Partituras encontradas:',
+        linkedWorkScores.length
+      );
     }
+
+    // 🆕 Criar array de peças musicais no formato correto
+    const musicalPieces: any[] = [];
+
+    // Primeiro, adicionar partituras específicas (têm prioridade)
+    for (const workScore of linkedWorkScores) {
+      musicalPieces.push({
+        workId: workScore.work.id,
+        workTitle: workScore.work.title,
+        composerName:
+          workScore.work.composer.fullName || workScore.work.composer.name,
+        composerId: workScore.work.composer.id,
+        scoreId: workScore.id,
+        scoreTitle: workScore.title,
+        scoreUrl: workScore.downloadUrl,
+        scoreType: workScore.type,
+        scoreSource: workScore.source,
+      });
+    }
+
+    // Depois, adicionar obras que não têm partituras específicas
+    for (const work of linkedWorks) {
+      // Verificar se essa obra já não foi incluída via workScore
+      const alreadyIncluded = musicalPieces.some(
+        (piece) => piece.workId === work.id
+      );
+
+      if (!alreadyIncluded) {
+        musicalPieces.push({
+          workId: work.id,
+          workTitle: work.title,
+          composerName: work.composer.fullName || work.composer.name,
+          composerId: work.composer.id,
+          // Sem partitura específica
+        });
+      }
+    }
+
+    console.log('🎵 [LESSON-API] Peças musicais processadas:', {
+      totalPieces: musicalPieces.length,
+      withScores: musicalPieces.filter((p) => p.scoreId).length,
+      withoutScores: musicalPieces.filter((p) => !p.scoreId).length,
+    });
 
     // Buscar aulas relacionadas (se for série recorrente)
     let relatedLessons: any[] = [];
@@ -367,7 +445,12 @@ export async function GET(
 
       // Conteúdo
       objectives: lesson.objectives,
-      workScoreIds: lesson.workScoreIds,
+
+      // 🆕 PEÇAS MUSICAIS
+      worksIds: lesson.worksIds || [],
+      workScoreIds: lesson.workScoreIds || [],
+      musicalPieces: musicalPieces,
+
       topics: lesson.topics,
       techniques: lesson.techniques,
       repertoire: lesson.repertoire,
@@ -417,8 +500,8 @@ export async function GET(
         relationshipDuration,
       },
 
-      // WorkScores
-      workScores: workScores.map((ws) => ({
+      // WorkScores (mantido para compatibilidade)
+      workScores: linkedWorkScores.map((ws) => ({
         id: ws.id,
         title: ws.title,
         composer: ws.work.composer.name,
@@ -454,9 +537,9 @@ export async function GET(
     };
 
     console.log(
-      `✅ [LESSON-DETAILS] Detalhes da aula carregados para ${
+      `✅ [LESSON-API] Detalhes da aula carregados para ${
         isTeacher ? 'professor' : 'aluno'
-      }`
+      } com ${musicalPieces.length} peças musicais`
     );
 
     return NextResponse.json({
@@ -467,10 +550,7 @@ export async function GET(
       isStudent,
     });
   } catch (error) {
-    console.error(
-      '❌ [LESSON-DETAILS] Erro ao buscar detalhes da aula:',
-      error
-    );
+    console.error('❌ [LESSON-API] Erro ao buscar detalhes da aula:', error);
     return NextResponse.json(
       { error: 'Erro interno do servidor' },
       { status: 500 }

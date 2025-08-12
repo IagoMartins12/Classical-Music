@@ -2634,14 +2634,19 @@ export const getTeacherLessonDetailsData = unstable_cache(
         });
       }
 
-      // 2. Buscar aula com todos os detalhes
+      // 2. Buscar aula com verificação de acesso
       const lesson = await prisma.lesson.findFirst({
         where: {
           id: lessonId,
-          // Verificar se o usuário tem acesso à aula
           OR: [
-            { teacherId: userTeacherProfile?.id },
-            { studentId: userStudentProfile?.id },
+            // Professor: deve ser dono da aula
+            {
+              teacherId: userTeacherProfile?.id,
+            },
+            // Aluno: deve ser dono do assignment
+            {
+              studentId: userStudentProfile?.id,
+            },
           ],
         },
         include: {
@@ -2733,10 +2738,44 @@ export const getTeacherLessonDetailsData = unstable_cache(
         }
       }
 
-      // 5. Buscar WorkScores se houver IDs
-      let workScores: any[] = [];
-      if (lesson.workScoreIds.length > 0) {
-        workScores = await prisma.workScore.findMany({
+      // 🆕 5. Buscar dados completos das OBRAS (worksIds)
+      let linkedWorks: any[] = [];
+      if (lesson.worksIds && lesson.worksIds.length > 0) {
+        console.log(
+          '🔍 [TEACHER-LESSON-DETAILS] Buscando obras:',
+          lesson.worksIds
+        );
+
+        linkedWorks = await prisma.work.findMany({
+          where: {
+            id: { in: lesson.worksIds },
+          },
+          include: {
+            composer: {
+              select: {
+                id: true,
+                name: true,
+                fullName: true,
+              },
+            },
+          },
+        });
+
+        console.log(
+          '✅ [TEACHER-LESSON-DETAILS] Obras encontradas:',
+          linkedWorks.length
+        );
+      }
+
+      // 🆕 6. Buscar dados completos das PARTITURAS (workScoreIds)
+      let linkedWorkScores: any[] = [];
+      if (lesson.workScoreIds && lesson.workScoreIds.length > 0) {
+        console.log(
+          '🔍 [TEACHER-LESSON-DETAILS] Buscando partituras:',
+          lesson.workScoreIds
+        );
+
+        linkedWorkScores = await prisma.workScore.findMany({
           where: {
             id: { in: lesson.workScoreIds },
           },
@@ -2744,15 +2783,67 @@ export const getTeacherLessonDetailsData = unstable_cache(
             work: {
               include: {
                 composer: {
-                  select: { name: true },
+                  select: {
+                    id: true,
+                    name: true,
+                    fullName: true,
+                  },
                 },
               },
             },
           },
         });
+
+        console.log(
+          '✅ [TEACHER-LESSON-DETAILS] Partituras encontradas:',
+          linkedWorkScores.length
+        );
       }
 
-      // 6. Buscar aulas relacionadas (se for série recorrente)
+      // 🆕 7. Criar array de peças musicais no formato correto
+      const musicalPieces: any[] = [];
+
+      // Primeiro, adicionar partituras específicas (têm prioridade)
+      for (const workScore of linkedWorkScores) {
+        musicalPieces.push({
+          workId: workScore.work.id,
+          workTitle: workScore.work.title,
+          composerName:
+            workScore.work.composer.fullName || workScore.work.composer.name,
+          composerId: workScore.work.composer.id,
+          scoreId: workScore.id,
+          scoreTitle: workScore.title,
+          scoreUrl: workScore.downloadUrl,
+          scoreType: workScore.type,
+          scoreSource: workScore.source,
+        });
+      }
+
+      // Depois, adicionar obras que não têm partituras específicas
+      for (const work of linkedWorks) {
+        // Verificar se essa obra já não foi incluída via workScore
+        const alreadyIncluded = musicalPieces.some(
+          (piece) => piece.workId === work.id
+        );
+
+        if (!alreadyIncluded) {
+          musicalPieces.push({
+            workId: work.id,
+            workTitle: work.title,
+            composerName: work.composer.fullName || work.composer.name,
+            composerId: work.composer.id,
+            // Sem partitura específica
+          });
+        }
+      }
+
+      console.log('🎵 [TEACHER-LESSON-DETAILS] Peças musicais processadas:', {
+        totalPieces: musicalPieces.length,
+        withScores: musicalPieces.filter((p) => p.scoreId).length,
+        withoutScores: musicalPieces.filter((p) => !p.scoreId).length,
+      });
+
+      // 8. Buscar aulas relacionadas (se for série recorrente)
       let relatedLessons: any[] = [];
       if (lesson.isRecurring) {
         const parentId = lesson.parentLessonId || lesson.id;
@@ -2772,7 +2863,7 @@ export const getTeacherLessonDetailsData = unstable_cache(
         });
       }
 
-      // 7. Definir permissões baseadas no role
+      // 9. Definir permissões baseadas no role
       const isTeacher =
         userRole === 1 && userTeacherProfile?.id === lesson.teacherId;
       const isStudent =
@@ -2787,7 +2878,7 @@ export const getTeacherLessonDetailsData = unstable_cache(
         canMarkAttendance: isTeacher,
       };
 
-      // 8. Montar resposta detalhada (formato compatível com interface existente)
+      // 10. Montar resposta detalhada (formato compatível com interface existente)
       const lessonDetails = {
         id: lesson.id,
         title: lesson.title,
@@ -2808,7 +2899,14 @@ export const getTeacherLessonDetailsData = unstable_cache(
 
         // Conteúdo
         objectives: lesson.objectives,
-        workScoreIds: lesson.workScoreIds,
+
+        // 🆕 IDs DAS PEÇAS MUSICAIS (para edição)
+        worksIds: lesson.worksIds || [],
+        workScoreIds: lesson.workScoreIds || [],
+
+        // 🆕 DADOS COMPLETOS DAS PEÇAS MUSICAIS (para exibição)
+        musicalPieces: musicalPieces,
+
         topics: lesson.topics,
         techniques: lesson.techniques,
         repertoire: lesson.repertoire,
@@ -2858,8 +2956,8 @@ export const getTeacherLessonDetailsData = unstable_cache(
           relationshipDuration,
         },
 
-        // WorkScores
-        workScores: workScores.map((ws) => ({
+        // WorkScores (mantido para compatibilidade)
+        workScores: linkedWorkScores.map((ws) => ({
           id: ws.id,
           title: ws.title,
           composer: ws.work.composer.name,
@@ -2897,7 +2995,7 @@ export const getTeacherLessonDetailsData = unstable_cache(
       console.log(
         `✅ [TEACHER-LESSON-DETAILS] Lesson details loaded for ${
           isTeacher ? 'teacher' : 'student'
-        }`
+        } with ${musicalPieces.length} musical pieces`
       );
 
       return {

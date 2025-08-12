@@ -1,8 +1,7 @@
-// app/teacher/lessons/[id]/pageClient.tsx - Client Component UNIFICADO (Detalhes + Edição) com Peças Musicais
-
+// app/teacher/lessons/[id]/pageClient.tsx
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import {
   FiCalendar,
   FiClock,
@@ -16,7 +15,6 @@ import {
   FiBookOpen,
   FiMessageSquare,
   FiTarget,
-
   FiRefreshCw,
   FiUserCheck,
   FiUserX,
@@ -26,6 +24,7 @@ import {
   FiInfo,
   FiAlertTriangle,
   FiMusic,
+  FiAlertCircle,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -44,7 +43,6 @@ import Modal from '@/app/components/Modal';
 import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
-
 
 interface TeacherLessonDetailsPageClientProps {
   lessonData: LessonDetailsData | null;
@@ -86,58 +84,6 @@ const formatDatetimeForInput = (date: Date | string): string => {
   return localDate.toISOString().slice(0, 16); // Retorna formato YYYY-MM-DDTHH:mm
 };
 
-// 🆕 FUNÇÃO PARA CONVERTER WORKSCOREIDS EM LESSONWORK
-const convertWorkScoreIdsToLessonWorks = async (
-  workScoreIds: string[]
-): Promise<LessonWork[]> => {
-  if (!workScoreIds || workScoreIds.length === 0) return [];
-
-  try {
-    console.log('🔄 Convertendo workScoreIds para LessonWork:', workScoreIds);
-
-    const lessonWorks: LessonWork[] = [];
-
-    // Para cada workScoreId, buscar dados da partitura e obra
-    for (const scoreId of workScoreIds) {
-      try {
-        // Buscar dados da partitura
-        const response = await fetch(`/api/work-scores/${scoreId}`);
-        if (!response.ok) continue;
-
-        const scoreData = await response.json();
-
-        // Buscar dados da obra
-        const workResponse = await fetch(`/api/works/${scoreData.workId}`);
-        if (!workResponse.ok) continue;
-
-        const workData = await workResponse.json();
-
-        const lessonWork: LessonWork = {
-          workId: workData.id,
-          workTitle: workData.title,
-          composerName: workData.composer.fullName || workData.composer.name,
-          composerId: workData.composer.id,
-          scoreId: scoreData.id,
-          scoreTitle: scoreData.title,
-          scoreUrl: scoreData.downloadUrl,
-          scoreType: scoreData.type,
-          scoreSource: scoreData.source,
-        };
-
-        lessonWorks.push(lessonWork);
-        console.log('✅ Peça convertida:', lessonWork.workTitle);
-      } catch (error) {
-        console.warn('⚠️ Erro ao converter scoreId:', scoreId, error);
-      }
-    }
-
-    return lessonWorks;
-  } catch (error) {
-    console.error('❌ Erro na conversão:', error);
-    return [];
-  }
-};
-
 export default function TeacherLessonDetailsPageClient({
   lessonData,
   errorMessage,
@@ -164,6 +110,7 @@ export default function TeacherLessonDetailsPageClient({
     cancelLesson,
     deleteLesson,
     setEditMode,
+    clearError,
   } = useLessonDetails(lessonData);
 
   // 🆕 NOVOS ESTADOS PARA EDIÇÃO COMPLETA
@@ -187,9 +134,10 @@ export default function TeacherLessonDetailsPageClient({
     homework: '',
   });
 
-  // 🆕 ESTADO PARA PEÇAS MUSICAIS
+  // 🆕 ESTADO PARA PEÇAS MUSICAIS - AGORA INICIALIZADO DIRETAMENTE
   const [editingWorks, setEditingWorks] = useState<LessonWork[]>([]);
-  const [loadingWorks, setLoadingWorks] = useState(false);
+  const [worksIds, setWorksIds] = useState<string[]>([]);
+  const [workScoreIds, setWorkScoreIds] = useState<string[]>([]);
 
   // 🆕 ESTADOS PARA ADICIONAR NOVOS ITEMS
   const [newObjective, setNewObjective] = useState('');
@@ -216,26 +164,52 @@ export default function TeacherLessonDetailsPageClient({
     }
   }, [lessonData, setLesson]);
 
-  // 🆕 CARREGAR PEÇAS MUSICAIS QUANDO A AULA FOR CARREGADA
+  // 🆕 INICIALIZAR PEÇAS MUSICAIS DIRETAMENTE DOS DADOS DO SERVIDOR
   useEffect(() => {
-    const loadLessonWorks = async () => {
-      if (lesson && lesson.workScoreIds && lesson.workScoreIds.length > 0) {
-        setLoadingWorks(true);
-        try {
-          const works = await convertWorkScoreIdsToLessonWorks(
-            lesson.workScoreIds
-          );
-          setEditingWorks(works);
-          console.log('✅ Peças musicais carregadas:', works.length);
-        } catch (error) {
-          console.error('❌ Erro ao carregar peças musicais:', error);
-        } finally {
-          setLoadingWorks(false);
-        }
-      }
-    };
+    if (lesson && lesson.musicalPieces) {
+      console.log(
+        '🎵 [LESSON-DETAILS] Inicializando peças musicais do servidor:',
+        lesson.musicalPieces
+      );
 
-    loadLessonWorks();
+      // Converter os dados do servidor para o formato LessonWork
+      const musicalPieces = lesson.musicalPieces.map((piece: any) => ({
+        workId: piece.workId,
+        workTitle: piece.workTitle,
+        composerName: piece.composerName,
+        composerId: piece.composerId,
+        scoreId: piece.scoreId || undefined,
+        scoreTitle: piece.scoreTitle || undefined,
+        scoreUrl: piece.scoreUrl || undefined,
+        scoreType: piece.scoreType || undefined,
+        scoreSource: piece.scoreSource || undefined,
+      }));
+
+      setEditingWorks(musicalPieces);
+
+      // Separar os IDs
+      const newWorksIds = musicalPieces.map((work: any) => work.workId);
+      const newWorkScoreIds = musicalPieces
+        .filter((work: any) => work.scoreId)
+        .map((work: any) => work.scoreId);
+
+      setWorksIds(newWorksIds);
+      setWorkScoreIds(newWorkScoreIds);
+
+      console.log('✅ [LESSON-DETAILS] Peças musicais inicializadas:', {
+        totalPieces: musicalPieces.length,
+        worksIds: newWorksIds,
+        workScoreIds: newWorkScoreIds,
+      });
+    } else if (lesson) {
+      // Se não tem musicalPieces, inicializar vazio
+      console.log(
+        '📝 [LESSON-DETAILS] Nenhuma peça musical encontrada, inicializando vazio'
+      );
+      setEditingWorks([]);
+      setWorksIds([]);
+      setWorkScoreIds([]);
+    }
   }, [lesson]);
 
   // Initialize edit states when editing starts
@@ -278,25 +252,74 @@ export default function TeacherLessonDetailsPageClient({
     }
   }, [lesson]);
 
-  // 🆕 HANDLER PARA MUDANÇAS NAS PEÇAS MUSICAIS
+  // 🆕 HANDLER PARA MUDANÇAS NAS PEÇAS MUSICAIS (melhorado)
   const handleWorksChange = useCallback((works: LessonWork[]) => {
-    console.log('🎵 Peças musicais atualizadas:', works);
+    console.log('🎵 [LESSON-DETAILS] Peças musicais atualizadas:', works);
     setEditingWorks(works);
+
+    // Extrair IDs corretamente
+    const newWorksIds = works.map((work) => work.workId);
+    const newWorkScoreIds = works
+      .filter((work) => work.scoreId)
+      .map((work) => work.scoreId!);
+
+    setWorksIds(newWorksIds);
+    setWorkScoreIds(newWorkScoreIds);
+
+    console.log('📊 [LESSON-DETAILS] IDs atualizados:', {
+      worksIds: newWorksIds,
+      workScoreIds: newWorkScoreIds,
+      totalPecas: works.length,
+      totalPartituras: newWorkScoreIds.length,
+    });
   }, []);
 
-  // 🆕 FUNÇÃO PARA SALVAR PEÇAS MUSICAIS
+  // 🆕 INDICADOR VISUAL DE MUDANÇAS NÃO SALVAS
+  const hasUnsavedChanges = useMemo(() => {
+    if (!lesson) return false;
+
+    const originalWorksIds = lesson.worksIds || [];
+    const originalWorkScoreIds = lesson.workScoreIds || [];
+
+    return (
+      JSON.stringify(originalWorksIds.sort()) !==
+        JSON.stringify(worksIds.sort()) ||
+      JSON.stringify(originalWorkScoreIds.sort()) !==
+        JSON.stringify(workScoreIds.sort())
+    );
+  }, [lesson, worksIds, workScoreIds]);
+
+  // 🆕 FUNÇÃO MELHORADA PARA SALVAR PEÇAS MUSICAIS COM FEEDBACK
   const handleSaveWorks = useCallback(async () => {
-    if (!lesson?.id) return false;
+    if (!lesson?.id) {
+      console.error('❌ [LESSON-DETAILS] ID da aula não encontrado');
+      return false;
+    }
+
+    // Verificar se houve mudanças
+    const originalWorksIds = lesson.worksIds || [];
+    const originalWorkScoreIds = lesson.workScoreIds || [];
+
+    if (!hasUnsavedChanges) {
+      console.log(
+        'ℹ️ [LESSON-DETAILS] Nenhuma alteração detectada nas peças musicais'
+      );
+      return true;
+    }
 
     try {
-      console.log('💾 Salvando peças musicais...');
-
-      // Converter LessonWork[] para workScoreIds[]
-      const workScoreIds = editingWorks
-        .filter((work) => work.scoreId)
-        .map((work) => work.scoreId!);
-
-      const worksIds = editingWorks.map((work) => work.workId);
+      console.log('💾 [LESSON-DETAILS] Salvando peças musicais...', {
+        lessonId: lesson.id,
+        editingWorks: editingWorks.length,
+        worksIds: worksIds.length,
+        workScoreIds: workScoreIds.length,
+        changes: {
+          originalWorksIds: originalWorksIds.length,
+          newWorksIds: worksIds.length,
+          originalWorkScoreIds: originalWorkScoreIds.length,
+          newWorkScoreIds: workScoreIds.length,
+        },
+      });
 
       const response = await fetch(`/api/lessons/${lesson.id}`, {
         method: 'PATCH',
@@ -304,13 +327,14 @@ export default function TeacherLessonDetailsPageClient({
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          workScoreIds,
-          worksIds, // Para referência futura
+          worksIds: worksIds,
+          workScoreIds: workScoreIds,
         }),
       });
 
       if (!response.ok) {
-        throw new Error('Erro ao atualizar peças musicais');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erro ao atualizar peças musicais');
       }
 
       const result = await response.json();
@@ -318,77 +342,44 @@ export default function TeacherLessonDetailsPageClient({
         throw new Error(result.error || 'Erro ao atualizar peças musicais');
       }
 
-      // Atualizar o estado local
+      // Atualizar o estado local da lesson
       setLesson({
         ...lesson,
-        workScoreIds,
+        worksIds: worksIds,
+        workScoreIds: workScoreIds,
+        musicalPieces: editingWorks,
       });
 
-      console.log('✅ Peças musicais salvas com sucesso');
+      console.log('✅ [LESSON-DETAILS] Peças musicais salvas com sucesso', {
+        savedWorksIds: worksIds.length,
+        savedWorkScoreIds: workScoreIds.length,
+      });
+
       return true;
     } catch (error) {
-      console.error('❌ Erro ao salvar peças musicais:', error);
+      console.error(
+        '❌ [LESSON-DETAILS] Erro ao salvar peças musicais:',
+        error
+      );
       return false;
     }
-  }, [editingWorks, lesson, setLesson]);
+  }, [
+    editingWorks,
+    lesson,
+    worksIds,
+    workScoreIds,
+    setLesson,
+    hasUnsavedChanges,
+  ]);
 
-  // Format functions
-  const formatDateTime = (date: Date | string) => {
-    return new Date(date).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      weekday: 'short',
-    });
-  };
+  // Form handlers
+  const updateFormData = useCallback((field: string, value: any) => {
+    setEditingBasicInfo((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  }, []);
 
-  const formatDuration = (minutes: number) => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    if (hours > 0) {
-      return `${hours}h${mins > 0 ? ` ${mins}min` : ''}`;
-    }
-    return `${mins}min`;
-  };
-
-  // Status functions
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'COMPLETED':
-        return 'bg-accent-green/10 border-accent-green/30 text-accent-green';
-      case 'CANCELLED':
-        return 'bg-accent-red/10 border-accent-red/30 text-accent-red';
-      case 'NO_SHOW':
-        return 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow';
-      case 'SCHEDULED':
-        return 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue';
-      default:
-        return 'bg-theme-secondary/10 border-theme-secondary/30 text-theme-secondary';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'COMPLETED':
-        return 'Concluída';
-      case 'CANCELLED':
-        return 'Cancelada';
-      case 'NO_SHOW':
-        return 'Faltou';
-      case 'SCHEDULED':
-        return 'Agendada';
-      default:
-        return status;
-    }
-  };
-
-  // 🆕 VERIFICAR SE PODE EDITAR (AULAS CANCELADAS NÃO PODEM SER EDITADAS)
-  const canEditLesson =
-    lesson?.status !== 'CANCELLED' && lesson?.permissions.canEdit;
-
-  // 🆕 HANDLERS PARA ARRAYS (TÓPICOS, TÉCNICAS, OBJETIVOS)
   const addArrayField = useCallback((field: string) => {
     if (field === 'objectives') {
       setEditingObjectives((prev) => [...prev, '']);
@@ -427,6 +418,9 @@ export default function TeacherLessonDetailsPageClient({
       setEditingTechniques((prev) => prev.filter((_, i) => i !== index));
     }
   }, []);
+
+  // Calculate lesson preview
+  const lessonCount = 1; // Para detalhes de aula única
 
   // Edit handlers
   const handleSaveBasicInfo = useCallback(async () => {
@@ -616,6 +610,90 @@ export default function TeacherLessonDetailsPageClient({
     router,
   ]);
 
+  // Format functions
+  const formatDateTime = (date: Date | string) => {
+    return new Date(date).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      weekday: 'short',
+    });
+  };
+
+  const formatDuration = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours > 0) {
+      return `${hours}h${mins > 0 ? ` ${mins}min` : ''}`;
+    }
+    return `${mins}min`;
+  };
+
+  // Status functions
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'COMPLETED':
+        return 'bg-accent-green/10 border-accent-green/30 text-accent-green';
+      case 'CANCELLED':
+        return 'bg-accent-red/10 border-accent-red/30 text-accent-red';
+      case 'NO_SHOW':
+        return 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow';
+      case 'SCHEDULED':
+        return 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue';
+      default:
+        return 'bg-theme-secondary/10 border-theme-secondary/30 text-theme-secondary';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'COMPLETED':
+        return 'Concluída';
+      case 'CANCELLED':
+        return 'Cancelada';
+      case 'NO_SHOW':
+        return 'Faltou';
+      case 'SCHEDULED':
+        return 'Agendada';
+      default:
+        return status;
+    }
+  };
+
+  // 🆕 VERIFICAR SE PODE EDITAR (AULAS CANCELADAS NÃO PODEM SER EDITADAS)
+  const canEditLesson =
+    lesson?.status !== 'CANCELLED' && lesson?.permissions.canEdit;
+
+  // 🆕 COMPONENTE DO BOTÃO DE SALVAR ATUALIZADO
+  const SaveWorksButton = () => (
+    <button
+      onClick={handleSaveWorks}
+      disabled={loading.update || !hasUnsavedChanges}
+      className={`btn-classical-secondary flex items-center space-x-1 text-sm transition-all ${
+        hasUnsavedChanges
+          ? 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow hover:bg-accent-yellow/20'
+          : ''
+      }`}
+    >
+      {loading.update ? (
+        <FiRefreshCw className="w-3 h-3 animate-spin" />
+      ) : hasUnsavedChanges ? (
+        <FiAlertCircle className="w-3 h-3" />
+      ) : (
+        <FiCheck className="w-3 h-3" />
+      )}
+      <span>
+        {loading.update
+          ? 'Salvando...'
+          : hasUnsavedChanges
+          ? 'Salvar Alterações'
+          : 'Peças Salvas'}
+      </span>
+    </button>
+  );
+
   // Render error state
   if ((error || errorMessage) && !lesson) {
     return (
@@ -783,10 +861,7 @@ export default function TeacherLessonDetailsPageClient({
                           type="text"
                           value={editingBasicInfo.title}
                           onChange={(e) =>
-                            setEditingBasicInfo((prev) => ({
-                              ...prev,
-                              title: e.target.value,
-                            }))
+                            updateFormData('title', e.target.value)
                           }
                           className="input-classical-2 w-full"
                           required
@@ -800,10 +875,7 @@ export default function TeacherLessonDetailsPageClient({
                           options={statusOptions}
                           value={editingBasicInfo.status}
                           onChange={(e) =>
-                            setEditingBasicInfo((prev) => ({
-                              ...prev,
-                              status: e.target.value,
-                            }))
+                            updateFormData('status', e.target.value)
                           }
                           className="input-classical-2 w-full"
                         />
@@ -819,10 +891,7 @@ export default function TeacherLessonDetailsPageClient({
                           options={lessonTypeOptions}
                           value={editingBasicInfo.type}
                           onChange={(e) =>
-                            setEditingBasicInfo((prev) => ({
-                              ...prev,
-                              type: e.target.value as LessonType,
-                            }))
+                            updateFormData('type', e.target.value)
                           }
                           className="input-classical-2 w-full"
                         />
@@ -835,10 +904,7 @@ export default function TeacherLessonDetailsPageClient({
                           type="text"
                           value={editingBasicInfo.location}
                           onChange={(e) =>
-                            setEditingBasicInfo((prev) => ({
-                              ...prev,
-                              location: e.target.value,
-                            }))
+                            updateFormData('location', e.target.value)
                           }
                           className="input-classical-2 w-full"
                           placeholder="Ex: Online, Estúdio A"
@@ -855,10 +921,7 @@ export default function TeacherLessonDetailsPageClient({
                           type="datetime-local"
                           value={editingBasicInfo.scheduledAt}
                           onChange={(e) =>
-                            setEditingBasicInfo((prev) => ({
-                              ...prev,
-                              scheduledAt: e.target.value,
-                            }))
+                            updateFormData('scheduledAt', e.target.value)
                           }
                           className="input-classical-2 w-full"
                           required
@@ -872,10 +935,10 @@ export default function TeacherLessonDetailsPageClient({
                           type="number"
                           value={editingBasicInfo.duration}
                           onChange={(e) =>
-                            setEditingBasicInfo((prev) => ({
-                              ...prev,
-                              duration: parseInt(e.target.value) || 60,
-                            }))
+                            updateFormData(
+                              'duration',
+                              parseInt(e.target.value) || 60
+                            )
                           }
                           min="30"
                           max="240"
@@ -891,10 +954,7 @@ export default function TeacherLessonDetailsPageClient({
                       <textarea
                         value={editingBasicInfo.description}
                         onChange={(e) =>
-                          setEditingBasicInfo((prev) => ({
-                            ...prev,
-                            description: e.target.value,
-                          }))
+                          updateFormData('description', e.target.value)
                         }
                         className="input-classical-2 w-full h-20"
                         placeholder="Descrição da aula..."
@@ -963,44 +1023,19 @@ export default function TeacherLessonDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* 🆕 SEÇÃO DE PEÇAS MUSICAIS */}
+            {/* 🆕 SEÇÃO DE PEÇAS MUSICAIS ATUALIZADA */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
+                  <h2 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
                     <FiMusic className="w-5 h-5" />
                     <span>Peças Musicais</span>
                   </h2>
-                  {canEditLesson && (
-                    <button
-                      onClick={handleSaveWorks}
-                      disabled={loading.update || loadingWorks}
-                      className="btn-classical-secondary flex items-center space-x-1 text-sm"
-                    >
-                      {loading.update || loadingWorks ? (
-                        <FiRefreshCw className="w-3 h-3 animate-spin" />
-                      ) : (
-                        <FiSave className="w-3 h-3" />
-                      )}
-                      <span>
-                        {loading.update || loadingWorks
-                          ? 'Salvando...'
-                          : 'Salvar Peças'}
-                      </span>
-                    </button>
-                  )}
+                  {canEditLesson && <SaveWorksButton />}
                 </div>
 
-                {loadingWorks ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="flex items-center space-x-3">
-                      <FiRefreshCw className="w-5 h-5 animate-spin text-brand-primary" />
-                      <span className="text-theme-secondary">
-                        Carregando peças musicais...
-                      </span>
-                    </div>
-                  </div>
-                ) : canEditLesson ? (
+                {canEditLesson ? (
+                  // Modo de edição
                   <WorkSelectionSection
                     selectedWorks={editingWorks}
                     onWorksChange={handleWorksChange}
@@ -1008,6 +1043,7 @@ export default function TeacherLessonDetailsPageClient({
                     disabled={loading.update}
                   />
                 ) : editingWorks.length > 0 ? (
+                  // Modo de visualização (quando não pode editar)
                   <div className="space-y-3">
                     <h4 className="text-sm font-medium text-theme-primary">
                       Peças vinculadas à aula ({editingWorks.length})
@@ -1052,6 +1088,7 @@ export default function TeacherLessonDetailsPageClient({
                     </div>
                   </div>
                 ) : (
+                  // Estado vazio
                   <div className="text-center py-8">
                     <FiMusic className="w-12 h-12 text-theme-tertiary mx-auto mb-4 opacity-50" />
                     <p className="text-theme-secondary">
@@ -1643,6 +1680,62 @@ export default function TeacherLessonDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
+            {/* 🆕 RESUMO DAS PEÇAS SELECIONADAS ATUALIZADO */}
+            {editingWorks.length > 0 && (
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard hover="none" className="classical-card p-6">
+                  <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                    <FiMusic className="w-5 h-5" />
+                    <span>Peças Vinculadas</span>
+                  </h3>
+
+                  <div className="space-y-3">
+                    {editingWorks.map((work, index) => (
+                      <div
+                        key={work.workId}
+                        className="flex items-center space-x-3 p-3 bg-theme-elevated/50 rounded-lg"
+                      >
+                        <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FiMusic className="w-4 h-4 text-accent-blue" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-theme-primary text-sm truncate">
+                            {work.workTitle}
+                          </p>
+                          <p className="text-xs text-theme-tertiary truncate">
+                            {work.composerName}
+                          </p>
+                          {work.scoreId && (
+                            <p className="text-xs text-accent-green">
+                              ✓ Com partitura
+                            </p>
+                          )}
+                        </div>
+                        <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-1 rounded">
+                          #{index + 1}
+                        </span>
+                      </div>
+                    ))}
+
+                    <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
+                      <div className="text-xs text-theme-secondary">
+                        <div className="flex justify-between">
+                          <span>Total de peças:</span>
+                          <span className="font-medium">{worksIds.length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Com partituras:</span>
+                          <span className="font-medium">
+                            {workScoreIds.length}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            )}
+
             {/* 🆕 Quick Actions COM MODAL DE CONFIRMAÇÃO */}
             {lesson.status === 'SCHEDULED' && (
               <AnimatedItem direction="up" springType="gentle">
@@ -1766,6 +1859,33 @@ export default function TeacherLessonDetailsPageClient({
                 </AnimatedCard>
               </AnimatedItem>
             )}
+
+            {/* Tips */}
+            <AnimatedItem direction="up" springType="gentle">
+              <AnimatedCard hover="none" className="classical-card p-6">
+                <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
+                  Dicas
+                </h3>
+                <div className="space-y-3 text-sm text-theme-secondary">
+                  <div className="flex items-start space-x-2">
+                    <FiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <p>Defina objetivos claros para cada aula</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <FiMusic className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <p>Vincule peças musicais para organizar o repertório</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <FiSave className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <p>Salve as alterações das peças antes de sair da página</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <FiCheck className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <p>As partituras vinculadas aparecem nos relatórios</p>
+                  </div>
+                </div>
+              </AnimatedCard>
+            </AnimatedItem>
           </div>
         </div>
       </AnimatedContainer>

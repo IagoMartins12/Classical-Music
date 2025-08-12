@@ -16,6 +16,7 @@ export interface LessonDetailsData {
   type: 'INDIVIDUAL' | 'GROUP' | 'THEORY' | 'PRACTICE' | 'MASTERCLASS';
   location?: string;
 
+  musicalPieces?: any;
   // Recorrência
   isRecurring: boolean;
   recurrenceType?: string;
@@ -25,6 +26,7 @@ export interface LessonDetailsData {
   // Conteúdo da aula
   objectives: string[];
   workScoreIds: string[];
+  worksIds: string[];
   topics: string[];
   techniques: string[];
   repertoire: string[];
