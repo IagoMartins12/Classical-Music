@@ -55,7 +55,7 @@ export default function StudentLessonsPageClient({
   // Local UI states
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTeacher, setSelectedTeacher] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<LessonFilter>('all');
+  const [statusFilter, setStatusFilter] = useState<LessonFilter>('scheduled'); // Mudança aqui: padrão agora é 'scheduled'
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('all');
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -162,10 +162,21 @@ export default function StudentLessonsPageClient({
       });
     }
 
-    return filtered.sort(
-      (a, b) =>
-        new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime()
-    );
+    // Ordenação: sempre das mais próximas para as mais distantes quando status é 'scheduled'
+    // Para outros status ou com filtros extras, ordem decrescente
+    return filtered.sort((a, b) => {
+      if (statusFilter === 'scheduled') {
+        // Status 'scheduled': sempre das mais próximas para as mais distantes (próxima aula primeiro)
+        return (
+          new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime()
+        );
+      } else {
+        // Outros status: das mais recentes para as mais antigas (decrescente)
+        return (
+          new Date(b.scheduledAt).getTime() - new Date(a.scheduledAt).getTime()
+        );
+      }
+    });
   }, [displayLessons, searchTerm, selectedTeacher, statusFilter, timeFilter]);
 
   // Pagination

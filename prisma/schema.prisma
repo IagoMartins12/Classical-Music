@@ -1655,6 +1655,7 @@ model Student {
   // Configurações de privacidade e relatórios
   allowPublicProgress Boolean @default(false) // Se professor pode ver progresso público
   allowProgressShare  Boolean @default(true) // Se permite compartilhar progresso
+  allowWhatsappMensage Boolean @default(false)
   profileVisibility   String  @default("teacher_only") // "public", "teacher_only", "private"
 
   // Informações de estudo

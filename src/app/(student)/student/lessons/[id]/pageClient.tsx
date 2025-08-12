@@ -33,6 +33,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/Modal';
+import { useToast } from '@/app/hooks/useToast';
 
 interface StudentLessonDetailPageClientProps {
   initialData: StudentLessonDetail | null;
@@ -59,6 +60,7 @@ export default function StudentLessonDetailPageClient({
     'cancel' | 'reschedule'
   >('cancel');
 
+  const toast = useToast();
   // Inicializar feedback se existir
   useEffect(() => {
     if (lesson?.studentFeedback) {
@@ -80,7 +82,10 @@ export default function StudentLessonDetailPageClient({
           setError(null);
         }
       }
+      toast.success('Aula atualizada com sucesso.');
     } catch (error) {
+      toast.error('Erro ao atualizar aula.');
+
       console.error('Erro ao atualizar aula:', error);
     } finally {
       setLoading(false);

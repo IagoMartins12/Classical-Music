@@ -55,7 +55,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FaFire } from 'react-icons/fa';
 
-
 interface StudentProgressPageClientProps {
   initialData: StudentProgressResponse | null;
   errorMessage?: string;
@@ -196,8 +195,13 @@ export default function StudentProgressPageClient({
               </h2>
               {progressData.period.start && (
                 <span className="text-sm text-theme-tertiary">
-                  {progressData.period.start.toLocaleDateString('pt-BR')} -{' '}
-                  {progressData.period.end.toLocaleDateString('pt-BR')}
+                  {new Date(progressData.period.start).toLocaleDateString(
+                    'pt-BR'
+                  )}{' '}
+                  -{' '}
+                  {new Date(progressData.period.end).toLocaleDateString(
+                    'pt-BR'
+                  )}{' '}
                 </span>
               )}
             </div>
@@ -244,7 +248,7 @@ export default function StudentProgressPageClient({
                     Aulas Completadas
                   </div>
                   <div className="text-xs text-accent-blue mt-1">
-                    {progressData.stats.attendanceRate.toFixed(1)}% presença
+                    {progressData.stats.attendanceRate?.toFixed(1)}% presença
                   </div>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
@@ -258,7 +262,7 @@ export default function StudentProgressPageClient({
               <div className="flex items-center justify-between">
                 <div>
                   <div className="text-2xl font-bold text-theme-primary">
-                    {progressData.stats.totalStudyHours}h
+                    {progressData.stats.totalStudyHours}
                   </div>
                   <div className="text-sm text-theme-tertiary">
                     Tempo de Estudo
@@ -366,7 +370,7 @@ export default function StudentProgressPageClient({
                       progressData.stats.assignmentCompletionRate
                     )}`}
                   >
-                    {progressData.stats.assignmentCompletionRate.toFixed(1)}%
+                    {progressData.stats.assignmentCompletionRate?.toFixed(1)}%
                   </span>
                 </div>
               </div>
@@ -533,7 +537,7 @@ export default function StudentProgressPageClient({
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={progressData.assignmentBreakdown.map(
+                      data={progressData.assignmentBreakdown?.map(
                         (item, index) => ({
                           name: getAssignmentTypeLabel(item.type),
                           value: item.completed,
@@ -554,7 +558,7 @@ export default function StudentProgressPageClient({
                       fill="#8884d8"
                       dataKey="value"
                     >
-                      {progressData.assignmentBreakdown.map((entry, index) => (
+                      {progressData.assignmentBreakdown?.map((entry, index) => (
                         <Cell
                           key={`cell-${index}`}
                           fill={
@@ -574,108 +578,109 @@ export default function StudentProgressPageClient({
         </div>
 
         {/* Teachers Breakdown */}
-        {progressData.teacherBreakdown.length > 0 && (
-          <AnimatedItem direction="up" springType="gentle">
-            <AnimatedCard hover="lift" className="classical-card p-6 mb-8">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-theme-primary">
-                  Progresso por Professor
-                </h3>
-                <FiUsers className="w-6 h-6 text-brand-primary" />
-              </div>
+        {progressData.teacherBreakdown &&
+          progressData.teacherBreakdown.length > 0 && (
+            <AnimatedItem direction="up" springType="gentle">
+              <AnimatedCard hover="lift" className="classical-card p-6 mb-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-theme-primary">
+                    Progresso por Professor
+                  </h3>
+                  <FiUsers className="w-6 h-6 text-brand-primary" />
+                </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {progressData.teacherBreakdown.map((teacher, index) => (
-                  <AnimatedItem
-                    key={teacher.teacherId}
-                    hover="scale"
-                    springType="bouncy"
-                    delay={index * 0.1}
-                  >
-                    <div className="p-4 bg-theme-elevated rounded-lg border border-theme-secondary hover:border-brand-primary transition-all duration-300">
-                      <div className="flex items-center space-x-3 mb-4">
-                        {teacher.teacherImage ? (
-                          <div className="w-10 h-10 relative rounded-full overflow-hidden">
-                            <Image
-                              src={teacher.teacherImage}
-                              alt={teacher.teacherName}
-                              fill
-                              sizes="40px"
-                              className="object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                            <FiUser className="w-5 h-5 text-theme-primary" />
-                          </div>
-                        )}
-                        <div className="flex-1">
-                          <h4 className="font-bold text-theme-primary text-sm">
-                            {teacher.teacherName}
-                          </h4>
-                          <p className="text-xs text-theme-tertiary">
-                            {teacher.relationshipDuration}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-theme-secondary">Aulas</span>
-                          <span className="text-theme-primary font-medium">
-                            {teacher.completedLessons}
-                          </span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-theme-secondary">Horas</span>
-                          <span className="text-theme-primary font-medium">
-                            {teacher.studyHours}h
-                          </span>
-                        </div>
-                        {teacher.avgRating > 0 && (
-                          <div className="flex justify-between text-sm">
-                            <span className="text-theme-secondary">
-                              Avaliação
-                            </span>
-                            <div className="flex items-center space-x-1">
-                              <span className="text-accent-yellow font-medium">
-                                {teacher.avgRating.toFixed(1)}
-                              </span>
-                              <FiStar className="w-3 h-3 text-accent-yellow" />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {progressData.teacherBreakdown.map((teacher, index) => (
+                    <AnimatedItem
+                      key={teacher.teacherId}
+                      hover="scale"
+                      springType="bouncy"
+                      delay={index * 0.1}
+                    >
+                      <div className="p-4 bg-theme-elevated rounded-lg border border-theme-secondary hover:border-brand-primary transition-all duration-300">
+                        <div className="flex items-center space-x-3 mb-4">
+                          {teacher.teacherImage ? (
+                            <div className="w-10 h-10 relative rounded-full overflow-hidden">
+                              <Image
+                                src={teacher.teacherImage}
+                                alt={teacher.teacherName}
+                                fill
+                                sizes="40px"
+                                className="object-cover"
+                              />
                             </div>
+                          ) : (
+                            <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                              <FiUser className="w-5 h-5 text-theme-primary" />
+                            </div>
+                          )}
+                          <div className="flex-1">
+                            <h4 className="font-bold text-theme-primary text-sm">
+                              {teacher.teacherName}
+                            </h4>
+                            <p className="text-xs text-theme-tertiary">
+                              {teacher.relationshipDuration}
+                            </p>
                           </div>
-                        )}
-                      </div>
+                        </div>
 
-                      {teacher.specialties.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-1">
-                          {teacher.specialties
-                            .slice(0, 2)
-                            .map((specialty, idx) => (
-                              <span
-                                key={idx}
-                                className="px-2 py-1 text-xs bg-brand-primary/10 text-brand-primary rounded-full"
-                              >
-                                {specialty}
-                              </span>
-                            ))}
-                          {teacher.specialties.length > 2 && (
-                            <span className="px-2 py-1 text-xs bg-theme-secondary text-theme-tertiary rounded-full">
-                              +{teacher.specialties.length - 2}
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-theme-secondary">Aulas</span>
+                            <span className="text-theme-primary font-medium">
+                              {teacher.completedLessons}
                             </span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-theme-secondary">Horas</span>
+                            <span className="text-theme-primary font-medium">
+                              {teacher.studyHours}h
+                            </span>
+                          </div>
+                          {teacher.avgRating > 0 && (
+                            <div className="flex justify-between text-sm">
+                              <span className="text-theme-secondary">
+                                Avaliação
+                              </span>
+                              <div className="flex items-center space-x-1">
+                                <span className="text-accent-yellow font-medium">
+                                  {teacher.avgRating.toFixed(1)}
+                                </span>
+                                <FiStar className="w-3 h-3 text-accent-yellow" />
+                              </div>
+                            </div>
                           )}
                         </div>
-                      )}
-                    </div>
-                  </AnimatedItem>
-                ))}
-              </div>
-            </AnimatedCard>
-          </AnimatedItem>
-        )}
+
+                        {teacher.specialties.length > 0 && (
+                          <div className="mt-3 flex flex-wrap gap-1">
+                            {teacher.specialties
+                              .slice(0, 2)
+                              .map((specialty, idx) => (
+                                <span
+                                  key={idx}
+                                  className="px-2 py-1 text-xs bg-brand-primary/10 text-brand-primary rounded-full"
+                                >
+                                  {specialty}
+                                </span>
+                              ))}
+                            {teacher.specialties.length > 2 && (
+                              <span className="px-2 py-1 text-xs bg-theme-secondary text-theme-tertiary rounded-full">
+                                +{teacher.specialties.length - 2}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </AnimatedItem>
+                  ))}
+                </div>
+              </AnimatedCard>
+            </AnimatedItem>
+          )}
 
         {/* Achievements */}
-        {progressData.achievements.length > 0 && (
+        {progressData.achievements && progressData.achievements.length > 0 && (
           <AnimatedItem direction="up" springType="gentle">
             <AnimatedCard hover="lift" className="classical-card p-6 mb-8">
               <div className="flex items-center justify-between mb-6">
@@ -755,7 +760,7 @@ export default function StudentProgressPageClient({
 
                 <div className="space-y-3 max-h-64 overflow-y-auto">
                   {progressData.workProgress
-                    .filter((work) => work.status === 'learned')
+                    ?.filter((work) => work.status === 'learned')
                     .slice(0, 5)
                     .map((work, index) => (
                       <AnimatedItem
@@ -809,7 +814,7 @@ export default function StudentProgressPageClient({
 
                 <div className="space-y-3 max-h-64 overflow-y-auto">
                   {progressData.workProgress
-                    .filter((work) => work.status === 'wanting')
+                    ?.filter((work) => work.status === 'wanting')
                     .slice(0, 5)
                     .map((work, index) => (
                       <AnimatedItem

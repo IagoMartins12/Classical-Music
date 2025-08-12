@@ -1,51 +1,78 @@
-// app/api/student/profile/route.ts
+// app/api/student/profile/route.ts - VERSÃO CORRIGIDA COM CACHE ROBUSTO
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
+import { revalidatePath, revalidateTag } from 'next/cache';
+
+// 🆕 FUNÇÃO MELHORADA PARA INVALIDAR CACHE DO ESTUDANTE
+async function revalidateStudentProfileData(userId: string) {
+  console.log(
+    `🔄 [CACHE] Revalidating student profile data for user ${userId}`
+  );
+
+  try {
+    // 1. Revalidar paths específicos da página de perfil
+    revalidatePath('/student/profile', 'page');
+    revalidatePath(`/student/profile`);
+
+    // 2. Tags específicas de student profile
+    revalidateTag('student-profile');
+    revalidateTag('student-profile-data');
+    revalidateTag('student-dashboard');
+    revalidateTag('student-dashboard-data');
+
+    // 3. Tag específica do usuário
+    revalidateTag(`student-${userId}`);
+    revalidateTag(`user-${userId}`);
+
+    // 4. Revalidar funções de cache específicas
+    revalidateTag('getStudentProfile');
+    revalidateTag('getStudentProfileForPageServer');
+
+    // 5. Paths relacionados
+    revalidatePath('/api/student/profile');
+    revalidatePath('/student');
+
+    console.log(
+      `✅ [CACHE] Student profile cache revalidated for user ${userId}`
+    );
+  } catch (error) {
+    console.error(
+      `❌ [CACHE] Error revalidating cache for user ${userId}:`,
+      error
+    );
+  }
+}
 
 interface StudentProfileData {
   id: string;
   userId: string;
-
-  // Informações musicais
   level: string;
   mainInstrument?: string;
   musicalGoals?: string | null;
   preferredGenres: string[];
   musicalBackground?: string;
-
-  // Configurações de privacidade
   allowPublicProgress: boolean;
   allowProgressShare: boolean;
   profileVisibility: string;
-
-  // Informações de estudo
   practiceTime?: number;
   practiceSchedule?: any;
   learningPace?: string;
   specialNeeds?: string;
-
-  // Status e datas
   status: string;
   enrollmentDate: Date;
   lastLessonAt?: Date;
   lastActiveAt?: Date;
-
-  // Configurações de comunicação
   preferredContact: string;
   reminderPreferences?: any;
-
-  // Métricas de progresso
   totalLessonsAttended: number;
   totalAssignments: number;
   completedAssignments: number;
   currentStreak: number;
   longestStreak: number;
   progressScore?: number;
-
-  // User data
   user: {
     firstName?: string | null;
     lastName?: string | null;
@@ -57,8 +84,6 @@ interface StudentProfileData {
     image?: string | null;
     experienceLevel: string | null;
   };
-
-  // Professores vinculados
   teachers: Array<{
     teacherId: string;
     teacherName: string;
@@ -70,13 +95,11 @@ interface StudentProfileData {
     nextLessonAt?: Date;
     totalLessons: number;
   }>;
-
-  // Timestamps
   createdAt: Date;
   updatedAt: Date;
 }
 
-// GET - Buscar perfil do aluno
+// GET - Buscar perfil do aluno (MANTIDO IGUAL)
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -215,6 +238,9 @@ export async function GET() {
         updatedAt: newStudentProfile.updatedAt,
       };
 
+      // 🆕 INVALIDAR CACHE APÓS CRIAÇÃO
+      await revalidateStudentProfileData(session.user.id);
+
       return NextResponse.json({
         success: true,
         profile: profileData,
@@ -312,7 +338,7 @@ export async function GET() {
   }
 }
 
-// PUT - Atualizar perfil do aluno
+// PUT - Atualizar perfil do aluno COM REVALIDAÇÃO MELHORADA
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -344,7 +370,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Atualizar dados do usuário se fornecidos
+    // 🔧 ATUALIZAR DADOS DO USUÁRIO COM VALIDAÇÃO MELHORADA
     if (userData) {
       const allowedUserFields = [
         'firstName',
@@ -356,24 +382,38 @@ export async function PUT(request: NextRequest) {
         'image',
         'experienceLevel',
       ];
+
       const userUpdateData: any = {};
 
       Object.keys(userData).forEach((key) => {
-        if (allowedUserFields.includes(key)) {
-          userUpdateData[key] = userData[key];
+        if (allowedUserFields.includes(key) && userData[key] !== undefined) {
+          // Tratamento especial para campos que podem ser null
+          if (
+            userData[key] === '' &&
+            ['phone', 'city', 'state', 'country'].includes(key)
+          ) {
+            userUpdateData[key] = null;
+          } else {
+            userUpdateData[key] = userData[key];
+          }
         }
       });
 
       if (Object.keys(userUpdateData).length > 0) {
+        console.log(
+          '📝 [STUDENT-PROFILE] Atualizando dados do usuário:',
+          userUpdateData
+        );
+
         await prisma.user.update({
           where: { id: session.user.id },
           data: userUpdateData,
         });
-        console.log('📝 [STUDENT-PROFILE] Dados do usuário atualizados');
+        console.log('✅ [STUDENT-PROFILE] Dados do usuário atualizados');
       }
     }
 
-    // Atualizar dados do aluno se fornecidos
+    // 🔧 ATUALIZAR DADOS DO ESTUDANTE COM VALIDAÇÃO
     if (studentData) {
       const allowedStudentFields = [
         'level',
@@ -395,8 +435,77 @@ export async function PUT(request: NextRequest) {
       const studentUpdateData: any = {};
 
       Object.keys(studentData).forEach((key) => {
-        if (allowedStudentFields.includes(key)) {
-          studentUpdateData[key] = studentData[key];
+        if (
+          allowedStudentFields.includes(key) &&
+          studentData[key] !== undefined
+        ) {
+          const value = studentData[key];
+
+          switch (key) {
+            case 'practiceTime':
+              // Validar tempo de prática
+              if (typeof value === 'number' && value >= 0 && value <= 2400) {
+                studentUpdateData[key] = value;
+              }
+              break;
+
+            case 'preferredGenres':
+              // Validar array de gêneros
+              if (Array.isArray(value)) {
+                studentUpdateData[key] = value;
+              }
+              break;
+
+            case 'allowPublicProgress':
+            case 'allowProgressShare':
+              // Validar booleans
+              if (typeof value === 'boolean') {
+                studentUpdateData[key] = value;
+              }
+              break;
+
+            case 'level':
+              // Validar nível
+              if (['BEGINNER', 'INTERMEDIATE', 'ADVANCED'].includes(value)) {
+                studentUpdateData[key] = value;
+              }
+              break;
+
+            case 'profileVisibility':
+              // Validar visibilidade
+              if (['public', 'teacher_only', 'private'].includes(value)) {
+                studentUpdateData[key] = value;
+              }
+              break;
+
+            case 'preferredContact':
+              // Validar contato preferido
+              if (['whatsapp', 'email', 'both'].includes(value)) {
+                studentUpdateData[key] = value;
+              }
+              break;
+
+            case 'learningPace':
+              // Validar ritmo de aprendizado
+              if (['slow', 'medium', 'fast'].includes(value) || value === '') {
+                studentUpdateData[key] = value || null;
+              }
+              break;
+
+            case 'practiceSchedule':
+            case 'reminderPreferences':
+              // Permitir objetos JSON
+              studentUpdateData[key] = value || {};
+              break;
+
+            default:
+              // Para outros campos de string, permitir strings vazias
+              if (typeof value === 'string') {
+                studentUpdateData[key] = value.trim() || null;
+              } else {
+                studentUpdateData[key] = value;
+              }
+          }
         }
       });
 
@@ -404,15 +513,23 @@ export async function PUT(request: NextRequest) {
       studentUpdateData.lastActiveAt = new Date();
 
       if (Object.keys(studentUpdateData).length > 0) {
+        console.log(
+          '📝 [STUDENT-PROFILE] Atualizando dados do aluno:',
+          studentUpdateData
+        );
+
         await prisma.student.update({
           where: { id: existingProfile.id },
           data: studentUpdateData,
         });
-        console.log('📝 [STUDENT-PROFILE] Dados do aluno atualizados');
+        console.log('✅ [STUDENT-PROFILE] Dados do aluno atualizados');
       }
     }
 
-    // Buscar perfil atualizado
+    // 🔥 REVALIDAR CACHE ANTES DE BUSCAR OS DADOS ATUALIZADOS
+    await revalidateStudentProfileData(session.user.id);
+
+    // ✅ Buscar perfil atualizado COM TODOS OS CAMPOS
     const updatedProfile = await prisma.student.findUnique({
       where: { userId: session.user.id },
       include: {
@@ -429,26 +546,118 @@ export async function PUT(request: NextRequest) {
             experienceLevel: true,
           },
         },
+        teachers: {
+          include: {
+            teacher: {
+              include: {
+                user: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                    image: true,
+                    id: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
+    await revalidateStudentProfileData(session.user.id);
 
-    console.log(`✅ [STUDENT-PROFILE] Perfil atualizado com sucesso`);
+    // Buscar informações dos professores novamente
+    const teachersWithDetails = await Promise.all(
+      (updatedProfile?.teachers || []).map(async (rel) => {
+        const nextLesson = await prisma.lesson.findFirst({
+          where: {
+            teacherId: rel.teacherId,
+            studentId: updatedProfile!.id,
+            status: 'SCHEDULED',
+            scheduledAt: { gte: new Date() },
+          },
+          orderBy: { scheduledAt: 'asc' },
+          select: { scheduledAt: true },
+        });
+
+        const totalLessons = await prisma.lesson.count({
+          where: {
+            teacherId: rel.teacherId,
+            studentId: updatedProfile!.id,
+          },
+        });
+
+        return {
+          teacherId: rel.teacher.user.id,
+          teacherName:
+            `${rel.teacher.user.firstName} ${rel.teacher.user.lastName}`.trim(),
+          teacherImage: rel.teacher.user.image || undefined,
+          isActive: rel.isActive,
+          startDate: rel.startDate,
+          maxLessonsPerWeek: rel.maxLessonsPerWeek,
+          lessonDuration: rel.lessonDuration,
+          nextLessonAt: nextLesson?.scheduledAt,
+          totalLessons,
+        };
+      })
+    );
+
+    // ✅ FORMATAR RESPOSTA COMPLETA
+    const formattedProfile = {
+      id: updatedProfile!.id,
+      userId: updatedProfile!.userId,
+      level: updatedProfile!.level,
+      mainInstrument: updatedProfile!.mainInstrument,
+      musicalGoals: updatedProfile!.musicalGoals,
+      preferredGenres: updatedProfile!.preferredGenres || [],
+      musicalBackground: updatedProfile!.musicalBackground,
+      allowPublicProgress: updatedProfile!.allowPublicProgress,
+      allowProgressShare: updatedProfile!.allowProgressShare,
+      profileVisibility: updatedProfile!.profileVisibility,
+      practiceTime: updatedProfile!.practiceTime,
+      practiceSchedule: updatedProfile!.practiceSchedule || {},
+      learningPace: updatedProfile!.learningPace,
+      specialNeeds: updatedProfile!.specialNeeds,
+      status: updatedProfile!.status,
+      enrollmentDate: updatedProfile!.enrollmentDate,
+      lastLessonAt: updatedProfile!.lastLessonAt,
+      lastActiveAt: updatedProfile!.lastActiveAt,
+      preferredContact: updatedProfile!.preferredContact,
+      reminderPreferences: updatedProfile!.reminderPreferences || {},
+      totalLessonsAttended: updatedProfile!.totalLessonsAttended,
+      totalAssignments: updatedProfile!.totalAssignments,
+      completedAssignments: updatedProfile!.completedAssignments,
+      currentStreak: updatedProfile!.currentStreak,
+      longestStreak: updatedProfile!.longestStreak,
+      progressScore: updatedProfile!.progressScore,
+      user: updatedProfile!.user,
+      teachers: teachersWithDetails,
+      createdAt: updatedProfile!.createdAt,
+      updatedAt: updatedProfile!.updatedAt,
+    };
+
+    console.log(
+      `✅ [STUDENT-PROFILE] Perfil atualizado com sucesso e cache revalidado`
+    );
 
     return NextResponse.json({
       success: true,
-      profile: updatedProfile,
+      profile: formattedProfile,
       message: 'Perfil atualizado com sucesso',
     });
   } catch (error) {
     console.error('❌ [STUDENT-PROFILE] Erro ao atualizar perfil:', error);
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido',
+      },
       { status: 500 }
     );
   }
 }
 
-// PATCH - Atualização parcial (campos específicos)
+// PATCH - Atualização parcial COM REVALIDAÇÃO MELHORADA
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -471,7 +680,8 @@ export async function PATCH(request: NextRequest) {
     }
 
     console.log(
-      `👨‍🎓🔧 [STUDENT-PROFILE] Atualizando campo ${field} - Ação: ${action}`
+      `👨‍🎓🔧 [STUDENT-PROFILE] Atualizando campo ${field} - Ação: ${action} - Valor:`,
+      value
     );
 
     // Verificar se perfil existe
@@ -510,8 +720,21 @@ export async function PATCH(request: NextRequest) {
           break;
       }
     } else {
-      // Atualização simples
-      updateData[field] = value;
+      // Atualização simples com validação
+      switch (field) {
+        case 'practiceTime':
+          if (typeof value === 'number' && value >= 0 && value <= 2400) {
+            updateData[field] = value;
+          }
+          break;
+        case 'level':
+          if (['BEGINNER', 'INTERMEDIATE', 'ADVANCED'].includes(value)) {
+            updateData[field] = value;
+          }
+          break;
+        default:
+          updateData[field] = value;
+      }
     }
 
     // Sempre atualizar lastActiveAt
@@ -521,9 +744,29 @@ export async function PATCH(request: NextRequest) {
     const updatedProfile = await prisma.student.update({
       where: { id: existingProfile.id },
       data: updateData,
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            city: true,
+            state: true,
+            country: true,
+            image: true,
+            experienceLevel: true,
+          },
+        },
+      },
     });
 
-    console.log(`✅ [STUDENT-PROFILE] Campo ${field} atualizado`);
+    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO DE CAMPO
+    await revalidateStudentProfileData(session.user.id);
+
+    console.log(
+      `✅ [STUDENT-PROFILE] Campo ${field} atualizado e cache revalidado`
+    );
 
     return NextResponse.json({
       success: true,
@@ -533,13 +776,16 @@ export async function PATCH(request: NextRequest) {
   } catch (error) {
     console.error('❌ [STUDENT-PROFILE] Erro ao atualizar campo:', error);
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido',
+      },
       { status: 500 }
     );
   }
 }
 
-// POST - Inicializar onboarding do aluno
+// POST - Inicializar onboarding do aluno COM REVALIDAÇÃO
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -621,8 +867,11 @@ export async function POST(request: NextRequest) {
       data: { onboardingCompleted: true },
     });
 
+    // 🔥 REVALIDAR CACHE APÓS CRIAÇÃO DO PERFIL
+    await revalidateStudentProfileData(session.user.id);
+
     console.log(
-      `✅ [STUDENT-PROFILE] Onboarding concluído para aluno ${session.user.id}`
+      `✅ [STUDENT-PROFILE] Onboarding concluído para aluno ${session.user.id} e cache revalidado`
     );
 
     return NextResponse.json({
@@ -633,7 +882,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('❌ [STUDENT-PROFILE] Erro no onboarding:', error);
     return NextResponse.json(
-      { error: 'Erro interno do servidor' },
+      {
+        error: 'Erro interno do servidor',
+        details: error instanceof Error ? error.message : 'Erro desconhecido',
+      },
       { status: 500 }
     );
   }

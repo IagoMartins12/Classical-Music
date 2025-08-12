@@ -1,4 +1,4 @@
-// app/hooks/useStudentProfile.ts - Hook atualizado para melhor integração
+// app/hooks/lessonsSystem/useStudentProfile.ts - Hook CORRIGIDO para melhor integração
 
 import { StudentProfileData } from '@/app/(student)/student/profile/pageServer';
 import { useState, useCallback } from 'react';
@@ -103,13 +103,15 @@ export function useStudentProfile(
     }));
   }, []);
 
-  // Update profile
+  // 🔧 UPDATE PROFILE CORRIGIDO - Cache invalidado automaticamente no servidor
   const updateProfile = useCallback(
     async (updates: UpdateProfileData): Promise<boolean> => {
       setLoading('updateProfile', true);
       setError(null);
 
       try {
+        console.log('📝 [HOOK] Enviando atualização de perfil:', updates);
+
         const response = await fetch('/api/student/profile', {
           method: 'PUT',
           headers: {
@@ -128,18 +130,16 @@ export function useStudentProfile(
           throw new Error(data.error || 'Erro ao atualizar perfil');
         }
 
-        // Update local state
+        // ✅ Atualizar estado local com dados retornados pelo servidor
         setState((prev) => ({
           ...prev,
-          profile: prev.profile
-            ? { ...prev.profile, ...data.profile }
-            : data.profile,
+          profile: data.profile, // Use dados completos do servidor
         }));
 
-        console.log('✅ Perfil atualizado com sucesso!');
+        console.log('✅ [HOOK] Perfil atualizado com sucesso!');
         return true;
       } catch (error) {
-        console.error('❌ Erro ao atualizar perfil:', error);
+        console.error('❌ [HOOK] Erro ao atualizar perfil:', error);
         setError(error instanceof Error ? error.message : 'Erro desconhecido');
         return false;
       } finally {
@@ -149,7 +149,7 @@ export function useStudentProfile(
     [setLoading, setError]
   );
 
-  // Update specific field
+  // 🔧 UPDATE FIELD CORRIGIDO - Cache invalidado automaticamente no servidor
   const updateField = useCallback(
     async (
       field: string,
@@ -160,6 +160,11 @@ export function useStudentProfile(
       setError(null);
 
       try {
+        console.log(
+          `📝 [HOOK] Atualizando campo ${field} com ação ${action}:`,
+          value
+        );
+
         const response = await fetch('/api/student/profile', {
           method: 'PATCH',
           headers: {
@@ -178,18 +183,16 @@ export function useStudentProfile(
           throw new Error(data.error || 'Erro ao atualizar campo');
         }
 
-        // Update local state
+        // ✅ Atualizar estado local com dados retornados pelo servidor
         setState((prev) => ({
           ...prev,
-          profile: prev.profile
-            ? { ...prev.profile, ...data.profile }
-            : data.profile,
+          profile: data.profile, // Use dados completos do servidor
         }));
 
-        console.log(`✅ Campo ${field} atualizado com sucesso!`);
+        console.log(`✅ [HOOK] Campo ${field} atualizado com sucesso!`);
         return true;
       } catch (error) {
-        console.error(`❌ Erro ao atualizar campo ${field}:`, error);
+        console.error(`❌ [HOOK] Erro ao atualizar campo ${field}:`, error);
         setError(error instanceof Error ? error.message : 'Erro desconhecido');
         return false;
       } finally {
@@ -199,12 +202,14 @@ export function useStudentProfile(
     [setLoading, setError]
   );
 
-  // Refresh profile data
+  // 🔧 REFRESH PROFILE CORRIGIDO
   const refreshProfile = useCallback(async () => {
     setLoading('profile', true);
     setError(null);
 
     try {
+      console.log('🔄 [HOOK] Recarregando perfil...');
+
       const response = await fetch('/api/student/profile');
       const data = await response.json();
 
@@ -216,89 +221,109 @@ export function useStudentProfile(
         throw new Error(data.error || 'Erro ao carregar perfil');
       }
 
+      // ✅ Atualizar estado com dados completos
       setState((prev) => ({
         ...prev,
         profile: data.profile,
       }));
 
-      console.log('✅ Perfil recarregado com sucesso!');
+      console.log('✅ [HOOK] Perfil recarregado com sucesso!');
     } catch (error) {
-      console.error('❌ Erro ao recarregar perfil:', error);
+      console.error('❌ [HOOK] Erro ao recarregar perfil:', error);
       setError(error instanceof Error ? error.message : 'Erro desconhecido');
     } finally {
       setLoading('profile', false);
     }
   }, [setLoading, setError]);
 
-  // 🔄 REFRESH STUDY DATA OTIMIZADO - Usar APIs corretas
+  // 🔄 REFRESH STUDY DATA MELHORADO - APIs corretas
   const refreshStudyData = useCallback(async () => {
     setLoading('refreshStudyData', true);
     setError(null);
 
     try {
-      console.log('🔄 Refreshing study data...');
+      console.log('🔄 [HOOK] Refreshing study data...');
 
-      // ✅ Buscar dados usando as APIs corretas (não as antigas)
+      // ✅ Fazer requisições paralelas para todos os dados de estudo
       const [wantToLearnResponse, learnedResponse, annotationsResponse] =
         await Promise.all([
-          fetch('/api/learning/want-to-learn'),
-          fetch('/api/learning/learned'),
-          fetch('/api/annotations?limit=5&public=true'),
+          fetch('/api/learning/want-to-learn').catch(() => null),
+          fetch('/api/learning/learned').catch(() => null),
+          fetch('/api/annotations?limit=5&public=true').catch(() => null),
         ]);
 
       // Processar want-to-learn
       let wantToLearnData = [];
-      if (wantToLearnResponse.ok) {
-        const wantToLearnJson = await wantToLearnResponse.json();
-        wantToLearnData = (wantToLearnJson.items || [])
-          .slice(0, 10)
-          .map((item: any) => ({
-            workId: item.workId,
-            title: item.work.title,
-            composer: item.work.composer.name,
-            addedAt: new Date(item.addedAt),
-            difficulty: item.difficulty,
-            selectedScore: item.selectedWorkScore
-              ? {
-                  title: item.selectedWorkScore.title,
-                  type: item.selectedWorkScore.type,
-                }
-              : undefined,
-          }));
+      if (wantToLearnResponse?.ok) {
+        try {
+          const wantToLearnJson = await wantToLearnResponse.json();
+          if (wantToLearnJson.success && wantToLearnJson.items) {
+            wantToLearnData = wantToLearnJson.items
+              .slice(0, 10)
+              .map((item: any) => ({
+                workId: item.workId,
+                title: item.work?.title || item.title,
+                composer: item.work?.composer?.name || item.composer,
+                addedAt: new Date(item.addedAt),
+                difficulty: item.difficulty,
+                selectedScore: item.selectedWorkScore
+                  ? {
+                      title: item.selectedWorkScore.title,
+                      type: item.selectedWorkScore.type,
+                    }
+                  : undefined,
+              }));
+          }
+        } catch (parseError) {
+          console.warn(
+            '⚠️ [HOOK] Erro ao processar want-to-learn:',
+            parseError
+          );
+        }
       }
 
       // Processar learned
       let learnedData = [];
-      if (learnedResponse.ok) {
-        const learnedJson = await learnedResponse.json();
-        learnedData = (learnedJson.items || [])
-          .slice(0, 10)
-          .map((item: any) => ({
-            workId: item.workId,
-            title: item.work.title,
-            composer: item.work.composer.name,
-            learnedAt: new Date(item.learnedAt),
-            mastery: item.mastery,
-            wouldRecommend: item.wouldRecommend,
-          }));
+      if (learnedResponse?.ok) {
+        try {
+          const learnedJson = await learnedResponse.json();
+          if (learnedJson.success && learnedJson.items) {
+            learnedData = learnedJson.items.slice(0, 10).map((item: any) => ({
+              workId: item.workId,
+              title: item.work?.title || item.title,
+              composer: item.work?.composer?.name || item.composer,
+              learnedAt: new Date(item.learnedAt),
+              mastery: item.mastery || 0,
+              wouldRecommend: item.wouldRecommend || false,
+            }));
+          }
+        } catch (parseError) {
+          console.warn('⚠️ [HOOK] Erro ao processar learned:', parseError);
+        }
       }
 
       // Processar annotations
       let annotationsData = [];
-      if (annotationsResponse.ok) {
-        const annotationsJson = await annotationsResponse.json();
-        annotationsData = (annotationsJson.annotations || [])
-          .slice(0, 5)
-          .map((annotation: any) => ({
-            id: annotation.id,
-            workTitle: annotation.work.title,
-            title: annotation.title,
-            category: annotation.category,
-            createdAt: new Date(annotation.createdAt),
-          }));
+      if (annotationsResponse?.ok) {
+        try {
+          const annotationsJson = await annotationsResponse.json();
+          if (annotationsJson.success && annotationsJson.annotations) {
+            annotationsData = annotationsJson.annotations
+              .slice(0, 5)
+              .map((annotation: any) => ({
+                id: annotation.id,
+                workTitle: annotation.work?.title || 'Obra não encontrada',
+                title: annotation.title,
+                category: annotation.category,
+                createdAt: new Date(annotation.createdAt),
+              }));
+          }
+        } catch (parseError) {
+          console.warn('⚠️ [HOOK] Erro ao processar annotations:', parseError);
+        }
       }
 
-      // Atualizar estado
+      // ✅ Atualizar estado com novos dados
       setState((prev) => ({
         ...prev,
         studyData: {
@@ -309,10 +334,10 @@ export function useStudentProfile(
       }));
 
       console.log(
-        `✅ Dados de estudo recarregados com sucesso! Want-to-learn: ${wantToLearnData.length}, Learned: ${learnedData.length}, Annotations: ${annotationsData.length}`
+        `✅ [HOOK] Dados de estudo recarregados! Want-to-learn: ${wantToLearnData.length}, Learned: ${learnedData.length}, Annotations: ${annotationsData.length}`
       );
     } catch (error) {
-      console.error('❌ Erro ao recarregar dados de estudo:', error);
+      console.error('❌ [HOOK] Erro ao recarregar dados de estudo:', error);
       setError(error instanceof Error ? error.message : 'Erro desconhecido');
     } finally {
       setLoading('refreshStudyData', false);

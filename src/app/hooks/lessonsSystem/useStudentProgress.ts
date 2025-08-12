@@ -113,11 +113,11 @@ export function useStudentProgress(
           teacherBreakdown: data.teacherBreakdown,
           workProgress: data.workProgress,
           assignmentBreakdown: data.assignmentBreakdown,
-          streakHistory: data.streakHistory.map((item: any) => ({
+          streakHistory: data.streakHistory?.map((item: any) => ({
             ...item,
             date: new Date(item.date),
           })),
-          achievements: data.achievements.map((item: any) => ({
+          achievements: data.achievements?.map((item: any) => ({
             ...item,
             earnedAt: new Date(item.earnedAt),
           })),
@@ -176,11 +176,11 @@ export function useStudentProgress(
             teacherBreakdown: data.teacherBreakdown,
             workProgress: data.workProgress,
             assignmentBreakdown: data.assignmentBreakdown,
-            streakHistory: data.streakHistory.map((item: any) => ({
+            streakHistory: data.streakHistory?.map((item: any) => ({
               ...item,
               date: new Date(item.date),
             })),
-            achievements: data.achievements.map((item: any) => ({
+            achievements: data.achievements?.map((item: any) => ({
               ...item,
               earnedAt: new Date(item.earnedAt),
             })),
