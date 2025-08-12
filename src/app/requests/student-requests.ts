@@ -1650,9 +1650,6 @@ export const getStudentAssignments = unstable_cache(
         // Recursos e materiais
         workScoreIds: assignment.workScoreIds,
         exercises: assignment.exercises,
-        audioFiles: assignment.audioFiles,
-        videoFiles: assignment.videoFiles,
-        documents: assignment.documents,
 
         // Metas específicas
         practiceGoals: assignment.practiceGoals,

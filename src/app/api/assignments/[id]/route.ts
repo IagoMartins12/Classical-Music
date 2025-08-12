@@ -170,9 +170,6 @@ export async function GET(
       // Recursos
       workScoreIds: assignment.workScoreIds,
       exercises: assignment.exercises,
-      audioFiles: assignment.audioFiles,
-      videoFiles: assignment.videoFiles,
-      documents: assignment.documents,
 
       // Metas
       practiceGoals: assignment.practiceGoals,

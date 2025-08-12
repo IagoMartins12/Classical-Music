@@ -21,6 +21,7 @@ import {
   FiStar,
   FiPlay,
   FiCheckCircle,
+  FiEdit,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -29,15 +30,14 @@ import {
   PageContainer,
   SequentialGrid,
 } from '../../../components/animation/AnimatedComponents';
-import {
-  TeacherAssignmentsData,
-  TeacherAssignment,
-} from './pageServer';
+import { TeacherAssignmentsData, TeacherAssignment } from './pageServer';
 import Image from 'next/image';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { useTeacherAssignments } from '@/app/hooks/lessonsSystem/useTeacherAssignments';
 import Modal from '@/app/components/Modal';
+import Link from 'next/link';
+import Button from '@/app/components/Common/Button';
 
 interface TeacherAssignmentsPageClientProps {
   initialData: TeacherAssignmentsData;
@@ -540,13 +540,18 @@ export default function TeacherAssignmentsPageClient({
                   />
                 </button>
 
-                <button
+                <Link href={'assignments/create'}>
+                  <Button variant="primary">
+                    <span>Nova Tarefa</span>
+                  </Button>
+                </Link>
+                {/* 
+                <Button
                   onClick={() => setShowCreateModal(true)}
-                  className="btn-classical-primary flex items-center space-x-2"
+                  variant="outline"
                 >
-                  <FiPlus className="w-4 h-4" />
-                  <span>Nova Tarefa</span>
-                </button>
+                  <span>Nova Tarefa Rápida</span>
+                </Button> */}
               </div>
             </div>
 
@@ -837,6 +842,12 @@ export default function TeacherAssignmentsPageClient({
                           >
                             <FiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                           </button>
+
+                          <Link href={`assignments/${assignment.id}/edit`}>
+                            <button className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
+                              <FiEdit className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                            </button>
+                          </Link>
 
                           {/* Status Actions */}
                           {!assignment.isCompleted && (
@@ -1306,11 +1317,8 @@ function AssignmentDetailsModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-bg-overlay backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <AnimatedCard
-        hover="none"
-        className="classical-card w-full max-w-4xl max-h-[90vh] overflow-y-auto"
-      >
+    <Modal isOpen onClose={onClose} maxWidth="4xl">
+      <AnimatedCard hover="none">
         <div className="p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -1340,12 +1348,6 @@ function AssignmentDetailsModal({
                 </span>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
-            >
-              <FiX className="w-4 h-4 text-theme-tertiary" />
-            </button>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -1507,6 +1509,6 @@ function AssignmentDetailsModal({
           </div>
         </div>
       </AnimatedCard>
-    </div>
+    </Modal>
   );
 }

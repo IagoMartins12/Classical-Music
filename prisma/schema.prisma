@@ -1866,9 +1866,6 @@ model Assignment {
   worksIds     String[] @default([]) @db.ObjectId // Partituras para estudar
 
   exercises  String[] @default([]) // Exercícios específicos
-  audioFiles String[] @default([]) // Arquivos de áudio
-  videoFiles String[] @default([]) // Arquivos de vídeo
-  documents  String[] @default([]) // Documentos anexos
 
   // Metas específicas
   practiceGoals  String[] @default([]) // Metas de prática

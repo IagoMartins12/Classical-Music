@@ -11,9 +11,6 @@ interface EditAssignmentData {
   estimatedTime?: number;
   workScoreIds?: string[];
   exercises?: string[];
-  audioFiles?: string[];
-  videoFiles?: string[];
-  documents?: string[];
   practiceGoals?: string[];
   technicalGoals?: string[];
   musicalGoals?: string[];

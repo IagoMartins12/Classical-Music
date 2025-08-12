@@ -14,9 +14,6 @@ export interface TeacherAssignment {
   priority: string;
   workScoreIds: string[];
   exercises: string[];
-  audioFiles: string[];
-  videoFiles: string[];
-  documents: string[];
   practiceGoals: string[];
   tempoTargets?: any;
   technicalGoals: string[];

@@ -277,7 +277,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                     {selectedStudent && filteredLessons.length > 0 && (
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Aula Relacionada (opcional)
+                          Aula Relacionada
                         </label>
                         <Select
                           options={[
@@ -442,7 +442,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                           key={index}
                           className="flex items-center space-x-2"
                         >
-                          <Input
+                          <input
                             type="text"
                             value={goal}
                             onChange={(e) =>
@@ -452,7 +452,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                                 e.target.value
                               )
                             }
-                            className="input-classical flex-1"
+                            className="input-classical flex-1 w-6/12"
                             placeholder="Ex: Tocar em andamento 120 BPM com metrônomo"
                           />
                           {formData.practiceGoals.length > 1 && (
@@ -501,7 +501,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                     </button>
 
                     {showAdvanced && (
-                      <div className="space-y-6 p-4 bg-theme-secondary/5 border border-theme-secondary/20 rounded-lg">
+                      <div className="space-y-6 p-4 bg-theme-secondary/5 shadow-lg rounded-lg">
                         {/* Technical Goals */}
                         <div>
                           <div className="flex items-center justify-between mb-2">
@@ -535,6 +535,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                                   }
                                   className="input-classical flex-1"
                                   placeholder="Ex: Melhorar articulação nos staccatos"
+                                  widhtFull
                                 />
                                 {formData.technicalGoals.length > 1 && (
                                   <button
@@ -585,6 +586,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                                   }
                                   className="input-classical flex-1"
                                   placeholder="Ex: Expressar melhor o caráter melancólico"
+                                  widhtFull
                                 />
                                 {formData.musicalGoals.length > 1 && (
                                   <button
@@ -635,6 +637,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                                   }
                                   className="input-classical flex-1"
                                   placeholder="Ex: Hanon nº 1, Czerny op. 599 nº 5"
+                                  widhtFull
                                 />
                                 {formData.exercises.length > 1 && (
                                   <button
@@ -758,12 +761,13 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                           {filteredLessons.slice(0, 3).map((lesson) => (
                             <div
                               key={lesson.id}
-                              className="text-xs p-2 bg-theme-secondary/10 rounded border"
+                              className="text-xs p-2 shadow-md rounded flex flex-col justify-center gap-4"
                             >
                               <div className="font-medium text-theme-primary">
                                 {lesson.title}
                               </div>
                               <div className="text-theme-tertiary">
+                                <strong>Data: </strong>
                                 {new Date(
                                   lesson.scheduledAt
                                 ).toLocaleDateString('pt-BR')}
@@ -795,7 +799,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                     return (
                       <div
                         key={type.value}
-                        className={`p-3 rounded-lg border transition-all ${
+                        className={`p-3 rounded-lg shadow-md transition-all ${
                           isSelected
                             ? 'bg-brand-primary/10 border-brand-primary/30'
                             : 'bg-theme-secondary/5 border-theme-secondary/20'

@@ -244,9 +244,6 @@ export async function GET(request: NextRequest) {
         // Recursos
         workScoreIds: assignment.workScoreIds,
         exercises: assignment.exercises,
-        audioFiles: assignment.audioFiles,
-        videoFiles: assignment.videoFiles,
-        documents: assignment.documents,
 
         // Metas
         practiceGoals: assignment.practiceGoals,
@@ -356,9 +353,6 @@ export async function POST(request: NextRequest) {
       estimatedTime,
       workScoreIds = [],
       exercises = [],
-      audioFiles = [],
-      videoFiles = [],
-      documents = [],
       practiceGoals = [],
       tempoTargets,
       technicalGoals = [],
@@ -431,9 +425,6 @@ export async function POST(request: NextRequest) {
         estimatedTime,
         workScoreIds,
         exercises,
-        audioFiles,
-        videoFiles,
-        documents,
         practiceGoals,
         tempoTargets,
         technicalGoals,

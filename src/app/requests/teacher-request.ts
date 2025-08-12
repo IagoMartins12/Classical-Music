@@ -442,9 +442,7 @@ export const getTeacherStudentsData = unstable_cache(
               experienceLevel: rel.student.user.experienceLevel,
               level: rel.student.level,
               mainInstrument: rel.student.mainInstrument,
-              musicalGoals: rel.student.musicalGoals
-                ? JSON.parse(rel.student.musicalGoals)
-                : [],
+
               practiceTime: rel.student.practiceTime,
             },
             relationship: {
@@ -1517,9 +1515,6 @@ export interface TeacherAssignmentData {
   priority: string;
   workScoreIds: string[];
   exercises: string[];
-  audioFiles: string[];
-  videoFiles: string[];
-  documents: string[];
   practiceGoals: string[];
   tempoTargets?: any;
   technicalGoals: string[];
@@ -1724,9 +1719,6 @@ export const getTeacherAssignmentsData = unstable_cache(
             // Recursos
             workScoreIds: assignment.workScoreIds,
             exercises: assignment.exercises,
-            audioFiles: assignment.audioFiles,
-            videoFiles: assignment.videoFiles,
-            documents: assignment.documents,
 
             // Metas
             practiceGoals: assignment.practiceGoals,
@@ -3031,9 +3023,6 @@ export interface TeacherAssignmentDetailsData {
     priority: string;
     workScoreIds: string[];
     exercises: string[];
-    audioFiles: string[];
-    videoFiles: string[];
-    documents: string[];
     practiceGoals: string[];
     tempoTargets?: any;
     technicalGoals: string[];
@@ -3234,9 +3223,6 @@ export const getTeacherAssignmentDetailsData = unstable_cache(
         // Recursos
         workScoreIds: assignment.workScoreIds,
         exercises: assignment.exercises,
-        audioFiles: assignment.audioFiles,
-        videoFiles: assignment.videoFiles,
-        documents: assignment.documents,
 
         // Metas
         practiceGoals: assignment.practiceGoals,
@@ -3342,9 +3328,6 @@ export interface TeacherAssignmentEditData {
     estimatedTime?: number | null;
     workScoreIds: string[];
     exercises: string[];
-    audioFiles: string[];
-    videoFiles: string[];
-    documents: string[];
     practiceGoals: string[];
     tempoTargets?: any;
     technicalGoals: string[];
@@ -3519,9 +3502,6 @@ export const getTeacherAssignmentEditData = unstable_cache(
         // Recursos
         workScoreIds: assignment.workScoreIds,
         exercises: assignment.exercises,
-        audioFiles: assignment.audioFiles,
-        videoFiles: assignment.videoFiles,
-        documents: assignment.documents,
 
         // Metas
         practiceGoals: assignment.practiceGoals,

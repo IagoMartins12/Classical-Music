@@ -14,6 +14,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   variant?: 'default' | 'outlined' | 'filled';
   inputType?: string;
   isPassword?: boolean;
+  widhtFull?: boolean;
 
   customId?: string; // 🆕 Prop para ID customizado
 }
@@ -31,6 +32,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       className = '',
       inputType,
       customId, // 🆕 ID customizado
+      widhtFull,
       ...props
     },
     ref
@@ -78,7 +80,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     `;
 
     return (
-      <div className="relative">
+      <div className={`relative ${widhtFull && 'w-full'}`}>
         {label && (
           <label
             htmlFor={finalInputId}
@@ -88,7 +90,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           </label>
         )}
 
-        <div className="relative">
+        <div className={`relative ${widhtFull && 'w-full'}`}>
           {leftIcon && (
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary">
               {leftIcon}

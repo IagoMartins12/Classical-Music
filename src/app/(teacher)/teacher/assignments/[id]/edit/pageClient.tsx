@@ -466,7 +466,7 @@ export default function EditAssignmentPageClient({
                     </button>
 
                     {showAdvanced && (
-                      <div className="space-y-6 p-4 bg-theme-secondary/5 border border-theme-secondary/20 rounded-lg">
+                      <div className="space-y-6 p-4 bg-theme-secondary/5 shadow-lg rounded-lg">
                         {/* Technical Goals */}
                         <div>
                           <div className="flex items-center justify-between mb-2">
@@ -500,6 +500,7 @@ export default function EditAssignmentPageClient({
                                   }
                                   className="input-classical flex-1"
                                   placeholder="Ex: Melhorar articulação nos staccatos"
+                                  widhtFull
                                 />
                                 {formData.technicalGoals.length > 1 && (
                                   <button
@@ -550,6 +551,7 @@ export default function EditAssignmentPageClient({
                                   }
                                   className="input-classical flex-1"
                                   placeholder="Ex: Expressar melhor o caráter melancólico"
+                                  widhtFull
                                 />
                                 {formData.musicalGoals.length > 1 && (
                                   <button
@@ -600,6 +602,7 @@ export default function EditAssignmentPageClient({
                                   }
                                   className="input-classical flex-1"
                                   placeholder="Ex: Hanon nº 1, Czerny op. 599 nº 5"
+                                  widhtFull
                                 />
                                 {formData.exercises.length > 1 && (
                                   <button

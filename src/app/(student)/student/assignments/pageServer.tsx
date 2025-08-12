@@ -15,9 +15,6 @@ export interface StudentAssignmentsData {
     priority: string;
     workScoreIds: string[];
     exercises: string[];
-    audioFiles: string[];
-    videoFiles: string[];
-    documents: string[];
     practiceGoals: string[];
     tempoTargets?: any;
     technicalGoals: string[];
@@ -69,7 +66,6 @@ export interface StudentAssignmentsData {
     totalLessons: number;
   }>;
 }
-
 
 interface StudentAssignmentsPageServerProps {
   userId: string;

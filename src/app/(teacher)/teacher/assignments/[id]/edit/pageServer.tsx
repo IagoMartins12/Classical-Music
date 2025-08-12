@@ -14,9 +14,6 @@ export interface EditAssignmentData {
     estimatedTime?: number | null;
     workScoreIds: string[];
     exercises: string[];
-    audioFiles: string[];
-    videoFiles: string[];
-    documents: string[];
     practiceGoals: string[];
     tempoTargets?: any;
     technicalGoals: string[];
@@ -117,9 +114,6 @@ export default async function EditAssignmentPageServer({
         estimatedTime: assignment.estimatedTime,
         workScoreIds: assignment.workScoreIds || [],
         exercises: assignment.exercises || [],
-        audioFiles: assignment.audioFiles || [],
-        videoFiles: assignment.videoFiles || [],
-        documents: assignment.documents || [],
         practiceGoals: assignment.practiceGoals || [],
         tempoTargets: assignment.tempoTargets,
         technicalGoals: assignment.technicalGoals || [],
