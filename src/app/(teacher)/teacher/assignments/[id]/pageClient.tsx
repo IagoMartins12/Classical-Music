@@ -1,4 +1,4 @@
-// app/teacher/assignments/[id]/pageClient.tsx - Client Component para Detalhes da Tarefa
+// app/teacher/assignments/[id]/pageClient.tsx - ATUALIZADO com MusicalPiecesSection
 
 'use client';
 
@@ -29,6 +29,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAssignmentDetails } from '@/app/hooks/lessonsSystem/useAssignmentDetails';
+import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
 
 interface AssignmentDetailsPageClientProps {
   initialData: AssignmentDetailsData | null;
@@ -417,6 +418,15 @@ export default function AssignmentDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
+            {/* 🆕 SEÇÃO DE PEÇAS MUSICAIS - NOVA */}
+            {assignment.workScores && assignment.workScores.length > 0 && (
+              <MusicalPiecesSection
+                workScores={assignment.workScores}
+                title="Peças Musicais da Tarefa"
+                emptyMessage="Nenhuma peça musical vinculada a esta tarefa."
+              />
+            )}
+
             {/* Student Submission */}
             {assignment.submissions && (
               <AnimatedItem direction="up" springType="gentle">
@@ -602,7 +612,7 @@ export default function AssignmentDetailsPageClient({
             </AnimatedItem>
           </div>
 
-          {/* Sidebar */}
+          {/* Sidebar - resto do código igual... */}
           <div className="space-y-6">
             {/* Student Info */}
             <AnimatedItem direction="up" springType="gentle">

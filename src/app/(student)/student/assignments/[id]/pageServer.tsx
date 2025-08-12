@@ -1,9 +1,9 @@
-// app/teacher/assignments/[id]/pageServer.tsx - INTERFACE CORRIGIDA
+// app/student/assignments/[id]/pageServer.tsx - Server Component para Detalhes da Tarefa do Aluno
 
-import { getTeacherAssignmentDetailsData } from '@/app/requests/teacher-request';
-import AssignmentDetailsPageClient from './pageClient';
+import { getStudentAssignmentDetailsData } from '@/app/requests/student-requests';
+import StudentAssignmentDetailsPageClient from './pageClient';
 
-export interface AssignmentDetailsData {
+export interface StudentAssignmentDetailsData {
   assignment: {
     id: string;
     title: string;
@@ -30,17 +30,15 @@ export interface AssignmentDetailsData {
     studentRating?: number | null;
     submissions?: any;
     submissionDate?: Date | null;
-    student: {
-      id: string;
-      name: string;
-      image?: string | null;
-    };
     lesson: {
       id: string;
       title: string;
       scheduledAt: Date;
+      teacher: {
+        name: string;
+        image?: string | null;
+      };
     };
-    // 🆕 ADICIONAR WORKSCORES COM DADOS COMPLETOS
     workScores: Array<{
       id: string;
       title: string;
@@ -49,37 +47,48 @@ export interface AssignmentDetailsData {
       type: string;
       downloadUrl?: string;
     }>;
+    // 🆕 PROGRESS MILESTONES TIPADO CORRETAMENTE
+    progressMilestones: {
+      learnedLeftHand: boolean;
+      learnedRightHand: boolean;
+      playedWithMetronome: boolean;
+      memorized: boolean;
+      playedAtTempo: boolean;
+      masteredDynamics: boolean;
+      performedForOthers: boolean;
+    };
+    permissions: {
+      canEdit: boolean;
+      canDelete: boolean;
+      canComplete: boolean;
+      canAddFeedback: boolean;
+      canAddSubmission: boolean;
+    };
     createdAt: Date;
     updatedAt: Date;
   };
-  canEdit: boolean;
-  canGiveFeedback: boolean;
+  canSubmit: boolean;
+  isOwner: boolean;
 }
 
-export interface TeacherProfile {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-  role: number;
-}
-
-export default async function AssignmentDetailsPageServer({
-  assignmentId,
-  userId,
-  userRole,
-}: {
+interface StudentAssignmentDetailsPageServerProps {
   assignmentId: string;
   userId: string;
   userRole: number;
-}) {
+}
+
+export default async function StudentAssignmentDetailsPageServer({
+  assignmentId,
+  userId,
+  userRole,
+}: StudentAssignmentDetailsPageServerProps) {
   console.log(
-    `📋👁️ [ASSIGNMENT-DETAILS-PAGE-SERVER] Loading assignment ${assignmentId} for user ${userId}`
+    `📋👨‍🎓 [STUDENT-ASSIGNMENT-DETAILS-PAGE-SERVER] Loading assignment ${assignmentId} for user ${userId}`
   );
 
   try {
-    // Buscar detalhes da tarefa diretamente do banco
-    const assignmentData = await getTeacherAssignmentDetailsData(
+    // Buscar detalhes da tarefa diretamente do banco (perspectiva do aluno)
+    const assignmentData = await getStudentAssignmentDetailsData(
       assignmentId,
       userId,
       userRole
@@ -98,11 +107,11 @@ export default async function AssignmentDetailsPageServer({
 
     const assignment = assignmentData.assignment;
 
-    // Verificar permissões baseadas no assignment carregado
-    const canEdit = assignment.permissions.canEdit;
-    const canGiveFeedback = userRole === 1; // Professor sempre pode dar feedback
+    // Verificar permissões baseadas no assignment carregado (perspectiva do aluno)
+    const canSubmit = userRole === 0 && !assignment.isCompleted; // Apenas aluno pode submeter
+    const isOwner = userRole === 0; // Aluno é "dono" da tarefa do ponto de vista dele
 
-    const assignmentDetailsData: AssignmentDetailsData = {
+    const assignmentDetailsData: StudentAssignmentDetailsData = {
       assignment: {
         id: assignment.id,
         title: assignment.title,
@@ -129,36 +138,51 @@ export default async function AssignmentDetailsPageServer({
         studentRating: assignment.studentRating,
         submissions: assignment.submissions,
         submissionDate: assignment.submissionDate,
-        student: {
-          id: assignment.student.id,
-          name: assignment.student.name,
-          image: assignment.student.image,
-        },
         lesson: {
           id: assignment.lesson.id,
           title: assignment.lesson.title,
           scheduledAt: assignment.lesson.scheduledAt,
+          teacher: {
+            name: assignment.lesson.teacher.name,
+            image: assignment.lesson.teacher.image,
+          },
         },
         // 🆕 ADICIONAR WORKSCORES DO BACKEND
         workScores: assignment.workScores || [],
+        // 🆕 PROGRESS MILESTONES (extrair de submissions ou criar sistema próprio)
+        progressMilestones: assignment.progressMilestones || {
+          learnedLeftHand: false,
+          learnedRightHand: false,
+          playedWithMetronome: false,
+          memorized: false,
+          playedAtTempo: false,
+          masteredDynamics: false,
+          performedForOthers: false,
+        },
+        permissions: assignment.permissions,
         createdAt: assignment.createdAt,
         updatedAt: assignment.updatedAt,
       },
-      canEdit,
-      canGiveFeedback,
+      canSubmit,
+      isOwner,
     };
 
     console.log(
-      `✅ [ASSIGNMENT-DETAILS-PAGE-SERVER] Assignment loaded successfully - ${assignment.title}`
+      `✅ [STUDENT-ASSIGNMENT-DETAILS-PAGE-SERVER] Assignment loaded successfully - ${assignment.title}`
     );
 
-    return <AssignmentDetailsPageClient initialData={assignmentDetailsData} />;
+    return (
+      <StudentAssignmentDetailsPageClient initialData={assignmentDetailsData} />
+    );
   } catch (error) {
-    console.error('❌ [ASSIGNMENT-DETAILS-PAGE-SERVER] Critical error:', error);
+    console.error(
+      '❌ [STUDENT-ASSIGNMENT-DETAILS-PAGE-SERVER] Critical error:',
+      error
+    );
 
     // Fallback com erro
     return (
-      <AssignmentDetailsPageClient
+      <StudentAssignmentDetailsPageClient
         initialData={null}
         errorMessage={
           error instanceof Error

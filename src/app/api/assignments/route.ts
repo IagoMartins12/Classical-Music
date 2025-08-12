@@ -35,6 +35,8 @@ async function revalidateTeacherAndStudentData(
   if (studentUserId) {
     revalidateTag('student-dashboard');
     revalidateTag('student-assignments');
+    revalidateTag('student-assignment-details');
+    revalidateTag('student-assignment-details-data');
     revalidateTag('student-lessons');
     revalidateTag(`student-${studentUserId}`);
   }
@@ -243,6 +245,7 @@ export async function GET(request: NextRequest) {
 
         // Recursos
         workScoreIds: assignment.workScoreIds,
+        worksIds: assignment.worksIds,
         exercises: assignment.exercises,
 
         // Metas
@@ -329,7 +332,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Criar novo assignment (com revalidação do cache)
+// POST - Criar novo assignment (com revalidação do cache e worksIds)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -352,6 +355,7 @@ export async function POST(request: NextRequest) {
       dueDate,
       estimatedTime,
       workScoreIds = [],
+      worksIds = [],
       exercises = [],
       practiceGoals = [],
       tempoTargets,
@@ -369,7 +373,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`📋➕ [ASSIGNMENTS] Criando assignment: ${title}`);
+    console.log(`📋➕ [ASSIGNMENTS] Criando assignment: ${title}`, {
+      worksIds: worksIds.length,
+      workScoreIds: workScoreIds.length,
+    });
 
     // Verificar se professor existe
     const teacherProfile = await prisma.teacher.findUnique({
@@ -424,6 +431,7 @@ export async function POST(request: NextRequest) {
         dueDate: dueDate ? new Date(dueDate) : null,
         estimatedTime,
         workScoreIds,
+        worksIds,
         exercises,
         practiceGoals,
         tempoTargets,
@@ -481,7 +489,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PATCH - Atualizar assignment (com revalidação do cache)
+// PATCH - Atualizar assignment (com revalidação do cache e suporte a progressMilestones)
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -504,7 +512,8 @@ export async function PATCH(request: NextRequest) {
     }
 
     console.log(
-      `📋✏️ [ASSIGNMENTS] Atualizando assignment ${assignmentId} - Role: ${session.user.role}`
+      `📋✏️ [ASSIGNMENTS] Atualizando assignment ${assignmentId} - Role: ${session.user.role}`,
+      { updateFields: Object.keys(updateData) }
     );
 
     // Buscar perfis
@@ -578,7 +587,7 @@ export async function PATCH(request: NextRequest) {
         filteredUpdateData.status = 'COMPLETED';
       }
     } else {
-      // Aluno pode atualizar apenas alguns campos
+      // 🆕 Aluno pode atualizar campos específicos incluindo progressMilestones
       const allowedFields = [
         'status',
         'progress',
@@ -587,6 +596,7 @@ export async function PATCH(request: NextRequest) {
         'studentRating',
         'submissions',
         'isCompleted',
+        'progressMilestones', // 🆕 Permitir progressMilestones
       ];
 
       Object.keys(updateData).forEach((key) => {
@@ -595,6 +605,17 @@ export async function PATCH(request: NextRequest) {
         }
       });
 
+      // 🆕 Se progressMilestones foi enviado, integrar com submissions
+      if (updateData.progressMilestones) {
+        const currentSubmissions = (assignment.submissions as any) || {};
+        filteredUpdateData.submissions = {
+          ...currentSubmissions,
+          progressMilestones: updateData.progressMilestones,
+        };
+        // Remover progressMilestones direto para não tentar salvar em campo inexistente
+        delete filteredUpdateData.progressMilestones;
+      }
+
       // Se aluno marcar como completo
       if (updateData.isCompleted && !assignment.isCompleted) {
         filteredUpdateData.completedAt = new Date();
@@ -602,6 +623,12 @@ export async function PATCH(request: NextRequest) {
         filteredUpdateData.submissionDate = new Date();
       }
     }
+
+    console.log(`📋 [ASSIGNMENTS] Dados filtrados para atualização:`, {
+      role: session.user.role,
+      fields: Object.keys(filteredUpdateData),
+      hasProgressMilestones: !!updateData.progressMilestones,
+    });
 
     // Atualizar assignment
     const updatedAssignment = await prisma.assignment.update({

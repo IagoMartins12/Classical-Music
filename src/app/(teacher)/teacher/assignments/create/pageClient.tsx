@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   FiUser,
   FiSave,
@@ -33,6 +33,9 @@ import Select from '@/app/components/Common/Select';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useTeacherAssignments } from '@/app/hooks/lessonsSystem/useTeacherAssignments';
+import WorkSelectionSection, {
+  LessonWork,
+} from '@/app/components/TeacherSystem/WorkSelectionSection';
 
 interface CreateAssignmentPageClientProps {
   initialData: CreateAssignmentData;
@@ -48,13 +51,18 @@ const typeIcons = {
   reading: FiMusic,
 };
 
-export default function CreateAssignmentuseCreateAssignmentPageClient({
+export default function CreateAssignmentPageClient({
   initialData,
   errorMessage,
 }: CreateAssignmentPageClientProps) {
   const router = useRouter();
   const { createAssignment, loading, error, clearError } =
     useTeacherAssignments();
+
+  // Refs para scroll automático aos campos com erro
+  const studentSelectRef = useRef<HTMLSelectElement>(null);
+  const titleInputRef = useRef<HTMLInputElement>(null);
+  const descriptionTextareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -70,8 +78,12 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
     technicalGoals: [''],
     musicalGoals: [''],
     exercises: [''],
-    workScoreIds: [] as string[],
   });
+
+  // 🆕 ESTADOS PARA PEÇAS MUSICAIS
+  const [selectedWorks, setSelectedWorks] = useState<LessonWork[]>([]);
+  const [worksIds, setWorksIds] = useState<string[]>([]);
+  const [workScoreIds, setWorkScoreIds] = useState<string[]>([]);
 
   const [selectedStudent, setSelectedStudent] = useState<
     (typeof initialData.students)[0] | null
@@ -81,7 +93,6 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
   >(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  console.log('selectedLesson', selectedLesson);
   // Update selected student and lesson when form changes
   useEffect(() => {
     const student = initialData.students.find(
@@ -101,6 +112,28 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
       updateFormData('studentUserId', lesson.student.id);
     }
   }, [formData.lessonId, initialData.recentLessons, formData.studentUserId]);
+
+  // 🆕 HANDLER PARA MUDANÇAS NAS PEÇAS MUSICAIS
+  const handleWorksChange = useCallback((works: LessonWork[]) => {
+    console.log('🎵 Peças musicais atualizadas na tarefa:', works);
+    setSelectedWorks(works);
+
+    // 🔥 EXTRAIR worksIds e workScoreIds CORRETAMENTE
+    const newWorksIds = works.map((work) => work.workId);
+    const newWorkScoreIds = works
+      .filter((work) => work.scoreId)
+      .map((work) => work.scoreId!);
+
+    setWorksIds(newWorksIds);
+    setWorkScoreIds(newWorkScoreIds);
+
+    console.log('📊 IDs extraídos para tarefa:', {
+      worksIds: newWorksIds,
+      workScoreIds: newWorkScoreIds,
+      totalPecas: works.length,
+      totalPartituras: newWorkScoreIds.length,
+    });
+  }, []);
 
   // Form handlers
   const updateFormData = useCallback((field: string, value: any) => {
@@ -155,14 +188,55 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
     updateFormData,
   ]);
 
+  // 🆕 FUNÇÃO PARA VALIDAÇÃO E SCROLL AUTOMÁTICO
+  const validateFormAndShowErrors = useCallback(() => {
+    // Campos obrigatórios
+    if (!formData.studentUserId) {
+      studentSelectRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+      studentSelectRef.current?.focus();
+      return 'Por favor, selecione um aluno.';
+    }
+
+    if (!formData.title.trim()) {
+      titleInputRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+      titleInputRef.current?.focus();
+      return 'Por favor, digite o título da tarefa.';
+    }
+
+    if (!formData.description.trim()) {
+      descriptionTextareaRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+      descriptionTextareaRef.current?.focus();
+      return 'Por favor, digite uma descrição detalhada da tarefa.';
+    }
+
+    return null; // Sem erros
+  }, [formData]);
+
+  // Estado para mostrar erros de validação
+  const [validationError, setValidationError] = useState<string | null>(null);
+
   // Submit handler
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       clearError();
+      setValidationError(null); // Limpar erro anterior
 
-      // Validation
-      if (!formData.studentUserId || !formData.title || !formData.description) {
+      // 🆕 VALIDAÇÃO COM SCROLL AUTOMÁTICO
+      const validationErrorMessage = validateFormAndShowErrors();
+      if (validationErrorMessage) {
+        setValidationError(validationErrorMessage);
+        // Auto-limpar após 5 segundos
+        setTimeout(() => setValidationError(null), 5000);
         return;
       }
 
@@ -173,7 +247,16 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
         technicalGoals: formData.technicalGoals.filter((goal) => goal.trim()),
         musicalGoals: formData.musicalGoals.filter((goal) => goal.trim()),
         exercises: formData.exercises.filter((ex) => ex.trim()),
+        // 🆕 INCLUIR PEÇAS MUSICAIS
+        worksIds: worksIds, // IDs das obras
+        workScoreIds: workScoreIds, // IDs das partituras
       };
+
+      console.log('🚀 Enviando dados da tarefa:', {
+        ...cleanData,
+        totalPecas: worksIds.length,
+        totalPartituras: workScoreIds.length,
+      });
 
       const success = await createAssignment(cleanData);
 
@@ -181,7 +264,15 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
         router.push('/teacher/assignments');
       }
     },
-    [formData, createAssignment, clearError, router]
+    [
+      formData,
+      worksIds,
+      workScoreIds,
+      createAssignment,
+      clearError,
+      router,
+      validateFormAndShowErrors,
+    ]
   );
 
   // Filter lessons by selected student
@@ -257,6 +348,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                         Aluno *
                       </label>
                       <Select
+                        ref={studentSelectRef}
                         options={[
                           { value: '', label: 'Selecione um aluno...' },
                           ...initialData.students.map((student) => ({
@@ -348,6 +440,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                         Título da Tarefa *
                       </label>
                       <Input
+                        ref={titleInputRef}
                         type="text"
                         value={formData.title}
                         onChange={(e) =>
@@ -364,6 +457,7 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                         Descrição Detalhada *
                       </label>
                       <textarea
+                        ref={descriptionTextareaRef}
                         value={formData.description}
                         onChange={(e) =>
                           updateFormData('description', e.target.value)
@@ -469,6 +563,26 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                         </div>
                       ))}
                     </div>
+                  </div>
+
+                  {/* 🆕 SEÇÃO DE PEÇAS MUSICAIS */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
+                        <FiMusic className="w-5 h-5" />
+                        <span>Peças Musicais</span>
+                      </h3>
+                      <div className="text-sm text-theme-secondary">
+                        {selectedWorks.length}/4 peças
+                      </div>
+                    </div>
+
+                    <WorkSelectionSection
+                      selectedWorks={selectedWorks}
+                      onWorksChange={handleWorksChange}
+                      maxWorks={4}
+                      disabled={loading.createAssignment}
+                    />
                   </div>
 
                   {/* Advanced Options */}
@@ -659,6 +773,29 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                   </div>
 
                   {/* Error Display */}
+                  {validationError && (
+                    <div className="bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg p-4">
+                      <div className="flex items-center space-x-3">
+                        <FiAlertCircle className="w-5 h-5 text-accent-yellow" />
+                        <div>
+                          <p className="text-accent-yellow font-medium">
+                            Campos obrigatórios
+                          </p>
+                          <p className="text-accent-yellow/80 text-sm">
+                            {validationError}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setValidationError(null)}
+                          className="ml-auto text-accent-yellow"
+                        >
+                          <FiX className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {error && (
                     <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
                       <div className="flex items-center space-x-3">
@@ -782,6 +919,62 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
               </AnimatedItem>
             )}
 
+            {/* 🆕 RESUMO DAS PEÇAS SELECIONADAS */}
+            {selectedWorks.length > 0 && (
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard hover="none" className="classical-card p-6">
+                  <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
+                    <FiMusic className="w-5 h-5" />
+                    <span>Peças Selecionadas</span>
+                  </h3>
+
+                  <div className="space-y-3">
+                    {selectedWorks.map((work, index) => (
+                      <div
+                        key={work.workId}
+                        className="flex items-center space-x-3 p-3 bg-theme-elevated/50 rounded-lg"
+                      >
+                        <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FiMusic className="w-4 h-4 text-accent-blue" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-theme-primary text-sm truncate">
+                            {work.workTitle}
+                          </p>
+                          <p className="text-xs text-theme-tertiary truncate">
+                            {work.composerName}
+                          </p>
+                          {work.scoreId && (
+                            <p className="text-xs text-accent-green">
+                              ✓ Com partitura
+                            </p>
+                          )}
+                        </div>
+                        <span className="text-xs bg-theme-secondary/20 text-theme-secondary px-2 py-1 rounded">
+                          #{index + 1}
+                        </span>
+                      </div>
+                    ))}
+
+                    <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
+                      <div className="text-xs text-theme-secondary">
+                        <div className="flex justify-between">
+                          <span>Total de peças:</span>
+                          <span className="font-medium">{worksIds.length}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Com partituras:</span>
+                          <span className="font-medium">
+                            {workScoreIds.length}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            )}
+
             {/* Assignment Type Info */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
@@ -843,6 +1036,10 @@ export default function CreateAssignmentuseCreateAssignmentPageClient({
                   <div className="flex items-start space-x-2">
                     <FiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>Seja específico nos objetivos para melhor resultado</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <FiMusic className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
+                    <p>Vincule peças musicais para organizar o repertório</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiClock className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />

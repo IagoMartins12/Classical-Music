@@ -1,4 +1,4 @@
-// app/hooks/useTeacherAssignments.ts - Hook específico para gerenciamento de tarefas
+// app/hooks/lessonsSystem/useTeacherAssignments.ts - Hook específico para gerenciamento de tarefas
 
 import { useState, useCallback } from 'react';
 import {
@@ -144,6 +144,8 @@ export function useTeacherAssignments(
       setError(null);
 
       try {
+        console.log('🚀 [HOOK] Enviando dados para API:', assignmentData);
+
         const response = await fetch('/api/assignments', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -158,6 +160,11 @@ export function useTeacherAssignments(
             musicalGoals:
               assignmentData.musicalGoals?.filter((g: string) => g.trim()) ||
               [],
+            exercises:
+              assignmentData.exercises?.filter((ex: string) => ex.trim()) || [],
+            // 🆕 INCLUIR PEÇAS MUSICAIS
+            worksIds: assignmentData.worksIds || [], // IDs das obras
+            workScoreIds: assignmentData.workScoreIds || [], // IDs das partituras
             dueDate: assignmentData.dueDate
               ? new Date(assignmentData.dueDate).toISOString()
               : null,
@@ -174,6 +181,8 @@ export function useTeacherAssignments(
           throw new Error('Erro na criação da tarefa');
         }
 
+        console.log('✅ [HOOK] Tarefa criada com sucesso:', data.assignment);
+
         // Add to local state
         setState((prev) => ({
           ...prev,
@@ -187,7 +196,7 @@ export function useTeacherAssignments(
 
         return true;
       } catch (error) {
-        console.error('Erro ao criar tarefa:', error);
+        console.error('❌ [HOOK] Erro ao criar tarefa:', error);
         setError(error instanceof Error ? error.message : 'Erro desconhecido');
         return false;
       } finally {
@@ -204,12 +213,17 @@ export function useTeacherAssignments(
       setError(null);
 
       try {
+        console.log('🔄 [HOOK] Atualizando assignment:', assignmentId, updates);
+
         const response = await fetch('/api/assignments', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             assignmentId,
             ...updates,
+            // 🆕 INCLUIR PEÇAS MUSICAIS SE FORNECIDAS
+            ...(updates.worksIds && { worksIds: updates.worksIds }),
+            ...(updates.workScoreIds && { workScoreIds: updates.workScoreIds }),
           }),
         });
 
@@ -223,6 +237,8 @@ export function useTeacherAssignments(
           throw new Error('Erro na atualização da tarefa');
         }
 
+        console.log('✅ [HOOK] Tarefa atualizada com sucesso');
+
         // Update local state
         setState((prev) => ({
           ...prev,
@@ -235,7 +251,7 @@ export function useTeacherAssignments(
 
         return true;
       } catch (error) {
-        console.error('Erro ao atualizar tarefa:', error);
+        console.error('❌ [HOOK] Erro ao atualizar tarefa:', error);
         setError(error instanceof Error ? error.message : 'Erro desconhecido');
         return false;
       } finally {
@@ -252,6 +268,8 @@ export function useTeacherAssignments(
       setError(null);
 
       try {
+        console.log('🗑️ [HOOK] Deletando assignment:', assignmentId);
+
         const response = await fetch(`/api/assignments?id=${assignmentId}`, {
           method: 'DELETE',
         });
@@ -265,6 +283,8 @@ export function useTeacherAssignments(
         if (!data.success) {
           throw new Error('Erro na exclusão da tarefa');
         }
+
+        console.log('✅ [HOOK] Tarefa deletada com sucesso');
 
         // Remove from local state
         setState((prev) => ({
@@ -280,7 +300,7 @@ export function useTeacherAssignments(
 
         return true;
       } catch (error) {
-        console.error('Erro ao deletar tarefa:', error);
+        console.error('❌ [HOOK] Erro ao deletar tarefa:', error);
         setError(error instanceof Error ? error.message : 'Erro desconhecido');
         return false;
       } finally {

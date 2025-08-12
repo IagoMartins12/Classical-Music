@@ -1451,10 +1451,10 @@ function AssignmentDetailsModal({
               </div>
 
               {/* Quick Actions */}
-              {!assignment.isCompleted && (
-                <div className="classical-card-2 p-4">
-                  <h3 className="font-bold text-theme-primary mb-4">Ações</h3>
-                  <div className="space-y-2">
+              <div className="classical-card-2 p-4">
+                <h3 className="font-bold text-theme-primary mb-4">Ações</h3>
+                <div className="space-y-4">
+                  {!assignment.isCompleted && (
                     <button
                       onClick={approveAssignment}
                       disabled={actionLoading === assignment.id}
@@ -1467,9 +1467,20 @@ function AssignmentDetailsModal({
                       )}
                       <span>Aprovar Tarefa</span>
                     </button>
-                  </div>
+                  )}
+
+                  <Link href={`assignments/${assignment.id}`}>
+                    <button
+                      disabled={actionLoading === assignment.id}
+                      className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
+                    >
+                      <FiEye className="w-4 h-4" />
+
+                      <span>Ver mais detalhes</span>
+                    </button>
+                  </Link>
                 </div>
-              )}
+              </div>
 
               {/* Assignment Info */}
               <div className="classical-card-2 p-4">

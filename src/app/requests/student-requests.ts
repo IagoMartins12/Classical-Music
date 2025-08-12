@@ -195,7 +195,21 @@ export interface StudentCalendarEvent {
     studentFeedback?: string;
   };
 }
-
+interface AssignmentSubmissions {
+  progressMilestones?: {
+    learnedLeftHand?: boolean;
+    learnedRightHand?: boolean;
+    playedWithMetronome?: boolean;
+    memorized?: boolean;
+    playedAtTempo?: boolean;
+    masteredDynamics?: boolean;
+    performedForOthers?: boolean;
+  };
+  recordings?: string[];
+  notes?: string;
+  files?: string[];
+  [key: string]: any;
+}
 // ====================================
 // DASHBOARD REQUESTS - QUERIES DIRETAS
 // ====================================
@@ -2275,6 +2289,339 @@ export const updateStudentAssignment = async (
     };
   }
 };
+
+export interface StudentAssignmentDetailsData {
+  assignment: {
+    id: string;
+    title: string;
+    description: string;
+    type: string;
+    priority: string;
+    workScoreIds: string[];
+    exercises: string[];
+    practiceGoals: string[];
+    tempoTargets?: any;
+    technicalGoals: string[];
+    musicalGoals: string[];
+    status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
+    dueDate?: Date | null;
+    estimatedTime?: number | null;
+    actualTime?: number | null;
+    isOverdue: boolean;
+    daysUntilDue?: number | null;
+    isCompleted: boolean;
+    completedAt?: Date | null;
+    progress?: number | null;
+    teacherFeedback?: string | null;
+    teacherRating?: number | null;
+    studentNotes?: string | null;
+    studentRating?: number | null;
+    submissions?: any;
+    submissionDate?: Date | null;
+    lesson: {
+      id: string;
+      title: string;
+      scheduledAt: Date;
+      teacher: {
+        name: string;
+        image?: string | null;
+      };
+    };
+    workScores: Array<{
+      id: string;
+      title: string;
+      composer: string;
+      workTitle: string;
+      type: string;
+      downloadUrl?: string;
+    }>;
+    progressMilestones?: {
+      learnedLeftHand: boolean;
+      learnedRightHand: boolean;
+      playedWithMetronome: boolean;
+      memorized: boolean;
+      playedAtTempo: boolean;
+      masteredDynamics: boolean;
+      performedForOthers: boolean;
+    };
+    permissions: {
+      canEdit: boolean;
+      canDelete: boolean;
+      canComplete: boolean;
+      canAddFeedback: boolean;
+      canAddSubmission: boolean;
+    };
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  userRole: number;
+}
+
+export interface StudentAssignmentDetailsResponse {
+  success: boolean;
+  assignment?: StudentAssignmentDetailsData['assignment'];
+  userRole?: number;
+  error?: string;
+}
+
+export const getStudentAssignmentDetailsData = unstable_cache(
+  async (
+    assignmentId: string,
+    userId: string,
+    userRole: number = 0
+  ): Promise<StudentAssignmentDetailsResponse> => {
+    try {
+      console.log(
+        `📋👨‍🎓 [STUDENT-ASSIGNMENT-DETAILS] Loading assignment ${assignmentId} for user ${userId}`
+      );
+
+      // 1. Verificar se aluno existe
+      const studentProfile = await prisma.student.findUnique({
+        where: { userId },
+        select: { id: true },
+      });
+
+      if (!studentProfile) {
+        console.log(
+          `❌ [STUDENT-ASSIGNMENT-DETAILS] Student profile not found for user ${userId}`
+        );
+        return {
+          success: false,
+          error: 'Perfil de aluno não encontrado',
+        };
+      }
+
+      // 2. Buscar assignment com verificação de acesso (aluno só vê seus próprios assignments)
+      const assignment = await prisma.assignment.findFirst({
+        where: {
+          id: assignmentId,
+          studentId: studentProfile.id,
+        },
+        include: {
+          student: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  image: true,
+                },
+              },
+            },
+          },
+          lesson: {
+            include: {
+              teacher: {
+                include: {
+                  user: {
+                    select: {
+                      firstName: true,
+                      lastName: true,
+                      image: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!assignment) {
+        console.log(
+          `❌ [STUDENT-ASSIGNMENT-DETAILS] Assignment ${assignmentId} not found or access denied`
+        );
+        return {
+          success: false,
+          error: 'Tarefa não encontrada ou acesso negado',
+        };
+      }
+
+      // 3. Buscar WorkScores se houver IDs
+      let workScores: any[] = [];
+      if (assignment.workScoreIds.length > 0) {
+        workScores = await prisma.workScore.findMany({
+          where: {
+            id: { in: assignment.workScoreIds },
+          },
+          include: {
+            work: {
+              include: {
+                composer: {
+                  select: { name: true },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      // 4. Calcular status atual
+      const now = new Date();
+      const isOverdue =
+        assignment.dueDate &&
+        assignment.dueDate < now &&
+        !assignment.isCompleted;
+
+      const daysUntilDue = assignment.dueDate
+        ? Math.ceil(
+            (assignment.dueDate.getTime() - now.getTime()) /
+              (1000 * 60 * 60 * 24)
+          )
+        : null;
+
+      // 🆕 5. Extrair progress milestones (melhorado)
+      let progressMilestones = {
+        learnedLeftHand: false,
+        learnedRightHand: false,
+        playedWithMetronome: false,
+        memorized: false,
+        playedAtTempo: false,
+        masteredDynamics: false,
+        performedForOthers: false,
+      };
+
+      // Extrair de submissions se existir
+      if (assignment.submissions) {
+        try {
+          const submissions = assignment.submissions as AssignmentSubmissions;
+          if (
+            submissions &&
+            typeof submissions === 'object' &&
+            submissions.progressMilestones
+          ) {
+            progressMilestones = {
+              ...progressMilestones,
+              ...submissions.progressMilestones,
+            };
+            console.log(
+              `📊 [STUDENT-ASSIGNMENT-DETAILS] Progress milestones extracted from submissions`
+            );
+          }
+        } catch (error) {
+          console.warn(
+            '⚠️ [STUDENT-ASSIGNMENT-DETAILS] Erro ao processar submissions progressMilestones:',
+            error
+          );
+        }
+      }
+
+      // 6. Definir permissões (perspectiva do aluno)
+      const permissions = {
+        canEdit: false, // Aluno não pode editar assignment
+        canDelete: false, // Aluno não pode deletar assignment
+        canComplete: userRole === 0 && !assignment.isCompleted,
+        canAddFeedback: userRole === 0,
+        canAddSubmission: userRole === 0 && !assignment.isCompleted,
+      };
+
+      // 7. Formatar assignment completo (perspectiva do aluno)
+      const assignmentDetail = {
+        id: assignment.id,
+        title: assignment.title,
+        description: assignment.description,
+        type: assignment.type,
+        priority: assignment.priority,
+
+        // Recursos
+        workScoreIds: assignment.workScoreIds,
+        exercises: assignment.exercises,
+
+        // Metas
+        practiceGoals: assignment.practiceGoals,
+        tempoTargets: assignment.tempoTargets,
+        technicalGoals: assignment.technicalGoals,
+        musicalGoals: assignment.musicalGoals,
+
+        // Status e prazos
+        status: (isOverdue ? 'OVERDUE' : assignment.status) as any,
+        dueDate: assignment.dueDate,
+        estimatedTime: assignment.estimatedTime,
+        actualTime: assignment.actualTime,
+        isOverdue: !!isOverdue,
+        daysUntilDue,
+
+        // Progresso
+        isCompleted: assignment.isCompleted,
+        completedAt: assignment.completedAt,
+        progress: assignment.progress,
+
+        // Feedback (aluno vê feedback do professor, mas pode editar o próprio)
+        teacherFeedback: assignment.teacherFeedback,
+        teacherRating: assignment.teacherRating,
+        studentNotes: assignment.studentNotes,
+        studentRating: assignment.studentRating,
+
+        // Submissões
+        submissions: assignment.submissions,
+        submissionDate: assignment.submissionDate,
+
+        // Relacionamentos
+        lesson: {
+          id: assignment.lesson.id,
+          title: assignment.lesson.title,
+          scheduledAt: assignment.lesson.scheduledAt,
+          teacher: {
+            name: `${assignment.lesson.teacher.user.firstName} ${assignment.lesson.teacher.user.lastName}`.trim(),
+            image: assignment.lesson.teacher.user.image,
+          },
+        },
+
+        // WorkScores
+        workScores: workScores.map((ws) => ({
+          id: ws.id,
+          title: ws.title,
+          composer: ws.work.composer.name,
+          workTitle: ws.work.title,
+          type: ws.type,
+          downloadUrl: ws.downloadUrl || undefined,
+        })),
+
+        // 🆕 Progress Milestones (agora extraído corretamente)
+        progressMilestones,
+
+        // Permissões
+        permissions,
+
+        // Timestamps
+        createdAt: assignment.createdAt,
+        updatedAt: assignment.updatedAt,
+      };
+
+      console.log(
+        `✅ [STUDENT-ASSIGNMENT-DETAILS] Assignment details loaded successfully - ${assignment.title}`,
+        {
+          hasProgressMilestones:
+            Object.values(progressMilestones).some(Boolean),
+          progressMilestonesCount:
+            Object.values(progressMilestones).filter(Boolean).length,
+        }
+      );
+
+      return {
+        success: true,
+        assignment: assignmentDetail,
+        userRole,
+      };
+    } catch (error) {
+      console.error(
+        '❌ [STUDENT-ASSIGNMENT-DETAILS] Error loading assignment details:',
+        error
+      );
+      return {
+        success: false,
+        error:
+          error instanceof Error ? error.message : 'Erro interno do servidor',
+      };
+    }
+  },
+  ['student-assignment-details-data'],
+  {
+    revalidate: 300, // 5 minutos
+    tags: ['student-assignment-details'],
+  }
+);
 
 // ====================================
 // CACHE INVALIDATION

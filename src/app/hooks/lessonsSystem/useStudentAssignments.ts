@@ -31,6 +31,12 @@ interface UseStudentAssignmentsActions {
     progress: number,
     actualTime?: number
   ) => Promise<boolean>;
+  // 🆕 Função específica para atualizar progressMilestones
+  updateProgressMilestones: (
+    assignmentId: string,
+    progressMilestones: any,
+    progress?: number
+  ) => Promise<boolean>;
   clearError: () => void;
 }
 
@@ -162,13 +168,21 @@ export function useStudentAssignments(
     }
   }, [state.pagination, setLoading, setError]);
 
-  // Update assignment
+  // Update assignment (função principal)
   const updateAssignment = useCallback(
     async (assignmentId: string, updates: any): Promise<boolean> => {
       setLoading('updateAssignment', true);
       setError(null);
 
       try {
+        console.log(
+          `📋 [UPDATE-ASSIGNMENT] Updating assignment ${assignmentId}`,
+          {
+            fields: Object.keys(updates),
+            hasProgressMilestones: !!updates.progressMilestones,
+          }
+        );
+
         const response = await fetch('/api/assignments', {
           method: 'PATCH',
           headers: {
@@ -213,6 +227,41 @@ export function useStudentAssignments(
     [setLoading, setError]
   );
 
+  // 🆕 Update progress milestones (função específica)
+  const updateProgressMilestones = useCallback(
+    async (
+      assignmentId: string,
+      progressMilestones: any,
+      progress?: number
+    ): Promise<boolean> => {
+      console.log(
+        `📊 [UPDATE-PROGRESS-MILESTONES] Updating milestones for assignment ${assignmentId}`,
+        {
+          milestones: progressMilestones,
+          progress,
+        }
+      );
+
+      return updateAssignment(assignmentId, {
+        progressMilestones,
+        progress,
+        // Automaticamente determinar status baseado no progresso
+        status: progress
+          ? progress >= 100
+            ? 'COMPLETED'
+            : progress > 0
+            ? 'IN_PROGRESS'
+            : 'PENDING'
+          : undefined,
+        // Se completou 100%, marcar como concluído
+        isCompleted: progress ?? 0 >= 100,
+        completedAt:
+          progress ?? 0 >= 100 ? new Date().toISOString() : undefined,
+      });
+    },
+    [updateAssignment]
+  );
+
   // Complete assignment
   const completeAssignment = useCallback(
     async (
@@ -227,6 +276,17 @@ export function useStudentAssignments(
         studentRating: rating,
         completedAt: new Date().toISOString(),
         submissionDate: new Date().toISOString(),
+        progress: 100, // Marca como 100% completo
+        // Marcar todos os progressMilestones como completos
+        progressMilestones: {
+          learnedLeftHand: true,
+          learnedRightHand: true,
+          playedWithMetronome: true,
+          memorized: true,
+          playedAtTempo: true,
+          masteredDynamics: true,
+          performedForOthers: true,
+        },
       });
     },
     [updateAssignment]
@@ -292,6 +352,7 @@ export function useStudentAssignments(
     completeAssignment,
     addSubmission,
     updateProgress,
+    updateProgressMilestones, // 🆕 Nova função
     clearError,
   };
 }

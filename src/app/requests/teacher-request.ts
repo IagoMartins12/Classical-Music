@@ -3327,6 +3327,7 @@ export interface TeacherAssignmentEditData {
     dueDate?: Date | null;
     estimatedTime?: number | null;
     workScoreIds: string[];
+    worksIds: string[];
     exercises: string[];
     practiceGoals: string[];
     tempoTargets?: any;
@@ -3501,6 +3502,8 @@ export const getTeacherAssignmentEditData = unstable_cache(
 
         // Recursos
         workScoreIds: assignment.workScoreIds,
+        // 🆕 INCLUIR worksIds
+        worksIds: assignment.worksIds || [],
         exercises: assignment.exercises,
 
         // Metas
@@ -3556,7 +3559,11 @@ export const getTeacherAssignmentEditData = unstable_cache(
       }));
 
       console.log(
-        `✅ [TEACHER-ASSIGNMENT-EDIT] Edit data loaded successfully - ${assignment.title}, ${students.length} students`
+        `✅ [TEACHER-ASSIGNMENT-EDIT] Edit data loaded successfully - ${
+          assignment.title
+        }, ${students.length} students, Works: ${
+          assignment.worksIds?.length || 0
+        }, Scores: ${assignment.workScoreIds?.length || 0}`
       );
 
       return {

@@ -796,7 +796,13 @@ export default function StudentAssignmentsPageClient({
                       <div className="text-sm text-theme-tertiary">
                         Criado em {formatDate(assignment.createdAt)}
                       </div>
-                      <FiEye className="w-4 h-4 text-brand-primary" />
+                      <Link
+                        className="text-sm text-brand-primary flex gap-2"
+                        href={`assignments/${assignment.id}`}
+                      >
+                        <FiEye className="w-4 h-4 text-brand-primary" />
+                        <span>Ver detalhes</span>
+                      </Link>
                     </div>
                   </AnimatedCard>
                 );

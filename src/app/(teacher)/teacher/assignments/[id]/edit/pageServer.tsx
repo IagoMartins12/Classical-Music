@@ -13,6 +13,8 @@ export interface EditAssignmentData {
     dueDate?: Date | null;
     estimatedTime?: number | null;
     workScoreIds: string[];
+    // 🆕 INCLUIR worksIds
+    worksIds: string[];
     exercises: string[];
     practiceGoals: string[];
     tempoTargets?: any;
@@ -113,6 +115,8 @@ export default async function EditAssignmentPageServer({
         dueDate: assignment.dueDate,
         estimatedTime: assignment.estimatedTime,
         workScoreIds: assignment.workScoreIds || [],
+        // 🆕 INCLUIR worksIds
+        worksIds: assignment.worksIds || [],
         exercises: assignment.exercises || [],
         practiceGoals: assignment.practiceGoals || [],
         tempoTargets: assignment.tempoTargets,
@@ -180,7 +184,11 @@ export default async function EditAssignmentPageServer({
     };
 
     console.log(
-      `✅ [EDIT-ASSIGNMENT-PAGE-SERVER] Data loaded successfully - Assignment: ${assignment.title}, Students: ${students.length}`
+      `✅ [EDIT-ASSIGNMENT-PAGE-SERVER] Data loaded successfully - Assignment: ${
+        assignment.title
+      }, Students: ${students.length}, Works: ${
+        assignment.worksIds?.length || 0
+      }, Scores: ${assignment.workScoreIds?.length || 0}`
     );
 
     return <EditAssignmentPageClient initialData={editAssignmentData} />;
