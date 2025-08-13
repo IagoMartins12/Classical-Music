@@ -33,7 +33,6 @@ import Select from '@/app/components/Common/Select';
 import { useStudentCalendar } from '@/app/hooks/lessonsSystem/useStudentCalendar';
 import Modal from '@/app/components/Modal';
 
-
 interface StudentCalendarPageClientProps {
   initialData: StudentCalendarData | null;
   errorMessage?: string;
@@ -1058,12 +1057,6 @@ function StudentEventDetailsModal({
                 </span>
               </div>
             </div>
-            <button
-              onClick={onClose}
-              className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center"
-            >
-              <FiX className="w-4 h-4 text-theme-tertiary" />
-            </button>
           </div>
 
           <div className="space-y-6">

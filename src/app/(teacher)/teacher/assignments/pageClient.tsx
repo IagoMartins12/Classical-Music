@@ -756,7 +756,7 @@ export default function TeacherAssignmentsPageClient({
                                   </div>
                                   <div className="w-full bg-theme-secondary rounded-full h-2">
                                     <div
-                                      className="bg-gradient-to-r from-brand-primary to-brand-secondary h-2 rounded-full transition-all duration-300"
+                                      className="progress-bar h-2 rounded-full transition-all duration-300"
                                       style={{
                                         width: `${assignment.progress}%`,
                                       }}

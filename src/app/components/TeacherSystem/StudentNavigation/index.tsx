@@ -1,4 +1,4 @@
-// app/(student)/components/StudentNavigation.tsx
+// app/(student)/components/StudentNavigation.tsx - ATUALIZADO COM NOTIFICAÇÕES
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -21,6 +21,8 @@ import {
   FiHeart,
   FiAward,
   FiFile,
+  FiBell,
+  FiBook,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { toast } from 'react-hot-toast';
@@ -29,6 +31,7 @@ import { useAuthStore, useOnboardingModal } from '@/app/stores/authStore';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { ThemeToggle } from '../../ThemeToggle';
+import NotificationBell from '../../Notification/NotificationBell';
 
 interface StudentNavigationProps {
   user: any;
@@ -74,24 +77,16 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
     },
     {
       label: 'Minhas Aulas',
+      icon: FiBook,
+      href: '/student/lessons',
+
+      active: pathname.startsWith('/student/lessons'),
+    },
+    {
+      label: 'Calendário',
+      href: '/student/calendar',
       icon: FiCalendar,
-      active:
-        pathname.startsWith('/student/lessons') ||
-        pathname.startsWith('/student/calendar'),
-      submenu: [
-        {
-          label: 'Próximas Aulas',
-          href: '/student/lessons',
-          description: 'Visualizar e gerenciar suas aulas',
-          icon: FiCalendar,
-        },
-        {
-          label: 'Calendário',
-          href: '/student/calendar',
-          description: 'Visualização em calendário',
-          icon: FiCalendar,
-        },
-      ],
+      active: pathname.startsWith('/student/calendar'),
     },
     {
       label: 'Meu Progresso',
@@ -107,42 +102,11 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
     },
 
     {
-      label: 'Estudos',
-      icon: FiMusic,
-      active: pathname.startsWith('/learning'),
-      submenu: [
-        {
-          label: 'Aprendendo',
-          href: '/learning?filter=want-to-learn',
-          description: 'Obras que você está estudando',
-          icon: FiBookOpen,
-        },
-        {
-          label: 'Aprendidas',
-          href: '/learning?filter=learned',
-          description: 'Obras que você já domina',
-          icon: FiAward,
-        },
-        {
-          label: 'Explorar Repertório',
-          href: '/explore?filter=want-to-learn',
-          description: 'Encontrar novas obras',
-          icon: FiMusic,
-        },
-      ],
-    },
-    {
       label: 'Perfil',
       href: '/student/profile',
       icon: FiUser,
       active: pathname === '/student/profile',
     },
-    // {
-    //   label: 'Avaliações',
-    //   href: '/student/reviews',
-    //   icon: FiStar,
-    //   active: pathname === '/student/reviews',
-    // },
   ];
 
   const getUserDisplayName = () => {
@@ -285,7 +249,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                           relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2
                           ${
                             item.active
-                              ? 'text-accent-green bg-accent-green/10 border border-accent-green/20'
+                              ? 'text-brand-primary'
                               : 'text-theme-secondary hover:text-accent-green hover:bg-interactive-hover'
                           }
                         `}
@@ -345,7 +309,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                         relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2
                         ${
                           item.active
-                            ? 'text-accent-green bg-accent-green/10 border border-accent-green/20'
+                            ? 'text-brand-primary'
                             : 'text-theme-secondary hover:text-accent-green hover:bg-interactive-hover'
                         }
                       `}
@@ -365,6 +329,13 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
             {/* Right Section */}
             <div className="flex items-center space-x-3">
+              {/* 🆕 NOTIFICATION BELL */}
+              <NotificationBell
+                userRole="student"
+                userId={user.id}
+                className="hidden sm:block"
+              />
+
               {/* Theme Toggle */}
               <ThemeToggle variant="navbar" className="hidden sm:block" />
 
@@ -436,6 +407,17 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                     >
                       <FiUser className="w-4 h-4" />
                       <span>Meu Perfil</span>
+                    </Link>
+
+                    {/* 🆕 LINK PARA NOTIFICAÇÕES */}
+                    <Link
+                      href="/student/notifications"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-green hover:bg-interactive-hover rounded-lg transition-all"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      <FiBell className="w-4 h-4" />
+
+                      <span>Notificações</span>
                     </Link>
 
                     <Link
@@ -522,6 +504,15 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                 >
                   <FiX className="w-5 h-5 text-theme-secondary" />
                 </button>
+              </div>
+
+              {/* 🆕 NOTIFICATION BELL MOBILE */}
+              <div className="mb-6 pb-4 border-b border-theme-secondary">
+                <NotificationBell
+                  userRole="student"
+                  userId={user.id}
+                  className="w-full justify-center"
+                />
               </div>
 
               {/* Navigation Items */}

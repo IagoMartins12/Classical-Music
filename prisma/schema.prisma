@@ -246,6 +246,48 @@ enum AssignmentStatus {
   OVERDUE // Atrasada
 }
 
+enum NotificationType {
+  // AULAS
+  LESSON_STARTING_SOON     // Aula em 30 minutos
+  LESSON_TOMORROW          // Aula amanhã (24h)
+  LESSON_STATUS_PENDING    // Aula passou e status ainda SCHEDULED
+  LESSON_NO_SHOW          // Aluno faltou sem reagendamento
+  
+  // TAREFAS
+  ASSIGNMENT_DUE_SOON     // Tarefa vence em 2h
+  ASSIGNMENT_DUE_TOMORROW // Tarefa vence amanhã
+  ASSIGNMENT_OVERDUE      // Tarefa já atrasada
+  ASSIGNMENT_FEEDBACK_NEEDED // Professor precisa dar feedback
+  ASSIGNMENT_COMPLETED    // Aluno completou tarefa
+  
+  // ALUNOS/PROFESSORES
+  STUDENT_INVITE_PENDING  // Convite de aluno pendente
+  STUDENT_MULTIPLE_LATE   // Aluno com 3+ tarefas atrasadas
+  NEW_STUDENT_FEEDBACK    // Novo feedback do professor
+  
+  // PROGRESSO
+  WEEKLY_REPORT_AVAILABLE // Relatório semanal disponível
+  PRACTICE_REMINDER       // Lembrete de prática
+  
+  // GERAIS
+  SYSTEM_MAINTENANCE      // Manutenção do sistema
+  GENERAL_ANNOUNCEMENT    // Anúncio geral
+}
+
+enum NotificationPriority {
+  LOW       // Azul - informativo
+  MEDIUM    // Amarelo - importante 
+  HIGH      // Vermelho - urgente
+  CRITICAL  // Vermelho piscando - crítico
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+  DISMISSED
+  EXPIRED
+}
+
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   firstName      String?
@@ -295,6 +337,7 @@ model User {
   moderatedUploads UploadModeration[] @relation("ModeratedUploads")
   uploadHistory    UploadHistory[]
   generatedReports GeneratedReport[]  @relation("GeneratedReports")
+  notifications Notification[] @relation("UserNotifications")
 
   // Estatísticas de upload
   totalUploads Int @default(0)
@@ -1954,4 +1997,72 @@ model TeacherReview {
   @@index([rating, createdAt])
   @@index([isModerated])
   @@map("teacher_reviews")
+}
+
+model Notification {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  type      NotificationType
+  priority  NotificationPriority @default(MEDIUM)
+  status    NotificationStatus   @default(UNREAD)
+  
+  // Conteúdo da notificação
+  title       String
+  message     String
+  actionText  String? // Texto do botão (ex: "Ver Aula", "Marcar como Feito")
+  actionUrl   String? // URL para onde levar o usuário
+  
+  // Dados relacionados (para construir links dinâmicos)
+  relatedEntityType String? // "lesson", "assignment", "student", etc.
+  relatedEntityId   String? @db.ObjectId
+  
+  // 🆕 CAMPO PARA PREVENÇÃO DE DUPLICATAS
+  uniqueHash String? // Hash único baseado em tipo + entidade + metadata específicos
+  
+  // Metadados adicionais
+  metadata Json? // Dados extras específicos por tipo
+  
+  // Configurações de exibição
+  showInToast   Boolean @default(true)  // Mostrar como toast
+  showInBrowser Boolean @default(false) // Mostrar como notificação browser
+  showInPage    Boolean @default(true)  // Mostrar na página de notificações
+  
+  // Controle de repetição (REMOVIDO cooldown)
+  lastShownAt DateTime? // Última vez que foi mostrada como toast
+  
+  // Agendamento
+  scheduledFor DateTime? // Quando deve ser mostrada (para agendamentos futuros)
+  expiresAt    DateTime? // Data de expiração (auto-cleanup)
+  
+  // Controle de entrega
+  toastShown    Boolean @default(false) // Toast já foi mostrado
+  browserShown  Boolean @default(false) // Notificação browser já foi mostrada
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  readAt    DateTime? // Quando foi marcada como lida
+  
+  // Relações
+  user User @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // 🆕 ÍNDICES OTIMIZADOS PARA PREVENÇÃO DE DUPLICATAS
+  @@index([userId, status, createdAt])
+  @@index([userId, type, status])
+  @@index([scheduledFor, status])
+  @@index([expiresAt])
+  @@index([relatedEntityType, relatedEntityId])
+  @@index([priority, status, createdAt])
+  @@index([showInToast, toastShown])
+  @@index([showInBrowser, browserShown])
+  
+  // 🆕 ÍNDICES PARA PREVENÇÃO DE DUPLICATAS
+  @@index([userId, type, relatedEntityId, status]) // Principal para verificar duplicatas
+  @@index([uniqueHash]) // Para verificação rápida por hash
+  @@index([userId, type, relatedEntityId, expiresAt]) // Para verificação com expiração
+  
+  // 🆕 CONSTRAINT OPCIONAL PARA HASH ÚNICO (se quiser garantir a nível de DB)
+  // @@unique([uniqueHash], name: "unique_notification_hash")
+  
+  @@map("notifications")
 }

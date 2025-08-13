@@ -1237,6 +1237,9 @@ body {
   transform: scale(0.8);
 }
 
+.progress-bar {
+  background-color: #04c514;
+}
 /* ===== ANIMAÇÕES PREMIUM ===== */
 
 @keyframes modalFadeIn {

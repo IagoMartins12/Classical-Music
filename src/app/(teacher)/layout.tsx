@@ -1,4 +1,4 @@
-// app/(teacher)/layout.tsx - SEM html, head, body
+// app/(teacher)/layout.tsx - ATUALIZADO COM NOTIFICAÇÕES
 import type { Metadata } from 'next';
 import { FavoritesProvider } from '../providers/FavoritesProvider';
 import { Toaster } from 'react-hot-toast';
@@ -7,6 +7,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
 import TeacherNavigation from '../components/TeacherSystem/TeacherNavigation';
+import NotificationManager from '../components/Notification/NotificationManager';
 
 export const metadata: Metadata = {
   title: {
@@ -64,68 +65,71 @@ export default async function TeacherLayout({
   return (
     <AdsProvider>
       <FavoritesProvider>
-        <div className="min-h-screen bg-gradient-primary">
-          {/* Navigation */}
-          <TeacherNavigation user={session.user} />
+        {/* 🆕 NOTIFICATION MANAGER - Gerencia notificações em background */}
+        <NotificationManager userRole="teacher" userId={session.user.id}>
+          <div className="min-h-screen bg-gradient-primary">
+            {/* Navigation */}
+            <TeacherNavigation user={session.user} />
 
-          {/* Main Content */}
-          <main className="transition-all duration-300">{children}</main>
-        </div>
+            {/* Main Content */}
+            <main className="transition-all duration-300">{children}</main>
+          </div>
 
-        {/* Toast Notifications */}
-        <Toaster
-          position="top-center"
-          containerClassName="toast-container"
-          toastOptions={{
-            duration: 4000,
-            className: 'toast-item',
-            style: {
-              background: 'var(--bg-elevated)',
-              color: 'var(--text-primary)',
-              border: '1px solid var(--border-primary)',
-              borderRadius: '0.75rem',
-              fontSize: '0.875rem',
-              fontWeight: '500',
-              boxShadow:
-                '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-              backdropFilter: 'blur(8px)',
-              maxWidth: '400px',
-            },
-            success: {
-              iconTheme: {
-                primary: 'var(--accent-green)',
-                secondary: 'white',
-              },
+          {/* Toast Notifications */}
+          <Toaster
+            position="top-center"
+            containerClassName="toast-container"
+            toastOptions={{
+              duration: 4000,
+              className: 'toast-item',
               style: {
-                border: '1px solid var(--accent-green)',
-                background:
-                  'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(34, 197, 94, 0.05) 100%)',
+                background: 'var(--bg-elevated)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border-primary)',
+                borderRadius: '0.75rem',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                boxShadow:
+                  '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                backdropFilter: 'blur(8px)',
+                maxWidth: '400px',
               },
-            },
-            error: {
-              iconTheme: {
-                primary: 'var(--accent-red)',
-                secondary: 'white',
+              success: {
+                iconTheme: {
+                  primary: 'var(--accent-green)',
+                  secondary: 'white',
+                },
+                style: {
+                  border: '1px solid var(--accent-green)',
+                  background:
+                    'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(34, 197, 94, 0.05) 100%)',
+                },
               },
-              style: {
-                border: '1px solid var(--accent-red)',
-                background:
-                  'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(239, 68, 68, 0.05) 100%)',
+              error: {
+                iconTheme: {
+                  primary: 'var(--accent-red)',
+                  secondary: 'white',
+                },
+                style: {
+                  border: '1px solid var(--accent-red)',
+                  background:
+                    'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(239, 68, 68, 0.05) 100%)',
+                },
               },
-            },
-            loading: {
-              iconTheme: {
-                primary: 'var(--brand-primary)',
-                secondary: 'white',
+              loading: {
+                iconTheme: {
+                  primary: 'var(--brand-primary)',
+                  secondary: 'white',
+                },
+                style: {
+                  border: '1px solid var(--brand-primary)',
+                  background:
+                    'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(99, 102, 241, 0.05) 100%)',
+                },
               },
-              style: {
-                border: '1px solid var(--brand-primary)',
-                background:
-                  'linear-gradient(135deg, var(--bg-elevated) 0%, rgba(99, 102, 241, 0.05) 100%)',
-              },
-            },
-          }}
-        />
+            }}
+          />
+        </NotificationManager>
       </FavoritesProvider>
     </AdsProvider>
   );

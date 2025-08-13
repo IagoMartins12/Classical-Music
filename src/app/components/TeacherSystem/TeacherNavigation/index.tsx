@@ -1,4 +1,4 @@
-// app/(teacher)/components/TeacherNavigation.tsx
+// app/(teacher)/components/TeacherNavigation.tsx - ATUALIZADO COM NOTIFICAÇÕES
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -14,22 +14,22 @@ import {
   FiCalendar,
   FiBookOpen,
   FiUser,
-  FiSettings,
   FiLogOut,
   FiChevronDown,
   FiChevronRight,
   FiPlus,
+  FiBell,
 } from 'react-icons/fi';
+import { GoBook } from 'react-icons/go';
+
 import { GiGrandPiano } from 'react-icons/gi';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
-import {
-  useAuthStore,
-  useOnboardingModal,
-} from '@/app/stores/authStore';
+import { useAuthStore, useOnboardingModal } from '@/app/stores/authStore';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { ThemeToggle } from '../../ThemeToggle';
+import NotificationBell from '../../Notification/NotificationBell';
 
 interface TeacherNavigationProps {
   user: any;
@@ -37,7 +37,7 @@ interface TeacherNavigationProps {
 
 interface NavItem {
   label: string;
-  href?: string;
+  href: string;
   icon: React.ComponentType<{ className?: string }>;
   active?: boolean;
   badge?: string;
@@ -83,6 +83,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
       label: 'Aulas',
       icon: FiCalendar,
       active: pathname.startsWith('/teacher/lessons'),
+      href: '/teacher/lessons',
       submenu: [
         {
           label: 'Todas as Aulas',
@@ -96,13 +97,13 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
           description: 'Agendar nova aula',
           icon: FiPlus,
         },
-        {
-          label: 'Calendário',
-          href: '/teacher/calendar',
-          description: 'Visualização em calendário',
-          icon: FiCalendar,
-        },
       ],
+    },
+    {
+      label: 'Calendário',
+      icon: FiCalendar,
+      active: pathname.startsWith('/teacher/calendar'),
+      href: '/teacher/calendar',
     },
     {
       label: 'Tarefas',
@@ -267,12 +268,13 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                 >
                   {item.submenu ? (
                     <div className="flex items-center">
-                      <button
+                      <Link
+                        href={item.href}
                         className={`
                           relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2
                           ${
                             item.active
-                              ? 'text-brand-primary bg-brand-primary/10 border border-brand-primary/20'
+                              ? 'text-brand-primary bg-brand-primary/10'
                               : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
                           }
                         `}
@@ -284,7 +286,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                             activeSubmenu === item.label ? 'rotate-180' : ''
                           }`}
                         />
-                      </button>
+                      </Link>
 
                       {/* Desktop Submenu */}
                       {activeSubmenu === item.label && (
@@ -332,7 +334,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                         relative px-3 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2
                         ${
                           item.active
-                            ? 'text-brand-primary bg-brand-primary/10 border border-brand-primary/20'
+                            ? 'text-brand-primary bg-brand-primary/10 '
                             : 'text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover'
                         }
                       `}
@@ -352,6 +354,13 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
             {/* Right Section */}
             <div className="flex items-center space-x-3">
+              {/* 🆕 NOTIFICATION BELL */}
+              <NotificationBell
+                userRole="teacher"
+                userId={user.id}
+                className="hidden sm:block"
+              />
+
               {/* Theme Toggle */}
               <ThemeToggle variant="navbar" className="hidden sm:block" />
 
@@ -425,13 +434,23 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       <span>Meu Perfil</span>
                     </Link>
 
+                    {/* 🆕 LINK PARA NOTIFICAÇÕES */}
                     <Link
-                      href="/teacher/settings"
+                      href="/teacher/notifications"
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiSettings className="w-4 h-4" />
-                      <span>Configurações</span>
+                      <FiBell className="w-4 h-4" />
+                      <span>Notificações</span>
+                    </Link>
+
+                    <Link
+                      href="/works"
+                      className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      <GoBook className="w-4 h-4" />
+                      <span>Ver peças </span>
                     </Link>
 
                     <Link
@@ -491,6 +510,15 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                 >
                   <FiX className="w-5 h-5 text-theme-secondary" />
                 </button>
+              </div>
+
+              {/* 🆕 NOTIFICATION BELL MOBILE */}
+              <div className="mb-6 pb-4 border-b border-theme-secondary">
+                <NotificationBell
+                  userRole="teacher"
+                  userId={user.id}
+                  className="w-full justify-center"
+                />
               </div>
 
               {/* Navigation Items */}
