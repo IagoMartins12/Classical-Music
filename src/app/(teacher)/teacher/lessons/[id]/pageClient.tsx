@@ -43,6 +43,7 @@ import Modal from '@/app/components/Modal';
 import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
+import { translateNivel } from '@/app/utils';
 
 interface TeacherLessonDetailsPageClientProps {
   lessonData: LessonDetailsData | null;
@@ -110,7 +111,6 @@ export default function TeacherLessonDetailsPageClient({
     cancelLesson,
     deleteLesson,
     setEditMode,
-    clearError,
   } = useLessonDetails(lessonData);
 
   // 🆕 NOVOS ESTADOS PARA EDIÇÃO COMPLETA
@@ -1648,7 +1648,7 @@ export default function TeacherLessonDetailsPageClient({
                       {lesson.student.name}
                     </h3>
                     <p className="text-theme-secondary">
-                      Nível: {lesson.student.level}
+                      Nível: {translateNivel(lesson.student.level)}
                     </p>
                     <p className="text-sm text-theme-tertiary">
                       {lesson.student.email}

@@ -1,4 +1,4 @@
-// app/student/assignments/pageClient.tsx - Client Component para Tarefas do Aluno
+// app/student/assignments/pageClient.tsx - Client Component para Tarefas do Aluno - ATUALIZADO
 
 'use client';
 
@@ -38,6 +38,7 @@ import Link from 'next/link';
 import { useStudentAssignments } from '@/app/hooks/lessonsSystem/useStudentAssignments';
 import Select from '@/app/components/Common/Select';
 import Input from '@/app/components/Common/Inputs';
+import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 
 interface StudentAssignmentsPageClientProps {
   initialData: StudentAssignmentsData | null;
@@ -84,6 +85,9 @@ export default function StudentAssignmentsPageClient({
     clearError,
   } = useStudentAssignments();
 
+  // 🆕 VIEW MODE STATE
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
+
   // Local UI states
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTeacher, setSelectedTeacher] = useState<string>('all');
@@ -121,6 +125,11 @@ export default function StudentAssignmentsPageClient({
   const displayAssignments = initialData?.assignments || assignments;
   const displayStats = initialData?.stats || stats;
   const teachersOptions = initialData?.teachers || [];
+
+  // 🆕 CHECK IF ASSIGNMENT HAS WORK SCORES
+  const hasWorkScores = useCallback((assignment: any) => {
+    return assignment.workScoreIds && assignment.workScoreIds.length > 0;
+  }, []);
 
   // Filter assignments
   const filteredAssignments = useMemo(() => {
@@ -336,6 +345,353 @@ export default function StudentAssignmentsPageClient({
     }
   }, [selectedAssignment, progressValue, actualTime, updateProgress]);
 
+  // 🆕 RENDER ASSIGNMENT CARD COMPONENT
+  const renderAssignmentCard = useCallback(
+    (assignment: (typeof assignments)[0], index: number) => {
+      const statusInfo = getAssignmentStatusInfo(assignment);
+      const StatusIcon = statusInfo.icon;
+      const TypeIcon =
+        typeIcons[assignment.type as keyof typeof typeIcons] || FiTarget;
+      const priorityColor =
+        priorityColors[assignment.priority as keyof typeof priorityColors] ||
+        'text-theme-secondary';
+      const hasScores = hasWorkScores(assignment);
+
+      return (
+        <AnimatedCard
+          key={assignment.id}
+          hover="lift"
+          className={`classical-card p-6 relative cursor-pointer ${
+            assignment.isOverdue ? 'ring-2 ring-accent-red/30' : ''
+          }`}
+          delay={index * 0.1}
+          onClick={() => openModal(assignment)}
+        >
+          {/* Status and Priority */}
+          <div className="flex items-center justify-between mb-4">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-medium border ${statusInfo.color}`}
+            >
+              <StatusIcon className="w-3 h-3 inline mr-1" />
+              {statusInfo.label}
+            </span>
+            <div className="flex items-center space-x-2">
+              <TypeIcon className={`w-4 h-4 ${priorityColor}`} />
+              <span className={`text-xs font-medium ${priorityColor}`}>
+                {assignment.priority === 'high'
+                  ? 'Alta'
+                  : assignment.priority === 'medium'
+                  ? 'Média'
+                  : 'Baixa'}
+              </span>
+              {/* 🆕 WORK SCORE INDICATOR */}
+              {hasScores && (
+                <div
+                  className="w-5 h-5 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full flex items-center justify-center"
+                  title="Tem partituras vinculadas"
+                >
+                  <FiMusic className="w-3 h-3" />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Assignment Info */}
+          <h3 className="font-bold text-theme-primary mb-2 line-clamp-2">
+            {assignment.title}
+          </h3>
+
+          <p className="text-sm text-theme-secondary mb-4 line-clamp-2">
+            {assignment.description}
+          </p>
+
+          {/* Meta Info */}
+          <div className="space-y-2 mb-4">
+            <div className="flex items-center text-sm text-theme-secondary">
+              <FiUser className="w-4 h-4 mr-2" />
+              {assignment.lesson.teacher.name}
+            </div>
+
+            {assignment.dueDate && (
+              <div className="flex items-center text-sm text-theme-secondary">
+                <FiCalendar className="w-4 h-4 mr-2" />
+                Prazo: {formatDate(assignment.dueDate)}
+                {assignment.daysUntilDue !== null && (
+                  <span
+                    className={`ml-1 font-medium ${
+                      assignment.daysUntilDue && assignment.daysUntilDue < 0
+                        ? 'text-accent-red'
+                        : assignment.daysUntilDue &&
+                          assignment.daysUntilDue <= 2
+                        ? 'text-accent-yellow'
+                        : 'text-theme-secondary'
+                    }`}
+                  >
+                    (
+                    {assignment.daysUntilDue && assignment.daysUntilDue < 0
+                      ? `${Math.abs(
+                          assignment.daysUntilDue && assignment.daysUntilDue
+                        )} dias atrás`
+                      : assignment.daysUntilDue === 0
+                      ? 'hoje'
+                      : `${assignment.daysUntilDue} dias`}
+                    )
+                  </span>
+                )}
+              </div>
+            )}
+
+            {assignment.estimatedTime && (
+              <div className="flex items-center text-sm text-theme-secondary">
+                <FiClock className="w-4 h-4 mr-2" />
+                {formatTime(assignment.estimatedTime)} estimado
+              </div>
+            )}
+
+            {/* 🆕 WORK SCORES INFO */}
+            {hasScores && (
+              <div className="flex items-center text-sm text-accent-purple">
+                <FiMusic className="w-4 h-4 mr-2" />
+                {assignment.workScoreIds.length} partitura
+                {assignment.workScoreIds.length !== 1 ? 's' : ''} vinculada
+                {assignment.workScoreIds.length !== 1 ? 's' : ''}
+              </div>
+            )}
+          </div>
+
+          {/* Progress Bar */}
+          {assignment.progress !== null &&
+            assignment.progress !== undefined && (
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-theme-tertiary">Progresso</span>
+                  <span className="text-xs text-theme-primary">
+                    {assignment.progress}%
+                  </span>
+                </div>
+                <div className="w-full bg-theme-secondary/20 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all ${
+                      assignment.progress >= 100
+                        ? 'bg-green-400'
+                        : assignment.progress >= 50
+                        ? 'bg-blue-400'
+                        : 'bg-yellow-400'
+                    }`}
+                    style={{
+                      width: `${Math.min(assignment.progress, 100)}%`,
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+
+          {/* Goals Preview */}
+          {assignment.practiceGoals.length > 0 && (
+            <div className="mb-4">
+              <div className="text-xs text-theme-tertiary mb-1">Objetivos:</div>
+              <div className="flex flex-wrap gap-1">
+                {assignment.practiceGoals.slice(0, 2).map((goal, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-1 bg-accent-blue/10 text-accent-blue text-xs rounded line-clamp-1"
+                  >
+                    {goal}
+                  </span>
+                ))}
+                {assignment.practiceGoals.length > 2 && (
+                  <span className="text-xs text-theme-tertiary">
+                    +{assignment.practiceGoals.length - 2}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Action Indicator */}
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-theme-tertiary">
+              Criado em {formatDate(assignment.createdAt)}
+            </div>
+            <Link
+              className="text-sm text-brand-primary flex gap-2"
+              href={`assignments/${assignment.id}`}
+            >
+              <FiEye className="w-4 h-4 text-brand-primary" />
+              <span>Ver detalhes</span>
+            </Link>
+          </div>
+        </AnimatedCard>
+      );
+    },
+    [getAssignmentStatusInfo, hasWorkScores, formatDate, formatTime, openModal]
+  );
+
+  // 🆕 RENDER ASSIGNMENT LIST ITEM COMPONENT
+  const renderAssignmentListItem = useCallback(
+    (assignment: any, index: number) => {
+      const statusInfo = getAssignmentStatusInfo(assignment);
+      const StatusIcon = statusInfo.icon;
+      const TypeIcon =
+        typeIcons[assignment.type as keyof typeof typeIcons] || FiTarget;
+      const priorityColor =
+        priorityColors[assignment.priority as keyof typeof priorityColors] ||
+        'text-theme-secondary';
+      const hasScores = hasWorkScores(assignment);
+
+      return (
+        <AnimatedCard
+          key={assignment.id}
+          hover="lift"
+          className={`classical-card p-6 relative cursor-pointer ${
+            assignment.isOverdue ? 'ring-2 ring-accent-red/30' : ''
+          }`}
+          delay={index * 0.1}
+          onClick={() => openModal(assignment)}
+        >
+          {/* Status and Priority */}
+          <div className="flex items-center justify-between mb-4">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-medium border ${statusInfo.color}`}
+            >
+              <StatusIcon className="w-3 h-3 inline mr-1" />
+              {statusInfo.label}
+            </span>
+            <div className="flex items-center space-x-2">
+              <TypeIcon className={`w-4 h-4 ${priorityColor}`} />
+              <span className={`text-xs font-medium ${priorityColor}`}>
+                {assignment.priority === 'high'
+                  ? 'Alta'
+                  : assignment.priority === 'medium'
+                  ? 'Média'
+                  : 'Baixa'}
+              </span>
+            </div>
+          </div>
+
+          {/* Assignment Info */}
+          <h3 className="font-bold text-theme-primary mb-2 line-clamp-2">
+            {assignment.title}
+          </h3>
+
+          <p className="text-sm text-theme-secondary mb-4 line-clamp-2">
+            {assignment.description}
+          </p>
+
+          {/* Meta Info */}
+          <div className="space-y-2 mb-4">
+            <div className="flex items-center text-sm text-theme-secondary">
+              <FiUser className="w-4 h-4 mr-2" />
+              {assignment.lesson.teacher.name}
+            </div>
+
+            {assignment.dueDate && (
+              <div className="flex items-center text-sm text-theme-secondary">
+                <FiCalendar className="w-4 h-4 mr-2" />
+                Prazo: {formatDate(assignment.dueDate)}
+                {assignment.daysUntilDue !== null && (
+                  <span
+                    className={`ml-1 font-medium ${
+                      assignment.daysUntilDue && assignment.daysUntilDue < 0
+                        ? 'text-accent-red'
+                        : assignment.daysUntilDue &&
+                          assignment.daysUntilDue <= 2
+                        ? 'text-accent-yellow'
+                        : 'text-theme-secondary'
+                    }`}
+                  >
+                    (
+                    {assignment.daysUntilDue && assignment.daysUntilDue < 0
+                      ? `${Math.abs(
+                          assignment.daysUntilDue && assignment.daysUntilDue
+                        )} dias atrás`
+                      : assignment.daysUntilDue === 0
+                      ? 'hoje'
+                      : `${assignment.daysUntilDue} dias`}
+                    )
+                  </span>
+                )}
+              </div>
+            )}
+
+            {assignment.estimatedTime && (
+              <div className="flex items-center text-sm text-theme-secondary">
+                <FiClock className="w-4 h-4 mr-2" />
+                {formatTime(assignment.estimatedTime)} estimado
+              </div>
+            )}
+          </div>
+
+          {/* Progress Bar */}
+          {assignment.progress !== null &&
+            assignment.progress !== undefined && (
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-theme-tertiary">Progresso</span>
+                  <span className="text-xs text-theme-primary">
+                    {assignment.progress}%
+                  </span>
+                </div>
+                <div className="w-full bg-theme-secondary/20 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full transition-all ${
+                      assignment.progress >= 100
+                        ? 'bg-green-400'
+                        : assignment.progress >= 50
+                        ? 'bg-blue-400'
+                        : 'bg-yellow-400'
+                    }`}
+                    style={{
+                      width: `${Math.min(assignment.progress, 100)}%`,
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+
+          {/* Goals Preview */}
+          {assignment.practiceGoals.length > 0 && (
+            <div className="mb-4">
+              <div className="text-xs text-theme-tertiary mb-1">Objetivos:</div>
+              <div className="flex flex-wrap gap-1">
+                {assignment.practiceGoals
+                  .slice(0, 2)
+                  .map((goal: any, idx: number) => (
+                    <span
+                      key={idx}
+                      className="px-2 py-1 bg-accent-blue/10 text-accent-blue text-xs rounded line-clamp-1"
+                    >
+                      {goal}
+                    </span>
+                  ))}
+                {assignment.practiceGoals.length > 2 && (
+                  <span className="text-xs text-theme-tertiary">
+                    +{assignment.practiceGoals.length - 2}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Action Indicator */}
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-theme-tertiary">
+              Criado em {formatDate(assignment.createdAt)}
+            </div>
+            <Link
+              className="text-sm text-brand-primary flex gap-2"
+              href={`assignments/${assignment.id}`}
+            >
+              <FiEye className="w-4 h-4 text-brand-primary" />
+              <span>Ver detalhes</span>
+            </Link>
+          </div>
+        </AnimatedCard>
+      );
+    },
+    [getAssignmentStatusInfo, hasWorkScores, formatDate, formatTime, openModal]
+  );
+
   // Error state para "no teachers"
   if (errorMessage === 'no_teachers') {
     return (
@@ -524,6 +880,12 @@ export default function StudentAssignmentsPageClient({
                   <span>Filtros</span>
                 </button>
 
+                {/* 🆕 VIEW MODE TOGGLE */}
+                <ViewModeToggle
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                />
+
                 <button
                   onClick={refreshAssignments}
                   disabled={loading.assignments}
@@ -636,178 +998,18 @@ export default function StudentAssignmentsPageClient({
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {paginatedAssignments.map((assignment, index) => {
-                const statusInfo = getAssignmentStatusInfo(assignment);
-                const StatusIcon = statusInfo.icon;
-                const TypeIcon =
-                  typeIcons[assignment.type as keyof typeof typeIcons] ||
-                  FiTarget;
-                const priorityColor =
-                  priorityColors[
-                    assignment.priority as keyof typeof priorityColors
-                  ] || 'text-theme-secondary';
-
-                return (
-                  <AnimatedCard
-                    key={assignment.id}
-                    hover="lift"
-                    className={`classical-card p-6 relative cursor-pointer ${
-                      assignment.isOverdue ? 'ring-2 ring-accent-red/30' : ''
-                    }`}
-                    delay={index * 0.1}
-                    onClick={() => openModal(assignment)}
-                  >
-                    {/* Status and Priority */}
-                    <div className="flex items-center justify-between mb-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium border ${statusInfo.color}`}
-                      >
-                        <StatusIcon className="w-3 h-3 inline mr-1" />
-                        {statusInfo.label}
-                      </span>
-                      <div className="flex items-center space-x-2">
-                        <TypeIcon className={`w-4 h-4 ${priorityColor}`} />
-                        <span
-                          className={`text-xs font-medium ${priorityColor}`}
-                        >
-                          {assignment.priority === 'high'
-                            ? 'Alta'
-                            : assignment.priority === 'medium'
-                            ? 'Média'
-                            : 'Baixa'}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Assignment Info */}
-                    <h3 className="font-bold text-theme-primary mb-2 line-clamp-2">
-                      {assignment.title}
-                    </h3>
-
-                    <p className="text-sm text-theme-secondary mb-4 line-clamp-2">
-                      {assignment.description}
-                    </p>
-
-                    {/* Meta Info */}
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center text-sm text-theme-secondary">
-                        <FiUser className="w-4 h-4 mr-2" />
-                        {assignment.lesson.teacher.name}
-                      </div>
-
-                      {assignment.dueDate && (
-                        <div className="flex items-center text-sm text-theme-secondary">
-                          <FiCalendar className="w-4 h-4 mr-2" />
-                          Prazo: {formatDate(assignment.dueDate)}
-                          {assignment.daysUntilDue !== null && (
-                            <span
-                              className={`ml-1 font-medium ${
-                                assignment.daysUntilDue &&
-                                assignment.daysUntilDue < 0
-                                  ? 'text-accent-red'
-                                  : assignment.daysUntilDue &&
-                                    assignment.daysUntilDue <= 2
-                                  ? 'text-accent-yellow'
-                                  : 'text-theme-secondary'
-                              }`}
-                            >
-                              (
-                              {assignment.daysUntilDue &&
-                              assignment.daysUntilDue < 0
-                                ? `${Math.abs(
-                                    assignment.daysUntilDue &&
-                                      assignment.daysUntilDue
-                                  )} dias atrás`
-                                : assignment.daysUntilDue === 0
-                                ? 'hoje'
-                                : `${assignment.daysUntilDue} dias`}
-                              )
-                            </span>
-                          )}
-                        </div>
-                      )}
-
-                      {assignment.estimatedTime && (
-                        <div className="flex items-center text-sm text-theme-secondary">
-                          <FiClock className="w-4 h-4 mr-2" />
-                          {formatTime(assignment.estimatedTime)} estimado
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Progress Bar */}
-                    {assignment.progress !== null &&
-                      assignment.progress !== undefined && (
-                        <div className="mb-4">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs text-theme-tertiary">
-                              Progresso
-                            </span>
-                            <span className="text-xs text-theme-primary">
-                              {assignment.progress}%
-                            </span>
-                          </div>
-                          <div className="w-full bg-theme-secondary/20 rounded-full h-2">
-                            <div
-                              className={`h-2 rounded-full transition-all ${
-                                assignment.progress >= 100
-                                  ? 'bg-accent-green'
-                                  : assignment.progress >= 50
-                                  ? 'bg-accent-blue'
-                                  : 'bg-accent-yellow'
-                              }`}
-                              style={{
-                                width: `${Math.min(assignment.progress, 100)}%`,
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                    {/* Goals Preview */}
-                    {assignment.practiceGoals.length > 0 && (
-                      <div className="mb-4">
-                        <div className="text-xs text-theme-tertiary mb-1">
-                          Objetivos:
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {assignment.practiceGoals
-                            .slice(0, 2)
-                            .map((goal, idx) => (
-                              <span
-                                key={idx}
-                                className="px-2 py-1 bg-accent-blue/10 text-accent-blue text-xs rounded line-clamp-1"
-                              >
-                                {goal}
-                              </span>
-                            ))}
-                          {assignment.practiceGoals.length > 2 && (
-                            <span className="text-xs text-theme-tertiary">
-                              +{assignment.practiceGoals.length - 2}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Action Indicator */}
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm text-theme-tertiary">
-                        Criado em {formatDate(assignment.createdAt)}
-                      </div>
-                      <Link
-                        className="text-sm text-brand-primary flex gap-2"
-                        href={`assignments/${assignment.id}`}
-                      >
-                        <FiEye className="w-4 h-4 text-brand-primary" />
-                        <span>Ver detalhes</span>
-                      </Link>
-                    </div>
-                  </AnimatedCard>
-                );
-              })}
-            </div>
+            <>
+              {/* 🆕 CONDITIONAL RENDERING BASED ON VIEW MODE */}
+              {viewMode === 'cards' ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {paginatedAssignments.map(renderAssignmentCard)}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {paginatedAssignments.map(renderAssignmentListItem)}
+                </div>
+              )}
+            </>
           )}
         </AnimatedItem>
 
@@ -881,6 +1083,16 @@ export default function StudentAssignmentsPageClient({
                   <p className="text-theme-secondary">
                     {selectedAssignment.lesson.teacher.name} •{' '}
                     {selectedAssignment.type}
+                    {/* Work Score Info in Modal */}
+                    {hasWorkScores(selectedAssignment) && (
+                      <span className="text-accent-purple">
+                        {' '}
+                        • {selectedAssignment.workScoreIds.length} partitura
+                        {selectedAssignment.workScoreIds.length !== 1
+                          ? 's'
+                          : ''}
+                      </span>
+                    )}
                   </p>
                 </div>
                 <button
@@ -926,6 +1138,35 @@ export default function StudentAssignmentsPageClient({
                         {selectedAssignment.description}
                       </p>
                     </div>
+
+                    {/* Work Scores Section */}
+                    {hasWorkScores(selectedAssignment) && (
+                      <div>
+                        <h3 className="text-lg font-bold text-theme-primary mb-2">
+                          Partituras Vinculadas
+                        </h3>
+                        <div className="bg-accent-purple/5 border border-accent-purple/20 rounded-lg p-4">
+                          <div className="flex items-center space-x-2 text-accent-purple">
+                            <FiMusic className="w-5 h-5" />
+                            <span className="font-medium">
+                              {selectedAssignment.workScoreIds.length} partitura
+                              {selectedAssignment.workScoreIds.length !== 1
+                                ? 's'
+                                : ''}{' '}
+                              disponível
+                              {selectedAssignment.workScoreIds.length !== 1
+                                ? 'is'
+                                : ''}{' '}
+                              para estudo
+                            </span>
+                          </div>
+                          <p className="text-sm text-theme-secondary mt-2">
+                            Acesse as partituras relacionadas a esta tarefa na
+                            seção de materiais.
+                          </p>
+                        </div>
+                      </div>
+                    )}
 
                     {selectedAssignment.practiceGoals.length > 0 && (
                       <div>
@@ -1114,15 +1355,12 @@ export default function StudentAssignmentsPageClient({
                                   star <= studentRating
                                     ? 'text-accent-yellow'
                                     : 'text-theme-tertiary'
-                                }`}
+                                } hover:text-accent-yellow`}
                               >
                                 <FiStar
-                                  className="w-6 h-6"
-                                  fill={
-                                    star <= studentRating
-                                      ? 'currentColor'
-                                      : 'none'
-                                  }
+                                  className={`w-6 h-6 ${
+                                    star <= studentRating ? 'fill-current' : ''
+                                  }`}
                                 />
                               </button>
                             ))}

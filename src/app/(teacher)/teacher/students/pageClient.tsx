@@ -25,6 +25,7 @@ import Select from '@/app/components/Common/Select';
 import { useTeacherStudents } from '@/app/hooks/lessonsSystem/useTeacherStudents';
 import { TeacherStudentsServerData } from './pageServer';
 import StudentCard from '@/app/components/TeacherSystem/StudentCard';
+import { translateNivel } from '@/app/utils';
 
 interface TeacherStudentsPageClientProps {
   initialData: TeacherStudentsServerData;
@@ -525,7 +526,6 @@ export default function TeacherStudentsPageClient({
                   <AnimatedItem
                     key={studentRel.relationshipId}
                     direction={viewMode === 'cards' ? 'up' : 'left'}
-                    hover="lift"
                     style={{
                       animationDelay: `${index * 0.1}s`,
                       animationFillMode: 'backwards',
@@ -678,7 +678,7 @@ function AddStudentModal({
                         )}
                         {student.experienceLevel && (
                           <div className="text-xs text-accent-blue">
-                            Nível: {student.experienceLevel}
+                            Nível: {translateNivel(student.experienceLevel)}
                           </div>
                         )}
                       </div>

@@ -17,6 +17,17 @@ export function getErrorTitle(errorCode?: string): string {
       return 'Erro Desconhecido';
   }
 }
+export const translateNivel = (nivel: string) => {
+  if (nivel === 'BEGINNER') {
+    return 'Iniciante';
+  } else if (nivel === 'INTERMEDIATE') {
+    return 'Intermediário';
+  } else if (nivel === 'ADVANCED') {
+    return 'Avançado';
+  } else {
+    return 'Não definido';
+  }
+};
 
 export function getErrorDescription(errorCode?: string): string {
   switch (errorCode) {

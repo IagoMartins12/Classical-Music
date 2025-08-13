@@ -1,4 +1,4 @@
-// app/teacher/calendar/pageClient.tsx - Client Component para Calendário do Professor com Modal de Aulas
+// app/teacher/calendar/pageClient.tsx - Client Component para Calendário do Professor com Indicativos - COMPLETO
 
 'use client';
 
@@ -20,6 +20,8 @@ import {
   FiBookOpen,
   FiTrash2,
   FiExternalLink,
+  FiAlertTriangle,
+  FiInfo,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -33,7 +35,7 @@ import Image from 'next/image';
 import { useTeacherCalendar } from '@/app/hooks/useTeacherCalendar';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
-
+import { useLessonDetails } from '@/app/hooks/lessonsSystem/useLessonDetails';
 
 interface TeacherCalendarPageClientProps {
   initialData: TeacherCalendarData;
@@ -41,7 +43,12 @@ interface TeacherCalendarPageClientProps {
 }
 
 type CalendarView = 'month' | 'week' | 'day';
-type EventFilter = 'all' | 'scheduled' | 'completed' | 'cancelled';
+type EventFilter =
+  | 'all'
+  | 'scheduled'
+  | 'completed'
+  | 'cancelled'
+  | 'needs_attention';
 
 // Helper functions
 const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
@@ -83,18 +90,25 @@ export default function TeacherCalendarPageClient({
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<CalendarView>('month');
   const [eventFilter, setEventFilter] = useState<EventFilter>('all');
-  const [selectedStudent, setSelectedStudent] = useState<string>('all'); // MUDANÇA: padrão é 'all'
+  const [selectedStudent, setSelectedStudent] = useState<string>('all');
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
     null
   );
   const [showEventModal, setShowEventModal] = useState(false);
 
-  // NOVO: Estados para Modal de todas as aulas do dia
+  // Estados para Modal de todas as aulas do dia
   const [selectedDayEvents, setSelectedDayEvents] = useState<CalendarEvent[]>(
     []
   );
   const [selectedDayDate, setSelectedDayDate] = useState<Date | null>(null);
   const [showDayEventsModal, setShowDayEventsModal] = useState(false);
+  const [showStatusUpdateModal, setShowStatusUpdateModal] = useState(false);
+  const [pendingStatusUpdate, setPendingStatusUpdate] = useState<{
+    lessonId: string;
+    newStatus: string;
+    statusLabel: string;
+  } | null>(null);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   // Initialize hook data on mount
   useEffect(() => {
@@ -107,6 +121,29 @@ export default function TeacherCalendarPageClient({
       });
     }
   }, [initialData, setInitialData]);
+
+  // 🆕 FUNÇÃO PARA VERIFICAR SE EVENTO PASSOU E PRECISA DE ATENÇÃO
+  const getEventStatusInfo = useCallback((event: CalendarEvent) => {
+    const now = new Date();
+    const eventTime = new Date(event.start);
+    const eventEndTime = new Date(event.end);
+    const hasPassedScheduledTime = eventEndTime < now; // Verifica se já passou do horário de fim
+    const needsAttention =
+      hasPassedScheduledTime && event.status === 'SCHEDULED';
+
+    return {
+      hasPassedScheduledTime,
+      needsAttention,
+      isPast: eventEndTime < now,
+      isToday: eventTime.toDateString() === now.toDateString(),
+      isUpcoming: eventTime > now,
+      hoursOverdue: needsAttention
+        ? Math.floor(
+            (now.getTime() - eventEndTime.getTime()) / (1000 * 60 * 60)
+          )
+        : 0,
+    };
+  }, []);
 
   // Calendar navigation
   const navigateMonth = useCallback((direction: 'prev' | 'next') => {
@@ -163,13 +200,15 @@ export default function TeacherCalendarPageClient({
             return event.status === 'COMPLETED';
           case 'cancelled':
             return event.status === 'CANCELLED';
+          case 'needs_attention':
+            return getEventStatusInfo(event).needsAttention;
           default:
             return true;
         }
       });
     }
 
-    // Filter by student - MUDANÇA: 'all' não filtra
+    // Filter by student
     if (selectedStudent !== 'all') {
       filtered = filtered.filter(
         (event) => event.student?.id === selectedStudent
@@ -177,11 +216,11 @@ export default function TeacherCalendarPageClient({
     }
 
     return filtered;
-  }, [events, eventFilter, selectedStudent]);
+  }, [events, eventFilter, selectedStudent, getEventStatusInfo]);
 
-  // MUDANÇA: Opções do select com "Todos os alunos" em primeiro
+  // Opções do select com filtro para "Precisam Atenção"
   const SelectedStudentsOptions = [
-    { value: 'all', label: 'Todos os alunos' }, // NOVO: opção padrão
+    { value: 'all', label: 'Todos os alunos' },
     ...initialData.students.map((student) => ({
       label: student.name,
       value: student.id,
@@ -193,6 +232,7 @@ export default function TeacherCalendarPageClient({
     { value: 'scheduled', label: 'Agendadas' },
     { value: 'completed', label: 'Concluídas' },
     { value: 'cancelled', label: 'Canceladas' },
+    { value: 'needs_attention', label: 'Precisam Atenção' },
   ];
 
   // Get calendar days for month view
@@ -241,7 +281,7 @@ export default function TeacherCalendarPageClient({
     return days;
   }, [currentDate]);
 
-  // NOVO: Handler para abrir modal com todas as aulas do dia
+  // Handler para abrir modal com todas as aulas do dia
   const handleShowDayEvents = useCallback(
     (date: Date, events: CalendarEvent[]) => {
       setSelectedDayDate(date);
@@ -251,7 +291,7 @@ export default function TeacherCalendarPageClient({
     []
   );
 
-  // NOVO: Handler para cancelar aula rapidamente
+  // Handler para cancelar aula rapidamente
   const handleQuickCancelLesson = useCallback(
     async (lessonId: string) => {
       if (confirm('Tem certeza que deseja cancelar esta aula?')) {
@@ -264,7 +304,6 @@ export default function TeacherCalendarPageClient({
           });
 
           if (response.ok) {
-            // Refresh calendar
             await handleRefreshCalendar();
             setShowDayEventsModal(false);
           } else {
@@ -298,21 +337,113 @@ export default function TeacherCalendarPageClient({
   };
 
   // Event status color
-  const getEventStatusColor = (status: string) => {
+  const getEventStatusColor = (
+    status: string,
+    needsAttention: boolean = false
+  ) => {
+    if (needsAttention) {
+      return ' border-red-400 text-red-400';
+    }
+
     switch (status) {
       case 'COMPLETED':
-        return 'bg-accent-green/10 border-accent-green/30 text-accent-green';
+        return 'border-green-400 text-green-400';
       case 'CANCELLED':
-        return 'bg-accent-red/10 border-accent-red/30 text-accent-red';
+        return ' border-red-400 text-red-400';
       case 'NO_SHOW':
-        return 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow';
+        return 'border-yellow-300 text-yellow-300';
       case 'RESCHEDULED':
-        return 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple';
+        return 'border-purple-300 text-purple-300';
       default:
-        return 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue';
+        return 'border-blue-300 text-blue-300';
     }
   };
 
+  // 🆕 FUNÇÃO ATUALIZADA PARA ATUALIZAR STATUS COM CONFIRMAÇÃO
+  const handleRequestStatusUpdate = useCallback(
+    (lessonId: string, newStatus: string) => {
+      const statusLabels: Record<string, string> = {
+        COMPLETED: 'Concluída',
+        NO_SHOW: 'Faltou',
+        CANCELLED: 'Cancelada',
+        SCHEDULED: 'Agendada',
+      };
+
+      setPendingStatusUpdate({
+        lessonId,
+        newStatus,
+        statusLabel: statusLabels[newStatus] || newStatus,
+      });
+      setShowStatusUpdateModal(true);
+    },
+    []
+  );
+
+  // 🆕 FUNÇÃO PARA EXECUTAR A ATUALIZAÇÃO DO STATUS
+  const executeStatusUpdate = useCallback(async () => {
+    if (!pendingStatusUpdate) return;
+
+    setUpdatingStatus(true);
+
+    try {
+      console.log(
+        `📝 [CALENDAR] Atualizando status da aula ${pendingStatusUpdate.lessonId} para ${pendingStatusUpdate.newStatus}`
+      );
+
+      const response = await fetch(
+        `/api/lessons/${pendingStatusUpdate.lessonId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: pendingStatusUpdate.newStatus,
+            // Adicionar timestamps relevantes
+            ...(pendingStatusUpdate.newStatus === 'COMPLETED' && {
+              actualEndTime: new Date().toISOString(),
+            }),
+            ...(pendingStatusUpdate.newStatus === 'CANCELLED' && {
+              cancelledAt: new Date().toISOString(),
+              cancelledBy: 'teacher',
+            }),
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erro ao atualizar status da aula');
+      }
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || 'Erro ao atualizar status da aula');
+      }
+
+      console.log(
+        `✅ [CALENDAR] Status atualizado com sucesso: ${pendingStatusUpdate.newStatus}`
+      );
+
+      // Fechar modais
+      setShowStatusUpdateModal(false);
+      setShowEventModal(false);
+      setPendingStatusUpdate(null);
+
+      // Atualizar calendário
+      await handleRefreshCalendar();
+    } catch (error) {
+      console.error('❌ [CALENDAR] Erro ao atualizar status:', error);
+      alert(
+        error instanceof Error
+          ? error.message
+          : 'Erro ao atualizar status da aula'
+      );
+    } finally {
+      setUpdatingStatus(false);
+    }
+  }, [pendingStatusUpdate, handleRefreshCalendar]);
 
   // Statistics for current view
   const viewStats = useMemo(() => {
@@ -344,8 +475,11 @@ export default function TeacherCalendarPageClient({
       today: filteredEvents.filter(
         (e) => new Date(e.start).toDateString() === now.toDateString()
       ).length,
+      needsAttention: eventsInView.filter(
+        (e) => getEventStatusInfo(e).needsAttention
+      ).length,
     };
-  }, [filteredEvents, viewMode, currentDate]);
+  }, [filteredEvents, viewMode, currentDate, getEventStatusInfo]);
 
   // Render error state
   if ((error || errorMessage) && events.length === 0) {
@@ -414,7 +548,7 @@ export default function TeacherCalendarPageClient({
 
         {/* Stats Cards */}
         <AnimatedItem direction="up" springType="gentle">
-          <div className="grid grid-cols-5 space-x-8 space-y-8">
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-6 mb-8">
             <AnimatedCard
               hover="scale"
               className="classical-card p-6 text-center"
@@ -486,11 +620,61 @@ export default function TeacherCalendarPageClient({
               </div>
               <div className="text-sm text-theme-tertiary">Hoje</div>
             </AnimatedCard>
+
+            {/* Card para aulas que precisam de atenção */}
+            <AnimatedCard
+              hover="scale"
+              className={`classical-card p-6 text-center ${
+                viewStats.needsAttention > 0 ? 'ring-2 ring-accent-red/30' : ''
+              }`}
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
+                <FiAlertTriangle className="w-6 h-6 text-theme-primary" />
+              </div>
+              <div className="text-2xl font-bold text-theme-primary mb-1">
+                {viewStats.needsAttention}
+              </div>
+              <div className="text-sm text-theme-tertiary">
+                Precisam Atenção
+              </div>
+            </AnimatedCard>
           </div>
         </AnimatedItem>
 
+        {/* Alerta para aulas que precisam de atenção */}
+        {viewStats.needsAttention > 0 && (
+          <AnimatedItem direction="up" springType="gentle">
+            <AnimatedCard
+              hover="lift"
+              className="classical-card p-4 mb-6 border-l-4 flex items-center justify-between !border-red-600"
+            >
+              <div className="flex items-center space-x-3">
+                <FiAlertTriangle className="w-5 h-5 text-accent-red" />
+                <div>
+                  <h4 className="font-semibold text-accent-red">
+                    {viewStats.needsAttention} aula
+                    {viewStats.needsAttention !== 1 ? 's' : ''} precisam de
+                    atenção
+                  </h4>
+                  <p className="text-sm text-theme-secondary">
+                    Há aulas que já passaram da data agendada mas ainda estão
+                    marcadas como "Agendadas". Atualize o status para
+                    "Concluída", "Cancelada" ou "Faltou".
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setEventFilter('needs_attention')}
+                className="btn-classical-secondary text-sm whitespace-nowrap"
+              >
+                Ver Todas
+              </button>
+            </AnimatedCard>
+          </AnimatedItem>
+        )}
+
         {/* Calendar Controls */}
-        <AnimatedItem direction="up" springType="gentle">
+        <AnimatedItem direction="up" className="mb-4" springType="gentle">
           <AnimatedCard hover="none" className="classical-card p-6">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               {/* Navigation */}
@@ -508,7 +692,7 @@ export default function TeacherCalendarPageClient({
                     <FiChevronLeft className="w-5 h-5 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
                   </button>
 
-                  <div className="text-center min-w-48">
+                  <div className="text-center px-4">
                     <div className="text-lg font-bold text-theme-primary">
                       {viewMode === 'month' &&
                         `${
@@ -598,6 +782,7 @@ export default function TeacherCalendarPageClient({
                   onChange={(e) => setSelectedStudent(e.target.value)}
                   className="input-classical-2 w-auto min-w-48"
                 />
+
                 {/* Status Filter */}
                 <Select
                   options={stateOptions}
@@ -640,11 +825,12 @@ export default function TeacherCalendarPageClient({
                   days={getCalendarDays()}
                   currentDate={currentDate}
                   getEventsForDay={getEventsForDay}
+                  getEventStatusInfo={getEventStatusInfo}
                   onEventClick={(event) => {
                     setSelectedEvent(event);
                     setShowEventModal(true);
                   }}
-                  onShowDayEvents={handleShowDayEvents} // NOVO: prop para mostrar todas as aulas
+                  onShowDayEvents={handleShowDayEvents}
                   formatTime={formatTime}
                   getEventStatusColor={getEventStatusColor}
                 />
@@ -654,6 +840,7 @@ export default function TeacherCalendarPageClient({
                 <WeekView
                   days={getWeekDays()}
                   getEventsForDay={getEventsForDay}
+                  getEventStatusInfo={getEventStatusInfo}
                   onEventClick={(event) => {
                     setSelectedEvent(event);
                     setShowEventModal(true);
@@ -668,6 +855,7 @@ export default function TeacherCalendarPageClient({
                 <DayView
                   date={currentDate}
                   events={getEventsForDay(currentDate)}
+                  getEventStatusInfo={getEventStatusInfo}
                   onEventClick={(event) => {
                     setSelectedEvent(event);
                     setShowEventModal(true);
@@ -726,25 +914,130 @@ export default function TeacherCalendarPageClient({
         )}
       </AnimatedContainer>
 
+      {showStatusUpdateModal && pendingStatusUpdate && (
+        <Modal
+          isOpen
+          onClose={() => setShowStatusUpdateModal(false)}
+          maxWidth="md"
+        >
+          <div className="p-6">
+            <div className="flex items-center space-x-3 mb-6">
+              <div
+                className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                  pendingStatusUpdate.newStatus === 'COMPLETED'
+                    ? 'bg-accent-green/10'
+                    : pendingStatusUpdate.newStatus === 'NO_SHOW'
+                    ? 'bg-accent-yellow/10'
+                    : 'bg-accent-red/10'
+                }`}
+              >
+                {pendingStatusUpdate.newStatus === 'COMPLETED' && (
+                  <FiCheck className="w-6 h-6 text-accent-green" />
+                )}
+                {pendingStatusUpdate.newStatus === 'NO_SHOW' && (
+                  <FiUser className="w-6 h-6 text-accent-yellow" />
+                )}
+                {pendingStatusUpdate.newStatus === 'CANCELLED' && (
+                  <FiX className="w-6 h-6 text-accent-red" />
+                )}
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-theme-primary">
+                  Confirmar Atualização
+                </h2>
+                <p className="text-theme-secondary">
+                  Alterar status da aula para "{pendingStatusUpdate.statusLabel}
+                  "
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 mb-6">
+              <div className="flex items-start space-x-3">
+                <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+                <div className="text-sm">
+                  <p className="font-medium text-accent-blue mb-1">
+                    Confirmação de Status
+                  </p>
+                  <p className="text-theme-secondary">
+                    {pendingStatusUpdate.newStatus === 'COMPLETED' &&
+                      'A aula será marcada como concluída e o horário de término será registrado.'}
+                    {pendingStatusUpdate.newStatus === 'NO_SHOW' &&
+                      'A aula será marcada como "Falta do Aluno" e permanecerá no histórico.'}
+                    {pendingStatusUpdate.newStatus === 'CANCELLED' &&
+                      'A aula será marcada como cancelada e o horário de cancelamento será registrado.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end space-x-3">
+              <button
+                onClick={() => setShowStatusUpdateModal(false)}
+                className="btn-classical-secondary"
+                disabled={updatingStatus}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={executeStatusUpdate}
+                disabled={updatingStatus}
+                className={`btn-classical-primary flex items-center space-x-2 ${
+                  pendingStatusUpdate.newStatus === 'CANCELLED'
+                    ? 'bg-accent-red border-accent-red hover:bg-accent-red/90'
+                    : pendingStatusUpdate.newStatus === 'COMPLETED'
+                    ? 'bg-accent-green border-accent-green hover:bg-accent-green/90'
+                    : 'bg-accent-yellow border-accent-yellow hover:bg-accent-yellow/90'
+                }`}
+              >
+                {updatingStatus ? (
+                  <FiRefreshCw className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    {pendingStatusUpdate.newStatus === 'COMPLETED' && (
+                      <FiCheck className="w-4 h-4" />
+                    )}
+                    {pendingStatusUpdate.newStatus === 'NO_SHOW' && (
+                      <FiUser className="w-4 h-4" />
+                    )}
+                    {pendingStatusUpdate.newStatus === 'CANCELLED' && (
+                      <FiX className="w-4 h-4" />
+                    )}
+                  </>
+                )}
+                <span className="truncate">
+                  {updatingStatus
+                    ? 'Atualizando...'
+                    : `Confirmar ${pendingStatusUpdate.statusLabel}`}
+                </span>
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
       {/* Event Details Modal */}
       {showEventModal && selectedEvent && (
         <EventDetailsModal
           event={selectedEvent}
+          getEventStatusInfo={getEventStatusInfo}
           onClose={() => {
             setShowEventModal(false);
             setSelectedEvent(null);
           }}
+          onUpdateStatus={handleRequestStatusUpdate}
           formatTime={formatTime}
           formatDate={formatDate}
           getEventStatusColor={getEventStatusColor}
         />
       )}
 
-      {/* NOVO: Modal de Todas as Aulas do Dia */}
+      {/* Modal de Todas as Aulas do Dia */}
       {showDayEventsModal && selectedDayDate && (
         <DayEventsModal
           date={selectedDayDate}
           events={selectedDayEvents}
+          getEventStatusInfo={getEventStatusInfo}
           onClose={() => {
             setShowDayEventsModal(false);
             setSelectedDayDate(null);
@@ -756,6 +1049,7 @@ export default function TeacherCalendarPageClient({
             setShowEventModal(true);
           }}
           onCancelEvent={handleQuickCancelLesson}
+          onUpdateStatus={handleRequestStatusUpdate}
           formatTime={formatTime}
           formatEventTime={formatEventTime}
           getEventStatusColor={getEventStatusColor}
@@ -765,23 +1059,25 @@ export default function TeacherCalendarPageClient({
   );
 }
 
-// Month View Component - MODIFICADO para mostrar "3+"
+// Month View Component
 interface MonthViewProps {
   days: Date[];
   currentDate: Date;
   getEventsForDay: (date: Date) => CalendarEvent[];
+  getEventStatusInfo: (event: CalendarEvent) => any;
   onEventClick: (event: CalendarEvent) => void;
-  onShowDayEvents: (date: Date, events: CalendarEvent[]) => void; // NOVO: prop para mostrar todas
+  onShowDayEvents: (date: Date, events: CalendarEvent[]) => void;
   formatTime: (date: Date | string) => string;
-  getEventStatusColor: (status: string) => string;
+  getEventStatusColor: (status: string, needsAttention?: boolean) => string;
 }
 
 function MonthView({
   days,
   currentDate,
   getEventsForDay,
+  getEventStatusInfo,
   onEventClick,
-  onShowDayEvents, // NOVO
+  onShowDayEvents,
   formatTime,
   getEventStatusColor,
 }: MonthViewProps) {
@@ -808,7 +1104,11 @@ function MonthView({
           const isToday = day.toDateString() === today.toDateString();
           const isCurrentMonth = day.getMonth() === currentMonth;
           const events = getEventsForDay(day);
-          const hasMoreThan3 = events.length > 3; // NOVO: verificar se tem mais de 3
+          const hasMoreThan3 = events.length > 3;
+          const eventsNeedingAttention = events.filter(
+            (event) => getEventStatusInfo(event).needsAttention
+          );
+          const hasAttentionEvents = eventsNeedingAttention.length > 0;
 
           return (
             <div
@@ -819,10 +1119,10 @@ function MonthView({
                   : isCurrentMonth
                   ? 'bg-theme-elevated/50'
                   : 'bg-theme-secondary/20 opacity-60'
-              }`}
+              } ${hasAttentionEvents ? 'ring-1 ring-accent-red/40' : ''}`}
             >
               <div
-                className={`text-sm font-medium mb-1 ${
+                className={`text-sm font-medium mb-1 flex items-center justify-between ${
                   isToday
                     ? 'text-brand-primary'
                     : isCurrentMonth
@@ -830,26 +1130,34 @@ function MonthView({
                     : 'text-theme-tertiary'
                 }`}
               >
-                {day.getDate()}
+                <span>{day.getDate()}</span>
+                {hasAttentionEvents && (
+                  <FiAlertTriangle className="w-3 h-3 text-accent-red" />
+                )}
               </div>
 
               <div className="space-y-1">
-                {/* MUDANÇA: Mostrar apenas as primeiras 3 aulas */}
-                {events.slice(0, 3).map((event) => (
-                  <button
-                    key={event.id}
-                    onClick={() => onEventClick(event)}
-                    className={`w-full text-left p-1 rounded text-xs font-medium transition-all hover:scale-105 ${getEventStatusColor(
-                      event.status
-                    )}`}
-                  >
-                    <div className="truncate">
-                      {formatTime(event.start)} {event.title}
-                    </div>
-                  </button>
-                ))}
+                {events.slice(0, 3).map((event) => {
+                  const statusInfo = getEventStatusInfo(event);
+                  return (
+                    <button
+                      key={event.id}
+                      onClick={() => onEventClick(event)}
+                      className={`w-full text-left p-1 rounded text-xs font-medium transition-all hover:scale-105 relative ${getEventStatusColor(
+                        event.status,
+                        statusInfo.needsAttention
+                      )}`}
+                    >
+                      {statusInfo.needsAttention && (
+                        <FiAlertTriangle className="absolute -top-1 -right-1 w-2 h-2 text-accent-red" />
+                      )}
+                      <div className="truncate">
+                        {formatTime(event.start)} {event.title}
+                      </div>
+                    </button>
+                  );
+                })}
 
-                {/* NOVO: Mostrar "+X" quando houver mais de 3 aulas */}
                 {hasMoreThan3 && (
                   <button
                     onClick={() => onShowDayEvents(day, events)}
@@ -870,19 +1178,21 @@ function MonthView({
   );
 }
 
-// Week View Component (sem mudanças)
+// Week View Component
 interface WeekViewProps {
   days: Date[];
   getEventsForDay: (date: Date) => CalendarEvent[];
+  getEventStatusInfo: (event: CalendarEvent) => any;
   onEventClick: (event: CalendarEvent) => void;
   formatTime: (date: Date | string) => string;
   formatEventTime: (start: Date | string, end: Date | string) => string;
-  getEventStatusColor: (status: string) => string;
+  getEventStatusColor: (status: string, needsAttention?: boolean) => string;
 }
 
 function WeekView({
   days,
   getEventsForDay,
+  getEventStatusInfo,
   onEventClick,
   formatEventTime,
   getEventStatusColor,
@@ -895,6 +1205,11 @@ function WeekView({
       <div className="grid grid-cols-7 gap-4 mb-4">
         {days.map((day, index) => {
           const isToday = day.toDateString() === today.toDateString();
+          const events = getEventsForDay(day);
+          const eventsNeedingAttention = events.filter(
+            (event) => getEventStatusInfo(event).needsAttention
+          );
+          const hasAttentionEvents = eventsNeedingAttention.length > 0;
 
           return (
             <div
@@ -903,10 +1218,13 @@ function WeekView({
                 isToday
                   ? 'bg-brand-primary/10 border border-brand-primary/30'
                   : 'bg-theme-elevated'
-              }`}
+              } ${hasAttentionEvents ? 'ring-1 ring-accent-red/40' : ''}`}
             >
-              <div className="text-sm text-theme-tertiary">
-                {WEEKDAYS[index]}
+              <div className="text-sm text-theme-tertiary flex items-center justify-center space-x-1">
+                <span>{WEEKDAYS[index]}</span>
+                {hasAttentionEvents && (
+                  <FiAlertTriangle className="w-3 h-3 text-accent-red" />
+                )}
               </div>
               <div
                 className={`text-lg font-bold ${
@@ -927,27 +1245,34 @@ function WeekView({
 
           return (
             <div key={index} className="space-y-2 min-h-96">
-              {events.map((event) => (
-                <button
-                  key={event.id}
-                  onClick={() => onEventClick(event)}
-                  className={`w-full text-left p-3 rounded-lg transition-all hover:scale-105 ${getEventStatusColor(
-                    event.status
-                  )}`}
-                >
-                  <div className="font-medium text-sm truncate">
-                    {event.title}
-                  </div>
-                  <div className="text-xs opacity-75">
-                    {formatEventTime(event.start, event.end)}
-                  </div>
-                  {event.student && (
-                    <div className="text-xs opacity-75 truncate">
-                      {event.student.name}
+              {events.map((event) => {
+                const statusInfo = getEventStatusInfo(event);
+                return (
+                  <button
+                    key={event.id}
+                    onClick={() => onEventClick(event)}
+                    className={`w-full text-left p-3 rounded-lg transition-all hover:scale-105 relative ${getEventStatusColor(
+                      event.status,
+                      statusInfo.needsAttention
+                    )}`}
+                  >
+                    {statusInfo.needsAttention && (
+                      <FiAlertTriangle className="absolute -top-1 -right-1 w-3 h-3 text-accent-red" />
+                    )}
+                    <div className="font-medium text-sm truncate">
+                      {event.title}
                     </div>
-                  )}
-                </button>
-              ))}
+                    <div className="text-xs opacity-75">
+                      {formatEventTime(event.start, event.end)}
+                    </div>
+                    {event.student && (
+                      <div className="text-xs opacity-75 truncate">
+                        {event.student.name}
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           );
         })}
@@ -956,19 +1281,21 @@ function WeekView({
   );
 }
 
-// Day View Component (sem mudanças)
+// Day View Component
 interface DayViewProps {
   date: Date;
   events: CalendarEvent[];
+  getEventStatusInfo: (event: CalendarEvent) => any;
   onEventClick: (event: CalendarEvent) => void;
   formatTime: (date: Date | string) => string;
   formatEventTime: (start: Date | string, end: Date | string) => string;
-  getEventStatusColor: (status: string) => string;
+  getEventStatusColor: (status: string, needsAttention?: boolean) => string;
 }
 
 function DayView({
   date,
   events,
+  getEventStatusInfo,
   onEventClick,
   formatEventTime,
   getEventStatusColor,
@@ -1002,91 +1329,116 @@ function DayView({
             </p>
           </div>
         ) : (
-          sortedEvents.map((event) => (
-            <button
-              key={event.id}
-              onClick={() => onEventClick(event)}
-              className={`w-full text-left p-6 rounded-lg transition-all hover:scale-105 ${getEventStatusColor(
-                event.status
-              )}`}
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <h3 className="font-bold text-lg mb-2">{event.title}</h3>
+          sortedEvents.map((event) => {
+            const statusInfo = getEventStatusInfo(event);
+            return (
+              <button
+                key={event.id}
+                onClick={() => onEventClick(event)}
+                className={`w-full text-left p-6 rounded-lg transition-all hover:scale-105 relative ${getEventStatusColor(
+                  event.status,
+                  statusInfo.needsAttention
+                )}`}
+              >
+                {statusInfo.needsAttention && (
+                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
+                    <FiAlertTriangle className="w-3 h-3 text-white" />
+                  </div>
+                )}
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <h3 className="font-bold text-lg mb-2">{event.title}</h3>
 
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center space-x-2">
-                      <FiClock className="w-4 h-4" />
-                      <span>{formatEventTime(event.start, event.end)}</span>
-                    </div>
-
-                    {event.student && (
+                    <div className="space-y-2 text-sm">
                       <div className="flex items-center space-x-2">
-                        <FiUser className="w-4 h-4" />
-                        <span>{event.student.name}</span>
+                        <FiClock className="w-4 h-4" />
+                        <span>{formatEventTime(event.start, event.end)}</span>
                       </div>
-                    )}
 
-                    {event.location && (
-                      <div className="flex items-center space-x-2">
-                        <FiMapPin className="w-4 h-4" />
-                        <span>{event.location}</span>
-                      </div>
-                    )}
-
-                    {event.objectives && event.objectives.length > 0 && (
-                      <div className="flex items-start space-x-2">
-                        <FiBookOpen className="w-4 h-4 mt-0.5" />
-                        <div className="flex flex-wrap gap-1">
-                          {event.objectives
-                            .slice(0, 3)
-                            .map((objective, index) => (
-                              <span
-                                key={index}
-                                className="px-2 py-1 bg-theme-elevated rounded text-xs"
-                              >
-                                {objective}
-                              </span>
-                            ))}
-                          {event.objectives.length > 3 && (
-                            <span className="text-xs opacity-75">
-                              +{event.objectives.length - 3}
-                            </span>
-                          )}
+                      {event.student && (
+                        <div className="flex items-center space-x-2">
+                          <FiUser className="w-4 h-4" />
+                          <span>{event.student.name}</span>
                         </div>
-                      </div>
-                    )}
+                      )}
+
+                      {event.location && (
+                        <div className="flex items-center space-x-2">
+                          <FiMapPin className="w-4 h-4" />
+                          <span>{event.location}</span>
+                        </div>
+                      )}
+
+                      {statusInfo.needsAttention && (
+                        <div className="flex items-center space-x-2 text-accent-red">
+                          <FiAlertTriangle className="w-4 h-4" />
+                          <span className="font-medium">
+                            Aula passou há {statusInfo.hoursOverdue}h - Status
+                            precisa ser atualizado
+                          </span>
+                        </div>
+                      )}
+
+                      {event.objectives && event.objectives.length > 0 && (
+                        <div className="flex items-start space-x-2">
+                          <FiBookOpen className="w-4 h-4 mt-0.5" />
+                          <div className="flex flex-wrap gap-1">
+                            {event.objectives
+                              .slice(0, 3)
+                              .map((objective, index) => (
+                                <span
+                                  key={index}
+                                  className="px-2 py-1 bg-theme-elevated rounded text-xs"
+                                >
+                                  {objective}
+                                </span>
+                              ))}
+                            {event.objectives.length > 3 && (
+                              <span className="text-xs opacity-75">
+                                +{event.objectives.length - 3}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="ml-4">
+                    <FiEye className="w-5 h-5 opacity-50" />
                   </div>
                 </div>
-
-                <div className="ml-4">
-                  <FiEye className="w-5 h-5 opacity-50" />
-                </div>
-              </div>
-            </button>
-          ))
+              </button>
+            );
+          })
         )}
       </div>
     </div>
   );
 }
 
-// Event Details Modal (sem mudanças na estrutura)
+// Event Details Modal
 interface EventDetailsModalProps {
   event: CalendarEvent;
+  getEventStatusInfo: (event: CalendarEvent) => any;
   onClose: () => void;
+  onUpdateStatus: (lessonId: string, newStatus: string) => void;
   formatTime: (date: Date | string) => string;
   formatDate: (date: Date | string) => string;
-  getEventStatusColor: (status: string) => string;
+  getEventStatusColor: (status: string, needsAttention?: boolean) => string;
 }
 
 function EventDetailsModal({
   event,
+  getEventStatusInfo,
   onClose,
+  onUpdateStatus, // Agora será a função handleRequestStatusUpdate
   formatTime,
   formatDate,
   getEventStatusColor,
 }: EventDetailsModalProps) {
+  const statusInfo = getEventStatusInfo(event);
+
   return (
     <Modal isOpen onClose={onClose} maxWidth="3xl">
       <AnimatedCard hover="none">
@@ -1099,7 +1451,8 @@ function EventDetailsModal({
               <div className="flex items-center space-x-3 mt-2">
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium ${getEventStatusColor(
-                    event.status
+                    event.status,
+                    statusInfo.needsAttention
                   )}`}
                 >
                   {event.status === 'SCHEDULED'
@@ -1119,9 +1472,62 @@ function EventDetailsModal({
                     Recorrente
                   </span>
                 )}
+                {statusInfo.needsAttention && (
+                  <span className="px-3 py-1 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-full text-sm flex items-center space-x-1">
+                    <FiAlertTriangle className="w-3 h-3" />
+                    <span>Precisa Atenção</span>
+                  </span>
+                )}
               </div>
             </div>
           </div>
+
+          {/* 🆕 ALERTA DE ATENÇÃO EXPANDIDO E MELHORADO */}
+          {statusInfo.needsAttention && (
+            <div className="mb-6 p-6 border border-red-600 rounded-lg bg-accent-red/5">
+              <div className="flex flex-col items-center text-center space-y-4">
+                <FiAlertTriangle className="w-12 h-12 text-accent-red" />
+                <div>
+                  <h4 className="font-bold text-accent-red text-lg mb-2">
+                    Esta aula precisa de atenção
+                  </h4>
+                  <p className="text-sm text-theme-secondary mb-1">
+                    A aula terminou há {statusInfo.hoursOverdue} hora
+                    {statusInfo.hoursOverdue !== 1 ? 's' : ''} mas ainda está
+                    marcada como "Agendada".
+                  </p>
+                  <p className="text-sm text-theme-secondary">
+                    Atualize o status para refletir o que realmente aconteceu.
+                  </p>
+                </div>
+
+                {/* 🆕 BOTÕES DE AÇÃO MELHORADOS */}
+                <div className="flex flex-wrap justify-center gap-3 pt-2">
+                  <button
+                    onClick={() => onUpdateStatus(event.id, 'COMPLETED')}
+                    className="btn-classical-primary bg-accent-green border-accent-green hover:bg-accent-green/90 text-white flex items-center space-x-2 px-4 py-2"
+                  >
+                    <FiCheck className="w-4 h-4" />
+                    <span>Marcar como Concluída</span>
+                  </button>
+                  <button
+                    onClick={() => onUpdateStatus(event.id, 'NO_SHOW')}
+                    className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 flex items-center space-x-2 px-4 py-2"
+                  >
+                    <FiUser className="w-4 h-4" />
+                    <span>Aluno Faltou</span>
+                  </button>
+                  <button
+                    onClick={() => onUpdateStatus(event.id, 'CANCELLED')}
+                    className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 flex items-center space-x-2 px-4 py-2"
+                  >
+                    <FiX className="w-4 h-4" />
+                    <span>Foi Cancelada</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="space-y-6">
             {/* Basic Info */}
@@ -1258,6 +1664,38 @@ function EventDetailsModal({
               </div>
             )}
 
+            {/* 🆝 SEÇÃO DE AÇÕES RÁPIDAS PARA AULAS AGENDADAS */}
+            {event.status === 'SCHEDULED' && !statusInfo.needsAttention && (
+              <div>
+                <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                  Ações Rápidas
+                </label>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={() => onUpdateStatus(event.id, 'COMPLETED')}
+                    className="btn-classical-secondary bg-accent-green/10 border-accent-green text-accent-green hover:bg-accent-green/20 flex items-center space-x-2 text-sm"
+                  >
+                    <FiCheck className="w-4 h-4" />
+                    <span>Concluir Aula</span>
+                  </button>
+                  <button
+                    onClick={() => onUpdateStatus(event.id, 'NO_SHOW')}
+                    className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 flex items-center space-x-2 text-sm"
+                  >
+                    <FiUser className="w-4 h-4" />
+                    <span>Marcar Falta</span>
+                  </button>
+                  <button
+                    onClick={() => onUpdateStatus(event.id, 'CANCELLED')}
+                    className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 flex items-center space-x-2 text-sm"
+                  >
+                    <FiX className="w-4 h-4" />
+                    <span>Cancelar</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Actions */}
             <div className="flex items-center justify-between pt-6 border-t border-theme-secondary">
               <Link
@@ -1272,10 +1710,18 @@ function EventDetailsModal({
                 {event.status === 'SCHEDULED' && (
                   <Link
                     href={`/teacher/lessons/${event.id}`}
-                    className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
+                    className={`text-sm font-medium transition-colors flex items-center space-x-1 ${
+                      statusInfo.needsAttention
+                        ? 'text-accent-red hover:text-accent-red/80'
+                        : 'text-accent-blue hover:text-accent-purple'
+                    }`}
                   >
                     <FiEdit3 className="w-4 h-4" />
-                    <span>Editar</span>
+                    <span>
+                      {statusInfo.needsAttention
+                        ? 'Atualizar Status'
+                        : 'Editar'}
+                    </span>
                   </Link>
                 )}
               </div>
@@ -1287,29 +1733,37 @@ function EventDetailsModal({
   );
 }
 
-// NOVO: Modal para todas as aulas do dia
+// Modal para todas as aulas do dia
 interface DayEventsModalProps {
   date: Date;
   events: CalendarEvent[];
+  getEventStatusInfo: (event: CalendarEvent) => any;
   onClose: () => void;
   onEventClick: (event: CalendarEvent) => void;
   onCancelEvent: (lessonId: string) => void;
+  onUpdateStatus: (lessonId: string, newStatus: string) => void;
   formatTime: (date: Date | string) => string;
   formatEventTime: (start: Date | string, end: Date | string) => string;
-  getEventStatusColor: (status: string) => string;
+  getEventStatusColor: (status: string, needsAttention?: boolean) => string;
 }
 
 function DayEventsModal({
   date,
   events,
+  getEventStatusInfo,
   onClose,
   onEventClick,
   onCancelEvent,
+  onUpdateStatus,
   formatEventTime,
   getEventStatusColor,
 }: DayEventsModalProps) {
   const sortedEvents = [...events].sort(
     (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
+  );
+
+  const eventsNeedingAttention = sortedEvents.filter(
+    (event) => getEventStatusInfo(event).needsAttention
   );
 
   return (
@@ -1329,6 +1783,12 @@ function DayEventsModal({
                   day: 'numeric',
                 })}{' '}
                 • {events.length} aula{events.length !== 1 ? 's' : ''}
+                {eventsNeedingAttention.length > 0 && (
+                  <span className="text-accent-red">
+                    {' '}
+                    • {eventsNeedingAttention.length} precisam de atenção
+                  </span>
+                )}
               </p>
             </div>
             <button
@@ -1339,116 +1799,183 @@ function DayEventsModal({
             </button>
           </div>
 
-          <div className="space-y-4 max-h-96 overflow-y-auto">
-            {sortedEvents.map((event) => (
-              <div
-                key={event.id}
-                className={`p-4 rounded-lg border transition-all ${getEventStatusColor(
-                  event.status
-                )}`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 mb-2">
-                      <h3 className="font-bold text-lg">{event.title}</h3>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${getEventStatusColor(
-                          event.status
-                        )}`}
-                      >
-                        {event.status === 'SCHEDULED'
-                          ? 'Agendada'
-                          : event.status === 'COMPLETED'
-                          ? 'Concluída'
-                          : event.status === 'CANCELLED'
-                          ? 'Cancelada'
-                          : event.status}
-                      </span>
-                    </div>
+          {/* Alerta geral se houver eventos precisando de atenção */}
+          {eventsNeedingAttention.length > 0 && (
+            <div className="mb-6 p-4 bg-accent-red/5 border border-accent-red/20 rounded-lg">
+              <div className="flex items-center space-x-3">
+                <FiAlertTriangle className="w-5 h-5 text-accent-red" />
+                <div>
+                  <h4 className="font-semibold text-accent-red">
+                    {eventsNeedingAttention.length} aula
+                    {eventsNeedingAttention.length !== 1 ? 's' : ''} precisam de
+                    atenção
+                  </h4>
+                  <p className="text-sm text-theme-secondary">
+                    Há aulas que já passaram da data agendada mas ainda estão
+                    marcadas como "Agendadas".
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                      <div className="space-y-2 text-sm">
-                        <div className="flex items-center space-x-2">
-                          <FiClock className="w-4 h-4" />
-                          <span>{formatEventTime(event.start, event.end)}</span>
+          <div className="space-y-4 max-h-96 overflow-y-auto">
+            {sortedEvents.map((event) => {
+              const statusInfo = getEventStatusInfo(event);
+
+              return (
+                <div
+                  key={event.id}
+                  className={`p-4 rounded-lg border transition-all ${getEventStatusColor(
+                    event.status,
+                    statusInfo.needsAttention
+                  )}`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <h3 className="font-bold text-lg">{event.title}</h3>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getEventStatusColor(
+                            event.status,
+                            statusInfo.needsAttention
+                          )}`}
+                        >
+                          {event.status === 'SCHEDULED'
+                            ? 'Agendada'
+                            : event.status === 'COMPLETED'
+                            ? 'Concluída'
+                            : event.status === 'CANCELLED'
+                            ? 'Cancelada'
+                            : event.status}
+                        </span>
+                        {statusInfo.needsAttention && (
+                          <span className="px-2 py-1 bg-accent-red/20 text-accent-red rounded-full text-xs flex items-center space-x-1">
+                            <FiAlertTriangle className="w-3 h-3" />
+                            <span>Atenção</span>
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center space-x-2">
+                            <FiClock className="w-4 h-4" />
+                            <span>
+                              {formatEventTime(event.start, event.end)}
+                            </span>
+                          </div>
+
+                          {event.student && (
+                            <div className="flex items-center space-x-2">
+                              <FiUser className="w-4 h-4" />
+                              <span>{event.student.name}</span>
+                            </div>
+                          )}
+
+                          {event.location && (
+                            <div className="flex items-center space-x-2">
+                              <FiMapPin className="w-4 h-4" />
+                              <span>{event.location}</span>
+                            </div>
+                          )}
+
+                          {statusInfo.needsAttention && (
+                            <div className="flex items-center space-x-2 text-accent-red">
+                              <FiAlertTriangle className="w-4 h-4" />
+                              <span className="font-medium text-xs">
+                                Passou há {statusInfo.hoursOverdue}h
+                              </span>
+                            </div>
+                          )}
                         </div>
 
-                        {event.student && (
-                          <div className="flex items-center space-x-2">
-                            <FiUser className="w-4 h-4" />
-                            <span>{event.student.name}</span>
-                          </div>
-                        )}
-
-                        {event.location && (
-                          <div className="flex items-center space-x-2">
-                            <FiMapPin className="w-4 h-4" />
-                            <span>{event.location}</span>
+                        {event.objectives && event.objectives.length > 0 && (
+                          <div>
+                            <label className="text-xs font-medium text-theme-tertiary block mb-1">
+                              Objetivos
+                            </label>
+                            <div className="flex flex-wrap gap-1">
+                              {event.objectives
+                                .slice(0, 2)
+                                .map((objective, index) => (
+                                  <span
+                                    key={index}
+                                    className="px-2 py-1 bg-theme-elevated rounded text-xs"
+                                  >
+                                    {objective}
+                                  </span>
+                                ))}
+                              {event.objectives.length > 2 && (
+                                <span className="text-xs opacity-75">
+                                  +{event.objectives.length - 2}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>
 
-                      {event.objectives && event.objectives.length > 0 && (
-                        <div>
-                          <label className="text-xs font-medium text-theme-tertiary block mb-1">
-                            Objetivos
-                          </label>
-                          <div className="flex flex-wrap gap-1">
-                            {event.objectives
-                              .slice(0, 2)
-                              .map((objective, index) => (
-                                <span
-                                  key={index}
-                                  className="px-2 py-1 bg-theme-elevated rounded text-xs"
+                      {/* Ações Rápidas */}
+                      <div className="flex items-center space-x-3 flex-wrap gap-2">
+                        <button
+                          onClick={() => onEventClick(event)}
+                          className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
+                        >
+                          <FiEye className="w-4 h-4" />
+                          <span>Ver Detalhes</span>
+                        </button>
+
+                        {event.status === 'SCHEDULED' && (
+                          <>
+                            <Link
+                              href={`/teacher/lessons/${event.id}`}
+                              className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
+                            >
+                              <FiEdit3 className="w-4 h-4" />
+                              <span>Editar</span>
+                              <FiExternalLink className="w-3 h-3" />
+                            </Link>
+
+                            {statusInfo.needsAttention && (
+                              <>
+                                <button
+                                  onClick={() =>
+                                    onUpdateStatus(event.id, 'COMPLETED')
+                                  }
+                                  className="text-accent-green hover:text-accent-green/80 text-sm font-medium transition-colors flex items-center space-x-1"
                                 >
-                                  {objective}
-                                </span>
-                              ))}
-                            {event.objectives.length > 2 && (
-                              <span className="text-xs opacity-75">
-                                +{event.objectives.length - 2}
-                              </span>
+                                  <FiCheck className="w-4 h-4" />
+                                  <span>Concluída</span>
+                                </button>
+
+                                <button
+                                  onClick={() =>
+                                    onUpdateStatus(event.id, 'NO_SHOW')
+                                  }
+                                  className="text-accent-yellow hover:text-accent-yellow/80 text-sm font-medium transition-colors flex items-center space-x-1"
+                                >
+                                  <FiUser className="w-4 h-4" />
+                                  <span>Faltou</span>
+                                </button>
+                              </>
                             )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
 
-                    {/* Ações Rápidas */}
-                    <div className="flex items-center space-x-3">
-                      <button
-                        onClick={() => onEventClick(event)}
-                        className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
-                      >
-                        <FiEye className="w-4 h-4" />
-                        <span>Ver Detalhes</span>
-                      </button>
-
-                      {event.status === 'SCHEDULED' && (
-                        <>
-                          <Link
-                            href={`/teacher/lessons/${event.id}`}
-                            className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
-                          >
-                            <FiEdit3 className="w-4 h-4" />
-                            <span>Editar</span>
-                            <FiExternalLink className="w-3 h-3" />
-                          </Link>
-
-                          <button
-                            onClick={() => onCancelEvent(event.id)}
-                            className="text-accent-red hover:text-accent-red/80 text-sm font-medium transition-colors flex items-center space-x-1"
-                          >
-                            <FiTrash2 className="w-4 h-4" />
-                            <span>Cancelar</span>
-                          </button>
-                        </>
-                      )}
+                            <button
+                              onClick={() => onCancelEvent(event.id)}
+                              className="text-accent-red hover:text-accent-red/80 text-sm font-medium transition-colors flex items-center space-x-1"
+                            >
+                              <FiTrash2 className="w-4 h-4" />
+                              <span>Cancelar</span>
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="flex items-center justify-end pt-6 border-t border-theme-secondary">

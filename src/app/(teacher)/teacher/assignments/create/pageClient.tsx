@@ -36,6 +36,7 @@ import { useTeacherAssignments } from '@/app/hooks/lessonsSystem/useTeacherAssig
 import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
+import { translateNivel } from '@/app/utils';
 
 interface CreateAssignmentPageClientProps {
   initialData: CreateAssignmentData;
@@ -884,7 +885,7 @@ export default function CreateAssignmentPageClient({
                           {selectedStudent.name}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Nível: {selectedStudent.level}
+                          Nível: {translateNivel(selectedStudent.level)}
                         </div>
                       </div>
                     </div>

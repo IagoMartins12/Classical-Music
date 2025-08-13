@@ -235,15 +235,15 @@ export default function StudentCalendarPageClient({
   const getEventStatusColor = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'bg-accent-green/10 border-accent-green/30 text-accent-green';
+        return 'border-green-400 text-green-400';
       case 'CANCELLED':
-        return 'bg-accent-red/10 border-accent-red/30 text-accent-red';
+        return ' border-red-400 text-red-400';
       case 'NO_SHOW':
-        return 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow';
+        return 'border-yellow-300 text-yellow-300';
       case 'RESCHEDULED':
-        return 'bg-accent-purple/10 border-accent-purple/30 text-accent-purple';
+        return ' border-purple-300 text-purple-300';
       default:
-        return 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue';
+        return ' border-blue-300 text-blue-300';
     }
   };
 

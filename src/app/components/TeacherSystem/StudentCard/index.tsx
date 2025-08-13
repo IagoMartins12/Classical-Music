@@ -13,8 +13,10 @@ import {
   FiTarget,
   FiUsers,
 } from 'react-icons/fi';
+import { TfiBlackboard } from 'react-icons/tfi';
 import { ViewMode } from '../../ViewModeToggle';
 import { TeacherStudentsServerData } from '@/app/(teacher)/teacher/students/pageServer';
+import { translateNivel } from '@/app/utils';
 
 interface StudentCardProps {
   studentRelationship: TeacherStudentsServerData['students'][0];
@@ -51,7 +53,7 @@ function StudentCard({
 
   return (
     <div
-      className={`classical-card p-6 group hover:shadow-theme-glow transition-all ${
+      className={`classical-card p-6 group ${
         viewMode === 'list' ? 'flex items-center space-x-6' : ''
       }`}
     >
@@ -145,7 +147,7 @@ function StudentCard({
               <FiTarget className="w-4 h-4 text-accent-blue" />
               <span className="text-theme-secondary">Nível:</span>
               <span className="text-theme-primary font-medium">
-                {student.level}
+                {translateNivel(student.level)}
               </span>
             </div>
             {student.mainInstrument && (
@@ -166,10 +168,18 @@ function StudentCard({
                 {formatDate(relationship.startDate)}
               </span>
             </div>
-            <div className="text-xs text-theme-tertiary">
-              {relationship.maxLessonsPerWeek}x por semana •{' '}
-              {relationship.lessonDuration}min
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <div className="flex items-center space-x-2">
+              <TfiBlackboard className="w-4 h-4 text-accent-green" />
+              <span className="text-theme-secondary">Perfil:</span>
+              <span className="text-theme-primary">
+                {relationship.maxLessonsPerWeek}x por semana •{' '}
+                {relationship.lessonDuration}min{' '}
+              </span>
             </div>
+            <div className="text-xs text-theme-tertiary"></div>
           </div>
         </div>
 
@@ -197,8 +207,8 @@ function StudentCard({
 
         {/* Next Lesson */}
         {nextLesson && isActive && (
-          <div className="p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
-            <div className="flex items-center justify-between">
+          <div className="p-3 bg-theme-elevated rounded-lg ">
+            <div className="flex gap-4 items-center justify-between">
               <div>
                 <div className="text-sm font-medium text-theme-primary">
                   Próxima aula
@@ -228,7 +238,11 @@ function StudentCard({
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
+        <div
+          className={`flex items-center gap-4 justify-between pt-4 ${
+            viewMode === 'list' ? 'gap-4' : 'border-t border-theme-secondary '
+          }`}
+        >
           <Link
             href={`/teacher/students/${student.id}`}
             className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"

@@ -1,4 +1,5 @@
-// app/teacher/assignments/pageClient.tsx - Client Component para Tarefas do Professor
+// app/teacher/assignments/pageClient.tsx - Client Component para Tarefas do Professor - ATUALIZADO
+
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
@@ -22,6 +23,7 @@ import {
   FiPlay,
   FiCheckCircle,
   FiEdit,
+  FiMoreVertical,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -34,6 +36,7 @@ import { TeacherAssignmentsData, TeacherAssignment } from './pageServer';
 import Image from 'next/image';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
+import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useTeacherAssignments } from '@/app/hooks/lessonsSystem/useTeacherAssignments';
 import Modal from '@/app/components/Modal';
 import Link from 'next/link';
@@ -119,6 +122,9 @@ export default function TeacherAssignmentsPageClient({
 
     clearError,
   } = useTeacherAssignments(initialData);
+
+  // 🆕 VIEW MODE STATE
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
 
   // Local UI states (não relacionados aos dados das tarefas)
   const [searchTerm, setSearchTerm] = useState('');
@@ -239,6 +245,11 @@ export default function TeacherAssignmentsPageClient({
     return filtered;
   }, [assignments, searchTerm, filter, selectedStudent, sortBy]);
 
+  // 🆕 CHECK IF ASSIGNMENT HAS WORK SCORES
+  const hasWorkScores = useCallback((assignment: TeacherAssignment) => {
+    return assignment.workScoreIds && assignment.workScoreIds.length > 0;
+  }, []);
+
   // Helper functions
   const formatDueDate = (dueDate: Date | string) => {
     const date = new Date(dueDate);
@@ -256,13 +267,11 @@ export default function TeacherAssignmentsPageClient({
   };
 
   const getStatusColor = (assignment: TeacherAssignment) => {
-    if (assignment.isOverdue)
-      return 'bg-accent-red/10 border-accent-red/30 text-accent-red';
-    if (assignment.isCompleted)
-      return 'bg-accent-green/10 border-accent-green/30 text-accent-green';
+    if (assignment.isOverdue) return ' border-red-400 text-red-400';
+    if (assignment.isCompleted) return 'border-green-400 text-green-400';
     if (assignment.status === 'IN_PROGRESS')
-      return 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue';
-    return 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow';
+      return 'border-blue-300 text-blue-300';
+    return ' border-yellow-30 text-yellow-300';
   };
 
   const getStatusText = (assignment: TeacherAssignment) => {
@@ -326,6 +335,517 @@ export default function TeacherAssignmentsPageClient({
       }
     },
     [updateAssignment]
+  );
+
+  // 🆕 RENDER ASSIGNMENT CARD COMPONENT
+  const renderAssignmentCard = useCallback(
+    (assignment: TeacherAssignment, index: number) => {
+      const hasScores = hasWorkScores(assignment);
+
+      return (
+        <AnimatedCard
+          key={assignment.id}
+          hover="lift"
+          className="classical-card"
+          delay={index * 0.05}
+        >
+          <div className="p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-start space-x-4">
+                  {/* Student Avatar */}
+
+                  {/* Assignment Details */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex flex-col gap-2 w-full">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="flex-shrink-0">
+                              {assignment.student.image ? (
+                                <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                                  <Image
+                                    src={assignment.student.image}
+                                    alt={assignment.student.name}
+                                    fill
+                                    sizes="48px"
+                                    className="object-cover"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                                  <FiUser className="w-6 h-6 text-theme-primary" />
+                                </div>
+                              )}
+                            </div>
+
+                            <h3 className="font-bold text-lg text-theme-primary classical-title truncate">
+                              {assignment.title}
+                            </h3>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <span
+                              className={`px-3 py-1 rounded-full text-sm font-medium border flex items-center space-x-1 ${getStatusColor(
+                                assignment
+                              )}`}
+                            >
+                              {getStatusIcon(assignment)}
+                              <span>{getStatusText(assignment)}</span>
+                            </span>
+
+                            <span
+                              className={`px-2 py-1 rounded text-xs font-medium border ${
+                                PRIORITY_COLORS[
+                                  assignment.priority as keyof typeof PRIORITY_COLORS
+                                ]
+                              }`}
+                            >
+                              {
+                                PRIORITY_LABELS[
+                                  assignment.priority as keyof typeof PRIORITY_LABELS
+                                ]
+                              }
+                            </span>
+
+                            {/* 🆕 WORK SCORE INDICATOR */}
+                            {hasScores && (
+                              <div
+                                className="w-6 h-6 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full flex items-center justify-center"
+                                title="Tem partituras vinculadas"
+                              >
+                                <FiMusic className="w-3 h-3" />
+                              </div>
+                            )}
+
+                            {/* Actions */}
+                            <div className="flex items-center space-x-2 ml-4">
+                              <button
+                                onClick={() => {
+                                  setSelectedAssignment(assignment);
+                                  setShowAssignmentModal(true);
+                                }}
+                                className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
+                              >
+                                <FiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                              </button>
+
+                              <Link href={`assignments/${assignment.id}/edit`}>
+                                <button className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
+                                  <FiEdit className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                                </button>
+                              </Link>
+
+                              {/* Status Actions */}
+                              {!assignment.isCompleted && (
+                                <button
+                                  onClick={() =>
+                                    updateAssignmentStatus(assignment.id, {
+                                      teacherFeedback:
+                                        'Aprovada pelo professor',
+                                      teacherRating: 5,
+                                      isCompleted: true,
+                                      status: 'COMPLETED',
+                                    })
+                                  }
+                                  disabled={actionLoading === assignment.id}
+                                  className="w-8 h-8 rounded-lg bg-accent-green/10 hover:bg-accent-green/20 transition-colors flex items-center justify-center group"
+                                  title="Aprovar Tarefa"
+                                >
+                                  {actionLoading === assignment.id ? (
+                                    <FiRefreshCw className="w-4 h-4 text-accent-green animate-spin" />
+                                  ) : (
+                                    <FiCheck className="w-4 h-4 text-accent-green" />
+                                  )}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center space-x-4 text-sm text-theme-secondary mt-1">
+                          <div className="flex items-center space-x-1">
+                            <FiUser className="w-4 h-4" />
+                            <span>{assignment.student.name}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <FiBookOpen className="w-4 h-4" />
+                            <span>
+                              {ASSIGNMENT_TYPES[
+                                assignment.type as keyof typeof ASSIGNMENT_TYPES
+                              ] || assignment.type}
+                            </span>
+                          </div>
+                          {assignment.dueDate && (
+                            <div className="flex items-center space-x-1">
+                              <FiCalendar className="w-4 h-4" />
+                              <span>{formatDueDate(assignment.dueDate)}</span>
+                            </div>
+                          )}
+                          {assignment.estimatedTime && (
+                            <div className="flex items-center space-x-1">
+                              <FiClock className="w-4 h-4" />
+                              <span>{assignment.estimatedTime}min</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-theme-secondary text-sm mb-4 line-clamp-2">
+                      {assignment.description}
+                    </p>
+
+                    {/* Progress Bar */}
+                    {assignment.progress !== undefined && (
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm text-theme-tertiary">
+                            Progresso
+                          </span>
+                          <span className="text-sm font-medium text-theme-primary">
+                            {assignment.progress}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-theme-secondary rounded-full h-2">
+                          <div
+                            className="progress-bar h-2 rounded-full transition-all duration-300"
+                            style={{
+                              width: `${assignment.progress}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Goals */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {assignment.practiceGoals.slice(0, 2).map((goal, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs flex items-center space-x-1"
+                        >
+                          <FiTarget className="w-3 h-3" />
+                          <span>{goal}</span>
+                        </span>
+                      ))}
+                      {assignment.technicalGoals
+                        .slice(0, 1)
+                        .map((goal, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs flex items-center space-x-1"
+                          >
+                            <FiMusic className="w-3 h-3" />
+                            <span>{goal}</span>
+                          </span>
+                        ))}
+                      {assignment.practiceGoals.length +
+                        assignment.technicalGoals.length +
+                        assignment.musicalGoals.length >
+                        3 && (
+                        <span className="text-xs text-theme-tertiary">
+                          +
+                          {assignment.practiceGoals.length +
+                            assignment.technicalGoals.length +
+                            assignment.musicalGoals.length -
+                            3}{' '}
+                          mais
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center space-x-6 text-sm text-theme-tertiary">
+                      <div className="flex items-center space-x-1">
+                        <FiCalendar className="w-4 h-4" />
+                        <span>
+                          Criada{' '}
+                          {new Date(assignment.createdAt).toLocaleDateString(
+                            'pt-BR'
+                          )}
+                        </span>
+                      </div>
+                      {assignment.completedAt && (
+                        <div className="flex items-center space-x-1">
+                          <FiCheck className="w-4 h-4" />
+                          <span>
+                            Concluída{' '}
+                            {new Date(
+                              assignment.completedAt
+                            ).toLocaleDateString('pt-BR')}
+                          </span>
+                        </div>
+                      )}
+                      {hasScores && (
+                        <div className="flex items-center space-x-1 text-accent-purple">
+                          <FiMusic className="w-4 h-4" />
+                          <span>
+                            {assignment.workScoreIds.length} partitura
+                            {assignment.workScoreIds.length !== 1 ? 's' : ''}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </AnimatedCard>
+      );
+    },
+    [
+      hasWorkScores,
+      getStatusColor,
+      getStatusText,
+      getStatusIcon,
+      formatDueDate,
+      updateAssignmentStatus,
+      actionLoading,
+    ]
+  );
+
+  // 🆕 RENDER ASSIGNMENT LIST ITEM COMPONENT
+  const renderAssignmentListItem = useCallback(
+    (assignment: TeacherAssignment, index: number) => {
+      const hasScores = hasWorkScores(assignment);
+
+      return (
+        <AnimatedCard
+          key={assignment.id}
+          hover="lift"
+          className="classical-card"
+          delay={index * 0.05}
+        >
+          <div className="p-6">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-start space-x-4">
+                  {/* Student Avatar */}
+                  <div className="flex-shrink-0">
+                    {assignment.student.image ? (
+                      <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                        <Image
+                          src={assignment.student.image}
+                          alt={assignment.student.name}
+                          fill
+                          sizes="48px"
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                        <FiUser className="w-6 h-6 text-theme-primary" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Assignment Details */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h3 className="font-bold text-lg text-theme-primary classical-title truncate">
+                          {assignment.title}
+                        </h3>
+                        <div className="flex items-center space-x-4 text-sm text-theme-secondary mt-1">
+                          <div className="flex items-center space-x-1">
+                            <FiUser className="w-4 h-4" />
+                            <span>{assignment.student.name}</span>
+                          </div>
+                          <div className="flex items-center space-x-1">
+                            <FiBookOpen className="w-4 h-4" />
+                            <span>
+                              {ASSIGNMENT_TYPES[
+                                assignment.type as keyof typeof ASSIGNMENT_TYPES
+                              ] || assignment.type}
+                            </span>
+                          </div>
+                          {assignment.dueDate && (
+                            <div className="flex items-center space-x-1">
+                              <FiCalendar className="w-4 h-4" />
+                              <span>{formatDueDate(assignment.dueDate)}</span>
+                            </div>
+                          )}
+                          {assignment.estimatedTime && (
+                            <div className="flex items-center space-x-1">
+                              <FiClock className="w-4 h-4" />
+                              <span>{assignment.estimatedTime}min</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-3">
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium border flex items-center space-x-1 ${getStatusColor(
+                            assignment
+                          )}`}
+                        >
+                          {getStatusIcon(assignment)}
+                          <span>{getStatusText(assignment)}</span>
+                        </span>
+
+                        <span
+                          className={`px-2 py-1 rounded text-xs font-medium border ${
+                            PRIORITY_COLORS[
+                              assignment.priority as keyof typeof PRIORITY_COLORS
+                            ]
+                          }`}
+                        >
+                          {
+                            PRIORITY_LABELS[
+                              assignment.priority as keyof typeof PRIORITY_LABELS
+                            ]
+                          }
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-theme-secondary text-sm mb-4 line-clamp-2">
+                      {assignment.description}
+                    </p>
+
+                    {/* Progress Bar */}
+                    {assignment.progress !== undefined && (
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm text-theme-tertiary">
+                            Progresso
+                          </span>
+                          <span className="text-sm font-medium text-theme-primary">
+                            {assignment.progress}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-theme-secondary rounded-full h-2">
+                          <div
+                            className="progress-bar h-2 rounded-full transition-all duration-300"
+                            style={{
+                              width: `${assignment.progress}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Goals */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {assignment.practiceGoals.slice(0, 2).map((goal, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs flex items-center space-x-1"
+                        >
+                          <FiTarget className="w-3 h-3" />
+                          <span>{goal}</span>
+                        </span>
+                      ))}
+                      {assignment.technicalGoals
+                        .slice(0, 1)
+                        .map((goal, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs flex items-center space-x-1"
+                          >
+                            <FiMusic className="w-3 h-3" />
+                            <span>{goal}</span>
+                          </span>
+                        ))}
+                      {assignment.practiceGoals.length +
+                        assignment.technicalGoals.length +
+                        assignment.musicalGoals.length >
+                        3 && (
+                        <span className="text-xs text-theme-tertiary">
+                          +
+                          {assignment.practiceGoals.length +
+                            assignment.technicalGoals.length +
+                            assignment.musicalGoals.length -
+                            3}{' '}
+                          mais
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center space-x-6 text-sm text-theme-tertiary">
+                      <div className="flex items-center space-x-1">
+                        <FiCalendar className="w-4 h-4" />
+                        <span>
+                          Criada{' '}
+                          {new Date(assignment.createdAt).toLocaleDateString(
+                            'pt-BR'
+                          )}
+                        </span>
+                      </div>
+                      {assignment.completedAt && (
+                        <div className="flex items-center space-x-1">
+                          <FiCheck className="w-4 h-4" />
+                          <span>
+                            Concluída{' '}
+                            {new Date(
+                              assignment.completedAt
+                            ).toLocaleDateString('pt-BR')}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center space-x-2 ml-4">
+                <button
+                  onClick={() => {
+                    setSelectedAssignment(assignment);
+                    setShowAssignmentModal(true);
+                  }}
+                  className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
+                >
+                  <FiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                </button>
+
+                <Link href={`assignments/${assignment.id}/edit`}>
+                  <button className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
+                    <FiEdit className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+                  </button>
+                </Link>
+
+                {/* Status Actions */}
+                {!assignment.isCompleted && (
+                  <button
+                    onClick={() =>
+                      updateAssignmentStatus(assignment.id, {
+                        teacherFeedback: 'Aprovada pelo professor',
+                        teacherRating: 5,
+                        isCompleted: true,
+                        status: 'COMPLETED',
+                      })
+                    }
+                    disabled={actionLoading === assignment.id}
+                    className="w-8 h-8 rounded-lg bg-accent-green/10 hover:bg-accent-green/20 transition-colors flex items-center justify-center group"
+                    title="Aprovar Tarefa"
+                  >
+                    {actionLoading === assignment.id ? (
+                      <FiRefreshCw className="w-4 h-4 text-accent-green animate-spin" />
+                    ) : (
+                      <FiCheck className="w-4 h-4 text-accent-green" />
+                    )}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </AnimatedCard>
+      );
+    },
+    [
+      hasWorkScores,
+      getStatusColor,
+      getStatusText,
+      updateAssignmentStatus,
+      actionLoading,
+    ]
   );
 
   // Render error state
@@ -540,18 +1060,17 @@ export default function TeacherAssignmentsPageClient({
                   />
                 </button>
 
+                {/* 🆕 VIEW MODE TOGGLE */}
+                <ViewModeToggle
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                />
+
                 <Link href={'assignments/create'}>
                   <Button variant="primary">
                     <span>Nova Tarefa</span>
                   </Button>
                 </Link>
-                {/* 
-                <Button
-                  onClick={() => setShowCreateModal(true)}
-                  variant="outline"
-                >
-                  <span>Nova Tarefa Rápida</span>
-                </Button> */}
               </div>
             </div>
 
@@ -643,239 +1162,20 @@ export default function TeacherAssignmentsPageClient({
                   </div>
                 </AnimatedCard>
               ) : (
-                filteredAndSortedAssignments.map((assignment, index) => (
-                  <AnimatedCard
-                    key={assignment.id}
-                    hover="lift"
-                    className="classical-card"
-                    delay={index * 0.05}
-                  >
-                    <div className="p-6">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-start space-x-4">
-                            {/* Student Avatar */}
-                            <div className="flex-shrink-0">
-                              {assignment.student.image ? (
-                                <div className="w-12 h-12 relative rounded-full overflow-hidden">
-                                  <Image
-                                    src={assignment.student.image}
-                                    alt={assignment.student.name}
-                                    fill
-                                    sizes="48px"
-                                    className="object-cover"
-                                  />
-                                </div>
-                              ) : (
-                                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                                  <FiUser className="w-6 h-6 text-theme-primary" />
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Assignment Details */}
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-start justify-between mb-3">
-                                <div>
-                                  <h3 className="font-bold text-lg text-theme-primary classical-title truncate">
-                                    {assignment.title}
-                                  </h3>
-                                  <div className="flex items-center space-x-4 text-sm text-theme-secondary mt-1">
-                                    <div className="flex items-center space-x-1">
-                                      <FiUser className="w-4 h-4" />
-                                      <span>{assignment.student.name}</span>
-                                    </div>
-                                    <div className="flex items-center space-x-1">
-                                      <FiBookOpen className="w-4 h-4" />
-                                      <span>
-                                        {ASSIGNMENT_TYPES[
-                                          assignment.type as keyof typeof ASSIGNMENT_TYPES
-                                        ] || assignment.type}
-                                      </span>
-                                    </div>
-                                    {assignment.dueDate && (
-                                      <div className="flex items-center space-x-1">
-                                        <FiCalendar className="w-4 h-4" />
-                                        <span>
-                                          {formatDueDate(assignment.dueDate)}
-                                        </span>
-                                      </div>
-                                    )}
-                                    {assignment.estimatedTime && (
-                                      <div className="flex items-center space-x-1">
-                                        <FiClock className="w-4 h-4" />
-                                        <span>
-                                          {assignment.estimatedTime}min
-                                        </span>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-
-                                <div className="flex items-center space-x-3">
-                                  <span
-                                    className={`px-3 py-1 rounded-full text-sm font-medium border flex items-center space-x-1 ${getStatusColor(
-                                      assignment
-                                    )}`}
-                                  >
-                                    {getStatusIcon(assignment)}
-                                    <span>{getStatusText(assignment)}</span>
-                                  </span>
-
-                                  <span
-                                    className={`px-2 py-1 rounded text-xs font-medium border ${
-                                      PRIORITY_COLORS[
-                                        assignment.priority as keyof typeof PRIORITY_COLORS
-                                      ]
-                                    }`}
-                                  >
-                                    {
-                                      PRIORITY_LABELS[
-                                        assignment.priority as keyof typeof PRIORITY_LABELS
-                                      ]
-                                    }
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Description */}
-                              <p className="text-theme-secondary text-sm mb-4 line-clamp-2">
-                                {assignment.description}
-                              </p>
-
-                              {/* Progress Bar */}
-                              {assignment.progress !== undefined && (
-                                <div className="mb-4">
-                                  <div className="flex items-center justify-between mb-2">
-                                    <span className="text-sm text-theme-tertiary">
-                                      Progresso
-                                    </span>
-                                    <span className="text-sm font-medium text-theme-primary">
-                                      {assignment.progress}%
-                                    </span>
-                                  </div>
-                                  <div className="w-full bg-theme-secondary rounded-full h-2">
-                                    <div
-                                      className="progress-bar h-2 rounded-full transition-all duration-300"
-                                      style={{
-                                        width: `${assignment.progress}%`,
-                                      }}
-                                    />
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Goals */}
-                              <div className="flex flex-wrap gap-2 mb-4">
-                                {assignment.practiceGoals
-                                  .slice(0, 2)
-                                  .map((goal, idx) => (
-                                    <span
-                                      key={idx}
-                                      className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs flex items-center space-x-1"
-                                    >
-                                      <FiTarget className="w-3 h-3" />
-                                      <span>{goal}</span>
-                                    </span>
-                                  ))}
-                                {assignment.technicalGoals
-                                  .slice(0, 1)
-                                  .map((goal, idx) => (
-                                    <span
-                                      key={idx}
-                                      className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs flex items-center space-x-1"
-                                    >
-                                      <FiMusic className="w-3 h-3" />
-                                      <span>{goal}</span>
-                                    </span>
-                                  ))}
-                                {assignment.practiceGoals.length +
-                                  assignment.technicalGoals.length +
-                                  assignment.musicalGoals.length >
-                                  3 && (
-                                  <span className="text-xs text-theme-tertiary">
-                                    +
-                                    {assignment.practiceGoals.length +
-                                      assignment.technicalGoals.length +
-                                      assignment.musicalGoals.length -
-                                      3}{' '}
-                                    mais
-                                  </span>
-                                )}
-                              </div>
-
-                              {/* Stats */}
-                              <div className="flex items-center space-x-6 text-sm text-theme-tertiary">
-                                <div className="flex items-center space-x-1">
-                                  <FiCalendar className="w-4 h-4" />
-                                  <span>
-                                    Criada{' '}
-                                    {new Date(
-                                      assignment.createdAt
-                                    ).toLocaleDateString('pt-BR')}
-                                  </span>
-                                </div>
-                                {assignment.completedAt && (
-                                  <div className="flex items-center space-x-1">
-                                    <FiCheck className="w-4 h-4" />
-                                    <span>
-                                      Concluída{' '}
-                                      {new Date(
-                                        assignment.completedAt
-                                      ).toLocaleDateString('pt-BR')}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex items-center space-x-2 ml-4">
-                          <button
-                            onClick={() => {
-                              setSelectedAssignment(assignment);
-                              setShowAssignmentModal(true);
-                            }}
-                            className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
-                          >
-                            <FiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
-                          </button>
-
-                          <Link href={`assignments/${assignment.id}/edit`}>
-                            <button className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group">
-                              <FiEdit className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
-                            </button>
-                          </Link>
-
-                          {/* Status Actions */}
-                          {!assignment.isCompleted && (
-                            <button
-                              onClick={() =>
-                                updateAssignmentStatus(assignment.id, {
-                                  teacherFeedback: 'Aprovada pelo professor',
-                                  teacherRating: 5,
-                                  isCompleted: true,
-                                  status: 'COMPLETED',
-                                })
-                              }
-                              disabled={actionLoading === assignment.id}
-                              className="w-8 h-8 rounded-lg bg-accent-green/10 hover:bg-accent-green/20 transition-colors flex items-center justify-center group"
-                              title="Aprovar Tarefa"
-                            >
-                              {actionLoading === assignment.id ? (
-                                <FiRefreshCw className="w-4 h-4 text-accent-green animate-spin" />
-                              ) : (
-                                <FiCheck className="w-4 h-4 text-accent-green" />
-                              )}
-                            </button>
-                          )}
-                        </div>
-                      </div>
+                <>
+                  {/* 🆕 CONDITIONAL RENDERING BASED ON VIEW MODE */}
+                  {viewMode === 'cards' ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                      {filteredAndSortedAssignments.map(renderAssignmentCard)}
                     </div>
-                  </AnimatedCard>
-                ))
+                  ) : (
+                    <div className="space-y-3">
+                      {filteredAndSortedAssignments.map(
+                        renderAssignmentListItem
+                      )}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </AnimatedItem>
@@ -1346,6 +1646,17 @@ function AssignmentDetailsModal({
                     ]
                   }
                 </span>
+                {/* Work Score Indicator */}
+                {assignment.workScoreIds &&
+                  assignment.workScoreIds.length > 0 && (
+                    <span className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded text-xs flex items-center space-x-1">
+                      <FiMusic className="w-3 h-3" />
+                      <span>
+                        {assignment.workScoreIds.length} partitura
+                        {assignment.workScoreIds.length !== 1 ? 's' : ''}
+                      </span>
+                    </span>
+                  )}
               </div>
             </div>
           </div>
@@ -1514,6 +1825,17 @@ function AssignmentDetailsModal({
                       </span>
                     </div>
                   )}
+
+                  {assignment.workScoreIds &&
+                    assignment.workScoreIds.length > 0 && (
+                      <div className="flex justify-between">
+                        <span className="text-theme-tertiary">Partituras:</span>
+                        <span className="text-accent-purple">
+                          {assignment.workScoreIds.length} vinculada
+                          {assignment.workScoreIds.length !== 1 ? 's' : ''}
+                        </span>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>

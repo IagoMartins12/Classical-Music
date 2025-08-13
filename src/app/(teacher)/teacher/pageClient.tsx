@@ -39,6 +39,7 @@ import StudentInviteStatusBadge from '@/app/components/TeacherSystem/StudentInvi
 import { useToast } from '@/app/hooks/useToast';
 import { useTeacherData } from '@/app/hooks/lessonsSystem/useTeacherData';
 import RefreshIndicator from '@/app/components/Common/RefreshIndicator';
+import { translateNivel } from '@/app/utils';
 
 interface TeacherProfile {
   id: string;
@@ -70,18 +71,6 @@ export interface StudentSearchResult {
   hasStudentProfile: boolean;
 }
 
-export const translateNivel = (nivel: string) => {
-  if (nivel === 'BEGINNER') {
-    return 'Iniciante';
-  } else if (nivel === 'INTERMEDIATE') {
-    return 'Intermediário';
-  } else if (nivel === 'ADVANCED') {
-    return 'Avançado';
-  } else {
-    return 'Não definido';
-  }
-};
-
 export default function TeacherPageClient({
   initialDashboardData,
   initialStudentsData,
@@ -91,10 +80,7 @@ export default function TeacherPageClient({
 }: TeacherPageClientProps) {
   // ===== USAR O HOOK PERSONALIZADO =====
   const {
-    data: {
-      dashboard: dashboardData,
-      students: studentsData,
-    },
+    data: { dashboard: dashboardData, students: studentsData },
     refreshing,
     error: dataError,
     refreshData,
@@ -744,7 +730,7 @@ export default function TeacherPageClient({
 
                         {/* Next Lesson */}
                         {studentRel.nextLesson && (
-                          <div className="mt-3 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
+                          <div className="mt-3 p-3 bg-theme-elevated rounded-lg ">
                             <div className="flex items-center justify-between">
                               <div>
                                 <div className="text-sm font-medium text-theme-primary">

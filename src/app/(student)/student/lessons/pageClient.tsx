@@ -1,4 +1,4 @@
-// app/student/lessons/pageClient.tsx - Client Component para Aulas do Aluno
+// app/student/lessons/pageClient.tsx - Client Component para Aulas do Aluno - ATUALIZADO
 
 'use client';
 
@@ -18,6 +18,7 @@ import {
   FiX,
   FiChevronLeft,
   FiChevronRight,
+  FiAlertTriangle,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -29,6 +30,7 @@ import { StudentLessonsData } from './pageServer';
 import Link from 'next/link';
 import { useStudentLessons } from '@/app/hooks/lessonsSystem/useStudentLessons';
 import Select from '@/app/components/Common/Select';
+import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 
 interface StudentLessonsPageClientProps {
   initialData: StudentLessonsData | null;
@@ -51,6 +53,9 @@ export default function StudentLessonsPageClient({
   // Initialize hook with server data
   const { lessons, loading, error, fetchLessons, refreshLessons, clearError } =
     useStudentLessons();
+
+  // 🆕 VIEW MODE STATE
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
 
   // Local UI states
   const [searchTerm, setSearchTerm] = useState('');
@@ -80,6 +85,22 @@ export default function StudentLessonsPageClient({
   // Use initial data or hook data
   const displayLessons = initialData?.lessons || lessons;
   const teachersOptions = initialData?.teachers || [];
+
+  // 🆕 FUNÇÃO PARA VERIFICAR SE AULA PASSOU E PRECISA DE ATENÇÃO
+  const getLessonStatusInfo = useCallback((lesson: any) => {
+    const now = new Date();
+    const lessonTime = new Date(lesson.scheduledAt);
+    const hasPassedScheduledTime = lessonTime < now;
+    const needsAttention =
+      hasPassedScheduledTime && lesson.status === 'SCHEDULED';
+
+    return {
+      hasPassedScheduledTime,
+      needsAttention,
+      isPast: lessonTime < now,
+      isToday: lessonTime.toDateString() === now.toDateString(),
+    };
+  }, []);
 
   // Filter lessons
   const filteredLessons = useMemo(() => {
@@ -216,42 +237,259 @@ export default function StudentLessonsPageClient({
   };
 
   // Get lesson status info
-  const getLessonStatusInfo = (status: string) => {
+  const getLessonStatusInfoDisplay = (status: string) => {
     switch (status) {
       case 'COMPLETED':
         return {
-          color: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
+          color: 'border-green-400 text-green-400',
           label: 'Concluída',
           icon: FiCheck,
         };
       case 'CANCELLED':
         return {
-          color: 'bg-accent-red/10 border-accent-red/30 text-accent-red',
+          color: 'border-red-400 text-red-400',
           label: 'Cancelada',
           icon: FiX,
         };
       case 'NO_SHOW':
         return {
-          color:
-            'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow',
+          color: 'border-yellow-300 text-yellow-300',
           label: 'Faltou',
           icon: FiX,
         };
       case 'RESCHEDULED':
         return {
-          color:
-            'bg-accent-purple/10 border-accent-purple/30 text-accent-purple',
+          color: 'border-purple-300 text-purple-300',
           label: 'Reagendada',
           icon: FiClock,
         };
       default:
         return {
-          color: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
+          color: 'border-blue-300 text-blue-300',
           label: 'Agendada',
           icon: FiCalendar,
         };
     }
   };
+
+  // 🆕 RENDER LESSON CARD COMPONENT
+  const renderLessonCard = useCallback(
+    (lesson: any, index: number) => {
+      const statusInfo = getLessonStatusInfo(lesson);
+      const statusDisplayInfo = getLessonStatusInfoDisplay(lesson.status);
+      const StatusIcon = statusDisplayInfo.icon;
+      const isToday = statusInfo.isToday;
+
+      return (
+        <AnimatedCard
+          key={lesson.id}
+          hover="lift"
+          className={`classical-card p-6 relative ${
+            isToday ? ' ring-yellow-400 ring-2' : ''
+          } ${statusInfo.needsAttention ? 'ring-2 ring-red-400' : ''}`}
+          delay={index * 0.1}
+        >
+          {/* 🆕 INDICATIVO DE ATENÇÃO NECESSÁRIA */}
+          {statusInfo.needsAttention && (
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">
+              <FiAlertTriangle className="w-3 h-3 text-white" />
+            </div>
+          )}
+
+          {/* Status Badge */}
+          <div className="flex items-center justify-between mb-4">
+            <span
+              className={`px-3 py-1 rounded-full text-xs font-medium border ${statusDisplayInfo.color}`}
+            >
+              <StatusIcon className="w-3 h-3 inline mr-1" />
+              {statusDisplayInfo.label}
+            </span>
+            {isToday && (
+              <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-xs font-medium">
+                Hoje
+              </span>
+            )}
+          </div>
+
+          {/* Lesson Info */}
+          <h3 className="font-bold text-theme-primary mb-2 line-clamp-2">
+            {lesson.title}
+          </h3>
+
+          <div className="space-y-2 mb-4">
+            <div className="flex items-center text-sm text-theme-secondary">
+              <FiCalendar className="w-4 h-4 mr-2" />
+              {formatDateTime(lesson.scheduledAt)}
+            </div>
+
+            <div className="flex items-center text-sm text-theme-secondary">
+              <FiClock className="w-4 h-4 mr-2" />
+              {lesson.duration} minutos
+            </div>
+
+            <div className="flex items-center text-sm text-theme-secondary">
+              <FiUser className="w-4 h-4 mr-2" />
+              {lesson.teacher.name}
+            </div>
+
+            {lesson.location && (
+              <div className="flex items-center text-sm text-theme-secondary">
+                <FiMapPin className="w-4 h-4 mr-2" />
+                {lesson.location}
+              </div>
+            )}
+          </div>
+
+          {/* Objectives Preview */}
+          {lesson.objectives.length > 0 && (
+            <div className="mb-4">
+              <div className="text-xs text-theme-tertiary mb-1">Objetivos:</div>
+              <div className="flex flex-wrap gap-1">
+                {lesson.objectives
+                  .slice(0, 2)
+                  .map((objective: any, idx: number) => (
+                    <span
+                      key={idx}
+                      className="px-2 py-1 bg-accent-blue/10 text-accent-blue text-xs rounded"
+                    >
+                      {objective}
+                    </span>
+                  ))}
+                {lesson.objectives.length > 2 && (
+                  <span className="text-xs text-theme-tertiary">
+                    +{lesson.objectives.length - 2}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Feedback Status */}
+          {lesson.status === 'COMPLETED' && (
+            <div className="mb-4">
+              {lesson.studentFeedback ? (
+                <div className="flex items-center text-sm text-accent-green">
+                  <FiMessageSquare className="w-4 h-4 mr-2" />
+                  Feedback enviado
+                </div>
+              ) : (
+                <div className="flex items-center text-sm text-accent-yellow">
+                  <FiMessageSquare className="w-4 h-4 mr-2" />
+                  Pendente feedback
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* 🆕 ALERTA PARA AULAS QUE PRECISAM DE ATENÇÃO */}
+          {statusInfo.needsAttention && (
+            <div className="mb-4">
+              <div className="flex items-center text-sm text-accent-red">
+                <FiAlertTriangle className="w-4 h-4 mr-2" />
+                Status precisa ser atualizado
+              </div>
+            </div>
+          )}
+
+          {/* Action Button */}
+          <Link
+            href={`/student/lessons/${lesson.id}`}
+            className="btn-classical-primary w-full text-center flex items-center justify-center space-x-2"
+          >
+            <FiEye className="w-4 h-4" />
+            <span>Ver Detalhes</span>
+          </Link>
+        </AnimatedCard>
+      );
+    },
+    [getLessonStatusInfo, getLessonStatusInfoDisplay, formatDateTime]
+  );
+
+  // 🆕 RENDER LESSON LIST ITEM COMPONENT
+  const renderLessonListItem = useCallback(
+    (lesson: any, index: number) => {
+      const statusInfo = getLessonStatusInfo(lesson);
+      const statusDisplayInfo = getLessonStatusInfoDisplay(lesson.status);
+      const StatusIcon = statusDisplayInfo.icon;
+      const isToday = statusInfo.isToday;
+
+      return (
+        <AnimatedCard
+          key={lesson.id}
+          hover="lift"
+          className={`classical-card p-4 ${
+            isToday ? 'ring-2 ring-yellow-400' : ''
+          } ${statusInfo.needsAttention ? 'ring-2 ring-red-600' : ''}`}
+          delay={index * 0.05}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4 flex-1">
+              {/* Status Indicator */}
+              <div className="flex items-center space-x-2">
+                <span
+                  className={`w-3 h-3 rounded-full ${
+                    lesson.status === 'COMPLETED'
+                      ? 'bg-accent-green'
+                      : lesson.status === 'CANCELLED'
+                      ? 'bg-accent-red'
+                      : lesson.status === 'NO_SHOW'
+                      ? 'bg-accent-yellow'
+                      : 'bg-accent-blue'
+                  }`}
+                />
+                {statusInfo.needsAttention && (
+                  <FiAlertTriangle className="w-4 h-4 text-accent-red" />
+                )}
+                {isToday && (
+                  <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-xs font-medium">
+                    Hoje
+                  </span>
+                )}
+              </div>
+
+              {/* Lesson Info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center space-x-3">
+                  <h3 className="font-semibold text-theme-primary truncate">
+                    {lesson.title}
+                  </h3>
+                  <span className="text-sm text-theme-secondary">
+                    {lesson.teacher.name}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
+                  <span>{formatDateTime(lesson.scheduledAt)}</span>
+                  <span>{lesson.duration}min</span>
+                  {lesson.location && <span>{lesson.location}</span>}
+                  {statusInfo.needsAttention && (
+                    <span className="text-accent-red">Status pendente</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Status */}
+              <span
+                className={`px-3 py-1 rounded-full text-sm font-medium ${statusDisplayInfo.color}`}
+              >
+                {statusDisplayInfo.label}
+              </span>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center space-x-2 ml-4">
+              <Link
+                href={`/student/lessons/${lesson.id}`}
+                className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-interactive-hover transition-colors flex items-center justify-center group"
+              >
+                <FiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+              </Link>
+            </div>
+          </div>
+        </AnimatedCard>
+      );
+    },
+    [getLessonStatusInfo, getLessonStatusInfoDisplay, formatDateTime]
+  );
 
   // Error state para "no teachers"
   if (errorMessage === 'no_teachers') {
@@ -426,6 +664,12 @@ export default function StudentLessonsPageClient({
                   <span>Filtros</span>
                 </button>
 
+                {/* 🆕 VIEW MODE TOGGLE */}
+                <ViewModeToggle
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                />
+
                 <button
                   onClick={handleRefresh}
                   disabled={loading.lessons}
@@ -536,123 +780,18 @@ export default function StudentLessonsPageClient({
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {paginatedLessons.map((lesson, index) => {
-                const statusInfo = getLessonStatusInfo(lesson.status);
-                const StatusIcon = statusInfo.icon;
-                const isToday =
-                  new Date(lesson.scheduledAt).toDateString() ===
-                  new Date().toDateString();
-                // const isPast = new Date(lesson.scheduledAt) < new Date();
-
-                return (
-                  <AnimatedCard
-                    key={lesson.id}
-                    hover="lift"
-                    className={`classical-card p-6 relative ${
-                      isToday ? 'ring-2 ring-brand-primary/30' : ''
-                    }`}
-                    delay={index * 0.1}
-                  >
-                    {/* Status Badge */}
-                    <div className="flex items-center justify-between mb-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium border ${statusInfo.color}`}
-                      >
-                        <StatusIcon className="w-3 h-3 inline mr-1" />
-                        {statusInfo.label}
-                      </span>
-                      {isToday && (
-                        <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-xs font-medium">
-                          Hoje
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Lesson Info */}
-                    <h3 className="font-bold text-theme-primary mb-2 line-clamp-2">
-                      {lesson.title}
-                    </h3>
-
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center text-sm text-theme-secondary">
-                        <FiCalendar className="w-4 h-4 mr-2" />
-                        {formatDateTime(lesson.scheduledAt)}
-                      </div>
-
-                      <div className="flex items-center text-sm text-theme-secondary">
-                        <FiClock className="w-4 h-4 mr-2" />
-                        {lesson.duration} minutos
-                      </div>
-
-                      <div className="flex items-center text-sm text-theme-secondary">
-                        <FiUser className="w-4 h-4 mr-2" />
-                        {lesson.teacher.name}
-                      </div>
-
-                      {lesson.location && (
-                        <div className="flex items-center text-sm text-theme-secondary">
-                          <FiMapPin className="w-4 h-4 mr-2" />
-                          {lesson.location}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Objectives Preview */}
-                    {lesson.objectives.length > 0 && (
-                      <div className="mb-4">
-                        <div className="text-xs text-theme-tertiary mb-1">
-                          Objetivos:
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {lesson.objectives
-                            .slice(0, 2)
-                            .map((objective, idx) => (
-                              <span
-                                key={idx}
-                                className="px-2 py-1 bg-accent-blue/10 text-accent-blue text-xs rounded"
-                              >
-                                {objective}
-                              </span>
-                            ))}
-                          {lesson.objectives.length > 2 && (
-                            <span className="text-xs text-theme-tertiary">
-                              +{lesson.objectives.length - 2}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Feedback Status */}
-                    {lesson.status === 'COMPLETED' && (
-                      <div className="mb-4">
-                        {lesson.studentFeedback ? (
-                          <div className="flex items-center text-sm text-accent-green">
-                            <FiMessageSquare className="w-4 h-4 mr-2" />
-                            Feedback enviado
-                          </div>
-                        ) : (
-                          <div className="flex items-center text-sm text-accent-yellow">
-                            <FiMessageSquare className="w-4 h-4 mr-2" />
-                            Pendente feedback
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Action Button */}
-                    <Link
-                      href={`/student/lessons/${lesson.id}`}
-                      className="btn-classical-primary w-full text-center flex items-center justify-center space-x-2"
-                    >
-                      <FiEye className="w-4 h-4" />
-                      <span>Ver Detalhes</span>
-                    </Link>
-                  </AnimatedCard>
-                );
-              })}
-            </div>
+            <>
+              {/* 🆕 CONDITIONAL RENDERING BASED ON VIEW MODE */}
+              {viewMode === 'cards' ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {paginatedLessons.map(renderLessonCard)}
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {paginatedLessons.map(renderLessonListItem)}
+                </div>
+              )}
+            </>
           )}
         </AnimatedItem>
 

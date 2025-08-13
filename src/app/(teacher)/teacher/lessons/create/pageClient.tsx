@@ -36,6 +36,7 @@ import Modal from '@/app/components/Modal';
 import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
+import { translateNivel } from '@/app/utils';
 
 interface CreateLessonPageClientProps {
   initialData: CreateLessonData;
@@ -439,7 +440,8 @@ export default function CreateLessonPageClient({
                               {selectedStudent.name}
                             </div>
                             <div className="text-sm text-theme-tertiary">
-                              Nível: {selectedStudent.level} • Duração padrão:{' '}
+                              Nível: {translateNivel(selectedStudent.level)} •
+                              Duração padrão:{' '}
                               {selectedStudent.relationship.lessonDuration}min •
                               Max:{' '}
                               {selectedStudent.relationship.maxLessonsPerWeek}
@@ -997,7 +999,7 @@ export default function CreateLessonPageClient({
                           {selectedStudent.name}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Nível: {selectedStudent.level}
+                          Nível: {translateNivel(selectedStudent.level)}
                         </div>
                       </div>
                     </div>
