@@ -1,20 +1,39 @@
-// app/types/notification.ts - TIPOS CORRIGIDOS
+// app/types/notification.ts - TIPOS ATUALIZADOS COM NOVOS TIPOS DE NOTIFICAÇÃO
 
 import { JsonValue } from '@prisma/client/runtime/library';
 
 export type NotificationType =
-  | 'LESSON_STARTING_SOON'
-  | 'LESSON_TOMORROW'
-  | 'LESSON_STATUS_PENDING'
+  // NOTIFICAÇÕES AUTOMÁTICAS (mantidas no check/route.ts)
+  | 'LESSON_STARTING_SOON' // 30min antes da aula
+  | 'LESSON_TOMORROW' // 24h antes da aula
+  | 'ASSIGNMENT_DUE_SOON' // 2h antes do vencimento
+  | 'ASSIGNMENT_DUE_TOMORROW' // 24h antes do vencimento
+  | 'ASSIGNMENT_OVERDUE' // Tarefa já atrasada
+  | 'LESSON_STATUS_PENDING' // Aula passou sem status atualizado
+
+  // 🆕 NOTIFICAÇÕES PARA ESTUDANTES (eventos reais)
+  | 'TEACHER_GAVE_FEEDBACK' // Professor deu feedback na tarefa
+  | 'LESSON_CANCELLED_BY_TEACHER' // Professor cancelou aula
+  | 'LESSON_RESCHEDULED_BY_TEACHER' // Professor reagendou aula
+  | 'LESSON_MARKED_NO_SHOW' // Professor marcou falta
+  | 'NEW_ASSIGNMENT_CREATED' // Professor criou nova tarefa
+  | 'ASSIGNMENT_UPDATED_BY_TEACHER' // Professor alterou tarefa
+  | 'NEW_LESSON_SCHEDULED' // Nova aula agendada (só PAI ou solo)
+
+  // 🆕 NOTIFICAÇÕES PARA PROFESSORES (eventos reais)
+  | 'STUDENT_SUBMITTED_ASSIGNMENT' // Aluno enviou submissão
+  | 'STUDENT_COMPLETED_ASSIGNMENT' // Aluno completou tarefa
+  | 'STUDENT_GAVE_LESSON_FEEDBACK' // Aluno deu feedback na aula
+  | 'STUDENT_INFORMED_ABSENCE' // Aluno informou ausência
+  | 'STUDENT_REQUESTED_RESCHEDULE' // Aluno solicitou reagendamento
+
+  // NOTIFICAÇÕES ANTIGAS (manter para compatibilidade se existirem)
   | 'LESSON_NO_SHOW'
-  | 'ASSIGNMENT_DUE_SOON'
-  | 'ASSIGNMENT_DUE_TOMORROW'
-  | 'ASSIGNMENT_OVERDUE'
-  | 'ASSIGNMENT_FEEDBACK_NEEDED'
+  | 'ASSIGNMENT_FEEDBACK_NEEDED' // 🗑️ SERÁ REMOVIDA do check/route.ts
   | 'ASSIGNMENT_COMPLETED'
   | 'STUDENT_INVITE_PENDING'
   | 'STUDENT_MULTIPLE_LATE'
-  | 'NEW_STUDENT_FEEDBACK'
+  | 'NEW_STUDENT_FEEDBACK' // 🗑️ SERÁ REMOVIDA do check/route.ts
   | 'WEEKLY_REPORT_AVAILABLE'
   | 'PRACTICE_REMINDER'
   | 'SYSTEM_MAINTENANCE'
@@ -31,22 +50,22 @@ export interface NotificationData {
   status: NotificationStatus;
   title: string;
   message: string;
-  actionText?: string; // undefined em vez de null
-  actionUrl?: string; // undefined em vez de null
-  relatedEntityType?: string; // undefined em vez de null
-  relatedEntityId?: string; // undefined em vez de null
+  actionText?: string;
+  actionUrl?: string;
+  relatedEntityType?: string;
+  relatedEntityId?: string;
   metadata?: Record<string, any> | JsonValue;
   showInToast: boolean;
   showInBrowser: boolean;
   showInPage: boolean;
-  lastShownAt?: Date; // undefined em vez de null
-  scheduledFor?: Date; // undefined em vez de null
-  expiresAt?: Date; // undefined em vez de null
+  lastShownAt?: Date;
+  scheduledFor?: Date;
+  expiresAt?: Date;
   toastShown: boolean;
   browserShown: boolean;
   createdAt: Date;
   updatedAt: Date;
-  readAt?: Date; // undefined em vez de null
+  readAt?: Date;
 }
 
 export interface CreateNotificationData {
@@ -74,7 +93,7 @@ export interface NotificationCheckResult {
   totalUnread: number;
 }
 
-// 🆕 HELPER PARA MAPEAR DADOS DO PRISMA PARA NotificationData
+// Helper para mapear dados do Prisma para NotificationData
 export const mapPrismaNotificationToData = (
   prismaNotification: any
 ): NotificationData => {
@@ -91,16 +110,13 @@ export const mapPrismaNotificationToData = (
   };
 };
 
-// Constantes do sistema (sem mudanças)
+// Constantes do sistema
 export const NOTIFICATION_CONFIG = {
-  // Intervals
   CHECK_INTERVAL: 30 * 60 * 1000, // 30 minutos
-  COOLDOWN_DURATION: 30 * 60 * 1000, // 30 minutos entre repetições (removido)
   NOTIFICATION_STORAGE_KEY: 'opus_atlas_notification_cache',
-  DEFAULT_EXPIRY_DAYS: 30, // 30 dias por padrão
-  CLEANUP_OLDER_THAN_DAYS: 30, // Limpar notificações mais antigas que 30 dias
+  DEFAULT_EXPIRY_DAYS: 30,
+  CLEANUP_OLDER_THAN_DAYS: 30,
 
-  // Timing para diferentes tipos
   LESSON_WARNING_TIMES: {
     STARTING_SOON: 30 * 60 * 1000, // 30 minutos antes
     TOMORROW: 24 * 60 * 60 * 1000, // 24 horas antes
@@ -113,13 +129,12 @@ export const NOTIFICATION_CONFIG = {
     OVERDUE_CHECK: 24 * 60 * 60 * 1000, // 24 horas após vencimento
   },
 
-  // Limites
   MAX_NOTIFICATIONS_PER_CHECK: 50,
   MAX_TOAST_NOTIFICATIONS: 5,
   MAX_BROWSER_NOTIFICATIONS: 3,
 } as const;
 
-// Configurações por tipo de notificação (sem mudanças)
+// 🆕 CONFIGURAÇÕES POR TIPO ATUALIZADAS
 export const NOTIFICATION_TYPE_CONFIG: Record<
   NotificationType,
   {
@@ -128,10 +143,10 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInBrowser: boolean;
     icon: string;
     color: string;
-    defaultExpiry?: number; // dias
+    defaultExpiry?: number;
   }
 > = {
-  // AULAS - Alta prioridade
+  // AUTOMÁTICAS (mantidas)
   LESSON_STARTING_SOON: {
     priority: 'HIGH',
     showInToast: true,
@@ -146,22 +161,6 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     icon: '📅',
     color: 'accent-amber',
   },
-  LESSON_STATUS_PENDING: {
-    priority: 'HIGH',
-    showInToast: true,
-    showInBrowser: false,
-    icon: '⏰',
-    color: 'accent-red',
-  },
-  LESSON_NO_SHOW: {
-    priority: 'MEDIUM',
-    showInToast: true,
-    showInBrowser: false,
-    icon: '❌',
-    color: 'accent-amber',
-  },
-
-  // TAREFAS - Prioridade variável
   ASSIGNMENT_DUE_SOON: {
     priority: 'HIGH',
     showInToast: true,
@@ -183,6 +182,110 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     icon: '🚨',
     color: 'accent-red',
   },
+  LESSON_STATUS_PENDING: {
+    priority: 'HIGH',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '⏰',
+    color: 'accent-red',
+  },
+
+  // 🆕 PARA ESTUDANTES
+  TEACHER_GAVE_FEEDBACK: {
+    priority: 'MEDIUM',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '💬',
+    color: 'accent-blue',
+  },
+  LESSON_CANCELLED_BY_TEACHER: {
+    priority: 'HIGH',
+    showInToast: true,
+    showInBrowser: true,
+    icon: '❌',
+    color: 'accent-red',
+  },
+  LESSON_RESCHEDULED_BY_TEACHER: {
+    priority: 'HIGH',
+    showInToast: true,
+    showInBrowser: true,
+    icon: '📅',
+    color: 'accent-amber',
+  },
+  LESSON_MARKED_NO_SHOW: {
+    priority: 'HIGH',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '⚠️',
+    color: 'accent-red',
+  },
+  NEW_ASSIGNMENT_CREATED: {
+    priority: 'MEDIUM',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '📋',
+    color: 'accent-blue',
+  },
+  ASSIGNMENT_UPDATED_BY_TEACHER: {
+    priority: 'MEDIUM',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '✏️',
+    color: 'accent-amber',
+  },
+  NEW_LESSON_SCHEDULED: {
+    priority: 'MEDIUM',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '📅',
+    color: 'accent-green',
+  },
+
+  // 🆕 PARA PROFESSORES
+  STUDENT_SUBMITTED_ASSIGNMENT: {
+    priority: 'MEDIUM',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '📤',
+    color: 'accent-blue',
+  },
+  STUDENT_COMPLETED_ASSIGNMENT: {
+    priority: 'MEDIUM',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '✅',
+    color: 'accent-green',
+  },
+  STUDENT_GAVE_LESSON_FEEDBACK: {
+    priority: 'LOW',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '💭',
+    color: 'accent-blue',
+  },
+  STUDENT_INFORMED_ABSENCE: {
+    priority: 'MEDIUM',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '🏃',
+    color: 'accent-amber',
+  },
+  STUDENT_REQUESTED_RESCHEDULE: {
+    priority: 'MEDIUM',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '🔄',
+    color: 'accent-amber',
+  },
+
+  // ANTIGAS (manter compatibilidade)
+  LESSON_NO_SHOW: {
+    priority: 'MEDIUM',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '❌',
+    color: 'accent-amber',
+  },
   ASSIGNMENT_FEEDBACK_NEEDED: {
     priority: 'MEDIUM',
     showInToast: true,
@@ -197,15 +300,13 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     icon: '✅',
     color: 'accent-green',
   },
-
-  // RELAÇÕES - Prioridade variável
   STUDENT_INVITE_PENDING: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: false,
     icon: '👥',
     color: 'accent-amber',
-    defaultExpiry: 7, // 7 dias para convites
+    defaultExpiry: 7,
   },
   STUDENT_MULTIPLE_LATE: {
     priority: 'MEDIUM',
@@ -221,15 +322,13 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     icon: '📢',
     color: 'accent-blue',
   },
-
-  // PROGRESSO - Baixa prioridade
   WEEKLY_REPORT_AVAILABLE: {
     priority: 'LOW',
     showInToast: false,
     showInBrowser: false,
     icon: '📊',
     color: 'accent-blue',
-    defaultExpiry: 7, // 7 dias para relatórios
+    defaultExpiry: 7,
   },
   PRACTICE_REMINDER: {
     priority: 'LOW',
@@ -238,15 +337,13 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     icon: '🎵',
     color: 'accent-blue',
   },
-
-  // SISTEMA - Informativo
   SYSTEM_MAINTENANCE: {
     priority: 'MEDIUM',
     showInToast: true,
     showInBrowser: true,
     icon: '🔧',
     color: 'accent-amber',
-    defaultExpiry: 3, // 3 dias para manutenção
+    defaultExpiry: 3,
   },
   GENERAL_ANNOUNCEMENT: {
     priority: 'LOW',
@@ -254,7 +351,7 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInBrowser: false,
     icon: '📢',
     color: 'accent-blue',
-    defaultExpiry: 14, // 14 dias para anúncios
+    defaultExpiry: 14,
   },
 };
 
@@ -262,20 +359,21 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
 export const NOTIFICATION_STORAGE_KEY = 'opus_atlas_notification_cache';
 
 export interface NotificationCache {
-  shownNotifications: Set<string>; // IDs já mostrados nesta sessão
+  shownNotifications: Set<string>;
 }
 
-// Mensagens padrão por tipo
+// 🆕 TEMPLATES DE MENSAGEM ATUALIZADOS
 export const getNotificationTemplate = (
   type: NotificationType,
   metadata?: Record<string, any>
 ): { title: string; message: string; actionText?: string } => {
   switch (type) {
+    // AUTOMÁTICAS (mantidas)
     case 'LESSON_STARTING_SOON':
       return {
         title: 'Aula em 30 minutos',
-        message: `Sua aula com ${
-          metadata?.studentName || 'aluno'
+        message: `Sua aula${
+          metadata?.teacherName ? ` com ${metadata.teacherName}` : ''
         } começará em breve`,
         actionText: 'Ver Aula',
       };
@@ -283,19 +381,10 @@ export const getNotificationTemplate = (
     case 'LESSON_TOMORROW':
       return {
         title: 'Aula amanhã',
-        message: `Lembre-se: aula com ${
-          metadata?.studentName || 'aluno'
+        message: `Lembre-se: aula${
+          metadata?.teacherName ? ` com ${metadata.teacherName}` : ''
         } amanhã às ${metadata?.time}`,
         actionText: 'Ver Agenda',
-      };
-
-    case 'LESSON_STATUS_PENDING':
-      return {
-        title: 'Atualizar status da aula',
-        message: `A aula com ${
-          metadata?.studentName || 'aluno'
-        } já passou. Atualize o status.`,
-        actionText: 'Atualizar',
       };
 
     case 'ASSIGNMENT_DUE_SOON':
@@ -304,6 +393,15 @@ export const getNotificationTemplate = (
         message: `A tarefa "${
           metadata?.assignmentTitle || 'Tarefa'
         }" vence em breve`,
+        actionText: 'Ver Tarefa',
+      };
+
+    case 'ASSIGNMENT_DUE_TOMORROW':
+      return {
+        title: 'Tarefa vence amanhã',
+        message: `A tarefa "${
+          metadata?.assignmentTitle || 'Tarefa'
+        }" vence amanhã`,
         actionText: 'Ver Tarefa',
       };
 
@@ -316,6 +414,130 @@ export const getNotificationTemplate = (
         actionText: 'Ver Tarefa',
       };
 
+    case 'LESSON_STATUS_PENDING':
+      return {
+        title: 'Atualizar status da aula',
+        message: `A aula${
+          metadata?.studentName ? ` com ${metadata.studentName}` : ''
+        } já passou. Atualize o status.`,
+        actionText: 'Atualizar',
+      };
+
+    // 🆕 PARA ESTUDANTES
+    case 'TEACHER_GAVE_FEEDBACK':
+      return {
+        title: 'Novo feedback do professor',
+        message: `${
+          metadata?.teacherName || 'Professor'
+        } deu feedback na tarefa "${metadata?.assignmentTitle || 'Tarefa'}"`,
+        actionText: 'Ver Feedback',
+      };
+
+    case 'LESSON_CANCELLED_BY_TEACHER':
+      return {
+        title: 'Aula cancelada',
+        message: `${metadata?.teacherName || 'Professor'} cancelou a aula "${
+          metadata?.lessonTitle || 'Aula'
+        }"${metadata?.reason ? ` - ${metadata.reason}` : ''}`,
+        actionText: 'Ver Detalhes',
+      };
+
+    case 'LESSON_RESCHEDULED_BY_TEACHER':
+      return {
+        title: 'Aula reagendada',
+        message: `${metadata?.teacherName || 'Professor'} reagendou a aula "${
+          metadata?.lessonTitle || 'Aula'
+        }" para ${metadata?.newDate || 'nova data'}`,
+        actionText: 'Ver Nova Data',
+      };
+
+    case 'LESSON_MARKED_NO_SHOW':
+      return {
+        title: 'Falta registrada',
+        message: `${
+          metadata?.teacherName || 'Professor'
+        } marcou sua ausência na aula "${metadata?.lessonTitle || 'Aula'}"`,
+        actionText: 'Ver Aula',
+      };
+
+    case 'NEW_ASSIGNMENT_CREATED':
+      return {
+        title: 'Nova tarefa criada',
+        message: `${metadata?.teacherName || 'Professor'} criou a tarefa "${
+          metadata?.assignmentTitle || 'Nova Tarefa'
+        }"`,
+        actionText: 'Ver Tarefa',
+      };
+
+    case 'ASSIGNMENT_UPDATED_BY_TEACHER':
+      return {
+        title: 'Tarefa atualizada',
+        message: `${metadata?.teacherName || 'Professor'} atualizou a tarefa "${
+          metadata?.assignmentTitle || 'Tarefa'
+        }"`,
+        actionText: 'Ver Mudanças',
+      };
+
+    case 'NEW_LESSON_SCHEDULED':
+      return {
+        title: 'Nova aula agendada',
+        message: `${metadata?.teacherName || 'Professor'} agendou${
+          metadata?.isRecurring ? ' nova série de aulas' : ' nova aula'
+        }: "${metadata?.lessonTitle || 'Aula'}"`,
+        actionText: 'Ver Agenda',
+      };
+
+    // 🆕 PARA PROFESSORES
+    case 'STUDENT_SUBMITTED_ASSIGNMENT':
+      return {
+        title: 'Submissão recebida',
+        message: `${
+          metadata?.studentName || 'Aluno'
+        } enviou submissão na tarefa "${
+          metadata?.assignmentTitle || 'Tarefa'
+        }"`,
+        actionText: 'Ver Submissão',
+      };
+
+    case 'STUDENT_COMPLETED_ASSIGNMENT':
+      return {
+        title: 'Tarefa concluída',
+        message: `${metadata?.studentName || 'Aluno'} completou a tarefa "${
+          metadata?.assignmentTitle || 'Tarefa'
+        }"`,
+        actionText: 'Ver Tarefa',
+      };
+
+    case 'STUDENT_GAVE_LESSON_FEEDBACK':
+      return {
+        title: 'Feedback do aluno',
+        message: `${
+          metadata?.studentName || 'Aluno'
+        } deixou feedback na aula "${metadata?.lessonTitle || 'Aula'}"`,
+        actionText: 'Ver Feedback',
+      };
+
+    case 'STUDENT_INFORMED_ABSENCE':
+      return {
+        title: 'Aluno informou ausência',
+        message: `${
+          metadata?.studentName || 'Aluno'
+        } informou que não poderá comparecer à aula "${
+          metadata?.lessonTitle || 'Aula'
+        }"`,
+        actionText: 'Ver Detalhes',
+      };
+
+    case 'STUDENT_REQUESTED_RESCHEDULE':
+      return {
+        title: 'Solicitação de reagendamento',
+        message: `${
+          metadata?.studentName || 'Aluno'
+        } solicitou reagendamento da aula "${metadata?.lessonTitle || 'Aula'}"`,
+        actionText: 'Ver Solicitação',
+      };
+
+    // ANTIGAS (compatibilidade)
     case 'STUDENT_INVITE_PENDING':
       return {
         title: 'Convite pendente',

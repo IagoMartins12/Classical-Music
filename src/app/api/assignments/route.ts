@@ -1,12 +1,13 @@
-// app/api/assignments/route.ts
+// app/api/assignments/route.ts - ATUALIZADO COM CRIAÇÃO DE NOTIFICAÇÕES EM TEMPO REAL
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
+import { NotificationFactory } from '@/app/utils/notifications/createNotification';
 
-// Função auxiliar para revalidar cache do professor e aluno
+// Função auxiliar para revalidar cache do professor e aluno (MANTIDA)
 async function revalidateTeacherAndStudentData(
   teacherUserId: string,
   studentUserId?: string
@@ -48,6 +49,7 @@ async function revalidateTeacherAndStudentData(
   );
 }
 
+// GET - Listar assignments (SEM MUDANÇAS)
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -60,10 +62,10 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const studentUserId = searchParams.get('studentUserId'); // Para professor filtrar por aluno
-    const teacherUserId = searchParams.get('teacherUserId'); // Para aluno filtrar por professor
-    const status = searchParams.get('status'); // PENDING, IN_PROGRESS, COMPLETED, OVERDUE
-    const lessonId = searchParams.get('lessonId'); // Filtrar por aula específica
+    const studentUserId = searchParams.get('studentUserId');
+    const teacherUserId = searchParams.get('teacherUserId');
+    const status = searchParams.get('status');
+    const lessonId = searchParams.get('lessonId');
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');
     const includeLessonData = searchParams.get('includeLesson') === 'true';
@@ -332,7 +334,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Criar novo assignment (com revalidação do cache e worksIds)
+// 🆕 POST - Criar novo assignment (COM NOTIFICAÇÃO)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -468,7 +470,29 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // 🔥 REVALIDAR CACHE APÓS CRIAÇÃO
+    // 🆕 CRIAR NOTIFICAÇÃO: NEW_ASSIGNMENT_CREATED
+    const teacherName =
+      `${assignment.lesson.teacher.user.firstName} ${assignment.lesson.teacher.user.lastName}`.trim();
+
+    try {
+      await NotificationFactory.newAssignmentCreated(
+        studentUserId,
+        assignment.id,
+        teacherName,
+        assignment.title
+      );
+      console.log(
+        `📬 [ASSIGNMENTS] Notificação NEW_ASSIGNMENT_CREATED criada para ${studentUserId}`
+      );
+    } catch (notificationError) {
+      console.error(
+        '❌ [ASSIGNMENTS] Erro ao criar notificação:',
+        notificationError
+      );
+      // Não falhar a criação do assignment por causa da notificação
+    }
+
+    // Revalidar cache
     await revalidateTeacherAndStudentData(session.user.id, studentUserId);
 
     console.log(
@@ -489,7 +513,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PATCH - Atualizar assignment (com revalidação do cache e suporte a progressMilestones)
+// 🆕 PATCH - Atualizar assignment (COM NOTIFICAÇÕES)
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -555,6 +579,12 @@ export async function PATCH(request: NextRequest) {
             teacher: {
               select: {
                 userId: true,
+                user: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                  },
+                },
               },
             },
           },
@@ -562,6 +592,12 @@ export async function PATCH(request: NextRequest) {
         student: {
           select: {
             userId: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
           },
         },
       },
@@ -573,6 +609,15 @@ export async function PATCH(request: NextRequest) {
         { status: 404 }
       );
     }
+
+    // 🆕 DETECTAR MUDANÇAS PARA NOTIFICAÇÕES (antes da atualização)
+    const oldData = {
+      worksIds: assignment.worksIds,
+      workScoreIds: assignment.workScoreIds,
+      teacherFeedback: assignment.teacherFeedback,
+      isCompleted: assignment.isCompleted,
+      submissions: assignment.submissions,
+    };
 
     // Filtrar atualizações baseadas no role
     let filteredUpdateData: any = {};
@@ -587,7 +632,7 @@ export async function PATCH(request: NextRequest) {
         filteredUpdateData.status = 'COMPLETED';
       }
     } else {
-      // 🆕 Aluno pode atualizar campos específicos incluindo progressMilestones
+      // Aluno pode atualizar campos específicos
       const allowedFields = [
         'status',
         'progress',
@@ -596,7 +641,7 @@ export async function PATCH(request: NextRequest) {
         'studentRating',
         'submissions',
         'isCompleted',
-        'progressMilestones', // 🆕 Permitir progressMilestones
+        'progressMilestones',
       ];
 
       Object.keys(updateData).forEach((key) => {
@@ -605,14 +650,13 @@ export async function PATCH(request: NextRequest) {
         }
       });
 
-      // 🆕 Se progressMilestones foi enviado, integrar com submissions
+      // Se progressMilestones foi enviado, integrar com submissions
       if (updateData.progressMilestones) {
         const currentSubmissions = (assignment.submissions as any) || {};
         filteredUpdateData.submissions = {
           ...currentSubmissions,
           progressMilestones: updateData.progressMilestones,
         };
-        // Remover progressMilestones direto para não tentar salvar em campo inexistente
         delete filteredUpdateData.progressMilestones;
       }
 
@@ -662,9 +706,100 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
+    // 🆕 CRIAR NOTIFICAÇÕES BASEADAS NAS MUDANÇAS
     const teacherUserId = assignment.lesson.teacher.userId;
     const studentUserId = assignment.student.userId;
+    const teacherName =
+      `${assignment.lesson.teacher.user.firstName} ${assignment.lesson.teacher.user.lastName}`.trim();
+    const studentName =
+      `${assignment.student.user.firstName} ${assignment.student.user.lastName}`.trim();
+
+    try {
+      if (session.user.role === 1) {
+        // 📬 NOTIFICAÇÕES PARA ESTUDANTE (ações do professor)
+
+        // 1. Professor deu feedback
+        if (filteredUpdateData.teacherFeedback && !oldData.teacherFeedback) {
+          await NotificationFactory.teacherGaveFeedback(
+            studentUserId,
+            assignmentId,
+            teacherName,
+            assignment.title
+          );
+          console.log(
+            `📬 [ASSIGNMENTS] Notificação TEACHER_GAVE_FEEDBACK criada`
+          );
+        }
+
+        // 2. Professor alterou assignment (verificar campos relevantes)
+        const changedFields = [];
+        if (
+          JSON.stringify(filteredUpdateData.worksIds) !==
+          JSON.stringify(oldData.worksIds)
+        ) {
+          changedFields.push('obras');
+        }
+        if (
+          JSON.stringify(filteredUpdateData.workScoreIds) !==
+          JSON.stringify(oldData.workScoreIds)
+        ) {
+          changedFields.push('partituras');
+        }
+
+        if (changedFields.length > 0) {
+          await NotificationFactory.assignmentUpdatedByTeacher(
+            studentUserId,
+            assignmentId,
+            teacherName,
+            assignment.title,
+            changedFields
+          );
+          console.log(
+            `📬 [ASSIGNMENTS] Notificação ASSIGNMENT_UPDATED_BY_TEACHER criada`
+          );
+        }
+      } else {
+        // 📬 NOTIFICAÇÕES PARA PROFESSOR (ações do aluno)
+
+        // 1. Aluno enviou submissão
+        if (
+          filteredUpdateData.submissions &&
+          JSON.stringify(filteredUpdateData.submissions) !==
+            JSON.stringify(oldData.submissions)
+        ) {
+          await NotificationFactory.studentSubmittedAssignment(
+            teacherUserId,
+            assignmentId,
+            studentName,
+            assignment.title
+          );
+          console.log(
+            `📬 [ASSIGNMENTS] Notificação STUDENT_SUBMITTED_ASSIGNMENT criada`
+          );
+        }
+
+        // 2. Aluno completou assignment
+        if (filteredUpdateData.isCompleted && !oldData.isCompleted) {
+          await NotificationFactory.studentCompletedAssignment(
+            teacherUserId,
+            assignmentId,
+            studentName,
+            assignment.title
+          );
+          console.log(
+            `📬 [ASSIGNMENTS] Notificação STUDENT_COMPLETED_ASSIGNMENT criada`
+          );
+        }
+      }
+    } catch (notificationError) {
+      console.error(
+        '❌ [ASSIGNMENTS] Erro ao criar notificações:',
+        notificationError
+      );
+      // Não falhar a atualização por causa das notificações
+    }
+
+    // Revalidar cache
     await revalidateTeacherAndStudentData(teacherUserId, studentUserId);
 
     console.log(
@@ -685,7 +820,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// DELETE - Deletar assignment (com revalidação do cache)
+// DELETE - Deletar assignment (SEM MUDANÇAS)
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -746,7 +881,7 @@ export async function DELETE(request: NextRequest) {
       where: { id: assignmentId },
     });
 
-    // 🔥 REVALIDAR CACHE APÓS EXCLUSÃO
+    // Revalidar cache
     await revalidateTeacherAndStudentData(session.user.id, studentUserId);
 
     console.log(

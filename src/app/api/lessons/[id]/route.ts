@@ -1,12 +1,13 @@
-// app/api/lessons/[id]/route.ts - ATUALIZADO COM DELETE
+// app/api/lessons/[id]/route.ts - ATUALIZADO COM NOTIFICAÇÕES EM TEMPO REAL
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
+import { NotificationFactory } from '@/app/utils/notifications/createNotification';
 
-// Função auxiliar para revalidar cache de lesson details
+// Função auxiliar para revalidar cache de lesson details (MANTIDA)
 async function revalidateLessonDetailsData(
   teacherUserId: string,
   studentUserId?: string
@@ -151,6 +152,7 @@ interface LessonDetails {
   };
 }
 
+// GET - Buscar lesson específica (SEM MUDANÇAS)
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -293,7 +295,7 @@ export async function GET(
       }
     }
 
-    // 🆕 Buscar dados completos das OBRAS (worksIds)
+    // Buscar dados completos das OBRAS (worksIds)
     let linkedWorks: any[] = [];
     if (lesson.worksIds && lesson.worksIds.length > 0) {
       console.log('🔍 [LESSON-API] Buscando obras:', lesson.worksIds);
@@ -316,7 +318,7 @@ export async function GET(
       console.log('✅ [LESSON-API] Obras encontradas:', linkedWorks.length);
     }
 
-    // 🆕 Buscar dados completos das PARTITURAS (workScoreIds)
+    // Buscar dados completos das PARTITURAS (workScoreIds)
     let linkedWorkScores: any[] = [];
     if (lesson.workScoreIds && lesson.workScoreIds.length > 0) {
       console.log('🔍 [LESSON-API] Buscando partituras:', lesson.workScoreIds);
@@ -346,7 +348,7 @@ export async function GET(
       );
     }
 
-    // 🆕 Criar array de peças musicais no formato correto
+    // Criar array de peças musicais no formato correto
     const musicalPieces: any[] = [];
 
     // Primeiro, adicionar partituras específicas (têm prioridade)
@@ -446,7 +448,7 @@ export async function GET(
       // Conteúdo
       objectives: lesson.objectives,
 
-      // 🆕 PEÇAS MUSICAIS
+      // PEÇAS MUSICAIS
       worksIds: lesson.worksIds || [],
       workScoreIds: lesson.workScoreIds || [],
       musicalPieces: musicalPieces,
@@ -558,7 +560,7 @@ export async function GET(
   }
 }
 
-// PATCH - Atualizar aula (professor) ou adicionar feedback (aluno) COM REVALIDAÇÃO
+// 🆕 PATCH - Atualizar aula (professor) ou adicionar feedback (aluno) COM NOTIFICAÇÕES
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -578,7 +580,8 @@ export async function PATCH(
     const body = await request.json();
 
     console.log(
-      `📝 [LESSON-DETAILS] Atualizando aula ${lessonId} - Role: ${session.user.role}`
+      `📝 [LESSON-DETAILS] Atualizando aula ${lessonId} - Role: ${session.user.role}`,
+      { body }
     );
 
     // Buscar perfis
@@ -608,10 +611,26 @@ export async function PATCH(
       },
       include: {
         teacher: {
-          select: { userId: true },
+          select: {
+            userId: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
         },
         student: {
-          select: { userId: true },
+          select: {
+            userId: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
         },
       },
     });
@@ -623,36 +642,203 @@ export async function PATCH(
       );
     }
 
+    // 🆕 DETECTAR MUDANÇAS PARA NOTIFICAÇÕES (antes da atualização)
+    const oldData = {
+      scheduledAt: lesson.scheduledAt,
+      status: lesson.status,
+      studentFeedback: lesson.studentFeedback,
+    };
+
     // Separar atualizações por role
     let updateData: any = {};
+    let notificationActions: string[] = [];
 
     if (session.user.role === 1) {
       // Professor pode atualizar tudo
       updateData = { ...body };
+
+      // 🆕 DETECTAR AÇÕES ESPECIAIS DO PROFESSOR
+      if (
+        body.scheduledAt &&
+        new Date(body.scheduledAt).getTime() !== oldData.scheduledAt.getTime()
+      ) {
+        notificationActions.push('reschedule');
+      }
+      if (body.status === 'NO_SHOW' && oldData.status !== 'NO_SHOW') {
+        notificationActions.push('no_show');
+      }
+      if (body.status === 'CANCELLED' && oldData.status !== 'CANCELLED') {
+        notificationActions.push('cancel');
+      }
     } else {
-      // Aluno só pode adicionar feedback
-      const { studentFeedback } = body;
+      // 🆕 ALUNO - LÓGICA CORRIGIDA PARA MENSAGEM OPCIONAL
+      const { studentFeedback, specialMessage, messageType } = body;
+
+      // 🔹 FEEDBACK EM AULAS CONCLUÍDAS
       if (studentFeedback && lesson.status === 'COMPLETED') {
         updateData.studentFeedback = studentFeedback;
-      } else {
+        notificationActions.push('feedback');
+      }
+
+      // 🔹 MENSAGENS ESPECIAIS DO ALUNO (CORRIGIDO - MENSAGEM OPCIONAL)
+      if (messageType) {
+        if (messageType === 'absence') {
+          notificationActions.push('inform_absence');
+        } else if (messageType === 'reschedule') {
+          notificationActions.push('request_reschedule');
+        }
+        // Não alterar a aula, apenas enviar notificação
+        // ✅ specialMessage é opcional - pode ser undefined ou string vazia
+      }
+      // 🔹 VALIDAÇÃO CORRIGIDA - só dar erro se não tem nenhuma ação válida
+      else if (!studentFeedback) {
         return NextResponse.json(
           {
-            error: 'Aluno só pode adicionar feedback em aulas concluídas',
+            error:
+              'Aluno só pode adicionar feedback em aulas concluídas ou enviar mensagens especiais',
           },
           { status: 403 }
         );
       }
     }
 
-    // Atualizar aula
-    const updatedLesson = await prisma.lesson.update({
-      where: { id: lessonId },
-      data: updateData,
-    });
+    // Atualizar aula (se há dados para atualizar)
+    let updatedLesson = lesson;
+    if (Object.keys(updateData).length > 0) {
+      updatedLesson = await prisma.lesson.update({
+        where: { id: lessonId },
+        data: updateData,
+        include: {
+          teacher: {
+            select: {
+              userId: true,
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                },
+              },
+            },
+          },
+          student: {
+            select: {
+              userId: true,
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    }
 
-    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
+    // 🆕 CRIAR NOTIFICAÇÕES BASEADAS NAS AÇÕES
     const teacherUserId = lesson.teacher.userId;
     const studentUserId = lesson.student.userId;
+    const teacherName =
+      `${lesson.teacher.user.firstName} ${lesson.teacher.user.lastName}`.trim();
+    const studentName =
+      `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim();
+
+    try {
+      for (const action of notificationActions) {
+        switch (action) {
+          case 'reschedule':
+            // Professor reagendou aula
+            await NotificationFactory.lessonRescheduledByTeacher(
+              studentUserId,
+              lessonId,
+              teacherName,
+              lesson.title,
+              new Date(body.scheduledAt),
+              oldData.scheduledAt
+            );
+            console.log(
+              `📬 [LESSON-DETAILS] Notificação LESSON_RESCHEDULED_BY_TEACHER criada`
+            );
+            break;
+
+          case 'no_show':
+            // Professor marcou falta
+            await NotificationFactory.lessonMarkedNoShow(
+              studentUserId,
+              lessonId,
+              teacherName,
+              lesson.title
+            );
+            console.log(
+              `📬 [LESSON-DETAILS] Notificação LESSON_MARKED_NO_SHOW criada`
+            );
+            break;
+
+          case 'cancel':
+            // Professor cancelou aula
+            await NotificationFactory.lessonCancelledByTeacher(
+              studentUserId,
+              lessonId,
+              teacherName,
+              lesson.title,
+              body.cancelReason
+            );
+            console.log(
+              `📬 [LESSON-DETAILS] Notificação LESSON_CANCELLED_BY_TEACHER criada`
+            );
+            break;
+
+          case 'feedback':
+            // Aluno deu feedback
+            await NotificationFactory.studentGaveLessonFeedback(
+              teacherUserId,
+              lessonId,
+              studentName,
+              lesson.title
+            );
+            console.log(
+              `📬 [LESSON-DETAILS] Notificação STUDENT_GAVE_LESSON_FEEDBACK criada`
+            );
+            break;
+
+          case 'inform_absence':
+            // 🔹 ALUNO INFORMOU AUSÊNCIA (MENSAGEM OPCIONAL)
+            await NotificationFactory.studentInformedAbsence(
+              teacherUserId,
+              lessonId,
+              studentName,
+              lesson.title,
+              body.specialMessage || undefined // ✅ Pode ser undefined
+            );
+            console.log(
+              `📬 [LESSON-DETAILS] Notificação STUDENT_INFORMED_ABSENCE criada`
+            );
+            break;
+
+          case 'request_reschedule':
+            // 🔹 ALUNO SOLICITOU REAGENDAMENTO (MENSAGEM OPCIONAL)
+            await NotificationFactory.studentRequestedReschedule(
+              teacherUserId,
+              lessonId,
+              studentName,
+              lesson.title,
+              body.specialMessage || undefined // ✅ Pode ser undefined
+            );
+            console.log(
+              `📬 [LESSON-DETAILS] Notificação STUDENT_REQUESTED_RESCHEDULE criada`
+            );
+            break;
+        }
+      }
+    } catch (notificationError) {
+      console.error(
+        '❌ [LESSON-DETAILS] Erro ao criar notificações:',
+        notificationError
+      );
+      // Não falhar a atualização por causa das notificações
+    }
+
+    // Revalidar cache
     await revalidateLessonDetailsData(teacherUserId, studentUserId);
 
     console.log(
@@ -665,7 +851,10 @@ export async function PATCH(
       message:
         session.user.role === 1
           ? 'Aula atualizada com sucesso'
-          : 'Feedback adicionado com sucesso',
+          : notificationActions.includes('feedback')
+          ? 'Feedback adicionado com sucesso'
+          : 'Mensagem enviada com sucesso',
+      notificationsSent: notificationActions.length,
     });
   } catch (error) {
     console.error('❌ [LESSON-DETAILS] Erro ao atualizar aula:', error);
@@ -676,7 +865,7 @@ export async function PATCH(
   }
 }
 
-// 🗑️ DELETE - NOVA FUNCIONALIDADE para cancelar/deletar aula específica
+// 🆕 DELETE - ATUALIZADO COM NOTIFICAÇÕES
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -723,8 +912,28 @@ export async function DELETE(
         teacherId: teacherProfile.id,
       },
       include: {
-        teacher: { select: { userId: true } },
-        student: { select: { userId: true } },
+        teacher: {
+          select: {
+            userId: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+        student: {
+          select: {
+            userId: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -738,8 +947,41 @@ export async function DELETE(
     let deletedLessons = 0;
     const deletedDetails = [];
 
+    // 🆕 CRIAR NOTIFICAÇÃO ANTES DE APAGAR
+    const teacherUserId = lesson.teacher.userId;
+    const studentUserId = lesson.student.userId;
+    const teacherName =
+      `${lesson.teacher.user.firstName} ${lesson.teacher.user.lastName}`.trim();
+
+    try {
+      // Só criar notificação se não foi uma aula no passado distante
+      const now = new Date();
+      const lessonTime = lesson.scheduledAt.getTime();
+      const timeDiff = lessonTime - now.getTime();
+      const isUpcoming = timeDiff > -7 * 24 * 60 * 60 * 1000; // Não mais que 7 dias no passado
+
+      if (isUpcoming) {
+        await NotificationFactory.lessonCancelledByTeacher(
+          studentUserId,
+          lessonId,
+          teacherName,
+          lesson.title,
+          reason
+        );
+        console.log(
+          `📬 [LESSON-DELETE] Notificação LESSON_CANCELLED_BY_TEACHER criada antes de apagar`
+        );
+      }
+    } catch (notificationError) {
+      console.error(
+        '❌ [LESSON-DELETE] Erro ao criar notificação antes de apagar:',
+        notificationError
+      );
+      // Continuar com a exclusão mesmo se a notificação falhar
+    }
+
     if (deleteAll && (lesson.parentLessonId || lesson.isRecurring)) {
-      // 🔄 APAGAR SÉRIE DE AULAS RECORRENTES COM TRANSAÇÃO
+      // APAGAR SÉRIE DE AULAS RECORRENTES COM TRANSAÇÃO
       const parentId = lesson.parentLessonId || lesson.id;
 
       const whereCondition: any = {
@@ -810,7 +1052,7 @@ export async function DELETE(
 
       console.log(`✅ [LESSON-DELETE] Série apagada: ${deletedLessons} aulas`);
     } else if (lesson.isRecurring && !deleteAll) {
-      // 🔄 APAGAR APENAS UMA AULA DE UMA SÉRIE - LÓGICA ESPECIAL
+      // APAGAR APENAS UMA AULA DE UMA SÉRIE - LÓGICA ESPECIAL
       const parentId = lesson.parentLessonId || lesson.id;
 
       // Se esta é a aula pai, precisamos promover a próxima
@@ -830,7 +1072,7 @@ export async function DELETE(
         });
 
         if (nextLesson) {
-          // 🔄 PROMOVER A PRÓXIMA AULA PARA SER A NOVA PAI
+          // PROMOVER A PRÓXIMA AULA PARA SER A NOVA PAI
           await prisma.$transaction(async (tx) => {
             // 1. Tornar a próxima aula a nova pai
             await tx.lesson.update({
@@ -885,11 +1127,9 @@ export async function DELETE(
         id: lesson.id,
         title: lesson.title,
         scheduledAt: lesson.scheduledAt,
-        // studentName:
-        //   `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim(),
       });
     } else {
-      // 🔄 APAGAR AULA INDIVIDUAL (NÃO RECORRENTE)
+      // APAGAR AULA INDIVIDUAL (NÃO RECORRENTE)
       await prisma.lesson.delete({
         where: { id: lessonId },
       });
@@ -899,16 +1139,12 @@ export async function DELETE(
         id: lesson.id,
         title: lesson.title,
         scheduledAt: lesson.scheduledAt,
-        // studentName:
-        //   `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim(),
       });
 
       console.log(`✅ [LESSON-DELETE] Aula individual apagada: ${lessonId}`);
     }
 
-    // 🔥 REVALIDAR CACHE APÓS APAGAR
-    const teacherUserId = lesson.teacher.userId;
-    const studentUserId = lesson.student.userId;
+    // Revalidar cache
     await revalidateLessonDetailsData(teacherUserId, studentUserId);
 
     console.log(`✅ [LESSON-DELETE] Cache revalidado após apagar`);

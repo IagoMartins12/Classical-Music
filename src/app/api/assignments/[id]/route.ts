@@ -1,12 +1,13 @@
-// app/api/assignments/[id]/route.ts
+// app/api/assignments/[id]/route.ts - ATUALIZADO COM NOTIFICAÇÕES EM TEMPO REAL
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
+import { NotificationFactory } from '@/app/utils/notifications/createNotification';
 
-// Função auxiliar para revalidar cache de assignment details
+// Função auxiliar para revalidar cache de assignment details (MANTIDA)
 async function revalidateAssignmentDetailsData(
   teacherUserId: string,
   studentUserId: string
@@ -37,7 +38,7 @@ async function revalidateAssignmentDetailsData(
   );
 }
 
-// GET - Buscar assignment específico (sem mudanças)
+// GET - Buscar assignment específico (SEM MUDANÇAS)
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -255,7 +256,7 @@ export async function GET(
   }
 }
 
-// PUT - Atualizar assignment (Professor) COM REVALIDAÇÃO
+// 🆕 PUT - Atualizar assignment (Professor) COM NOTIFICAÇÕES
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -271,7 +272,6 @@ export async function PUT(
     }
 
     const { id } = await params;
-
     const assignmentId = id;
     const body = await request.json();
 
@@ -302,7 +302,29 @@ export async function PUT(
       },
       include: {
         student: {
-          select: { userId: true },
+          select: {
+            userId: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+        lesson: {
+          include: {
+            teacher: {
+              include: {
+                user: {
+                  select: {
+                    firstName: true,
+                    lastName: true,
+                  },
+                },
+              },
+            },
+          },
         },
       },
     });
@@ -313,6 +335,16 @@ export async function PUT(
         { status: 404 }
       );
     }
+
+    // 🆕 DETECTAR MUDANÇAS PARA NOTIFICAÇÕES (antes da atualização)
+    const oldData = {
+      worksIds: assignment.worksIds,
+      workScoreIds: assignment.workScoreIds,
+      teacherFeedback: assignment.teacherFeedback,
+      title: assignment.title,
+      description: assignment.description,
+      dueDate: assignment.dueDate,
+    };
 
     // Preparar dados de atualização
     const updateData: any = { ...body };
@@ -382,8 +414,82 @@ export async function PUT(
       },
     });
 
-    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
+    // 🆕 CRIAR NOTIFICAÇÕES BASEADAS NAS MUDANÇAS
     const studentUserId = assignment.student.userId;
+    const teacherName =
+      `${assignment.lesson.teacher.user.firstName} ${assignment.lesson.teacher.user.lastName}`.trim();
+
+    try {
+      // 1. Professor deu feedback (novo ou atualizou)
+      if (
+        updateData.teacherFeedback &&
+        updateData.teacherFeedback !== oldData.teacherFeedback
+      ) {
+        await NotificationFactory.teacherGaveFeedback(
+          studentUserId,
+          assignmentId,
+          teacherName,
+          assignment.title
+        );
+        console.log(
+          `📬 [ASSIGNMENT-DETAIL] Notificação TEACHER_GAVE_FEEDBACK criada`
+        );
+      }
+
+      // 2. Professor alterou assignment (verificar campos relevantes)
+      const changedFields = [];
+
+      if (
+        JSON.stringify(updateData.worksIds) !== JSON.stringify(oldData.worksIds)
+      ) {
+        changedFields.push('obras');
+      }
+      if (
+        JSON.stringify(updateData.workScoreIds) !==
+        JSON.stringify(oldData.workScoreIds)
+      ) {
+        changedFields.push('partituras');
+      }
+      if (updateData.title && updateData.title !== oldData.title) {
+        changedFields.push('título');
+      }
+      if (
+        updateData.description &&
+        updateData.description !== oldData.description
+      ) {
+        changedFields.push('descrição');
+      }
+      if (
+        updateData.dueDate &&
+        updateData.dueDate.getTime() !== oldData.dueDate?.getTime()
+      ) {
+        changedFields.push('prazo');
+      }
+
+      // Só criar notificação se houve mudanças relevantes
+      if (changedFields.length > 0) {
+        await NotificationFactory.assignmentUpdatedByTeacher(
+          studentUserId,
+          assignmentId,
+          teacherName,
+          assignment.title,
+          changedFields
+        );
+        console.log(
+          `📬 [ASSIGNMENT-DETAIL] Notificação ASSIGNMENT_UPDATED_BY_TEACHER criada para mudanças: ${changedFields.join(
+            ', '
+          )}`
+        );
+      }
+    } catch (notificationError) {
+      console.error(
+        '❌ [ASSIGNMENT-DETAIL] Erro ao criar notificações:',
+        notificationError
+      );
+      // Não falhar a atualização por causa das notificações
+    }
+
+    // Revalidar cache
     await revalidateAssignmentDetailsData(session.user.id, studentUserId);
 
     console.log(

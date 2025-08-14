@@ -247,31 +247,41 @@ enum AssignmentStatus {
 }
 
 enum NotificationType {
-  // AULAS
-  LESSON_STARTING_SOON     // Aula em 30 minutos
-  LESSON_TOMORROW          // Aula amanhã (24h)
-  LESSON_STATUS_PENDING    // Aula passou e status ainda SCHEDULED
-  LESSON_NO_SHOW          // Aluno faltou sem reagendamento
-  
-  // TAREFAS
-  ASSIGNMENT_DUE_SOON     // Tarefa vence em 2h
-  ASSIGNMENT_DUE_TOMORROW // Tarefa vence amanhã
+  // NOTIFICAÇÕES AUTOMÁTICAS (mantidas no check/route.ts)
+  LESSON_STARTING_SOON     // 30min antes da aula
+  LESSON_TOMORROW          // 24h antes da aula
+  ASSIGNMENT_DUE_SOON     // 2h antes do vencimento
+  ASSIGNMENT_DUE_TOMORROW // 24h antes do vencimento
   ASSIGNMENT_OVERDUE      // Tarefa já atrasada
-  ASSIGNMENT_FEEDBACK_NEEDED // Professor precisa dar feedback
-  ASSIGNMENT_COMPLETED    // Aluno completou tarefa
+  LESSON_STATUS_PENDING    // Aula passou sem status atualizado
   
-  // ALUNOS/PROFESSORES
-  STUDENT_INVITE_PENDING  // Convite de aluno pendente
-  STUDENT_MULTIPLE_LATE   // Aluno com 3+ tarefas atrasadas
-  NEW_STUDENT_FEEDBACK    // Novo feedback do professor
+  // 🆕 NOTIFICAÇÕES PARA ESTUDANTES (eventos reais)
+  TEACHER_GAVE_FEEDBACK     // Professor deu feedback na tarefa
+  LESSON_CANCELLED_BY_TEACHER // Professor cancelou aula
+  LESSON_RESCHEDULED_BY_TEACHER // Professor reagendou aula
+  LESSON_MARKED_NO_SHOW     // Professor marcou falta
+  NEW_ASSIGNMENT_CREATED    // Professor criou nova tarefa
+  ASSIGNMENT_UPDATED_BY_TEACHER // Professor alterou tarefa
+  NEW_LESSON_SCHEDULED      // Nova aula agendada (só PAI ou solo)
   
-  // PROGRESSO
-  WEEKLY_REPORT_AVAILABLE // Relatório semanal disponível
-  PRACTICE_REMINDER       // Lembrete de prática
+  // 🆕 NOTIFICAÇÕES PARA PROFESSORES (eventos reais)
+  STUDENT_SUBMITTED_ASSIGNMENT // Aluno enviou submissão
+  STUDENT_COMPLETED_ASSIGNMENT // Aluno completou tarefa
+  STUDENT_GAVE_LESSON_FEEDBACK // Aluno deu feedback na aula
+  STUDENT_INFORMED_ABSENCE     // Aluno informou ausência
+  STUDENT_REQUESTED_RESCHEDULE // Aluno solicitou reagendamento
   
-  // GERAIS
-  SYSTEM_MAINTENANCE      // Manutenção do sistema
-  GENERAL_ANNOUNCEMENT    // Anúncio geral
+  // NOTIFICAÇÕES ANTIGAS (manter para compatibilidade)
+  LESSON_NO_SHOW
+  ASSIGNMENT_FEEDBACK_NEEDED  // 🗑️ SERÁ REMOVIDA do check/route.ts
+  ASSIGNMENT_COMPLETED
+  STUDENT_INVITE_PENDING
+  STUDENT_MULTIPLE_LATE
+  NEW_STUDENT_FEEDBACK        // 🗑️ SERÁ REMOVIDA do check/route.ts
+  WEEKLY_REPORT_AVAILABLE
+  PRACTICE_REMINDER
+  SYSTEM_MAINTENANCE
+  GENERAL_ANNOUNCEMENT
 }
 
 enum NotificationPriority {

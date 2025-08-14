@@ -1,4 +1,5 @@
-// app/student/lessons/[id]/pageClient.tsx
+// app/student/lessons/[id]/pageClient.tsx - ATUALIZADO com modais funcionais
+
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
@@ -21,6 +22,8 @@ import {
   FiUserX,
   FiEdit3,
   FiSave,
+  FiSend, // 🆕 Novo ícone
+  FiCheck, // 🆕 Novo ícone
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -55,13 +58,17 @@ export default function StudentLessonDetailPageClient({
   const [studentFeedback, setStudentFeedback] = useState('');
   const [loadingFeedback, setLoadingFeedback] = useState(false);
 
-  // Estados para modal de ações do aluno
+  // 🆕 ESTADOS ATUALIZADOS PARA MODAL FUNCIONAL
   const [showStudentActionModal, setShowStudentActionModal] = useState(false);
   const [studentActionType, setStudentActionType] = useState<
-    'cancel' | 'reschedule'
-  >('cancel');
+    'absence' | 'reschedule'
+  >('absence');
+  const [studentMessage, setStudentMessage] = useState('');
+  const [loadingStudentAction, setLoadingStudentAction] = useState(false);
+  const [actionSent, setActionSent] = useState(false); // 🆕 Para controlar se já enviou
 
   const toast = useToast();
+
   // Inicializar feedback se existir
   useEffect(() => {
     if (lesson?.studentFeedback) {
@@ -86,12 +93,11 @@ export default function StudentLessonDetailPageClient({
       toast.success('Aula atualizada com sucesso.');
     } catch (error) {
       toast.error('Erro ao atualizar aula.');
-
       console.error('Erro ao atualizar aula:', error);
     } finally {
       setLoading(false);
     }
-  }, [lesson?.id]);
+  }, [lesson?.id, toast]);
 
   // Função para salvar feedback do aluno
   const handleSaveFeedback = useCallback(async () => {
@@ -114,23 +120,77 @@ export default function StudentLessonDetailPageClient({
         if (data.success) {
           setLesson({ ...lesson, studentFeedback: studentFeedback.trim() });
           setIsEditingFeedback(false);
+          toast.success('Feedback salvo com sucesso!');
         }
       }
     } catch (error) {
       console.error('Erro ao salvar feedback:', error);
+      toast.error('Erro ao salvar feedback.');
     } finally {
       setLoadingFeedback(false);
     }
-  }, [lesson, studentFeedback]);
+  }, [lesson, studentFeedback, toast]);
 
-  // Handlers para ações do aluno (placeholder)
+  // 🆕 HANDLERS ATUALIZADOS PARA AÇÕES DO ALUNO
   const handleStudentAction = useCallback(
-    (actionType: 'cancel' | 'reschedule') => {
+    (actionType: 'absence' | 'reschedule') => {
       setStudentActionType(actionType);
+      setStudentMessage('');
       setShowStudentActionModal(true);
     },
     []
   );
+
+  // 🆕 FUNÇÃO PARA ENVIAR AÇÃO DO ALUNO
+  const executeStudentAction = useCallback(async () => {
+    if (!lesson?.id) return;
+
+    setLoadingStudentAction(true);
+
+    try {
+      const response = await fetch(`/api/lessons/${lesson.id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          specialMessage: studentMessage.trim() || undefined,
+          messageType: studentActionType,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          setActionSent(true);
+
+          const actionText =
+            studentActionType === 'absence'
+              ? 'informou que não poderá comparecer'
+              : 'solicitou reagendamento';
+
+          toast.success(
+            `Mensagem enviada! Seu professor foi notificado que você ${actionText}.`
+          );
+
+          // Fechar modal após 2 segundos
+          setTimeout(() => {
+            setShowStudentActionModal(false);
+            setActionSent(false);
+          }, 2000);
+        }
+      } else {
+        toast.error('Erro ao enviar mensagem.');
+      }
+    } catch (error) {
+      console.error('Erro ao enviar ação:', error);
+      toast.error('Erro ao enviar mensagem.');
+    } finally {
+      setLoadingStudentAction(false);
+    }
+  }, [lesson?.id, studentMessage, studentActionType, toast]);
+
+  // ... (resto das funções permanecem iguais: formatDateTime, formatDuration, getStatusColor, getStatusLabel)
 
   // Função para formatar data/hora
   const formatDateTime = (date: Date | string) => {
@@ -184,6 +244,9 @@ export default function StudentLessonDetailPageClient({
         return status;
     }
   };
+
+  // 🆕 VERIFICAR SE AINDA PODE FAZER AÇÕES (não pode se já enviou mensagem ou se não é mais SCHEDULED)
+  const canTakeAction = lesson?.status === 'SCHEDULED' && !actionSent;
 
   // Render error state
   if ((error || errorMessage) && !lesson) {
@@ -275,7 +338,7 @@ export default function StudentLessonDetailPageClient({
               {lesson.status === 'SCHEDULED' && (
                 <div className="flex items-center space-x-2">
                   <button
-                    onClick={() => handleStudentAction('cancel')}
+                    onClick={() => handleStudentAction('absence')}
                     className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10 flex items-center space-x-2 text-sm"
                   >
                     <FiUserX className="w-4 h-4" />
@@ -873,7 +936,7 @@ export default function StudentLessonDetailPageClient({
         </div>
       </AnimatedContainer>
 
-      {/* Modal para Ações do Aluno */}
+      {/* 🆕 MODAL ATUALIZADO PARA AÇÕES DO ALUNO */}
       {showStudentActionModal && (
         <Modal
           isOpen
@@ -884,12 +947,12 @@ export default function StudentLessonDetailPageClient({
             <div className="flex items-center space-x-3 mb-6">
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                  studentActionType === 'cancel'
+                  studentActionType === 'absence'
                     ? 'bg-accent-red/10'
                     : 'bg-accent-blue/10'
                 }`}
               >
-                {studentActionType === 'cancel' ? (
+                {studentActionType === 'absence' ? (
                   <FiUserX className="w-6 h-6 text-accent-red" />
                 ) : (
                   <FiCalendar className="w-6 h-6 text-accent-blue" />
@@ -897,46 +960,100 @@ export default function StudentLessonDetailPageClient({
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
-                  {studentActionType === 'cancel'
+                  {studentActionType === 'absence'
                     ? 'Informar Ausência'
                     : 'Solicitar Reagendamento'}
                 </h2>
                 <p className="text-theme-secondary">
-                  {studentActionType === 'cancel'
+                  {studentActionType === 'absence'
                     ? 'Informe que não poderá comparecer à aula'
                     : 'Solicite um novo horário para sua aula'}
                 </p>
               </div>
             </div>
 
-            <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 mb-6">
-              <div className="flex items-start space-x-3">
-                <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-medium text-accent-blue mb-1">
-                    Em desenvolvimento
-                  </p>
-                  <p className="text-theme-secondary">
-                    Esta funcionalidade estará disponível em breve. Por
-                    enquanto, entre em contato diretamente com seu professor
-                    para{' '}
-                    {studentActionType === 'cancel'
-                      ? 'informar sua ausência'
-                      : 'reagendar a aula'}
-                    .
-                  </p>
+            {!actionSent ? (
+              <>
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                    Mensagem (opcional)
+                  </label>
+                  <textarea
+                    value={studentMessage}
+                    onChange={(e) => setStudentMessage(e.target.value)}
+                    rows={4}
+                    className="input-classical-2 w-full"
+                    placeholder={
+                      studentActionType === 'absence'
+                        ? 'Ex: Estou com febre e não posso comparecer...'
+                        : 'Ex: Preciso reagendar por conta de um compromisso...'
+                    }
+                  />
                 </div>
-              </div>
-            </div>
 
-            <div className="flex items-center justify-end space-x-3">
-              <button
-                onClick={() => setShowStudentActionModal(false)}
-                className="btn-classical-secondary"
-              >
-                Entendi
-              </button>
-            </div>
+                <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 mb-6">
+                  <div className="flex items-start space-x-3">
+                    <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+                    <div className="text-sm">
+                      <p className="font-medium text-accent-blue mb-1">
+                        Confirmação
+                      </p>
+                      <p className="text-theme-secondary">
+                        {studentActionType === 'absence'
+                          ? 'Seu professor será notificado que você não poderá comparecer à aula.'
+                          : 'Seu professor será notificado da sua solicitação de reagendamento.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end space-x-3">
+                  <button
+                    onClick={() => setShowStudentActionModal(false)}
+                    className="btn-classical-secondary"
+                    disabled={loadingStudentAction}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={executeStudentAction}
+                    disabled={loadingStudentAction}
+                    className={`btn-classical-primary flex items-center space-x-2 ${
+                      studentActionType === 'absence'
+                        ? 'bg-accent-red border-accent-red hover:bg-accent-red/90'
+                        : ''
+                    }`}
+                  >
+                    {loadingStudentAction ? (
+                      <FiRefreshCw className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <FiSend className="w-4 h-4" />
+                    )}
+                    <span>
+                      {loadingStudentAction
+                        ? 'Enviando...'
+                        : 'Enviar Notificação'}
+                    </span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-6">
+                <div className="w-16 h-16 bg-accent-green/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FiCheck className="w-8 h-8 text-accent-green" />
+                </div>
+                <h3 className="text-lg font-bold text-theme-primary mb-2">
+                  Mensagem Enviada!
+                </h3>
+                <p className="text-theme-secondary">
+                  Seu professor foi notificado{' '}
+                  {studentActionType === 'absence'
+                    ? 'da sua ausência'
+                    : 'da sua solicitação de reagendamento'}
+                  .
+                </p>
+              </div>
+            )}
           </div>
         </Modal>
       )}

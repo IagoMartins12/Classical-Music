@@ -1,4 +1,4 @@
-// app/api/teacher/notifications/check/route.ts - CORRIGIDO COMPLETAMENTE SEM SINTAXE JSON INCORRETA
+// app/api/teacher/notifications/check/route.ts - ATUALIZADO: REMOVENDO NOTIFICAÇÕES MOVIDAS PARA EVENTOS REAIS
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -9,7 +9,7 @@ import {
 } from '@/app/types/notification';
 import prisma from '@/app/libs/prismadb';
 
-// Helper para verificar se notificação já existe (CORRIGIDO)
+// Helper para verificar se notificação já existe (MANTIDO)
 const checkExistingNotification = async (
   userId: string,
   type: string,
@@ -24,25 +24,6 @@ const checkExistingNotification = async (
     expiresAt: { gte: new Date() },
   };
 
-  // Para assignments, usar consulta em duas etapas
-  if (
-    type === 'ASSIGNMENT_FEEDBACK_NEEDED' &&
-    metadata?.assignmentCompletedAt
-  ) {
-    // Primeiro: buscar todas as notificações candidatas
-    const candidates = await prisma.notification.findMany({
-      where: baseWhere,
-    });
-
-    // Segundo: filtrar por metadata específico em JavaScript
-    return candidates.find((n) => {
-      if (!n.metadata || typeof n.metadata !== 'object') return false;
-      const meta = n.metadata as any;
-      return meta.assignmentCompletedAt === metadata.assignmentCompletedAt;
-    });
-  }
-
-  // Para outras notificações, verificação simples
   return await prisma.notification.findFirst({
     where: baseWhere,
   });
@@ -63,7 +44,11 @@ export async function POST(req: NextRequest) {
     const userId = session.user.id;
     const now = new Date();
 
-    // 1. Verificar aulas que precisam de notificação
+    console.log(
+      `📬 [TEACHER-CHECK] Verificando notificações automáticas para ${userId}`
+    );
+
+    // 1. Verificar aulas que precisam de notificação (MANTIDO)
     const upcomingLessons = await prisma.lesson.findMany({
       where: {
         teacherId: userId,
@@ -84,7 +69,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 2. Verificar aulas passadas sem atualização de status
+    // 2. Verificar aulas passadas sem atualização de status (MANTIDO)
     const pastLessons = await prisma.lesson.findMany({
       where: {
         teacherId: userId,
@@ -105,30 +90,10 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 3. Verificar tarefas que precisam de feedback
-    const assignmentsNeedingFeedback = await prisma.assignment.findMany({
-      where: {
-        lesson: {
-          teacherId: userId,
-        },
-        isCompleted: true,
-        teacherFeedback: null,
-        completedAt: {
-          gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
-        },
-      },
-      include: {
-        student: {
-          include: {
-            user: {
-              select: { firstName: true, lastName: true, email: true },
-            },
-          },
-        },
-      },
-    });
+    // 🗑️ REMOVIDO: Verificação de tarefas precisando de feedback (agora é evento real)
+    // 🗑️ REMOVIDO: === TAREFAS PRECISANDO DE FEEDBACK ===
 
-    // 4. Verificar convites pendentes
+    // 4. Verificar convites pendentes (MANTIDO)
     const pendingInvites = await prisma.teacherStudent.findMany({
       where: {
         teacherId: userId,
@@ -148,10 +113,10 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 5. Gerar notificações baseadas nas verificações
+    // 5. Gerar notificações baseadas nas verificações (APENAS AUTOMÁTICAS)
     const notificationsToCreate: any[] = [];
 
-    // === AULAS PRÓXIMAS ===
+    // === AULAS PRÓXIMAS (MANTIDO) ===
     for (const lesson of upcomingLessons) {
       const timeDiff = lesson.scheduledAt.getTime() - now.getTime();
       const studentName =
@@ -242,7 +207,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // === AULAS PASSADAS SEM STATUS ===
+    // === AULAS PASSADAS SEM STATUS (MANTIDO) ===
     for (const lesson of pastLessons) {
       const studentName =
         `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim();
@@ -279,50 +244,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // === TAREFAS PRECISANDO DE FEEDBACK (CORRIGIDO) ===
-    for (const assignment of assignmentsNeedingFeedback) {
-      const studentName =
-        `${assignment.student.user.firstName} ${assignment.student.user.lastName}`.trim();
-
-      const feedbackMetadata = {
-        studentName,
-        assignmentTitle: assignment.title,
-        assignmentCompletedAt: assignment.completedAt?.toISOString(),
-      };
-
-      // Verificação com metadata específico
-      const existing = await checkExistingNotification(
-        userId,
-        'ASSIGNMENT_FEEDBACK_NEEDED',
-        assignment.id,
-        feedbackMetadata
-      );
-
-      if (!existing) {
-        const template = getNotificationTemplate('ASSIGNMENT_FEEDBACK_NEEDED', {
-          studentName,
-          assignmentTitle: assignment.title,
-        });
-
-        notificationsToCreate.push({
-          userId,
-          type: 'ASSIGNMENT_FEEDBACK_NEEDED',
-          priority: 'MEDIUM',
-          title: template.title,
-          message: template.message,
-          actionText: 'Dar Feedback',
-          actionUrl: `/teacher/assignments/${assignment.id}`,
-          relatedEntityType: 'assignment',
-          relatedEntityId: assignment.id,
-          showInToast: includeToast,
-          showInBrowser: false,
-          expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
-          metadata: feedbackMetadata,
-        });
-      }
-    }
-
-    // === CONVITES PENDENTES ===
+    // === CONVITES PENDENTES (MANTIDO) ===
     for (const invite of pendingInvites) {
       const studentName =
         `${invite.student.user.firstName} ${invite.student.user.lastName}`.trim();
@@ -359,45 +281,23 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 6. Criar notificações no banco usando transação
+    // 6. Criar notificações no banco usando transação (MANTIDO)
     const createdNotifications = [];
 
     for (const notificationData of notificationsToCreate) {
       try {
         const created = await prisma.$transaction(async (tx) => {
-          // Verificação final dentro da transação
           const baseWhere: any = {
             userId: notificationData.userId,
             type: notificationData.type,
             relatedEntityId: notificationData.relatedEntityId,
-            status: { in: ['UNREAD', 'READ'] as const },
+            status: { in: ['UNREAD', 'read'] as const },
             expiresAt: { gte: now },
           };
 
-          let finalCheck;
-
-          // Para assignments, usar verificação específica
-          if (
-            notificationData.type === 'ASSIGNMENT_FEEDBACK_NEEDED' &&
-            notificationData.metadata?.assignmentCompletedAt
-          ) {
-            const candidates = await tx.notification.findMany({
-              where: baseWhere,
-            });
-
-            finalCheck = candidates.find((n) => {
-              if (!n.metadata || typeof n.metadata !== 'object') return false;
-              const meta = n.metadata as any;
-              return (
-                meta.assignmentCompletedAt ===
-                notificationData.metadata.assignmentCompletedAt
-              );
-            });
-          } else {
-            finalCheck = await tx.notification.findFirst({
-              where: baseWhere,
-            });
-          }
+          const finalCheck = await tx.notification.findFirst({
+            where: baseWhere,
+          });
 
           if (finalCheck) {
             return null; // Já existe
@@ -416,7 +316,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 7. Buscar notificações existentes
+    // 7. Buscar notificações existentes (MANTIDO)
     const rawNotifications = await prisma.notification.findMany({
       where: {
         userId,
@@ -437,7 +337,7 @@ export async function POST(req: NextRequest) {
       take: NOTIFICATION_CONFIG.MAX_NOTIFICATIONS_PER_CHECK,
     });
 
-    // Mapear para o tipo correto
+    // Mapear para o tipo correto (MANTIDO)
     const allNotifications = rawNotifications.map((n) => ({
       ...n,
       actionText: n.actionText || undefined,
@@ -450,7 +350,7 @@ export async function POST(req: NextRequest) {
       readAt: n.readAt || undefined,
     }));
 
-    // 8. Filtrar notificações para toast e browser
+    // 8. Filtrar notificações para toast e browser (MANTIDO)
     const toastNotifications = allNotifications
       .filter((n) => n.showInToast && !n.toastShown && includeToast)
       .slice(0, NOTIFICATION_CONFIG.MAX_TOAST_NOTIFICATIONS);
@@ -459,7 +359,7 @@ export async function POST(req: NextRequest) {
       .filter((n) => n.showInBrowser && !n.browserShown && includeBrowser)
       .slice(0, NOTIFICATION_CONFIG.MAX_BROWSER_NOTIFICATIONS);
 
-    // 9. Contar total não lidas
+    // 9. Contar total não lidas (MANTIDO)
     const totalUnread = await prisma.notification.count({
       where: {
         userId,
@@ -468,7 +368,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 10. Limpar notificações expiradas
+    // 10. Limpar notificações expiradas (MANTIDO)
     await prisma.notification.deleteMany({
       where: {
         userId,
@@ -492,6 +392,10 @@ export async function POST(req: NextRequest) {
       browserNotifications,
       totalUnread,
     };
+
+    console.log(
+      `✅ [TEACHER-CHECK] Verificação concluída - ${createdNotifications.length} notificações automáticas criadas`
+    );
 
     return NextResponse.json(result);
   } catch (error) {

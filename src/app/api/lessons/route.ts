@@ -1,4 +1,4 @@
-// app/api/lessons/route.ts - API melhorada com ordenação cronológica e cache - CORRIGIDO
+// app/api/lessons/route.ts - ATUALIZADO COM NOTIFICAÇÕES EM TEMPO REAL
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -6,8 +6,9 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 import { Lesson, LessonStatus } from '@prisma/client';
+import { NotificationFactory } from '@/app/utils/notifications/createNotification';
 
-// 🆕 FUNÇÃO MELHORADA PARA REVALIDAR CACHE
+// FUNÇÃO MELHORADA PARA REVALIDAR CACHE (MANTIDA)
 async function revalidateTeacherData(userId: string, studentUserId?: string) {
   console.log(`🔄 [CACHE] Revalidating teacher data for user ${userId}`);
 
@@ -45,7 +46,7 @@ async function revalidateTeacherData(userId: string, studentUserId?: string) {
   }
 }
 
-// 🆕 FUNÇÃO PARA CALCULAR STATS EM TEMPO REAL
+// FUNÇÃO PARA CALCULAR STATS EM TEMPO REAL (MANTIDA)
 async function calculateLessonsStats(teacherId: string) {
   const now = new Date();
   const today = new Date(now);
@@ -118,7 +119,7 @@ async function calculateLessonsStats(teacherId: string) {
   };
 }
 
-// Função para calcular datas de recorrência com limite de 3 meses
+// Função para calcular datas de recorrência com limite de 3 meses (MANTIDA)
 function calculateRecurrenceDates(
   startDate: Date,
   recurrenceType: string,
@@ -127,7 +128,7 @@ function calculateRecurrenceDates(
   const dates: Date[] = [];
   const currentDate = new Date(startDate);
 
-  // NOVO: Verificar limite de 3 meses
+  // Verificar limite de 3 meses
   const maxDate = new Date(startDate);
   maxDate.setMonth(maxDate.getMonth() + 3);
   const actualEndDate = endDate > maxDate ? maxDate : endDate;
@@ -169,7 +170,7 @@ function calculateRecurrenceDates(
   return dates;
 }
 
-// Função melhorada para verificar conflitos de horário
+// Função melhorada para verificar conflitos de horário (MANTIDA)
 async function checkScheduleConflicts(
   teacherId: string,
   scheduledAt: Date,
@@ -269,7 +270,7 @@ async function checkScheduleConflicts(
   };
 }
 
-// GET - Listar aulas com ordenação cronológica melhorada
+// GET - Listar aulas com ordenação cronológica melhorada (SEM MUDANÇAS)
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -355,7 +356,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // 🆕 ORDENAÇÃO CRONOLÓGICA MELHORADA: Separar futuras das passadas
+    // ORDENAÇÃO CRONOLÓGICA MELHORADA: Separar futuras das passadas
     const now = new Date();
 
     // Buscar aulas futuras e passadas separadamente
@@ -495,7 +496,7 @@ export async function GET(request: NextRequest) {
       updatedAt: lesson.updatedAt,
     }));
 
-    // 🆕 CALCULAR STATS EM TEMPO REAL SE SOLICITADO
+    // CALCULAR STATS EM TEMPO REAL SE SOLICITADO
     let stats = null;
     if (includeStats && userTeacherId) {
       stats = await calculateLessonsStats(userTeacherId);
@@ -524,7 +525,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Criar nova aula (MELHORADO com validações)
+// 🆕 POST - Criar nova aula (COM NOTIFICAÇÃO)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -546,9 +547,9 @@ export async function POST(request: NextRequest) {
       type = 'INDIVIDUAL',
       location,
       objectives = [],
-      // 🔥 CAMPOS DE PEÇAS MUSICAIS
-      worksIds = [], // 🆕 IDs das obras
-      workScoreIds = [], // 🆕 IDs das partituras
+      // CAMPOS DE PEÇAS MUSICAIS
+      worksIds = [],
+      workScoreIds = [],
       topics = [],
       techniques = [],
       repertoire = [],
@@ -581,7 +582,7 @@ export async function POST(request: NextRequest) {
       errors.push('Duração deve estar entre 15 e 300 minutos');
     }
 
-    // 🔥 VALIDAÇÃO DE PEÇAS MUSICAIS
+    // VALIDAÇÃO DE PEÇAS MUSICAIS
     if (worksIds && worksIds.length > 4) {
       errors.push('Máximo de 4 obras por aula');
     }
@@ -590,7 +591,7 @@ export async function POST(request: NextRequest) {
       errors.push('Máximo de 4 partituras por aula');
     }
 
-    // 🔥 LOG DOS DADOS DE PEÇAS MUSICAIS
+    // LOG DOS DADOS DE PEÇAS MUSICAIS
     console.log('🎼 [LESSONS] Dados de peças musicais recebidos:', {
       worksIds: worksIds || [],
       workScoreIds: workScoreIds || [],
@@ -650,7 +651,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 🔥 VALIDAR IDs DAS WORKS (se fornecidas)
+    // VALIDAR IDs DAS WORKS (se fornecidas)
     if (worksIds && worksIds.length > 0) {
       console.log('🔍 [LESSONS] Validando IDs das obras:', worksIds);
 
@@ -690,7 +691,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // 🔥 VALIDAR IDs DAS WORK SCORES (se fornecidas)
+    // VALIDAR IDs DAS WORK SCORES (se fornecidas)
     if (workScoreIds && workScoreIds.length > 0) {
       console.log('🔍 [LESSONS] Validando IDs das partituras:', workScoreIds);
 
@@ -776,7 +777,7 @@ export async function POST(request: NextRequest) {
       const lessonDate = lessonDates[i];
 
       try {
-        // 🔥 DADOS DA AULA COM PEÇAS MUSICAIS
+        // DADOS DA AULA COM PEÇAS MUSICAIS
         const lessonData = {
           teacherId: teacherProfile.id,
           studentId: studentProfile.id,
@@ -787,9 +788,9 @@ export async function POST(request: NextRequest) {
           type,
           location,
           objectives,
-          // 🔥 CAMPOS DE PEÇAS MUSICAIS CORRETOS
-          worksIds: worksIds || [], // IDs das obras
-          workScoreIds: workScoreIds || [], // IDs das partituras
+          // CAMPOS DE PEÇAS MUSICAIS CORRETOS
+          worksIds: worksIds || [],
+          workScoreIds: workScoreIds || [],
           topics,
           techniques,
           repertoire,
@@ -870,6 +871,49 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // 🆕 CRIAR NOTIFICAÇÃO: NEW_LESSON_SCHEDULED (só PAI ou solo)
+    try {
+      // Só criar notificação para aula PAI (primeira) ou aula solo
+      const firstLesson = createdLessons[0];
+
+      if (firstLesson && (!firstLesson.parentLessonId || !isRecurring)) {
+        const teacher = await prisma.teacher.findFirst({
+          where: { id: firstLesson.teacherId },
+          include: {
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        });
+        let teacherName = 'Não identificado ';
+        if (teacher) {
+          teacherName =
+            `${teacher.user.firstName} ${teacher.user.lastName}`.trim();
+        }
+
+        await NotificationFactory.newLessonScheduled(
+          studentUserId,
+          firstLesson.id,
+          teacherName,
+          firstLesson.title,
+          lessonDates.length > 1 // isRecurring
+        );
+
+        console.log(
+          `📬 [LESSONS] Notificação NEW_LESSON_SCHEDULED criada para aula PAI/solo: ${firstLesson.id}`
+        );
+      }
+    } catch (notificationError) {
+      console.error(
+        '❌ [LESSONS] Erro ao criar notificação:',
+        notificationError
+      );
+      // Não falhar a criação da aula por causa da notificação
+    }
+
     // Revalidar cache
     await revalidateTeacherData(session.user.id, studentUserId);
 
@@ -880,7 +924,7 @@ export async function POST(request: NextRequest) {
       isRecurring: lessonDates.length > 1,
       totalPlanned: lessonDates.length,
       created: createdLessons.length,
-      // 🔥 INFORMAÇÕES SOBRE PEÇAS MUSICAIS
+      // INFORMAÇÕES SOBRE PEÇAS MUSICAIS
       musicalPieces: {
         worksCount: worksIds?.length || 0,
         scoresCount: workScoreIds?.length || 0,
@@ -896,11 +940,15 @@ export async function POST(request: NextRequest) {
         : null,
     };
 
-    console.log(`🎉 [LESSONS] Criação concluída com peças musicais:`, {
-      totalLessons: createdLessons.length,
-      worksPerLesson: worksIds?.length || 0,
-      scoresPerLesson: workScoreIds?.length || 0,
-    });
+    console.log(
+      `🎉 [LESSONS] Criação concluída com peças musicais e notificação:`,
+      {
+        totalLessons: createdLessons.length,
+        worksPerLesson: worksIds?.length || 0,
+        scoresPerLesson: workScoreIds?.length || 0,
+        notificationCreated: !createdLessons[0]?.parentLessonId,
+      }
+    );
 
     return NextResponse.json(response);
   } catch (error) {
@@ -915,7 +963,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PATCH - Atualizar aula (com revalidação do cache)
+// PATCH - Atualizar aula (SEM MUDANÇAS SIGNIFICATIVAS, apenas com revalidação do cache)
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -1018,7 +1066,7 @@ export async function PATCH(request: NextRequest) {
       },
     });
 
-    // 🔥 REVALIDAR CACHE APÓS ATUALIZAÇÃO
+    // Revalidar cache
     await revalidateTeacherData(session.user.id, lesson.student.userId);
 
     console.log(`✅ [LESSONS] Aula atualizada e cache revalidado: ${lessonId}`);
@@ -1037,7 +1085,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// DELETE - Cancelar aula (MELHORADO com opções avançadas)
+// DELETE - Cancelar aula (SEM MUDANÇAS SIGNIFICATIVAS)
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -1053,7 +1101,7 @@ export async function DELETE(request: NextRequest) {
     const lessonId = searchParams.get('id');
     const reason = searchParams.get('reason') || 'Cancelada pelo professor';
     const cancelRecurringSeries = searchParams.get('cancelSeries') === 'true';
-    const cancelFutureOnly = searchParams.get('futureOnly') === 'true'; // NOVO: cancelar apenas futuras
+    const cancelFutureOnly = searchParams.get('futureOnly') === 'true';
 
     if (!lessonId) {
       return NextResponse.json(
@@ -1103,7 +1151,6 @@ export async function DELETE(request: NextRequest) {
       // Cancelar série de aulas
       const parentId = lesson.parentLessonId || lesson.id;
 
-      // NOVO: Opção de cancelar apenas futuras
       const whereCondition: any = {
         OR: [{ id: parentId }, { parentLessonId: parentId }],
         status: 'SCHEDULED',
@@ -1178,7 +1225,7 @@ export async function DELETE(request: NextRequest) {
       console.log(`✅ [LESSONS] Aula individual cancelada: ${lessonId}`);
     }
 
-    // 🔥 REVALIDAR CACHE APÓS CANCELAMENTO
+    // Revalidar cache
     await revalidateTeacherData(session.user.id, lesson.student.userId);
 
     console.log(`✅ [LESSONS] Cache revalidado após cancelamento`);
@@ -1189,7 +1236,6 @@ export async function DELETE(request: NextRequest) {
       cancelledCount: cancelledLessons,
       cancelledDetails,
       reason,
-      // NOVO: Sugestão de reagendamento
       suggestion:
         cancelledLessons === 1
           ? 'Deseja reagendar esta aula para outro horário?'

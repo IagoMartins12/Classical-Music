@@ -542,9 +542,21 @@ export default function TeacherLessonDetailsPageClient({
           break;
 
         case 'absent':
+          // 🆕 MARCAÇÃO DE FALTA ATUALIZADA - muda status para NO_SHOW
           success = await markAttendance({
             studentPresent: false,
           });
+
+          // 🆕 TAMBÉM ATUALIZAR O STATUS DA LESSON PARA NO_SHOW
+          if (success) {
+            const statusSuccess = await updateBasicInfo({
+              status: 'NO_SHOW',
+            });
+
+            if (statusSuccess) {
+              console.log('✅ Status da aula atualizado para NO_SHOW');
+            }
+          }
           break;
 
         case 'complete':
@@ -563,6 +575,13 @@ export default function TeacherLessonDetailsPageClient({
       if (success) {
         setShowQuickActionModal(false);
         await refreshLesson();
+
+        // 🆕 MENSAGEM ESPECÍFICA PARA FALTA
+        if (quickActionType === 'absent') {
+          console.log(
+            '🔔 Aluno marcado como falta - notificação será enviada automaticamente'
+          );
+        }
       }
     } catch (error) {
       console.error('❌ Erro na ação rápida:', error);
@@ -574,6 +593,7 @@ export default function TeacherLessonDetailsPageClient({
     quickActionReason,
     lesson,
     markAttendance,
+    updateBasicInfo, // 🆕 Adicionado para atualizar status
     completeLesson,
     cancelLesson,
     refreshLesson,
