@@ -1,4 +1,4 @@
-// app/api/teacher/students/route.ts
+// app/api/teacher/students/route.ts - ATUALIZADO para processar plano de estudos
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -252,7 +252,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Vincular novo aluno COM REVALIDAÇÃO
+// POST - Vincular novo aluno COM REVALIDAÇÃO E PLANO DE ESTUDOS COMPLETO
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -274,6 +274,11 @@ export async function POST(request: NextRequest) {
       learningPlan,
       currentFocus = [],
       teacherNotes,
+      // 🆕 NOVOS CAMPOS DO PLANO DE ESTUDOS
+      studyGoals,
+      practiceFrequency,
+      homeworkExpectation,
+      specialInstructions,
     } = body;
 
     if (!studentUserId) {
@@ -284,7 +289,19 @@ export async function POST(request: NextRequest) {
     }
 
     console.log(
-      `🔗 [TEACHER-STUDENTS] Vinculando aluno ${studentUserId} ao professor ${session.user.id}`
+      `🔗 [TEACHER-STUDENTS] Vinculando aluno ${studentUserId} ao professor ${session.user.id} com plano de estudos:`,
+      {
+        maxLessonsPerWeek,
+        lessonDuration,
+        preferredDaysCount: preferredDays?.length || 0,
+        preferredTimesCount: preferredTimes?.length || 0,
+        currentFocusCount: currentFocus?.length || 0,
+        hasLearningPlan: !!learningPlan,
+        hasStudyGoals: !!studyGoals,
+        practiceFrequency,
+        homeworkExpectation,
+        hasSpecialInstructions: !!specialInstructions,
+      }
     );
 
     // Verificar se professor existe e buscar dados do professor
@@ -376,7 +393,7 @@ export async function POST(request: NextRequest) {
           { status: 409 }
         );
       } else {
-        // Reativar relacionamento existente
+        // Reativar relacionamento existente COM NOVOS DADOS DO PLANO
         const reactivatedRelationship = await prisma.teacherStudent.update({
           where: { id: existingRelationship.id },
           data: {
@@ -388,9 +405,9 @@ export async function POST(request: NextRequest) {
             lessonDuration,
             preferredDays,
             preferredTimes,
-            learningPlan,
+            learningPlan: learningPlan || null,
             currentFocus,
-            teacherNotes,
+            teacherNotes: teacherNotes || null,
           },
           include: {
             student: {
@@ -407,23 +424,59 @@ export async function POST(request: NextRequest) {
           },
         });
 
+        console.log(
+          `🔄 [TEACHER-STUDENTS] Relacionamento reativado com plano de estudos atualizado: ${reactivatedRelationship.id}`
+        );
+
         // Revalidar cache
         await revalidateTeacherStudentsData(session.user.id, studentUserId);
-
-        console.log(
-          `✅ [TEACHER-STUDENTS] Relacionamento reativado e cache revalidado: ${reactivatedRelationship.id}`
-        );
 
         return NextResponse.json({
           success: true,
           relationship: reactivatedRelationship,
-          message: 'Aluno vinculado novamente com sucesso',
+          message:
+            'Aluno vinculado novamente com sucesso e plano de estudos atualizado!',
           reactivated: true,
         });
       }
     }
 
-    // Criar novo relacionamento
+    // 🆕 COMPILAR PLANO DE APRENDIZADO DETALHADO
+    const detailedLearningPlan = [
+      learningPlan || '',
+      studyGoals ? `\n\n📋 OBJETIVOS DE ESTUDO:\n${studyGoals}` : '',
+      practiceFrequency
+        ? `\n\n🎯 FREQUÊNCIA DE PRÁTICA:\n${practiceFrequency}`
+        : '',
+      homeworkExpectation
+        ? `\n\n📚 EXPECTATIVA DE TAREFAS:\n${homeworkExpectation}`
+        : '',
+      specialInstructions
+        ? `\n\n⚠️ INSTRUÇÕES ESPECIAIS:\n${specialInstructions}`
+        : '',
+    ]
+      .filter(Boolean)
+      .join('')
+      .trim();
+
+    // 🆕 COMPILAR NOTAS DO PROFESSOR COM INFORMAÇÕES EXTRA
+    const compiledTeacherNotes = [
+      teacherNotes || '',
+      practiceFrequency
+        ? `\nFrequência de prática preferida: ${practiceFrequency}`
+        : '',
+      homeworkExpectation
+        ? `\nExpectativa de tarefas: ${homeworkExpectation}`
+        : '',
+      specialInstructions
+        ? `\nInstruções especiais: ${specialInstructions}`
+        : '',
+    ]
+      .filter(Boolean)
+      .join('')
+      .trim();
+
+    // Criar novo relacionamento COM PLANO COMPLETO
     const newRelationship = await prisma.teacherStudent.create({
       data: {
         teacherId: teacherProfile.id,
@@ -432,9 +485,9 @@ export async function POST(request: NextRequest) {
         lessonDuration,
         preferredDays,
         preferredTimes,
-        learningPlan,
+        learningPlan: detailedLearningPlan || null,
         currentFocus,
-        teacherNotes,
+        teacherNotes: compiledTeacherNotes || null,
         isActive: true,
       },
       include: {
@@ -452,7 +505,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // 🆕 NOVO: Enviar email de convite para o aluno
+    console.log(
+      `✅ [TEACHER-STUDENTS] Novo relacionamento criado com plano de estudos completo: ${newRelationship.id}`,
+      {
+        learningPlanLength: detailedLearningPlan.length,
+        teacherNotesLength: compiledTeacherNotes.length,
+        preferredDaysCount: preferredDays.length,
+        currentFocusCount: currentFocus.length,
+      }
+    );
+
+    // 🆕 ENVIAR EMAIL DE CONVITE COM DETALHES DO PLANO
     if (studentUser.email) {
       try {
         // Criar tokens para aceitar/recusar convite
@@ -485,14 +548,32 @@ export async function POST(request: NextRequest) {
         const acceptUrl = `${baseUrl}/confirm-student-invite/${acceptToken}`;
         const declineUrl = `${baseUrl}/decline-student-invite/${declineToken}`;
 
-        // Preparar dados do plano de estudos para o email
-        const studyPlan: any = {};
+        // 🆕 PREPARAR DADOS DETALHADOS DO PLANO PARA O EMAIL
+        const studyPlanForEmail: any = {};
         if (maxLessonsPerWeek > 0)
-          studyPlan.maxLessonsPerWeek = maxLessonsPerWeek;
-        if (lessonDuration > 0) studyPlan.lessonDuration = lessonDuration;
-        if (preferredDays.length > 0)
-          studyPlan.preferredDays = preferredDays.join(', ');
-        if (currentFocus.length > 0) studyPlan.focus = currentFocus.join(', ');
+          studyPlanForEmail.maxLessonsPerWeek = maxLessonsPerWeek;
+        if (lessonDuration > 0)
+          studyPlanForEmail.lessonDuration = lessonDuration;
+        if (preferredDays.length > 0) {
+          const dayLabels: { [key: string]: string } = {
+            monday: 'Segunda-feira',
+            tuesday: 'Terça-feira',
+            wednesday: 'Quarta-feira',
+            thursday: 'Quinta-feira',
+            friday: 'Sexta-feira',
+            saturday: 'Sábado',
+            sunday: 'Domingo',
+          };
+          studyPlanForEmail.preferredDays = preferredDays
+            .map((day: any) => dayLabels[day] || day)
+            .join(', ');
+        }
+        if (currentFocus.length > 0)
+          studyPlanForEmail.focus = currentFocus.join(', ');
+        if (practiceFrequency)
+          studyPlanForEmail.practiceFrequency = practiceFrequency;
+        if (homeworkExpectation)
+          studyPlanForEmail.homeworkExpectation = homeworkExpectation;
 
         // Enviar email de convite
         await sendTemplateEmail(studentUser.email, {
@@ -504,13 +585,16 @@ export async function POST(request: NextRequest) {
             teacherExperience: teacherProfile.experience || null,
             acceptUrl,
             declineUrl,
-            studyPlan: Object.keys(studyPlan).length > 0 ? studyPlan : null,
+            studyPlan:
+              Object.keys(studyPlanForEmail).length > 0
+                ? studyPlanForEmail
+                : null,
             siteUrl: baseUrl,
           },
         });
 
         console.log(
-          `✅ [TEACHER-STUDENTS] Email de convite para aluno enviado para ${studentUser.email}`
+          `📧 [TEACHER-STUDENTS] Email de convite enviado com plano de estudos para ${studentUser.email}`
         );
       } catch (emailError) {
         console.error(
@@ -525,15 +609,24 @@ export async function POST(request: NextRequest) {
     await revalidateTeacherStudentsData(session.user.id, studentUserId);
 
     console.log(
-      `✅ [TEACHER-STUDENTS] Novo relacionamento criado e cache revalidado: ${newRelationship.id}`
+      `✅ [TEACHER-STUDENTS] Processo completo finalizado com sucesso!`
     );
 
     return NextResponse.json({
       success: true,
       relationship: newRelationship,
-      message: 'Aluno adicionado com sucesso. Email de convite enviado!',
+      message:
+        'Aluno adicionado com sucesso! Email de convite com plano de estudos enviado!',
       created: true,
       inviteEmailSent: !!studentUser.email,
+      studyPlanIncluded: true,
+      studyPlanDetails: {
+        maxLessonsPerWeek,
+        lessonDuration,
+        preferredDaysCount: preferredDays.length,
+        currentFocusCount: currentFocus.length,
+        hasDetailedPlan: !!detailedLearningPlan,
+      },
     });
   } catch (error) {
     console.error('❌ [TEACHER-STUDENTS] Erro ao vincular aluno:', error);
@@ -544,7 +637,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PATCH - Atualizar relacionamento COM REVALIDAÇÃO
+// PATCH - Atualizar relacionamento COM REVALIDAÇÃO (continua igual)
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -567,7 +660,12 @@ export async function PATCH(request: NextRequest) {
     }
 
     console.log(
-      `📝 [TEACHER-STUDENTS] Atualizando relacionamento ${relationshipId}`
+      `📝 [TEACHER-STUDENTS] Atualizando relacionamento ${relationshipId}`,
+      {
+        updateFields: Object.keys(updateData),
+        hasPreferredDays: !!updateData.preferredDays,
+        hasCurrentFocus: !!updateData.currentFocus,
+      }
     );
 
     // Verificar se professor é dono do relacionamento
@@ -625,7 +723,7 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({
       success: true,
       relationship: updatedRelationship,
-      message: 'Relacionamento atualizado com sucesso',
+      message: 'Configurações da relação atualizadas com sucesso!',
     });
   } catch (error) {
     console.error(
@@ -639,7 +737,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// DELETE - Desativar relacionamento (não deletar) COM REVALIDAÇÃO
+// DELETE - Desativar relacionamento (não deletar) COM REVALIDAÇÃO (continua igual)
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

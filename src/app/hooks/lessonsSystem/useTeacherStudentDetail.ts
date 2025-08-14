@@ -1,4 +1,4 @@
-// app/hooks/useTeacherStudentDetail.ts - Hook específico para detalhes do aluno
+// app/hooks/useTeacherStudentDetail.ts - Hook ATUALIZADO com edição de relacionamento
 
 import { StudentDetailData } from '@/app/(teacher)/teacher/students/[studentId]/pageServer';
 import { useState, useCallback } from 'react';
@@ -9,6 +9,7 @@ interface UseTeacherStudentDetailState {
     updateNotes: boolean;
     toggleStatus: boolean;
     refresh: boolean;
+    updateRelationship: boolean; // 🆕 NOVO
   };
   error: string | null;
 }
@@ -21,13 +22,24 @@ interface UseTeacherStudentDetailActions {
   // Student management
   updateTeacherNotes: (notes: string) => Promise<boolean>;
   toggleStudentStatus: () => Promise<boolean>;
-  updateRelationship: (updates: any) => Promise<boolean>;
+  updateRelationship: (updates: RelationshipUpdates) => Promise<boolean>; // 🆕 NOVO
 
   // Local state updates
   updateStudentDataInState: (updates: Partial<StudentDetailData>) => void;
 
   // Utilities
   clearError: () => void;
+}
+
+// 🆕 INTERFACE PARA ATUALIZAÇÕES DA RELAÇÃO
+interface RelationshipUpdates {
+  maxLessonsPerWeek?: number;
+  lessonDuration?: number;
+  preferredDays?: string[];
+  preferredTimes?: string[];
+  learningPlan?: string;
+  currentFocus?: string[];
+  teacherNotes?: string;
 }
 
 export function useTeacherStudentDetail(
@@ -39,6 +51,7 @@ export function useTeacherStudentDetail(
       updateNotes: false,
       toggleStatus: false,
       refresh: false,
+      updateRelationship: false, // 🆕 NOVO
     },
     error: null,
   });
@@ -209,13 +222,15 @@ export function useTeacherStudentDetail(
     }
   }, [state.studentData.relationship, setLoading, setError]);
 
-  // Update relationship details
+  // 🆕 NOVO: Update relationship configuration
   const updateRelationship = useCallback(
-    async (updates: any): Promise<boolean> => {
-      setLoading('updateNotes', true); // Reusing updateNotes loading state
+    async (updates: RelationshipUpdates): Promise<boolean> => {
+      setLoading('updateRelationship', true);
       setError(null);
 
       try {
+        console.log('🔄 [HOOK] Atualizando relação:', updates);
+
         const response = await fetch('/api/teacher/students', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
@@ -228,12 +243,16 @@ export function useTeacherStudentDetail(
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || 'Erro ao atualizar relacionamento');
+          throw new Error(
+            data.error || 'Erro ao atualizar configurações da relação'
+          );
         }
 
         if (!data.success) {
-          throw new Error('Erro na atualização do relacionamento');
+          throw new Error('Erro na atualização das configurações');
         }
+
+        console.log('✅ [HOOK] Relação atualizada com sucesso');
 
         // Update local state
         setState((prev) => ({
@@ -249,11 +268,11 @@ export function useTeacherStudentDetail(
 
         return true;
       } catch (error) {
-        console.error('Erro ao atualizar relacionamento:', error);
+        console.error('❌ [HOOK] Erro ao atualizar relação:', error);
         setError(error instanceof Error ? error.message : 'Erro desconhecido');
         return false;
       } finally {
-        setLoading('updateNotes', false);
+        setLoading('updateRelationship', false);
       }
     },
     [state.studentData.relationship.relationshipId, setLoading, setError]
@@ -287,7 +306,7 @@ export function useTeacherStudentDetail(
     setInitialData,
     updateTeacherNotes,
     toggleStudentStatus,
-    updateRelationship,
+    updateRelationship, // 🆕 NOVO
     updateStudentDataInState,
     clearError,
   };

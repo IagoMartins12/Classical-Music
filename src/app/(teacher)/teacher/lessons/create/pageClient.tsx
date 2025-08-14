@@ -1,4 +1,4 @@
-// app/teacher/lessons/create/pageClient.tsx - Client Component para Criar Nova Aula com Sistema de Peças Musicais
+// app/teacher/lessons/create/pageClient.tsx - ATUALIZADO com sistema de conflitos
 
 'use client';
 
@@ -18,6 +18,8 @@ import {
   FiCheckCircle,
   FiInfo,
   FiMusic,
+  FiAlertTriangle,
+  FiXCircle,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -55,6 +57,37 @@ type LessonType =
   | 'THEORY'
   | 'PRACTICE'
   | 'MASTERCLASS';
+
+// 🆕 TIPOS PARA CONFLITOS
+interface LessonConflict {
+  id: string;
+  title: string;
+  scheduledAt: Date;
+  duration: number;
+  studentName: string;
+  studentEmail: string;
+}
+
+interface WeeklyLimitWarning {
+  currentLessons: number;
+  maxLessonsPerWeek: number;
+  studentName: string;
+  weekStart: Date;
+  weekEnd: Date;
+  upcomingLessons: Array<{
+    id: string;
+    title: string;
+    scheduledAt: Date;
+  }>;
+}
+
+interface ConflictCheckResult {
+  hasTimeConflicts: boolean;
+  hasWeeklyLimitExceeded: boolean;
+  timeConflicts: LessonConflict[];
+  weeklyLimitWarning: WeeklyLimitWarning | null;
+  warnings: string[];
+}
 
 const recurrenceOptions = [
   { value: 'NONE', label: 'Sem recorrência' },
@@ -108,6 +141,247 @@ const calculateLessonCount = (
   }
 };
 
+// 🆕 MODAL DE CONFLITOS
+interface ConflictModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  conflicts: ConflictCheckResult;
+  onConfirm: () => void;
+  onCancel: () => void;
+  loading: boolean;
+}
+
+function ConflictModal({
+  isOpen,
+  onClose,
+  conflicts,
+  onConfirm,
+  onCancel,
+  loading,
+}: ConflictModalProps) {
+  const formatDateTime = (date: Date) => {
+    return new Date(date).toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+    });
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} maxWidth="3xl">
+      <div className="p-6">
+        <div className="flex items-center space-x-3 mb-6">
+          <div
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+              conflicts.hasTimeConflicts
+                ? 'bg-accent-red/10'
+                : 'bg-accent-yellow/10'
+            }`}
+          >
+            {conflicts.hasTimeConflicts ? (
+              <FiXCircle className="w-6 h-6 text-accent-red" />
+            ) : (
+              <FiAlertTriangle className="w-6 h-6 text-accent-yellow" />
+            )}
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-theme-primary">
+              {conflicts.hasTimeConflicts
+                ? 'Conflitos de Horário Detectados'
+                : 'Aviso: Limite Semanal'}
+            </h2>
+            <p className="text-theme-secondary">
+              {conflicts.hasTimeConflicts
+                ? 'Existem aulas em horários conflitantes'
+                : 'O aluno já atingiu o limite de aulas da semana'}
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          {/* Conflitos de Horário */}
+          {conflicts.hasTimeConflicts && conflicts.timeConflicts.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-accent-red mb-4 flex items-center space-x-2">
+                <FiAlertCircle className="w-5 h-5" />
+                <span>
+                  Conflitos de Horário ({conflicts.timeConflicts.length})
+                </span>
+              </h3>
+
+              <div className="space-y-3">
+                {conflicts.timeConflicts.map((conflict) => (
+                  <div
+                    key={conflict.id}
+                    className="bg-accent-red/5 border border-accent-red/20 rounded-lg p-4"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-accent-red">
+                          {conflict.title}
+                        </p>
+                        <p className="text-sm text-theme-tertiary">
+                          {formatDateTime(conflict.scheduledAt)} •{' '}
+                          {conflict.duration}min
+                        </p>
+                        <p className="text-sm text-theme-secondary">
+                          Aluno: {conflict.studentName}
+                        </p>
+                      </div>
+                      <FiAlertCircle className="w-5 h-5 text-accent-red" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4 mt-4">
+                <div className="flex items-start space-x-3">
+                  <FiInfo className="w-5 h-5 text-accent-red mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-medium text-accent-red mb-1">
+                      ⚠️ Não é possível criar esta aula
+                    </p>
+                    <p className="text-theme-secondary">
+                      Existe conflito de horário com outras aulas já agendadas.
+                      Ajuste o horário ou cancele uma das aulas conflitantes
+                      antes de prosseguir.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Limite Semanal */}
+          {conflicts.hasWeeklyLimitExceeded && conflicts.weeklyLimitWarning && (
+            <div>
+              <h3 className="text-lg font-semibold text-accent-yellow mb-4 flex items-center space-x-2">
+                <FiAlertTriangle className="w-5 h-5" />
+                <span>Limite Semanal Atingido</span>
+              </h3>
+
+              <div className="bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg p-4">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-theme-primary font-medium">
+                      {conflicts.weeklyLimitWarning.studentName}
+                    </span>
+                    <span className="text-accent-yellow font-bold">
+                      {conflicts.weeklyLimitWarning.currentLessons}/
+                      {conflicts.weeklyLimitWarning.maxLessonsPerWeek} aulas
+                    </span>
+                  </div>
+
+                  <div className="text-sm text-theme-secondary">
+                    <p>
+                      <strong>Semana:</strong>{' '}
+                      {formatDate(conflicts.weeklyLimitWarning.weekStart)} a{' '}
+                      {formatDate(conflicts.weeklyLimitWarning.weekEnd)}
+                    </p>
+                  </div>
+
+                  {conflicts.weeklyLimitWarning.upcomingLessons.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium text-theme-primary mb-2">
+                        Aulas já agendadas esta semana:
+                      </p>
+                      <div className="space-y-1">
+                        {conflicts.weeklyLimitWarning.upcomingLessons.map(
+                          (lesson) => (
+                            <div
+                              key={lesson.id}
+                              className="text-sm text-theme-tertiary"
+                            >
+                              • {lesson.title} -{' '}
+                              {formatDateTime(lesson.scheduledAt)}
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 mt-4">
+                <div className="flex items-start space-x-3">
+                  <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-medium text-accent-blue mb-1">
+                      ℹ️ Você pode prosseguir se necessário
+                    </p>
+                    <p className="text-theme-secondary">
+                      O aluno configurou um limite de{' '}
+                      {conflicts.weeklyLimitWarning.maxLessonsPerWeek} aula(s)
+                      por semana, mas você pode criar uma aula extra se houver
+                      necessidade pedagógica.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Warnings Gerais */}
+          {conflicts.warnings.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-accent-blue mb-3">
+                Avisos Adicionais
+              </h3>
+              <div className="space-y-2">
+                {conflicts.warnings.map((warning, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center space-x-3 text-sm text-theme-secondary"
+                  >
+                    <FiInfo className="w-4 h-4 text-accent-blue" />
+                    <span>{warning}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center justify-end space-x-3 pt-6 border-t border-theme-secondary mt-6">
+          <button
+            onClick={onCancel}
+            className="btn-classical-secondary"
+            disabled={loading}
+          >
+            {conflicts.hasTimeConflicts ? 'Ajustar Horário' : 'Cancelar'}
+          </button>
+
+          {!conflicts.hasTimeConflicts && (
+            <button
+              onClick={onConfirm}
+              disabled={loading}
+              className="btn-classical-primary bg-accent-yellow hover:bg-accent-yellow/80 flex items-center space-x-2"
+            >
+              {loading ? (
+                <FiRefreshCw className="w-4 h-4 animate-spin" />
+              ) : (
+                <FiCheckCircle className="w-4 h-4" />
+              )}
+              <span>{loading ? 'Criando...' : 'Criar Mesmo Assim'}</span>
+            </button>
+          )}
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
 export default function CreateLessonPageClient({
   initialData,
   errorMessage,
@@ -115,7 +389,6 @@ export default function CreateLessonPageClient({
   const router = useRouter();
   const { createLesson, loading, error, clearError } = useTeacherLessons();
 
-  console.log('paginaaaa');
   // Form state
   const [formData, setFormData] = useState({
     studentUserId: '',
@@ -142,12 +415,15 @@ export default function CreateLessonPageClient({
   const [worksIds, setWorksIds] = useState<string[]>([]);
   const [workScoreIds, setWorkScoreIds] = useState<string[]>([]);
 
+  // 🆕 ESTADOS PARA CONFLITOS
+  const [conflicts, setConflicts] = useState<ConflictCheckResult | null>(null);
+  const [showConflictModal, setShowConflictModal] = useState(false);
+  const [checkingConflicts, setCheckingConflicts] = useState(false);
+
   const [selectedStudent, setSelectedStudent] = useState<
     (typeof initialData.students)[0] | null
   >(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
-  const [conflicts, setConflicts] = useState<any[]>([]);
-  const [showConflictModal, setShowConflictModal] = useState(false);
   const [pendingSubmission, setPendingSubmission] = useState(false);
 
   // Update selected student when form changes
@@ -182,12 +458,67 @@ export default function CreateLessonPageClient({
     }
   }, [formData.scheduledAt, formData.recurrenceType, formData.isRecurring]);
 
+  // 🆕 FUNÇÃO PARA VERIFICAR CONFLITOS
+  const checkForConflicts = useCallback(async () => {
+    if (!formData.studentUserId || !formData.scheduledAt || !selectedStudent) {
+      return;
+    }
+
+    setCheckingConflicts(true);
+
+    try {
+      const response = await fetch('/api/lessons/check-conflicts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          studentUserId: formData.studentUserId,
+          scheduledAt: formData.scheduledAt,
+          duration: formData.duration,
+          maxLessonsPerWeek: selectedStudent.relationship.maxLessonsPerWeek,
+        }),
+      });
+
+      if (response.ok) {
+        const conflictData = await response.json();
+
+        if (conflictData.success) {
+          setConflicts(conflictData.conflicts);
+
+          // Mostrar modal apenas se houver conflitos ou warnings
+          if (
+            conflictData.conflicts.hasTimeConflicts ||
+            conflictData.conflicts.hasWeeklyLimitExceeded
+          ) {
+            setShowConflictModal(true);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao verificar conflitos:', error);
+    } finally {
+      setCheckingConflicts(false);
+    }
+  }, [
+    formData.studentUserId,
+    formData.scheduledAt,
+    formData.duration,
+    selectedStudent,
+  ]);
+
+  // Verificar conflitos quando data/hora mudar
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      checkForConflicts();
+    }, 1000); // Debounce de 1 segundo
+
+    return () => clearTimeout(timeoutId);
+  }, [checkForConflicts]);
+
   // 🆕 HANDLER PARA MUDANÇAS NAS PEÇAS MUSICAIS
   const handleWorksChange = useCallback((works: LessonWork[]) => {
     console.log('🎵 Peças musicais atualizadas:', works);
     setSelectedWorks(works);
 
-    // 🔥 EXTRAIR worksIds e workScoreIds CORRETAMENTE
     const newWorksIds = works.map((work) => work.workId);
     const newWorkScoreIds = works
       .filter((work) => work.scoreId)
@@ -195,13 +526,6 @@ export default function CreateLessonPageClient({
 
     setWorksIds(newWorksIds);
     setWorkScoreIds(newWorkScoreIds);
-
-    console.log('📊 IDs extraídos:', {
-      worksIds: newWorksIds,
-      workScoreIds: newWorkScoreIds,
-      totalPecas: works.length,
-      totalPartituras: newWorkScoreIds.length,
-    });
   }, []);
 
   // Form handlers
@@ -282,21 +606,42 @@ export default function CreateLessonPageClient({
         return;
       }
 
+      // 🆕 VERIFICAR CONFLITOS ANTES DE PROSSEGUIR
+      if (conflicts?.hasTimeConflicts) {
+        setShowConflictModal(true);
+        return;
+      }
+
+      // Se tem limite semanal mas não há conflitos de horário, verificar primeiro
+      if (conflicts?.hasWeeklyLimitExceeded && !conflicts?.hasTimeConflicts) {
+        setShowConflictModal(true);
+        return;
+      }
+
+      await submitLesson();
+    },
+    [formData, conflicts, clearError]
+  );
+
+  // 🆕 FUNÇÃO PARA SUBMETER A AULA
+  const submitLesson = useCallback(
+    async (forceCreate = false) => {
       // Clean up array fields
       const cleanData = {
         ...formData,
         objectives: formData.objectives.filter((obj) => obj.trim()),
         topics: formData.topics.filter((topic) => topic.trim()),
         techniques: formData.techniques.filter((tech) => tech.trim()),
-        // 🆕 INCLUIR PEÇAS MUSICAIS
-        worksIds: worksIds, // IDs das obras
-        workScoreIds: workScoreIds, // IDs das partituras
+        worksIds: worksIds,
+        workScoreIds: workScoreIds,
+        forceCreate, // Flag para ignorar warnings (não conflitos)
       };
 
       console.log('🚀 Enviando dados da aula:', {
         ...cleanData,
         totalPecas: worksIds.length,
         totalPartituras: workScoreIds.length,
+        forceCreate,
       });
 
       const success = await createLesson(cleanData);
@@ -305,7 +650,7 @@ export default function CreateLessonPageClient({
         router.push('/teacher/lessons');
       }
     },
-    [formData, worksIds, workScoreIds, createLesson, clearError, router]
+    [formData, worksIds, workScoreIds, createLesson, router]
   );
 
   // Handle conflicts confirmation
@@ -313,27 +658,13 @@ export default function CreateLessonPageClient({
     setShowConflictModal(false);
     setPendingSubmission(true);
 
-    // Force submit despite conflicts
-    const cleanData = {
-      ...formData,
-      objectives: formData.objectives.filter((obj) => obj.trim()),
-      topics: formData.topics.filter((topic) => topic.trim()),
-      techniques: formData.techniques.filter((tech) => tech.trim()),
-      // 🆕 INCLUIR PEÇAS MUSICAIS
-      worksIds: worksIds,
-      workScoreIds: workScoreIds,
-      forceCreate: false, // Flag to ignore conflicts
-    };
-
-    const success = await createLesson(cleanData);
+    await submitLesson(true); // Force create
     setPendingSubmission(false);
+  }, [submitLesson]);
 
-    if (success) {
-      router.push('/teacher/lessons');
-    } else {
-      setConflicts(['Erro ao criar aula']);
-    }
-  }, [formData, worksIds, workScoreIds, createLesson, router]);
+  const handleConflictCancel = useCallback(() => {
+    setShowConflictModal(false);
+  }, []);
 
   // Render error state
   if (errorMessage && initialData.students.length === 0) {
@@ -500,11 +831,80 @@ export default function CreateLessonPageClient({
                     </div>
                   </div>
 
-                  {/* Schedule */}
+                  {/* Schedule com INDICADOR DE CONFLITOS */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-bold text-theme-primary classical-title">
                       Agendamento
                     </h3>
+
+                    {/* 🆕 INDICADOR DE VERIFICAÇÃO DE CONFLITOS */}
+                    {checkingConflicts && (
+                      <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-3">
+                        <div className="flex items-center space-x-3">
+                          <FiRefreshCw className="w-4 h-4 animate-spin text-accent-blue" />
+                          <span className="text-sm text-accent-blue">
+                            Verificando conflitos de horário...
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* 🆕 WARNINGS DE CONFLITOS */}
+                    {conflicts && !checkingConflicts && (
+                      <div className="space-y-3">
+                        {conflicts.hasTimeConflicts && (
+                          <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-3">
+                            <div className="flex items-center space-x-3">
+                              <FiXCircle className="w-4 h-4 text-accent-red" />
+                              <div className="text-sm">
+                                <p className="font-medium text-accent-red">
+                                  Conflito de horário detectado!
+                                </p>
+                                <p className="text-theme-secondary">
+                                  {conflicts.timeConflicts.length} aula(s) em
+                                  horário conflitante
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {conflicts.hasWeeklyLimitExceeded &&
+                          !conflicts.hasTimeConflicts && (
+                            <div className="bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg p-3">
+                              <div className="flex items-center space-x-3">
+                                <FiAlertTriangle className="w-4 h-4 text-accent-yellow" />
+                                <div className="text-sm">
+                                  <p className="font-medium text-accent-yellow">
+                                    Limite semanal atingido
+                                  </p>
+                                  <p className="text-theme-secondary">
+                                    {conflicts.weeklyLimitWarning?.studentName}{' '}
+                                    já tem{' '}
+                                    {
+                                      conflicts.weeklyLimitWarning
+                                        ?.currentLessons
+                                    }{' '}
+                                    aula(s) esta semana
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                        {!conflicts.hasTimeConflicts &&
+                          !conflicts.hasWeeklyLimitExceeded && (
+                            <div className="bg-accent-green/10 border border-accent-green/30 rounded-lg p-3">
+                              <div className="flex items-center space-x-3">
+                                <FiCheckCircle className="w-4 h-4 text-accent-green" />
+                                <span className="text-sm text-accent-green">
+                                  Nenhum conflito detectado - pode prosseguir!
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                      </div>
+                    )}
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
@@ -940,11 +1340,14 @@ export default function CreateLessonPageClient({
                         !formData.studentUserId ||
                         !formData.title ||
                         !formData.scheduledAt ||
-                        (formData.isRecurring && !formData.recurrenceEnd)
+                        (formData.isRecurring && !formData.recurrenceEnd) ||
+                        checkingConflicts
                       }
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       {loading.createLesson || pendingSubmission ? (
+                        <FiRefreshCw className="w-4 h-4 animate-spin" />
+                      ) : checkingConflicts ? (
                         <FiRefreshCw className="w-4 h-4 animate-spin" />
                       ) : (
                         <FiSave className="w-4 h-4" />
@@ -954,6 +1357,8 @@ export default function CreateLessonPageClient({
                           ? formData.isRecurring
                             ? 'Criando Série...'
                             : 'Criando Aula...'
+                          : checkingConflicts
+                          ? 'Verificando...'
                           : formData.isRecurring
                           ? `Criar ${lessonCount} Aula${
                               lessonCount !== 1 ? 's' : ''
@@ -1134,87 +1539,16 @@ export default function CreateLessonPageClient({
         </div>
       </AnimatedContainer>
 
-      {/* Conflict Modal */}
-      {showConflictModal && (
-        <Modal
-          isOpen
+      {/* 🆕 MODAL DE CONFLITOS */}
+      {conflicts && (
+        <ConflictModal
+          isOpen={showConflictModal}
           onClose={() => setShowConflictModal(false)}
-          maxWidth="2xl"
-        >
-          <div className="p-6">
-            <div className="flex items-center space-x-3 mb-6">
-              <div className="w-12 h-12 bg-accent-red/10 rounded-full flex items-center justify-center">
-                <FiAlertCircle className="w-6 h-6 text-accent-red" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-theme-primary">
-                  Conflitos de Horário Detectados
-                </h2>
-                <p className="text-theme-secondary">
-                  Algumas aulas podem entrar em conflito com horários já
-                  agendados
-                </p>
-              </div>
-            </div>
-
-            {conflicts.length > 0 && (
-              <div className="space-y-3 mb-6">
-                {conflicts.map((conflict, index) => (
-                  <div
-                    key={index}
-                    className="bg-accent-red/5 border border-accent-red/20 rounded-lg p-4"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium text-accent-red">
-                          {conflict.title}
-                        </p>
-                        <p className="text-sm text-theme-tertiary">
-                          {new Date(conflict.scheduledAt).toLocaleString(
-                            'pt-BR'
-                          )}{' '}
-                          - {conflict.studentName}
-                        </p>
-                      </div>
-                      <FiAlertCircle className="w-5 h-5 text-accent-red" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div className="bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg p-4 mb-6">
-              <div className="flex items-start space-x-3">
-                <FiInfo className="w-5 h-5 text-accent-yellow mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-medium text-accent-yellow mb-1">
-                    O que acontece ao continuar?
-                  </p>
-                  <p className="text-theme-secondary">
-                    As aulas serão criadas mesmo com conflitos. Você pode
-                    reorganizar posteriormente ou cancelar as aulas
-                    conflitantes.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-end space-x-3">
-              <button
-                onClick={() => setShowConflictModal(false)}
-                className="btn-classical-secondary"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleConflictConfirmation}
-                className="btn-classical-primary bg-accent-red hover:bg-accent-red/80"
-              >
-                Criar Mesmo Assim
-              </button>
-            </div>
-          </div>
-        </Modal>
+          conflicts={conflicts}
+          onConfirm={handleConflictConfirmation}
+          onCancel={handleConflictCancel}
+          loading={pendingSubmission}
+        />
       )}
     </PageContainer>
   );

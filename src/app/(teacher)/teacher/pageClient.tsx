@@ -1,4 +1,5 @@
-// app/teacher/pageClient.tsx - Dashboard Completo do Professor (COM REFRESH)
+// app/teacher/pageClient.tsx - Dashboard ATUALIZADO para capturar dados do plano de estudos
+
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
@@ -69,6 +70,21 @@ export interface StudentSearchResult {
   isAlreadyStudent: boolean;
   relationshipId?: string;
   hasStudentProfile: boolean;
+}
+
+// 🆕 INTERFACE PARA O PLANO DE ESTUDOS
+interface StudyPlanData {
+  maxLessonsPerWeek: number;
+  lessonDuration: number;
+  preferredDays: string[];
+  preferredTimes: string[];
+  currentFocus: string[];
+  learningPlan?: string;
+  studyGoals?: string;
+  practiceFrequency?: string;
+  homeworkExpectation?: string;
+  specialInstructions?: string;
+  teacherNotes?: string;
 }
 
 export default function TeacherPageClient({
@@ -219,39 +235,70 @@ export default function TeacherPageClient({
     [searchStudents]
   );
 
-  // ===== FUNÇÃO ATUALIZADA DE ADICIONAR ALUNO (SEM RELOAD) =====
+  // 🆕 FUNÇÃO ATUALIZADA PARA RECEBER PLANO DE ESTUDOS
   const addStudent = useCallback(
-    async (studentUserId: string) => {
+    async (studentUserId: string, studyPlan?: StudyPlanData) => {
       setLoading(true);
       setError(undefined);
-      clearError(); // Limpar erros do hook também
+      clearError();
 
       try {
+        console.log('🎯 [TEACHER-DASHBOARD] Adicionando aluno com plano:', {
+          studentUserId,
+          hasStudyPlan: !!studyPlan,
+          studyPlan: studyPlan
+            ? {
+                maxLessonsPerWeek: studyPlan.maxLessonsPerWeek,
+                lessonDuration: studyPlan.lessonDuration,
+                preferredDaysCount: studyPlan.preferredDays?.length || 0,
+                preferredTimesCount: studyPlan.preferredTimes?.length || 0,
+                currentFocusCount: studyPlan.currentFocus?.length || 0,
+              }
+            : null,
+        });
+
+        // 🔥 USAR DADOS DO PLANO DE ESTUDOS OU VALORES PADRÃO
+        const payload = {
+          studentUserId,
+          maxLessonsPerWeek: studyPlan?.maxLessonsPerWeek || 1,
+          lessonDuration: studyPlan?.lessonDuration || 60,
+          preferredDays: studyPlan?.preferredDays || [],
+          preferredTimes: studyPlan?.preferredTimes || [],
+          learningPlan: studyPlan?.learningPlan || '',
+          currentFocus: studyPlan?.currentFocus || [],
+          teacherNotes: studyPlan?.teacherNotes || '',
+          // 🆕 CAMPOS ADICIONAIS DO PLANO
+          studyGoals: studyPlan?.studyGoals || '',
+          practiceFrequency: studyPlan?.practiceFrequency || '',
+          homeworkExpectation: studyPlan?.homeworkExpectation || '',
+          specialInstructions: studyPlan?.specialInstructions || '',
+        };
+
+        console.log('📤 [TEACHER-DASHBOARD] Enviando payload:', payload);
+
         const response = await fetch('/api/teacher/students', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            studentUserId,
-            maxLessonsPerWeek: 1,
-            lessonDuration: 60,
-            preferredDays: [],
-            preferredTimes: [],
-            learningPlan: '',
-            currentFocus: [],
-            teacherNotes: '',
-          }),
+          body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
-          throw new Error('Erro ao adicionar aluno');
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Erro ao adicionar aluno');
         }
 
         const data = await response.json();
 
         if (data.success) {
-          toast.success('Aluno adicionado com sucesso!');
+          console.log('✅ [TEACHER-DASHBOARD] Aluno adicionado com sucesso!', {
+            relationship: data.relationship?.id,
+            inviteEmailSent: data.inviteEmailSent,
+            message: data.message,
+          });
+
+          toast.success(data.message || 'Aluno adicionado com sucesso!');
 
           // Fechar modal
           setShowAddStudent(false);
@@ -260,10 +307,15 @@ export default function TeacherPageClient({
 
           // Atualizar dados sem reload
           await refreshData(false);
+        } else {
+          throw new Error(data.error || 'Erro desconhecido');
         }
       } catch (error) {
-        console.error('Erro ao adicionar aluno:', error);
-        const message = 'Erro ao adicionar aluno. Tente novamente.';
+        console.error('❌ [TEACHER-DASHBOARD] Erro ao adicionar aluno:', error);
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Erro ao adicionar aluno. Tente novamente.';
         setError(message);
         toast.error(message);
       } finally {
@@ -952,7 +1004,7 @@ export default function TeacherPageClient({
       </AnimatedContainer>
 
       <AddStudentModal
-        addStudent={addStudent}
+        addStudent={addStudent} // 🔥 Função que agora recebe studyPlan
         handleSearchChange={handleSearchChange}
         isOpen={showAddStudent}
         loading={loading}

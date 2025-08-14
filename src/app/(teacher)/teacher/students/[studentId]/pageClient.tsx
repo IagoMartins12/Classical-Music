@@ -1,4 +1,4 @@
-// app/teacher/students/[studentId]/pageClient.tsx - Client Component para Detalhes do Aluno
+// app/teacher/students/[studentId]/pageClient.tsx - Client Component ATUALIZADO
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
@@ -28,6 +28,8 @@ import {
   FiRefreshCw,
   FiChevronRight,
   FiX,
+  FiSave,
+  FiUserCheck,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -39,9 +41,405 @@ import {
 import { useTeacherStudentDetail } from '@/app/hooks/lessonsSystem/useTeacherStudentDetail';
 import { StudentDetailData } from './pageServer';
 import { translateNivel } from '@/app/utils';
+import Input from '@/app/components/Common/Inputs';
+import Select from '@/app/components/Common/Select';
+import Modal from '@/app/components/Modal';
 
 interface TeacherStudentDetailPageClientProps {
   studentData: StudentDetailData;
+}
+
+// 🆕 MODAL PARA EDITAR RELAÇÃO
+interface EditRelationshipModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  relationship: StudentDetailData['relationship'];
+  onSave: (updates: RelationshipUpdates) => Promise<boolean>;
+  loading: boolean;
+}
+
+interface RelationshipUpdates {
+  maxLessonsPerWeek: number;
+  lessonDuration: number;
+  preferredDays: string[];
+  preferredTimes: string[];
+  learningPlan?: string;
+  currentFocus: string[];
+  teacherNotes?: string;
+}
+
+const DAYS_OF_WEEK = [
+  { value: 'monday', label: 'Segunda-feira' },
+  { value: 'tuesday', label: 'Terça-feira' },
+  { value: 'wednesday', label: 'Quarta-feira' },
+  { value: 'thursday', label: 'Quinta-feira' },
+  { value: 'friday', label: 'Sexta-feira' },
+  { value: 'saturday', label: 'Sábado' },
+  { value: 'sunday', label: 'Domingo' },
+];
+
+const TIME_SLOTS = [
+  { value: '07:00', label: '07:00' },
+  { value: '08:00', label: '08:00' },
+  { value: '09:00', label: '09:00' },
+  { value: '10:00', label: '10:00' },
+  { value: '11:00', label: '11:00' },
+  { value: '14:00', label: '14:00' },
+  { value: '15:00', label: '15:00' },
+  { value: '16:00', label: '16:00' },
+  { value: '17:00', label: '17:00' },
+  { value: '18:00', label: '18:00' },
+  { value: '19:00', label: '19:00' },
+  { value: '20:00', label: '20:00' },
+];
+
+const COMMON_FOCUS_AREAS = [
+  'Técnica básica',
+  'Leitura de partituras',
+  'Teoria musical',
+  'Repertório clássico',
+  'Improvisação',
+  'Digitação',
+  'Dinâmica',
+  'Fraseado',
+  'Ritmo',
+  'Harmonia',
+];
+
+function EditRelationshipModal({
+  isOpen,
+  onClose,
+  relationship,
+  onSave,
+  loading,
+}: EditRelationshipModalProps) {
+  const [formData, setFormData] = useState<RelationshipUpdates>({
+    maxLessonsPerWeek: relationship.maxLessonsPerWeek,
+    lessonDuration: relationship.lessonDuration,
+    preferredDays: relationship.preferredDays || [],
+    preferredTimes: relationship.preferredTimes || [],
+    learningPlan: relationship.learningPlan || '',
+    currentFocus: relationship.currentFocus || [],
+    teacherNotes: relationship.teacherNotes || '',
+  });
+
+  // Reset form when relationship changes
+  useEffect(() => {
+    setFormData({
+      maxLessonsPerWeek: relationship.maxLessonsPerWeek,
+      lessonDuration: relationship.lessonDuration,
+      preferredDays: relationship.preferredDays || [],
+      preferredTimes: relationship.preferredTimes || [],
+      learningPlan: relationship.learningPlan || '',
+      currentFocus: relationship.currentFocus || [],
+      teacherNotes: relationship.teacherNotes || '',
+    });
+  }, [relationship]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = await onSave(formData);
+    if (success) {
+      onClose();
+    }
+  };
+
+  const handleMultiSelectChange = (
+    field: 'preferredDays' | 'preferredTimes' | 'currentFocus',
+    value: string
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: prev[field].includes(value)
+        ? prev[field].filter((item) => item !== value)
+        : [...prev[field], value],
+    }));
+  };
+
+  const handleAddFocusArea = (area: string) => {
+    if (area.trim() && !formData.currentFocus.includes(area.trim())) {
+      setFormData((prev) => ({
+        ...prev,
+        currentFocus: [...prev.currentFocus, area.trim()],
+      }));
+    }
+  };
+
+  const handleRemoveFocusArea = (area: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      currentFocus: prev.currentFocus.filter((focus) => focus !== area),
+    }));
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose} maxWidth="4xl">
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-bold text-theme-primary classical-title">
+              Editar Configurações da Relação
+            </h2>
+            <p className="text-theme-tertiary">
+              Ajuste a frequência, duração e preferências das aulas
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Configurações Básicas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <AnimatedCard className="classical-card p-4">
+              <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
+                <FiCalendar className="w-5 h-5 text-brand-primary" />
+                Configurações de Aulas
+              </h3>
+
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-theme-primary mb-2">
+                      Aulas por Semana
+                    </label>
+                    <Select
+                      options={[
+                        { value: '1', label: '1 aula' },
+                        { value: '2', label: '2 aulas' },
+                        { value: '3', label: '3 aulas' },
+                        { value: '4', label: '4 aulas' },
+                      ]}
+                      value={formData.maxLessonsPerWeek.toString()}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          maxLessonsPerWeek: parseInt(e.target.value),
+                        }))
+                      }
+                      className="input-classical w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-theme-primary mb-2">
+                      Duração (minutos)
+                    </label>
+                    <Select
+                      options={[
+                        { value: '30', label: '30 min' },
+                        { value: '45', label: '45 min' },
+                        { value: '60', label: '60 min' },
+                        { value: '90', label: '90 min' },
+                        { value: '120', label: '120 min' },
+                      ]}
+                      value={formData.lessonDuration.toString()}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          lessonDuration: parseInt(e.target.value),
+                        }))
+                      }
+                      className="input-classical w-full"
+                    />
+                  </div>
+                </div>
+
+                {/* Dias Preferidos */}
+                <div>
+                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                    Dias Preferidos
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {DAYS_OF_WEEK.map((day) => (
+                      <label
+                        key={day.value}
+                        className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer transition-all ${
+                          formData.preferredDays.includes(day.value)
+                            ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
+                            : 'border-theme-secondary hover:border-theme-primary'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.preferredDays.includes(day.value)}
+                          onChange={() =>
+                            handleMultiSelectChange('preferredDays', day.value)
+                          }
+                          className="sr-only"
+                        />
+                        <span className="text-sm">{day.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Horários Preferidos */}
+                <div>
+                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                    Horários Preferidos
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {TIME_SLOTS.map((time) => (
+                      <label
+                        key={time.value}
+                        className={`flex items-center justify-center p-2 border rounded-lg cursor-pointer transition-all ${
+                          formData.preferredTimes.includes(time.value)
+                            ? 'border-brand-primary bg-brand-primary/10 text-brand-primary'
+                            : 'border-theme-secondary hover:border-theme-primary'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.preferredTimes.includes(time.value)}
+                          onChange={() =>
+                            handleMultiSelectChange(
+                              'preferredTimes',
+                              time.value
+                            )
+                          }
+                          className="sr-only"
+                        />
+                        <span className="text-sm font-mono">{time.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </AnimatedCard>
+
+            <AnimatedCard className="classical-card p-4">
+              <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
+                <FiBookOpen className="w-5 h-5 text-brand-primary" />
+                Plano de Estudos
+              </h3>
+
+              <div className="space-y-4">
+                {/* Áreas de Foco */}
+                <div>
+                  <label className="block text-sm font-medium text-theme-primary mb-2">
+                    Áreas de Foco
+                  </label>
+
+                  {/* Botões Rápidos */}
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {COMMON_FOCUS_AREAS.map((area) => (
+                      <button
+                        key={area}
+                        type="button"
+                        onClick={() => handleAddFocusArea(area)}
+                        className={`px-3 py-1 text-xs rounded-full border transition-all ${
+                          formData.currentFocus.includes(area)
+                            ? 'border-brand-primary bg-brand-primary text-white'
+                            : 'border-theme-secondary text-theme-secondary hover:border-brand-primary hover:text-brand-primary'
+                        }`}
+                        disabled={formData.currentFocus.includes(area)}
+                      >
+                        {area}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Selecionadas */}
+                  {formData.currentFocus.length > 0 && (
+                    <div className="space-y-2">
+                      <p className="text-sm text-theme-secondary">
+                        Áreas selecionadas:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {formData.currentFocus.map((focus) => (
+                          <span
+                            key={focus}
+                            className="inline-flex items-center gap-2 px-3 py-1 bg-brand-primary text-white text-sm rounded-full"
+                          >
+                            {focus}
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveFocusArea(focus)}
+                              className="hover:text-red-200"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </AnimatedCard>
+          </div>
+
+          {/* Campos de Texto */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-theme-primary mb-2">
+                Plano de Aprendizado Detalhado
+              </label>
+              <textarea
+                value={formData.learningPlan}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    learningPlan: e.target.value,
+                  }))
+                }
+                rows={4}
+                className="input-classical w-full"
+                placeholder="Descreva o plano detalhado de aprendizado, metodologia a ser seguida, progressão esperada..."
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-theme-primary mb-2">
+                Notas do Professor (privadas)
+              </label>
+              <textarea
+                value={formData.teacherNotes}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    teacherNotes: e.target.value,
+                  }))
+                }
+                rows={3}
+                className="input-classical w-full"
+                placeholder="Observações pessoais sobre o aluno..."
+              />
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center justify-end gap-3 pt-6 border-t border-theme-secondary">
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-classical-secondary"
+              disabled={loading}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-classical-primary flex items-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <FiRefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Salvando...</span>
+                </>
+              ) : (
+                <>
+                  <FiSave className="w-4 h-4" />
+                  <span>Salvar Alterações</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </Modal>
+  );
 }
 
 export default function TeacherStudentDetailPageClient({
@@ -59,12 +457,14 @@ export default function TeacherStudentDetailPageClient({
     setInitialData,
     updateTeacherNotes,
     toggleStudentStatus,
+    updateRelationship, // 🆕 NOVO método
 
     clearError,
   } = useTeacherStudentDetail(studentData);
 
-  // Local UI states (não relacionados aos dados do aluno)
+  // 🆕 NOVOS ESTADOS
   const [editingNotes, setEditingNotes] = useState(false);
+  const [showEditRelationship, setShowEditRelationship] = useState(false);
   const [teacherNotes, setTeacherNotes] = useState(
     studentData.relationship.teacherNotes || ''
   );
@@ -123,6 +523,20 @@ export default function TeacherStudentDetailPageClient({
       console.log('Status do aluno atualizado com sucesso!');
     }
   }, [toggleStudentStatus]);
+
+  // 🆕 NOVO: Atualizar relação professor-aluno
+  const handleUpdateRelationship = useCallback(
+    async (updates: RelationshipUpdates) => {
+      const success = await updateRelationship(updates);
+
+      if (success) {
+        console.log('Relação atualizada com sucesso!');
+      }
+
+      return success;
+    },
+    [updateRelationship]
+  );
 
   // Format functions
   const formatDate = (date: Date | string) => {
@@ -416,7 +830,131 @@ export default function TeacherStudentDetailPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* Progress Stats */}
+            {/* 🆕 NOVA SEÇÃO: Configurações da Relação */}
+            <AnimatedItem direction="up" springType="gentle">
+              <AnimatedCard hover="lift" className="classical-card p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
+                      <FiUserCheck className="w-5 h-5 text-theme-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-theme-primary classical-title">
+                        Configurações da Relação
+                      </h3>
+                      <p className="text-theme-tertiary text-sm">
+                        Frequência, duração e preferências das aulas
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setShowEditRelationship(true)}
+                    className="btn-classical-secondary flex items-center space-x-2"
+                  >
+                    <FiEdit3 className="w-4 h-4" />
+                    <span>Editar</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div className="classical-card-2 p-4">
+                      <div className="flex items-center space-x-3 mb-3">
+                        <FiCalendar className="w-5 h-5 text-brand-primary" />
+                        <h4 className="font-semibold text-theme-primary">
+                          Frequência das Aulas
+                        </h4>
+                      </div>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-theme-tertiary">
+                            Por semana:
+                          </span>
+                          <span className="text-theme-primary font-medium">
+                            {relationship.maxLessonsPerWeek} aula
+                            {relationship.maxLessonsPerWeek !== 1 ? 's' : ''}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-theme-tertiary">Duração:</span>
+                          <span className="text-theme-primary font-medium">
+                            {relationship.lessonDuration} minutos
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {relationship.preferredDays &&
+                      relationship.preferredDays.length > 0 && (
+                        <div className="classical-card-2 p-4">
+                          <div className="flex items-center space-x-3 mb-3">
+                            <FiCalendar className="w-5 h-5 text-accent-green" />
+                            <h4 className="font-semibold text-theme-primary">
+                              Dias Preferidos
+                            </h4>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {relationship.preferredDays.map((day) => {
+                              const dayLabel =
+                                DAYS_OF_WEEK.find((d) => d.value === day)
+                                  ?.label || day;
+                              return (
+                                <span
+                                  key={day}
+                                  className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-sm"
+                                >
+                                  {dayLabel}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                  </div>
+
+                  <div className="space-y-4">
+                    {relationship.preferredTimes &&
+                      relationship.preferredTimes.length > 0 && (
+                        <div className="classical-card-2 p-4">
+                          <div className="flex items-center space-x-3 mb-3">
+                            <FiClock className="w-5 h-5 text-accent-blue" />
+                            <h4 className="font-semibold text-theme-primary">
+                              Horários Preferidos
+                            </h4>
+                          </div>
+                          <div className="flex flex-wrap gap-2">
+                            {relationship.preferredTimes.map((time) => (
+                              <span
+                                key={time}
+                                className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-sm font-mono"
+                              >
+                                {time}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                    {relationship.learningPlan && (
+                      <div className="classical-card-2 p-4">
+                        <div className="flex items-center space-x-3 mb-3">
+                          <FiBookOpen className="w-5 h-5 text-accent-purple" />
+                          <h4 className="font-semibold text-theme-primary">
+                            Plano de Aprendizado
+                          </h4>
+                        </div>
+                        <p className="text-sm text-theme-secondary line-clamp-3">
+                          {relationship.learningPlan}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </AnimatedCard>
+            </AnimatedItem>
+
+            {/* Progress Stats - continua igual... */}
             <AnimatedItem direction="up" springType="gentle">
               <SequentialGrid cols={4} gap={6} delayBetweenItems={0.1}>
                 <AnimatedCard
@@ -474,9 +1012,8 @@ export default function TeacherStudentDetailPageClient({
                   <div className="text-2xl font-bold text-theme-primary mb-1">
                     {stats.streakDays}
                   </div>
-                  <div className="text-sm text-theme-tertiary">
-                    Dias de Streak
-                  </div>
+                  <div className="text-sm text-theme-tertiary"></div>Dias de
+                  Streak
                 </AnimatedCard>
               </SequentialGrid>
             </AnimatedItem>
@@ -913,6 +1450,15 @@ export default function TeacherStudentDetailPageClient({
           </div>
         </div>
       </AnimatedContainer>
+
+      {/* 🆕 MODAL PARA EDITAR RELAÇÃO */}
+      <EditRelationshipModal
+        isOpen={showEditRelationship}
+        onClose={() => setShowEditRelationship(false)}
+        relationship={relationship}
+        onSave={handleUpdateRelationship}
+        loading={loading.updateNotes} // Reusing loading state
+      />
     </PageContainer>
   );
 }
