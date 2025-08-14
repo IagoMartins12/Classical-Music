@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     const skip = (page - 1) * limit;
     const now = new Date();
 
-    const where = {
+    const where: any = {
       userId: session.user.id,
       expiresAt: { gte: now },
       ...(status && { status }),

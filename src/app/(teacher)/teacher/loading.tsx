@@ -1,4 +1,4 @@
-// app/teacher/loading.tsx - Loading Premium do Dashboard do Professor
+// app/teacher/loading.tsx - Loading para Dashboard Principal do Professor
 'use client';
 
 import {
@@ -8,10 +8,14 @@ import {
   FiBarChart2,
   FiClock,
   FiBookOpen,
+  FiClipboard,
+  FiStar,
+  FiTrendingUp,
+  FiBell,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 
-export default function TeacherLoading() {
+export default function TeacherDashboardLoading() {
   return (
     <div className="bg-gradient-primary min-h-screen">
       {/* Background Pattern */}
@@ -31,7 +35,7 @@ export default function TeacherLoading() {
         ></div>
       </div>
 
-      {/* Floating musical elements */}
+      {/* Floating elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-16 left-16 text-5xl text-brand-primary/10 animate-float">
           <FiUsers />
@@ -71,7 +75,7 @@ export default function TeacherLoading() {
           </div>
         </div>
 
-        {/* Stats Cards Skeleton */}
+        {/* Main Stats Cards Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {[
             { icon: <FiUsers className="w-6 h-6 text-theme-inverse/20" /> },
@@ -97,14 +101,14 @@ export default function TeacherLoading() {
           {/* Left Column - 2/3 */}
           <div className="lg:col-span-2 space-y-8">
             {/* Quick Actions Skeleton */}
-            <div className="classical-card p-6">
+            <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-green/20 to-accent-blue/20 rounded-xl flex items-center justify-center">
                   <FiClock className="w-5 h-5 text-theme-primary/30" />
                 </div>
                 <div className="space-y-2">
-                  <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
-                  <div className="h-4 w-32 bg-theme-elevated rounded animate-pulse"></div>
+                  <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+                  <div className="h-4 w-32 bg-theme-elevated rounded"></div>
                 </div>
               </div>
 
@@ -119,21 +123,40 @@ export default function TeacherLoading() {
               </div>
             </div>
 
-            {/* Students Section Skeleton */}
-            <div className="classical-card p-6">
+            {/* Recent Activities Skeleton */}
+            <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-                  <FiUsers className="w-5 h-5 text-theme-primary/30" />
+                  <FiBookOpen className="w-5 h-5 text-theme-primary/30" />
                 </div>
                 <div className="space-y-2">
-                  <div className="h-6 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
-                  <div className="h-4 w-32 bg-theme-elevated rounded animate-pulse"></div>
+                  <div className="h-6 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+                  <div className="h-4 w-32 bg-theme-elevated rounded"></div>
                 </div>
               </div>
 
               <div className="space-y-4">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <ActivityItemSkeleton key={i} />
+                ))}
+              </div>
+            </div>
+
+            {/* Assignments Overview Skeleton */}
+            <div className="classical-card p-6 animate-pulse">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+                  <FiClipboard className="w-5 h-5 text-theme-primary/30" />
+                </div>
+                <div className="space-y-2">
+                  <div className="h-6 w-48 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+                  <div className="h-4 w-32 bg-theme-elevated rounded"></div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {Array.from({ length: 4 }).map((_, i) => (
-                  <StudentCardSkeleton key={i} />
+                  <AssignmentItemSkeleton key={i} />
                 ))}
               </div>
             </div>
@@ -142,16 +165,16 @@ export default function TeacherLoading() {
           {/* Right Column - 1/3 */}
           <div className="lg:col-span-1 space-y-6">
             {/* Today's Schedule Skeleton */}
-            <div className="classical-card p-6">
+            <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
                   <FiCalendar className="w-4 h-4 text-theme-primary/30" />
                 </div>
-                <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
+                <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               </div>
 
               <div className="space-y-3">
-                {Array.from({ length: 3 }).map((_, i) => (
+                {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="classical-card-2 p-3 animate-pulse">
                     <div className="flex items-center space-x-3">
                       <div className="w-2 h-12 bg-brand-primary/30 rounded-full"></div>
@@ -165,27 +188,58 @@ export default function TeacherLoading() {
               </div>
             </div>
 
-            {/* Recent Activity Skeleton */}
-            <div className="classical-card p-6">
+            {/* Recent Reviews Skeleton */}
+            <div className="classical-card p-6 animate-pulse">
               <div className="flex items-center space-x-3 mb-4">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                  <FiBookOpen className="w-4 h-4 text-theme-primary/30" />
+                  <FiStar className="w-4 h-4 text-theme-primary/30" />
                 </div>
-                <div className="h-5 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded animate-pulse"></div>
+                <div className="h-5 w-40 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+              </div>
+
+              <div className="space-y-4">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <ReviewItemSkeleton key={i} />
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Stats Skeleton */}
+            <div className="classical-card p-6 animate-pulse">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                  <FiTrendingUp className="w-4 h-4 text-theme-primary/30" />
+                </div>
+                <div className="h-5 w-28 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  'Esta Semana',
+                  'Este Mês',
+                  'Satisfação',
+                  'Taxa de Conclusão',
+                ].map((_, i) => (
+                  <div key={i} className="flex justify-between items-center">
+                    <div className="h-3 bg-theme-tertiary/30 rounded w-20"></div>
+                    <div className="h-4 bg-accent-green/30 rounded w-8"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Notifications Skeleton */}
+            <div className="classical-card p-6 animate-pulse">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                  <FiBell className="w-4 h-4 text-theme-primary/30" />
+                </div>
+                <div className="h-5 w-32 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded"></div>
               </div>
 
               <div className="space-y-3">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="flex items-center space-x-3 animate-pulse"
-                  >
-                    <div className="w-8 h-8 bg-theme-secondary/50 rounded-full"></div>
-                    <div className="flex-1">
-                      <div className="h-3 bg-theme-elevated rounded mb-1"></div>
-                      <div className="h-3 bg-theme-secondary/50 rounded w-1/2"></div>
-                    </div>
-                  </div>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <NotificationItemSkeleton key={i} />
                 ))}
               </div>
             </div>
@@ -201,39 +255,83 @@ export default function TeacherLoading() {
   );
 }
 
-// Skeleton para Student Card
-function StudentCardSkeleton() {
+// Activity Item Skeleton
+function ActivityItemSkeleton() {
   return (
-    <div className="classical-card-2 p-4 relative animate-pulse">
-      <div className="flex items-center gap-4">
-        {/* Avatar */}
-        <div className="relative w-12 h-12">
-          <div className="w-full h-full bg-gradient-to-br from-brand-primary/20 to-brand-secondary/20 rounded-full border-2 border-brand-primary/20 flex items-center justify-center">
-            <FiUsers className="w-6 h-6 text-theme-inverse/20" />
+    <div className="flex items-center space-x-4 p-3 bg-theme-elevated/50 rounded-lg animate-pulse">
+      <div className="w-8 h-8 bg-accent-blue/20 rounded-lg flex-shrink-0"></div>
+      <div className="flex-1">
+        <div className="h-4 bg-theme-primary/20 rounded mb-1 w-3/4"></div>
+        <div className="h-3 bg-theme-tertiary/20 rounded w-1/2"></div>
+      </div>
+      <div className="h-3 w-12 bg-theme-tertiary/20 rounded"></div>
+    </div>
+  );
+}
+
+// Assignment Item Skeleton
+function AssignmentItemSkeleton() {
+  return (
+    <div className="classical-card-2 p-4 animate-pulse">
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-brand-primary/20 rounded-full"></div>
+          <div>
+            <div className="h-4 bg-theme-primary/20 rounded mb-1 w-24"></div>
+            <div className="h-3 bg-theme-tertiary/20 rounded w-16"></div>
           </div>
         </div>
-
-        {/* Info */}
-        <div className="flex flex-col justify-center flex-1">
-          <div className="h-5 bg-gradient-to-r from-theme-primary/20 to-theme-secondary/20 rounded mb-2 w-3/4"></div>
-          <div className="h-3 bg-theme-elevated rounded w-1/2"></div>
-        </div>
-
-        {/* Status Badge */}
-        <div className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 rounded-full w-16 h-6"></div>
+        <div className="h-5 w-16 bg-accent-blue/20 border border-accent-blue/30 rounded-full"></div>
       </div>
 
-      {/* Stats */}
-      <div className="mt-4 pt-4 border-t border-theme-secondary grid grid-cols-2 gap-4">
-        <div className="text-center">
-          <div className="h-6 bg-brand-primary/20 rounded mb-1"></div>
-          <div className="h-3 bg-theme-secondary/50 rounded w-3/4 mx-auto"></div>
-        </div>
-        <div className="text-center">
-          <div className="h-6 bg-accent-blue/20 rounded mb-1"></div>
-          <div className="h-3 bg-theme-secondary/50 rounded w-3/4 mx-auto"></div>
+      <div className="h-3 bg-theme-elevated rounded mb-2 w-full"></div>
+      <div className="h-3 bg-theme-elevated rounded w-3/4"></div>
+
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-theme-secondary">
+        <div className="h-3 bg-theme-tertiary/20 rounded w-16"></div>
+        <div className="flex space-x-2">
+          <div className="w-6 h-6 bg-theme-elevated rounded"></div>
+          <div className="w-6 h-6 bg-theme-elevated rounded"></div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// Review Item Skeleton
+function ReviewItemSkeleton() {
+  return (
+    <div className="flex items-start space-x-3 animate-pulse">
+      <div className="w-8 h-8 bg-brand-primary/20 rounded-full flex-shrink-0"></div>
+      <div className="flex-1">
+        <div className="flex items-center space-x-2 mb-1">
+          <div className="h-3 bg-theme-primary/20 rounded w-20"></div>
+          <div className="flex space-x-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div
+                key={i}
+                className="w-3 h-3 bg-accent-yellow/30 rounded"
+              ></div>
+            ))}
+          </div>
+        </div>
+        <div className="h-3 bg-theme-tertiary/20 rounded w-full mb-1"></div>
+        <div className="h-3 bg-theme-tertiary/20 rounded w-2/3"></div>
+      </div>
+    </div>
+  );
+}
+
+// Notification Item Skeleton
+function NotificationItemSkeleton() {
+  return (
+    <div className="flex items-start space-x-3 p-3 bg-theme-elevated/30 rounded-lg animate-pulse">
+      <div className="w-6 h-6 bg-accent-blue/20 rounded flex-shrink-0 mt-0.5"></div>
+      <div className="flex-1">
+        <div className="h-3 bg-theme-primary/20 rounded mb-1 w-3/4"></div>
+        <div className="h-3 bg-theme-tertiary/20 rounded w-1/2"></div>
+      </div>
+      <div className="h-2 w-2 bg-accent-red/50 rounded-full"></div>
     </div>
   );
 }

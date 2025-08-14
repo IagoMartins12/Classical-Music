@@ -38,7 +38,7 @@ import {
 } from '../../../../components/animation/AnimatedComponents';
 import { useTeacherStudentDetail } from '@/app/hooks/lessonsSystem/useTeacherStudentDetail';
 import { StudentDetailData } from './pageServer';
-import { translateNivel } from '../../pageClient';
+import { translateNivel } from '@/app/utils';
 
 interface TeacherStudentDetailPageClientProps {
   studentData: StudentDetailData;
