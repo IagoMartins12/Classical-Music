@@ -1,4 +1,4 @@
-// app/api/lessons/[id]/route.ts - ATUALIZADO COM NOTIFICAÇÕES EM TEMPO REAL
+// app/api/lessons/[id]/route.ts - ATUALIZADO COM NOTIFICAÇÕES E LOGGING DE ATIVIDADES
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -6,6 +6,10 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 import { NotificationFactory } from '@/app/utils/notifications/createNotification';
+import {
+  createTeacherActivityLogger,
+  createStudentActivityLogger,
+} from '@/app/utils/schoolActivities';
 
 // Função auxiliar para revalidar cache de lesson details (MANTIDA)
 async function revalidateLessonDetailsData(
@@ -560,7 +564,7 @@ export async function GET(
   }
 }
 
-// 🆕 PATCH - Atualizar aula (professor) ou adicionar feedback (aluno) COM NOTIFICAÇÕES
+// 🆕 PATCH - Atualizar aula (professor) ou adicionar feedback (aluno) COM NOTIFICAÇÕES E LOGGING
 export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -642,11 +646,21 @@ export async function PATCH(
       );
     }
 
-    // 🆕 DETECTAR MUDANÇAS PARA NOTIFICAÇÕES (antes da atualização)
+    // 🆕 DETECTAR MUDANÇAS PARA NOTIFICAÇÕES E LOGGING (antes da atualização)
     const oldData = {
       scheduledAt: lesson.scheduledAt,
       status: lesson.status,
       studentFeedback: lesson.studentFeedback,
+      teacherNotes: lesson.teacherNotes,
+      publicNotes: lesson.publicNotes,
+      lessonSummary: lesson.lessonSummary,
+      title: lesson.title,
+      description: lesson.description,
+      objectives: lesson.objectives,
+      topics: lesson.topics,
+      techniques: lesson.techniques,
+      workScoreIds: lesson.workScoreIds,
+      worksIds: lesson.worksIds,
     };
 
     // Separar atualizações por role
@@ -838,11 +852,147 @@ export async function PATCH(
       // Não falhar a atualização por causa das notificações
     }
 
+    // 🆕 LOGGING DE ATIVIDADES
+    try {
+      if (session.user.role === 1) {
+        // 📝 ATIVIDADES DO PROFESSOR
+        const activityLogger = createTeacherActivityLogger(session.user.id);
+
+        // 1. Professor alterou status da aula
+        if (updateData.status && updateData.status !== oldData.status) {
+          await activityLogger.lessonStatusChanged(
+            lessonId,
+            lesson.title,
+            oldData.status,
+            updateData.status,
+            body.cancelReason || body.rescheduleReason,
+            updateData.scheduledAt
+              ? new Date(updateData.scheduledAt)
+              : undefined
+          );
+          console.log(`📝 [ACTIVITY] LESSON_STATUS_CHANGED registrado`);
+        }
+
+        // 2. Professor adicionou anotações (detectar se teacherNotes, publicNotes ou lessonSummary foram alterados)
+        const notesAdded = [];
+        if (
+          updateData.teacherNotes &&
+          updateData.teacherNotes !== oldData.teacherNotes
+        ) {
+          notesAdded.push('teacher');
+        }
+        if (
+          updateData.publicNotes &&
+          updateData.publicNotes !== oldData.publicNotes
+        ) {
+          notesAdded.push('public');
+        }
+        if (
+          updateData.lessonSummary &&
+          updateData.lessonSummary !== oldData.lessonSummary
+        ) {
+          notesAdded.push('summary');
+        }
+
+        // Se alguma anotação foi adicionada, registrar atividade
+        if (notesAdded.length > 0) {
+          for (const notesType of notesAdded) {
+            await activityLogger.lessonNotesAdded(
+              lessonId,
+              lesson.title,
+              notesType as 'teacher' | 'public' | 'summary'
+            );
+          }
+          console.log(
+            `📝 [ACTIVITY] LESSON_NOTES_ADDED registrado para: ${notesAdded.join(
+              ', '
+            )}`
+          );
+        }
+
+        // 3. Professor editou aula (mudanças gerais)
+        const hasGeneralChanges = Object.keys(updateData).some(
+          (key) =>
+            ![
+              'status',
+              'teacherNotes',
+              'publicNotes',
+              'lessonSummary',
+            ].includes(key)
+        );
+
+        if (hasGeneralChanges) {
+          const changes: any = {};
+          Object.keys(updateData).forEach((key) => {
+            if (
+              ![
+                'status',
+                'teacherNotes',
+                'publicNotes',
+                'lessonSummary',
+              ].includes(key)
+            ) {
+              const oldValue = (oldData as any)[key];
+              const newValue = updateData[key];
+
+              if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+                changes[key] = { from: oldValue, to: newValue };
+              }
+            }
+          });
+
+          if (Object.keys(changes).length > 0) {
+            await activityLogger.lessonUpdated(lessonId, lesson.title, changes);
+            console.log(`📝 [ACTIVITY] LESSON_UPDATED registrado`);
+          }
+        }
+      } else {
+        // 📝 ATIVIDADES DO ALUNO
+        const activityLogger = createStudentActivityLogger(session.user.id);
+
+        // 1. Aluno deu feedback da aula
+        if (notificationActions.includes('feedback')) {
+          await activityLogger.lessonFeedbackGiven(
+            lessonId,
+            lesson.title,
+            updateData.studentFeedback
+          );
+          console.log(`📝 [ACTIVITY] LESSON_FEEDBACK_GIVEN registrado`);
+        }
+
+        // 2. Aluno solicitou reagendamento
+        if (notificationActions.includes('request_reschedule')) {
+          await activityLogger.lessonRescheduleRequested(
+            lessonId,
+            lesson.title,
+            body.specialMessage
+          );
+          console.log(`📝 [ACTIVITY] LESSON_RESCHEDULE_REQUESTED registrado`);
+        }
+
+        // 3. Aluno informou ausência
+        if (notificationActions.includes('inform_absence')) {
+          await activityLogger.lessonAbsenceInformed(
+            lessonId,
+            lesson.title,
+            body.specialMessage
+          );
+          console.log(`📝 [ACTIVITY] LESSON_ABSENCE_INFORMED registrado`);
+        }
+      }
+    } catch (loggingError) {
+      console.error(
+        '❌ [LESSON-DETAILS] Erro ao registrar atividade:',
+        loggingError
+      );
+      // Não falhar a atualização por causa do logging
+    }
+
     // Revalidar cache
     await revalidateLessonDetailsData(teacherUserId, studentUserId);
 
     console.log(
-      `✅ [LESSON-DETAILS] Aula ${lessonId} atualizada e cache revalidado`
+      `✅ [LESSON-DETAILS] Aula ${lessonId} atualizada, notificações e atividades registradas`
     );
 
     return NextResponse.json({
@@ -865,7 +1015,7 @@ export async function PATCH(
   }
 }
 
-// 🆕 DELETE - ATUALIZADO COM NOTIFICAÇÕES
+// 🆕 DELETE - ATUALIZADO COM NOTIFICAÇÕES E LOGGING
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -1142,6 +1292,31 @@ export async function DELETE(
       });
 
       console.log(`✅ [LESSON-DELETE] Aula individual apagada: ${lessonId}`);
+    }
+
+    // 🆕 LOGGING DE ATIVIDADE (após deletar com sucesso)
+    try {
+      const activityLogger = createTeacherActivityLogger(session.user.id);
+
+      // Como a aula já foi deletada, usar dados que salvamos antes
+      await activityLogger.lessonStatusChanged(
+        lessonId,
+        lesson.title,
+        lesson.status,
+        'CANCELLED',
+        reason,
+        undefined // Não foi reagendamento
+      );
+
+      console.log(
+        `📝 [ACTIVITY] LESSON_STATUS_CHANGED registrado para cancelamento/exclusão`
+      );
+    } catch (loggingError) {
+      console.error(
+        '❌ [LESSON-DELETE] Erro ao registrar atividade:',
+        loggingError
+      );
+      // Não falhar por causa do logging
     }
 
     // Revalidar cache

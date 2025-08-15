@@ -6,6 +6,7 @@ import {
   markTokenAsUsed,
   logSecurityEvent,
 } from '@/app/libs/tokenUtils';
+import { NotificationFactory } from '@/app/utils/notifications/createNotification';
 
 interface Params {
   token: string;
@@ -169,6 +170,24 @@ export async function GET(
           inviteDeclinedAt: null,
         },
       });
+
+      try {
+        await NotificationFactory.studentDeclinedInvite(
+          teacherId,
+          user.firstName ?? 'Desconhecido',
+          relationship.id,
+          user.email
+        );
+
+        console.log(
+          `📬 [DECLINE-INVITE] Notificação de declínio enviada para professor ${teacherId}`
+        );
+      } catch (notificationError) {
+        console.error(
+          '❌ [DECLINE-INVITE] Erro ao criar notificação:',
+          notificationError
+        );
+      }
     }
 
     // Marcar token como usado

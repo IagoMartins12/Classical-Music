@@ -1,10 +1,11 @@
-// app/api/student/profile/route.ts - VERSÃO CORRIGIDA COM CACHE ROBUSTO
+// app/api/student/profile/route.ts - VERSÃO COM LOGGING DE ATIVIDADES
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidatePath, revalidateTag } from 'next/cache';
+import { createStudentActivityLogger } from '@/app/utils/schoolActivities';
 
 // 🆕 FUNÇÃO MELHORADA PARA INVALIDAR CACHE DO ESTUDANTE
 async function revalidateStudentProfileData(userId: string) {
@@ -338,7 +339,7 @@ export async function GET() {
   }
 }
 
-// PUT - Atualizar perfil do aluno COM REVALIDAÇÃO MELHORADA
+// 🆕 PUT - Atualizar perfil do aluno COM LOGGING DE ATIVIDADES
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -370,7 +371,40 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    // 🆕 CAPTURAR DADOS ANTIGOS PARA DETECTAR MUDANÇAS
+    const oldUserData = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        firstName: true,
+        lastName: true,
+        phone: true,
+        city: true,
+        state: true,
+        country: true,
+        experienceLevel: true,
+      },
+    });
+
+    const oldStudentData = await prisma.student.findUnique({
+      where: { userId: session.user.id },
+      select: {
+        level: true,
+        mainInstrument: true,
+        musicalGoals: true,
+        preferredGenres: true,
+        musicalBackground: true,
+        allowPublicProgress: true,
+        allowProgressShare: true,
+        profileVisibility: true,
+        practiceTime: true,
+        learningPace: true,
+        specialNeeds: true,
+        preferredContact: true,
+      },
+    });
+
     // 🔧 ATUALIZAR DADOS DO USUÁRIO COM VALIDAÇÃO MELHORADA
+    let userChanges: any = {};
     if (userData) {
       const allowedUserFields = [
         'firstName',
@@ -387,6 +421,14 @@ export async function PUT(request: NextRequest) {
 
       Object.keys(userData).forEach((key) => {
         if (allowedUserFields.includes(key) && userData[key] !== undefined) {
+          // Detectar mudanças para logging
+          const oldValue = (oldUserData as any)?.[key];
+          const newValue = userData[key];
+
+          if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+            userChanges[key] = { from: oldValue, to: newValue };
+          }
+
           // Tratamento especial para campos que podem ser null
           if (
             userData[key] === '' &&
@@ -414,6 +456,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // 🔧 ATUALIZAR DADOS DO ESTUDANTE COM VALIDAÇÃO
+    let studentChanges: any = {};
     if (studentData) {
       const allowedStudentFields = [
         'level',
@@ -440,6 +483,13 @@ export async function PUT(request: NextRequest) {
           studentData[key] !== undefined
         ) {
           const value = studentData[key];
+
+          // Detectar mudanças para logging
+          const oldValue = (oldStudentData as any)?.[key];
+
+          if (JSON.stringify(oldValue) !== JSON.stringify(value)) {
+            studentChanges[key] = { from: oldValue, to: value };
+          }
 
           switch (key) {
             case 'practiceTime':
@@ -526,6 +576,28 @@ export async function PUT(request: NextRequest) {
       }
     }
 
+    // 🆕 LOGGING DE ATIVIDADE: PERFIL ATUALIZADO
+    try {
+      const allChanges = { ...userChanges, ...studentChanges };
+
+      if (Object.keys(allChanges).length > 0) {
+        const activityLogger = createStudentActivityLogger(session.user.id);
+
+        await activityLogger.studentProfileUpdated(allChanges);
+
+        console.log(
+          `📝 [ACTIVITY] STUDENT_PROFILE_UPDATED registrado para aluno ${session.user.id}`,
+          { changedFields: Object.keys(allChanges) }
+        );
+      }
+    } catch (loggingError) {
+      console.error(
+        '❌ [STUDENT-PROFILE] Erro ao registrar atividade:',
+        loggingError
+      );
+      // Não falhar a atualização por causa do logging
+    }
+
     // 🔥 REVALIDAR CACHE ANTES DE BUSCAR OS DADOS ATUALIZADOS
     await revalidateStudentProfileData(session.user.id);
 
@@ -564,7 +636,6 @@ export async function PUT(request: NextRequest) {
         },
       },
     });
-    await revalidateStudentProfileData(session.user.id);
 
     // Buscar informações dos professores novamente
     const teachersWithDetails = await Promise.all(
@@ -637,13 +708,16 @@ export async function PUT(request: NextRequest) {
     };
 
     console.log(
-      `✅ [STUDENT-PROFILE] Perfil atualizado com sucesso e cache revalidado`
+      `✅ [STUDENT-PROFILE] Perfil atualizado com sucesso, cache revalidado e atividade registrada`
     );
 
     return NextResponse.json({
       success: true,
       profile: formattedProfile,
       message: 'Perfil atualizado com sucesso',
+      activityLogged:
+        Object.keys(userChanges).length + Object.keys(studentChanges).length >
+        0,
     });
   } catch (error) {
     console.error('❌ [STUDENT-PROFILE] Erro ao atualizar perfil:', error);
@@ -657,7 +731,7 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// PATCH - Atualização parcial COM REVALIDAÇÃO MELHORADA
+// PATCH - Atualização parcial COM REVALIDAÇÃO MELHORADA (MANTIDO IGUAL)
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -785,7 +859,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-// POST - Inicializar onboarding do aluno COM REVALIDAÇÃO
+// POST - Inicializar onboarding do aluno COM REVALIDAÇÃO (MANTIDO IGUAL)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

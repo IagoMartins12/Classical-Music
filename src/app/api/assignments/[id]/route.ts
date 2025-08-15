@@ -1,4 +1,4 @@
-// app/api/assignments/[id]/route.ts - ATUALIZADO COM NOTIFICAÇÕES EM TEMPO REAL
+// app/api/assignments/[id]/route.ts - ATUALIZADO COM NOTIFICAÇÕES E LOGGING DE ATIVIDADES
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -6,6 +6,7 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 import { NotificationFactory } from '@/app/utils/notifications/createNotification';
+import { createTeacherActivityLogger } from '@/app/utils/schoolActivities';
 
 // Função auxiliar para revalidar cache de assignment details (MANTIDA)
 async function revalidateAssignmentDetailsData(
@@ -256,7 +257,7 @@ export async function GET(
   }
 }
 
-// 🆕 PUT - Atualizar assignment (Professor) COM NOTIFICAÇÕES
+// 🆕 PUT - Atualizar assignment (Professor) COM NOTIFICAÇÕES E LOGGING
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -336,7 +337,7 @@ export async function PUT(
       );
     }
 
-    // 🆕 DETECTAR MUDANÇAS PARA NOTIFICAÇÕES (antes da atualização)
+    // 🆕 DETECTAR MUDANÇAS PARA NOTIFICAÇÕES E LOGGING (antes da atualização)
     const oldData = {
       worksIds: assignment.worksIds,
       workScoreIds: assignment.workScoreIds,
@@ -489,11 +490,65 @@ export async function PUT(
       // Não falhar a atualização por causa das notificações
     }
 
+    // 🆕 LOGGING DE ATIVIDADES
+    try {
+      const activityLogger = createTeacherActivityLogger(session.user.id);
+
+      // 1. Se deu feedback, registrar ASSIGNMENT_FEEDBACK_GIVEN
+      if (
+        updateData.teacherFeedback &&
+        updateData.teacherFeedback !== oldData.teacherFeedback
+      ) {
+        await activityLogger.assignmentFeedbackGiven(
+          assignmentId,
+          assignment.title,
+          updateData.teacherFeedback,
+          updateData.teacherRating
+        );
+        console.log(`📝 [ACTIVITY] ASSIGNMENT_FEEDBACK_GIVEN registrado`);
+      }
+
+      // 2. Se houve mudanças gerais, registrar ASSIGNMENT_UPDATED
+      const hasGeneralChanges = Object.keys(updateData).some(
+        (key) => key !== 'teacherFeedback' && key !== 'teacherRating'
+      );
+
+      if (hasGeneralChanges) {
+        // Detectar campos que mudaram
+        const changes: any = {};
+        Object.keys(updateData).forEach((key) => {
+          if (key !== 'teacherFeedback' && key !== 'teacherRating') {
+            const oldValue = (oldData as any)[key];
+            const newValue = updateData[key];
+
+            if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+              changes[key] = { from: oldValue, to: newValue };
+            }
+          }
+        });
+
+        if (Object.keys(changes).length > 0) {
+          await activityLogger.assignmentUpdated(
+            assignmentId,
+            assignment.title,
+            changes
+          );
+          console.log(`📝 [ACTIVITY] ASSIGNMENT_UPDATED registrado`);
+        }
+      }
+    } catch (loggingError) {
+      console.error(
+        '❌ [ASSIGNMENT-DETAIL] Erro ao registrar atividade:',
+        loggingError
+      );
+      // Não falhar a atualização por causa do logging
+    }
+
     // Revalidar cache
     await revalidateAssignmentDetailsData(session.user.id, studentUserId);
 
     console.log(
-      `✅ [ASSIGNMENT-DETAIL] Assignment ${assignmentId} atualizado e cache revalidado`
+      `✅ [ASSIGNMENT-DETAIL] Assignment ${assignmentId} atualizado, notificações e atividades registradas`
     );
 
     return NextResponse.json({

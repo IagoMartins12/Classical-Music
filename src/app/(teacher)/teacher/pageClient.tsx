@@ -41,6 +41,7 @@ import { useToast } from '@/app/hooks/useToast';
 import { useTeacherData } from '@/app/hooks/lessonsSystem/useTeacherData';
 import RefreshIndicator from '@/app/components/Common/RefreshIndicator';
 import { translateNivel } from '@/app/utils';
+import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
 
 interface TeacherProfile {
   id: string;
@@ -944,61 +945,7 @@ export default function TeacherPageClient({
             </AnimatedItem>
 
             {/* Recent Activity */}
-            <AnimatedItem direction="up" springType="gentle">
-              <AnimatedCard hover="lift" className="classical-card p-6">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-red rounded-lg flex items-center justify-center">
-                    <FiActivity className="w-4 h-4 text-theme-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-theme-primary">
-                      Atividade Recente
-                    </h3>
-                    <p className="text-xs text-theme-tertiary">Últimas ações</p>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  {recentActivities.map((activity) => (
-                    <div
-                      key={activity.id}
-                      className="flex items-center space-x-3"
-                    >
-                      <div className="w-8 h-8 bg-theme-secondary rounded-full flex items-center justify-center flex-shrink-0">
-                        {activity.type === 'lesson_completed' && (
-                          <FiCheckCircle className="w-4 h-4 text-accent-green" />
-                        )}
-                        {activity.type === 'lesson_cancelled' && (
-                          <FiXCircle className="w-4 h-4 text-accent-red" />
-                        )}
-                        {activity.type === 'student_added' && (
-                          <FiUserPlus className="w-4 h-4 text-accent-blue" />
-                        )}
-                        {activity.type === 'note_added' && (
-                          <FiEdit3 className="w-4 h-4 text-accent-purple" />
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-sm text-theme-primary">
-                          {activity.title}
-                        </div>
-                        <div className="text-xs text-theme-tertiary">
-                          {activity.description}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {recentActivities.length === 0 && (
-                    <div className="text-center py-4">
-                      <p className="text-sm text-theme-tertiary">
-                        Nenhuma atividade recente
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </AnimatedCard>
-            </AnimatedItem>
+            <RecentActivities userId={teacherProfile.id} userType="teacher" />
           </div>
         </div>
       </AnimatedContainer>

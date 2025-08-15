@@ -26,6 +26,9 @@ export type NotificationType =
   | 'STUDENT_GAVE_LESSON_FEEDBACK' // Aluno deu feedback na aula
   | 'STUDENT_INFORMED_ABSENCE' // Aluno informou ausência
   | 'STUDENT_REQUESTED_RESCHEDULE' // Aluno solicitou reagendamento
+  | 'WELCOME_NEW_TEACHER'
+  | 'WELCOME_NEW_STUDENT'
+  | 'STUDENT_DECLINED_INVITE'
 
   // NOTIFICAÇÕES ANTIGAS (manter para compatibilidade se existirem)
   | 'LESSON_NO_SHOW'
@@ -353,6 +356,27 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     icon: '📢',
     color: 'accent-blue',
     defaultExpiry: 14,
+  },
+  STUDENT_DECLINED_INVITE: {
+    priority: 'LOW',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '❌',
+    color: 'accent-amber',
+  },
+  WELCOME_NEW_STUDENT: {
+    priority: 'LOW',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '🎓',
+    color: 'accent-blue',
+  },
+  WELCOME_NEW_TEACHER: {
+    priority: 'LOW',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '🎉',
+    color: 'accent-blue',
   },
 };
 

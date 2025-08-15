@@ -1,4 +1,4 @@
-// app/utils/createNotification.ts - UTILITÁRIO PARA CRIAR NOTIFICAÇÕES EM ROTAS
+// app/utils/createNotification.ts - UTILITÁRIO PARA CRIAR NOTIFICAÇÕES EM ROTAS - ATUALIZADO
 
 import {
   NotificationType,
@@ -189,6 +189,37 @@ async function checkForExistingNotification(
       };
       break;
 
+    // 🆕 VERIFICAÇÕES PARA NOVAS NOTIFICAÇÕES
+    case 'WELCOME_NEW_STUDENT':
+      // Apenas uma notificação de boas-vindas por relacionamento professor-aluno
+      if (metadata?.teacherUserId) {
+        const candidates = await prisma.notification.findMany({
+          where: baseWhere,
+        });
+        return candidates.find((n: any) => {
+          const meta = n.metadata as any;
+          return meta?.teacherUserId === metadata.teacherUserId;
+        });
+      }
+      break;
+
+    case 'WELCOME_NEW_TEACHER':
+      // Apenas uma notificação de boas-vindas por usuário (verificar por tipo apenas)
+      break;
+
+    case 'STUDENT_DECLINED_INVITE':
+      // Verificar por relacionamento específico (evitar múltiplos declínios)
+      if (metadata?.relationshipId) {
+        const candidates = await prisma.notification.findMany({
+          where: baseWhere,
+        });
+        return candidates.find((n: any) => {
+          const meta = n.metadata as any;
+          return meta?.relationshipId === metadata.relationshipId;
+        });
+      }
+      break;
+
     default:
       // Para outros tipos, verificação simples por entidade
       break;
@@ -222,6 +253,10 @@ function buildActionUrl(
     case 'NEW_LESSON_SCHEDULED':
       return '/student/lessons';
 
+    // 🆕 NOVA: Boas-vindas de aluno
+    case 'WELCOME_NEW_STUDENT':
+      return '/student/dashboard';
+
     // PROFESSOR
     case 'STUDENT_SUBMITTED_ASSIGNMENT':
     case 'STUDENT_COMPLETED_ASSIGNMENT':
@@ -232,9 +267,29 @@ function buildActionUrl(
     case 'STUDENT_REQUESTED_RESCHEDULE':
       return `/teacher/lessons/${relatedEntityId}`;
 
+    // 🆕 NOVAS: Para professores
+    case 'WELCOME_NEW_TEACHER':
+      return '/teacher/profile';
+
+    case 'STUDENT_DECLINED_INVITE':
+      return '/teacher/students';
+
     default:
       return '/notifications';
   }
+}
+
+function generateNotificationHash(
+  userId: string,
+  type: string,
+  entityId: string,
+  metadata?: any
+): string {
+  const crypto = require('crypto');
+  const baseString = `${userId}-${type}-${entityId}-${JSON.stringify(
+    metadata || {}
+  )}`;
+  return crypto.createHash('md5').update(baseString).digest('hex');
 }
 
 /**
@@ -384,6 +439,34 @@ export const NotificationFactory = {
       },
     }),
 
+  // 🆕 NOVA: Parabéns por aceitar ser aluno
+  welcomeNewStudent: (
+    studentUserId: string,
+    teacherName: string,
+    teacherUserId: string,
+    teacherSpecialties?: string[]
+  ) =>
+    createNotification({
+      userId: studentUserId,
+      type: 'WELCOME_NEW_STUDENT',
+      relatedEntityType: 'teacher-student-relationship',
+      metadata: {
+        teacherName,
+        teacherUserId,
+        teacherSpecialties: teacherSpecialties || [],
+        welcomeType: 'student_accepted_invite',
+        specialtiesText: teacherSpecialties?.length
+          ? ` especializado em ${teacherSpecialties.join(', ')}`
+          : '',
+      },
+      customTitle: `🎉 Parabéns! Você agora é aluno de ${teacherName}`,
+      customMessage: `Bem-vindo! Você aceitou o convite para ser aluno de ${teacherName}${
+        teacherSpecialties?.length
+          ? ` especializado em ${teacherSpecialties.join(', ')}`
+          : ''
+      }. Prepare-se para uma jornada musical incrível!`,
+    }),
+
   // === PARA PROFESSORES ===
   studentSubmittedAssignment: (
     teacherUserId: string,
@@ -479,7 +562,53 @@ export const NotificationFactory = {
       },
     }),
 
-  // 🆕 NOVA NOTIFICAÇÃO: Aluno enviou vídeo
+  // 🆕 NOVA: Parabéns por se tornar professor
+  welcomeNewTeacher: (teacherUserId: string, teacherName: string) =>
+    createNotification({
+      userId: teacherUserId,
+      type: 'WELCOME_NEW_TEACHER',
+      relatedEntityType: 'teacher-profile',
+      metadata: {
+        teacherName,
+        welcomeType: 'teacher_profile_created',
+        isFirstTime: true,
+      },
+      customTitle: `🎓 Parabéns! Você agora é professor no Opus Atlas`,
+      customMessage: `Bem-vindo à nossa comunidade de professores, ${teacherName}! Você pode começar a adicionar alunos e agendar suas primeiras aulas.`,
+    }),
+
+  // 🆕 NOVA: Aluno declinou convite
+  studentDeclinedInvite: (
+    teacherUserId: string,
+    studentName: string,
+    relationshipId: string,
+    studentEmail?: string | null,
+    declineReason?: string
+  ) =>
+    createNotification({
+      userId: teacherUserId,
+      type: 'STUDENT_DECLINED_INVITE',
+      relatedEntityType: 'teacher-student-invitation',
+      relatedEntityId: relationshipId,
+      metadata: {
+        studentName,
+        studentEmail: studentEmail || null,
+        declineReason: declineReason || null,
+        relationshipId,
+        actionType: 'student_declined',
+        declinedAt: new Date().toISOString(),
+      },
+      customTitle: `📋 ${studentName} declinou seu convite`,
+      customMessage: `${studentName} declinou o convite para ser seu aluno.${
+        declineReason ? ` Motivo: "${declineReason}"` : ''
+      }${
+        studentEmail
+          ? ` Você pode entrar em contato pelo email: ${studentEmail}`
+          : ''
+      }`,
+    }),
+
+  // 🆕 EXISTING: Aluno enviou vídeo (mantendo funcionalidade existente)
   studentSubmittedVideo: (
     teacherUserId: string,
     assignmentId: string,

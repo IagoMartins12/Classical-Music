@@ -263,7 +263,7 @@ export const createNotificationSafely = async (
 /**
  * Factory functions CORRIGIDAS com hash único
  */
-export const NotificationFactory = {
+export const NotificationFactoryCron = {
   // === TAREFAS ===
   assignmentDueTomorrow: (
     userId: string,

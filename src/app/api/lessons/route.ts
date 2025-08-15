@@ -1,4 +1,4 @@
-// app/api/lessons/route.ts - ATUALIZADO COM NOTIFICAÇÕES EM TEMPO REAL
+// app/api/lessons/route.ts - ATUALIZADO COM NOTIFICAÇÕES E LOGGING DE ATIVIDADES
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -7,6 +7,7 @@ import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 import { Lesson, LessonStatus } from '@prisma/client';
 import { NotificationFactory } from '@/app/utils/notifications/createNotification';
+import { createTeacherActivityLogger } from '@/app/utils/schoolActivities';
 
 // FUNÇÃO MELHORADA PARA REVALIDAR CACHE (MANTIDA)
 async function revalidateTeacherData(userId: string, studentUserId?: string) {
@@ -525,7 +526,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// 🆕 POST - Criar nova aula (COM NOTIFICAÇÃO)
+// 🆕 POST - Criar nova aula (COM NOTIFICAÇÃO E LOGGING)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -914,6 +915,36 @@ export async function POST(request: NextRequest) {
       // Não falhar a criação da aula por causa da notificação
     }
 
+    // 🆕 LOGGING DE ATIVIDADE: LESSON_CREATED (só para aula PAI ou solo)
+    try {
+      const firstLesson = createdLessons[0];
+
+      if (firstLesson && (!firstLesson.parentLessonId || !isRecurring)) {
+        const activityLogger = createTeacherActivityLogger(session.user.id);
+
+        await activityLogger.lessonCreated(firstLesson.id, firstLesson.title, {
+          studentId: firstLesson.studentId,
+          duration: firstLesson.duration,
+          scheduledAt: firstLesson.scheduledAt,
+          isRecurring: lessonDates.length > 1,
+          recurrenceType: isRecurring ? recurrenceType : undefined,
+          totalLessonsInSeries: lessonDates.length,
+          workScoreIds: firstLesson.workScoreIds,
+          worksIds: firstLesson.worksIds,
+          objectives: firstLesson.objectives,
+          type: firstLesson.type,
+          location: firstLesson.location,
+        });
+
+        console.log(
+          `📝 [ACTIVITY] LESSON_CREATED registrado para aula PAI/solo: ${firstLesson.id}`
+        );
+      }
+    } catch (loggingError) {
+      console.error('❌ [LESSONS] Erro ao registrar atividade:', loggingError);
+      // Não falhar a criação da aula por causa do logging
+    }
+
     // Revalidar cache
     await revalidateTeacherData(session.user.id, studentUserId);
 
@@ -941,12 +972,13 @@ export async function POST(request: NextRequest) {
     };
 
     console.log(
-      `🎉 [LESSONS] Criação concluída com peças musicais e notificação:`,
+      `🎉 [LESSONS] Criação concluída com peças musicais, notificação e logging:`,
       {
         totalLessons: createdLessons.length,
         worksPerLesson: worksIds?.length || 0,
         scoresPerLesson: workScoreIds?.length || 0,
         notificationCreated: !createdLessons[0]?.parentLessonId,
+        activityLogged: !createdLessons[0]?.parentLessonId,
       }
     );
 

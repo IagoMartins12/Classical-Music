@@ -1,4 +1,4 @@
-// app/api/teacher/students/[studentId]/resend-invite/route.ts
+// app/api/teacher/students/[studentId]/resend-invite/route.ts - COM LOGGING DE ATIVIDADES
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -7,8 +7,9 @@ import prisma from '@/app/libs/prismadb';
 import { sendTemplateEmail } from '@/app/libs/newsletter/email';
 import { createToken } from '@/app/libs/tokenUtils';
 import { revalidateTag } from 'next/cache';
+import { createTeacherActivityLogger } from '@/app/utils/schoolActivities';
 
-// POST - Reenviar convite para aluno
+// 🆕 POST - Reenviar convite para aluno COM LOGGING DE ATIVIDADES
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ studentId: string }> }
@@ -192,6 +193,38 @@ export async function POST(
       },
     });
 
+    // 🆕 LOGGING DE ATIVIDADE: REENVIO DE CONVITE
+    try {
+      const activityLogger = createTeacherActivityLogger(session.user.id);
+
+      const studentName =
+        `${studentUser.firstName || ''} ${studentUser.lastName || ''}`.trim() ||
+        'Estudante';
+
+      // Registrar atividade específica para reenvio de convite
+      await activityLogger.studentAdded(studentId, studentName, {
+        isResend: true, // Flag para indicar que é reenvio
+        email: studentUser.email,
+        previousStatus: existingRelationship.inviteStatus,
+        relationshipId: existingRelationship.id,
+      });
+
+      console.log(
+        `📝 [ACTIVITY] Reenvio de convite registrado como STUDENT_ADDED para aluno ${studentName}`,
+        {
+          isResend: true,
+          email: studentUser.email,
+          previousStatus: existingRelationship.inviteStatus,
+        }
+      );
+    } catch (loggingError) {
+      console.error(
+        '❌ [RESEND-INVITE] Erro ao registrar atividade:',
+        loggingError
+      );
+      // Não falhar o reenvio por causa do logging
+    }
+
     // Revalidar cache
     revalidateTag('teacher-students');
     revalidateTag('teacher-students-data');
@@ -199,7 +232,7 @@ export async function POST(
     revalidateTag(`student-${studentId}`);
 
     console.log(
-      `✅ [RESEND-INVITE] Convite reenviado com sucesso para ${studentUser.email}`
+      `✅ [RESEND-INVITE] Convite reenviado com sucesso para ${studentUser.email} e atividade registrada`
     );
 
     return NextResponse.json({
@@ -207,6 +240,10 @@ export async function POST(
       message: `Convite reenviado com sucesso para ${studentUser.email}`,
       studentEmail: studentUser.email,
       inviteStatus: 'PENDING',
+      activityLogged: true,
+      studentName:
+        `${studentUser.firstName || ''} ${studentUser.lastName || ''}`.trim() ||
+        'Estudante',
     });
   } catch (error) {
     console.error('❌ [RESEND-INVITE] Erro ao reenviar convite:', error);

@@ -1,4 +1,4 @@
-// app/api/assignments/route.ts - ATUALIZADO COM CRIAÇÃO DE NOTIFICAÇÕES EM TEMPO REAL
+// app/api/assignments/route.ts - ATUALIZADO COM CRIAÇÃO DE NOTIFICAÇÕES E LOGGING DE ATIVIDADES
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
@@ -6,6 +6,10 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 import { NotificationFactory } from '@/app/utils/notifications/createNotification';
+import {
+  createTeacherActivityLogger,
+  createStudentActivityLogger,
+} from '@/app/utils/schoolActivities';
 import {
   uploadAssignmentVideo,
   deleteAssignmentVideo,
@@ -341,7 +345,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// 🆕 POST - Criar novo assignment (COM NOTIFICAÇÃO)
+// 🆕 POST - Criar novo assignment (COM NOTIFICAÇÃO E LOGGING)
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -499,11 +503,38 @@ export async function POST(request: NextRequest) {
       // Não falhar a criação do assignment por causa da notificação
     }
 
+    // 🆕 LOGGING DE ATIVIDADE: ASSIGNMENT_CREATED
+    try {
+      const activityLogger = createTeacherActivityLogger(session.user.id);
+
+      await activityLogger.assignmentCreated(assignment.id, assignment.title, {
+        studentId: assignment.studentId,
+        lessonId: assignment.lessonId,
+        type: assignment.type,
+        priority: assignment.priority,
+        dueDate: assignment.dueDate,
+        workScoreIds: assignment.workScoreIds,
+        worksIds: assignment.worksIds,
+        duration: assignment.estimatedTime,
+        isRecurring: false, // assignments não são recorrentes
+      });
+
+      console.log(
+        `📝 [ACTIVITY] ASSIGNMENT_CREATED registrado para assignment ${assignment.id}`
+      );
+    } catch (loggingError) {
+      console.error(
+        '❌ [ASSIGNMENTS] Erro ao registrar atividade:',
+        loggingError
+      );
+      // Não falhar a criação do assignment por causa do logging
+    }
+
     // Revalidar cache
     await revalidateTeacherAndStudentData(session.user.id, studentUserId);
 
     console.log(
-      `✅ [ASSIGNMENTS] Assignment criado e cache revalidado: ${assignment.id}`
+      `✅ [ASSIGNMENTS] Assignment criado, notificação e atividade registradas: ${assignment.id}`
     );
 
     return NextResponse.json({
@@ -520,8 +551,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// 🆕 PATCH - Atualizar assignment (COM NOTIFICAÇÕES)
-// 🆕 PATCH - Atualizar assignment (ATUALIZADO COM UPLOAD DE VÍDEO)
+// 🆕 PATCH - Atualizar assignment (COM NOTIFICAÇÕES E LOGGING)
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -650,7 +680,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // 🆕 DETECTAR MUDANÇAS PARA NOTIFICAÇÕES (antes da atualização)
+    // 🆕 DETECTAR MUDANÇAS PARA NOTIFICAÇÕES E LOGGING (antes da atualização)
     const oldData = {
       worksIds: assignment.worksIds,
       workScoreIds: assignment.workScoreIds,
@@ -897,14 +927,105 @@ export async function PATCH(request: NextRequest) {
       // Não falhar a atualização por causa das notificações
     }
 
+    // 🆕 LOGGING DE ATIVIDADES
+    try {
+      if (session.user.role === 1) {
+        // 📝 ATIVIDADES DO PROFESSOR
+        const activityLogger = createTeacherActivityLogger(session.user.id);
+
+        // 1. Professor deu feedback
+        if (filteredUpdateData.teacherFeedback && !oldData.teacherFeedback) {
+          await activityLogger.assignmentFeedbackGiven(
+            assignmentId,
+            assignment.title,
+            filteredUpdateData.teacherFeedback,
+            filteredUpdateData.teacherRating
+          );
+          console.log(`📝 [ACTIVITY] ASSIGNMENT_FEEDBACK_GIVEN registrado`);
+        }
+
+        // 2. Professor atualizou assignment (campos gerais)
+        const hasGeneralChanges = Object.keys(filteredUpdateData).some(
+          (key) => key !== 'teacherFeedback' && key !== 'teacherRating'
+        );
+
+        if (hasGeneralChanges) {
+          const changes: any = {};
+          Object.keys(filteredUpdateData).forEach((key) => {
+            if (key !== 'teacherFeedback' && key !== 'teacherRating') {
+              const oldValue = (oldData as any)[key];
+              const newValue = filteredUpdateData[key];
+
+              if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+                changes[key] = { from: oldValue, to: newValue };
+              }
+            }
+          });
+
+          if (Object.keys(changes).length > 0) {
+            await activityLogger.assignmentUpdated(
+              assignmentId,
+              assignment.title,
+              changes
+            );
+            console.log(`📝 [ACTIVITY] ASSIGNMENT_UPDATED registrado`);
+          }
+        }
+      } else {
+        // 📝 ATIVIDADES DO ALUNO
+        const activityLogger = createStudentActivityLogger(session.user.id);
+
+        // 1. Aluno enviou submissão (vídeo/arquivo)
+        if (
+          filteredUpdateData.submissions &&
+          JSON.stringify(filteredUpdateData.submissions) !==
+            JSON.stringify(oldData.submissions)
+        ) {
+          let submissionType = 'text';
+          if (hasNewVideo) {
+            submissionType = 'video';
+          } else if (filteredUpdateData.submissions?.files?.length > 0) {
+            submissionType = 'file';
+          }
+
+          await activityLogger.assignmentSubmissionSent(
+            assignmentId,
+            assignment.title,
+            submissionType as 'video' | 'file' | 'text'
+          );
+          console.log(`📝 [ACTIVITY] ASSIGNMENT_SUBMISSION registrado`);
+        }
+
+        // 2. Aluno completou assignment
+        if (filteredUpdateData.isCompleted && !oldData.isCompleted) {
+          await activityLogger.assignmentCompleted(
+            assignmentId,
+            assignment.title,
+            {
+              actualTime: filteredUpdateData.actualTime,
+              progress: filteredUpdateData.progress,
+            }
+          );
+          console.log(`📝 [ACTIVITY] ASSIGNMENT_COMPLETED registrado`);
+        }
+      }
+    } catch (loggingError) {
+      console.error(
+        '❌ [ASSIGNMENTS] Erro ao registrar atividade:',
+        loggingError
+      );
+      // Não falhar a atualização por causa do logging
+    }
+
     // Revalidar cache
     await revalidateTeacherAndStudentData(teacherUserId, studentUserId);
 
     console.log(
-      `✅ [ASSIGNMENTS] Assignment ${assignmentId} atualizado e cache revalidado`,
+      `✅ [ASSIGNMENTS] Assignment ${assignmentId} atualizado, notificações e atividades registradas`,
       {
         videoUploaded: hasNewVideo,
         notificationsSent: true,
+        activitiesLogged: true,
       }
     );
 

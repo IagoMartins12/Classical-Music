@@ -255,7 +255,7 @@ enum NotificationType {
   ASSIGNMENT_OVERDUE      // Tarefa já atrasada
   LESSON_STATUS_PENDING    // Aula passou sem status atualizado
   
-  // 🆕 NOTIFICAÇÕES PARA ESTUDANTES (eventos reais)
+  // NOTIFICAÇÕES PARA ESTUDANTES (eventos reais)
   TEACHER_GAVE_FEEDBACK     // Professor deu feedback na tarefa
   LESSON_CANCELLED_BY_TEACHER // Professor cancelou aula
   LESSON_RESCHEDULED_BY_TEACHER // Professor reagendou aula
@@ -264,12 +264,19 @@ enum NotificationType {
   ASSIGNMENT_UPDATED_BY_TEACHER // Professor alterou tarefa
   NEW_LESSON_SCHEDULED      // Nova aula agendada (só PAI ou solo)
   
-  // 🆕 NOTIFICAÇÕES PARA PROFESSORES (eventos reais)
+  // 🆕 NOVA: Parabéns por aceitar ser aluno
+  WELCOME_NEW_STUDENT       // Parabéns por aceitar ser aluno de um professor
+  
+  // NOTIFICAÇÕES PARA PROFESSORES (eventos reais)
   STUDENT_SUBMITTED_ASSIGNMENT // Aluno enviou submissão
   STUDENT_COMPLETED_ASSIGNMENT // Aluno completou tarefa
   STUDENT_GAVE_LESSON_FEEDBACK // Aluno deu feedback na aula
   STUDENT_INFORMED_ABSENCE     // Aluno informou ausência
   STUDENT_REQUESTED_RESCHEDULE // Aluno solicitou reagendamento
+  
+  // 🆕 NOVAS: Para professores
+  WELCOME_NEW_TEACHER       // Parabéns por se tornar professor
+  STUDENT_DECLINED_INVITE   // Aluno declinou convite para ser aluno
   
   // NOTIFICAÇÕES ANTIGAS (manter para compatibilidade)
   LESSON_NO_SHOW
@@ -298,6 +305,28 @@ enum NotificationStatus {
   EXPIRED
 }
 
+enum SchoolActivityAction {
+  // AÇÕES DO PROFESSOR
+  STUDENT_ADDED             // Cadastrou novo aluno
+  LESSON_CREATED           // Criou nova aula
+  LESSON_UPDATED           // Editou aula existente
+  LESSON_STATUS_CHANGED    // Alterou status da aula (cancelou, deu falta, remarcou)
+  ASSIGNMENT_CREATED       // Criou nova tarefa
+  ASSIGNMENT_UPDATED       // Editou tarefa
+  ASSIGNMENT_FEEDBACK_GIVEN // Deu feedback e concluiu tarefa
+  LESSON_NOTES_ADDED       // Adicionou anotações na aula
+  TEACHER_PROFILE_UPDATED  // Alterou dados do perfil de professor
+  USER_PROFILE_UPDATED     // Alterou dados do perfil de usuário
+
+  // AÇÕES DO ALUNO
+  ASSIGNMENT_SUBMISSION    // Enviou video/arquivo na tarefa
+  ASSIGNMENT_COMPLETED    // Completou tarefa
+  LESSON_FEEDBACK_GIVEN   // Deu feedback de aula
+  LESSON_RESCHEDULE_REQUESTED // Solicitou reagendamento
+  LESSON_ABSENCE_INFORMED  // Informou ausência
+  LESSON_COMPLETED        // Concluiu aula
+  STUDENT_PROFILE_UPDATED // Alterou perfil de aluno
+}
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   firstName      String?
@@ -348,6 +377,7 @@ model User {
   uploadHistory    UploadHistory[]
   generatedReports GeneratedReport[]  @relation("GeneratedReports")
   notifications Notification[] @relation("UserNotifications")
+  schoolActivities SchoolActivity[] @relation("UserSchoolActivities")
 
   // Estatísticas de upload
   totalUploads Int @default(0)
@@ -2075,4 +2105,39 @@ model Notification {
   // @@unique([uniqueHash], name: "unique_notification_hash")
   
   @@map("notifications")
+}
+
+model SchoolActivity {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String @db.ObjectId // Quem fez a ação
+  userType String // "teacher" ou "student"
+  
+  // Informações da ação
+  action      SchoolActivityAction
+  entityType  String  // "lesson", "assignment", "profile", "student", etc.
+  entityId    String? @db.ObjectId // ID da entidade relacionada
+  entityName  String? // Nome/título da entidade para facilitar exibição
+  
+  // Descrição e detalhes
+  title       String  // Título amigável da ação
+  description String? // Descrição detalhada
+  
+  // Dados das mudanças (para updates)
+  changes  Json? // Mudanças específicas (oldValue, newValue)
+  metadata Json? // Dados extras (IDs relacionados, contexto, etc.)
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  
+  // Relações
+  user User @relation("UserSchoolActivities", fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Índices otimizados
+  @@index([userId, createdAt]) // Principal para buscar atividades por usuário
+  @@index([userType, action, createdAt]) // Para filtros por tipo
+  @@index([entityType, entityId]) // Para buscar por entidade
+  @@index([createdAt]) // Para limpeza/manutenção
+  @@index([userId, action, createdAt]) // Para filtros específicos
+  
+  @@map("school_activities")
 }

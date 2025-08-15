@@ -7,7 +7,7 @@ import {
   NOTIFICATION_CONFIG,
 } from '@/app/types/notification';
 import {
-  NotificationFactory,
+  NotificationFactoryCron,
   createNotificationSafely,
 } from '@/app/utils/notifications';
 import prisma from '@/app/libs/prismadb';
@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
         timeDiff >
           NOTIFICATION_CONFIG.LESSON_WARNING_TIMES.STARTING_SOON - 5 * 60 * 1000
       ) {
-        const notification = NotificationFactory.lessonStartingSoon(
+        const notification = NotificationFactoryCron.lessonStartingSoon(
           userId,
           lesson.id,
           teacherName,
@@ -186,7 +186,7 @@ export async function POST(req: NextRequest) {
 
       // 24 horas antes (apenas entre 18h-20h)
       if (shouldCreateTimeBasedNotification(timeDiff, 'TOMORROW')) {
-        const notification = NotificationFactory.lessonTomorrow(
+        const notification = NotificationFactoryCron.lessonTomorrow(
           userId,
           lesson.id,
           teacherName,
@@ -207,7 +207,7 @@ export async function POST(req: NextRequest) {
 
       // 2 horas antes (janela de 15 minutos)
       if (shouldCreateTimeBasedNotification(timeDiff, 'SOON')) {
-        const notification = NotificationFactory.assignmentDueSoon(
+        const notification = NotificationFactoryCron.assignmentDueSoon(
           userId,
           assignment.id,
           assignment.title,
@@ -222,7 +222,7 @@ export async function POST(req: NextRequest) {
 
       // 24 horas antes (apenas entre 18h-20h)
       if (shouldCreateTimeBasedNotification(timeDiff, 'TOMORROW')) {
-        const notification = NotificationFactory.assignmentDueTomorrow(
+        const notification = NotificationFactoryCron.assignmentDueTomorrow(
           userId,
           assignment.id,
           assignment.title,
@@ -239,7 +239,7 @@ export async function POST(req: NextRequest) {
     // === TAREFAS EM ATRASO (apenas às 9h da manhã) ===
     for (const assignment of overdueAssignments) {
       if (shouldCreateTimeBasedNotification(0, 'OVERDUE')) {
-        const notification = NotificationFactory.assignmentOverdue(
+        const notification = NotificationFactoryCron.assignmentOverdue(
           userId,
           assignment.id,
           assignment.title,

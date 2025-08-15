@@ -9,6 +9,7 @@ import {
   createToken,
 } from '@/app/libs/tokenUtils';
 import { sendTemplateEmail } from '@/app/libs/newsletter/email';
+import { NotificationFactory } from '@/app/utils/notifications/createNotification';
 
 interface Params {
   token: string;
@@ -186,6 +187,24 @@ export async function GET(
       `${relationship.teacher.user.firstName || ''} ${
         relationship.teacher.user.lastName || ''
       }`.trim() || 'Professor';
+
+    try {
+      await NotificationFactory.welcomeNewStudent(
+        user.id,
+        teacherName,
+        relationship.teacher.userId,
+        relationship.teacher.specialties
+      );
+
+      console.log(
+        `🎉 [CONFIRM-INVITE] Notificação de boas-vindas enviada para aluno ${user.firstName}`
+      );
+    } catch (notificationError) {
+      console.error(
+        '❌ [CONFIRM-INVITE] Erro ao criar notificação de boas-vindas:',
+        notificationError
+      );
+    }
 
     // Log de segurança
     logSecurityEvent('STUDENT_INVITE_ACCEPTED', user.id, {

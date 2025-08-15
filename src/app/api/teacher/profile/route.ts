@@ -1,10 +1,12 @@
-// app/api/teacher/profile/route.ts - VERSÃO CORRIGIDA COM CACHE E VALIDAÇÃO
+// app/api/teacher/profile/route.ts - VERSÃO COM LOGGING DE ATIVIDADES
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag, revalidatePath } from 'next/cache';
+import { createTeacherActivityLogger } from '@/app/utils/schoolActivities';
+import { NotificationFactory } from '@/app/utils/notifications/createNotification';
 
 // Função auxiliar para revalidar cache de teacher profile - MELHORADA
 async function revalidateTeacherProfileData(userId: string) {
@@ -179,6 +181,7 @@ export async function GET() {
         include: {
           user: {
             select: {
+              id: true,
               firstName: true,
               lastName: true,
               email: true,
@@ -193,6 +196,26 @@ export async function GET() {
           },
         },
       });
+
+      // 🆕 CRIAR NOTIFICAÇÃO DE BOAS-VINDAS PARA O PROFESSOR
+      try {
+        const teacherName =
+          `${newTeacherProfile.user.firstName} ${newTeacherProfile.user.lastName}`.trim();
+
+        await NotificationFactory.welcomeNewTeacher(
+          newTeacherProfile.user.id,
+          teacherName
+        );
+
+        console.log(
+          `🎓 [TEACHER-PROFILE] Notificação de boas-vindas enviada para professor ${session.user.id}`
+        );
+      } catch (notificationError) {
+        console.error(
+          '❌ [TEACHER-PROFILE] Erro ao criar notificação de boas-vindas:',
+          notificationError
+        );
+      }
 
       const profileData: TeacherProfileData = {
         id: newTeacherProfile.id,
@@ -292,7 +315,7 @@ export async function GET() {
   }
 }
 
-// PUT - Atualizar perfil do professor COM REVALIDAÇÃO MELHORADA
+// 🆕 PUT - Atualizar perfil do professor COM LOGGING DE ATIVIDADES
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -325,7 +348,48 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    // 🆕 CAPTURAR DADOS ANTIGOS PARA DETECTAR MUDANÇAS
+    const oldUserData = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        firstName: true,
+        lastName: true,
+        phone: true,
+        phoneCountryCode: true,
+        phoneNumber: true,
+        city: true,
+        state: true,
+        country: true,
+      },
+    });
+
+    const oldTeacherData = await prisma.teacher.findUnique({
+      where: { userId: session.user.id },
+      select: {
+        bio: true,
+        specialties: true,
+        instruments: true,
+        experience: true,
+        education: true,
+        achievements: true,
+        isPublicProfile: true,
+        website: true,
+        socialMedia: true,
+        publicBio: true,
+        highlightedWorks: true,
+        defaultLessonDuration: true,
+        maxStudentsPerWeek: true,
+        timezone: true,
+        teachingMethod: true,
+        ageGroups: true,
+        skillLevels: true,
+        allowProgressReports: true,
+        reportPreferences: true,
+      },
+    });
+
     // 🔧 ATUALIZAR DADOS DO USUÁRIO COM VALIDAÇÃO MELHORADA
+    let userChanges: any = {};
     if (userData) {
       const allowedUserFields = [
         'firstName',
@@ -343,6 +407,14 @@ export async function PUT(request: NextRequest) {
 
       Object.keys(userData).forEach((key) => {
         if (allowedUserFields.includes(key) && userData[key] !== undefined) {
+          // Detectar mudanças para logging
+          const oldValue = (oldUserData as any)?.[key];
+          const newValue = userData[key];
+
+          if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+            userChanges[key] = { from: oldValue, to: newValue };
+          }
+
           // 🔧 Tratamento especial para campos que podem ser null
           if (
             userData[key] === '' &&
@@ -423,7 +495,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // 🔧 ATUALIZAR DADOS DO PROFESSOR COM VALIDAÇÃO CORRIGIDA
-    console.log('TEACHER DATA', teacherData);
+    let teacherChanges: any = {};
     if (teacherData) {
       const allowedTeacherFields = [
         'bio',
@@ -456,6 +528,13 @@ export async function PUT(request: NextRequest) {
           teacherData[key] !== undefined
         ) {
           const value = teacherData[key];
+
+          // Detectar mudanças para logging
+          const oldValue = (oldTeacherData as any)?.[key];
+
+          if (JSON.stringify(oldValue) !== JSON.stringify(value)) {
+            teacherChanges[key] = { from: oldValue, to: value };
+          }
 
           switch (key) {
             case 'defaultLessonDuration':
@@ -552,6 +631,28 @@ export async function PUT(request: NextRequest) {
       }
     }
 
+    // 🆕 LOGGING DE ATIVIDADE: PERFIL ATUALIZADO
+    try {
+      const allChanges = { ...userChanges, ...teacherChanges };
+
+      if (Object.keys(allChanges).length > 0) {
+        const activityLogger = createTeacherActivityLogger(session.user.id);
+
+        await activityLogger.teacherProfileUpdated(allChanges);
+
+        console.log(
+          `📝 [ACTIVITY] TEACHER_PROFILE_UPDATED registrado para professor ${session.user.id}`,
+          { changedFields: Object.keys(allChanges) }
+        );
+      }
+    } catch (loggingError) {
+      console.error(
+        '❌ [TEACHER-PROFILE] Erro ao registrar atividade:',
+        loggingError
+      );
+      // Não falhar a atualização por causa do logging
+    }
+
     // 🔥 REVALIDAR CACHE ANTES DE BUSCAR OS DADOS ATUALIZADOS
     await revalidateTeacherProfileData(session.user.id);
 
@@ -615,13 +716,16 @@ export async function PUT(request: NextRequest) {
     };
 
     console.log(
-      `✅ [TEACHER-PROFILE] Perfil atualizado com sucesso e cache revalidado`
+      `✅ [TEACHER-PROFILE] Perfil atualizado com sucesso, cache revalidado e atividade registrada`
     );
 
     return NextResponse.json({
       success: true,
       profile: formattedProfile,
       message: 'Perfil atualizado com sucesso',
+      activityLogged:
+        Object.keys(userChanges).length + Object.keys(teacherChanges).length >
+        0,
     });
   } catch (error) {
     console.error('❌ [TEACHER-PROFILE] Erro ao atualizar perfil:', error);
@@ -635,7 +739,7 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// PATCH - Atualização parcial (campos específicos) COM REVALIDAÇÃO MELHORADA
+// PATCH - Atualização parcial (campos específicos) COM REVALIDAÇÃO MELHORADA (MANTIDO IGUAL)
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
