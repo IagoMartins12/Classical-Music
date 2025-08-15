@@ -1,32 +1,52 @@
-// app/api/student/notifications/check/route.ts - ATUALIZADO: REMOVENDO NOTIFICAÇÕES MOVIDAS PARA EVENTOS REAIS
+// app/api/student/notifications/check/route.ts - CORRIGIDO SEM DUPLICATAS
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import {
   NotificationCheckResult,
   NOTIFICATION_CONFIG,
-  getNotificationTemplate,
 } from '@/app/types/notification';
+import {
+  NotificationFactory,
+  createNotificationSafely,
+} from '@/app/utils/notifications';
 import prisma from '@/app/libs/prismadb';
 
-// Helper para verificar se notificação já existe (MANTIDO)
-const checkExistingNotification = async (
-  userId: string,
-  type: string,
-  relatedEntityId: string,
-  metadata?: any
-) => {
-  const baseWhere: any = {
-    userId,
-    type: type as any,
-    relatedEntityId,
-    status: { in: ['UNREAD', 'READ'] as const },
-    expiresAt: { gte: new Date() },
-  };
+// 🔥 NOVA ABORDAGEM: Helper para determinar se já é hora de criar a notificação
+const shouldCreateTimeBasedNotification = (
+  timeDiff: number,
+  notificationType: 'TOMORROW' | 'SOON' | 'OVERDUE'
+): boolean => {
+  const now = new Date();
+  const currentHour = now.getHours();
 
-  return await prisma.notification.findFirst({
-    where: baseWhere,
-  });
+  switch (notificationType) {
+    case 'TOMORROW':
+      // Criar apenas entre 18h-20h do dia anterior (janela específica)
+      return (
+        timeDiff <= NOTIFICATION_CONFIG.ASSIGNMENT_WARNING_TIMES.DUE_TOMORROW &&
+        timeDiff >
+          NOTIFICATION_CONFIG.ASSIGNMENT_WARNING_TIMES.DUE_TOMORROW -
+            2 * 60 * 60 * 1000 &&
+        currentHour >= 18 &&
+        currentHour <= 20
+      );
+
+    case 'SOON':
+      // Criar apenas quando faltam exatamente 2 horas (janela de 15 min)
+      return (
+        timeDiff <= NOTIFICATION_CONFIG.ASSIGNMENT_WARNING_TIMES.DUE_SOON &&
+        timeDiff >
+          NOTIFICATION_CONFIG.ASSIGNMENT_WARNING_TIMES.DUE_SOON - 15 * 60 * 1000
+      );
+
+    case 'OVERDUE':
+      // Criar apenas uma vez por dia, às 9h da manhã
+      return currentHour === 9;
+
+    default:
+      return false;
+  }
 };
 
 export async function POST(req: NextRequest) {
@@ -44,16 +64,12 @@ export async function POST(req: NextRequest) {
     const userId = session.user.id;
     const now = new Date();
 
-    console.log(
-      `📬 [STUDENT-CHECK] Verificando notificações automáticas para ${userId}`
-    );
+    console.log(`📬 [STUDENT-CHECK] Verificando notificações para ${userId}`);
 
     // 1. Buscar perfil do estudante
     const studentProfile = await prisma.student.findUnique({
       where: { userId },
-      include: {
-        user: true,
-      },
+      include: { user: true },
     });
 
     if (!studentProfile) {
@@ -63,7 +79,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 2. Verificar próximas aulas do aluno
+    // 2. Verificar próximas aulas (CONDIÇÕES MAIS PRECISAS)
     const upcomingLessons = await prisma.lesson.findMany({
       where: {
         studentId: studentProfile.id,
@@ -84,7 +100,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 3. Verificar tarefas do aluno
+    // 3. Verificar tarefas próximas do vencimento
     const assignments = await prisma.assignment.findMany({
       where: {
         studentId: studentProfile.id,
@@ -134,254 +150,118 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 🗑️ REMOVIDO: Verificação de novos feedbacks (agora é evento real)
-    // 🗑️ REMOVIDO: === NOVOS FEEDBACKS ===
-
-    // 6. Gerar notificações baseadas nas verificações (APENAS AUTOMÁTICAS)
+    // 5. Gerar notificações usando Factory com hash único
     const notificationsToCreate: any[] = [];
 
-    // === AULAS PRÓXIMAS (MANTIDO) ===
+    // === AULAS PRÓXIMAS (CONDIÇÕES MAIS ESPECÍFICAS) ===
     for (const lesson of upcomingLessons) {
       const timeDiff = lesson.scheduledAt.getTime() - now.getTime();
       const teacherName =
         `${lesson.teacher.user.firstName} ${lesson.teacher.user.lastName}`.trim();
+      const time = lesson.scheduledAt.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
 
-      // 30 minutos antes
+      // 30 minutos antes (janela de 5 minutos)
       if (
         timeDiff <= NOTIFICATION_CONFIG.LESSON_WARNING_TIMES.STARTING_SOON &&
         timeDiff >
           NOTIFICATION_CONFIG.LESSON_WARNING_TIMES.STARTING_SOON - 5 * 60 * 1000
       ) {
-        const existing = await checkExistingNotification(
+        const notification = NotificationFactory.lessonStartingSoon(
           userId,
-          'LESSON_STARTING_SOON',
-          lesson.id
+          lesson.id,
+          teacherName,
+          time,
+          lesson.scheduledAt.toISOString()
         );
 
-        if (!existing) {
-          const template = getNotificationTemplate('LESSON_STARTING_SOON', {
-            teacherName,
-            time: lesson.scheduledAt.toLocaleTimeString('pt-BR', {
-              hour: '2-digit',
-              minute: '2-digit',
-            }),
-          });
+        // Configurar toast e browser
+        notification.showInToast = includeToast;
+        notification.showInBrowser = includeBrowser;
 
-          notificationsToCreate.push({
-            userId,
-            type: 'LESSON_STARTING_SOON',
-            priority: 'HIGH',
-            title: template.title,
-            message: template.message,
-            actionText: template.actionText,
-            actionUrl: `/student/lessons/${lesson.id}`,
-            relatedEntityType: 'lesson',
-            relatedEntityId: lesson.id,
-            showInToast: includeToast,
-            showInBrowser: includeBrowser,
-            expiresAt: new Date(lesson.scheduledAt.getTime() + 60 * 60 * 1000),
-            metadata: {
-              teacherName,
-              lessonTime: lesson.scheduledAt.toISOString(),
-            },
-          });
-        }
+        notificationsToCreate.push(notification);
       }
 
-      // 24 horas antes
-      if (
-        timeDiff <= NOTIFICATION_CONFIG.LESSON_WARNING_TIMES.TOMORROW &&
-        timeDiff >
-          NOTIFICATION_CONFIG.LESSON_WARNING_TIMES.TOMORROW - 60 * 60 * 1000
-      ) {
-        const existing = await checkExistingNotification(
+      // 24 horas antes (apenas entre 18h-20h)
+      if (shouldCreateTimeBasedNotification(timeDiff, 'TOMORROW')) {
+        const notification = NotificationFactory.lessonTomorrow(
           userId,
-          'LESSON_TOMORROW',
-          lesson.id
+          lesson.id,
+          teacherName,
+          time,
+          lesson.scheduledAt.toISOString()
         );
 
-        if (!existing) {
-          const template = getNotificationTemplate('LESSON_TOMORROW', {
-            teacherName,
-            time: lesson.scheduledAt.toLocaleTimeString('pt-BR', {
-              hour: '2-digit',
-              minute: '2-digit',
-            }),
-          });
+        notification.showInToast = includeToast;
+        notification.showInBrowser = false;
 
-          notificationsToCreate.push({
-            userId,
-            type: 'LESSON_TOMORROW',
-            priority: 'MEDIUM',
-            title: template.title,
-            message: template.message,
-            actionText: 'Ver Agenda',
-            actionUrl: '/student/lessons',
-            relatedEntityType: 'lesson',
-            relatedEntityId: lesson.id,
-            showInToast: includeToast,
-            showInBrowser: false,
-            expiresAt: new Date(lesson.scheduledAt.getTime()),
-            metadata: {
-              teacherName,
-              lessonTime: lesson.scheduledAt.toISOString(),
-            },
-          });
-        }
+        notificationsToCreate.push(notification);
       }
     }
 
-    // === TAREFAS VENCENDO (MANTIDO) ===
+    // === TAREFAS VENCENDO (CONDIÇÕES MAIS ESPECÍFICAS) ===
     for (const assignment of assignments) {
       const timeDiff = assignment.dueDate!.getTime() - now.getTime();
-      const teacherName =
-        `${assignment.lesson.teacher.user.firstName} ${assignment.lesson.teacher.user.lastName}`.trim();
 
-      // 2 horas antes do vencimento
-      if (
-        timeDiff <= NOTIFICATION_CONFIG.ASSIGNMENT_WARNING_TIMES.DUE_SOON &&
-        timeDiff >
-          NOTIFICATION_CONFIG.ASSIGNMENT_WARNING_TIMES.DUE_SOON - 30 * 60 * 1000
-      ) {
-        const existing = await checkExistingNotification(
+      // 2 horas antes (janela de 15 minutos)
+      if (shouldCreateTimeBasedNotification(timeDiff, 'SOON')) {
+        const notification = NotificationFactory.assignmentDueSoon(
           userId,
-          'ASSIGNMENT_DUE_SOON',
-          assignment.id
+          assignment.id,
+          assignment.title,
+          assignment.dueDate!.toISOString()
         );
 
-        if (!existing) {
-          const template = getNotificationTemplate('ASSIGNMENT_DUE_SOON', {
-            assignmentTitle: assignment.title,
-          });
+        notification.showInToast = includeToast;
+        notification.showInBrowser = includeBrowser;
 
-          notificationsToCreate.push({
-            userId,
-            type: 'ASSIGNMENT_DUE_SOON',
-            priority: 'HIGH',
-            title: template.title,
-            message: template.message,
-            actionText: template.actionText,
-            actionUrl: `/student/assignments/${assignment.id}`,
-            relatedEntityType: 'assignment',
-            relatedEntityId: assignment.id,
-            showInToast: includeToast,
-            showInBrowser: includeBrowser,
-            expiresAt: assignment.dueDate!,
-            metadata: {
-              assignmentTitle: assignment.title,
-              teacherName,
-              dueDate: assignment.dueDate!.toISOString(),
-            },
-          });
-        }
+        notificationsToCreate.push(notification);
       }
 
-      // 24 horas antes do vencimento
-      if (
-        timeDiff <= NOTIFICATION_CONFIG.ASSIGNMENT_WARNING_TIMES.DUE_TOMORROW &&
-        timeDiff >
-          NOTIFICATION_CONFIG.ASSIGNMENT_WARNING_TIMES.DUE_TOMORROW -
-            60 * 60 * 1000
-      ) {
-        const existing = await checkExistingNotification(
+      // 24 horas antes (apenas entre 18h-20h)
+      if (shouldCreateTimeBasedNotification(timeDiff, 'TOMORROW')) {
+        const notification = NotificationFactory.assignmentDueTomorrow(
           userId,
-          'ASSIGNMENT_DUE_TOMORROW',
-          assignment.id
+          assignment.id,
+          assignment.title,
+          assignment.dueDate!.toISOString()
         );
 
-        if (!existing) {
-          const template = getNotificationTemplate('ASSIGNMENT_DUE_TOMORROW', {
-            assignmentTitle: assignment.title,
-          });
+        notification.showInToast = includeToast;
+        notification.showInBrowser = false;
 
-          notificationsToCreate.push({
-            userId,
-            type: 'ASSIGNMENT_DUE_TOMORROW',
-            priority: 'MEDIUM',
-            title: template.title,
-            message: template.message,
-            actionText: 'Ver Tarefa',
-            actionUrl: `/student/assignments/${assignment.id}`,
-            relatedEntityType: 'assignment',
-            relatedEntityId: assignment.id,
-            showInToast: includeToast,
-            showInBrowser: false,
-            expiresAt: assignment.dueDate!,
-            metadata: {
-              assignmentTitle: assignment.title,
-              teacherName,
-              dueDate: assignment.dueDate!.toISOString(),
-            },
-          });
-        }
+        notificationsToCreate.push(notification);
       }
     }
 
-    // === TAREFAS EM ATRASO (MANTIDO) ===
+    // === TAREFAS EM ATRASO (apenas às 9h da manhã) ===
     for (const assignment of overdueAssignments) {
-      const teacherName =
-        `${assignment.lesson.teacher.user.firstName} ${assignment.lesson.teacher.user.lastName}`.trim();
-
-      const existing = await checkExistingNotification(
-        userId,
-        'ASSIGNMENT_OVERDUE',
-        assignment.id
-      );
-
-      if (!existing) {
-        const template = getNotificationTemplate('ASSIGNMENT_OVERDUE', {
-          assignmentTitle: assignment.title,
-        });
-
-        notificationsToCreate.push({
+      if (shouldCreateTimeBasedNotification(0, 'OVERDUE')) {
+        const notification = NotificationFactory.assignmentOverdue(
           userId,
-          type: 'ASSIGNMENT_OVERDUE',
-          priority: 'HIGH',
-          title: template.title,
-          message: template.message,
-          actionText: template.actionText,
-          actionUrl: `/student/assignments/${assignment.id}`,
-          relatedEntityType: 'assignment',
-          relatedEntityId: assignment.id,
-          showInToast: includeToast,
-          showInBrowser: false,
-          expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
-          metadata: {
-            assignmentTitle: assignment.title,
-            teacherName,
-            dueDate: assignment.dueDate!.toISOString(),
-          },
-        });
+          assignment.id,
+          assignment.title,
+          assignment.dueDate!.toISOString()
+        );
+
+        notification.showInToast = includeToast;
+        notification.showInBrowser = false;
+
+        notificationsToCreate.push(notification);
       }
     }
 
-    // 7. Criar notificações no banco usando transação (MANTIDO)
+    // 6. Criar notificações usando transação SEGURA
     const createdNotifications = [];
 
     for (const notificationData of notificationsToCreate) {
       try {
-        const created = await prisma.$transaction(async (tx) => {
-          const baseWhere: any = {
-            userId: notificationData.userId,
-            type: notificationData.type,
-            relatedEntityId: notificationData.relatedEntityId,
-            status: { in: ['UNREAD', 'READ'] as const },
-            expiresAt: { gte: now },
-          };
-
-          const finalCheck = await tx.notification.findFirst({
-            where: baseWhere,
-          });
-
-          if (finalCheck) {
-            return null; // Já existe
-          }
-
-          return await tx.notification.create({
-            data: notificationData,
-          });
-        });
-
+        const created = await createNotificationSafely(
+          prisma,
+          notificationData
+        );
         if (created) {
           createdNotifications.push(created);
         }
@@ -390,7 +270,7 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 8. Buscar notificações existentes (MANTIDO)
+    // 7. Buscar notificações existentes (apenas não expiradas)
     const rawNotifications = await prisma.notification.findMany({
       where: {
         userId,
@@ -411,7 +291,7 @@ export async function POST(req: NextRequest) {
       take: NOTIFICATION_CONFIG.MAX_NOTIFICATIONS_PER_CHECK,
     });
 
-    // Mapear para o tipo correto (MANTIDO)
+    // Mapear para o tipo correto
     const allNotifications = rawNotifications.map((n) => ({
       ...n,
       actionText: n.actionText || undefined,
@@ -424,7 +304,7 @@ export async function POST(req: NextRequest) {
       readAt: n.readAt || undefined,
     }));
 
-    // 9. Filtrar notificações para toast e browser (MANTIDO)
+    // 8. Filtrar notificações para toast e browser (SEM DUPLICATAS)
     const toastNotifications = allNotifications
       .filter((n) => n.showInToast && !n.toastShown && includeToast)
       .slice(0, NOTIFICATION_CONFIG.MAX_TOAST_NOTIFICATIONS);
@@ -433,7 +313,7 @@ export async function POST(req: NextRequest) {
       .filter((n) => n.showInBrowser && !n.browserShown && includeBrowser)
       .slice(0, NOTIFICATION_CONFIG.MAX_BROWSER_NOTIFICATIONS);
 
-    // 10. Contar total não lidas (MANTIDO)
+    // 9. Contar total não lidas
     const totalUnread = await prisma.notification.count({
       where: {
         userId,
@@ -442,7 +322,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 11. Limpar notificações expiradas (MANTIDO)
+    // 10. Limpar notificações expiradas
     await prisma.notification.deleteMany({
       where: {
         userId,
@@ -468,7 +348,7 @@ export async function POST(req: NextRequest) {
     };
 
     console.log(
-      `✅ [STUDENT-CHECK] Verificação concluída - ${createdNotifications.length} notificações automáticas criadas`
+      `✅ [STUDENT-CHECK] Verificação concluída - ${createdNotifications.length} notificações criadas (sem duplicatas)`
     );
 
     return NextResponse.json(result);

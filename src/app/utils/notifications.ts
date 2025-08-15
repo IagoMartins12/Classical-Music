@@ -1,4 +1,4 @@
-// app/utils/notifications.ts - ATUALIZADO COM PREVENÇÃO DE DUPLICATAS
+// app/utils/notifications.ts - CORRIGIDO COM PREVENÇÃO ROBUSTA DE DUPLICATAS
 import {
   NotificationData,
   NotificationType,
@@ -11,8 +11,8 @@ import {
 import crypto from 'crypto';
 
 /**
- * 🆕 Helper para criar hash único de notificação
- * Usado para prevenir duplicatas absolutas
+ * 🆕 Helper para criar hash único MAIS ESPECÍFICO
+ * Inclui data específica para notificações baseadas em tempo
  */
 export const createNotificationUniqueHash = (
   type: NotificationType,
@@ -28,6 +28,28 @@ export const createNotificationUniqueHash = (
 
   // Para tipos específicos, incluir metadados relevantes
   switch (type) {
+    case 'ASSIGNMENT_DUE_SOON':
+    case 'ASSIGNMENT_DUE_TOMORROW':
+    case 'ASSIGNMENT_OVERDUE':
+      // Incluir data de vencimento E data atual para permitir apenas 1 por dia
+      if (metadata?.dueDate) {
+        const dueDate = new Date(metadata.dueDate).toISOString().split('T')[0];
+        const today = new Date().toISOString().split('T')[0];
+        hashInput += `_${dueDate}_${today}`;
+      }
+      break;
+
+    case 'LESSON_STARTING_SOON':
+    case 'LESSON_TOMORROW':
+      // Incluir data da aula específica
+      if (metadata?.lessonTime) {
+        const lessonDate = new Date(metadata.lessonTime)
+          .toISOString()
+          .split('T')[0];
+        hashInput += `_${lessonDate}`;
+      }
+      break;
+
     case 'NEW_STUDENT_FEEDBACK':
       // Incluir timestamp do feedback para detectar mudanças reais
       if (metadata?.feedbackDate) {
@@ -39,23 +61,6 @@ export const createNotificationUniqueHash = (
       // Incluir timestamp de completion para detectar novas submissions
       if (metadata?.assignmentCompletedAt) {
         hashInput += `_${metadata.assignmentCompletedAt}`;
-      }
-      break;
-
-    case 'LESSON_STARTING_SOON':
-    case 'LESSON_TOMORROW':
-      // Incluir data da aula para distinguir aulas diferentes
-      if (metadata?.lessonTime) {
-        hashInput += `_${metadata.lessonTime}`;
-      }
-      break;
-
-    case 'ASSIGNMENT_DUE_SOON':
-    case 'ASSIGNMENT_DUE_TOMORROW':
-    case 'ASSIGNMENT_OVERDUE':
-      // Incluir data de vencimento
-      if (metadata?.dueDate) {
-        hashInput += `_${metadata.dueDate}`;
       }
       break;
 
@@ -79,63 +84,22 @@ export const createNotificationUniqueHash = (
 };
 
 /**
- * 🆕 Helper para verificar se notificação já existe (query otimizada)
+ * 🆕 Helper para verificar se notificação já existe usando HASH ÚNICO
  */
 export const buildDuplicateCheckQuery = (
   userId: string,
   type: NotificationType,
-  relatedEntityId?: string,
-  metadata?: Record<string, any>
+  uniqueHash: string,
+  relatedEntityId?: string
 ) => {
   const now = new Date();
 
-  const baseQuery = {
+  return {
     userId,
-    type,
+    uniqueHash, // 🔥 PRINCIPAL MUDANÇA - usar hash único como chave primária
     status: { in: ['UNREAD', 'READ'] },
     expiresAt: { gte: now }, // Apenas não expiradas
   };
-
-  // Adicionar filtro por entidade relacionada se existe
-  if (relatedEntityId) {
-    (baseQuery as any).relatedEntityId = relatedEntityId;
-  }
-
-  // Para tipos específicos, adicionar verificações de metadata
-  switch (type) {
-    case 'NEW_STUDENT_FEEDBACK':
-      if (metadata?.feedbackDate) {
-        (baseQuery as any).metadata = {
-          path: ['feedbackDate'],
-          equals: metadata.feedbackDate,
-        };
-      }
-      break;
-
-    case 'ASSIGNMENT_FEEDBACK_NEEDED':
-      if (metadata?.assignmentCompletedAt) {
-        (baseQuery as any).metadata = {
-          path: ['assignmentCompletedAt'],
-          equals: metadata.assignmentCompletedAt,
-        };
-      }
-      break;
-
-    case 'PRACTICE_REMINDER':
-      // Para lembretes de prática, verificar se já existe um hoje
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
-      const endOfDay = new Date();
-      endOfDay.setHours(23, 59, 59, 999);
-
-      (baseQuery as any).createdAt = {
-        gte: startOfDay,
-        lte: endOfDay,
-      };
-      break;
-  }
-
-  return baseQuery;
 };
 
 /**
@@ -252,46 +216,71 @@ export class NotificationBuilder {
 }
 
 /**
- * Factory functions atualizadas para tipos específicos de notificação
+ * 🆕 Helper para executar verificação de duplicata MAIS ROBUSTA
+ */
+export const createNotificationSafely = async (
+  prisma: any,
+  notificationData: CreateNotificationData & { uniqueHash?: string }
+) => {
+  return await prisma.$transaction(async (tx: any) => {
+    // 🔥 VERIFICAÇÃO BASEADA EM HASH ÚNICO
+    if (notificationData.uniqueHash) {
+      const existing = await tx.notification.findFirst({
+        where: {
+          userId: notificationData.userId,
+          uniqueHash: notificationData.uniqueHash,
+          status: { in: ['UNREAD', 'read'] },
+          expiresAt: { gte: new Date() },
+        },
+      });
+
+      if (existing) {
+        console.log('📬 [DUPLICATE-PREVENTION] Notification already exists:', {
+          type: notificationData.type,
+          hash: notificationData.uniqueHash,
+          existingId: existing.id,
+        });
+        return null; // Já existe
+      }
+    }
+
+    // Criar notificação
+    const created = await tx.notification.create({
+      data: notificationData,
+    });
+
+    console.log('📬 [NOTIFICATION-CREATED] New notification:', {
+      id: created.id,
+      type: created.type,
+      title: created.title,
+      hash: created.uniqueHash,
+    });
+
+    return created;
+  });
+};
+
+/**
+ * Factory functions CORRIGIDAS com hash único
  */
 export const NotificationFactory = {
-  // === AULAS ===
-  lessonStartingSoon: (
-    userId: string,
-    lessonId: string,
-    studentName: string,
-    time: string,
-    lessonTime: string
-  ) => {
-    return new NotificationBuilder(userId, 'LESSON_STARTING_SOON')
-      .title('Aula em 30 minutos')
-      .message(`Sua aula com ${studentName} começará em breve`)
-      .action('Ver Aula', `/teacher/lessons/${lessonId}`)
-      .relatedTo('lesson', lessonId)
-      .metadata({ studentName, time, lessonTime })
-      .showInBrowser(true)
-      .generateUniqueHash()
-      .build();
-  },
-
-  lessonTomorrow: (
-    userId: string,
-    lessonId: string,
-    studentName: string,
-    time: string,
-    lessonTime: string
-  ) => {
-    return new NotificationBuilder(userId, 'LESSON_TOMORROW')
-      .title('Aula amanhã')
-      .message(`Lembre-se: aula com ${studentName} amanhã às ${time}`)
-      .action('Ver Agenda', '/teacher/calendar')
-      .relatedTo('lesson', lessonId)
-      .metadata({ studentName, time, lessonTime })
-      .generateUniqueHash()
-      .build();
-  },
-
   // === TAREFAS ===
+  assignmentDueTomorrow: (
+    userId: string,
+    assignmentId: string,
+    assignmentTitle: string,
+    dueDate: string
+  ) => {
+    return new NotificationBuilder(userId, 'ASSIGNMENT_DUE_TOMORROW')
+      .title('Tarefa vence amanhã')
+      .message(`A tarefa "${assignmentTitle}" vence amanhã`)
+      .action('Ver Tarefa', `/student/assignments/${assignmentId}`)
+      .relatedTo('assignment', assignmentId)
+      .metadata({ assignmentTitle, dueDate })
+      .generateUniqueHash()
+      .build();
+  },
+
   assignmentDueSoon: (
     userId: string,
     assignmentId: string,
@@ -309,103 +298,61 @@ export const NotificationFactory = {
       .build();
   },
 
-  assignmentFeedbackNeeded: (
+  assignmentOverdue: (
     userId: string,
     assignmentId: string,
-    studentName: string,
     assignmentTitle: string,
-    assignmentCompletedAt: string
+    dueDate: string
   ) => {
-    return new NotificationBuilder(userId, 'ASSIGNMENT_FEEDBACK_NEEDED')
-      .title('Tarefa precisa de feedback')
-      .message(
-        `${studentName} completou "${assignmentTitle}" e aguarda seu feedback`
-      )
-      .action('Dar Feedback', `/teacher/assignments/${assignmentId}`)
+    return new NotificationBuilder(userId, 'ASSIGNMENT_OVERDUE')
+      .title('Tarefa em atraso')
+      .message(`A tarefa "${assignmentTitle}" está em atraso`)
+      .action('Ver Tarefa', `/student/assignments/${assignmentId}`)
       .relatedTo('assignment', assignmentId)
-      .metadata({ studentName, assignmentTitle, assignmentCompletedAt })
+      .metadata({ assignmentTitle, dueDate })
+      .priority('HIGH')
       .generateUniqueHash()
       .build();
   },
 
-  newStudentFeedback: (
+  // === AULAS ===
+  lessonStartingSoon: (
     userId: string,
-    assignmentId: string,
+    lessonId: string,
     teacherName: string,
-    assignmentTitle: string,
-    feedbackDate: string
+    time: string,
+    lessonTime: string
   ) => {
-    return new NotificationBuilder(userId, 'NEW_STUDENT_FEEDBACK')
-      .title('Novo feedback do professor')
-      .message(`${teacherName} deu feedback na tarefa "${assignmentTitle}"`)
-      .action('Ver Feedback', `/student/assignments/${assignmentId}`)
-      .relatedTo('assignment', assignmentId)
-      .metadata({ teacherName, assignmentTitle, feedbackDate })
+    return new NotificationBuilder(userId, 'LESSON_STARTING_SOON')
+      .title('Aula em 30 minutos')
+      .message(`Sua aula com ${teacherName} começará em breve`)
+      .action('Ver Aula', `/student/lessons/${lessonId}`)
+      .relatedTo('lesson', lessonId)
+      .metadata({ teacherName, time, lessonTime })
+      .showInBrowser(true)
       .generateUniqueHash()
       .build();
   },
 
-  // === ESTUDOS ===
-  practiceReminder: (userId: string) => {
-    return new NotificationBuilder(userId, 'PRACTICE_REMINDER')
-      .title('Hora de praticar!')
-      .message('Que tal dedicar um tempo aos seus estudos musicais hoje?')
-      .action('Ver Estudos', '/learning')
-      .relatedTo('practice', '')
-      .expiresAt(new Date(Date.now() + 24 * 60 * 60 * 1000)) // 24h
+  lessonTomorrow: (
+    userId: string,
+    lessonId: string,
+    teacherName: string,
+    time: string,
+    lessonTime: string
+  ) => {
+    return new NotificationBuilder(userId, 'LESSON_TOMORROW')
+      .title('Aula amanhã')
+      .message(`Lembre-se: aula com ${teacherName} amanhã às ${time}`)
+      .action('Ver Agenda', '/student/lessons')
+      .relatedTo('lesson', lessonId)
+      .metadata({ teacherName, time, lessonTime })
       .generateUniqueHash()
       .build();
   },
 };
 
-/**
- * 🆕 Helper para executar verificação de duplicata segura com transação
- */
-export const createNotificationSafely = async (
-  prisma: any,
-  notificationData: CreateNotificationData & { uniqueHash?: string }
-) => {
-  return await prisma.$transaction(async (tx: any) => {
-    // Verificação final dentro da transação
-    const duplicateQuery = buildDuplicateCheckQuery(
-      notificationData.userId,
-      notificationData.type,
-      notificationData.relatedEntityId,
-      notificationData.metadata
-    );
-
-    const existing = await tx.notification.findFirst({
-      where: duplicateQuery,
-    });
-
-    if (existing) {
-      console.log('📬 [DUPLICATE-PREVENTION] Notification already exists:', {
-        type: notificationData.type,
-        entityId: notificationData.relatedEntityId,
-        existingId: existing.id,
-      });
-      return null; // Já existe
-    }
-
-    // Criar notificação
-    const created = await tx.notification.create({
-      data: notificationData,
-    });
-
-    console.log('📬 [NOTIFICATION-CREATED] New notification:', {
-      id: created.id,
-      type: created.type,
-      title: created.title,
-      entityId: created.relatedEntityId,
-    });
-
-    return created;
-  });
-};
-
-/**
- * Helpers existentes mantidos...
- */
+// Helpers existentes mantidos...
 export const getNotificationCache = () => {
   if (typeof window === 'undefined') return { lastShown: {} };
 
@@ -432,9 +379,6 @@ export const saveNotificationCache = (cache: any) => {
   }
 };
 
-/**
- * Helper para agrupar notificações por data
- */
 export const groupNotificationsByDate = (notifications: NotificationData[]) => {
   const groups: Record<string, NotificationData[]> = {};
 
@@ -456,9 +400,6 @@ export const groupNotificationsByDate = (notifications: NotificationData[]) => {
   return groups;
 };
 
-/**
- * Helper para determinar cor da prioridade
- */
 export const getPriorityColor = (priority: NotificationPriority): string => {
   switch (priority) {
     case 'CRITICAL':
@@ -472,9 +413,6 @@ export const getPriorityColor = (priority: NotificationPriority): string => {
   }
 };
 
-/**
- * Helper para limpar notificações expiradas do cache local
- */
 export const cleanupExpiredNotifications = (
   notifications: NotificationData[]
 ): NotificationData[] => {

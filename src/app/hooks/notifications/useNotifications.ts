@@ -20,30 +20,65 @@ interface UseNotificationsOptions {
 
 const STORAGE_KEY = 'opus_atlas_notification_cache';
 
-// Helper para cache local simplificado (apenas para prevenção de duplicatas)
+// 🔥 CACHE APRIMORADO - trackeia notificações por hash único
 const getNotificationCache = () => {
-  if (typeof window === 'undefined') return { shownNotifications: new Set() };
+  if (typeof window === 'undefined')
+    return {
+      shownNotifications: new Set(),
+      lastCleanup: Date.now(),
+    };
+
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
-    const parsed = stored ? JSON.parse(stored) : { shownNotifications: [] };
+    const parsed = stored
+      ? JSON.parse(stored)
+      : {
+          shownNotifications: [],
+          lastCleanup: Date.now(),
+        };
+
     return {
       shownNotifications: new Set(parsed.shownNotifications || []),
+      lastCleanup: parsed.lastCleanup || Date.now(),
     };
   } catch {
-    return { shownNotifications: new Set() };
+    return {
+      shownNotifications: new Set(),
+      lastCleanup: Date.now(),
+    };
   }
 };
 
 const saveNotificationCache = (cache: any) => {
   if (typeof window === 'undefined') return;
+
   try {
     const cacheData = {
       shownNotifications: Array.from(cache.shownNotifications),
+      lastCleanup: cache.lastCleanup,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cacheData));
   } catch (error) {
     console.warn('Failed to save notification cache:', error);
   }
+};
+
+// 🔥 DEBOUNCE para evitar múltiplas chamadas
+const useDebounce = (callback: Function, delay: number) => {
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
+
+  return useCallback(
+    (...args: any[]) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        callback(...args);
+      }, delay);
+    },
+    [callback, delay]
+  );
 };
 
 export const useNotifications = ({
@@ -61,18 +96,40 @@ export const useNotifications = ({
   const isPageVisible = usePageVisibility();
   const { sendBrowserNotification } = useBrowserNotifications();
 
-  // Refs to prevent re-render loops
+  // Refs para evitar re-render loops
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const isCheckingRef = useRef(false);
   const lastCheckRef = useRef<Date | null>(null);
   const cacheRef = useRef(getNotificationCache());
+  const requestIdRef = useRef(0); // Para cancelar requests antigos
 
-  // Stable check function that doesn't change reference
+  // 🔥 LIMPEZA AUTOMÁTICA DO CACHE
+  const cleanupCache = useCallback(() => {
+    const cache = cacheRef.current;
+    const now = Date.now();
+
+    // Limpar cache a cada 6 horas
+    if (now - cache.lastCleanup > 6 * 60 * 60 * 1000) {
+      console.log('📬 [CACHE-CLEANUP] Limpando cache antigo');
+
+      // Manter apenas últimas 50 notificações
+      const recentIds = Array.from(cache.shownNotifications).slice(-50);
+      cache.shownNotifications = new Set(recentIds);
+      cache.lastCleanup = now;
+
+      cacheRef.current = cache;
+      saveNotificationCache(cache);
+    }
+  }, []);
+
+  // 🔥 FUNÇÃO DE CHECK COM DEBOUNCE E DEDUPLICAÇÃO
   const checkNotifications = useCallback(
     async (force = false): Promise<NotificationCheckResult | null> => {
-      // Prevent multiple simultaneous calls
+      const requestId = ++requestIdRef.current;
+
+      // Prevenir múltiplas chamadas simultâneas
       if (isCheckingRef.current && !force) {
-        console.log('📬 [NOTIFICATIONS] Check already in progress, skipping');
+        console.log('📬 [NOTIFICATIONS] Check já em progresso, pulando');
         return null;
       }
 
@@ -83,24 +140,22 @@ export const useNotifications = ({
       try {
         const now = new Date();
 
-        // Throttle requests - don't check too frequently (but more lenient)
+        // Throttle mais rigoroso
         if (!force && lastCheckRef.current) {
           const timeSinceLastCheck =
             now.getTime() - lastCheckRef.current.getTime();
-          const minInterval = 5 * 1000; // Minimum 5 seconds between checks (reduced)
+          const minInterval = 10 * 1000; // Mínimo 10 segundos
 
           if (timeSinceLastCheck < minInterval) {
             console.log(
-              '📬 [NOTIFICATIONS] Too soon since last check, skipping'
+              '📬 [NOTIFICATIONS] Muito cedo desde última verificação'
             );
             return null;
           }
         }
 
         console.log(
-          '📬 [NOTIFICATIONS] Checking notifications for',
-          userRole,
-          userId
+          `📬 [NOTIFICATIONS] Verificando notificações para ${userRole} ${userId}`
         );
 
         const response = await fetch(`/api/${userRole}/notifications/check`, {
@@ -113,22 +168,30 @@ export const useNotifications = ({
           }),
         });
 
+        // Verificar se request ainda é válido
+        if (requestId !== requestIdRef.current) {
+          console.log(
+            '📬 [NOTIFICATIONS] Request cancelado (mais recente existe)'
+          );
+          return null;
+        }
+
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
 
         const result: NotificationCheckResult = await response.json();
 
-        console.log('📬 [NOTIFICATIONS] Got result:', {
-          newNotifications: result.newNotifications?.length || 0,
-          toastNotifications: result.toastNotifications?.length || 0,
-          totalUnread: result.totalUnread,
+        console.log('📬 [NOTIFICATIONS] Resultado:', {
+          novas: result.newNotifications?.length || 0,
+          toast: result.toastNotifications?.length || 0,
+          naoLidas: result.totalUnread,
         });
 
-        // Process notifications (MELHORADO - sem cooldown)
+        // Processar notificações com deduplicação
         await processNotifications(result);
 
-        // Update state
+        // Atualizar estado
         setNotifications((prev) => {
           const existingIds = new Set(prev.map((n) => n.id));
           const newOnes =
@@ -139,16 +202,16 @@ export const useNotifications = ({
 
         setUnreadCount(result.totalUnread || 0);
 
-        // Update refs
+        // Atualizar refs
         lastCheckRef.current = now;
         setLastCheck(now);
 
+        // Limpar cache periodicamente
+        cleanupCache();
+
         return result;
       } catch (error) {
-        console.error(
-          '📬 [NOTIFICATIONS] Error checking notifications:',
-          error
-        );
+        console.error('📬 [NOTIFICATIONS] Erro:', error);
         setError(
           error instanceof Error
             ? error.message
@@ -156,33 +219,38 @@ export const useNotifications = ({
         );
         return null;
       } finally {
-        isCheckingRef.current = false;
-        setIsChecking(false);
+        // Apenas alterar estado se este ainda for o request mais recente
+        if (requestId === requestIdRef.current) {
+          isCheckingRef.current = false;
+          setIsChecking(false);
+        }
       }
     },
-    [userRole, userId, isPageVisible]
-  ); // Stable dependencies
+    [userRole, userId, isPageVisible, cleanupCache]
+  );
 
-  // Process notifications (MELHORADO - sem cooldown)
+  // 🔥 PROCESSAMENTO COM DEDUPLICAÇÃO APRIMORADA
   const processNotifications = useCallback(
     async (result: NotificationCheckResult) => {
       const cache = cacheRef.current;
 
-      // Process toast notifications (SEM VERIFICAÇÃO DE COOLDOWN)
+      // Processar toast notifications
       if (result.toastNotifications && result.toastNotifications.length > 0) {
         console.log(
-          '📬 [NOTIFICATIONS] Processing',
-          result.toastNotifications.length,
-          'toast notifications'
+          `📬 [NOTIFICATIONS] Processando ${result.toastNotifications.length} toast notifications`
         );
 
         for (const notification of result.toastNotifications) {
-          // Verificação simples baseada apenas no ID da notificação
-          const notificationId = notification.id;
+          // 🔥 CHAVE ÚNICA: usar hash se existir, senão ID + timestamp
+          const uniqueKey =
+            notification.uniqueHash ||
+            `${notification.id}_${new Date(
+              notification.createdAt
+            ).toDateString()}`;
 
-          // Verificar se já foi mostrada nesta sessão
-          if (!cache.shownNotifications.has(notificationId)) {
-            // Show toast based on priority
+          // Verificar se já foi mostrada
+          if (!cache.shownNotifications.has(uniqueKey)) {
+            // Determinar tipo do toast
             const toastType =
               notification.priority === 'HIGH' ||
               notification.priority === 'CRITICAL'
@@ -199,31 +267,35 @@ export const useNotifications = ({
                   : 4000,
             };
 
-            // Show toast
+            // Mostrar toast
             toast[toastType](
               notification.title,
               notification.message,
               toastOptions
             );
 
-            // Adicionar ao cache local
-            cache.shownNotifications.add(notificationId);
+            // Adicionar ao cache
+            cache.shownNotifications.add(uniqueKey);
 
-            // Mark as shown in server
+            // Marcar como mostrada no servidor
             markAsShown(notification.id, 'toast');
+
+            console.log(`📬 [TOAST] Mostrado: ${notification.title}`);
+          } else {
+            console.log(
+              `📬 [TOAST] Pulado (já mostrado): ${notification.title}`
+            );
           }
         }
       }
 
-      // Process browser notifications (SEM VERIFICAÇÃO DE COOLDOWN)
+      // Processar browser notifications
       if (
         result.browserNotifications &&
         result.browserNotifications.length > 0
       ) {
         console.log(
-          '📬 [NOTIFICATIONS] Processing',
-          result.browserNotifications.length,
-          'browser notifications'
+          `📬 [NOTIFICATIONS] Processando ${result.browserNotifications.length} browser notifications`
         );
 
         for (const notification of result.browserNotifications) {
@@ -236,21 +308,17 @@ export const useNotifications = ({
         }
       }
 
-      // Save updated cache
+      // Salvar cache atualizado
       cacheRef.current = cache;
       saveNotificationCache(cache);
-
-      // Limpar cache local se ficar muito grande (manter apenas últimas 100)
-      if (cache.shownNotifications.size > 100) {
-        const recentIds = Array.from(cache.shownNotifications).slice(-50);
-        cache.shownNotifications = new Set(recentIds);
-        saveNotificationCache(cache);
-      }
     },
     [toast, sendBrowserNotification]
   );
 
-  // Mark as shown - stable function
+  // Debounced check function
+  const debouncedCheck = useDebounce(checkNotifications, 1000);
+
+  // Mark as shown - função estável
   const markAsShown = useCallback(
     async (notificationId: string, type: 'toast' | 'browser') => {
       try {
@@ -269,7 +337,7 @@ export const useNotifications = ({
     [userRole]
   );
 
-  // Mark as read - stable function
+  // Mark as read - função estável
   const markAsRead = useCallback(
     async (notificationId: string) => {
       try {
@@ -297,7 +365,7 @@ export const useNotifications = ({
     [userRole]
   );
 
-  // Mark all as read - stable function
+  // Mark all as read - função estável
   const markAllAsRead = useCallback(async () => {
     try {
       const response = await fetch(
@@ -322,7 +390,7 @@ export const useNotifications = ({
     }
   }, [userRole]);
 
-  // Fetch notifications - stable function
+  // Fetch notifications - função estável
   const fetchNotifications = useCallback(
     async (page = 1, limit = 20) => {
       try {
@@ -332,7 +400,6 @@ export const useNotifications = ({
 
         if (response.ok) {
           const data = await response.json();
-          // Mapear os dados do Prisma para o tipo correto
           return data.notifications.map(
             mapPrismaNotificationToData
           ) as NotificationData[];
@@ -345,37 +412,37 @@ export const useNotifications = ({
     [userRole]
   );
 
-  // Start/stop checking functions - stable
+  // Start checking - função estável
   const startChecking = useCallback(() => {
     if (intervalRef.current) {
-      console.log('📬 [NOTIFICATIONS] Interval already running');
+      console.log('📬 [NOTIFICATIONS] Interval já rodando');
       return;
     }
 
     console.log(
-      '📬 [NOTIFICATIONS] Starting notification checks every',
-      NOTIFICATION_CONFIG.CHECK_INTERVAL / 1000,
-      'seconds'
+      `📬 [NOTIFICATIONS] Iniciando verificações a cada ${
+        NOTIFICATION_CONFIG.CHECK_INTERVAL / 1000
+      }s`
     );
 
-    // Initial check
+    // Check inicial
     checkNotifications(false);
 
-    // Set interval for subsequent checks
+    // Interval para checks subsequentes
     intervalRef.current = setInterval(() => {
-      checkNotifications(false);
+      debouncedCheck(false);
     }, NOTIFICATION_CONFIG.CHECK_INTERVAL);
-  }, [checkNotifications]);
+  }, [checkNotifications, debouncedCheck]);
 
   const stopChecking = useCallback(() => {
     if (intervalRef.current) {
-      console.log('📬 [NOTIFICATIONS] Stopping notification checks');
+      console.log('📬 [NOTIFICATIONS] Parando verificações');
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
   }, []);
 
-  // Effect for auto-start/stop - ONLY runs when autoStart or visibility changes
+  // Effect para auto-start/stop
   useEffect(() => {
     if (autoStart && isPageVisible) {
       startChecking();
@@ -383,13 +450,12 @@ export const useNotifications = ({
       stopChecking();
     }
 
-    // Cleanup on unmount
     return () => {
       stopChecking();
     };
   }, [autoStart, isPageVisible, startChecking, stopChecking]);
 
-  // Force refresh function
+  // Force refresh
   const refresh = useCallback(() => {
     checkNotifications(true);
   }, [checkNotifications]);
@@ -403,7 +469,7 @@ export const useNotifications = ({
     error,
 
     // Functions
-    checkNotifications: refresh, // Use the force refresh version for manual calls
+    checkNotifications: refresh,
     markAsRead,
     markAllAsRead,
     fetchNotifications,

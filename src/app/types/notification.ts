@@ -66,6 +66,7 @@ export interface NotificationData {
   createdAt: Date;
   updatedAt: Date;
   readAt?: Date;
+  uniqueHash?: string | null;
 }
 
 export interface CreateNotificationData {
