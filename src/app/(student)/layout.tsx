@@ -1,4 +1,4 @@
-// app/(student)/layout.tsx - ATUALIZADO COM NOTIFICAÇÕES
+// app/(student)/layout.tsx - ATUALIZADO COM VERIFICAÇÃO DE STUDENT
 import type { Metadata } from 'next';
 import { FavoritesProvider } from '../providers/FavoritesProvider';
 import { Toaster } from 'react-hot-toast';
@@ -8,6 +8,7 @@ import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
 import StudentNavigation from '../components/TeacherSystem/StudentNavigation';
 import NotificationManager from '../components/Notification/NotificationManager';
+import StudentVerificationRequired from '../components/VerificationsProviders/StudentVerificationRequired';
 
 export const metadata: Metadata = {
   title: {
@@ -58,8 +59,65 @@ export default async function StudentLayout({
   }
 
   // Verificar se tem role de estudante
-  if (!session.user?.isStudent) {
+  if (!session.user?.isStudent && !session.user.studentInviteStatus) {
     redirect('/access-denied');
+  }
+
+  // 🆕 VERIFICAR STATUS DO CONVITE DO STUDENT
+  console.log('🔍 Verificando status do student:', {
+    userId: session.user.id,
+    isStudent: session.user.isStudent,
+    studentInviteStatus: session.user.studentInviteStatus,
+  });
+
+  // Se não tem professor vinculado (null/undefined), redirecionar para página específica
+  if (!session.user.studentInviteStatus) {
+    console.log(
+      '⚠️ Student sem professor vinculado, redirecionando para access-denied'
+    );
+    redirect('/access-denied?reason=no_teacher');
+  }
+
+  // Se convite foi DECLINED, redirecionar para access-denied
+  if (session.user.studentInviteStatus === 'DECLINED') {
+    console.log(
+      '❌ Convite de student foi recusado, redirecionando para access-denied'
+    );
+    redirect('/access-denied?reason=invite_declined');
+  }
+
+  // Se convite está EXPIRED, redirecionar para access-denied
+  if (session.user.studentInviteStatus === 'EXPIRED') {
+    console.log(
+      '⏰ Convite de student expirou, redirecionando para access-denied'
+    );
+    redirect('/access-denied?reason=invite_expired');
+  }
+
+  // Se convite está PENDING, mostrar tela de aguardando aprovação
+  if (session.user.studentInviteStatus === 'PENDING') {
+    console.log(
+      '⏳ Student com convite pendente, mostrando tela de aguardando aprovação'
+    );
+
+    return (
+      <StudentVerificationRequired
+        userEmail={session.user.email}
+        userName={session.user.firstName || session.user.name || undefined}
+      />
+    );
+  }
+
+  // Se chegou aqui, o status deve ser ACCEPTED - liberar acesso completo
+  if (session.user.studentInviteStatus === 'ACCEPTED') {
+    console.log('✅ Student com convite aceito, liberando acesso completo');
+  } else {
+    // Caso inesperado - log de debug e redirecionar por segurança
+    console.warn(
+      '⚠️ Status inesperado do student:',
+      session.user.studentInviteStatus
+    );
+    redirect('/access-denied?reason=unknown_status');
   }
 
   return (

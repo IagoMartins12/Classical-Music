@@ -1,10 +1,62 @@
-// app/libs/auth.ts - VERSÃO ATUALIZADA com campos de telefone
+// app/libs/auth.ts - VERSÃO ATUALIZADA com verificação teacher/student
 import { NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import prisma from '@/app/libs/prismadb';
 import { CustomPrismaAdapter } from './CustomPrismaAdapter';
+
+// 🆕 FUNÇÃO PARA BUSCAR DADOS DE VERIFICAÇÃO TEACHER/STUDENT
+async function getUserVerificationData(
+  userId: string,
+  isTeacher: boolean,
+  isStudent: boolean
+) {
+  const result = {
+    teacherVerified: null as boolean | null,
+    studentInviteStatus: null as
+      | 'PENDING'
+      | 'ACCEPTED'
+      | 'DECLINED'
+      | 'EXPIRED'
+      | null,
+  };
+
+  try {
+    // 🔥 SÓ BUSCAR SE O USUÁRIO FOR TEACHER OU STUDENT (performance)
+    if (isTeacher) {
+      console.log('🔍 Buscando dados de verificação do teacher para:', userId);
+      const teacherProfile = await prisma.teacher.findUnique({
+        where: { userId },
+        select: { isVerified: true },
+      });
+      result.teacherVerified = teacherProfile?.isVerified || false;
+      console.log('✅ Teacher verification status:', result.teacherVerified);
+    } else {
+      console.log('🔍 Buscando dados de convite do student para:', userId);
+      // Buscar o status do convite mais recente (ACCEPTED tem prioridade)
+      const studentRelation = await prisma.teacherStudent.findFirst({
+        where: {
+          student: { userId },
+          isActive: true,
+        },
+        select: { inviteStatus: true },
+        orderBy: [
+          { inviteStatus: 'desc' }, // ACCEPTED vem antes
+          { createdAt: 'desc' }, // Mais recente primeiro
+        ],
+      });
+      result.studentInviteStatus = studentRelation?.inviteStatus || null;
+      console.log('✅ Student invite status:', result.studentInviteStatus);
+    }
+
+    return result;
+  } catch (error) {
+    console.error('❌ Erro ao buscar dados de verificação:', error);
+    // Em caso de erro, não bloquear login
+    return result;
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   adapter: CustomPrismaAdapter(prisma),
@@ -80,6 +132,15 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Email ou senha incorretos');
         }
 
+        // 🆕 BUSCAR DADOS DE VERIFICAÇÃO SE NECESSÁRIO
+        const verificationData = await getUserVerificationData(
+          user.id,
+          user.isTeacher || false,
+          user.isStudent || false
+        );
+
+        console.log('VERIFICATION DATA');
+
         return {
           id: user.id,
           email: user.email!,
@@ -103,6 +164,10 @@ export const authOptions: NextAuthOptions = {
           isStudent: user.isStudent,
           isTeacher: user.isTeacher,
           phoneNumber: user.phoneNumber,
+
+          // 🆕 CAMPOS DE VERIFICAÇÃO
+          teacherVerified: verificationData.teacherVerified,
+          studentInviteStatus: verificationData.studentInviteStatus,
 
           favoriteComposerId: user.favoriteComposerId,
           favoriteEpochId: user.favoriteEpochId,
@@ -170,6 +235,13 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (fullUser) {
+          // 🆕 BUSCAR DADOS DE VERIFICAÇÃO SE NECESSÁRIO
+          const verificationData = await getUserVerificationData(
+            fullUser.id,
+            fullUser.isTeacher || false,
+            fullUser.isStudent || false
+          );
+
           return {
             ...token,
             id: fullUser.id,
@@ -189,8 +261,12 @@ export const authOptions: NextAuthOptions = {
             phone: fullUser.phone,
             phoneCountryCode: fullUser.phoneCountryCode,
             phoneNumber: fullUser.phoneNumber,
-            isStudent: user.isStudent,
-            isTeacher: user.isTeacher,
+            isStudent: fullUser.isStudent,
+            isTeacher: fullUser.isTeacher,
+
+            // 🆕 CAMPOS DE VERIFICAÇÃO
+            teacherVerified: verificationData.teacherVerified,
+            studentInviteStatus: verificationData.studentInviteStatus,
 
             favoriteComposerId: fullUser.favoriteComposerId,
             favoriteEpochId: fullUser.favoriteEpochId,
@@ -243,6 +319,13 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (freshUser) {
+          // 🆕 BUSCAR DADOS DE VERIFICAÇÃO ATUALIZADOS
+          const verificationData = await getUserVerificationData(
+            freshUser.id,
+            freshUser.isTeacher || false,
+            freshUser.isStudent || false
+          );
+
           return {
             ...token,
             firstName: freshUser.firstName,
@@ -261,8 +344,13 @@ export const authOptions: NextAuthOptions = {
             phone: freshUser.phone,
             phoneCountryCode: freshUser.phoneCountryCode,
             phoneNumber: freshUser.phoneNumber,
-            isStudent: user?.isStudent,
-            isTeacher: user?.isTeacher,
+            isStudent: freshUser.isStudent,
+            isTeacher: freshUser.isTeacher,
+
+            // 🆕 CAMPOS DE VERIFICAÇÃO ATUALIZADOS
+            teacherVerified: verificationData.teacherVerified,
+            studentInviteStatus: verificationData.studentInviteStatus,
+
             favoriteComposerId: freshUser.favoriteComposerId,
             favoriteEpochId: freshUser.favoriteEpochId,
             experienceLevel: freshUser.experienceLevel,
@@ -317,6 +405,13 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (user) {
+          // 🆕 BUSCAR DADOS DE VERIFICAÇÃO PARA SESSÃO
+          const verificationData = await getUserVerificationData(
+            user.id,
+            user.isTeacher || false,
+            user.isStudent || false
+          );
+
           session.user = {
             id: user.id,
             email: user.email!,
@@ -340,6 +435,11 @@ export const authOptions: NextAuthOptions = {
             phoneNumber: user.phoneNumber,
             isStudent: user.isStudent,
             isTeacher: user.isTeacher,
+
+            // 🆕 CAMPOS DE VERIFICAÇÃO
+            teacherVerified: verificationData.teacherVerified,
+            studentInviteStatus: verificationData.studentInviteStatus,
+
             favoriteComposerId: user.favoriteComposerId,
             favoriteEpochId: user.favoriteEpochId,
             experienceLevel: user.experienceLevel,

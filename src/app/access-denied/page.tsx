@@ -31,6 +31,7 @@ import Navbar from '../components/Navbar';
 import AdminHeader from '../components/Admin/AdminHeader';
 import AdminSidebar from '../components/Admin/AdminSidebar';
 import Image from 'next/image';
+import { LuPiano } from 'react-icons/lu';
 
 interface SuggestionCard {
   title: string;
@@ -228,10 +229,10 @@ export default function AccessDenied() {
     switch (userRole) {
       case 0: // Estudante
         suggestions.push({
-          title: 'Área do Estudante',
-          description: 'Acesse sua área personalizada',
+          title: 'Explorar peças ',
+          description: 'Navegue pelo nosso conteúdo de peças',
           href: '/student',
-          icon: GiGraduateCap,
+          icon: LuPiano,
           color: 'from-accent-green to-accent-blue',
         });
 
@@ -321,8 +322,6 @@ export default function AccessDenied() {
     if (!session?.user) return '';
 
     switch (session.user.role) {
-      case 0:
-        return 'Estudante';
       case 1:
         return 'Professor';
       case 2:

@@ -126,7 +126,7 @@ export default function DeclineStudentInvitePage() {
             Tem certeza de que deseja recusar este convite para ser aluno?
           </p>
 
-          <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-xl p-6 mb-8">
+          <div className="bg-theme-elevated rounded-xl p-6 mb-8">
             <h3 className="text-xl font-semibold text-accent-amber mb-4">
               ⚠️ Esta ação é irreversível
             </h3>
@@ -153,7 +153,7 @@ export default function DeclineStudentInvitePage() {
             </div>
           </div>
 
-          <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-xl p-6 mb-8">
+          <div className="bg-theme-elevated rounded-xl p-6 mb-8">
             <h4 className="font-medium text-accent-blue mb-3">
               💡 Alternativas
             </h4>

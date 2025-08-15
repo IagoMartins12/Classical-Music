@@ -1,4 +1,4 @@
-// app/(teacher)/layout.tsx - ATUALIZADO COM NOTIFICAÇÕES
+// app/(teacher)/layout.tsx - ATUALIZADO COM VERIFICAÇÃO DE TEACHER
 import type { Metadata } from 'next';
 import { FavoritesProvider } from '../providers/FavoritesProvider';
 import { Toaster } from 'react-hot-toast';
@@ -8,6 +8,7 @@ import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
 import TeacherNavigation from '../components/TeacherSystem/TeacherNavigation';
 import NotificationManager from '../components/Notification/NotificationManager';
+import TeacherVerificationRequired from '../components/VerificationsProviders/TeacherVerificationRequired';
 
 export const metadata: Metadata = {
   title: {
@@ -61,6 +62,32 @@ export default async function TeacherLayout({
   if (!session.user.isTeacher || session.user.role !== 1) {
     redirect('/access-denied');
   }
+
+  // 🆕 VERIFICAR SE O TEACHER ESTÁ VERIFICADO
+  console.log('🔍 Verificando status do teacher:', {
+    userId: session.user.id,
+    isTeacher: session.user.isTeacher,
+    teacherVerified: session.user.teacherVerified,
+  });
+
+  // Se teacherVerified for false ou null, mostrar tela de verificação
+  if (
+    session.user.teacherVerified === false ||
+    session.user.teacherVerified === null
+  ) {
+    console.log(
+      '⚠️ Teacher não verificado, mostrando tela de aguardando aprovação'
+    );
+
+    return (
+      <TeacherVerificationRequired
+        userEmail={session.user.email}
+        userName={session.user.firstName || session.user.name || undefined}
+      />
+    );
+  }
+
+  console.log('✅ Teacher verificado, liberando acesso completo');
 
   return (
     <AdsProvider>

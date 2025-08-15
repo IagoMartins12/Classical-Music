@@ -2,7 +2,7 @@
 // Componente para proteger funcionalidades que exigem email verificado
 
 import { ReactNode } from 'react';
-import EmailVerificationRequired from '../EmailVerificationRequired';
+import EmailVerificationRequired from '../../VerificationsProviders/EmailVerificationRequired';
 import { FiMail } from 'react-icons/fi';
 import Button from '../../Common/Button';
 

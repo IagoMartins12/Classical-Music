@@ -277,7 +277,7 @@ enum NotificationType {
   // 🆕 NOVAS: Para professores
   WELCOME_NEW_TEACHER       // Parabéns por se tornar professor
   STUDENT_DECLINED_INVITE   // Aluno declinou convite para ser aluno
-  
+  STUDENT_ACCEPTED_INVITE
   // NOTIFICAÇÕES ANTIGAS (manter para compatibilidade)
   LESSON_NO_SHOW
   ASSIGNMENT_FEEDBACK_NEEDED  // 🗑️ SERÁ REMOVIDA do check/route.ts

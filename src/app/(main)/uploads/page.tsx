@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 
 import UploadsPageServer from './pageServer';
 import AuthCheck from '@/app/components/AuthCheck';
-import EmailVerificationRequired from '@/app/components/EmailVerification/EmailVerificationRequired';
+import EmailVerificationRequired from '@/app/components/VerificationsProviders/EmailVerificationRequired';
 import { authOptions } from '@/app/libs/auth';
 import { getUserById } from '@/app/actions/auth';
 

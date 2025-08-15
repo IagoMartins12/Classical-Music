@@ -1,4 +1,4 @@
-// types/next-auth.d.ts (versão atualizada com campos de telefone)
+// types/next-auth.d.ts - VERSÃO ATUALIZADA com verificação teacher/student
 import { DefaultSession, DefaultUser } from 'next-auth';
 import { DefaultJWT } from 'next-auth/jwt';
 
@@ -27,8 +27,18 @@ declare module 'next-auth' {
       phone?: string | null; // Telefone completo (+5511999999999)
       phoneCountryCode?: string | null; // Código do país (BR, US, etc.)
       phoneNumber?: string | null; // Apenas o número (11999999999)
-      isStudent?: boolean;
-      isTeacher?: boolean;
+      isStudent?: boolean | null;
+      isTeacher?: boolean | null;
+
+      // 🆕 CAMPOS DE VERIFICAÇÃO TEACHER/STUDENT
+      teacherVerified?: boolean | null; // Se o teacher está verificado (isVerified)
+      studentInviteStatus?:
+        | 'PENDING'
+        | 'ACCEPTED'
+        | 'DECLINED'
+        | 'EXPIRED'
+        | null; // Status do convite do student
+
       // Campos existentes
       favoriteComposerId?: string | null;
       favoriteEpochId?: string | null;
@@ -62,8 +72,18 @@ declare module 'next-auth' {
     phone?: string | null; // Telefone completo (+5511999999999)
     phoneCountryCode?: string | null; // Código do país (BR, US, etc.)
     phoneNumber?: string | null; // Apenas o número (11999999999)
-    isStudent?: boolean;
-    isTeacher?: boolean;
+    isStudent?: boolean | null;
+    isTeacher?: boolean | null;
+
+    // 🆕 CAMPOS DE VERIFICAÇÃO TEACHER/STUDENT
+    teacherVerified?: boolean | null; // Se o teacher está verificado (isVerified)
+    studentInviteStatus?:
+      | 'PENDING'
+      | 'ACCEPTED'
+      | 'DECLINED'
+      | 'EXPIRED'
+      | null; // Status do convite do student
+
     // Campos existentes
     favoriteComposerId?: string | null;
     favoriteEpochId?: string | null;
@@ -106,8 +126,18 @@ declare module 'next-auth/jwt' {
     phone?: string | null; // Telefone completo (+5511999999999)
     phoneCountryCode?: string | null; // Código do país (BR, US, etc.)
     phoneNumber?: string | null; // Apenas o número (11999999999)
-    isStudent?: boolean;
-    isTeacher?: boolean;
+    isStudent?: boolean | null;
+    isTeacher?: boolean | null;
+
+    // 🆕 CAMPOS DE VERIFICAÇÃO TEACHER/STUDENT
+    teacherVerified?: boolean | null; // Se o teacher está verificado (isVerified)
+    studentInviteStatus?:
+      | 'PENDING'
+      | 'ACCEPTED'
+      | 'DECLINED'
+      | 'EXPIRED'
+      | null; // Status do convite do student
+
     // Campos existentes
     favoriteComposerId?: string | null;
     favoriteEpochId?: string | null;

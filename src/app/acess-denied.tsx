@@ -57,8 +57,8 @@ export default function AccessDenied() {
       // Estudante tentando acessar área de professor/admin
       setSuggestions([
         {
-          title: 'Área do Estudante',
-          description: 'Acesse sua área personalizada',
+          title: 'Explorar peças ',
+          description: 'Navegue pelo nosso conteúdo de peças.',
           href: '/student',
           icon: GiGraduateCap,
           color: 'from-accent-green to-accent-blue',
@@ -160,21 +160,6 @@ export default function AccessDenied() {
     return 'Usuário';
   };
 
-  const getRoleLabel = () => {
-    if (!session?.user) return '';
-
-    switch (session.user.role) {
-      case 0:
-        return 'Estudante';
-      case 1:
-        return 'Professor';
-      case 2:
-        return 'Administrador';
-      default:
-        return 'Usuário';
-    }
-  };
-
   return (
     <>
       <div className="classical-theme min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -258,9 +243,6 @@ export default function AccessDenied() {
                     <p className="text-sm text-theme-tertiary">
                       {session.user.email}
                     </p>
-                    <span className="inline-block px-2 py-1 bg-brand-primary/10 text-brand-primary text-xs rounded-full mt-1">
-                      {getRoleLabel()}
-                    </span>
                   </div>
                 </div>
               </AnimatedCard>

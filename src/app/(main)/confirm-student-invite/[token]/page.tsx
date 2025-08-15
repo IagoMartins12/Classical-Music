@@ -220,7 +220,7 @@ export default function ConfirmStudentInvitePage() {
                       <h4 className="font-medium text-accent-green mb-2">
                         📚 Seu Plano de Estudos
                       </h4>
-                      <ul className="text-sm text-accent-green opacity-90 space-y-1 text-left">
+                      <ul className="text-xs text-accent-green opacity-90 space-y-1 text-left">
                         <li>
                           • {state.relationship.maxLessonsPerWeek} aula(s) por
                           semana
@@ -246,7 +246,7 @@ export default function ConfirmStudentInvitePage() {
                       <h4 className="font-medium text-accent-green mb-2">
                         ⚡ Próximos Passos
                       </h4>
-                      <ul className="text-sm text-accent-green opacity-90 space-y-1 text-left">
+                      <ul className="text-xs text-accent-green opacity-90 space-y-1 text-left">
                         <li>• Complete seu perfil de aluno</li>
                         <li>• Defina seus objetivos musicais</li>
                         <li>• Aguarde o agendamento da primeira aula</li>

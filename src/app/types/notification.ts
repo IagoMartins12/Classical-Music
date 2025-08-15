@@ -29,6 +29,7 @@ export type NotificationType =
   | 'WELCOME_NEW_TEACHER'
   | 'WELCOME_NEW_STUDENT'
   | 'STUDENT_DECLINED_INVITE'
+  | 'STUDENT_ACCEPTED_INVITE'
 
   // NOTIFICAÇÕES ANTIGAS (manter para compatibilidade se existirem)
   | 'LESSON_NO_SHOW'
@@ -363,6 +364,13 @@ export const NOTIFICATION_TYPE_CONFIG: Record<
     showInBrowser: false,
     icon: '❌',
     color: 'accent-amber',
+  },
+  STUDENT_ACCEPTED_INVITE: {
+    priority: 'LOW',
+    showInToast: true,
+    showInBrowser: false,
+    icon: '✅',
+    color: 'accent-green',
   },
   WELCOME_NEW_STUDENT: {
     priority: 'LOW',

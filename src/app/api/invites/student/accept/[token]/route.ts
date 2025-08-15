@@ -206,6 +206,24 @@ export async function GET(
       );
     }
 
+    try {
+      await NotificationFactory.studentAcceptedInvite(
+        teacherId,
+        `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
+          'Desconhecido',
+        relationship.id,
+        user.email
+      );
+
+      console.log(
+        `📬 [DECLINE-INVITE] Notificação de declínio enviada para professor ${teacherId}`
+      );
+    } catch (notificationError) {
+      console.error(
+        '❌ [DECLINE-INVITE] Erro ao criar notificação:',
+        notificationError
+      );
+    }
     // Log de segurança
     logSecurityEvent('STUDENT_INVITE_ACCEPTED', user.id, {
       email: user.email,

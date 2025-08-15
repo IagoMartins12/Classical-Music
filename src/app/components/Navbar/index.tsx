@@ -3,7 +3,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import {
   FiMenu,
   FiX,
@@ -406,16 +406,17 @@ const Navbar: React.FC = () => {
                         </Link>
                       )}
 
-                      {user.isStudent && (
-                        <Link
-                          href="/student"
-                          className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
-                          onClick={() => setIsProfileOpen(false)}
-                        >
-                          <FaGraduationCap className="w-4 h-4" />
-                          <span>Painel do aluno</span>
-                        </Link>
-                      )}
+                      {user.isStudent ||
+                        (user.studentInviteStatus && (
+                          <Link
+                            href="/student"
+                            className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                            onClick={() => setIsProfileOpen(false)}
+                          >
+                            <FaGraduationCap className="w-4 h-4" />
+                            <span>Painel do aluno</span>
+                          </Link>
+                        ))}
                       {user.role === 2 && (
                         <Link
                           href="/admin"

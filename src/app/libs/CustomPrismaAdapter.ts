@@ -1,4 +1,4 @@
-// app/libs/CustomPrismaAdapter.ts - VERSÃO ATUALIZADA com campos de telefone
+// app/libs/CustomPrismaAdapter.ts - VERSÃO ATUALIZADA com verificação teacher/student
 import {
   Adapter,
   AdapterUser,
@@ -7,12 +7,84 @@ import {
 } from 'next-auth/adapters';
 import { PrismaClient } from '@prisma/client';
 import { sendTemplateEmail } from './newsletter/email';
+import prisma from './prismadb';
 
 interface CreateUserData {
   name?: string | null;
   email: string;
   image?: string | null;
   emailVerified?: Date | null;
+}
+
+// 🆕 FUNÇÃO PARA BUSCAR DADOS DE VERIFICAÇÃO
+async function getUserVerificationData(
+  userId: string,
+  isTeacher: boolean,
+  isStudent: boolean
+) {
+  const result = {
+    teacherVerified: null as boolean | null,
+    studentInviteStatus: null as
+      | 'PENDING'
+      | 'ACCEPTED'
+      | 'DECLINED'
+      | 'EXPIRED'
+      | null,
+  };
+
+  console.log('RESULT', result);
+
+  try {
+    // 🔥 SÓ BUSCAR SE O USUÁRIO FOR TEACHER OU STUDENT (performance)
+    if (isTeacher) {
+      console.log(
+        '🔍 [CustomAdapter] Buscando dados de verificação do teacher para:',
+        userId
+      );
+      const teacherProfile = await prisma.teacher.findUnique({
+        where: { userId },
+        select: { isVerified: true },
+      });
+      result.teacherVerified = teacherProfile?.isVerified || false;
+      console.log(
+        '✅ [CustomAdapter] Teacher verification status:',
+        result.teacherVerified
+      );
+    }
+
+    if (isStudent) {
+      console.log(
+        '🔍 [CustomAdapter] Buscando dados de convite do student para:',
+        userId
+      );
+      // Buscar o status do convite mais recente (ACCEPTED tem prioridade)
+      const studentRelation = await prisma.teacherStudent.findFirst({
+        where: {
+          student: { userId },
+          isActive: true,
+        },
+        select: { inviteStatus: true },
+        orderBy: [
+          { inviteStatus: 'desc' }, // ACCEPTED vem antes
+          { createdAt: 'desc' }, // Mais recente primeiro
+        ],
+      });
+      result.studentInviteStatus = studentRelation?.inviteStatus || null;
+      console.log(
+        '✅ [CustomAdapter] Student invite status:',
+        result.studentInviteStatus
+      );
+    }
+
+    return result;
+  } catch (error) {
+    console.error(
+      '❌ [CustomAdapter] Erro ao buscar dados de verificação:',
+      error
+    );
+    // Em caso de erro, não bloquear login
+    return result;
+  }
 }
 
 export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
@@ -41,13 +113,21 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           phone: true,
           phoneCountryCode: true,
           phoneNumber: true,
+          isStudent: true,
+          isTeacher: true,
         },
       });
 
       if (existingUser) {
         console.log('👤 Usuário já existe - fazendo login:', existingUser.id);
 
-        // Limpar flags será feito no cliente pelo GoogleRegistrationHandler
+        // 🆕 BUSCAR DADOS DE VERIFICAÇÃO
+        const verificationData = await getUserVerificationData(
+          existingUser.id,
+          existingUser.isTeacher || false,
+          existingUser.isStudent || false
+        );
+
         console.log('👤 Usuário existente fazendo login via Google');
 
         return {
@@ -68,6 +148,12 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           phone: existingUser.phone,
           phoneCountryCode: existingUser.phoneCountryCode,
           phoneNumber: existingUser.phoneNumber,
+          isStudent: existingUser.isStudent,
+          isTeacher: existingUser.isTeacher,
+
+          // 🆕 CAMPOS DE VERIFICAÇÃO
+          teacherVerified: verificationData.teacherVerified,
+          studentInviteStatus: verificationData.studentInviteStatus,
         } as AdapterUser;
       }
 
@@ -108,6 +194,13 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         });
 
         console.log('✅ Nova conta Google criada:', createdUser.id);
+
+        // 🆕 BUSCAR DADOS DE VERIFICAÇÃO PARA USUÁRIO NOVO (deve retornar null para ambos)
+        const verificationData = await getUserVerificationData(
+          createdUser.id,
+          false, // Novo usuário ainda não é teacher
+          false // Novo usuário ainda não é student
+        );
 
         // A marcação no sessionStorage será feita no cliente pelo RegisterModal
 
@@ -162,6 +255,12 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           phone: createdUser.phone,
           phoneCountryCode: createdUser.phoneCountryCode,
           phoneNumber: createdUser.phoneNumber,
+          isStudent: false, // Novo usuário
+          isTeacher: false, // Novo usuário
+
+          // 🆕 CAMPOS DE VERIFICAÇÃO (null para usuário novo)
+          teacherVerified: verificationData.teacherVerified,
+          studentInviteStatus: verificationData.studentInviteStatus,
         } as AdapterUser;
       } catch (error) {
         console.error('❌ CustomAdapter: Erro ao criar usuário Google:', error);
@@ -191,6 +290,8 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
               phone: true,
               phoneCountryCode: true,
               phoneNumber: true,
+              isStudent: true,
+              isTeacher: true,
             },
           });
 
@@ -198,6 +299,13 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             console.log(
               '✅ Usuário encontrado após race condition:',
               raceUser.id
+            );
+
+            // 🆕 BUSCAR DADOS DE VERIFICAÇÃO
+            const verificationData = await getUserVerificationData(
+              raceUser.id,
+              raceUser.isTeacher || false,
+              raceUser.isStudent || false
             );
 
             return {
@@ -218,6 +326,12 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
               phone: raceUser.phone,
               phoneCountryCode: raceUser.phoneCountryCode,
               phoneNumber: raceUser.phoneNumber,
+              isStudent: raceUser.isStudent,
+              isTeacher: raceUser.isTeacher,
+
+              // 🆕 CAMPOS DE VERIFICAÇÃO
+              teacherVerified: verificationData.teacherVerified,
+              studentInviteStatus: verificationData.studentInviteStatus,
             } as AdapterUser;
           }
         }
@@ -248,10 +362,19 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             phone: true,
             phoneCountryCode: true,
             phoneNumber: true,
+            isStudent: true,
+            isTeacher: true,
           },
         });
 
         if (!user) return null;
+
+        // 🆕 BUSCAR DADOS DE VERIFICAÇÃO
+        const verificationData = await getUserVerificationData(
+          user.id,
+          user.isTeacher || false,
+          user.isStudent || false
+        );
 
         return {
           id: user.id,
@@ -269,6 +392,12 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           phone: user.phone,
           phoneCountryCode: user.phoneCountryCode,
           phoneNumber: user.phoneNumber,
+          isStudent: user.isStudent,
+          isTeacher: user.isTeacher,
+
+          // 🆕 CAMPOS DE VERIFICAÇÃO
+          teacherVerified: verificationData.teacherVerified,
+          studentInviteStatus: verificationData.studentInviteStatus,
         } as AdapterUser;
       } catch (error) {
         console.error('❌ CustomAdapter: Erro ao buscar usuário:', error);
@@ -298,10 +427,19 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             phone: true,
             phoneCountryCode: true,
             phoneNumber: true,
+            isStudent: true,
+            isTeacher: true,
           },
         });
 
         if (!user) return null;
+
+        // 🆕 BUSCAR DADOS DE VERIFICAÇÃO
+        const verificationData = await getUserVerificationData(
+          user.id,
+          user.isTeacher || false,
+          user.isStudent || false
+        );
 
         return {
           id: user.id,
@@ -319,6 +457,12 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           phone: user.phone,
           phoneCountryCode: user.phoneCountryCode,
           phoneNumber: user.phoneNumber,
+          isStudent: user.isStudent,
+          isTeacher: user.isTeacher,
+
+          // 🆕 CAMPOS DE VERIFICAÇÃO
+          teacherVerified: verificationData.teacherVerified,
+          studentInviteStatus: verificationData.studentInviteStatus,
         } as AdapterUser;
       } catch (error) {
         console.error(
@@ -364,6 +508,8 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
                 phone: true,
                 phoneCountryCode: true,
                 phoneNumber: true,
+                isStudent: true,
+                isTeacher: true,
               },
             },
           },
@@ -372,6 +518,13 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
         if (!account || !account.user) return null;
 
         const user = account.user;
+
+        // 🆕 BUSCAR DADOS DE VERIFICAÇÃO
+        const verificationData = await getUserVerificationData(
+          user.id,
+          user.isTeacher || false,
+          user.isStudent || false
+        );
 
         return {
           id: user.id,
@@ -389,6 +542,12 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           phone: user.phone,
           phoneCountryCode: user.phoneCountryCode,
           phoneNumber: user.phoneNumber,
+          isStudent: user.isStudent,
+          isTeacher: user.isTeacher,
+
+          // 🆕 CAMPOS DE VERIFICAÇÃO
+          teacherVerified: verificationData.teacherVerified,
+          studentInviteStatus: verificationData.studentInviteStatus,
         } as AdapterUser;
       } catch (error) {
         console.error(
@@ -419,6 +578,10 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           updateData.emailVerified = new Date(data.emailVerified);
         }
 
+        // 🆕 REMOVER CAMPOS DE VERIFICAÇÃO DO UPDATE (são calculados dinamicamente)
+        delete updateData.teacherVerified;
+        delete updateData.studentInviteStatus;
+
         const user = await prisma.user.update({
           where: { id },
           data: updateData,
@@ -439,8 +602,17 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             phone: true,
             phoneCountryCode: true,
             phoneNumber: true,
+            isStudent: true,
+            isTeacher: true,
           },
         });
+
+        // 🆕 BUSCAR DADOS DE VERIFICAÇÃO ATUALIZADOS
+        const verificationData = await getUserVerificationData(
+          user.id,
+          user.isTeacher || false,
+          user.isStudent || false
+        );
 
         return {
           id: user.id,
@@ -458,6 +630,12 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
           phone: user.phone,
           phoneCountryCode: user.phoneCountryCode,
           phoneNumber: user.phoneNumber,
+          isStudent: user.isStudent,
+          isTeacher: user.isTeacher,
+
+          // 🆕 CAMPOS DE VERIFICAÇÃO
+          teacherVerified: verificationData.teacherVerified,
+          studentInviteStatus: verificationData.studentInviteStatus,
         } as AdapterUser;
       } catch (error) {
         console.error('❌ CustomAdapter: Erro ao atualizar usuário:', error);
@@ -622,12 +800,21 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
                 phone: true,
                 phoneCountryCode: true,
                 phoneNumber: true,
+                isStudent: true,
+                isTeacher: true,
               },
             },
           },
         });
 
         if (!session || !session.user) return null;
+
+        // 🆕 BUSCAR DADOS DE VERIFICAÇÃO
+        const verificationData = await getUserVerificationData(
+          session.user.id,
+          session.user.isTeacher || false,
+          session.user.isStudent || false
+        );
 
         return {
           session: {
@@ -654,6 +841,12 @@ export function CustomPrismaAdapter(prisma: PrismaClient): Adapter {
             phone: session.user.phone,
             phoneCountryCode: session.user.phoneCountryCode,
             phoneNumber: session.user.phoneNumber,
+            isStudent: session.user.isStudent,
+            isTeacher: session.user.isTeacher,
+
+            // 🆕 CAMPOS DE VERIFICAÇÃO
+            teacherVerified: verificationData.teacherVerified,
+            studentInviteStatus: verificationData.studentInviteStatus,
           } as AdapterUser,
         };
       } catch (error) {

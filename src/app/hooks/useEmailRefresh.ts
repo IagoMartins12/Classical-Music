@@ -1,9 +1,11 @@
 // app/hooks/useEmailRefresh.ts - Versão Robusta com API Backup
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { useToast } from './useToast';
 
 interface UseEmailRefreshReturn {
   isRefreshing: boolean;
@@ -85,34 +87,83 @@ export function useEmailRefresh(): UseEmailRefreshReturn {
 }
 
 // Versão simplificada (apenas NextAuth)
-export function useEmailRefreshSimple(): UseEmailRefreshReturn {
+export function useEmailRefreshSimple() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const { update } = useSession();
+  const router = useRouter();
+  const toast = useToast();
 
-  const refreshEmailStatus = async () => {
-    if (isRefreshing) return;
-
+  const refreshEmailStatus = useCallback(async () => {
     setIsRefreshing(true);
 
     try {
-      // Apenas força atualização da sessão
+      console.log('🔄 Verificando status de verificação...');
+
+      // Atualizar a sessão para pegar dados frescos do banco
       const updatedSession = await update();
 
-      if (updatedSession?.user?.emailVerified) {
-        toast.success('Email confirmado com sucesso!');
-        setTimeout(() => window.location.reload(), 1500);
+      if (updatedSession?.user) {
+        console.log('✅ Sessão atualizada:', {
+          teacherVerified: updatedSession.user.teacherVerified,
+          studentInviteStatus: updatedSession.user.studentInviteStatus,
+          teste: updatedSession.user.isTeacher,
+          teste2: updatedSession.user.isStudent,
+        });
+
+        // Verificar se teacher foi verificado
+        if (
+          updatedSession.user.isTeacher &&
+          updatedSession.user.teacherVerified
+        ) {
+          toast.success('Professor verificado! Redirecionando...');
+          setTimeout(() => {
+            router.refresh(); // Força reload da página para aplicar as verificações do layout
+          }, 1000);
+          return;
+        }
+
+        // Verificar se student foi aceito
+        if (updatedSession.user.studentInviteStatus === 'ACCEPTED') {
+          toast.success('Convite aceito! Redirecionando...');
+          setTimeout(() => {
+            router.refresh(); // Força reload da página para aplicar as verificações do layout
+          }, 1000);
+          return;
+        }
+
+        if (updatedSession.user.studentInviteStatus === 'PENDING') {
+          console.log('caiu aqui');
+          toast.info('Aguardando aprovação do convite.');
+        } else if (updatedSession.user.studentInviteStatus === 'DECLINED') {
+          toast.error('Seu convite foi recusado.');
+        } else if (updatedSession.user.studentInviteStatus === 'EXPIRED') {
+          toast.error('Seu convite expirou. Entre em contato com o professor.');
+        } else if (
+          !updatedSession.user.isStudent &&
+          !updatedSession.user.isTeacher &&
+          updatedSession.user.teacherVerified
+        ) {
+          toast.error(
+            'Seu convite foi declinado. Entre em contato com o nosso suporte.'
+          );
+
+          setTimeout(() => {
+            router.push('/'); // Força reload da página para aplicar as verificações do layout
+          }, 2000);
+        }
       } else {
-        toast.error(
-          'Email ainda não foi confirmado. Verifique sua caixa de entrada.'
-        );
+        toast.error('Erro ao verificar status. Tente fazer login novamente.');
       }
     } catch (error) {
-      console.error('Erro ao verificar:', error);
-      toast.error('Erro ao verificar confirmação.');
+      console.error('❌ Erro ao verificar status:', error);
+      toast.error('Erro ao verificar status. Tente novamente.');
     } finally {
       setIsRefreshing(false);
     }
-  };
+  }, [update, router, toast]);
 
-  return { isRefreshing, refreshEmailStatus };
+  return {
+    isRefreshing,
+    refreshEmailStatus,
+  };
 }

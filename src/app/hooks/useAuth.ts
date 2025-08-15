@@ -7,6 +7,7 @@ import { useUserStore } from './userStore';
 
 export function useAuth() {
   const { data: session, status } = useSession();
+
   const {
     user,
     isLoading: userLoading,
@@ -64,6 +65,7 @@ export function useAuth() {
             showLocation: session.user.showLocation,
             isStudent: session.user.isStudent,
             isTeacher: session.user.isTeacher,
+            studentInviteStatus: session.user.studentInviteStatus,
           });
         }
       } else {

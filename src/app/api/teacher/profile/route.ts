@@ -198,24 +198,6 @@ export async function GET() {
       });
 
       // 🆕 CRIAR NOTIFICAÇÃO DE BOAS-VINDAS PARA O PROFESSOR
-      try {
-        const teacherName =
-          `${newTeacherProfile.user.firstName} ${newTeacherProfile.user.lastName}`.trim();
-
-        await NotificationFactory.welcomeNewTeacher(
-          newTeacherProfile.user.id,
-          teacherName
-        );
-
-        console.log(
-          `🎓 [TEACHER-PROFILE] Notificação de boas-vindas enviada para professor ${session.user.id}`
-        );
-      } catch (notificationError) {
-        console.error(
-          '❌ [TEACHER-PROFILE] Erro ao criar notificação de boas-vindas:',
-          notificationError
-        );
-      }
 
       const profileData: TeacherProfileData = {
         id: newTeacherProfile.id,

@@ -160,21 +160,11 @@ export async function GET(
         },
       });
 
-      await prisma.teacherStudent.update({
-        where: {
-          id: relationship.id,
-        },
-        data: {
-          inviteStatus: 'DECLINED',
-          inviteAcceptedAt: new Date(),
-          inviteDeclinedAt: null,
-        },
-      });
-
       try {
         await NotificationFactory.studentDeclinedInvite(
           teacherId,
-          user.firstName ?? 'Desconhecido',
+          `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
+            'Desconhecido',
           relationship.id,
           user.email
         );

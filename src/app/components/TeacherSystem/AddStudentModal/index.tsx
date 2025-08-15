@@ -8,6 +8,7 @@ import {
   FiUserPlus,
   FiCalendar,
   FiBookOpen,
+  FiRefreshCw,
 } from 'react-icons/fi';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import Input from '../../Common/Inputs';
@@ -16,6 +17,9 @@ import Modal from '../../Modal';
 import Image from 'next/image';
 import { StudentSearchResult } from '@/app/(teacher)/teacher/pageClient';
 import { Dispatch, SetStateAction, useState } from 'react';
+import Button from '../../Common/Button';
+import { BiLeftArrow } from 'react-icons/bi';
+import { FaChevronLeft } from 'react-icons/fa';
 
 interface AddStudentModalProps {
   onClose: () => void;
@@ -168,6 +172,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
 
   const handleAddStudentWithPlan = async (studentUserId: string) => {
     const finalStudyPlan = showStudyPlan ? studyPlan : undefined;
+
     await addStudent(studentUserId, finalStudyPlan);
 
     // Reset após adicionar
@@ -188,7 +193,18 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
     <Modal maxWidth="5xl" isOpen={isOpen} onClose={onClose}>
       <AnimatedCard hover="none">
         <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-6 mb-6">
+            {showStudyPlan && (
+              <button
+                onClick={() => {
+                  setSelectedStudent(null);
+                  setShowStudyPlan(false);
+                }}
+                className="text-theme-primary "
+              >
+                <FaChevronLeft className="w-4 h-4" />
+              </button>
+            )}
             <div>
               <h2 className="text-xl font-bold text-theme-primary classical-title">
                 Adicionar Novo Aluno
@@ -281,16 +297,26 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                             </span>
                           ) : (
                             <div className="flex gap-2">
-                              {/* 🆕 NOVO: Botão rápido sem plano */}
-                              <button
+                              <Button
                                 onClick={() =>
                                   handleAddStudentWithPlan(student.id)
                                 }
                                 disabled={loading}
-                                className="btn-classical-secondary text-sm px-3 py-2"
+                                variant="secondary"
+                                className="flex"
                               >
-                                Adicionar Rápido
-                              </button>
+                                <span>
+                                  {loading ? (
+                                    <FiRefreshCw
+                                      className={`w-4 h-4 ${
+                                        loading ? 'animate-spin' : ''
+                                      }`}
+                                    />
+                                  ) : (
+                                    ' Adicionar Rápido'
+                                  )}
+                                </span>
+                              </Button>
 
                               {/* 🆕 NOVO: Botão com plano de estudos */}
                               <button
@@ -299,7 +325,9 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                                   setShowStudyPlan(true);
                                 }}
                                 disabled={loading}
-                                className="btn-classical-primary text-sm px-4 py-2 flex items-center space-x-2"
+                                className={`btn-classical-primary ${
+                                  loading ? 'opacity-25' : ''
+                                } text-sm px-4 py-2 flex items-center space-x-2`}
                               >
                                 <FiPlus className="w-4 h-4" />
                                 <span>Com Plano</span>
@@ -366,15 +394,6 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={() => {
-                      setSelectedStudent(null);
-                      setShowStudyPlan(false);
-                    }}
-                    className="text-theme-tertiary hover:text-theme-primary"
-                  >
-                    <FiPlus className="w-5 h-5 rotate-45" />
-                  </button>
                 </div>
               </div>
 
@@ -678,7 +697,9 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                     setSelectedStudent(null);
                     setShowStudyPlan(false);
                   }}
-                  className="btn-classical-secondary"
+                  className={`btn-classical-secondary ${
+                    loading ?? 'opacity-85'
+                  }`}
                   disabled={loading}
                 >
                   Voltar

@@ -121,7 +121,7 @@ export default function DeclineTeacherInvitePage() {
             Tem certeza de que deseja recusar o convite para ser professor?
           </p>
 
-          <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-xl p-6 mb-8">
+          <div className="bg-theme-elevated rounded-xl p-6 mb-8">
             <h3 className="text-xl font-semibold text-accent-amber mb-4">
               ⚠️ Esta ação é irreversível
             </h3>

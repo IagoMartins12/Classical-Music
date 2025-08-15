@@ -9,6 +9,7 @@ import {
   createToken,
 } from '@/app/libs/tokenUtils';
 import { sendTemplateEmail } from '@/app/libs/newsletter/email';
+import { NotificationFactory } from '@/app/utils/notifications/createNotification';
 
 interface Params {
   token: string;
@@ -129,6 +130,20 @@ export async function GET(
       },
     });
 
+    try {
+      const teacherName = `${user.firstName} ${user.lastName}`.trim();
+
+      await NotificationFactory.welcomeNewTeacher(user.id, teacherName);
+
+      console.log(
+        `🎓 [TEACHER-PROFILE] Notificação de boas-vindas enviada para professor ${user.id}`
+      );
+    } catch (notificationError) {
+      console.error(
+        '❌ [TEACHER-PROFILE] Erro ao criar notificação de boas-vindas:',
+        notificationError
+      );
+    }
     // Marcar token como usado
     await markTokenAsUsed(token);
 

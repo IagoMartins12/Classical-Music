@@ -1,7 +1,7 @@
 // app/student/pageClient.tsx - Dashboard Completo do Aluno
 'use client';
 
-import {  useEffect, useMemo, useCallback } from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -30,6 +30,7 @@ import {
 } from '../../components/animation/AnimatedComponents';
 import { StudentDashboardData } from './pageServer';
 import { useStudentDashboard } from '@/app/hooks/lessonsSystem/useStudentDashboard';
+import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
 
 interface StudentProfile {
   id: string;
@@ -616,27 +617,22 @@ export default function StudentPageClient({
                       </span>
                     </h3>
                     <div className="space-y-2">
-                      {studyProgress.currentWorks
-                        .slice(0, 4)
-                        .map((work) => (
-                          <div
-                            key={work.workId}
-                            className="classical-card-2 p-3"
-                          >
-                            <div className="font-medium text-theme-primary text-sm">
-                              {work.title}
-                            </div>
-                            <div className="text-xs text-theme-tertiary">
-                              {work.composer}
-                            </div>
-                            {work.selectedScore && (
-                              <div className="text-xs text-accent-blue mt-1">
-                                {work.selectedScore.title} (
-                                {work.selectedScore.type})
-                              </div>
-                            )}
+                      {studyProgress.currentWorks.slice(0, 4).map((work) => (
+                        <div key={work.workId} className="classical-card-2 p-3">
+                          <div className="font-medium text-theme-primary text-sm">
+                            {work.title}
                           </div>
-                        ))}
+                          <div className="text-xs text-theme-tertiary">
+                            {work.composer}
+                          </div>
+                          {work.selectedScore && (
+                            <div className="text-xs text-accent-blue mt-1">
+                              {work.selectedScore.title} (
+                              {work.selectedScore.type})
+                            </div>
+                          )}
+                        </div>
+                      ))}
                       {studyProgress.currentWorks.length === 0 && (
                         <p className="text-sm text-theme-tertiary py-4">
                           Nenhuma obra em estudo no momento
@@ -654,33 +650,28 @@ export default function StudentPageClient({
                       </span>
                     </h3>
                     <div className="space-y-2">
-                      {studyProgress.learnedWorks
-                        .slice(0, 4)
-                        .map((work) => (
-                          <div
-                            key={work.workId}
-                            className="classical-card-2 p-3"
-                          >
-                            <div className="flex items-center justify-between">
-                              <div className="flex-1">
-                                <div className="font-medium text-theme-primary text-sm">
-                                  {work.title}
-                                </div>
-                                <div className="text-xs text-theme-tertiary">
-                                  {work.composer}
-                                </div>
+                      {studyProgress.learnedWorks.slice(0, 4).map((work) => (
+                        <div key={work.workId} className="classical-card-2 p-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="font-medium text-theme-primary text-sm">
+                                {work.title}
                               </div>
-                              <div className="flex items-center space-x-1">
-                                <div className="text-xs text-accent-green font-medium">
-                                  {work.mastery}%
-                                </div>
-                                {work.wouldRecommend && (
-                                  <FiHeart className="w-3 h-3 text-accent-red" />
-                                )}
+                              <div className="text-xs text-theme-tertiary">
+                                {work.composer}
                               </div>
                             </div>
+                            <div className="flex items-center space-x-1">
+                              <div className="text-xs text-accent-green font-medium">
+                                {work.mastery}%
+                              </div>
+                              {work.wouldRecommend && (
+                                <FiHeart className="w-3 h-3 text-accent-red" />
+                              )}
+                            </div>
                           </div>
-                        ))}
+                        </div>
+                      ))}
                       {studyProgress.learnedWorks.length === 0 && (
                         <p className="text-sm text-theme-tertiary py-4">
                           Nenhuma obra concluída ainda
@@ -875,6 +866,8 @@ export default function StudentPageClient({
                 </div>
               </AnimatedCard>
             </AnimatedItem>
+
+            <RecentActivities userId={studentProfile.id} userType="student" />
           </div>
         </div>
       </AnimatedContainer>

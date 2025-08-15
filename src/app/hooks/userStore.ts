@@ -1,4 +1,5 @@
 // hooks/userStore.ts - Interface User atualizada
+import { StudentInviteStatus } from '@prisma/client';
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 
@@ -38,8 +39,9 @@ export interface User {
   practiceTimePerWeek?: number | null;
   profilePublic: boolean;
   showLocation: boolean;
-  isTeacher?: boolean;
-  isStudent?: boolean;
+  isTeacher?: boolean | null;
+  isStudent?: boolean | null;
+  studentInviteStatus?: null | StudentInviteStatus;
 }
 
 interface UserState {

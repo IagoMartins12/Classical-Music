@@ -207,6 +207,7 @@ async function checkForExistingNotification(
       // Apenas uma notificação de boas-vindas por usuário (verificar por tipo apenas)
       break;
 
+    case 'STUDENT_ACCEPTED_INVITE':
     case 'STUDENT_DECLINED_INVITE':
       // Verificar por relacionamento específico (evitar múltiplos declínios)
       if (metadata?.relationshipId) {
@@ -270,7 +271,7 @@ function buildActionUrl(
     // 🆕 NOVAS: Para professores
     case 'WELCOME_NEW_TEACHER':
       return '/teacher/profile';
-
+    case 'STUDENT_ACCEPTED_INVITE':
     case 'STUDENT_DECLINED_INVITE':
       return '/teacher/students';
 
@@ -578,6 +579,29 @@ export const NotificationFactory = {
     }),
 
   // 🆕 NOVA: Aluno declinou convite
+  studentAcceptedInvite: (
+    teacherUserId: string,
+    studentName: string,
+    relationshipId: string,
+    studentEmail?: string | null
+  ) =>
+    createNotification({
+      userId: teacherUserId,
+      type: 'STUDENT_ACCEPTED_INVITE',
+      relatedEntityType: 'teacher-student-invitation',
+      relatedEntityId: relationshipId,
+      metadata: {
+        studentName,
+        studentEmail: studentEmail || null,
+        relationshipId,
+        actionType: 'student_accepted',
+        acceptedAt: new Date().toISOString(),
+      },
+      customTitle: `✅ ${studentName} aceitou seu convite`,
+      customMessage: `${studentName} aceitou o convite para ser seu aluno.`,
+    }),
+
+  // 🆕 NOVA: Aluno declinou convite
   studentDeclinedInvite: (
     teacherUserId: string,
     studentName: string,
@@ -598,7 +622,7 @@ export const NotificationFactory = {
         actionType: 'student_declined',
         declinedAt: new Date().toISOString(),
       },
-      customTitle: `📋 ${studentName} declinou seu convite`,
+      customTitle: `❌ ${studentName} declinou seu convite`,
       customMessage: `${studentName} declinou o convite para ser seu aluno.${
         declineReason ? ` Motivo: "${declineReason}"` : ''
       }${

@@ -5,6 +5,7 @@ import CarouselContainer from '../CarouselContainer';
 import CarouselCard from '../CarouselCard';
 import useIsMobile from '@/app/hooks/useIsMobile';
 import { ModernCarouselProps } from '@/app/types/types';
+import useIsTablet from '@/app/hooks/useIsTablet';
 
 const Carousel: React.FC<ModernCarouselProps> = ({
   items,
@@ -15,9 +16,10 @@ const Carousel: React.FC<ModernCarouselProps> = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
 
   // Ajustar itemsPerView baseado no dispositivo
-  const responsiveItemsPerView = isMobile ? 1 : itemsPerView;
+  const responsiveItemsPerView = isMobile ? 1 : isTablet ? 2 : itemsPerView;
   const maxIndex = Math.max(0, items.length - responsiveItemsPerView);
 
   // Auto play
