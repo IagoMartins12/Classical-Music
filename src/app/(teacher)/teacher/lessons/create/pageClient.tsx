@@ -1,8 +1,8 @@
-// app/teacher/lessons/create/pageClient.tsx - ATUALIZADO com sistema de conflitos
+// app/teacher/lessons/create/pageClient.tsx - ATUALIZADO COM VALIDAÇÃO E SCROLL
 
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   FiClock,
   FiUser,
@@ -188,9 +188,9 @@ function ConflictModal({
             }`}
           >
             {conflicts.hasTimeConflicts ? (
-              <FiXCircle className="w-6 h-6 text-accent-red" />
+              <FiXCircle className="w-6 h-6 " />
             ) : (
-              <FiAlertTriangle className="w-6 h-6 text-accent-yellow" />
+              <FiAlertTriangle className="w-6 h-6 " />
             )}
           </div>
           <div>
@@ -211,7 +211,7 @@ function ConflictModal({
           {/* Conflitos de Horário */}
           {conflicts.hasTimeConflicts && conflicts.timeConflicts.length > 0 && (
             <div>
-              <h3 className="text-lg font-semibold text-accent-red mb-4 flex items-center space-x-2">
+              <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                 <FiAlertCircle className="w-5 h-5" />
                 <span>
                   Conflitos de Horário ({conflicts.timeConflicts.length})
@@ -222,7 +222,7 @@ function ConflictModal({
                 {conflicts.timeConflicts.map((conflict) => (
                   <div
                     key={conflict.id}
-                    className="bg-accent-red/5 border border-accent-red/20 rounded-lg p-4"
+                    className="bg-accent-red/5 bg-theme-tertiary rounded-lg p-4"
                   >
                     <div className="flex items-center justify-between">
                       <div>
@@ -243,7 +243,7 @@ function ConflictModal({
                 ))}
               </div>
 
-              <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4 mt-4">
+              <div className="bg-theme-tertiary rounded-lg p-4 mt-4">
                 <div className="flex items-start space-x-3">
                   <FiInfo className="w-5 h-5 text-accent-red mt-0.5" />
                   <div className="text-sm">
@@ -269,7 +269,7 @@ function ConflictModal({
                 <span>Limite Semanal Atingido</span>
               </h3>
 
-              <div className="bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg p-4">
+              <div className="bg-theme-tertiary rounded-lg p-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-theme-primary font-medium">
@@ -312,7 +312,7 @@ function ConflictModal({
                 </div>
               </div>
 
-              <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4 mt-4">
+              <div className="bg-theme-tertiary rounded-lg p-4 mt-4">
                 <div className="flex items-start space-x-3">
                   <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
                   <div className="text-sm">
@@ -389,6 +389,20 @@ export default function CreateLessonPageClient({
   const router = useRouter();
   const { createLesson, loading, error, clearError } = useTeacherLessons();
 
+  // 🆕 REFS PARA VALIDAÇÃO E SCROLL
+  const fieldRefs = {
+    studentUserId: useRef<HTMLSelectElement>(null),
+    title: useRef<HTMLInputElement>(null),
+    scheduledAt: useRef<HTMLInputElement>(null),
+    duration: useRef<HTMLInputElement>(null),
+    recurrenceEnd: useRef<HTMLInputElement>(null),
+  };
+
+  // 🆕 ESTADO PARA ERROS DE VALIDAÇÃO
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
+
   // Form state
   const [formData, setFormData] = useState({
     studentUserId: '',
@@ -426,6 +440,116 @@ export default function CreateLessonPageClient({
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [pendingSubmission, setPendingSubmission] = useState(false);
 
+  // 🆕 FUNÇÃO PARA SCROLL AUTOMÁTICO PARA O PRIMEIRO ERRO
+  const scrollToFirstError = useCallback((errorFields: string[]) => {
+    if (errorFields.length > 0) {
+      const firstErrorField = errorFields[0] as keyof typeof fieldRefs;
+      const fieldRef = fieldRefs[firstErrorField];
+
+      if (fieldRef?.current) {
+        fieldRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+
+        setTimeout(() => {
+          fieldRef.current?.focus();
+        }, 500);
+      }
+    }
+  }, []);
+
+  // 🆕 FUNÇÃO DE VALIDAÇÃO COMPLETA
+  const validateForm = useCallback((): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    // Validação do aluno
+    if (!formData.studentUserId.trim()) {
+      newErrors.studentUserId = 'Selecione um aluno para a aula';
+    }
+
+    // Validação do título
+    if (!formData.title.trim()) {
+      newErrors.title = 'Título da aula é obrigatório';
+    } else if (formData.title.trim().length < 3) {
+      newErrors.title = 'Título deve ter pelo menos 3 caracteres';
+    } else if (formData.title.trim().length > 100) {
+      newErrors.title = 'Título deve ter no máximo 100 caracteres';
+    }
+
+    // 🆕 VALIDAÇÃO DA DATA E HORA MELHORADA
+    if (!formData.scheduledAt.trim()) {
+      newErrors.scheduledAt = 'Data e hora da aula são obrigatórias';
+    } else {
+      const scheduledDate = new Date(formData.scheduledAt);
+      const now = new Date();
+
+      // Adiciona 15 minutos de margem mínima
+      const minDate = new Date(now.getTime() + 15 * 60 * 1000);
+
+      if (isNaN(scheduledDate.getTime())) {
+        newErrors.scheduledAt = 'Data e hora inválidas';
+      } else if (scheduledDate <= minDate) {
+        const diffMinutes = Math.ceil(
+          (minDate.getTime() - scheduledDate.getTime()) / (1000 * 60)
+        );
+        newErrors.scheduledAt = `A aula deve ser agendada com pelo menos 15 minutos de antecedência (faltam ${diffMinutes} min)`;
+      } else {
+        // Verificar se não é muito no futuro (máximo 1 ano)
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() + 1);
+
+        if (scheduledDate > maxDate) {
+          newErrors.scheduledAt =
+            'A aula não pode ser agendada para mais de 1 ano no futuro';
+        }
+      }
+    }
+
+    // Validação da duração
+    if (!formData.duration || formData.duration < 15) {
+      newErrors.duration = 'Duração mínima é de 15 minutos';
+    } else if (formData.duration > 240) {
+      newErrors.duration = 'Duração máxima é de 240 minutos';
+    }
+
+    // Validação de recorrência
+    if (formData.isRecurring) {
+      if (!formData.recurrenceEnd.trim()) {
+        newErrors.recurrenceEnd = 'Data de fim da recorrência é obrigatória';
+      } else if (formData.scheduledAt) {
+        const endDate = new Date(formData.recurrenceEnd);
+        const startDate = new Date(formData.scheduledAt);
+
+        if (endDate <= startDate) {
+          newErrors.recurrenceEnd =
+            'Data de fim deve ser posterior à data de início';
+        }
+
+        // Verificar se não excede 3 meses
+        const maxDate = new Date(startDate);
+        maxDate.setMonth(maxDate.getMonth() + 3);
+
+        if (endDate > maxDate) {
+          newErrors.recurrenceEnd = 'Recorrência não pode exceder 3 meses';
+        }
+      }
+    }
+
+    setValidationErrors(newErrors);
+
+    // Fazer scroll para o primeiro erro
+    const errorFields = Object.keys(newErrors);
+    if (errorFields.length > 0) {
+      setTimeout(() => {
+        scrollToFirstError(errorFields);
+      }, 100);
+      return false;
+    }
+
+    return true;
+  }, [formData, scrollToFirstError]);
+
   // Update selected student when form changes
   useEffect(() => {
     const student = initialData.students.find(
@@ -440,7 +564,20 @@ export default function CreateLessonPageClient({
         duration: student.relationship.lessonDuration,
       }));
     }
-  }, [formData.studentUserId, initialData.students]);
+
+    // 🆕 LIMPAR ERRO DE ALUNO QUANDO SELECIONAR UM
+    if (formData.studentUserId && validationErrors.studentUserId) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.studentUserId;
+        return newErrors;
+      });
+    }
+  }, [
+    formData.studentUserId,
+    initialData.students,
+    validationErrors.studentUserId,
+  ]);
 
   // Update recurrence end date when start date or recurrence type changes
   useEffect(() => {
@@ -529,11 +666,79 @@ export default function CreateLessonPageClient({
   }, []);
 
   // Form handlers
-  const updateFormData = useCallback((field: string, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const updateFormData = useCallback(
+    (field: string, value: any) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+
+      // 🆕 LIMPAR ERRO DO CAMPO QUANDO USUÁRIO DIGITAR
+      if (validationErrors[field]) {
+        setValidationErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[field];
+          return newErrors;
+        });
+      }
+    },
+    [validationErrors]
+  );
+
+  // 🆕 FUNÇÃO PARA OBTER DATA/HORA MÍNIMA
+  const getMinDateTime = (): string => {
+    const now = new Date();
+    // Adiciona 30 minutos para dar uma margem mínima
+    now.setMinutes(now.getMinutes() + 30);
+
+    // Formato: YYYY-MM-DDTHH:MM
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+  // 🆕 FUNÇÃO PARA VALIDAÇÃO EM TEMPO REAL
+  const handleDateTimeChange = useCallback(
+    (value: string) => {
+      updateFormData('scheduledAt', value);
+
+      // Validação em tempo real
+      if (value) {
+        const scheduledDate = new Date(value);
+        const now = new Date();
+        const minDate = new Date(now.getTime() + 15 * 60 * 1000);
+
+        if (scheduledDate <= minDate) {
+          const diffMinutes = Math.ceil(
+            (minDate.getTime() - scheduledDate.getTime()) / (1000 * 60)
+          );
+          setValidationErrors((prev) => ({
+            ...prev,
+            scheduledAt: `Horário deve ser pelo menos 15 minutos no futuro (faltam ${diffMinutes} min)`,
+          }));
+        } else {
+          // Limpar erro se a data estiver válida
+          setValidationErrors((prev) => {
+            const newErrors = { ...prev };
+            delete newErrors.scheduledAt;
+            return newErrors;
+          });
+        }
+      }
+    },
+    [updateFormData]
+  );
+  useEffect(() => {
+    // Atualizar o datetime mínimo a cada minuto
+    const interval = setInterval(() => {
+      // Força re-render para atualizar o min datetime
+      setFormData((prev) => ({ ...prev }));
+    }, 60000); // 60 segundos
+
+    return () => clearInterval(interval);
   }, []);
 
   const addArrayField = useCallback((field: string) => {
@@ -590,19 +795,14 @@ export default function CreateLessonPageClient({
       )
     : 1;
 
-  // Submit handler
+  // 🆕 SUBMIT HANDLER ATUALIZADO COM VALIDAÇÃO
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       clearError();
 
-      // Validation
-      if (!formData.studentUserId || !formData.title || !formData.scheduledAt) {
-        return;
-      }
-
-      // Validate recurrence end date
-      if (formData.isRecurring && !formData.recurrenceEnd) {
+      // 🆕 VALIDAR FORMULÁRIO ANTES DE PROSSEGUIR
+      if (!validateForm()) {
         return;
       }
 
@@ -620,7 +820,7 @@ export default function CreateLessonPageClient({
 
       await submitLesson();
     },
-    [formData, conflicts, clearError]
+    [formData, conflicts, clearError, validateForm]
   );
 
   // 🆕 FUNÇÃO PARA SUBMETER A AULA
@@ -732,6 +932,7 @@ export default function CreateLessonPageClient({
                         Aluno *
                       </label>
                       <Select
+                        ref={fieldRefs.studentUserId}
                         options={[
                           { value: '', label: 'Selecione um aluno...' },
                           ...initialData.students.map((student) => ({
@@ -743,13 +944,18 @@ export default function CreateLessonPageClient({
                         onChange={(e) =>
                           updateFormData('studentUserId', e.target.value)
                         }
-                        className="input-classical w-full"
+                        className={`input-classical w-full ${
+                          validationErrors.studentUserId
+                            ? '!border-red-400'
+                            : ''
+                        }`}
+                        error={validationErrors.studentUserId}
                         required
                       />
                     </div>
 
                     {selectedStudent && (
-                      <div className="bg-brand-primary/5 border border-brand-primary/20 rounded-lg p-4">
+                      <div className="bg-theme-tertiary rounded-lg p-4">
                         <div className="flex items-center space-x-3">
                           {selectedStudent.image ? (
                             <div className="w-12 h-12 relative rounded-full overflow-hidden">
@@ -789,14 +995,18 @@ export default function CreateLessonPageClient({
                           Título da Aula *
                         </label>
                         <Input
+                          ref={fieldRefs.title}
                           type="text"
                           value={formData.title}
                           onChange={(e) =>
                             updateFormData('title', e.target.value)
                           }
-                          className="input-classical w-full"
+                          className={`input-classical w-full ${
+                            validationErrors.title ? '!border-red-400' : ''
+                          }`}
                           placeholder="Ex: Aula de Piano - Chopin"
                           required
+                          error={validationErrors.title}
                         />
                       </div>
 
@@ -839,7 +1049,7 @@ export default function CreateLessonPageClient({
 
                     {/* 🆕 INDICADOR DE VERIFICAÇÃO DE CONFLITOS */}
                     {checkingConflicts && (
-                      <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-3">
+                      <div className=" rounded-lg p-3">
                         <div className="flex items-center space-x-3">
                           <FiRefreshCw className="w-4 h-4 animate-spin text-accent-blue" />
                           <span className="text-sm text-accent-blue">
@@ -853,7 +1063,7 @@ export default function CreateLessonPageClient({
                     {conflicts && !checkingConflicts && (
                       <div className="space-y-3">
                         {conflicts.hasTimeConflicts && (
-                          <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-3">
+                          <div className="border-red-400 rounded-lg p-3">
                             <div className="flex items-center space-x-3">
                               <FiXCircle className="w-4 h-4 text-accent-red" />
                               <div className="text-sm">
@@ -871,7 +1081,7 @@ export default function CreateLessonPageClient({
 
                         {conflicts.hasWeeklyLimitExceeded &&
                           !conflicts.hasTimeConflicts && (
-                            <div className="bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg p-3">
+                            <div className=" border border-yellow-400 rounded-lg p-3">
                               <div className="flex items-center space-x-3">
                                 <FiAlertTriangle className="w-4 h-4 text-accent-yellow" />
                                 <div className="text-sm">
@@ -894,10 +1104,10 @@ export default function CreateLessonPageClient({
 
                         {!conflicts.hasTimeConflicts &&
                           !conflicts.hasWeeklyLimitExceeded && (
-                            <div className="bg-accent-green/10 border border-accent-green/30 rounded-lg p-3">
+                            <div className=" rounded-lg p-3">
                               <div className="flex items-center space-x-3">
-                                <FiCheckCircle className="w-4 h-4 text-accent-green" />
-                                <span className="text-sm text-accent-green">
+                                <FiCheckCircle className="w-4 h-4 text-green-400" />
+                                <span className="text-sm text-green-300">
                                   Nenhum conflito detectado - pode prosseguir!
                                 </span>
                               </div>
@@ -912,31 +1122,53 @@ export default function CreateLessonPageClient({
                           Data e Hora *
                         </label>
                         <Input
+                          ref={fieldRefs.scheduledAt}
                           type="datetime-local"
                           value={formData.scheduledAt}
-                          onChange={(e) =>
-                            updateFormData('scheduledAt', e.target.value)
-                          }
-                          className="input-classical w-full"
+                          onChange={(e) => handleDateTimeChange(e.target.value)}
+                          min={getMinDateTime()} // ⭐ IMPEDE SELEÇÃO NO HTML
+                          className={`input-classical w-full ${
+                            validationErrors.scheduledAt
+                              ? '!border-red-400'
+                              : ''
+                          }`}
                           required
                         />
+                        {validationErrors.scheduledAt && (
+                          <p className="text-red-500 text-sm mt-1 flex items-center space-x-1">
+                            <FiAlertCircle className="w-3 h-3" />
+                            <span>{validationErrors.scheduledAt}</span>
+                          </p>
+                        )}
+                        <p className="text-xs text-theme-tertiary mt-1 flex items-center space-x-1">
+                          Aulas devem ser agendadas com pelo menos 15 minutos de
+                          antecedência
+                        </p>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Duração (min)
+                          Duração (min) *
                         </label>
                         <Input
+                          ref={fieldRefs.duration}
                           type="number"
                           value={formData.duration}
                           onChange={(e) =>
                             updateFormData('duration', parseInt(e.target.value))
                           }
                           min={15}
-                          max={180}
+                          max={240}
                           step={15}
-                          className="input-classical w-full"
+                          className={`input-classical w-full ${
+                            validationErrors.duration ? '!border-red-400' : ''
+                          }`}
                         />
+                        {validationErrors.duration && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {validationErrors.duration}
+                          </p>
+                        )}
                       </div>
 
                       <div>
@@ -997,9 +1229,7 @@ export default function CreateLessonPageClient({
                                 Frequência *
                               </label>
                               <Select
-                                options={recurrenceOptions.filter(
-                                  (opt) => opt.value !== 'NONE'
-                                )}
+                                options={recurrenceOptions}
                                 value={formData.recurrenceType || 'WEEKLY'}
                                 onChange={(e) =>
                                   updateFormData(
@@ -1017,6 +1247,7 @@ export default function CreateLessonPageClient({
                                 Até quando *
                               </label>
                               <Input
+                                ref={fieldRefs.recurrenceEnd}
                                 type="date"
                                 value={formData.recurrenceEnd}
                                 onChange={(e) =>
@@ -1035,9 +1266,18 @@ export default function CreateLessonPageClient({
                                     ? getMaxRecurrenceDate(formData.scheduledAt)
                                     : ''
                                 }
-                                className="input-classical w-full"
+                                className={`input-classical w-full ${
+                                  validationErrors.recurrenceEnd
+                                    ? '!border-red-400'
+                                    : ''
+                                }`}
                                 required
                               />
+                              {validationErrors.recurrenceEnd && (
+                                <p className="text-red-500 text-sm mt-1">
+                                  {validationErrors.recurrenceEnd}
+                                </p>
+                              )}
                               <p className="text-xs text-theme-tertiary mt-1">
                                 Máximo:{' '}
                                 {formData.scheduledAt
@@ -1152,6 +1392,7 @@ export default function CreateLessonPageClient({
                             }
                             className="input-classical flex-1"
                             placeholder="Ex: Trabalhar digitação da mão direita"
+                            widhtFull
                           />
                           {formData.objectives.length > 1 && (
                             <button
@@ -1233,6 +1474,7 @@ export default function CreateLessonPageClient({
                                   }
                                   className="input-classical flex-1"
                                   placeholder="Ex: Escala de Dó maior"
+                                  widhtFull
                                 />
                                 {formData.topics.length > 1 && (
                                   <button
@@ -1337,10 +1579,6 @@ export default function CreateLessonPageClient({
                       disabled={
                         loading.createLesson ||
                         pendingSubmission ||
-                        !formData.studentUserId ||
-                        !formData.title ||
-                        !formData.scheduledAt ||
-                        (formData.isRecurring && !formData.recurrenceEnd) ||
                         checkingConflicts
                       }
                       className="btn-classical-primary flex items-center space-x-2"
@@ -1531,6 +1769,10 @@ export default function CreateLessonPageClient({
                     <p>
                       Recorrência funciona por 3 meses - renovação é automática!
                     </p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <FiAlertCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
+                    <p>Preencha todos os campos obrigatórios marcados com *</p>
                   </div>
                 </div>
               </AnimatedCard>

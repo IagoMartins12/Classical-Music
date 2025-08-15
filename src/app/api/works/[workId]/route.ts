@@ -4,19 +4,20 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { workId: string } } // 🔥 PEGAR DOS PARAMS, NÃO SEARCHPARAMS
+  { params }: { params: Promise<{ workId: string }> } // 🔥 PEGAR DOS PARAMS, NÃO SEARCHPARAMS
 ) {
   try {
-    let workId: string | null = params.workId; // 🔥 AQUI ESTÁ O workId CORRETO
+    const { workId } = await params;
+    let workIdVariable: string | null = workId; // 🔥 AQUI ESTÁ O workId CORRETO
 
-    if (!workId) {
+    if (!workIdVariable) {
       const { searchParams } = new URL(request.url);
-      workId = searchParams.get('workId');
+      workIdVariable = searchParams.get('workId');
     }
 
-    console.log('🔍 [API-WORKS] workId recebido:', workId);
+    console.log('🔍 [API-WORKS] workId recebido:', workIdVariable);
 
-    if (!workId) {
+    if (!workIdVariable) {
       console.log('❌ [API-WORKS] workId não fornecido');
       return NextResponse.json(
         { error: 'ID da obra é obrigatório.' },
@@ -27,7 +28,7 @@ export async function GET(
     // 🔥 BUSCAR DADOS COMPLETOS DA OBRA
     const work = await prisma.work.findFirst({
       where: {
-        id: workId,
+        id: workIdVariable,
       },
       select: {
         id: true,
@@ -47,7 +48,7 @@ export async function GET(
     });
 
     if (!work) {
-      console.log('❌ [API-WORKS] Obra não encontrada:', workId);
+      console.log('❌ [API-WORKS] Obra não encontrada:', workIdVariable);
       return NextResponse.json(
         { error: 'Obra não encontrada.' },
         { status: 404 }

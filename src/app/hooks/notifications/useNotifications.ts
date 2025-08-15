@@ -64,7 +64,7 @@ const saveNotificationCache = (cache: any) => {
 };
 
 // 🔥 DEBOUNCE para evitar múltiplas chamadas
-const useDebounce = (callback: Function, delay: number) => {
+const useDebounce = (callback: any, delay: number) => {
   const timeoutRef = useRef<NodeJS.Timeout>(null);
 
   return useCallback(

@@ -410,7 +410,6 @@ export default function StudentLessonsPageClient({
     (lesson: any, index: number) => {
       const statusInfo = getLessonStatusInfo(lesson);
       const statusDisplayInfo = getLessonStatusInfoDisplay(lesson.status);
-      const StatusIcon = statusDisplayInfo.icon;
       const isToday = statusInfo.isToday;
 
       return (

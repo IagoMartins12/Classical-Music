@@ -8,15 +8,11 @@ import {
   FiTarget,
   FiBookOpen,
   FiMusic,
-  FiUser,
   FiStar,
   FiSave,
   FiCheck,
-  FiRefreshCw,
   FiCheckCircle,
   FiCircle,
-  FiEdit3,
-  FiTrendingUp,
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
 

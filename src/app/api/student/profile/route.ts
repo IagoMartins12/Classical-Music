@@ -404,7 +404,7 @@ export async function PUT(request: NextRequest) {
     });
 
     // 🔧 ATUALIZAR DADOS DO USUÁRIO COM VALIDAÇÃO MELHORADA
-    let userChanges: any = {};
+    const userChanges: any = {};
     if (userData) {
       const allowedUserFields = [
         'firstName',
@@ -456,7 +456,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // 🔧 ATUALIZAR DADOS DO ESTUDANTE COM VALIDAÇÃO
-    let studentChanges: any = {};
+    const studentChanges: any = {};
     if (studentData) {
       const allowedStudentFields = [
         'level',

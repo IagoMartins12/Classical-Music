@@ -16,12 +16,6 @@ interface UseAssignmentVideoReturn {
   uploadVideo: (assignmentId: string, additionalData?: any) => Promise<boolean>;
 }
 
-interface UploadVideoParams {
-  assignmentId: string;
-  videoFile: File;
-  additionalData?: any;
-}
-
 /**
  * 🎥 Hook para gerenciar upload de vídeo em assignments
  */

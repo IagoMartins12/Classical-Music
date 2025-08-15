@@ -23,7 +23,6 @@ import {
   FiPlay,
   FiCheckCircle,
   FiEdit,
-  FiMoreVertical,
   FiVideo,
   FiSave,
 } from 'react-icons/fi';
@@ -611,8 +610,6 @@ export default function TeacherAssignmentsPageClient({
   // 🆕 RENDER ASSIGNMENT LIST ITEM COMPONENT
   const renderAssignmentListItem = useCallback(
     (assignment: TeacherAssignment, index: number) => {
-      const hasScores = hasWorkScores(assignment);
-
       return (
         <AnimatedCard
           key={assignment.id}
@@ -1154,12 +1151,11 @@ export default function TeacherAssignmentsPageClient({
                         Limpar Filtros
                       </button>
                     ) : (
-                      <button
-                        onClick={() => setShowCreateModal(true)}
-                        className="btn-classical-primary"
-                      >
-                        Criar Primeira Tarefa
-                      </button>
+                      <Link href={'assignments/create'}>
+                        <Button variant="primary">
+                          <span> Criar Primeira Tarefa</span>
+                        </Button>
+                      </Link>
                     )}
                   </div>
                 </AnimatedCard>
@@ -1822,7 +1818,7 @@ function AssignmentDetailsModal({
                   <label className="text-sm font-medium text-theme-tertiary block mb-3">
                     Vídeo da Performance
                   </label>
-                  <div className="p-4 bg-accent-purple/5 border border-accent-purple/20 rounded-lg">
+                  <div className="p-4 bg-theme-elevated rounded-lg">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-accent-purple/10 border border-accent-purple/30 rounded-lg flex items-center justify-center">

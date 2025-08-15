@@ -11,11 +11,9 @@ import {
   FiPlus,
   FiClock,
   FiTrendingUp,
-  FiCheckCircle,
   FiXCircle,
   FiEye,
   FiBarChart2,
-  FiActivity,
   FiChevronRight,
   FiRefreshCw,
   FiUserPlus,
@@ -65,11 +63,11 @@ export interface StudentSearchResult {
   email: string;
   image?: string | null;
   location?: string | null;
-  experienceLevel?: string;
-  mainInstrument?: string;
-  studentLevel?: string;
+  experienceLevel?: string | null;
+  mainInstrument?: string | null;
+  studentLevel?: string | null;
   isAlreadyStudent: boolean;
-  relationshipId?: string;
+  relationshipId?: string | null;
   hasStudentProfile: boolean;
 }
 
@@ -180,8 +178,6 @@ export default function TeacherPageClient({
     dashboardData?.dashboard?.upcomingLessons?.slice(0, 5) || [];
   const activeStudents =
     studentsData?.students?.filter((s) => s.relationship.isActive) || [];
-  const recentActivities =
-    dashboardData?.dashboard?.recentActivities?.slice(0, 5) || [];
 
   // Function to search students
   const searchStudents = useCallback(async (email: string) => {

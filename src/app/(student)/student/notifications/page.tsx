@@ -19,13 +19,5 @@ export const metadata: Metadata = {
 export default async function StudentNotificationsPage() {
   const session = await getRequiredServerSession();
 
-  return (
-    <StudentNotificationsPageServer
-      userId={session.user.id}
-      userEmail={session.user.email || ''}
-      userName={`${session.user.firstName || ''} ${
-        session.user.lastName || ''
-      }`.trim()}
-    />
-  );
+  return <StudentNotificationsPageServer userId={session.user.id} />;
 }

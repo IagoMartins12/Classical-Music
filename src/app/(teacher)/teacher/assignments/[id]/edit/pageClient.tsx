@@ -129,7 +129,7 @@ export default function EditAssignmentPageClient({
               const workData = await response.json();
 
               // Verificar se tem partitura específica para esta obra
-              const scoreId = assignment.workScoreIds.find((scoreId) => {
+              const scoreId = assignment.workScoreIds.find(() => {
                 // Aqui você pode implementar lógica para associar score com work
                 // Por simplicidade, vamos assumir que qualquer score está disponível
                 return true;

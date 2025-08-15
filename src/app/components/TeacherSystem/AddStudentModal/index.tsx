@@ -18,7 +18,6 @@ import Image from 'next/image';
 import { StudentSearchResult } from '@/app/(teacher)/teacher/pageClient';
 import { Dispatch, SetStateAction, useState } from 'react';
 import Button from '../../Common/Button';
-import { BiLeftArrow } from 'react-icons/bi';
 import { FaChevronLeft } from 'react-icons/fa';
 
 interface AddStudentModalProps {
@@ -189,6 +188,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
     });
   };
 
+  console.log('search', searchResults);
   return (
     <Modal maxWidth="5xl" isOpen={isOpen} onClose={onClose}>
       <AnimatedCard hover="none">

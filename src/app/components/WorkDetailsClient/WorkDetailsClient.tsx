@@ -148,10 +148,6 @@ export default function WorkDetailsClient({
 
   // Hook otimizado para partitura mais favoritada
   const {
-    mostFavoritedScoreId,
-    mostFavoritedSource,
-    hasFavorites: hasMostFavorited,
-    loading: loadingMostFavorited,
     isScoreMostFavorited,
   } = useMostFavoritedForWork(mounted ? work.id : '');
 
@@ -185,8 +181,6 @@ export default function WorkDetailsClient({
     loadMoreForTab,
     loadAll,
     fromCache,
-    backgroundCaching,
-    cacheProgress,
     setSelectedScore,
     getTabStats,
   } = useIMSLPScoresIncremental(work.imslpPermlink || '', {

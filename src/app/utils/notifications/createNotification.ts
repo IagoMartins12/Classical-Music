@@ -66,7 +66,7 @@ export async function createNotification({
       title: customTitle || template.title,
       message: customMessage || template.message,
       actionText: template.actionText,
-      actionUrl: actionUrl || buildActionUrl(type, relatedEntityId, metadata),
+      actionUrl: actionUrl || buildActionUrl(type, relatedEntityId),
       relatedEntityType,
       relatedEntityId,
       metadata,
@@ -236,8 +236,7 @@ async function checkForExistingNotification(
  */
 function buildActionUrl(
   type: NotificationType,
-  relatedEntityId?: string,
-  metadata?: Record<string, any>
+  relatedEntityId?: string
 ): string {
   switch (type) {
     // ESTUDANTE
@@ -278,19 +277,6 @@ function buildActionUrl(
     default:
       return '/notifications';
   }
-}
-
-function generateNotificationHash(
-  userId: string,
-  type: string,
-  entityId: string,
-  metadata?: any
-): string {
-  const crypto = require('crypto');
-  const baseString = `${userId}-${type}-${entityId}-${JSON.stringify(
-    metadata || {}
-  )}`;
-  return crypto.createHash('md5').update(baseString).digest('hex');
 }
 
 /**

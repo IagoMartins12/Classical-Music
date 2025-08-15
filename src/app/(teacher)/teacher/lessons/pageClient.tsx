@@ -23,7 +23,6 @@ import {
   FiCheckCircle,
   FiXCircle,
   FiAlertTriangle,
-  FiMusic,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -631,8 +630,7 @@ export default function TeacherLessonsPageClient({
 
   // 🆕 RENDER LESSON LIST ITEM COMPONENT
   const renderLessonListItem = useCallback(
-    (lesson: any, index: number) => {
-      const statusInfo = getLessonStatusInfo(lesson);
+    (lesson: any) => {
 
       return (
         <AnimatedCard

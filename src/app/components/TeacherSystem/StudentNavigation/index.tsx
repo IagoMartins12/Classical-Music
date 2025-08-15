@@ -19,7 +19,6 @@ import {
   FiChevronRight,
   FiMusic,
   FiHeart,
-  FiAward,
   FiFile,
   FiBell,
   FiBook,

@@ -735,7 +735,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const relationship = studentProfile.teachers[0];
     const lessonStart = new Date(scheduledAt);
 
     // Calcular datas de recorrência

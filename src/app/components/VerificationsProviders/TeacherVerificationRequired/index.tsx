@@ -19,10 +19,7 @@ import {
 } from '../../animation/AnimatedComponents';
 import AnimatedMusicalNotes from '../../AnimatedMusicalNotes';
 import Button from '../../Common/Button';
-import {
-  useEmailRefresh,
-  useEmailRefreshSimple,
-} from '@/app/hooks/useEmailRefresh';
+import { useEmailRefreshSimple } from '@/app/hooks/useEmailRefresh';
 import Navbar from '../../Navbar';
 import { Toaster } from 'react-hot-toast';
 

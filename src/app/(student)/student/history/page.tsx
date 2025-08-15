@@ -1,7 +1,6 @@
 // app/student/history/page.tsx - Página de Histórico de Atividades do Aluno
 
 import { Metadata } from 'next';
-import { getRequiredServerSession } from '@/app/utils/sessionUtils';
 import StudentHistoryClient from './pageClient';
 
 export const metadata: Metadata = {
@@ -19,40 +18,29 @@ export const metadata: Metadata = {
 };
 
 interface StudentHistoryPageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string;
     action?: string;
     entityType?: string;
     dateFrom?: string;
     dateTo?: string;
-  };
+  }>;
 }
 
 export default async function StudentHistoryPage({
   searchParams,
 }: StudentHistoryPageProps) {
-  const session = await getRequiredServerSession();
-
-  // Verificar se é aluno
-  if (session.user.role !== 0) {
-    throw new Error('Acesso negado - Apenas alunos');
-  }
+  const resolvedSearchParams = await searchParams;
 
   // Extrair parâmetros de busca
-  const page = parseInt(searchParams.page || '1');
-  const action = searchParams.action || 'all';
-  const entityType = searchParams.entityType || 'all';
-  const dateFrom = searchParams.dateFrom || '';
-  const dateTo = searchParams.dateTo || '';
+  const page = parseInt(resolvedSearchParams.page || '1');
+  const action = resolvedSearchParams.action || 'all';
+  const entityType = resolvedSearchParams.entityType || 'all';
+  const dateFrom = resolvedSearchParams.dateFrom || '';
+  const dateTo = resolvedSearchParams.dateTo || '';
 
   return (
     <StudentHistoryClient
-      userId={session.user.id}
-      userEmail={session.user.email || ''}
-      userName={`${session.user.firstName || ''} ${
-        session.user.lastName || ''
-      }`.trim()}
-      userImage={session.user.image}
       initialFilters={{
         page,
         action,

@@ -331,7 +331,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                 <div className="p-4 text-center text-theme-tertiary">
                   <FiSearch className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">
-                    Nenhuma obra encontrada para "{query}"
+                    Nenhuma obra encontrada para &quot;{query}&quot;
                   </p>
                   <p className="text-xs mt-1">Tente termos diferentes</p>
                 </div>

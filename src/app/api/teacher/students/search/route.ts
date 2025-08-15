@@ -32,6 +32,19 @@ export async function GET(request: NextRequest) {
       `🔍 [TEACHER-SEARCH] Professor ${session.user.id} buscando: ${email}`
     );
 
+    // Primeiro buscar o perfil de professor do usuário atual
+    const currentTeacher = await prisma.teacher.findUnique({
+      where: { userId: session.user.id },
+      select: { id: true },
+    });
+
+    if (!currentTeacher) {
+      return NextResponse.json(
+        { error: 'Perfil de professor não encontrado' },
+        { status: 404 }
+      );
+    }
+
     // Buscar usuários com role 0 (alunos) por email
     const potentialStudents = await prisma.user.findMany({
       where: {
@@ -60,13 +73,16 @@ export async function GET(request: NextRequest) {
             mainInstrument: true,
             teachers: {
               where: {
-                teacherId: session.user.id,
-                isActive: true,
+                teacherId: currentTeacher.id, // Filtrar apenas relacionamentos com este professor
               },
               select: {
                 id: true,
+                teacherId: true,
                 isActive: true,
                 startDate: true,
+                inviteStatus: true,
+                inviteAcceptedAt: true,
+                inviteDeclinedAt: true,
               },
             },
           },
@@ -76,12 +92,15 @@ export async function GET(request: NextRequest) {
       take: limit,
     });
 
+    console.log(
+      `📊 [TEACHER-SEARCH] Professor ID: ${currentTeacher.id}, Encontrados: ${potentialStudents.length} usuários`
+    );
+
     // Formatar resultado
     const studentsFormatted = potentialStudents.map((user) => {
-      const isAlreadyStudent =
-        user.studentProfile?.teachers &&
-        user.studentProfile?.teachers?.length > 0;
-      const relationshipData = user.studentProfile?.teachers?.[0];
+      // Como já filtramos na query, se existe relacionamento, é com este professor
+      const existingRelationship = user.studentProfile?.teachers?.[0];
+      const isAlreadyStudent = !!existingRelationship;
 
       return {
         id: user.id,
@@ -94,16 +113,31 @@ export async function GET(request: NextRequest) {
         mainInstrument: user.studentProfile?.mainInstrument || null,
         studentLevel: user.studentProfile?.level || null,
         createdAt: user.createdAt,
+
         // Status do relacionamento
         isAlreadyStudent,
-        relationshipId: relationshipData?.id || null,
-        relationshipStartDate: relationshipData?.startDate || null,
+        relationshipId: existingRelationship?.id || null,
+        relationshipStartDate: existingRelationship?.startDate || null,
+        relationshipIsActive: existingRelationship?.isActive || false,
+        inviteStatus: existingRelationship?.inviteStatus || null,
+        inviteAcceptedAt: existingRelationship?.inviteAcceptedAt || null,
+        inviteDeclinedAt: existingRelationship?.inviteDeclinedAt || null,
         hasStudentProfile: !!user.studentProfile,
       };
     });
 
+    const activeStudents = studentsFormatted.filter(
+      (s) => s.isAlreadyStudent && s.relationshipIsActive
+    );
+    const pendingInvites = studentsFormatted.filter(
+      (s) => s.isAlreadyStudent && s.inviteStatus === 'PENDING'
+    );
+    const availableStudents = studentsFormatted.filter(
+      (s) => !s.isAlreadyStudent
+    );
+
     console.log(
-      `✅ [TEACHER-SEARCH] Encontrados ${studentsFormatted.length} alunos potenciais`
+      `✅ [TEACHER-SEARCH] Resultados: ${activeStudents.length} ativos, ${pendingInvites.length} pendentes, ${availableStudents.length} disponíveis`
     );
 
     return NextResponse.json({
@@ -111,6 +145,12 @@ export async function GET(request: NextRequest) {
       students: studentsFormatted,
       total: studentsFormatted.length,
       searchTerm: email,
+      summary: {
+        total: studentsFormatted.length,
+        active: activeStudents.length,
+        pending: pendingInvites.length,
+        available: availableStudents.length,
+      },
     });
   } catch (error) {
     console.error('❌ [TEACHER-SEARCH] Erro na busca de alunos:', error);

@@ -16,8 +16,6 @@ import {
   FiRepeat,
   FiInfo,
   FiMusic,
-  FiDownload,
-  FiExternalLink,
   FiX,
   FiUserX,
   FiEdit3,
@@ -34,7 +32,6 @@ import {
 import { StudentLessonDetail } from './pageServer';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/Modal';
 import { useToast } from '@/app/hooks/useToast';
 import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
@@ -44,11 +41,24 @@ interface StudentLessonDetailPageClientProps {
   errorMessage?: string;
 }
 
+const translatePendingAssignments = (status: string) => {
+  if (status === 'PENDING') {
+    return 'Pendente';
+  } else if (status === 'IN_PROGRESS') {
+    return 'Em progresso';
+  } else if (status === 'COMPLETED') {
+    return 'Concluída';
+  } else if (status === 'OVERDUE') {
+    return 'Atrasada';
+  } else {
+    return 'Desconhecida';
+  }
+};
+
 export default function StudentLessonDetailPageClient({
   initialData,
   errorMessage,
 }: StudentLessonDetailPageClientProps) {
-  const router = useRouter();
   const [lesson, setLesson] = useState<StudentLessonDetail | null>(initialData);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(errorMessage || null);
@@ -246,7 +256,7 @@ export default function StudentLessonDetailPageClient({
   };
 
   // 🆕 VERIFICAR SE AINDA PODE FAZER AÇÕES (não pode se já enviou mensagem ou se não é mais SCHEDULED)
-  const canTakeAction = lesson?.status === 'SCHEDULED' && !actionSent;
+  // const canTakeAction = lesson?.status === 'SCHEDULED' && !actionSent;
 
   // Render error state
   if ((error || errorMessage) && !lesson) {
@@ -863,35 +873,35 @@ export default function StudentLessonDetailPageClient({
 
                   <div className="space-y-3">
                     {lesson.assignments.map((assignment) => (
-                      <div
+                      <Link
+                        href={`/student/assignments/${assignment.id}`}
                         key={assignment.id}
-                        className="p-3 border border-theme-secondary rounded-lg"
                       >
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-medium text-theme-primary">
-                            {assignment.title}
-                          </h4>
-                          <span
-                            className={`px-2 py-1 text-xs rounded ${
-                              assignment.isCompleted
-                                ? 'bg-accent-green/10 text-accent-green'
-                                : 'bg-accent-yellow/10 text-accent-yellow'
-                            }`}
-                          >
-                            {assignment.isCompleted
-                              ? 'Concluída'
-                              : assignment.status}
-                          </span>
-                        </div>
-                        <p className="text-sm text-theme-secondary mt-1">
-                          {assignment.description}
-                        </p>
-                        {assignment.dueDate && (
-                          <p className="text-xs text-theme-tertiary mt-1">
-                            Prazo: {formatDateTime(assignment.dueDate)}
+                        <div className="p-3 border border-theme-secondary rounded-lg">
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-medium text-theme-primary">
+                              {assignment.title}
+                            </h4>
+                            <span
+                              className={`px-2 py-1 text-xs rounded ${
+                                assignment.isCompleted
+                                  ? 'text-green-400'
+                                  : 'text-yellow-400'
+                              }`}
+                            >
+                              {translatePendingAssignments(assignment.status)}
+                            </span>
+                          </div>
+                          <p className="text-sm text-theme-secondary mt-1">
+                            {assignment.description}
                           </p>
-                        )}
-                      </div>
+                          {assignment.dueDate && (
+                            <p className="text-xs text-theme-tertiary mt-1">
+                              Prazo: {formatDateTime(assignment.dueDate)}
+                            </p>
+                          )}
+                        </div>
+                      </Link>
                     ))}
                   </div>
                 </AnimatedCard>

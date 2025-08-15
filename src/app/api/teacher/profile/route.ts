@@ -6,7 +6,6 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag, revalidatePath } from 'next/cache';
 import { createTeacherActivityLogger } from '@/app/utils/schoolActivities';
-import { NotificationFactory } from '@/app/utils/notifications/createNotification';
 
 // Função auxiliar para revalidar cache de teacher profile - MELHORADA
 async function revalidateTeacherProfileData(userId: string) {
@@ -371,7 +370,7 @@ export async function PUT(request: NextRequest) {
     });
 
     // 🔧 ATUALIZAR DADOS DO USUÁRIO COM VALIDAÇÃO MELHORADA
-    let userChanges: any = {};
+    const userChanges: any = {};
     if (userData) {
       const allowedUserFields = [
         'firstName',
@@ -477,7 +476,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // 🔧 ATUALIZAR DADOS DO PROFESSOR COM VALIDAÇÃO CORRIGIDA
-    let teacherChanges: any = {};
+    const teacherChanges: any = {};
     if (teacherData) {
       const allowedTeacherFields = [
         'bio',

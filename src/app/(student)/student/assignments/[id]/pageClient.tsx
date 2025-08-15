@@ -15,23 +15,17 @@ import {
   FiClock,
   FiTarget,
   FiBookOpen,
-  FiEdit3,
   FiSave,
   FiUpload,
   FiPlay,
   FiMusic,
   FiTrendingUp,
-  FiAward,
   FiCheckCircle,
   FiCircle,
-  FiHeadphones,
-  FiMic,
   FiUsers,
   FiAlertTriangle,
   FiVideo,
   FiTrash2,
-  FiFile,
-  FiDownload,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -41,7 +35,6 @@ import {
 } from '../../../../components/animation/AnimatedComponents';
 import { StudentAssignmentDetailsData } from './pageServer';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useStudentAssignments } from '@/app/hooks/lessonsSystem/useStudentAssignments';
 import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
@@ -138,20 +131,10 @@ interface ProgressMilestones {
   [key: string]: boolean;
 }
 
-interface VideoSubmission {
-  filename: string;
-  originalName: string;
-  filePath: string;
-  fileSize: number;
-  uploadedAt: string;
-  mimeType: string;
-}
-
 export default function StudentAssignmentDetailsPageClient({
   initialData,
   errorMessage,
 }: StudentAssignmentDetailsPageClientProps) {
-  const router = useRouter();
   const { updateAssignment, completeAssignment, loading, error, clearError } =
     useStudentAssignments();
 
@@ -188,9 +171,6 @@ export default function StudentAssignmentDetailsPageClient({
   const [studentRating, setStudentRating] = useState(
     initialData?.assignment?.studentRating || 0
   );
-  const [actualTime, setActualTime] = useState(
-    initialData?.assignment?.actualTime?.toString() || ''
-  );
 
   // Estados para controle de mudanças
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -213,11 +193,10 @@ export default function StudentAssignmentDetailsPageClient({
   const [showVideoModal, setShowVideoModal] = useState(false);
 
   // 🆕 Estado do vídeo atual
-  const [currentVideoSubmission, setCurrentVideoSubmission] =
-    useState<VideoSubmission | null>(
-      initialData?.assignment?.submissions?.videoSubmission || null
-    );
 
+  const actualTime = initialData?.assignment?.actualTime?.toString();
+  const currentVideoSubmission =
+    initialData?.assignment?.submissions?.videoSubmission;
   // Detectar mudanças nos campos editáveis
   useEffect(() => {
     const hasChanges =
@@ -541,7 +520,8 @@ export default function StudentAssignmentDetailsPageClient({
                   Você tem alterações não salvas
                 </p>
                 <p className="text-theme-secondary text-sm">
-                  Clique em "Salvar Alterações" para manter suas modificações.
+                  Clique em &quot;Salvar Alterações&quot; para manter suas
+                  modificações.
                 </p>
               </div>
             </div>
@@ -652,7 +632,7 @@ export default function StudentAssignmentDetailsPageClient({
                       </span>
                     </div>
 
-                    <div>
+                    {/* <div>
                       <label className="text-sm font-medium text-theme-tertiary block mb-3">
                         Tempo de Estudo
                       </label>
@@ -727,7 +707,7 @@ export default function StudentAssignmentDetailsPageClient({
                           </div>
                         )}
                       </div>
-                    </div>
+                    </div> */}
 
                     <button
                       onClick={() => setShowProgressModal(true)}
@@ -809,7 +789,7 @@ export default function StudentAssignmentDetailsPageClient({
 
                   {/* Vídeo Atual */}
                   {currentVideoSubmission && (
-                    <div className="mb-6 p-4 bg-accent-green/5 border border-accent-green/20 rounded-lg">
+                    <div className="mb-6 p-4 bg-theme-elevated rounded-lg">
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <h4 className="font-medium text-theme-primary mb-1">
@@ -817,9 +797,7 @@ export default function StudentAssignmentDetailsPageClient({
                           </h4>
                           <div className="flex items-center space-x-4 text-sm text-theme-secondary">
                             <span>{currentVideoSubmission.originalName}</span>
-                            <span>
-                              {formatFileSize(currentVideoSubmission.fileSize)}
-                            </span>
+
                             <span>
                               Enviado em{' '}
                               {formatDateTime(
@@ -1163,7 +1141,6 @@ export default function StudentAssignmentDetailsPageClient({
                 </h3>
                 <div className="space-y-2">
                   {PROGRESS_MILESTONES.slice(0, 4).map((milestone) => {
-                    const Icon = milestone.icon;
                     const isCompleted = progressMilestones[milestone.key];
                     return (
                       <div
@@ -1373,12 +1350,6 @@ export default function StudentAssignmentDetailsPageClient({
                   <h2 className="text-xl font-bold text-theme-primary classical-title">
                     Visualizar Vídeo
                   </h2>
-                  <button
-                    onClick={() => setShowVideoModal(false)}
-                    className="text-theme-tertiary hover:text-theme-primary"
-                  >
-                    <FiX className="w-5 h-5" />
-                  </button>
                 </div>
 
                 <div className="space-y-4">

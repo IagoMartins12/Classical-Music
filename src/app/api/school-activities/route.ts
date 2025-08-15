@@ -5,21 +5,6 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 
-interface ActivityRecord {
-  id: string;
-  userId: string;
-  userType: string;
-  action: string;
-  entityType: string;
-  entityId?: string;
-  entityName?: string;
-  title: string;
-  description?: string;
-  changes?: any;
-  metadata?: any;
-  createdAt: string;
-}
-
 // GET - Listar atividades escolares
 export async function GET(request: NextRequest) {
   try {
@@ -300,7 +285,7 @@ async function enrichActivitiesWithEntityDetails(activities: any[]) {
         // Adicionar informações de tempo relativo
         timeAgo: getTimeAgo(activity.createdAt),
         // Adicionar resumo das mudanças
-        changesSummary: getChangesSummary(activity.changes, activity.action),
+        changesSummary: getChangesSummary(activity.changes),
       };
     })
   );
@@ -392,7 +377,7 @@ function getTimeAgo(date: Date | string): string {
 }
 
 // Função para resumir mudanças
-function getChangesSummary(changes: any, action: string): string {
+function getChangesSummary(changes: any): string {
   if (!changes || typeof changes !== 'object') {
     return '';
   }

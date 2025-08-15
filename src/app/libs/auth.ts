@@ -7,11 +7,7 @@ import prisma from '@/app/libs/prismadb';
 import { CustomPrismaAdapter } from './CustomPrismaAdapter';
 
 // 🆕 FUNÇÃO PARA BUSCAR DADOS DE VERIFICAÇÃO TEACHER/STUDENT
-async function getUserVerificationData(
-  userId: string,
-  isTeacher: boolean,
-  isStudent: boolean
-) {
+async function getUserVerificationData(userId: string, isTeacher: boolean) {
   const result = {
     teacherVerified: null as boolean | null,
     studentInviteStatus: null as
@@ -135,8 +131,7 @@ export const authOptions: NextAuthOptions = {
         // 🆕 BUSCAR DADOS DE VERIFICAÇÃO SE NECESSÁRIO
         const verificationData = await getUserVerificationData(
           user.id,
-          user.isTeacher || false,
-          user.isStudent || false
+          user.isTeacher || false
         );
 
         console.log('VERIFICATION DATA');
@@ -238,8 +233,7 @@ export const authOptions: NextAuthOptions = {
           // 🆕 BUSCAR DADOS DE VERIFICAÇÃO SE NECESSÁRIO
           const verificationData = await getUserVerificationData(
             fullUser.id,
-            fullUser.isTeacher || false,
-            fullUser.isStudent || false
+            fullUser.isTeacher || false
           );
 
           return {
@@ -322,8 +316,7 @@ export const authOptions: NextAuthOptions = {
           // 🆕 BUSCAR DADOS DE VERIFICAÇÃO ATUALIZADOS
           const verificationData = await getUserVerificationData(
             freshUser.id,
-            freshUser.isTeacher || false,
-            freshUser.isStudent || false
+            freshUser.isTeacher || false
           );
 
           return {
@@ -408,8 +401,7 @@ export const authOptions: NextAuthOptions = {
           // 🆕 BUSCAR DADOS DE VERIFICAÇÃO PARA SESSÃO
           const verificationData = await getUserVerificationData(
             user.id,
-            user.isTeacher || false,
-            user.isStudent || false
+            user.isTeacher || false
           );
 
           session.user = {

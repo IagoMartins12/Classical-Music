@@ -6,17 +6,18 @@ import prisma from '@/app/libs/prismadb';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id || !session.user.isStudent) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+    const { id } = await params;
 
     const notification = await prisma.notification.update({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
       data: {

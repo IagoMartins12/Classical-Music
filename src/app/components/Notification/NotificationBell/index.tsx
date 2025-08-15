@@ -14,10 +14,7 @@ import {
   FiExternalLink,
 } from 'react-icons/fi';
 import { useNotifications } from '@/app/hooks/notifications/useNotifications';
-import {
-  NotificationData,
-  NOTIFICATION_TYPE_CONFIG,
-} from '@/app/types/notification';
+import { NotificationData } from '@/app/types/notification';
 
 interface NotificationBellProps {
   userRole: 'teacher' | 'student';

@@ -6,7 +6,7 @@ import prisma from '@/app/libs/prismadb';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -23,10 +23,11 @@ export async function POST(
     } else if (type === 'browser') {
       updateData.browserShown = true;
     }
+    const { id } = await params;
 
-    const notification = await prisma.notification.update({
+    await prisma.notification.update({
       where: {
-        id: params.id,
+        id: id,
         userId: session.user.id,
       },
       data: updateData,

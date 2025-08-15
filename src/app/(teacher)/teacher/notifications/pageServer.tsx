@@ -5,14 +5,10 @@ import { NotificationData } from '@/app/types/notification';
 
 interface TeacherNotificationsPageServerProps {
   userId: string;
-  userEmail: string;
-  userName: string;
 }
 
 export default async function TeacherNotificationsPageServer({
   userId,
-  userEmail,
-  userName,
 }: TeacherNotificationsPageServerProps) {
   try {
     const now = new Date();
@@ -60,11 +56,6 @@ export default async function TeacherNotificationsPageServer({
         initialNotifications={notifications as NotificationData[]}
         unreadCount={unreadCount}
         notificationStats={notificationStats}
-        userProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-        }}
       />
     );
   } catch (error) {
@@ -75,11 +66,6 @@ export default async function TeacherNotificationsPageServer({
         initialNotifications={[]}
         unreadCount={0}
         notificationStats={[]}
-        userProfile={{
-          id: userId,
-          name: userName,
-          email: userEmail,
-        }}
         errorMessage="Erro ao carregar notificações. Tente recarregar a página."
       />
     );

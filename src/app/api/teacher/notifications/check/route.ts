@@ -13,8 +13,7 @@ import prisma from '@/app/libs/prismadb';
 const checkExistingNotification = async (
   userId: string,
   type: string,
-  relatedEntityId: string,
-  metadata?: any
+  relatedEntityId: string
 ) => {
   const baseWhere: any = {
     userId,

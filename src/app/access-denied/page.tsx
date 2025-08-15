@@ -16,7 +16,7 @@ import {
   FiCompass,
   FiLock,
 } from 'react-icons/fi';
-import { GiGraduateCap, GiGrandPiano, GiMusicalNotes } from 'react-icons/gi';
+import { GiGrandPiano, GiMusicalNotes } from 'react-icons/gi';
 import {
   AnimatedContainer,
   AnimatedCard,

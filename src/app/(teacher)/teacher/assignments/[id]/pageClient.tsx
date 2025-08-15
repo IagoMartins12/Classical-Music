@@ -20,7 +20,6 @@ import {
   FiVideo,
   FiPlay,
   FiDownload,
-  FiEye,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -215,6 +214,8 @@ export default function AssignmentDetailsPageClient({
   }
 
   const assignment = initialData.assignment;
+
+  console.log('assignment', initialData.assignment);
 
   return (
     <PageContainer showBackground={true}>
@@ -474,7 +475,7 @@ export default function AssignmentDetailsPageClient({
                   </h3>
 
                   <div className="space-y-4">
-                    <div className="p-4 bg-accent-purple/5 border border-accent-purple/20 rounded-lg">
+                    <div className="p-4 bg-theme-elevated rounded-lg">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                           <div className="w-12 h-12 bg-accent-purple/10 border border-accent-purple/30 rounded-lg flex items-center justify-center">
@@ -491,9 +492,6 @@ export default function AssignmentDetailsPageClient({
                               <span>
                                 Enviado em{' '}
                                 {formatDateTime(videoSubmission.uploadedAt)}
-                              </span>
-                              <span className="px-2 py-1 bg-theme-secondary/50 rounded text-xs">
-                                {videoSubmission.mimeType}
                               </span>
                             </div>
                           </div>

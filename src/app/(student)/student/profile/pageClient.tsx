@@ -44,6 +44,7 @@ import {
   convertLocationDataToDatabase,
 } from '@/app/utils/locationUtils';
 import { useStudentProfile } from '@/app/hooks/lessonsSystem/useStudentProfile';
+import { useToast } from '@/app/hooks/useToast';
 
 interface StudentProfilePageClientProps {
   initialData: StudentProfileData | null;
@@ -172,6 +173,7 @@ export default function StudentProfilePageClient({
     }
   }, [initialData, setInitialData]);
 
+  const toast = useToast();
   // 🔄 SINCRONIZAR FORMS QUANDO PROFILE MUDAR
   useEffect(() => {
     if (profile) {
@@ -219,6 +221,7 @@ export default function StudentProfilePageClient({
 
   const showError = (message: string) => {
     clearError();
+    toast.error(message);
     setTimeout(() => clearError(), 8000);
   };
 
@@ -395,17 +398,6 @@ export default function StudentProfilePageClient({
           : [...currentGenres, genre],
       };
     });
-  }, []);
-
-  // Handle boolean toggles
-  const handleToggle = useCallback((field: string, currentValue: boolean) => {
-    if (field.startsWith('privacy.')) {
-      const fieldName = field.replace('privacy.', '');
-      setPrivacyForm((prev) => ({
-        ...prev,
-        [fieldName]: !currentValue,
-      }));
-    }
   }, []);
 
   // Error state

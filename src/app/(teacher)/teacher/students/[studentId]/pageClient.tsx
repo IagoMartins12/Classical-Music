@@ -41,7 +41,6 @@ import {
 import { useTeacherStudentDetail } from '@/app/hooks/lessonsSystem/useTeacherStudentDetail';
 import { StudentDetailData } from './pageServer';
 import { translateNivel } from '@/app/utils';
-import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
 

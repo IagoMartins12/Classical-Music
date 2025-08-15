@@ -1,4 +1,4 @@
-// app/teacher/assignments/create/pageClient.tsx - Client Component para Criar Nova Tarefa
+// app/teacher/assignments/create/pageClient.tsx - ATUALIZADO COM VALIDAÇÃO E SCROLL
 
 'use client';
 
@@ -60,10 +60,19 @@ export default function CreateAssignmentPageClient({
   const { createAssignment, loading, error, clearError } =
     useTeacherAssignments();
 
-  // Refs para scroll automático aos campos com erro
-  const studentSelectRef = useRef<HTMLSelectElement>(null);
-  const titleInputRef = useRef<HTMLInputElement>(null);
-  const descriptionTextareaRef = useRef<HTMLTextAreaElement>(null);
+  // 🆕 REFS PARA VALIDAÇÃO E SCROLL AUTOMÁTICO
+  const fieldRefs = {
+    studentUserId: useRef<HTMLSelectElement>(null),
+    title: useRef<HTMLInputElement>(null),
+    description: useRef<HTMLTextAreaElement>(null),
+    dueDate: useRef<HTMLInputElement>(null),
+    estimatedTime: useRef<HTMLInputElement>(null),
+  };
+
+  // 🆕 ESTADO PARA ERROS DE VALIDAÇÃO
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
 
   // Form state
   const [formData, setFormData] = useState({
@@ -89,10 +98,88 @@ export default function CreateAssignmentPageClient({
   const [selectedStudent, setSelectedStudent] = useState<
     (typeof initialData.students)[0] | null
   >(null);
-  const [selectedLesson, setSelectedLesson] = useState<
-    (typeof initialData.recentLessons)[0] | null
-  >(null);
+
   const [showAdvanced, setShowAdvanced] = useState(false);
+
+  // 🆕 FUNÇÃO PARA SCROLL AUTOMÁTICO PARA O PRIMEIRO ERRO
+  const scrollToFirstError = useCallback((errorFields: string[]) => {
+    if (errorFields.length > 0) {
+      const firstErrorField = errorFields[0] as keyof typeof fieldRefs;
+      const fieldRef = fieldRefs[firstErrorField];
+
+      if (fieldRef?.current) {
+        fieldRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+
+        setTimeout(() => {
+          fieldRef.current?.focus();
+        }, 500);
+      }
+    }
+  }, []);
+
+  // 🆕 FUNÇÃO DE VALIDAÇÃO COMPLETA
+  const validateForm = useCallback((): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    // Validação do aluno
+    if (!formData.studentUserId.trim()) {
+      newErrors.studentUserId = 'Selecione um aluno para a tarefa';
+    }
+
+    // Validação do título
+    if (!formData.title.trim()) {
+      newErrors.title = 'Título da tarefa é obrigatório';
+    } else if (formData.title.trim().length < 3) {
+      newErrors.title = 'Título deve ter pelo menos 3 caracteres';
+    } else if (formData.title.trim().length > 100) {
+      newErrors.title = 'Título deve ter no máximo 100 caracteres';
+    }
+
+    // Validação da descrição
+    if (!formData.description.trim()) {
+      newErrors.description = 'Descrição detalhada é obrigatória';
+    } else if (formData.description.trim().length < 10) {
+      newErrors.description = 'Descrição deve ter pelo menos 10 caracteres';
+    } else if (formData.description.trim().length > 1000) {
+      newErrors.description = 'Descrição deve ter no máximo 1000 caracteres';
+    }
+
+    // Validação do prazo (se preenchido)
+    if (formData.dueDate.trim()) {
+      const dueDate = new Date(formData.dueDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Começar do início do dia
+
+      if (isNaN(dueDate.getTime())) {
+        newErrors.dueDate = 'Data de prazo inválida';
+      } else if (dueDate < today) {
+        newErrors.dueDate = 'Prazo deve ser hoje ou uma data futura';
+      }
+    }
+
+    // Validação do tempo estimado
+    if (!formData.estimatedTime || formData.estimatedTime < 5) {
+      newErrors.estimatedTime = 'Tempo estimado mínimo é de 5 minutos';
+    } else if (formData.estimatedTime > 300) {
+      newErrors.estimatedTime = 'Tempo estimado máximo é de 300 minutos';
+    }
+
+    setValidationErrors(newErrors);
+
+    // Fazer scroll para o primeiro erro
+    const errorFields = Object.keys(newErrors);
+    if (errorFields.length > 0) {
+      setTimeout(() => {
+        scrollToFirstError(errorFields);
+      }, 100);
+      return false;
+    }
+
+    return true;
+  }, [formData, scrollToFirstError]);
 
   // Update selected student and lesson when form changes
   useEffect(() => {
@@ -100,13 +187,25 @@ export default function CreateAssignmentPageClient({
       (s) => s.id === formData.studentUserId
     );
     setSelectedStudent(student || null);
-  }, [formData.studentUserId, initialData.students]);
+
+    // 🆕 LIMPAR ERRO DE ALUNO QUANDO SELECIONAR UM
+    if (formData.studentUserId && validationErrors.studentUserId) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.studentUserId;
+        return newErrors;
+      });
+    }
+  }, [
+    formData.studentUserId,
+    initialData.students,
+    validationErrors.studentUserId,
+  ]);
 
   useEffect(() => {
     const lesson = initialData.recentLessons.find(
       (l) => l.id === formData.lessonId
     );
-    setSelectedLesson(lesson || null);
 
     // Auto-select student if lesson is selected
     if (lesson && lesson.student.id !== formData.studentUserId) {
@@ -136,13 +235,25 @@ export default function CreateAssignmentPageClient({
     });
   }, []);
 
-  // Form handlers
-  const updateFormData = useCallback((field: string, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  }, []);
+  // 🆕 FORM HANDLERS ATUALIZADOS COM LIMPEZA DE ERROS
+  const updateFormData = useCallback(
+    (field: string, value: any) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+
+      // 🆕 LIMPAR ERRO DO CAMPO QUANDO USUÁRIO DIGITAR
+      if (validationErrors[field]) {
+        setValidationErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[field];
+          return newErrors;
+        });
+      }
+    },
+    [validationErrors]
+  );
 
   const addArrayField = useCallback((field: string) => {
     setFormData((prev) => ({
@@ -172,72 +283,41 @@ export default function CreateAssignmentPageClient({
     }));
   }, []);
 
-  // Generate default title based on type and student
-  useEffect(() => {
-    if (selectedStudent && formData.type && !formData.title) {
-      const typeLabel =
-        initialData.assignmentTypes.find((t) => t.value === formData.type)
-          ?.label || 'Tarefa';
-      const defaultTitle = `${typeLabel} - ${selectedStudent.name}`;
+  const setDefaultTittle = (newType?: string) => {
+    const typeValue = newType || formData.type;
+    const typeLabel =
+      initialData.assignmentTypes.find((t) => t.value === typeValue)?.label ||
+      'Tarefa';
+
+    const currentTitle = formData.title;
+
+    // Regex para identificar o padrão "Tarefa de [Tipo] - [resto]"
+    const taskPatternRegex = /^Tarefa de .+ - (.*)$/;
+    const match = currentTitle.match(taskPatternRegex);
+
+    if (match) {
+      // Se o título segue o padrão, substitui apenas a parte do tipo
+      const restOfTitle = match[1]; // Captura tudo após " - "
+      const newTitle = `Tarefa de ${typeLabel} - ${restOfTitle}`;
+      updateFormData('title', newTitle);
+    } else if (selectedStudent && typeValue && !currentTitle) {
+      // Se não há título e há aluno selecionado
+      const defaultTitle = `Tarefa de ${typeLabel} - ${selectedStudent.name}`;
+      updateFormData('title', defaultTitle);
+    } else if (typeValue && !currentTitle) {
+      // Se não há título
+      const defaultTitle = `Tarefa de ${typeLabel} - `;
       updateFormData('title', defaultTitle);
     }
-  }, [
-    selectedStudent,
-    formData.type,
-    formData.title,
-    initialData.assignmentTypes,
-    updateFormData,
-  ]);
-
-  // 🆕 FUNÇÃO PARA VALIDAÇÃO E SCROLL AUTOMÁTICO
-  const validateFormAndShowErrors = useCallback(() => {
-    // Campos obrigatórios
-    if (!formData.studentUserId) {
-      studentSelectRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
-      studentSelectRef.current?.focus();
-      return 'Por favor, selecione um aluno.';
-    }
-
-    if (!formData.title.trim()) {
-      titleInputRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
-      titleInputRef.current?.focus();
-      return 'Por favor, digite o título da tarefa.';
-    }
-
-    if (!formData.description.trim()) {
-      descriptionTextareaRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      });
-      descriptionTextareaRef.current?.focus();
-      return 'Por favor, digite uma descrição detalhada da tarefa.';
-    }
-
-    return null; // Sem erros
-  }, [formData]);
-
-  // Estado para mostrar erros de validação
-  const [validationError, setValidationError] = useState<string | null>(null);
-
-  // Submit handler
+  };
+  // 🆕 SUBMIT HANDLER ATUALIZADO COM VALIDAÇÃO
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       clearError();
-      setValidationError(null); // Limpar erro anterior
 
-      // 🆕 VALIDAÇÃO COM SCROLL AUTOMÁTICO
-      const validationErrorMessage = validateFormAndShowErrors();
-      if (validationErrorMessage) {
-        setValidationError(validationErrorMessage);
-        // Auto-limpar após 5 segundos
-        setTimeout(() => setValidationError(null), 5000);
+      // 🆕 VALIDAR FORMULÁRIO ANTES DE PROSSEGUIR
+      if (!validateForm()) {
         return;
       }
 
@@ -272,7 +352,7 @@ export default function CreateAssignmentPageClient({
       createAssignment,
       clearError,
       router,
-      validateFormAndShowErrors,
+      validateForm,
     ]
   );
 
@@ -349,7 +429,7 @@ export default function CreateAssignmentPageClient({
                         Aluno *
                       </label>
                       <Select
-                        ref={studentSelectRef}
+                        ref={fieldRefs.studentUserId}
                         options={[
                           { value: '', label: 'Selecione um aluno...' },
                           ...initialData.students.map((student) => ({
@@ -361,9 +441,18 @@ export default function CreateAssignmentPageClient({
                         onChange={(e) =>
                           updateFormData('studentUserId', e.target.value)
                         }
-                        className="input-classical w-full"
+                        className={`input-classical w-full ${
+                          validationErrors.studentUserId
+                            ? '!border-red-400'
+                            : ''
+                        }`}
                         required
                       />
+                      {validationErrors.studentUserId && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {validationErrors.studentUserId}
+                        </p>
+                      )}
                     </div>
 
                     {/* Lesson Selection (Optional) */}
@@ -402,9 +491,10 @@ export default function CreateAssignmentPageClient({
                             label: type.label,
                           }))}
                           value={formData.type}
-                          onChange={(e) =>
-                            updateFormData('type', e.target.value)
-                          }
+                          onChange={(e) => {
+                            updateFormData('type', e.target.value);
+                            setDefaultTittle(e.target.value);
+                          }}
                           className="input-classical w-full"
                         />
                         <p className="text-xs text-theme-tertiary mt-1">
@@ -441,16 +531,26 @@ export default function CreateAssignmentPageClient({
                         Título da Tarefa *
                       </label>
                       <Input
-                        ref={titleInputRef}
+                        ref={fieldRefs.title}
                         type="text"
                         value={formData.title}
                         onChange={(e) =>
                           updateFormData('title', e.target.value)
                         }
-                        className="input-classical w-full"
+                        className={`input-classical w-full ${
+                          validationErrors.title ? '!border-red-400' : ''
+                        }`}
                         placeholder="Ex: Prática - Escalas de Dó maior"
                         required
                       />
+                      {validationErrors.title && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {validationErrors.title}
+                        </p>
+                      )}
+                      <p className="text-xs text-theme-tertiary mt-1">
+                        {formData.title.length}/100 caracteres
+                      </p>
                     </div>
 
                     <div>
@@ -458,16 +558,27 @@ export default function CreateAssignmentPageClient({
                         Descrição Detalhada *
                       </label>
                       <textarea
-                        ref={descriptionTextareaRef}
+                        ref={fieldRefs.description}
                         value={formData.description}
                         onChange={(e) =>
                           updateFormData('description', e.target.value)
                         }
                         rows={4}
-                        className="input-classical w-full"
+                        className={`input-classical w-full ${
+                          validationErrors.description ? '!border-red-400' : ''
+                        }`}
                         placeholder="Descreva detalhadamente o que o aluno deve fazer, como deve praticar, quais técnicas focar..."
+                        maxLength={1000}
                         required
                       />
+                      {validationErrors.description && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {validationErrors.description}
+                        </p>
+                      )}
+                      <p className="text-xs text-theme-tertiary mt-1">
+                        {formData.description.length}/1000 caracteres
+                      </p>
                     </div>
                   </div>
 
@@ -483,34 +594,52 @@ export default function CreateAssignmentPageClient({
                           Prazo de Entrega
                         </label>
                         <Input
+                          ref={fieldRefs.dueDate}
                           type="date"
                           value={formData.dueDate}
                           onChange={(e) =>
                             updateFormData('dueDate', e.target.value)
                           }
-                          className="input-classical w-full"
+                          className={`input-classical w-full ${
+                            validationErrors.dueDate ? '!border-red-400' : ''
+                          }`}
                           min={new Date().toISOString().slice(0, 10)}
                         />
+                        {validationErrors.dueDate && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {validationErrors.dueDate}
+                          </p>
+                        )}
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Tempo Estimado (minutos)
+                          Tempo Estimado (minutos) *
                         </label>
                         <Input
+                          ref={fieldRefs.estimatedTime}
                           type="number"
                           value={formData.estimatedTime}
                           onChange={(e) =>
                             updateFormData(
                               'estimatedTime',
-                              parseInt(e.target.value)
+                              parseInt(e.target.value) || 0
                             )
                           }
                           min={5}
                           max={300}
                           step={5}
-                          className="input-classical w-full"
+                          className={`input-classical w-full ${
+                            validationErrors.estimatedTime
+                              ? '!border-red-400'
+                              : ''
+                          }`}
                         />
+                        {validationErrors.estimatedTime && (
+                          <p className="text-red-500 text-sm mt-1">
+                            {validationErrors.estimatedTime}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -774,29 +903,6 @@ export default function CreateAssignmentPageClient({
                   </div>
 
                   {/* Error Display */}
-                  {validationError && (
-                    <div className="bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg p-4">
-                      <div className="flex items-center space-x-3">
-                        <FiAlertCircle className="w-5 h-5 text-accent-yellow" />
-                        <div>
-                          <p className="text-accent-yellow font-medium">
-                            Campos obrigatórios
-                          </p>
-                          <p className="text-accent-yellow/80 text-sm">
-                            {validationError}
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setValidationError(null)}
-                          className="ml-auto text-accent-yellow"
-                        >
-                          <FiX className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
                   {error && (
                     <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
                       <div className="flex items-center space-x-3">
@@ -828,12 +934,7 @@ export default function CreateAssignmentPageClient({
                     </Link>
                     <button
                       type="submit"
-                      disabled={
-                        loading.createAssignment ||
-                        !formData.studentUserId ||
-                        !formData.title ||
-                        !formData.description
-                      }
+                      disabled={loading.createAssignment}
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       {loading.createAssignment ? (
@@ -1049,6 +1150,10 @@ export default function CreateAssignmentPageClient({
                   <div className="flex items-start space-x-2">
                     <FiCalendar className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
                     <p>Prazos claros ajudam na organização</p>
+                  </div>
+                  <div className="flex items-start space-x-2">
+                    <FiAlertCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
+                    <p>Preencha todos os campos obrigatórios marcados com *</p>
                   </div>
                 </div>
               </AnimatedCard>

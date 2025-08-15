@@ -246,7 +246,7 @@ export default function TeacherReviewsLoading() {
         {/* Reviews List Skeleton */}
         <div className="space-y-6">
           {Array.from({ length: 5 }).map((_, index) => (
-            <ReviewCardSkeleton key={index} index={index} />
+            <ReviewCardSkeleton key={index} />
           ))}
         </div>
 
@@ -265,7 +265,7 @@ export default function TeacherReviewsLoading() {
 }
 
 // Review Card Skeleton
-function ReviewCardSkeleton({ index }: { index: number }) {
+function ReviewCardSkeleton() {
   const hasComment = Math.random() > 0.3;
   const hasSpecificRatings = Math.random() > 0.4;
 

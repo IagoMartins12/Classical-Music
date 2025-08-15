@@ -2,12 +2,9 @@
 'use client';
 
 import { useState, useMemo, useCallback, useEffect } from 'react';
-import Image from 'next/image';
 import {
   FiUsers,
   FiSearch,
-  FiPlus,
-  FiMapPin,
   FiXCircle,
   FiUserPlus,
   FiRefreshCw,
@@ -19,13 +16,13 @@ import {
   PageContainer,
 } from '../../../components/animation/AnimatedComponents';
 import ViewModeToggle, { ViewMode } from '../../../components/ViewModeToggle';
-import Modal from '@/app/components/Modal';
 import Input from '@/app/components/Common/Inputs';
 import Select from '@/app/components/Common/Select';
 import { useTeacherStudents } from '@/app/hooks/lessonsSystem/useTeacherStudents';
 import { TeacherStudentsServerData } from './pageServer';
 import StudentCard from '@/app/components/TeacherSystem/StudentCard';
-import { translateNivel } from '@/app/utils';
+// 🆕 IMPORTAR O MODAL AVANÇADO
+import AddStudentModal from '@/app/components/TeacherSystem/AddStudentModal';
 
 interface TeacherStudentsPageClientProps {
   initialData: TeacherStudentsServerData;
@@ -39,6 +36,21 @@ type SortOption =
   | 'totalLessons'
   | 'nextLesson'
   | 'completionRate';
+
+// 🆕 INTERFACE PARA O PLANO DE ESTUDOS (mesmo do modal avançado)
+interface StudyPlanData {
+  maxLessonsPerWeek: number;
+  lessonDuration: number;
+  preferredDays: string[];
+  preferredTimes: string[];
+  currentFocus: string[];
+  learningPlan?: string;
+  studyGoals?: string;
+  practiceFrequency?: string;
+  homeworkExpectation?: string;
+  specialInstructions?: string;
+  teacherNotes?: string;
+}
 
 export default function TeacherStudentsPageClient({
   initialData,
@@ -77,18 +89,24 @@ export default function TeacherStudentsPageClient({
     }
   }, [initialData, setInitialData]);
 
-  // Handle search input change (debounced)
-  useEffect(() => {
-    const delayedSearch = setTimeout(() => {
-      if (showAddStudent && searchQuery.trim()) {
-        searchStudents(searchQuery.trim());
-      } else {
-        clearSearchResults();
-      }
-    }, 300);
+  // Handle search input change (debounced) - 🔄 ATUALIZADO para funcionar com o modal avançado
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setSearchQuery(value);
 
-    return () => clearTimeout(delayedSearch);
-  }, [searchQuery, searchStudents, showAddStudent, clearSearchResults]);
+      // Debounce logic
+      const timeoutId = setTimeout(() => {
+        if (value.trim()) {
+          searchStudents(value.trim());
+        } else {
+          clearSearchResults();
+        }
+      }, 600);
+
+      return () => clearTimeout(timeoutId);
+    },
+    [searchStudents, clearSearchResults]
+  );
 
   // Filter and sort students
   const filteredAndSortedStudents = useMemo(() => {
@@ -115,8 +133,8 @@ export default function TeacherStudentsPageClient({
         break;
     }
 
-    // Filter by search
-    if (searchQuery.trim()) {
+    // Filter by search (somente quando não estiver no modal)
+    if (searchQuery.trim() && !showAddStudent) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (student) =>
@@ -154,7 +172,7 @@ export default function TeacherStudentsPageClient({
     });
 
     return filtered;
-  }, [students, activeTab, searchQuery, sortBy]);
+  }, [students, activeTab, searchQuery, sortBy, showAddStudent]);
 
   // Statistics for filtered data
   const filteredStats = useMemo(() => {
@@ -191,16 +209,49 @@ export default function TeacherStudentsPageClient({
     };
   }, [filteredAndSortedStudents]);
 
-  // Add student function using hook
-  const handleAddStudent = useCallback(
-    async (studentUserId: string) => {
-      const success = await addStudent(studentUserId);
+  // 🆕 FUNÇÃO ATUALIZADA PARA FUNCIONAR COM PLANO DE ESTUDOS
+  const handleAddStudentWithPlan = useCallback(
+    async (studentUserId: string, studyPlan?: StudyPlanData) => {
+      console.log('🎯 [STUDENTS-PAGE] Adicionando aluno com plano:', {
+        studentUserId,
+        hasStudyPlan: !!studyPlan,
+        studyPlan: studyPlan
+          ? {
+              maxLessonsPerWeek: studyPlan.maxLessonsPerWeek,
+              lessonDuration: studyPlan.lessonDuration,
+              preferredDaysCount: studyPlan.preferredDays?.length || 0,
+              preferredTimesCount: studyPlan.preferredTimes?.length || 0,
+              currentFocusCount: studyPlan.currentFocus?.length || 0,
+            }
+          : null,
+      });
+
+      // 🔥 PREPARAR DADOS DO PLANO DE ESTUDOS OU USAR VALORES PADRÃO
+      const studyPlanData = studyPlan
+        ? {
+            maxLessonsPerWeek: studyPlan.maxLessonsPerWeek,
+            lessonDuration: studyPlan.lessonDuration,
+            preferredDays: studyPlan.preferredDays,
+            preferredTimes: studyPlan.preferredTimes,
+            learningPlan: studyPlan.learningPlan || '',
+            currentFocus: studyPlan.currentFocus,
+            studyGoals: studyPlan.studyGoals || '',
+            practiceFrequency: studyPlan.practiceFrequency || '',
+            homeworkExpectation: studyPlan.homeworkExpectation || '',
+            specialInstructions: studyPlan.specialInstructions || '',
+            teacherNotes: studyPlan.teacherNotes || '',
+          }
+        : undefined;
+
+      // ⚠️ IMPORTANTE: O hook addStudent precisa ser atualizado para aceitar studyPlanData
+      // Por enquanto, vou usar só o studentUserId - você precisará atualizar o hook
+      const success = await addStudent(studentUserId, studyPlanData);
 
       if (success) {
         setSearchQuery('');
         clearSearchResults();
         setShowAddStudent(false);
-        console.log('Aluno adicionado com sucesso!');
+        console.log('✅ [STUDENTS-PAGE] Aluno adicionado com sucesso!');
       }
     },
     [addStudent, clearSearchResults]
@@ -224,6 +275,13 @@ export default function TeacherStudentsPageClient({
       hour: '2-digit',
       minute: '2-digit',
     });
+  };
+
+  // 🆕 FUNÇÃO PARA FECHAR O MODAL
+  const handleCloseModal = () => {
+    setShowAddStudent(false);
+    setSearchQuery('');
+    clearSearchResults();
   };
 
   // Render error state
@@ -290,80 +348,6 @@ export default function TeacherStudentsPageClient({
             </p>
           </div>
         </AnimatedItem>
-
-        {/* Stats Cards */}
-        {/* <AnimatedItem direction="up" springType="gentle">
-          <SequentialGrid
-            cols={4}
-            gap={6}
-            delayBetweenItems={0.1}
-            className="mb-8"
-          >
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiUsers className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {summary.total}
-              </div>
-              <div className="text-sm text-theme-tertiary">Total de Alunos</div>
-              <div className="text-xs text-accent-green mt-1">
-                {summary.active} ativos
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCheckCircle className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {filteredStats.avgCompletionRate}%
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                Taxa de Conclusão
-              </div>
-              <div className="text-xs text-accent-green mt-1">Média geral</div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiBarChart2 className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {filteredStats.avgLessons}
-              </div>
-              <div className="text-sm text-theme-tertiary">Aulas/Aluno</div>
-              <div className="text-xs text-theme-tertiary mt-1">
-                Média histórica
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiTrendingUp className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {filteredAndSortedStudents.filter((s) => s.nextLesson).length}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                Com Próxima Aula
-              </div>
-              <div className="text-xs text-accent-blue mt-1">Esta semana</div>
-            </AnimatedCard>
-          </SequentialGrid>
-        </AnimatedItem> */}
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
@@ -546,209 +530,17 @@ export default function TeacherStudentsPageClient({
         )}
       </AnimatedContainer>
 
-      {/* Add Student Modal */}
-      {showAddStudent && (
-        <AddStudentModal
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          searchResults={searchResults}
-          searchLoading={loading.searchStudents}
-          loading={loading.addStudent}
-          onClose={() => {
-            setShowAddStudent(false);
-            setSearchQuery('');
-            clearSearchResults();
-          }}
-          onAddStudent={handleAddStudent}
-        />
-      )}
+      {/* 🆕 MODAL AVANÇADO COM PLANO DE ESTUDOS */}
+      <AddStudentModal
+        addStudent={handleAddStudentWithPlan} // 🔥 Função que agora recebe studyPlan
+        handleSearchChange={handleSearchChange}
+        isOpen={showAddStudent}
+        loading={loading.addStudent}
+        onClose={handleCloseModal}
+        searchLoading={loading.searchStudents}
+        searchQuery={searchQuery}
+        searchResults={searchResults}
+      />
     </PageContainer>
-  );
-}
-
-// Add Student Modal Component (unchanged)
-interface SearchStudentResult {
-  id: string;
-  name: string;
-  email?: string | null;
-  image?: string;
-  location?: string | null;
-  experienceLevel?: string | null;
-  mainInstrument?: string | null;
-  studentLevel?: string | null;
-  isAlreadyStudent: boolean;
-  relationshipId?: string | null;
-  hasStudentProfile: boolean;
-}
-
-interface AddStudentModalProps {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
-  searchResults: SearchStudentResult[];
-  searchLoading: boolean;
-  loading: boolean;
-  onClose: () => void;
-  onAddStudent: (studentUserId: string) => void;
-}
-
-function AddStudentModal({
-  searchQuery,
-  setSearchQuery,
-  searchResults,
-  searchLoading,
-  loading,
-  onClose,
-  onAddStudent,
-}: AddStudentModalProps) {
-  return (
-    <Modal maxWidth="3xl" isOpen onClose={onClose}>
-      <AnimatedCard hover="none">
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-xl font-bold text-theme-primary classical-title">
-                Adicionar Novo Aluno
-              </h2>
-              <p className="text-theme-tertiary">
-                Busque o aluno pelo email completo
-              </p>
-            </div>
-          </div>
-
-          {/* Search Input */}
-          <div className="relative mb-6">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
-            <Input
-              type="email"
-              placeholder="Digite o email completo do aluno..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="input-classical w-full"
-            />
-            {searchLoading && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                <div className="w-4 h-4 border-2 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
-              </div>
-            )}
-          </div>
-
-          {/* Search Results */}
-          {searchResults.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="font-semibold text-theme-primary">
-                Resultados da busca ({searchResults.length})
-              </h3>
-
-              {searchResults.map((student) => (
-                <div key={student.id} className="classical-card-2 p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      {/* Avatar */}
-                      <div className="relative w-10 h-10">
-                        {student.image ? (
-                          <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-brand-primary/20">
-                            <Image
-                              src={student.image}
-                              alt={student.name}
-                              fill
-                              sizes="40px"
-                              className="object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20">
-                            <FiUsers className="w-5 h-5 text-theme-primary" />
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Info */}
-                      <div>
-                        <div className="font-semibold text-theme-primary">
-                          {student.name}
-                        </div>
-                        <div className="text-sm text-theme-tertiary">
-                          {student.email}
-                        </div>
-                        {student.location && (
-                          <div className="text-xs text-theme-tertiary flex items-center">
-                            <FiMapPin className="w-3 h-3 mr-1" />
-                            {student.location}
-                          </div>
-                        )}
-                        {student.experienceLevel && (
-                          <div className="text-xs text-accent-blue">
-                            Nível: {translateNivel(student.experienceLevel)}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Action Button */}
-                    <div>
-                      {student.isAlreadyStudent ? (
-                        <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
-                          Já é seu aluno
-                        </span>
-                      ) : (
-                        <button
-                          onClick={() => onAddStudent(student.id)}
-                          disabled={loading}
-                          className="btn-classical-primary text-sm px-4 py-2 flex items-center space-x-2"
-                        >
-                          {loading ? (
-                            <>
-                              <div className="w-4 h-4 border-2 border-theme-primary/30 border-t-theme-primary rounded-full animate-spin"></div>
-                              <span>Adicionando...</span>
-                            </>
-                          ) : (
-                            <>
-                              <FiPlus className="w-4 h-4" />
-                              <span>Adicionar</span>
-                            </>
-                          )}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Empty States */}
-          {searchQuery.length >= 3 &&
-            searchResults.length === 0 &&
-            !searchLoading && (
-              <div className="text-center py-8">
-                <FiSearch className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
-                <h3 className="font-semibold text-theme-primary mb-2">
-                  Nenhum aluno encontrado
-                </h3>
-                <p className="text-theme-tertiary text-sm">
-                  Verifique se o email está correto ou se o usuário já se
-                  cadastrou na plataforma.
-                </p>
-              </div>
-            )}
-
-          {searchQuery.length < 3 && (
-            <div className="text-center py-8">
-              <FiUserPlus className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
-              <h3 className="font-semibold text-theme-primary mb-2">
-                Como adicionar um aluno
-              </h3>
-              <div className="text-theme-tertiary text-sm space-y-2">
-                <p>1. Digite o email completo do aluno no campo acima</p>
-                <p>2. O aluno deve estar cadastrado na plataforma</p>
-                <p>
-                  3. Clique em &quot;Adicionar&quot; quando encontrar o aluno
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      </AnimatedCard>
-    </Modal>
   );
 }

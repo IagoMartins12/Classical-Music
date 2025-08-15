@@ -419,9 +419,6 @@ export default function TeacherLessonDetailsPageClient({
     }
   }, []);
 
-  // Calculate lesson preview
-  const lessonCount = 1; // Para detalhes de aula única
-
   // Edit handlers
   const handleSaveBasicInfo = useCallback(async () => {
     // Converter a data para ISO string completo

@@ -53,10 +53,6 @@ interface Activity {
 }
 
 interface TeacherHistoryClientProps {
-  userId: string;
-  userEmail: string;
-  userName: string;
-  userImage?: string | null;
   initialFilters: {
     page: number;
     action: string;
@@ -67,10 +63,6 @@ interface TeacherHistoryClientProps {
 }
 
 const TeacherHistoryClient = ({
-  userId,
-  userEmail,
-  userName,
-  userImage,
   initialFilters,
 }: TeacherHistoryClientProps) => {
   const router = useRouter();

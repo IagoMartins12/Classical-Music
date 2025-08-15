@@ -88,9 +88,7 @@ export const createNotificationUniqueHash = (
  */
 export const buildDuplicateCheckQuery = (
   userId: string,
-  type: NotificationType,
-  uniqueHash: string,
-  relatedEntityId?: string
+  uniqueHash: string
 ) => {
   const now = new Date();
 

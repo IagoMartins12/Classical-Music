@@ -1,7 +1,7 @@
 // app/(student)/notifications/pageClient.tsx
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import Link from 'next/link';
 import {
   FiBell,
@@ -11,11 +11,9 @@ import {
   FiAlertTriangle,
   FiInfo,
   FiFilter,
-  FiTrash2,
   FiRefreshCw,
   FiExternalLink,
   FiCalendar,
-  FiUser,
   FiFileText,
   FiMusic,
   FiBookOpen,
@@ -26,21 +24,14 @@ import {
   AnimatedItem,
   PageContainer,
 } from '../../../components/animation/AnimatedComponents';
-import {
-  NotificationData,
-  NOTIFICATION_TYPE_CONFIG,
-} from '@/app/types/notification';
+import { NotificationData } from '@/app/types/notification';
 import { useToast } from '@/app/hooks/useToast';
 
 interface StudentNotificationsPageClientProps {
   initialNotifications: NotificationData[];
   unreadCount: number;
   notificationStats: Array<{ type: string; _count: { id: number } }>;
-  userProfile: {
-    id: string;
-    name: string;
-    email: string;
-  };
+
   errorMessage?: string;
 }
 
@@ -51,7 +42,6 @@ export default function StudentNotificationsPageClient({
   initialNotifications,
   unreadCount: initialUnreadCount,
   notificationStats,
-  userProfile,
   errorMessage,
 }: StudentNotificationsPageClientProps) {
   const [notifications, setNotifications] =
@@ -122,7 +112,7 @@ export default function StudentNotificationsPageClient({
           setUnreadCount((prev) => Math.max(0, prev - 1));
           toast.success('Notificação marcada como lida');
         }
-      } catch (error) {
+      } catch {
         toast.error('Erro ao marcar notificação como lida');
       }
     },
@@ -147,7 +137,7 @@ export default function StudentNotificationsPageClient({
         setUnreadCount(0);
         toast.success('Todas as notificações marcadas como lidas');
       }
-    } catch (error) {
+    } catch {
       toast.error('Erro ao marcar todas como lidas');
     } finally {
       setLoading(false);
@@ -174,7 +164,7 @@ export default function StudentNotificationsPageClient({
           setHasMore(false);
         }
       }
-    } catch (error) {
+    } catch {
       toast.error('Erro ao carregar mais notificações');
     } finally {
       setLoading(false);

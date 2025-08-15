@@ -228,8 +228,8 @@ const useProcessedData = (imslpData: any, workScores: WorkScore[]) => {
 
     // ✅ 1. Processar dados IMSLP
     if (imslpData) {
-      Object.entries(imslpData.scoresByType).forEach(
-        ([type, groups]: [string, any[]]) => {
+      (Object.entries(imslpData.scoresByType) as [string, any[]][]).forEach(
+        ([type, groups]) => {
           if (groups && groups.length > 0) {
             const processedGroups = groups.map((group: any) => ({
               groupIndex: group.groupIndex,

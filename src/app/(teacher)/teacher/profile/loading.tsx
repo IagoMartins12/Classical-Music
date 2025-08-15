@@ -323,8 +323,6 @@ interface ProfileSectionSkeletonProps {
 
 function ProfileSectionSkeleton({
   icon,
-  title,
-  subtitle,
   children,
 }: ProfileSectionSkeletonProps) {
   return (

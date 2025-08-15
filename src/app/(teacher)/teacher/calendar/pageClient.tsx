@@ -35,7 +35,6 @@ import Image from 'next/image';
 import { useTeacherCalendar } from '@/app/hooks/useTeacherCalendar';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
-import { useLessonDetails } from '@/app/hooks/lessonsSystem/useLessonDetails';
 
 interface TeacherCalendarPageClientProps {
   initialData: TeacherCalendarData;
@@ -658,8 +657,9 @@ export default function TeacherCalendarPageClient({
                   </h4>
                   <p className="text-sm text-theme-secondary">
                     Há aulas que já passaram da data agendada mas ainda estão
-                    marcadas como "Agendadas". Atualize o status para
-                    "Concluída", "Cancelada" ou "Faltou".
+                    marcadas como &quot;Agendadas&quot;. Atualize o status para
+                    &quot;Concluída&quot;, &quot;Cancelada&quot; ou
+                    &quot;Faltou&quot;.
                   </p>
                 </div>
               </div>
@@ -946,8 +946,8 @@ export default function TeacherCalendarPageClient({
                   Confirmar Atualização
                 </h2>
                 <p className="text-theme-secondary">
-                  Alterar status da aula para "{pendingStatusUpdate.statusLabel}
-                  "
+                  Alterar status da aula para &quot;{pendingStatusUpdate.statusLabel}
+                  &quot;
                 </p>
               </div>
             </div>
@@ -1494,7 +1494,7 @@ function EventDetailsModal({
                   <p className="text-sm text-theme-secondary mb-1">
                     A aula terminou há {statusInfo.hoursOverdue} hora
                     {statusInfo.hoursOverdue !== 1 ? 's' : ''} mas ainda está
-                    marcada como "Agendada".
+                    marcada como &quot;Agendada&quot;.
                   </p>
                   <p className="text-sm text-theme-secondary">
                     Atualize o status para refletir o que realmente aconteceu.
@@ -1812,7 +1812,7 @@ function DayEventsModal({
                   </h4>
                   <p className="text-sm text-theme-secondary">
                     Há aulas que já passaram da data agendada mas ainda estão
-                    marcadas como "Agendadas".
+                    marcadas como &quot;Agendadas&quot;.
                   </p>
                 </div>
               </div>

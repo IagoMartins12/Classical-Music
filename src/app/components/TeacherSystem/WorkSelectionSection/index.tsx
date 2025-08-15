@@ -44,16 +44,6 @@ interface Composer {
   worksCount?: number;
 }
 
-interface Work {
-  id: string;
-  title: string;
-  composer: {
-    id: string;
-    name: string;
-    fullName: string;
-  };
-}
-
 export default function WorkSelectionSection({
   selectedWorks,
   onWorksChange,
@@ -76,7 +66,6 @@ export default function WorkSelectionSection({
   } | null>(null);
 
   // Estados para loading
-  const [loadingComposers, setLoadingComposers] = useState(false);
 
   // 🆕 Carregar compositores populares ao inicializar
   useEffect(() => {
@@ -84,7 +73,6 @@ export default function WorkSelectionSection({
   }, []);
 
   const loadPopularComposers = async () => {
-    setLoadingComposers(true);
     try {
       const response = await fetch('/api/composers', {
         method: 'POST',
@@ -99,8 +87,6 @@ export default function WorkSelectionSection({
       }
     } catch (error) {
       console.error('❌ Erro ao carregar compositores:', error);
-    } finally {
-      setLoadingComposers(false);
     }
   };
 

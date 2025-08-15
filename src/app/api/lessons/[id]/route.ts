@@ -665,7 +665,7 @@ export async function PATCH(
 
     // Separar atualizações por role
     let updateData: any = {};
-    let notificationActions: string[] = [];
+    const notificationActions: string[] = [];
 
     if (session.user.role === 1) {
       // Professor pode atualizar tudo
@@ -686,7 +686,7 @@ export async function PATCH(
       }
     } else {
       // 🆕 ALUNO - LÓGICA CORRIGIDA PARA MENSAGEM OPCIONAL
-      const { studentFeedback, specialMessage, messageType } = body;
+      const { studentFeedback, messageType } = body;
 
       // 🔹 FEEDBACK EM AULAS CONCLUÍDAS
       if (studentFeedback && lesson.status === 'COMPLETED') {

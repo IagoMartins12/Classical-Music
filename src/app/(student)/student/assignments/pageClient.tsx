@@ -537,7 +537,6 @@ export default function StudentAssignmentsPageClient({
       const priorityColor =
         priorityColors[assignment.priority as keyof typeof priorityColors] ||
         'text-theme-secondary';
-      const hasScores = hasWorkScores(assignment);
 
       return (
         <AnimatedCard

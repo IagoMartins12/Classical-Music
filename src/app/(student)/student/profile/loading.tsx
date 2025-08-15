@@ -293,8 +293,6 @@ export default function StudentProfileLoading() {
 function ProfileSectionSkeleton({
   icon,
   iconColor,
-  title,
-  subtitle,
   children,
 }: {
   icon: React.ReactNode;
@@ -333,7 +331,6 @@ function ProfileSectionSkeleton({
 
 // Profile Field Skeleton Component
 function ProfileFieldSkeleton({
-  label,
   icon,
 }: {
   label: string;
