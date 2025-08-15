@@ -6,6 +6,13 @@ import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { revalidateTag } from 'next/cache';
 import { NotificationFactory } from '@/app/utils/notifications/createNotification';
+import {
+  uploadAssignmentVideo,
+  deleteAssignmentVideo,
+  extractVideoSubmission,
+  createVideoSubmission,
+  updateSubmissionsWithVideo,
+} from '@/app/utils/assignmentVideoUpload';
 
 // Função auxiliar para revalidar cache do professor e aluno (MANTIDA)
 async function revalidateTeacherAndStudentData(
@@ -514,6 +521,7 @@ export async function POST(request: NextRequest) {
 }
 
 // 🆕 PATCH - Atualizar assignment (COM NOTIFICAÇÕES)
+// 🆕 PATCH - Atualizar assignment (ATUALIZADO COM UPLOAD DE VÍDEO)
 export async function PATCH(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -525,7 +533,35 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Acesso negado' }, { status: 403 });
     }
 
-    const body = await request.json();
+    // 🆕 PROCESSAR FORMDATA PARA UPLOAD DE VÍDEO
+    const contentType = request.headers.get('content-type');
+    let body: any;
+    let videoFile: File | null = null;
+
+    if (contentType?.includes('multipart/form-data')) {
+      // FormData com possível arquivo de vídeo
+      const formData = await request.formData();
+
+      // Extrair dados JSON
+      const jsonData = formData.get('data') as string;
+      body = JSON.parse(jsonData);
+
+      // Extrair arquivo de vídeo
+      videoFile = formData.get('videoFile') as File | null;
+
+      console.log(
+        `📋🎥 [ASSIGNMENTS] FormData recebido - vídeo: ${!!videoFile}`
+      );
+    } else {
+      // JSON tradicional
+      body = await request.json();
+      console.log(
+        `📋 [ASSIGNMENTS] JSON recebido - campos: ${Object.keys(body).join(
+          ', '
+        )}`
+      );
+    }
+
     const { assignmentId, ...updateData } = body;
 
     if (!assignmentId) {
@@ -537,7 +573,11 @@ export async function PATCH(request: NextRequest) {
 
     console.log(
       `📋✏️ [ASSIGNMENTS] Atualizando assignment ${assignmentId} - Role: ${session.user.role}`,
-      { updateFields: Object.keys(updateData) }
+      {
+        updateFields: Object.keys(updateData),
+        hasVideo: !!videoFile,
+        videoSize: videoFile ? `${Math.round(videoFile.size / 1024)}KB` : 'N/A',
+      }
     );
 
     // Buscar perfis
@@ -668,10 +708,55 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
+    // 🆕 PROCESSAR UPLOAD DE VÍDEO (apenas para alunos)
+    let videoUploadResult = null;
+    let hasNewVideo = false;
+
+    if (videoFile && session.user.role === 0) {
+      console.log(
+        `🎥 [ASSIGNMENTS] Processando upload de vídeo para assignment ${assignmentId}`
+      );
+
+      // 1. Upload do novo vídeo
+      videoUploadResult = await uploadAssignmentVideo(assignmentId, videoFile);
+
+      if (!videoUploadResult.success) {
+        return NextResponse.json(
+          { error: `Erro no upload: ${videoUploadResult.error}` },
+          { status: 400 }
+        );
+      }
+
+      // 2. Deletar vídeo anterior se existir
+      const currentVideoSubmission = extractVideoSubmission(
+        assignment.submissions
+      );
+      if (currentVideoSubmission?.filePath) {
+        await deleteAssignmentVideo(currentVideoSubmission.filePath);
+        console.log(`🗑️ [ASSIGNMENTS] Vídeo anterior removido`);
+      }
+
+      // 3. Atualizar submissions com novo vídeo
+      const newVideoSubmission = createVideoSubmission(videoUploadResult);
+      const updatedSubmissions = updateSubmissionsWithVideo(
+        filteredUpdateData.submissions || assignment.submissions,
+        newVideoSubmission
+      );
+
+      filteredUpdateData.submissions = updatedSubmissions;
+      hasNewVideo = true;
+
+      console.log(
+        `✅ [ASSIGNMENTS] Vídeo processado com sucesso: ${videoUploadResult.filename}`
+      );
+    }
+
     console.log(`📋 [ASSIGNMENTS] Dados filtrados para atualização:`, {
       role: session.user.role,
       fields: Object.keys(filteredUpdateData),
       hasProgressMilestones: !!updateData.progressMilestones,
+      hasNewVideo,
+      videoFileName: videoUploadResult?.filename || 'N/A',
     });
 
     // Atualizar assignment
@@ -778,7 +863,20 @@ export async function PATCH(request: NextRequest) {
           );
         }
 
-        // 2. Aluno completou assignment
+        // 🆕 2. Aluno enviou vídeo (nova notificação específica)
+        if (hasNewVideo) {
+          await NotificationFactory.studentSubmittedVideo(
+            teacherUserId,
+            assignmentId,
+            studentName,
+            assignment.title
+          );
+          console.log(
+            `📬 [ASSIGNMENTS] Notificação STUDENT_SUBMITTED_VIDEO criada`
+          );
+        }
+
+        // 3. Aluno completou assignment
         if (filteredUpdateData.isCompleted && !oldData.isCompleted) {
           await NotificationFactory.studentCompletedAssignment(
             teacherUserId,
@@ -803,13 +901,20 @@ export async function PATCH(request: NextRequest) {
     await revalidateTeacherAndStudentData(teacherUserId, studentUserId);
 
     console.log(
-      `✅ [ASSIGNMENTS] Assignment ${assignmentId} atualizado e cache revalidado`
+      `✅ [ASSIGNMENTS] Assignment ${assignmentId} atualizado e cache revalidado`,
+      {
+        videoUploaded: hasNewVideo,
+        notificationsSent: true,
+      }
     );
 
     return NextResponse.json({
       success: true,
       assignment: updatedAssignment,
-      message: 'Assignment atualizado com sucesso',
+      videoUpload: videoUploadResult,
+      message: hasNewVideo
+        ? 'Assignment atualizado com vídeo enviado com sucesso'
+        : 'Assignment atualizado com sucesso',
     });
   } catch (error) {
     console.error('❌ [ASSIGNMENTS] Erro ao atualizar assignment:', error);

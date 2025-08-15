@@ -320,7 +320,7 @@ function ConflictModal({
                       ℹ️ Você pode prosseguir se necessário
                     </p>
                     <p className="text-theme-secondary">
-                      O aluno configurou um limite de{' '}
+                      Você configurou um limite de{' '}
                       {conflicts.weeklyLimitWarning.maxLessonsPerWeek} aula(s)
                       por semana, mas você pode criar uma aula extra se houver
                       necessidade pedagógica.

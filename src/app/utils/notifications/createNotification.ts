@@ -478,4 +478,26 @@ export const NotificationFactory = {
         requestedAt: new Date().toISOString(),
       },
     }),
+
+  // 🆕 NOVA NOTIFICAÇÃO: Aluno enviou vídeo
+  studentSubmittedVideo: (
+    teacherUserId: string,
+    assignmentId: string,
+    studentName: string,
+    assignmentTitle: string
+  ) =>
+    createNotification({
+      userId: teacherUserId,
+      type: 'STUDENT_SUBMITTED_ASSIGNMENT', // Reutilizando tipo existente
+      relatedEntityType: 'assignment',
+      relatedEntityId: assignmentId,
+      metadata: {
+        studentName,
+        assignmentTitle,
+        submissionType: 'video',
+        submissionDate: new Date().toISOString(),
+      },
+      customTitle: 'Vídeo da Tarefa Enviado',
+      customMessage: `${studentName} enviou vídeo da tarefa "${assignmentTitle}"`,
+    }),
 };

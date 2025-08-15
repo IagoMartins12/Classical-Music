@@ -24,6 +24,8 @@ import {
   FiCheckCircle,
   FiEdit,
   FiMoreVertical,
+  FiVideo,
+  FiSave,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -1559,7 +1561,6 @@ function CreateAssignmentModal({
   );
 }
 
-// Assignment Details Modal Component (simplified)
 interface AssignmentDetailsModalProps {
   assignment: TeacherAssignment;
   onClose: () => void;
@@ -1576,8 +1577,30 @@ function AssignmentDetailsModal({
   const [feedback, setFeedback] = useState(assignment.teacherFeedback || '');
   const [rating, setRating] = useState(assignment.teacherRating || 0);
 
+  // 🆕 Extrair video submission
+  const videoSubmission = assignment.submissions?.videoSubmission || null;
+  const progressMilestones = assignment.submissions?.progressMilestones || {};
+
   const formatDate = (date: Date | string) => {
     return new Date(date).toLocaleDateString('pt-BR');
+  };
+
+  const formatDateTime = (date: Date | string) => {
+    return new Date(date).toLocaleString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  const formatFileSize = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   const getStatusColor = (assignment: TeacherAssignment) => {
@@ -1616,79 +1639,334 @@ function AssignmentDetailsModal({
     });
   };
 
+  const milestoneLabels: Record<string, string> = {
+    learnedLeftHand: 'Aprendeu a mão esquerda',
+    learnedRightHand: 'Aprendeu a mão direita',
+    playedWithMetronome: 'Tocou com metrônomo',
+    memorized: 'Memorizou a peça',
+    playedAtTempo: 'Tocou no andamento original',
+    masteredDynamics: 'Dominou dinâmicas',
+    performedForOthers: 'Apresentou para outros',
+  };
+
+  const completedMilestones = Object.entries(progressMilestones)
+    .filter(([_, completed]) => completed)
+    .map(([key, _]) => key);
+
   return (
-    <Modal isOpen onClose={onClose} maxWidth="4xl">
+    <Modal isOpen onClose={onClose} maxWidth="6xl">
       <AnimatedCard hover="none">
         <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                {assignment.title}
-              </h2>
-              <div className="flex items-center space-x-3 mt-2">
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
-                    assignment
-                  )}`}
-                >
-                  {getStatusText(assignment)}
-                </span>
-                <span
-                  className={`px-2 py-1 rounded text-xs font-medium border ${
-                    PRIORITY_COLORS[
-                      assignment.priority as keyof typeof PRIORITY_COLORS
-                    ]
-                  }`}
-                >
-                  {
-                    PRIORITY_LABELS[
-                      assignment.priority as keyof typeof PRIORITY_LABELS
-                    ]
-                  }
-                </span>
-                {/* Work Score Indicator */}
-                {assignment.workScoreIds &&
-                  assignment.workScoreIds.length > 0 && (
+          {/* Header melhorado */}
+          <div className="flex items-start justify-between mb-6 pb-4 border-b border-theme-secondary">
+            <div className="flex items-start space-x-4">
+              {/* Student Avatar */}
+              <div className="flex-shrink-0">
+                {assignment.student.image ? (
+                  <div className="w-16 h-16 relative rounded-full overflow-hidden">
+                    <Image
+                      src={assignment.student.image}
+                      alt={assignment.student.name}
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
+                    <FiUser className="w-8 h-8 text-theme-primary" />
+                  </div>
+                )}
+              </div>
+
+              {/* Assignment Info */}
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
+                  {assignment.title}
+                </h2>
+                <div className="flex items-center space-x-4 mb-3">
+                  <div className="flex items-center space-x-2 text-theme-secondary">
+                    <FiUser className="w-4 h-4" />
+                    <span className="font-medium">
+                      {assignment.student.name}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-theme-secondary">
+                    <FiBookOpen className="w-4 h-4" />
+                    <span>
+                      {ASSIGNMENT_TYPES[
+                        assignment.type as keyof typeof ASSIGNMENT_TYPES
+                      ] || assignment.type}
+                    </span>
+                  </div>
+                  {assignment.dueDate && (
+                    <div className="flex items-center space-x-2 text-theme-secondary">
+                      <FiCalendar className="w-4 h-4" />
+                      <span>{formatDate(assignment.dueDate)}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Status e Indicadores */}
+                <div className="flex items-center space-x-3">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
+                      assignment
+                    )}`}
+                  >
+                    {getStatusText(assignment)}
+                  </span>
+
+                  <span
+                    className={`px-2 py-1 rounded text-xs font-medium border ${
+                      PRIORITY_COLORS[
+                        assignment.priority as keyof typeof PRIORITY_COLORS
+                      ]
+                    }`}
+                  >
+                    {
+                      PRIORITY_LABELS[
+                        assignment.priority as keyof typeof PRIORITY_LABELS
+                      ]
+                    }
+                  </span>
+
+                  {/* 🆕 Indicadores visuais */}
+                  {videoSubmission && (
                     <span className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded text-xs flex items-center space-x-1">
-                      <FiMusic className="w-3 h-3" />
-                      <span>
-                        {assignment.workScoreIds.length} partitura
-                        {assignment.workScoreIds.length !== 1 ? 's' : ''}
-                      </span>
+                      <FiVideo className="w-3 h-3" />
+                      <span>Vídeo</span>
                     </span>
                   )}
+
+                  {assignment.workScoreIds &&
+                    assignment.workScoreIds.length > 0 && (
+                      <span className="px-2 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded text-xs flex items-center space-x-1">
+                        <FiMusic className="w-3 h-3" />
+                        <span>{assignment.workScoreIds.length}</span>
+                      </span>
+                    )}
+
+                  {completedMilestones.length > 0 && (
+                    <span className="px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded text-xs flex items-center space-x-1">
+                      <FiTarget className="w-3 h-3" />
+                      <span>{completedMilestones.length} conquistas</span>
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main Content */}
             <div className="lg:col-span-2 space-y-6">
+              {/* Description */}
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
                   Descrição
                 </label>
-                <div className="text-theme-primary whitespace-pre-wrap">
+                <div className="text-theme-primary whitespace-pre-wrap p-4 bg-theme-secondary/5 rounded-lg border">
                   {assignment.description}
                 </div>
               </div>
 
+              {/* Progress */}
+              {assignment.progress !== undefined && (
+                <div>
+                  <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                    Progresso do Aluno
+                  </label>
+                  <div className="flex items-center space-x-4 mb-3">
+                    <div className="flex-1">
+                      <div className="w-full bg-theme-secondary rounded-full h-3">
+                        <div
+                          className="progress-bar h-3 rounded-full transition-all duration-300"
+                          style={{ width: `${assignment.progress}%` }}
+                        />
+                      </div>
+                    </div>
+                    <span className="text-theme-primary font-medium min-w-[3rem]">
+                      {assignment.progress}%
+                    </span>
+                  </div>
+
+                  {/* Conquistas do aluno */}
+                  {completedMilestones.length > 0 && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
+                      {completedMilestones.slice(0, 6).map((key) => (
+                        <div
+                          key={key}
+                          className="flex items-center space-x-2 text-sm p-2 bg-accent-green/5 border border-accent-green/20 rounded"
+                        >
+                          <FiCheckCircle className="w-3 h-3 text-accent-green" />
+                          <span className="text-theme-primary">
+                            {milestoneLabels[key] || key}
+                          </span>
+                        </div>
+                      ))}
+                      {completedMilestones.length > 6 && (
+                        <div className="text-xs text-theme-tertiary">
+                          +{completedMilestones.length - 6} mais...
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* 🆕 Seção de Vídeo */}
+              {videoSubmission && (
+                <div>
+                  <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                    Vídeo da Performance
+                  </label>
+                  <div className="p-4 bg-accent-purple/5 border border-accent-purple/20 rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-accent-purple/10 border border-accent-purple/30 rounded-lg flex items-center justify-center">
+                          <FiVideo className="w-5 h-5 text-accent-purple" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-theme-primary text-sm">
+                            {videoSubmission.originalName}
+                          </div>
+                          <div className="text-xs text-theme-secondary">
+                            {formatFileSize(videoSubmission.fileSize)} •{' '}
+                            {formatDateTime(videoSubmission.uploadedAt)}
+                          </div>
+                        </div>
+                      </div>
+                      <a
+                        href={videoSubmission.filePath}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-classical-secondary text-xs px-3 py-1 flex items-center space-x-1"
+                      >
+                        <FiPlay className="w-3 h-3" />
+                        <span>Assistir</span>
+                      </a>
+                    </div>
+
+                    {/* Video preview */}
+                    <video
+                      src={videoSubmission.filePath}
+                      controls
+                      className="w-full rounded-lg"
+                      style={{ maxHeight: '200px' }}
+                    >
+                      Seu navegador não suporta a reprodução de vídeo.
+                    </video>
+                  </div>
+                </div>
+              )}
+
+              {/* Goals resumo */}
+              {(assignment.practiceGoals.length > 0 ||
+                assignment.technicalGoals.length > 0) && (
+                <div>
+                  <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                    Objetivos
+                  </label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {assignment.practiceGoals.slice(0, 3).map((goal, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center space-x-2 text-sm p-2 bg-accent-blue/5 border border-accent-blue/20 rounded"
+                      >
+                        <FiTarget className="w-3 h-3 text-accent-blue" />
+                        <span className="text-theme-primary truncate">
+                          {goal}
+                        </span>
+                      </div>
+                    ))}
+                    {assignment.technicalGoals.slice(0, 3).map((goal, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center space-x-2 text-sm p-2 bg-accent-green/5 border border-accent-green/20 rounded"
+                      >
+                        <FiMusic className="w-3 h-3 text-accent-green" />
+                        <span className="text-theme-primary truncate">
+                          {goal}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                  {assignment.practiceGoals.length +
+                    assignment.technicalGoals.length >
+                    6 && (
+                    <div className="text-xs text-theme-tertiary mt-2">
+                      +
+                      {assignment.practiceGoals.length +
+                        assignment.technicalGoals.length -
+                        6}{' '}
+                      objetivos adicionais
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Submissão do aluno */}
+              {(assignment.studentNotes || assignment.studentRating) && (
+                <div>
+                  <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                    Submissão do Aluno
+                  </label>
+                  <div className="space-y-3">
+                    {assignment.studentNotes && (
+                      <div className="p-3 bg-theme-secondary/5 rounded-lg border">
+                        <div className="text-sm font-medium text-theme-primary mb-1">
+                          Comentários:
+                        </div>
+                        <div className="text-sm text-theme-secondary">
+                          {assignment.studentNotes}
+                        </div>
+                      </div>
+                    )}
+
+                    {assignment.studentRating && (
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm text-theme-tertiary">
+                          Avaliação de dificuldade:
+                        </span>
+                        <div className="flex items-center space-x-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <FiStar
+                              key={star}
+                              className={`w-4 h-4 ${
+                                star <= assignment.studentRating!
+                                  ? 'text-accent-yellow fill-current'
+                                  : 'text-theme-tertiary'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-sm text-theme-primary">
+                          ({assignment.studentRating}/5)
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Teacher Feedback Section */}
               <div>
-                <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                <label className="text-sm font-medium text-theme-tertiary block mb-3">
                   Seu Feedback
                 </label>
                 <div className="space-y-4">
                   <textarea
                     value={feedback}
                     onChange={(e) => setFeedback(e.target.value)}
-                    rows={4}
-                    className="input-classical w-full"
+                    rows={3}
+                    className="input-classical w-full text-sm"
                     placeholder="Adicione seu feedback sobre o desempenho do aluno..."
                   />
 
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
                       <span className="text-sm text-theme-tertiary">
                         Avaliação:
                       </span>
@@ -1697,15 +1975,13 @@ function AssignmentDetailsModal({
                           <button
                             key={star}
                             onClick={() => setRating(star)}
-                            className={`w-6 h-6 ${
-                              star <= rating
-                                ? 'text-accent-yellow'
-                                : 'text-theme-tertiary'
-                            } hover:text-accent-yellow transition-colors`}
+                            className="w-5 h-5 text-theme-tertiary hover:text-accent-yellow transition-colors"
                           >
                             <FiStar
                               className={`w-4 h-4 ${
-                                star <= rating ? 'fill-current' : ''
+                                star <= rating
+                                  ? 'text-accent-yellow fill-current'
+                                  : ''
                               }`}
                             />
                           </button>
@@ -1723,9 +1999,9 @@ function AssignmentDetailsModal({
                       {actionLoading === assignment.id ? (
                         <FiRefreshCw className="w-3 h-3 animate-spin" />
                       ) : (
-                        <FiCheck className="w-3 h-3" />
+                        <FiSave className="w-3 h-3" />
                       )}
-                      <span>Salvar Feedback</span>
+                      <span>Salvar</span>
                     </button>
                   </div>
                 </div>
@@ -1733,74 +2009,15 @@ function AssignmentDetailsModal({
             </div>
 
             {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Student Info */}
+            <div className="space-y-4">
+              {/* Quick Stats */}
               <div className="classical-card-2 p-4">
-                <h3 className="font-bold text-theme-primary mb-4">Aluno</h3>
-                <div className="flex items-center space-x-3 mb-4">
-                  {assignment.student.image ? (
-                    <div className="w-12 h-12 relative rounded-full overflow-hidden">
-                      <Image
-                        src={assignment.student.image}
-                        alt={assignment.student.name}
-                        fill
-                        sizes="48px"
-                        className="object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center">
-                      <FiUser className="w-6 h-6 text-theme-primary" />
-                    </div>
-                  )}
-                  <div>
-                    <div className="font-medium text-theme-primary">
-                      {assignment.student.name}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="classical-card-2 p-4">
-                <h3 className="font-bold text-theme-primary mb-4">Ações</h3>
-                <div className="space-y-4">
-                  {!assignment.isCompleted && (
-                    <button
-                      onClick={approveAssignment}
-                      disabled={actionLoading === assignment.id}
-                      className="w-full btn-classical-primary flex items-center justify-center space-x-2"
-                    >
-                      {actionLoading === assignment.id ? (
-                        <FiRefreshCw className="w-4 h-4 animate-spin" />
-                      ) : (
-                        <FiCheck className="w-4 h-4" />
-                      )}
-                      <span>Aprovar Tarefa</span>
-                    </button>
-                  )}
-
-                  <Link href={`assignments/${assignment.id}`}>
-                    <button
-                      disabled={actionLoading === assignment.id}
-                      className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
-                    >
-                      <FiEye className="w-4 h-4" />
-
-                      <span>Ver mais detalhes</span>
-                    </button>
-                  </Link>
-                </div>
-              </div>
-
-              {/* Assignment Info */}
-              <div className="classical-card-2 p-4">
-                <h3 className="font-bold text-theme-primary mb-4">
+                <h3 className="font-bold text-theme-primary mb-3 text-sm">
                   Informações
                 </h3>
-                <div className="space-y-3 text-sm">
+                <div className="space-y-2 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-theme-tertiary">Criado em:</span>
+                    <span className="text-theme-tertiary">Criado:</span>
                     <span className="text-theme-primary">
                       {formatDate(assignment.createdAt)}
                     </span>
@@ -1817,9 +2034,18 @@ function AssignmentDetailsModal({
                     </div>
                   )}
 
+                  {assignment.actualTime && (
+                    <div className="flex justify-between">
+                      <span className="text-theme-tertiary">Tempo real:</span>
+                      <span className="text-theme-primary">
+                        {assignment.actualTime}min
+                      </span>
+                    </div>
+                  )}
+
                   {assignment.completedAt && (
                     <div className="flex justify-between">
-                      <span className="text-theme-tertiary">Concluída em:</span>
+                      <span className="text-theme-tertiary">Concluído:</span>
                       <span className="text-theme-primary">
                         {formatDate(assignment.completedAt)}
                       </span>
@@ -1830,14 +2056,98 @@ function AssignmentDetailsModal({
                     assignment.workScoreIds.length > 0 && (
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">Partituras:</span>
-                        <span className="text-accent-purple">
-                          {assignment.workScoreIds.length} vinculada
-                          {assignment.workScoreIds.length !== 1 ? 's' : ''}
+                        <span className="text-accent-blue">
+                          {assignment.workScoreIds.length}
                         </span>
                       </div>
                     )}
+
+                  {videoSubmission && (
+                    <div className="flex justify-between">
+                      <span className="text-theme-tertiary">Vídeo:</span>
+                      <span className="text-accent-purple">
+                        {formatFileSize(videoSubmission.fileSize)}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
+
+              {/* Quick Actions */}
+              <div className="classical-card-2 p-4">
+                <h3 className="font-bold text-theme-primary mb-3 text-sm">
+                  Ações Rápidas
+                </h3>
+                <div className="space-y-2">
+                  {!assignment.isCompleted && (
+                    <button
+                      onClick={approveAssignment}
+                      disabled={actionLoading === assignment.id}
+                      className="w-full btn-classical-primary text-sm flex items-center justify-center space-x-2"
+                    >
+                      {actionLoading === assignment.id ? (
+                        <FiRefreshCw className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <FiCheck className="w-3 h-3" />
+                      )}
+                      <span>Aprovar</span>
+                    </button>
+                  )}
+
+                  <Link href={`assignments/${assignment.id}`}>
+                    <button className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2">
+                      <FiEye className="w-3 h-3" />
+                      <span>Ver mais detalhes</span>
+                    </button>
+                  </Link>
+
+                  <Link href={`assignments/${assignment.id}/edit`}>
+                    <button className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2">
+                      <FiEdit className="w-3 h-3" />
+                      <span>Editar</span>
+                    </button>
+                  </Link>
+
+                  {videoSubmission && (
+                    <a
+                      href={videoSubmission.filePath}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full btn-classical-secondary text-sm flex items-center justify-center space-x-2"
+                    >
+                      <FiVideo className="w-3 h-3" />
+                      <span>Assistir Vídeo</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+
+              {/* Progress Overview */}
+              {completedMilestones.length > 0 && (
+                <div className="classical-card-2 p-4">
+                  <h3 className="font-bold text-theme-primary mb-3 text-sm">
+                    Conquistas do Aluno
+                  </h3>
+                  <div className="space-y-1">
+                    {completedMilestones.slice(0, 4).map((key) => (
+                      <div
+                        key={key}
+                        className="flex items-center space-x-2 text-xs"
+                      >
+                        <FiCheckCircle className="w-3 h-3 text-accent-green" />
+                        <span className="text-theme-primary">
+                          {milestoneLabels[key] || key}
+                        </span>
+                      </div>
+                    ))}
+                    {completedMilestones.length > 4 && (
+                      <div className="text-xs text-theme-tertiary">
+                        +{completedMilestones.length - 4} mais...
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-// app/teacher/assignments/[id]/pageClient.tsx - ATUALIZADO com MusicalPiecesSection
+// app/teacher/assignments/[id]/pageClient.tsx - ATUALIZADO COM VISUALIZAÇÃO DE VÍDEO
 
 'use client';
 
@@ -17,6 +17,10 @@ import {
   FiBookOpen,
   FiEdit3,
   FiSave,
+  FiVideo,
+  FiPlay,
+  FiDownload,
+  FiEye,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -30,6 +34,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAssignmentDetails } from '@/app/hooks/lessonsSystem/useAssignmentDetails';
 import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
+import Modal from '@/app/components/Modal';
 
 interface AssignmentDetailsPageClientProps {
   initialData: AssignmentDetailsData | null;
@@ -57,6 +62,15 @@ const PRIORITY_LABELS = {
   high: 'Alta',
 };
 
+interface VideoSubmission {
+  filename: string;
+  originalName: string;
+  filePath: string;
+  fileSize: number;
+  uploadedAt: string;
+  mimeType: string;
+}
+
 export default function AssignmentDetailsPageClient({
   initialData,
   errorMessage,
@@ -78,6 +92,13 @@ export default function AssignmentDetailsPageClient({
 
   const [isEditingFeedback, setIsEditingFeedback] = useState(false);
   const [showApproveModal, setShowApproveModal] = useState(false);
+
+  // 🆕 Estados para vídeo
+  const [showVideoModal, setShowVideoModal] = useState(false);
+
+  // 🆕 Extrair video submission
+  const videoSubmission: VideoSubmission | null =
+    initialData?.assignment?.submissions?.videoSubmission || null;
 
   // Update feedback data
   const updateFeedbackData = useCallback((field: string, value: any) => {
@@ -117,6 +138,15 @@ export default function AssignmentDetailsPageClient({
       router.push('/teacher/assignments');
     }
   }, [initialData, feedbackData, approveAssignment, router]);
+
+  // 🆕 Format file size
+  const formatFileSize = useCallback((bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }, []);
 
   // Format date
   const formatDate = (date: Date | string) => {
@@ -218,6 +248,14 @@ export default function AssignmentDetailsPageClient({
               >
                 {getStatusText(assignment)}
               </span>
+
+              {/* 🆕 Indicador de vídeo */}
+              {videoSubmission && (
+                <span className="px-3 py-2 rounded-full text-sm font-medium border bg-accent-purple/10 border-accent-purple/30 text-accent-purple flex items-center space-x-1">
+                  <FiVideo className="w-3 h-3" />
+                  <span>Com vídeo</span>
+                </span>
+              )}
 
               {!assignment.isCompleted && initialData.canGiveFeedback && (
                 <button
@@ -418,13 +456,83 @@ export default function AssignmentDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* 🆕 SEÇÃO DE PEÇAS MUSICAIS - NOVA */}
+            {/* SEÇÃO DE PEÇAS MUSICAIS */}
             {assignment.workScores && assignment.workScores.length > 0 && (
               <MusicalPiecesSection
                 workScores={assignment.workScores}
                 title="Peças Musicais da Tarefa"
                 emptyMessage="Nenhuma peça musical vinculada a esta tarefa."
               />
+            )}
+
+            {/* 🆕 SEÇÃO DE VÍDEO DO ALUNO */}
+            {videoSubmission && (
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard hover="none" className="classical-card p-6">
+                  <h3 className="text-xl font-bold text-theme-primary classical-title mb-4">
+                    Vídeo da Performance
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div className="p-4 bg-accent-purple/5 border border-accent-purple/20 rounded-lg">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-accent-purple/10 border border-accent-purple/30 rounded-lg flex items-center justify-center">
+                            <FiVideo className="w-6 h-6 text-accent-purple" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-theme-primary mb-1">
+                              {videoSubmission.originalName}
+                            </h4>
+                            <div className="flex items-center space-x-4 text-sm text-theme-secondary">
+                              <span>
+                                {formatFileSize(videoSubmission.fileSize)}
+                              </span>
+                              <span>
+                                Enviado em{' '}
+                                {formatDateTime(videoSubmission.uploadedAt)}
+                              </span>
+                              <span className="px-2 py-1 bg-theme-secondary/50 rounded text-xs">
+                                {videoSubmission.mimeType}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => setShowVideoModal(true)}
+                            className="btn-classical-primary flex items-center space-x-2"
+                          >
+                            <FiPlay className="w-4 h-4" />
+                            <span>Assistir</span>
+                          </button>
+                          <a
+                            href={videoSubmission.filePath}
+                            download={videoSubmission.originalName}
+                            className="btn-classical-secondary flex items-center space-x-2"
+                          >
+                            <FiDownload className="w-4 h-4" />
+                            <span>Download</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Preview do vídeo */}
+                    <div className="rounded-lg overflow-hidden border border-theme-secondary">
+                      <video
+                        src={videoSubmission.filePath}
+                        controls
+                        className="w-full"
+                        style={{ maxHeight: '400px' }}
+                        poster="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzIxMjEyOSIvPjx0ZXh0IHg9IjIwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTk5OWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5DbGlxdWUgcGFyYSByZXByb2R1emlyPC90ZXh0Pjwvc3ZnPg=="
+                      >
+                        Seu navegador não suporta a reprodução de vídeo.
+                      </video>
+                    </div>
+                  </div>
+                </AnimatedCard>
+              </AnimatedItem>
             )}
 
             {/* Student Submission */}
@@ -479,15 +587,43 @@ export default function AssignmentDetailsPageClient({
                     </div>
                   )}
 
-                  {/* Submission Files/Media */}
-                  <div className="space-y-4">
-                    <h4 className="font-medium text-theme-primary">
-                      Arquivos Enviados
-                    </h4>
-                    <div className="text-theme-tertiary">
-                      Nenhum arquivo enviado ainda
+                  {/* 🆕 Progress Milestones do aluno */}
+                  {assignment.submissions?.progressMilestones && (
+                    <div className="mb-6">
+                      <label className="text-sm font-medium text-theme-tertiary block mb-3">
+                        Conquistas Marcadas pelo Aluno
+                      </label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {Object.entries(
+                          assignment.submissions.progressMilestones
+                        )
+                          .filter(([_, completed]) => completed)
+                          .map(([key, _]) => {
+                            const milestoneLabels: Record<string, string> = {
+                              learnedLeftHand: 'Aprendeu a mão esquerda',
+                              learnedRightHand: 'Aprendeu a mão direita',
+                              playedWithMetronome: 'Tocou com metrônomo',
+                              memorized: 'Memorizou a peça',
+                              playedAtTempo: 'Tocou no andamento original',
+                              masteredDynamics: 'Dominou dinâmicas',
+                              performedForOthers: 'Apresentou para outros',
+                            };
+
+                            return (
+                              <div
+                                key={key}
+                                className="flex items-center space-x-2 p-2 bg-accent-green/5 border border-accent-green/20 rounded-lg"
+                              >
+                                <FiCheck className="w-4 h-4 text-accent-green" />
+                                <span className="text-sm text-theme-primary">
+                                  {milestoneLabels[key] || key}
+                                </span>
+                              </div>
+                            );
+                          })}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </AnimatedCard>
               </AnimatedItem>
             )}
@@ -612,7 +748,7 @@ export default function AssignmentDetailsPageClient({
             </AnimatedItem>
           </div>
 
-          {/* Sidebar - resto do código igual... */}
+          {/* Sidebar */}
           <div className="space-y-6">
             {/* Student Info */}
             <AnimatedItem direction="up" springType="gentle">
@@ -675,6 +811,18 @@ export default function AssignmentDetailsPageClient({
                     </div>
                   )}
 
+                  {/* 🆕 Info do vídeo */}
+                  {videoSubmission && (
+                    <div className="flex justify-between">
+                      <span className="text-theme-tertiary">
+                        Vídeo enviado:
+                      </span>
+                      <span className="text-accent-purple">
+                        {formatDate(videoSubmission.uploadedAt)}
+                      </span>
+                    </div>
+                  )}
+
                   {assignment.lesson && (
                     <div>
                       <span className="text-theme-tertiary">
@@ -706,6 +854,17 @@ export default function AssignmentDetailsPageClient({
                     <FiEdit3 className="w-4 h-4" />
                     <span>Editar Tarefa</span>
                   </Link>
+
+                  {/* 🆕 Botão de visualizar vídeo */}
+                  {videoSubmission && (
+                    <button
+                      onClick={() => setShowVideoModal(true)}
+                      className="w-full btn-classical-secondary flex items-center justify-center space-x-2 bg-accent-purple/10 border-accent-purple/30 text-accent-purple hover:bg-accent-purple/20"
+                    >
+                      <FiVideo className="w-4 h-4" />
+                      <span>Assistir Vídeo</span>
+                    </button>
+                  )}
 
                   {assignment.lesson && (
                     <Link
@@ -800,6 +959,60 @@ export default function AssignmentDetailsPageClient({
               </div>
             </AnimatedCard>
           </div>
+        )}
+
+        {/* 🆕 Video Modal */}
+        {showVideoModal && videoSubmission && (
+          <Modal
+            isOpen={showVideoModal}
+            onClose={() => setShowVideoModal(false)}
+            maxWidth="6xl"
+          >
+            <AnimatedCard hover="none">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-xl font-bold text-theme-primary classical-title">
+                      Vídeo da Performance
+                    </h2>
+                    <p className="text-theme-secondary text-sm">
+                      {videoSubmission.originalName} •{' '}
+                      {formatFileSize(videoSubmission.fileSize)} •{' '}
+                      {formatDateTime(videoSubmission.uploadedAt)}
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <a
+                      href={videoSubmission.filePath}
+                      download={videoSubmission.originalName}
+                      className="btn-classical-secondary flex items-center space-x-2"
+                    >
+                      <FiDownload className="w-4 h-4" />
+                      <span>Download</span>
+                    </a>
+                    <button
+                      onClick={() => setShowVideoModal(false)}
+                      className="text-theme-tertiary hover:text-theme-primary"
+                    >
+                      <FiX className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-lg overflow-hidden bg-black">
+                  <video
+                    src={videoSubmission.filePath}
+                    controls
+                    autoPlay
+                    className="w-full"
+                    style={{ maxHeight: '80vh' }}
+                  >
+                    Seu navegador não suporta a reprodução de vídeo.
+                  </video>
+                </div>
+              </div>
+            </AnimatedCard>
+          </Modal>
         )}
       </AnimatedContainer>
     </PageContainer>

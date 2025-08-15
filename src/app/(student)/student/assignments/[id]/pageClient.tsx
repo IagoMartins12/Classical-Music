@@ -1,4 +1,4 @@
-// app/student/assignments/[id]/pageClient.tsx - Client Component para Detalhes da Tarefa do Aluno
+// app/student/assignments/[id]/pageClient.tsx - ATUALIZADO COM UPLOAD DE VÍDEO
 
 'use client';
 
@@ -28,6 +28,10 @@ import {
   FiMic,
   FiUsers,
   FiAlertTriangle,
+  FiVideo,
+  FiTrash2,
+  FiFile,
+  FiDownload,
 } from 'react-icons/fi';
 import {
   AnimatedContainer,
@@ -42,6 +46,7 @@ import Link from 'next/link';
 import { useStudentAssignments } from '@/app/hooks/lessonsSystem/useStudentAssignments';
 import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
 import Modal from '@/app/components/Modal';
+import { useAssignmentVideo } from '@/app/hooks/lessonsSystem/useAssignmentVideo';
 
 interface StudentAssignmentDetailsPageClientProps {
   initialData: StudentAssignmentDetailsData | null;
@@ -133,6 +138,15 @@ interface ProgressMilestones {
   [key: string]: boolean;
 }
 
+interface VideoSubmission {
+  filename: string;
+  originalName: string;
+  filePath: string;
+  fileSize: number;
+  uploadedAt: string;
+  mimeType: string;
+}
+
 export default function StudentAssignmentDetailsPageClient({
   initialData,
   errorMessage,
@@ -140,6 +154,18 @@ export default function StudentAssignmentDetailsPageClient({
   const router = useRouter();
   const { updateAssignment, completeAssignment, loading, error, clearError } =
     useStudentAssignments();
+
+  // 🆕 Hook de upload de vídeo
+  const {
+    selectedVideo,
+    videoPreviewUrl,
+    isUploading,
+    uploadError,
+    selectVideo,
+    removeVideo,
+    clearError: clearVideoError,
+    uploadVideo,
+  } = useAssignmentVideo();
 
   // Estados do progresso e milestones
   const [progressMilestones, setProgressMilestones] =
@@ -166,11 +192,11 @@ export default function StudentAssignmentDetailsPageClient({
     initialData?.assignment?.actualTime?.toString() || ''
   );
 
-  // 🆕 Estados para controle de mudanças
+  // Estados para controle de mudanças
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // 🆕 Estados iniciais para comparação
+  // Estados iniciais para comparação
   const [initialStudentNotes] = useState(
     initialData?.assignment?.studentNotes || ''
   );
@@ -184,8 +210,15 @@ export default function StudentAssignmentDetailsPageClient({
   // Modal states
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [showProgressModal, setShowProgressModal] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
 
-  // 🆕 Detectar mudanças nos campos editáveis
+  // 🆕 Estado do vídeo atual
+  const [currentVideoSubmission, setCurrentVideoSubmission] =
+    useState<VideoSubmission | null>(
+      initialData?.assignment?.submissions?.videoSubmission || null
+    );
+
+  // Detectar mudanças nos campos editáveis
   useEffect(() => {
     const hasChanges =
       studentNotes !== initialStudentNotes ||
@@ -238,7 +271,7 @@ export default function StudentAssignmentDetailsPageClient({
         newStatus = 'IN_PROGRESS';
       }
 
-      // 🆕 Preparar submissions com progressMilestones
+      // Preparar submissions com progressMilestones
       const updatedSubmissions = {
         ...((initialData.assignment.submissions as any) || {}),
         progressMilestones: newMilestones,
@@ -262,7 +295,7 @@ export default function StudentAssignmentDetailsPageClient({
     [initialData, progressMilestones, calculateProgress, updateAssignment]
   );
 
-  // 🆕 Handle save changes (salvar alterações manuais)
+  // Handle save changes (salvar alterações manuais)
   const handleSaveChanges = useCallback(async () => {
     if (!initialData?.assignment?.id) return;
 
@@ -295,9 +328,6 @@ export default function StudentAssignmentDetailsPageClient({
 
       if (success) {
         setHasUnsavedChanges(false);
-        // Atualizar os valores iniciais
-        // Note: Em um caso real, você deveria atualizar os estados iniciais
-        // ou recarregar os dados do servidor
       }
     } finally {
       setIsSaving(false);
@@ -312,6 +342,36 @@ export default function StudentAssignmentDetailsPageClient({
     initialActualTime,
     updateAssignment,
   ]);
+
+  // 🆕 Handle upload de vídeo
+  const handleVideoUpload = useCallback(async () => {
+    if (!initialData?.assignment?.id || !selectedVideo) return;
+
+    const success = await uploadVideo(initialData.assignment.id);
+
+    if (success) {
+      // Refresh da página ou atualizar estado local
+      window.location.reload();
+    }
+  }, [initialData, selectedVideo, uploadVideo]);
+
+  // 🆕 Handle file input change
+  const handleFileInputChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0] || null;
+      selectVideo(file);
+    },
+    [selectVideo]
+  );
+
+  // 🆕 Format file size
+  const formatFileSize = useCallback((bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }, []);
 
   // Handle complete assignment
   const handleCompleteAssignment = useCallback(async () => {
@@ -442,7 +502,7 @@ export default function StudentAssignmentDetailsPageClient({
                 {getStatusText(assignment)}
               </span>
 
-              {/* 🆕 Botão de Salvar Alterações */}
+              {/* Botão de Salvar Alterações */}
               {hasUnsavedChanges && (
                 <button
                   onClick={handleSaveChanges}
@@ -471,7 +531,7 @@ export default function StudentAssignmentDetailsPageClient({
           </div>
         </AnimatedItem>
 
-        {/* 🆕 Alerta de mudanças não salvas */}
+        {/* Alerta de mudanças não salvas */}
         {hasUnsavedChanges && (
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-6 p-4 bg-accent-yellow/10 border border-accent-yellow/30 rounded-lg flex items-center space-x-3">
@@ -561,8 +621,6 @@ export default function StudentAssignmentDetailsPageClient({
                         </div>
                       </div>
                     )}
-
-                    {/* 🆕 Layout melhorado para Tempo Gasto */}
                   </div>
 
                   {/* Description */}
@@ -741,6 +799,167 @@ export default function StudentAssignmentDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
+            {/* 🆕 SEÇÃO DE UPLOAD DE VÍDEO */}
+            {!assignment.isCompleted && initialData.canSubmit && (
+              <AnimatedItem direction="up" springType="gentle">
+                <AnimatedCard hover="none" className="classical-card p-6">
+                  <h3 className="text-xl font-bold text-theme-primary classical-title mb-4">
+                    Enviar Vídeo da Performance
+                  </h3>
+
+                  {/* Vídeo Atual */}
+                  {currentVideoSubmission && (
+                    <div className="mb-6 p-4 bg-accent-green/5 border border-accent-green/20 rounded-lg">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <h4 className="font-medium text-theme-primary mb-1">
+                            Vídeo Atual
+                          </h4>
+                          <div className="flex items-center space-x-4 text-sm text-theme-secondary">
+                            <span>{currentVideoSubmission.originalName}</span>
+                            <span>
+                              {formatFileSize(currentVideoSubmission.fileSize)}
+                            </span>
+                            <span>
+                              Enviado em{' '}
+                              {formatDateTime(
+                                currentVideoSubmission.uploadedAt
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => setShowVideoModal(true)}
+                          className="btn-classical-secondary flex items-center space-x-2"
+                        >
+                          <FiPlay className="w-4 h-4" />
+                          <span>Visualizar</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    {/* Upload Area */}
+                    <div>
+                      <label className="text-sm font-medium text-theme-tertiary block mb-2">
+                        {currentVideoSubmission
+                          ? 'Substituir Vídeo'
+                          : 'Escolher Vídeo'}
+                      </label>
+
+                      {!selectedVideo ? (
+                        <div className="border-2 border-dashed border-theme-secondary rounded-lg p-8 text-center hover:border-brand-primary transition-colors">
+                          <input
+                            type="file"
+                            id="video-upload"
+                            accept="video/mp4,video/webm,video/mov,video/quicktime"
+                            onChange={handleFileInputChange}
+                            className="hidden"
+                          />
+                          <label
+                            htmlFor="video-upload"
+                            className="cursor-pointer"
+                          >
+                            <div className="w-16 h-16 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-3xl flex items-center justify-center mx-auto mb-4">
+                              <FiVideo className="w-8 h-8 text-theme-primary" />
+                            </div>
+                            <h4 className="text-lg font-medium text-theme-primary mb-2">
+                              Clique para escolher um vídeo
+                            </h4>
+                            <p className="text-theme-secondary">
+                              Formatos aceitos: MP4, WebM, MOV (máximo 100MB)
+                            </p>
+                          </label>
+                        </div>
+                      ) : (
+                        <div className="border border-theme-secondary rounded-lg p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <div className="w-12 h-12 bg-accent-blue/10 border border-accent-blue/30 rounded-lg flex items-center justify-center">
+                                <FiVideo className="w-6 h-6 text-accent-blue" />
+                              </div>
+                              <div>
+                                <div className="font-medium text-theme-primary">
+                                  {selectedVideo.name}
+                                </div>
+                                <div className="text-sm text-theme-secondary">
+                                  {formatFileSize(selectedVideo.size)}
+                                </div>
+                              </div>
+                            </div>
+                            <button
+                              onClick={removeVideo}
+                              className="text-accent-red hover:text-accent-red/80 transition-colors"
+                            >
+                              <FiTrash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          {videoPreviewUrl && (
+                            <div className="mt-4">
+                              <video
+                                src={videoPreviewUrl}
+                                controls
+                                className="w-full max-h-64 rounded-lg"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Error Display */}
+                    {uploadError && (
+                      <div className="p-3 bg-accent-red/10 border border-accent-red/30 rounded-lg flex items-center space-x-2">
+                        <FiAlertCircle className="w-4 h-4 text-accent-red" />
+                        <span className="text-accent-red text-sm">
+                          {uploadError}
+                        </span>
+                        <button
+                          onClick={clearVideoError}
+                          className="ml-auto text-accent-red hover:text-accent-red/80"
+                        >
+                          <FiX className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Upload Button */}
+                    {selectedVideo && (
+                      <div className="flex items-center justify-end space-x-3">
+                        <button
+                          onClick={removeVideo}
+                          disabled={isUploading}
+                          className="btn-classical-secondary"
+                        >
+                          Cancelar
+                        </button>
+                        <button
+                          onClick={handleVideoUpload}
+                          disabled={isUploading}
+                          className="btn-classical-primary flex items-center space-x-2"
+                        >
+                          {isUploading ? (
+                            <FiRefreshCw className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <FiUpload className="w-4 h-4" />
+                          )}
+                          <span>
+                            {isUploading
+                              ? 'Enviando...'
+                              : currentVideoSubmission
+                              ? 'Substituir Vídeo'
+                              : 'Enviar Vídeo'}
+                          </span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            )}
+
             {/* Seção de Peças Musicais */}
             {assignment.workScores && assignment.workScores.length > 0 && (
               <MusicalPiecesSection
@@ -905,6 +1124,18 @@ export default function StudentAssignmentDetailsPageClient({
                       <span className="text-theme-tertiary">Concluída em:</span>
                       <span className="text-theme-primary">
                         {formatDate(assignment.completedAt)}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* 🆕 Info do vídeo */}
+                  {currentVideoSubmission && (
+                    <div className="flex justify-between">
+                      <span className="text-theme-tertiary">
+                        Vídeo enviado:
+                      </span>
+                      <span className="text-accent-green">
+                        {formatDate(currentVideoSubmission.uploadedAt)}
                       </span>
                     </div>
                   )}
@@ -1123,6 +1354,53 @@ export default function StudentAssignmentDetailsPageClient({
                   >
                     Fechar
                   </button>
+                </div>
+              </div>
+            </AnimatedCard>
+          </Modal>
+        )}
+
+        {/* 🆕 Video Modal */}
+        {showVideoModal && currentVideoSubmission && (
+          <Modal
+            isOpen={showVideoModal}
+            onClose={() => setShowVideoModal(false)}
+            maxWidth="4xl"
+          >
+            <AnimatedCard hover="none">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-bold text-theme-primary classical-title">
+                    Visualizar Vídeo
+                  </h2>
+                  <button
+                    onClick={() => setShowVideoModal(false)}
+                    className="text-theme-tertiary hover:text-theme-primary"
+                  >
+                    <FiX className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center space-x-4 text-sm text-theme-secondary">
+                    <span>{currentVideoSubmission.originalName}</span>
+                    <span>
+                      {formatFileSize(currentVideoSubmission.fileSize)}
+                    </span>
+                    <span>
+                      Enviado em{' '}
+                      {formatDateTime(currentVideoSubmission.uploadedAt)}
+                    </span>
+                  </div>
+
+                  <video
+                    src={currentVideoSubmission.filePath}
+                    controls
+                    className="w-full rounded-lg"
+                    style={{ maxHeight: '70vh' }}
+                  >
+                    Seu navegador não suporta a reprodução de vídeo.
+                  </video>
                 </div>
               </div>
             </AnimatedCard>
