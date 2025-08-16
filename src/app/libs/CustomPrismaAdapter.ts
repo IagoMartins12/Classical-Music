@@ -70,10 +70,6 @@ async function getUserVerificationData(
         ],
       });
       result.studentInviteStatus = studentRelation?.inviteStatus || null;
-      console.log(
-        '✅ [CustomAdapter] Student invite status:',
-        result.studentInviteStatus
-      );
     }
 
     return result;

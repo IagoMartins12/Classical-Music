@@ -147,9 +147,9 @@ export default function WorkDetailsClient({
   }, [audioData]);
 
   // Hook otimizado para partitura mais favoritada
-  const {
-    isScoreMostFavorited,
-  } = useMostFavoritedForWork(mounted ? work.id : '');
+  const { isScoreMostFavorited } = useMostFavoritedForWork(
+    mounted ? work.id : ''
+  );
 
   // ✅ Hook para carregamento de WorkScores do banco
   const {
@@ -1133,13 +1133,14 @@ export default function WorkDetailsClient({
             </div>
           </AnimatedCard>
 
-          <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" />
+          {/* <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" /> */}
 
           {/* Seção de Multimídia */}
           <MediaSection
             work={workForMediaSection}
             canEditMedia={canEditMedia}
             onMediaUpdate={handleMediaUpdate}
+            isAdmin={isAdmin}
           />
 
           <VideoAulaSection

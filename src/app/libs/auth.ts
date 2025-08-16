@@ -29,7 +29,6 @@ async function getUserVerificationData(userId: string, isTeacher: boolean) {
       result.teacherVerified = teacherProfile?.isVerified || false;
       console.log('✅ Teacher verification status:', result.teacherVerified);
     } else {
-      console.log('🔍 Buscando dados de convite do student para:', userId);
       // Buscar o status do convite mais recente (ACCEPTED tem prioridade)
       const studentRelation = await prisma.teacherStudent.findFirst({
         where: {
@@ -43,7 +42,6 @@ async function getUserVerificationData(userId: string, isTeacher: boolean) {
         ],
       });
       result.studentInviteStatus = studentRelation?.inviteStatus || null;
-      console.log('✅ Student invite status:', result.studentInviteStatus);
     }
 
     return result;

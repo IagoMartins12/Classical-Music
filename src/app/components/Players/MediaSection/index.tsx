@@ -1,4 +1,4 @@
-// app/components/Players/MediaSection.tsx - CORRIGIDA VALIDAÇÃO DE BUSCA
+// app/components/Players/MediaSection.tsx - NOVA LÓGICA SEM MENSAGENS DE "NÃO ENCONTRADO"
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -56,12 +56,16 @@ interface MediaSectionProps {
   work: WorkDetails;
   canEditMedia?: boolean;
   onMediaUpdate?: (newMediaData: any) => void;
+  userRole?: number; // 🆕 Adicionar role do usuário
+  isAdmin?: boolean; // 🆕 Fallback para compatibilidade
 }
 
 const MediaSection: React.FC<MediaSectionProps> = ({
   work,
   canEditMedia = false,
   onMediaUpdate,
+  userRole,
+  isAdmin = false, // 🆕 Fallback para compatibilidade
 }) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
@@ -87,6 +91,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
 
   // ✅ VERIFICAR SE JÁ FOI FEITA ALGUMA BUSCA (SERVIDOR OU SESSÃO ATUAL)
   const hasSearchBeenMade = !!work.lastMediaSearch || hasSearchedInSession;
+
+  // 🆕 VERIFICAR SE É ADMIN (role 2 ou isAdmin como fallback)
+  const isAdminUser = userRole === 2 || isAdmin;
+
+  // 🆕 VERIFICAR SE PODE BUSCAR (admin pode sempre, usuário comum só se não buscou)
+  const canSearch = isAdminUser || !hasSearchBeenMade;
 
   // Função para parsear artistas do Spotify
   const parseSpotifyArtists = (artistsData: any): string[] => {
@@ -563,16 +573,26 @@ const MediaSection: React.FC<MediaSectionProps> = ({
     }
   };
 
-  // Verificar se tem alguma mídia
+  // 🆕 VERIFICAR SE TEM ALGUMA MÍDIA DISPONÍVEL
   const hasAnyMedia =
     mediaData.spotify ||
     mediaData.youtube ||
     mediaData.customAudio ||
     mediaData.alternativeAudio.length > 0;
 
-  // Lógica dos botões
-  const showLoadMediaButton = !hasAnyMedia;
-  // const showLoadMediaButton = true;
+  // 🆕 VERIFICAR SE TEM APENAS ÁUDIO (para layout responsivo)
+  const hasOnlyAudio =
+    (mediaData.spotify || mediaData.customAudio) && !mediaData.youtube;
+  const hasOnlyVideo =
+    mediaData.youtube && !mediaData.spotify && !mediaData.customAudio;
+  const hasAudioAndVideo =
+    (mediaData.spotify || mediaData.customAudio) && mediaData.youtube;
+
+  // 🆕 ESTADOS PARA EXIBIÇÃO
+  const shouldShowLoadButton = !hasSearchBeenMade && !hasAnyMedia;
+  const shouldShowNoMediaMessage =
+    hasSearchBeenMade && !hasAnyMedia && !isSearching;
+  const shouldShowContent = hasAnyMedia;
 
   return (
     <AnimatedCard hover="lift" className="classical-card overflow-hidden">
@@ -606,7 +626,8 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               </Button>
             )}
 
-            {showLoadMediaButton && (
+            {/* 🆕 BOTÃO DE BUSCA COM LÓGICA MELHORADA */}
+            {canSearch && (
               <Button
                 variant="primary"
                 size="sm"
@@ -620,7 +641,11 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 onClick={() => searchMedia(false)}
                 disabled={isSearching}
               >
-                {isSearching ? 'Buscando...' : 'Carregar Mídia'}
+                {isSearching
+                  ? 'Buscando...'
+                  : hasSearchBeenMade
+                  ? 'Buscar Novamente'
+                  : 'Carregar Mídia'}
               </Button>
             )}
           </div>
@@ -668,7 +693,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   }
                   placeholder="https://open.spotify.com/track/..."
                   leftIcon={<SiSpotify />}
-                  disabled={!hasSearchBeenMade} // ✅ Desabilitado se não buscou
+                  disabled={!hasSearchBeenMade}
                 />
 
                 <Input
@@ -682,7 +707,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   }
                   placeholder="https://www.youtube.com/watch?v=..."
                   leftIcon={<SiYoutube />}
-                  disabled={!hasSearchBeenMade} // ✅ Desabilitado se não buscou
+                  disabled={!hasSearchBeenMade}
                 />
               </div>
 
@@ -729,7 +754,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                       removeCustomAudio: false,
                     }))
                   }
-                  disabled={!hasSearchBeenMade} // ✅ Desabilitado se não buscou
+                  disabled={!hasSearchBeenMade}
                   className="w-full p-3 bg-theme-elevated border border-theme-secondary rounded-xl text-theme-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 {editData.audioFile && (
@@ -766,7 +791,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   onClick={saveManualMedia}
                   disabled={
                     isUploading ||
-                    !hasSearchBeenMade || // ✅ Desabilitado se não buscou
+                    !hasSearchBeenMade ||
                     (!editData.spotifyUrl &&
                       !editData.youtubeUrl &&
                       !editData.audioFile &&
@@ -810,130 +835,237 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         </div>
       )}
 
-      {/* Conteúdo Principal */}
+      {/* 🆕 CONTEÚDO PRINCIPAL COM NOVA LÓGICA */}
       <div className="px-8 pb-8">
-        {/* Grid de Mídia */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {/* Coluna 1: Áudio */}
-          <div className="space-y-6">
-            {/* Link do Spotify */}
-            <AnimatedItem direction="up" delay={0.2}>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <SiSpotify className="w-5 h-5 text-green-400" />
-                    <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                      Spotify
-                    </h3>
-                  </div>
-                </div>
-
-                {mediaData.spotify ? (
-                  <SpotifyRedirectCard
-                    spotify={{
-                      trackId: mediaData.spotify.trackId,
-                      trackUrl: mediaData.spotify.trackUrl,
-                      displayTitle: mediaData.spotify.displayTitle,
-                      duration: mediaData.spotify.duration || 0,
-                      previewUrl: mediaData.spotify.previewUrl || null,
-                      albumArt: mediaData.spotify.albumArt || null,
-                      thumbnail: mediaData.spotify.thumbnail,
-                      artists: mediaData.spotify.artists || [
-                        work.composer.fullName,
-                      ],
-                      albumName: mediaData.spotify.albumName || work.title,
-                      popularity: mediaData.spotify.popularity || 0,
-                    }}
-                  />
-                ) : (
-                  <div className="bg-theme-elevated rounded-xl p-8 border-2 border-dashed border-theme-secondary text-center">
-                    <SiSpotify className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
-                    <p className="text-theme-secondary text-sm">
-                      {isSearching
-                        ? 'Procurando no Spotify...'
-                        : searchError
-                        ? 'Peça não encontrada no Spotify'
-                        : 'Não encontrado no Spotify'}
-                    </p>
-                  </div>
-                )}
+        {/* 🆕 ESTADO: Nenhuma busca foi feita e não tem mídia */}
+        {shouldShowLoadButton && (
+          <AnimatedItem direction="up" delay={0.1}>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gradient-to-br from-accent-purple to-accent-blue rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <FiSearch className="w-8 h-8 text-theme-primary" />
               </div>
-            </AnimatedItem>
-
-            <AnimatedItem direction="up" delay={0.1}>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <FiMusic className="w-5 h-5 text-accent-green" />
-                  <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                    Reprodução de Áudio
-                  </h3>
-                </div>
-
-                <UniversalAudioPlayer
-                  work={work}
-                  customAudio={mediaData.customAudio}
-                  alternativeAudioSources={mediaData.alternativeAudio}
-                  isSearching={isSearching}
-                  searchError={searchError}
-                />
-              </div>
-            </AnimatedItem>
-          </div>
-
-          {/* Coluna 2: Vídeos */}
-          <div className="space-y-6">
-            <AnimatedItem direction="up" delay={0.3}>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <SiYoutube className="w-5 h-5 text-red-400" />
-                  <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                    YouTube
-                  </h3>
-                </div>
-
-                {mediaData.youtube ? (
-                  <YouTubeVideoPlayer
-                    video={{
-                      videoId: mediaData.youtube.videoId,
-                      videoUrl: mediaData.youtube.videoUrl,
-                      thumbnail: `https://img.youtube.com/vi/${mediaData.youtube.videoId}/maxresdefault.jpg`,
-                      title: mediaData.youtube.title,
-                      channel: work.composer.fullName,
-                      publishedAt: new Date().toISOString(),
-                    }}
-                    workTitle={work.title}
-                    composer={work.composer.fullName}
-                  />
-                ) : (
-                  <div className="bg-theme-elevated rounded-xl p-8 border-2 border-dashed border-theme-secondary text-center">
-                    <FiVideo className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
-                    <p className="text-theme-secondary">
-                      {isSearching
-                        ? 'Procurando vídeos...'
-                        : searchError
-                        ? 'Sem vídeo encontrado'
-                        : 'Nenhum vídeo encontrado'}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </AnimatedItem>
-          </div>
-        </div>
-
-        {/* Mensagem de Erro */}
-        {searchError && (
-          <AnimatedItem direction="up" delay={0.5}>
-            <div className="mt-6 bg-red-900/20 border border-red-700/30 rounded-xl p-4 flex items-start space-x-3">
-              <FiAlertCircle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-red-300 text-sm font-medium">
-                  Erro na busca de mídia
-                </p>
-                <p className="text-red-400 text-sm mt-1">{searchError}</p>
-              </div>
+              <h3 className="text-xl font-semibold text-theme-primary mb-3">
+                Buscar Multimídia
+              </h3>
+              <p className="text-theme-secondary mb-6 max-w-md mx-auto">
+                Clique no botão abaixo para buscar automaticamente conteúdo de
+                áudio e vídeo para esta obra.
+              </p>
+              <Button
+                variant="primary"
+                size="md"
+                leftIcon={<FiSearch />}
+                onClick={() => searchMedia(false)}
+                disabled={isSearching}
+              >
+                {isSearching ? 'Buscando...' : 'Carregar Mídia'}
+              </Button>
             </div>
           </AnimatedItem>
+        )}
+
+        {/* 🆕 ESTADO: Busca foi feita mas não encontrou nada */}
+        {shouldShowNoMediaMessage && (
+          <AnimatedItem direction="up" delay={0.1}>
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-gradient-to-br from-gray-600 to-gray-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <FiMusic className="w-8 h-8 text-gray-300" />
+              </div>
+              <h3 className="text-xl font-semibold text-theme-primary mb-3">
+                Sem mídia disponível
+              </h3>
+              <p className="text-theme-secondary mb-6 max-w-md mx-auto">
+                Não encontramos conteúdo de áudio ou vídeo para esta peça nos
+                nossos bancos de dados.
+              </p>
+              {isAdminUser && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leftIcon={<FiRefreshCw />}
+                  onClick={() => searchMedia(true)}
+                  disabled={isSearching}
+                >
+                  Tentar Novamente
+                </Button>
+              )}
+            </div>
+          </AnimatedItem>
+        )}
+
+        {/* 🆕 ESTADO: Tem mídia disponível - LAYOUT RESPONSIVO */}
+        {shouldShowContent && (
+          <>
+            {/* Layout para apenas áudio OU apenas vídeo - VERTICAL */}
+            {(hasOnlyAudio || hasOnlyVideo) && (
+              <div className="space-y-6">
+                {/* Spotify */}
+                {mediaData.spotify && (
+                  <AnimatedItem direction="up" delay={0.1}>
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-2">
+                        <SiSpotify className="w-5 h-5 text-green-400" />
+                        <h3 className="text-lg font-semibold text-theme-primary classical-title">
+                          Spotify
+                        </h3>
+                      </div>
+                      <SpotifyRedirectCard
+                        spotify={{
+                          trackId: mediaData.spotify.trackId,
+                          trackUrl: mediaData.spotify.trackUrl,
+                          displayTitle: mediaData.spotify.displayTitle,
+                          duration: mediaData.spotify.duration || 0,
+                          previewUrl: mediaData.spotify.previewUrl || null,
+                          albumArt: mediaData.spotify.albumArt || null,
+                          thumbnail: mediaData.spotify.thumbnail,
+                          artists: mediaData.spotify.artists || [
+                            work.composer.fullName,
+                          ],
+                          albumName: mediaData.spotify.albumName || work.title,
+                          popularity: mediaData.spotify.popularity || 0,
+                        }}
+                      />
+                    </div>
+                  </AnimatedItem>
+                )}
+
+                {/* Áudio */}
+                {mediaData.customAudio && (
+                  <AnimatedItem direction="up" delay={0.2}>
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-2">
+                        <FiMusic className="w-5 h-5 text-accent-green" />
+                        <h3 className="text-lg font-semibold text-theme-primary classical-title">
+                          Reprodução de Áudio
+                        </h3>
+                      </div>
+                      <UniversalAudioPlayer
+                        work={work}
+                        customAudio={mediaData.customAudio}
+                        alternativeAudioSources={mediaData.alternativeAudio}
+                        isSearching={isSearching}
+                        searchError={searchError}
+                      />
+                    </div>
+                  </AnimatedItem>
+                )}
+
+                {/* YouTube */}
+                {mediaData.youtube && (
+                  <AnimatedItem direction="up" delay={0.3}>
+                    <div className="space-y-4">
+                      <div className="flex items-center space-x-2">
+                        <SiYoutube className="w-5 h-5 text-red-400" />
+                        <h3 className="text-lg font-semibold text-theme-primary classical-title">
+                          YouTube
+                        </h3>
+                      </div>
+                      <YouTubeVideoPlayer
+                        video={{
+                          videoId: mediaData.youtube.videoId,
+                          videoUrl: mediaData.youtube.videoUrl,
+                          thumbnail: `https://img.youtube.com/vi/${mediaData.youtube.videoId}/maxresdefault.jpg`,
+                          title: mediaData.youtube.title,
+                          channel: work.composer.fullName,
+                          publishedAt: new Date().toISOString(),
+                        }}
+                        workTitle={work.title}
+                        composer={work.composer.fullName}
+                      />
+                    </div>
+                  </AnimatedItem>
+                )}
+              </div>
+            )}
+
+            {/* Layout para áudio E vídeo - GRID 2 COLUNAS */}
+            {hasAudioAndVideo && (
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                {/* Coluna 1: Áudio */}
+                <div className="space-y-6">
+                  {/* Spotify */}
+                  {mediaData.spotify && (
+                    <AnimatedItem direction="up" delay={0.2}>
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-2">
+                          <SiSpotify className="w-5 h-5 text-green-400" />
+                          <h3 className="text-lg font-semibold text-theme-primary classical-title">
+                            Spotify
+                          </h3>
+                        </div>
+                        <SpotifyRedirectCard
+                          spotify={{
+                            trackId: mediaData.spotify.trackId,
+                            trackUrl: mediaData.spotify.trackUrl,
+                            displayTitle: mediaData.spotify.displayTitle,
+                            duration: mediaData.spotify.duration || 0,
+                            previewUrl: mediaData.spotify.previewUrl || null,
+                            albumArt: mediaData.spotify.albumArt || null,
+                            thumbnail: mediaData.spotify.thumbnail,
+                            artists: mediaData.spotify.artists || [
+                              work.composer.fullName,
+                            ],
+                            albumName:
+                              mediaData.spotify.albumName || work.title,
+                            popularity: mediaData.spotify.popularity || 0,
+                          }}
+                        />
+                      </div>
+                    </AnimatedItem>
+                  )}
+
+                  {/* Áudio Player */}
+                  {mediaData.customAudio && (
+                    <AnimatedItem direction="up" delay={0.1}>
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-2">
+                          <FiMusic className="w-5 h-5 text-accent-green" />
+                          <h3 className="text-lg font-semibold text-theme-primary classical-title">
+                            Reprodução de Áudio
+                          </h3>
+                        </div>
+                        <UniversalAudioPlayer
+                          work={work}
+                          customAudio={mediaData.customAudio}
+                          alternativeAudioSources={mediaData.alternativeAudio}
+                          isSearching={isSearching}
+                          searchError={searchError}
+                        />
+                      </div>
+                    </AnimatedItem>
+                  )}
+                </div>
+
+                {/* Coluna 2: Vídeo */}
+                {mediaData.youtube && (
+                  <div className="space-y-6">
+                    <AnimatedItem direction="up" delay={0.3}>
+                      <div className="space-y-4">
+                        <div className="flex items-center space-x-2">
+                          <SiYoutube className="w-5 h-5 text-red-400" />
+                          <h3 className="text-lg font-semibold text-theme-primary classical-title">
+                            YouTube
+                          </h3>
+                        </div>
+                        <YouTubeVideoPlayer
+                          video={{
+                            videoId: mediaData.youtube.videoId,
+                            videoUrl: mediaData.youtube.videoUrl,
+                            thumbnail: `https://img.youtube.com/vi/${mediaData.youtube.videoId}/maxresdefault.jpg`,
+                            title: mediaData.youtube.title,
+                            channel: work.composer.fullName,
+                            publishedAt: new Date().toISOString(),
+                          }}
+                          workTitle={work.title}
+                          composer={work.composer.fullName}
+                        />
+                      </div>
+                    </AnimatedItem>
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         )}
 
         {/* Status de Carregamento Global */}
@@ -948,6 +1080,21 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 <p className="text-blue-400 text-xs mt-1">
                   🎵 Spotify • 📺 YouTube • 🎼 Fontes de Áudio
                 </p>
+              </div>
+            </div>
+          </AnimatedItem>
+        )}
+
+        {/* Mensagem de Erro */}
+        {searchError && hasSearchBeenMade && (
+          <AnimatedItem direction="up" delay={0.5}>
+            <div className="mt-6 bg-red-900/20 border border-red-700/30 rounded-xl p-4 flex items-start space-x-3">
+              <FiAlertCircle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-red-300 text-sm font-medium">
+                  Erro na busca de mídia
+                </p>
+                <p className="text-red-400 text-sm mt-1">{searchError}</p>
               </div>
             </div>
           </AnimatedItem>

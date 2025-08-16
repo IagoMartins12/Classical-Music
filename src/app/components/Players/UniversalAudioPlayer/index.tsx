@@ -1,7 +1,7 @@
-// app/components/Players/UniversalAudioPlayer.tsx - SIMPLIFICADO SEM BUSCA DE FONTES
+// app/components/Players/UniversalAudioPlayer/index.tsx - COM IMPORT DO WAVEFORM
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, JSX } from 'react';
 import {
   FiPlay,
   FiPause,
@@ -14,7 +14,9 @@ import {
 } from 'react-icons/fi';
 import { SiYoutube } from 'react-icons/si';
 
-interface AudioSource {
+// Importar componente Waveform e tipos
+import Waveform from '../../Waveform';
+export interface AudioSource {
   type:
     | 'youtube-audio'
     | 'custom-audio'
@@ -25,33 +27,92 @@ interface AudioSource {
   quality?: string;
   label: string;
   requiresAuth?: boolean;
-  isPersistent?: boolean; // 🆕 Se está salvo no banco
-  metadata?: any; // 🆕 Metadados da fonte
+  isPersistent?: boolean;
+  metadata?: Record<string, any>;
 }
 
-interface UniversalAudioPlayerProps {
-  work: {
-    id: string;
-    title: string;
-    composer: { fullName: string };
-    // 🆕 Campos expandidos para áudio customizado
-    customAudioUrl?: string | null;
-    customAudioFile?: string | null;
-    customAudioSource?: string | null; // "upload" ou nome da fonte
-    customAudioMetadata?: any; // Metadados JSON
-  };
+export interface AlternativeAudioSource {
+  audioUrl: string;
+  duration?: number;
+  quality?: string;
+  source: string;
+  [key: string]: any;
+}
 
+export interface Work {
+  id: string;
+  title: string;
+  composer: {
+    fullName: string;
+    [key: string]: any;
+  };
+  customAudioUrl?: string | null;
+  customAudioFile?: string | null;
+  customAudioSource?: string | null;
+  customAudioMetadata?: Record<string, any>;
+}
+
+export interface CustomAudio {
+  url: string;
+  file: string;
+  title?: string;
+  isPersistent?: boolean;
+}
+
+export interface UniversalAudioPlayerProps {
+  work: Work;
   isSearching: boolean;
   searchError: string | null;
-  customAudio?: {
-    url: string;
-    file: string;
-    title?: string;
-    isPersistent?: boolean;
-  } | null;
+  customAudio?: CustomAudio | null;
+  alternativeAudioSources?: AlternativeAudioSource[];
+}
 
-  // 🆕 Prop para fontes alternativas temporárias (vindas do MediaSection)
-  alternativeAudioSources?: any[];
+export interface WaveformProps {
+  audioRef: React.RefObject<HTMLAudioElement>;
+  currentTime: number;
+  duration: number;
+  isPlaying: boolean;
+  onSeek?: (time: number) => void;
+  height?: number;
+  width?: number;
+  className?: string;
+}
+
+// Tipos para eventos de áudio
+export interface AudioEventHandlers {
+  onTimeUpdate: () => void;
+  onLoadedMetadata: () => void;
+  onEnded: () => void;
+  onError: (error: Event) => void;
+}
+
+// Estados do player
+export interface AudioPlayerState {
+  isPlaying: boolean;
+  currentTime: number;
+  duration: number;
+  volume: number;
+  isMuted: boolean;
+  isLoading: boolean;
+}
+
+// Configurações do waveform
+export interface WaveformConfig {
+  barCount: number;
+  maxHeight: number;
+  colors: {
+    played: string[];
+    unplayed: string;
+    progress: string;
+    glow: string;
+  };
+}
+
+// Para análise de áudio
+export interface AudioAnalysisData {
+  waveformData: number[];
+  isAnalyzing: boolean;
+  audioContext: AudioContext | null;
 }
 
 const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
@@ -62,27 +123,26 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   alternativeAudioSources = [],
 }) => {
   // Estados do player
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.7);
-  const [isMuted, setIsMuted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
+  const [volume, setVolume] = useState<number>(0.7);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Estados das fontes de áudio
   const [audioSources, setAudioSources] = useState<AudioSource[]>([]);
   const [currentSource, setCurrentSource] = useState<AudioSource | null>(null);
-  const [sourcesInitialized, setSourcesInitialized] = useState(false);
+  const [sourcesInitialized, setSourcesInitialized] = useState<boolean>(false);
 
   // Refs
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const waveformRef = useRef<HTMLDivElement | null>(null);
 
-  // 🆕 Função para inicializar fontes de áudio COM PRIORIDADES CORRETAS
+  // Função para inicializar fontes de áudio
   const initializeAudioSources = useCallback(() => {
     const sources: AudioSource[] = [];
 
-    // 🎯 PRIORIDADE 1: Áudio Customizado (UPLOAD) - SEMPRE PRIMEIRO
+    // PRIORIDADE 1: Áudio Customizado (UPLOAD)
     if (customAudio?.url || customAudio?.file) {
       sources.push({
         type: 'custom-audio',
@@ -94,7 +154,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
       });
     }
 
-    // 🎯 PRIORIDADE 2: Fonte Alternativa SALVA no banco (se não for upload)
+    // PRIORIDADE 2: Fonte Alternativa SALVA no banco
     if (
       work.customAudioUrl &&
       work.customAudioSource &&
@@ -111,34 +171,27 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
       });
     }
 
-    // 🎯 PRIORIDADE 3: Fontes alternativas TEMPORÁRIAS (não salvas) - vindas do MediaSection
+    // PRIORIDADE 3: Fontes alternativas TEMPORÁRIAS
     if (alternativeAudioSources.length > 0) {
-      const freshAlternativeSources = alternativeAudioSources.map(
-        (source: any, index: number) => ({
-          type: 'alternative-fresh' as const,
-          url: source.audioUrl,
-          duration: source.duration,
-          quality: source.quality || 'varies',
-          label: `${source.source} (${index + 1})`,
-          isPersistent: false, // NÃO são persistentes
-          metadata: source,
-        })
-      );
+      const freshAlternativeSources: AudioSource[] =
+        alternativeAudioSources.map(
+          (source: AlternativeAudioSource, index: number) => ({
+            type: 'alternative-fresh' as const,
+            url: source.audioUrl,
+            duration: source.duration,
+            quality: source.quality || 'varies',
+            label: `${source.source} (${index + 1})`,
+            isPersistent: false,
+            metadata: source,
+          })
+        );
 
       sources.push(...freshAlternativeSources);
-      console.log(
-        `✅ [AUDIO-PLAYER] Adicionado: ${freshAlternativeSources.length} fonte(s) alternativa(s) temporária(s)`
-      );
     }
 
     setAudioSources(sources);
 
-    // 🆕 Definir fonte padrão (sempre a primeira disponível)
     if (sources.length > 0 && !currentSource) {
-      console.log(
-        '🎵 [AUDIO-PLAYER] Definindo fonte padrão:',
-        sources[0].label
-      );
       setCurrentSource(sources[0]);
     }
 
@@ -152,7 +205,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     currentSource,
   ]);
 
-  // 🆕 Inicializar fontes quando componente monta ou props mudam
   useEffect(() => {
     initializeAudioSources();
   }, [initializeAudioSources]);
@@ -161,32 +213,16 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   useEffect(() => {
     if (!currentSource) return;
 
-    console.log('🎵 [AUDIO-PLAYER] Configurando player para:', {
-      label: currentSource.label,
-      type: currentSource.type,
-      isPersistent: currentSource.isPersistent,
-    });
-
     const audio = new Audio(currentSource.url);
     audio.volume = isMuted ? 0 : volume;
     audio.crossOrigin = 'anonymous';
     audioRef.current = audio;
 
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime * 1000);
-    const handleLoadedMetadata = () => {
-      setDuration(audio.duration * 1000);
-      console.log(
-        '🎵 [AUDIO-PLAYER] Áudio carregado, duração:',
-        audio.duration
-      );
-    };
+    const handleLoadedMetadata = () => setDuration(audio.duration * 1000);
     const handleEnded = () => setIsPlaying(false);
-    const handleError = (e: any) => {
-      console.error(
-        '❌ [AUDIO-PLAYER] Erro ao carregar áudio:',
-        currentSource.url,
-        e
-      );
+    const handleError = (e: Event) => {
+      console.error('❌ Erro ao carregar áudio:', currentSource.url, e);
       tryNextAudioSource();
     };
 
@@ -204,7 +240,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     };
   }, [currentSource, volume, isMuted]);
 
-  // Tentar próxima fonte de áudio em caso de erro
+  // Tentar próxima fonte de áudio
   const tryNextAudioSource = useCallback(() => {
     const currentIndex = audioSources.findIndex(
       (source) => source === currentSource
@@ -212,33 +248,17 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     const nextSource = audioSources[currentIndex + 1];
 
     if (nextSource) {
-      console.log(
-        '🔄 [AUDIO-PLAYER] Tentando próxima fonte:',
-        nextSource.label
-      );
       setCurrentSource(nextSource);
-    } else {
-      console.log(
-        '❌ [AUDIO-PLAYER] Todas as fontes falharam. Use o botão "Mais Fontes" no MediaSection para buscar alternativas.'
-      );
     }
   }, [audioSources, currentSource]);
 
-  // 🆕 Função para selecionar fonte manualmente
+  // Selecionar fonte manualmente
   const selectAudioSource = useCallback(
     (source: AudioSource) => {
-      console.log('🎵 [AUDIO-PLAYER] Fonte selecionada manualmente:', {
-        label: source.label,
-        type: source.type,
-        isPersistent: source.isPersistent,
-      });
-
-      // Parar áudio atual se estiver tocando
       if (audioRef.current && isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
       }
-
       setCurrentSource(source);
     },
     [isPlaying]
@@ -246,32 +266,27 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
 
   // Controles do player
   const togglePlay = async () => {
-    if (!currentSource || !audioRef.current) {
-      console.warn('🎵 [AUDIO-PLAYER] Nenhuma fonte ou player disponível');
-      return;
-    }
+    if (!currentSource || !audioRef.current) return;
 
     try {
       setIsLoading(true);
 
       if (isPlaying) {
         audioRef.current.pause();
-        console.log('⏸️ [AUDIO-PLAYER] Pausado');
       } else {
         await audioRef.current.play();
-        console.log('▶️ [AUDIO-PLAYER] Reproduzindo');
       }
 
       setIsPlaying(!isPlaying);
     } catch (error) {
-      console.error('❌ [AUDIO-PLAYER] Erro ao controlar reprodução:', error);
+      console.error('❌ Erro ao controlar reprodução:', error);
       tryNextAudioSource();
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleVolumeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
     setIsMuted(newVolume === 0);
@@ -281,7 +296,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     }
   };
 
-  const toggleMute = async () => {
+  const toggleMute = () => {
     const newMuted = !isMuted;
     setIsMuted(newMuted);
 
@@ -290,30 +305,41 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     }
   };
 
-  const formatTime = (ms: number) => {
+  // Função para navegação no áudio (waveform)
+  const handleSeek = useCallback(
+    (timeInMs: number) => {
+      if (audioRef.current && duration > 0) {
+        const timeInSeconds = timeInMs / 1000;
+        audioRef.current.currentTime = timeInSeconds;
+        setCurrentTime(timeInMs);
+      }
+    },
+    [duration]
+  );
+
+  const formatTime = (ms: number): string => {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  // 🆕 Ícone da fonte com indicadores de persistência
-  const getSourceIcon = (source: AudioSource) => {
+  const getSourceIcon = (source: AudioSource): JSX.Element => {
     switch (source.type) {
       case 'youtube-audio':
         return <SiYoutube className="w-4 h-4 text-red-400" />;
       case 'custom-audio':
         return <FiUpload className="w-4 h-4 text-blue-400" />;
       case 'alternative-saved':
-        return <FiDatabase className="w-4 h-4 text-green-400" />; // 🆕 Ícone para salvas
+        return <FiDatabase className="w-4 h-4 text-green-400" />;
       case 'alternative-fresh':
-        return <FiMusic className="w-4 h-4 text-purple-400" />; // 🆕 Ícone para temporárias
+        return <FiMusic className="w-4 h-4 text-purple-400" />;
       default:
         return <FiMusic className="w-4 h-4 text-gray-400" />;
     }
   };
 
-  const getAudioCover = () => {
+  const getAudioCover = (): JSX.Element => {
     if (currentSource?.type === 'custom-audio') {
       return (
         <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -338,7 +364,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
       );
     }
 
-    // Fallback padrão
     return (
       <div className="w-20 h-20 bg-gradient-to-br from-gray-700 to-gray-600 rounded-lg flex items-center justify-center">
         <FiMusic className="w-8 h-8 text-gray-400" />
@@ -346,7 +371,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     );
   };
 
-  // 🆕 Status de inicialização
   if (!sourcesInitialized) {
     return (
       <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
@@ -360,7 +384,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     );
   }
 
-  // 🆕 Estado sem fontes disponíveis
   if (audioSources.length === 0) {
     return (
       <div className="bg-theme-elevated rounded-xl p-8 border-2 border-dashed border-theme-secondary text-center">
@@ -396,7 +419,6 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
             </h3>
             <p className="text-gray-400 text-sm">{work.composer.fullName}</p>
 
-            {/* 🆕 Fonte atual com indicadores de persistência */}
             {currentSource && (
               <div className="flex items-center space-x-2 mt-2">
                 {getSourceIcon(currentSource)}
@@ -409,7 +431,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
         </div>
       </div>
 
-      {/* 🆕 Seletor de fontes com indicadores de persistência */}
+      {/* Seletor de fontes */}
       {audioSources.length > 1 && (
         <div className="px-6 pb-4">
           <div className="flex space-x-2 overflow-x-auto">
@@ -437,25 +459,20 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
         </div>
       )}
 
-      {/* Waveform/Progress */}
-      <div className="px-6 pb-4">
-        <div
-          ref={waveformRef}
-          className="h-16 bg-gray-800/50 rounded-lg relative overflow-hidden cursor-pointer"
-        >
-          <div className="absolute inset-0 flex items-center px-2">
-            <div className="w-full h-2 bg-gray-600 rounded-full">
-              <div
-                className="h-full bg-gradient-to-r from-blue-500 to-green-500 rounded-full transition-all duration-100"
-                style={{
-                  width:
-                    duration > 0 ? `${(currentTime / duration) * 100}%` : '0%',
-                }}
-              />
-            </div>
-          </div>
+      {/* Waveform - COMPONENTE IMPORTADO */}
+      {audioRef !== null && (
+        <div className="px-6 pb-4">
+          <Waveform
+            audioRef={audioRef}
+            currentTime={currentTime}
+            duration={duration}
+            isPlaying={isPlaying}
+            onSeek={handleSeek}
+            height={80}
+            className="rounded-lg border border-gray-600"
+          />
         </div>
-      </div>
+      )}
 
       {/* Controles */}
       <div className="px-6 pb-6">

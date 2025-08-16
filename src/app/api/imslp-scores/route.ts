@@ -48,13 +48,6 @@ export async function POST(request: NextRequest) {
       targetTabType,
     } = pagination;
 
-    console.log(`\n🚀 [API-FIXED] === NOVA LÓGICA DE CACHE CORRIGIDA ===`);
-    console.log(`🌐 URL: ${imslpUrl}`);
-    console.log(`🎼 WorkID: ${workId || 'não informado'}`);
-    console.log(`🎯 Tab alvo: ${targetTabType || 'todas'}`);
-    console.log(`🔄 Load more: ${loadMore}, Limit: ${limit}`);
-    console.log(`⭐ Force refresh: ${forceRefresh}`);
-
     let scoresData: any = null;
     let fromCache = false;
     let cacheStats = null;

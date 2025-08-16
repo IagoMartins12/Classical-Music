@@ -30,7 +30,7 @@ interface CacheResult {
 
 export class ScoresCacheServiceIncremental {
   private static readonly CACHE_VERSION = '2.0-RETURN-ALL-CACHED';
-  private static readonly DEFAULT_CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 dias
+  private static readonly DEFAULT_CACHE_TTL = 7 * 24 * 60 * 60 * 100000; // 7 dias
 
   // 🆕 Mapeamento de tipos (minúsculas -> maiúsculas) para corrigir erro
   private static readonly TYPE_MAPPING = {

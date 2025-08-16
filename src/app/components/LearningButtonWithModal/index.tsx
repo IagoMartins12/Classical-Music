@@ -20,6 +20,8 @@ import {
   type SelectedWorkScore,
 } from '@/app/stores/useLearningModalStore';
 import { useAuth } from '@/app/hooks/useAuth';
+import { useToast } from '@/app/hooks/useToast';
+import { useLoginModal } from '@/app/stores/authStore';
 
 interface LearningButtonWithModalProps {
   workId: string;
@@ -47,6 +49,7 @@ const LearningButtonWithModal = ({
   const { isAuthenticated } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const { open: openLoginModal } = useLoginModal();
 
   const {
     isWantToLearn,
@@ -173,9 +176,20 @@ const LearningButtonWithModal = ({
     }
   };
 
+  const toast = useToast();
   // ✅ Handler para abrir modal usando store global
   const handleClick = () => {
-    if (disabled || isLoading || !isAuthenticated) {
+    if (disabled || isLoading) {
+      return;
+    }
+
+    if (!isAuthenticated) {
+      toast.error(
+        `Faça login para adicionar peça ao ${
+          type === 'learned' ? 'Já aprendi' : 'Quero estudar'
+        }`
+      );
+      openLoginModal();
       return;
     }
 
