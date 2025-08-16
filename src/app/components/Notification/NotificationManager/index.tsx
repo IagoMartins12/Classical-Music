@@ -1,4 +1,4 @@
-// app/components/Notifications/NotificationManager.tsx - CORRIGIDO
+// app/components/Notifications/NotificationManager.tsx - CORRIGIDO PARA EVITAR MÚLTIPLAS INSTÂNCIAS
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -10,9 +10,12 @@ interface NotificationManagerProps {
   children?: React.ReactNode;
 }
 
+// 🆕 INSTÂNCIA GLOBAL para evitar múltiplos managers
+const globalInstanceTracker = new Map<string, boolean>();
+
 /**
  * Componente responsável por gerenciar notificações em background
- * Versão corrigida sem re-render loops
+ * Versão corrigida para evitar múltiplas instâncias simultâneas
  */
 export default function NotificationManager({
   userRole,
@@ -22,31 +25,66 @@ export default function NotificationManager({
   const initRef = useRef(false);
   const userRoleRef = useRef(userRole);
   const userIdRef = useRef(userId);
+  const instanceKey = `${userRole}_${userId}`;
+
+  // 🆕 Verificar se já existe uma instância para este usuário
+  const isMainInstance = useRef(false);
 
   const { unreadCount, isChecking, error } = useNotifications({
     userRole,
     userId,
-    autoStart: true,
+    autoStart: isMainInstance.current, // 🆕 Só auto-start se for a instância principal
   });
 
-  // Only log on significant changes, not every render
+  // 🆕 Controle de instância única
   useEffect(() => {
-    if (!initRef.current) {
+    const hasExistingInstance = globalInstanceTracker.get(instanceKey);
+
+    if (!hasExistingInstance) {
+      // Esta é a primeira instância para este usuário
+      globalInstanceTracker.set(instanceKey, true);
+      isMainInstance.current = true;
+
       console.log(
-        `📬 [NOTIFICATION-MANAGER] Initialized for ${userRole.toUpperCase()} ${userId}`
+        `📬 [NOTIFICATION-MANAGER] 👑 Instância PRINCIPAL criada para ${instanceKey}`
+      );
+    } else {
+      // Já existe uma instância para este usuário
+      isMainInstance.current = false;
+      console.log(
+        `📬 [NOTIFICATION-MANAGER] 👥 Instância SECUNDÁRIA ignorada para ${instanceKey}`
+      );
+    }
+
+    // Cleanup quando componente desmonta
+    return () => {
+      if (isMainInstance.current) {
+        globalInstanceTracker.delete(instanceKey);
+        console.log(
+          `📬 [NOTIFICATION-MANAGER] 🗑️ Instância PRINCIPAL removida para ${instanceKey}`
+        );
+      }
+    };
+  }, [instanceKey]);
+
+  // Log inicial apenas para instância principal
+  useEffect(() => {
+    if (isMainInstance.current && !initRef.current) {
+      console.log(
+        `📬 [NOTIFICATION-MANAGER] ✅ Initialized MAIN instance for ${userRole.toUpperCase()} ${userId}`
       );
       initRef.current = true;
     }
-  }, []);
+  }, [userRole, userId]);
 
-  // Log errors only when they change
+  // Log errors apenas da instância principal
   useEffect(() => {
-    if (error) {
+    if (isMainInstance.current && error) {
       console.warn('📬 [NOTIFICATION-MANAGER] Error:', error);
     }
   }, [error]);
 
-  // Update refs if props change (should be rare)
+  // Update refs se props mudarem
   useEffect(() => {
     if (userRoleRef.current !== userRole || userIdRef.current !== userId) {
       console.log(
@@ -61,9 +99,10 @@ export default function NotificationManager({
     <>
       {children}
 
-      {/* Debug info - only in development, and only show on significant changes */}
-      {process.env.NODE_ENV === 'development' && (
+      {/* Debug info - apenas para instância principal em desenvolvimento */}
+      {process.env.NODE_ENV === 'development' && isMainInstance.current && (
         <div className="fixed bottom-4 left-4 z-[9999] bg-black/80 text-white text-xs p-2 rounded pointer-events-none">
+          <div>👑 MAIN Instance</div>
           <div>Role: {userRole}</div>
           <div>Unread: {unreadCount}</div>
           <div
@@ -76,6 +115,14 @@ export default function NotificationManager({
               Error: {error.substring(0, 30)}...
             </div>
           )}
+        </div>
+      )}
+
+      {/* Debug para instâncias secundárias */}
+      {process.env.NODE_ENV === 'development' && !isMainInstance.current && (
+        <div className="fixed bottom-4 left-20 z-[9999] bg-red-900/80 text-white text-xs p-2 rounded pointer-events-none">
+          <div>👥 SECONDARY (ignored)</div>
+          <div>Role: {userRole}</div>
         </div>
       )}
     </>

@@ -420,7 +420,7 @@ export default function StudentLessonDetailPageClient({
 
                   {/* Recurrence Info */}
                   {lesson.isRecurring && (
-                    <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4">
+                    <div className="bg-theme-elevated rounded-lg p-4">
                       <div className="flex items-center space-x-2 text-accent-blue mb-2">
                         <FiRepeat className="w-4 h-4" />
                         <span className="font-medium">Aula Recorrente</span>

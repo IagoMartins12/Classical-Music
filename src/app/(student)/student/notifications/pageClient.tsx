@@ -26,6 +26,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import { NotificationData } from '@/app/types/notification';
 import { useToast } from '@/app/hooks/useToast';
+import Select from '@/app/components/Common/Select';
 
 interface StudentNotificationsPageClientProps {
   initialNotifications: NotificationData[];
@@ -37,6 +38,12 @@ interface StudentNotificationsPageClientProps {
 
 type FilterType = 'all' | 'unread' | 'lessons' | 'assignments' | 'practice';
 type SortType = 'newest' | 'oldest' | 'priority';
+
+export const NotificatiosSelectFIlter = [
+  { value: 'newest', label: 'Mais Recenetes' },
+  { value: 'oldest', label: 'Mais Antigas' },
+  { value: 'priority', label: 'Por Prioridade' },
+];
 
 export default function StudentNotificationsPageClient({
   initialNotifications,
@@ -380,16 +387,11 @@ export default function StudentNotificationsPageClient({
 
               {/* Actions */}
               <div className="flex items-center space-x-3">
-                <select
+                <Select
+                  options={NotificatiosSelectFIlter}
                   value={sort}
                   onChange={(e) => setSort(e.target.value as SortType)}
-                  className="px-3 py-2 bg-theme-elevated border border-theme-secondary rounded-lg text-theme-primary"
-                >
-                  <option value="newest">Mais Recentes</option>
-                  <option value="oldest">Mais Antigas</option>
-                  <option value="priority">Por Prioridade</option>
-                </select>
-
+                />
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}

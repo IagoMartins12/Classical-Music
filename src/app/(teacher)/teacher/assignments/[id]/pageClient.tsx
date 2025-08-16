@@ -442,7 +442,7 @@ export default function AssignmentDetailsPageClient({
                           <div className="flex-1">
                             <div className="w-full bg-theme-secondary rounded-full h-3">
                               <div
-                                className="bg-gradient-to-r from-brand-primary to-brand-secondary h-3 rounded-full transition-all duration-300"
+                                className="progress-bar h-3 rounded-full transition-all duration-300"
                                 style={{ width: `${assignment.progress}%` }}
                               />
                             </div>
@@ -553,7 +553,7 @@ export default function AssignmentDetailsPageClient({
                       <label className="text-sm font-medium text-theme-tertiary block mb-2">
                         Comentários do Aluno
                       </label>
-                      <div className="p-4 bg-theme-secondary/10 rounded-lg border">
+                      <div className="p-4 bg-theme-secondary/10 rounded-lg bg-theme-elevated">
                         <div className="text-theme-primary whitespace-pre-wrap">
                           {assignment.studentNotes}
                         </div>
@@ -610,7 +610,7 @@ export default function AssignmentDetailsPageClient({
                             return (
                               <div
                                 key={key}
-                                className="flex items-center space-x-2 p-2 bg-accent-green/5 border border-accent-green/20 rounded-lg"
+                                className="flex bg-theme-elevated items-center space-x-2 p-2  rounded-lg"
                               >
                                 <FiCheck className="w-4 h-4 text-accent-green" />
                                 <span className="text-sm text-theme-primary">
@@ -662,7 +662,7 @@ export default function AssignmentDetailsPageClient({
                       />
                     ) : (
                       <div
-                        className={`p-4 rounded-lg border ${
+                        className={`p-4 rounded-lg bg-theme-elevated ${
                           feedbackData.teacherFeedback
                             ? 'bg-theme-secondary/10 border-theme-secondary/20'
                             : 'bg-theme-secondary/5 border-theme-secondary/10'

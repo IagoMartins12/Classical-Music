@@ -251,7 +251,7 @@ export default function NotificationBell({
                 {recentNotifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={`p-4 hover:bg-interactive-hover transition-colors border-l-4 ${getPriorityColor(
+                    className={`p-4 hover:bg-interactive-hover transition-colors border-color-primary ${getPriorityColor(
                       notification.priority
                     )} ${
                       notification.status === 'UNREAD'

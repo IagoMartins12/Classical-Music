@@ -350,6 +350,10 @@ body {
   color: var(--brand-primary);
 }
 
+.border-color-primary {
+  border-color: var(--brand-primary);
+}
+
 .text-brand-secondary {
   color: var(--brand-secondary);
 }

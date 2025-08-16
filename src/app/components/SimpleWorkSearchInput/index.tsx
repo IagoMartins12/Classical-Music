@@ -1,5 +1,5 @@
-// app/components/SimpleWorkSearchInput.tsx - VERSÃO SIMPLES SEM AUTO-SUGGESTIONS
-import React, { useState, useRef, useCallback } from 'react';
+// app/components/SimpleWorkSearchInput.tsx - VERSÃO ATUALIZADA COM USER SUGGESTIONS
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
   FiSearch,
   FiMusic,
@@ -7,6 +7,7 @@ import {
   FiCheck,
   FiX,
   FiAlertCircle,
+  FiStar,
 } from 'react-icons/fi';
 
 interface Work {
@@ -26,6 +27,9 @@ interface SimpleWorkSearchInputProps {
   error?: string;
   disabled?: boolean;
   filterByComposer?: string;
+  // 🆕 Novas props para sugestões
+  userSuggestions?: Work[];
+  loadingUserSuggestions?: boolean;
 }
 
 const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
@@ -35,6 +39,9 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   error,
   disabled = false,
   filterByComposer = '',
+  // 🆕 Props de sugestões com valores padrão
+  userSuggestions = [],
+  loadingUserSuggestions = false,
 }) => {
   const [query, setQuery] = useState('');
   const [works, setWorks] = useState<Work[]>([]);
@@ -46,16 +53,19 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  console.log('🔍 [SIMPLE-WORK-SEARCH] Render simples:', {
+  console.log('🔍 [SIMPLE-WORK-SEARCH] Render com sugestões:', {
     query,
     selectedWork,
+    userSuggestions: userSuggestions.length,
+    loadingUserSuggestions,
   });
 
-  // 🔥 BUSCA APENAS QUANDO DIGITA (SEM AUTO-SUGGESTIONS)
+  // 🆕 BUSCA COMBINADA - API + USER SUGGESTIONS
   const performSearch = useCallback(
     async (searchQuery: string) => {
       if (searchQuery.trim().length < 2) {
-        setWorks([]);
+        // 🆕 Se não há query, mostrar sugestões do usuário
+        setWorks(userSuggestions.slice(0, 8));
         setIsLoading(false);
         return;
       }
@@ -77,10 +87,21 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
 
         if (response.ok) {
           const data = await response.json();
-          setWorks(data.works || []);
+          const apiWorks = data.works || [];
+
+          // 🆕 COMBINAR COM USER SUGGESTIONS
+          const combinedWorks = combineWorksWithSuggestions(
+            apiWorks,
+            searchQuery
+          );
+          setWorks(combinedWorks);
+
           console.log(
-            '✅ [SIMPLE-WORK-SEARCH] Encontradas:',
-            data.works?.length || 0
+            '✅ [SIMPLE-WORK-SEARCH] Obras combinadas:',
+            combinedWorks.length,
+            '(API:',
+            apiWorks.length,
+            '+ Sugestões)'
           );
         } else {
           console.error(
@@ -96,8 +117,51 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
         setIsLoading(false);
       }
     },
-    [filterByComposer]
+    [filterByComposer, userSuggestions]
   );
+
+  // 🆕 FUNÇÃO PARA COMBINAR API RESULTS COM USER SUGGESTIONS
+  const combineWorksWithSuggestions = useCallback(
+    (apiWorks: Work[], searchQuery: string) => {
+      // Filtrar user suggestions que correspondem à busca
+      const matchingUserSuggestions = userSuggestions.filter((userWork) => {
+        const matchesQuery =
+          userWork.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          userWork.composer.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          userWork.composer.fullName
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
+
+        const matchesComposer =
+          !filterByComposer ||
+          filterByComposer.trim() === '' ||
+          userWork.composer.id === filterByComposer;
+
+        return matchesQuery && matchesComposer;
+      });
+
+      // Remover duplicatas (obras que estão tanto na API quanto nas sugestões)
+      const apiWorksFiltered = apiWorks.filter(
+        (apiWork) =>
+          !matchingUserSuggestions.some(
+            (userWork) => userWork.id === apiWork.id
+          )
+      );
+
+      // Priorizar user suggestions no topo
+      return [...matchingUserSuggestions, ...apiWorksFiltered];
+    },
+    [userSuggestions, filterByComposer]
+  );
+
+  // 🆕 EFFECT PARA MOSTRAR SUGESTÕES QUANDO NÃO HÁ QUERY
+  useEffect(() => {
+    if (query.trim().length === 0 && userSuggestions.length > 0) {
+      setWorks(userSuggestions.slice(0, 8));
+    }
+  }, [userSuggestions, query]);
 
   // 🔥 HANDLER DE INPUT COM DEBOUNCE
   const handleInputChange = useCallback(
@@ -114,49 +178,65 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
       if (value.length === 0 && selectedWorkData) {
         onWorkSelect('');
         setSelectedWorkData(null);
-        setWorks([]);
-        setIsOpen(false);
+        // 🆕 Mostrar sugestões quando limpar
+        setWorks(userSuggestions.slice(0, 8));
         return;
       }
 
-      // Só buscar se tiver pelo menos 2 caracteres
+      // 🆕 BUSCAR OU MOSTRAR SUGESTÕES
       if (value.trim().length >= 2) {
         searchTimeoutRef.current = setTimeout(() => {
           performSearch(value);
         }, 400);
       } else {
-        setWorks([]);
+        // Mostrar sugestões quando menos de 2 caracteres
+        setWorks(userSuggestions.slice(0, 8));
         setIsLoading(false);
       }
     },
-    [selectedWorkData, onWorkSelect, performSearch]
+    [selectedWorkData, onWorkSelect, performSearch, userSuggestions]
   );
 
   // 🔥 BUSCAR DADOS DA OBRA SELECIONADA
-  const findSelectedWork = useCallback(async (workId: string) => {
-    if (!workId) {
-      setSelectedWorkData(null);
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/works/${workId}`);
-      if (response.ok) {
-        const workData = await response.json();
-        setSelectedWorkData(workData);
-        console.log(
-          '✅ [SIMPLE-WORK-SEARCH] Obra selecionada carregada:',
-          workData.title
-        );
+  const findSelectedWork = useCallback(
+    async (workId: string) => {
+      if (!workId) {
+        setSelectedWorkData(null);
+        return;
       }
-    } catch (error) {
-      console.error('❌ [SIMPLE-WORK-SEARCH] Erro ao carregar obra:', error);
-      setSelectedWorkData(null);
-    }
-  }, []);
+
+      // 🆕 Primeiro verificar nas user suggestions
+      const userWork = userSuggestions.find((work) => work.id === workId);
+      if (userWork) {
+        setSelectedWorkData(userWork);
+        console.log(
+          '✅ [SIMPLE-WORK-SEARCH] Obra encontrada nas sugestões:',
+          userWork.title
+        );
+        return;
+      }
+
+      // Se não encontrou nas sugestões, buscar na API
+      try {
+        const response = await fetch(`/api/works/${workId}`);
+        if (response.ok) {
+          const workData = await response.json();
+          setSelectedWorkData(workData);
+          console.log(
+            '✅ [SIMPLE-WORK-SEARCH] Obra carregada da API:',
+            workData.title
+          );
+        }
+      } catch (error) {
+        console.error('❌ [SIMPLE-WORK-SEARCH] Erro ao carregar obra:', error);
+        setSelectedWorkData(null);
+      }
+    },
+    [userSuggestions]
+  );
 
   // 🔥 CARREGAR OBRA SELECIONADA QUANDO selectedWork MUDA
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedWork && selectedWork !== selectedWorkData?.id) {
       findSelectedWork(selectedWork);
     } else if (!selectedWork) {
@@ -165,7 +245,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   }, [selectedWork, selectedWorkData?.id, findSelectedWork]);
 
   // 🔥 FECHAR DROPDOWN AO CLICAR FORA
-  React.useEffect(() => {
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -184,7 +264,7 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
   }, []);
 
   // 🔥 LIMPAR TIMEOUT NO UNMOUNT
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
@@ -213,6 +293,31 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
     setIsOpen(false);
     setWorks([]);
   }, [onWorkSelect]);
+
+  // 🆕 DETERMINAR SE É USER SUGGESTION
+  const isUserSuggestion = useCallback(
+    (work: Work) => {
+      return userSuggestions.some((userWork) => userWork.id === work.id);
+    },
+    [userSuggestions]
+  );
+
+  // 🆕 DETERMINAR LABEL DO HEADER
+  const getHeaderLabel = () => {
+    if (query.length >= 2) {
+      return filterByComposer
+        ? 'Resultados filtrados por compositor'
+        : 'Resultados da busca';
+    }
+
+    if (userSuggestions.length > 0) {
+      return filterByComposer
+        ? 'Obras do compositor selecionado'
+        : 'Sugestões para você';
+    }
+
+    return 'Obras populares';
+  };
 
   return (
     <div className="relative">
@@ -260,8 +365,10 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
               value={query}
               onChange={(e) => handleInputChange(e.target.value)}
               onFocus={() => {
-                if (query.length >= 2) {
-                  setIsOpen(true);
+                setIsOpen(true);
+                // 🆕 Mostrar sugestões no foco se não há query
+                if (query.length === 0 && userSuggestions.length > 0) {
+                  setWorks(userSuggestions.slice(0, 8));
                 }
               }}
               placeholder={placeholder}
@@ -270,79 +377,117 @@ const SimpleWorkSearchInput: React.FC<SimpleWorkSearchInputProps> = ({
                 error ? 'border-red-500' : ''
               } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
             />
-            {isLoading && (
+            {(isLoading || loadingUserSuggestions) && (
               <FiLoader className="absolute right-3 top-1/2 transform -translate-y-1/2 text-brand-primary w-4 h-4 animate-spin" />
             )}
           </div>
 
           {/* Dropdown de resultados */}
-          {isOpen && !disabled && query.length >= 2 && (
+          {isOpen && !disabled && (
             <div
               ref={dropdownRef}
               className="absolute top-full left-0 right-0 mt-2 bg-theme-elevated border border-theme-secondary rounded-lg shadow-theme-large max-h-80 overflow-y-auto z-50"
             >
               {/* Loading */}
-              {isLoading && (
+              {(isLoading || loadingUserSuggestions) && (
                 <div className="p-4 text-center">
                   <FiLoader className="w-5 h-5 mx-auto animate-spin text-brand-primary mb-2" />
                   <p className="text-sm text-theme-tertiary">
-                    Buscando obras...
+                    {loadingUserSuggestions
+                      ? 'Carregando sugestões...'
+                      : 'Buscando obras...'}
                   </p>
                 </div>
               )}
 
               {/* Results */}
-              {!isLoading && works.length > 0 && (
+              {!isLoading && !loadingUserSuggestions && works.length > 0 && (
                 <div className="p-2">
+                  {/* 🆕 Header inteligente */}
                   <div className="px-3 py-2 text-xs font-medium text-theme-tertiary uppercase tracking-wide border-b border-theme-secondary mb-2">
                     <div className="flex items-center gap-2">
-                      <FiSearch className="w-4 h-4" />
-                      Resultados da busca
+                      {query.length >= 2 ? (
+                        <FiSearch className="w-4 h-4" />
+                      ) : userSuggestions.length > 0 ? (
+                        <FiStar className="w-4 h-4 text-accent-purple" />
+                      ) : (
+                        <FiMusic className="w-4 h-4" />
+                      )}
+                      {getHeaderLabel()}
                     </div>
                   </div>
 
-                  {works.map((work, i) => (
-                    <button
-                      key={`${work.id}-${i}`}
-                      type="button"
-                      onClick={() => handleWorkSelect(work)}
-                      className="w-full text-left p-3 rounded-lg hover:bg-theme-secondary transition-colors group"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform bg-accent-blue/20 group-hover:bg-accent-blue/30">
-                          <FiMusic className="w-4 h-4 text-accent-blue" />
+                  {works.map((work, i) => {
+                    const isUserWork = isUserSuggestion(work);
+
+                    return (
+                      <button
+                        key={`${work.id}-${i}`}
+                        type="button"
+                        onClick={() => handleWorkSelect(work)}
+                        className="w-full text-left p-3 rounded-lg hover:bg-theme-secondary transition-colors group"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div
+                            className={`w-8 h-8 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform ${
+                              isUserWork
+                                ? 'bg-accent-purple/20 group-hover:bg-accent-purple/30'
+                                : 'bg-accent-blue/20 group-hover:bg-accent-blue/30'
+                            }`}
+                          >
+                            {isUserWork ? (
+                              <FiStar className="w-4 h-4 text-accent-purple" />
+                            ) : (
+                              <FiMusic className="w-4 h-4 text-accent-blue" />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2">
+                              <p className="font-medium text-theme-primary text-sm truncate">
+                                {work.title}
+                              </p>
+                              {isUserWork && (
+                                <span className="text-xs bg-accent-purple/20 text-accent-purple px-1.5 py-0.5 rounded">
+                                  Sugerida
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-theme-tertiary text-xs truncate">
+                              {work.composer.fullName || work.composer.name}
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-theme-primary text-sm truncate">
-                            {work.title}
-                          </p>
-                          <p className="text-theme-tertiary text-xs truncate">
-                            {work.composer.fullName || work.composer.name}
-                          </p>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
 
               {/* Empty state */}
-              {!isLoading && works.length === 0 && query.length >= 2 && (
+              {!isLoading && !loadingUserSuggestions && works.length === 0 && (
                 <div className="p-4 text-center text-theme-tertiary">
                   <FiSearch className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">
-                    Nenhuma obra encontrada para &quot;{query}&quot;
+                    {query.length >= 2
+                      ? `Nenhuma obra encontrada para "${query}"`
+                      : userSuggestions.length === 0
+                      ? 'Nenhuma sugestão disponível'
+                      : 'Digite pelo menos 2 caracteres para buscar'}
                   </p>
-                  <p className="text-xs mt-1">Tente termos diferentes</p>
+                  {query.length >= 2 && (
+                    <p className="text-xs mt-1">Tente termos diferentes</p>
+                  )}
                 </div>
               )}
             </div>
           )}
 
-          {/* Dica quando não há busca */}
+          {/* 🆕 Dica dinâmica */}
           {!isOpen && query.length === 0 && !selectedWorkData && (
             <div className="mt-2 text-xs text-theme-tertiary">
-              💡 Digite pelo menos 2 caracteres para buscar obras
+              {userSuggestions.length > 0
+                ? ``
+                : '💡 Digite pelo menos 2 caracteres para buscar obras'}
             </div>
           )}
         </div>

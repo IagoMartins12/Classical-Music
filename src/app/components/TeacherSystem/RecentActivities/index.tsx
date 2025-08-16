@@ -165,20 +165,20 @@ const RecentActivities = ({
         case 'STUDENT_ADDED':
         case 'LESSON_CREATED':
         case 'ASSIGNMENT_CREATED':
-          return 'bg-green-50 text-green-700 border-green-200';
+          return ' text-green-700 border-green-200';
         case 'LESSON_UPDATED':
         case 'ASSIGNMENT_UPDATED':
         case 'LESSON_STATUS_CHANGED':
-          return 'bg-orange-50 text-orange-700 border-orange-200';
+          return 'text-orange-700 border-orange-200';
         case 'ASSIGNMENT_FEEDBACK_GIVEN':
-          return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+          return 'text-yellow-700 border-yellow-200';
         case 'LESSON_NOTES_ADDED':
-          return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+          return 'text-indigo-700 border-indigo-200';
         case 'WELCOME_NEW_STUDENT':
         case 'WELCOME_NEW_TEACHER':
-          return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+          return 'text-yellow-700 border-yellow-200';
         case 'STUDENT_DECLINED_INVITE':
-          return 'bg-red-50 text-red-700 border-red-200';
+          return ' text-red-700 border-red-200';
         default:
           return 'bg-gray-50 text-gray-700 border-gray-200';
       }
@@ -188,18 +188,18 @@ const RecentActivities = ({
       switch (action) {
         case 'ASSIGNMENT_SUBMISSION':
         case 'ASSIGNMENT_COMPLETED':
-          return 'bg-green-50 text-green-700 border-green-200';
+          return 'text-green-700 border-green-200';
         case 'LESSON_FEEDBACK_GIVEN':
-          return 'bg-blue-50 text-blue-700 border-blue-200';
+          return ' text-blue-700 border-blue-200';
         case 'LESSON_RESCHEDULE_REQUESTED':
-          return 'bg-orange-50 text-orange-700 border-orange-200';
+          return 'text-orange-700 border-orange-200';
         case 'LESSON_ABSENCE_INFORMED':
-          return 'bg-red-50 text-red-700 border-red-200';
+          return ' text-red-700 border-red-200';
         case 'WELCOME_NEW_STUDENT':
         case 'WELCOME_NEW_TEACHER':
-          return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+          return 'text-yellow-700 border-yellow-200';
         case 'STUDENT_DECLINED_INVITE':
-          return 'bg-red-50 text-red-700 border-red-200';
+          return ' text-red-700 border-red-200';
         default:
           return 'bg-gray-50 text-gray-700 border-gray-200';
       }
@@ -414,9 +414,7 @@ const RecentActivities = ({
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-1">
                           <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium border ${getActionColor(
-                              activity.action
-                            )}`}
+                            className={`py-1 rounded-full text-xs font-extrabold `}
                           >
                             {getActionLabel(activity.action)}
                           </span>

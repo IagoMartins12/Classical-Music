@@ -117,10 +117,17 @@ export const mapPrismaNotificationToData = (
 
 // Constantes do sistema
 export const NOTIFICATION_CONFIG = {
-  CHECK_INTERVAL: 30 * 60 * 1000, // 30 minutos
+  CHECK_INTERVAL: 5 * 60 * 1000, // 🆕 5 minutos (era 30 minutos)
   NOTIFICATION_STORAGE_KEY: 'opus_atlas_notification_cache',
   DEFAULT_EXPIRY_DAYS: 30,
   CLEANUP_OLDER_THAN_DAYS: 30,
+
+  // 🆕 CONFIGURAÇÕES DE DEDUPLICAÇÃO
+  DEDUPLICATION: {
+    CACHE_CLEANUP_HOURS: 3, // Limpeza de cache a cada 3 horas
+    MAX_CACHED_NOTIFICATIONS: 30, // Máximo de notificações no cache
+    MIN_CHECK_INTERVAL_SECONDS: 5, // Mínimo entre checks (evita spam)
+  },
 
   LESSON_WARNING_TIMES: {
     STARTING_SOON: 30 * 60 * 1000, // 30 minutos antes

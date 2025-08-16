@@ -1,4 +1,4 @@
-// app/api/teacher/notifications/check/route.ts - ATUALIZADO: REMOVENDO NOTIFICAÇÕES MOVIDAS PARA EVENTOS REAIS
+// app/api/teacher/notifications/check/route.ts - CORRIGIDO COM DEDUPLICAÇÃO ROBUSTA
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -7,26 +7,12 @@ import {
   NOTIFICATION_CONFIG,
   getNotificationTemplate,
 } from '@/app/types/notification';
+import {
+  generateNotificationHash,
+  createNotificationSafely,
+  cleanupNotifications,
+} from '@/app/utils/notifications/deduplication';
 import prisma from '@/app/libs/prismadb';
-
-// Helper para verificar se notificação já existe (MANTIDO)
-const checkExistingNotification = async (
-  userId: string,
-  type: string,
-  relatedEntityId: string
-) => {
-  const baseWhere: any = {
-    userId,
-    type: type as any,
-    relatedEntityId,
-    status: { in: ['UNREAD', 'READ'] as const },
-    expiresAt: { gte: new Date() },
-  };
-
-  return await prisma.notification.findFirst({
-    where: baseWhere,
-  });
-};
 
 export async function POST(req: NextRequest) {
   try {
@@ -44,10 +30,13 @@ export async function POST(req: NextRequest) {
     const now = new Date();
 
     console.log(
-      `📬 [TEACHER-CHECK] Verificando notificações automáticas para ${userId}`
+      `📬 [TEACHER-CHECK] 🚀 Verificando notificações para ${userId} (includeToast: ${includeToast})`
     );
 
-    // 1. Verificar aulas que precisam de notificação (MANTIDO)
+    // 0. Limpeza automática de notificações antigas/duplicadas
+    await cleanupNotifications(prisma, userId);
+
+    // 1. Verificar aulas que precisam de notificação (CONDIÇÕES ESPECÍFICAS)
     const upcomingLessons = await prisma.lesson.findMany({
       where: {
         teacherId: userId,
@@ -68,7 +57,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 2. Verificar aulas passadas sem atualização de status (MANTIDO)
+    // 2. Verificar aulas passadas sem atualização de status
     const pastLessons = await prisma.lesson.findMany({
       where: {
         teacherId: userId,
@@ -89,10 +78,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 🗑️ REMOVIDO: Verificação de tarefas precisando de feedback (agora é evento real)
-    // 🗑️ REMOVIDO: === TAREFAS PRECISANDO DE FEEDBACK ===
-
-    // 4. Verificar convites pendentes (MANTIDO)
+    // 3. Verificar convites pendentes
     const pendingInvites = await prisma.teacherStudent.findMany({
       where: {
         teacherId: userId,
@@ -112,119 +98,46 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 5. Gerar notificações baseadas nas verificações (APENAS AUTOMÁTICAS)
+    // 4. Gerar notificações baseadas nas verificações (APENAS AUTOMÁTICAS COM DEDUPLICAÇÃO)
     const notificationsToCreate: any[] = [];
 
-    // === AULAS PRÓXIMAS (MANTIDO) ===
+    // === AULAS PRÓXIMAS (CONDIÇÕES ESPECÍFICAS PARA EVITAR SPAM) ===
     for (const lesson of upcomingLessons) {
       const timeDiff = lesson.scheduledAt.getTime() - now.getTime();
       const studentName =
         `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim();
+      const time = lesson.scheduledAt.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
 
-      // 30 minutos antes
+      // 30 minutos antes (janela de 5 minutos para evitar spam)
       if (
         timeDiff <= NOTIFICATION_CONFIG.LESSON_WARNING_TIMES.STARTING_SOON &&
         timeDiff >
           NOTIFICATION_CONFIG.LESSON_WARNING_TIMES.STARTING_SOON - 5 * 60 * 1000
       ) {
-        const existing = await checkExistingNotification(
+        const template = getNotificationTemplate('LESSON_STARTING_SOON', {
+          studentName,
+          time,
+        });
+
+        const metadata = {
+          studentName,
+          lessonTime: lesson.scheduledAt.toISOString(),
+          time,
+        };
+
+        const uniqueHash = generateNotificationHash(
           userId,
           'LESSON_STARTING_SOON',
-          lesson.id
+          lesson.id,
+          metadata
         );
-
-        if (!existing) {
-          const template = getNotificationTemplate('LESSON_STARTING_SOON', {
-            studentName,
-            time: lesson.scheduledAt.toLocaleTimeString('pt-BR', {
-              hour: '2-digit',
-              minute: '2-digit',
-            }),
-          });
-
-          notificationsToCreate.push({
-            userId,
-            type: 'LESSON_STARTING_SOON',
-            priority: 'HIGH',
-            title: template.title,
-            message: template.message,
-            actionText: template.actionText,
-            actionUrl: `/teacher/lessons/${lesson.id}`,
-            relatedEntityType: 'lesson',
-            relatedEntityId: lesson.id,
-            showInToast: includeToast,
-            showInBrowser: includeBrowser,
-            expiresAt: new Date(lesson.scheduledAt.getTime() + 60 * 60 * 1000),
-            metadata: {
-              studentName,
-              lessonTime: lesson.scheduledAt.toISOString(),
-            },
-          });
-        }
-      }
-
-      // 24 horas antes
-      if (
-        timeDiff <= NOTIFICATION_CONFIG.LESSON_WARNING_TIMES.TOMORROW &&
-        timeDiff >
-          NOTIFICATION_CONFIG.LESSON_WARNING_TIMES.TOMORROW - 60 * 60 * 1000
-      ) {
-        const existing = await checkExistingNotification(
-          userId,
-          'LESSON_TOMORROW',
-          lesson.id
-        );
-
-        if (!existing) {
-          const template = getNotificationTemplate('LESSON_TOMORROW', {
-            studentName,
-            time: lesson.scheduledAt.toLocaleTimeString('pt-BR', {
-              hour: '2-digit',
-              minute: '2-digit',
-            }),
-          });
-
-          notificationsToCreate.push({
-            userId,
-            type: 'LESSON_TOMORROW',
-            priority: 'MEDIUM',
-            title: template.title,
-            message: template.message,
-            actionText: 'Ver Agenda',
-            actionUrl: '/teacher/calendar',
-            relatedEntityType: 'lesson',
-            relatedEntityId: lesson.id,
-            showInToast: includeToast,
-            showInBrowser: false,
-            expiresAt: new Date(lesson.scheduledAt.getTime()),
-            metadata: {
-              studentName,
-              lessonTime: lesson.scheduledAt.toISOString(),
-            },
-          });
-        }
-      }
-    }
-
-    // === AULAS PASSADAS SEM STATUS (MANTIDO) ===
-    for (const lesson of pastLessons) {
-      const studentName =
-        `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim();
-
-      const existing = await checkExistingNotification(
-        userId,
-        'LESSON_STATUS_PENDING',
-        lesson.id
-      );
-
-      if (!existing) {
-        const template = getNotificationTemplate('LESSON_STATUS_PENDING', {
-          studentName,
-        });
 
         notificationsToCreate.push({
           userId,
-          type: 'LESSON_STATUS_PENDING',
+          type: 'LESSON_STARTING_SOON',
           priority: 'HIGH',
           title: template.title,
           message: template.message,
@@ -233,89 +146,181 @@ export async function POST(req: NextRequest) {
           relatedEntityType: 'lesson',
           relatedEntityId: lesson.id,
           showInToast: includeToast,
-          showInBrowser: false,
-          expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
-          metadata: {
-            studentName,
-            lessonTime: lesson.scheduledAt.toISOString(),
-          },
+          showInBrowser: includeBrowser,
+          expiresAt: new Date(lesson.scheduledAt.getTime() + 60 * 60 * 1000),
+          metadata,
+          uniqueHash,
         });
+
+        console.log(
+          `📬 [TEACHER-LESSON-SOON] Preparando notificação para aula em 30min: ${lesson.id}`
+        );
+      }
+
+      // 24 horas antes (apenas entre 18h-20h)
+      const currentHour = now.getHours();
+      if (
+        timeDiff <= NOTIFICATION_CONFIG.LESSON_WARNING_TIMES.TOMORROW &&
+        timeDiff >
+          NOTIFICATION_CONFIG.LESSON_WARNING_TIMES.TOMORROW - 60 * 60 * 1000 &&
+        currentHour >= 18 &&
+        currentHour <= 20
+      ) {
+        const template = getNotificationTemplate('LESSON_TOMORROW', {
+          studentName,
+          time,
+        });
+
+        const metadata = {
+          studentName,
+          lessonTime: lesson.scheduledAt.toISOString(),
+          time,
+        };
+
+        const uniqueHash = generateNotificationHash(
+          userId,
+          'LESSON_TOMORROW',
+          lesson.id,
+          metadata
+        );
+
+        notificationsToCreate.push({
+          userId,
+          type: 'LESSON_TOMORROW',
+          priority: 'MEDIUM',
+          title: template.title,
+          message: template.message,
+          actionText: 'Ver Agenda',
+          actionUrl: '/teacher/calendar',
+          relatedEntityType: 'lesson',
+          relatedEntityId: lesson.id,
+          showInToast: includeToast,
+          showInBrowser: false,
+          expiresAt: new Date(lesson.scheduledAt.getTime()),
+          metadata,
+          uniqueHash,
+        });
+
+        console.log(
+          `📬 [TEACHER-LESSON-TOMORROW] Preparando notificação para aula amanhã: ${lesson.id}`
+        );
       }
     }
 
-    // === CONVITES PENDENTES (MANTIDO) ===
+    // === AULAS PASSADAS SEM STATUS ===
+    for (const lesson of pastLessons) {
+      const studentName =
+        `${lesson.student.user.firstName} ${lesson.student.user.lastName}`.trim();
+
+      const template = getNotificationTemplate('LESSON_STATUS_PENDING', {
+        studentName,
+      });
+
+      const metadata = {
+        studentName,
+        lessonTime: lesson.scheduledAt.toISOString(),
+      };
+
+      const uniqueHash = generateNotificationHash(
+        userId,
+        'LESSON_STATUS_PENDING',
+        lesson.id,
+        metadata
+      );
+
+      notificationsToCreate.push({
+        userId,
+        type: 'LESSON_STATUS_PENDING',
+        priority: 'HIGH',
+        title: template.title,
+        message: template.message,
+        actionText: template.actionText,
+        actionUrl: `/teacher/lessons/${lesson.id}`,
+        relatedEntityType: 'lesson',
+        relatedEntityId: lesson.id,
+        showInToast: includeToast,
+        showInBrowser: false,
+        expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+        metadata,
+        uniqueHash,
+      });
+
+      console.log(
+        `📬 [TEACHER-STATUS-PENDING] Preparando notificação para status pendente: ${lesson.id}`
+      );
+    }
+
+    // === CONVITES PENDENTES ===
     for (const invite of pendingInvites) {
       const studentName =
         `${invite.student.user.firstName} ${invite.student.user.lastName}`.trim();
 
-      const existing = await checkExistingNotification(
+      const template = getNotificationTemplate('STUDENT_INVITE_PENDING', {
+        studentName,
+      });
+
+      const metadata = {
+        studentName,
+        inviteDate: invite.createdAt.toISOString(),
+      };
+
+      const uniqueHash = generateNotificationHash(
         userId,
         'STUDENT_INVITE_PENDING',
-        invite.id
+        invite.id,
+        metadata
       );
 
-      if (!existing) {
-        const template = getNotificationTemplate('STUDENT_INVITE_PENDING', {
-          studentName,
-        });
+      notificationsToCreate.push({
+        userId,
+        type: 'STUDENT_INVITE_PENDING',
+        priority: 'MEDIUM',
+        title: template.title,
+        message: template.message,
+        actionText: 'Ver Alunos',
+        actionUrl: '/teacher/students',
+        relatedEntityType: 'teacher_student',
+        relatedEntityId: invite.id,
+        showInToast: includeToast,
+        showInBrowser: false,
+        expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+        metadata,
+        uniqueHash,
+      });
 
-        notificationsToCreate.push({
-          userId,
-          type: 'STUDENT_INVITE_PENDING',
-          priority: 'MEDIUM',
-          title: template.title,
-          message: template.message,
-          actionText: 'Ver Alunos',
-          actionUrl: '/teacher/students',
-          relatedEntityType: 'teacher_student',
-          relatedEntityId: invite.id,
-          showInToast: includeToast,
-          showInBrowser: false,
-          expiresAt: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
-          metadata: {
-            studentName,
-            inviteDate: invite.createdAt.toISOString(),
-          },
-        });
-      }
+      console.log(
+        `📬 [TEACHER-INVITE-PENDING] Preparando notificação para convite pendente: ${invite.id}`
+      );
     }
 
-    // 6. Criar notificações no banco usando transação (MANTIDO)
+    // 5. Criar notificações usando TRANSAÇÃO SEGURA
     const createdNotifications = [];
+    console.log(
+      `📬 [TEACHER-CHECK] Tentando criar ${notificationsToCreate.length} notificações`
+    );
 
     for (const notificationData of notificationsToCreate) {
       try {
-        const created = await prisma.$transaction(async (tx) => {
-          const baseWhere: any = {
-            userId: notificationData.userId,
-            type: notificationData.type,
-            relatedEntityId: notificationData.relatedEntityId,
-            status: { in: ['UNREAD', 'read'] as const },
-            expiresAt: { gte: now },
-          };
-
-          const finalCheck = await tx.notification.findFirst({
-            where: baseWhere,
-          });
-
-          if (finalCheck) {
-            return null; // Já existe
-          }
-
-          return await tx.notification.create({
-            data: notificationData,
-          });
-        });
-
+        const created = await createNotificationSafely(
+          prisma,
+          notificationData
+        );
         if (created) {
           createdNotifications.push(created);
         }
       } catch (error) {
-        console.error('Error creating notification:', error);
+        console.error(
+          `📬 [TEACHER-CHECK] Erro ao criar notificação ${notificationData.type}:`,
+          error
+        );
       }
     }
 
-    // 7. Buscar notificações existentes (MANTIDO)
+    console.log(
+      `📬 [TEACHER-CHECK] ✅ Criadas ${createdNotifications.length} notificações (sem duplicatas)`
+    );
+
+    // 6. Buscar notificações existentes
     const rawNotifications = await prisma.notification.findMany({
       where: {
         userId,
@@ -336,7 +341,7 @@ export async function POST(req: NextRequest) {
       take: NOTIFICATION_CONFIG.MAX_NOTIFICATIONS_PER_CHECK,
     });
 
-    // Mapear para o tipo correto (MANTIDO)
+    // Mapear para o tipo correto
     const allNotifications = rawNotifications.map((n) => ({
       ...n,
       actionText: n.actionText || undefined,
@@ -349,7 +354,7 @@ export async function POST(req: NextRequest) {
       readAt: n.readAt || undefined,
     }));
 
-    // 8. Filtrar notificações para toast e browser (MANTIDO)
+    // 7. Filtrar notificações para toast e browser (SEM DUPLICATAS)
     const toastNotifications = allNotifications
       .filter((n) => n.showInToast && !n.toastShown && includeToast)
       .slice(0, NOTIFICATION_CONFIG.MAX_TOAST_NOTIFICATIONS);
@@ -358,20 +363,16 @@ export async function POST(req: NextRequest) {
       .filter((n) => n.showInBrowser && !n.browserShown && includeBrowser)
       .slice(0, NOTIFICATION_CONFIG.MAX_BROWSER_NOTIFICATIONS);
 
-    // 9. Contar total não lidas (MANTIDO)
+    console.log(
+      `📬 [TEACHER-CHECK] Filtradas - Toast: ${toastNotifications.length}, Browser: ${browserNotifications.length}`
+    );
+
+    // 8. Contar total não lidas
     const totalUnread = await prisma.notification.count({
       where: {
         userId,
         status: 'UNREAD',
         expiresAt: { gte: now },
-      },
-    });
-
-    // 10. Limpar notificações expiradas (MANTIDO)
-    await prisma.notification.deleteMany({
-      where: {
-        userId,
-        expiresAt: { lt: now },
       },
     });
 
@@ -392,13 +393,16 @@ export async function POST(req: NextRequest) {
       totalUnread,
     };
 
-    console.log(
-      `✅ [TEACHER-CHECK] Verificação concluída - ${createdNotifications.length} notificações automáticas criadas`
-    );
+    console.log(`📬 [TEACHER-CHECK] ✅ Resposta final:`, {
+      novas: result.newNotifications.length,
+      toast: result.toastNotifications.length,
+      browser: result.browserNotifications.length,
+      naoLidas: result.totalUnread,
+    });
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Error checking teacher notifications:', error);
+    console.error('📬 [TEACHER-CHECK] ❌ Erro geral:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

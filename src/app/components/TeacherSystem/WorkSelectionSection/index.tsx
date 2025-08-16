@@ -1,7 +1,8 @@
 // app/components/lessons/WorkSelectionSection.tsx - Componente para Seleção de Peças
 'use client';
+'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   FiMusic,
   FiPlus,
@@ -30,6 +31,17 @@ export interface LessonWork {
   scoreSource?: 'IMSLP' | 'CUSTOM' | 'UPLOAD';
 }
 
+// 🆕 Interface para obras
+interface Work {
+  id: string;
+  title: string;
+  composer: {
+    id?: string;
+    name: string;
+    fullName: string;
+  };
+}
+
 interface WorkSelectionSectionProps {
   selectedWorks: LessonWork[];
   onWorksChange: (works: LessonWork[]) => void;
@@ -56,6 +68,11 @@ export default function WorkSelectionSection({
   const [selectedWorkId, setSelectedWorkId] = useState('');
   const [popularComposers, setPopularComposers] = useState<Composer[]>([]);
 
+  // 🆕 Estados para obras do compositor
+  const [composerWorks, setComposerWorks] = useState<Work[]>([]);
+  const [loadingComposerWorks, setLoadingComposerWorks] = useState(false);
+  const lastComposerRef = useRef<string>('');
+
   // Estados para modal de partitura
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [currentWorkForScore, setCurrentWorkForScore] = useState<{
@@ -64,8 +81,6 @@ export default function WorkSelectionSection({
     composerName: string;
     index: number;
   } | null>(null);
-
-  // Estados para loading
 
   // 🆕 Carregar compositores populares ao inicializar
   useEffect(() => {
@@ -89,6 +104,75 @@ export default function WorkSelectionSection({
       console.error('❌ Erro ao carregar compositores:', error);
     }
   };
+
+  // 🆕 FUNÇÃO PARA CARREGAR OBRAS DO COMPOSITOR - IGUAL AO CreateScoreModal
+  const loadComposerWorks = useCallback(async (composerId: string) => {
+    // Evitar chamadas duplicadas
+    if (
+      !composerId ||
+      composerId.trim() === '' ||
+      lastComposerRef.current === composerId
+    ) {
+      return;
+    }
+
+    console.log(
+      '🎼 [WORK-SELECTION] Carregando obras do compositor:',
+      composerId
+    );
+    lastComposerRef.current = composerId;
+
+    try {
+      setLoadingComposerWorks(true);
+
+      const params = new URLSearchParams({
+        q: '',
+        composer: composerId,
+        limit: '20',
+      });
+
+      const response = await fetch(`/api/works/search?${params.toString()}`);
+
+      if (response.ok) {
+        const data = await response.json();
+        setComposerWorks(data.works || []);
+        console.log(
+          '✅ [WORK-SELECTION] Obras do compositor carregadas:',
+          data.works?.length || 0
+        );
+      } else {
+        console.error(
+          '❌ [WORK-SELECTION] Erro ao carregar obras do compositor:',
+          response.status
+        );
+        setComposerWorks([]);
+      }
+    } catch (error) {
+      console.error(
+        '❌ [WORK-SELECTION] Erro ao buscar obras do compositor:',
+        error
+      );
+      setComposerWorks([]);
+    } finally {
+      setLoadingComposerWorks(false);
+    }
+  }, []);
+
+  // 🆕 EFFECT PARA CARREGAR OBRAS QUANDO COMPOSITOR MUDA - SEM LOOPS
+  useEffect(() => {
+    if (selectedComposer && selectedComposer.trim() !== '') {
+      // Só carrega se realmente mudou
+      if (lastComposerRef.current !== selectedComposer) {
+        loadComposerWorks(selectedComposer);
+      }
+    } else {
+      // Limpar obras do compositor se não há filtro
+      if (composerWorks.length > 0) {
+        setComposerWorks([]);
+        lastComposerRef.current = '';
+      }
+    }
+  }, [selectedComposer, loadComposerWorks, composerWorks.length]);
 
   // 🆕 Adicionar nova peça
   const handleAddWork = useCallback(async () => {
@@ -208,6 +292,9 @@ export default function WorkSelectionSection({
     setSelectedComposer('');
     setSelectedWorkId('');
     setIsAddingWork(false);
+    // 🆕 Limpar também as obras do compositor
+    setComposerWorks([]);
+    lastComposerRef.current = '';
   }, []);
 
   const canAddWork = selectedWorks.length < maxWorks;
@@ -370,7 +457,7 @@ export default function WorkSelectionSection({
                 </span>
               </button>
             ) : (
-              <div className="bg-brand-primary/5 border border-brand-primary/20 rounded-lg p-4 space-y-4">
+              <div className="bg-brand-primary/5 border border-color-primary rounded-lg p-4 space-y-4">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-medium text-theme-primary flex items-center space-x-2">
                     <FiPlus className="w-4 h-4 text-brand-primary" />
@@ -420,6 +507,12 @@ export default function WorkSelectionSection({
                     <div className="flex items-center space-x-2">
                       <FiMusic className="w-4 h-4" />
                       <span>Obra *</span>
+                      {/* 🆕 Indicador de carregamento das obras do compositor */}
+                      {loadingComposerWorks && (
+                        <span className="text-xs text-brand-primary">
+                          (Carregando obras...)
+                        </span>
+                      )}
                     </div>
                   </label>
 
@@ -428,7 +521,22 @@ export default function WorkSelectionSection({
                     onWorkSelect={setSelectedWorkId}
                     filterByComposer={selectedComposer}
                     placeholder="Digite para buscar uma obra..."
+                    // 🆕 Passar as obras do compositor como sugestões
+                    userSuggestions={composerWorks}
+                    loadingUserSuggestions={loadingComposerWorks}
                   />
+
+                  {/* 🆕 Informação sobre as obras carregadas */}
+                  {hasComposerSelected &&
+                    composerWorks.length > 0 &&
+                    !loadingComposerWorks && (
+                      <p className="text-xs text-theme-tertiary mt-2">
+                        🎼 {composerWorks.length} obra(s) de{' '}
+                        {popularComposers.find((c) => c.id === selectedComposer)
+                          ?.name || 'compositor selecionado'}{' '}
+                        carregadas automaticamente
+                      </p>
+                    )}
                 </div>
 
                 {/* Botões de ação */}
@@ -442,7 +550,11 @@ export default function WorkSelectionSection({
                     ) : !hasComposerSelected && !hasWorkSelected ? (
                       <span>Selecione um compositor e uma obra</span>
                     ) : hasComposerSelected ? (
-                      <span>Agora selecione uma obra</span>
+                      <span>
+                        {loadingComposerWorks
+                          ? 'Carregando obras do compositor...'
+                          : 'Agora selecione uma obra'}
+                      </span>
                     ) : (
                       <span>Selecione um compositor primeiro</span>
                     )}
@@ -460,7 +572,7 @@ export default function WorkSelectionSection({
                     <button
                       type="button"
                       onClick={handleAddWork}
-                      disabled={!hasWorkSelected}
+                      disabled={!hasWorkSelected || loadingComposerWorks}
                       className="btn-classical-primary text-sm flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <FiCheck className="w-3 h-3" />
@@ -502,6 +614,7 @@ export default function WorkSelectionSection({
                 </p>
                 <ul className="list-disc list-inside space-y-1 text-xs">
                   <li>Selecione primeiro o compositor, depois a obra</li>
+                  <li>As obras do compositor são carregadas automaticamente</li>
                   <li>Cada peça pode ter uma partitura opcional vinculada</li>
                   <li>As partituras vêm do seu acervo no Open Atlas</li>
                   <li>Você pode adicionar até {maxWorks} peças por aula</li>

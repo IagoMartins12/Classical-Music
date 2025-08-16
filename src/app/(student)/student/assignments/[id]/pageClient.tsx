@@ -183,9 +183,6 @@ export default function StudentAssignmentDetailsPageClient({
   const [initialStudentRating] = useState(
     initialData?.assignment?.studentRating || 0
   );
-  const [initialActualTime] = useState(
-    initialData?.assignment?.actualTime?.toString() || ''
-  );
 
   // Modal states
   const [showCompleteModal, setShowCompleteModal] = useState(false);
@@ -194,25 +191,16 @@ export default function StudentAssignmentDetailsPageClient({
 
   // 🆕 Estado do vídeo atual
 
-  const actualTime = initialData?.assignment?.actualTime?.toString();
   const currentVideoSubmission =
     initialData?.assignment?.submissions?.videoSubmission;
   // Detectar mudanças nos campos editáveis
   useEffect(() => {
     const hasChanges =
       studentNotes !== initialStudentNotes ||
-      studentRating !== initialStudentRating ||
-      actualTime !== initialActualTime;
+      studentRating !== initialStudentRating;
 
     setHasUnsavedChanges(hasChanges);
-  }, [
-    studentNotes,
-    studentRating,
-    actualTime,
-    initialStudentNotes,
-    initialStudentRating,
-    initialActualTime,
-  ]);
+  }, [studentNotes, studentRating, initialStudentNotes, initialStudentRating]);
 
   // Calcular progresso baseado nos milestones
   const calculateProgress = useCallback((milestones: any) => {
@@ -291,10 +279,6 @@ export default function StudentAssignmentDetailsPageClient({
         updates.studentRating = studentRating;
       }
 
-      if (actualTime !== initialActualTime) {
-        updates.actualTime = actualTime ? parseInt(actualTime) : null;
-      }
-
       if (Object.keys(updates).length === 0) {
         setHasUnsavedChanges(false);
         return;
@@ -315,10 +299,8 @@ export default function StudentAssignmentDetailsPageClient({
     initialData,
     studentNotes,
     studentRating,
-    actualTime,
     initialStudentNotes,
     initialStudentRating,
-    initialActualTime,
     updateAssignment,
   ]);
 
@@ -622,7 +604,7 @@ export default function StudentAssignmentDetailsPageClient({
                       <div className="flex-1">
                         <div className="w-full bg-theme-secondary rounded-full h-3">
                           <div
-                            className="bg-green-400 h-3 rounded-full transition-all duration-300"
+                            className="progress-bar rounded-full transition-all duration-300"
                             style={{ width: `${currentProgress}%` }}
                           />
                         </div>
@@ -1268,7 +1250,7 @@ export default function StudentAssignmentDetailsPageClient({
                     <div className="flex-1">
                       <div className="w-full bg-theme-secondary rounded-full h-3">
                         <div
-                          className="bg-green-400 h-3 rounded-full transition-all duration-300"
+                          className="progress-bar h-3 rounded-full transition-all duration-300"
                           style={{ width: `${currentProgress}%` }}
                         />
                       </div>

@@ -1337,7 +1337,7 @@ export default function TeacherStudentDetailPageClient({
 
                         <div className="w-full bg-theme-secondary rounded-full h-2">
                           <div
-                            className="bg-brand-primary rounded-full h-2 transition-all"
+                            className="progress-bar rounded-full h-2 transition-all"
                             style={{ width: `${assignment.progress}%` }}
                           ></div>
                         </div>

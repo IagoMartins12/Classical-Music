@@ -1,4 +1,4 @@
-// app/hooks/notifications/useNotifications.ts - CORRIGIDO SEM DUPLICATAS
+// app/hooks/notifications/useNotifications.ts - CORRIGIDO COM CHECK IMEDIATO E DEDUPLICAÇÃO ROBUSTA
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
@@ -9,7 +9,7 @@ import {
   mapPrismaNotificationToData,
 } from '@/app/types/notification';
 import { useToast } from '@/app/hooks/useToast';
-import { usePageVisibility } from './usePageVisibility';
+import { useSimplePageVisibility } from './usePageVisibility';
 import { useBrowserNotifications } from './useBrowserNotifications';
 
 interface UseNotificationsOptions {
@@ -20,7 +20,7 @@ interface UseNotificationsOptions {
 
 const STORAGE_KEY = 'opus_atlas_notification_cache';
 
-// 🔥 CACHE APRIMORADO - trackeia notificações por hash único
+// 🔥 CACHE APRIMORADO - trackeia notificações por hash único MAIS ROBUSTO
 const getNotificationCache = () => {
   if (typeof window === 'undefined')
     return {
@@ -59,8 +59,26 @@ const saveNotificationCache = (cache: any) => {
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cacheData));
   } catch (error) {
-    console.warn('Failed to save notification cache:', error);
+    console.warn('📬 [CACHE] Failed to save notification cache:', error);
   }
+};
+
+// 🔥 GERAÇÃO DE CHAVE ÚNICA CONSISTENTE - evita duplicatas
+const generateConsistentKey = (notification: NotificationData): string => {
+  // Se tem uniqueHash, usar ele
+  if (notification.uniqueHash) {
+    return notification.uniqueHash;
+  }
+
+  // Senão, criar chave baseada em tipo + entidade relacionada + data (só dia, não hora)
+  const dateOnly = new Date(notification.createdAt).toDateString();
+
+  if (notification.relatedEntityId && notification.relatedEntityType) {
+    return `${notification.type}_${notification.relatedEntityType}_${notification.relatedEntityId}_${dateOnly}`;
+  }
+
+  // Fallback para ID + data
+  return `${notification.id}_${dateOnly}`;
 };
 
 // 🔥 DEBOUNCE para evitar múltiplas chamadas
@@ -93,7 +111,7 @@ export const useNotifications = ({
   const [error, setError] = useState<string | null>(null);
 
   const toast = useToast();
-  const isPageVisible = usePageVisibility();
+  const isPageVisible = useSimplePageVisibility();
   const { sendBrowserNotification } = useBrowserNotifications();
 
   // Refs para evitar re-render loops
@@ -101,19 +119,21 @@ export const useNotifications = ({
   const isCheckingRef = useRef(false);
   const lastCheckRef = useRef<Date | null>(null);
   const cacheRef = useRef(getNotificationCache());
-  const requestIdRef = useRef(0); // Para cancelar requests antigos
+  const requestIdRef = useRef(0);
+  const hasInitialCheckRef = useRef(false); // 🆕 Para controlar check inicial
+  const mutexRef = useRef(false); // 🆕 MUTEX para evitar chamadas simultâneas
 
-  // 🔥 LIMPEZA AUTOMÁTICA DO CACHE
+  // 🔥 LIMPEZA AUTOMÁTICA DO CACHE (6h -> 3h para ser mais agressivo)
   const cleanupCache = useCallback(() => {
     const cache = cacheRef.current;
     const now = Date.now();
 
-    // Limpar cache a cada 6 horas
-    if (now - cache.lastCleanup > 6 * 60 * 60 * 1000) {
+    // Limpar cache a cada 3 horas (mais agressivo)
+    if (now - cache.lastCleanup > 3 * 60 * 60 * 1000) {
       console.log('📬 [CACHE-CLEANUP] Limpando cache antigo');
 
-      // Manter apenas últimas 50 notificações
-      const recentIds = Array.from(cache.shownNotifications).slice(-50);
+      // Manter apenas últimas 30 notificações (era 50)
+      const recentIds = Array.from(cache.shownNotifications).slice(-30);
       cache.shownNotifications = new Set(recentIds);
       cache.lastCleanup = now;
 
@@ -122,14 +142,30 @@ export const useNotifications = ({
     }
   }, []);
 
-  // 🔥 FUNÇÃO DE CHECK COM DEBOUNCE E DEDUPLICAÇÃO
+  // 🔥 FUNÇÃO DE CHECK COM MUTEX PARA EVITAR CHAMADAS SIMULTÂNEAS
   const checkNotifications = useCallback(
     async (force = false): Promise<NotificationCheckResult | null> => {
       const requestId = ++requestIdRef.current;
 
-      // Prevenir múltiplas chamadas simultâneas
+      // 🆕 MUTEX: Verificar se já há uma chamada em andamento
+      if (mutexRef.current && !force) {
+        console.log(
+          `📬 [NOTIFICATIONS] 🔒 MUTEX ativo, aguardando chamada anterior terminar (requestId: ${requestId})`
+        );
+        return null;
+      }
+
+      // 🆕 Ativar MUTEX
+      mutexRef.current = true;
+
+      console.log(
+        `📬 [NOTIFICATIONS] 🚀 Iniciando check (force: ${force}, requestId: ${requestId}, mutex: ativo)`
+      );
+
+      // Prevenir múltiplas chamadas simultâneas (backup)
       if (isCheckingRef.current && !force) {
         console.log('📬 [NOTIFICATIONS] Check já em progresso, pulando');
+        mutexRef.current = false; // Liberar mutex
         return null;
       }
 
@@ -140,11 +176,11 @@ export const useNotifications = ({
       try {
         const now = new Date();
 
-        // Throttle mais rigoroso
-        if (!force && lastCheckRef.current) {
+        // Throttle menos rigoroso para initial check
+        if (!force && !hasInitialCheckRef.current && lastCheckRef.current) {
           const timeSinceLastCheck =
             now.getTime() - lastCheckRef.current.getTime();
-          const minInterval = 10 * 1000; // Mínimo 10 segundos
+          const minInterval = 3 * 1000; // 🆕 Reduzido para 3 segundos
 
           if (timeSinceLastCheck < minInterval) {
             console.log(
@@ -185,10 +221,11 @@ export const useNotifications = ({
         console.log('📬 [NOTIFICATIONS] Resultado:', {
           novas: result.newNotifications?.length || 0,
           toast: result.toastNotifications?.length || 0,
+          browser: result.browserNotifications?.length || 0,
           naoLidas: result.totalUnread,
         });
 
-        // Processar notificações com deduplicação
+        // Processar notificações com deduplicação ROBUSTA
         await processNotifications(result);
 
         // Atualizar estado
@@ -205,6 +242,7 @@ export const useNotifications = ({
         // Atualizar refs
         lastCheckRef.current = now;
         setLastCheck(now);
+        hasInitialCheckRef.current = true; // 🆕 Marcar que já fez check inicial
 
         // Limpar cache periodicamente
         cleanupCache();
@@ -224,12 +262,17 @@ export const useNotifications = ({
           isCheckingRef.current = false;
           setIsChecking(false);
         }
+        // 🆕 SEMPRE liberar MUTEX
+        mutexRef.current = false;
+        console.log(
+          `📬 [NOTIFICATIONS] 🔓 MUTEX liberado (requestId: ${requestId})`
+        );
       }
     },
     [userRole, userId, isPageVisible, cleanupCache]
   );
 
-  // 🔥 PROCESSAMENTO COM DEDUPLICAÇÃO APRIMORADA
+  // 🔥 PROCESSAMENTO COM DEDUPLICAÇÃO APRIMORADA E MARCAÇÃO OTIMISTA
   const processNotifications = useCallback(
     async (result: NotificationCheckResult) => {
       const cache = cacheRef.current;
@@ -241,15 +284,32 @@ export const useNotifications = ({
         );
 
         for (const notification of result.toastNotifications) {
-          // 🔥 CHAVE ÚNICA: usar hash se existir, senão ID + timestamp
-          const uniqueKey =
-            notification.uniqueHash ||
-            `${notification.id}_${new Date(
-              notification.createdAt
-            ).toDateString()}`;
+          // 🔥 CHAVE ÚNICA CONSISTENTE
+          const uniqueKey = generateConsistentKey(notification);
+
+          console.log(
+            `📬 [TOAST] Verificando notificação: ${notification.title} (key: ${uniqueKey})`
+          );
 
           // Verificar se já foi mostrada
           if (!cache.shownNotifications.has(uniqueKey)) {
+            // 🆕 MARCAÇÃO OTIMISTA: Marcar como shown ANTES de mostrar o toast
+            cache.shownNotifications.add(uniqueKey);
+            cacheRef.current = cache;
+            saveNotificationCache(cache);
+
+            // 🆕 Marcar no servidor de forma assíncrona (não bloquear o toast)
+            markAsShown(notification.id, 'toast').catch((error) => {
+              console.warn(
+                `📬 [MARK-SHOWN] Erro ao marcar ${notification.id}:`,
+                error
+              );
+              // Se falhar no servidor, remover do cache local para tentar novamente
+              cache.shownNotifications.delete(uniqueKey);
+              cacheRef.current = cache;
+              saveNotificationCache(cache);
+            });
+
             // Determinar tipo do toast
             const toastType =
               notification.priority === 'HIGH' ||
@@ -274,16 +334,12 @@ export const useNotifications = ({
               toastOptions
             );
 
-            // Adicionar ao cache
-            cache.shownNotifications.add(uniqueKey);
-
-            // Marcar como mostrada no servidor
-            markAsShown(notification.id, 'toast');
-
-            console.log(`📬 [TOAST] Mostrado: ${notification.title}`);
+            console.log(
+              `📬 [TOAST] ✅ Mostrado: ${notification.title} (key: ${uniqueKey})`
+            );
           } else {
             console.log(
-              `📬 [TOAST] Pulado (já mostrado): ${notification.title}`
+              `📬 [TOAST] ⏭️ Pulado (já mostrado): ${notification.title} (key: ${uniqueKey})`
             );
           }
         }
@@ -307,16 +363,12 @@ export const useNotifications = ({
           }
         }
       }
-
-      // Salvar cache atualizado
-      cacheRef.current = cache;
-      saveNotificationCache(cache);
     },
     [toast, sendBrowserNotification]
   );
 
-  // Debounced check function
-  const debouncedCheck = useDebounce(checkNotifications, 1000);
+  // Debounced check function (menos agressivo devido ao MUTEX)
+  const debouncedCheck = useDebounce(checkNotifications, 1000); // Volta para 1000ms
 
   // Mark as shown - função estável
   const markAsShown = useCallback(
@@ -331,7 +383,10 @@ export const useNotifications = ({
           }
         );
       } catch (error) {
-        console.warn('Failed to mark notification as shown:', error);
+        console.warn(
+          '📬 [MARK-SHOWN] Failed to mark notification as shown:',
+          error
+        );
       }
     },
     [userRole]
@@ -359,7 +414,10 @@ export const useNotifications = ({
           setUnreadCount((prev) => Math.max(0, prev - 1));
         }
       } catch (error) {
-        console.error('Error marking notification as read:', error);
+        console.error(
+          '📬 [MARK-READ] Error marking notification as read:',
+          error
+        );
       }
     },
     [userRole]
@@ -386,7 +444,10 @@ export const useNotifications = ({
         setUnreadCount(0);
       }
     } catch (error) {
-      console.error('Error marking all notifications as read:', error);
+      console.error(
+        '📬 [MARK-ALL-READ] Error marking all notifications as read:',
+        error
+      );
     }
   }, [userRole]);
 
@@ -405,7 +466,7 @@ export const useNotifications = ({
           ) as NotificationData[];
         }
       } catch (error) {
-        console.error('Error fetching notifications:', error);
+        console.error('📬 [FETCH] Error fetching notifications:', error);
       }
       return [];
     },
@@ -425,8 +486,11 @@ export const useNotifications = ({
       }s`
     );
 
-    // Check inicial
-    checkNotifications(false);
+    // 🆕 CHECK IMEDIATO ao inicializar
+    if (!hasInitialCheckRef.current) {
+      console.log('📬 [NOTIFICATIONS] 🚀 Executando check inicial IMEDIATO');
+      checkNotifications(true); // Force check inicial
+    }
 
     // Interval para checks subsequentes
     intervalRef.current = setInterval(() => {
@@ -441,6 +505,16 @@ export const useNotifications = ({
       intervalRef.current = null;
     }
   }, []);
+
+  // 🆕 Effect para verificar quando volta para a aba
+  useEffect(() => {
+    if (isPageVisible && hasInitialCheckRef.current) {
+      console.log(
+        '📬 [PAGE-FOCUS] Usuário voltou para a aba, verificando notificações'
+      );
+      debouncedCheck(false);
+    }
+  }, [isPageVisible, debouncedCheck]);
 
   // Effect para auto-start/stop
   useEffect(() => {
@@ -457,6 +531,7 @@ export const useNotifications = ({
 
   // Force refresh
   const refresh = useCallback(() => {
+    console.log('📬 [REFRESH] Forçando verificação manual');
     checkNotifications(true);
   }, [checkNotifications]);
 
