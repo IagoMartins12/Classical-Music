@@ -395,7 +395,7 @@ export default function FAQPage(): JSX.Element {
       {/* FAQ Items */}
       <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
-          <div className="section-wrap">
+          <div className="">
             <div className="max-w-4xl mx-auto space-y-4">
               {filteredFAQs.length === 0 ? (
                 <AnimatedCard

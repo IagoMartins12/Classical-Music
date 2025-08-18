@@ -4,6 +4,7 @@
 import { FiTrendingUp } from 'react-icons/fi';
 import SectionTitle from '../Utils/SectionTitle';
 import Carousel from '../Carousel/Carousel';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 export interface composerHomeProps {
   epochName: string;
@@ -24,12 +25,16 @@ export interface pageComposersInterface {
 const PopularComposers: React.FC<pageComposersInterface> = ({
   composersData,
 }) => {
+  const { t } = useTranslation({
+    sections: ['common/common'],
+  });
+
   return (
     <section className="section-wrap">
       <SectionTitle
-        title="Compositores Populares"
-        subtitle="Os grandes mestres mais explorados pela comunidade"
-        linkText="Ver todos compositores"
+        title={t('popular_composers')}
+        subtitle={t('master_composers')}
+        linkText={t('see_all_composers')}
         linkHref="/composers"
         icon={<FiTrendingUp className="w-6 h-6" />}
         accent="gold"

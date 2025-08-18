@@ -44,7 +44,7 @@ export default async function EnhancedHomePage() {
 
   return (
     <div className="classical-theme">
-      <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" />
+      {/* <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" /> */}
 
       {/* Hero principal */}
       <HeroMainPage />

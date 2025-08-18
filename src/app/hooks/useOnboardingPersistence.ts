@@ -10,6 +10,7 @@ interface OnboardingPersistenceOptions {
   autoSaveDelay?: number;
   enableLocalBackup?: boolean;
   showSaveIndicator?: boolean;
+  maxBackups?: number; // Novo: máximo de backups permitidos
 }
 
 interface OnboardingPersistenceReturn {
@@ -25,6 +26,124 @@ const DEFAULT_OPTIONS: OnboardingPersistenceOptions = {
   autoSaveDelay: 1000,
   enableLocalBackup: true,
   showSaveIndicator: true,
+  maxBackups: 3, // Limite de 3 backups
+};
+
+// Função utilitária para gerenciar backups no localStorage
+const manageOnboardingBackups = (maxBackups: number = 3) => {
+  try {
+    // Buscar todas as chaves de backup de onboarding
+    const backupKeys: string[] = [];
+    const backupData: Array<{
+      key: string;
+      timestamp: number;
+      userId: string;
+    }> = [];
+
+    // Iterar por todas as chaves do localStorage
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('onboarding-backup-')) {
+        backupKeys.push(key);
+      }
+    }
+
+    // Parse dos dados para obter timestamps
+    backupKeys.forEach((key) => {
+      try {
+        const data = localStorage.getItem(key);
+        if (data) {
+          const parsed = JSON.parse(data);
+          if (parsed.timestamp && parsed.userId) {
+            backupData.push({
+              key,
+              timestamp: parsed.timestamp,
+              userId: parsed.userId,
+            });
+          }
+        }
+      } catch (error) {
+        console.warn(`Erro ao analisar backup ${key}:`, error);
+        // Remove backup corrompido
+        localStorage.removeItem(key);
+      }
+    });
+
+    // Ordenar por timestamp (mais antigo primeiro)
+    backupData.sort((a, b) => a.timestamp - b.timestamp);
+
+    // Se exceder o limite, remover os mais antigos
+    if (backupData.length >= maxBackups) {
+      const backupsToRemove = backupData.slice(
+        0,
+        backupData.length - maxBackups + 1
+      );
+
+      backupsToRemove.forEach((backup) => {
+        localStorage.removeItem(backup.key);
+        if (process.env.NODE_ENV === 'development') {
+          console.log(
+            `🗑️ Backup antigo removido: ${backup.key} (${new Date(
+              backup.timestamp
+            ).toLocaleString()})`
+          );
+        }
+      });
+    }
+
+    return {
+      totalBackups: backupData.length,
+      removedCount:
+        backupData.length >= maxBackups
+          ? backupData.length - maxBackups + 1
+          : 0,
+    };
+  } catch (error) {
+    console.error('Erro ao gerenciar backups:', error);
+    return { totalBackups: 0, removedCount: 0 };
+  }
+};
+
+// Função para obter estatísticas dos backups
+const getBackupStats = () => {
+  try {
+    const backups: Array<{ userId: string; timestamp: number; step: number }> =
+      [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('onboarding-backup-')) {
+        try {
+          const data = localStorage.getItem(key);
+          if (data) {
+            const parsed = JSON.parse(data);
+            backups.push({
+              userId: parsed.userId,
+              timestamp: parsed.timestamp,
+              step: parsed.step || 1,
+            });
+          }
+        } catch (error) {
+          // Ignora backups corrompidos
+        }
+      }
+    }
+
+    return {
+      total: backups.length,
+      oldest:
+        backups.length > 0
+          ? Math.min(...backups.map((b) => b.timestamp))
+          : null,
+      newest:
+        backups.length > 0
+          ? Math.max(...backups.map((b) => b.timestamp))
+          : null,
+      users: [...new Set(backups.map((b) => b.userId))].length,
+    };
+  } catch (error) {
+    return { total: 0, oldest: null, newest: null, users: 0 };
+  }
 };
 
 export function useOnboardingPersistence(
@@ -39,9 +158,9 @@ export function useOnboardingPersistence(
   // Refs para controle de estado
   const isSavingRef = useRef(false);
   const lastDataRef = useRef(data);
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null); // ✅ Valor inicial adicionado
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Função de save direto
+  // Função de save direto com gerenciamento de limite
   const forceSave = useCallback(() => {
     if (!isAuthenticated || !user?.id) return;
 
@@ -50,6 +169,9 @@ export function useOnboardingPersistence(
 
       // Salvar no localStorage como backup adicional
       if (config.enableLocalBackup) {
+        // Gerenciar backups antes de salvar o novo
+        const { removedCount } = manageOnboardingBackups(config.maxBackups);
+
         const backupData = {
           userId: user.id,
           step,
@@ -62,17 +184,30 @@ export function useOnboardingPersistence(
           `onboarding-backup-${user.id}`,
           JSON.stringify(backupData)
         );
-      }
 
-      if (process.env.NODE_ENV === 'development') {
-        console.log('💾 Onboarding force saved:', { step, data });
+        if (process.env.NODE_ENV === 'development') {
+          const stats = getBackupStats();
+          console.log('💾 Onboarding force saved:', {
+            step,
+            data,
+            backupStats: stats,
+            removedOldBackups: removedCount,
+          });
+        }
       }
     } catch (error) {
       console.error('Erro ao salvar progresso do onboarding:', error);
     } finally {
       isSavingRef.current = false;
     }
-  }, [isAuthenticated, user?.id, step, data, config.enableLocalBackup]);
+  }, [
+    isAuthenticated,
+    user?.id,
+    step,
+    data,
+    config.enableLocalBackup,
+    config.maxBackups,
+  ]);
 
   // Função de save com debounce
   const debouncedSave = useCallback(
@@ -124,16 +259,20 @@ export function useOnboardingPersistence(
     };
   }, [debouncedSave]);
 
-  // Função para limpar progresso
+  // Função para limpar progresso (atualizada para considerar limite)
   const clearProgress = useCallback(() => {
     if (!user?.id) return;
 
     try {
-      // Limpar backup local
+      // Limpar backup local do usuário atual
       localStorage.removeItem(`onboarding-backup-${user.id}`);
 
       if (process.env.NODE_ENV === 'development') {
-        console.log('🗑️ Progresso do onboarding limpo');
+        const stats = getBackupStats();
+        console.log('🗑️ Progresso do onboarding limpo', {
+          userId: user.id,
+          remainingBackups: stats,
+        });
       }
     } catch (error) {
       console.error('Erro ao limpar progresso:', error);
@@ -165,7 +304,7 @@ export function useOnboardingPersistence(
     return summary;
   }, [hasProgress, step, data]);
 
-  // Restaurar backup se necessário
+  // Restaurar backup se necessário (com verificação de limite)
   useEffect(() => {
     if (
       !isAuthenticated ||
@@ -187,7 +326,14 @@ export function useOnboardingPersistence(
           Date.now() - backupData.timestamp < 7 * 24 * 60 * 60 * 1000;
 
         if (isRecentBackup && backupData.userId === user.id) {
-          console.log('🔄 Backup local encontrado e restaurado');
+          if (process.env.NODE_ENV === 'development') {
+            const stats = getBackupStats();
+            console.log('🔄 Backup local encontrado e restaurado', {
+              userId: user.id,
+              step: backupData.step,
+              allBackups: stats,
+            });
+          }
         } else {
           // Limpar backup antigo
           localStorage.removeItem(backupKey);
@@ -197,6 +343,29 @@ export function useOnboardingPersistence(
       console.error('Erro ao restaurar backup local:', error);
     }
   }, [isAuthenticated, user?.id, config.enableLocalBackup]);
+
+  // Limpeza periódica de backups antigos (executar uma vez por sessão)
+  useEffect(() => {
+    if (!config.enableLocalBackup) return;
+
+    // Executar limpeza apenas uma vez por sessão
+    const sessionKey = 'onboarding-cleanup-session';
+    const lastCleanup = sessionStorage.getItem(sessionKey);
+    const now = Date.now();
+
+    // Limpar a cada 6 horas ou na primeira vez da sessão
+    if (!lastCleanup || now - parseInt(lastCleanup) > 6 * 60 * 60 * 1000) {
+      const { removedCount } = manageOnboardingBackups(config.maxBackups);
+
+      if (removedCount > 0 && process.env.NODE_ENV === 'development') {
+        console.log(
+          `🧹 Limpeza automática: ${removedCount} backup(s) antigo(s) removido(s)`
+        );
+      }
+
+      sessionStorage.setItem(sessionKey, now.toString());
+    }
+  }, [config.enableLocalBackup, config.maxBackups]);
 
   return {
     isSaving: isSavingRef.current,
@@ -211,7 +380,7 @@ export function useOnboardingPersistence(
 
 // Hook para monitorar performance do onboarding
 export function useOnboardingPerformance() {
-  const startTimeRef = useRef<number | undefined>(undefined); // ✅ Valor inicial adicionado
+  const startTimeRef = useRef<number | undefined>(undefined);
   const stepTimesRef = useRef<Record<number, number>>({});
 
   const { isOpen, step } = useOnboardingModal();

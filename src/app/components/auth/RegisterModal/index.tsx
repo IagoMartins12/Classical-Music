@@ -1,4 +1,4 @@
-// components/auth/RegisterModal.tsx - VERSÃO COM DETECÇÃO DE REGISTRO GOOGLE
+// components/auth/RegisterModal.tsx - VERSÃO COM ACEITAÇÃO DE TERMOS LGPD
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -12,7 +12,6 @@ import {
 } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { GiGrandPiano } from 'react-icons/gi';
-
 import { registerUser } from '@/app/actions/auth';
 import { toast } from 'react-hot-toast';
 import {
@@ -23,6 +22,7 @@ import {
 import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
+import TermsAcceptance from '../TermsAcceptance';
 
 interface RegisterStep {
   step: 'form' | 'success' | 'confirmation-sent';
@@ -55,9 +55,13 @@ const RegisterModal: React.FC = () => {
     password: '',
     confirmPassword: '',
   });
+
+  // 🆕 NOVO: Estado para aceitação de termos
+  const [termsAccepted, setTermsAccepted] = useState(false);
+
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // 🆕 NOVO: Verificar se retornou de um registro Google
+  // Verificar se retornou de um registro Google
   useEffect(() => {
     if (isOpen) {
       checkGoogleRegistrationReturn();
@@ -65,41 +69,85 @@ const RegisterModal: React.FC = () => {
     }
   }, [isOpen]);
 
-  // 🆕 NOVO: Verificar retorno do registro Google
+  // Verificar retorno do registro Google
   const checkGoogleRegistrationReturn = () => {
     if (typeof window === 'undefined') return;
 
-    // Verificar se há flag de registro Google pendente
+    // 🔧 VERIFICAR ERRO NA URL PRIMEIRO
+    const currentUrl = new URL(window.location.href);
+    const urlError = currentUrl.searchParams.get('error');
+
+    if (urlError) {
+      console.log(
+        '❌ Erro na URL detectado, não processando como sucesso:',
+        urlError
+      );
+
+      // Limpar todas as flags de sucesso em caso de erro
+      sessionStorage.removeItem('google-register-pending');
+      sessionStorage.removeItem('google-register-email');
+      sessionStorage.removeItem('google-register-name');
+      sessionStorage.removeItem('google-register-timestamp');
+
+      // Não processar como sucesso - o checkUrlErrors() irá lidar com o erro
+      return;
+    }
+
+    // Verificar flags apenas se NÃO há erro
     const googleRegisterFlag = sessionStorage.getItem(
       'google-register-pending'
     );
     const googleRegisterEmail = sessionStorage.getItem('google-register-email');
     const googleRegisterName = sessionStorage.getItem('google-register-name');
+    const googleRegisterTimestamp = sessionStorage.getItem(
+      'google-register-timestamp'
+    );
 
-    if (googleRegisterFlag === 'true') {
-      console.log('🎉 Detectado retorno de registro Google');
+    // 🔧 LÓGICA MAIS RIGOROSA: Só processar como sucesso se:
+    // 1. Há flag de pending
+    // 2. Há timestamp recente (últimos 5 minutos)
+    // 3. NÃO há erro na URL
+    // 4. Há dados válidos
+    if (googleRegisterFlag === 'true' && googleRegisterTimestamp && !urlError) {
+      const now = Date.now();
+      const timestamp = parseInt(googleRegisterTimestamp);
+      const timeDiff = now - timestamp;
 
-      // Limpar flags
-      sessionStorage.removeItem('google-register-pending');
-      sessionStorage.removeItem('google-register-email');
-      sessionStorage.removeItem('google-register-name');
+      // Verificar se é recente (últimos 5 minutos)
+      if (timeDiff < 5 * 60 * 1000) {
+        console.log('✅ Retorno de registro Google válido detectado');
 
-      // Mostrar tela de confirmação para usuário Google
-      setRegisterStep({
-        step: 'confirmation-sent',
-        userData: {
-          firstName: googleRegisterName || 'Usuário',
-          email: googleRegisterEmail || '',
-          isLoggedIn: true, // Google users já estão logados
-          registrationMethod: 'google',
-        },
-      });
+        // Limpar flags antes de processar
+        sessionStorage.removeItem('google-register-pending');
+        sessionStorage.removeItem('google-register-email');
+        sessionStorage.removeItem('google-register-name');
+        sessionStorage.removeItem('google-register-timestamp');
 
-      toast.success('Conta criada com Google! Bem-vindo à Opus Atlas!');
+        // Mostrar tela de confirmação para usuário Google
+        setRegisterStep({
+          step: 'confirmation-sent',
+          userData: {
+            firstName: googleRegisterName || 'Usuário',
+            email: googleRegisterEmail || '',
+            isLoggedIn: true,
+            registrationMethod: 'google',
+          },
+        });
+
+        toast.success('Conta criada com Google! Bem-vindo à Opus Atlas!');
+      } else {
+        console.log('⏰ Timestamp muito antigo, limpando flags:', timeDiff);
+
+        // Timestamp muito antigo - limpar flags
+        sessionStorage.removeItem('google-register-pending');
+        sessionStorage.removeItem('google-register-email');
+        sessionStorage.removeItem('google-register-name');
+        sessionStorage.removeItem('google-register-timestamp');
+      }
     }
   };
 
-  // Função existente para verificar erros na URL
+  // 🔧 FUNÇÃO CORRIGIDA - checkUrlErrors
   const checkUrlErrors = () => {
     if (typeof window === 'undefined') return;
 
@@ -112,6 +160,12 @@ const RegisterModal: React.FC = () => {
         error,
         errorDescription,
       });
+
+      // 🆕 NOVO: Limpar flags de sucesso quando há erro
+      sessionStorage.removeItem('google-register-pending');
+      sessionStorage.removeItem('google-register-email');
+      sessionStorage.removeItem('google-register-name');
+      sessionStorage.removeItem('google-register-timestamp');
 
       let errorMessage = '';
       let shouldShowConflictError = false;
@@ -188,6 +242,7 @@ const RegisterModal: React.FC = () => {
     }
   };
 
+  // 🆕 ATUALIZADO: Validação incluindo termos
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
@@ -218,6 +273,12 @@ const RegisterModal: React.FC = () => {
       newErrors.confirmPassword = 'Confirmação de senha é obrigatória';
     } else if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Senhas não coincidem';
+    }
+
+    // 🆕 NOVO: Validação de termos obrigatória
+    if (!termsAccepted) {
+      newErrors.terms =
+        'Você deve aceitar os Termos de Uso e a Política de Privacidade para continuar';
     }
 
     setErrors(newErrors);
@@ -304,15 +365,25 @@ const RegisterModal: React.FC = () => {
     }
   };
 
-  // 🆕 ATUALIZADO: handleGoogleSignIn com detecção de registro
+  // 🆕 ATUALIZADO: handleGoogleSignIn com verificação de termos
   const handleGoogleSignIn = async () => {
+    // 🆕 NOVA VALIDAÇÃO: Verificar termos antes do Google
+    if (!termsAccepted) {
+      setErrors({
+        terms:
+          'Você deve aceitar os Termos de Uso e a Política de Privacidade antes de continuar com o Google',
+      });
+      toast.error('Aceite os termos para continuar');
+      return;
+    }
+
     setIsGoogleLoading(true);
     setEmailConflictError(null);
 
     try {
       console.log('🔄 Iniciando registro com Google...');
 
-      // 🆕 NOVO: Salvar flags no sessionStorage antes do redirect
+      // Salvar flags no sessionStorage antes do redirect
       sessionStorage.setItem('google-register-pending', 'true');
       sessionStorage.setItem(
         'google-register-timestamp',
@@ -321,11 +392,10 @@ const RegisterModal: React.FC = () => {
 
       // Fazer o signIn com redirect
       const result = await signIn('google', {
-        redirect: true, // 🆕 MUDANÇA: usar redirect true para permitir detecção
+        redirect: true,
         callbackUrl: window.location.origin + '/?google-register=true',
       });
 
-      // Este código só executa se redirect: false
       if (result?.error) {
         console.error('❌ Erro no Google SignUp:', result.error);
 
@@ -388,6 +458,7 @@ const RegisterModal: React.FC = () => {
       password: '',
       confirmPassword: '',
     });
+    setTermsAccepted(false); // 🆕 NOVO: Reset dos termos
     open();
     setErrors({});
     setEmailConflictError(null);
@@ -407,7 +478,6 @@ const RegisterModal: React.FC = () => {
     }, 300);
   };
 
-  // 🆕 ATUALIZADO: renderConfirmationSent com suporte para Google
   const renderConfirmationSent = () => (
     <>
       <div className="text-center mb-8">
@@ -580,7 +650,6 @@ const RegisterModal: React.FC = () => {
     </>
   );
 
-  // Resto do código permanece igual...
   const renderRegistrationForm = () => (
     <>
       <div className="text-center mb-8">
@@ -663,6 +732,14 @@ const RegisterModal: React.FC = () => {
           autoComplete="new-password"
         />
 
+        {/* 🆕 NOVO: Componente de Aceitação de Termos */}
+        <TermsAcceptance
+          accepted={termsAccepted}
+          onChange={setTermsAccepted}
+          error={errors.terms}
+          disabled={isLoading || isGoogleLoading}
+        />
+
         <Button
           type="submit"
           variant="primary"
@@ -708,19 +785,6 @@ const RegisterModal: React.FC = () => {
           >
             Fazer login
           </button>
-        </p>
-      </div>
-
-      <div className="mt-6 text-center">
-        <p className="text-xs text-theme-tertiary">
-          Ao criar uma conta, você concorda com nossos{' '}
-          <a href="/terms" className="text-brand-primary hover:underline">
-            Termos de Uso
-          </a>{' '}
-          e{' '}
-          <a href="/privacy" className="text-brand-primary hover:underline">
-            Política de Privacidade
-          </a>
         </p>
       </div>
     </>

@@ -129,13 +129,13 @@ export const AnimatedCard: React.FC<AnimatedCardProps> = ({
 }) => {
   const variants = createItemVariants('scale', 'bouncy');
   const hoverConfig = hoverVariants[hover] || {};
-  const cursorClass = clickable ? 'cursor-pointer' : '';
+  const cursorClass = clickable || onClick ? 'cursor-pointer' : '';
 
   return (
     <motion.div
       className={`${className} ${cursorClass}`}
       variants={variants}
-      onClick={clickable ? onClick : undefined}
+      onClick={onClick ? onClick : undefined}
       whileHover={hoverConfig.hover}
       whileTap={clickable ? hoverConfig.tap : undefined}
     >

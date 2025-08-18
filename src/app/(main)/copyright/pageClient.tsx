@@ -241,9 +241,9 @@ export default function CopyrightPage() {
       </section>
 
       {/* Introduction */}
-      <section className="py-8">
+      <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="section-wrap">
+          <div className="">
             <div className="max-w-4xl mx-auto">
               <AnimatedCard hover="lift" className="classical-card p-8">
                 <div className="flex items-start space-x-4">
@@ -317,9 +317,9 @@ export default function CopyrightPage() {
       </section>
 
       {/* Copyright Sections */}
-      <section className="py-8">
+      <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="fast">
-          <div className="section-wrap">
+          <div className="">
             <div className="max-w-4xl mx-auto space-y-8">
               {copyrightData.map((section, index) => (
                 <AnimatedItem
@@ -398,9 +398,9 @@ export default function CopyrightPage() {
       </section>
 
       {/* Important Notes */}
-      <section className="py-8">
+      <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="section-wrap">
+          <div className="">
             <div className="max-w-4xl mx-auto">
               <AnimatedCard hover="lift" className="classical-card p-8">
                 <div className="flex items-start space-x-4">

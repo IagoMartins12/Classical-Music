@@ -78,7 +78,7 @@ const contactOptions: ContactOption[] = [
 
 export default function ContactPageClient() {
   const { submitForm, loading, success, error, reset } = useContactForm();
-  const [selectedCategory, setSelectedCategory] = useState('suporte');
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -101,14 +101,6 @@ export default function ContactPageClient() {
     }));
   };
 
-  const handleCategorySelect = (category: string) => {
-    setSelectedCategory(category);
-    setFormData((prev) => ({
-      ...prev,
-      subject: getDefaultSubject(category),
-    }));
-  };
-
   const getDefaultSubject = (category: string): string => {
     switch (category) {
       case 'suporte':
@@ -121,6 +113,33 @@ export default function ContactPageClient() {
         return 'Proposta de parceria';
       default:
         return '';
+    }
+  };
+
+  const getAllDefaultSubjects = (): string[] => {
+    return [
+      'Dúvida sobre funcionalidades',
+      'Relato de problema técnico',
+      'Questão sobre moderação de conteúdo',
+      'Proposta de parceria',
+    ];
+  };
+
+  const isDefaultSubject = (subject: string): boolean => {
+    return getAllDefaultSubjects().includes(subject.trim());
+  };
+
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category);
+
+    // Define o assunto automaticamente se:
+    // 1. O campo estiver vazio, OU
+    // 2. O campo contiver um dos textos padrão das categorias
+    if (!formData.subject.trim() || isDefaultSubject(formData.subject)) {
+      setFormData((prev) => ({
+        ...prev,
+        subject: getDefaultSubject(category),
+      }));
     }
   };
 
@@ -245,6 +264,7 @@ export default function ContactPageClient() {
                 <AnimatedCard
                   key={index}
                   hover="lift"
+                  clickable
                   className={`classical-card p-6 cursor-pointer group transition-all duration-300 ${
                     selectedCategory === option.category
                       ? 'ring-2 ring-brand-primary bg-brand-primary/5'

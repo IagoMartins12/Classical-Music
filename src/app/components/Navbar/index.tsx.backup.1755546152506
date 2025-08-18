@@ -34,7 +34,6 @@ import { useRouter } from 'next/navigation';
 import useIsMobile from '@/app/hooks/useIsMobile';
 import { FaGraduationCap } from 'react-icons/fa';
 import { LanguageDropdown, LanguageToggle } from '../LanguageToggle';
-import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface NavItem {
   label: string;
@@ -60,8 +59,6 @@ const Navbar: React.FC = () => {
   const { open } = useOnboardingModal();
 
   const isMobile = useIsMobile();
-  const { t } = useTranslation({ sections: ['navbar'] });
-
   const toggleMobileMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
@@ -91,30 +88,30 @@ const Navbar: React.FC = () => {
   const submenuTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const optionsArr: NavItem[] = [
-    { label: t('navbar_historia'), href: '/music-history' },
+    { label: 'História da Música', href: '/music-history' },
 
-    { label: t('navbar_instrumentos'), href: '/instruments' },
-    { label: t('navbar_compositores'), href: '/composers' },
+    { label: 'Instrumentos', href: '/instruments' },
+    { label: 'Compositores', href: '/composers' },
 
     {
-      label: t('navbar_obras'),
+      label: 'Obras',
       href: '/works',
       submenu: [
         {
-          label: t('navbar_todas_as_obras'),
+          label: 'Todas as Obras',
           href: '/works',
-          description: t('navbar_todas_as_obras_subtitle'),
+          description: 'Explore nossa coleção completa',
         },
         {
-          label: t('navbar_categorias'),
+          label: 'Categorias',
           href: '/genres',
-          description: t('navbar_categorias_subtitle'),
+          description: 'Navegue por gêneros musicais',
         },
       ],
     },
 
     {
-      label: t('navbar_quem_somos'),
+      label: 'Quem somos',
       href: '/about-us',
     },
   ];
@@ -319,7 +316,7 @@ const Navbar: React.FC = () => {
                     </p>
                     {!user.onboardingCompleted && (
                       <p className="text-xs text-accent-amber">
-                        {t('navbar_configure_seu_perfil')}
+                        Configure seu perfil
                       </p>
                     )}
                   </div>
@@ -346,7 +343,7 @@ const Navbar: React.FC = () => {
                             className="classical-card py-2 px-2 text-xs text-center text-brand-primary my-4 cursor-pointer"
                             onClick={open}
                           >
-                            {t('navbar_clique_aqui_completar')}
+                            Clique aqui para completar seu perfil.
                           </div>
                         )}
                       </div>
@@ -359,7 +356,7 @@ const Navbar: React.FC = () => {
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FiUser className="w-4 h-4" />
-                          <span>{t('navbar_link_meu_perfil')}</span>
+                          <span>Meu Perfil</span>
                         </Link>
                       )}
 
@@ -369,7 +366,7 @@ const Navbar: React.FC = () => {
                         onClick={() => setIsProfileOpen(false)}
                       >
                         <FiHeart className="w-4 h-4" />
-                        <span>{t('navbar_link_favoritos')}</span>
+                        <span>Favoritos</span>
                       </Link>
 
                       <Link
@@ -378,7 +375,7 @@ const Navbar: React.FC = () => {
                         onClick={() => setIsProfileOpen(false)}
                       >
                         <FiBookOpen className="w-4 h-4" />
-                        <span>{t('navbar_link_lições')}</span>
+                        <span>Lições</span>
                       </Link>
 
                       <Link
@@ -387,7 +384,7 @@ const Navbar: React.FC = () => {
                         onClick={() => setIsProfileOpen(false)}
                       >
                         <FiFile className="w-4 h-4" />
-                        <span>{t('navbar_link_anotações')}</span>
+                        <span>Anotações</span>
                       </Link>
 
                       <Link
@@ -396,7 +393,7 @@ const Navbar: React.FC = () => {
                         onClick={() => setIsProfileOpen(false)}
                       >
                         <FiUpload className="w-4 h-4" />
-                        <span>{t('navbar_link_uploads')}</span>
+                        <span>Uploads</span>
                       </Link>
 
                       {user.role === 1 && (
@@ -406,7 +403,7 @@ const Navbar: React.FC = () => {
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FaGraduationCap className="w-4 h-4" />
-                          <span>{t('navbar_link_painel_professor')}</span>
+                          <span>Painel do professor</span>
                         </Link>
                       )}
 
@@ -417,7 +414,7 @@ const Navbar: React.FC = () => {
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FaGraduationCap className="w-4 h-4" />
-                          <span>{t('navbar_link_painel_aluno')}</span>
+                          <span>Painel do aluno</span>
                         </Link>
                       )}
                       {user.role === 2 && (
@@ -427,7 +424,7 @@ const Navbar: React.FC = () => {
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <FiSettings className="w-4 h-4" />
-                          <span>{t('navbar_link_admin')}</span>
+                          <span>Admin</span>
                         </Link>
                       )}
 
@@ -438,7 +435,7 @@ const Navbar: React.FC = () => {
                         className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-accent-red hover:bg-accent-red hover:bg-opacity-10 rounded-lg transition-all"
                       >
                         <FiLogOut className="w-4 h-4" />
-                        <span>{t('navbar_sair')}</span>
+                        <span>Sair</span>
                       </button>
                     </div>
                   </>
@@ -453,11 +450,11 @@ const Navbar: React.FC = () => {
                   onClick={openLogin}
                   className="hidden sm:inline-flex"
                 >
-                  {t('navbar_button_entrar')}
+                  Entrar
                 </Button>
 
                 <Button variant="primary" size="sm" onClick={openRegister}>
-                  {t('navbar_button_criar')}
+                  Criar Conta
                 </Button>
               </div>
             )}
@@ -469,7 +466,7 @@ const Navbar: React.FC = () => {
               aria-controls="mobile-menu"
               aria-expanded={isMenuOpen}
             >
-              <span className="sr-only">{t('navbar_abrir')}</span>
+              <span className="sr-only">Abrir menu principal</span>
               {isMenuOpen ? (
                 <FiX className="w-6 h-6" />
               ) : (
@@ -563,7 +560,7 @@ const Navbar: React.FC = () => {
                       }}
                       className="block w-full px-4 py-3 text-left rounded-lg font-medium text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover transition-all"
                     >
-                      {t('navbar_fazer_login')}
+                      Fazer Login
                     </button>
                   </li>
                   <li>
@@ -574,7 +571,7 @@ const Navbar: React.FC = () => {
                       }}
                       className="block w-full px-4 py-3 text-left rounded-lg font-medium text-brand-primary bg-brand-primary bg-opacity-10 hover:bg-opacity-20 transition-all"
                     >
-                      {t('navbar_button_criar')}
+                      Criar Conta
                     </button>
                   </li>
                 </>

@@ -153,7 +153,7 @@ const dataTypes = [
   {
     icon: FiDatabase,
     title: 'Dados Técnicos',
-    description: 'IP, dispositivo, navegador, logs',
+    description: 'Cookies e geral.',
     retention: '90 dias',
   },
   {
@@ -168,10 +168,7 @@ export default function PrivacyPage() {
   const lastUpdated = 'Janeiro de 2025';
 
   return (
-    <PageContainer
-      showBackground={true}
-      className="classical-theme section-wrap"
-    >
+    <PageContainer showBackground={true} className="section-wrap">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>
@@ -336,7 +333,7 @@ export default function PrivacyPage() {
       </section>
 
       {/* Your Rights */}
-      <section className="py-8">
+      <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="">
             <div className="max-w-4xl mx-auto">

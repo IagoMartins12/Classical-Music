@@ -123,18 +123,18 @@ Escolha entre:
 - **Professor**: Para educadores musicais
 
 ### Passo 2: Instrumentos
-- Selecione todos os instrumentos que você toca
+- Selecione todos os instrumentos que você toca ou estuda.
 - Defina seu nível para cada instrumento (Iniciante, Intermediário, Avançado)
 - Marque seu instrumento principal
 - Adicione instrumentos que está aprendendo
 
 ### Passo 3: Preferências Musicais
-- **Compositores Favoritos**: Escolha até 10 compositores
-- **Épocas Musicais**: Selecione períodos de interesse (Barroco, Clássico, Romântico, etc.)
+- **Compositores Favoritos**: Escolha até 1 compositor
+- **Épocas Musicais**: Selecione período de maior interesse (Barroco, Clássico, Romântico, etc.)
 - **Gêneros**: Defina tipos de obra preferidos
 
 ### Passo 4: Perfil Pessoal
-- **Localização**: País, estado/província, cidade
+- **Localização**: País, estado/província, cidade (opcional)
 - **Telefone**: Adicione um número para contato (opcional)
 - **Bio**: Escreva uma breve descrição sobre você (opcional)
 
@@ -300,54 +300,54 @@ Exemplos de buscas eficazes:
 - Verifique obras relacionadas na página de cada peça
         `,
       },
-      {
-        id: 'discover-features',
-        title: 'Recursos de descoberta',
-        description: 'Como usar recomendações e explorar novo repertório',
-        type: 'interactive',
-        duration: '6 min',
-        difficulty: 'intermediate',
-        content: `
-# Recursos de Descoberta
+      //       {
+      //         id: 'discover-features',
+      //         title: 'Recursos de descoberta',
+      //         description: 'Como usar recomendações e explorar novo repertório',
+      //         type: 'interactive',
+      //         duration: '6 min',
+      //         difficulty: 'intermediate',
+      //         content: `
+      // # Recursos de Descoberta
 
-## Recomendações Personalizadas
-- **Baseadas em Favoritos**: Obras similares às suas preferidas
-- **Por Instrumento**: Sugestões para seus instrumentos
-- **Por Nível**: Adequadas ao seu nível de experiência
-- **Tendências**: Obras populares na comunidade
+      // ## Recomendações Personalizadas
+      // - **Baseadas em Favoritos**: Obras similares às suas preferidas
+      // - **Por Instrumento**: Sugestões para seus instrumentos
+      // - **Por Nível**: Adequadas ao seu nível de experiência
+      // - **Tendências**: Obras populares na comunidade
 
-## Exploração por Categoria
-### Páginas de Compositores
-- **Obras Populares**: Mais acessadas do compositor
-- **Por Período**: Cronologia da produção
-- **Por Instrumento**: Filtragem específica
-- **Obras Relacionadas**: Compositores similares
+      // ## Exploração por Categoria
+      // ### Páginas de Compositores
+      // - **Obras Populares**: Mais acessadas do compositor
+      // - **Por Período**: Cronologia da produção
+      // - **Por Instrumento**: Filtragem específica
+      // - **Obras Relacionadas**: Compositores similares
 
-### Páginas de Obras
-- **Mesmo Gênero**: Outras sonatas, concertos, etc.
-- **Mesmo Compositor**: Catálogo completo
-- **Dificuldade Similar**: Para seu nível
-- **Época Similar**: Contexto histórico
+      // ### Páginas de Obras
+      // - **Mesmo Gênero**: Outras sonatas, concertos, etc.
+      // - **Mesmo Compositor**: Catálogo completo
+      // - **Dificuldade Similar**: Para seu nível
+      // - **Época Similar**: Contexto histórico
 
-## Listas Curadas
-- **Obras Essenciais**: Repertório fundamental
-- **Para Iniciantes**: Peças acessíveis
-- **Desafios Técnicos**: Para músicos avançados
-- **Joias Escondidas**: Obras menos conhecidas
+      // ## Listas Curadas
+      // - **Obras Essenciais**: Repertório fundamental
+      // - **Para Iniciantes**: Peças acessíveis
+      // - **Desafios Técnicos**: Para músicos avançados
+      // - **Joias Escondidas**: Obras menos conhecidas
 
-## Sistema de Tags
-- **Técnica**: #dedilhado #escalas #arpejos
-- **Expressão**: #melancólico #heroico #pastoral
-- **Dificuldade**: #iniciante #virtuosístico
-- **Contexto**: #romântico #impressionista #nacional
+      // ## Sistema de Tags
+      // - **Técnica**: #dedilhado #escalas #arpejos
+      // - **Expressão**: #melancólico #heroico #pastoral
+      // - **Dificuldade**: #iniciante #virtuosístico
+      // - **Contexto**: #romântico #impressionista #nacional
 
-## Navegação Inteligente
-- **Obras Relacionadas**: Links automáticos
-- **Compositores Similares**: Mesmo estilo/época
-- **Progressão de Dificuldade**: Caminho de aprendizado
-- **Contexto Histórico**: Influências e contemporâneos
-        `,
-      },
+      // ## Navegação Inteligente
+      // - **Obras Relacionadas**: Links automáticos
+      // - **Compositores Similares**: Mesmo estilo/época
+      // - **Progressão de Dificuldade**: Caminho de aprendizado
+      // - **Contexto Histórico**: Influências e contemporâneos
+      //         `,
+      //       },
     ],
   },
   {
@@ -1017,7 +1017,7 @@ Exemplos de buscas eficazes:
   {
     id: 'favorites',
     title: 'Sistema de Favoritos',
-    description: 'Organize suas preferências musicais',
+    description: 'Organize suas preferências musicais com o nosso sistema.',
     icon: FiHeart,
     color: 'from-pink-500 to-red-500',
     guides: [
@@ -1372,7 +1372,7 @@ Para cada partitura, você encontra:
   {
     id: 'learning-system',
     title: 'Quero Aprender / Já Aprendi',
-    description: 'Organize seu progresso musical',
+    description: 'Organize seu progresso musical com nossas listas.',
     icon: FiTarget,
     color: 'from-green-500 to-teal-500',
     guides: [
@@ -2648,10 +2648,50 @@ interface GuideCardProps {
   guide: Guide;
 }
 
+function renderInlineBold(text: string) {
+  if (!text.includes('**')) {
+    return text;
+  }
+
+  const parts = text.split(/(\*\*.*?\*\*)/g);
+
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <strong key={index} className="font-semibold text-theme-primary">
+          {part.substring(2, part.length - 2)}
+        </strong>
+      );
+    }
+    return part;
+  });
+}
+function renderMarkdownInline(line: string, lineIndex: number) {
+  const parts = line.split(/(\*\*.*?\*\*)/g);
+
+  return (
+    <p key={lineIndex} className="mb-2 leading-relaxed">
+      {parts.map((part, partIndex) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return (
+            <strong
+              key={`${lineIndex}-${partIndex}`}
+              className="font-semibold text-theme-primary"
+            >
+              {part.substring(2, part.length - 2)}
+            </strong>
+          );
+        }
+        return part;
+      })}
+    </p>
+  );
+}
 function GuideCard({ guide }: GuideCardProps): JSX.Element {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const IconComponent = getTypeIcon(guide.type);
 
+  console.log('GUIDE', { guide, isExpanded });
   return (
     <div className="classical-card overflow-hidden">
       <button
@@ -2712,10 +2752,11 @@ function GuideCard({ guide }: GuideCardProps): JSX.Element {
       {isExpanded && (
         <div className="px-6 pb-6 border-t border-theme-secondary/20">
           <div className="pt-4">
-            <div className="border-l-2 border-brand-primary/20 pl-4">
+            <div className="border-brand-primary/20 pl-4">
               <div className="prose prose-sm max-w-none text-theme-secondary classical-body">
                 {guide.content.split('\n').map((line, index) => {
                   if (line.trim() === '') return <br key={index} />;
+
                   if (line.startsWith('# ')) {
                     return (
                       <h3
@@ -2726,6 +2767,7 @@ function GuideCard({ guide }: GuideCardProps): JSX.Element {
                       </h3>
                     );
                   }
+
                   if (line.startsWith('## ')) {
                     return (
                       <h4
@@ -2736,6 +2778,7 @@ function GuideCard({ guide }: GuideCardProps): JSX.Element {
                       </h4>
                     );
                   }
+
                   if (line.startsWith('### ')) {
                     return (
                       <h5
@@ -2746,21 +2789,30 @@ function GuideCard({ guide }: GuideCardProps): JSX.Element {
                       </h5>
                     );
                   }
+
                   if (line.startsWith('- ')) {
                     return (
                       <li key={index} className="ml-4 mb-1 list-disc">
-                        {line.substring(2)}
+                        {renderInlineBold(line.substring(2))}
                       </li>
                     );
                   }
+
                   if (line.match(/^\d+\./)) {
                     return (
                       <div key={index} className="ml-4 mb-1 font-medium">
-                        {line}
+                        {renderInlineBold(line)}
                       </div>
                     );
                   }
-                  if (line.startsWith('**') && line.endsWith('**')) {
+
+                  // NOVA LÓGICA PARA NEGRITO
+                  // Linha inteira em negrito (título/destaque)
+                  if (
+                    line.startsWith('**') &&
+                    line.endsWith('**') &&
+                    line.length > 4
+                  ) {
                     return (
                       <p
                         key={index}
@@ -2770,6 +2822,13 @@ function GuideCard({ guide }: GuideCardProps): JSX.Element {
                       </p>
                     );
                   }
+
+                  // Linha com markdown inline
+                  if (line.includes('**')) {
+                    return renderMarkdownInline(line, index);
+                  }
+
+                  // Parágrafo normal
                   return (
                     <p key={index} className="mb-2 leading-relaxed">
                       {line}
@@ -2798,6 +2857,7 @@ function GuideCard({ guide }: GuideCardProps): JSX.Element {
 export default function HelpPage(): JSX.Element {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  console.log('GELP', selectedCategory);
   const renderStep = (): JSX.Element => {
     if (!selectedCategory) {
       return (
@@ -2816,10 +2876,9 @@ export default function HelpPage(): JSX.Element {
 
                 <SequentialGrid cols={3} gap={8} delayBetweenItems={0.1}>
                   {helpCategories.map((category) => (
-                    <AnimatedCard
+                    <div
                       key={category.id}
-                      hover="lift"
-                      className={`classical-card p-6 cursor-pointer transition-all ${
+                      className={`classical-card p-6 group flex flex-col items-center justify-center cursor-pointer transition-all ${
                         selectedCategory === category.id
                           ? 'ring-2 ring-brand-primary'
                           : ''
@@ -2827,7 +2886,7 @@ export default function HelpPage(): JSX.Element {
                       onClick={() => setSelectedCategory(category.id)}
                     >
                       <div
-                        className={`w-16 h-16 bg-gradient-to-br ${category.color} rounded-2xl flex items-center justify-center mb-6`}
+                        className={`w-16 h-16 bg-gradient-to-br  rounded-2xl flex items-center justify-center mb-6`}
                       >
                         <category.icon className="w-8 h-8 text-theme-primary" />
                       </div>
@@ -2836,7 +2895,7 @@ export default function HelpPage(): JSX.Element {
                         {category.title}
                       </h3>
 
-                      <p className="text-theme-secondary classical-body mb-4">
+                      <p className="text-theme-secondary text-center classical-body mb-4">
                         {category.description}
                       </p>
 
@@ -2844,7 +2903,7 @@ export default function HelpPage(): JSX.Element {
                         <span>{category.guides.length} guias</span>
                         <FiArrowRight className="w-4 h-4 ml-2" />
                       </div>
-                    </AnimatedCard>
+                    </div>
                   ))}
                 </SequentialGrid>
               </div>
@@ -2934,9 +2993,9 @@ export default function HelpPage(): JSX.Element {
       </section>
 
       {/* Quick Access */}
-      <section className="py-8">
+      <section className="">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="section-wrap">
+          <div className="">
             <div className="max-w-4xl mx-auto">
               <AnimatedCard hover="lift" className="classical-card p-8 mb-12">
                 <div className="text-center">
@@ -2983,78 +3042,6 @@ export default function HelpPage(): JSX.Element {
 
       {/* Main Content */}
       {renderStep()}
-
-      {/* Popular Resources */}
-      <section className="py-8 bg-gradient-to-b from-transparent to-theme-secondary/30">
-        <AnimatedContainer delay={0.1} staggerSpeed="normal">
-          <div className="section-wrap">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold classical-title text-theme-primary mb-4">
-                  Recursos Populares
-                </h2>
-                <p className="text-xl text-theme-secondary">
-                  Os guias mais acessados pela comunidade
-                </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8">
-                <AnimatedCard hover="lift" className="classical-card p-6">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <FiStar className="w-5 h-5 text-accent-amber" />
-                    <span className="text-accent-amber font-medium">
-                      Mais Popular
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-semibold classical-title text-theme-primary mb-3">
-                    Como Criar Sua Conta
-                  </h3>
-                  <p className="text-theme-secondary classical-body mb-4">
-                    Guia completo para criar e configurar sua conta no Opus
-                    Atlas, incluindo dicas de onboarding.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <FiVideo className="w-4 h-4 text-accent-blue" />
-                      <span className="text-sm text-theme-tertiary">5 min</span>
-                    </div>
-                    <span className="text-sm text-accent-green font-medium">
-                      Iniciante
-                    </span>
-                  </div>
-                </AnimatedCard>
-
-                <AnimatedCard hover="lift" className="classical-card p-6">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <FiDownload className="w-5 h-5 text-accent-green" />
-                    <span className="text-accent-green font-medium">
-                      Prático
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-semibold classical-title text-theme-primary mb-3">
-                    Sistema de Uploads
-                  </h3>
-                  <p className="text-theme-secondary classical-body mb-4">
-                    Dicas e melhores práticas para contribuir com conteúdo de
-                    alta qualidade para a comunidade.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <FiBook className="w-4 h-4 text-accent-blue" />
-                      <span className="text-sm text-theme-tertiary">
-                        12 min
-                      </span>
-                    </div>
-                    <span className="text-sm text-accent-red font-medium">
-                      Intermediário
-                    </span>
-                  </div>
-                </AnimatedCard>
-              </div>
-            </div>
-          </div>
-        </AnimatedContainer>
-      </section>
 
       {/* Contact Section */}
       <section className="py-8 relative overflow-hidden">

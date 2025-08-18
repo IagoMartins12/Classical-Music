@@ -1,12 +1,7 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
-import { useTranslation } from '@/app/hooks/useTranslation';
 
 const HeroMainPage = () => {
-  const { t } = useTranslation({ sections: ['components/heroMainPage'] });
-
   return (
     <div className="section-wrap flex flex-col lg:flex-row gap-6">
       {/* Seção Principal - História da Música */}
@@ -16,7 +11,7 @@ const HeroMainPage = () => {
       >
         <div className="relative flex-1 h-96 md:h-80 lg:h-auto">
           <Image
-            alt={t('heroMainPage_image_alt_partitura')}
+            alt="Período clássico da música - Instrumentos históricos e partituras antigas"
             src="/classical-period-2.jpg"
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 60vw"
@@ -29,13 +24,16 @@ const HeroMainPage = () => {
           {/* Conteúdo sobreposto */}
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
             <h2 className="text-2xl lg:text-3xl font-bold mb-3 leading-tight">
-              {t('heroMainPage_link_musica')}
+              História da Música Clássica
             </h2>
             <p className="text-gray-200 text-base lg:text-lg mb-4 leading-relaxed line-clamp-3 md:line-clamp-none">
-              {t('heroMainPage_banner_1')}
+              Embarque em uma jornada fascinante através dos séculos, desde o
+              canto gregoriano medieval até as inovações contemporâneas.
+              Descubra como cada período histórico moldou a música que
+              conhecemos e amamos hoje.
             </p>
             <div className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white font-semibold hover:bg-white/30 transition-all duration-300 group/btn">
-              {t('heroMainPage_link_explorar_história_completa')}
+              Explorar História Completa
               <svg
                 className="ml-2 w-4 h-4 transition-transform group-hover/btn:translate-x-1"
                 fill="none"
@@ -63,7 +61,7 @@ const HeroMainPage = () => {
         >
           <div className="relative h-64">
             <Image
-              alt={t('heroMainPage_image_alt_classico')}
+              alt="Instrumentos clássicos - Violino, piano e outros instrumentos históricos"
               src="/instrument-2.jpg"
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
@@ -78,13 +76,15 @@ const HeroMainPage = () => {
                 </span>
               </div> */}
               <h3 className="text-lg font-bold mb-2">
-                {t('heroMainPage_link_instrumentação_clássica')}
+                Instrumentação Clássica
               </h3>
               <p className="text-gray-200 text-sm mb-3 leading-snug">
-                {t('heroMainPage_link_musica_1')}
+                Conheça a evolução dos instrumentos musicais e como cada um
+                contribuiu para o desenvolvimento da música clássica ao longo
+                dos séculos.
               </p>
               <div className="inline-flex items-center text-sm font-semibold text-white hover:text-purple-200 transition-colors group/div">
-                {t('heroMainPage_link_descobrir_mais')}
+                Descobrir mais
                 <svg
                   className="ml-1 w-3 h-3 transition-transform group-hover/link:translate-x-1"
                   fill="none"
@@ -110,7 +110,7 @@ const HeroMainPage = () => {
         >
           <div className="relative h-64">
             <Image
-              alt={t('heroMainPage_image_alt_partitura_1')}
+              alt="Ambiente de estudo musical - Partituras, metrônomo e instrumentos musicais"
               src="/wallpaper.jpg"
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
@@ -124,14 +124,14 @@ const HeroMainPage = () => {
                   🎼 Sobre Nós
                 </span>
               </div> */}
-              <h3 className="text-lg font-bold mb-2">
-                {t('heroMainPage_link_nossa_missão')}
-              </h3>
+              <h3 className="text-lg font-bold mb-2">Nossa Missão</h3>
               <p className="text-gray-200 text-sm mb-3 leading-snug">
-                {t('heroMainPage_banner_3')}
+                Democratizar o acesso à música clássica através de uma
+                plataforma completa que combina conhecimento histórico com
+                ferramentas práticas de estudo.
               </p>
               <div className="inline-flex items-center text-sm font-semibold text-white hover:text-green-200 transition-colors group/link">
-                {t('heroMainPage_link_conheça_nossa_história')}
+                Conheça nossa história
                 <svg
                   className="ml-1 w-3 h-3 transition-transform group-hover/link:translate-x-1"
                   fill="none"

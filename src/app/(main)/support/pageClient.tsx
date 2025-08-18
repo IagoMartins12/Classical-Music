@@ -639,7 +639,7 @@ export default function SupportPage(): JSX.Element {
       </section>
 
       {/* System Status */}
-      <section className="py-8">
+      {/* <section className="py-8">
         <AnimatedContainer delay={0.1} staggerSpeed="normal">
           <div className="section-wrap">
             <div className="max-w-4xl mx-auto">
@@ -698,7 +698,7 @@ export default function SupportPage(): JSX.Element {
             </div>
           </div>
         </AnimatedContainer>
-      </section>
+      </section> */}
 
       {/* Support Categories */}
       {!selectedCategory && (
@@ -717,10 +717,9 @@ export default function SupportPage(): JSX.Element {
 
                 <SequentialGrid cols={3} gap={8} delayBetweenItems={0.1}>
                   {supportCategories.map((category) => (
-                    <AnimatedCard
+                    <div
                       key={category.id}
-                      hover="lift"
-                      className={`classical-card p-6 cursor-pointer transition-all ${
+                      className={`classical-card p-6 group flex flex-col items-center justify-center cursor-pointer transition-all  ${
                         selectedCategory === category.id
                           ? 'ring-2 ring-brand-primary'
                           : ''
@@ -728,7 +727,7 @@ export default function SupportPage(): JSX.Element {
                       onClick={() => setSelectedCategory(category.id)}
                     >
                       <div
-                        className={`w-16 h-16 bg-gradient-to-br ${category.color} rounded-2xl flex items-center justify-center mb-6`}
+                        className={`w-16 h-16 bg-gradient-to-br  rounded-2xl flex items-center justify-center mb-6`}
                       >
                         <category.icon className="w-8 h-8 text-theme-primary" />
                       </div>
@@ -737,14 +736,14 @@ export default function SupportPage(): JSX.Element {
                         {category.title}
                       </h3>
 
-                      <p className="text-theme-secondary classical-body mb-4">
+                      <p className="text-theme-secondary text-center classical-body mb-4">
                         {category.description}
                       </p>
 
                       <div className="text-brand-primary font-medium">
                         {category.solutions.length} soluções
                       </div>
-                    </AnimatedCard>
+                    </div>
                   ))}
                 </SequentialGrid>
               </div>
@@ -861,7 +860,7 @@ export default function SupportPage(): JSX.Element {
                                 solution.steps && (
                                   <div className="px-6 pb-6 border-t border-theme-secondary/20">
                                     <div className="pt-4">
-                                      <div className="border-l-2 border-brand-primary/20 pl-4">
+                                      <div className="border-brand-primary/20 pl-4">
                                         <h5 className="font-semibold classical-title text-theme-primary mb-4 flex items-center">
                                           <span className="w-6 h-6 bg-brand-primary text-white rounded-full flex items-center justify-center text-sm font-medium mr-2">
                                             ✓

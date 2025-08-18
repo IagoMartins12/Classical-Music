@@ -131,10 +131,7 @@ export default function TermsPage() {
   const lastUpdated = 'Janeiro de 2025';
 
   return (
-    <PageContainer
-      showBackground={true}
-      className="classical-theme section-wrap"
-    >
+    <PageContainer showBackground={true} className=" section-wrap">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-16">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-accent-purple/5 to-accent-blue/5"></div>

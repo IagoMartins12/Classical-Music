@@ -89,7 +89,7 @@ const Modal = forwardRef<ModalRef, ModalProps>(
 
     // Prevenção de scroll
     useLayoutEffect(() => {
-      if (!preventBodyScroll || !isOpen) return;
+      if (!isOpen) return;
 
       const scrollY = window.scrollY;
       document.body.style.position = 'fixed';
