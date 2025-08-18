@@ -27,9 +27,9 @@ import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
-} from '../../animation/AnimatedComponents';
-import Button from '../../Common/Button';
-import CreateWorkModal from '../modals/CreateWorkModal';
+} from '../../../../../components/animation/AnimatedComponents';
+import Button from '../../../../../components/Common/Button';
+import CreateWorkModal from '../../../../../components/UploadsPage/modals/CreateWorkModal';
 import { useToast } from '@/app/hooks/useToast';
 
 interface EditWorkClientProps {

@@ -9,8 +9,6 @@ import {
   FiSearch,
   FiPlay,
   FiMessageCircle,
-  FiDownload,
-  FiStar,
   FiArrowRight,
   FiBookOpen,
   FiHelpCircle,

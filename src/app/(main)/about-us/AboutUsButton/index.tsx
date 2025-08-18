@@ -6,7 +6,7 @@ import { FiMusic, FiUsers } from 'react-icons/fi';
 interface buttonProps {
   action: 'login' | 'register';
 }
-const Button: React.FC<buttonProps> = ({ action }) => {
+const AboutUsButton: React.FC<buttonProps> = ({ action }) => {
   const { open: openRegisterModal } = useRegisterModal();
 
   const { isAuthenticated } = useAuth();
@@ -42,4 +42,4 @@ const Button: React.FC<buttonProps> = ({ action }) => {
   }
 };
 
-export default Button;
+export default AboutUsButton;

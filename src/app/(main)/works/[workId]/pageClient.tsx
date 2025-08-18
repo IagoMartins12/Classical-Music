@@ -25,31 +25,30 @@ import { useWorkScores } from '@/app/hooks/useWorkScores';
 import { useNavigate } from '@/app/hooks/useNavigate';
 import { useScoreSelectionStore } from '@/app/stores/useScoreSelectionStore';
 import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
-import FavoriteButton from '../FavoriteButton';
-import { LearningInitializer } from '../LearningInitializer';
-import LearningButtonWithModal from '../LearningButtonWithModal';
+import FavoriteButton from '../../../components/FavoriteButton';
+import { LearningInitializer } from '../../../components/LearningInitializer';
+import LearningButtonWithModal from '../../../components/LearningButtonWithModal';
 import { IMSLPScore } from '@/app/libs/imslp-score-scraper-incremental';
 import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
-} from '../animation/AnimatedComponents';
-import ShareButton from '../ShareButton';
-import AnnotationsSection from '../Annotations/AnnotationsSection';
+} from '../../../components/animation/AnimatedComponents';
+import ShareButton from '../../../components/ShareButton';
+import AnnotationsSection from '../../../components/Annotations/AnnotationsSection';
 import { useMostFavoritedForWork } from '@/app/stores/useMostFavoritedStore';
-import IMSLPTabsIncremental from './IMSLPTabsIncremental';
+import IMSLPTabsIncremental from '../../../components/WorkDetailsClient/IMSLPTabsIncremental';
 import { GiMusicalNotes } from 'react-icons/gi';
-import ReportButton from '../Report/ReportButton';
-import VerificationModal from '../Verification/VerificationModal';
-import VerificationBadge from '../Verification/VerificationBadge';
-import VerificationButton from '../Verification/VerificationButton';
-import AdContainer from '../Ads/AdContainer';
-import EditButton from '../Common/EditButton';
-import MediaSection from '../Players/MediaSection';
+import ReportButton from '../../../components/Report/ReportButton';
+import VerificationModal from '../../../components/Verification/VerificationModal';
+import VerificationBadge from '../../../components/Verification/VerificationBadge';
+import VerificationButton from '../../../components/Verification/VerificationButton';
+import EditButton from '../../../components/Common/EditButton';
+import MediaSection from '../../../components/Players/MediaSection';
 import { WorkDetails } from '@/app/requests/work-page-details';
-import LearningModal from '../LearningModal';
-import ScorePreview from './ScorePreview'; // ✅ IMPORTAR SCOREPREVIEW
-import VideoAulaSection from '../Players/VideoAulaSection';
+import LearningModal from '../../../components/LearningModal';
+import ScorePreview from '../../../components/WorkDetailsClient/ScorePreview'; // ✅ IMPORTAR SCOREPREVIEW
+import VideoAulaSection from '../../../components/Players/VideoAulaSection';
 
 // ✅ Interface para dados de áudio processados (mantida igual)
 interface ProcessedAudioData {

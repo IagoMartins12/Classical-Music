@@ -33,22 +33,22 @@ import {
   AnimatedCard,
   SequentialGrid,
   LoadingSpinner,
-} from '../animation/AnimatedComponents';
+} from '../../components/animation/AnimatedComponents';
 import { UserUpload } from '@/app/requests/upload';
-import Button from '../Common/Button';
-import Select from '../Common/Select';
-import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
-import PaginationControls from '../PaginationControls';
-import CreateScoreModal from './modals/CreateScoreModal';
-import CreateWorkModal from './modals/CreateWorkModal';
-import CreateComposerModal from './modals/CreateComposerModal';
-import BulkInsertWorksModal from './modals/BulkInsertWorksModal';
+import Button from '../../components/Common/Button';
+import Select from '../../components/Common/Select';
+import ViewModeToggle, { ViewMode } from '../../components/ViewModeToggle';
+import PaginationControls from '../../components/PaginationControls';
+import CreateScoreModal from '../../components/UploadsPage/modals/CreateScoreModal';
+import CreateWorkModal from '../../components/UploadsPage/modals/CreateWorkModal';
+import CreateComposerModal from '../../components/UploadsPage/modals/CreateComposerModal';
+import BulkInsertWorksModal from '../../components/UploadsPage/modals/BulkInsertWorksModal';
 
 import { useToast } from '@/app/hooks/useToast';
 
-import UploadComposerCard from './UploadComposerCard';
-import UploadWorkCard from './UploadWorkCard';
-import UploadScoreCard from './UploadScoreCard';
+import UploadComposerCard from '../../components/UploadsPage/UploadComposerCard';
+import UploadWorkCard from '../../components/UploadsPage/UploadWorkCard';
+import UploadScoreCard from '../../components/UploadsPage/UploadScoreCard';
 
 interface Epoch {
   id: string;

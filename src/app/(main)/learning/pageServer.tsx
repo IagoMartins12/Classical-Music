@@ -1,6 +1,6 @@
 // app/pageServer.tsx - Enhanced Home Page
 
-import LearningPageClient from '../../components/LearningPageClient';
+import LearningPageClient from './pageClient';
 import { getCurrentUserLearningData } from '../../requests/learning';
 
 export default async function LearningPageServer() {

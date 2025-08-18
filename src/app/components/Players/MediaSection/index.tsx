@@ -4,7 +4,6 @@
 import React, { useState, useEffect } from 'react';
 import {
   FiMusic,
-  FiVideo,
   FiRefreshCw,
   FiSearch,
   FiAlertCircle,

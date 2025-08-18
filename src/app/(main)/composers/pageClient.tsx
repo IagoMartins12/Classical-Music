@@ -5,12 +5,12 @@ import { useState, useTransition, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useNavigate } from '@/app/hooks/useNavigate';
 import { FiSearch, FiClock } from 'react-icons/fi';
-import ComposerCard from './ComposerCard';
-import ComposerCardList from './ComposerCardList';
-import PaginationControls from '../PaginationControls';
+import ComposerCard from '../../components/ComposersClient/ComposerCard';
+import ComposerCardList from '../../components/ComposersClient/ComposerCardList';
+import PaginationControls from '../../components/PaginationControls';
 import { FaRegUser } from 'react-icons/fa';
-import AnimatedMusicalNotes2 from '../AnimatedMusicalNotes2';
-import ViewModeToggle from '../ViewModeToggle';
+import AnimatedMusicalNotes2 from '../../components/AnimatedMusicalNotes2';
+import ViewModeToggle from '../../components/ViewModeToggle';
 
 // Importar componentes de animação - INCLUINDO SEQUENCIAL
 import {
@@ -19,8 +19,8 @@ import {
   AnimatedItem,
   SequentialGrid, // ✅ NOVO - Para animação sequencial
   LoadingSpinner,
-} from '../animation/AnimatedComponents';
-import Select from '../Common/Select';
+} from '../../components/animation/AnimatedComponents';
+import Select from '../../components/Common/Select';
 
 export interface ComposerImslp {
   epochName: string;

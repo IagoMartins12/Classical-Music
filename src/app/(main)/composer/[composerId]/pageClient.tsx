@@ -20,22 +20,22 @@ import {
   FiHeart,
   FiInfo,
 } from 'react-icons/fi';
-import ComposerBiography from '../ComposerBiography';
-import ComposerWorks from '../ComposersClient/ComposerWorks';
-import FavoriteButton from '../FavoriteButton';
-import ShareButton from '../ShareButton'; // Novo componente
+import ComposerBiography from '../../../components/ComposerBiography';
+import ComposerWorks from '../../../components/ComposersClient/ComposerWorks';
+import FavoriteButton from '../../../components/FavoriteButton';
+import ShareButton from '../../../components/ShareButton'; // Novo componente
 import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
-} from '../animation/AnimatedComponents';
-import { getComposerNationalityDisplay } from '../Utils/nationalityFlags';
-import { INSTRUMENT_MAPPING } from '../../../../scripts/imslp-works-scraper-util';
-import VerificationBadge from '../Verification/VerificationBadge';
-import ReportButton from '../Report/ReportButton';
-import VerificationModal from '../Verification/VerificationModal';
-import VerificationButton from '../Verification/VerificationButton';
-import EditButton from '../Common/EditButton';
+} from '../../../components/animation/AnimatedComponents';
+import { getComposerNationalityDisplay } from '../../../components/Utils/nationalityFlags';
+import { INSTRUMENT_MAPPING } from '../../../../../scripts/imslp-works-scraper-util';
+import VerificationBadge from '../../../components/Verification/VerificationBadge';
+import ReportButton from '../../../components/Report/ReportButton';
+import VerificationModal from '../../../components/Verification/VerificationModal';
+import VerificationButton from '../../../components/Verification/VerificationButton';
+import EditButton from '../../../components/Common/EditButton';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;

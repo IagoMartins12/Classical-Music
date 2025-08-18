@@ -1,6 +1,6 @@
 // app/work/[workId]/page.tsx - Página otimizada com cache inteligente
 import { notFound } from 'next/navigation';
-import WorkDetailsServer from './WorkDetailsServer';
+import WorkDetailsServer from './pageServer';
 import { getWorkById } from '@/app/requests/work-page-details';
 
 interface WorkParams {

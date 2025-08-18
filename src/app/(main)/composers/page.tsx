@@ -1,4 +1,4 @@
-import ComposersServer from './ComposersServer';
+import ComposersServer from './pageServer';
 
 export const metadata = {
   title: 'Compositores Clássicos - Lista Completa',

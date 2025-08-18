@@ -1,4 +1,4 @@
-import ComposersClient from '@/app/components/ComposersClient';
+import ComposersClient from '@/app/(main)/composers/pageClient';
 import {
   getComposersCount,
   getComposersWithPagination,

@@ -17,12 +17,12 @@ import {
   AnimatedContainer,
   AnimatedItem,
   PageContainer,
-} from '../animation/AnimatedComponents';
-import AuthCheck from '../AuthCheck';
-import Select from '../Common/Select';
-import UserAnnotationCard from './UserAnnotationCard';
-import AnnotationsStatsWidget from './AnnotationsStatsWidget';
-import CreateAnnotationModal from './CreateAnnotationModal';
+} from '../../components/animation/AnimatedComponents';
+import AuthCheck from '../../components/AuthCheck';
+import Select from '../../components/Common/Select';
+import UserAnnotationCard from '../../components/Annotations/UserAnnotationCard';
+import AnnotationsStatsWidget from '../../components/Annotations/AnnotationsStatsWidget';
+import CreateAnnotationModal from '../../components/Annotations/CreateAnnotationModal';
 import {
   useAnnotationsStore,
   AnnotationFilters,

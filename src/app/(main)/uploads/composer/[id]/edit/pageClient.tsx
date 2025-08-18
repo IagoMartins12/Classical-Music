@@ -22,10 +22,10 @@ import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
-} from '../../animation/AnimatedComponents';
-import Button from '../../Common/Button';
-import CreateComposerModal from '../modals/CreateComposerModal';
-import { getComposerNationalityDisplay } from '../../Utils/nationalityFlags';
+} from '../../../../../components/animation/AnimatedComponents';
+import Button from '../../../../../components/Common/Button';
+import CreateComposerModal from '../../../../../components/UploadsPage/modals/CreateComposerModal';
+import { getComposerNationalityDisplay } from '../../../../../components/Utils/nationalityFlags';
 import { useToast } from '@/app/hooks/useToast';
 
 interface EditComposerClientProps {

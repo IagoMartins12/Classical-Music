@@ -13,15 +13,15 @@ import {
 } from 'react-icons/fi';
 
 // Import all profile sections
-import PersonalInfoSection from './PersonalInfoSection';
-import InstrumentsSection from './InstrumentsSection';
-import MusicalPreferencesSection from './MusicalPreferencesSection';
-import PrivacySection from './PrivacySection';
-import AccountSettingsSection from './AccountSettingsSection';
+import PersonalInfoSection from '../../components/profile/PersonalInfoSection';
+import InstrumentsSection from '../../components/profile/InstrumentsSection';
+import MusicalPreferencesSection from '../../components/profile/MusicalPreferencesSection';
+import PrivacySection from '../../components/profile/PrivacySection';
+import AccountSettingsSection from '../../components/profile/AccountSettingsSection';
 import { useAuth } from '@/app/hooks/useAuth';
 import { User } from 'next-auth';
 import { useAuthStore } from '@/app/stores/authStore';
-import AuthCheck from '../AuthCheck';
+import AuthCheck from '../../components/AuthCheck';
 
 interface Tab {
   id: string;

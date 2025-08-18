@@ -26,9 +26,9 @@ import {
   AnimatedContainer,
   AnimatedCard,
   AnimatedItem,
-} from '../../animation/AnimatedComponents';
-import Button from '../../Common/Button';
-import CreateScoreModal from '../modals/CreateScoreModal';
+} from '../../../../../components/animation/AnimatedComponents';
+import Button from '../../../../../components/Common/Button';
+import CreateScoreModal from '../../../../../components/UploadsPage/modals/CreateScoreModal';
 import { useToast } from '@/app/hooks/useToast';
 
 interface EditScoreClientProps {

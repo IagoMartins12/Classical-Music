@@ -1,7 +1,7 @@
-// app/works/WorksServer.tsx - VERSÃO ULTRA OTIMIZADA
+// app/works/pageServer.tsx - VERSÃO ULTRA OTIMIZADA
 import { unstable_cache } from 'next/cache';
 import { getWorks, getFilterOptions } from '@/app/requests/work-details';
-import WorksClient from '@/app/components/WorksClient';
+import WorksClient from '@/app/(main)/works/pageClient';
 
 interface WorksServerProps {
   searchParams: {

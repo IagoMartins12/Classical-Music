@@ -5,14 +5,11 @@ import {
   FiTool,
   FiSmartphone,
   FiHeadphones,
-  FiAlertCircle,
   FiRefreshCw,
   FiSettings,
   FiMessageCircle,
   FiMail,
   FiClock,
-  FiCheckCircle,
-  FiInfo,
   FiActivity,
   FiServer,
   FiUpload,
@@ -52,11 +49,11 @@ interface Solution {
   priority: 'high' | 'medium' | 'low';
 }
 
-interface SystemStatus {
-  service: string;
-  status: 'operational' | 'maintenance' | 'degraded';
-  uptime: string;
-}
+// interface SystemStatus {
+//   service: string;
+//   status: 'operational' | 'maintenance' | 'degraded';
+//   uptime: string;
+// }
 
 const supportCategories: SupportCategory[] = [
   {
@@ -520,64 +517,64 @@ const supportCategories: SupportCategory[] = [
   },
 ];
 
-const systemStatus: SystemStatus[] = [
-  {
-    service: 'Plataforma Principal',
-    status: 'operational',
-    uptime: '99.9%',
-  },
-  {
-    service: 'Sistema de Uploads',
-    status: 'operational',
-    uptime: '99.7%',
-  },
-  {
-    service: 'Players de Mídia',
-    status: 'operational',
-    uptime: '99.8%',
-  },
-  {
-    service: 'Base de Dados IMSLP',
-    status: 'maintenance',
-    uptime: '98.5%',
-  },
-  {
-    service: 'Sistema Professor-Aluno',
-    status: 'operational',
-    uptime: '99.6%',
-  },
-  {
-    service: 'Newsletter',
-    status: 'operational',
-    uptime: '99.9%',
-  },
-];
+// const systemStatus: SystemStatus[] = [
+//   {
+//     service: 'Plataforma Principal',
+//     status: 'operational',
+//     uptime: '99.9%',
+//   },
+//   {
+//     service: 'Sistema de Uploads',
+//     status: 'operational',
+//     uptime: '99.7%',
+//   },
+//   {
+//     service: 'Players de Mídia',
+//     status: 'operational',
+//     uptime: '99.8%',
+//   },
+//   {
+//     service: 'Base de Dados IMSLP',
+//     status: 'maintenance',
+//     uptime: '98.5%',
+//   },
+//   {
+//     service: 'Sistema Professor-Aluno',
+//     status: 'operational',
+//     uptime: '99.6%',
+//   },
+//   {
+//     service: 'Newsletter',
+//     status: 'operational',
+//     uptime: '99.9%',
+//   },
+// ];
 
-const getStatusColor = (status: string): string => {
-  switch (status) {
-    case 'operational':
-      return 'text-accent-green';
-    case 'maintenance':
-      return 'text-accent-amber';
-    case 'degraded':
-      return 'text-accent-red';
-    default:
-      return 'text-theme-secondary';
-  }
-};
+// const getStatusColor = (status: string): string => {
+//   switch (status) {
+//     case 'operational':
+//       return 'text-accent-green';
+//     case 'maintenance':
+//       return 'text-accent-amber';
+//     case 'degraded':
+//       return 'text-accent-red';
+//     default:
+//       return 'text-theme-secondary';
+//   }
+// };
 
-const getStatusIcon = (status: string) => {
-  switch (status) {
-    case 'operational':
-      return FiCheckCircle;
-    case 'maintenance':
-      return FiTool;
-    case 'degraded':
-      return FiAlertCircle;
-    default:
-      return FiInfo;
-  }
-};
+// const getStatusIcon = (status: string) => {
+//   switch (status) {
+//     case 'operational':
+//       return FiCheckCircle;
+//     case 'maintenance':
+//       return FiTool;
+//     case 'degraded':
+//       return FiAlertCircle;
+//     default:
+//       return FiInfo;
+//   }
+// };
 
 const getPriorityColor = (priority: string): string => {
   switch (priority) {

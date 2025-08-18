@@ -1,4 +1,4 @@
-// app/works/WorksClient.tsx - Com Performance Otimizada e Z-index Corrigido
+// app/works/pageClient.tsx - Com Performance Otimizada e Z-index Corrigido
 'use client';
 
 import {
@@ -21,22 +21,22 @@ import {
   FiBookOpen,
   FiClock,
 } from 'react-icons/fi';
-import WorkCard from './WorkCard';
-import WorkCardList from './WorkCardList';
-import PaginationControls from '../PaginationControls';
-import AnimatedMusicalNotes2 from '../AnimatedMusicalNotes2';
-import GenreSearchInput from '../GenreSearchInput';
-import ComposerSearchInput from '../ComposerSearchInput';
-import ViewModeToggle from '../ViewModeToggle';
+import WorkCard from '../../components/WorksClient/WorkCard';
+import WorkCardList from '../../components/WorksClient/WorkCardList';
+import PaginationControls from '../../components/PaginationControls';
+import AnimatedMusicalNotes2 from '../../components/AnimatedMusicalNotes2';
+import GenreSearchInput from '../../components/GenreSearchInput';
+import ComposerSearchInput from '../../components/ComposerSearchInput';
+import ViewModeToggle from '../../components/ViewModeToggle';
 import {
   PageContainer,
   AnimatedContainer,
   AnimatedItem,
   AnimatedCard,
   SequentialGrid,
-} from '../animation/AnimatedComponents';
+} from '../../components/animation/AnimatedComponents';
 import { useComposerName } from '@/app/hooks/useComposerName';
-import Select from '../Common/Select';
+import Select from '../../components/Common/Select';
 
 interface WorksClientProps {
   worksData: WorksListResponse;

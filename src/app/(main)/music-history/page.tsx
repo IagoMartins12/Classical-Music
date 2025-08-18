@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { MusicHistoryPageServer } from './MusicHistoryPageServer';
+import { MusicHistoryPageServer } from './pageServer';
 import LoadingSkeleton from './loading';
 
 export const metadata = {

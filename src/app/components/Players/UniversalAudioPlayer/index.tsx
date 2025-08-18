@@ -49,7 +49,7 @@ export interface Work {
   customAudioUrl?: string | null;
   customAudioFile?: string | null;
   customAudioSource?: string | null;
-  customAudioMetadata?: Record<string, any>;
+  customAudioMetadata?: any;
 }
 
 export interface CustomAudio {

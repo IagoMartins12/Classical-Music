@@ -1,4 +1,4 @@
-import { MusicHistoryPageClient } from '@/app/components/MusicHistoryPageClient';
+import { MusicHistoryPageClient } from '@/app/(main)/music-history/pageClient';
 import {
   getComposersByEpoch,
   getEpochsHistoricalData,

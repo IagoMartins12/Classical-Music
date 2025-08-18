@@ -1,7 +1,7 @@
 // app/composer/[composerId]/page.tsx
 import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
-import ComposerDetailsServer from './ComposerDetailsServer';
+import ComposerDetailsServer from './pageServer';
 import { getComposerById } from '@/app/requests/composer-details';
 import ComposerDetailsLoading from './loading';
 

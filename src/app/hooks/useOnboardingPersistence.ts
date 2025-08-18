@@ -123,7 +123,7 @@ const getBackupStats = () => {
               step: parsed.step || 1,
             });
           }
-        } catch (error) {
+        } catch {
           // Ignora backups corrompidos
         }
       }
@@ -141,7 +141,7 @@ const getBackupStats = () => {
           : null,
       users: [...new Set(backups.map((b) => b.userId))].length,
     };
-  } catch (error) {
+  } catch {
     return { total: 0, oldest: null, newest: null, users: 0 };
   }
 };

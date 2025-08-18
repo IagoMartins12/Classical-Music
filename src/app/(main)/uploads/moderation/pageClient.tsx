@@ -31,10 +31,10 @@ import Button from '@/app/components/Common/Button';
 import ReportHistoryModal from '@/app/components/Report/ReportHistoryModal';
 import VerificationBadge from '@/app/components/Verification/VerificationBadge';
 import { REPORT_REASONS } from '@/app/utils/reportHelpers';
-import BulkReportActions from '../../Report/BulkReportActions';
-import ReportPriorityBadge from '../../Report/ReportPriorityBadge';
+import BulkReportActions from '../../../components/Report/BulkReportActions';
+import ReportPriorityBadge from '../../../components/Report/ReportPriorityBadge';
 import { useToast } from '@/app/hooks/useToast';
-import Input from '../../Common/Inputs';
+import Input from '../../../components/Common/Inputs';
 
 interface ModerationClientProps {
   page: number;

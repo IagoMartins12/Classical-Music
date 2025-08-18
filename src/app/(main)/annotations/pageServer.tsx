@@ -2,7 +2,7 @@
 
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../libs/auth';
-import AnnotationsPageClient from '../../components/Annotations/AnnotationsPageClient';
+import AnnotationsPageClient from './pageClient';
 
 export default async function AnnotationsPageServer() {
   const session = await getServerSession(authOptions);

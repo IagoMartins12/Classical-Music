@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 import {
   FiCheckSquare,
   FiSquare,
-  FiExternalLink,
   FiShield,
   FiFileText,
   FiAlertCircle,
@@ -251,9 +250,9 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
         <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
           <h4 className="font-semibold text-accent-red mb-2">⚠️ Limitações</h4>
           <p className="text-accent-red/90">
-            A plataforma é fornecida "como está". Não garantimos precisão
-            absoluta de todas as informações musicais. Use por sua conta e
-            risco.
+            A plataforma é fornecida &quot;como está&quot;. Não garantimos
+            precisão absoluta de todas as informações musicais. Use por sua
+            conta e risco.
           </p>
         </div>
       </div>

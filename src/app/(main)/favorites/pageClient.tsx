@@ -16,11 +16,11 @@ import {
 } from 'react-icons/fi';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import Image from 'next/image';
-import FavoriteButton from '../FavoriteButton';
-import EmptyStateFavorites from './EmptyStateFavorites';
-import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
-import FavoriteScoreButton from '../FavoriteScoreButton';
-import MostFavoritedBadge from '../MostFavoritedBadge';
+import FavoriteButton from '../../components/FavoriteButton';
+import EmptyStateFavorites from '../../components/favorites/EmptyStateFavorites';
+import ViewModeToggle, { ViewMode } from '../../components/ViewModeToggle';
+import FavoriteScoreButton from '../../components/FavoriteScoreButton';
+import MostFavoritedBadge from '../../components/MostFavoritedBadge';
 
 // Importar componentes de animação
 import {
@@ -29,7 +29,7 @@ import {
   AnimatedItem,
   AnimatedCard,
   SequentialGrid,
-} from '../animation/AnimatedComponents';
+} from '../../components/animation/AnimatedComponents';
 
 // 🆕 Atualizar tipo para incluir 'scores'
 type FilterTab = 'all' | 'composers' | 'works' | 'scores';

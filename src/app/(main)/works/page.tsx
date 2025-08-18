@@ -1,7 +1,7 @@
 // app/works/page.tsx - VERSÃO ULTRA OTIMIZADA
 import { Suspense } from 'react';
 import { unstable_cache } from 'next/cache';
-import WorksServer from './WorksServer';
+import WorksServer from './pageServer';
 import WorksLoading from './loading';
 
 interface WorksPageProps {

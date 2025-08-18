@@ -10,7 +10,7 @@ import {
   FiChevronRight,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
-import { ComposerImslp } from '..';
+import { ComposerImslp } from '../../../(main)/composers/pageClient';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 

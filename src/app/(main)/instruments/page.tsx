@@ -1,6 +1,6 @@
 // app/instruments/page.tsx
 import { Metadata } from 'next';
-import { InstrumentsPageServer } from './InstrumentsPageServer';
+import { InstrumentsPageServer } from './pageServer';
 
 export const metadata: Metadata = {
   title: 'Instrumentos Históricos | Enciclopédia Musical',

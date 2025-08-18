@@ -18,10 +18,10 @@ import {
   useLearningModalStore,
   type SelectedWorkScore,
 } from '@/app/stores/useLearningModalStore';
-import { EmptyState } from './EmptyState';
-import { LearningCard } from './LearningCard';
-import Select from '../Common/Select';
-import ViewModeToggle, { ViewMode } from '../ViewModeToggle';
+import { EmptyState } from '../../components/LearningPageClient/EmptyState';
+import { LearningCard } from '../../components/LearningPageClient/LearningCard';
+import Select from '../../components/Common/Select';
+import ViewModeToggle, { ViewMode } from '../../components/ViewModeToggle';
 import { PiTarget } from 'react-icons/pi';
 import {
   PageContainer,
@@ -29,8 +29,8 @@ import {
   AnimatedItem,
   AnimatedCard,
   SequentialGrid,
-} from '../animation/AnimatedComponents';
-import LearningModal from '../LearningModal';
+} from '../../components/animation/AnimatedComponents';
+import LearningModal from '../../components/LearningModal';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 type FilterTab = 'all' | 'want-to-learn' | 'learned';

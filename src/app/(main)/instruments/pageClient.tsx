@@ -24,8 +24,8 @@ import { GiGrandPiano, GiViolin, GiHarp, GiPipeOrgan } from 'react-icons/gi';
 import { IoIosTrendingUp } from 'react-icons/io';
 import { MdMusicNote } from 'react-icons/md';
 import Link from 'next/link';
-import FloatingIcons from '../FloatingIcons';
-import AnimatedMusicalNotes from '../AnimatedMusicalNotes';
+import FloatingIcons from '../../components/FloatingIcons';
+import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
 import Image from 'next/image';
 
 interface Composer {
@@ -883,7 +883,6 @@ export function InstrumentsPageClient({
         className="fixed bottom-20 right-4 w-1.5 h-1.5 bg-accent-blue/30 rounded-full animate-pulse z-20"
         style={{ animationDelay: '0.5s' }}
       ></div>
-
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 import { Suspense } from 'react';
 import ProfileSkeleton from './loading';
-import ProfilePageClient from '../../components/profile/ProfilePageClient';
+import ProfilePageClient from './pageClient';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../libs/auth';
 import AuthCheck from '../../components/AuthCheck';

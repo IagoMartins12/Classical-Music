@@ -17,7 +17,6 @@ import {
   GiMetronome,
 } from 'react-icons/gi';
 import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
-import Button from './Button';
 import Link from 'next/link';
 
 // Importar componentes de animação
@@ -29,6 +28,7 @@ import {
   SequentialGrid,
   FloatingElement,
 } from '../../components/animation/AnimatedComponents';
+import AboutUsButton from './AboutUsButton';
 
 export default function AboutPage() {
   const features = [
@@ -127,7 +127,7 @@ export default function AboutPage() {
 
               <AnimatedItem direction="up" springType="gentle">
                 <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
-                  <Button action="register" />
+                  <AboutUsButton action="register" />
                   <Link
                     href="/composers"
                     className="btn-classical-secondary flex items-center justify-center space-x-2 px-8 py-4 text-lg"
@@ -358,7 +358,7 @@ export default function AboutPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                <Button action="login" />
+                <AboutUsButton action="login" />
 
                 <Link
                   href="/"

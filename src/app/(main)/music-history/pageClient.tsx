@@ -2,11 +2,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { HeroSection } from '../HeroSection';
-import { NavigationTabs } from '../NavigationTabs';
-import { EpochSection } from '../EpochSection';
-import { ComposersTimeline } from '../ComposerTimeline';
-import { DetailedMusicHistory } from '../DetailedMusicHistory';
+import { HeroSection } from '../../components/HeroSection';
+import { NavigationTabs } from '../../components/NavigationTabs';
+import { EpochSection } from '../../components/EpochSection';
+import { ComposersTimeline } from '../../components/ComposerTimeline';
+import { DetailedMusicHistory } from '../../components/DetailedMusicHistory';
 
 interface Composer {
   id: string;

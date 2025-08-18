@@ -12,8 +12,8 @@ import {
   FiChevronDown,
   FiChevronUp,
 } from 'react-icons/fi';
-import AnimatedMusicalNotes2 from '../AnimatedMusicalNotes2';
-import ViewModeToggle from '../ViewModeToggle';
+import AnimatedMusicalNotes2 from '../../components/AnimatedMusicalNotes2';
+import ViewModeToggle from '../../components/ViewModeToggle';
 
 interface Genre {
   id: string;

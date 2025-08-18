@@ -158,56 +158,6 @@ const RecentActivities = ({
     return <FiActivity className="w-4 h-4 text-gray-600" />;
   };
 
-  // Função para obter cor da ação
-  const getActionColor = (action: string) => {
-    if (userType === 'teacher') {
-      switch (action) {
-        case 'STUDENT_ADDED':
-        case 'LESSON_CREATED':
-        case 'ASSIGNMENT_CREATED':
-          return ' text-green-700 border-green-200';
-        case 'LESSON_UPDATED':
-        case 'ASSIGNMENT_UPDATED':
-        case 'LESSON_STATUS_CHANGED':
-          return 'text-orange-700 border-orange-200';
-        case 'ASSIGNMENT_FEEDBACK_GIVEN':
-          return 'text-yellow-700 border-yellow-200';
-        case 'LESSON_NOTES_ADDED':
-          return 'text-indigo-700 border-indigo-200';
-        case 'WELCOME_NEW_STUDENT':
-        case 'WELCOME_NEW_TEACHER':
-          return 'text-yellow-700 border-yellow-200';
-        case 'STUDENT_DECLINED_INVITE':
-          return ' text-red-700 border-red-200';
-        default:
-          return 'bg-gray-50 text-gray-700 border-gray-200';
-      }
-    }
-
-    if (userType === 'student') {
-      switch (action) {
-        case 'ASSIGNMENT_SUBMISSION':
-        case 'ASSIGNMENT_COMPLETED':
-          return 'text-green-700 border-green-200';
-        case 'LESSON_FEEDBACK_GIVEN':
-          return ' text-blue-700 border-blue-200';
-        case 'LESSON_RESCHEDULE_REQUESTED':
-          return 'text-orange-700 border-orange-200';
-        case 'LESSON_ABSENCE_INFORMED':
-          return ' text-red-700 border-red-200';
-        case 'WELCOME_NEW_STUDENT':
-        case 'WELCOME_NEW_TEACHER':
-          return 'text-yellow-700 border-yellow-200';
-        case 'STUDENT_DECLINED_INVITE':
-          return ' text-red-700 border-red-200';
-        default:
-          return 'bg-gray-50 text-gray-700 border-gray-200';
-      }
-    }
-
-    return 'bg-gray-50 text-gray-700 border-gray-200';
-  };
-
   // Função para obter rótulo amigável da ação
   const getActionLabel = (action: string) => {
     const labels: Record<string, string> = {

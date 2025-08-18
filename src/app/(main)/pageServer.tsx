@@ -20,7 +20,6 @@ import ComposersByEpoch from '../components/ComposersByEpoch';
 import RandomDiscoveries from '../components/RandomDiscoveries';
 import RecentAdditions from '../components/RecentAdditions';
 import MusicalFacts from '../components/MusicalFacts';
-import AdContainer from '../components/Ads/AdContainer';
 
 export default async function EnhancedHomePage() {
   // Buscar todos os dados em paralelo para melhor performance

@@ -1,7 +1,7 @@
 // app/genres/page.tsx
 import { getAllWorkGenres } from '@/app/requests/work-details';
 import { Metadata } from 'next';
-import GenresClient from '../../components/GenresClient';
+import GenresClient from './pageClient';
 
 export const metadata: Metadata = {
   title: 'Gêneros Musicais | Enciclopédia de Música Clássica',
