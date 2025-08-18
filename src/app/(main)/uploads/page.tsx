@@ -1,12 +1,16 @@
-// app/uploads/page.tsx - ATUALIZADO COM VERIFICAÇÃO DE EMAIL
+// ================================
+// app/uploads/page.tsx - CORRIGIDO
+// ================================
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
+import { Suspense } from 'react';
 
 import UploadsPageServer from './pageServer';
 import AuthCheck from '@/app/components/AuthCheck';
 import EmailVerificationRequired from '@/app/components/VerificationsProviders/EmailVerificationRequired';
 import { authOptions } from '@/app/libs/auth';
 import { getUserById } from '@/app/actions/auth';
+import { FormPageLoading } from '@/app/wrappers/SuspenseWrapper';
 
 export const metadata: Metadata = {
   title: 'Meus Uploads | Classical Music App',
@@ -27,19 +31,16 @@ export default async function UploadsPage({
 }) {
   const session = await getServerSession(authOptions);
 
-  // Verificar se usuário está logado
   if (!session?.user?.id) {
     return <AuthCheck title="Meus Uploads" />;
   }
 
-  // 🆕 NOVO: Buscar dados completos do usuário para verificar email
   const userData = await getUserById(session.user.id);
 
   if (!userData) {
     return <AuthCheck title="Meus Uploads" />;
   }
 
-  // 🆕 NOVO: Verificar se o email foi confirmado
   if (!userData.emailVerified && userData.email) {
     return (
       <EmailVerificationRequired
@@ -49,7 +50,6 @@ export default async function UploadsPage({
     );
   }
 
-  // Se chegou aqui, o email está verificado - continuar normalmente
   const resolvedSearchParams = await searchParams;
   const page = Number(resolvedSearchParams.page) || 1;
   const search = resolvedSearchParams.search || '';
@@ -59,15 +59,17 @@ export default async function UploadsPage({
   const workId = resolvedSearchParams.work || '';
 
   return (
-    <UploadsPageServer
-      page={page}
-      search={search}
-      type={type}
-      epochId={epochId}
-      composerId={composerId}
-      workId={workId}
-      userId={session.user.id}
-      userRole={session.user.role || 0}
-    />
+    <Suspense fallback={<FormPageLoading />}>
+      <UploadsPageServer
+        page={page}
+        search={search}
+        type={type}
+        epochId={epochId}
+        composerId={composerId}
+        workId={workId}
+        userId={session.user.id}
+        userRole={session.user.role || 0}
+      />
+    </Suspense>
   );
 }

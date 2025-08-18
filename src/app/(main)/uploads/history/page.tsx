@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
-import HistoryClient from '@/app/(main)/uploads/history/pageClient';
+import HistoryClient from './pageClient';
 import { Suspense } from 'react';
 import HistoryLoading from './loading';
 

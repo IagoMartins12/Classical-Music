@@ -3,7 +3,9 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import AdminAnalytics from '@/app/components/Admin/Analytics/AdminAnalytics';
+import LoadingAdminState from '@/app/components/Admin/Common/LoadingState';
 
 export const metadata: Metadata = {
   title: 'Analytics | Admin Panel',
@@ -18,5 +20,15 @@ export default async function AdminAnalyticsPage() {
     redirect('/');
   }
 
-  return <AdminAnalytics />;
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-primary">
+          <LoadingAdminState loadingName="analytics" />
+        </div>
+      }
+    >
+      <AdminAnalytics />
+    </Suspense>
+  );
 }

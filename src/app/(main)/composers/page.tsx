@@ -1,4 +1,7 @@
+// app/composers/page.tsx - CORRIGIDO
+import { Suspense } from 'react';
 import ComposersServer from './pageServer';
+import { ListPageLoading } from '@/app/wrappers/SuspenseWrapper';
 
 export const metadata = {
   title: 'Compositores Clássicos - Lista Completa',
@@ -8,7 +11,6 @@ export const metadata = {
 
 export const revalidate = 3600;
 
-// A função agora é async e searchParams é uma Promise
 export default async function ComposersPage({
   searchParams,
 }: {
@@ -18,12 +20,14 @@ export default async function ComposersPage({
     epoch?: string;
   }>;
 }) {
-  // Aguarde a resolução dos searchParams
   const resolvedSearchParams = await searchParams;
-
   const page = Number(resolvedSearchParams.page) || 1;
   const search = resolvedSearchParams.search || '';
   const epochId = resolvedSearchParams.epoch || '';
 
-  return <ComposersServer page={page} search={search} epochId={epochId} />;
+  return (
+    <Suspense fallback={<ListPageLoading />}>
+      <ComposersServer page={page} search={search} epochId={epochId} />
+    </Suspense>
+  );
 }

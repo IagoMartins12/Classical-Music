@@ -4,6 +4,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
 import ModerationClient from '@/app/(main)/uploads/moderation/pageClient';
+import { Suspense } from 'react';
+import LoadingAdminState from '@/app/components/Admin/Common/LoadingState';
 
 export const metadata: Metadata = {
   title: 'Moderação de Uploads | Classical Music App',
@@ -28,5 +30,15 @@ export default async function ModerationPage({
   const page = Number(resolvedSearchParams.page) || 1;
   const status = resolvedSearchParams.status || 'pending';
 
-  return <ModerationClient page={page} status={status} />;
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-primary">
+          <LoadingAdminState loadingName="analytics" />
+        </div>
+      }
+    >
+      <ModerationClient page={page} status={status} />
+    </Suspense>
+  );
 }

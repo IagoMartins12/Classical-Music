@@ -1,7 +1,10 @@
-// app/public/teachers/page.tsx - Página Pública de Professores
-
+// ================================
+// app/public/teachers/page.tsx - CORRIGIDO
+// ================================
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import PublicTeachersPageServer from './pageServer';
+import { ListPageLoading } from '@/app/wrappers/SuspenseWrapper';
 
 export const metadata: Metadata = {
   title: 'Conheça Nossos Professores | Opus Atlas',
@@ -9,25 +12,6 @@ export const metadata: Metadata = {
     'Encontre o professor ideal para suas aulas de música. Navegue por perfis verificados, especialidades e avaliações de alunos.',
   keywords:
     'professores de música, aulas de música, professores particulares, ensino musical, instrumento musical, aulas online',
-  openGraph: {
-    title: 'Professores de Música - Opus Atlas',
-    description:
-      'Descubra professores talentosos e experientes para sua jornada musical',
-    type: 'website',
-    images: [
-      {
-        url: '/images/og-teachers.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'Professores de Música - Opus Atlas',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Professores de Música - Opus Atlas',
-    description: 'Encontre o professor ideal para suas aulas de música',
-  },
 };
 
 interface PublicTeachersPageProps {
@@ -58,5 +42,9 @@ export default async function PublicTeachersPage({
     page: parseInt(resolvedSearchParams?.page || '1'),
   };
 
-  return <PublicTeachersPageServer filters={filters} />;
+  return (
+    <Suspense fallback={<ListPageLoading />}>
+      <PublicTeachersPageServer filters={filters} />
+    </Suspense>
+  );
 }
