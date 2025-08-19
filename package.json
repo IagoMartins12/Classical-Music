@@ -115,6 +115,7 @@
     "recharts": "^2.15.3",
     "sharp": "^0.34.2",
     "systeminformation": "^5.27.7",
+    "ts-morph": "^26.0.0",
     "uuid": "^11.1.0",
     "xlsx": "^0.18.5",
     "zod": "^3.25.64",

@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import {
   FiHeart,
@@ -30,11 +29,8 @@ import {
   FloatingElement,
 } from '../../components/animation/AnimatedComponents';
 import AboutUsButton from './AboutUsButton';
-import { useTranslation } from '@/app/hooks/useTranslation';
 
 export default function AboutPage() {
-  const { t } = useTranslation({ sections: ['page/aboutUs'] });
-
   const features = [
     {
       icon: GiMusicalNotes,
@@ -107,23 +103,25 @@ export default function AboutPage() {
                 <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-8">
                   <GiGrandPiano className="w-5 h-5 text-brand-primary mr-2" />
                   <span className="text-brand-primary font-medium">
-                    {t('aboutUs_jsx_span_children_0__welcome')}
+                    Bem-vindo ao Opus Atlas
                   </span>
                 </div>
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
                 <h1 className="text-4xl lg:text-6xl font-bold classical-title text-theme-primary mb-6">
-                  {t('aboutUs_jsx_h1_children_0__sua_jornada_pela')}
+                  Sua jornada pela
                   <span className="text-gradient-brand block lg:inline lg:ml-4">
-                    {t('aboutUs_jsx_span_children_0__music')}
+                    música clássica
                   </span>
                 </h1>
               </AnimatedItem>
 
               <AnimatedItem direction="up" springType="gentle">
                 <p className="text-xl lg:text-2xl text-theme-secondary leading-relaxed classical-body">
-                  {t('aboutUs_jsx_p_children_0__music')}
+                  Descubra, aprenda e domine o universo da música clássica com a
+                  plataforma mais completa para estudantes, professores e
+                  entusiastas musicais.
                 </p>
               </AnimatedItem>
 
@@ -135,9 +133,7 @@ export default function AboutPage() {
                     className="btn-classical-secondary flex items-center justify-center space-x-2 px-8 py-4 text-lg"
                   >
                     <FiBookOpen className="w-5 h-5" />
-                    <span>
-                      {t('aboutUs_jsx_span_children_0__explore_enciclopédia')}
-                    </span>
+                    <span>Explore a Enciclopédia</span>
                   </Link>
                 </div>
               </AnimatedItem>
@@ -158,21 +154,27 @@ export default function AboutPage() {
                 <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-blue/20 to-accent-purple/20 border border-accent-blue/30 rounded-full">
                   <FiTarget className="w-4 h-4 text-accent-blue mr-2" />
                   <span className="text-accent-blue font-medium text-sm">
-                    {t('aboutUs_jsx_span_children_0__nossa_missão')}
+                    Nossa Missão
                   </span>
                 </div>
 
                 <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary">
-                  {t('aboutUs_jsx_h2_children_0__music')}
+                  Transformando o aprendizado da música clássica
                 </h2>
 
                 <div className="space-y-6">
                   <p className="text-lg text-theme-secondary leading-relaxed classical-body">
-                    {t('aboutUs_jsx_p_children_0__music_1')}
+                    Nascemos da paixão pela música clássica e da percepção de
+                    que faltava uma plataforma verdadeiramente completa para o
+                    estudo e apreciação deste universo musical rico e complexo.
                   </p>
 
                   <p className="text-lg text-theme-secondary leading-relaxed classical-body">
-                    {t('aboutUs_jsx_p_children_0__study')}
+                    O Opus Atlas foi criado para ser mais que uma simples
+                    enciclopédia. Somos um ecossistema educacional que combina
+                    conhecimento histórico com ferramentas práticas de estudo,
+                    criando uma experiência única para músicos de todos os
+                    níveis.
                   </p>
 
                   <AnimatedCard
@@ -184,10 +186,12 @@ export default function AboutPage() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-theme-primary classical-title mb-2">
-                        {t('aboutUs_jsx_h3_children_0__music')}
+                        Democratizando a Música Clássica
                       </h3>
                       <p className="text-theme-secondary">
-                        {t('aboutUs_jsx_p_children_0__music_2')}
+                        Acreditamos que todos devem ter acesso às maravilhas da
+                        música clássica, independentemente de seu background
+                        musical ou econômico.
                       </p>
                     </div>
                   </AnimatedCard>
@@ -207,51 +211,47 @@ export default function AboutPage() {
                     <div className="grid grid-cols-2 gap-6">
                       <div className="text-center">
                         <div className="text-3xl font-bold text-brand-primary classical-title">
-                          {t('aboutUs_jsx_div_children_0__text')}
+                          1000+
                         </div>
                         <div className="text-theme-tertiary text-sm">
-                          {t('aboutUs_jsx_div_children_0__composer')}
+                          Compositores
                         </div>
                       </div>
                       <div className="text-center">
                         <div className="text-3xl font-bold text-brand-primary classical-title">
-                          {t('aboutUs_jsx_div_children_0__text_1')}
+                          5000+
                         </div>
-                        <div className="text-theme-tertiary text-sm">
-                          {t('aboutUs_jsx_div_children_0__peças')}
-                        </div>
+                        <div className="text-theme-tertiary text-sm">Peças</div>
                       </div>
                     </div>
 
                     <div className="mt-8 pt-6 border-t border-theme-secondary">
                       <h4 className="font-semibold text-theme-primary classical-title mb-4">
-                        {t('aboutUs_jsx_h4_children_0__recursos_disponíveis')}
+                        Recursos Disponíveis
                       </h4>
                       <div className="space-y-3">
                         <div className="flex items-center space-x-3">
                           <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                           <span className="text-theme-secondary text-sm">
-                            {t(
-                              'aboutUs_jsx_span_children_0__biografias_detalhadas'
-                            )}
+                            Biografias detalhadas
                           </span>
                         </div>
                         <div className="flex items-center space-x-3">
                           <div className="w-2 h-2 bg-accent-blue rounded-full"></div>
                           <span className="text-theme-secondary text-sm">
-                            {t('aboutUs_jsx_span_children_0__score')}
+                            Partituras e áudios
                           </span>
                         </div>
                         <div className="flex items-center space-x-3">
                           <div className="w-2 h-2 bg-accent-purple rounded-full"></div>
                           <span className="text-theme-secondary text-sm">
-                            {t('aboutUs_jsx_span_children_0__study')}
+                            Ferramentas de estudo
                           </span>
                         </div>
                         <div className="flex items-center space-x-3">
                           <div className="w-2 h-2 bg-accent-green rounded-full"></div>
                           <span className="text-theme-secondary text-sm">
-                            {t('aboutUs_jsx_span_children_0__comunidade_ativa')}
+                            Comunidade ativa
                           </span>
                         </div>
                       </div>
@@ -272,16 +272,17 @@ export default function AboutPage() {
               <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-accent-purple/20 to-accent-blue/20 border border-accent-purple/30 rounded-full mb-6">
                 <FiStar className="w-4 h-4 text-accent-purple mr-2" />
                 <span className="text-accent-purple font-medium text-sm">
-                  {t('aboutUs_jsx_span_children_0__funcionalidades')}
+                  Funcionalidades
                 </span>
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
-                {t('aboutUs_jsx_h2_children_0__tudo_precisa_lugar')}
+                Tudo que você precisa em um só lugar
               </h2>
 
               <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-body">
-                {t('aboutUs_jsx_p_children_0__music_3')}
+                Uma plataforma completa que combina conhecimento enciclopédico
+                com ferramentas práticas para elevar sua experiência musical.
               </p>
             </div>
 
@@ -308,12 +309,12 @@ export default function AboutPage() {
               <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-brand-primary/20 to-brand-secondary/20 border border-brand-primary/30 rounded-full mb-6">
                 <FiHeart className="w-4 h-4 text-brand-primary mr-2" />
                 <span className="text-brand-primary font-medium text-sm">
-                  {t('aboutUs_jsx_span_children_0__nossos_valores')}
+                  Nossos Valores
                 </span>
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
-                {t('aboutUs_jsx_h2_children_0__princípios_nos_guiam')}
+                Princípios que nos guiam
               </h2>
             </div>
 
@@ -347,11 +348,13 @@ export default function AboutPage() {
               </div>
 
               <h2 className="text-3xl lg:text-4xl font-bold classical-title text-theme-primary mb-6">
-                {t('aboutUs_jsx_h2_children_0__pronto_começar_sua')}
+                Pronto para começar sua jornada?
               </h2>
 
               <p className="text-xl text-theme-secondary mb-12 classical-body">
-                {t('aboutUs_jsx_p_children_0__music_4')}
+                Junte-se a milhares de músicos que já descobriram uma nova forma
+                de estudar e apreciar a música clássica. Comece gratuitamente
+                hoje mesmo.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -362,30 +365,22 @@ export default function AboutPage() {
                   className="btn-classical-secondary flex items-center justify-center space-x-3 px-10 py-4 text-lg"
                 >
                   <FiHeadphones className="w-5 h-5" />
-                  <span>
-                    {t('aboutUs_jsx_span_children_0__explorar_cadastro')}
-                  </span>
+                  <span>Explorar Sem Cadastro</span>
                 </Link>
               </div>
 
               <div className="flex items-center justify-center space-x-8 mt-12 pt-8 border-t border-theme-secondary">
                 <div className="flex items-center space-x-2 text-theme-tertiary">
                   <FiUsers className="w-4 h-4" />
-                  <span className="text-sm">
-                    {t('aboutUs_jsx_span_children_0__user')}
-                  </span>
+                  <span className="text-sm">10.000+ usuários</span>
                 </div>
                 <div className="flex items-center space-x-2 text-theme-tertiary">
                   <FiStar className="w-4 h-4" />
-                  <span className="text-sm">
-                    {t('aboutUs_jsx_span_children_0__avaliação')}
-                  </span>
+                  <span className="text-sm">Avaliação 4.9/5</span>
                 </div>
                 <div className="flex items-center space-x-2 text-theme-tertiary">
                   <FiAward className="w-4 h-4" />
-                  <span className="text-sm">
-                    {t('aboutUs_jsx_span_children_0__totalmente_gratuito')}
-                  </span>
+                  <span className="text-sm">Totalmente gratuito</span>
                 </div>
               </div>
             </AnimatedCard>

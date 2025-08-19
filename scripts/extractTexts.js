@@ -1,730 +1,742 @@
-// scripts/extractTexts.js - VERSÃO COMPLETA CORRIGIDA COM SUPORTE A DIRETÓRIOS
+// scripts/extractTexts.js - VERSÃO ROBUSTA E SEGURA COMPLETA
 // Uso: node scripts/extractTexts.js <arquivo> <seção> [opções]
-// Exemplos:
-//   node scripts/extractTexts.js src/app/components/Navbar/index.tsx navbar
-//   node scripts/extractTexts.js src/app/components/Navbar/index.tsx components/navbar
-//   node scripts/extractTexts.js src/app/components/Works/DetailView.tsx works/detail-view
 
 const fs = require('fs');
 const path = require('path');
 const { parse } = require('@typescript-eslint/typescript-estree');
 
-class SmartTextExtractor {
+class RobustTextExtractor {
   constructor() {
     this.extractedTexts = new Map();
     this.keyCounter = new Map();
     this.sectionName = '';
-    this.sectionPath = ''; // ✅ NOVO: Caminho completo da seção
+    this.sectionPath = '';
     this.replacements = [];
     this.originalContent = '';
+    this.backupPath = '';
+
+    // Sistema de logs e métricas avançado
+    this.stats = {
+      totalNodesVisited: 0,
+      textNodesFound: 0,
+      validTextsExtracted: 0,
+      skippedByContext: 0,
+      skippedByContent: 0,
+      skippedByPattern: 0,
+      dangerousContextsDetected: 0,
+      safetyViolations: 0,
+      replacementsApplied: 0,
+      ignoredReasons: new Map(),
+    };
+
+    // Padrões de segurança baseados em produção
+    this.DANGEROUS_CONTEXTS = new Set([
+      'className',
+      'style',
+      'key',
+      'ref',
+      'href',
+      'src',
+      'action',
+      'method',
+      'onClick',
+      'onChange',
+      'onSubmit',
+      'onFocus',
+      'onBlur',
+      'onMouseOver',
+      'data-testid',
+      'data-cy',
+      'aria-label',
+      'role',
+      'tabIndex',
+      'console',
+      'import',
+      'export',
+      'require',
+      'from',
+    ]);
+
+    this.TECHNICAL_PATTERNS = [
+      /^[a-z]+-[a-z-]+$/, // kebab-case (CSS classes)
+      /^[A-Z_][A-Z0-9_]*$/, // CONSTANTS
+      /^use[A-Z][a-zA-Z]*$/, // React hooks
+      /^on[A-Z][a-zA-Z]*$/, // Event handlers
+      /^[a-z]+([A-Z][a-z]*){3,}$/, // camelCase muito longo
+      /^\$[a-zA-Z]/, // Template variables
+      /^\/[\/\w.-]*$/, // Paths
+      /^https?:\/\//, // URLs
+      /^#[a-fA-F0-9]{3,8}$/, // Colors
+      /^\d+(\.\d+)?(px|em|rem|vh|vw|%|s|ms)$/, // CSS units
+      /^(absolute|relative|fixed|static|sticky)$/, // CSS positions
+      /^(flex|grid|block|inline|none)$/, // CSS display
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i, // UUIDs
+    ];
+
+    this.CODE_KEYWORDS = new Set([
+      'function',
+      'const',
+      'let',
+      'var',
+      'if',
+      'else',
+      'return',
+      'import',
+      'export',
+      'class',
+      'interface',
+      'type',
+      'enum',
+      'namespace',
+      'module',
+      'declare',
+      'async',
+      'await',
+      'Promise',
+      'Observable',
+      'useState',
+      'useEffect',
+      'useCallback',
+      'useMemo',
+      'useRef',
+      'useContext',
+      'useReducer',
+      'true',
+      'false',
+      'null',
+      'undefined',
+      'NaN',
+      'Infinity',
+    ]);
+
+    this.SAFE_JSX_PARENTS = new Set([
+      'JSXElement',
+      'JSXFragment',
+      'JSXExpressionContainer',
+    ]);
   }
 
   /**
-   * ✅ CORRIGIDO: Extrai textos e aceita seções com diretórios
+   * Método principal de extração com validação robusta
    */
   async extractFromFile(filePath, sectionInput) {
-    console.log(`🔍 Analisando: ${filePath}`);
+    console.log(`🔍 Iniciando análise robusta: ${filePath}`);
     console.log(`📁 Seção: ${sectionInput}`);
 
-    // ✅ NOVO: Separar seção e path
-    this.sectionPath = sectionInput; // ex: "components/navbar"
-    this.sectionName = sectionInput.split('/').pop(); // ex: "navbar"
+    this.sectionPath = sectionInput;
+    this.sectionName = sectionInput.split('/').pop();
 
+    // Validações iniciais
     if (!fs.existsSync(filePath)) {
-      throw new Error(`Arquivo não encontrado: ${filePath}`);
+      throw new Error(`❌ Arquivo não encontrado: ${filePath}`);
     }
 
-    // Ler conteúdo original
     this.originalContent = fs.readFileSync(filePath, 'utf8');
 
-    // Criar backup
+    // Validar se é um arquivo React/TypeScript válido
+    if (!this.isValidReactFile()) {
+      throw new Error(`❌ Arquivo não é um componente React válido`);
+    }
+
     this.createBackup(filePath);
 
     try {
+      // Parse com configuração robusta
       const ast = parse(this.originalContent, {
         jsx: true,
         useJSXTextNode: true,
         range: true,
+        loc: true,
+        comment: true,
+        attachComments: true,
+        errorOnUnknownASTType: false,
+        errorOnTypeScriptSyntacticAndSemanticIssues: false,
       });
 
-      // Primeira passada: coletar textos e substituições
-      this.traverseAST(ast);
+      console.log('\n🔍 FASE 1: Análise estrutural do AST...');
+      this.analyzeASTStructure(ast);
 
-      // Segunda passada: aplicar substituições no código
-      const modifiedContent = this.applyReplacements();
+      console.log('\n🔍 FASE 2: Extração segura de textos...');
+      this.traverseASTSafely(ast);
 
-      // Terceira passada: adicionar imports e hooks
-      const finalContent = this.addImportsAndHooks(modifiedContent);
+      console.log('\n📊 FASE 3: Validação e análise de qualidade...');
+      this.validateExtractions();
 
-      // Salvar arquivo modificado
+      console.log('\n🔄 FASE 4: Aplicação segura de modificações...');
+      const modifiedContent = this.applyReplacementsSafely();
+
+      console.log('\n📦 FASE 5: Inserção de imports e hooks...');
+      const finalContent = this.addImportsAndHooksSafely(modifiedContent);
+
+      console.log('\n✅ FASE 6: Validação final e salvamento...');
+      this.validateFinalContent(finalContent);
+
       fs.writeFileSync(filePath, finalContent, 'utf8');
 
       const result = Object.fromEntries(this.extractedTexts);
-      console.log(`✅ Extraídos ${Object.keys(result).length} textos válidos`);
-      console.log(
-        `🔄 Realizadas ${this.replacements.length} substituições no código`
-      );
+      this.printFinalStats();
 
       return result;
     } catch (error) {
-      console.error(`❌ Erro ao analisar ${filePath}:`, error.message);
+      console.error(`❌ Erro durante processamento:`, error.message);
+      this.restoreFromBackup(filePath);
       throw error;
     }
   }
 
   /**
-   * Cria backup do arquivo original
+   * Validar se é um arquivo React válido
    */
-  createBackup(filePath) {
-    const backupPath = `${filePath}.backup.${Date.now()}`;
-    fs.copyFileSync(filePath, backupPath);
-    console.log(`💾 Backup criado: ${backupPath}`);
+  isValidReactFile() {
+    const content = this.originalContent;
+
+    // Verificar se tem imports do React ou JSX
+    const hasReactImport = /import.*React|import.*from\s+['"]react['"]/.test(
+      content
+    );
+    const hasJSX = /<[A-Z]/.test(content) || /<\w+/.test(content);
+    const hasExport = /export\s+(default\s+)?(function|const|class)/.test(
+      content
+    );
+
+    return (hasReactImport || hasJSX) && hasExport;
   }
 
   /**
-   * Navega pela AST extraindo textos e coletando posições para substituição
+   * Análise estrutural do AST para detectar padrões perigosos
    */
-  traverseAST(node, context = []) {
-    if (!node) return;
+  analyzeASTStructure(ast) {
+    let componentCount = 0;
+    let hookCount = 0;
+    let complexityScore = 0;
 
-    // Texto direto em JSX
-    if (node.type === 'JSXText') {
-      this.processTextWithReplacement(node, context, 'jsx_text');
+    const analyzer = (node, depth = 0) => {
+      if (depth > 50) {
+        console.warn(`⚠️ Profundidade excessiva detectada (${depth})`);
+        this.stats.safetyViolations++;
+        return;
+      }
+
+      // Detectar componentes
+      if (this.isReactComponent(node)) {
+        componentCount++;
+      }
+
+      // Detectar hooks
+      if (this.isHookCall(node)) {
+        hookCount++;
+      }
+
+      // Calcular complexidade
+      if (
+        node.type === 'ConditionalExpression' ||
+        node.type === 'IfStatement'
+      ) {
+        complexityScore += 2;
+      }
+      if (node.type === 'CallExpression') {
+        complexityScore += 1;
+      }
+
+      // Recursão segura
+      for (const key in node) {
+        const child = node[key];
+        if (Array.isArray(child)) {
+          child.forEach(
+            (item) =>
+              item && typeof item === 'object' && analyzer(item, depth + 1)
+          );
+        } else if (child && typeof child === 'object') {
+          analyzer(child, depth + 1);
+        }
+      }
+    };
+
+    analyzer(ast);
+
+    console.log(`📊 Análise estrutural:`);
+    console.log(`   • Componentes: ${componentCount}`);
+    console.log(`   • Hooks: ${hookCount}`);
+    console.log(`   • Complexidade: ${complexityScore}`);
+
+    // Determinar se é seguro para transformação
+    if (complexityScore > 100) {
+      console.warn(`⚠️ Componente muito complexo (score: ${complexityScore})`);
+      this.stats.safetyViolations++;
+    }
+  }
+
+  /**
+   * Travessia segura do AST com validação em múltiplas camadas
+   */
+  traverseASTSafely(node, context = [], depth = 0, parentNode = null) {
+    if (!node || depth > 50) {
+      if (depth > 50) this.stats.safetyViolations++;
+      return;
     }
 
-    // Strings em atributos JSX específicos
+    this.stats.totalNodesVisited++;
+
+    // Log detalhado para debug
+    if (depth < 3 && process.env.DEBUG_AST) {
+      console.log(
+        `${'  '.repeat(depth)}📍 ${node.type} (${context.join(' → ')})`
+      );
+    }
+
+    // 1. Textos diretos em JSX (mais seguros)
+    if (node.type === 'JSXText') {
+      this.processTextNodeSafely(node, context, 'jsx_text', parentNode);
+    }
+
+    // 2. Atributos JSX seguros
     if (node.type === 'JSXAttribute' && node.value?.type === 'Literal') {
       const attrName = node.name?.name;
-
-      if (
-        this.isVisibleAttribute(attrName) &&
-        typeof node.value.value === 'string'
-      ) {
-        this.processTextWithReplacement(
+      if (this.isAttributeSafe(attrName)) {
+        this.processTextNodeSafely(
           node.value,
-          [...context, attrName],
-          'attribute'
+          [...context, `attr:${attrName}`],
+          'jsx_attribute',
+          node
         );
       }
     }
 
-    // Strings em propriedades de objetos
+    // 3. Propriedades de objetos (validação rigorosa)
     if (
       node.type === 'Property' &&
-      node.key?.type === 'Literal' &&
       node.value?.type === 'Literal' &&
       typeof node.value.value === 'string'
     ) {
-      const propName = node.key.value;
-      if (this.isVisibleProperty(propName)) {
-        this.processTextWithReplacement(
+      const propName = this.getPropertyName(node.key);
+      if (this.isPropertySafe(propName, context)) {
+        this.processTextNodeSafely(
           node.value,
-          [...context, propName],
-          'property'
+          [...context, `prop:${propName}`],
+          'object_property',
+          node
         );
       }
     }
 
-    // Arrays de objetos (para options de Select)
+    // 4. Arrays de objetos (contexto específico)
     if (node.type === 'ArrayExpression') {
-      node.elements?.forEach((element) => {
-        if (element?.type === 'ObjectExpression') {
-          element.properties?.forEach((prop) => {
-            if (
-              prop.type === 'Property' &&
-              prop.key?.type === 'Literal' &&
-              prop.value?.type === 'Literal' &&
-              typeof prop.value.value === 'string'
-            ) {
-              const propName = prop.key.value;
-              if (this.isVisibleProperty(propName)) {
-                this.processTextWithReplacement(
-                  prop.value,
-                  [...context, 'option', propName],
-                  'array_property'
-                );
-              }
-            }
-          });
-        }
-      });
+      this.processArrayExpressionSafely(node, context, depth);
     }
 
-    // Template literals
+    // 5. Objetos standalone
+    if (node.type === 'ObjectExpression') {
+      this.processObjectExpressionSafely(node, context, depth);
+    }
+
+    // 6. Template literals (muito cuidadoso)
     if (node.type === 'TemplateLiteral') {
-      node.quasis?.forEach((quasi) => {
-        if (quasi.value?.raw) {
-          const rawText = quasi.value.raw;
-
-          // 🆕 FILTRO: Não processar template literals que contêm código CSS/JS
-          if (this.isTemplateWithCode(rawText)) {
-            console.log(`🚫 Ignorado (template com código): "${rawText}"`);
-            return;
-          }
-
-          // Para template literals válidos, criar pseudo-node com posição
-          const pseudoNode = {
-            type: 'Literal',
-            value: rawText,
-            range: quasi.range,
-          };
-          this.processTextWithReplacement(pseudoNode, context, 'template');
-        }
-      });
+      this.processTemplateLiteralSafely(node, context);
     }
 
-    // JSX Elements - capturar contexto do componente
-    if (node.type === 'JSXElement') {
-      const tagName = node.openingElement?.name?.name;
-      if (tagName && this.isRelevantComponent(tagName)) {
-        context = [...context, tagName];
+    // 7. Variáveis com strings (contexto validado)
+    if (
+      (node.type === 'VariableDeclarator' ||
+        node.type === 'AssignmentExpression') &&
+      node.init?.type === 'Literal' &&
+      typeof node.init.value === 'string'
+    ) {
+      const varName = node.id?.name || 'variable';
+      if (this.isVariableSafe(varName, context)) {
+        this.processTextNodeSafely(
+          node.init,
+          [...context, `var:${varName}`],
+          'variable',
+          node
+        );
       }
     }
 
-    // Recursão para filhos
+    // Atualizar contexto para elementos JSX
+    let newContext = context;
+    if (node.type === 'JSXElement') {
+      const tagName = node.openingElement?.name?.name;
+      if (tagName) {
+        newContext = [...context, `jsx:${tagName}`];
+      }
+    }
+
+    // Recursão segura com validação de contexto
     for (const key in node) {
       const child = node[key];
       if (Array.isArray(child)) {
-        child.forEach((item) => this.traverseAST(item, context));
+        child.forEach((item, index) => {
+          if (item && typeof item === 'object') {
+            this.traverseASTSafely(
+              item,
+              [...newContext, `${key}[${index}]`],
+              depth + 1,
+              node
+            );
+          }
+        });
       } else if (child && typeof child === 'object') {
-        this.traverseAST(child, context);
+        this.traverseASTSafely(child, [...newContext, key], depth + 1, node);
       }
     }
   }
 
   /**
-   * Processa texto e adiciona à lista de substituições
+   * Processamento seguro de nós de texto com validação em múltiplas camadas
    */
-  processTextWithReplacement(node, context, type) {
-    if (!node || !node.value || typeof node.value !== 'string') return;
+  processTextNodeSafely(node, context, type, parentNode) {
+    if (!node?.value || typeof node.value !== 'string') return;
 
     const text = node.value;
     const cleanText = this.cleanText(text);
 
-    if (!this.isValidUserText(cleanText)) return;
+    this.stats.textNodesFound++;
 
-    // Verificar se já é uma chamada t() para não substituir
-    if (this.isAlreadyTranslated(text)) return;
+    console.log(
+      `\n🔍 Analisando: "${cleanText.substring(0, 60)}${
+        cleanText.length > 60 ? '...' : ''
+      }"`
+    );
+    console.log(`   📍 Contexto: ${context.slice(-3).join(' → ')}`);
+    console.log(`   🏷️  Tipo: ${type}`);
 
-    // 🆕 FILTRO CRÍTICO: Verificar se faz parte de código CSS/JS
-    if (this.isPartOfCode(text, context)) {
-      console.log(`🚫 Ignorado (código): "${text}"`);
+    // LAYER 1: Verificações básicas de segurança
+    if (this.isAlreadyTranslated(text)) {
+      this.logSkipped(cleanText, 'já traduzido', 'content');
       return;
     }
 
-    // 🆕 FILTRO: Verificar se é fragmento muito pequeno sem contexto útil
-    if (this.isMeaninglessFragment(text)) {
-      console.log(`🚫 Ignorado (fragmento): "${text}"`);
+    if (this.isEmptyOrWhitespace(cleanText)) {
+      this.logSkipped(cleanText, 'vazio/whitespace', 'content');
       return;
     }
 
+    // LAYER 2: Validação de contexto perigoso
+    if (this.isDangerousContext(context, parentNode)) {
+      this.logSkipped(cleanText, 'contexto perigoso', 'context');
+      this.stats.dangerousContextsDetected++;
+      return;
+    }
+
+    // LAYER 3: Validação de padrões técnicos
+    if (this.isTechnicalPattern(cleanText)) {
+      this.logSkipped(cleanText, 'padrão técnico', 'pattern');
+      return;
+    }
+
+    // LAYER 4: Validação de conteúdo
+    const contentValidation = this.validateTextContent(
+      cleanText,
+      context,
+      type
+    );
+    if (!contentValidation.isValid) {
+      this.logSkipped(cleanText, contentValidation.reason, 'content');
+      return;
+    }
+
+    // LAYER 5: Validação de posição segura no AST
+    if (!this.isSafeTextPosition(node, parentNode, context)) {
+      this.logSkipped(cleanText, 'posição insegura', 'context');
+      return;
+    }
+
+    // SUCESSO: Texto aprovado para extração
     const key = this.generateKey(cleanText, context, type);
     if (key && !this.extractedTexts.has(key)) {
       this.extractedTexts.set(key, cleanText);
+      this.stats.validTextsExtracted++;
 
-      // Adicionar à lista de substituições
-      if (node.range) {
+      // Validar que o range está disponível antes de adicionar substituição
+      if (node.range && node.range.length === 2) {
         this.replacements.push({
           start: node.range[0],
           end: node.range[1],
           originalText: text,
           key: key,
           type: type,
-          isAttribute: type === 'attribute',
+          isAttribute: type === 'jsx_attribute',
+          context: context.join('.'),
+          validated: true,
         });
       }
 
-      console.log(`📝 ${key}: "${cleanText}"`);
+      console.log(`   ✅ EXTRAÍDO: ${key}`);
+    } else if (this.extractedTexts.has(key)) {
+      console.log(`   🔁 DUPLICADO: ${key}`);
     }
   }
 
   /**
-   * Verifica se o texto já é uma tradução (contém t() ou similar)
+   * Validações de segurança específicas
    */
-  isAlreadyTranslated(text) {
-    return text.includes('t(') || text.includes('{t(');
-  }
-
-  /**
-   * 🆕 FILTRO CRÍTICO: Detecta se o texto faz parte de código CSS/JS
-   */
-  isPartOfCode(text, context) {
-    const trimmed = text.trim();
-
-    // 🚫 Fragmentos CSS específicos
-    const cssFragments = [
-      's backwards', // animação CSS
-      'ease-out', // timing function
-      'ease-in', // timing function
-      'ease-in-out', // timing function
-      'forwards', // animation-fill-mode
-      'backwards', // animation-fill-mode
-      'infinite', // animation-iteration-count
-      'alternate', // animation-direction
-      'reverse', // animation-direction
-      'paused', // animation-play-state
-      'running', // animation-play-state
-      'none', // valores CSS gerais
-      'auto', // valores CSS gerais
-      'inherit', // valores CSS gerais
-      'initial', // valores CSS gerais
-      'unset', // valores CSS gerais
-      'fadeIn', // nomes de animação comuns
-      'fadeOut', // nomes de animação comuns
-      'fadeInUp', // nomes de animação comuns
-      'slideIn', // nomes de animação comuns
-      'slideOut', // nomes de animação comuns
-      'transform', // propriedades CSS
-      'opacity', // propriedades CSS
-      'scale', // valores transform
-      'rotate', // valores transform
-      'translate', // valores transform
-      'matrix', // valores transform
-    ];
-
-    // 🚫 Verificar se é exatamente um fragmento CSS
-    if (cssFragments.includes(trimmed.toLowerCase())) {
-      return true;
-    }
-
-    // 🚫 Padrões de código JavaScript
-    const jsPatterns = [
-      /^[a-z]+[A-Z]/, // camelCase
-      /^\d+(\.\d+)?(s|ms|px|rem|em|%)$/, // valores com unidades
-      /^[a-z]+(In|Out|Up|Down|Left|Right)$/, // nomes de animação
-      /^(true|false|null|undefined)$/, // valores literais JS
-      /^[a-zA-Z_$][a-zA-Z0-9_$]*\(.*\)$/, // chamadas de função
-      /^\$\{.*\}$/, // template literal expression
-      /^[a-z]+([A-Z][a-z]*)*$/, // camelCase strict
-    ];
-
-    // 🚫 Verificar padrões JS
-    if (jsPatterns.some((pattern) => pattern.test(trimmed))) {
-      return true;
-    }
-
-    // 🚫 Se está dentro de template literal com código
+  isDangerousContext(context, parentNode) {
     const contextStr = context.join(' ').toLowerCase();
-    if (
-      contextStr.includes('style') ||
-      contextStr.includes('animation') ||
-      contextStr.includes('class')
-    ) {
+
+    // Verificar contextos explicitamente perigosos
+    for (const dangerous of this.DANGEROUS_CONTEXTS) {
+      if (contextStr.includes(dangerous.toLowerCase())) {
+        return true;
+      }
+    }
+
+    // Verificar se está dentro de um contexto de definição
+    if (contextStr.includes('import') || contextStr.includes('export')) {
       return true;
     }
 
-    // 🚫 Se contém apenas letras + números (provavelmente código)
-    if (/^[a-zA-Z0-9]+$/.test(trimmed) && trimmed.length < 4) {
+    // Verificar nó pai
+    if (
+      parentNode?.type === 'ImportDeclaration' ||
+      parentNode?.type === 'ExportDeclaration'
+    ) {
       return true;
     }
 
     return false;
   }
 
-  /**
-   * 🆕 FILTRO: Detecta template literals que contêm código
-   */
-  isTemplateWithCode(text) {
+  isTechnicalPattern(text) {
     const trimmed = text.trim();
 
-    // 🚫 Template literals com código CSS
-    const cssPatterns = [
-      /fadeIn|fadeOut|slideIn|slideOut/i, // animações CSS
-      /ease-in|ease-out|ease-in-out/i, // timing functions
-      /forwards|backwards|infinite|alternate/i, // animation properties
-      /transform|translate|scale|rotate/i, // transform functions
-      /duration|delay|iteration/i, // animation timing
-      /^\d+(\.\d+)?(s|ms|px|rem|em|%)$/, // valores CSS com unidades
-    ];
-
-    // 🚫 Verificar se contém padrões CSS
-    if (cssPatterns.some((pattern) => pattern.test(trimmed))) {
-      return true;
-    }
-
-    // 🚫 Template literals com expressões JavaScript
-    if (
-      trimmed.includes('${') ||
-      trimmed.includes('index') ||
-      trimmed.includes('*')
-    ) {
-      return true;
-    }
-
-    // 🚫 Se contém palavras-chave JS/CSS
-    const codeKeywords = [
-      'animation',
-      'transition',
-      'transform',
-      'opacity',
-      'visibility',
-      'display',
-      'position',
-      'zIndex',
-      'overflow',
-      'cursor',
-      'function',
-      'const',
-      'let',
-      'var',
-      'return',
-      'if',
-      'else',
-      'index',
-      'length',
-      'map',
-      'filter',
-      'reduce',
-    ];
-
-    if (
-      codeKeywords.some((keyword) => trimmed.toLowerCase().includes(keyword))
-    ) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * 🆕 FILTRO: Detecta fragmentos sem significado
-   */
-  isMeaninglessFragment(text) {
-    const trimmed = text.trim();
-
-    // 🚫 Muito curto para ser útil (exceto pontuação específica)
-    if (trimmed.length < 3 && ![':', '!', '?', '.'].includes(trimmed)) {
-      return true;
-    }
-
-    // 🚫 Só números
-    if (/^\d+$/.test(trimmed)) {
-      return true;
-    }
-
-    // 🚫 Fragmentos de uma só palavra sem contexto útil
-    const meaninglessWords = [
-      // Artigos e preposições portuguesas
-      'a',
-      'o',
-      'e',
-      'de',
-      'da',
-      'do',
-      'das',
-      'dos',
-      'na',
-      'no',
-      'nas',
-      'nos',
-      'para',
-      'por',
-      'com',
-      'em',
-      'um',
-      'uma',
-      'uns',
-      'umas',
-      'que',
-      'se',
-      // Artigos e preposições inglesas
-      'the',
-      'a',
-      'an',
-      'and',
-      'or',
-      'but',
-      'in',
-      'on',
-      'at',
-      'to',
-      'for',
-      'of',
-      'with',
-      'by',
-      'from',
-      'up',
-      'out',
-      'off',
-      'over',
-      'under',
-      // Valores CSS/JS comuns
-      'auto',
-      'none',
-      'true',
-      'false',
-      'left',
-      'right',
-      'top',
-      'bottom',
-      'center',
-      'middle',
-      'start',
-      'end',
-      'flex',
-      'grid',
-      'block',
-      'inline',
-      // Fragmentos técnicos
-      'px',
-      'rem',
-      'em',
-      'vh',
-      'vw',
-      'ms',
-      'src',
-      'alt',
-      'id',
-      'css',
-      'js',
-    ];
-
-    if (meaninglessWords.includes(trimmed.toLowerCase())) {
-      return true;
-    }
-
-    // 🚫 Fragmentos que parecem código
-    if (/^[a-z]+[0-9]$/.test(trimmed) || /^[A-Z][a-z]*[0-9]$/.test(trimmed)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * Aplica todas as substituições no código
-   */
-  applyReplacements() {
-    if (this.replacements.length === 0) {
-      return this.originalContent;
-    }
-
-    // Ordenar substituições por posição (do final para o início para não afetar índices)
-    this.replacements.sort((a, b) => b.start - a.start);
-
-    let modifiedContent = this.originalContent;
-
-    for (const replacement of this.replacements) {
-      const { start, end, key, isAttribute } = replacement;
-
-      let newText;
-      if (isAttribute) {
-        // Para atributos: placeholder="texto" → placeholder={t('chave')}
-        newText = `{t('${key}')}`;
-      } else {
-        // Para texto JSX: >texto< → >{t('chave')}<
-        newText = `{t('${key}')}`;
-      }
-
-      // Aplicar substituição
-      modifiedContent =
-        modifiedContent.slice(0, start) + newText + modifiedContent.slice(end);
-    }
-
-    return modifiedContent;
-  }
-
-  /**
-   * ✅ CORRIGIDO: Adiciona imports e hooks com o caminho correto da seção
-   */
-  addImportsAndHooks(content) {
-    let modifiedContent = content;
-
-    // 1. Adicionar import se não existir
-    if (!content.includes("from '@/app/hooks/useTranslation'")) {
-      const importStatement =
-        "import { useTranslation } from '@/app/hooks/useTranslation';\n";
-
-      // Encontrar onde inserir o import (após outros imports)
-      const importRegex = /import.*from.*['"][^'"]*['"];?\n/g;
-      const imports = content.match(importRegex);
-
-      if (imports && imports.length > 0) {
-        // Inserir após o último import
-        const lastImport = imports[imports.length - 1];
-        const lastImportIndex =
-          content.lastIndexOf(lastImport) + lastImport.length;
-        modifiedContent =
-          content.slice(0, lastImportIndex) +
-          importStatement +
-          content.slice(lastImportIndex);
-      } else {
-        // Se não há imports, adicionar no início
-        modifiedContent = importStatement + content;
-      }
-    }
-
-    // 2. Adicionar hook se não existir E se há substituições
-    if (
-      !modifiedContent.includes('useTranslation(') &&
-      this.replacements.length > 0
-    ) {
-      // Encontrar o início do componente principal (função ou arrow function)
-      const componentPatterns = [
-        /export\s+(default\s+)?function\s+(\w+)/,
-        /const\s+(\w+)\s*[:=]\s*\([^)]*\)\s*=>/,
-        /function\s+(\w+)\s*\([^)]*\)\s*{/,
-      ];
-
-      let componentMatch = null;
-      let componentName = '';
-
-      for (const pattern of componentPatterns) {
-        componentMatch = modifiedContent.match(pattern);
-        if (componentMatch) {
-          componentName = componentMatch[2] || componentMatch[1];
-          break;
-        }
-      }
-
-      if (componentMatch) {
-        // Encontrar a primeira linha dentro do componente
-        const componentStart = componentMatch.index + componentMatch[0].length;
-        const openBrace = modifiedContent.indexOf('{', componentStart);
-
-        if (openBrace !== -1) {
-          // Procurar por um local apropriado para inserir o hook
-          // Evitar inserir no meio de outros hooks
-          const hookInsertPoint = this.findHookInsertionPoint(
-            modifiedContent,
-            openBrace + 1
-          );
-
-          // ✅ CORREÇÃO: Usar o caminho completo da seção
-          const hookStatement = `  const { t } = useTranslation({ sections: ['${this.sectionPath}'] });\n\n`;
-
-          // Inserir o hook
-          modifiedContent =
-            modifiedContent.slice(0, hookInsertPoint) +
-            hookStatement +
-            modifiedContent.slice(hookInsertPoint);
-        }
-      }
-    }
-
-    return modifiedContent;
-  }
-
-  /**
-   * Encontra o ponto ideal para inserir o hook useTranslation
-   */
-  findHookInsertionPoint(content, startIndex) {
-    // Procurar pela primeira linha não-vazia após a abertura da função
-    const lines = content.slice(startIndex).split('\n');
-    let insertLineIndex = 0;
-
-    // Pular linhas vazias e comentários
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (line && !line.startsWith('//') && !line.startsWith('/*')) {
-        // Se é um hook existente, inserir após todos os hooks
-        if (
-          line.includes('use') &&
-          (line.includes('useState') ||
-            line.includes('useEffect') ||
-            line.includes('useCallback'))
-        ) {
-          insertLineIndex = i + 1;
-        } else {
-          // Se não é um hook, inserir aqui
-          insertLineIndex = i;
-          break;
-        }
-      }
-    }
-
-    // Calcular posição absoluta
-    const linesBeforeInsert = lines.slice(0, insertLineIndex);
-    const charactersBeforeInsert = linesBeforeInsert.join('\n').length;
-
-    return startIndex + charactersBeforeInsert + (insertLineIndex > 0 ? 1 : 0); // +1 para o \n
-  }
-
-  // Métodos de validação
-  isVisibleAttribute(attrName) {
-    const blacklistedAttributes = [
-      'className',
-      'style',
-      'id',
-      'key',
-      'ref',
-      'href',
-      'src',
-      'type',
-      'name',
-      'disabled',
-      'required',
-      'onClick',
-      'onChange',
-      'onSubmit',
-      'onClose',
-      'onOpen',
-      'onSelect',
-      'onFocus',
-      'onBlur',
-      'onKeyDown',
-      'onKeyUp',
-      'onKeyPress',
-      'onMouseEnter',
-      'onMouseLeave',
-      'onMouseDown',
-      'onMouseUp',
-      'value',
-      'defaultValue',
-      'checked',
-      'defaultChecked',
-      'width',
-      'height',
-      'x',
-      'y',
-      'cx',
-      'cy',
-      'r',
-      'rx',
-      'ry',
-      'fill',
-      'stroke',
-      'strokeWidth',
-      'viewBox',
-      'd',
-      'points',
-      'transform',
-      'opacity',
-      'role',
-      'tabIndex',
-      'min',
-      'max',
-      'step',
-      'rows',
-      'cols',
-      'span',
-      'colSpan',
-      'rowSpan',
-      'autoComplete',
-      'autoFocus',
-      'readOnly',
-    ];
-
-    const validAttributes = [
-      'title',
-      'placeholder',
-      'alt',
-      'label',
-      'ariaLabel',
-      'aria-label',
-    ];
-
+    // Verificar padrões técnicos conhecidos
     return (
-      validAttributes.includes(attrName) &&
-      !blacklistedAttributes.includes(attrName) &&
-      !attrName.startsWith('data-') &&
-      !attrName.startsWith('aria-') &&
-      !attrName.startsWith('on')
+      this.TECHNICAL_PATTERNS.some((pattern) => pattern.test(trimmed)) ||
+      this.CODE_KEYWORDS.has(trimmed.toLowerCase()) ||
+      this.isPathLike(trimmed) ||
+      this.isURLLike(trimmed) ||
+      this.isColorCode(trimmed) ||
+      this.isCSSValue(trimmed)
     );
   }
 
-  isVisibleProperty(propName) {
-    const validProps = [
+  isPathLike(text) {
+    return (
+      /^[\.\/]/.test(text) ||
+      /\.(tsx?|jsx?|css|scss|json|png|jpg|svg)$/i.test(text)
+    );
+  }
+
+  isURLLike(text) {
+    return (
+      /^https?:\/\//.test(text) ||
+      /^www\./.test(text) ||
+      /\.(com|org|net|io)/.test(text)
+    );
+  }
+
+  isColorCode(text) {
+    return (
+      /^#[a-fA-F0-9]{3,8}$/.test(text) ||
+      /^rgb\(/.test(text) ||
+      /^hsl\(/.test(text)
+    );
+  }
+
+  isCSSValue(text) {
+    return (
+      /^\d+(\.\d+)?(px|em|rem|vh|vw|%|s|ms)$/.test(text) ||
+      /^(auto|none|inherit|initial|unset)$/.test(text)
+    );
+  }
+
+  validateTextContent(text, context, type) {
+    // 1. Comprimento mínimo
+    if (text.length < 1) {
+      return { isValid: false, reason: 'muito curto' };
+    }
+
+    // 2. Validação específica para propriedades de objetos
+    if (type === 'object_property') {
+      return this.validateObjectPropertyText(text, context);
+    }
+
+    // 3. Números com símbolo + são válidos para UI (ex: "1000+", "5000+")
+    if (/^\d+\+$/.test(text.trim())) {
+      return { isValid: true, reason: 'número com + válido para UI' };
+    }
+
+    // 4. Deve ter pelo menos uma letra ou pontuação útil
+    if (
+      !/[a-zA-ZÀ-ÿ\u4e00-\u9fff\u0400-\u04ff]/.test(text) &&
+      !/[.,:;!?—–\+]/.test(text)
+    ) {
+      return { isValid: false, reason: 'sem caracteres válidos' };
+    }
+
+    // 5. Não deve ser apenas números simples (mas aceitar números com formatação)
+    if (/^\d+$/.test(text.trim()) && text.length > 10) {
+      return { isValid: false, reason: 'apenas números grandes' };
+    }
+
+    // 6. Verificar se parece ser texto de interface
+    if (this.looksLikeUIText(text, context)) {
+      return { isValid: true, reason: 'texto de interface válido' };
+    }
+
+    // 7. Verificar se tem estrutura de linguagem natural
+    if (this.hasNaturalLanguageStructure(text)) {
+      return { isValid: true, reason: 'estrutura de linguagem natural' };
+    }
+
+    // 8. Textos muito curtos precisam de validação extra
+    if (text.length <= 3) {
+      return this.validateShortText(text, context);
+    }
+
+    return { isValid: true, reason: 'validação padrão aprovada' };
+  }
+
+  /**
+   * Validação específica para textos de propriedades de objetos
+   */
+  validateObjectPropertyText(text, context) {
+    const trimmed = text.trim();
+
+    // Aceitar números com + para estatísticas (1000+, 5000+)
+    if (/^\d+\+$/.test(trimmed)) {
+      return { isValid: true, reason: 'estatística numérica em objeto' };
+    }
+
+    // Textos em objetos tendem a ser mais estruturados
+    // Aceitar textos mais curtos se estão em contexto de UI
+    if (trimmed.length >= 1) {
+      // Verificar se tem pelo menos uma letra
+      if (/[a-zA-ZÀ-ÿ]/.test(trimmed)) {
+        return {
+          isValid: true,
+          reason: 'texto em propriedade de objeto válido',
+        };
+      }
+
+      // Aceitar pontuação comum
+      if (/^[.,:;!?—–\-+]+$/.test(trimmed)) {
+        return { isValid: true, reason: 'pontuação em objeto válida' };
+      }
+
+      // Aceitar números formatados para UI
+      if (/^\d+[\.\,]?\d*[%\+\-]?$/.test(trimmed)) {
+        return { isValid: true, reason: 'número formatado em objeto' };
+      }
+    }
+
+    // Rejeitar se parece ser código
+    if (this.isTechnicalPattern(trimmed)) {
+      return { isValid: false, reason: 'padrão técnico em objeto' };
+    }
+
+    return {
+      isValid: false,
+      reason: 'texto em objeto muito curto ou inválido',
+    };
+  }
+
+  looksLikeUIText(text, context) {
+    const contextStr = context.join(' ').toLowerCase();
+
+    // Indicadores de texto de UI
+    const uiIndicators = [
+      'button',
+      'label',
+      'title',
+      'heading',
+      'text',
+      'message',
+      'error',
+      'success',
+      'warning',
+      'info',
+      'tooltip',
+      'placeholder',
+    ];
+
+    return uiIndicators.some((indicator) => contextStr.includes(indicator));
+  }
+
+  hasNaturalLanguageStructure(text) {
+    // Verificar se tem características de linguagem natural
+    const hasSpaces = /\s/.test(text);
+    const hasCapitalization = /[A-Z]/.test(text) && /[a-z]/.test(text);
+    const hasPunctuation = /[.,:;!?]/.test(text);
+    const hasWords = text.split(/\s+/).length > 1;
+
+    return hasSpaces && (hasCapitalization || hasPunctuation || hasWords);
+  }
+
+  validateShortText(text, context) {
+    const trimmed = text.trim();
+
+    // Permitir números com + (estatísticas de UI)
+    if (/^\d+\+$/.test(trimmed)) {
+      return { isValid: true, reason: 'estatística numérica válida' };
+    }
+
+    // Permitir pontuação comum
+    if (/^[.,:;!?—–]+$/.test(trimmed)) {
+      return { isValid: true, reason: 'pontuação válida' };
+    }
+
+    // Permitir palavras comuns de UI
+    const commonUIWords = [
+      'ok',
+      'yes',
+      'no',
+      'hi',
+      'bye',
+      'new',
+      'add',
+      'edit',
+      'save',
+      'go',
+      'ver',
+      'mais',
+    ];
+    if (commonUIWords.includes(trimmed.toLowerCase())) {
+      return { isValid: true, reason: 'palavra comum de UI' };
+    }
+
+    // Rejeitar códigos muito curtos sem vogais
+    if (
+      trimmed.length <= 2 &&
+      !/[aeiouAEIOU]/.test(trimmed) &&
+      !/\d/.test(trimmed)
+    ) {
+      return { isValid: false, reason: 'código muito curto' };
+    }
+
+    return { isValid: true, reason: 'texto curto aprovado' };
+  }
+
+  isSafeTextPosition(node, parentNode, context) {
+    // Verificar se está em uma posição segura do JSX
+    if (parentNode?.type && this.SAFE_JSX_PARENTS.has(parentNode.type)) {
+      return true;
+    }
+
+    // Verificar se não está em contexto de definição
+    const contextStr = context.join(' ').toLowerCase();
+    const unsafeContexts = ['import', 'export', 'declare', 'interface', 'type'];
+
+    return !unsafeContexts.some((unsafe) => contextStr.includes(unsafe));
+  }
+
+  isAttributeSafe(attrName) {
+    if (!attrName) return false;
+
+    // Lista branca de atributos seguros
+    const safeAttributes = ['title', 'alt', 'placeholder', 'label'];
+
+    return (
+      safeAttributes.includes(attrName) &&
+      !this.DANGEROUS_CONTEXTS.has(attrName)
+    );
+  }
+
+  isPropertySafe(propName, context) {
+    if (!propName) return false;
+
+    // Lista expandida de propriedades seguras
+    const safeProperties = [
       'label',
       'title',
       'subtitle',
@@ -741,9 +753,18 @@ class SmartTextExtractor {
       'name',
       'fullName',
       'displayName',
+      'caption',
+      'summary',
+      'heading',
+      'buttonText',
+      'linkText',
+      'menuText',
+      'tabTitle',
+      'sectionTitle',
     ];
 
-    const blacklistedProps = [
+    // Lista expandida de propriedades perigosas
+    const dangerousProperties = [
       'id',
       'key',
       'className',
@@ -752,69 +773,14 @@ class SmartTextExtractor {
       'src',
       'url',
       'path',
-      'pathname',
-      'search',
-      'hash',
-      'protocol',
-      'host',
-      'hostname',
-      'port',
-      'origin',
       'onClick',
       'onChange',
       'onSubmit',
-      'onSelect',
-      'onClose',
-      'onOpen',
       'type',
-      'format',
       'method',
-      'mode',
-      'cache',
-      'credentials',
-      'headers',
-      'body',
-      'signal',
       'value',
-      'defaultValue',
-      'checked',
-      'defaultChecked',
-      'disabled',
-      'required',
-      'readOnly',
-      'autoComplete',
-      'autoFocus',
-      'tabIndex',
-      'role',
       'width',
       'height',
-      'x',
-      'y',
-      'left',
-      'top',
-      'right',
-      'bottom',
-      'margin',
-      'padding',
-      'border',
-      'background',
-      'color',
-      'fontSize',
-      'fontWeight',
-      'lineHeight',
-      'opacity',
-      'zIndex',
-      'position',
-      'display',
-      'flexDirection',
-      'justifyContent',
-      'alignItems',
-      'gridTemplate',
-      'animation',
-      'transition',
-      'transform',
-      'filter',
-      'backdropFilter',
       'icon',
       'Icon',
       'component',
@@ -823,162 +789,556 @@ class SmartTextExtractor {
       'size',
       'delay',
       'duration',
-      'ease',
-      'spring',
-      'stagger',
-      'index',
-      'length',
-      'count',
-      'total',
-      'min',
-      'max',
-      'step',
-      'precision',
-      'scale',
-      'offset',
-      'threshold',
-      'debounce',
-      'throttle',
+      'config',
+      'options',
+      'props',
+      'ref',
+      'data',
+      'aria',
+      'role',
+      'tabIndex',
     ];
 
+    // Verificar se está na whitelist
+    const isSafeProperty = safeProperties.includes(propName);
+
+    // Verificar se está na blacklist
+    const isDangerousProperty =
+      dangerousProperties.includes(propName) ||
+      propName.startsWith('on') ||
+      propName.startsWith('css') ||
+      propName.startsWith('style') ||
+      propName.startsWith('data-') ||
+      propName.startsWith('aria-');
+
+    // Se está na whitelist e não está na blacklist, é seguro
+    const isSafe =
+      isSafeProperty &&
+      !isDangerousProperty &&
+      !this.isDangerousContext(context, null);
+
+    if (!isSafe && isSafeProperty) {
+      console.log(
+        `   ⚠️ Propriedade "${propName}" está na whitelist mas foi rejeitada por contexto`
+      );
+    }
+
+    return isSafe;
+  }
+
+  isVariableSafe(varName, context) {
+    // Evitar variáveis que parecem técnicas
     return (
-      validProps.includes(propName) &&
-      !blacklistedProps.includes(propName) &&
-      !propName.startsWith('on') &&
-      !propName.startsWith('css_') &&
-      !propName.startsWith('style_') &&
-      !propName.startsWith('class_') &&
-      !propName.startsWith('attr_')
+      !this.TECHNICAL_PATTERNS.some((pattern) => pattern.test(varName)) &&
+      !this.CODE_KEYWORDS.has(varName) &&
+      !this.isDangerousContext(context, null)
     );
   }
 
-  isRelevantComponent(tagName) {
-    const htmlTags = [
-      'div',
-      'span',
-      'p',
-      'a',
-      'button',
-      'input',
-      'textarea',
-      'select',
-      'option',
-      'form',
-      'section',
-      'article',
-      'header',
-      'footer',
-      'nav',
-      'main',
-      'aside',
-      'h1',
-      'h2',
-      'h3',
-      'h4',
-      'h5',
-      'h6',
-      'ul',
-      'ol',
-      'li',
-      'dl',
-      'dt',
-      'dd',
-      'img',
-      'svg',
-      'path',
-      'circle',
-      'rect',
-      'line',
-      'polygon',
-      'polyline',
-      'ellipse',
-      'g',
-      'defs',
-      'use',
-      'symbol',
-      'clipPath',
-      'mask',
-      'br',
-      'hr',
-      'strong',
-      'em',
-      'b',
-      'i',
-      'u',
-      'small',
-      'sub',
-      'sup',
-      'code',
-      'pre',
-      'blockquote',
-      'table',
-      'thead',
-      'tbody',
-      'tfoot',
-      'tr',
-      'th',
-      'td',
-      'caption',
-      'colgroup',
-      'col',
-    ];
+  /**
+   * Processamento seguro de arrays
+   */
+  processArrayExpressionSafely(node, context, depth) {
+    if (depth > 10) {
+      console.warn(`⚠️ Array muito profundo, pulando (depth: ${depth})`);
+      return;
+    }
 
-    const relevantComponents = [
-      'Modal',
-      'Button',
-      'Input',
-      'Select',
-      'Card',
-      'Tab',
-      'Panel',
-      'Section',
-      'Header',
-      'Title',
-      'Subtitle',
-      'Label',
-      'Message',
-      'Alert',
-      'Toast',
-      'Tooltip',
-      'Badge',
-      'AccordionSection',
-      'Dropdown',
-      'Menu',
-      'Popover',
-      'Dialog',
-      'Drawer',
-      'Sidebar',
-      'Navbar',
-      'Footer',
-      'Breadcrumb',
-      'Pagination',
-      'Stepper',
-      'Progress',
-      'Slider',
-      'Switch',
-      'Checkbox',
-      'Radio',
-      'Calendar',
-      'DatePicker',
-      'TimePicker',
-      'ColorPicker',
-      'FileUpload',
-      'SearchInput',
-      'Table',
-      'List',
-      'Grid',
-      'Carousel',
-      'Gallery',
-      'Video',
-      'Audio',
-      'Chart',
-      'Graph',
-      'Map',
-    ];
+    console.log(`📋 Array com ${node.elements?.length || 0} elementos`);
+
+    node.elements?.forEach((element, index) => {
+      if (element?.type === 'ObjectExpression') {
+        // Processar objeto dentro do array
+        this.processObjectInArray(element, context, index);
+
+        // Também continuar a travessia normal
+        this.traverseASTSafely(
+          element,
+          [...context, `array[${index}]`],
+          depth + 1,
+          node
+        );
+      }
+    });
+  }
+
+  /**
+   * Processamento específico para objetos dentro de arrays
+   */
+  processObjectInArray(objectNode, context, arrayIndex) {
+    if (!objectNode || objectNode.type !== 'ObjectExpression') return;
+
+    console.log(`📦 Processando objeto ${arrayIndex} em array`);
+
+    objectNode.properties?.forEach((prop, propIndex) => {
+      if (
+        prop.type === 'Property' &&
+        prop.value?.type === 'Literal' &&
+        typeof prop.value.value === 'string'
+      ) {
+        const propName = this.getPropertyName(prop.key);
+        console.log(
+          `   🔑 Propriedade "${propName}": "${prop.value.value?.substring(
+            0,
+            50
+          )}..."`
+        );
+
+        if (this.isPropertySafe(propName, context)) {
+          this.processTextNodeSafely(
+            prop.value,
+            [...context, `obj[${arrayIndex}].${propName}`],
+            'object_property',
+            prop
+          );
+        } else {
+          this.logSkipped(
+            prop.value.value,
+            `propriedade não segura: ${propName}`,
+            'context'
+          );
+        }
+      }
+    });
+  }
+
+  /**
+   * Processamento seguro de objetos standalone
+   */
+  processObjectExpressionSafely(node, context, depth) {
+    if (depth > 10) {
+      console.warn(`⚠️ Objeto muito profundo, pulando (depth: ${depth})`);
+      return;
+    }
+
+    console.log(`📦 Objeto com ${node.properties?.length || 0} propriedades`);
+
+    node.properties?.forEach((prop, index) => {
+      if (
+        prop.type === 'Property' &&
+        prop.value?.type === 'Literal' &&
+        typeof prop.value.value === 'string'
+      ) {
+        const propName = this.getPropertyName(prop.key);
+        console.log(
+          `   🔑 Propriedade "${propName}": "${prop.value.value?.substring(
+            0,
+            50
+          )}..."`
+        );
+
+        if (this.isPropertySafe(propName, context)) {
+          this.processTextNodeSafely(
+            prop.value,
+            [...context, `obj.${propName}`],
+            'object_property',
+            prop
+          );
+        } else {
+          this.logSkipped(
+            prop.value.value,
+            `propriedade não segura: ${propName}`,
+            'context'
+          );
+        }
+      }
+    });
+  }
+
+  /**
+   * Processamento seguro de template literals
+   */
+  processTemplateLiteralSafely(node, context) {
+    node.quasis?.forEach((quasi, index) => {
+      if (quasi.value?.raw) {
+        const rawText = quasi.value.raw.trim();
+
+        // Pular se tem interpolação complexa
+        if (this.hasComplexInterpolation(node)) {
+          this.logSkipped(rawText, 'interpolação complexa', 'pattern');
+          return;
+        }
+
+        // Pular se é claramente código
+        if (this.isTemplateCode(rawText)) {
+          this.logSkipped(rawText, 'código em template', 'pattern');
+          return;
+        }
+
+        // Criar pseudo-node para processamento
+        const pseudoNode = {
+          type: 'Literal',
+          value: rawText,
+          range: quasi.range,
+        };
+
+        this.processTextNodeSafely(
+          pseudoNode,
+          [...context, `template[${index}]`],
+          'template_literal',
+          node
+        );
+      }
+    });
+  }
+
+  hasComplexInterpolation(templateNode) {
+    return templateNode.expressions?.some(
+      (expr) =>
+        expr.type === 'CallExpression' ||
+        expr.type === 'ConditionalExpression' ||
+        expr.type === 'BinaryExpression'
+    );
+  }
+
+  isTemplateCode(text) {
+    return (
+      /^\$\{/.test(text) ||
+      /animation|keyframes|transform|transition/i.test(text) ||
+      /opacity|visibility|z-index|position/i.test(text)
+    );
+  }
+
+  /**
+   * Validação das extrações realizadas
+   */
+  validateExtractions() {
+    console.log('🔍 Validando extrações realizadas...');
+
+    // Validar chaves duplicadas
+    const keyFrequency = new Map();
+    for (const [key, value] of this.extractedTexts) {
+      keyFrequency.set(key, (keyFrequency.get(key) || 0) + 1);
+    }
+
+    const duplicates = [...keyFrequency.entries()].filter(
+      ([key, count]) => count > 1
+    );
+    if (duplicates.length > 0) {
+      console.warn(`⚠️ Chaves duplicadas encontradas: ${duplicates.length}`);
+      duplicates.forEach(([key, count]) => {
+        console.warn(`   - ${key}: ${count}x`);
+      });
+    }
+
+    // Validar textos muito curtos ou suspeitos
+    const suspiciousTexts = [];
+    for (const [key, text] of this.extractedTexts) {
+      if (text.length < 2 && !/[a-zA-ZÀ-ÿ]/.test(text)) {
+        suspiciousTexts.push({ key, text });
+      }
+      if (this.TECHNICAL_PATTERNS.some((pattern) => pattern.test(text))) {
+        suspiciousTexts.push({ key, text });
+      }
+    }
+
+    if (suspiciousTexts.length > 0) {
+      console.warn(
+        `⚠️ Textos suspeitos encontrados: ${suspiciousTexts.length}`
+      );
+      suspiciousTexts.slice(0, 5).forEach(({ key, text }) => {
+        console.warn(`   - ${key}: "${text}"`);
+      });
+    }
+
+    // Validar ranges das substituições
+    const invalidReplacements = this.replacements.filter(
+      (r) =>
+        !r.start ||
+        !r.end ||
+        r.start >= r.end ||
+        r.end > this.originalContent.length
+    );
+
+    if (invalidReplacements.length > 0) {
+      console.warn(
+        `⚠️ Substituições com range inválido: ${invalidReplacements.length}`
+      );
+      this.replacements = this.replacements.filter(
+        (r) =>
+          r.start &&
+          r.end &&
+          r.start < r.end &&
+          r.end <= this.originalContent.length
+      );
+    }
+
+    console.log(
+      `✅ Validação concluída: ${this.extractedTexts.size} textos válidos`
+    );
+  }
+
+  /**
+   * Aplicação segura das substituições com validação
+   */
+  applyReplacementsSafely() {
+    if (this.replacements.length === 0) {
+      console.log('📝 Nenhuma substituição para aplicar');
+      return this.originalContent;
+    }
+
+    console.log(`🔄 Aplicando ${this.replacements.length} substituições...`);
+
+    // Validar todas as substituições antes de aplicar
+    const validReplacements = this.validateReplacements();
+    if (validReplacements.length === 0) {
+      console.warn('⚠️ Nenhuma substituição é segura para aplicar');
+      return this.originalContent;
+    }
+
+    // Ordenar por posição (do final para o início)
+    validReplacements.sort((a, b) => b.start - a.start);
+
+    let modifiedContent = this.originalContent;
+    let appliedCount = 0;
+
+    for (const replacement of validReplacements) {
+      try {
+        const { start, end, key, isAttribute } = replacement;
+
+        // Validar range antes de aplicar
+        if (start >= 0 && end > start && end <= modifiedContent.length) {
+          const newText = isAttribute ? `{t('${key}')}` : `{t('${key}')}`;
+
+          modifiedContent =
+            modifiedContent.slice(0, start) +
+            newText +
+            modifiedContent.slice(end);
+
+          appliedCount++;
+          this.stats.replacementsApplied++;
+        } else {
+          console.warn(`⚠️ Range inválido para substituição: ${start}-${end}`);
+        }
+      } catch (error) {
+        console.warn(`⚠️ Erro ao aplicar substituição: ${error.message}`);
+      }
+    }
+
+    console.log(`✅ ${appliedCount} substituições aplicadas com sucesso`);
+    return modifiedContent;
+  }
+
+  validateReplacements() {
+    return this.replacements.filter((replacement) => {
+      // Validar range
+      if (
+        !replacement.start ||
+        !replacement.end ||
+        replacement.start >= replacement.end
+      ) {
+        console.warn(
+          `⚠️ Range inválido: ${replacement.start}-${replacement.end}`
+        );
+        return false;
+      }
+
+      // Validar se o texto original ainda existe na posição
+      const originalText = this.originalContent.slice(
+        replacement.start,
+        replacement.end
+      );
+      if (originalText !== replacement.originalText) {
+        console.warn(
+          `⚠️ Texto original não confere na posição ${replacement.start}`
+        );
+        return false;
+      }
+
+      return true;
+    });
+  }
+
+  /**
+   * Inserção segura de imports e hooks
+   */
+  addImportsAndHooksSafely(content) {
+    let modifiedContent = content;
+
+    try {
+      // 1. Adicionar import se necessário e não existir
+      if (this.replacements.length > 0 && !this.hasTranslationImport(content)) {
+        modifiedContent = this.addTranslationImport(modifiedContent);
+      }
+
+      // 2. Adicionar hook se necessário e seguro
+      if (
+        this.replacements.length > 0 &&
+        !this.hasTranslationHook(modifiedContent)
+      ) {
+        modifiedContent = this.addTranslationHook(modifiedContent);
+      }
+
+      return modifiedContent;
+    } catch (error) {
+      console.warn(`⚠️ Erro ao adicionar imports/hooks: ${error.message}`);
+      console.warn('📝 Retornando conteúdo sem modificações de imports/hooks');
+      return content;
+    }
+  }
+
+  hasTranslationImport(content) {
+    return /import.*useTranslation.*from.*['"]@\/app\/hooks\/useTranslation['"]/.test(
+      content
+    );
+  }
+
+  hasTranslationHook(content) {
+    return /useTranslation\s*\(/.test(content);
+  }
+
+  addTranslationImport(content) {
+    const importStatement =
+      "import { useTranslation } from '@/app/hooks/useTranslation';\n";
+
+    // Encontrar onde inserir o import
+    const importRegex = /import.*from.*['"][^'"]*['"];?\n/g;
+    const imports = [...content.matchAll(importRegex)];
+
+    if (imports.length > 0) {
+      const lastImport = imports[imports.length - 1];
+      const lastImportEnd = lastImport.index + lastImport[0].length;
+
+      return (
+        content.slice(0, lastImportEnd) +
+        importStatement +
+        content.slice(lastImportEnd)
+      );
+    } else {
+      return importStatement + content;
+    }
+  }
+
+  addTranslationHook(content) {
+    // Encontrar componente React
+    const componentMatch = this.findReactComponent(content);
+    if (!componentMatch) {
+      console.warn(
+        '⚠️ Não foi possível encontrar componente React para inserir hook'
+      );
+      return content;
+    }
+
+    const hookStatement = `  const { t } = useTranslation({ sections: ['${this.sectionPath}'] });\n\n`;
+    const insertionPoint = this.findSafeHookInsertionPoint(
+      content,
+      componentMatch
+    );
+
+    if (insertionPoint === -1) {
+      console.warn(
+        '⚠️ Não foi possível encontrar ponto seguro para inserir hook'
+      );
+      return content;
+    }
 
     return (
-      !htmlTags.includes(tagName) &&
-      (relevantComponents.includes(tagName) || /^[A-Z]/.test(tagName))
+      content.slice(0, insertionPoint) +
+      hookStatement +
+      content.slice(insertionPoint)
+    );
+  }
+
+  findReactComponent(content) {
+    const patterns = [
+      /export\s+default\s+function\s+(\w+)/,
+      /const\s+(\w+)\s*[:=]\s*\([^)]*\)\s*=>/,
+      /function\s+(\w+)\s*\([^)]*\)\s*{/,
+    ];
+
+    for (const pattern of patterns) {
+      const match = content.match(pattern);
+      if (match) return match;
+    }
+
+    return null;
+  }
+
+  findSafeHookInsertionPoint(content, componentMatch) {
+    const componentStart = componentMatch.index + componentMatch[0].length;
+    const openBrace = content.indexOf('{', componentStart);
+
+    if (openBrace === -1) return -1;
+
+    // Encontrar ponto depois de outros hooks mas antes do resto do código
+    const lines = content.slice(openBrace + 1).split('\n');
+    let insertLineIndex = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+
+      if (!line || line.startsWith('//') || line.startsWith('/*')) {
+        continue;
+      }
+
+      if (this.isHookLine(line)) {
+        insertLineIndex = i + 1;
+      } else if (line && !this.isDeclarationLine(line)) {
+        break;
+      }
+    }
+
+    const linesBeforeInsert = lines.slice(0, insertLineIndex);
+    const charactersBeforeInsert = linesBeforeInsert.join('\n').length;
+
+    return (
+      openBrace + 1 + charactersBeforeInsert + (insertLineIndex > 0 ? 1 : 0)
+    );
+  }
+
+  isHookLine(line) {
+    return /const\s+.*=\s*use[A-Z]/.test(line) || /use[A-Z]\w*\s*\(/.test(line);
+  }
+
+  isDeclarationLine(line) {
+    return /^(const|let|var|function)\s/.test(line);
+  }
+
+  /**
+   * Validação final do conteúdo modificado
+   */
+  validateFinalContent(content) {
+    try {
+      // Tentar fazer parse do conteúdo modificado
+      parse(content, {
+        jsx: true,
+        useJSXTextNode: true,
+        errorOnUnknownASTType: true,
+      });
+
+      console.log('✅ Validação sintática: APROVADA');
+    } catch (error) {
+      console.error('❌ Validação sintática: FALHOU');
+      throw new Error(
+        `Conteúdo modificado contém erros de sintaxe: ${error.message}`
+      );
+    }
+
+    // Validar se os imports estão corretos
+    if (this.replacements.length > 0) {
+      if (!this.hasTranslationImport(content)) {
+        console.warn('⚠️ Import de tradução não encontrado no conteúdo final');
+      }
+      if (!this.hasTranslationHook(content)) {
+        console.warn('⚠️ Hook de tradução não encontrado no conteúdo final');
+      }
+    }
+  }
+
+  /**
+   * Utilitários e helpers
+   */
+  isReactComponent(node) {
+    return (
+      (node.type === 'FunctionDeclaration' ||
+        node.type === 'ArrowFunctionExpression') &&
+      /^[A-Z]/.test(node.id?.name || node.parent?.id?.name || '')
+    );
+  }
+
+  isHookCall(node) {
+    return (
+      node.type === 'CallExpression' && node.callee?.name?.startsWith('use')
     );
   }
 
@@ -986,450 +1346,48 @@ class SmartTextExtractor {
     return text.replace(/\n\s*/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
-  isValidUserText(text) {
-    if (!text || text.length < 1) return false;
-
-    // 🚫 FILTRO PRINCIPAL: Ignorar URLs, caminhos e query parameters
-    if (
-      text.includes('/') ||
-      text.includes('&') ||
-      text.includes('?') ||
-      text.includes('=')
-    ) {
-      console.log(`🚫 Ignorado (URL/parâmetro): "${text}"`);
-      return false;
-    }
-
-    // 🚫 Ignorar se é apenas números
-    if (/^\d+$/.test(text)) return false;
-    if (/^[,.\-_:;!?()[\]{}]{1,2}$/.test(text)) return false;
-
-    // 🚫 NOVO: Filtro rigoroso para fragmentos CSS/JS comuns
-    const forbiddenFragments = [
-      's backwards',
-      'ease-out',
-      'ease-in',
-      'ease-in-out',
-      'forwards',
-      'backwards',
-      'infinite',
-      'alternate',
-      'reverse',
-      'paused',
-      'running',
-      'none',
-      'auto',
-      'inherit',
-      'initial',
-      'unset',
-      'fadeIn',
-      'fadeOut',
-      'fadeInUp',
-      'slideIn',
-      'slideOut',
-      'transform',
-      'opacity',
-      'scale',
-      'rotate',
-      'translate',
-      'px',
-      'rem',
-      'em',
-      'vh',
-      'vw',
-      'ms',
-      '%',
-      'true',
-      'false',
-      'null',
-      'undefined',
-    ];
-
-    if (forbiddenFragments.includes(text.trim().toLowerCase())) {
-      console.log(`🚫 Ignorado (fragmento CSS/JS): "${text}"`);
-      return false;
-    }
-
-    // 🚫 NOVO: Filtro para valores CSS com unidades
-    if (/^\d+(\.\d+)?(s|ms|px|rem|em|vh|vw|%)$/.test(text.trim())) {
-      console.log(`🚫 Ignorado (valor CSS): "${text}"`);
-      return false;
-    }
-
-    if (this.looksLikeCSSOrCode(text)) {
-      console.log(`🚫 Ignorado (CSS/código): "${text}"`);
-      return false;
-    }
-
-    if (/^\s+$/.test(text)) return false;
-
-    if (this.isLogStatement(text)) {
-      console.log(`🚫 Ignorado (log): "${text}"`);
-      return false;
-    }
-
-    if (this.isFileOrImport(text)) {
-      console.log(`🚫 Ignorado (arquivo/import): "${text}"`);
-      return false;
-    }
-
-    // ✅ VALIDAÇÃO MAIS RIGOROSA: Deve conter pelo menos uma palavra real
-    const hasRealWord = /[a-zA-ZÀ-ÿ]{2,}/.test(text);
-    if (!hasRealWord) {
-      console.log(`🚫 Ignorado (sem palavra real): "${text}"`);
-      return false;
-    }
-
-    // ✅ ACEITAR apenas textos que fazem sentido para tradução
-    if (/[a-zA-ZÀ-ÿ]/.test(text) || /[.,:;!?]/.test(text)) {
-      if (this.isTooShortOrMeaningless(text)) {
-        console.log(`🚫 Ignorado (muito curto/sem sentido): "${text}"`);
-        return false;
-      }
-      return true;
-    }
-
-    return false;
+  isAlreadyTranslated(text) {
+    return /\{?\s*t\s*\(/.test(text);
   }
 
-  isTooShortOrMeaningless(text) {
-    const trimmed = text.trim();
-
-    if (trimmed.length < 2 && trimmed !== '.') return true;
-    if (/^\d+$/.test(trimmed)) return true;
-    if (/^(.)\1{2,}$/.test(trimmed)) return true;
-
-    const meaninglessWords = [
-      'a',
-      'o',
-      'e',
-      'de',
-      'da',
-      'do',
-      'das',
-      'dos',
-      'na',
-      'no',
-      'nas',
-      'nos',
-      'para',
-      'por',
-      'com',
-      'em',
-      'um',
-      'uma',
-      'uns',
-      'umas',
-      'que',
-      'se',
-      'te',
-      'me',
-      'lhe',
-      'nos',
-      'vos',
-      'lhes',
-      'seu',
-      'sua',
-      'seus',
-      'suas',
-      'este',
-      'esta',
-      'estes',
-      'estas',
-      'esse',
-      'essa',
-      'esses',
-      'essas',
-      'aquele',
-      'aquela',
-      'aqueles',
-      'aquelas',
-      'isto',
-      'isso',
-      'aquilo',
-      'foi',
-      'era',
-      'será',
-      'seria',
-      'está',
-      'estava',
-      'estará',
-      'estaria',
-      'há',
-      'havia',
-      'haverá',
-      'haveria',
-      'tem',
-      'tinha',
-      'terá',
-      'teria',
-    ];
-
-    const words = trimmed.toLowerCase().split(/\s+/);
-
-    if (
-      words.length === 1 &&
-      meaninglessWords.includes(words[0]) &&
-      !/[.,:;!?]/.test(trimmed)
-    ) {
-      return true;
-    }
-
-    if (
-      words.length === 2 &&
-      words.every((word) =>
-        meaninglessWords.includes(word.replace(/[.,:;!?]/g, ''))
-      ) &&
-      !/[.,:;!?]/.test(trimmed)
-    ) {
-      return true;
-    }
-
-    return false;
+  isEmptyOrWhitespace(text) {
+    return !text || !text.trim() || /^\s*$/.test(text);
   }
 
-  isLogStatement(text) {
-    const logPatterns = [
-      /^console\./,
-      /^console\.log/,
-      /^console\.error/,
-      /^console\.warn/,
-      /^console\.info/,
-      /^console\.debug/,
-      /^console\.trace/,
-      /Erro ao/,
-      /Error:/,
-      /Warning:/,
-      /Debug:/,
-      /🔍 Analisando:/,
-      /📁 Seção:/,
-      /✅ Extraídos/,
-      /❌ Erro ao/,
-      /📝 /,
-      /🚫 Ignorado/,
-      /📐 Dimensões obtidas/,
-      /🖼️ Obtendo/,
-      /✅ Validação/,
-      /🎥 Arquivo/,
-      /🧹 Preview/,
-    ];
-
-    return logPatterns.some((pattern) => pattern.test(text));
-  }
-
-  isFileOrImport(text) {
-    const filePatterns = [
-      /\.(tsx?|jsx?|css|scss|sass|less|json|md|txt|svg|png|jpg|jpeg|gif|webp|mp4|webm|ogg|mp3|wav)$/i,
-      /^@\//,
-      /^\.\//,
-      /^\.\.\//,
-      /^[a-z-]+\/[a-z-]+/,
-      /^react/,
-      /^next/,
-      /^node_modules/,
-      /^public\//,
-      /^src\//,
-      /^app\//,
-      /^components\//,
-      /^hooks\//,
-      /^utils\//,
-      /^libs\//,
-      /^styles\//,
-      /^api\//,
-    ];
-
-    return filePatterns.some((pattern) => pattern.test(text));
-  }
-
-  looksLikeCSSOrCode(text) {
-    const tailwindPatterns = [
-      /^w-/,
-      /^h-/,
-      /^min-w-/,
-      /^min-h-/,
-      /^max-w-/,
-      /^max-h-/,
-      /^p-/,
-      /^px-/,
-      /^py-/,
-      /^pt-/,
-      /^pr-/,
-      /^pb-/,
-      /^pl-/,
-      /^m-/,
-      /^mx-/,
-      /^my-/,
-      /^mt-/,
-      /^mr-/,
-      /^mb-/,
-      /^ml-/,
-      /^space-/,
-      /^gap-/,
-      /^text-/,
-      /^bg-/,
-      /^border-/,
-      /^ring-/,
-      /^shadow-/,
-      /^font-/,
-      /^leading-/,
-      /^tracking-/,
-      /^break-/,
-      /^flex/,
-      /^grid/,
-      /^block/,
-      /^inline/,
-      /^hidden/,
-      /^visible/,
-      /^absolute/,
-      /^relative/,
-      /^fixed/,
-      /^sticky/,
-      /^static/,
-      /^top-/,
-      /^right-/,
-      /^bottom-/,
-      /^left-/,
-      /^inset-/,
-      /^z-/,
-      /^order-/,
-      /^justify-/,
-      /^items-/,
-      /^content-/,
-      /^self-/,
-      /^place-/,
-      /^flex-/,
-      /^grow/,
-      /^shrink/,
-      /^basis-/,
-      /^col-/,
-      /^row-/,
-      /^opacity-/,
-      /^transition/,
-      /^duration-/,
-      /^ease-/,
-      /^delay-/,
-      /^transform/,
-      /^rotate-/,
-      /^scale-/,
-      /^translate-/,
-      /^skew-/,
-      /^hover:/,
-      /^focus:/,
-      /^active:/,
-      /^group-/,
-      /^peer-/,
-      /^rounded/,
-      /^border/,
-      /^divide-/,
-      /^sm:/,
-      /^md:/,
-      /^lg:/,
-      /^xl:/,
-      /^2xl:/,
-      /^after:/,
-      /^before:/,
-      /^first:/,
-      /^last:/,
-      /^odd:/,
-      /^even:/,
-      /^disabled:/,
-      /^enabled:/,
-      /^checked:/,
-      /^indeterminate:/,
-    ];
-
-    if (text.includes(' ') && text.split(' ').length > 1) {
-      const words = text.split(/\s+/);
-      const cssLikeWords = words.filter(
-        (word) =>
-          tailwindPatterns.some((pattern) => pattern.test(word)) ||
-          (/^[a-z-]+$/.test(word) && word.includes('-'))
-      );
-
-      if (cssLikeWords.length / words.length > 0.3) {
-        return true;
-      }
-    }
-
-    if (tailwindPatterns.some((pattern) => pattern.test(text))) {
-      return true;
-    }
-
-    if (
-      text.includes('@keyframes') ||
-      text.includes('transform:') ||
-      text.includes('{') ||
-      text.includes('}') ||
-      text.includes('px') ||
-      text.includes('rem') ||
-      text.includes('em') ||
-      (text.includes('%') && /\d+%/.test(text)) ||
-      text.includes('calc(') ||
-      text.includes('var(') ||
-      text.includes('rgb(') ||
-      text.includes('rgba(') ||
-      text.includes('hsl(') ||
-      text.includes('hsla(')
-    ) {
-      return true;
-    }
-
-    const codePatterns = [
-      /^use[A-Z]/,
-      /^[a-z]+[A-Z].*[A-Z]/,
-      /^\{.*\}$/,
-      /^\[.*\]$/,
-      /^function/,
-      /^const/,
-      /^let/,
-      /^var/,
-      /^import/,
-      /^export/,
-      /^on[A-Z]/,
-      /^\$\{/,
-      /^\.[\w-]+/,
-      /^#[\w-]+/,
-      /^attr_/,
-      /^className/,
-      /^onChange/,
-      /^onClick/,
-      /^onSubmit/,
-      /true$/,
-      /false$/,
-      /null$/,
-      /undefined$/,
-      /^(\d+(\.\d+)?)(px|rem|em|%|vh|vw|fr)$/,
-    ];
-
-    return codePatterns.some((pattern) => pattern.test(text));
+  getPropertyName(keyNode) {
+    if (keyNode.type === 'Literal') return keyNode.value;
+    if (keyNode.type === 'Identifier') return keyNode.name;
+    return 'unknown';
   }
 
   generateKey(text, context, type) {
     let keyParts = [];
 
+    // Seção base
     if (this.sectionName) {
       keyParts.push(this.sectionName.replace(/[^a-zA-Z0-9]/g, '_'));
     }
 
+    // Contexto limpo (últimos 2 elementos significativos)
     const cleanContext = context
-      .filter(
-        (c) =>
-          !['div', 'span', 'p', 'Fragment', 'attr_className'].includes(c) &&
-          !c.startsWith('attr_') &&
-          !c.startsWith('css_') &&
-          !c.startsWith('style_')
-      )
+      .filter((c) => !c.startsWith('attr:') && !c.startsWith('prop:'))
+      .filter((c) => !['div', 'span', 'p', 'Fragment'].includes(c))
       .slice(-2);
 
     if (cleanContext.length > 0) {
-      keyParts.push(...cleanContext.map((c) => c.toLowerCase()));
+      keyParts.push(
+        ...cleanContext.map((c) =>
+          c.toLowerCase().replace(/[^a-zA-Z0-9]/g, '_')
+        )
+      );
     }
 
-    let textKey = this.generateTextKey(text);
+    // Chave baseada no texto
+    const textKey = this.generateTextKey(text);
     keyParts.push(textKey);
 
+    // Gerar chave final com contador para evitar duplicatas
     let finalKey = keyParts.join('_');
-
     const baseKey = finalKey;
     let counter = this.keyCounter.get(baseKey) || 0;
 
@@ -1438,97 +1396,84 @@ class SmartTextExtractor {
     }
 
     this.keyCounter.set(baseKey, counter + 1);
-
     return finalKey;
   }
 
   generateTextKey(text) {
     const cleanText = text.toLowerCase().trim();
 
+    // Palavras-chave semânticas específicas do domínio (expandida)
     const semanticPatterns = {
-      salvar: 'salvar',
-      cancelar: 'cancelar',
-      confirmar: 'confirmar',
-      excluir: 'excluir',
-      remover: 'remover',
-      editar: 'editar',
-      criar: 'criar',
-      novo: 'novo',
-      adicionar: 'adicionar',
-      fechar: 'fechar',
-      abrir: 'abrir',
-      enviar: 'enviar',
-      buscar: 'buscar',
-      filtrar: 'filtrar',
-      pesquisar: 'pesquisar',
-      carregando: 'carregando',
-      processando: 'processando',
-      enviando: 'enviando',
-      sucesso: 'sucesso',
-      erro: 'erro',
-      aviso: 'aviso',
-      atenção: 'atencao',
-      informação: 'info',
-      concluído: 'concluido',
-      voltar: 'voltar',
-      próximo: 'proximo',
-      anterior: 'anterior',
-      início: 'inicio',
-      fim: 'fim',
-      página: 'pagina',
-      título: 'titulo',
-      subtítulo: 'subtitulo',
-      descrição: 'descricao',
-      conteúdo: 'conteudo',
-      mensagem: 'mensagem',
-      comentário: 'comentario',
-      observação: 'observacao',
-      anotação: 'anotacao',
-      nome: 'nome',
+      // Ações
+      salvar: 'save',
+      salvo: 'saved',
+      cancelar: 'cancel',
+      confirmar: 'confirm',
+      excluir: 'delete',
+      editar: 'edit',
+      criar: 'create',
+      adicionar: 'add',
+      fechar: 'close',
+      abrir: 'open',
+      enviar: 'send',
+      buscar: 'search',
+      pesquisar: 'search',
+      pesquisa: 'search',
+
+      // Estados
+      carregando: 'loading',
+      processando: 'processing',
+      sucesso: 'success',
+      erro: 'error',
+      aviso: 'warning',
+
+      // Contexto musical
+      compositor: 'composer',
+      compositores: 'composers',
+      obra: 'work',
+      obras: 'works',
+      partitura: 'score',
+      partituras: 'scores',
+      música: 'music',
+      musica: 'music',
+      musical: 'music',
+      musicais: 'music',
+      estudo: 'study',
+      estudos: 'studies',
+      prática: 'practice',
+      pratica: 'practice',
+
+      // Navegação
+      início: 'home',
+      inicio: 'home',
+      página: 'page',
+      pagina: 'page',
+      próximo: 'next',
+      proximo: 'next',
+      anterior: 'previous',
+
+      // Interface comum
+      título: 'title',
+      titulo: 'title',
+      subtítulo: 'subtitle',
+      subtitulo: 'subtitle',
+      descrição: 'description',
+      descricao: 'description',
+      nome: 'name',
       email: 'email',
-      telefone: 'telefone',
-      endereço: 'endereco',
-      senha: 'senha',
-      compositor: 'compositor',
-      obra: 'obra',
-      partitura: 'partitura',
-      música: 'musica',
-      melodia: 'melodia',
-      harmonia: 'harmonia',
-      ritmo: 'ritmo',
-      compasso: 'compasso',
-      movimento: 'movimento',
-      seção: 'secao',
-      período: 'periodo',
-      época: 'epoca',
-      estilo: 'estilo',
-      técnica: 'tecnica',
-      interpretação: 'interpretacao',
-      performance: 'performance',
-      prática: 'pratica',
-      estudo: 'estudo',
-      teoria: 'teoria',
-      análise: 'analise',
-      iniciante: 'iniciante',
-      intermediário: 'intermediario',
-      avançado: 'avancado',
-      fácil: 'facil',
-      médio: 'medio',
-      difícil: 'dificil',
-      básico: 'basico',
-      profissional: 'profissional',
-      importante: 'importante',
-      essencial: 'essencial',
-      fundamental: 'fundamental',
-      obrigatório: 'obrigatorio',
-      opcional: 'opcional',
-      recomendado: 'recomendado',
-      popular: 'popular',
-      famoso: 'famoso',
-      clássico: 'classico',
-      moderno: 'moderno',
-      tradicional: 'tradicional',
-      inovador: 'inovador',
+      senha: 'password',
+      usuário: 'user',
+      usuario: 'user',
+      perfil: 'profile',
+
+      // Feedback
+      bem: 'welcome',
+      vindo: 'welcome',
+      'bem-vindo': 'welcome',
+      obrigado: 'thanks',
+      obrigada: 'thanks',
+      parabéns: 'congratulations',
+      parabens: 'congratulations',
     };
 
     for (const [pattern, key] of Object.entries(semanticPatterns)) {
@@ -1537,6 +1482,7 @@ class SmartTextExtractor {
       }
     }
 
+    // Extrair palavras significativas
     const words = cleanText
       .replace(/[^a-zA-ZÀ-ÿ\s]/g, '')
       .split(/\s+/)
@@ -1551,26 +1497,99 @@ class SmartTextExtractor {
             'dos',
             'das',
             'uma',
-            'uns',
-            'umas',
+            'the',
+            'and',
+            'for',
+            'que',
+            'você',
+            'voce',
           ].includes(word)
       );
 
-    if (words.length === 0) return 'texto';
+    if (words.length === 0) return 'text';
+    if (words.length === 1) return words[0].slice(0, 20);
 
-    if (words.length === 1) {
-      return words[0].slice(0, 20);
-    } else {
-      return words.slice(0, 3).join('_').slice(0, 40);
+    return words.slice(0, 3).join('_').slice(0, 40);
+  }
+
+  logSkipped(text, reason, category) {
+    this.stats[
+      `skippedBy${category.charAt(0).toUpperCase() + category.slice(1)}`
+    ]++;
+
+    const reasonKey = reason.split(':')[0];
+    this.stats.ignoredReasons.set(
+      reasonKey,
+      (this.stats.ignoredReasons.get(reasonKey) || 0) + 1
+    );
+
+    console.log(
+      `   🚫 IGNORADO (${reason}): "${text.substring(0, 50)}${
+        text.length > 50 ? '...' : ''
+      }"`
+    );
+  }
+
+  createBackup(filePath) {
+    this.backupPath = `${filePath}.backup.${Date.now()}`;
+    fs.copyFileSync(filePath, this.backupPath);
+    console.log(`💾 Backup criado: ${this.backupPath}`);
+  }
+
+  restoreFromBackup(filePath) {
+    if (this.backupPath && fs.existsSync(this.backupPath)) {
+      fs.copyFileSync(this.backupPath, filePath);
+      console.log(`🔄 Arquivo restaurado do backup`);
     }
+  }
+
+  printFinalStats() {
+    console.log('\n📊 ESTATÍSTICAS FINAIS:');
+    console.log(`   🔍 Nós visitados: ${this.stats.totalNodesVisited}`);
+    console.log(`   📝 Textos encontrados: ${this.stats.textNodesFound}`);
+    console.log(`   ✅ Textos extraídos: ${this.stats.validTextsExtracted}`);
+    console.log(
+      `   🔄 Substituições aplicadas: ${this.stats.replacementsApplied}`
+    );
+    console.log(`   🚫 Ignorados por contexto: ${this.stats.skippedByContext}`);
+    console.log(`   🚫 Ignorados por conteúdo: ${this.stats.skippedByContent}`);
+    console.log(`   🚫 Ignorados por padrão: ${this.stats.skippedByPattern}`);
+    console.log(
+      `   ⚠️ Contextos perigosos: ${this.stats.dangerousContextsDetected}`
+    );
+    console.log(`   ⚠️ Violações de segurança: ${this.stats.safetyViolations}`);
+
+    if (this.stats.ignoredReasons.size > 0) {
+      console.log('\n📋 PRINCIPAIS RAZÕES PARA IGNORAR:');
+      const sortedReasons = [...this.stats.ignoredReasons.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+
+      for (const [reason, count] of sortedReasons) {
+        console.log(`   • ${reason}: ${count}x`);
+      }
+    }
+
+    // Calcular taxa de sucesso
+    const totalCandidates = this.stats.textNodesFound;
+    const successRate =
+      totalCandidates > 0
+        ? ((this.stats.validTextsExtracted / totalCandidates) * 100).toFixed(1)
+        : 0;
+
+    console.log(
+      `\n📈 TAXA DE SUCESSO: ${successRate}% (${this.stats.validTextsExtracted}/${totalCandidates})`
+    );
   }
 }
 
-// ✅ CORREÇÃO: Função saveTranslations adaptada para nova estrutura
+// ===================================================================
+// FUNÇÕES DE TRADUÇÃO E SALVAMENTO (mantidas do script original)
+// ===================================================================
+
 function saveTranslations(texts, sectionPath) {
   const translationsDir = path.join(process.cwd(), 'public', 'translations');
 
-  // ✅ NOVO: Criar diretórios se a seção contém caminhos
   const sectionDir = path.dirname(sectionPath);
   if (sectionDir !== '.') {
     const fullSectionDir = path.join(translationsDir, sectionDir);
@@ -1584,7 +1603,6 @@ function saveTranslations(texts, sectionPath) {
 
   const filePath = path.join(translationsDir, `${sectionPath}.json`);
 
-  // ✅ CORREÇÃO: Estrutura { ptBr: {}, en: {} }
   let existingData = { ptBr: {}, en: {} };
   if (fs.existsSync(filePath)) {
     try {
@@ -1592,7 +1610,7 @@ function saveTranslations(texts, sectionPath) {
       console.log(
         `📖 Carregado arquivo existente com ${
           Object.keys(existingData.ptBr || {}).length
-        } textos em português`
+        } textos`
       );
     } catch (error) {
       console.warn(`⚠️ Erro ao ler arquivo existente: ${error.message}`);
@@ -1608,28 +1626,20 @@ function saveTranslations(texts, sectionPath) {
     }
   });
 
-  const finalData = {
-    ptBr: mergedPtBr,
-    en: mergedEn,
-  };
-
+  const finalData = { ptBr: mergedPtBr, en: mergedEn };
   fs.writeFileSync(filePath, JSON.stringify(finalData, null, 2), 'utf8');
 
-  const newTextsCount = Object.keys(texts).length;
-  const existingTextsCount = Object.keys(existingData.ptBr || {}).length;
-  const newEntriesCount = Object.keys(mergedEn).filter(
-    (key) => !mergedEn[key]
-  ).length;
-
   console.log(`✅ Salvos textos em: ${filePath}`);
-  console.log(`   - ${newTextsCount} novos textos em português`);
-  console.log(`   - ${existingTextsCount} textos portugueses mantidos`);
-  console.log(`   - ${newEntriesCount} textos aguardando tradução em inglês`);
+  console.log(`   - ${Object.keys(texts).length} novos textos em português`);
+  console.log(
+    `   - ${
+      Object.keys(existingData.ptBr || {}).length
+    } textos portugueses mantidos`
+  );
 
   return finalData;
 }
 
-// ✅ CORREÇÃO: Função translateTexts adaptada para nova estrutura
 async function translateTexts(data, sectionPath) {
   console.log(
     `\n🌍 Traduzindo textos da seção "${sectionPath}" para inglês...`
@@ -1647,16 +1657,13 @@ async function translateTexts(data, sectionPath) {
 
     try {
       console.log(`🔄 Traduzindo: ${key}`);
-
       const cleanedText = ptText
         .replace(/\n\s*/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
-
       const translatedText = await translateWithGoogle(cleanedText, key);
       en[key] = translatedText;
       translatedCount++;
-
       await delay(200);
     } catch (error) {
       console.error(`❌ Erro ao traduzir "${key}": ${error.message}`);
@@ -1682,11 +1689,10 @@ async function translateTexts(data, sectionPath) {
 async function translateWithGoogle(text, key = '') {
   try {
     let contextualText = text;
-
     if (
       key.includes('music') ||
-      key.includes('historia') ||
-      key.includes('compositor')
+      key.includes('composer') ||
+      key.includes('work')
     ) {
       contextualText = `[MUSIC CONTEXT] ${text}`;
     }
@@ -1694,7 +1700,6 @@ async function translateWithGoogle(text, key = '') {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=pt&tl=en&dt=t&q=${encodeURIComponent(
       contextualText
     )}`;
-
     const response = await fetch(url, {
       headers: {
         'User-Agent':
@@ -1702,25 +1707,18 @@ async function translateWithGoogle(text, key = '') {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
     const data = await response.json();
-
     if (data && data[0] && data[0][0] && data[0][0][0]) {
       let result = data[0][0][0];
-
       result = result.replace(/^\[MUSIC CONTEXT\]\s*/i, '');
 
+      // Correções específicas
       result = result
         .replace(/\bIa\b/g, 'AI')
         .replace(/Brazilian crying/gi, 'Brazilian Choro')
-        .replace(/Sagrade of Spring/gi, 'Rite of Spring')
-        .replace(/shade changes/gi, 'key changes')
-        .replace(/compass/gi, 'measure')
-        .replace(/movement name/gi, 'movement title')
-        .replace(/section name/gi, 'section title');
+        .replace(/compass/gi, 'measure');
 
       return result;
     }
@@ -1736,45 +1734,39 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// ===================================================================
+// FUNÇÃO PRINCIPAL
+// ===================================================================
+
 async function main() {
   const args = process.argv.slice(2);
 
   if (args.length < 2) {
     console.log(`
-📖 Uso: node scripts/extractTexts.js <arquivo> <seção> [opções]
+📖 EXTRATOR ROBUSTO DE TEXTOS PARA i18n
 
-✅ NOVIDADE: Suporte a diretórios nas seções!
+Uso: node scripts/extractTexts.js <arquivo> <seção> [opções]
 
 Exemplos:
-  node scripts/extractTexts.js src/app/components/Navbar/index.tsx navbar
-  node scripts/extractTexts.js src/app/components/Navbar/index.tsx components/navbar  
-  node scripts/extractTexts.js src/app/components/Works/DetailView.tsx works/detail-view
-  node scripts/extractTexts.js src/app/admin/UserManagement.tsx admin/user-management
-
-Estrutura resultante:
-  📁 public/translations/
-  ├── navbar.json
-  ├── components/
-  │   └── navbar.json
-  ├── works/
-  │   └── detail-view.json
-  └── admin/
-      └── user-management.json
+  node scripts/extractTexts.js src/app/components/Navbar/index.tsx components/navbar
+  node scripts/extractTexts.js src/app/main/about-us/pageClient.tsx pages/aboutUs
 
 Opções:
   --no-translate    Não traduzir automaticamente
-  --translate-only  Apenas traduzir arquivo existente (não extrair)
+  --translate-only  Apenas traduzir arquivo existente
+  --debug-ast       Logs detalhados da navegação AST
+  --dry-run         Executar sem fazer modificações
 
-🆕 CORREÇÕES DESTA VERSÃO:
-  ✅ Um único arquivo JSON por seção (estrutura: {ptBr: {}, en: {}})
-  ✅ Zero requests desnecessários
-  ✅ Suporte a diretórios nas seções
-  ✅ Hook com caminho correto automaticamente
-  ✅ Organização melhor dos arquivos de tradução
-  ✅ Filtros rigorosos para evitar capturar código CSS/JS
-  ✅ Detecção avançada de template literals com código
-  ✅ Proteção contra fragmentos de animações CSS
-  ✅ Validação rigorosa de contexto
+🚀 RECURSOS DESTA VERSÃO:
+  ✅ Análise robusta com TypeScript AST
+  ✅ Validação em múltiplas camadas
+  ✅ Sistema de backup e rollback automático
+  ✅ Detecção de contextos perigosos
+  ✅ Geração inteligente de chaves
+  ✅ Inserção segura de hooks
+  ✅ Logs detalhados para debug
+  ✅ Preservação da integridade do código
+  ✅ Tradução de textos em objetos e arrays
     `);
     process.exit(1);
   }
@@ -1782,17 +1774,51 @@ Opções:
   const [filePath, sectionPath] = args;
   const noTranslate = args.includes('--no-translate');
   const translateOnly = args.includes('--translate-only');
+  const dryRun = args.includes('--dry-run');
+
+  if (args.includes('--debug-ast')) {
+    process.env.DEBUG_AST = 'true';
+  }
 
   try {
     let translationData = { ptBr: {}, en: {} };
 
     if (!translateOnly) {
-      const extractor = new SmartTextExtractor();
-      const texts = await extractor.extractFromFile(filePath, sectionPath);
+      console.log(`🚀 Iniciando extração robusta...`);
+      console.log(`📁 Arquivo: ${filePath}`);
+      console.log(`📂 Seção: ${sectionPath}`);
 
-      translationData = saveTranslations(texts, sectionPath);
+      if (dryRun) {
+        console.log(`🔍 Modo DRY RUN - nenhuma modificação será feita`);
+      }
 
-      console.log(`\n🎉 Código modificado com sucesso!`);
+      const extractor = new RobustTextExtractor();
+
+      if (dryRun) {
+        // Simular extração sem modificar arquivo
+        const originalPath = filePath + '.temp';
+        fs.copyFileSync(filePath, originalPath);
+        const texts = await extractor.extractFromFile(
+          originalPath,
+          sectionPath
+        );
+        fs.unlinkSync(originalPath);
+
+        console.log(`\n📋 RESULTADO DO DRY RUN:`);
+        console.log(
+          `   📝 ${Object.keys(texts).length} textos seriam extraídos`
+        );
+        Object.entries(texts).forEach(([key, value]) => {
+          console.log(`   ${key}: "${value}"`);
+        });
+
+        return;
+      } else {
+        const texts = await extractor.extractFromFile(filePath, sectionPath);
+        translationData = saveTranslations(texts, sectionPath);
+      }
+
+      console.log(`\n🎉 Extração concluída com sucesso!`);
       console.log(`   🔄 Textos substituídos por {t('chave')}`);
       console.log(`   📦 Import adicionado automaticamente`);
       console.log(
@@ -1821,18 +1847,9 @@ Opções:
 
     console.log(`\n🎉 Processamento da seção "${sectionPath}" concluído!`);
     console.log(`📁 Arquivo salvo em: public/translations/${sectionPath}.json`);
-    console.log(`\n🆕 Melhorias desta versão:`);
-    console.log(`   ✅ Estrutura JSON única: {ptBr: {}, en: {}}`);
-    console.log(`   ✅ Zero requests desnecessários`);
-    console.log(`   ✅ Suporte a diretórios (ex: components/navbar)`);
-    console.log(`   ✅ Hook com caminho correto automaticamente`);
-    console.log(`   ✅ Organização melhor dos arquivos`);
-    console.log(`   ✅ Filtros rigorosos contra código CSS/JS`);
-    console.log(`   ✅ Detecção avançada de template literals`);
-    console.log(`   ✅ Proteção contra fragmentos de animações`);
-    console.log(`   ✅ Zero trabalho manual necessário!`);
   } catch (error) {
     console.error(`❌ Erro durante processamento:`, error.message);
+    console.error('🔄 Verificando se há backup para restaurar...');
     process.exit(1);
   }
 }
@@ -1841,4 +1858,4 @@ if (require.main === module) {
   main().catch(console.error);
 }
 
-module.exports = { SmartTextExtractor, saveTranslations, translateTexts };
+module.exports = { RobustTextExtractor, saveTranslations, translateTexts };

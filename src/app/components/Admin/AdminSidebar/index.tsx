@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   FiBarChart2,
   FiUsers,
@@ -43,7 +43,6 @@ interface SidebarItem {
 
 export default function AdminSidebar() {
   const pathname = usePathname();
-  const params = useSearchParams();
   const [expandedSections, setExpandedSections] = useState<string[]>([
     'Principal',
   ]);
@@ -56,10 +55,13 @@ export default function AdminSidebar() {
     );
   };
 
-  const isActive = params.get('isActive');
-  const hasAnnotations = params.get('hasAnnotations');
-  const hasUploads = params.get('hasUploads');
+  // const isActive = params.get('isActive');
+  // const hasAnnotations = params.get('hasAnnotations');
+  // const hasUploads = params.get('hasUploads');
 
+  const isActive = false;
+  const hasAnnotations = false;
+  const hasUploads = false;
   // Configurar seções da sidebar com dados reais
   const sidebarSections: SidebarSection[] = [
     {
