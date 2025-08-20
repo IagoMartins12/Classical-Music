@@ -1,8 +1,9 @@
-// providers/AuthProvider.tsx - Versão com persistência otimizada
+// providers/AuthProvider.tsx - Versão com persistência otimizada E sem erro de SSR
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { SessionProvider } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 
 // Import modals
 import LoginModal from '@/app/components/auth/LoginModal';
@@ -16,7 +17,15 @@ import { useHydration } from '../hooks/useHydration';
 import { useUserStore } from '../hooks/userStore';
 import { useOnboardingPersistence } from '../hooks/useOnboardingPersistence';
 import OnboardingPrompt from '../components/auth/onboarding/OnboardingPrompt';
-import GoogleRegistrationHandler from '../components/auth/GoogleRegistrationHandler';
+
+// 🔧 SOLUÇÃO: Dynamic import do GoogleRegistrationHandler sem SSR
+const GoogleRegistrationHandler = dynamic(
+  () => import('../components/auth/GoogleRegistrationHandler'),
+  {
+    ssr: false, // Não renderizar no servidor
+    loading: () => null, // Sem loading spinner
+  }
+);
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -220,7 +229,12 @@ const HydratedContent: React.FC<{ children: React.ReactNode }> = ({
       <LoginModal />
       <RegisterModal />
       <OnboardingModal />
-      <GoogleRegistrationHandler />
+
+      {/* 🔧 SOLUÇÃO: Suspense boundary para o GoogleRegistrationHandler */}
+      <Suspense fallback={null}>
+        <GoogleRegistrationHandler />
+      </Suspense>
+
       {/* Lógica de onboarding com persistência */}
       <OnboardingManager />
 
