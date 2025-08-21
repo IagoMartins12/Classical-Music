@@ -3,13 +3,7 @@
 
 import { useCallback } from 'react';
 import Link from 'next/link';
-import {
-  FiClock,
-  FiPlus,
-  FiExternalLink,
-  FiCalendar,
-  FiMusic,
-} from 'react-icons/fi';
+import { FiClock, FiExternalLink, FiCalendar, FiMusic } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 
 export interface RecentWorkProps {

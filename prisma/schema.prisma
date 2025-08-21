@@ -586,7 +586,7 @@ model Composer {
   epochId     String  @db.ObjectId
   epochName   String?
   bio         String?
-
+  videoUrl    String?
   // Dados IMSLP
   permLinkImslp String?
   imslpId       String?

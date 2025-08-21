@@ -1,0 +1,38 @@
+{
+  "ptBr": {
+    "error_jsx_span_children_0__opus_atlas": "Opus Atlas",
+    "error_jsx_h1_children_0__oops_algo_deu_errado": "Oops! Algo deu errado",
+    "error_jsx_p_children_0__sinfonia_encontrou_nota": "A sinfonia encontrou uma nota fora do tom 🎵",
+    "error_jsx_span_children_0__tentar_novamente": "Tentar Novamente",
+    "error_jsx_span_children_0__voltar_ao": "Voltar ao",
+    "error_jsx_h3_children_0__que_voce_pode_fazer": "O que você pode fazer?",
+    "error_jsx_span_children_0__recarregar_pagina": "Recarregar a página",
+    "error_jsx_span_children_0__verificar_conexao": "Verificar sua conexão",
+    "error_jsx_span_children_0__tentar_mais_tarde": "Tentar mais tarde",
+    "error_jsx_span_children_0__voltar_pagina_anterior": "Voltar à página anterior",
+    "error_jsx_blockquote_children_0__music": "A música pode dar nome ao inominável e comunicar o desconhecido.",
+    "error_jsx_cite_children_0__leonard_bernstein": "— Leonard Bernstein",
+    "error_area_title_teacher": "Área do Professor",
+    "error_area_title_student": "Área do Estudante",
+    "error_area_title_admin": "Painel Administrativo",
+    "error_area_title_main": "Opus Atlas"
+  },
+  "en": {
+    "error_jsx_span_children_0__opus_atlas": "Opus Atlas",
+    "error_jsx_h1_children_0__oops_algo_deu_errado": "Oops! Something went wrong",
+    "error_jsx_p_children_0__sinfonia_encontrou_nota": "The symphony found a note out of tune 🎵",
+    "error_jsx_span_children_0__tentar_novamente": "Try Again",
+    "error_jsx_span_children_0__voltar_ao": "Back to",
+    "error_jsx_h3_children_0__que_voce_pode_fazer": "What you can do?",
+    "error_jsx_span_children_0__recarregar_pagina": "Refresh the page",
+    "error_jsx_span_children_0__verificar_conexao": "Check your connection",
+    "error_jsx_span_children_0__tentar_mais_tarde": "Try again later",
+    "error_jsx_span_children_0__voltar_pagina_anterior": "Go back to previous page",
+    "error_jsx_blockquote_children_0__music": "Music can name the unnameable and communicate the unknown.",
+    "error_jsx_cite_children_0__leonard_bernstein": "— Leonard Bernstein",
+    "error_area_title_teacher": "Teacher Area",
+    "error_area_title_student": "Student Area",
+    "error_area_title_admin": "Admin Panel",
+    "error_area_title_main": "Opus Atlas"
+  }
+}

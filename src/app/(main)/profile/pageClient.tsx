@@ -21,7 +21,6 @@ import AccountSettingsSection from '../../components/profile/AccountSettingsSect
 import { useAuth } from '@/app/hooks/useAuth';
 import { User } from 'next-auth';
 import { useAuthStore } from '@/app/stores/authStore';
-import AuthCheck from '../../components/AuthCheck';
 import ProfileSkeleton from './loading';
 
 interface Tab {

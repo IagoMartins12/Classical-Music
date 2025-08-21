@@ -43,7 +43,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     const isChecked = checked !== undefined ? checked : internalChecked;
 
     return (
-      <div className={`relative ${containerClassName}`}>
+      <div className={`relative ${containerClassName} ${className}`}>
         <label
           htmlFor={checkboxId}
           className="flex items-center cursor-pointer select-none"

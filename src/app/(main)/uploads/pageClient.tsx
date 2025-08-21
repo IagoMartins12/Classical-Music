@@ -16,8 +16,6 @@ import {
   FiX,
   FiMusic,
   FiUser,
-  FiFile,
-  FiDatabase,
   FiUpload,
   FiSettings,
   FiFileText,

@@ -160,7 +160,6 @@ const ScoreSelectionModal = ({
     workScores,
     loading: loadingWorkScores,
     error: workScoresError,
-    total: totalWorkScores,
     loadMoreForType,
     refetch: refetchWorkScores,
     pagination,

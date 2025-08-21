@@ -134,9 +134,9 @@ class RobustTextExtractor {
     this.originalContent = fs.readFileSync(filePath, 'utf8');
 
     // Validar se é um arquivo React/TypeScript válido
-    if (!this.isValidReactFile()) {
-      throw new Error(`❌ Arquivo não é um componente React válido`);
-    }
+    // if (!this.isValidReactFile()) {
+    //   throw new Error(`❌ Arquivo não é um componente React válido`);
+    // }
 
     this.createBackup(filePath);
 

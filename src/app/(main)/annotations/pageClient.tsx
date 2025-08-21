@@ -18,7 +18,6 @@ import {
   AnimatedItem,
   PageContainer,
 } from '../../components/animation/AnimatedComponents';
-import AuthCheck from '../../components/AuthCheck';
 import Select from '../../components/Common/Select';
 import UserAnnotationCard from '../../components/Annotations/UserAnnotationCard';
 import AnnotationsStatsWidget from '../../components/Annotations/AnnotationsStatsWidget';

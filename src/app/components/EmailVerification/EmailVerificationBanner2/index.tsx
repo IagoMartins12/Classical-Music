@@ -3,13 +3,7 @@
 
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import {
-  FiMail,
-  FiAlertTriangle,
-  FiX,
-  FiRefreshCw,
-  FiCheck,
-} from 'react-icons/fi';
+import { FiX, FiRefreshCw } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
 
@@ -77,7 +71,6 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   // Determine banner type and content
   let bannerType = customType;
   let message = customMessage;
-  let icon = <FiMail className="w-5 h-5" />;
   let bgColor = '';
   let textColor = '';
   let borderColor = '';
@@ -87,12 +80,10 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
       bannerType = 'warning';
       message =
         'Verifique seu email para acessar todas as funcionalidades, incluindo uploads de arquivos.';
-      icon = <FiAlertTriangle className="w-5 h-5" />;
     } else {
       bannerType = 'success';
       message =
         'Email verificado com sucesso! Todas as funcionalidades estão disponíveis.';
-      icon = <FiCheck className="w-5 h-5" />;
     }
   }
 

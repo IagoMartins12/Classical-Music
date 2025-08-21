@@ -26,7 +26,6 @@ import { useLoginModal, useRegisterModal } from '../stores/authStore';
 import { useAuth } from '../hooks/useAuth';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
-import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface SuggestionCard {
   title: string;
@@ -48,7 +47,6 @@ export default function NotAuthenticated() {
   const { open: openRegister } = useRegisterModal();
   const [currentArea, setCurrentArea] = useState<AreaType>('main');
   const [suggestions, setSuggestions] = useState<SuggestionCard[]>([]);
-  const { t } = useTranslation({ sections: ['pages/not-authenticated'] });
 
   // Redirecionar usuários autenticados
   useEffect(() => {
@@ -81,24 +79,22 @@ export default function NotAuthenticated() {
       case 'teacher':
         areaSuggestions = [
           {
-            title: t('not_authenticated_suggestion_login_teacher'),
-            description: t('not_authenticated_suggestion_login_teacher_desc'),
+            title: 'Fazer Login como Professor',
+            description: 'Entre com sua conta de professor',
             icon: FiUser,
             color: 'from-brand-primary to-brand-secondary',
             action: () => openLogin(),
           },
           {
-            title: t('not_authenticated_suggestion_request_teacher'),
-            description: t('not_authenticated_suggestion_request_teacher_desc'),
+            title: 'Solicitar Acesso como Professor',
+            description: 'Ainda não é professor? Entre em contato',
             href: '/contact',
             icon: FiMail,
             color: 'from-accent-purple to-accent-blue',
           },
           {
-            title: t('not_authenticated_suggestion_explore_encyclopedia'),
-            description: t(
-              'not_authenticated_suggestion_explore_encyclopedia_desc'
-            ),
+            title: 'Explorar Enciclopédia',
+            description: 'Navegue pelo conteúdo público',
             href: '/composers',
             icon: FiBookOpen,
             color: 'from-accent-green to-accent-blue',
@@ -109,22 +105,22 @@ export default function NotAuthenticated() {
       case 'student':
         areaSuggestions = [
           {
-            title: t('not_authenticated_suggestion_login_student'),
-            description: t('not_authenticated_suggestion_login_student_desc'),
+            title: 'Fazer Login como Estudante',
+            description: 'Entre com sua conta de estudante',
             icon: FiUser,
             color: 'from-accent-green to-accent-blue',
             action: () => openLogin(),
           },
           {
-            title: t('not_authenticated_suggestion_create_student'),
-            description: t('not_authenticated_suggestion_create_student_desc'),
+            title: 'Criar Conta de Estudante',
+            description: 'Cadastre-se para acessar lições',
             icon: FiUserPlus,
             color: 'from-brand-primary to-brand-secondary',
             action: () => openRegister(),
           },
           {
-            title: t('not_authenticated_suggestion_know_platform'),
-            description: t('not_authenticated_suggestion_know_platform_desc'),
+            title: 'Conhecer a Plataforma',
+            description: 'Saiba mais sobre nossos recursos',
             href: '/about-us',
             icon: FiCompass,
             color: 'from-accent-purple to-accent-red',
@@ -135,15 +131,15 @@ export default function NotAuthenticated() {
       case 'admin':
         areaSuggestions = [
           {
-            title: t('not_authenticated_suggestion_admin_login'),
-            description: t('not_authenticated_suggestion_admin_login_desc'),
+            title: 'Login Administrativo',
+            description: 'Acesso restrito para administradores',
             icon: FiUser,
             color: 'from-accent-red to-accent-purple',
             action: () => openLogin(),
           },
           {
-            title: t('not_authenticated_suggestion_home'),
-            description: t('not_authenticated_suggestion_home_desc'),
+            title: 'Página Inicial',
+            description: 'Voltar ao site principal',
             href: '/',
             icon: FiHome,
             color: 'from-brand-primary to-brand-secondary',
@@ -154,22 +150,22 @@ export default function NotAuthenticated() {
       default:
         areaSuggestions = [
           {
-            title: t('not_authenticated_suggestion_login'),
-            description: t('not_authenticated_suggestion_login_desc'),
+            title: 'Fazer Login',
+            description: 'Entre com sua conta existente',
             icon: FiUser,
             color: 'from-brand-primary to-brand-secondary',
             action: () => openLogin(),
           },
           {
-            title: t('not_authenticated_suggestion_create_free'),
-            description: t('not_authenticated_suggestion_create_free_desc'),
+            title: 'Criar Conta Gratuita',
+            description: 'Cadastre-se e comece a aprender',
             icon: FiUserPlus,
             color: 'from-accent-green to-accent-blue',
             action: () => openRegister(),
           },
           {
-            title: t('not_authenticated_suggestion_explore_public'),
-            description: t('not_authenticated_suggestion_explore_public_desc'),
+            title: 'Explorar Conteúdo Público',
+            description: 'Navegue sem necessidade de login',
             href: '/composers',
             icon: FiBookOpen,
             color: 'from-accent-purple to-accent-blue',
@@ -178,31 +174,31 @@ export default function NotAuthenticated() {
     }
 
     setSuggestions(areaSuggestions);
-  }, [currentArea, openLogin, openRegister, t]);
+  }, [currentArea, openLogin, openRegister]);
 
   const getTitle = () => {
     switch (currentArea) {
       case 'teacher':
-        return t('not_authenticated_area_title_teacher');
+        return 'Área do Professor';
       case 'student':
-        return t('not_authenticated_area_title_student');
+        return 'Área do Estudante';
       case 'admin':
-        return t('not_authenticated_area_title_admin');
+        return 'Painel Administrativo';
       default:
-        return t('not_authenticated_area_title_main');
+        return 'Área Restrita';
     }
   };
 
   const getDescription = () => {
     switch (currentArea) {
       case 'teacher':
-        return t('not_authenticated_description_teacher');
+        return 'Para acessar a área do professor, você precisa estar logado com uma conta autorizada';
       case 'student':
-        return t('not_authenticated_description_student');
+        return 'Para acessar a área do estudante, você precisa criar uma conta ou fazer login';
       case 'admin':
-        return t('not_authenticated_description_admin');
+        return 'Esta área é restrita para administradores do sistema';
       default:
-        return t('not_authenticated_description_main');
+        return 'Você precisa estar logado para acessar esta seção';
     }
   };
 
@@ -210,31 +206,31 @@ export default function NotAuthenticated() {
     switch (currentArea) {
       case 'teacher':
         return [
-          t('not_authenticated_benefit_teacher_0'),
-          t('not_authenticated_benefit_teacher_1'),
-          t('not_authenticated_benefit_teacher_2'),
-          t('not_authenticated_benefit_teacher_3'),
+          'Gerenciar seus alunos e aulas',
+          'Criar materiais didáticos',
+          'Acompanhar progresso dos estudantes',
+          'Acesso a recursos exclusivos',
         ];
       case 'student':
         return [
-          t('not_authenticated_benefit_student_0'),
-          t('not_authenticated_benefit_student_1'),
-          t('not_authenticated_benefit_student_2'),
-          t('not_authenticated_benefit_student_3'),
+          'Aulas interativas personalizadas',
+          'Acompanhamento do seu progresso',
+          'Acesso a exercícios e partituras',
+          'Comunicação com professores',
         ];
       case 'admin':
         return [
-          t('not_authenticated_benefit_admin_0'),
-          t('not_authenticated_benefit_admin_1'),
-          t('not_authenticated_benefit_admin_2'),
-          t('not_authenticated_benefit_admin_3'),
+          'Gerenciamento completo da plataforma',
+          'Controle de usuários e permissões',
+          'Análises e relatórios detalhados',
+          'Configurações do sistema',
         ];
       default:
         return [
-          t('not_authenticated_benefit_main_0'),
-          t('not_authenticated_benefit_main_1'),
-          t('not_authenticated_benefit_main_2'),
-          t('not_authenticated_benefit_main_3'),
+          'Salvar seus compositores favoritos',
+          'Acompanhar seu progresso de aprendizado',
+          'Criar anotações personalizadas',
+          'Acesso a conteúdo exclusivo',
         ];
     }
   };
@@ -248,9 +244,7 @@ export default function NotAuthenticated() {
         <div className="classical-theme min-h-screen flex items-center justify-center">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-theme-secondary">
-              {t('not_authenticated_jsx_span_children_0__redirecionando')}
-            </span>
+            <span className="text-theme-secondary">Redirecionando...</span>
           </div>
         </div>
       ) : (
@@ -275,10 +269,10 @@ export default function NotAuthenticated() {
                     <GiGrandPiano className="w-12 h-12 mr-4 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
                     <div className="text-left">
                       <span className="text-2xl font-bold text-gradient-brand classical-title">
-                        {t('not_authenticated_jsx_span_children_0__opus_atlas')}
+                        Opus Atlas
                       </span>
                       <div className="text-sm text-theme-tertiary">
-                        {t('not_authenticated_jsx_div_children_0__music')}
+                        Enciclopédia de Música Clássica
                       </div>
                     </div>
                   </Link>
@@ -297,7 +291,7 @@ export default function NotAuthenticated() {
               {/* Title */}
               <AnimatedItem direction="up" springType="bouncy">
                 <h1 className="text-4xl md:text-5xl font-bold text-theme-primary classical-title mb-6">
-                  {t('not_authenticated_jsx_h1_children_0__acesso_requerido')}
+                  Acesso Requerido
                 </h1>
               </AnimatedItem>
 
@@ -377,7 +371,7 @@ export default function NotAuthenticated() {
                     )}
                   </div>
                   <h3 className="text-2xl font-bold text-theme-primary classical-title">
-                    {t('not_authenticated_jsx_h3_children_0__terá_acesso')}
+                    O que você terá acesso:
                   </h3>
                 </div>
 
@@ -393,22 +387,20 @@ export default function NotAuthenticated() {
                 {currentArea !== 'admin' && (
                   <div className="mt-8 pt-6 border-t border-theme-secondary">
                     <p className="text-theme-tertiary text-sm mb-4">
-                      {t('not_authenticated_jsx_p_children_0__não_tem_conta')}
+                      Não tem uma conta ainda?
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
                       <button
                         onClick={() => openLogin()}
                         className="btn-classical-secondary text-sm px-6 py-2"
                       >
-                        {t(
-                          'not_authenticated_jsx_button_children_0__fazer_login'
-                        )}
+                        Fazer Login
                       </button>
                       <button
                         onClick={() => openRegister()}
                         className="btn-classical-primary text-sm px-6 py-2"
                       >
-                        {t('not_authenticated_jsx_button_children_0__create')}
+                        Criar Conta Gratuita
                       </button>
                     </div>
                   </div>
@@ -426,9 +418,7 @@ export default function NotAuthenticated() {
                     className="btn-classical-secondary flex items-center space-x-3 group text-lg px-8 py-4"
                   >
                     <FiHome className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                    <span>
-                      {t('not_authenticated_jsx_span_children_0__page')}
-                    </span>
+                    <span>Página Inicial</span>
                   </Link>
                 </AnimatedItem>
 
@@ -438,11 +428,7 @@ export default function NotAuthenticated() {
                     className="btn-classical-primary flex items-center space-x-3 group text-lg px-8 py-4"
                   >
                     <FiBookOpen className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                    <span>
-                      {t(
-                        'not_authenticated_jsx_span_children_0__explorar_enciclopédia'
-                      )}
-                    </span>
+                    <span>Explorar Enciclopédia</span>
                   </Link>
                 </AnimatedItem>
               </AnimatedContainer>
@@ -451,14 +437,11 @@ export default function NotAuthenticated() {
               <AnimatedItem direction="up" springType="gentle">
                 <div className="p-6 classical-card-simple max-w-2xl mx-auto">
                   <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
-                    &quot;
-                    {t('not_authenticated_jsx_blockquote_children_0__music')}
-                    &quot;
+                    &quot;A música é a revelação mais alta que toda
+                    filosofia.&quot;
                   </blockquote>
                   <cite className="text-brand-primary font-semibold">
-                    {t(
-                      'not_authenticated_jsx_cite_children_0__ludwig_van_beethoven'
-                    )}
+                    — Ludwig van Beethoven
                   </cite>
                 </div>
               </AnimatedItem>

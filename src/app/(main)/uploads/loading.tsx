@@ -2,12 +2,9 @@
 'use client';
 
 import {
-  FiUpload,
-  FiDatabase,
   FiUser,
   FiMusic,
   FiFileText,
-  FiFile,
   FiSearch,
   FiFilter,
   FiPlus,

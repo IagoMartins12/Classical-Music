@@ -65,6 +65,7 @@ export async function GET(
   }
 }
 
+// app/api/uploads/composer/[id]/route.ts - PUT method ATUALIZADO
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<Params> }
@@ -112,7 +113,7 @@ export async function PUT(
       );
     }
 
-    // 🆕 Salvar dados antigos para comparação
+    // 🆕 Salvar dados antigos para comparação - INCLUINDO NOVOS CAMPOS
     const oldData = {
       name: currentComposer.name,
       fullName: currentComposer.fullName,
@@ -123,30 +124,53 @@ export async function PUT(
       epochId: currentComposer.epochId,
       bio: currentComposer.bio,
       imslpId: currentComposer.imslpId,
+      permLinkImslp: currentComposer.permLinkImslp, // 🆕
       wikipediaLink: currentComposer.wikipediaLink,
+      videoUrl: currentComposer.videoUrl, // 🆕
       nationality: currentComposer.nationality,
       instruments: currentComposer.instruments,
       primaryRoleId: currentComposer.primaryRoleId,
       roles: currentComposer.roles,
     };
 
+    // 🆕 DADOS PARA ATUALIZAÇÃO INCLUINDO NOVOS CAMPOS
+    const updateData = {
+      name: body.name,
+      fullName: body.fullName,
+      alternativeNames: body.alternativeNames || null,
+      birthDate: body.birthDate || null,
+      deathDate: body.deathDate || null,
+      portraitUrl: body.portraitUrl || null,
+      epochId: body.epochId,
+      epochName: body.epochName || null,
+      bio: body.bio || null,
+      imslpId: body.imslpId || null,
+      permLinkImslp: body.permLinkImslp || null, // 🆕 NOVO CAMPO
+      wikipediaLink: body.wikipediaLink || null,
+      videoUrl: body.videoUrl || null, // 🆕 NOVO CAMPO
+      nationality: body.nationality || null,
+      instruments: body.instruments || null,
+      imslpCategories: body.imslpCategories || null,
+      primaryRoleId: body.primaryRoleId,
+      roles: body.roles || null,
+      dataSource: body.dataSource || 'none',
+      lastEditedBy: userId,
+      lastEditedAt: new Date(),
+      hasValidImage: !!body.portraitUrl,
+      dataCompleteness: calculateDataCompleteness(body),
+    };
+
     // Atualizar compositor
     const updatedComposer = await prisma.composer.update({
       where: { id },
-      data: {
-        ...body,
-        lastEditedBy: userId,
-        lastEditedAt: new Date(),
-        hasValidImage: !!body.portraitUrl,
-        dataCompleteness: calculateDataCompleteness(body),
-      },
+      data: updateData,
       include: {
         epoch: { select: { name: true } },
         primaryRole: { select: { name: true } },
       },
     });
 
-    // 🆕 Registrar alterações no histórico
+    // 🆕 Registrar alterações no histórico - INCLUINDO NOVOS CAMPOS
     await logComposerUpdate(
       userId,
       id,
@@ -161,7 +185,9 @@ export async function PUT(
         epochId: updatedComposer.epochId,
         bio: updatedComposer.bio,
         imslpId: updatedComposer.imslpId,
+        permLinkImslp: updatedComposer.permLinkImslp, // 🆕
         wikipediaLink: updatedComposer.wikipediaLink,
+        videoUrl: updatedComposer.videoUrl, // 🆕
         nationality: updatedComposer.nationality,
         instruments: updatedComposer.instruments,
         primaryRoleId: updatedComposer.primaryRoleId,
@@ -186,6 +212,7 @@ export async function PUT(
     );
   }
 }
+
 // app/api/uploads/composer/[id]/route.ts - DELETE method (atualizado)
 export async function DELETE(
   request: NextRequest,
@@ -452,7 +479,8 @@ export async function DELETE(
     );
   }
 }
-// Função helper para calcular completude dos dados
+
+// 🆕 FUNÇÃO HELPER ATUALIZADA PARA INCLUIR NOVOS CAMPOS (mesma do POST)
 function calculateDataCompleteness(data: any): number {
   const fields = [
     'name',
@@ -463,6 +491,8 @@ function calculateDataCompleteness(data: any): number {
     'bio',
     'nationality',
     'instruments',
+    'permLinkImslp', // 🆕 NOVO CAMPO
+    'videoUrl', // 🆕 NOVO CAMPO
   ];
 
   const filledFields = fields.filter(

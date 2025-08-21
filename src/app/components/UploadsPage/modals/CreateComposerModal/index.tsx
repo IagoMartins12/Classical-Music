@@ -1,4 +1,4 @@
-// CreateComposerModal.tsx - ATUALIZADO COM TOASTS
+// CreateComposerModal.tsx - ATUALIZADO COM CAMPOS IMSLP E VIDEOURL
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
@@ -19,6 +19,7 @@ import {
   FiAlertCircle,
   FiDatabase,
   FiLock,
+  FiPlay,
 } from 'react-icons/fi';
 import {
   AnimatedCard,
@@ -192,6 +193,7 @@ const formatDateForInput = (dateString: string | null): string => {
 
   return '';
 };
+
 const CreateComposerModal = ({
   isOpen,
   onClose,
@@ -228,7 +230,7 @@ const CreateComposerModal = ({
     nationality: useRef<HTMLDivElement>(null),
   };
 
-  // Form state
+  // 🆕 FORM STATE ATUALIZADO COM NOVOS CAMPOS
   const [formData, setFormData] = useState({
     name: '',
     fullName: '',
@@ -240,7 +242,9 @@ const CreateComposerModal = ({
     epochName: '',
     bio: '',
     imslpId: '',
+    permLinkImslp: '', // 🆕 NOVO CAMPO
     wikipediaLink: '',
+    videoUrl: '', // 🆕 NOVO CAMPO
     nationality: '',
     instruments: '',
     imslpCategories: '',
@@ -259,9 +263,8 @@ const CreateComposerModal = ({
     if (!editingComposer) return null;
 
     let detectedSource: DataSource = 'none';
-    if (editingComposer.imslpId) {
+    if (editingComposer.imslpId || editingComposer.permLinkImslp) {
       detectedSource = 'imslp';
-
       setIsEditingExternalSource(true);
     } else if (editingComposer.wikipediaLink) {
       detectedSource = 'wikipedia';
@@ -279,7 +282,9 @@ const CreateComposerModal = ({
       epochName: editingComposer.epochName || '',
       bio: editingComposer.bio || '',
       imslpId: editingComposer.imslpId || '',
+      permLinkImslp: editingComposer.permLinkImslp || '', // 🆕
       wikipediaLink: editingComposer.wikipediaLink || '',
+      videoUrl: editingComposer.videoUrl || '', // 🆕
       nationality: editingComposer.nationality || '',
       instruments: editingComposer.instruments || '',
       imslpCategories: editingComposer.imslpCategories || '',
@@ -304,7 +309,7 @@ const CreateComposerModal = ({
       let detectedSource: DataSource = 'none';
       let detectedUrl = '';
 
-      if (editingComposer.imslpId) {
+      if (editingComposer.imslpId || editingComposer.permLinkImslp) {
         detectedSource = 'imslp';
         detectedUrl =
           editingComposer.permLinkImslp ||
@@ -328,10 +333,11 @@ const CreateComposerModal = ({
         portraitUrl: editingComposer.portraitUrl || '',
         epochId: editingComposer.epochId || '',
         epochName: editingComposer.epochName || '',
-
         bio: editingComposer.bio || '',
         imslpId: editingComposer.imslpId || '',
+        permLinkImslp: editingComposer.permLinkImslp || '', // 🆕
         wikipediaLink: editingComposer.wikipediaLink || '',
+        videoUrl: editingComposer.videoUrl || '', // 🆕
         nationality: editingComposer.nationality || '',
         instruments: editingComposer.instruments || '',
         imslpCategories: editingComposer.imslpCategories || '',
@@ -349,8 +355,6 @@ const CreateComposerModal = ({
     originalData, // Se null = modo criação, se preenchido = modo edição
     ['primaryRoleId', 'dataSource']
   );
-
-  // Função para extrair data de formato extenso
 
   // Função para formatar data para salvar (dd/mm/yyyy)
   const formatDateForSave = (dateString: string): string => {
@@ -520,11 +524,11 @@ const CreateComposerModal = ({
 
     // Verificar duplicatas antes de salvar (apenas se não estiver editando fonte externa)
     if (!isEditingExternalSource) {
+      // 🆕 VERIFICAR DUPLICATA PARA PERMLINK IMSLP
       if (
-        formData.imslpId &&
-        (await checkDuplicateByLink(formData.imslpId, 'imslp'))
+        formData.permLinkImslp &&
+        (await checkDuplicateByLink(formData.permLinkImslp, 'imslp'))
       ) {
-        // 🆕 SUBSTITUIR alert POR toast
         toast.error(
           'Duplicata Encontrada',
           'Já existe um compositor com este link do IMSLP.'
@@ -533,10 +537,20 @@ const CreateComposerModal = ({
       }
 
       if (
+        formData.imslpId &&
+        (await checkDuplicateByLink(formData.imslpId, 'imslp'))
+      ) {
+        toast.error(
+          'Duplicata Encontrada',
+          'Já existe um compositor com este ID do IMSLP.'
+        );
+        return;
+      }
+
+      if (
         formData.wikipediaLink &&
         (await checkDuplicateByLink(formData.wikipediaLink, 'wikipedia'))
       ) {
-        // 🆕 SUBSTITUIR alert POR toast
         toast.error(
           'Duplicata Encontrada',
           'Já existe um compositor com este link da Wikipedia.'
@@ -685,7 +699,9 @@ const CreateComposerModal = ({
       portraitUrl: data.portraitUrl || prev.portraitUrl,
       bio: data.bio || prev.bio,
       imslpId: data.imslpId || prev.imslpId,
+      permLinkImslp: data.permLinkImslp || prev.permLinkImslp, // 🆕
       wikipediaLink: data.wikipediaLink || prev.wikipediaLink,
+      videoUrl: data.videoUrl || prev.videoUrl, // 🆕
       nationality: data.nationality || prev.nationality,
       instruments: data.instruments || prev.instruments,
       imslpCategories: data.imslpCategories || prev.imslpCategories,
@@ -761,6 +777,16 @@ const CreateComposerModal = ({
     return null;
   };
 
+  // 🆕 FUNÇÃO PARA VERIFICAR SE CAMPO DEVE SER BLOQUEADO
+  const isFieldLocked = (field: 'wikipediaLink' | 'permLinkImslp'): boolean => {
+    // if (!isEditingExternalSource) return false;
+
+    if (field === 'wikipediaLink' && dataSource === 'wikipedia') return true;
+    if (field === 'permLinkImslp' && dataSource === 'imslp') return true;
+
+    return false;
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -812,7 +838,7 @@ const CreateComposerModal = ({
                       Extrair Dados de Fonte Externa
                     </span>
                     {isEditingExternalSource && (
-                      <div className="flex items-center space-x-1 text-xs text-blue-600">
+                      <div className="flex items-center space-x-1 text-xs text-theme-primary font-bold">
                         <FiLock className="w-3 h-3" />
                         <span>Fonte detectada automaticamente</span>
                       </div>
@@ -866,7 +892,7 @@ const CreateComposerModal = ({
                       {duplicateCheck.loading && (
                         <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
                           <div className="flex items-center space-x-2">
-                            <FiLoader className="w-4 h-4 animate-spin text-blue-600" />
+                            <FiLoader className="w-4 h-4 animate-spin text-theme-primary font-bold" />
                             <span className="text-sm text-blue-800">
                               Verificando duplicatas...
                             </span>
@@ -1221,23 +1247,86 @@ const CreateComposerModal = ({
                 </div>
               </AnimatedCard>
 
-              {/* External Links */}
+              {/* 🆕 EXTERNAL LINKS - SEÇÃO ATUALIZADA */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiGlobe className="w-5 h-5" />
                   <span>Links Externos</span>
                 </h3>
 
-                <div className="grid grid-cols-1  gap-4">
-                  <Input
-                    label="Link da Wikipedia"
-                    value={formData.wikipediaLink}
-                    onChange={(e) =>
-                      handleInputChange('wikipediaLink', e.target.value)
-                    }
-                    placeholder="https://en.wikipedia.org/wiki/..."
-                    leftIcon={<FiExternalLink />}
-                  />
+                <div className="grid grid-cols-1 gap-4">
+                  {/* Wikipedia Link */}
+                  <div className="relative">
+                    <Input
+                      label="Link da Wikipedia"
+                      value={formData.wikipediaLink}
+                      onChange={(e) =>
+                        handleInputChange('wikipediaLink', e.target.value)
+                      }
+                      placeholder="https://en.wikipedia.org/wiki/..."
+                      leftIcon={<FiExternalLink />}
+                      disabled={isFieldLocked('wikipediaLink')}
+                      className={
+                        isFieldLocked('wikipediaLink')
+                          ? 'bg-gray-50 cursor-not-allowed'
+                          : ''
+                      }
+                    />
+                    {isFieldLocked('wikipediaLink') && (
+                      <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
+                        <FiLock className="w-3 h-3" />
+                        <span>
+                          Campo bloqueado pois foi extraído via scraping do
+                          Wikipedia
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 🆕 IMSLP Link */}
+                  <div className="relative">
+                    <Input
+                      label="Link do IMSLP"
+                      value={formData.permLinkImslp}
+                      onChange={(e) =>
+                        handleInputChange('permLinkImslp', e.target.value)
+                      }
+                      placeholder="https://imslp.org/wiki/Category:Mozart,_Wolfgang_Amadeus"
+                      leftIcon={<FiExternalLink />}
+                      disabled={isFieldLocked('permLinkImslp')}
+                      className={
+                        isFieldLocked('permLinkImslp')
+                          ? 'bg-gray-50 cursor-not-allowed'
+                          : ''
+                      }
+                    />
+                    {isFieldLocked('permLinkImslp') && (
+                      <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
+                        <FiLock className="w-3 h-3" />
+                        <span>
+                          Campo bloqueado pois foi extraído via scraping do
+                          IMSLP
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 🆕 Video URL */}
+                  <div>
+                    <Input
+                      label="URL do Vídeo (opcional)"
+                      value={formData.videoUrl}
+                      onChange={(e) =>
+                        handleInputChange('videoUrl', e.target.value)
+                      }
+                      placeholder="https://www.youtube.com/watch?v=... ou outro vídeo"
+                      leftIcon={<FiPlay />}
+                    />
+                    <p className="text-xs text-theme-tertiary mt-1">
+                      Link para vídeo documentário, biografia ou apresentação
+                      sobre o compositor
+                    </p>
+                  </div>
                 </div>
               </AnimatedCard>
 

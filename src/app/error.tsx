@@ -20,6 +20,7 @@ import StudentNavigation from './components/TeacherSystem/StudentNavigation';
 import Navbar from './components/Navbar';
 import AdminHeader from './components/Admin/AdminHeader';
 import AdminSidebar from './components/Admin/AdminSidebar';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -33,6 +34,7 @@ export default function Error({ error, reset }: ErrorProps) {
   const { data: session } = useSession();
   const [currentArea, setCurrentArea] = useState<AreaType>('main');
   const [showAdminSidebar, setShowAdminSidebar] = useState(false);
+  const { t } = useTranslation({ sections: ['pages/error'] });
 
   useEffect(() => {
     console.error('Erro na aplicação:', error);
@@ -115,13 +117,13 @@ export default function Error({ error, reset }: ErrorProps) {
   const getAreaTitle = () => {
     switch (currentArea) {
       case 'teacher':
-        return 'Área do Professor';
+        return t('error_area_title_teacher');
       case 'student':
-        return 'Área do Estudante';
+        return t('error_area_title_student');
       case 'admin':
-        return 'Painel Administrativo';
+        return t('error_area_title_admin');
       default:
-        return 'Opus Atlas';
+        return t('error_area_title_main');
     }
   };
 
@@ -160,7 +162,7 @@ export default function Error({ error, reset }: ErrorProps) {
                     <GiGrandPiano className="w-12 h-12 mr-4 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
                     <div className="text-left">
                       <span className="text-2xl font-bold text-gradient-brand classical-title">
-                        Opus Atlas
+                        {t('error_jsx_span_children_0__opus_atlas')}
                       </span>
                       <div className="text-sm text-theme-tertiary">
                         {getAreaTitle()}
@@ -183,14 +185,14 @@ export default function Error({ error, reset }: ErrorProps) {
             {/* Title */}
             <AnimatedItem direction="up" springType="bouncy">
               <h1 className="text-5xl md:text-6xl font-bold text-gradient-brand classical-title mb-6">
-                Oops! Algo deu errado
+                {t('error_jsx_h1_children_0__oops_algo_deu_errado')}
               </h1>
             </AnimatedItem>
 
             {/* Subtitle */}
             <AnimatedItem direction="up" springType="smooth">
               <p className="text-xl md:text-2xl text-theme-secondary mb-8 leading-relaxed">
-                A sinfonia encontrou uma nota fora do tom 🎵
+                {t('error_jsx_p_children_0__sinfonia_encontrou_nota')}
               </p>
             </AnimatedItem>
 
@@ -205,7 +207,9 @@ export default function Error({ error, reset }: ErrorProps) {
                   className="btn-classical-primary flex items-center space-x-3 group text-lg px-8 py-4"
                 >
                   <FiRefreshCw className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" />
-                  <span>Tentar Novamente</span>
+                  <span>
+                    {t('error_jsx_span_children_0__tentar_novamente')}
+                  </span>
                 </button>
               </AnimatedItem>
 
@@ -215,7 +219,9 @@ export default function Error({ error, reset }: ErrorProps) {
                   className="btn-classical-secondary flex items-center space-x-3 group text-lg px-8 py-4"
                 >
                   <FiHome className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Voltar ao {getAreaTitle()}</span>
+                  <span>
+                    {t('error_jsx_span_children_0__voltar_ao')} {getAreaTitle()}
+                  </span>
                 </Link>
               </AnimatedItem>
             </AnimatedContainer>
@@ -230,7 +236,7 @@ export default function Error({ error, reset }: ErrorProps) {
                   <FiMusic className="w-5 h-5 text-accent-blue" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
-                  O que você pode fazer?
+                  {t('error_jsx_h3_children_0__que_voce_pode_fazer')}
                 </h3>
               </div>
 
@@ -239,13 +245,13 @@ export default function Error({ error, reset }: ErrorProps) {
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
-                      Recarregar a página
+                      {t('error_jsx_span_children_0__recarregar_pagina')}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
-                      Verificar sua conexão
+                      {t('error_jsx_span_children_0__verificar_conexao')}
                     </span>
                   </div>
                 </div>
@@ -253,13 +259,13 @@ export default function Error({ error, reset }: ErrorProps) {
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
-                      Tentar mais tarde
+                      {t('error_jsx_span_children_0__tentar_mais_tarde')}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-brand-primary rounded-full"></div>
                     <span className="text-theme-secondary">
-                      Voltar à página anterior
+                      {t('error_jsx_span_children_0__voltar_pagina_anterior')}
                     </span>
                   </div>
                 </div>
@@ -270,11 +276,10 @@ export default function Error({ error, reset }: ErrorProps) {
             <AnimatedItem direction="up" springType="gentle">
               <div className="p-6 classical-card-simple max-w-2xl mx-auto">
                 <blockquote className="text-lg text-theme-secondary italic mb-4 leading-relaxed">
-                  &quot;A música pode dar nome ao inominável e comunicar o
-                  desconhecido.&quot;
+                  &quot;{t('error_jsx_blockquote_children_0__music')}&quot;
                 </blockquote>
                 <cite className="text-brand-primary font-semibold">
-                  — Leonard Bernstein
+                  {t('error_jsx_cite_children_0__leonard_bernstein')}
                 </cite>
               </div>
             </AnimatedItem>

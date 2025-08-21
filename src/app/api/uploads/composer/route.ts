@@ -1,4 +1,4 @@
-// app/api/uploads/composer/route.ts
+// app/api/uploads/composer/route.ts - ATUALIZADO COM NOVOS CAMPOS
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
@@ -47,18 +47,37 @@ export async function POST(request: NextRequest) {
 
     console.log('BODY', body);
 
+    // 🆕 DADOS PARA CRIAÇÃO INCLUINDO NOVOS CAMPOS
+    const createData = {
+      name: body.name,
+      fullName: body.fullName,
+      alternativeNames: body.alternativeNames || null,
+      birthDate: body.birthDate || null,
+      deathDate: body.deathDate || null,
+      portraitUrl: body.portraitUrl || null,
+      epochId: body.epochId,
+      epochName: body.epochName || null,
+      bio: body.bio || null,
+      imslpId: body.imslpId || null,
+      permLinkImslp: body.permLinkImslp || null, // 🆕 NOVO CAMPO
+      wikipediaLink: body.wikipediaLink || null,
+      videoUrl: body.videoUrl || null, // 🆕 NOVO CAMPO
+      nationality: body.nationality || null,
+      instruments: body.instruments || null,
+      imslpCategories: body.imslpCategories || null,
+      primaryRoleId: body.primaryRoleId,
+      roles: body.roles || null,
+      dataSource: body.dataSource || 'none',
+      createdBy: userId,
+      isCustom: true,
+      hasValidImage: !!body.portraitUrl,
+      lastVerified: new Date(),
+      dataCompleteness: calculateDataCompleteness(body),
+    };
+
     // Criar compositor
     const composer = await prisma.composer.create({
-      data: {
-        ...body,
-        createdBy: userId,
-        isCustom: true,
-        dataSource: body.dataSource || 'none',
-
-        hasValidImage: !!body.portraitUrl,
-        lastVerified: new Date(),
-        dataCompleteness: calculateDataCompleteness(body),
-      },
+      data: createData,
       include: {
         epoch: { select: { name: true } },
         primaryRole: { select: { name: true } },
@@ -77,6 +96,8 @@ export async function POST(request: NextRequest) {
         nationality: composer.nationality,
         birthDate: composer.birthDate,
         deathDate: composer.deathDate,
+        videoUrl: composer.videoUrl, // 🆕 INCLUIR NO LOG
+        permLinkImslp: composer.permLinkImslp, // 🆕 INCLUIR NO LOG
       },
       request
     );
@@ -97,7 +118,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Função helper para calcular completude dos dados
+// 🆕 FUNÇÃO HELPER ATUALIZADA PARA INCLUIR NOVOS CAMPOS
 function calculateDataCompleteness(data: any): number {
   const fields = [
     'name',
@@ -108,6 +129,8 @@ function calculateDataCompleteness(data: any): number {
     'bio',
     'nationality',
     'instruments',
+    'permLinkImslp', // 🆕 NOVO CAMPO
+    'videoUrl', // 🆕 NOVO CAMPO
   ];
 
   const filledFields = fields.filter(
