@@ -14,6 +14,7 @@ import { GiGrandPiano } from 'react-icons/gi';
 import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import { useOnboardingModal } from '@/app/stores/authStore';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ConfirmationState {
   status: 'loading' | 'success' | 'error' | 'already-confirmed';
@@ -27,14 +28,51 @@ interface ConfirmationState {
   canResend?: boolean;
 }
 
+// Funções auxiliares para mensagens de erro
+function getErrorTitle(errorCode?: string, t?: any): string {
+  switch (errorCode) {
+    case 'EXPIRED_TOKEN':
+      return t('pages_token_error_title_expired_token');
+    case 'USED_TOKEN':
+      return t('pages_token_error_title_used_token');
+    case 'INVALID_TOKEN':
+      return t('pages_token_error_title_invalid_token');
+    case 'NO_TOKEN':
+      return t('pages_token_error_title_no_token');
+    case 'CONNECTION_ERROR':
+      return t('pages_token_error_title_connection_error');
+    default:
+      return t('pages_token_error_title_default');
+  }
+}
+
+function getErrorDescription(errorCode?: string, t?: any): string {
+  switch (errorCode) {
+    case 'EXPIRED_TOKEN':
+      return t('pages_token_error_description_expired_token');
+    case 'USED_TOKEN':
+      return t('pages_token_error_description_used_token');
+    case 'INVALID_TOKEN':
+      return t('pages_token_error_description_invalid_token');
+    case 'NO_TOKEN':
+      return t('pages_token_error_description_no_token');
+    case 'CONNECTION_ERROR':
+      return t('pages_token_error_description_connection_error');
+    default:
+      return t('pages_token_error_description_default');
+  }
+}
+
 export default function ConfirmAccountPage() {
   const params = useParams();
   const router = useRouter();
   const token = params.token as string;
 
+  const { t } = useTranslation({ sections: ['pagesToken'] });
+
   const [state, setState] = useState<ConfirmationState>({
     status: 'loading',
-    message: 'Processando confirmação...',
+    message: t('pages_token_jsx_span_children_0__processando_confirmação'),
   });
 
   const [resendLoading, setResendLoading] = useState(false);
@@ -44,7 +82,9 @@ export default function ConfirmAccountPage() {
     if (!token) {
       setState({
         status: 'error',
-        message: 'Token de confirmação não fornecido',
+        message: t(
+          'pages_token_jsx_span_children_0__token_convite_não_fornecido'
+        ),
         errorCode: 'NO_TOKEN',
       });
       return;
@@ -59,7 +99,7 @@ export default function ConfirmAccountPage() {
     try {
       setState({
         status: 'loading',
-        message: 'Confirmando sua conta...',
+        message: t('pages_token_jsx_h1_children_0__confirmando_sua_conta'),
       });
 
       const response = await fetch(`/api/auth/confirm-account/${token}`);
@@ -96,7 +136,7 @@ export default function ConfirmAccountPage() {
       console.error('Erro na confirmação:', error);
       setState({
         status: 'error',
-        message: 'Erro de conexão. Tente novamente.',
+        message: t('pages_token_jsx_span_children_0__erro_conexão_reenviar'),
         errorCode: 'CONNECTION_ERROR',
       });
     }
@@ -123,13 +163,14 @@ export default function ConfirmAccountPage() {
         setResendSuccess(true);
         setState((prev) => ({
           ...prev,
-          message:
-            'Novo email de confirmação enviado! Verifique sua caixa de entrada.',
+          message: t('pages_token_jsx_span_children_0__novo_email_confirmação'),
         }));
       } else {
         setState((prev) => ({
           ...prev,
-          message: result.error || 'Erro ao reenviar confirmação',
+          message:
+            result.error ||
+            t('pages_token_jsx_span_children_0__erro_reenviar_confirmação'),
         }));
       }
     } catch (error) {
@@ -137,7 +178,7 @@ export default function ConfirmAccountPage() {
 
       setState((prev) => ({
         ...prev,
-        message: 'Erro de conexão ao reenviar email',
+        message: t('pages_token_jsx_span_children_0__erro_conexão_reenviar'),
       }));
     } finally {
       setResendLoading(false);
@@ -153,7 +194,7 @@ export default function ConfirmAccountPage() {
               <FiLoader className="w-10 h-10 text-white animate-spin" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              Confirmando sua conta...
+              {t('pages_token_jsx_h1_children_0__confirmando_sua_conta')}
             </h1>
             <p className="text-theme-secondary text-lg">{state.message}</p>
             <div className="mt-8">
@@ -171,20 +212,23 @@ export default function ConfirmAccountPage() {
               <FiCheckCircle className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              🎉 Conta Confirmada!
+              {t('pages_token_jsx_h1_children_0__conta_confirmada')}
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && (
               <div className="bg-accent-green bg-opacity-10 border border-accent-green rounded-xl p-6 mb-8">
                 <h3 className="text-xl font-semibold text-accent-green mb-2">
-                  Bem-vindo, {state.user.firstName}! 🎼
+                  {t('pages_token_jsx_h3_children_0__bem_vindo', {
+                    firstName: state.user.firstName,
+                  })}
                 </h3>
                 <p className="text-accent-green opacity-80">
-                  Sua conta <strong>{state.user.email}</strong> foi confirmada
-                  com sucesso.
+                  {t('pages_token_jsx_p_children_0__sua_conta_confirmada', {
+                    email: state.user.email,
+                  })}
                   {!state.user.onboardingCompleted &&
-                    ' Vamos completar seu perfil!'}
+                    t('pages_token_jsx_p_children_0__vamos_completar_perfil')}
                 </p>
               </div>
             )}
@@ -204,8 +248,8 @@ export default function ConfirmAccountPage() {
                 className="animate-pulse"
               >
                 {state.user?.onboardingCompleted
-                  ? 'Ir para o Site'
-                  : 'Completar Perfil'}
+                  ? t('pages_token_jsx_button_children_0__ir_para_site')
+                  : t('pages_token_jsx_button_children_0__completar_perfil')}
               </Button>
 
               <Button
@@ -213,14 +257,16 @@ export default function ConfirmAccountPage() {
                 size="lg"
                 onClick={() => router.push('/')}
               >
-                Explorar Opus Atlas
+                {t('pages_token_jsx_button_children_0__explorar_opus_atlas')}
               </Button>
             </div>
 
             <div className="mt-8 text-sm text-theme-tertiary">
               {!isOpen && (
                 <span>
-                  Redirecionando automaticamente em alguns segundos...
+                  {t(
+                    'pages_token_jsx_span_children_0__redirecionando_automaticamente'
+                  )}
                 </span>
               )}
             </div>
@@ -234,18 +280,19 @@ export default function ConfirmAccountPage() {
               <FiCheckCircle className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              ✅ Já Confirmado
+              {t('pages_token_jsx_h1_children_0__já_confirmado')}
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && (
               <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-xl p-6 mb-8">
                 <h3 className="text-xl font-semibold text-accent-blue mb-2">
-                  Olá, {state.user.firstName}! 👋
+                  {t('pages_token_jsx_h3_children_0__olá', {
+                    firstName: state.user.firstName,
+                  })}
                 </h3>
                 <p className="text-accent-blue opacity-80">
-                  Sua conta já estava confirmada. Você pode fazer login
-                  normalmente.
+                  {t('pages_token_jsx_p_children_0__sua_conta_já_confirmada')}
                 </p>
               </div>
             )}
@@ -257,7 +304,7 @@ export default function ConfirmAccountPage() {
                 rightIcon={<FiArrowRight />}
                 onClick={() => router.push('/')}
               >
-                Fazer Login
+                {t('pages_token_jsx_button_children_0__fazer_login')}
               </Button>
 
               <Button
@@ -265,7 +312,7 @@ export default function ConfirmAccountPage() {
                 size="lg"
                 onClick={() => router.push('/')}
               >
-                Ir para o Site
+                {t('pages_token_jsx_button_children_0__ir_para_site')}
               </Button>
             </div>
           </div>
@@ -278,7 +325,7 @@ export default function ConfirmAccountPage() {
               <FiAlertCircle className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              ❌ Erro na Confirmação
+              {t('pages_token_jsx_h1_children_0__erro_na_confirmação')}
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
@@ -286,11 +333,11 @@ export default function ConfirmAccountPage() {
               <div className="flex items-center justify-center mb-3">
                 <FiAlertCircle className="w-5 h-5 text-accent-red mr-2" />
                 <span className="font-medium text-accent-red">
-                  {getErrorTitle(state.errorCode)}
+                  {getErrorTitle(state.errorCode, t)}
                 </span>
               </div>
               <p className="text-accent-red opacity-80 text-sm">
-                {getErrorDescription(state.errorCode)}
+                {getErrorDescription(state.errorCode, t)}
               </p>
             </div>
 
@@ -305,7 +352,11 @@ export default function ConfirmAccountPage() {
                   disabled={resendSuccess}
                   className="w-full"
                 >
-                  {resendSuccess ? 'Email Enviado!' : 'Reenviar Confirmação'}
+                  {resendSuccess
+                    ? t('pages_token_jsx_button_children_0__email_enviado')
+                    : t(
+                        'pages_token_jsx_button_children_0__reenviar_confirmação'
+                      )}
                 </Button>
               )}
 
@@ -315,7 +366,7 @@ export default function ConfirmAccountPage() {
                   size="lg"
                   onClick={() => router.push('/')}
                 >
-                  Voltar ao Site
+                  {t('pages_token_jsx_button_children_0__voltar_ao_site')}
                 </Button>
 
                 <Button
@@ -324,7 +375,7 @@ export default function ConfirmAccountPage() {
                   leftIcon={<FiRefreshCw />}
                   onClick={confirmAccount}
                 >
-                  Tentar Novamente
+                  {t('pages_token_jsx_button_children_0__tentar_novamente')}
                 </Button>
               </div>
             </div>
@@ -355,7 +406,7 @@ export default function ConfirmAccountPage() {
                 <GiGrandPiano className="w-10 h-10 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
               </div>
               <span className="text-2xl font-bold text-gradient-brand classical-title">
-                Opus Atlas
+                {t('pages_token_jsx_h1_children_0__opus_atlas')}
               </span>
             </Link>
           </div>
@@ -366,12 +417,12 @@ export default function ConfirmAccountPage() {
           {/* Footer */}
           <div className="mt-12 pt-8 border-t border-theme-secondary text-center">
             <p className="text-sm text-theme-tertiary">
-              Precisa de ajuda?{' '}
+              {t('pages_token_jsx_p_children_0__precisa_ajuda')}{' '}
               <Link
                 href="/support"
                 className="text-brand-primary hover:underline"
               >
-                Entre em contato
+                {t('pages_token_jsx_link_children_0__entre_contato')}
               </Link>
             </p>
           </div>
@@ -379,39 +430,4 @@ export default function ConfirmAccountPage() {
       </div>
     </div>
   );
-}
-
-// Funções auxiliares para mensagens de erro
-function getErrorTitle(errorCode?: string): string {
-  switch (errorCode) {
-    case 'EXPIRED_TOKEN':
-      return 'Token Expirado';
-    case 'USED_TOKEN':
-      return 'Link Já Utilizado';
-    case 'INVALID_TOKEN':
-      return 'Token Inválido';
-    case 'NO_TOKEN':
-      return 'Token Não Fornecido';
-    case 'CONNECTION_ERROR':
-      return 'Erro de Conexão';
-    default:
-      return 'Erro Desconhecido';
-  }
-}
-
-function getErrorDescription(errorCode?: string): string {
-  switch (errorCode) {
-    case 'EXPIRED_TOKEN':
-      return 'O link de confirmação expirou. Você pode solicitar um novo link abaixo.';
-    case 'USED_TOKEN':
-      return 'Este link de confirmação já foi utilizado anteriormente.';
-    case 'INVALID_TOKEN':
-      return 'O link de confirmação é inválido ou foi corrompido.';
-    case 'NO_TOKEN':
-      return 'Nenhum token de confirmação foi fornecido na URL.';
-    case 'CONNECTION_ERROR':
-      return 'Não foi possível conectar ao servidor. Verifique sua conexão.';
-    default:
-      return 'Ocorreu um erro inesperado durante a confirmação.';
-  }
 }

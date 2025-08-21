@@ -15,7 +15,7 @@ import { GiGrandPiano } from 'react-icons/gi';
 import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
-import { getErrorDescription, getErrorTitle } from '@/app/utils';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ConfirmationState {
   status: 'loading' | 'success' | 'error' | 'already-accepted';
@@ -40,14 +40,50 @@ interface ConfirmationState {
   canResend?: boolean;
 }
 
+function getErrorTitle(errorCode?: string, t?: any): string {
+  switch (errorCode) {
+    case 'EXPIRED_TOKEN':
+      return t('pages_token_error_title_expired_token');
+    case 'USED_TOKEN':
+      return t('pages_token_error_title_used_token');
+    case 'INVALID_TOKEN':
+      return t('pages_token_error_title_invalid_token');
+    case 'NO_TOKEN':
+      return t('pages_token_error_title_no_token');
+    case 'CONNECTION_ERROR':
+      return t('pages_token_error_title_connection_error');
+    default:
+      return t('pages_token_error_title_default');
+  }
+}
+
+function getErrorDescription(errorCode?: string, t?: any): string {
+  switch (errorCode) {
+    case 'EXPIRED_TOKEN':
+      return t('pages_token_error_description_expired_token');
+    case 'USED_TOKEN':
+      return t('pages_token_error_description_used_token');
+    case 'INVALID_TOKEN':
+      return t('pages_token_error_description_invalid_token');
+    case 'NO_TOKEN':
+      return t('pages_token_error_description_no_token');
+    case 'CONNECTION_ERROR':
+      return t('pages_token_error_description_connection_error');
+    default:
+      return t('pages_token_error_description_default');
+  }
+}
+
 export default function ConfirmStudentInvitePage() {
   const params = useParams();
   const router = useRouter();
   const token = params.token as string;
 
+  const { t } = useTranslation({ sections: ['pagesToken'] });
+
   const [state, setState] = useState<ConfirmationState>({
     status: 'loading',
-    message: 'Processando convite...',
+    message: t('pages_token_jsx_h1_children_0__processando_convite'),
   });
 
   const [resendLoading, setResendLoading] = useState(false);
@@ -57,7 +93,9 @@ export default function ConfirmStudentInvitePage() {
     if (!token) {
       setState({
         status: 'error',
-        message: 'Token de convite não fornecido',
+        message: t(
+          'pages_token_jsx_span_children_0__token_convite_não_fornecido'
+        ),
         errorCode: 'NO_TOKEN',
       });
       return;
@@ -70,7 +108,7 @@ export default function ConfirmStudentInvitePage() {
     try {
       setState({
         status: 'loading',
-        message: 'Processando seu convite de aluno...',
+        message: t('pages_token_jsx_p_children_0__processando_convite_aluno'),
       });
 
       const response = await fetch(`/api/invites/student/accept/${token}`);
@@ -114,7 +152,7 @@ export default function ConfirmStudentInvitePage() {
       console.error('Erro na aceitação:', error);
       setState({
         status: 'error',
-        message: 'Erro de conexão. Tente novamente.',
+        message: t('pages_token_jsx_span_children_0__erro_conexão_reenviar'),
         errorCode: 'CONNECTION_ERROR',
         canResend: true,
       });
@@ -143,14 +181,15 @@ export default function ConfirmStudentInvitePage() {
         setResendSuccess(true);
         setState((prev) => ({
           ...prev,
-          message:
-            'Novo email de convite enviado! Verifique sua caixa de entrada.',
+          message: t('pages_token_jsx_span_children_0__novo_email_confirmação'),
         }));
         toast.success('Email reenviado!');
       } else {
         setState((prev) => ({
           ...prev,
-          message: result.error || 'Erro ao reenviar convite',
+          message:
+            result.error ||
+            t('pages_token_jsx_span_children_0__erro_reenviar_confirmação'),
         }));
         toast.error(result.error);
       }
@@ -158,7 +197,7 @@ export default function ConfirmStudentInvitePage() {
       console.error('Erro ao reenviar:', error);
       setState((prev) => ({
         ...prev,
-        message: 'Erro de conexão ao reenviar email',
+        message: t('pages_token_jsx_span_children_0__erro_conexão_reenviar'),
       }));
       toast.error('Erro de conexão');
     } finally {
@@ -175,7 +214,7 @@ export default function ConfirmStudentInvitePage() {
               <FiLoader className="w-10 h-10 text-theme-primary animate-spin" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              Processando convite...
+              {t('pages_token_jsx_h1_children_0__processando_convite')}
             </h1>
             <p className="text-theme-secondary text-lg">{state.message}</p>
             <div className="mt-8">
@@ -193,7 +232,7 @@ export default function ConfirmStudentInvitePage() {
               <FiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              🎉 Convite Aceito!
+              {t('pages_token_jsx_h1_children_0__convite_aceito')}
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
@@ -205,11 +244,14 @@ export default function ConfirmStudentInvitePage() {
                   </div>
                   <div>
                     <h3 className="text-2xl font-semibold text-accent-green">
-                      Bem-vindo, {state.user.firstName}! 🎼
+                      {t('pages_token_jsx_h3_children_0__bem_vindo_aluno', {
+                        firstName: state.user.firstName,
+                      })}
                     </h3>
                     <p className="text-accent-green opacity-80">
-                      Você agora é aluno de{' '}
-                      <strong>{state.teacher.name}</strong>
+                      {t('pages_token_jsx_p_children_0__agora_aluno_de', {
+                        teacherName: state.teacher.name,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -218,39 +260,59 @@ export default function ConfirmStudentInvitePage() {
                   <div className="grid md:grid-cols-2 gap-4 mt-6">
                     <div className="classical-card-simple bg-opacity-10 rounded-lg p-4">
                       <h4 className="font-medium text-accent-green mb-2">
-                        📚 Seu Plano de Estudos
+                        {t('pages_token_jsx_h4_children_0__seu_plano_estudos')}
                       </h4>
                       <ul className="text-xs text-accent-green opacity-90 space-y-1 text-left">
                         <li>
-                          • {state.relationship.maxLessonsPerWeek} aula(s) por
-                          semana
+                          {t(
+                            'pages_token_jsx_li_children_0__aulas_por_semana',
+                            { maxLessons: state.relationship.maxLessonsPerWeek }
+                          )}
                         </li>
                         <li>
-                          • {state.relationship.lessonDuration} minutos por aula
+                          {t(
+                            'pages_token_jsx_li_children_0__minutos_por_aula',
+                            { duration: state.relationship.lessonDuration }
+                          )}
                         </li>
                         {state.relationship.preferredDays?.length > 0 && (
                           <li>
-                            • Dias:{' '}
-                            {state.relationship.preferredDays.join(', ')}
+                            {t('pages_token_jsx_li_children_0__dias', {
+                              days: state.relationship.preferredDays.join(', '),
+                            })}
                           </li>
                         )}
                         {state.relationship.preferredTimes?.length > 0 && (
                           <li>
-                            • Horários:{' '}
-                            {state.relationship.preferredTimes.join(', ')}
+                            {t('pages_token_jsx_li_children_0__horários', {
+                              times:
+                                state.relationship.preferredTimes.join(', '),
+                            })}
                           </li>
                         )}
                       </ul>
                     </div>
                     <div className="classical-card-simple bg-opacity-10 rounded-lg p-4">
                       <h4 className="font-medium text-accent-green mb-2">
-                        ⚡ Próximos Passos
+                        {t('pages_token_jsx_h4_children_0__próximos_passos')}
                       </h4>
                       <ul className="text-xs text-accent-green opacity-90 space-y-1 text-left">
-                        <li>• Complete seu perfil de aluno</li>
-                        <li>• Defina seus objetivos musicais</li>
-                        <li>• Aguarde o agendamento da primeira aula</li>
-                        <li>• Prepare-se para aprender!</li>
+                        <li>
+                          {t('pages_token_jsx_li_children_0__complete_perfil')}
+                        </li>
+                        <li>
+                          {t('pages_token_jsx_li_children_0__defina_objetivos')}
+                        </li>
+                        <li>
+                          {t(
+                            'pages_token_jsx_li_children_0__aguarde_agendamento'
+                          )}
+                        </li>
+                        <li>
+                          {t(
+                            'pages_token_jsx_li_children_0__prepare_se_aprender'
+                          )}
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -266,7 +328,7 @@ export default function ConfirmStudentInvitePage() {
                 onClick={() => router.push('/student/profile')}
                 className="animate-pulse"
               >
-                Completar Perfil
+                {t('pages_token_jsx_button_children_0__completar_perfil')}
               </Button>
 
               <Button
@@ -274,12 +336,14 @@ export default function ConfirmStudentInvitePage() {
                 size="lg"
                 onClick={() => router.push('/student')}
               >
-                Área do Aluno
+                {t('pages_token_jsx_button_children_0__área_do_aluno')}
               </Button>
             </div>
 
             <div className="mt-8 text-sm text-theme-tertiary">
-              <span>Redirecionando para o perfil em alguns segundos...</span>
+              <span>
+                {t('pages_token_jsx_span_children_0__redirecionando_perfil')}
+              </span>
             </div>
           </div>
         );
@@ -291,18 +355,21 @@ export default function ConfirmStudentInvitePage() {
               <FiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              ✅ Já é Aluno
+              {t('pages_token_jsx_h1_children_0__já_é_aluno')}
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             {state.user && state.teacher && (
               <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-xl p-6 mb-8">
                 <h3 className="text-xl font-semibold text-accent-blue mb-2">
-                  Olá, {state.user.firstName}! 👋
+                  {t('pages_token_jsx_h3_children_0__olá_aluno', {
+                    firstName: state.user.firstName,
+                  })}
                 </h3>
                 <p className="text-accent-blue opacity-80">
-                  Você já é aluno de <strong>{state.teacher.name}</strong>.
-                  Acesse sua área para acompanhar suas aulas e progresso.
+                  {t('pages_token_jsx_p_children_0__já_é_aluno_de', {
+                    teacherName: state.teacher.name,
+                  })}
                 </p>
               </div>
             )}
@@ -314,7 +381,7 @@ export default function ConfirmStudentInvitePage() {
                 rightIcon={<FiArrowRight />}
                 onClick={() => router.push('/student')}
               >
-                Área do Aluno
+                {t('pages_token_jsx_button_children_0__área_do_aluno')}
               </Button>
 
               <Button
@@ -322,7 +389,7 @@ export default function ConfirmStudentInvitePage() {
                 size="lg"
                 onClick={() => router.push('/student/profile')}
               >
-                Editar Perfil
+                {t('pages_token_jsx_button_children_0__editar_perfil')}
               </Button>
             </div>
           </div>
@@ -335,7 +402,7 @@ export default function ConfirmStudentInvitePage() {
               <FiAlertCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              ❌ Erro no Convite
+              {t('pages_token_jsx_h1_children_0__erro_no_convite')}
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
@@ -343,11 +410,11 @@ export default function ConfirmStudentInvitePage() {
               <div className="flex items-center justify-center mb-3">
                 <FiAlertCircle className="w-5 h-5 text-accent-red mr-2" />
                 <span className="font-medium text-accent-red">
-                  {getErrorTitle(state.errorCode)}
+                  {getErrorTitle(state.errorCode, t)}
                 </span>
               </div>
               <p className="text-accent-red opacity-80 text-sm">
-                {getErrorDescription(state.errorCode)}
+                {getErrorDescription(state.errorCode, t)}
               </p>
             </div>
 
@@ -362,7 +429,9 @@ export default function ConfirmStudentInvitePage() {
                   disabled={resendSuccess}
                   className="w-full"
                 >
-                  {resendSuccess ? 'Email Enviado!' : 'Reenviar Convite'}
+                  {resendSuccess
+                    ? t('pages_token_jsx_button_children_0__email_enviado')
+                    : t('pages_token_jsx_button_children_0__reenviar_convite')}
                 </Button>
               )}
 
@@ -372,7 +441,7 @@ export default function ConfirmStudentInvitePage() {
                   size="lg"
                   onClick={() => router.push('/')}
                 >
-                  Voltar ao Site
+                  {t('pages_token_jsx_button_children_0__voltar_ao_site')}
                 </Button>
 
                 <Button
@@ -381,7 +450,7 @@ export default function ConfirmStudentInvitePage() {
                   leftIcon={<FiRefreshCw />}
                   onClick={acceptInvite}
                 >
-                  Tentar Novamente
+                  {t('pages_token_jsx_button_children_0__tentar_novamente')}
                 </Button>
               </div>
             </div>
@@ -412,11 +481,11 @@ export default function ConfirmStudentInvitePage() {
                 <GiGrandPiano className="w-10 h-10 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
               </div>
               <span className="text-2xl font-bold text-gradient-brand classical-title">
-                Opus Atlas
+                {t('pages_token_jsx_h1_children_0__opus_atlas')}
               </span>
             </Link>
             <div className="text-sm text-theme-tertiary mb-4">
-              Convite de Aluno
+              {t('pages_token_jsx_div_children_0__convite_de_aluno')}
             </div>
           </div>
 
@@ -426,12 +495,12 @@ export default function ConfirmStudentInvitePage() {
           {/* Footer */}
           <div className="mt-12 pt-8 border-t border-theme-secondary text-center">
             <p className="text-sm text-theme-tertiary">
-              Precisa de ajuda?{' '}
+              {t('pages_token_jsx_p_children_0__precisa_ajuda')}{' '}
               <Link
                 href="/support"
                 className="text-brand-primary hover:underline"
               >
-                Entre em contato
+                {t('pages_token_jsx_link_children_0__entre_contato')}
               </Link>
             </p>
           </div>

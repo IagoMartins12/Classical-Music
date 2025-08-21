@@ -20,6 +20,7 @@ import { useAuthStore } from '@/app/stores/authStore';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useAuth } from '@/app/hooks/useAuth';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ConfirmationResult {
   success: boolean;
@@ -40,6 +41,8 @@ export default function ConfirmEmailChangePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isResending, setIsResending] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const { t } = useTranslation({ sections: ['pagesToken'] });
 
   // 🆕 NOVO: Hooks para logout
   const { logout: authLogout } = useAuthStore();
@@ -68,7 +71,9 @@ export default function ConfirmEmailChangePage() {
       console.log('data', data);
       if (data.success && data.data) {
         // Não atualizar a sessão - vamos deslogar o usuário
-        toast.success('Email alterado com sucesso!');
+        toast.success(
+          t('pages_token_jsx_h2_children_0__email_alterado_sucesso')
+        );
 
         // 🆕 NOVO: Auto-logout após 3 segundos
         setTimeout(() => {
@@ -81,7 +86,7 @@ export default function ConfirmEmailChangePage() {
       console.error('Erro ao confirmar mudança de email:', error);
       setResult({
         success: false,
-        message: 'Erro ao processar confirmação. Tente novamente.',
+        message: t('pages_token_jsx_p_children_0__não_foi_possível_processar'),
         errorCode: 'NETWORK_ERROR',
       });
       toast.error('Erro de rede. Tente novamente.');
@@ -172,10 +177,10 @@ export default function ConfirmEmailChangePage() {
             </div>
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
-            Confirmando mudança de email...
+            {t('pages_token_jsx_h2_children_0__confirmando_mudança_email')}
           </h2>
           <p className="text-theme-secondary">
-            Aguarde enquanto processamos sua solicitação.
+            {t('pages_token_jsx_p_children_0__aguarde_processamento')}
           </p>
         </div>
       );
@@ -190,13 +195,13 @@ export default function ConfirmEmailChangePage() {
             </div>
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
-            Erro ao processar
+            {t('pages_token_jsx_h2_children_0__erro_ao_processar')}
           </h2>
           <p className="text-theme-secondary mb-6">
-            Não foi possível processar sua solicitação.
+            {t('pages_token_jsx_p_children_0__não_foi_possível_processar')}
           </p>
           <Button variant="primary" onClick={() => router.push('/')}>
-            Voltar ao Início
+            {t('pages_token_jsx_button_children_0__voltar_ao_início')}
           </Button>
         </div>
       );
@@ -211,7 +216,7 @@ export default function ConfirmEmailChangePage() {
             </div>
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
-            ✅ Email alterado com sucesso!
+            {t('pages_token_jsx_h2_children_0__email_alterado_sucesso')}
           </h2>
           <p className="text-theme-secondary mb-6">{result.message}</p>
 
@@ -219,17 +224,21 @@ export default function ConfirmEmailChangePage() {
             <div className="bg-accent-green/10 border border-accent-green/20 rounded-lg p-6 mb-6">
               <h3 className="font-semibold text-accent-green mb-4 flex items-center justify-center">
                 <FiMail className="w-5 h-5 mr-2" />
-                Resumo da Alteração
+                {t('pages_token_jsx_h3_children_0__resumo_alteração')}
               </h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-theme-secondary">Email anterior:</span>
+                  <span className="text-theme-secondary">
+                    {t('pages_token_jsx_span_children_0__email_anterior')}
+                  </span>
                   <span className="text-theme-primary font-mono">
                     {result.data.oldEmail}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-theme-secondary">Novo email:</span>
+                  <span className="text-theme-secondary">
+                    {t('pages_token_jsx_span_children_0__novo_email')}
+                  </span>
                   <span className="text-theme-primary font-mono font-bold">
                     {result.data.newEmail}
                   </span>
@@ -244,20 +253,21 @@ export default function ConfirmEmailChangePage() {
               <FiLogOut className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-accent-amber mb-2">
-                  🔄 Logout Necessário
+                  {t('pages_token_jsx_h4_children_0__logout_necessário')}
                 </h4>
                 <p className="text-sm text-accent-amber opacity-90 mb-3">
-                  Por segurança, você será deslogado automaticamente e precisará
-                  fazer login novamente com seu novo email.
+                  {t('pages_token_jsx_p_children_0__logout_segurança')}
                 </p>
                 {isLoggingOut ? (
                   <div className="flex items-center justify-center text-accent-amber">
                     <FiLoader className="w-4 h-4 animate-spin mr-2" />
-                    <span className="text-sm">Fazendo logout...</span>
+                    <span className="text-sm">
+                      {t('pages_token_jsx_span_children_0__fazendo_logout')}
+                    </span>
                   </div>
                 ) : (
                   <div className="text-xs text-accent-amber opacity-70">
-                    💡 Logout automático em alguns segundos...
+                    {t('pages_token_jsx_div_children_0__logout_automático')}
                   </div>
                 )}
               </div>
@@ -267,13 +277,19 @@ export default function ConfirmEmailChangePage() {
           <div className="bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4 mb-6">
             <h4 className="font-medium text-accent-blue mb-2 flex items-center justify-center">
               <FiCheckCircle className="w-4 h-4 mr-2" />
-              Funcionalidades Restauradas
+              {t('pages_token_jsx_h4_children_0__funcionalidades_restauradas')}
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-accent-blue">
-              <div>✅ Upload de compositores</div>
-              <div>✅ Upload de obras</div>
-              <div>✅ Upload de partituras</div>
-              <div>✅ Funcionalidades premium</div>
+              <div>
+                {t('pages_token_jsx_div_children_0__upload_compositores')}
+              </div>
+              <div>{t('pages_token_jsx_div_children_0__upload_obras')}</div>
+              <div>
+                {t('pages_token_jsx_div_children_0__upload_partituras')}
+              </div>
+              <div>
+                {t('pages_token_jsx_div_children_0__funcionalidades_premium')}
+              </div>
             </div>
           </div>
 
@@ -293,7 +309,9 @@ export default function ConfirmEmailChangePage() {
               className="w-full"
               disabled={isLoggingOut}
             >
-              {isLoggingOut ? 'Fazendo Logout...' : 'Fazer Logout Agora'}
+              {isLoggingOut
+                ? t('pages_token_jsx_button_children_0__fazendo_logout')
+                : t('pages_token_jsx_button_children_0__fazer_logout_agora')}
             </Button>
 
             <Button
@@ -304,18 +322,18 @@ export default function ConfirmEmailChangePage() {
               className="w-full"
               disabled={isLoggingOut}
             >
-              Ir para Home
+              {t('pages_token_jsx_button_children_0__ir_para_home')}
             </Button>
           </div>
 
           {/* 🆕 NOVO: Instruções para próximo login */}
           <div className="text-center pt-4 border-t border-theme-secondary mt-6">
             <p className="text-xs text-theme-tertiary">
-              🔑 <strong>Próximo login:</strong> Use seu novo email{' '}
+              {t('pages_token_jsx_p_children_0__próximo_login')}{' '}
               <span className="font-mono text-theme-primary">
                 {result.data?.newEmail}
               </span>{' '}
-              para entrar
+              {t('pages_token_jsx_span_children_0__para_entrar')}
             </p>
           </div>
         </div>
@@ -333,12 +351,12 @@ export default function ConfirmEmailChangePage() {
 
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-4">
           {result.errorCode === 'EXPIRED_TOKEN'
-            ? '⏰ Link Expirado'
+            ? t('pages_token_jsx_h2_children_0__link_expirado')
             : result.errorCode === 'USED_TOKEN'
-            ? '✅ Link Já Utilizado'
+            ? t('pages_token_jsx_h2_children_0__link_já_utilizado')
             : result.errorCode === 'EMAIL_TAKEN'
-            ? '📧 Email Indisponível'
-            : '❌ Erro na Confirmação'}
+            ? t('pages_token_jsx_h2_children_0__email_indisponível')
+            : t('pages_token_jsx_h2_children_0__erro_na_confirmação_alt')}
         </h2>
 
         <p className="text-theme-secondary mb-6">{result.message}</p>
@@ -347,8 +365,7 @@ export default function ConfirmEmailChangePage() {
           {result.errorCode === 'EXPIRED_TOKEN' && (
             <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4">
               <p className="text-accent-amber text-sm">
-                💡 O link de confirmação expirou. Você pode solicitar uma nova
-                mudança de email em seu perfil.
+                {t('pages_token_jsx_p_children_0__link_expirado_dica')}
               </p>
             </div>
           )}
@@ -356,8 +373,7 @@ export default function ConfirmEmailChangePage() {
           {result.errorCode === 'EMAIL_TAKEN' && (
             <div className="bg-accent-red/10 border border-accent-red/20 rounded-lg p-4">
               <p className="text-accent-red text-sm">
-                ⚠️ O email que você tentou usar já está sendo utilizado por
-                outra conta. Tente com um email diferente.
+                {t('pages_token_jsx_p_children_0__email_indisponível_dica')}
               </p>
             </div>
           )}
@@ -365,8 +381,7 @@ export default function ConfirmEmailChangePage() {
           {result.errorCode === 'USED_TOKEN' && (
             <div className="bg-accent-green/10 border border-accent-green/20 rounded-lg p-4">
               <p className="text-accent-green text-sm">
-                Este link já foi usado anteriormente. Se você ainda precisa
-                alterar seu email, solicite uma nova mudança em seu perfil.
+                {t('pages_token_jsx_p_children_0__link_já_usado')}
               </p>
             </div>
           )}
@@ -383,7 +398,9 @@ export default function ConfirmEmailChangePage() {
                   leftIcon={<FiRefreshCw />}
                   className="w-full"
                 >
-                  Reenviar Confirmação
+                  {t(
+                    'pages_token_jsx_button_children_0__reenviar_confirmação_alt'
+                  )}
                 </Button>
 
                 <Button
@@ -392,7 +409,9 @@ export default function ConfirmEmailChangePage() {
                   onClick={() => router.push('/profile')}
                   className="w-full"
                 >
-                  Solicitar Nova Mudança
+                  {t(
+                    'pages_token_jsx_button_children_0__solicitar_nova_mudança'
+                  )}
                 </Button>
               </>
             )}
@@ -404,7 +423,7 @@ export default function ConfirmEmailChangePage() {
                 onClick={() => router.push('/profile')}
                 className="w-full"
               >
-                Tentar Outro Email
+                {t('pages_token_jsx_button_children_0__tentar_outro_email')}
               </Button>
             )}
 
@@ -415,7 +434,7 @@ export default function ConfirmEmailChangePage() {
               rightIcon={<FiHome />}
               className="w-full"
             >
-              Voltar ao Início
+              {t('pages_token_jsx_button_children_0__voltar_ao_início')}
             </Button>
           </div>
         </div>
@@ -435,10 +454,10 @@ export default function ConfirmEmailChangePage() {
               </div>
             </div>
             <h1 className="text-lg font-bold text-theme-primary classical-title">
-              Opus Atlas
+              {t('pages_token_jsx_h1_children_0__opus_atlas')}
             </h1>
             <p className="text-sm text-theme-tertiary">
-              Confirmação de Mudança de Email
+              {t('pages_token_jsx_p_children_0__confirmação_mudança_email')}
             </p>
           </div>
 
@@ -448,12 +467,12 @@ export default function ConfirmEmailChangePage() {
         {/* Footer */}
         <div className="text-center mt-6">
           <p className="text-xs text-theme-tertiary">
-            Problemas? Entre em contato com nosso{' '}
+            {t('pages_token_jsx_p_children_0__problemas_contato')}{' '}
             <a
               href="mailto:suporte@opusatlas.com"
               className="text-brand-primary hover:underline"
             >
-              suporte
+              {t('pages_token_jsx_a_children_0__suporte')}
             </a>
           </p>
         </div>

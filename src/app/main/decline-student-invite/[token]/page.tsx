@@ -16,7 +16,7 @@ import { GiGrandPiano } from 'react-icons/gi';
 import Button from '@/app/components/Common/Button';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
-import { getErrorDescription, getErrorTitle } from '@/app/utils';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface DeclineState {
   status: 'loading' | 'success' | 'error' | 'already-processed';
@@ -32,14 +32,50 @@ interface DeclineState {
   errorCode?: string;
 }
 
+function getErrorTitle(errorCode?: string, t?: any): string {
+  switch (errorCode) {
+    case 'EXPIRED_TOKEN':
+      return t('pages_token_error_title_expired_token');
+    case 'USED_TOKEN':
+      return t('pages_token_error_title_used_token');
+    case 'INVALID_TOKEN':
+      return t('pages_token_error_title_invalid_token');
+    case 'NO_TOKEN':
+      return t('pages_token_error_title_no_token');
+    case 'CONNECTION_ERROR':
+      return t('pages_token_error_title_connection_error');
+    default:
+      return t('pages_token_error_title_default');
+  }
+}
+
+function getErrorDescription(errorCode?: string, t?: any): string {
+  switch (errorCode) {
+    case 'EXPIRED_TOKEN':
+      return t('pages_token_error_description_expired_token');
+    case 'USED_TOKEN':
+      return t('pages_token_error_description_used_token');
+    case 'INVALID_TOKEN':
+      return t('pages_token_error_description_invalid_token');
+    case 'NO_TOKEN':
+      return t('pages_token_error_description_no_token');
+    case 'CONNECTION_ERROR':
+      return t('pages_token_error_description_connection_error');
+    default:
+      return t('pages_token_error_description_default');
+  }
+}
+
 export default function DeclineStudentInvitePage() {
   const params = useParams();
   const router = useRouter();
   const token = params.token as string;
 
+  const { t } = useTranslation({ sections: ['pagesToken'] });
+
   const [state, setState] = useState<DeclineState>({
     status: 'loading',
-    message: 'Processando recusa...',
+    message: t('pages_token_jsx_h1_children_0__processando_recusa'),
   });
 
   const [confirmDecline, setConfirmDecline] = useState(false);
@@ -48,7 +84,9 @@ export default function DeclineStudentInvitePage() {
     if (!token) {
       setState({
         status: 'error',
-        message: 'Token de convite não fornecido',
+        message: t(
+          'pages_token_jsx_span_children_0__token_convite_não_fornecido'
+        ),
         errorCode: 'NO_TOKEN',
       });
       return;
@@ -69,7 +107,7 @@ export default function DeclineStudentInvitePage() {
     try {
       setState({
         status: 'loading',
-        message: 'Processando recusa do convite...',
+        message: t('pages_token_jsx_p_children_0__processando_recusa_convite'),
       });
 
       const response = await fetch(`/api/invites/student/decline/${token}`);
@@ -105,7 +143,7 @@ export default function DeclineStudentInvitePage() {
       console.error('Erro na recusa:', error);
       setState({
         status: 'error',
-        message: 'Erro de conexão. Tente novamente.',
+        message: t('pages_token_jsx_span_children_0__erro_conexão_reenviar'),
         errorCode: 'CONNECTION_ERROR',
       });
       toast.error('Erro de conexão');
@@ -120,34 +158,35 @@ export default function DeclineStudentInvitePage() {
             <FiAlertCircle className="w-10 h-10 text-theme-primary" />
           </div>
           <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-            ⚠️ Confirmar Recusa
+            {t('pages_token_jsx_h1_children_0__confirmar_recusa')}
           </h1>
           <p className="text-theme-secondary text-lg mb-6">
-            Tem certeza de que deseja recusar este convite para ser aluno?
+            {t('pages_token_jsx_p_children_0__certeza_recusar_convite')}
           </p>
 
           <div className="bg-theme-elevated rounded-xl p-6 mb-8">
             <h3 className="text-xl font-semibold text-accent-amber mb-4">
-              ⚠️ Esta ação é irreversível
+              {t('pages_token_jsx_h3_children_0__ação_irreversível')}
             </h3>
             <div className="text-accent-amber opacity-90 space-y-3 text-left">
-              <p className="text-sm">
-                <strong>Se você recusar este convite:</strong>
-              </p>
+              <p
+                className="text-sm"
+                dangerouslySetInnerHTML={{
+                  __html: t('pages_token_jsx_p_children_0__se_recusar_convite'),
+                }}
+              />
               <ul className="text-sm space-y-2 ml-4">
                 <li>
-                  • O relacionamento com o professor será removido
-                  permanentemente
+                  {t('pages_token_jsx_li_children_0__relacionamento_removido')}
                 </li>
                 <li>
-                  • Você não aparecerá mais na lista de alunos do professor
+                  {t('pages_token_jsx_li_children_0__não_aparecerá_lista')}
                 </li>
                 <li>
-                  • Será necessário um novo convite do professor para ter aulas
-                  novamente
+                  {t('pages_token_jsx_li_children_0__necessário_novo_convite')}
                 </li>
                 <li>
-                  • Suas configurações de perfil de aluno podem ser afetadas
+                  {t('pages_token_jsx_li_children_0__configurações_afetadas')}
                 </li>
               </ul>
             </div>
@@ -155,12 +194,10 @@ export default function DeclineStudentInvitePage() {
 
           <div className="bg-theme-elevated rounded-xl p-6 mb-8">
             <h4 className="font-medium text-accent-blue mb-3">
-              💡 Alternativas
+              {t('pages_token_jsx_h4_children_0__alternativas')}
             </h4>
             <p className="text-accent-blue opacity-80 text-sm">
-              Se você não pode ter aulas agora mas quer manter o relacionamento,
-              entre em contato diretamente com o professor para pausar as aulas
-              temporariamente.
+              {t('pages_token_jsx_p_children_0__alternativas_texto')}
             </p>
           </div>
 
@@ -172,7 +209,7 @@ export default function DeclineStudentInvitePage() {
                 onClick={() => router.push('/')}
                 leftIcon={<FiHome />}
               >
-                Voltar ao Site
+                {t('pages_token_jsx_button_children_0__voltar_ao_site')}
               </Button>
 
               <Button
@@ -182,7 +219,7 @@ export default function DeclineStudentInvitePage() {
                 leftIcon={<FiX />}
                 className="bg-gradient-to-r from-accent-red to-accent-amber"
               >
-                Confirmar Recusa
+                {t('pages_token_jsx_button_children_0__confirmar_recusa')}
               </Button>
             </div>
           </div>
@@ -198,7 +235,7 @@ export default function DeclineStudentInvitePage() {
               <FiLoader className="w-10 h-10 text-theme-primary animate-spin" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              Processando recusa...
+              {t('pages_token_jsx_h1_children_0__processando_recusa')}
             </h1>
             <p className="text-theme-secondary text-lg">{state.message}</p>
             <div className="mt-8">
@@ -216,7 +253,7 @@ export default function DeclineStudentInvitePage() {
               <FiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              ✅ Convite Recusado
+              {t('pages_token_jsx_h1_children_0__convite_recusado')}
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
@@ -228,33 +265,41 @@ export default function DeclineStudentInvitePage() {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-theme-primary">
-                      {state.user.firstName}, convite recusado
+                      {t(
+                        'pages_token_jsx_h3_children_0__convite_recusado_nome',
+                        { firstName: state.user.firstName }
+                      )}
                     </h3>
                     <p className="text-theme-secondary opacity-80">
-                      Você não será aluno de{' '}
-                      <strong>{state.teacher.name}</strong>
+                      {t('pages_token_jsx_p_children_0__não_será_aluno', {
+                        teacherName: state.teacher.name,
+                      })}
                     </p>
                   </div>
                 </div>
 
                 <div className="bg-theme-primary bg-opacity-10 rounded-lg p-4 mt-4">
                   <p className="text-theme-primary text-sm opacity-90">
-                    O relacionamento foi removido e{' '}
-                    <strong>{state.teacher.name}</strong> foi notificado da sua
-                    decisão. Você pode continuar aproveitando o Opus Atlas como
-                    estudante independente.
+                    {t(
+                      'pages_token_jsx_p_children_0__relacionamento_removido_notificado',
+                      { teacherName: state.teacher.name }
+                    )}
                   </p>
                 </div>
               </div>
             )}
 
             <div className="bg-accent-blue bg-opacity-10 border border-accent-blue rounded-xl p-6 mb-8">
-              <h4 className="font-medium text-accent-blue mb-3">💡 E agora?</h4>
+              <h4 className="font-medium text-accent-blue mb-3">
+                {t('pages_token_jsx_h4_children_0__e_agora')}
+              </h4>
               <div className="text-accent-blue opacity-80 text-sm space-y-2 text-left">
-                <p>• Você pode continuar estudando de forma independente</p>
-                <p>• Explore nossa biblioteca de compositores e obras</p>
-                <p>• Use nossas ferramentas de estudo e anotações</p>
-                <p>• Se mudar de ideia, peça um novo convite ao professor</p>
+                <p>
+                  {t('pages_token_jsx_p_children_0__pode_continuar_estudando')}
+                </p>
+                <p>{t('pages_token_jsx_p_children_0__explore_biblioteca')}</p>
+                <p>{t('pages_token_jsx_p_children_0__use_ferramentas')}</p>
+                <p>{t('pages_token_jsx_p_children_0__mudar_ideia')}</p>
               </div>
             </div>
 
@@ -266,7 +311,7 @@ export default function DeclineStudentInvitePage() {
                 onClick={() => router.push('/')}
                 className="animate-pulse"
               >
-                Explorar Opus Atlas
+                {t('pages_token_jsx_button_children_0__explorar_opus_atlas')}
               </Button>
 
               <Button
@@ -274,12 +319,14 @@ export default function DeclineStudentInvitePage() {
                 size="lg"
                 onClick={() => router.push('/profile')}
               >
-                Meu Perfil
+                {t('pages_token_jsx_button_children_0__meu_perfil')}
               </Button>
             </div>
 
             <div className="mt-8 text-sm text-theme-tertiary">
-              <span>Redirecionando para o site em alguns segundos...</span>
+              <span>
+                {t('pages_token_jsx_span_children_0__redirecionando_site')}
+              </span>
             </div>
           </div>
         );
@@ -291,14 +338,13 @@ export default function DeclineStudentInvitePage() {
               <FiCheckCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              ℹ️ Já Processado
+              {t('pages_token_jsx_h1_children_0__já_processado')}
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
             <div className="bg-theme-secondary bg-opacity-50 border border-theme-secondary rounded-xl p-6 mb-8">
               <p className="text-theme-primary opacity-80">
-                Este convite já foi processado anteriormente. Não há mais ações
-                necessárias.
+                {t('pages_token_jsx_p_children_0__convite_já_processado')}
               </p>
             </div>
 
@@ -309,7 +355,7 @@ export default function DeclineStudentInvitePage() {
                 rightIcon={<FiArrowRight />}
                 onClick={() => router.push('/')}
               >
-                Ir para o Site
+                {t('pages_token_jsx_button_children_0__ir_para_o_site')}
               </Button>
 
               <Button
@@ -317,7 +363,7 @@ export default function DeclineStudentInvitePage() {
                 size="lg"
                 onClick={() => router.push('/profile')}
               >
-                Meu Perfil
+                {t('pages_token_jsx_button_children_0__meu_perfil')}
               </Button>
             </div>
           </div>
@@ -330,7 +376,7 @@ export default function DeclineStudentInvitePage() {
               <FiAlertCircle className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-              ❌ Erro ao Processar
+              {t('pages_token_jsx_h1_children_0__erro_ao_processar')}
             </h1>
             <p className="text-theme-secondary text-lg mb-6">{state.message}</p>
 
@@ -338,11 +384,11 @@ export default function DeclineStudentInvitePage() {
               <div className="flex items-center justify-center mb-3">
                 <FiAlertCircle className="w-5 h-5 text-accent-red mr-2" />
                 <span className="font-medium text-accent-red">
-                  {getErrorTitle(state.errorCode)}
+                  {getErrorTitle(state.errorCode, t)}
                 </span>
               </div>
               <p className="text-accent-red opacity-80 text-sm">
-                {getErrorDescription(state.errorCode)}
+                {getErrorDescription(state.errorCode, t)}
               </p>
             </div>
 
@@ -352,7 +398,7 @@ export default function DeclineStudentInvitePage() {
                 size="lg"
                 onClick={() => router.push('/')}
               >
-                Voltar ao Site
+                {t('pages_token_jsx_button_children_0__voltar_ao_site')}
               </Button>
 
               <Button
@@ -360,7 +406,7 @@ export default function DeclineStudentInvitePage() {
                 size="lg"
                 onClick={() => setConfirmDecline(true)}
               >
-                Tentar Novamente
+                {t('pages_token_jsx_button_children_0__tentar_novamente')}
               </Button>
             </div>
           </div>
@@ -390,11 +436,11 @@ export default function DeclineStudentInvitePage() {
                 <GiGrandPiano className="w-10 h-10 mr-3 text-brand-primary icon-glow transition-all duration-300 group-hover:scale-110" />
               </div>
               <span className="text-2xl font-bold text-gradient-brand classical-title">
-                Opus Atlas
+                {t('pages_token_jsx_h1_children_0__opus_atlas')}
               </span>
             </Link>
             <div className="text-sm text-theme-tertiary mb-4">
-              Recusar Convite de Aluno
+              {t('pages_token_jsx_div_children_0__recusar_convite_aluno')}
             </div>
           </div>
 
@@ -404,12 +450,12 @@ export default function DeclineStudentInvitePage() {
           {/* Footer */}
           <div className="mt-12 pt-8 border-t border-theme-secondary text-center">
             <p className="text-sm text-theme-tertiary">
-              Precisa de ajuda?{' '}
+              {t('pages_token_jsx_p_children_0__precisa_ajuda')}{' '}
               <Link
                 href="/support"
                 className="text-brand-primary hover:underline"
               >
-                Entre em contato
+                {t('pages_token_jsx_link_children_0__entre_contato')}
               </Link>
             </p>
           </div>
