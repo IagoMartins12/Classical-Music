@@ -3,6 +3,7 @@
 
 import { FiBookOpen, FiClock } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface Props {
   activeTab: 'history' | 'timeline';
@@ -10,18 +11,20 @@ interface Props {
 }
 
 export function NavigationTabs({ activeTab, onTabChange }: Props) {
+  const { t } = useTranslation({ sections: ['pages/music-history'] });
+
   const tabs = [
     {
       id: 'history' as const,
-      label: 'Épocas Históricas',
-      description: 'Explore cada período da música clássica',
+      label: t('navigation_tabs_0__label'),
+      description: t('navigation_tabs_0__description'),
       icon: FiBookOpen,
       gradient: 'from-brand-primary to-brand-secondary',
     },
     {
       id: 'timeline' as const,
-      label: 'Linha do Tempo',
-      description: 'Cronologia dos grandes compositores',
+      label: t('navigation_tabs_1__label'),
+      description: t('navigation_tabs_1__description'),
       icon: FiClock,
       gradient: 'from-accent-purple to-accent-blue',
     },
@@ -37,11 +40,11 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
               <GiMusicalNotes className="w-5 h-5 text-theme-primary" />
             </div>
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
-              Navegue pela História
+              {t('navigation_jsx_h2_children_0__navegue_historia')}
             </h2>
           </div>
           <p className="text-theme-secondary classical-subtitle">
-            Escolha como deseja explorar a evolução da música clássica
+            {t('navigation_jsx_p_children_0__escolha_explorar')}
           </p>
         </div>
 
@@ -128,7 +131,9 @@ export function NavigationTabs({ activeTab, onTabChange }: Props) {
                       <div className="flex items-center space-x-2 mt-3">
                         <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
                         <span className="text-xs font-medium text-brand-primary">
-                          Visualização atual
+                          {t(
+                            'navigation_jsx_span_children_0__visualizacao_atual'
+                          )}
                         </span>
                       </div>
                     )}

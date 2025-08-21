@@ -1,9 +1,14 @@
-// components/LanguageToggle.tsx
 'use client';
 
-import { useTranslation } from '@/app/hooks/useTranslation';
+// 3. components/LanguageToggle.tsx - ATUALIZADO com Modal e Portal
+// ===================================================================
+
+'use client';
+
+import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
 import React from 'react';
 import { FiGlobe } from 'react-icons/fi';
+import { TranslationLoadingModal } from '../TranslationLoadingModal';
 
 interface LanguageToggleProps {
   variant?: 'default' | 'compact' | 'navbar' | 'globe';
@@ -11,7 +16,7 @@ interface LanguageToggleProps {
   className?: string;
 }
 
-// Componentes de bandeira usando CSS (mais leve que SVGs)
+// Componentes de bandeira (mantém os mesmos)
 const FlagBR: React.FC<{ className?: string }> = ({
   className = 'w-5 h-5',
 }) => (
@@ -33,19 +38,15 @@ const FlagUS: React.FC<{ className?: string }> = ({
   <div
     className={`${className} relative overflow-hidden rounded border border-theme-secondary`}
   >
-    {/* Listras vermelhas e brancas */}
-    <div className="absolute inset-0">
-      {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-        <div
-          key={i}
-          className={`absolute left-0 right-0 h-1/7 ${
-            i % 2 === 0 ? 'bg-red-600' : 'bg-white'
-          }`}
-          style={{ top: `${(i / 7) * 100}%` }}
-        />
-      ))}
-    </div>
-    {/* Retângulo azul */}
+    {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+      <div
+        key={i}
+        className={`absolute left-0 right-0 h-1/7 ${
+          i % 2 === 0 ? 'bg-red-600' : 'bg-white'
+        }`}
+        style={{ top: `${(i / 7) * 100}%` }}
+      />
+    ))}
     <div className="absolute top-0 left-0 bg-blue-800 w-2/5 h-2/5" />
   </div>
 );
@@ -55,7 +56,8 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   showLabel = false,
   className = '',
 }) => {
-  const { language, toggleLanguage, isLoading } = useTranslation();
+  const { language, toggleLanguage, isTranslating, onModalComplete } =
+    useLanguageWithRefresh();
 
   const getVariantClasses = () => {
     switch (variant) {
@@ -112,49 +114,53 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
   };
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      {showLabel && (
-        <span className="text-theme-secondary text-sm font-medium">
-          {getLanguageLabel()}
-        </span>
-      )}
+    <>
+      {/* ✅ Modal de tradução com Portal e callback */}
+      <TranslationLoadingModal
+        isOpen={isTranslating}
+        currentLanguage={language}
+        onComplete={onModalComplete} // ✅ Callback para finalizar
+      />
 
-      <button
-        onClick={toggleLanguage}
-        disabled={isLoading}
-        className={`
-          ${getVariantClasses()}
-          relative bg-theme-elevated border border-theme-primary rounded-xl 
-          hover:border-theme-accent hover:bg-interactive-hover 
-          active:scale-95 transition-all duration-300 group 
-          disabled:opacity-50 disabled:cursor-not-allowed 
-          focus:outline-none focus:ring-2 focus:ring-brand-primary/50 
-          focus:ring-offset-2 focus:ring-offset-bg-primary
-        `}
-        aria-label={`Alterar para ${
-          language === 'pt' ? 'inglês' : 'português'
-        }`}
-        title={`Trocar para ${language === 'pt' ? 'English' : 'Português'}`}
-      >
-        {/* Background gradient effect */}
-        <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
-
-        {/* Flag/Globe container */}
-        <div className="relative flex items-center justify-center">
-          {getCurrentFlag()}
-        </div>
-
-        {/* Loading indicator */}
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-theme-elevated/80 rounded-xl">
-            <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin" />
-          </div>
+      {/* Toggle button */}
+      <div className={`flex items-center gap-2 ${className}`}>
+        {showLabel && (
+          <span className="text-theme-secondary text-sm font-medium">
+            {getLanguageLabel()}
+          </span>
         )}
 
-        {/* Subtle animation indicator */}
-        <div className="absolute -top-1 -right-1 w-2 h-2 bg-accent-green rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
-      </button>
-    </div>
+        <button
+          onClick={toggleLanguage}
+          disabled={isTranslating}
+          className={`
+            ${getVariantClasses()}
+            relative bg-theme-elevated border border-theme-primary rounded-xl 
+            hover:border-theme-accent hover:bg-interactive-hover 
+            active:scale-95 transition-all duration-300 group 
+            disabled:opacity-50 disabled:cursor-not-allowed 
+            focus:outline-none focus:ring-2 focus:ring-brand-primary/50 
+            focus:ring-offset-2 focus:ring-offset-bg-primary
+            ${isTranslating ? 'animate-pulse cursor-wait' : ''}
+          `}
+          aria-label={`Alterar para ${
+            language === 'pt' ? 'inglês' : 'português'
+          }`}
+          title={`Trocar para ${language === 'pt' ? 'English' : 'Português'}`}
+        >
+          {/* Background gradient effect */}
+          <div className="absolute inset-0 bg-brand-gradient opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300" />
+
+          {/* Flag/Globe container */}
+          <div className="relative flex items-center justify-center">
+            {getCurrentFlag()}
+          </div>
+
+          {/* Subtle animation indicator */}
+          <div className="absolute -top-1 -right-1 w-2 h-2 bg-accent-green rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
+        </button>
+      </div>
+    </>
   );
 };
 
@@ -162,7 +168,7 @@ export const LanguageToggle: React.FC<LanguageToggleProps> = ({
 export const LanguageDropdown: React.FC<{
   className?: string;
 }> = ({ className = '' }) => {
-  const { language, changeLanguage, isLoading } = useTranslation();
+  const { language, changeLanguage } = useLanguageWithRefresh();
   const [isOpen, setIsOpen] = React.useState(false);
 
   const languages = [
@@ -184,7 +190,6 @@ export const LanguageDropdown: React.FC<{
     <div className={`relative ${className}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        disabled={isLoading}
         className="flex items-center space-x-2 px-3 py-2 bg-theme-elevated border border-theme-primary rounded-lg hover:bg-interactive-hover transition-colors duration-200 disabled:opacity-50"
       >
         <FiGlobe className="w-4 h-4 text-brand-primary" />
@@ -252,20 +257,3 @@ export const LanguageDropdown: React.FC<{
     </div>
   );
 };
-
-// Hook para facilitar o uso
-// export const useLanguage = () => {
-//   const { language, changeLanguage, toggleLanguage, isLoading } =
-//     useTranslation();
-
-//   return {
-//     language,
-//     changeLanguage,
-//     toggleLanguage,
-//     isLoading,
-//     isPt: language === 'pt',
-//     isEn: language === 'en',
-//     getFlag: () => (language === 'pt' ? <FlagBR /> : <FlagUS />),
-//     getLanguageName: () => (language === 'pt' ? 'Português' : 'English'),
-//   };
-// };

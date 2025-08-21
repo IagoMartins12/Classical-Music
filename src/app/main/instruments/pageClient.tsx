@@ -217,46 +217,6 @@ export function InstrumentsPageClient({
                   grandes virtuosos que os eternizaram.
                 </p>
               </div>
-
-              {/* Stats Cards */}
-              {/* <div
-                className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto animate-fade-in-up"
-                style={{ animationDelay: '0.4s' }}
-              >
-                <div className="classical-card p-6 text-center group hover:scale-105 transition-all duration-300">
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <FiSettings className="w-6 h-6 text-theme-primary" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-brand-primary mb-2">
-                    {instruments.length}
-                  </h3>
-                  <p className="text-theme-secondary text-sm">Instrumentos</p>
-                </div>
-
-                <div className="classical-card p-6 text-center group hover:scale-105 transition-all duration-300">
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-red rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <FaMusic className="w-6 h-6 text-theme-primary" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-accent-purple mb-2">
-                    {totalWorks}
-                  </h3>
-                  <p className="text-theme-secondary text-sm">
-                    Obras Catalogadas
-                  </p>
-                </div>
-
-                <div className="classical-card p-6 text-center group hover:scale-105 transition-all duration-300">
-                  <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <FaUsers className="w-6 h-6 text-theme-primary" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-accent-green mb-2">
-                    {totalUsers}
-                  </h3>
-                  <p className="text-theme-secondary text-sm">
-                    Usuários Estudando
-                  </p>
-                </div>
-              </div> */}
             </div>
           </div>
         </section>
@@ -275,8 +235,6 @@ export function InstrumentsPageClient({
                   animationDelay: `${index * 0.1}s`,
                 }}
               >
-                {/* Background decoration */}
-
                 {/* Instrument Header - Always Visible */}
                 <div
                   className="flex items-center justify-between p-8 cursor-pointer transition-all duration-300 hover:bg-interactive-hover relative z-10"

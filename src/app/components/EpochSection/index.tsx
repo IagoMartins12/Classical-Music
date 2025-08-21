@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fi';
 import { GiMusicalNotes, GiScrollQuill, GiGrandPiano } from 'react-icons/gi';
 import { HistoryComposerCard } from '../cards/HistoryComposerCard';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface Composer {
   id: string;
@@ -68,6 +69,7 @@ const epochIcons = {
 };
 
 export function EpochSection({ epoch, index, isReversed = false }: Props) {
+  const { t } = useTranslation({ sections: ['pages/music-history'] });
   const [isExpanded, setIsExpanded] = useState(false);
   const [showAllComposers, setShowAllComposers] = useState(false);
 
@@ -134,7 +136,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   <FiBookOpen className="w-4 h-4 text-theme-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                  Sobre o Período
+                  {t('epoch_jsx_h3_children_0__sobre_periodo')}
                 </h3>
               </div>
               <p className="text-theme-secondary text-lg leading-relaxed classical-body">
@@ -156,7 +158,9 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                   <FiStar className="w-5 h-5 text-theme-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-theme-primary classical-title">
-                  Características e Desenvolvimentos
+                  {t(
+                    'epoch_jsx_h3_children_0__caracteristicas_desenvolvimentos'
+                  )}
                 </h3>
               </div>
               <div
@@ -188,7 +192,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                         <GiMusicalNotes className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
-                        Características
+                        {t('epoch_jsx_h4_children_0__caracteristicas')}
                       </h4>
                     </div>
                     <div className="space-y-3">
@@ -214,7 +218,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                         <FiClock className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
-                        Desenvolvimentos-chave
+                        {t('epoch_jsx_h4_children_0__desenvolvimentos_chave')}
                       </h4>
                     </div>
                     <div className="space-y-3">
@@ -240,7 +244,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                         <FiMusic className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
-                        Formas Musicais
+                        {t('epoch_jsx_h4_children_0__formas_musicais')}
                       </h4>
                     </div>
                     <div className="flex flex-wrap gap-3">
@@ -263,7 +267,7 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                         <GiGrandPiano className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h4 className="font-semibold text-theme-primary classical-title">
-                        Instrumentos
+                        {t('epoch_jsx_h4_children_0__instrumentos')}
                       </h4>
                     </div>
                     <div className="flex flex-wrap gap-3">
@@ -294,11 +298,13 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
             </div>
             <div>
               <h3 className="text-xl font-bold text-theme-primary classical-title">
-                Compositores Famosos
+                {t('epoch_jsx_h3_children_0__compositores_famosos')}
               </h3>
               <p className="text-theme-tertiary text-sm">
                 {epoch.composers.length}{' '}
-                {epoch.composers.length === 1 ? 'compositor' : 'compositores'}
+                {epoch.composers.length === 1
+                  ? t('epoch_jsx_span_children_0__compositor')
+                  : t('epoch_jsx_span_children_0__compositores')}
               </p>
             </div>
           </div>
@@ -324,8 +330,10 @@ export function EpochSection({ epoch, index, isReversed = false }: Props) {
                 <FiUsers className="w-4 h-4 group-hover:scale-110 transition-transform duration-300" />
                 <span className="font-medium">
                   {showAllComposers
-                    ? 'Ver menos'
-                    : `Ver mais ${epoch.composers.length - 4} compositores`}
+                    ? t('epoch_jsx_span_children_0__ver_menos')
+                    : `${t('epoch_jsx_span_children_0__ver_mais')} ${
+                        epoch.composers.length - 4
+                      } ${t('epoch_jsx_span_children_0__compositores')}`}
                 </span>
                 <svg
                   className={`w-4 h-4 transition-transform duration-300 ${

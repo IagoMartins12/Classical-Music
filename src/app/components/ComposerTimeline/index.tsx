@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 import { FiClock, FiUser, FiCalendar, FiMapPin } from 'react-icons/fi';
 import { GiMusicalNotes, GiGrandPiano } from 'react-icons/gi';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ComposerTimeline {
   id: string;
@@ -28,7 +29,6 @@ interface ComposerTimeline {
 
 interface Props {
   composers: ComposerTimeline[];
-  // epochsData: EpochData[];
 }
 
 const epochColors = {
@@ -83,6 +83,8 @@ const extractYear = (dateStr: string | null): number | null => {
 };
 
 export function ComposersTimeline({ composers }: Props) {
+  const { t } = useTranslation({ sections: ['pages/music-history'] });
+
   const timelineData = useMemo(() => {
     const composersWithYears = composers.map((composer) => {
       const birthYear = extractYear(composer.birthDate);
@@ -115,9 +117,12 @@ export function ComposersTimeline({ composers }: Props) {
   }, [composers]);
 
   const getLifespan = (composer: any) => {
-    if (!composer.extractedBirthYear) return 'Período desconhecido';
+    if (!composer.extractedBirthYear)
+      return t('timeline_jsx_span_children_0__periodo_desconhecido');
     if (!composer.extractedDeathYear)
-      return `${composer.extractedBirthYear} - presente`;
+      return `${composer.extractedBirthYear} - ${t(
+        'timeline_jsx_span_children_0__presente'
+      )}`;
     return `${composer.extractedBirthYear} - ${composer.extractedDeathYear}`;
   };
 
@@ -144,11 +149,10 @@ export function ComposersTimeline({ composers }: Props) {
         </div>
 
         <h2 className="text-3xl lg:text-4xl font-bold text-gradient-brand classical-title mb-4">
-          Linha do Tempo dos Compositores
+          {t('timeline_jsx_h2_children_0__linha_tempo_compositores')}
         </h2>
         <p className="text-lg text-theme-secondary classical-subtitle max-w-2xl mx-auto">
-          Acompanhe a cronologia dos grandes mestres da música clássica através
-          dos séculos
+          {t('timeline_jsx_p_children_0__acompanhe_cronologia')}
         </p>
       </div>
 
@@ -236,7 +240,8 @@ export function ComposersTimeline({ composers }: Props) {
                       </div>
                       {getLifespanDuration(composer) && (
                         <span className="text-xs text-theme-tertiary bg-theme-elevated border border-theme-secondary px-2 py-1 rounded-full">
-                          {getLifespanDuration(composer)} anos
+                          {getLifespanDuration(composer)}{' '}
+                          {t('timeline_jsx_span_children_0__anos')}
                         </span>
                       )}
                     </div>
@@ -255,7 +260,9 @@ export function ComposersTimeline({ composers }: Props) {
                     {/* CTA */}
                     <div className="flex items-center justify-end mt-4 pt-3 border-t border-theme-secondary">
                       <div className="flex items-center text-brand-primary text-sm font-medium group-hover/cta:translate-x-1 transition-transform duration-300">
-                        <span>Ver detalhes</span>
+                        <span>
+                          {t('timeline_jsx_span_children_0__ver_detalhes')}
+                        </span>
                         <svg
                           className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300"
                           fill="none"
@@ -301,7 +308,8 @@ export function ComposersTimeline({ composers }: Props) {
                       <div
                         className={`px-4 py-2 bg-gradient-to-r classical-card-simple ${composer.gradientClass} text-theme-primary text-xs rounded-full shadow-theme-medium whitespace-nowrap font-medium`}
                       >
-                        Era {composer.epochName}
+                        {t('timeline_jsx_span_children_0__era')}{' '}
+                        {composer.epochName}
                       </div>
                     </div>
                   )}
@@ -319,7 +327,7 @@ export function ComposersTimeline({ composers }: Props) {
             <FiClock className="w-6 h-6 text-theme-primary" />
           </div>
           <p className="text-theme-tertiary text-sm mt-3 classical-caption">
-            Fim da linha do tempo
+            {t('timeline_jsx_p_children_0__fim_linha_tempo')}
           </p>
         </div>
       </div>

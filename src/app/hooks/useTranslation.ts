@@ -1,6 +1,9 @@
 'use client';
 // hooks/useTranslation.ts - VERSÃO SEM SEÇÕES PADRÃO
-import { useLanguageStore, Language } from '@/app/stores/useLanguageStore';
+import {
+  useLanguageWithRefresh,
+  Language,
+} from '@/app/stores/useLanguageStore';
 import { useState, useEffect, useCallback } from 'react';
 
 // Cache global para todas as seções carregadas
@@ -38,7 +41,7 @@ export function useTranslation(
   // ✅ REMOVIDO: Seções padrão - agora só carrega se explicitamente definido
   const { sections, defaultSection } = options;
 
-  const { language, setLanguage, toggleLanguage } = useLanguageStore();
+  const { language, setLanguage, toggleLanguage } = useLanguageWithRefresh();
   const [isLoading, setIsLoading] = useState(false);
   const [loadedSections, setLoadedSections] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);

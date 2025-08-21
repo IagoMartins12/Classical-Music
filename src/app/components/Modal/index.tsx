@@ -15,7 +15,7 @@ import { useModalConfirmation } from '@/app/hooks/useModalConfirmation';
 
 interface ModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   title?: string;
   children: React.ReactNode;
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl' | '5xl' | '6xl';
@@ -121,7 +121,9 @@ const Modal = forwardRef<ModalRef, ModalProps>(
       if (confirmOnClose) {
         requestClose(onClose); // Vai mostrar confirmação se necessário
       } else {
-        onClose(); // Fecha direto
+        if (onClose) {
+          onClose(); // Fecha direto
+        }
       }
     };
 
