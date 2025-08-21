@@ -32,12 +32,12 @@ const RecentComposerCard = ({
       <Link href={`/composer/${composer.id}`}>
         <div className="classical-card-simple overflow-hidden transition-all duration-500 ease-out group-hover:scale-[1.02] hover:shadow-theme-glow relative">
           {/* New badge */}
-          <div className="absolute top-3 left-3 z-10">
+          {/* <div className="absolute top-3 left-3 z-10">
             <div className="bg-gradient-to-r from-green-500/20 to-emerald-500/20 border border-green-500/30 backdrop-blur-md rounded-full px-2 py-1 text-xs font-medium text-green-400 flex items-center gap-1">
               <FiPlus className="w-2.5 h-2.5" />
               Novo
             </div>
-          </div>
+          </div> */}
 
           {/* Time indicator */}
           <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300">
@@ -80,9 +80,9 @@ const RecentComposerCard = ({
                   )}
 
                   {/* Pulse indicator */}
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center animate-pulse">
+                  {/* <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center animate-pulse">
                     <FiPlus className="w-2 h-2 text-white" />
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

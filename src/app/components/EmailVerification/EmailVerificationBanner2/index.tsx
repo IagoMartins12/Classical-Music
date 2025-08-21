@@ -117,10 +117,11 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   }
 
   return (
-    <div className={`${bgColor} ${borderColor} border rounded-lg p-4 mb-6`}>
+    <div
+      className={`${bgColor} bg-theme-elevated ${borderColor} rounded-lg p-4 mb-6`}
+    >
       <div className="flex items-start justify-between">
         <div className="flex items-start space-x-3 flex-1">
-          <div className={textColor}>{icon}</div>
           <div className="flex-1">
             <div className={`font-medium ${textColor} mb-1`}>
               {bannerType === 'warning' && '⚠️ Verificação de Email Pendente'}

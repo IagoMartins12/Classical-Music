@@ -69,7 +69,8 @@ const contactOptions: ContactOption[] = [
   {
     icon: FiUser,
     title: 'Parcerias',
-    description: 'Interesse em parcerias, colaborações ou publicidade',
+    description:
+      'Interesse em parcerias, colaborações, utilizar ferramenta como professor ou publicidade',
     action: 'Propor Parceria',
     color: 'from-brand-primary to-brand-secondary',
     category: 'parceria',

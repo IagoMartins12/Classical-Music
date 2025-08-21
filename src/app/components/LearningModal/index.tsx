@@ -18,6 +18,8 @@ import {
   FiEdit3,
   FiArrowRight,
   FiDownload,
+  FiTrash,
+  FiX,
 } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import { useLearningStore } from '@/app/stores/useLearningStore';
@@ -35,6 +37,7 @@ import { WorkScore } from '@/app/hooks/useWorkScores';
 import ScoreSelectionModal from './ScoreSelectionModal';
 import Input from '../Common/Inputs';
 import Select from '../Common/Select';
+import Checkbox from '../Common/Checkbox';
 
 const LearningModal = () => {
   const { user } = useAuth();
@@ -694,7 +697,7 @@ const LearningModal = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center space-x-3">
-                  <Input
+                  <Checkbox
                     type="checkbox"
                     id="wouldRecommend"
                     checked={learnedForm.wouldRecommend}
@@ -712,7 +715,7 @@ const LearningModal = () => {
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <Input
+                  <Checkbox
                     type="checkbox"
                     id="publicPerformance"
                     checked={learnedForm.publicPerformance}
@@ -784,30 +787,31 @@ const LearningModal = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-4">
                   {/* ✅ BOTÃO DE DOWNLOAD */}
                   {selectedWorkScore.downloadUrl && (
                     <button
+                      title="Download"
                       onClick={handleScoreDownload}
-                      className="btn-classical-secondary-sm flex items-center space-x-2 text-accent-purple border-accent-purple/30 hover:bg-accent-purple/10"
+                      className="btn-classical-secondary-sm  flex items-center space-x-2 text-accent-purple border-accent-purple/30 hover:bg-accent-purple/10"
                     >
-                      <FiDownload className="w-3 h-3" />
-                      <span>Download</span>
+                      <FiDownload className="w-5 h-5 text-theme-primary" />
                     </button>
                   )}
 
                   <button
+                    title={isCurrentlyActive ? 'Trocar' : 'Alterar'}
                     onClick={handleAddScore}
-                    className="btn-classical-secondary-sm flex items-center space-x-2"
+                    className="btn-classical-secondary-sm  flex items-center space-x-2"
                   >
-                    <FiEdit3 className="w-3 h-3" />
-                    <span>{isCurrentlyActive ? 'Trocar' : 'Alterar'}</span>
+                    <FiEdit3 className="w-5 h-5 text-theme-primary" />
                   </button>
                   <button
+                    title="Remover"
                     onClick={handleRemoveScore}
-                    className="btn-classical-outline-sm text-accent-red border-accent-red hover:bg-accent-red hover:text-theme-primary"
+                    className="btn-classical-outline-sm  text-accent-red border-accent-red hover:bg-accent-red hover:text-theme-primary"
                   >
-                    Remover
+                    <FiX className="w-5 h-5 text-theme-primary" />
                   </button>
                 </div>
               </div>
@@ -870,16 +874,20 @@ const LearningModal = () => {
           {/* ✅ Botões de ação à esquerda */}
           {isCurrentlyActive && !isSubmitting && (
             <div className="flex items-center space-x-3">
-              <Button variant="outline" onClick={handleRemove}>
-                Deletar peça da lista
+              <Button
+                variant="delete"
+                leftIcon={<FiTrash />}
+                onClick={handleRemove}
+              >
+                Deletar
               </Button>
 
               {/* ✅ NOVO: Botão de transferência para "quero aprender" */}
               {type === 'want-to-learn' && (
                 <Button
                   variant="outline"
+                  className="truncate"
                   onClick={handleTransferToLearned}
-                  rightIcon="🎉"
                 >
                   Marcar como Aprendida
                 </Button>

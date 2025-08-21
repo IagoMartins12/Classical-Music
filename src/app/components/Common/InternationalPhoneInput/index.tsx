@@ -69,7 +69,7 @@ const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = ({
   error,
   placeholder,
   showLabel = true,
-  defaultCountry = '+55',
+  defaultCountry = 'BR',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');

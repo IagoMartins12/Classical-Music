@@ -30,7 +30,7 @@ export default function NotificationManager({
   // 🆕 Verificar se já existe uma instância para este usuário
   const isMainInstance = useRef(false);
 
-  const { unreadCount, isChecking, error } = useNotifications({
+  const { error } = useNotifications({
     userRole,
     userId,
     autoStart: isMainInstance.current, // 🆕 Só auto-start se for a instância principal
@@ -95,36 +95,5 @@ export default function NotificationManager({
     }
   }, [userRole, userId]);
 
-  return (
-    <>
-      {children}
-
-      {/* Debug info - apenas para instância principal em desenvolvimento */}
-      {process.env.NODE_ENV === 'development' && isMainInstance.current && (
-        <div className="fixed bottom-4 left-4 z-[9999] bg-black/80 text-white text-xs p-2 rounded pointer-events-none">
-          <div>👑 MAIN Instance</div>
-          <div>Role: {userRole}</div>
-          <div>Unread: {unreadCount}</div>
-          <div
-            className={`${isChecking ? 'text-yellow-400' : 'text-green-400'}`}
-          >
-            Status: {isChecking ? 'Checking...' : 'Ready'}
-          </div>
-          {error && (
-            <div className="text-red-400">
-              Error: {error.substring(0, 30)}...
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Debug para instâncias secundárias */}
-      {process.env.NODE_ENV === 'development' && !isMainInstance.current && (
-        <div className="fixed bottom-4 left-20 z-[9999] bg-red-900/80 text-white text-xs p-2 rounded pointer-events-none">
-          <div>👥 SECONDARY (ignored)</div>
-          <div>Role: {userRole}</div>
-        </div>
-      )}
-    </>
-  );
+  return <>{children}</>;
 }

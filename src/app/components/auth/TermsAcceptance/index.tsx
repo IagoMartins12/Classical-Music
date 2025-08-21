@@ -44,7 +44,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
     icon: <FiShield className="w-5 h-5 text-brand-primary" />,
     content: (
       <div className="space-y-6 text-sm text-theme-secondary leading-relaxed">
-        <div className="bg-accent-blue/10 border border-accent-blue/30 rounded-lg p-4">
+        <div className="rounded-lg p-4">
           <h4 className="font-semibold text-accent-blue mb-2 flex items-center">
             <FiShield className="w-4 h-4 mr-2" />
             Resumo da Nossa Política
@@ -90,7 +90,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           <h4 className="font-semibold text-theme-primary mb-3">
             🛡️ Seus Direitos LGPD
           </h4>
-          <div className="bg-accent-green/10 border border-accent-green/30 rounded-lg p-3">
+          <div className="rounded-lg p-3">
             <ul className="space-y-1 text-accent-green">
               <li>
                 ✓ <strong>Acesso:</strong> Ver seus dados
@@ -163,7 +163,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
     icon: <FiFileText className="w-5 h-5 text-brand-primary" />,
     content: (
       <div className="space-y-6 text-sm text-theme-secondary leading-relaxed">
-        <div className="bg-accent-purple/10 border border-accent-purple/30 rounded-lg p-4">
+        <div className="bg-theme-elevated rounded-lg p-4">
           <h4 className="font-semibold text-accent-purple mb-2 flex items-center">
             <FiFileText className="w-4 h-4 mr-2" />
             Resumo dos Termos
@@ -226,7 +226,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           <h4 className="font-semibold text-theme-primary mb-3">
             🛡️ Responsabilidades
           </h4>
-          <div className="bg-accent-amber/10 border border-accent-amber/30 rounded-lg p-3">
+          <div className="rounded-lg p-3">
             <ul className="space-y-1 text-accent-amber">
               <li>• Manter segurança da sua conta</li>
               <li>• Ser respeitoso com outros usuários</li>
@@ -247,7 +247,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           </ul>
         </div>
 
-        <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
+        <div className="rounded-lg p-4">
           <h4 className="font-semibold text-accent-red mb-2">⚠️ Limitações</h4>
           <p className="text-accent-red/90">
             A plataforma é fornecida &quot;como está&quot;. Não garantimos

@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 
 import FavoritesPageServer from './pageServer';
-import AuthCheck from '../../components/AuthCheck';
+import { redirect } from 'next/navigation';
 
 export const metadata = {
   title: 'Seus Favoritos | Enciclopédia Musical',
@@ -15,7 +15,7 @@ export default async function FavoritesPage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    return <AuthCheck title="Seus favoritos" />;
+    return redirect('/not-authenticated');
   }
 
   return <FavoritesPageServer />;

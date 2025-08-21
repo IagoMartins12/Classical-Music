@@ -22,6 +22,7 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { User } from 'next-auth';
 import { useAuthStore } from '@/app/stores/authStore';
 import AuthCheck from '../../components/AuthCheck';
+import ProfileSkeleton from './loading';
 
 interface Tab {
   id: string;
@@ -117,7 +118,7 @@ export default function ProfilePageClient() {
 
   // Not authenticated
   if (!isAuthenticated || !user) {
-    return <AuthCheck title="Seu perfil" />;
+    return <ProfileSkeleton />;
   }
 
   return (

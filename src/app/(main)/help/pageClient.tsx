@@ -159,23 +159,24 @@ Escolha entre:
 
 ## Menu Principal
 - **Início**: Página inicial com destaques e recomendações
+- **História da Música**: História e evolução da música que conhecemos hoje
+- **Instrumentos**: História e características dos instrumentos
 - **Compositores**: Enciclopédia de compositores clássicos
 - **Obras**: Catálogo completo de peças musicais
-- **Meus Favoritos**: Suas obras, compositores e partituras favoritas
-- **Meus Uploads**: Conteúdo que você contribuiu (apenas usuários verificados)
+- **Quem somos**: Conheça nossa história e nossa missão
 
 ## Barra de Busca
-- Localizada no topo da página
-- Busca global por compositores, obras e termos
+- Localizada no topo das paginas de peças e compositores
+- Busca global por compositores e obras
 - Use filtros para refinar resultados
-- Histórico de buscas recentes
 
 ## Perfil do Usuário
 - Acesse clicando na sua foto/avatar
 - **Meu Perfil**: Informações pessoais e musicais
-- **Configurações**: Preferências e privacidade
-- **Quero Aprender**: Lista de obras que deseja estudar
-- **Já Aprendi**: Registro do seu progresso musical
+- **Favoritos**: Suas obras, compositores e partituras favoritas
+- **Lições**: Lista de obras que deseja estudar e que ja estudou.
+- **Anotações**: Lista de anotações feitas nas peças estudadas
+- **Uploads**: Conteúdo que você contribuiu (apenas usuários verificados)
 
 ## Navegação Mobile
 - Menu hambúrguer (três linhas) para acessar seções
@@ -219,16 +220,10 @@ Use os filtros por época:
 - **Impressionista** (1870-1920): Debussy, Ravel
 - **Moderno** (1900+): Stravinsky, Bartók
 
-## Filtros Avançados
-- **Nacionalidade**: Alemão, Francês, Italiano, etc.
-- **Instrumento**: Compositores que escreveram para instrumentos específicos
-- **Verificação**: Apenas compositores verificados pela moderação
 
 ## Dicas de Busca
 - Use aspas para busca exata: "Johann Sebastian Bach"
-- Busque por apelidos: "O Divino" encontra Mozart
 - Combine filtros para resultados precisos
-- Explore compositores relacionados nas páginas de resultado
         `,
       },
       {
@@ -285,11 +280,6 @@ Exemplos de buscas eficazes:
 - "Violino + Bach + Barroco + Sonata"
 - "Orquestra + Beethoven + Clássico + Sinfonia"
 
-## Resultados e Ordenação
-- **Relevância**: Melhor correspondência aos critérios
-- **Popularidade**: Obras mais acessadas
-- **Data**: Obras mais recentemente adicionadas
-- **Alfabética**: Ordem alfabética por título
 
 ## Dicas Avançadas
 - Use o número de catálogo: "BWV 1007", "K. 331"
@@ -619,7 +609,6 @@ Exemplos de buscas eficazes:
 ## Requisitos
 - Conta verificada no Opus Atlas
 - Email confirmado
-- Reputação mínima na plataforma
 
 ## Processo de Upload
 
@@ -652,7 +641,7 @@ Exemplos de buscas eficazes:
 - **Nome**: Nome principal do compositor
 - **Nome Completo**: Nome oficial completo
 - **Época Musical**: Período histórico
-- **Função Principal**: Compositor, pianista, violinista, etc.
+- **Função Principal**: Compositor, libretista, arranjador, etc.
 
 #### Informações Opcionais
 - **Biografia**: Descrição da vida e obra
@@ -1049,13 +1038,7 @@ Exemplos de buscas eficazes:
 - Vá para "Meu Perfil" > "Compositores Favoritos"
 - Ou use o menu "Meus Favoritos"
 - Lista todos os compositores favoritados
-- Ordenação por nome ou data de adição
 
-### Organizando
-- **Por Época**: Filtre por período musical
-- **Por Instrumento**: Compositores que escreveram para seus instrumentos
-- **Por Nacionalidade**: Agrupe por país de origem
-- **Personalizada**: Crie sua própria ordem
 
 ## Funcionalidades Especiais
 
@@ -1065,11 +1048,6 @@ Exemplos de buscas eficazes:
 - Considera época, estilo e instrumentação
 - Descubra novos compositores do seu interesse
 
-### Notificações
-- Receba alertas quando novas obras são adicionadas
-- Notificações sobre eventos especiais
-- Atualizações de informações biográficas
-- Newsletter personalizada com seus favoritos
 
 ### Estatísticas Pessoais
 - Época musical preferida
@@ -1349,20 +1327,6 @@ Para cada partitura, você encontra:
 - Compare versões históricas
 - Considere manuscritos quando disponíveis
 - Documente diferenças entre edições
-
-## Gestão Avançada
-
-### Exportação e Backup
-- Exporte lista de partituras favoritas
-- Faça backup de suas preferências
-- Compartilhe seleções com outros músicos
-- Mantenha registro de versões utilizadas
-
-### Atualizações Automáticas
-- Receba notificações sobre novas versões
-- Seja alertado sobre melhorias de qualidade
-- Mantenha-se atualizado sobre novas descobertas
-- Participe de discussões sobre edições
         `,
       },
     ],
@@ -2855,7 +2819,6 @@ function GuideCard({ guide }: GuideCardProps): JSX.Element {
 export default function HelpPage(): JSX.Element {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  console.log('GELP', selectedCategory);
   const renderStep = (): JSX.Element => {
     if (!selectedCategory) {
       return (

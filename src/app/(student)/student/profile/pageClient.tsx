@@ -30,9 +30,7 @@ import {
 } from '../../../components/animation/AnimatedComponents';
 import { StudentProfileData, UserProfile } from './pageServer';
 import Image from 'next/image';
-import LocationSelector, {
-  LocationData,
-} from '../../../components/Common/LocationSelector';
+import LocationSelector from '../../../components/Common/LocationSelector';
 import InternationalPhoneInput from '../../../components/Common/InternationalPhoneInput';
 import {
   validatePhoneNumber,
@@ -231,7 +229,7 @@ export default function StudentProfilePageClient({
     setPhoneError('');
   };
 
-  const handleLocationChange = (location: LocationData) => {
+  const handleLocationChange = (location: any) => {
     setPersonalForm((prev) => ({ ...prev, location }));
   };
 
@@ -600,7 +598,6 @@ export default function StudentProfilePageClient({
                       disabled={saving}
                       label="Telefone/WhatsApp"
                       placeholder="Digite seu número"
-                      defaultCountry="+55"
                       showLabel={true}
                       error={phoneError}
                     />

@@ -495,7 +495,7 @@ export const getPublicTeachers = unstable_cache(
   },
   ['public-teachers-data'],
   {
-    revalidate: 600, // 10 minutos
+    revalidate: 300, // 10 minutos
     tags: ['public-teachers'],
   }
 );
@@ -586,7 +586,6 @@ export const getPublicTeacherDetails = unstable_cache(
             prisma.teacherStudent.count({
               where: {
                 teacherId: teacher.id,
-                startDate: { gte: monthStart, lte: monthEnd },
               },
             }),
             prisma.lesson.count({

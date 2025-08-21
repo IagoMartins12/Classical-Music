@@ -339,14 +339,14 @@ export default function AnnotationCard({
           {/* Badges */}
           <div className="flex flex-wrap gap-2 mb-4">
             <span
-              className={`px-3 py-1 rounded-full text-xs font-medium border ${categoryConfig.bgColor} flex items-center space-x-1`}
+              className={`px-3 py-1 rounded-full text-xs font-medium bg-theme-tertiary ${categoryConfig.bgColor} flex items-center space-x-1`}
             >
               <CategoryIcon className="w-3 h-3" />
               <span>{categoryConfig.label}</span>
             </span>
 
             <span
-              className={`px-3 py-1 rounded-full text-xs font-medium border ${
+              className={`px-3 py-1 rounded-full text-xs font-medium bg-theme-tertiary ${
                 DIFFICULTY_COLORS[annotation.difficulty]
               }`}
             >
@@ -355,7 +355,7 @@ export default function AnnotationCard({
 
             {/* 🆕 Badge para anotação privada */}
             {!annotation.isPublic && (
-              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-red/10 border-accent-red/30 text-accent-red flex items-center space-x-1">
+              <span className="px-3 py-1 rounded-full text-xs font-medium border bg-accent-red/10 border-red-400 text-accent-red flex items-center space-x-1">
                 <FiEye className="w-3 h-3" />
                 <span>Anotação Privada</span>
               </span>
@@ -438,14 +438,28 @@ export default function AnnotationCard({
                 <button
                   onClick={() => handleVote(true)}
                   disabled={isVoting}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-xl transition-all text-sm font-medium ${
+                  className={`flex items-center space-x-2 border-transparent  px-3 py-2 rounded-xl transition-all text-sm font-medium ${
                     annotation.userVote === true
                       ? 'bg-accent-green/10 border border-accent-green/30 text-accent-green'
                       : 'text-theme-tertiary hover:text-accent-green hover:bg-accent-green/5 border border-transparent hover:border-accent-green/20'
                   } ${isVoting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <FiThumbsUp className="w-4 h-4" />
-                  <span>{annotation.helpfulCount}</span>
+                  <FiThumbsUp
+                    className={`w-4 h-4 ${
+                      annotation.userVote === true
+                        ? 'text-blue-600'
+                        : 'text-theme-primary'
+                    }`}
+                  />
+                  <span
+                    className={`${
+                      annotation.userVote === true
+                        ? 'text-blue-400'
+                        : 'text-theme-primary'
+                    }`}
+                  >
+                    {annotation.helpfulCount}
+                  </span>
                 </button>
 
                 <button
@@ -453,12 +467,26 @@ export default function AnnotationCard({
                   disabled={isVoting}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-xl transition-all text-sm font-medium ${
                     annotation.userVote === false
-                      ? 'bg-accent-red/10 border border-accent-red/30 text-accent-red'
-                      : 'text-theme-tertiary hover:text-accent-red hover:bg-accent-red/5 border border-transparent hover:border-accent-red/20'
+                      ? 'text-accent-red'
+                      : 'text-theme-tertiary hover:text-accent-red hover:bg-accent-red/5 hover:border-accent-red/20'
                   } ${isVoting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                  <FiThumbsDown className="w-4 h-4" />
-                  <span>Não útil</span>
+                  <FiThumbsDown
+                    className={`w-4 h-4 ${
+                      annotation.userVote === false
+                        ? 'text-red-600'
+                        : 'text-theme-primary'
+                    }`}
+                  />
+                  <span
+                    className={`${
+                      annotation.userVote === false
+                        ? 'text-red-400'
+                        : 'text-theme-primary'
+                    }`}
+                  >
+                    Não útil
+                  </span>
                 </button>
               </div>
             ) : (

@@ -35,7 +35,7 @@ export default function VerificationBadge({
   if (variant === 'icon') {
     return (
       <div className={`${sizeClasses[size]}${className}`} title="Verificado">
-        <MdVerified className={iconSizeClasses[size]} />
+        <MdVerified className={`${iconSizeClasses[size]}`} />
       </div>
     );
   }
@@ -45,7 +45,7 @@ export default function VerificationBadge({
       <div
         className={`inline-flex items-center space-x-1 px-2 py-1 bg-accent-blue/10 text-accent-blue rounded-full border border-accent-blue/30 ${className}`}
       >
-        <MdVerified className={iconSizeClasses[size]} />
+        <MdVerified className={`${iconSizeClasses[size]}`} />
         <span className="text-xs font-medium">Verificado</span>
       </div>
     );
@@ -56,7 +56,7 @@ export default function VerificationBadge({
       <div
         className={`inline-flex items-center space-x-1 text-accent-blue ${className}`}
       >
-        <MdVerified className={iconSizeClasses[size]} />
+        <MdVerified className={`${iconSizeClasses[size]}`} />
         <span className="text-sm font-medium">{title} verificado</span>
       </div>
     );

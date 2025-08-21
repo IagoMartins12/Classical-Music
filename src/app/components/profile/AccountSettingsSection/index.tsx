@@ -391,7 +391,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               </div>
             ) : (
               <div className="classical-card-2 p-4 space-y-4">
-                <div className="bg-accent-amber bg-opacity-10 border border-accent-amber rounded-lg p-4">
+                <div className="bg-accent-amber bg-opacity-10 border border-red-400 rounded-lg p-4">
                   <div className="flex items-start">
                     <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
                     <div>
@@ -822,7 +822,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         </div>
 
         <div className="classical-card-2 p-4 border border-accent-red bg-accent-red bg-opacity-5">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-4 justify-between mb-4">
             <div>
               <h4 className="font-medium text-theme-primary mb-1">
                 Deletar Conta Permanentemente
@@ -834,11 +834,11 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             </div>
 
             <Button
-              variant="outline"
+              variant="delete"
               size="sm"
               onClick={handleOpenDeleteModal}
               leftIcon={<FiTrash2 />}
-              className="border-accent-red text-accent-red hover:bg-accent-red hover:text-white"
+              className="truncate py-3 px-4"
             >
               Deletar Conta
             </Button>

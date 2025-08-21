@@ -2,8 +2,8 @@
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../libs/auth';
-import AuthCheck from '../../components/AuthCheck';
 import AnnotationsPageServer from './pageServer';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Minhas Anotações | Opus Atlas',
@@ -23,7 +23,7 @@ export default async function AnnotationsPage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    return <AuthCheck title="Suas anotações musicais" />;
+    return redirect('/not-authenticated');
   }
 
   return <AnnotationsPageServer />;

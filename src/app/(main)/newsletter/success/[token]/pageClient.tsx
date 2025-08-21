@@ -18,7 +18,7 @@ import {
   AnimatedContainer,
   AnimatedItem,
   FloatingElement,
-} from '../../../components/animation/AnimatedComponents';
+} from '../../../../components/animation/AnimatedComponents';
 
 export default function NewsletterSuccessContent() {
   const searchParams = useSearchParams();

@@ -1429,7 +1429,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                       : `Abrir no ${getPlatformLabel(videoInfo.platform)}`}
                   </span>
 
-                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0  opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Button>
 
                 <div className="flex items-center justify-center space-x-4 text-xs text-theme-tertiary">

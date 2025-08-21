@@ -1,7 +1,7 @@
-// components/IMSLPTabsIncremental.tsx - REFATORADO COM BADGES E SEM TAB UPLOADS
+// components/IMSLPTabsIncremental.tsx - REFATORADO COM BADGES E AUTO SCROLL
 'use client';
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   FiMusic,
   FiFileText,
@@ -360,6 +360,25 @@ const useProcessedData = (imslpData: any, workScores: WorkScore[]) => {
   }, [imslpData, workScores]);
 };
 
+// ✅ HOOK PARA AUTO SCROLL
+const useAutoScrollToPreview = (selectedScore: MixedScoreData | null) => {
+  useEffect(() => {
+    if (selectedScore) {
+      // Aguarda um frame para garantir que o elemento foi renderizado
+      requestAnimationFrame(() => {
+        const previewElement = document.getElementById('score-preview');
+        if (previewElement) {
+          previewElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            inline: 'nearest',
+          });
+        }
+      });
+    }
+  }, [selectedScore]);
+};
+
 // ✅ COMPONENTE PRINCIPAL REFATORADO
 export default function IMSLPTabsIncremental({
   imslpData,
@@ -378,8 +397,6 @@ export default function IMSLPTabsIncremental({
   onWorkScoresRefetch,
   onScoreSelect,
   workId,
-  workTitle,
-  composerName,
   totalAvailable = 0,
   currentLoaded = 0,
   getTabStats,
@@ -390,6 +407,9 @@ export default function IMSLPTabsIncremental({
   const [selectedScore, setSelectedScore] = useState<MixedScoreData | null>(
     null
   );
+
+  // ✅ AUTO SCROLL HOOK
+  useAutoScrollToPreview(selectedScore);
 
   // ✅ PROCESSAR DADOS COM HOOK CUSTOMIZADO
   const { mixedData, visibleTabs, activeTabDefault } = useProcessedData(
@@ -582,23 +602,6 @@ export default function IMSLPTabsIncremental({
                     </div>
                   </div>
                 </div>
-
-                {selectedScore &&
-                  workId &&
-                  workTitle &&
-                  composerName &&
-                  !isSelectionMode && (
-                    <div className="flex items-center space-x-3">
-                      <div className="bg-theme-elevated/50 border border-theme-primary/30 rounded-xl px-4 py-2">
-                        <div className="flex items-center space-x-2 text-sm">
-                          <div className="w-2 h-2 bg-accent-green rounded-full animate-pulse"></div>
-                          <span className="text-theme-secondary font-medium">
-                            Partitura selecionada para estudo
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
               </div>
             </div>
 
@@ -819,9 +822,12 @@ export default function IMSLPTabsIncremental({
                   )}
                 </div>
 
-                {/* Preview Panel */}
+                {/* Preview Panel com ID para scroll */}
                 {selectedScore && (
-                  <div className="lg:sticky lg:top-6 animate-fade-in-up scroll-mt-4">
+                  <div
+                    id="score-preview"
+                    className="lg:sticky lg:top-6 animate-fade-in-up scroll-mt-4"
+                  >
                     <div className="classical-card-2 p-6">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">

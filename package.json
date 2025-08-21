@@ -74,8 +74,6 @@
     "backup:restore:latest": "tsx scripts/backup/backup.ts list && echo 'Use: npm run backup:restore <path>'",
     "backup:restore:selective:latest": "tsx scripts/backup/selective-backup.ts list && echo 'Use: npm run backup:selective:restore <path>'",
     "vercel-build": "prisma generate && next build",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "lint:logs": "eslint . --ext .ts,.tsx --rule \"no-console: [\"error\", { \"allow\": [\"warn\", \"error\"] }]\" --fix",
     "difficulty-scraper": "tsx scripts/difficulty-scraper.ts",
     "difficulty:analyze": "npm run difficulty-scraper start",
     "difficulty:apply": "npm run difficulty-scraper apply",
@@ -85,7 +83,10 @@
     "db:migrate:difficulty": "npx prisma db push",
     "db:generate": "npx prisma generate",
     "dev:difficulty": "npm run dev -- --experimental-https",
-    "build:difficulty": "npm run build && npm run difficulty:analyze"
+    "build:difficulty": "npm run build && npm run difficulty:analyze",
+    "analyze": "ANALYZE=true npm run build",
+    "analyze:server": "ANALYZE=true npm run build && npx serve .next/static",
+    "analyze:windows": "set ANALYZE=true && npm run build"
   },
   "dependencies": {
     "@blocknote/core": "^0.35.0",
@@ -123,6 +124,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@next/bundle-analyzer": "^15.5.0",
     "@tailwindcss/postcss": "^4",
     "@types/fluent-ffmpeg": "^2.1.27",
     "@types/lodash": "^4.17.17",

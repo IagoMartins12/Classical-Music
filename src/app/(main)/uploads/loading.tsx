@@ -44,7 +44,7 @@ export default function UploadsPageLoading() {
         </div>
 
         {/* Stats Cards Skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+        {/* <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           {[
             {
               icon: <FiDatabase className="w-5 h-5 text-theme-primary/30" />,
@@ -81,7 +81,7 @@ export default function UploadsPageLoading() {
               <div className="h-4 bg-theme-elevated rounded"></div>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* Controls Skeleton */}
         <div className="classical-card p-6">

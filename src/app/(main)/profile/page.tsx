@@ -5,7 +5,7 @@ import ProfileSkeleton from './loading';
 import ProfilePageClient from './pageClient';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../libs/auth';
-import AuthCheck from '../../components/AuthCheck';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Meu Perfil | Opus Atlas',
@@ -17,7 +17,7 @@ export default async function ProfilePage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    return <AuthCheck title="Seu perfil" />;
+    return redirect('/not-authenticated');
   }
 
   return (

@@ -546,9 +546,6 @@ export default function WorkDetailsClient({
     <div className="bg-gradient-primary">
       <LearningInitializer learningData={learningData} />
 
-      {/* ✅ NOVO: LearningModal global */}
-      <LearningModal />
-
       <div className="section-wrap space-y-8 relative z-10">
         {/* Breadcrumb */}
         <AnimatedItem direction="down" springType="gentle">
@@ -1204,6 +1201,8 @@ export default function WorkDetailsClient({
           )}
         </AnimatedContainer>
       </div>
+      {/* ✅ NOVO: LearningModal global */}
+      <LearningModal />
     </div>
   );
 }

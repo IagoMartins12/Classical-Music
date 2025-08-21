@@ -554,12 +554,6 @@ const ScoreSelectionModal = ({
                   <p className="text-theme-secondary classical-subtitle">
                     {workTitle} • {composerName}
                   </p>
-                  {totalWorkScores > 0 && (
-                    <span className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-full flex items-center space-x-1">
-                      <FiUpload className="w-3 h-3" />
-                      <span>Open Atlas</span>
-                    </span>
-                  )}
                 </div>
               </div>
             </div>

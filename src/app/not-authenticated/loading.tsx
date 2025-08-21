@@ -12,7 +12,7 @@ export default function ComumnLoading() {
       direction="scale"
       className="absolute inset-0 bg-theme-overlay backdrop-blur-sm flex items-center justify-center z-10 rounded-2xl"
     >
-      <div className="classical-card p-8 text-center">
+      <div className="classical-card flex flex-col justify-center items-center gap-6 p-8 text-center">
         <LoadingSpinner size="lg" />
         <p className="text-theme-primary font-medium mt-4">
           Carregando página...

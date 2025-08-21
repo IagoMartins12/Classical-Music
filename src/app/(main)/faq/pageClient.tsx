@@ -101,14 +101,14 @@ const faqData: FAQItem[] = [
     answer:
       'Sim! Para cada obra, você pode escolher partituras específicas para favoritar. Isso é útil porque uma mesma obra pode ter múltiplas versões: partitura completa, partes separadas, diferentes editores ou arranjos. Você pode comparar versões, ler comentários da comunidade e favoritar aquela que melhor atende suas necessidades.',
   },
-  {
-    id: '8',
-    category: 'Favoritos',
-    icon: FiLayers,
-    question: 'Como organizar meus favoritos?',
-    answer:
-      'Seus favoritos são automaticamente organizados por tipo (compositores, obras, partituras) e podem ser filtrados por instrumento, época musical, dificuldade e outras características. Você também pode adicionar notas pessoais e usar o sistema de tags para criação de categorias personalizadas como "para recital", "estudando agora", etc.',
-  },
+  // {
+  //   id: '8',
+  //   category: 'Favoritos',
+  //   icon: FiLayers,
+  //   question: 'Como organizar meus favoritos?',
+  //   answer:
+  //     'Seus favoritos são automaticamente organizados por tipo (compositores, obras, partituras) e podem ser filtrados por instrumento, época musical, dificuldade e outras características. Você também pode adicionar notas pessoais e usar o sistema de tags para criação de categorias personalizadas como "para recital", "estudando agora", etc.',
+  // },
 
   // PARTITURAS
   {
@@ -231,14 +231,14 @@ const faqData: FAQItem[] = [
     answer:
       'Conteúdo verificado passou por análise especializada da nossa equipe de moderação, que confirmou a precisão de dados biográficos, atribuições de obras e qualidade das informações. Apenas moderadores qualificados podem fazer verificações. É um selo de qualidade que indica confiabilidade acadêmica e educacional.',
   },
-  {
-    id: '23',
-    category: 'Moderação',
-    icon: FiUser,
-    question: 'Como posso me tornar um moderador?',
-    answer:
-      'Moderadores são selecionados com base em expertise musical, histórico de contribuições de qualidade na plataforma e formação relevante (música, musicologia). Demonstre conhecimento através de uploads precisos, reports úteis e anotações valiosas. Eventualmente convidamos usuários destacados para integrar a equipe de moderação.',
-  },
+  // {
+  //   id: '23',
+  //   category: 'Moderação',
+  //   icon: FiUser,
+  //   question: 'Como posso me tornar um moderador?',
+  //   answer:
+  //     'Moderadores são selecionados com base em expertise musical, histórico de contribuições de qualidade na plataforma e formação relevante (música, musicologia). Demonstre conhecimento através de uploads precisos, reports úteis e anotações valiosas. Eventualmente convidamos usuários destacados para integrar a equipe de moderação.',
+  // },
 
   // NEWSLETTER
   {

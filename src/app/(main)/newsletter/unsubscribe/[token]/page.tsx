@@ -1,16 +1,16 @@
 // app/newsletter/unsubscribe/page.tsx
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import React, { useState } from 'react';
+import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { FiMail, FiX, FiCheck, FiArrowRight } from 'react-icons/fi';
+import { FiX, FiCheck, FiArrowRight } from 'react-icons/fi';
 import {
   PageContainer,
   AnimatedContainer,
   AnimatedItem,
   AnimatedCard,
-} from '../../../components/animation/AnimatedComponents';
+} from '../../../../components/animation/AnimatedComponents';
 import Input from '@/app/components/Common/Inputs';
 
 const unsubscribeReasons = [
@@ -24,9 +24,9 @@ const unsubscribeReasons = [
 
 export default function UnsubscribePage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [token, setToken] = useState('');
-  const [email, setEmail] = useState('');
+  const params = useParams();
+  const token = params.token as string;
+
   const [reason, setReason] = useState('');
   const [feedback, setFeedback] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,14 +34,7 @@ export default function UnsubscribePage() {
     'confirm'
   );
 
-  useEffect(() => {
-    const tokenParam = searchParams.get('token');
-    const emailParam = searchParams.get('email');
-
-    if (tokenParam) setToken(tokenParam);
-    if (emailParam) setEmail(emailParam);
-  }, [searchParams]);
-
+  console.log('token', token);
   const handleUnsubscribe = async () => {
     setIsSubmitting(true);
 
@@ -53,7 +46,6 @@ export default function UnsubscribePage() {
         },
         body: JSON.stringify({
           token,
-          email,
           reason,
           feedback,
         }),
@@ -145,19 +137,6 @@ export default function UnsubscribePage() {
                     cancelar sua inscrição?
                   </p>
                 </AnimatedItem>
-
-                {email && (
-                  <AnimatedItem direction="up" springType="gentle">
-                    <div className="mt-6 p-4 bg-theme-secondary rounded-lg">
-                      <div className="flex items-center justify-center space-x-2">
-                        <FiMail className="w-5 h-5 text-theme-secondary" />
-                        <span className="font-medium text-theme-primary">
-                          {email}
-                        </span>
-                      </div>
-                    </div>
-                  </AnimatedItem>
-                )}
               </div>
 
               {/* Content based on step */}

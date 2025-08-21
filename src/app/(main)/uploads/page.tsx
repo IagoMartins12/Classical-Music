@@ -6,11 +6,11 @@ import { getServerSession } from 'next-auth';
 import { Suspense } from 'react';
 
 import UploadsPageServer from './pageServer';
-import AuthCheck from '@/app/components/AuthCheck';
 import EmailVerificationRequired from '@/app/components/VerificationsProviders/EmailVerificationRequired';
 import { authOptions } from '@/app/libs/auth';
 import { getUserById } from '@/app/actions/auth';
 import { FormPageLoading } from '@/app/wrappers/SuspenseWrapper';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Meus Uploads | Classical Music App',
@@ -32,13 +32,13 @@ export default async function UploadsPage({
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    return <AuthCheck title="Meus Uploads" />;
+    return redirect('/not-authenticated');
   }
 
   const userData = await getUserById(session.user.id);
 
   if (!userData) {
-    return <AuthCheck title="Meus Uploads" />;
+    return redirect('/not-authenticated');
   }
 
   if (!userData.emailVerified && userData.email) {

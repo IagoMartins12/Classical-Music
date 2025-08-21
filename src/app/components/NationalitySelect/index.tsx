@@ -164,7 +164,7 @@ export default function NationalitySelect({
                   onClick={() => handleNationalitySelect(nationality)}
                   className={`
                     w-full text-left px-4 py-3 hover:bg-interactive-hover transition-colors duration-200 
-                    border-b last:border-b-0 border-theme-secondary/50
+                    border-b border-color-primary last:border-b-0 border-theme-secondary/50
                     ${
                       value === nationality.name
                         ? 'bg-brand-primary/10 text-brand-primary font-medium'
@@ -207,17 +207,6 @@ export default function NationalitySelect({
               </div>
             )}
           </div>
-
-          {/* Footer with count */}
-          {filteredNationalities.length > 0 && (
-            <div className="px-4 py-2 bg-theme-secondary/5 border-t border-theme-secondary/50">
-              <p className="text-xs text-theme-tertiary">
-                {filteredNationalities.length === NATIONALITIES.length
-                  ? `${NATIONALITIES.length} nacionalidades disponíveis`
-                  : `${filteredNationalities.length} de ${NATIONALITIES.length} nacionalidades`}
-              </p>
-            </div>
-          )}
         </div>
       )}
     </div>

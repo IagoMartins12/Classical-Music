@@ -1,5 +1,5 @@
 // ================================
-// app/public/teachers/page.tsx - CORRIGIDO
+// app/teachers/page.tsx - CORRIGIDO
 // ================================
 import { Metadata } from 'next';
 import { Suspense } from 'react';

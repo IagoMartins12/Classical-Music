@@ -38,6 +38,7 @@ import {
 // 🆕 IMPORTAR O HOOK DE TOAST
 import { useToast } from '@/app/hooks/useToast';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 interface DuplicateCheckState {
   loading: boolean;
@@ -1164,17 +1165,17 @@ const CreateComposerModal = ({
                     />
                   </div>
 
-                  <div className="md:col-span-2">
+                  <div className="md:col-span-2 space-x-4">
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
                       Papéis Secundários
                     </label>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 md:grid-cols-3  gap-2">
                       {roles.map((role) => (
                         <div
                           key={role.id}
                           className="flex items-center space-x-2"
                         >
-                          <Input
+                          <Checkbox
                             type="checkbox"
                             id={`role-${role.id}`}
                             checked={formData.roles.includes(role.id)}

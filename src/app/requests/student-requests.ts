@@ -210,6 +210,80 @@ interface AssignmentSubmissions {
   files?: string[];
   [key: string]: any;
 }
+
+export interface StudentAssignmentDetailsData {
+  assignment: {
+    id: string;
+    title: string;
+    description: string;
+    type: string;
+    priority: string;
+    workScoreIds: string[];
+    exercises: string[];
+    practiceGoals: string[];
+    tempoTargets?: any;
+    technicalGoals: string[];
+    musicalGoals: string[];
+    status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
+    dueDate?: Date | null;
+    estimatedTime?: number | null;
+    actualTime?: number | null;
+    isOverdue: boolean;
+    daysUntilDue?: number | null;
+    isCompleted: boolean;
+    completedAt?: Date | null;
+    progress?: number | null;
+    teacherFeedback?: string | null;
+    teacherRating?: number | null;
+    studentNotes?: string | null;
+    studentRating?: number | null;
+    submissions?: any;
+    submissionDate?: Date | null;
+    lesson: {
+      id: string;
+      title: string;
+      scheduledAt: Date;
+      teacher: {
+        name: string;
+        image?: string | null;
+      };
+    };
+    workScores: Array<{
+      id: string;
+      title: string;
+      composer: string;
+      workTitle: string;
+      type: string;
+      downloadUrl?: string;
+    }>;
+    progressMilestones?: {
+      learnedLeftHand: boolean;
+      learnedRightHand: boolean;
+      playedWithMetronome: boolean;
+      memorized: boolean;
+      playedAtTempo: boolean;
+      masteredDynamics: boolean;
+      performedForOthers: boolean;
+    };
+    permissions: {
+      canEdit: boolean;
+      canDelete: boolean;
+      canComplete: boolean;
+      canAddFeedback: boolean;
+      canAddSubmission: boolean;
+    };
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  userRole: number;
+}
+
+export interface StudentAssignmentDetailsResponse {
+  success: boolean;
+  assignment?: StudentAssignmentDetailsData['assignment'];
+  userRole?: number;
+  error?: string;
+}
 // ====================================
 // DASHBOARD REQUESTS - QUERIES DIRETAS
 // ====================================
@@ -1736,276 +1810,6 @@ export const getStudentAssignments = unstable_cache(
   }
 );
 
-export const getStudentLessonWorks = unstable_cache(
-  async (
-    userId: string,
-    lessonId?: string,
-    options: {
-      includeProgress?: boolean;
-      teacherId?: string;
-      status?: string;
-      limit?: number;
-    } = {}
-  ): Promise<any> => {
-    try {
-      console.log(
-        `🎵 [STUDENT-LESSON-WORKS] Loading lesson works for user ${userId}`
-      );
-
-      // Verificar se aluno existe
-      const studentProfile = await prisma.student.findUnique({
-        where: { userId },
-        select: { id: true },
-      });
-
-      if (!studentProfile) {
-        console.log(
-          `❌ [STUDENT-LESSON-WORKS] Student profile not found for user ${userId}`
-        );
-        return null;
-      }
-
-      const studentId = studentProfile.id;
-
-      // Se específico para uma aula
-      if (lessonId) {
-        const lesson = await prisma.lesson.findFirst({
-          where: {
-            id: lessonId,
-            studentId: studentId,
-          },
-          include: {
-            teacher: {
-              include: {
-                user: {
-                  select: { firstName: true, lastName: true },
-                },
-              },
-            },
-            student: {
-              include: {
-                user: {
-                  select: { firstName: true, lastName: true },
-                },
-              },
-            },
-          },
-        });
-
-        if (!lesson) {
-          return {
-            success: false,
-            error: 'Aula não encontrada',
-          };
-        }
-
-        // Buscar obras vinculadas à aula (através dos workScoreIds)
-        if (lesson.workScoreIds.length === 0) {
-          return {
-            success: true,
-            lessonWorks: [],
-            lesson: {
-              id: lesson.id,
-              title: lesson.title,
-              scheduledAt: lesson.scheduledAt,
-              teacher: `${lesson.teacher.user.firstName} ${lesson.teacher.user.lastName}`,
-              student: `${lesson.student.user.firstName} ${lesson.student.user.lastName}`,
-            },
-          };
-        }
-
-        // Buscar WorkScores e suas Works associadas
-        const workScores = await prisma.workScore.findMany({
-          where: {
-            id: { in: lesson.workScoreIds },
-          },
-          include: {
-            work: {
-              include: {
-                composer: {
-                  select: { name: true },
-                },
-              },
-            },
-          },
-        });
-
-        // Agrupar por Work
-        const worksMap = new Map<string, any>();
-
-        workScores.forEach((workScore) => {
-          const workId = workScore.work.id;
-
-          if (!worksMap.has(workId)) {
-            worksMap.set(workId, {
-              workId: workId,
-              workTitle: workScore.work.title,
-              composer: workScore.work.composer.name,
-              workScoreIds: [],
-              selectedScores: [],
-              studyFocus: lesson.topics, // Usar topics da aula
-              difficulty: workScore.work.difficultyLevel || 'INTERMEDIATE',
-              notes: lesson.publicNotes,
-              status: lesson.status === 'COMPLETED' ? 'completed' : 'studying',
-              assignedAt: lesson.createdAt,
-              completedAt:
-                lesson.status === 'COMPLETED' ? lesson.scheduledAt : undefined,
-            });
-          }
-
-          const work = worksMap.get(workId);
-          work.workScoreIds.push(workScore.id);
-          work.selectedScores.push({
-            id: workScore.id,
-            title: workScore.title,
-            type: workScore.type,
-            downloadUrl: workScore.downloadUrl,
-            pageCount: workScore.pageCount,
-          });
-        });
-
-        const lessonWorks = Array.from(worksMap.values());
-
-        return {
-          success: true,
-          lessonWorks,
-          lesson: {
-            id: lesson.id,
-            title: lesson.title,
-            scheduledAt: lesson.scheduledAt,
-            teacher: `${lesson.teacher.user.firstName} ${lesson.teacher.user.lastName}`,
-            student: `${lesson.student.user.firstName} ${lesson.student.user.lastName}`,
-          },
-        };
-      }
-
-      // Busca geral (todas as obras das aulas do usuário)
-      const whereClause: any = {
-        studentId: studentId,
-        workScoreIds: { isEmpty: false },
-      };
-
-      if (options.status) {
-        if (options.status === 'completed') {
-          whereClause.status = 'COMPLETED';
-        } else if (options.status === 'studying') {
-          whereClause.status = { in: ['SCHEDULED', 'IN_PROGRESS'] };
-        }
-      }
-
-      if (options.teacherId) {
-        const teacherProfile = await prisma.teacher.findUnique({
-          where: { userId: options.teacherId },
-          select: { id: true },
-        });
-        if (teacherProfile) {
-          whereClause.teacherId = teacherProfile.id;
-        }
-      }
-
-      const lessons = await prisma.lesson.findMany({
-        where: whereClause,
-        orderBy: { scheduledAt: 'desc' },
-        take: options.limit || 50,
-      });
-
-      // Coletar todas as obras
-      const allWorkScoreIds = [
-        ...new Set(lessons.flatMap((l) => l.workScoreIds)),
-      ];
-
-      const workScores = await prisma.workScore.findMany({
-        where: { id: { in: allWorkScoreIds } },
-        include: {
-          work: {
-            include: {
-              composer: { select: { name: true } },
-            },
-          },
-        },
-      });
-
-      // Mapear obras únicas
-      const uniqueWorks = new Map<string, any>();
-
-      workScores.forEach((workScore) => {
-        const workId = workScore.work.id;
-
-        if (!uniqueWorks.has(workId)) {
-          uniqueWorks.set(workId, {
-            workId,
-            workTitle: workScore.work.title,
-            composer: workScore.work.composer.name,
-            timesStudied: 0,
-            lastStudied: null,
-            scores: [],
-          });
-        }
-
-        const work = uniqueWorks.get(workId);
-        if (!work.scores.find((s: any) => s.id === workScore.id)) {
-          work.scores.push({
-            id: workScore.id,
-            title: workScore.title,
-            type: workScore.type,
-          });
-        }
-      });
-
-      // Contar quantas vezes cada obra foi estudada
-      lessons.forEach((lesson) => {
-        lesson.workScoreIds.forEach((scoreId) => {
-          const workScore = workScores.find((ws) => ws.id === scoreId);
-          if (!workScore) return;
-
-          const work = uniqueWorks.get(workScore.work.id);
-          if (work) {
-            work.timesStudied++;
-            if (!work.lastStudied || lesson.scheduledAt > work.lastStudied) {
-              work.lastStudied = lesson.scheduledAt;
-            }
-          }
-        });
-      });
-
-      const worksArray = Array.from(uniqueWorks.values()).sort(
-        (a, b) =>
-          (b.lastStudied?.getTime() || 0) - (a.lastStudied?.getTime() || 0)
-      );
-
-      console.log(
-        `✅ [STUDENT-LESSON-WORKS] Returning ${worksArray.length} works`
-      );
-
-      return {
-        success: true,
-        works: worksArray,
-        summary: {
-          totalWorks: worksArray.length,
-          totalLessons: lessons.length,
-          recentWorks: worksArray.slice(0, 5),
-        },
-      };
-    } catch (error) {
-      console.error(
-        '❌ [STUDENT-LESSON-WORKS] Error fetching lesson works:',
-        error
-      );
-      return null;
-    }
-  },
-  ['student-lesson-works-data'],
-  {
-    revalidate: 300, // 5 minutos
-    tags: ['student-lesson-works'],
-  }
-);
-
-// ====================================
-// FUNÇÕES PARA COMPATIBILIDADE COM PAGESEVER
-// ====================================
-
-// Wrapper para usar no pageServer sem passar userId explicitamente
 export const getStudentDashboardForPageServer = async (userId: string) => {
   return await getStudentDashboard(userId);
 };
@@ -2061,122 +1865,6 @@ export const getStudentAssignmentsForPageServer = async (
   return await getStudentAssignments(userId, filters);
 };
 
-// ====================================
-// FUNÇÕES DE MUTAÇÃO (mantidas como estão)
-// ====================================
-
-export const updateStudentProfile = async (updates: {
-  userData?: any;
-  studentData?: any;
-}): Promise<{ success: boolean; profile?: any; error?: string }> => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/student/profile`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updates),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || `Error ${response.status}`,
-      };
-    }
-
-    return { success: data.success, profile: data.profile };
-  } catch (error) {
-    console.error('❌ Error updating student profile:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-};
-
-export const updateStudentProfileField = async (
-  field: string,
-  value: any,
-  action: 'set' | 'add' | 'remove' = 'set'
-): Promise<{ success: boolean; profile?: any; error?: string }> => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/student/profile`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ field, value, action }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || `Error ${response.status}`,
-      };
-    }
-
-    return { success: data.success, profile: data.profile };
-  } catch (error) {
-    console.error('❌ Error updating student profile field:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-};
-
-export const initializeStudentProfile = async (profileData: {
-  level?: string;
-  mainInstrument?: string;
-  musicalGoals?: string;
-  preferredGenres?: string[];
-  practiceTime?: number;
-  learningPace?: string;
-  allowPublicProgress?: boolean;
-  preferredContact?: string;
-}): Promise<{ success: boolean; profile?: any; error?: string }> => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/student/profile`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(profileData),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || `Error ${response.status}`,
-      };
-    }
-
-    return { success: data.success, profile: data.profile };
-  } catch (error) {
-    console.error('❌ Error initializing student profile:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-};
-
 export const addLessonFeedback = async (
   lessonId: string,
   feedback: string,
@@ -2212,157 +1900,6 @@ export const addLessonFeedback = async (
     };
   }
 };
-
-export const updateStudentLessonFeedback = async (
-  lessonId: string,
-  feedback: string,
-  rating?: number
-): Promise<{ success: boolean; lesson?: any; error?: string }> => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/lessons/${lessonId}`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          studentFeedback: feedback,
-          studentRating: rating,
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || `Error ${response.status}`,
-      };
-    }
-
-    return { success: data.success, lesson: data.lesson };
-  } catch (error) {
-    console.error('❌ Error updating lesson feedback:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-};
-
-export const updateStudentAssignment = async (
-  assignmentId: string,
-  updates: any
-): Promise<{ success: boolean; assignment?: any; error?: string }> => {
-  try {
-    const response = await fetch(
-      `${process.env.NEXTAUTH_URL}/api/assignments`,
-      {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          assignmentId,
-          ...updates,
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      return {
-        success: false,
-        error: data.error || `Error ${response.status}`,
-      };
-    }
-
-    return { success: data.success, assignment: data.assignment };
-  } catch (error) {
-    console.error('❌ Error updating student assignment:', error);
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    };
-  }
-};
-
-export interface StudentAssignmentDetailsData {
-  assignment: {
-    id: string;
-    title: string;
-    description: string;
-    type: string;
-    priority: string;
-    workScoreIds: string[];
-    exercises: string[];
-    practiceGoals: string[];
-    tempoTargets?: any;
-    technicalGoals: string[];
-    musicalGoals: string[];
-    status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
-    dueDate?: Date | null;
-    estimatedTime?: number | null;
-    actualTime?: number | null;
-    isOverdue: boolean;
-    daysUntilDue?: number | null;
-    isCompleted: boolean;
-    completedAt?: Date | null;
-    progress?: number | null;
-    teacherFeedback?: string | null;
-    teacherRating?: number | null;
-    studentNotes?: string | null;
-    studentRating?: number | null;
-    submissions?: any;
-    submissionDate?: Date | null;
-    lesson: {
-      id: string;
-      title: string;
-      scheduledAt: Date;
-      teacher: {
-        name: string;
-        image?: string | null;
-      };
-    };
-    workScores: Array<{
-      id: string;
-      title: string;
-      composer: string;
-      workTitle: string;
-      type: string;
-      downloadUrl?: string;
-    }>;
-    progressMilestones?: {
-      learnedLeftHand: boolean;
-      learnedRightHand: boolean;
-      playedWithMetronome: boolean;
-      memorized: boolean;
-      playedAtTempo: boolean;
-      masteredDynamics: boolean;
-      performedForOthers: boolean;
-    };
-    permissions: {
-      canEdit: boolean;
-      canDelete: boolean;
-      canComplete: boolean;
-      canAddFeedback: boolean;
-      canAddSubmission: boolean;
-    };
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  userRole: number;
-}
-
-export interface StudentAssignmentDetailsResponse {
-  success: boolean;
-  assignment?: StudentAssignmentDetailsData['assignment'];
-  userRole?: number;
-  error?: string;
-}
 
 export const getStudentAssignmentDetailsData = unstable_cache(
   async (

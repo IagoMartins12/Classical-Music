@@ -5,6 +5,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../../libs/auth';
 import AuthCheck from '../../components/AuthCheck';
 import LearningPageServer from './pageServer';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Meu Aprendizado | Classical Music App',
@@ -16,7 +17,7 @@ export default async function LearningPage() {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
-    return <AuthCheck title="Suas lições" />;
+    return redirect('/not-authenticated');
   }
 
   return <LearningPageServer />;

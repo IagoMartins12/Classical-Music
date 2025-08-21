@@ -81,7 +81,7 @@ export default function PublicTeacherDetailsPageClient({
     if (navigator.share) {
       try {
         await navigator.share(shareData);
-      } catch  {
+      } catch {
         // Fallback para clipboard
         navigator.clipboard.writeText(window.location.href);
       }
@@ -116,7 +116,7 @@ export default function PublicTeacherDetailsPageClient({
         <AnimatedItem direction="down" springType="gentle">
           <nav className="flex items-center space-x-2 text-sm text-theme-tertiary mb-6 pt-4">
             <Link
-              href="/public/teachers"
+              href="/teachers"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
               Professores

@@ -261,7 +261,7 @@ export default function TermsPage() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold classical-title text-theme-primary mb-4">
-                      Importantes Considerações
+                      Considerações Importantes
                     </h3>
                     <ul className="space-y-3 text-theme-secondary">
                       <li className="flex items-start space-x-2">

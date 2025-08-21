@@ -21,7 +21,6 @@ async function getUserVerificationData(userId: string, isTeacher: boolean) {
   try {
     // 🔥 SÓ BUSCAR SE O USUÁRIO FOR TEACHER OU STUDENT (performance)
     if (isTeacher) {
-      console.log('🔍 Buscando dados de verificação do teacher para:', userId);
       const teacherProfile = await prisma.teacher.findUnique({
         where: { userId },
         select: { isVerified: true },

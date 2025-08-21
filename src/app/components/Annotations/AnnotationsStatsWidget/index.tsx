@@ -183,12 +183,9 @@ export default function AnnotationsStatsWidget({
                     <div className="flex items-center space-x-3 p-3 classical-card-simple rounded-xl group hover:border-brand-primary/50 transition-all">
                       <div className="flex items-center space-x-2">
                         <div
-                          className={`w-6 h-6 rounded-lg ${
-                            categoryConfig?.bgColor ||
-                            'bg-theme-primary/10 border-theme-primary/30 text-theme-primary'
-                          } border flex items-center justify-center`}
+                          className={`w-6 h-6 rounded-lg flex items-center justify-center`}
                         >
-                          <Icon className="w-3 h-3" />
+                          <Icon className="w-4 h-4" />
                         </div>
                         {annotation.isVerified && (
                           <MdVerified className="w-4 h-4 text-accent-green" />

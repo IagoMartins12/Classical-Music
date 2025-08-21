@@ -1,5 +1,9 @@
 import type { NextConfig } from 'next';
 
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -11,8 +15,6 @@ const nextConfig: NextConfig = {
       // new URL('https://**.imslp.org/images/**'),
     ],
   },
-
-  experimental: { missingSuspenseWithCSRBailout: false } as any,
 
   async headers() {
     return [
@@ -37,3 +39,4 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+module.exports = withBundleAnalyzer(nextConfig);

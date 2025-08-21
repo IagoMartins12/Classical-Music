@@ -608,30 +608,6 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
           </p>
         )}
       </div>
-
-      {/* 🐛 Debug Info (apenas em desenvolvimento) */}
-      {process.env.NODE_ENV === 'development' &&
-        (value.country || value.state || value.city) && (
-          <div className="mt-4 p-3 bg-theme-secondary bg-opacity-20 rounded-xl">
-            <h4 className="text-xs font-medium text-theme-tertiary mb-2">
-              🔍 Debug Info:
-            </h4>
-            <div className="text-xs text-theme-tertiary space-y-1">
-              {value.country && (
-                <div>
-                  🌍 País: {value.country.flag} {value.country.name} (
-                  {value.country.isoCode})
-                </div>
-              )}
-              {value.state && (
-                <div>
-                  🗺️ Estado: {value.state.name} ({value.state.isoCode})
-                </div>
-              )}
-              {value.city && <div>🏙️ Cidade: {value.city.name}</div>}
-            </div>
-          </div>
-        )}
     </div>
   );
 };

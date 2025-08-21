@@ -1084,7 +1084,7 @@ export default function CreateAnnotationModal({
             onClick={() =>
               setFormData((prev) => ({ ...prev, isPublic: !prev.isPublic }))
             }
-            className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
+            className={` rounded-lg gap-4 border-2 flex items-center justify-center transition-all ${
               formData.isPublic
                 ? 'bg-accent-green border-none text-theme-primary'
                 : 'bg-accent-red border-none text-theme-primary'
@@ -1095,24 +1095,25 @@ export default function CreateAnnotationModal({
             ) : (
               <FiEyeOff className="w-4 h-4" />
             )}
-          </button>
-          <div>
-            <div className="flex items-center space-x-2">
-              <span className="font-medium text-theme-primary">
-                {formData.isPublic ? 'Anotação Pública' : 'Anotação Privada'}
-              </span>
-              {formData.isPublic ? (
-                <FiEye className="w-4 h-4 text-accent-green" />
-              ) : (
-                <FiEyeOff className="w-4 h-4 text-accent-red" />
-              )}
+
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="font-medium text-theme-primary">
+                  {formData.isPublic ? 'Anotação Pública' : 'Anotação Privada'}
+                </span>
+                {formData.isPublic ? (
+                  <FiEye className="w-4 h-4 text-accent-green" />
+                ) : (
+                  <FiEyeOff className="w-4 h-4 text-accent-red" />
+                )}
+              </div>
+              <p className="text-sm text-theme-secondary">
+                {formData.isPublic
+                  ? 'Outros usuários poderão ver e votar nesta anotação'
+                  : 'Apenas você poderá ver esta anotação'}
+              </p>
             </div>
-            <p className="text-sm text-theme-secondary">
-              {formData.isPublic
-                ? 'Outros usuários poderão ver e votar nesta anotação'
-                : 'Apenas você poderá ver esta anotação'}
-            </p>
-          </div>
+          </button>
         </div>
       </div>
 

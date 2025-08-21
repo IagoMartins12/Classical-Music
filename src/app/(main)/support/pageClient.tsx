@@ -84,8 +84,6 @@ const supportCategories: SupportCategory[] = [
           'Se você criou uma conta com email e depois tenta usar Google (ou vice-versa), pode haver conflito.',
         steps: [
           'Se o email é o mesmo, use o método original de login',
-          'Para unificar contas, entre em contato com suporte',
-          'Evite criar múltiplas contas com o mesmo email',
           'Use "Esqueci a senha" se necessário',
         ],
         priority: 'high',

@@ -744,7 +744,7 @@ const UploadsClient = ({
         </AnimatedItem>
 
         {/* Quick Stats Cards */}
-        <AnimatedItem direction="up" springType="gentle">
+        {/* <AnimatedItem direction="up" springType="gentle">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
             <AnimatedCard className="classical-card p-4 text-center">
               <div className="flex items-center justify-center mb-2">
@@ -818,7 +818,7 @@ const UploadsClient = ({
               <div className="text-sm text-theme-tertiary">Customizados</div>
             </AnimatedCard>
           </div>
-        </AnimatedItem>
+        </AnimatedItem> */}
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
@@ -870,11 +870,11 @@ const UploadsClient = ({
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => setShowFilters(!showFilters)}
-                    className={`flex items-center space-x-2 px-4 py-3 rounded-lg border transition-all font-medium ${
+                    className={`flex items-center space-x-2 px-4 py-3 rounded-lg  transition-all font-medium ${
                       showFilters
-                        ? 'bg-brand-primary text-theme-primary border-brand-primary shadow-md'
+                        ? 'bg-brand-primary text-theme-primary border-theme-primary border-2 border-brand-primary shadow-md'
                         : hasActiveFilters
-                        ? 'bg-accent-blue/10 text-accent-blue border-accent-blue/30 shadow-sm'
+                        ? 'text-accent-blue border-accent-blue/30 shadow-sm'
                         : 'bg-theme-elevated text-theme-primary border-theme-secondary hover:border-brand-primary hover:bg-interactive-hover'
                     }`}
                   >

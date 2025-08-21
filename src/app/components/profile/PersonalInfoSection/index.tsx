@@ -163,7 +163,6 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       return;
     }
 
-    console.log('✅ Validação passou, prosseguindo com o salvamento');
     setIsLoading(true);
 
     try {
@@ -181,8 +180,6 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         country: locationForDatabase.country,
         image: formData.image,
       };
-
-      console.log('💾 Salvando dados no backend:', dataToSave);
 
       const result = await updatePersonalInfo(user.id, dataToSave);
 
@@ -268,25 +265,6 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
     const lastName = formData.lastName || user.lastName || '';
     return `${firstName} ${lastName}`.trim();
   };
-
-  // 🐛 Debug melhorado com telefone
-  React.useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🔍 PersonalInfoSection - Estado atual:', {
-        'Dados do usuário (banco)': {
-          country: user.country,
-          state: user.state,
-          city: user.city,
-          phone: user.phone,
-        },
-        'FormData location (objetos completos)': formData.location,
-        'FormData phone': formData.phone,
-        phoneValidation: phoneValidation,
-        errors: errors,
-        isEditing: isEditing,
-      });
-    }
-  }, [user, formData, phoneValidation, errors, isEditing]);
 
   return (
     <div className="space-y-6">
@@ -426,7 +404,6 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           disabled={!isEditing}
           label="Telefone"
           placeholder="Digite seu número"
-          defaultCountry="br"
           showLabel={true}
           error={errors.phone} // Passar erro específico do telefone
         />
@@ -471,68 +448,6 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           <p className="text-sm text-theme-tertiary mt-2 italic">
             Nenhuma localização definida
           </p>
-        )}
-      </div>
-
-      {/* Account Info (Read-only) */}
-      <div className="pt-6 border-t border-theme-secondary">
-        <h4 className="font-medium text-theme-primary mb-4">
-          Informações da Conta
-        </h4>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-theme-secondary mb-2">
-              Email
-            </label>
-            <div className="input-classical bg-theme-secondary bg-opacity-50 cursor-not-allowed">
-              {user.email}
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-theme-secondary mb-2">
-              Tipo de Usuário
-            </label>
-            <div className="input-classical bg-theme-secondary bg-opacity-50 cursor-not-allowed">
-              {user.userType === 'MUSIC_STUDENT' && 'Estudante de Música'}
-              {user.userType === 'CASUAL_USER' && 'Entusiasta'}
-              {user.userType === 'PROFESSIONAL' && 'Profissional'}
-              {user.userType === 'TEACHER' && 'Professor'}
-              {!user.userType && 'Não definido'}
-            </div>
-          </div>
-        </div>
-
-        {/* Informações técnicas do telefone */}
-        {user.phone && (
-          <div className="mt-4 p-3 bg-theme-secondary bg-opacity-20 rounded-lg">
-            <h5 className="text-sm font-medium text-theme-primary mb-2">
-              Informações do Telefone
-            </h5>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-              <div>
-                <span className="text-theme-tertiary">Completo:</span>
-                <div className="font-mono text-theme-primary">{user.phone}</div>
-              </div>
-              {user.phoneCountryCode && (
-                <div>
-                  <span className="text-theme-tertiary">País:</span>
-                  <div className="font-mono text-theme-primary">
-                    {user.phoneCountryCode}
-                  </div>
-                </div>
-              )}
-              {user.phoneNumber && (
-                <div>
-                  <span className="text-theme-tertiary">Número:</span>
-                  <div className="font-mono text-theme-primary">
-                    {user.phoneNumber}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
         )}
       </div>
     </div>

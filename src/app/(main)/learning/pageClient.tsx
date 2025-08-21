@@ -1,4 +1,4 @@
-// app/learning/LearningPageClient.tsx - ATUALIZADO COM OPENDIALOG CORRIGIDO
+// app/learning/LearningPageClient.tsx - ATUALIZADO COM EMPTY STATE ÚNICO
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -8,6 +8,7 @@ import {
   FiSearch,
   FiFilter,
   FiX,
+  FiMusic,
 } from 'react-icons/fi';
 import {
   useLearningStore,
@@ -31,6 +32,7 @@ import {
   SequentialGrid,
 } from '../../components/animation/AnimatedComponents';
 import LearningModal from '../../components/LearningModal';
+import Link from 'next/link';
 
 type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
 type FilterTab = 'all' | 'want-to-learn' | 'learned';
@@ -142,6 +144,20 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
 
     return { wantToLearn: wantToLearnFiltered, learned: learnedFiltered };
   }, [wantToLearn, learned, searchQuery, difficultyFilter, priorityFilter]);
+
+  // ✅ NOVO: Verificar se ambas as listas estão vazias
+  const isBothListsEmpty = useMemo(() => {
+    return (
+      filteredData.wantToLearn.length === 0 && filteredData.learned.length === 0
+    );
+  }, [filteredData]);
+
+  // ✅ NOVO: Determinar ordem das seções (priorizar seção com conteúdo)
+  const shouldShowLearnedFirst = useMemo(() => {
+    return (
+      filteredData.learned.length > 0 && filteredData.wantToLearn.length === 0
+    );
+  }, [filteredData]);
 
   // Statistics (mantido igual)
   const stats = useMemo(() => {
@@ -473,144 +489,213 @@ const LearningPageClient = ({ initialData }: LearningPageClientProps) => {
           </AnimatedCard>
         </AnimatedItem>
 
-        {/* Content (mantido igual, apenas mudança na função onEdit) */}
-        <div className="space-y-8">
-          {/* Want to Learn Section */}
-          {(activeTab === 'all' || activeTab === 'want-to-learn') && (
-            <AnimatedItem direction="up" springType="gentle" className="mt-4">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
-                  <FiTarget className="w-5 h-5 text-theme-primary" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                    Quero Aprender
-                  </h2>
-                  <p className="text-theme-tertiary">
-                    {filteredData.wantToLearn.length} de {wantToLearn.length}{' '}
-                    obras
-                  </p>
-                </div>
+        {/* ✅ NOVO: Empty State Único quando ambas as listas estão vazias */}
+        {isBothListsEmpty && activeTab === 'all' ? (
+          <AnimatedItem
+            direction="scale"
+            springType="bouncy"
+            className="mt-8 classical-card"
+          >
+            <div className="text-center py-16">
+              <div className="w-24 h-24 bg-gradient-to-br from-theme-secondary to-theme-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <PiTarget className="w-12 h-12 text-theme-tertiary" />
               </div>
-
-              {filteredData.wantToLearn.length === 0 ? (
-                <EmptyState
-                  type="want-to-learn"
-                  searchQuery={searchQuery}
-                  hasFilters={hasActiveFilters}
-                />
-              ) : (
-                <>
-                  {viewMode === 'cards' ? (
-                    <SequentialGrid cols={3} gap={6} className="">
-                      {filteredData.wantToLearn.map((item) => (
-                        <LearningCard
-                          key={item.id}
-                          item={item}
-                          type="want-to-learn"
-                          viewMode={viewMode}
-                          onEdit={() => handleEditItem(item, 'want-to-learn')}
-                        />
-                      ))}
-                    </SequentialGrid>
-                  ) : (
-                    <div className="space-y-4">
-                      {filteredData.wantToLearn.map((item, index) => (
-                        <AnimatedItem
-                          key={item.id}
-                          direction="left"
-                          hover="lift"
-                          style={{
-                            animationDelay: `${index * 0.1}s`,
-                            animationFillMode: 'backwards',
-                          }}
-                        >
-                          <LearningCard
-                            item={item}
-                            type="want-to-learn"
-                            viewMode={viewMode}
-                            onEdit={() => handleEditItem(item, 'want-to-learn')}
-                          />
-                        </AnimatedItem>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
-            </AnimatedItem>
-          )}
-
-          {/* Learned Section */}
-          {(activeTab === 'all' || activeTab === 'learned') && (
-            <AnimatedItem direction="up" springType="gentle" className="mt-4">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
-                  <FiCheckCircle className="w-5 h-5 text-theme-primary" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                    Já Aprendi
-                  </h2>
-                  <p className="text-theme-tertiary">
-                    {filteredData.learned.length} de {learned.length} obras
-                  </p>
-                </div>
-              </div>
-
-              {filteredData.learned.length === 0 ? (
-                <AnimatedItem direction="scale" springType="bouncy">
-                  <EmptyState
-                    type="learned"
-                    searchQuery={searchQuery}
-                    hasFilters={hasActiveFilters}
+              <h3 className="text-2xl font-bold text-theme-primary mb-4">
+                Sua jornada musical começa aqui!
+              </h3>
+              <p className="text-theme-tertiary mb-8 max-w-md mx-auto">
+                Você ainda não adicionou nenhuma obra às suas listas de
+                aprendizado. Comece explorando nosso catálogo e adicionando
+                obras que gostaria de estudar.
+              </p>
+              <Link
+                href={'/works'}
+                className="btn-classical-primary max-w-[250px] flex items-center justify-center space-x-2 group mx-auto"
+              >
+                <FiMusic className="w-4 h-4" />
+                <span>Descobrir Obras</span>
+                <svg
+                  className="w-4 h-4 transition-transform group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
                   />
-                </AnimatedItem>
-              ) : (
-                <>
-                  {viewMode === 'cards' ? (
-                    <SequentialGrid
-                      cols={3}
-                      gap={6}
-                      delayBetweenItems={0.1}
-                      className=""
-                    >
-                      {filteredData.learned.map((item) => (
-                        <LearningCard
-                          key={item.id}
-                          item={item}
-                          type="learned"
-                          viewMode={viewMode}
-                          onEdit={() => handleEditItem(item, 'learned')}
-                        />
-                      ))}
-                    </SequentialGrid>
-                  ) : (
-                    <div className="space-y-4">
-                      {filteredData.learned.map((item, index) => (
-                        <AnimatedItem
-                          key={item.id}
-                          direction="left"
-                          hover="lift"
-                          style={{
-                            animationDelay: `${index * 0.1}s`,
-                            animationFillMode: 'backwards',
-                          }}
-                        >
-                          <LearningCard
-                            item={item}
-                            type="learned"
-                            viewMode={viewMode}
-                            onEdit={() => handleEditItem(item, 'learned')}
-                          />
-                        </AnimatedItem>
-                      ))}
+                </svg>
+              </Link>
+            </div>
+          </AnimatedItem>
+        ) : (
+          /* ✅ Content Original (quando pelo menos uma lista tem itens) */
+          <div className="space-y-8">
+            {/* ✅ NOVO: Renderizar seções na ordem correta */}
+            {(() => {
+              // Componente da seção Quero Aprender
+              const WantToLearnSection = (activeTab === 'all' ||
+                activeTab === 'want-to-learn') && (
+                <AnimatedItem
+                  direction="up"
+                  springType="gentle"
+                  className="mt-4"
+                  key="want-to-learn"
+                >
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
+                      <FiTarget className="w-5 h-5 text-theme-primary" />
                     </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                        Quero Aprender
+                      </h2>
+                      <p className="text-theme-tertiary">
+                        {filteredData.wantToLearn.length} de{' '}
+                        {wantToLearn.length} obras
+                      </p>
+                    </div>
+                  </div>
+
+                  {filteredData.wantToLearn.length === 0 ? (
+                    <EmptyState
+                      type="want-to-learn"
+                      searchQuery={searchQuery}
+                      hasFilters={hasActiveFilters}
+                    />
+                  ) : (
+                    <>
+                      {viewMode === 'cards' ? (
+                        <SequentialGrid cols={3} gap={6} className="">
+                          {filteredData.wantToLearn.map((item) => (
+                            <LearningCard
+                              key={item.id}
+                              item={item}
+                              type="want-to-learn"
+                              viewMode={viewMode}
+                              onEdit={() =>
+                                handleEditItem(item, 'want-to-learn')
+                              }
+                            />
+                          ))}
+                        </SequentialGrid>
+                      ) : (
+                        <div className="space-y-4">
+                          {filteredData.wantToLearn.map((item, index) => (
+                            <AnimatedItem
+                              key={item.id}
+                              direction="left"
+                              hover="lift"
+                              style={{
+                                animationDelay: `${index * 0.1}s`,
+                                animationFillMode: 'backwards',
+                              }}
+                            >
+                              <LearningCard
+                                item={item}
+                                type="want-to-learn"
+                                viewMode={viewMode}
+                                onEdit={() =>
+                                  handleEditItem(item, 'want-to-learn')
+                                }
+                              />
+                            </AnimatedItem>
+                          ))}
+                        </div>
+                      )}
+                    </>
                   )}
-                </>
-              )}
-            </AnimatedItem>
-          )}
-        </div>
+                </AnimatedItem>
+              );
+
+              // Componente da seção Já Aprendi
+              const LearnedSection = (activeTab === 'all' ||
+                activeTab === 'learned') && (
+                <AnimatedItem
+                  direction="up"
+                  springType="gentle"
+                  className="mt-4"
+                  key="learned"
+                >
+                  <div className="flex items-center space-x-3 mb-6">
+                    <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
+                      <FiCheckCircle className="w-5 h-5 text-theme-primary" />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-bold text-theme-primary classical-title">
+                        Já Aprendi
+                      </h2>
+                      <p className="text-theme-tertiary">
+                        {filteredData.learned.length} de {learned.length} obras
+                      </p>
+                    </div>
+                  </div>
+
+                  {filteredData.learned.length === 0 ? (
+                    <AnimatedItem direction="scale" springType="bouncy">
+                      <EmptyState
+                        type="learned"
+                        searchQuery={searchQuery}
+                        hasFilters={hasActiveFilters}
+                      />
+                    </AnimatedItem>
+                  ) : (
+                    <>
+                      {viewMode === 'cards' ? (
+                        <SequentialGrid
+                          cols={3}
+                          gap={6}
+                          delayBetweenItems={0.1}
+                          className=""
+                        >
+                          {filteredData.learned.map((item) => (
+                            <LearningCard
+                              key={item.id}
+                              item={item}
+                              type="learned"
+                              viewMode={viewMode}
+                              onEdit={() => handleEditItem(item, 'learned')}
+                            />
+                          ))}
+                        </SequentialGrid>
+                      ) : (
+                        <div className="space-y-4">
+                          {filteredData.learned.map((item, index) => (
+                            <AnimatedItem
+                              key={item.id}
+                              direction="left"
+                              hover="lift"
+                              style={{
+                                animationDelay: `${index * 0.1}s`,
+                                animationFillMode: 'backwards',
+                              }}
+                            >
+                              <LearningCard
+                                item={item}
+                                type="learned"
+                                viewMode={viewMode}
+                                onEdit={() => handleEditItem(item, 'learned')}
+                              />
+                            </AnimatedItem>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </AnimatedItem>
+              );
+
+              // ✅ LÓGICA DE ORDENAÇÃO: Mostrar seção com conteúdo primeiro
+              if (shouldShowLearnedFirst) {
+                return [LearnedSection, WantToLearnSection];
+              } else {
+                return [WantToLearnSection, LearnedSection];
+              }
+            })()}
+          </div>
+        )}
       </AnimatedContainer>
 
       {/* ✅ Modal global (sem condicional) */}

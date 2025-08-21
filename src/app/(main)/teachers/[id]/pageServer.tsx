@@ -17,19 +17,11 @@ export default async function PublicTeacherDetailsPageServer({
 
   try {
     // Buscar detalhes completos do professor
-    console.log('🔍 Loading teacher detailed profile...');
     const teacherDetails = await getPublicTeacherDetails(teacherId);
 
     if (!teacherDetails) {
-      console.log(
-        `❌ [TEACHER-DETAILS-PAGE-SERVER] Teacher ${teacherId} not found`
-      );
       notFound();
     }
-
-    console.log(
-      `✅ [TEACHER-DETAILS-PAGE-SERVER] Teacher details loaded successfully: ${teacherDetails.name}`
-    );
 
     return <PublicTeacherDetailsPageClient teacher={teacherDetails} />;
   } catch (error) {

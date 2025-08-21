@@ -18,6 +18,7 @@ import {
   FiCalendar,
   FiLoader,
   FiPlus,
+  FiLayers,
 } from 'react-icons/fi';
 import {
   GiViolin,
@@ -498,12 +499,12 @@ export default function ComposerWorks({
           {/* Tabs de WorkType */}
           {availableWorkTypes.length > 0 && (
             <div className="mb-6">
-              {/* <div className="flex items-center space-x-2 mb-3">
+              <div className="flex items-center space-x-2 mb-3">
                 <FiLayers className="w-4 h-4 text-theme-primary" />
                 <span className="text-sm font-medium text-theme-primary">
                   Filtrar por tipo de obra
                 </span>
-              </div> */}
+              </div>
 
               <div className="flex flex-wrap gap-2">
                 {/* Tab "Todos" */}
@@ -638,21 +639,6 @@ export default function ComposerWorks({
                       className="input-classical w-full appearance-none pl-11"
                       disabled={loading}
                     />
-                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <svg
-                        className="w-4 h-4 text-theme-tertiary"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </div>
                   </div>
                 </div>
 
@@ -676,21 +662,6 @@ export default function ComposerWorks({
                       className="input-classical capitalize w-full appearance-none pl-11"
                       disabled={loading}
                     />
-                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <svg
-                        className="w-4 h-4 text-theme-tertiary"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </div>
                   </div>
                 </div>
 
@@ -714,21 +685,6 @@ export default function ComposerWorks({
                       className="input-classical w-full appearance-none pl-11"
                       disabled={loading}
                     />
-                    <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                      <svg
-                        className="w-4 h-4 text-theme-tertiary"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </div>
                   </div>
                 </div>
               </div>

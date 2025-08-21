@@ -206,7 +206,6 @@ const ProfileStep: React.FC = () => {
             onChange={handlePhoneChange}
             label="Telefone (opcional)"
             placeholder="Digite seu número"
-            defaultCountry="BR"
             showLabel={true}
           />
         </div>

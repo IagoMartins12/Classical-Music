@@ -114,7 +114,7 @@ const AnnotationsPageClient = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  const { isAuthenticated, user } = useAuth();
+  const { user } = useAuth();
 
   // 🔧 CORREÇÃO PRINCIPAL: Acessar o estado diretamente da store
   const {
@@ -369,10 +369,6 @@ const AnnotationsPageClient = () => {
     );
   }
 
-  if (!isAuthenticated) {
-    return <AuthCheck title="Suas anotações musicais" />;
-  }
-
   return (
     <PageContainer showBackground={true}>
       <AnimatedContainer delay={0.1} staggerSpeed="normal">
@@ -605,34 +601,40 @@ const AnnotationsPageClient = () => {
                 </div>
               </div>
             ) : filteredAnnotations.length === 0 ? (
-              <div className="text-center py-16">
-                <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <FiMessageSquare className="w-8 h-8 text-theme-tertiary" />
+              <AnimatedItem
+                direction="scale"
+                springType="bouncy"
+                className="mt-8 classical-card"
+              >
+                <div className="text-center py-16">
+                  <div className="w-24 h-24 bg-gradient-to-br from-theme-secondary to-theme-primary rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                    <FiMessageSquare className="w-12 h-12 text-theme-tertiary" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-theme-primary mb-4">
+                    {debouncedSearchQuery || hasActiveFilters
+                      ? 'Nenhuma anotação encontrada'
+                      : stats.totalAnnotations === 0
+                      ? 'Você ainda não fez anotações'
+                      : 'Nenhuma anotação nesta categoria'}
+                  </h3>
+                  <p className="text-theme-tertiary mb-8 max-w-md mx-auto">
+                    {debouncedSearchQuery || hasActiveFilters
+                      ? 'Tente ajustar os filtros ou termos de busca.'
+                      : stats.totalAnnotations === 0
+                      ? 'Comece criando sua primeira anotação musical e compartilhe seu conhecimento!'
+                      : 'Tente ajustar os filtros aplicados.'}
+                  </p>
+                  {stats.totalAnnotations === 0 && (
+                    <Link
+                      href="/works"
+                      className="btn-classical-primary flex w-max items-center space-x-2 mx-auto"
+                    >
+                      <span>Explorar Obras</span>
+                      <FiPlus className="w-4 h-4" />
+                    </Link>
+                  )}
                 </div>
-                <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-                  {debouncedSearchQuery || hasActiveFilters
-                    ? 'Nenhuma anotação encontrada'
-                    : stats.totalAnnotations === 0
-                    ? 'Você ainda não fez anotações'
-                    : 'Nenhuma anotação nesta categoria'}
-                </h3>
-                <p className="text-theme-secondary max-w-md mx-auto mb-6">
-                  {debouncedSearchQuery || hasActiveFilters
-                    ? 'Tente ajustar os filtros ou termos de busca.'
-                    : stats.totalAnnotations === 0
-                    ? 'Comece criando sua primeira anotação musical e compartilhe seu conhecimento!'
-                    : 'Tente ajustar os filtros aplicados.'}
-                </p>
-                {stats.totalAnnotations === 0 && (
-                  <Link
-                    href="/works"
-                    className="btn-classical-primary flex w-max items-center space-x-2 mx-auto"
-                  >
-                    <span>Explorar Obras</span>
-                    <FiPlus className="w-4 h-4" />
-                  </Link>
-                )}
-              </div>
+              </AnimatedItem>
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Annotations List (2/3 da largura) */}

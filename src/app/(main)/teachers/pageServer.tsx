@@ -1,7 +1,9 @@
-// app/public/teachers/pageServer.tsx - Server Component para Professores Públicos
+// app/teachers/pageServer.tsx - Server Component para Professores Públicos
 
 import { getPublicTeachers } from '@/app/requests/public-teachers-requests';
 import PublicTeachersPageClient from './pageClient';
+import { Suspense } from 'react';
+import ComumnLoading from './loading';
 
 interface PublicTeachersPageServerProps {
   filters: {
@@ -24,48 +26,37 @@ export default async function PublicTeachersPageServer({
     filters
   );
 
-  try {
-    const limit = 12;
-    const offset = ((filters.page || 1) - 1) * limit;
+  const limit = 12;
+  const offset = ((filters.page || 1) - 1) * limit;
 
-    // Buscar professores públicos
-    console.log('🔍 Loading public teachers...');
-    const teachersData = await getPublicTeachers({
-      instrument: filters.instrument,
-      specialty: filters.specialty,
-      skillLevel: filters.skillLevel,
-      ageGroup: filters.ageGroup,
-      location: filters.location,
-      verified: filters.verified,
-      sortBy: filters.sortBy as any,
-      limit,
-      offset,
-    });
+  // Buscar professores públicos
+  console.log('🔍 Loading public teachers...');
+  const teachersData = await getPublicTeachers({
+    instrument: filters.instrument,
+    specialty: filters.specialty,
+    skillLevel: filters.skillLevel,
+    ageGroup: filters.ageGroup,
+    location: filters.location,
+    verified: filters.verified,
+    sortBy: filters.sortBy as any,
+    limit,
+    offset,
+  });
 
-    if (!teachersData) {
-      throw new Error('Failed to load teachers data');
-    }
+  if (!teachersData) {
+    throw new Error('Failed to load teachers data');
+  }
 
-    console.log(
-      `✅ [PUBLIC-TEACHERS-PAGE-SERVER] Loaded ${teachersData.teachers.length} teachers successfully`
-    );
+  console.log(
+    `✅ [PUBLIC-TEACHERS-PAGE-SERVER] Loaded ${teachersData.teachers.length} teachers successfully`
+  );
 
-    return (
+  return (
+    <Suspense fallback={<ComumnLoading />}>
       <PublicTeachersPageClient
         initialData={teachersData}
         currentFilters={filters}
       />
-    );
-  } catch (error) {
-    console.error('❌ [PUBLIC-TEACHERS-PAGE-SERVER] Critical error:', error);
-
-    // Fallback para erro crítico
-    return (
-      <PublicTeachersPageClient
-        initialData={null}
-        currentFilters={filters}
-        errorMessage="Erro ao carregar dados dos professores. Tente recarregar a página."
-      />
-    );
-  }
+    </Suspense>
+  );
 }

@@ -209,7 +209,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 </p>
               </div>
 
-              <div className="bg-accent-red/10 border border-accent-red/20 rounded-lg p-4">
+              <div className="bg-accent-red/10 border border-red-400 rounded-lg p-4">
                 <h5 className="font-medium text-accent-red mb-2 flex items-center">
                   <FiInfo className="w-4 h-4 mr-2" />O que acontecerá:
                 </h5>
@@ -272,7 +272,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               ) : cascadeInfo ? (
                 <div className="space-y-4">
                   {/* Summary */}
-                  <div className="bg-accent-amber/10 border border-accent-amber/20 rounded-lg p-4 text-center">
+                  <div className="bg-accent-amber/10 border border-red-400 rounded-lg p-4 text-center">
                     <h5 className="font-bold text-accent-amber text-lg mb-1">
                       {cascadeInfo.totalItems}
                     </h5>
@@ -374,7 +374,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   )}
 
                   {/* Additional Info */}
-                  <div className="bg-accent-blue/10 border border-accent-blue/20 rounded-lg p-4">
+                  <div className="bg-theme-elevated rounded-lg p-4">
                     <div className="flex items-start space-x-2">
                       <FiMail className="w-4 h-4 text-accent-blue mt-0.5 flex-shrink-0" />
                       <div className="text-sm text-accent-blue">
@@ -414,7 +414,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 </p>
               </div>
 
-              <div className="bg-accent-red/10 border border-accent-red/20 rounded-lg p-4">
+              <div className="border border-red-400 rounded-lg p-4">
                 <h5 className="font-medium text-accent-red mb-2">
                   ⚠️ ATENÇÃO: Esta ação é permanente!
                 </h5>

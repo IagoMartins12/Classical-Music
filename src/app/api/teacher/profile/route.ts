@@ -20,6 +20,8 @@ async function revalidateTeacherProfileData(userId: string) {
     revalidateTag('teacher-profile-extended-data');
     revalidateTag('teacher-dashboard');
     revalidateTag('teacher-dashboard-data');
+    revalidateTag('public-teachers');
+    revalidateTag('public-teachers-data');
 
     // Tag específica do usuário
     revalidateTag(`teacher-${userId}`);

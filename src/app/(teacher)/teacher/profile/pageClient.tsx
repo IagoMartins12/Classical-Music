@@ -679,7 +679,6 @@ export default function TeacherProfilePageClient({
                       disabled={saving}
                       label="Telefone/WhatsApp"
                       placeholder="Digite seu número"
-                      defaultCountry="+55"
                       showLabel={true}
                       error={phoneError}
                     />

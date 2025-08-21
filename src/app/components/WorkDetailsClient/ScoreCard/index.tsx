@@ -180,11 +180,6 @@ const ScoreCard = ({
               />
 
               {/* Download button */}
-
-              <span className="inline-flex items-center px-3 py-2 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm font-medium">
-                {score.source === 'IMSLP' ? 'IMSLP' : 'Open Atlas'}
-              </span>
-
               {score.downloadUrl && (
                 <a
                   href={score.downloadUrl}
@@ -236,15 +231,6 @@ const ScoreCard = ({
                   {score.uploader}
                   {score.uploadDate && ` • ${score.uploadDate}`}
                 </span>
-              </div>
-            )}
-
-            {score.downloadCount && (
-              <div className="flex items-center gap-2 text-theme-secondary">
-                <div className="w-5 h-5 bg-accent-purple/20 border border-accent-purple/30 rounded-lg flex items-center justify-center">
-                  <FiDownload className="w-3 h-3 text-accent-purple" />
-                </div>
-                <span>{score.downloadCount} downloads</span>
               </div>
             )}
 

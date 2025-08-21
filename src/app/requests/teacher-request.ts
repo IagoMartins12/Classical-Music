@@ -135,6 +135,336 @@ export interface TeacherStudentsData {
   };
 }
 
+export interface TeacherAssignmentData {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  priority: string;
+  workScoreIds: string[];
+  exercises: string[];
+  practiceGoals: string[];
+  tempoTargets?: any;
+  technicalGoals: string[];
+  musicalGoals: string[];
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
+  dueDate?: Date | null;
+  estimatedTime?: number | null;
+  actualTime?: number | null;
+  isOverdue: boolean;
+  daysUntilDue?: number | null;
+  isCompleted: boolean;
+  completedAt?: Date | null;
+  progress?: number | null;
+  teacherFeedback?: string | null;
+  teacherRating?: number | null;
+  studentNotes?: string | null;
+  studentRating?: number | null;
+  submissions?: any;
+  submissionDate?: Date | null;
+  student: {
+    id: string;
+    name: string;
+    image?: string | null;
+  };
+  lesson: {
+    id: string;
+    title: string;
+    scheduledAt: Date;
+    teacher: {
+      name: string;
+      image?: string | null;
+    };
+  };
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TeacherAssignmentStats {
+  total: number;
+  pending: number;
+  inProgress: number;
+  completed: number;
+  overdue: number;
+  completionRate: number;
+  averageTime: number;
+}
+
+export interface TeacherAssignmentsResponse {
+  success: boolean;
+  assignments: TeacherAssignmentData[];
+  stats: TeacherAssignmentStats;
+  pagination: {
+    offset: number;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+  };
+}
+
+export interface TeacherReviewData {
+  id: string;
+  rating: number;
+  comment?: string;
+  isPublic: boolean;
+
+  // Avaliações específicas
+  teachingQuality?: number;
+  communication?: number;
+  punctuality?: number;
+  preparation?: number;
+  patience?: number;
+  motivation?: number;
+
+  // Contexto
+  relationshipDuration?: string;
+  lessonsCount?: number;
+  wouldRecommend: boolean;
+
+  // Dados do aluno (anonimizados se público)
+  student: {
+    id: string;
+    name: string;
+    image?: string;
+  };
+
+  // Moderação
+  isModerated: boolean;
+  moderatedBy?: string;
+  moderatedAt?: Date;
+  moderationNote?: string;
+
+  // Timestamps
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TeacherReviewsStats {
+  total: number;
+  averageRating: number;
+  ratingDistribution: {
+    1: number;
+    2: number;
+    3: number;
+    4: number;
+    5: number;
+  };
+  specificAverages: {
+    teachingQuality: number;
+    communication: number;
+    punctuality: number;
+    preparation: number;
+    patience: number;
+    motivation: number;
+  };
+  recommendationRate: number;
+  publicReviews: number;
+  privateReviews: number;
+  recentReviews: number; // últimos 30 dias
+  thisMonthCount: number;
+  lastMonthCount: number;
+}
+
+export interface TeacherReviewsResponse {
+  success: boolean;
+  reviews: TeacherReviewData[];
+  stats: TeacherReviewsStats;
+  pagination: {
+    offset: number;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+  };
+}
+
+export interface TeacherProfileExtended {
+  id: string;
+  userId: string;
+  averageRating: number;
+  totalReviews: number;
+  isPublicProfile: boolean;
+  bio?: string | null;
+  specialties: string[];
+  experience?: string | null;
+  education?: string | null;
+  status: string;
+  isVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  user: {
+    id: string;
+    firstName?: string | null;
+    lastName?: string | null;
+    email: string | null;
+    image?: string | null;
+    phone?: string | null;
+    city?: string | null;
+    state?: string | null;
+  };
+}
+
+export interface TeacherLessonsStats {
+  total: number;
+  scheduled: number;
+  completed: number;
+  cancelled: number;
+  noShow: number;
+  today: number;
+  thisWeek: number;
+  thisMonth: number;
+  averageDuration: number;
+  completionRate: number;
+}
+
+export interface TeacherLessonsResponse {
+  success: boolean;
+  lessons: any[]; // Usando any para compatibilidade com as interfaces existentes
+  stats: TeacherLessonsStats;
+  pagination: {
+    offset: number;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+  };
+}
+
+export interface TeacherLessonDetailsResponse {
+  success: boolean;
+  lesson: any; // Interface compatível com pageServer existente
+  userRole: number;
+  isTeacher: boolean;
+  isStudent: boolean;
+}
+
+export interface TeacherAssignmentDetailsData {
+  assignment: {
+    id: string;
+    title: string;
+    description: string;
+    type: string;
+    priority: string;
+    workScoreIds: string[];
+    exercises: string[];
+    practiceGoals: string[];
+    tempoTargets?: any;
+    technicalGoals: string[];
+    musicalGoals: string[];
+    status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
+    dueDate?: Date | null;
+    estimatedTime?: number | null;
+    actualTime?: number | null;
+    isOverdue: boolean;
+    daysUntilDue?: number | null;
+    isCompleted: boolean;
+    completedAt?: Date | null;
+    progress?: number | null;
+    teacherFeedback?: string | null;
+    teacherRating?: number | null;
+    studentNotes?: string | null;
+    studentRating?: number | null;
+    submissions?: any;
+    submissionDate?: Date | null;
+    student: {
+      id: string;
+      name: string;
+      image?: string | null;
+    };
+    lesson: {
+      id: string;
+      title: string;
+      scheduledAt: Date;
+      teacher: {
+        name: string;
+        image?: string | null;
+      };
+    };
+    workScores: Array<{
+      id: string;
+      title: string;
+      composer: string;
+      workTitle: string;
+      type: string;
+      downloadUrl?: string;
+    }>;
+    permissions: {
+      canEdit: boolean;
+      canDelete: boolean;
+      canComplete: boolean;
+      canAddFeedback: boolean;
+      canAddSubmission: boolean;
+    };
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  userRole: number;
+}
+
+export interface TeacherAssignmentDetailsResponse {
+  success: boolean;
+  assignment?: TeacherAssignmentDetailsData['assignment'];
+  userRole?: number;
+  error?: string;
+}
+
+export interface TeacherAssignmentEditData {
+  assignment: {
+    id: string;
+    title: string;
+    description: string;
+    type: string;
+    priority: string;
+    dueDate?: Date | null;
+    estimatedTime?: number | null;
+    workScoreIds: string[];
+    worksIds: string[];
+    exercises: string[];
+    practiceGoals: string[];
+    tempoTargets?: any;
+    technicalGoals: string[];
+    musicalGoals: string[];
+    status: string;
+    isCompleted: boolean;
+    student: {
+      id: string;
+      name: string;
+      image?: string | null;
+    };
+    lesson: {
+      id: string;
+      title: string;
+      scheduledAt: Date;
+    };
+    workScores: Array<{
+      id: string;
+      title: string;
+      composer: string;
+      workTitle: string;
+      type: string;
+      downloadUrl?: string;
+    }>;
+    permissions: {
+      canEdit: boolean;
+      canDelete: boolean;
+    };
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  students: Array<{
+    id: string;
+    name: string;
+    image?: string | null;
+    level: string;
+    isActive: boolean;
+  }>;
+}
+
+export interface TeacherAssignmentEditResponse {
+  success: boolean;
+  assignment?: TeacherAssignmentEditData['assignment'];
+  students?: TeacherAssignmentEditData['students'];
+  error?: string;
+}
+
 // ====================================
 // 🚀 SERVER-SIDE FUNCTIONS (ACESSO DIRETO AO BANCO)
 // ====================================
@@ -969,68 +1299,6 @@ export const getTeacherCalendarDataDirect = unstable_cache(
   }
 );
 
-// ====================================
-// 🔄 QUERIES DIRETAS PARA BUSCA DE ALUNOS
-// ====================================
-
-export const searchStudentsData = unstable_cache(
-  async (email: string, limit: number = 10): Promise<any[]> => {
-    try {
-      if (email.length < 3) return [];
-
-      console.log(`🔍 [SEARCH-STUDENTS] Searching for: ${email}`);
-
-      const students = await prisma.user.findMany({
-        where: {
-          email: {
-            contains: email,
-            mode: 'insensitive',
-          },
-          role: 0, // Apenas alunos
-        },
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          email: true,
-          image: true,
-          experienceLevel: true,
-          studentProfile: {
-            select: {
-              id: true,
-              level: true,
-              mainInstrument: true,
-              status: true,
-            },
-          },
-        },
-        take: limit,
-      });
-
-      console.log(`✅ [SEARCH-STUDENTS] Found ${students.length} students`);
-
-      return students.map((student) => ({
-        id: student.id,
-        name: `${student.firstName || ''} ${student.lastName || ''}`.trim(),
-        email: student.email,
-        image: student.image,
-        experienceLevel: student.experienceLevel,
-        level: student.studentProfile?.level || 'BEGINNER',
-        mainInstrument: student.studentProfile?.mainInstrument,
-        status: student.studentProfile?.status || 'ACTIVE',
-      }));
-    } catch (error) {
-      console.error('❌ [SEARCH-STUDENTS] Error searching students:', error);
-      return [];
-    }
-  },
-  ['search-students-data'],
-  {
-    revalidate: 60, // 1 minuto
-    tags: ['search-students'],
-  }
-);
-
 export const getTeacherStudentDetailData = unstable_cache(
   async (
     userId: string,
@@ -1507,73 +1775,6 @@ export const moveLessonAPI = async (
 }; // CACHE INVALIDATION
 // ====================================
 
-export interface TeacherAssignmentData {
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  priority: string;
-  workScoreIds: string[];
-  exercises: string[];
-  practiceGoals: string[];
-  tempoTargets?: any;
-  technicalGoals: string[];
-  musicalGoals: string[];
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
-  dueDate?: Date | null;
-  estimatedTime?: number | null;
-  actualTime?: number | null;
-  isOverdue: boolean;
-  daysUntilDue?: number | null;
-  isCompleted: boolean;
-  completedAt?: Date | null;
-  progress?: number | null;
-  teacherFeedback?: string | null;
-  teacherRating?: number | null;
-  studentNotes?: string | null;
-  studentRating?: number | null;
-  submissions?: any;
-  submissionDate?: Date | null;
-  student: {
-    id: string;
-    name: string;
-    image?: string | null;
-  };
-  lesson: {
-    id: string;
-    title: string;
-    scheduledAt: Date;
-    teacher: {
-      name: string;
-      image?: string | null;
-    };
-  };
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface TeacherAssignmentStats {
-  total: number;
-  pending: number;
-  inProgress: number;
-  completed: number;
-  overdue: number;
-  completionRate: number;
-  averageTime: number;
-}
-
-export interface TeacherAssignmentsResponse {
-  success: boolean;
-  assignments: TeacherAssignmentData[];
-  stats: TeacherAssignmentStats;
-  pagination: {
-    offset: number;
-    limit: number;
-    total: number;
-    hasMore: boolean;
-  };
-}
-
 // Buscar assignments do professor - DIRETO DO BANCO
 export const getTeacherAssignmentsData = unstable_cache(
   async (
@@ -1837,475 +2038,6 @@ export const getTeacherAssignmentsData = unstable_cache(
     tags: ['teacher-assignments'],
   }
 );
-
-export interface TeacherReviewData {
-  id: string;
-  rating: number;
-  comment?: string;
-  isPublic: boolean;
-
-  // Avaliações específicas
-  teachingQuality?: number;
-  communication?: number;
-  punctuality?: number;
-  preparation?: number;
-  patience?: number;
-  motivation?: number;
-
-  // Contexto
-  relationshipDuration?: string;
-  lessonsCount?: number;
-  wouldRecommend: boolean;
-
-  // Dados do aluno (anonimizados se público)
-  student: {
-    id: string;
-    name: string;
-    image?: string;
-  };
-
-  // Moderação
-  isModerated: boolean;
-  moderatedBy?: string;
-  moderatedAt?: Date;
-  moderationNote?: string;
-
-  // Timestamps
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface TeacherReviewsStats {
-  total: number;
-  averageRating: number;
-  ratingDistribution: {
-    1: number;
-    2: number;
-    3: number;
-    4: number;
-    5: number;
-  };
-  specificAverages: {
-    teachingQuality: number;
-    communication: number;
-    punctuality: number;
-    preparation: number;
-    patience: number;
-    motivation: number;
-  };
-  recommendationRate: number;
-  publicReviews: number;
-  privateReviews: number;
-  recentReviews: number; // últimos 30 dias
-  thisMonthCount: number;
-  lastMonthCount: number;
-}
-
-export interface TeacherReviewsResponse {
-  success: boolean;
-  reviews: TeacherReviewData[];
-  stats: TeacherReviewsStats;
-  pagination: {
-    offset: number;
-    limit: number;
-    total: number;
-    hasMore: boolean;
-  };
-}
-
-export interface TeacherProfileExtended {
-  id: string;
-  userId: string;
-  averageRating: number;
-  totalReviews: number;
-  isPublicProfile: boolean;
-  bio?: string | null;
-  specialties: string[];
-  experience?: string | null;
-  education?: string | null;
-  status: string;
-  isVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  user: {
-    id: string;
-    firstName?: string | null;
-    lastName?: string | null;
-    email: string | null;
-    image?: string | null;
-    phone?: string | null;
-    city?: string | null;
-    state?: string | null;
-  };
-}
-
-// Buscar reviews do professor - DIRETO DO BANCO
-export const getTeacherReviewsData = unstable_cache(
-  async (
-    userId: string,
-    includePrivate: boolean = false,
-    includeModerated: boolean = false,
-    limit: number = 20,
-    offset: number = 0
-  ): Promise<TeacherReviewsResponse | null> => {
-    try {
-      console.log(`⭐ [TEACHER-REVIEWS] Loading reviews for user ${userId}`);
-
-      // 1. Verificar se professor existe
-      const teacherProfile = await prisma.teacher.findUnique({
-        where: { userId },
-        select: { id: true },
-      });
-
-      if (!teacherProfile) {
-        console.log(
-          `❌ [TEACHER-REVIEWS] Teacher profile not found for user ${userId}`
-        );
-        return null;
-      }
-
-      const teacherId = teacherProfile.id;
-
-      // 2. Montar where clause para reviews
-      const whereClause: any = {
-        teacherId,
-      };
-
-      // Se não incluir privados, filtrar apenas públicos
-      if (!includePrivate) {
-        whereClause.isPublic = true;
-      }
-
-      // Filtro de moderação
-      if (!includeModerated) {
-        whereClause.isModerated = false;
-      }
-
-      // 3. Buscar reviews com contagem total
-      const [reviews, totalCount] = await Promise.all([
-        prisma.teacherReview.findMany({
-          where: whereClause,
-          include: {
-            student: {
-              include: {
-                user: {
-                  select: {
-                    id: true,
-                    firstName: true,
-                    lastName: true,
-                    image: true,
-                  },
-                },
-              },
-            },
-          },
-          orderBy: { createdAt: 'desc' },
-          take: limit,
-          skip: offset,
-        }),
-        prisma.teacherReview.count({ where: whereClause }),
-      ]);
-
-      console.log(`📊 [TEACHER-REVIEWS] Found ${reviews.length} reviews`);
-
-      // 4. Formatar reviews
-      const reviewsFormatted: TeacherReviewData[] = reviews.map((review) => ({
-        id: review.id,
-        rating: review.rating,
-        comment: review.comment || undefined,
-        isPublic: review.isPublic,
-
-        // Avaliações específicas
-        teachingQuality: review.teachingQuality || undefined,
-        communication: review.communication || undefined,
-        punctuality: review.punctuality || undefined,
-        preparation: review.preparation || undefined,
-        patience: review.patience || undefined,
-        motivation: review.motivation || undefined,
-
-        // Contexto
-        relationshipDuration: review.relationshipDuration || undefined,
-        lessonsCount: review.lessonsCount || undefined,
-        wouldRecommend: review.wouldRecommend,
-
-        // Dados do aluno (anonimizar se público)
-        student: {
-          id: review.student.user.id,
-          name: review.isPublic
-            ? `${review.student.user.firstName?.charAt(0)}${'*'.repeat(
-                Math.max(2, review.student.user.firstName?.length ?? 0 - 1)
-              )}` // Anonimizar em reviews públicos
-            : `${review.student.user.firstName} ${review.student.user.lastName}`.trim(),
-          image: review.isPublic
-            ? undefined
-            : review.student.user.image || undefined,
-        },
-
-        // Moderação
-        isModerated: review.isModerated,
-        moderatedBy: review.moderatedBy || undefined,
-        moderatedAt: review.moderatedAt || undefined,
-        moderationNote: review.moderationNote || undefined,
-
-        // Timestamps
-        createdAt: review.createdAt,
-        updatedAt: review.updatedAt,
-      }));
-
-      // 5. Calcular estatísticas completas
-      const now = new Date();
-      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-      const startOfLastMonth = new Date(
-        now.getFullYear(),
-        now.getMonth() - 1,
-        1
-      );
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-
-      // Buscar todas as reviews do professor para estatísticas completas
-      const allReviews = await prisma.teacherReview.findMany({
-        where: { teacherId },
-        select: {
-          rating: true,
-          teachingQuality: true,
-          communication: true,
-          punctuality: true,
-          preparation: true,
-          patience: true,
-          motivation: true,
-          wouldRecommend: true,
-          isPublic: true,
-          isModerated: true,
-          createdAt: true,
-        },
-      });
-
-      // Calcular distribuição de ratings
-      const ratingDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-      allReviews.forEach((review) => {
-        if (review.rating >= 1 && review.rating <= 5) {
-          ratingDistribution[
-            review.rating as keyof typeof ratingDistribution
-          ]++;
-        }
-      });
-
-      // Calcular médias específicas
-      const specificAverages = {
-        teachingQuality: 0,
-        communication: 0,
-        punctuality: 0,
-        preparation: 0,
-        patience: 0,
-        motivation: 0,
-      };
-
-      if (allReviews.length > 0) {
-        const validReviews = allReviews.filter(
-          (r) => r.teachingQuality !== null
-        );
-        if (validReviews.length > 0) {
-          specificAverages.teachingQuality =
-            validReviews.reduce((sum, r) => sum + (r.teachingQuality || 0), 0) /
-            validReviews.length;
-          specificAverages.communication =
-            validReviews.reduce((sum, r) => sum + (r.communication || 0), 0) /
-            validReviews.length;
-          specificAverages.punctuality =
-            validReviews.reduce((sum, r) => sum + (r.punctuality || 0), 0) /
-            validReviews.length;
-          specificAverages.preparation =
-            validReviews.reduce((sum, r) => sum + (r.preparation || 0), 0) /
-            validReviews.length;
-          specificAverages.patience =
-            validReviews.reduce((sum, r) => sum + (r.patience || 0), 0) /
-            validReviews.length;
-          specificAverages.motivation =
-            validReviews.reduce((sum, r) => sum + (r.motivation || 0), 0) /
-            validReviews.length;
-        }
-      }
-
-      // Calcular outras estatísticas
-      const averageRating =
-        allReviews.length > 0
-          ? allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length
-          : 0;
-
-      const recommendationRate =
-        allReviews.length > 0
-          ? (allReviews.filter((r) => r.wouldRecommend).length /
-              allReviews.length) *
-            100
-          : 0;
-
-      const publicReviews = allReviews.filter((r) => r.isPublic).length;
-      const privateReviews = allReviews.length - publicReviews;
-
-      const recentReviews = allReviews.filter(
-        (r) => r.createdAt >= thirtyDaysAgo
-      ).length;
-      const thisMonthCount = allReviews.filter(
-        (r) => r.createdAt >= startOfMonth
-      ).length;
-      const lastMonthCount = allReviews.filter(
-        (r) => r.createdAt >= startOfLastMonth && r.createdAt < startOfMonth
-      ).length;
-
-      const stats: TeacherReviewsStats = {
-        total: allReviews.length,
-        averageRating: Math.round(averageRating * 10) / 10,
-        ratingDistribution,
-        specificAverages: {
-          teachingQuality:
-            Math.round(specificAverages.teachingQuality * 10) / 10,
-          communication: Math.round(specificAverages.communication * 10) / 10,
-          punctuality: Math.round(specificAverages.punctuality * 10) / 10,
-          preparation: Math.round(specificAverages.preparation * 10) / 10,
-          patience: Math.round(specificAverages.patience * 10) / 10,
-          motivation: Math.round(specificAverages.motivation * 10) / 10,
-        },
-        recommendationRate: Math.round(recommendationRate * 10) / 10,
-        publicReviews,
-        privateReviews,
-        recentReviews,
-        thisMonthCount,
-        lastMonthCount,
-      };
-
-      console.log(
-        `✅ [TEACHER-REVIEWS] Reviews loaded successfully - Stats: ${stats.total} total, ${stats.averageRating} avg rating`
-      );
-
-      return {
-        success: true,
-        reviews: reviewsFormatted,
-        stats,
-        pagination: {
-          offset,
-          limit,
-          total: totalCount,
-          hasMore: offset + reviewsFormatted.length < totalCount,
-        },
-      };
-    } catch (error) {
-      console.error('❌ [TEACHER-REVIEWS] Error loading reviews:', error);
-      return null;
-    }
-  },
-  ['teacher-reviews-data'],
-  {
-    revalidate: 300, // 5 minutos
-    tags: ['teacher-reviews'],
-  }
-);
-
-// Buscar perfil estendido do professor - DIRETO DO BANCO
-export const getTeacherProfileExtended = unstable_cache(
-  async (userId: string): Promise<TeacherProfileExtended | null> => {
-    try {
-      console.log(
-        `👨‍🏫 [TEACHER-PROFILE-EXTENDED] Loading profile for user ${userId}`
-      );
-
-      const teacherProfile = await prisma.teacher.findUnique({
-        where: { userId },
-        include: {
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              email: true,
-              image: true,
-              phone: true,
-              city: true,
-              state: true,
-            },
-          },
-        },
-      });
-
-      if (!teacherProfile) {
-        console.log(
-          `❌ [TEACHER-PROFILE-EXTENDED] Teacher profile not found for user ${userId}`
-        );
-        return null;
-      }
-
-      // Buscar estatísticas de reviews atualizadas
-      const reviewStats = await prisma.teacherReview.aggregate({
-        where: { teacherId: teacherProfile.id },
-        _avg: { rating: true },
-        _count: { id: true },
-      });
-
-      console.log(`✅ [TEACHER-PROFILE-EXTENDED] Profile loaded successfully`);
-
-      return {
-        id: teacherProfile.id,
-        userId: teacherProfile.userId,
-        averageRating: reviewStats._avg.rating || 0,
-        totalReviews: reviewStats._count.id,
-        isPublicProfile: teacherProfile.isPublicProfile,
-        bio: teacherProfile.bio,
-        specialties: teacherProfile.specialties || [],
-        experience: teacherProfile.experience,
-        education: teacherProfile.education,
-        status: teacherProfile.status,
-        isVerified: teacherProfile.isVerified,
-        createdAt: teacherProfile.createdAt,
-        updatedAt: teacherProfile.updatedAt,
-        user: teacherProfile.user,
-      };
-    } catch (error) {
-      console.error(
-        '❌ [TEACHER-PROFILE-EXTENDED] Error loading profile:',
-        error
-      );
-      return null;
-    }
-  },
-  ['teacher-profile-extended-data'],
-  {
-    revalidate: 600, // 10 minutos
-    tags: ['teacher-profile-extended'],
-  }
-);
-
-// Reaproveitando as interfaces dos pageServers existentes
-export interface TeacherLessonsStats {
-  total: number;
-  scheduled: number;
-  completed: number;
-  cancelled: number;
-  noShow: number;
-  today: number;
-  thisWeek: number;
-  thisMonth: number;
-  averageDuration: number;
-  completionRate: number;
-}
-
-export interface TeacherLessonsResponse {
-  success: boolean;
-  lessons: any[]; // Usando any para compatibilidade com as interfaces existentes
-  stats: TeacherLessonsStats;
-  pagination: {
-    offset: number;
-    limit: number;
-    total: number;
-    hasMore: boolean;
-  };
-}
-
-export interface TeacherLessonDetailsResponse {
-  success: boolean;
-  lesson: any; // Interface compatível com pageServer existente
-  userRole: number;
-  isTeacher: boolean;
-  isStudent: boolean;
-}
 
 // Buscar lessons do professor - DIRETO DO BANCO
 export const getTeacherLessonsData = unstable_cache(
@@ -3014,76 +2746,6 @@ export const getTeacherLessonDetailsData = unstable_cache(
 
 // Adicionar esta função no teacher-request.ts
 
-export interface TeacherAssignmentDetailsData {
-  assignment: {
-    id: string;
-    title: string;
-    description: string;
-    type: string;
-    priority: string;
-    workScoreIds: string[];
-    exercises: string[];
-    practiceGoals: string[];
-    tempoTargets?: any;
-    technicalGoals: string[];
-    musicalGoals: string[];
-    status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'OVERDUE';
-    dueDate?: Date | null;
-    estimatedTime?: number | null;
-    actualTime?: number | null;
-    isOverdue: boolean;
-    daysUntilDue?: number | null;
-    isCompleted: boolean;
-    completedAt?: Date | null;
-    progress?: number | null;
-    teacherFeedback?: string | null;
-    teacherRating?: number | null;
-    studentNotes?: string | null;
-    studentRating?: number | null;
-    submissions?: any;
-    submissionDate?: Date | null;
-    student: {
-      id: string;
-      name: string;
-      image?: string | null;
-    };
-    lesson: {
-      id: string;
-      title: string;
-      scheduledAt: Date;
-      teacher: {
-        name: string;
-        image?: string | null;
-      };
-    };
-    workScores: Array<{
-      id: string;
-      title: string;
-      composer: string;
-      workTitle: string;
-      type: string;
-      downloadUrl?: string;
-    }>;
-    permissions: {
-      canEdit: boolean;
-      canDelete: boolean;
-      canComplete: boolean;
-      canAddFeedback: boolean;
-      canAddSubmission: boolean;
-    };
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  userRole: number;
-}
-
-export interface TeacherAssignmentDetailsResponse {
-  success: boolean;
-  assignment?: TeacherAssignmentDetailsData['assignment'];
-  userRole?: number;
-  error?: string;
-}
-
 // Buscar detalhes de assignment específico - DIRETO DO BANCO
 export const getTeacherAssignmentDetailsData = unstable_cache(
   async (
@@ -3316,65 +2978,6 @@ export const getTeacherAssignmentDetailsData = unstable_cache(
 );
 
 // Adicionar esta função também no teacher-request.ts
-
-export interface TeacherAssignmentEditData {
-  assignment: {
-    id: string;
-    title: string;
-    description: string;
-    type: string;
-    priority: string;
-    dueDate?: Date | null;
-    estimatedTime?: number | null;
-    workScoreIds: string[];
-    worksIds: string[];
-    exercises: string[];
-    practiceGoals: string[];
-    tempoTargets?: any;
-    technicalGoals: string[];
-    musicalGoals: string[];
-    status: string;
-    isCompleted: boolean;
-    student: {
-      id: string;
-      name: string;
-      image?: string | null;
-    };
-    lesson: {
-      id: string;
-      title: string;
-      scheduledAt: Date;
-    };
-    workScores: Array<{
-      id: string;
-      title: string;
-      composer: string;
-      workTitle: string;
-      type: string;
-      downloadUrl?: string;
-    }>;
-    permissions: {
-      canEdit: boolean;
-      canDelete: boolean;
-    };
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  students: Array<{
-    id: string;
-    name: string;
-    image?: string | null;
-    level: string;
-    isActive: boolean;
-  }>;
-}
-
-export interface TeacherAssignmentEditResponse {
-  success: boolean;
-  assignment?: TeacherAssignmentEditData['assignment'];
-  students?: TeacherAssignmentEditData['students'];
-  error?: string;
-}
 
 // Buscar dados para editar assignment - DIRETO DO BANCO
 export const getTeacherAssignmentEditData = unstable_cache(

@@ -1,4 +1,4 @@
-// app/public/teachers/pageClient.tsx - Client Component para Professores Públicos
+// app/teachers/pageClient.tsx - Client Component para Professores Públicos
 
 'use client';
 
@@ -108,7 +108,7 @@ export default function PublicTeachersPageClient({
       }
 
       setIsLoading(true);
-      router.push(`/public/teachers?${current.toString()}`);
+      router.push(`/teachers?${current.toString()}`);
     },
     [searchParams, router]
   );
@@ -116,8 +116,7 @@ export default function PublicTeachersPageClient({
   // Clear all filters
   const clearFilters = useCallback(() => {
     setSearchQuery('');
-    setIsLoading(true);
-    router.push('/public/teachers');
+    router.push('/teachers');
   }, [router]);
 
   // Handle WhatsApp contact
@@ -745,7 +744,7 @@ function TeacherCard({
           <div className="mt-auto space-y-3">
             {/* View Profile */}
             <Link
-              href={`/public/teachers/${teacher.id}`}
+              href={`/teachers/${teacher.id}`}
               className="btn-classical-primary w-full text-center flex items-center justify-center space-x-2"
             >
               <FiExternalLink className="w-4 h-4" />

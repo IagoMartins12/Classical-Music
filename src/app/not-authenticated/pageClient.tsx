@@ -240,7 +240,7 @@ export default function NotAuthenticated() {
       <Navbar />
 
       {/* Evitar renderizar se estiver carregando ou se o usuário estiver autenticado */}
-      {isLoading || isAuthenticated ? (
+      {isAuthenticated ? (
         <div className="classical-theme min-h-screen flex items-center justify-center">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>

@@ -562,6 +562,10 @@ const RegisterModal: React.FC = () => {
                     • <strong>Para uploads:</strong> Confirme seu email para
                     fazer uploads de arquivos
                   </p>
+                  <p>
+                    • <strong>Para alterar seu perfil:</strong> Confirme seu
+                    email para fazer alterações no seu perfil
+                  </p>
                 </div>
               </div>
             </div>
