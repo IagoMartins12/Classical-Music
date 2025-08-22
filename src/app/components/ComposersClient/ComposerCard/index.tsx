@@ -8,12 +8,15 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import { ComposerImslp } from '../../../main/composers/pageClient';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
+import { useTranslation } from '@/app/hooks/useTranslation';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 
 interface composerCardProps {
   composer: ComposerImslp;
 }
 
 const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
+  const { t } = useTranslation({ sections: ['pages/composers'] });
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -25,7 +28,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
       : '?';
     const death = composer.deathDate
       ? new Date(composer.deathDate).getFullYear()
-      : 'presente';
+      : t('card_jsx_span_children_0__presente');
 
     return `${birth} - ${death}`;
   };
@@ -120,7 +123,7 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
               <div className="text-center">
                 <span className="inline-flex items-center px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary rounded-full text-xs font-medium hover:bg-brand-primary/20 transition-colors duration-300">
                   <GiMusicalNotes className="w-3 h-3 mr-1" />
-                  {composer.epochName}
+                  {translateEpochWithHook(composer.epochName, t)}
                 </span>
               </div>
             )}
@@ -159,7 +162,9 @@ const ComposerCard: React.FC<composerCardProps> = ({ composer }) => {
             <div className="flex items-center justify-center pt-4 border-t border-theme-secondary mt-4">
               <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
                 <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
-                <span className="font-medium">Explorar obras</span>
+                <span className="font-medium">
+                  {t('card_jsx_span_children_0__explorar_obras')}
+                </span>
                 <svg
                   className="w-3 h-3 transition-transform group-hover:translate-x-1"
                   fill="none"

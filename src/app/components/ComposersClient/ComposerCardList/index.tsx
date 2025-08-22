@@ -13,12 +13,15 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import { ComposerImslp } from '../../../main/composers/pageClient';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
+import { useTranslation } from '@/app/hooks/useTranslation';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 
 interface composerCardListProps {
   composer: ComposerImslp;
 }
 
 const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
+  const { t } = useTranslation({ sections: ['pages/composers'] });
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -34,8 +37,6 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
 
     return `${birth} - ${death}`;
   };
-
-  console.log('composer', composer);
 
   return (
     <div className="flex items-center justify-between w-full group">
@@ -85,7 +86,7 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
             {composer.epochName && (
               <span className="inline-flex items-center text-xs text-brand-primary font-medium">
                 <GiMusicalNotes className="w-3 h-3 mr-1" />
-                {composer.epochName}
+                {translateEpochWithHook(composer.epochName, t)}
               </span>
             )}
 
@@ -145,7 +146,9 @@ const ComposerCardList: React.FC<composerCardListProps> = ({ composer }) => {
         {/* Action hint */}
         <div className="hidden md:flex items-center space-x-2 text-theme-tertiary text-xs">
           <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
-          <span className="font-medium">Ver obras</span>
+          <span className="font-medium">
+            {t('cardlist_jsx_span_children_0__ver_obras')}
+          </span>
         </div>
 
         {/* Arrow */}

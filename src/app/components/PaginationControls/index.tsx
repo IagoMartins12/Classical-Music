@@ -6,6 +6,7 @@ import {
   FiChevronRight,
   FiMoreHorizontal,
 } from 'react-icons/fi';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface PaginationControlsProps {
   currentPage: number;
@@ -20,6 +21,8 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
   onPageChange,
   isPending,
 }) => {
+  const { t } = useTranslation({ sections: ['pages/composers'] });
+
   // Generate page numbers to show
   const getVisiblePages = () => {
     const delta = 2; // Number of pages to show on each side of current page
@@ -67,9 +70,9 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         <div className="flex items-center space-x-2 text-theme-secondary text-sm">
           <div className="w-2 h-2 bg-brand-primary rounded-full animate-pulse"></div>
           <span>
-            Página{' '}
+            {t('pagination_jsx_span_children_0__pagina')}{' '}
             <span className="font-bold text-theme-primary">{currentPage}</span>{' '}
-            de{' '}
+            {t('pagination_jsx_span_children_0__de_paginas')}{' '}
             <span className="font-bold text-theme-primary">{totalPages}</span>
           </span>
         </div>
@@ -82,7 +85,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
             disabled={currentPage === 1 || isPending}
             className="hidden md:flex items-center px-3 py-2 text-sm font-medium text-theme-secondary hover:text-theme-primary bg-theme-elevated border border-theme-secondary hover:border-theme-primary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
           >
-            Início
+            {t('pagination_jsx_button_children_0__inicio')}
           </button>
 
           {/* Previous button */}
@@ -146,7 +149,7 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
             disabled={currentPage === totalPages || isPending}
             className="hidden md:flex items-center px-3 py-2 text-sm font-medium text-theme-secondary hover:text-theme-primary bg-theme-elevated border border-theme-secondary hover:border-theme-primary rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105"
           >
-            Final
+            {t('pagination_jsx_button_children_0__final')}
           </button>
         </div>
 
@@ -159,7 +162,9 @@ const PaginationControls: React.FC<PaginationControlsProps> = ({
         <div className="mt-4 flex items-center justify-center">
           <div className="flex items-center space-x-2 text-brand-primary text-sm">
             <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
-            <span>Carregando...</span>
+            <span>
+              {t('pagination_jsx_span_children_0__carregando_pagination')}
+            </span>
           </div>
         </div>
       )}

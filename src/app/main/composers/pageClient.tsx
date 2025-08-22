@@ -4,6 +4,7 @@
 import { useState, useTransition, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useNavigate } from '@/app/hooks/useNavigate';
+import { useTranslation } from '@/app/hooks/useTranslation';
 import { FiSearch, FiClock } from 'react-icons/fi';
 import ComposerCard from '../../components/ComposersClient/ComposerCard';
 import ComposerCardList from '../../components/ComposersClient/ComposerCardList';
@@ -21,6 +22,7 @@ import {
   LoadingSpinner,
 } from '../../components/animation/AnimatedComponents';
 import Select from '../../components/Common/Select';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 
 export interface ComposerImslp {
   epochName: string;
@@ -65,6 +67,7 @@ export default function ComposersClient({
   searchTerm: initialSearchTerm,
   selectedEpoch: initialSelectedEpoch,
 }: ComposersClientProps) {
+  const { t } = useTranslation({ sections: ['pages/composers'] });
   const router = useRouter();
   const searchParams = useSearchParams();
   const { navigateToUrl } = useNavigate();
@@ -177,14 +180,13 @@ export default function ComposersClient({
 
             <AnimatedItem direction="up">
               <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-                Compositores Clássicos
+                {t('client_jsx_h1_children_0__compositores_classicos')}
               </h1>
             </AnimatedItem>
 
             <AnimatedItem direction="up">
               <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-subtitle">
-                Explore nossa coleção completa de grandes mestres da música
-                clássica
+                {t('client_jsx_p_children_0__explore_nossa_colecao')}
               </p>
             </AnimatedItem>
           </div>
@@ -200,10 +202,10 @@ export default function ComposersClient({
           <div className="flex items-center mb-6">
             <div>
               <h3 className="text-xl font-bold text-theme-primary classical-title">
-                Busca e Filtros
+                {t('client_jsx_h3_children_0__busca_filtros')}
               </h3>
               <p className="text-theme-secondary text-sm">
-                Encontre exatamente o compositor que você procura.
+                {t('client_jsx_p_children_0__encontre_exatamente')}
               </p>
             </div>
           </div>
@@ -212,13 +214,15 @@ export default function ComposersClient({
             {/* Search Field */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-theme-secondary">
-                Pesquisar por nome
+                {t('client_jsx_label_children_0__pesquisar_por_nome')}
               </label>
               <div className="relative mt-2">
                 <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                 <input
                   type="text"
-                  placeholder="Digite o nome do compositor..."
+                  placeholder={t(
+                    'client_jsx_input_placeholder__digite_nome_compositor'
+                  )}
                   value={searchTerm}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   className="input-classical pl-12 w-full"
@@ -237,15 +241,18 @@ export default function ComposersClient({
             {/* Epoch Filter */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-theme-secondary">
-                Filtrar por período
+                {t('client_jsx_label_children_0__filtrar_por_periodo')}
               </label>
               <div className="relative mt-2">
                 <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                 <Select
                   options={[
-                    { label: 'Todos os períodos', value: '' },
+                    {
+                      label: t('client_jsx_option_children_0__todos_periodos'),
+                      value: '',
+                    },
                     ...epochs.map((epoch) => ({
-                      label: epoch.name,
+                      label: translateEpochWithHook(epoch.name, t),
                       value: epoch.id,
                     })),
                   ]}
@@ -279,24 +286,27 @@ export default function ComposersClient({
                 <span className="font-medium text-theme-primary">
                   {composers.length}
                 </span>{' '}
-                de{' '}
+                {t('client_jsx_span_children_0__de')}{' '}
                 <span className="font-medium text-theme-primary">
                   {totalCount}
                 </span>{' '}
-                compositores
+                {t('client_jsx_span_children_0__compositores')}
                 {searchTerm && (
                   <span className="text-brand-primary">
                     {' '}
-                    para &quot;
+                    {t('client_jsx_span_children_0__para')} &quot;
                     <span className="font-medium">{searchTerm}</span>&quot;
                   </span>
                 )}
                 {selectedEpoch && (
                   <span className="text-accent-purple">
                     {' '}
-                    do período &quot;
+                    {t('client_jsx_span_children_0__do_periodo')} &quot;
                     <span className="font-medium">
-                      {epochs.find((e) => e.id === selectedEpoch)?.name}
+                      {translateEpochWithHook(
+                        epochs.find((e) => e.id === selectedEpoch)?.name || '',
+                        t
+                      )}
                     </span>
                     &quot;
                   </span>
@@ -306,7 +316,9 @@ export default function ComposersClient({
               {isPending && (
                 <div className="flex items-center text-brand-primary text-sm">
                   <LoadingSpinner size="sm" classname="" />
-                  <span className="ml-2  hidden sm:flex">Carregando...</span>
+                  <span className="ml-2  hidden sm:flex">
+                    {t('client_jsx_span_children_0__carregando')}
+                  </span>
                 </div>
               )}
             </div>
@@ -318,7 +330,7 @@ export default function ComposersClient({
                   onClick={clearFilters}
                   className="btn-classical-secondary text-sm"
                 >
-                  Limpar Filtros
+                  {t('client_jsx_button_children_0__limpar_filtros')}
                 </button>
               )}
 
@@ -378,19 +390,20 @@ export default function ComposersClient({
                 </div>
 
                 <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
-                  Nenhum compositor encontrado
+                  {t('client_jsx_h3_children_0__nenhum_compositor_encontrado')}
                 </h3>
 
                 <p className="text-theme-secondary mb-6">
-                  Tente ajustar seus filtros ou termo de busca para encontrar
-                  compositores.
+                  {t('client_jsx_p_children_0__tente_ajustar_filtros')}
                 </p>
                 {hasActiveFilters && (
                   <button
                     onClick={clearFilters}
                     className="btn-classical-primary"
                   >
-                    Limpar Filtros e Ver Todos
+                    {t(
+                      'client_jsx_button_children_0__limpar_filtros_ver_todos'
+                    )}
                   </button>
                 )}
               </div>
@@ -406,7 +419,7 @@ export default function ComposersClient({
               <div className="classical-card p-8 text-center">
                 <LoadingSpinner size="lg" />
                 <p className="text-theme-primary font-medium mt-4">
-                  Carregando compositores...
+                  {t('client_jsx_p_children_0__carregando_compositores')}
                 </p>
               </div>
             </AnimatedItem>
