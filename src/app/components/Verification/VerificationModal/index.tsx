@@ -7,6 +7,7 @@ import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';
 import { useToast } from '@/app/hooks/useToast';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface VerificationModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ export default function VerificationModal({
   currentVerificationStatus,
   onVerificationChange,
 }: VerificationModalProps) {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -63,17 +65,23 @@ export default function VerificationModal({
 
       if (response.ok) {
         const data = await response.json();
-        toast.success('Sucesso', data.message);
+        toast.success(t('verification_modal_sucesso'), data.message);
         onVerificationChange(verified);
         onClose();
         setNotes('');
       } else {
         const error = await response.json();
-        toast.error('Erro', error.error || 'Erro ao alterar verificação');
+        toast.error(
+          t('verification_modal_erro'),
+          error.error || t('verification_modal_erro_alterar')
+        );
       }
     } catch (error) {
       console.error('Erro ao alterar verificação:', error);
-      toast.error('Erro', 'Erro ao alterar verificação');
+      toast.error(
+        t('verification_modal_erro'),
+        t('verification_modal_erro_alterar')
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -100,7 +108,7 @@ export default function VerificationModal({
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
-                  Verificação de Compositor
+                  {t('verification_modal_titulo')}
                 </h2>
                 <p className="text-sm text-theme-secondary">{composerName}</p>
               </div>
@@ -112,7 +120,7 @@ export default function VerificationModal({
             <div className="p-3 bg-theme-secondary rounded-lg">
               <div className="flex items-center space-x-2">
                 <span className="text-sm font-medium text-theme-tertiary">
-                  Status atual:
+                  {t('verification_modal_status_atual')}
                 </span>
                 <span
                   className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
@@ -124,10 +132,10 @@ export default function VerificationModal({
                   {currentVerificationStatus ? (
                     <>
                       <FiCheck className="w-3 h-3" />
-                      <span>Verificado</span>
+                      <span>{t('verification_modal_verificado')}</span>
                     </>
                   ) : (
-                    <span>Não verificado</span>
+                    <span>{t('verification_modal_nao_verificado')}</span>
                   )}
                 </span>
               </div>
@@ -137,12 +145,12 @@ export default function VerificationModal({
           {/* Notes */}
           <div className="mb-6">
             <label className="block text-sm font-medium text-theme-primary mb-2">
-              Notas (opcional)
+              {t('verification_modal_notas')}
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Adicione notas sobre esta verificação..."
+              placeholder={t('verification_modal_placeholder')}
               rows={3}
               className="input-classical w-full resize-none"
             />
@@ -155,7 +163,7 @@ export default function VerificationModal({
               onClick={handleClose}
               disabled={isSubmitting}
             >
-              Cancelar
+              {t('verification_modal_cancelar')}
             </Button>
 
             {currentVerificationStatus ? (
@@ -164,7 +172,9 @@ export default function VerificationModal({
                 onClick={() => handleSubmit(false)}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Removendo...' : 'Remover Verificação'}
+                {isSubmitting
+                  ? t('verification_modal_removendo')
+                  : t('verification_modal_remover')}
               </Button>
             ) : (
               <Button
@@ -173,7 +183,9 @@ export default function VerificationModal({
                 disabled={isSubmitting}
                 leftIcon={<FiCheck />}
               >
-                {isSubmitting ? 'Verificando...' : 'Verificar'}
+                {isSubmitting
+                  ? t('verification_modal_verificando')
+                  : t('verification_modal_verificar')}
               </Button>
             )}
           </div>

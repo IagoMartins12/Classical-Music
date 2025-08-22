@@ -2,6 +2,7 @@
 'use client';
 
 import { MdVerified } from 'react-icons/md';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface VerificationBadgeProps {
   verified?: boolean;
@@ -18,6 +19,8 @@ export default function VerificationBadge({
   variant = 'icon',
   className = '',
 }: VerificationBadgeProps) {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
+
   if (!verified) return null;
 
   const sizeClasses = {
@@ -34,7 +37,10 @@ export default function VerificationBadge({
 
   if (variant === 'icon') {
     return (
-      <div className={`${sizeClasses[size]}${className}`} title="Verificado">
+      <div
+        className={`${sizeClasses[size]}${className}`}
+        title={t('verification_badge_verificado')}
+      >
         <MdVerified className={`${iconSizeClasses[size]}`} />
       </div>
     );
@@ -46,18 +52,29 @@ export default function VerificationBadge({
         className={`inline-flex items-center space-x-1 px-2 py-1 bg-accent-blue/10 text-accent-blue rounded-full border border-accent-blue/30 ${className}`}
       >
         <MdVerified className={`${iconSizeClasses[size]}`} />
-        <span className="text-xs font-medium">Verificado</span>
+        <span className="text-xs font-medium">
+          {t('verification_badge_verificado')}
+        </span>
       </div>
     );
   }
 
   if (variant === 'text') {
+    const titleKey =
+      title === 'Compositor'
+        ? 'verification_badge_compositor'
+        : 'verification_badge_peca';
+    const verifiedText =
+      title === 'Compositor'
+        ? t('verification_badge_compositor_verificado')
+        : t('verification_badge_peca_verificada');
+
     return (
       <div
         className={`inline-flex items-center space-x-1 text-accent-blue ${className}`}
       >
         <MdVerified className={`${iconSizeClasses[size]}`} />
-        <span className="text-sm font-medium">{title} verificado</span>
+        <span className="text-sm font-medium">{verifiedText}</span>
       </div>
     );
   }

@@ -1,4 +1,4 @@
-// app/components/Players/SpotifyRedirectCard.tsx - ATUALIZADO COM THUMBNAIL PERSISTENTE
+// app/components/Players/SpotifyRedirectCard.tsx - ATUALIZADO COM THUMBNAIL PERSISTENTE E TRADUÇÕES
 'use client';
 
 import React from 'react';
@@ -6,6 +6,7 @@ import { FiExternalLink, FiClock, FiMusic } from 'react-icons/fi';
 import { SiSpotify } from 'react-icons/si';
 import { AnimatedItem } from '../../animation/AnimatedComponents';
 import Image from 'next/image';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface SpotifyRedirectCardProps {
   spotify: {
@@ -25,6 +26,8 @@ interface SpotifyRedirectCardProps {
 const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
   spotify,
 }) => {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
+
   // 🆕 Função para formatar duração
   const formatDuration = (durationMs: number) => {
     const minutes = Math.floor(durationMs / 60000);
@@ -80,9 +83,11 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
               </div>
               <div>
                 <h4 className="text-theme-primary font-semibold text-sm">
-                  Disponível no Spotify
+                  {t('spotify_card_disponivel')}
                 </h4>
-                <p className="text-green-400 text-xs">Ouça a música completa</p>
+                <p className="text-green-400 text-xs">
+                  {t('spotify_card_ouvir_completa')}
+                </p>
               </div>
             </div>
 
@@ -150,7 +155,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                   {/* 🆕 Indicador visual se tem intérprete */}
                   {artistInfo.hasInterpreter && (
                     <p className="text-green-400 text-xs">
-                      Compositor • Intérprete
+                      {t('spotify_card_compositor_interprete')}
                     </p>
                   )}
 
@@ -165,10 +170,10 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                   {spotify.previewUrl && (
                     <div
                       className="flex items-center space-x-1"
-                      title="Preview de 30s disponível"
+                      title={t('spotify_card_preview_disponivel')}
                     >
                       <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                      <span>Preview 30s</span>
+                      <span>{t('spotify_card_preview_30s')}</span>
                     </div>
                   )}
                 </div>
@@ -186,11 +191,12 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
                     <p className="text-green-300 text-sm font-medium">
-                      Preview de 30s
+                      {t('spotify_card_preview_30s')}
                     </p>
                     {spotify.duration > 0 && (
                       <span className="text-xs text-green-400">
-                        Música completa: {formatDuration(spotify.duration)}
+                        {t('spotify_card_musica_completa')}{' '}
+                        {formatDuration(spotify.duration)}
                       </span>
                     )}
                   </div>
@@ -201,7 +207,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                     controlsList="nodownload"
                   >
                     <source src={spotify.previewUrl} type="audio/mpeg" />
-                    Seu navegador não suporta o elemento de áudio.
+                    {t('spotify_card_nao_suporta_audio')}
                   </audio>
                 </div>
               </div>
@@ -217,7 +223,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
               className="w-full bg-[#1db954] hover:bg-[#1ed760] text-white rounded-lg py-3 px-4 flex items-center justify-center space-x-2 font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg group"
             >
               <SiSpotify className="w-4 h-4" />
-              <span>Ouvir no Spotify</span>
+              <span>{t('spotify_card_ouvir_spotify')}</span>
               <FiExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </a>
 
@@ -232,7 +238,7 @@ const SpotifyRedirectCard: React.FC<SpotifyRedirectCardProps> = ({
                   rel="noopener noreferrer"
                   className="text-xs text-green-400 hover:text-green-300 transition-colors"
                 >
-                  Ver álbum completo: {spotify.albumName}
+                  {t('spotify_card_ver_album')} {spotify.albumName}
                 </a>
               </div>
             )}

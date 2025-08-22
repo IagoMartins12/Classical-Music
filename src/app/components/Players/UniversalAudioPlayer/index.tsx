@@ -1,4 +1,4 @@
-// app/components/Players/UniversalAudioPlayer/index.tsx - COM IMPORT DO WAVEFORM
+// app/components/Players/UniversalAudioPlayer/index.tsx - COM IMPORT DO WAVEFORM E TRADUÇÕES
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback, JSX } from 'react';
@@ -13,6 +13,7 @@ import {
   FiDatabase,
 } from 'react-icons/fi';
 import { SiYoutube } from 'react-icons/si';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 // Importar componente Waveform e tipos
 import Waveform from '../../Waveform';
@@ -122,6 +123,8 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
   searchError,
   alternativeAudioSources = [],
 }) => {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
+
   // Estados do player
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState<number>(0);
@@ -149,7 +152,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
         url: customAudio.url || customAudio.file,
         duration: 0,
         quality: 'original',
-        label: customAudio.title || 'Áudio Personalizado',
+        label: customAudio.title || t('universal_audio_player_personalizado'),
         isPersistent: customAudio.isPersistent ?? true,
       });
     }
@@ -165,7 +168,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
         url: work.customAudioUrl,
         duration: work.customAudioMetadata?.duration || 0,
         quality: work.customAudioMetadata?.quality || 'varies',
-        label: `${work.customAudioSource} (Salvo)`,
+        label: `${work.customAudioSource} ${t('universal_audio_player_salvo')}`,
         isPersistent: true,
         metadata: work.customAudioMetadata,
       });
@@ -203,6 +206,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
     work.customAudioMetadata,
     alternativeAudioSources,
     currentSource,
+    t,
   ]);
 
   useEffect(() => {
@@ -377,7 +381,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-400 text-sm">
-            Inicializando player de áudio...
+            {t('universal_audio_player_inicializando')}
           </p>
         </div>
       </div>
@@ -391,10 +395,10 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
           <FiAlertTriangle className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
           <p className="text-theme-secondary">
             {isSearching
-              ? 'Procurando áudio...'
+              ? t('universal_audio_player_procurando')
               : searchError
-              ? 'Sem áudio encontrado'
-              : 'Nenhum áudio encontrado'}
+              ? t('universal_audio_player_sem_audio')
+              : t('universal_audio_player_nenhum_encontrado')}
           </p>
         </div>
       </div>
@@ -450,7 +454,7 @@ const UniversalAudioPlayer: React.FC<UniversalAudioPlayerProps> = ({
                 {source.isPersistent && (
                   <FiDatabase
                     className="w-3 h-3 text-green-400"
-                    title="Salvo no banco"
+                    title={t('universal_audio_player_banco')}
                   />
                 )}
               </button>

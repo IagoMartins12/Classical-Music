@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLoginModal } from '@/app/stores/authStore';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 export type FavoriteType = 'composer' | 'work';
 
@@ -51,6 +52,7 @@ const FavoriteButton = ({
   itemName,
   style,
 }: FavoriteButtonProps) => {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
   const { user, isAuthenticated } = useAuth();
   const { open } = useLoginModal();
   const [mounted, setMounted] = useState(false);
@@ -140,7 +142,7 @@ const FavoriteButton = ({
 
     if (disabled || isLoading || !user?.id || !isAuthenticated) {
       if (!isAuthenticated && showToast) {
-        toast.error('Faça login para favoritar itens');
+        toast.error(t('favorite_login_required'));
         open();
       }
       return;
@@ -157,11 +159,14 @@ const FavoriteButton = ({
 
       // Toast de feedback
       if (showToast) {
-        const action = newState ? 'adicionado aos' : 'removido dos';
-        const typeLabel = type === 'composer' ? 'Compositor' : 'Obra';
+        const action = newState
+          ? t('favorite_adicionado_aos')
+          : t('favorite_removido_dos');
+        const typeLabel =
+          type === 'composer' ? t('favorite_compositor') : t('favorite_obra');
         const name = itemName || typeLabel;
 
-        toast.success(`${name} ${action} favoritos`, {
+        toast.success(`${name} ${action} ${t('favorite_favoritos')}`, {
           icon: newState ? '❤️' : '💔',
           duration: 2000,
           style: {
@@ -178,7 +183,7 @@ const FavoriteButton = ({
       onError?.(error as Error);
 
       if (showToast) {
-        toast.error('Erro ao favoritar. Tente novamente.');
+        toast.error(t('favorite_erro_favoritar'));
       }
     }
   };
@@ -244,24 +249,26 @@ const FavoriteButton = ({
     );
   }
 
+  const getTitle = () => {
+    const entityType =
+      type === 'composer' ? t('entity_type_compositor') : t('entity_type_obra');
+    return isFavorited
+      ? t('favorite_remover_' + type, { entityType })
+      : t('favorite_adicionar_' + type, { entityType });
+  };
+
+  const getAriaLabel = () => {
+    return isFavorited ? `Remover dos favoritos` : `Adicionar aos favoritos`;
+  };
+
   return (
     <button
       onClick={handleClick}
       disabled={disabled || isLoading}
       className={`${getVariantClasses()} ${className}`}
       style={style}
-      title={
-        isFavorited
-          ? `Remover ${
-              type === 'composer' ? 'compositor' : 'obra'
-            } dos favoritos`
-          : `Adicionar ${
-              type === 'composer' ? 'compositor' : 'obra'
-            } aos favoritos`
-      }
-      aria-label={
-        isFavorited ? `Remover dos favoritos` : `Adicionar aos favoritos`
-      }
+      title={getTitle()}
+      aria-label={getAriaLabel()}
     >
       {/* Efeito de pulso para favoritos */}
       {isFavorited && variant !== 'minimal' && <PulseEffect />}

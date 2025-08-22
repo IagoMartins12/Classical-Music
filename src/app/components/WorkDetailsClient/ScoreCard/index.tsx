@@ -1,11 +1,11 @@
-// ScoreCard.tsx - VERSÃO OTIMIZADA sem múltiplas requisições
+// ScoreCard.tsx - VERSÃO OTIMIZADA sem múltiplas requisições COM TRADUÇÕES
 import { FiClock, FiDownload, FiFileText, FiUser } from 'react-icons/fi';
 import { useState } from 'react';
 import Image from 'next/image';
 import FavoriteScoreButton from '../../FavoriteScoreButton';
 import { useLearningModalStore } from '@/app/stores/useLearningModalStore';
 import { WorkScore } from '@prisma/client';
-// 🆕 Importar apenas o componente de badge, não o hook
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ScoreCardProps {
   score: WorkScore;
@@ -43,6 +43,7 @@ const ScoreCard = ({
   showMostFavoritedBadge = true,
   isMostFavorited = false, // 🆕 Recebido via props
 }: ScoreCardProps) => {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
   const [showMagnified, setShowMagnified] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -189,7 +190,7 @@ const ScoreCard = ({
                   onClick={(e) => e.stopPropagation()}
                 >
                   <FiDownload className="w-3 h-3 group-hover/download:animate-bounce" />
-                  <span>Download</span>
+                  <span>{t('score_card_download')}</span>
                   <svg
                     className="w-3 h-3 transition-transform group-hover/download:translate-x-0.5"
                     fill="none"
@@ -217,7 +218,8 @@ const ScoreCard = ({
                 </div>
                 <span>
                   {score.fileSize}
-                  {score.pageCount && ` • ${score.pageCount} páginas`}
+                  {score.pageCount &&
+                    ` • ${score.pageCount} ${t('score_card_paginas')}`}
                 </span>
               </div>
             )}
@@ -252,7 +254,7 @@ const ScoreCard = ({
                   {score.editor && (
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
                       <span className="font-medium text-theme-secondary w-2/12 sm:w-1/12">
-                        Editor:
+                        {t('score_preview_editor')}
                       </span>
                       <span className="w-full sm:w-11/12 text-center sm:text-start">
                         {score.editor}
@@ -262,7 +264,7 @@ const ScoreCard = ({
                   {score.publisher && (
                     <div className="flex pt-2 sm:pt-0 flex-col sm:flex-row items-center justify-between gap-2">
                       <span className="font-medium text-theme-secondary w-2/12 sm:w-1/12">
-                        Editora:
+                        {t('score_preview_editora')}
                       </span>
                       <span className="w-full sm:w-11/12 text-center sm:text-start">
                         {truncateText(score.publisher, 300)}
@@ -272,7 +274,7 @@ const ScoreCard = ({
                   {score.copyright && (
                     <div className="flex pt-2 sm:pt-0 flex-col sm:flex-row items-center justify-between gap-2">
                       <span className="font-medium text-theme-secondary w-3/12 sm:w-1/12">
-                        Copyright:
+                        {t('score_preview_copyright')}
                       </span>
                       <span className="w-full sm:w-11/12 text-center sm:text-start">
                         {score.copyright}
@@ -295,7 +297,7 @@ const ScoreCard = ({
             <div className="flex items-center space-x-1">
               <span className="text-base">👑</span>
               <span className="text-sm font-bold hidden sm:inline">
-                Favorita da comunidade
+                {t('score_card_favorita_comunidade')}
               </span>
             </div>
           </div>

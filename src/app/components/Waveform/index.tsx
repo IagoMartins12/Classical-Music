@@ -1,6 +1,7 @@
 // app/components/Waveform/index.tsx - VERSÃO ULTRA ROBUSTA
 'use client';
 
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 
 interface WaveformProps {
@@ -30,6 +31,7 @@ const Waveform: React.FC<WaveformProps> = ({
   const [canvasWidth, setCanvasWidth] = useState<number>(800);
   const [waveformReady, setWaveformReady] = useState<boolean>(false);
 
+  const { language } = useLanguageStore();
   // Atualizar largura do canvas
   const updateCanvasWidth = useCallback(() => {
     if (containerRef.current) {
@@ -300,21 +302,27 @@ const Waveform: React.FC<WaveformProps> = ({
         <div className="absolute inset-0 bg-gray-800/50 rounded-lg flex items-center justify-center">
           <div className="flex items-center space-x-2 text-blue-400">
             <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-sm">Preparando...</span>
+            <span className="text-sm">
+              {language === 'en' ? 'Loading... ' : 'Carregando...'}
+            </span>
           </div>
         </div>
       )}
 
       {/* Status */}
       <div className="absolute bottom-1 left-2 text-xs text-gray-400 bg-gray-900/70 px-2 py-1 rounded">
-        {waveformReady ? 'Clique para navegar' : 'Carregando...'}
+        {waveformReady && (
+          <span>
+            {language === 'en' ? 'Click on wave ' : 'Clique para navegar'}
+          </span>
+        )}
       </div>
 
       {/* Indicador de reprodução */}
       {isPlaying && waveformReady && (
         <div className="absolute top-1 right-2 text-xs text-green-400 bg-gray-900/70 px-2 py-1 rounded flex items-center space-x-1">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span>Tocando</span>
+          <span> {language === 'en' ? 'Playing' : 'Tocando'}</span>
         </div>
       )}
     </div>

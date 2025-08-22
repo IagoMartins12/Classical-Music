@@ -4,6 +4,7 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { FiPlay, FiExternalLink, FiCalendar, FiUser } from 'react-icons/fi';
 import { SiYoutube } from 'react-icons/si';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface YouTubePlayerProps {
   video: {
@@ -24,6 +25,7 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
   composer,
 }) => {
   const [isPlayerVisible, setIsPlayerVisible] = useState(false);
+  const { t } = useTranslation({ sections: ['pages/workId'] });
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('pt-BR', {
@@ -129,7 +131,7 @@ const YouTubeVideoPlayer: React.FC<YouTubePlayerProps> = ({
             className="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center space-x-2"
           >
             <FiPlay className="w-4 h-4" />
-            <span>Reproduzir Vídeo</span>
+            <span>{t('youtube_button_span')}</span>
           </button>
         )}
       </div>

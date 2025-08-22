@@ -1,4 +1,4 @@
-// app/components/Players/VideoAulaSection.tsx - TIKTOK E INSTAGRAM EXTERNOS
+// app/components/Players/VideoAulaSection.tsx - TIKTOK E INSTAGRAM EXTERNOS COM TRADUÇÕES
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -25,6 +25,7 @@ import Input from '../../Common/Inputs';
 import Select from '../../Common/Select';
 import Image from 'next/image';
 import { useToast } from '@/app/hooks/useToast';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface VideoAulaSectionProps {
   work: {
@@ -46,19 +47,6 @@ interface VideoAulaSectionProps {
   onOpenEditModal?: () => void;
 }
 
-const videoAulaTypeOptions = [
-  { value: 'video', label: 'Vídeo Normal' },
-  { value: 'reels', label: 'Reels/Shorts' },
-  { value: 'live', label: 'Live/Transmissão' },
-];
-
-const videoAulaSourceOptions = [
-  { value: 'youtube', label: 'YouTube' },
-  { value: 'instagram', label: 'Instagram' },
-  { value: 'tiktok', label: 'TikTok' },
-  { value: 'local', label: 'Upload Local' },
-];
-
 interface VideoInfo {
   platform: string;
   embedUrl: string;
@@ -74,6 +62,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   work,
   canEditMedia = false,
 }) => {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
   const [isPlayerVisible, setIsPlayerVisible] = useState(false);
   const [videoInfo, setVideoInfo] = useState<VideoInfo | null>(null);
 
@@ -89,6 +78,19 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   });
 
   const toast = useToast();
+
+  const videoAulaTypeOptions = [
+    { value: 'video', label: t('video_aula_tipo_normal') },
+    { value: 'reels', label: t('video_aula_tipo_reels') },
+    { value: 'live', label: t('video_aula_tipo_live') },
+  ];
+
+  const videoAulaSourceOptions = [
+    { value: 'youtube', label: t('video_aula_fonte_youtube') },
+    { value: 'instagram', label: t('video_aula_fonte_instagram') },
+    { value: 'tiktok', label: t('video_aula_fonte_tiktok') },
+    { value: 'local', label: t('video_aula_fonte_local') },
+  ];
 
   // ✅ VERIFICAR SE TEM VIDEO AULA
   const hasVideoAula = !!(work.videoAulaUrl || work.videoAulaFile);
@@ -186,7 +188,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
         thumbnailUrl,
         canEmbed: false, // ✅ SEMPRE EXTERNO
         aspectRatio: isReel ? '9:16' : '1:1',
-        displayType: isReel ? 'Instagram Reel' : 'Instagram Post',
+        displayType: isReel
+          ? t('video_aula_instagram_reel')
+          : t('video_aula_instagram_post'),
         originalUrl: url,
       };
     }
@@ -334,8 +338,12 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
         <circle cx="150" cy="200" r="40" fill="white" opacity="0.9"/>
         <path d="M140 185 L170 205 L140 225 V185Z" fill="black"/>
         <text x="150" y="280" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">TikTok</text>
-        <text x="150" y="305" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14">${work.title}</text>
-        <text x="150" y="325" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" opacity="0.8">Clique para abrir</text>
+        <text x="150" y="305" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="14">${
+          work.title
+        }</text>
+        <text x="150" y="325" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" opacity="0.8">${t(
+          'video_aula_clique_abrir'
+        )}</text>
       </svg>
     `;
 
@@ -371,7 +379,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
         <text x="${width / 2}" y="${
       height / 2 + 20
     }" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="18" font-weight="bold">${
-      isReel ? 'Instagram Reel' : 'Instagram'
+      isReel ? t('video_aula_instagram_reel') : 'Instagram'
     }</text>
         <text x="${width / 2}" y="${
       height / 2 + 45
@@ -380,7 +388,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
     }</text>
         <text x="${width / 2}" y="${
       height / 2 + 65
-    }" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" opacity="0.8">Clique para abrir</text>
+    }" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-size="12" opacity="0.8">${t(
+      'video_aula_clique_abrir'
+    )}</text>
       </svg>
     `;
 
@@ -460,7 +470,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   // Funções para salvar e deletar
   const saveVideoAula = async () => {
     if (!canEditMedia) {
-      toast.error('Você não tem permissão para editar mídia');
+      toast.error(t('video_aula_erro_permissao'));
       return;
     }
 
@@ -494,7 +504,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
         const uploadData = await uploadResponse.json();
 
         if (!uploadResponse.ok) {
-          throw new Error(uploadData.error || 'Erro no upload');
+          throw new Error(uploadData.error || t('video_aula_erro_salvar'));
         }
 
         console.log('✅ [VIDEO-AULA] Upload concluído:', uploadData.url);
@@ -526,18 +536,18 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erro ao salvar');
+        throw new Error(data.error || t('video_aula_erro_salvar'));
       }
 
       console.log('✅ [VIDEO-AULA] Video aula salva com sucesso');
 
       window.location.reload();
 
-      toast.success('Video aula salva com sucesso!');
+      toast.success(t('video_aula_salva_sucesso'));
     } catch (error) {
       console.error('❌ [VIDEO-AULA] Erro ao salvar video aula:', error);
       toast.error(
-        error instanceof Error ? error.message : 'Erro ao salvar video aula'
+        error instanceof Error ? error.message : t('video_aula_erro_salvar')
       );
     } finally {
       setIsUploading(false);
@@ -546,12 +556,12 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
 
   const deleteVideoAula = async () => {
     if (!canEditMedia) {
-      toast.error('Você não tem permissão para editar mídia');
+      toast.error(t('video_aula_erro_permissao'));
       return;
     }
 
     if (!work.videoAulaUrl && !work.videoAulaFile) {
-      toast.error('Nenhuma video aula para deletar');
+      toast.error(t('video_aula_nenhuma_deletar'));
       return;
     }
 
@@ -572,9 +582,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
           );
 
           if (!deleteFileResponse.ok) {
-            console.warn('⚠️ [VIDEO-AULA] Falha ao deletar arquivo físico');
+            console.warn('⚠️ [VIDEO-AULA] ' + t('video_aula_falha_deletar'));
           } else {
-            console.log('✅ [VIDEO-AULA] Arquivo físico deletado');
+            console.log('✅ [VIDEO-AULA] ' + t('video_aula_arquivo_deletado'));
           }
         }
       }
@@ -588,18 +598,18 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erro ao deletar');
+        throw new Error(data.error || t('video_aula_erro_deletar'));
       }
 
-      console.log('✅ [VIDEO-AULA] Video aula deletada com sucesso');
+      console.log('✅ [VIDEO-AULA] ' + t('video_aula_deletada_sucesso'));
 
       window.location.reload();
 
-      toast.success('Video aula removida com sucesso!');
+      toast.success(t('video_aula_deletada_sucesso'));
     } catch (error) {
       console.error('❌ [VIDEO-AULA] Erro ao deletar video aula:', error);
       toast.error(
-        error instanceof Error ? error.message : 'Erro ao deletar video aula'
+        error instanceof Error ? error.message : t('video_aula_erro_deletar')
       );
     } finally {
       setIsUploading(false);
@@ -695,13 +705,13 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
   const getPlatformLabel = (platform: string) => {
     switch (platform) {
       case 'youtube':
-        return 'YouTube';
+        return t('video_aula_fonte_youtube');
       case 'instagram':
-        return 'Instagram';
+        return t('video_aula_fonte_instagram');
       case 'instagram-reel':
-        return 'Instagram Reel';
+        return t('video_aula_instagram_reel');
       case 'tiktok':
-        return 'TikTok';
+        return t('video_aula_fonte_tiktok');
       case 'local':
         return 'Vídeo Local';
       case 'direct':
@@ -810,10 +820,10 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                  Video aula
+                  {t('video_aula_titulo')}
                 </h2>
                 <p className="text-theme-secondary text-sm">
-                  Veja a video aula desta peça.
+                  {t('video_aula_subtitulo')}
                 </p>
               </div>
             </div>
@@ -825,7 +835,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 leftIcon={<FiPlus />}
                 onClick={() => setShowEditMode(true)}
               >
-                Adicionar Video Aula
+                {t('video_aula_adicionar')}
               </Button>
             )}
           </div>
@@ -836,13 +846,13 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
           <div className="p-6">
             <div className="bg-purple-900/20 border border-purple-700/30 rounded-xl p-4">
               <h3 className="text-lg font-semibold text-theme-primary mb-4">
-                Adicionar Video Aula
+                {t('video_aula_adicionar')}
               </h3>
 
               <div className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Select
-                    label="Tipo de Vídeo"
+                    label={t('video_aula_tipo')}
                     options={videoAulaTypeOptions}
                     value={editData.videoAulaType}
                     onChange={(e) =>
@@ -854,7 +864,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   />
 
                   <Select
-                    label="Plataforma/Fonte"
+                    label={t('video_aula_plataforma')}
                     options={videoAulaSourceOptions}
                     value={editData.videoAulaSource}
                     onChange={(e) =>
@@ -867,7 +877,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 </div>
 
                 <Input
-                  label="Título da Video Aula"
+                  label={t('video_aula_titulo_campo')}
                   value={editData.videoAulaTitle}
                   onChange={(e) =>
                     setEditData((prev) => ({
@@ -880,7 +890,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
 
                 {editData.videoAulaSource !== 'local' ? (
                   <Input
-                    label="URL do Vídeo"
+                    label={t('video_aula_url')}
                     value={editData.videoAulaUrl}
                     onChange={(e) =>
                       setEditData((prev) => ({
@@ -912,7 +922,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 ) : (
                   <div>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Upload de Video Aula
+                      {t('video_aula_upload')}
                     </label>
                     <input
                       type="file"
@@ -928,7 +938,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     />
                     {editData.videoAulaFile && (
                       <p className="text-sm text-theme-secondary mt-1">
-                        Arquivo: {editData.videoAulaFile.name}
+                        {t('video_aula_arquivo')} {editData.videoAulaFile.name}
                       </p>
                     )}
                   </div>
@@ -951,7 +961,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                       (!editData.videoAulaUrl && !editData.videoAulaFile)
                     }
                   >
-                    {isUploading ? 'Salvando...' : 'Salvar Video Aula'}
+                    {isUploading
+                      ? t('video_aula_deletando')
+                      : t('video_aula_salvar')}
                   </Button>
 
                   <Button
@@ -960,7 +972,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     leftIcon={<FiX />}
                     onClick={() => setShowEditMode(false)}
                   >
-                    Cancelar
+                    {t('video_aula_cancelar')}
                   </Button>
                 </div>
               </div>
@@ -975,13 +987,13 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               </div>
 
               <h3 className="text-xl font-semibold text-theme-primary mb-2">
-                Sem video aula cadastrada
+                {t('video_aula_sem_cadastrada')}
               </h3>
 
               <p className="text-theme-secondary mb-6 max-w-md mx-auto">
                 {canEditMedia
-                  ? 'Ainda não há uma video aula para esta peça. Deseja adicionar uma video aula para ajudar outros estudantes?'
-                  : 'Ainda não há uma video aula disponível para esta peça. Volte mais tarde para ver se alguma foi adicionada.'}
+                  ? t('video_aula_nao_disponivel_admin')
+                  : t('video_aula_nao_disponivel_user')}
               </p>
 
               {canEditMedia && (
@@ -992,7 +1004,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   onClick={() => setShowEditMode(true)}
                   className="hover:scale-105 transition-transform duration-300"
                 >
-                  Adicionar Video Aula
+                  {t('video_aula_adicionar')}
                 </Button>
               )}
             </div>
@@ -1014,10 +1026,10 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                Video aula
+                {t('video_aula_titulo')}
               </h2>
               <p className="text-theme-secondary text-sm">
-                Veja a video aula desta peça.
+                {t('video_aula_subtitulo')}
               </p>
             </div>
           </div>
@@ -1030,7 +1042,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 leftIcon={<FiEdit3 />}
                 onClick={() => setShowEditMode(!showEditMode)}
               >
-                {showEditMode ? 'Cancelar' : 'Editar'}
+                {showEditMode
+                  ? t('video_aula_cancelar')
+                  : t('video_aula_editar')}
               </Button>
             )}
 
@@ -1048,7 +1062,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     }
                   }}
                   className="text-blue-400 hover:text-blue-300 transition-colors p-2 hover:bg-blue-400/10 rounded-lg"
-                  title="Abrir em nova aba"
+                  title={t('video_aula_abrir_nova_aba')}
                 >
                   <FiExternalLink className="w-5 h-5" />
                 </button>
@@ -1063,7 +1077,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
           <div className="bg-purple-900/20 border border-purple-700/30 rounded-xl p-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-theme-primary">
-                Editar Video Aula
+                {t('video_aula_editar_titulo')}
               </h3>
 
               {(work.videoAulaUrl || work.videoAulaFile) && (
@@ -1075,7 +1089,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   disabled={isUploading}
                   className="text-red-400 hover:text-red-300 hover:bg-red-400/10"
                 >
-                  {isUploading ? 'Deletando...' : 'Deletar Video Aula'}
+                  {isUploading
+                    ? t('video_aula_deletando')
+                    : t('video_aula_deletar')}
                 </Button>
               )}
             </div>
@@ -1083,7 +1099,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Select
-                  label="Tipo de Vídeo"
+                  label={t('video_aula_tipo')}
                   options={videoAulaTypeOptions}
                   value={editData.videoAulaType}
                   onChange={(e) =>
@@ -1095,7 +1111,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 />
 
                 <Select
-                  label="Plataforma/Fonte"
+                  label={t('video_aula_plataforma')}
                   options={videoAulaSourceOptions}
                   value={editData.videoAulaSource}
                   onChange={(e) =>
@@ -1108,7 +1124,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               </div>
 
               <Input
-                label="Título da Video Aula"
+                label={t('video_aula_titulo_campo')}
                 value={editData.videoAulaTitle}
                 onChange={(e) =>
                   setEditData((prev) => ({
@@ -1121,7 +1137,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
 
               {editData.videoAulaSource !== 'local' ? (
                 <Input
-                  label="URL do Vídeo"
+                  label={t('video_aula_url')}
                   value={editData.videoAulaUrl}
                   onChange={(e) =>
                     setEditData((prev) => ({
@@ -1153,7 +1169,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
               ) : (
                 <div>
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    Upload de Video Aula
+                    {t('video_aula_upload')}
                   </label>
                   <input
                     type="file"
@@ -1169,12 +1185,13 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   />
                   {editData.videoAulaFile && (
                     <p className="text-sm text-theme-secondary mt-1">
-                      Arquivo: {editData.videoAulaFile.name}
+                      {t('video_aula_arquivo')} {editData.videoAulaFile.name}
                     </p>
                   )}
                   {work.videoAulaFile && !editData.videoAulaFile && (
                     <p className="text-sm text-green-400 mt-1">
-                      📁 Arquivo atual: {work.videoAulaFile.split('/').pop()}
+                      📁 {t('video_aula_arquivo_atual')}{' '}
+                      {work.videoAulaFile.split('/').pop()}
                     </p>
                   )}
                 </div>
@@ -1197,7 +1214,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     (!editData.videoAulaUrl && !editData.videoAulaFile)
                   }
                 >
-                  {isUploading ? 'Salvando...' : 'Salvar Video Aula'}
+                  {isUploading
+                    ? t('video_aula_deletando')
+                    : t('video_aula_salvar')}
                 </Button>
 
                 <Button
@@ -1216,7 +1235,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     });
                   }}
                 >
-                  Cancelar
+                  {t('video_aula_cancelar')}
                 </Button>
               </div>
             </div>
@@ -1292,7 +1311,9 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   {videoInfo.platform === 'youtube' && (
                     <div className="absolute top-3 left-3">
                       <div className="bg-red-600/90 backdrop-blur-sm rounded px-2 py-1">
-                        <span className="text-white text-xs font-bold">HD</span>
+                        <span className="text-white text-xs font-bold">
+                          {t('video_aula_hd')}
+                        </span>
                       </div>
                     </div>
                   )}
@@ -1301,7 +1322,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     <div className="absolute top-3 left-3">
                       <div className="bg-green-600/90 backdrop-blur-sm rounded px-2 py-1">
                         <span className="text-white text-xs font-bold">
-                          LOCAL
+                          {t('video_aula_local')}
                         </span>
                       </div>
                     </div>
@@ -1313,7 +1334,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     <div className="absolute top-3 left-3">
                       <div className="bg-gradient-to-r from-purple-600 to-pink-600 backdrop-blur-sm rounded px-2 py-1">
                         <span className="text-white text-xs font-bold">
-                          EXTERNO
+                          {t('video_aula_externo')}
                         </span>
                       </div>
                     </div>
@@ -1363,7 +1384,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 <button
                   onClick={() => setIsPlayerVisible(false)}
                   className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition-all duration-300 z-10"
-                  title="Fechar player"
+                  title={t('video_aula_fechar_player')}
                 >
                   <FiX className="w-4 h-4" />
                 </button>
@@ -1404,10 +1425,10 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   href={work.videoAulaFile}
                   download
                   className="flex items-center space-x-1 text-blue-400 hover:text-blue-300 transition-colors hover:bg-blue-400/10 px-2 py-1 rounded"
-                  title="Download do vídeo"
+                  title={t('video_aula_download')}
                 >
                   <FiDownload className="w-4 h-4" />
-                  <span>Download</span>
+                  <span>{t('video_aula_download')}</span>
                 </a>
               )}
             </div>
@@ -1425,8 +1446,10 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                 >
                   <span className="relative z-10">
                     {videoInfo.canEmbed
-                      ? `Assistir ${videoInfo.displayType}`
-                      : `Abrir no ${getPlatformLabel(videoInfo.platform)}`}
+                      ? `${t('video_aula_assistir')} ${videoInfo.displayType}`
+                      : `${t('video_aula_abrir_no')} ${getPlatformLabel(
+                          videoInfo.platform
+                        )}`}
                   </span>
 
                   <div className="absolute inset-0  opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -1436,14 +1459,14 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   {!videoInfo.canEmbed && (
                     <div className="flex items-center space-x-1">
                       <FiExternalLink className="w-3 h-3" />
-                      <span>Abre em nova aba</span>
+                      <span>{t('video_aula_abre_nova_aba')}</span>
                     </div>
                   )}
 
                   {videoInfo.platform === 'local' && (
                     <div className="flex items-center space-x-1">
                       <FiDownload className="w-3 h-3" />
-                      <span>Download disponível</span>
+                      <span>{t('video_aula_download_disponivel')}</span>
                     </div>
                   )}
 
@@ -1452,7 +1475,8 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                     <div className="flex items-center space-x-1">
                       {getPlatformIcon(videoInfo.platform)}
                       <span>
-                        Abre no {getPlatformLabel(videoInfo.platform)}
+                        {t('video_aula_abre_no')}{' '}
+                        {getPlatformLabel(videoInfo.platform)}
                       </span>
                     </div>
                   )}
@@ -1468,7 +1492,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                   size="sm"
                   leftIcon={<FiX />}
                 >
-                  Fechar Player
+                  {t('video_aula_fechar_player')}
                 </Button>
 
                 {(videoInfo.platform === 'local' ||
@@ -1480,7 +1504,7 @@ const VideoAulaSection: React.FC<VideoAulaSectionProps> = ({
                       className="flex items-center space-x-1 text-blue-400 hover:text-blue-300 transition-colors hover:bg-blue-400/10 px-3 py-2 rounded text-sm"
                     >
                       <FiDownload className="w-4 h-4" />
-                      <span>Download</span>
+                      <span>{t('video_aula_download')}</span>
                     </a>
                   )}
               </div>

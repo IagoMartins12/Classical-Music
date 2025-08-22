@@ -187,6 +187,16 @@ export function TranslationLoadingModal({
             <div className="flex items-center space-x-2">
               <div className="w-6 h-6 relative overflow-hidden rounded border border-theme-secondary">
                 {currentLanguage === 'pt' ? (
+                  // Bandeira do Brasil
+                  <div className="absolute inset-0">
+                    <div className="absolute inset-0 bg-green-500" />
+                    <div
+                      className="absolute inset-0 bg-yellow-400"
+                      style={{ top: '30%', bottom: '30%' }}
+                    />
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-blue-600 rounded-full" />
+                  </div>
+                ) : (
                   // Bandeira dos EUA
                   <div className="absolute inset-0">
                     {[0, 1, 2, 3, 4, 5, 6].map((i) => (
@@ -200,22 +210,12 @@ export function TranslationLoadingModal({
                     ))}
                     <div className="absolute top-0 left-0 bg-blue-800 w-2/5 h-2/5" />
                   </div>
-                ) : (
-                  // Bandeira do Brasil
-                  <div className="absolute inset-0">
-                    <div className="absolute inset-0 bg-green-500" />
-                    <div
-                      className="absolute inset-0 bg-yellow-400"
-                      style={{ top: '30%', bottom: '30%' }}
-                    />
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-blue-600 rounded-full" />
-                  </div>
                 )}
               </div>
               <span className="text-theme-secondary text-sm font-medium">
                 {currentLanguage === 'pt'
-                  ? 'Português → English'
-                  : 'English → Português'}
+                  ? 'English → Português'
+                  : 'Português → English'}
               </span>
             </div>
           </div>

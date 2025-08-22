@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { FiFlag } from 'react-icons/fi';
 import ReportModal from '../ReportModal';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ReportButtonProps {
   entityType: 'composer' | 'work' | 'score';
@@ -23,6 +24,7 @@ export default function ReportButton({
   size = 'md',
   className = '',
 }: ReportButtonProps) {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
   const [showModal, setShowModal] = useState(false);
 
   const sizeClasses = {
@@ -54,7 +56,7 @@ export default function ReportButton({
                 }
                 rounded-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group
               `}
-          title="Reportar"
+          title={t('report_button_reportar')}
         >
           <FiFlag
             className={`${iconSizes[size]} group-hover:rotate-12 transition-transform duration-300`}

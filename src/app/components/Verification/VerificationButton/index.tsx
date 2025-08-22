@@ -3,6 +3,7 @@
 
 import { FiShield } from 'react-icons/fi';
 import Button from '@/app/components/Common/Button';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface VerificationButtonProps {
   entityType: 'composer' | 'work';
@@ -20,6 +21,13 @@ export default function VerificationButton({
   showLabel = true,
   onClick,
 }: VerificationButtonProps) {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
+
+  const titleKey =
+    entityType === 'composer'
+      ? 'verification_button_verificar_compositor'
+      : 'verification_button_verificar_obra';
+
   return (
     <>
       <Button
@@ -28,9 +36,9 @@ export default function VerificationButton({
         leftIcon={<FiShield />}
         onClick={onClick}
         className={'flex items-center justify-center'}
-        title={`Verificar ${entityType === 'composer' ? 'compositor' : 'obra'}`}
+        title={t(titleKey)}
       >
-        {showLabel && 'Verificar'}
+        {showLabel && t('verification_button_verificar')}
       </Button>
     </>
   );

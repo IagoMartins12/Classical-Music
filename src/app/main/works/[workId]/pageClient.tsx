@@ -1,4 +1,4 @@
-// app/work/[workId]/WorkDetailsClient.tsx - ATUALIZADO COM PREVIEW EM EDIÇÃO
+// app/work/[workId]/WorkDetailsClient.tsx - COM TRADUÇÕES COMPLETAS
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -47,10 +47,18 @@ import EditButton from '../../../components/Common/EditButton';
 import MediaSection from '../../../components/Players/MediaSection';
 import { WorkDetails } from '@/app/requests/work-page-details';
 import LearningModal from '../../../components/LearningModal';
-import ScorePreview from '../../../components/WorkDetailsClient/ScorePreview'; // ✅ IMPORTAR SCOREPREVIEW
+import ScorePreview from '../../../components/WorkDetailsClient/ScorePreview';
 import VideoAulaSection from '../../../components/Players/VideoAulaSection';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
-// ✅ Interface para dados de áudio processados (mantida igual)
+import { translateGenre } from '@/app/utils/translations/instrumentsGenresTranslation';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
+import { translateWorkTypeWithHook } from '@/app/utils/translations/workTypeTranslation';
+import { translateToneWithHook } from '@/app/utils/translations/toneTranslation';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
+import { translateCategoryStatic } from '@/app/utils/translations/categoryTranslation';
+
+// Interface para dados de áudio processados (mantida igual)
 interface ProcessedAudioData {
   hasAnyAudio: boolean;
   customAudio: {
@@ -105,6 +113,12 @@ export default function WorkDetailsClient({
   canEditMedia,
   learningData = { wantToLearn: [], learned: [] },
 }: WorkDetailsClientProps) {
+  // ✅ Hook de traduções
+  const { t } = useTranslation({ sections: ['pages/workId'] });
+
+  // ✅ Hook de idioma para traduções estáticas
+  const { language } = useLanguageStore();
+
   // Estados seguros para SSR
   const [mounted, setMounted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -112,11 +126,11 @@ export default function WorkDetailsClient({
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [isVerified, setIsVerified] = useState(work.isVerified || false);
 
-  // ✅ Estado local para dados de mídia
+  // Estado local para dados de mídia
   const [currentAudioData, setCurrentAudioData] =
     useState<ProcessedAudioData | null>(audioData || null);
 
-  // ✅ Hooks para seleção de partitura (mantidos)
+  // Hooks para seleção de partitura (mantidos)
   const {
     isSelectionMode,
     activeType,
@@ -126,7 +140,7 @@ export default function WorkDetailsClient({
     cancelScoreSelection,
   } = useScoreSelectionStore();
 
-  // ✅ Hook para LearningModal global
+  // Hook para LearningModal global
   const { isInSelectionMode } = useLearningModalStore();
 
   const handleVerificationChange = (verified: boolean) => {
@@ -150,7 +164,7 @@ export default function WorkDetailsClient({
     mounted ? work.id : ''
   );
 
-  // ✅ Hook para carregamento de WorkScores do banco
+  // Hook para carregamento de WorkScores do banco
   const {
     workScores,
     loading: loadingWorkScores,
@@ -166,7 +180,7 @@ export default function WorkDetailsClient({
     source: 'UPLOAD',
   });
 
-  // ✅ Hook para carregamento incremental IMSLP (apenas se tiver link)
+  // Hook para carregamento incremental IMSLP (apenas se tiver link)
   const {
     scores: imslpScores,
     loading: loadingScores,
@@ -191,7 +205,7 @@ export default function WorkDetailsClient({
 
   const { navigateToUrl } = useNavigate();
 
-  // ✅ Handler para seleção de partitura (funciona para ambos os tipos)
+  // Handler para seleção de partitura (funciona para ambos os tipos)
   const handleScoreSelectForLearning = async (score: IMSLPScore | any) => {
     if (isSelectionMode || (isInSelectionMode && score?.title)) {
       console.log(
@@ -199,7 +213,7 @@ export default function WorkDetailsClient({
         score.title
       );
 
-      // ✅ Se for IMSLPScore, buscar WorkScore correspondente
+      // Se for IMSLPScore, buscar WorkScore correspondente
       if (score.id && !score.workId) {
         // É IMSLPScore
         try {
@@ -222,7 +236,7 @@ export default function WorkDetailsClient({
           console.error('❌ [WORK-CLIENT] Erro ao buscar WorkScore:', error);
         }
       } else {
-        // ✅ Já é WorkScore
+        // Já é WorkScore
         selectFromWorkScore(score);
       }
     } else {
@@ -230,13 +244,13 @@ export default function WorkDetailsClient({
     }
   };
 
-  // ✅ NOVO: Handler para confirmar seleção com verificação de mudança
+  // Handler para confirmar seleção com verificação de mudança
   const handleConfirmSelection = () => {
     console.log('✅ [WORK-CLIENT] Confirmando seleção de partitura');
     confirmScoreSelection();
   };
 
-  // ✅ Handler para cancelar seleção
+  // Handler para cancelar seleção
   const handleCancelSelection = () => {
     console.log('❌ [WORK-CLIENT] Cancelando seleção de partitura');
     cancelScoreSelection();
@@ -280,14 +294,14 @@ export default function WorkDetailsClient({
       }
     : work;
 
-  // ✅ CONVERTER WORK PARA O FORMATO ESPERADO PELA VideoAulaSection
+  // CONVERTER WORK PARA O FORMATO ESPERADO PELA VideoAulaSection
   const workForVideoAulaSection = {
     id: work.id,
     title: work.title,
     composer: {
       fullName: work.composer.fullName,
     },
-    // ✅ CONVERTER null para undefined para compatibilidade TypeScript
+    // CONVERTER null para undefined para compatibilidade TypeScript
     videoAulaUrl: work.videoAulaUrl || undefined,
     videoAulaFile: work.videoAulaFile || undefined,
     videoAulaTitle: work.videoAulaTitle || undefined,
@@ -336,33 +350,20 @@ export default function WorkDetailsClient({
     });
   };
 
-  // Funções utilitárias mantidas...
+  // ✅ Funções utilitárias com traduções MELHORADAS
   const formatDuration = (duration?: string) => {
     if (!duration) return null;
     return duration;
   };
 
   const getWorkTypeLabel = (type: string) => {
-    const labels = {
-      INDIVIDUAL: 'Obra Individual',
-      COMPLETE_WORK: 'Obra Completa',
-      ARRANGEMENT: 'Arranjo',
-      COLLECTION: 'Coleção de peças',
-      COLLABORATION: 'Colaboração',
-      COMPOSITION: 'Composição Original',
-      COLLECTED_WORKS: 'Coleção de peças',
-      COLLECTIONS_WITH: 'Coleção com outros',
-    };
-    return labels[type as keyof typeof labels] || type;
+    return translateWorkTypeWithHook(type, t);
   };
 
   const getDifficultyLabel = (level?: string) => {
-    const labels = {
-      BEGINNER: 'Iniciante',
-      INTERMEDIATE: 'Intermediário',
-      ADVANCED: 'Avançado',
-    };
-    return level ? labels[level as keyof typeof labels] || level : null;
+    if (!level) return null;
+    const labelKey = `difficulty_${level.toLowerCase()}`;
+    return t(labelKey) || level;
   };
 
   const getDifficultyColor = (level?: string) => {
@@ -377,6 +378,28 @@ export default function WorkDetailsClient({
       : 'from-theme-primary to-theme-secondary';
   };
 
+  // ✅ Função para traduzir tonalidade
+  const getToneLabel = (tone?: string) => {
+    if (!tone) return null;
+    return translateToneWithHook(tone, t);
+  };
+
+  // ✅ Função para traduzir época
+  const getEpochLabel = (epochName?: string) => {
+    if (!epochName) return null;
+    return translateEpochWithHook(epochName, t);
+  };
+
+  // ✅ Função para traduzir categoria
+  const getCategoryLabel = (categoryName: string) => {
+    return translateCategoryStatic(categoryName, language);
+  };
+
+  // ✅ Função para traduzir gênero
+  const getGenreLabel = (genreName: string) => {
+    return translateGenre(genreName, language);
+  };
+
   console.log('🎵 [WORK-CLIENT] Renderizando:', {
     workId: work.id,
     isSelectionMode,
@@ -387,7 +410,7 @@ export default function WorkDetailsClient({
     shouldShowPreview: isSelectionMode || isInSelectionMode,
   });
 
-  // ✅ MODO DE SELEÇÃO MELHORADO COM PREVIEW (INCLUINDO QUANDO ESTÁ EDITANDO)
+  // MODO DE SELEÇÃO MELHORADO COM PREVIEW (INCLUINDO QUANDO ESTÁ EDITANDO)
   if (isSelectionMode || isInSelectionMode) {
     console.log(
       '🎯 [WORK-CLIENT] Entrando em modo seleção com preview lateral'
@@ -395,7 +418,7 @@ export default function WorkDetailsClient({
     return (
       <div className="bg-gradient-primary">
         <div className="section-wrap space-y-8 relative z-10">
-          {/* ✅ Header do modo seleção MELHORADO */}
+          {/* Header do modo seleção MELHORADO */}
           <AnimatedItem direction="down" springType="gentle">
             <div className="bg-gradient-to-r from-accent-blue/10 to-brand-primary/10 border-2 border-accent-blue/30 rounded-2xl p-6 mb-6">
               <div className="flex items-center justify-between">
@@ -405,15 +428,17 @@ export default function WorkDetailsClient({
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Selecionar Partitura para{' '}
+                      {t('selection_mode_selecionar_partitura')}{' '}
                       {activeType === 'want-to-learn'
-                        ? 'Quero Aprender'
-                        : 'Já Aprendi'}
+                        ? t('selection_mode_quero_aprender')
+                        : t('selection_mode_ja_aprendi')}
                     </h2>
                     <p className="text-theme-secondary">
                       {tempSelectedWorkScore
-                        ? `Partitura selecionada: ${tempSelectedWorkScore.title}`
-                        : 'Clique em uma partitura abaixo para selecioná-la'}
+                        ? `${t('selection_mode_partitura_selecionada')} ${
+                            tempSelectedWorkScore.title
+                          }`
+                        : t('selection_mode_clique_partitura')}
                     </p>
                   </div>
                 </div>
@@ -425,7 +450,7 @@ export default function WorkDetailsClient({
                       className="btn-classical-primary flex items-center space-x-2"
                     >
                       <FiCheckCircle className="w-4 h-4" />
-                      <span>Confirmar Seleção</span>
+                      <span>{t('selection_mode_confirmar_selecao')}</span>
                     </button>
                   )}
 
@@ -434,14 +459,14 @@ export default function WorkDetailsClient({
                     className="btn-classical-secondary flex items-center space-x-2"
                   >
                     <FiArrowLeft className="w-4 h-4" />
-                    <span>Voltar</span>
+                    <span>{t('selection_mode_voltar')}</span>
                   </button>
                 </div>
               </div>
             </div>
           </AnimatedItem>
 
-          {/* ✅ LAYOUT COM PREVIEW LATERAL */}
+          {/* LAYOUT COM PREVIEW LATERAL */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Lista de Partituras */}
             <div className="lg:col-span-2">
@@ -483,7 +508,7 @@ export default function WorkDetailsClient({
               </AnimatedCard>
             </div>
 
-            {/* ✅ PREVIEW LATERAL (SEMPRE VISÍVEL EM MODO SELEÇÃO) */}
+            {/* PREVIEW LATERAL (SEMPRE VISÍVEL EM MODO SELEÇÃO) */}
             <div className="lg:col-span-1">
               <AnimatedCard hover="none" className="sticky top-6">
                 <div className="p-6">
@@ -492,7 +517,7 @@ export default function WorkDetailsClient({
                       <FiBookOpen className="w-4 h-4 text-theme-primary" />
                     </div>
                     <h3 className="text-lg font-semibold text-theme-primary">
-                      Preview da Partitura
+                      {t('selection_mode_preview_partitura')}
                     </h3>
                   </div>
 
@@ -500,14 +525,14 @@ export default function WorkDetailsClient({
                     <div className="space-y-4">
                       <ScorePreview score={tempSelectedWorkScore as any} />
 
-                      {/* ✅ BOTÕES DE AÇÃO MELHORADOS */}
+                      {/* BOTÕES DE AÇÃO MELHORADOS */}
                       <div className="flex flex-col space-y-3 pt-4 border-t border-theme-secondary">
                         <button
                           onClick={handleConfirmSelection}
                           className="btn-classical-primary flex items-center justify-center space-x-2"
                         >
                           <FiCheckCircle className="w-4 h-4" />
-                          <span>Confirmar Seleção</span>
+                          <span>{t('selection_mode_confirmar_selecao')}</span>
                         </button>
 
                         <button
@@ -515,7 +540,7 @@ export default function WorkDetailsClient({
                           className="btn-classical-secondary flex items-center justify-center space-x-2"
                         >
                           <FiArrowLeft className="w-4 h-4" />
-                          <span>Voltar</span>
+                          <span>{t('selection_mode_voltar')}</span>
                         </button>
                       </div>
                     </div>
@@ -525,10 +550,10 @@ export default function WorkDetailsClient({
                         <FiMusic className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h4 className="text-lg font-semibold text-theme-primary mb-2">
-                        Selecione uma Partitura
+                        {t('selection_mode_selecione_partitura')}
                       </h4>
                       <p className="text-theme-secondary text-sm">
-                        Clique em uma partitura ao lado para ver o preview aqui
+                        {t('selection_mode_clique_preview')}
                       </p>
                     </div>
                   )}
@@ -541,7 +566,7 @@ export default function WorkDetailsClient({
     );
   }
 
-  // Renderização normal (resto do código mantido igual)
+  // Renderização normal
   return (
     <div className="bg-gradient-primary">
       <LearningInitializer learningData={learningData} />
@@ -554,7 +579,7 @@ export default function WorkDetailsClient({
               href="/works"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
-              Obras
+              {t('breadcrumb_obras')}
             </Link>
             <svg
               className="w-4 h-4"
@@ -597,7 +622,7 @@ export default function WorkDetailsClient({
           staggerSpeed="normal"
           className="flex flex-col gap-4"
         >
-          {/* Card principal da obra (mantido igual) - TODO: MUITO CÓDIGO, MAS MANTENHO IGUAL PARA NÃO QUEBRAR */}
+          {/* Card principal da obra */}
           <AnimatedCard
             hover="lift"
             className="classical-card overflow-hidden relative"
@@ -641,7 +666,7 @@ export default function WorkDetailsClient({
                         )}
 
                         <div className="flex items-center space-x-2 text-xl text-theme-secondary mt-3">
-                          <span>por</span>
+                          <span>{t('work_details_por')}</span>
                           <Link
                             href={`/composer/${work.composer.id}`}
                             className="text-brand-primary hover:text-brand-secondary font-semibold transition-colors duration-300 classical-subtitle"
@@ -711,7 +736,8 @@ export default function WorkDetailsClient({
                         >
                           <FiTarget className="w-4 h-4 text-theme-primary" />
                           <span className="text-theme-primary font-semibold text-sm">
-                            Nível: {getDifficultyLabel(work.difficultyLevel)}
+                            {t('work_details_nivel')}{' '}
+                            {getDifficultyLabel(work.difficultyLevel)}
                           </span>
                         </div>
                       </div>
@@ -738,7 +764,7 @@ export default function WorkDetailsClient({
                     </div>
                   </div>
 
-                  {/* Grid de Informações Detalhadas - TODO: MANTENDO IGUAL POR SER MUITO CÓDIGO */}
+                  {/* Grid de Informações Detalhadas */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Ano de Composição */}
                     {work.compositionYear && (
@@ -748,7 +774,7 @@ export default function WorkDetailsClient({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Ano de Composição
+                            {t('work_details_ano_composicao')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {work.compositionYear}
@@ -765,7 +791,7 @@ export default function WorkDetailsClient({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Duração
+                            {t('work_details_duracao')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {formatDuration(work.mediaDuration)}
@@ -774,7 +800,7 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {/* Tom */}
+                    {/* ✅ Tom - COM TRADUÇÃO */}
                     {work.tone && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -782,10 +808,10 @@ export default function WorkDetailsClient({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Tom
+                            {t('work_details_tom')}
                           </p>
                           <p className="text-theme-primary font-semibold">
-                            {work.tone}
+                            {getToneLabel(work.tone) || work.tone}
                           </p>
                         </div>
                       </div>
@@ -799,7 +825,7 @@ export default function WorkDetailsClient({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Instrumento
+                            {t('work_details_instrumento')}
                           </p>
                           <p className="text-theme-primary font-semibold">
                             {work.instrument.name}
@@ -808,7 +834,7 @@ export default function WorkDetailsClient({
                       </div>
                     )}
 
-                    {/* Época */}
+                    {/* ✅ Época - COM TRADUÇÃO */}
                     {work.epoch && (
                       <div className="flex items-start space-x-3 group">
                         <div className="w-8 h-8 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mt-0.5 group-hover:scale-110 transition-transform duration-300">
@@ -816,30 +842,30 @@ export default function WorkDetailsClient({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Época/Estilo
+                            {t('work_details_epoca_estilo')}
                           </p>
                           <p className="text-brand-primary font-semibold">
-                            {work.epoch.name}
+                            {getEpochLabel(work.epoch.name) || work.epoch.name}
                           </p>
                         </div>
                       </div>
                     )}
                   </div>
 
-                  {/* Informações Adicionais (resto mantido igual...) */}
+                  {/* Informações Adicionais */}
                   {(work.firstPublishDate ||
                     work.dedicateTo ||
                     work.workStyle) && (
                     <div className="border-t border-theme-secondary pt-6">
                       <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                         <FiInfo className="w-5 h-5 text-accent-blue" />
-                        <span>Informações Adicionais</span>
+                        <span>{t('work_details_informacoes_adicionais')}</span>
                       </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         {work.firstPublishDate && (
                           <div className="flex items-center space-x-2">
                             <span className="font-medium text-theme-tertiary">
-                              Primeira Publicação:
+                              {t('work_details_primeira_publicacao')}
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.firstPublishDate}
@@ -849,7 +875,7 @@ export default function WorkDetailsClient({
                         {work.dedicateTo && (
                           <div className="flex items-center space-x-2">
                             <span className="font-medium text-theme-tertiary">
-                              Dedicada a:
+                              {t('work_details_dedicada_a')}
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.dedicateTo}
@@ -860,7 +886,7 @@ export default function WorkDetailsClient({
                         {work.workStyle && (
                           <div className="flex items-center space-x-2">
                             <span className="font-medium text-theme-tertiary">
-                              Estilo:
+                              {t('work_details_estilo')}
                             </span>
                             <span className="text-theme-primary font-semibold">
                               {work.workStyle}
@@ -870,7 +896,7 @@ export default function WorkDetailsClient({
                         {work.instrumentation && (
                           <div className="md:col-span-2 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
                             <span className="font-medium text-theme-tertiary block mb-1">
-                              Instrumentação:
+                              {t('work_details_instrumentacao')}
                             </span>
                             <span className="text-theme-primary whitespace-pre-line">
                               {work.instrumentation}
@@ -881,7 +907,7 @@ export default function WorkDetailsClient({
                         {work.moviment && (
                           <div className="md:col-span-2 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-xl border border-theme-primary">
                             <span className="font-medium text-theme-tertiary block mb-1">
-                              Movimentos:
+                              {t('work_details_movimentos')}
                             </span>
                             <span className="text-theme-primary whitespace-pre-line">
                               {work.moviment}
@@ -892,20 +918,20 @@ export default function WorkDetailsClient({
                     </div>
                   )}
 
-                  {/* Tags de Categorias e Gêneros (resto mantido igual...) */}
+                  {/* ✅ Tags de Categorias e Gêneros - COM TRADUÇÕES */}
                   {work.workGenresArr &&
                     (work.categoryNames?.length > 0 ||
                       work.workGenresArr?.length > 0) && (
                       <div className="border-t border-theme-secondary pt-6">
                         <h3 className="text-lg font-semibold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                           <FiTag className="w-5 h-5 text-accent-green" />
-                          <span>Categorias e Gêneros</span>
+                          <span>{t('work_details_categorias_generos')}</span>
                         </h3>
                         <div className="space-y-4">
                           {work.categoryNames?.length > 0 && (
                             <div>
                               <span className="text-sm font-medium text-theme-tertiary block mb-3">
-                                Categorias:
+                                {t('work_details_categorias')}
                               </span>
                               <div className="flex flex-wrap gap-2">
                                 {work.categoryNames.map(
@@ -923,7 +949,7 @@ export default function WorkDetailsClient({
                                           )
                                         }
                                       >
-                                        {categoryName}
+                                        {getCategoryLabel(categoryName)}
                                       </span>
                                     </AnimatedItem>
                                   )
@@ -936,7 +962,7 @@ export default function WorkDetailsClient({
                             work.workGenresArr.length > 0 && (
                               <div>
                                 <span className="text-sm font-medium text-theme-tertiary block mb-3">
-                                  Tipos de Obra:
+                                  {t('work_details_tipos_obra')}
                                 </span>
                                 <div className="flex flex-wrap gap-2">
                                   {work.workGenresArr.map(
@@ -954,7 +980,7 @@ export default function WorkDetailsClient({
                                             )
                                           }
                                         >
-                                          {workGenre}
+                                          {getGenreLabel(workGenre)}
                                         </span>
                                       </AnimatedItem>
                                     )
@@ -967,7 +993,7 @@ export default function WorkDetailsClient({
                     )}
                 </div>
 
-                {/* Sidebar com Player e Links - TODO: MANTENDO IGUAL */}
+                {/* Sidebar com Player e Links */}
                 <div className="space-y-6">
                   {/* Player de Áudio/Vídeo */}
                   {work.videoUrl && (
@@ -977,7 +1003,7 @@ export default function WorkDetailsClient({
                           <FiHeadphones className="w-4 h-4 text-theme-primary" />
                         </div>
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                          Reprodução
+                          {t('work_details_reproducao')}
                         </h3>
                       </div>
                       <div className="space-y-3">
@@ -990,7 +1016,11 @@ export default function WorkDetailsClient({
                           ) : (
                             <FiPlay className="w-4 h-4" />
                           )}
-                          <span>{isPlaying ? 'Pausar' : 'Reproduzir'}</span>
+                          <span>
+                            {isPlaying
+                              ? t('work_details_pausar')
+                              : t('work_details_reproduzir')}
+                          </span>
                         </button>
                         <a
                           href={work.videoUrl}
@@ -999,7 +1029,7 @@ export default function WorkDetailsClient({
                           className="btn-classical-secondary w-full flex items-center justify-center space-x-2 group"
                         >
                           <FiExternalLink className="w-4 h-4" />
-                          <span>Abrir no Player Externo</span>
+                          <span>{t('work_details_abrir_player_externo')}</span>
                           <svg
                             className="w-4 h-4 transition-transform group-hover:translate-x-1"
                             fill="none"
@@ -1025,7 +1055,7 @@ export default function WorkDetailsClient({
                         <FiBookOpen className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                        Recursos Externos
+                        {t('work_details_recursos_externos')}
                       </h3>
                     </div>
                     <div className="space-y-3">
@@ -1036,7 +1066,7 @@ export default function WorkDetailsClient({
                         className="btn-classical-primary w-full flex items-center space-x-2 group"
                       >
                         <FiBookOpen className="w-4 h-4" />
-                        <span>Ver Partitura (IMSLP)</span>
+                        <span>{t('work_details_ver_partitura_imslp')}</span>
                         <svg
                           className="w-4 h-4 transition-transform group-hover:translate-x-1"
                           fill="none"
@@ -1054,20 +1084,20 @@ export default function WorkDetailsClient({
                     </div>
                   </div>
 
-                  {/* Informações Técnicas */}
+                  {/* ✅ Informações Técnicas - COM TRADUÇÕES */}
                   <div className="classical-card-simple p-6">
                     <div className="flex items-center space-x-3 mb-4">
                       <div className="w-8 h-8 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
                         <FiSettings className="w-4 h-4 text-theme-primary" />
                       </div>
                       <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                        Detalhes Técnicos
+                        {t('work_details_detalhes_tecnicos')}
                       </h3>
                     </div>
                     <div className="space-y-3 text-sm">
                       <div className="flex items-center justify-between">
                         <span className="font-medium text-theme-tertiary">
-                          Tipo:
+                          {t('work_details_tipo')}
                         </span>
                         <span className="text-theme-primary font-semibold">
                           {getWorkTypeLabel(work.workType)}
@@ -1078,7 +1108,7 @@ export default function WorkDetailsClient({
                       {work.difficultyLevel && (
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-theme-tertiary">
-                            Dificuldade:
+                            {t('work_details_dificuldade')}
                           </span>
                           <span className="text-theme-primary font-semibold">
                             {getDifficultyLabel(work.difficultyLevel)}
@@ -1089,7 +1119,7 @@ export default function WorkDetailsClient({
                       {work.movementNumber && (
                         <div className="flex items-center justify-between">
                           <span className="font-medium text-theme-tertiary">
-                            Movimento:
+                            {t('work_details_movimento')}
                           </span>
                           <span className="text-theme-primary font-semibold">
                             #{work.movementNumber}
@@ -1098,7 +1128,7 @@ export default function WorkDetailsClient({
                       )}
                       <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
                         <span className="font-medium text-theme-tertiary">
-                          Catalogado em:
+                          {t('work_details_catalogado_em')}
                         </span>
                         <span className="text-theme-primary font-semibold text-xs">
                           {new Date(work.createdAt).toLocaleDateString('pt-BR')}
@@ -1109,7 +1139,7 @@ export default function WorkDetailsClient({
                       {process.env.NODE_ENV === 'development' && (
                         <div className="flex items-center justify-between pt-2 border-t border-theme-secondary">
                           <span className="font-medium text-theme-tertiary">
-                            Cache Status:
+                            {t('work_details_cache_status')}
                           </span>
                           <span
                             className={`text-xs font-semibold ${
@@ -1129,8 +1159,6 @@ export default function WorkDetailsClient({
             </div>
           </AnimatedCard>
 
-          {/* <AdContainer placement="BETWEEN_CONTENT" className="space-y-4" /> */}
-
           {/* Seção de Multimídia */}
           <MediaSection
             work={workForMediaSection}
@@ -1140,10 +1168,11 @@ export default function WorkDetailsClient({
           />
 
           <VideoAulaSection
-            work={workForVideoAulaSection} // ✅ Usar versão convertida
-            canEditMedia={canEditMedia} // ✅ Passar permissão de edição
+            work={workForVideoAulaSection}
+            canEditMedia={canEditMedia}
           />
-          {/* ✅ Seção de Partituras SEMPRE VISÍVEL */}
+
+          {/* Seção de Partituras SEMPRE VISÍVEL */}
           <AnimatedCard hover="none">
             <IMSLPTabsIncremental
               // Props IMSLP (se disponível)
@@ -1201,7 +1230,7 @@ export default function WorkDetailsClient({
           )}
         </AnimatedContainer>
       </div>
-      {/* ✅ NOVO: LearningModal global */}
+      {/* LearningModal global */}
       <LearningModal />
     </div>
   );

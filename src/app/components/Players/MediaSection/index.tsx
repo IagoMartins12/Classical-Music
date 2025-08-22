@@ -1,4 +1,4 @@
-// app/components/Players/MediaSection.tsx - NOVA LÓGICA SEM MENSAGENS DE "NÃO ENCONTRADO"
+// app/components/Players/MediaSection.tsx - COM TRADUÇÕES
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -23,6 +23,7 @@ import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import { useToast } from '@/app/hooks/useToast';
 import { WorkDetails } from '@/app/requests/work-page-details';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface MediaData {
   spotify: {
@@ -55,8 +56,8 @@ interface MediaSectionProps {
   work: WorkDetails;
   canEditMedia?: boolean;
   onMediaUpdate?: (newMediaData: any) => void;
-  userRole?: number; // 🆕 Adicionar role do usuário
-  isAdmin?: boolean; // 🆕 Fallback para compatibilidade
+  userRole?: number;
+  isAdmin?: boolean;
 }
 
 const MediaSection: React.FC<MediaSectionProps> = ({
@@ -64,8 +65,9 @@ const MediaSection: React.FC<MediaSectionProps> = ({
   canEditMedia = false,
   onMediaUpdate,
   userRole,
-  isAdmin = false, // 🆕 Fallback para compatibilidade
+  isAdmin = false,
 }) => {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [mediaData, setMediaData] = useState<MediaData>({
@@ -83,18 +85,18 @@ const MediaSection: React.FC<MediaSectionProps> = ({
   });
   const [isUploading, setIsUploading] = useState(false);
 
-  // ✅ CONTROLE LOCAL DE BUSCA REALIZADA NESTA SESSÃO
+  // CONTROLE LOCAL DE BUSCA REALIZADA NESTA SESSÃO
   const [hasSearchedInSession, setHasSearchedInSession] = useState(false);
 
   const toast = useToast();
 
-  // ✅ VERIFICAR SE JÁ FOI FEITA ALGUMA BUSCA (SERVIDOR OU SESSÃO ATUAL)
+  // VERIFICAR SE JÁ FOI FEITA ALGUMA BUSCA (SERVIDOR OU SESSÃO ATUAL)
   const hasSearchBeenMade = !!work.lastMediaSearch || hasSearchedInSession;
 
-  // 🆕 VERIFICAR SE É ADMIN (role 2 ou isAdmin como fallback)
+  // VERIFICAR SE É ADMIN (role 2 ou isAdmin como fallback)
   const isAdminUser = userRole === 2 || isAdmin;
 
-  // 🆕 VERIFICAR SE PODE BUSCAR (admin pode sempre, usuário comum só se não buscou)
+  // VERIFICAR SE PODE BUSCAR (admin pode sempre, usuário comum só se não buscou)
   const canSearch = isAdminUser || !hasSearchBeenMade;
 
   // Função para parsear artistas do Spotify
@@ -157,7 +159,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               file: work.customAudioFile!,
               title:
                 work.customAudioSource === 'upload'
-                  ? `${work.title} - Áudio Personalizado`
+                  ? `${work.title} - ${t('media_audio_personalizado')}`
                   : `${work.title} - ${work.customAudioSource}`,
               isPersistent: true,
             }
@@ -176,7 +178,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       audioFile: null,
       removeCustomAudio: false,
     });
-  }, [work]);
+  }, [work, t]);
 
   // Buscar mídia automaticamente (INTEGRADA: Spotify + YouTube + Áudio)
   const searchMedia = async (forceRefresh = false) => {
@@ -198,11 +200,11 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erro na busca');
+        throw new Error(data.error || t('media_erro_busca'));
       }
 
       if (data.success) {
-        // ✅ MARCAR QUE A BUSCA FOI FEITA NESTA SESSÃO
+        // MARCAR QUE A BUSCA FOI FEITA NESTA SESSÃO
         setHasSearchedInSession(true);
 
         // Atualizar dados locais
@@ -289,20 +291,20 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         }
 
         if (foundSources.length > 0) {
-          toast.success(`Mídia encontrada! ${foundSources.join(', ')}`);
+          toast.success(t('media_encontrada'));
         } else {
-          setSearchError('Nenhuma mídia encontrada para esta obra');
-          toast.warning('Nenhuma mídia encontrada');
+          setSearchError(t('media_nenhuma_encontrada'));
+          toast.warning(t('media_nenhuma_encontrada'));
         }
       } else {
-        throw new Error(data.error || 'Erro na busca');
+        throw new Error(data.error || t('media_erro_busca'));
       }
     } catch (error) {
       console.error('❌ [MEDIA-SECTION] Erro na busca de mídia:', error);
       const errorMessage =
         error instanceof Error ? error.message : 'Erro desconhecido';
       setSearchError(errorMessage);
-      toast.error(`Erro na busca: ${errorMessage}`);
+      toast.error(`${t('media_erro_busca_geral')} ${errorMessage}`);
     } finally {
       setIsSearching(false);
     }
@@ -311,12 +313,12 @@ const MediaSection: React.FC<MediaSectionProps> = ({
   // Função para deletar áudio customizado (física + banco)
   const deleteCustomAudio = async () => {
     if (!canEditMedia) {
-      toast.error('Você não tem permissão para editar mídia');
+      toast.error(t('media_erro_permissao'));
       return;
     }
 
     if (!work.customAudioFile && !work.customAudioUrl) {
-      toast.error('Nenhum áudio customizado para deletar');
+      toast.error(t('media_audio_nao_encontrado'));
       return;
     }
 
@@ -347,7 +349,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erro ao deletar');
+        throw new Error(data.error || t('media_erro_deletar'));
       }
 
       // Limpar interface
@@ -368,14 +370,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         });
       }
 
-      toast.success('Áudio customizado removido com sucesso!');
+      toast.success(t('media_audio_removido_sucesso'));
     } catch (error) {
       console.error(
         '❌ [MEDIA-SECTION] Erro ao deletar áudio customizado:',
         error
       );
       toast.error(
-        error instanceof Error ? error.message : 'Erro ao deletar áudio'
+        error instanceof Error ? error.message : t('media_erro_deletar_audio')
       );
     } finally {
       setIsUploading(false);
@@ -385,13 +387,13 @@ const MediaSection: React.FC<MediaSectionProps> = ({
   // Salvar mídia manual
   const saveManualMedia = async () => {
     if (!canEditMedia) {
-      toast.error('Você não tem permissão para editar mídia');
+      toast.error(t('media_erro_permissao'));
       return;
     }
 
-    // ✅ VERIFICAÇÃO MELHORADA - deve ter feito busca primeiro
+    // VERIFICAÇÃO MELHORADA - deve ter feito busca primeiro
     if (!hasSearchBeenMade) {
-      toast.error('É necessário carregar mídia primeiro antes de editar');
+      toast.error(t('media_erro_busca_primeiro'));
       return;
     }
 
@@ -407,7 +409,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           updateData.spotifyTrackId = trackId;
           updateData.spotifyTrackUrl = editData.spotifyUrl;
         } else {
-          throw new Error('URL do Spotify inválida');
+          throw new Error(t('media_spotify_invalido'));
         }
       }
 
@@ -425,7 +427,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           updateData.youtubeVideoUrl = `https://www.youtube.com/watch?v=${videoId}`;
           updateData.youtubeTitle = `${work.title} - ${work.composer.fullName}`;
         } else {
-          throw new Error('URL do YouTube inválida');
+          throw new Error(t('media_youtube_invalido'));
         }
       }
 
@@ -451,14 +453,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         const uploadData = await uploadResponse.json();
 
         if (!uploadResponse.ok) {
-          throw new Error(uploadData.error || 'Erro no upload');
+          throw new Error(uploadData.error || t('media_erro_upload'));
         }
 
         updateData.customAudioFile = uploadData.url;
         updateData.customAudioUrl = uploadData.url;
         updateData.customAudioSource = 'upload';
         updateData.customAudioMetadata = {
-          title: `${work.title} - Áudio Personalizado`,
+          title: `${work.title} - ${t('media_audio_personalizado')}`,
           source: 'upload',
           originalName: editData.audioFile.name,
           uploadedAt: new Date().toISOString(),
@@ -478,7 +480,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erro ao salvar');
+        throw new Error(data.error || t('media_erro_salvar'));
       }
 
       // Atualizar interface
@@ -509,7 +511,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
           ? {
               url: updateData.customAudioFile,
               file: updateData.customAudioFile,
-              title: `${work.title} - Áudio Personalizado`,
+              title: `${work.title} - ${t('media_audio_personalizado')}`,
               isPersistent: true,
             }
           : prev.customAudio,
@@ -548,7 +550,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 isUpload: true,
                 isAlternativeSource: false,
                 isPersistent: true,
-                title: `${work.title} - Áudio Personalizado`,
+                title: `${work.title} - ${t('media_audio_personalizado')}`,
               }
             : null,
         });
@@ -561,25 +563,25 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         audioFile: null,
         removeCustomAudio: false,
       });
-      toast.success('Mídia salva com sucesso!');
+      toast.success(t('media_sucesso_salvar'));
     } catch (error) {
       console.error('❌ [MEDIA-SECTION] Erro ao salvar mídia manual:', error);
       toast.error(
-        error instanceof Error ? error.message : 'Erro ao salvar mídia'
+        error instanceof Error ? error.message : t('media_erro_salvar_geral')
       );
     } finally {
       setIsUploading(false);
     }
   };
 
-  // 🆕 VERIFICAR SE TEM ALGUMA MÍDIA DISPONÍVEL
+  // VERIFICAR SE TEM ALGUMA MÍDIA DISPONÍVEL
   const hasAnyMedia =
     mediaData.spotify ||
     mediaData.youtube ||
     mediaData.customAudio ||
     mediaData.alternativeAudio.length > 0;
 
-  // 🆕 VERIFICAR SE TEM APENAS ÁUDIO (para layout responsivo)
+  // VERIFICAR SE TEM APENAS ÁUDIO (para layout responsivo)
   const hasOnlyAudio =
     (mediaData.spotify || mediaData.customAudio) && !mediaData.youtube;
   const hasOnlyVideo =
@@ -587,7 +589,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
   const hasAudioAndVideo =
     (mediaData.spotify || mediaData.customAudio) && mediaData.youtube;
 
-  // 🆕 ESTADOS PARA EXIBIÇÃO
+  // ESTADOS PARA EXIBIÇÃO
   const shouldShowLoadButton = !hasSearchBeenMade && !hasAnyMedia;
   const shouldShowNoMediaMessage =
     hasSearchBeenMade && !hasAnyMedia && !isSearching;
@@ -604,10 +606,10 @@ const MediaSection: React.FC<MediaSectionProps> = ({
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                Multimídia
+                {t('media_titulo')}
               </h2>
               <p className="text-theme-secondary text-sm">
-                Áudio, vídeos e conteúdo musical.
+                {t('media_subtitulo')}
               </p>
             </div>
           </div>
@@ -621,11 +623,11 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 leftIcon={<FiEdit3 />}
                 onClick={() => setShowEditMode(!showEditMode)}
               >
-                {showEditMode ? 'Cancelar' : 'Editar Mídia'}
+                {showEditMode ? t('media_cancelar') : t('media_editar')}
               </Button>
             )}
 
-            {/* 🆕 BOTÃO DE BUSCA COM LÓGICA MELHORADA */}
+            {/* BOTÃO DE BUSCA COM LÓGICA MELHORADA */}
             {canSearch && (
               <Button
                 variant="primary"
@@ -641,38 +643,36 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 disabled={isSearching}
               >
                 {isSearching
-                  ? 'Buscando...'
+                  ? t('media_buscando')
                   : hasSearchBeenMade
-                  ? 'Buscar Novamente'
-                  : 'Carregar Mídia'}
+                  ? t('media_buscar_novamente')
+                  : t('media_carregar')}
               </Button>
             )}
           </div>
         </div>
       </div>
 
-      {/* ✅ MODO DE EDIÇÃO COM VALIDAÇÃO MELHORADA */}
+      {/* MODO DE EDIÇÃO COM VALIDAÇÃO MELHORADA */}
       {showEditMode && canEditMedia && (
         <div className="px-8 pb-6">
           <AnimatedCard className="bg-blue-900/20 border border-blue-700/30 p-4">
             <h3 className="text-lg font-semibold text-theme-primary mb-4">
-              Adicionar Mídia Manualmente
+              {t('media_adicionar_manual')}
             </h3>
 
-            {/* ✅ ALERTA MELHORADO - Mais claro sobre a necessidade da busca */}
+            {/* ALERTA MELHORADO - Mais claro sobre a necessidade da busca */}
             {!hasSearchBeenMade && (
               <div className="mb-4 bg-amber-900/20 border border-amber-700/30 rounded-xl p-4 flex items-start space-x-3">
                 <FiAlertCircle className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-amber-300 font-medium">
-                    Busca de mídia necessária
+                    {t('media_busca_necessaria')}
                   </p>
                   <p className="text-amber-400 text-sm mt-1">
-                    Para adicionar mídias manualmente, é necessário primeiro
-                    realizar uma busca automática. Clique no botão{' '}
-                    <strong>&quot;Carregar Mídia&quot;</strong> acima para
-                    buscar conteúdo disponível e depois você poderá editar ou
-                    adicionar suas próprias mídias.
+                    {t('media_busca_instrucoes')}{' '}
+                    <strong>&quot;{t('media_carregar')}&quot;</strong>{' '}
+                    {t('media_busca_instrucoes_2')}
                   </p>
                 </div>
               </div>
@@ -682,7 +682,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               {/* Campos de entrada */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
-                  label="URL do Spotify"
+                  label={t('media_spotify_url')}
                   value={editData.spotifyUrl}
                   onChange={(e) =>
                     setEditData((prev) => ({
@@ -696,7 +696,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 />
 
                 <Input
-                  label="URL do YouTube"
+                  label={t('media_youtube_url')}
                   value={editData.youtubeUrl}
                   onChange={(e) =>
                     setEditData((prev) => ({
@@ -713,7 +713,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               {/* Seção de áudio customizado */}
               <div>
                 <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                  Áudio Personalizado
+                  {t('media_audio_personalizado')}
                 </label>
 
                 {/* Mostrar áudio existente com opção de deletar */}
@@ -724,8 +724,10 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                         <FiDatabase className="w-4 h-4 text-green-400" />
                         <span className="text-sm text-green-300">
                           {work.customAudioSource === 'upload'
-                            ? 'Áudio personalizado já salvo'
-                            : `Fonte alternativa salva: ${work.customAudioSource}`}
+                            ? t('media_audio_salvo')
+                            : `${t('media_fonte_alternativa')} ${
+                                work.customAudioSource
+                              }`}
                         </span>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -736,7 +738,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                           className="text-xs px-2 py-1 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 flex items-center space-x-1"
                         >
                           <FiTrash2 className="w-3 h-3" />
-                          <span>Deletar</span>
+                          <span>{t('media_deletar')}</span>
                         </button>
                       </div>
                     </div>
@@ -758,20 +760,20 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 />
                 {editData.audioFile && (
                   <p className="text-sm text-theme-secondary mt-1">
-                    Novo arquivo: {editData.audioFile.name}
+                    {t('media_novo_arquivo')} {editData.audioFile.name}
                   </p>
                 )}
                 {work.customAudioMetadata &&
                   (work.customAudioMetadata as any)?.title &&
                   !editData.audioFile && (
                     <p className="text-sm text-theme-secondary mt-1">
-                      Arquivo já selecionado{' '}
+                      {t('media_arquivo_selecionado')}{' '}
                       {(work.customAudioMetadata as any).title}
                     </p>
                   )}
                 {editData.removeCustomAudio && (
                   <p className="text-sm text-red-400 mt-1">
-                    ⚠️ O áudio atual será removido
+                    ⚠️ {t('media_audio_removido')}
                   </p>
                 )}
               </div>
@@ -800,7 +802,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     !hasSearchBeenMade ? 'opacity-50 cursor-not-allowed' : ''
                   }
                 >
-                  {isUploading ? 'Salvando...' : 'Salvar Mídia'}
+                  {isUploading ? t('media_salvando') : t('media_salvar')}
                 </Button>
 
                 <Button
@@ -818,15 +820,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     });
                   }}
                 >
-                  Cancelar
+                  {t('media_cancelar')}
                 </Button>
               </div>
 
-              {/* ✅ FEEDBACK ADICIONAL */}
+              {/* FEEDBACK ADICIONAL */}
               {!hasSearchBeenMade && (
                 <div className="mt-3 text-xs text-theme-tertiary text-center">
-                  💡 Dica: A busca automática ajuda a encontrar conteúdo já
-                  disponível antes de adicionar manualmente
+                  💡 {t('media_dica_busca')}
                 </div>
               )}
             </div>
@@ -834,9 +835,9 @@ const MediaSection: React.FC<MediaSectionProps> = ({
         </div>
       )}
 
-      {/* 🆕 CONTEÚDO PRINCIPAL COM NOVA LÓGICA */}
+      {/* CONTEÚDO PRINCIPAL COM NOVA LÓGICA */}
       <div className="px-8 pb-8">
-        {/* 🆕 ESTADO: Nenhuma busca foi feita e não tem mídia */}
+        {/* ESTADO: Nenhuma busca foi feita e não tem mídia */}
         {shouldShowLoadButton && (
           <AnimatedItem direction="up" delay={0.1}>
             <div className="text-center py-12">
@@ -844,11 +845,10 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 <FiSearch className="w-8 h-8 text-theme-primary" />
               </div>
               <h3 className="text-xl font-semibold text-theme-primary mb-3">
-                Buscar Multimídia
+                {t('media_buscar_multimidia')}
               </h3>
               <p className="text-theme-secondary mb-6 max-w-md mx-auto">
-                Clique no botão abaixo para buscar automaticamente conteúdo de
-                áudio e vídeo para esta obra.
+                {t('media_buscar_instrucoes')}
               </p>
               <Button
                 variant="primary"
@@ -857,13 +857,13 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 onClick={() => searchMedia(false)}
                 disabled={isSearching}
               >
-                {isSearching ? 'Buscando...' : 'Carregar Mídia'}
+                {isSearching ? t('media_buscando') : t('media_carregar')}
               </Button>
             </div>
           </AnimatedItem>
         )}
 
-        {/* 🆕 ESTADO: Busca foi feita mas não encontrou nada */}
+        {/* ESTADO: Busca foi feita mas não encontrou nada */}
         {shouldShowNoMediaMessage && (
           <AnimatedItem direction="up" delay={0.1}>
             <div className="text-center py-12">
@@ -871,11 +871,10 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 <FiMusic className="w-8 h-8 text-gray-300" />
               </div>
               <h3 className="text-xl font-semibold text-theme-primary mb-3">
-                Sem mídia disponível
+                {t('media_sem_midia')}
               </h3>
               <p className="text-theme-secondary mb-6 max-w-md mx-auto">
-                Não encontramos conteúdo de áudio ou vídeo para esta peça nos
-                nossos bancos de dados.
+                {t('media_nao_encontrado')}
               </p>
               {isAdminUser && (
                 <Button
@@ -885,14 +884,14 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                   onClick={() => searchMedia(true)}
                   disabled={isSearching}
                 >
-                  Tentar Novamente
+                  {t('media_tentar_novamente')}
                 </Button>
               )}
             </div>
           </AnimatedItem>
         )}
 
-        {/* 🆕 ESTADO: Tem mídia disponível - LAYOUT RESPONSIVO */}
+        {/* ESTADO: Tem mídia disponível - LAYOUT RESPONSIVO */}
         {shouldShowContent && (
           <>
             {/* Layout para apenas áudio OU apenas vídeo - VERTICAL */}
@@ -905,7 +904,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                       <div className="flex items-center space-x-2">
                         <SiSpotify className="w-5 h-5 text-green-400" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                          Spotify
+                          {t('media_spotify')}
                         </h3>
                       </div>
                       <SpotifyRedirectCard
@@ -935,7 +934,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                       <div className="flex items-center space-x-2">
                         <FiMusic className="w-5 h-5 text-accent-green" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                          Reprodução de Áudio
+                          {t('media_reproducao_audio')}
                         </h3>
                       </div>
                       <UniversalAudioPlayer
@@ -956,7 +955,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                       <div className="flex items-center space-x-2">
                         <SiYoutube className="w-5 h-5 text-red-400" />
                         <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                          YouTube
+                          {t('media_youtube')}
                         </h3>
                       </div>
                       <YouTubeVideoPlayer
@@ -989,7 +988,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                         <div className="flex items-center space-x-2">
                           <SiSpotify className="w-5 h-5 text-green-400" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                            Spotify
+                            {t('media_spotify')}
                           </h3>
                         </div>
                         <SpotifyRedirectCard
@@ -1020,7 +1019,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                         <div className="flex items-center space-x-2">
                           <FiMusic className="w-5 h-5 text-accent-green" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                            Reprodução de Áudio
+                            {t('media_reproducao_audio')}
                           </h3>
                         </div>
                         <UniversalAudioPlayer
@@ -1043,7 +1042,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                         <div className="flex items-center space-x-2">
                           <SiYoutube className="w-5 h-5 text-red-400" />
                           <h3 className="text-lg font-semibold text-theme-primary classical-title">
-                            YouTube
+                            {t('media_youtube')}
                           </h3>
                         </div>
                         <YouTubeVideoPlayer
@@ -1074,7 +1073,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               <FiRefreshCw className="w-5 h-5 text-blue-400 animate-spin" />
               <div className="flex-1">
                 <p className="text-blue-300 text-sm font-medium">
-                  Buscando mídia para &quot;{work.title}&quot;...
+                  {t('media_buscando_para')} &quot;{work.title}&quot;...
                 </p>
                 <p className="text-blue-400 text-xs mt-1">
                   🎵 Spotify • 📺 YouTube • 🎼 Fontes de Áudio
@@ -1091,7 +1090,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
               <FiAlertCircle className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-red-300 text-sm font-medium">
-                  Erro na busca de mídia
+                  {t('media_erro_busca')}
                 </p>
                 <p className="text-red-400 text-sm mt-1">{searchError}</p>
               </div>
@@ -1107,7 +1106,7 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                   <span className="text-theme-secondary">
-                    Mídia disponível:
+                    {t('media_disponivel')}
                   </span>
                 </div>
 
@@ -1137,7 +1136,8 @@ const MediaSection: React.FC<MediaSectionProps> = ({
                     <div className="flex items-center space-x-1 text-purple-400">
                       <FiMusic className="w-3 h-3" />
                       <span>
-                        {mediaData.alternativeAudio.length} temporária(s)
+                        {mediaData.alternativeAudio.length}{' '}
+                        {t('media_temporarias')}
                       </span>
                     </div>
                   )}

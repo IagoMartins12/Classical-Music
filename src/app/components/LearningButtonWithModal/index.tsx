@@ -1,4 +1,4 @@
-// components/LearningButton/LearningButtonWithModal.tsx - REDESENHADO COM STORE GLOBAL
+// components/LearningButton/LearningButtonWithModal.tsx - COM TRADUÇÕES
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -22,6 +22,7 @@ import {
 import { useAuth } from '@/app/hooks/useAuth';
 import { useToast } from '@/app/hooks/useToast';
 import { useLoginModal } from '@/app/stores/authStore';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface LearningButtonWithModalProps {
   workId: string;
@@ -46,6 +47,7 @@ const LearningButtonWithModal = ({
   disabled = false,
   style,
 }: LearningButtonWithModalProps) => {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
   const { isAuthenticated } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -59,7 +61,7 @@ const LearningButtonWithModal = ({
     getLearnedItem,
   } = useLearningStore();
 
-  // ✅ Usar store global do modal
+  // Usar store global do modal
   const { openModal } = useLearningModalStore();
 
   useEffect(() => {
@@ -96,15 +98,15 @@ const LearningButtonWithModal = ({
       : (currentItem as LearnedItem).mastery
     : 3;
 
-  // Configurações baseadas no tipo
+  // Configurações baseadas no tipo COM TRADUÇÕES
   const config =
     type === 'want-to-learn'
       ? {
           labels: {
-            active: 'Quero estudar',
-            inactive: 'Quero estudar',
-            edit: 'Editar estudo',
-            remove: 'Remover da lista',
+            active: t('learning_quero_estudar'),
+            inactive: t('learning_quero_estudar'),
+            edit: t('learning_editar_estudo'),
+            remove: t('learning_remover_lista'),
           },
           icon: isActive ? FiTarget : FiBookOpen,
           colors: {
@@ -115,14 +117,20 @@ const LearningButtonWithModal = ({
             levelBg: 'bg-blue-50 border-blue-200',
             levelText: 'text-blue-700',
           },
-          levelLabels: ['Baixa', 'Baixa-Média', 'Média', 'Média-Alta', 'Alta'],
+          levelLabels: [
+            t('learning_priority_baixa'),
+            t('learning_priority_baixa_media'),
+            t('learning_priority_media'),
+            t('learning_priority_media_alta'),
+            t('learning_priority_alta'),
+          ],
         }
       : {
           labels: {
-            active: 'Já aprendi',
-            inactive: 'Marcar como aprendida',
-            edit: 'Editar aprendizado',
-            remove: 'Remover da lista',
+            active: t('learning_ja_aprendi'),
+            inactive: t('learning_marcar_aprendida'),
+            edit: t('learning_editar_aprendizado'),
+            remove: t('learning_remover_lista'),
           },
           icon: isActive ? FiCheckCircle : FiBookOpen,
           colors: {
@@ -134,11 +142,11 @@ const LearningButtonWithModal = ({
             levelText: 'text-green-700',
           },
           levelLabels: [
-            'Iniciante',
-            'Básico',
-            'Intermediário',
-            'Avançado',
-            'Expert',
+            t('learning_mastery_iniciante'),
+            t('learning_mastery_basico'),
+            t('learning_mastery_intermediario'),
+            t('learning_mastery_avancado'),
+            t('learning_mastery_expert'),
           ],
         };
 
@@ -177,25 +185,25 @@ const LearningButtonWithModal = ({
   };
 
   const toast = useToast();
-  // ✅ Handler para abrir modal usando store global
+  // Handler para abrir modal usando store global
   const handleClick = () => {
     if (disabled || isLoading) {
       return;
     }
 
     if (!isAuthenticated) {
-      toast.error(
-        `Faça login para adicionar peça ao ${
-          type === 'learned' ? 'Já aprendi' : 'Quero estudar'
-        }`
-      );
+      const targetList =
+        type === 'learned'
+          ? t('learning_ja_aprendi')
+          : t('learning_quero_estudar');
+      toast.error(`${t('learning_login_required')} ${targetList}`);
       openLoginModal();
       return;
     }
 
     console.log(`🎵 [LEARNING-BUTTON] Abrindo modal para ${type}:`, workTitle);
 
-    // ✅ Preparar dados iniciais
+    // Preparar dados iniciais
     let initialWantToLearnData = {};
     let initialLearnedData = {};
     let initialWorkScore: SelectedWorkScore | null = null;
@@ -214,7 +222,7 @@ const LearningButtonWithModal = ({
           selectedWorkScoreId: item.selectedWorkScoreId,
         };
 
-        // ✅ Configurar WorkScore se existir
+        // Configurar WorkScore se existir
         if (item.selectedWorkScore) {
           initialWorkScore = {
             id: item.selectedWorkScore.id,
@@ -253,7 +261,7 @@ const LearningButtonWithModal = ({
           selectedWorkScoreId: item.selectedWorkScoreId,
         };
 
-        // ✅ Configurar WorkScore se existir
+        // Configurar WorkScore se existir
         if (item.selectedWorkScore) {
           initialWorkScore = {
             id: item.selectedWorkScore.id,
@@ -276,7 +284,7 @@ const LearningButtonWithModal = ({
         }
       }
     } else {
-      // ✅ Dados padrão para novos itens
+      // Dados padrão para novos itens
       if (type === 'want-to-learn') {
         initialWantToLearnData = { priority: 0 };
       } else {
@@ -288,7 +296,7 @@ const LearningButtonWithModal = ({
       }
     }
 
-    // ✅ Abrir modal com dados iniciais
+    // Abrir modal com dados iniciais
     openModal({
       workId,
       workTitle,
@@ -328,7 +336,7 @@ const LearningButtonWithModal = ({
     </div>
   );
 
-  // ✅ Ícone dinâmico baseado no estado
+  // Ícone dinâmico baseado no estado
   const getIcon = () => {
     if (isActive && isHovered && variant === 'detailed') {
       return FiEdit3; // Mostrar ícone de edição no hover se ativo
@@ -338,7 +346,7 @@ const LearningButtonWithModal = ({
 
   const Icon = getIcon();
 
-  // ✅ Texto dinâmico baseado no estado
+  // Texto dinâmico baseado no estado
   const getButtonText = () => {
     if (isActive && isHovered && variant === 'detailed') {
       return config.labels.edit;
@@ -351,7 +359,9 @@ const LearningButtonWithModal = ({
       <div className={`${getButtonClasses()} ${className}`} style={style}>
         <FiBookOpen className={`${sizes[size].icon} opacity-50`} />
         {variant !== 'compact' && (
-          <span className="ml-2 opacity-50">Carregando...</span>
+          <span className="ml-2 opacity-50">
+            {t('universal_audio_player_carregando')}
+          </span>
         )}
       </div>
     );
@@ -391,7 +401,7 @@ const LearningButtonWithModal = ({
         {/* Gradient overlay */}
         <div className="absolute rounded-xl inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-        {/* ✅ Indicator para edição quando hover em item ativo */}
+        {/* Indicator para edição quando hover em item ativo */}
         {isActive && isHovered && variant !== 'detailed' && (
           <div className="absolute inset-0 bg-black/10 rounded-xl flex items-center justify-center">
             <FiEdit3 className={`${sizes[size].icon} opacity-80`} />

@@ -1,10 +1,11 @@
-// components/ShareButton.tsx - Componente reutilizável de compartilhamento
+// components/ShareButton.tsx - COM TRADUÇÕES
 'use client';
 
 import { useState } from 'react';
 import { FiShare2, FiCopy, FiCheck, FiX } from 'react-icons/fi';
 import { FaWhatsapp, FaTwitter, FaTelegram, FaFacebook } from 'react-icons/fa';
 import Input from '../Common/Inputs';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ShareButtonProps {
   url?: string;
@@ -23,6 +24,7 @@ export default function ShareButton({
   size = 'md',
   className = '',
 }: ShareButtonProps) {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -56,7 +58,6 @@ export default function ShareButton({
   const handleShare = (platform: string) => {
     const encodedUrl = encodeURIComponent(shareUrl);
     const encodedTitle = encodeURIComponent(title);
-    // const encodedDescription = encodeURIComponent(description || '');
 
     let shareLink = '';
 
@@ -115,7 +116,7 @@ export default function ShareButton({
           }
           rounded-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group
         `}
-        title="Compartilhar"
+        title={t('share_compartilhar')}
       >
         <FiShare2
           className={`${iconSizes[size]} group-hover:rotate-12 transition-transform duration-300`}
@@ -135,7 +136,7 @@ export default function ShareButton({
           <div className="absolute top-full right-0 mt-2 bg-theme-elevated border border-theme-primary rounded-2xl shadow-theme-glow p-4 z-50 min-w-64 animate-fade-in-up">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-theme-primary">
-                Compartilhar
+                {t('share_compartilhar')}
               </h3>
               <button
                 onClick={() => setIsOpen(false)}
@@ -160,7 +161,7 @@ export default function ShareButton({
             {/* Copiar URL */}
             <div className="mb-4">
               <label className="text-sm font-medium text-theme-secondary mb-2 block">
-                Copiar Link
+                {t('share_copiar_link')}
               </label>
               <div className="flex items-center space-x-2">
                 <Input
@@ -190,7 +191,7 @@ export default function ShareButton({
               {copied && (
                 <p className="text-accent-green text-xs mt-1 flex items-center">
                   <FiCheck className="w-3 h-3 mr-1" />
-                  Link copiado!
+                  {t('share_link_copiado')}
                 </p>
               )}
             </div>
@@ -198,7 +199,7 @@ export default function ShareButton({
             {/* Plataformas de compartilhamento */}
             <div>
               <label className="text-sm font-medium text-theme-secondary mb-3 block">
-                Compartilhar em
+                {t('share_compartilhar_em')}
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
@@ -206,7 +207,9 @@ export default function ShareButton({
                   className="flex items-center space-x-3 p-3 bg-green-500/10 border border-green-500/30 rounded-xl text-green-500 hover:bg-green-500/20 transition-all duration-300 group"
                 >
                   <FaWhatsapp className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-medium">WhatsApp</span>
+                  <span className="text-sm font-medium">
+                    {t('share_whatsapp')}
+                  </span>
                 </button>
 
                 <button
@@ -214,7 +217,9 @@ export default function ShareButton({
                   className="flex items-center space-x-3 p-3 bg-blue-400/10 border border-blue-400/30 rounded-xl text-blue-400 hover:bg-blue-400/20 transition-all duration-300 group"
                 >
                   <FaTwitter className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-medium">Twitter</span>
+                  <span className="text-sm font-medium">
+                    {t('share_twitter')}
+                  </span>
                 </button>
 
                 <button
@@ -222,7 +227,9 @@ export default function ShareButton({
                   className="flex items-center space-x-3 p-3 bg-blue-600/10 border border-blue-600/30 rounded-xl text-blue-600 hover:bg-blue-600/20 transition-all duration-300 group"
                 >
                   <FaFacebook className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-medium">Facebook</span>
+                  <span className="text-sm font-medium">
+                    {t('share_facebook')}
+                  </span>
                 </button>
 
                 <button
@@ -230,7 +237,9 @@ export default function ShareButton({
                   className="flex items-center space-x-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-500 hover:bg-blue-500/20 transition-all duration-300 group"
                 >
                   <FaTelegram className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm font-medium">Telegram</span>
+                  <span className="text-sm font-medium">
+                    {t('share_telegram')}
+                  </span>
                 </button>
               </div>
             </div>

@@ -1,4 +1,4 @@
-// components/Annotations/AnnotationsSection.tsx - VERSÃO CORRIGIDA SEM VAZAMENTO DE USERID
+// components/Annotations/AnnotationsSection.tsx - COM TRADUÇÕES COMPLETAS
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -23,10 +23,7 @@ import {
 } from '@/app/stores/useAnnotationsStore';
 import { useAuth } from '@/app/hooks/useAuth';
 import AnnotationCard from '../AnnotationCard';
-import CreateAnnotationModal, {
-  DIFFICULTY_OPTIONS,
-  SCOPE_OPTIONS,
-} from '../CreateAnnotationModal';
+import CreateAnnotationModal from '../CreateAnnotationModal';
 import AnnotationFiltersComponent from '../AnnotationFilters';
 import {
   AnimatedCard,
@@ -36,6 +33,7 @@ import {
 import toast from 'react-hot-toast';
 import { useLoginModal } from '@/app/stores/authStore';
 import Input from '../../Common/Inputs';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface AnnotationsSectionProps {
   workId: string;
@@ -43,62 +41,18 @@ interface AnnotationsSectionProps {
   composerName: string;
 }
 
-const CATEGORY_CONFIG = {
-  TECHNIQUE: {
-    label: 'Técnica',
-    icon: FiTarget,
-    color: 'from-accent-red to-accent-purple',
-    description: 'Dedilhado, articulação, postura',
-  },
-  INTERPRETATION: {
-    label: 'Interpretação',
-    icon: GiMusicalNotes,
-    color: 'from-accent-blue to-accent-purple',
-    description: 'Dinâmica, fraseado, expressão',
-  },
-  PRACTICE_TIP: {
-    label: 'Dicas de Estudo',
-    icon: FiBookOpen,
-    color: 'from-accent-green to-accent-blue',
-    description: 'Métodos e estratégias de prática',
-  },
-  THEORY: {
-    label: 'Teoria',
-    icon: FiLayers,
-    color: 'from-accent-purple to-accent-blue',
-    description: 'Análise harmônica e formal',
-  },
-  PERFORMANCE: {
-    label: 'Performance',
-    icon: FiMusic,
-    color: 'from-brand-primary to-brand-secondary',
-    description: 'Apresentação e palco',
-  },
-  HISTORICAL: {
-    label: 'Contexto',
-    icon: FiAward,
-    color: 'from-accent-purple to-accent-red',
-    description: 'História e contexto cultural',
-  },
-  GENERAL: {
-    label: 'Geral',
-    icon: FiMessageSquare,
-    color: 'from-theme-primary to-theme-secondary',
-    description: 'Comentários gerais',
-  },
-};
-
 export default function AnnotationsSection({
   workId,
   workTitle,
   composerName,
 }: AnnotationsSectionProps) {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
   const { isAuthenticated, user } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [localSearchTerm, setLocalSearchTerm] = useState('');
 
-  // 🔧 NOVO: Estado local para filtros da comunidade - separado da store global
+  // Estado local para filtros da comunidade - separado da store global
   const [communityFilters, setCommunityFilters] = useState<AnnotationFilters>({
     sortBy: 'helpful',
   });
@@ -118,13 +72,59 @@ export default function AnnotationsSection({
   const allAnnotations = getWorkAnnotations(workId);
   const totalStats = getAnnotationStats(workId);
 
-  // 🔧 CORREÇÃO: Verificar filtros avançados sem incluir userId
+  // ✅ Configuração das categorias COM TRADUÇÕES
+  const CATEGORY_CONFIG = {
+    TECHNIQUE: {
+      label: t('annotations_categoria_tecnica'),
+      icon: FiTarget,
+      color: 'from-accent-red to-accent-purple',
+      description: t('annotations_categoria_tecnica_desc'),
+    },
+    INTERPRETATION: {
+      label: t('annotations_categoria_interpretacao'),
+      icon: GiMusicalNotes,
+      color: 'from-accent-blue to-accent-purple',
+      description: t('annotations_categoria_interpretacao_desc'),
+    },
+    PRACTICE_TIP: {
+      label: t('annotations_categoria_dicas_estudo'),
+      icon: FiBookOpen,
+      color: 'from-accent-green to-accent-blue',
+      description: t('annotations_categoria_dicas_estudo_desc'),
+    },
+    THEORY: {
+      label: t('annotations_categoria_teoria'),
+      icon: FiLayers,
+      color: 'from-accent-purple to-accent-blue',
+      description: t('annotations_categoria_teoria_desc'),
+    },
+    PERFORMANCE: {
+      label: t('annotations_categoria_performance'),
+      icon: FiMusic,
+      color: 'from-brand-primary to-brand-secondary',
+      description: t('annotations_categoria_performance_desc'),
+    },
+    HISTORICAL: {
+      label: t('annotations_categoria_contexto'),
+      icon: FiAward,
+      color: 'from-accent-purple to-accent-red',
+      description: t('annotations_categoria_contexto_desc'),
+    },
+    GENERAL: {
+      label: t('annotations_categoria_geral'),
+      icon: FiMessageSquare,
+      color: 'from-theme-primary to-theme-secondary',
+      description: t('annotations_categoria_geral_desc'),
+    },
+  };
+
+  // Verificar filtros avançados sem incluir userId
   const hasAdvancedFilters =
     communityFilters.difficulty ||
     communityFilters.scope ||
     communityFilters.search;
 
-  // 🔧 CORREÇÃO: Inicialização limpa - sempre sem userId
+  // Inicialização limpa - sempre sem userId
   useEffect(() => {
     console.log(
       '🧹 [AnnotationsSection] Montando componente para workId:',
@@ -144,7 +144,7 @@ export default function AnnotationsSection({
     );
   }, [workId, fetchWorkAnnotations]);
 
-  // 🔧 CORREÇÃO: Filtrar anotações localmente apenas se não há filtros avançados
+  // Filtrar anotações localmente apenas se não há filtros avançados
   const displayedAnnotations = hasAdvancedFilters
     ? allAnnotations
     : allAnnotations.filter((annotation) => {
@@ -174,7 +174,7 @@ export default function AnnotationsSection({
         return true;
       });
 
-  // 🔧 CORREÇÃO: Handler para filtro de categoria - sem userId
+  // Handler para filtro de categoria - sem userId
   const handleCategoryFilter = (category: AnnotationCategory | 'ALL') => {
     let newFilters: AnnotationFilters;
 
@@ -209,7 +209,7 @@ export default function AnnotationsSection({
     setLocalSearchTerm(term);
   };
 
-  // 🔧 CORREÇÃO: Handler para filtros avançados - garantir que não há userId
+  // Handler para filtros avançados - garantir que não há userId
   const handleAdvancedFiltersChange = (newFilters: AnnotationFilters) => {
     console.log(
       '🔧 [AnnotationsSection] Aplicando filtros avançados:',
@@ -234,7 +234,7 @@ export default function AnnotationsSection({
     );
   };
 
-  // 🔧 CORREÇÃO: Limpar todos os filtros da comunidade
+  // Limpar todos os filtros da comunidade
   const handleClearAllFilters = () => {
     console.log('🧹 [AnnotationsSection] Limpando todos os filtros');
 
@@ -257,7 +257,7 @@ export default function AnnotationsSection({
     }
   };
 
-  // 🔧 CORREÇÃO: Verificar se há filtros ativos (sem contar userId)
+  // Verificar se há filtros ativos (sem contar userId)
   const hasAnyFilters =
     communityFilters.category ||
     communityFilters.difficulty ||
@@ -278,10 +278,10 @@ export default function AnnotationsSection({
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                    Anotações da Comunidade
+                    {t('annotations_titulo')}
                   </h2>
                   <p className="text-theme-secondary classical-subtitle">
-                    Compartilhe conhecimentos sobre interpretação e técnica
+                    {t('annotations_subtitulo')}
                   </p>
                 </div>
               </div>
@@ -289,7 +289,7 @@ export default function AnnotationsSection({
               <button
                 onClick={() => {
                   if (!isAuthenticated) {
-                    toast.error('Faça login para fazer anotações.');
+                    toast.error(t('annotations_login_required'));
                     open();
                     return;
                   }
@@ -298,11 +298,11 @@ export default function AnnotationsSection({
                 className="btn-classical-primary flex items-center space-x-2"
               >
                 <FiPlus className="w-4 h-4" />
-                <span>Nova Anotação</span>
+                <span>{t('annotations_nova_anotacao')}</span>
               </button>
             </div>
 
-            {/* Barra de busca e filtros */}
+            {/* ✅ Barra de busca e filtros COM TRADUÇÕES */}
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1 relative">
@@ -310,8 +310,8 @@ export default function AnnotationsSection({
                     type="text"
                     placeholder={
                       hasAdvancedFilters
-                        ? "Use 'Filtros Avançados' para busca"
-                        : 'Buscar anotações...'
+                        ? t('annotations_busca_filtros_avancados')
+                        : t('annotations_buscar')
                     }
                     value={localSearchTerm}
                     leftIcon={<FiSearch />}
@@ -324,7 +324,7 @@ export default function AnnotationsSection({
                   {hasAdvancedFilters && (
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <span className="text-xs bg-accent-blue/10 text-accent-blue px-2 py-1 rounded-lg">
-                        Filtros ativos
+                        {t('annotations_filtros_ativos')}
                       </span>
                     </div>
                   )}
@@ -338,7 +338,7 @@ export default function AnnotationsSection({
                   }`}
                 >
                   <FiFilter className="w-4 h-4" />
-                  <span>Filtros Avançados</span>
+                  <span>{t('annotations_filtros_avancados')}</span>
                   {hasAdvancedFilters && (
                     <span className="bg-brand-primary text-theme-primary rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">
                       {
@@ -366,7 +366,7 @@ export default function AnnotationsSection({
                       : 'bg-theme-elevated border border-theme-primary/30 text-theme-secondary hover:border-brand-primary/50'
                   }`}
                 >
-                  Todas (
+                  {t('annotations_todas')} (
                   {hasAnyFilters ? totalStats.total : allAnnotations.length})
                 </button>
 
@@ -405,12 +405,14 @@ export default function AnnotationsSection({
                 })}
               </div>
 
-              {/* Status de filtros */}
+              {/* ✅ Status de filtros COM TRADUÇÕES */}
               {hasAnyFilters && (
                 <div className="flex items-center justify-between bg-theme-elevated/50 classical-card-simple rounded-xl px-4 py-3">
                   <div className="flex items-center space-x-2 text-sm">
                     <FiFilter className="w-4 h-4 text-theme-tertiary" />
-                    <span className="text-theme-primary">Filtros ativos:</span>
+                    <span className="text-theme-primary">
+                      {t('annotations_filtros_ativos')}:
+                    </span>
 
                     <div className="flex items-center space-x-1">
                       {communityFilters.category && (
@@ -420,16 +422,28 @@ export default function AnnotationsSection({
                       )}
                       {communityFilters.difficulty && (
                         <span className="bg-accent-blue/10 text-accent-blue px-2 py-1 rounded-lg text-xs">
-                          {DIFFICULTY_OPTIONS.find(
-                            (opt) => opt.value === communityFilters.difficulty
-                          )?.label || communityFilters.difficulty}
+                          {/* ✅ Traduzir dificuldade */}
+                          {communityFilters.difficulty === 'BEGINNER' &&
+                            t('annotation_difficulty_iniciante')}
+                          {communityFilters.difficulty === 'INTERMEDIATE' &&
+                            t('annotation_difficulty_intermediario')}
+                          {communityFilters.difficulty === 'ADVANCED' &&
+                            t('annotation_difficulty_avancado')}
+                          {communityFilters.difficulty === 'ALL_LEVELS' &&
+                            t('annotation_difficulty_todos_niveis')}
                         </span>
                       )}
                       {communityFilters.scope && (
                         <span className="bg-accent-green/10 text-accent-green px-2 py-1 rounded-lg text-xs">
-                          {SCOPE_OPTIONS.find(
-                            (opt) => opt.value === communityFilters.scope
-                          )?.label || communityFilters.scope}
+                          {/* ✅ Traduzir abrangência */}
+                          {communityFilters.scope === 'ENTIRE_WORK' &&
+                            t('annotation_scope_obra_inteira')}
+                          {communityFilters.scope === 'MOVEMENT' &&
+                            t('annotation_scope_movimento')}
+                          {communityFilters.scope === 'SECTION' &&
+                            t('annotation_scope_secao')}
+                          {communityFilters.scope === 'SPECIFIC_MEASURE' &&
+                            t('annotation_scope_compasso_especifico')}
                         </span>
                       )}
                       {communityFilters.search && (
@@ -439,7 +453,8 @@ export default function AnnotationsSection({
                       )}
                       {localSearchTerm && (
                         <span className="bg-accent-red/10 text-accent-red px-2 py-1 rounded-lg text-xs">
-                          Busca: &quot;{localSearchTerm}&quot;
+                          {t('annotations_busca_label')} &quot;{localSearchTerm}
+                          &quot;
                         </span>
                       )}
                     </div>
@@ -450,7 +465,7 @@ export default function AnnotationsSection({
                     className="text-accent-red hover:text-accent-red/80 text-sm font-medium flex items-center space-x-1 transition-colors"
                   >
                     <FiX className="w-4 h-4" />
-                    <span>Limpar todos</span>
+                    <span>{t('annotations_limpar_todos')}</span>
                   </button>
                 </div>
               )}
@@ -486,7 +501,7 @@ export default function AnnotationsSection({
                   ></div>
                 </div>
                 <span className="text-theme-primary font-medium">
-                  Carregando anotações...
+                  {t('annotations_carregando')}
                 </span>
               </div>
             </div>
@@ -514,12 +529,12 @@ export default function AnnotationsSection({
                       {isLoading ? (
                         <>
                           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
-                          <span>Carregando...</span>
+                          <span>{t('universal_audio_player_carregando')}</span>
                         </>
                       ) : (
                         <>
                           <FiEye className="w-4 h-4" />
-                          <span>Ver Mais Anotações</span>
+                          <span>{t('annotations_ver_mais')}</span>
                         </>
                       )}
                     </button>
@@ -534,13 +549,13 @@ export default function AnnotationsSection({
               </div>
               <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
                 {hasAnyFilters
-                  ? 'Nenhuma anotação encontrada'
-                  : 'Seja o primeiro a anotar!'}
+                  ? t('annotations_nenhuma_encontrada')
+                  : t('annotations_primeiro_anotar')}
               </h3>
               <p className="text-theme-secondary max-w-md mx-auto mb-6">
                 {hasAnyFilters
-                  ? 'Tente ajustar os filtros ou termos de busca.'
-                  : 'Compartilhe suas descobertas sobre técnica, interpretação e estudo desta obra.'}
+                  ? t('annotations_ajustar_filtros')
+                  : t('annotations_compartilhe_descobertas')}
               </p>
               {isAuthenticated && !hasAnyFilters && (
                 <button
@@ -548,7 +563,7 @@ export default function AnnotationsSection({
                   className="btn-classical-primary flex items-center space-x-2 mx-auto"
                 >
                   <FiPlus className="w-4 h-4" />
-                  <span>Criar Primeira Anotação</span>
+                  <span>{t('annotations_criar_primeira')}</span>
                 </button>
               )}
             </div>

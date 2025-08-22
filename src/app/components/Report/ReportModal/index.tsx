@@ -7,6 +7,7 @@ import Button from '@/app/components/Common/Button';
 import { AnimatedItem } from '@/app/components/animation/AnimatedComponents';
 import Modal from '../../Modal';
 import { useToast } from '@/app/hooks/useToast';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ReportModalProps {
   isOpen: boolean;
@@ -16,39 +17,6 @@ interface ReportModalProps {
   entityName: string;
 }
 
-const REPORT_REASONS = [
-  {
-    value: 'inappropriate_content',
-    label: 'Conteúdo inadequado',
-    description: 'Conteúdo ofensivo ou impróprio',
-  },
-  {
-    value: 'copyright_violation',
-    label: 'Violação de direitos autorais',
-    description: 'Uso não autorizado de material protegido',
-  },
-  {
-    value: 'false_information',
-    label: 'Informações falsas',
-    description: 'Dados incorretos ou enganosos',
-  },
-  {
-    value: 'spam',
-    label: 'Spam',
-    description: 'Conteúdo repetitivo ou não relacionado',
-  },
-  {
-    value: 'duplicate_content',
-    label: 'Conteúdo duplicado',
-    description: 'Item já existe na plataforma',
-  },
-  {
-    value: 'other',
-    label: 'Outros',
-    description: 'Outro motivo não listado',
-  },
-];
-
 export default function ReportModal({
   isOpen,
   onClose,
@@ -56,16 +24,57 @@ export default function ReportModal({
   entityId,
   entityName,
 }: ReportModalProps) {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
   const [selectedReason, setSelectedReason] = useState('');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toaster = useToast();
+
+  // Traduções dos motivos de report
+  const REPORT_REASONS = [
+    {
+      value: 'inappropriate_content',
+      label: t('report_reason_inappropriate'),
+      description: t('report_reason_inappropriate_desc'),
+    },
+    {
+      value: 'copyright_violation',
+      label: t('report_reason_copyright'),
+      description: t('report_reason_copyright_desc'),
+    },
+    {
+      value: 'false_information',
+      label: t('report_reason_false_info'),
+      description: t('report_reason_false_info_desc'),
+    },
+    {
+      value: 'spam',
+      label: t('report_reason_spam'),
+      description: t('report_reason_spam_desc'),
+    },
+    {
+      value: 'duplicate_content',
+      label: t('report_reason_duplicate'),
+      description: t('report_reason_duplicate_desc'),
+    },
+    {
+      value: 'other',
+      label: t('report_reason_other'),
+      description: t('report_reason_other_desc'),
+    },
+  ];
+
+  const getEntityTypeLabel = () => {
+    const entityTypeKey = `entity_type_${entityType}`;
+    return t(entityTypeKey);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!selectedReason) {
-      toaster.error('Erro', 'Por favor, selecione um motivo');
+      toaster.error('Erro', t('report_modal_selecione_motivo'));
       return;
     }
 
@@ -92,11 +101,11 @@ export default function ReportModal({
         resetForm();
       } else {
         const error = await response.json();
-        toaster.error(error.error || 'Erro ao enviar report');
+        toaster.error(error.error || t('report_modal_erro_enviar'));
       }
     } catch (error) {
       console.log('error', error);
-      toaster.error('Erro ao enviar report');
+      toaster.error(t('report_modal_erro_enviar'));
     } finally {
       setIsSubmitting(false);
     }
@@ -114,25 +123,12 @@ export default function ReportModal({
     }
   };
 
-  const getEntityTypeLabel = () => {
-    switch (entityType) {
-      case 'composer':
-        return 'compositor';
-      case 'work':
-        return 'obra';
-      case 'score':
-        return 'partitura';
-      default:
-        return 'item';
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} closeOnOverlayClick maxWidth="3xl">
       <AnimatedItem direction="scale" springType="bouncy">
-        <div className="  w-full ">
+        <div className="w-full">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-3">
@@ -141,7 +137,9 @@ export default function ReportModal({
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
-                  Reportar {getEntityTypeLabel()}
+                  {t('report_modal_titulo', {
+                    entityType: getEntityTypeLabel(),
+                  })}
                 </h2>
                 <p className="text-sm text-theme-secondary">
                   &quot;{entityName}&quot;
@@ -155,7 +153,7 @@ export default function ReportModal({
             {/* Reason Selection */}
             <div>
               <label className="block text-sm font-medium text-theme-primary mb-3">
-                Motivo do report *
+                {t('report_modal_motivo')}
               </label>
               <div className="space-y-2">
                 {REPORT_REASONS.map((reason) => (
@@ -191,8 +189,9 @@ export default function ReportModal({
             {/* Description */}
             <div>
               <label className="block text-sm font-medium text-theme-primary mb-2">
-                Descrição adicional
-                {selectedReason === 'other' && ' *'}
+                {selectedReason === 'other'
+                  ? t('report_modal_descricao_obrigatoria')
+                  : t('report_modal_descricao')}
               </label>
               <textarea
                 value={description}
@@ -210,12 +209,10 @@ export default function ReportModal({
                 <FiAlertTriangle className="w-5 h-5 text-accent-amber flex-shrink-0 mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium text-accent-amber mb-1">
-                    Importante
+                    {t('report_modal_importante')}
                   </p>
                   <p className="text-theme-secondary">
-                    Reports falsos ou mal-intencionados podem resultar em
-                    penalidades na sua conta. Use esta função apenas para
-                    reportar problemas legítimos.
+                    {t('report_modal_aviso')}
                   </p>
                 </div>
               </div>
@@ -229,7 +226,7 @@ export default function ReportModal({
                 onClick={handleClose}
                 disabled={isSubmitting}
               >
-                Cancelar
+                {t('report_modal_cancelar')}
               </Button>
               <Button
                 type="submit"
@@ -237,7 +234,9 @@ export default function ReportModal({
                 disabled={isSubmitting || !selectedReason}
                 leftIcon={<FiFlag />}
               >
-                {isSubmitting ? 'Enviando...' : 'Enviar Report'}
+                {isSubmitting
+                  ? t('report_modal_enviando')
+                  : t('report_modal_enviar')}
               </Button>
             </div>
           </form>

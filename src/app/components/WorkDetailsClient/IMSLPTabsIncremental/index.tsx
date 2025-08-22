@@ -1,4 +1,4 @@
-// components/IMSLPTabsIncremental.tsx - REFATORADO COM BADGES E AUTO SCROLL
+// components/IMSLPTabsIncremental.tsx - REFATORADO COM BADGES E AUTO SCROLL E TRADUÇÕES
 'use client';
 
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
@@ -25,11 +25,8 @@ import {
 } from '../../animation/AnimatedComponents';
 import { useScoreFavorites } from '@/app/hooks/useScoreFavorites';
 import ScorePreview from '../ScorePreview';
-import {
-  getTabLabel,
-  getTabStatistics,
-  TabStatistics,
-} from '@/app/utils/type-utils';
+import { getTabStatistics, TabStatistics } from '@/app/utils/type-utils';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 // ✅ INTERFACE UNIFICADA SIMPLIFICADA
 interface MixedScoreData {
@@ -100,42 +97,42 @@ interface IMSLPTabsIncrementalProps {
 const TABS = [
   {
     id: 'scores',
-    label: 'Partituras',
+    labelKey: 'imslp_tabs_partituras',
     icon: FiMusic,
     type: 'scores',
     gradient: 'from-brand-primary to-brand-secondary',
   },
   {
     id: 'parts',
-    label: 'Partes',
+    labelKey: 'imslp_tabs_partes',
     icon: FiFileText,
     type: 'parts',
     gradient: 'from-accent-blue to-accent-purple',
   },
   {
     id: 'arrangements',
-    label: 'Arranjos',
+    labelKey: 'imslp_tabs_arranjos',
     icon: GiMusicalNotes,
     type: 'arrangements',
     gradient: 'from-accent-green to-accent-blue',
   },
   {
     id: 'librettos',
-    label: 'Libretos',
+    labelKey: 'imslp_tabs_libretos',
     icon: FiFileText,
     type: 'librettos',
     gradient: 'from-accent-purple to-accent-red',
   },
   {
     id: 'others',
-    label: 'Outros',
+    labelKey: 'imslp_tabs_outros',
     icon: FiFileText,
     type: 'others',
     gradient: 'from-accent-red to-accent-purple',
   },
   {
     id: 'sources',
-    label: 'Arquivos Fonte',
+    labelKey: 'imslp_tabs_arquivos_fonte',
     icon: FiFileText,
     type: 'sources',
     gradient: 'from-accent-purple to-accent-blue',
@@ -144,12 +141,12 @@ const TABS = [
 
 // ✅ COMPONENTE BADGE DE FONTE
 const SourceBadge = React.memo(
-  ({ source }: { source: 'IMSLP' | 'UPLOAD' | 'CUSTOM' }) => {
+  ({ source, t }: { source: 'IMSLP' | 'UPLOAD' | 'CUSTOM'; t: any }) => {
     if (source === 'IMSLP') {
       return (
         <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
           <FiBookOpen className="w-3 h-3 mr-1" />
-          IMSLP
+          {t('score_preview_imslp')}
         </div>
       );
     }
@@ -157,7 +154,7 @@ const SourceBadge = React.memo(
     return (
       <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
         <FiTarget className="w-3 h-3 mr-1" />
-        Open Atlas
+        {t('score_preview_open_atlas')}
       </div>
     );
   }
@@ -180,6 +177,7 @@ const ScoreCardWithBadge = React.memo(
     isSelectionMode,
     isTempSelected,
     tempSelectedWorkScore,
+    t,
   }: any) => (
     <div className="relative">
       <ScoreCard
@@ -198,7 +196,7 @@ const ScoreCardWithBadge = React.memo(
         tempSelectedWorkScore={tempSelectedWorkScore}
       />
       <div className="absolute top-2 right-2">
-        <SourceBadge source={score.source} />
+        <SourceBadge source={score.source} t={t} />
       </div>
     </div>
   )
@@ -404,6 +402,7 @@ export default function IMSLPTabsIncremental({
   tempSelectedWorkScore,
   isScoreMostFavorited,
 }: IMSLPTabsIncrementalProps) {
+  const { t } = useTranslation({ sections: ['pages/workId'] });
   const [selectedScore, setSelectedScore] = useState<MixedScoreData | null>(
     null
   );
@@ -459,6 +458,14 @@ export default function IMSLPTabsIncremental({
     [selectedScore?.id, onScoreSelect]
   );
 
+  const getTabLabelTranslated = useCallback(
+    (tabId: string) => {
+      const tab = TABS.find((t) => t.id === tabId);
+      return tab ? t(tab.labelKey) : tabId;
+    },
+    [t]
+  );
+
   const renderTabSpecificButtons = useCallback(() => {
     if (!activeTabStats.hasMore) {
       return (
@@ -468,11 +475,15 @@ export default function IMSLPTabsIncremental({
               <FiTarget className="w-8 h-8 text-theme-primary" />
             </div>
             <h3 className="text-lg font-semibold text-theme-primary mb-2">
-              Todas as {getTabLabel(activeTab).toLowerCase()} carregadas!
+              {t('imslp_tabs_todas_carregadas', {
+                tipo: getTabLabelTranslated(activeTab).toLowerCase(),
+              })}
             </h3>
             <p className="text-theme-secondary text-sm">
-              Você visualizou todas as {activeTabStats.total}{' '}
-              {getTabLabel(activeTab).toLowerCase()} disponíveis.
+              {t('imslp_tabs_visualizou_todas', {
+                total: activeTabStats.total,
+                tipo: getTabLabelTranslated(activeTab).toLowerCase(),
+              })}
             </p>
           </div>
         </div>
@@ -493,13 +504,16 @@ export default function IMSLPTabsIncremental({
           {imslpLoadingMore ? (
             <>
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              <span>Carregando...</span>
+              <span>{t('imslp_tabs_carregando')}</span>
             </>
           ) : (
             <>
               <FiMoreHorizontal className="w-4 h-4" />
               <span>
-                Carregar Mais {getTabLabel(activeTab)} ({loadAmount})
+                {t('imslp_tabs_carregar_mais', {
+                  tipo: getTabLabelTranslated(activeTab),
+                  amount: loadAmount,
+                })}
               </span>
             </>
           )}
@@ -519,8 +533,10 @@ export default function IMSLPTabsIncremental({
         >
           <FiDownload className="w-4 h-4" />
           <span>
-            Carregar Todas as {getTabLabel(activeTab)} (
-            {activeTabStats.remaining} restantes)
+            {t('imslp_tabs_carregar_todas', {
+              tipo: getTabLabelTranslated(activeTab),
+              remaining: activeTabStats.remaining,
+            })}
           </span>
         </button>
       );
@@ -537,7 +553,9 @@ export default function IMSLPTabsIncremental({
         >
           <FiLayers className="w-4 h-4" />
           <span>
-            Carregar Todas as Partituras ({globalRemaining} restantes)
+            {t('imslp_tabs_carregar_todas_partituras', {
+              remaining: globalRemaining,
+            })}
           </span>
         </button>
       );
@@ -552,6 +570,8 @@ export default function IMSLPTabsIncremental({
     onImslpLoadAll,
     totalAvailable,
     currentLoaded,
+    t,
+    getTabLabelTranslated,
   ]);
 
   // ✅ ESTADOS DE CARREGAMENTO
@@ -559,7 +579,7 @@ export default function IMSLPTabsIncremental({
   const hasError = imslpError || workScoresError;
 
   if (isLoading && activeTabData.length === 0) {
-    return <LoadingState />;
+    return <LoadingState t={t} />;
   }
 
   if (hasError) {
@@ -567,12 +587,13 @@ export default function IMSLPTabsIncremental({
       <ErrorState
         error={hasError}
         onRefetch={onImslpRefetch || onWorkScoresRefetch}
+        t={t}
       />
     );
   }
 
   if (activeTabData.length === 0 && !isLoading) {
-    return <EmptyState />;
+    return <EmptyState t={t} />;
   }
 
   return (
@@ -589,15 +610,17 @@ export default function IMSLPTabsIncremental({
                   </div>
                   <div className="flex-1">
                     <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                      Partituras Disponíveis
+                      {t('imslp_tabs_partituras_disponiveis')}
                     </h2>
                     <div className="flex items-center space-x-2">
                       <p className="text-theme-secondary classical-subtitle">
                         {selectedScore
-                          ? `Partitura selecionada: ${selectedScore.title}`
+                          ? `${t('imslp_tabs_partitura_selecionada')} ${
+                              selectedScore.title
+                            }`
                           : isSelectionMode
-                          ? 'Selecione uma partitura abaixo'
-                          : 'Explore as partituras disponíveis'}
+                          ? t('imslp_tabs_selecione_partitura')
+                          : t('imslp_tabs_explore_partituras')}
                       </p>
                     </div>
                   </div>
@@ -646,7 +669,7 @@ export default function IMSLPTabsIncremental({
                         >
                           <Icon className="w-3 h-3" />
                         </div>
-                        <span className="font-semibold">{tab.label}</span>
+                        <span className="font-semibold">{t(tab.labelKey)}</span>
 
                         <div className="flex items-center space-x-1">
                           <span
@@ -752,6 +775,7 @@ export default function IMSLPTabsIncremental({
                                   tempSelectedWorkScore?.id === score.id
                                 }
                                 tempSelectedWorkScore={tempSelectedWorkScore}
+                                t={t}
                               />
                             </SequentialGrid>
                           );
@@ -765,19 +789,22 @@ export default function IMSLPTabsIncremental({
                     <div className="flex flex-col items-center space-y-6 py-8 border-t border-theme-secondary">
                       <div className="text-center">
                         <h3 className="text-lg font-semibold text-theme-primary mb-2">
-                          Mais {getTabLabel(activeTab).toLowerCase()}{' '}
-                          disponíveis
+                          {t('imslp_tabs_mais_disponiveis', {
+                            tipo: getTabLabelTranslated(
+                              activeTab
+                            ).toLowerCase(),
+                          })}
                         </h3>
                         <p className="text-theme-secondary text-sm mb-4">
                           {imslpLoadingMore
-                            ? `Carregando mais ${getTabLabel(
-                                activeTab
-                              ).toLowerCase()}...`
-                            : `Mostrando ${activeTabStats.loaded} de ${
-                                activeTabStats.total
-                              } ${getTabLabel(
-                                activeTab
-                              ).toLowerCase()} disponíveis`}
+                            ? t('imslp_tabs_carregando_mais')
+                            : t('imslp_tabs_mostrando_de', {
+                                loaded: activeTabStats.loaded,
+                                total: activeTabStats.total,
+                                tipo: getTabLabelTranslated(
+                                  activeTab
+                                ).toLowerCase(),
+                              })}
                         </p>
                       </div>
                       <div className="flex flex-wrap gap-4 justify-center">
@@ -791,14 +818,15 @@ export default function IMSLPTabsIncremental({
                     <div className="flex flex-col items-center space-y-4 py-8 border-t border-theme-secondary">
                       <div className="text-center">
                         <h3 className="text-lg font-semibold text-theme-primary mb-2">
-                          Mais partituras Open Atlas disponíveis
+                          {t('imslp_tabs_mais_open_atlas')}
                         </h3>
                         <p className="text-theme-secondary text-sm mb-4">
                           {workScoresLoading
-                            ? 'Carregando mais partituras...'
-                            : `Mostrando ${
-                                workScores?.length || 0
-                              } de ${workScoresTotal} partituras`}
+                            ? t('imslp_tabs_carregando_mais')
+                            : t('imslp_tabs_mostrando_partituras', {
+                                current: workScores?.length || 0,
+                                total: workScoresTotal,
+                              })}
                         </p>
                       </div>
                       <button
@@ -809,12 +837,12 @@ export default function IMSLPTabsIncremental({
                         {workScoresLoading ? (
                           <>
                             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                            <span>Carregando...</span>
+                            <span>{t('imslp_tabs_carregando')}</span>
                           </>
                         ) : (
                           <>
                             <FiMoreHorizontal className="w-4 h-4" />
-                            <span>Carregar Mais (20)</span>
+                            <span>{t('imslp_tabs_carregar_mais_20')}</span>
                           </>
                         )}
                       </button>
@@ -832,9 +860,9 @@ export default function IMSLPTabsIncremental({
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-theme-primary flex items-center space-x-2">
                           <FiBookOpen className="w-5 h-5 text-accent-blue" />
-                          <span>Preview da Partitura</span>
+                          <span>{t('imslp_tabs_preview_partitura')}</span>
                         </h3>
-                        <SourceBadge source={selectedScore.source} />
+                        <SourceBadge source={selectedScore.source} t={t} />
                       </div>
 
                       <ScorePreview score={selectedScore as any} />
@@ -847,7 +875,7 @@ export default function IMSLPTabsIncremental({
                               className="btn-classical-secondary flex items-center space-x-2"
                             >
                               <FiMusic className="w-4 h-4" />
-                              <span>Desselecionar</span>
+                              <span>{t('imslp_tabs_desselecionar')}</span>
                             </button>
                           </div>
                         </div>
@@ -857,7 +885,7 @@ export default function IMSLPTabsIncremental({
                 )}
               </div>
             ) : (
-              <EmptyTabState />
+              <EmptyTabState t={t} />
             )}
           </div>
         </div>
@@ -867,7 +895,7 @@ export default function IMSLPTabsIncremental({
 }
 
 // ✅ COMPONENTES AUXILIARES OTIMIZADOS
-const LoadingState = React.memo(() => (
+const LoadingState = React.memo(({ t }: { t: any }) => (
   <div className="classical-card overflow-hidden animate-fade-in-up">
     <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
       <div className="flex items-center space-x-3">
@@ -876,10 +904,10 @@ const LoadingState = React.memo(() => (
         </div>
         <div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title">
-            Partituras Disponíveis
+            {t('imslp_tabs_partituras_disponiveis')}
           </h2>
           <p className="text-theme-secondary classical-subtitle">
-            Carregando recursos disponíveis...
+            {t('imslp_tabs_carregando_partituras')}
           </p>
         </div>
       </div>
@@ -894,7 +922,7 @@ const LoadingState = React.memo(() => (
           ></div>
         </div>
         <span className="text-theme-primary font-medium">
-          Carregando partituras...
+          {t('imslp_tabs_carregando_partituras')}
         </span>
       </div>
     </div>
@@ -903,7 +931,15 @@ const LoadingState = React.memo(() => (
 LoadingState.displayName = 'LoadingState';
 
 const ErrorState = React.memo(
-  ({ error, onRefetch }: { error: string; onRefetch?: () => void }) => (
+  ({
+    error,
+    onRefetch,
+    t,
+  }: {
+    error: string;
+    onRefetch?: () => void;
+    t: any;
+  }) => (
     <div className="classical-card overflow-hidden animate-fade-in-up">
       <div className="border-b border-theme-secondary p-8 bg-gradient-to-r from-theme-elevated to-interactive-hover">
         <div className="flex items-center space-x-3">
@@ -912,10 +948,10 @@ const ErrorState = React.memo(
           </div>
           <div>
             <h2 className="text-2xl font-bold text-theme-primary classical-title">
-              Partituras Disponíveis
+              {t('imslp_tabs_partituras_disponiveis')}
             </h2>
             <p className="text-theme-secondary classical-subtitle">
-              Erro ao carregar recursos
+              {t('imslp_tabs_erro_carregar_recursos')}
             </p>
           </div>
         </div>
@@ -934,7 +970,7 @@ const ErrorState = React.memo(
                   className="btn-classical-secondary flex items-center space-x-2 group"
                 >
                   <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
-                  <span>Tentar novamente</span>
+                  <span>{t('imslp_tabs_tentar_novamente')}</span>
                 </button>
               )}
             </div>
@@ -946,34 +982,33 @@ const ErrorState = React.memo(
 );
 ErrorState.displayName = 'ErrorState';
 
-const EmptyState = React.memo(() => (
+const EmptyState = React.memo(({ t }: { t: any }) => (
   <div className="classical-card p-8">
     <div className="text-center py-16">
       <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
         <FiMusic className="w-8 h-8 text-theme-tertiary" />
       </div>
       <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-        Nenhuma partitura encontrada
+        {t('imslp_tabs_nenhuma_partitura_encontrada')}
       </h3>
       <p className="text-theme-secondary max-w-md mx-auto">
-        Não foram encontradas partituras para esta obra no momento.
+        {t('imslp_tabs_nao_encontradas')}
       </p>
     </div>
   </div>
 ));
 EmptyState.displayName = 'EmptyState';
 
-const EmptyTabState = React.memo(() => (
+const EmptyTabState = React.memo(({ t }: { t: any }) => (
   <div className="text-center py-16">
     <div className="w-16 h-16 bg-theme-tertiary/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
       <FiMusic className="w-8 h-8 text-theme-tertiary" />
     </div>
     <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-      Nenhuma partitura disponível
+      {t('imslp_tabs_nenhuma_disponivel')}
     </h3>
     <p className="text-theme-secondary max-w-md mx-auto">
-      Não foram encontradas partituras desta categoria para esta obra no
-      momento.
+      {t('imslp_tabs_nao_encontradas_categoria')}
     </p>
   </div>
 ));
