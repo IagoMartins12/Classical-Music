@@ -27,6 +27,7 @@ import Link from 'next/link';
 import FloatingIcons from '../../components/FloatingIcons';
 import AnimatedMusicalNotes from '../../components/AnimatedMusicalNotes';
 import Image from 'next/image';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface Composer {
   id: string;
@@ -79,15 +80,8 @@ interface InstrumentWithWorks {
   }[];
 }
 
-// interface InstrumentStats {
-//   instrumentName: string;
-//   totalWorks: number;
-//   totalUsers: number;
-// }
-
 interface Props {
   instruments: InstrumentWithWorks[];
-  // instrumentsStats: InstrumentStats[];
   hasError?: boolean;
 }
 
@@ -110,25 +104,16 @@ const getIcon = (iconName: string) => {
 
 export function InstrumentsPageClient({
   instruments,
-  // instrumentsStats,
   hasError = false,
 }: Props) {
+  const { t } = useTranslation({ sections: ['pages/instruments'] });
+
   const [expandedSections, setExpandedSections] = useState<
     Record<string, boolean>
   >({});
   const [expandedInstruments, setExpandedInstruments] = useState<
     Record<string, boolean>
   >({});
-
-  // const totalWorks = useMemo(
-  //   () => instrumentsStats.reduce((sum, stat) => sum + stat.totalWorks, 0),
-  //   [instrumentsStats]
-  // );
-
-  // const totalUsers = useMemo(
-  //   () => instrumentsStats.reduce((sum, stat) => sum + stat.totalUsers, 0),
-  //   [instrumentsStats]
-  // );
 
   const toggleSection = (instrumentId: string, section: string) => {
     const key = `${instrumentId}-${section}`;
@@ -161,10 +146,10 @@ export function InstrumentsPageClient({
             <FaMusic className="w-10 h-10 text-theme-primary" />
           </div>
           <h2 className="text-2xl font-bold mb-2 text-theme-primary classical-title">
-            Erro ao carregar instrumentos
+            {t('instruments_jsx_h2_children_0__erro_carregar_instrumentos')}
           </h2>
           <p className="text-theme-secondary classical-subtitle">
-            Tente recarregar a página
+            {t('instruments_jsx_p_children_0__tente_recarregar_pagina')}
           </p>
         </div>
       </div>
@@ -205,16 +190,14 @@ export function InstrumentsPageClient({
                 style={{ animationDelay: '0.2s' }}
               >
                 <h1 className="text-5xl lg:text-7xl font-bold text-theme-primary classical-title tracking-tight leading-tight">
-                  História dos {''}
+                  {t('hero_jsx_h1_children_0__historia_dos')} {''}
                   <span className="block text-gradient-brand bg-clip-text text-transparent mt-2">
-                    Instrumentos Musicais
+                    {t('hero_jsx_span_children_0__instrumentos_musicais')}
                   </span>
                 </h1>
 
                 <p className="text-xl lg:text-2xl text-theme-secondary classical-subtitle mb-8 max-w-4xl mx-auto leading-relaxed">
-                  Explore a rica história e evolução dos instrumentos
-                  fundamentais da música clássica, desde suas origens até os
-                  grandes virtuosos que os eternizaram.
+                  {t('hero_jsx_p_children_0__explore_rica_historia')}
                 </p>
               </div>
             </div>
@@ -246,7 +229,7 @@ export function InstrumentsPageClient({
                     </div>
                     <div className="flex-1">
                       <h2 className="text-4xl text-theme-primary classical-title mb-2 group-hover:text-brand-primary transition-colors duration-300">
-                        {instrument.name}
+                        {instrument.historicalData.name}
                       </h2>
                       <p className="text-theme-secondary text-lg classical-subtitle mb-1">
                         {instrument.historicalData.category} •{' '}
@@ -263,7 +246,9 @@ export function InstrumentsPageClient({
                       <div className="text-2xl font-bold text-brand-primary classical-title">
                         {instrument.stats.totalWorks}
                       </div>
-                      <div className="text-sm text-theme-secondary">Obras</div>
+                      <div className="text-sm text-theme-secondary">
+                        {t('instruments_jsx_div_children_0__obras')}
+                      </div>
                     </div>
 
                     <div className="w-8 h-8 bg-interactive-hover rounded-xl flex items-center justify-center transition-all duration-300 group-hover:bg-brand-primary/20">
@@ -306,7 +291,9 @@ export function InstrumentsPageClient({
                                 <FaHistory className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
-                                História Detalhada
+                                {t(
+                                  'instruments_jsx_h3_children_0__historia_detalhada'
+                                )}
                               </h3>
                             </div>
                             <p className="text-theme-secondary leading-relaxed text-sm classical-body">
@@ -323,13 +310,15 @@ export function InstrumentsPageClient({
                                 <FaMapMarkerAlt className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
-                                Informações Básicas
+                                {t(
+                                  'instruments_jsx_h3_children_0__informacoes_basicas'
+                                )}
                               </h3>
                             </div>
                             <div className="space-y-3">
                               <div className="flex justify-between">
                                 <span className="text-theme-secondary">
-                                  Origem:
+                                  {t('instruments_jsx_span_children_0__origem')}
                                 </span>
                                 <span className="text-theme-primary font-medium">
                                   {instrument.historicalData.origin}
@@ -337,16 +326,22 @@ export function InstrumentsPageClient({
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-theme-secondary">
-                                  Inventor:
+                                  {t(
+                                    'instruments_jsx_span_children_0__inventor'
+                                  )}
                                 </span>
                                 <span className="text-theme-primary font-medium">
                                   {instrument.historicalData.inventor ||
-                                    'Desconhecido'}
+                                    t(
+                                      'instruments_jsx_span_children_0__desconhecido'
+                                    )}
                                 </span>
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-theme-secondary">
-                                  Período:
+                                  {t(
+                                    'instruments_jsx_span_children_0__periodo'
+                                  )}
                                 </span>
                                 <span className="text-theme-primary font-medium">
                                   {instrument.historicalData.inventionPeriod}
@@ -354,7 +349,9 @@ export function InstrumentsPageClient({
                               </div>
                               <div className="flex justify-between">
                                 <span className="text-theme-secondary">
-                                  Categoria:
+                                  {t(
+                                    'instruments_jsx_span_children_0__categoria'
+                                  )}
                                 </span>
                                 <span className="text-theme-primary font-medium">
                                   {instrument.historicalData.category}
@@ -373,7 +370,9 @@ export function InstrumentsPageClient({
                                   <FaAward className="w-4 h-4 text-theme-primary" />
                                 </div>
                                 <h3 className="text-xl font-bold text-theme-primary classical-title">
-                                  Compositor Destaque
+                                  {t(
+                                    'instruments_jsx_h3_children_0__compositor_destaque'
+                                  )}
                                 </h3>
                               </div>
                               <div className="flex items-center space-x-4">
@@ -413,7 +412,11 @@ export function InstrumentsPageClient({
                                   </Link>
 
                                   <div className="text-theme-secondary text-sm">
-                                    {instrument.topComposers[0].count} obras •{' '}
+                                    {instrument.topComposers[0].count}{' '}
+                                    {t(
+                                      'instruments_jsx_span_children_0__obras_minuscula'
+                                    )}{' '}
+                                    •{' '}
                                     <span className="text-brand-primary">
                                       {
                                         instrument.topComposers[0].composer
@@ -443,7 +446,9 @@ export function InstrumentsPageClient({
                                 <FaLightbulb className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
-                                Características
+                                {t(
+                                  'instruments_jsx_h3_children_0__caracteristicas'
+                                )}
                               </h3>
                             </div>
                             <div
@@ -501,7 +506,9 @@ export function InstrumentsPageClient({
                                 <IoIosTrendingUp className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
-                                Evolução Histórica
+                                {t(
+                                  'instruments_jsx_h3_children_0__evolucao_historica'
+                                )}
                               </h3>
                             </div>
                             <div
@@ -560,7 +567,9 @@ export function InstrumentsPageClient({
                                 <FaStar className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
-                                Características Técnicas
+                                {t(
+                                  'instruments_jsx_h3_children_0__caracteristicas_tecnicas'
+                                )}
                               </h3>
                             </div>
                             <div
@@ -617,7 +626,9 @@ export function InstrumentsPageClient({
                                 <FaStar className="w-4 h-4 text-theme-primary" />
                               </div>
                               <h3 className="text-xl font-bold text-theme-primary classical-title">
-                                Intérpretes Famosos
+                                {t(
+                                  'instruments_jsx_h3_children_0__interpretes_famosos'
+                                )}
                               </h3>
                             </div>
                             <div
@@ -678,10 +689,15 @@ export function InstrumentsPageClient({
                           </div>
                           <div>
                             <h3 className="text-2xl font-bold text-theme-primary classical-title">
-                              Obras Selecionadas
+                              {t(
+                                'instruments_jsx_h3_children_0__obras_selecionadas'
+                              )}
                             </h3>
                             <p className="text-theme-secondary text-sm">
-                              {instrument.works.length} composições disponíveis
+                              {instrument.works.length}{' '}
+                              {t(
+                                'instruments_jsx_p_children_0__composicoes_disponiveis'
+                              )}
                             </p>
                           </div>
                         </div>
