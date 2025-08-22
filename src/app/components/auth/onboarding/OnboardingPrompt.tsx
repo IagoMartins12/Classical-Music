@@ -1,9 +1,11 @@
+// components/onboarding/OnboardingPrompt.tsx
 'use client';
 
 import React from 'react';
 import { FiUser, FiArrowRight, FiX } from 'react-icons/fi';
 import { useOnboardingModal, usePromptModal } from '@/app/stores/authStore';
 import { useUser } from '@/app/hooks/userStore';
+import { useTranslation } from '@/app/hooks/useTranslation';
 import Button from '../../Common/Button';
 
 const OnboardingPrompt = () => {
@@ -14,6 +16,7 @@ const OnboardingPrompt = () => {
     isOpen: isOnboardingModalOpen,
     step,
   } = useOnboardingModal();
+  const { t } = useTranslation({ sections: ['components/onboarding'] });
 
   // Don't show if user has completed onboarding
   if (!user || user.onboardingCompleted) {
@@ -35,17 +38,16 @@ const OnboardingPrompt = () => {
 
         <div className="flex-1">
           <h4 className="font-semibold text-theme-primary mb-1">
-            Complete seu perfil
+            {t('prompt_title')}
           </h4>
           <p className="text-sm text-theme-secondary mb-3">
-            Configure suas preferências musicais para receber recomendações
-            personalizadas.
+            {t('prompt_description')}
           </p>
 
           <div className="mb-8">
             <div className="flex items-center justify-between mb-4">
               <span className="text-sm text-theme-tertiary">
-                Etapa {step} de 6
+                {t('prompt_step_of')} {step} {t('onboarding_modal_step_of')} 6
               </span>
             </div>
 
@@ -66,11 +68,11 @@ const OnboardingPrompt = () => {
               }}
               rightIcon={<FiArrowRight />}
             >
-              Configurar Agora
+              {t('prompt_configure_now')}
             </Button>
 
             <Button variant="ghost" size="sm" onClick={closePrompt}>
-              Depois
+              {t('prompt_later')}
             </Button>
           </div>
         </div>

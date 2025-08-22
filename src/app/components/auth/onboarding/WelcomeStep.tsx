@@ -1,11 +1,14 @@
-// components/auth/onboarding/WelcomeStep.tsx
+// components/onboarding/WelcomeStep.tsx
 'use client';
 
 import React from 'react';
 import { GiGrandPiano, GiMusicalNotes, GiViolin } from 'react-icons/gi';
 import { FiHeart, FiBook, FiUsers } from 'react-icons/fi';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 const WelcomeStep: React.FC = () => {
+  const { t } = useTranslation({ sections: ['components/onboarding'] });
+
   return (
     <div className="text-center py-8">
       <div className="mb-8">
@@ -22,13 +25,11 @@ const WelcomeStep: React.FC = () => {
         </div>
 
         <h3 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-          Bem-vindo à Opus Atlas!
+          {t('welcome_step_title')}
         </h3>
 
         <p className="text-lg text-theme-secondary max-w-2xl mx-auto leading-relaxed">
-          Estamos muito felizes em tê-lo conosco! Vamos configurar seu perfil
-          para personalizar sua experiência e ajudá-lo a descobrir o melhor da
-          música clássica.
+          {t('welcome_step_subtitle')}
         </p>
       </div>
 
@@ -38,10 +39,10 @@ const WelcomeStep: React.FC = () => {
             <FiBook className="w-6 h-6 text-accent-green" />
           </div>
           <h4 className="font-semibold text-theme-primary mb-2">
-            Explore & Aprenda
+            {t('welcome_step_explore_title')}
           </h4>
           <p className="text-sm text-theme-secondary">
-            Descubra milhares de obras e compositores da música clássica
+            {t('welcome_step_explore_description')}
           </p>
         </div>
 
@@ -49,9 +50,11 @@ const WelcomeStep: React.FC = () => {
           <div className="w-12 h-12 bg-accent-purple bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
             <FiHeart className="w-6 h-6 text-accent-purple" />
           </div>
-          <h4 className="font-semibold text-theme-primary mb-2">Personalize</h4>
+          <h4 className="font-semibold text-theme-primary mb-2">
+            {t('welcome_step_personalize_title')}
+          </h4>
           <p className="text-sm text-theme-secondary">
-            Crie listas de favoritos e acompanhe seu progresso musical
+            {t('welcome_step_personalize_description')}
           </p>
         </div>
 
@@ -59,9 +62,11 @@ const WelcomeStep: React.FC = () => {
           <div className="w-12 h-12 bg-accent-blue bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
             <FiUsers className="w-6 h-6 text-accent-blue" />
           </div>
-          <h4 className="font-semibold text-theme-primary mb-2">Conecte-se</h4>
+          <h4 className="font-semibold text-theme-primary mb-2">
+            {t('welcome_step_connect_title')}
+          </h4>
           <p className="text-sm text-theme-secondary">
-            Faça parte de uma comunidade apaixonada por música clássica
+            {t('welcome_step_connect_description')}
           </p>
         </div>
       </div>

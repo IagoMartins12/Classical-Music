@@ -46,7 +46,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
       <div className={`relative ${containerClassName} ${className}`}>
         <label
           htmlFor={checkboxId}
-          className="flex items-center cursor-pointer select-none"
+          className="flex items-center cursor-pointer select-none "
         >
           {/* INPUT */}
           <input
@@ -77,7 +77,11 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             />
           </div>
 
-          {label && <span className="ml-3 text-sm text-gray-800">{label}</span>}
+          {label && (
+            <span className="ml-2 text-sm text-theme-primary font-semibold">
+              {label}
+            </span>
+          )}
         </label>
 
         {error && <p className="mt-1 text-sm text-red-600">{error}</p>}

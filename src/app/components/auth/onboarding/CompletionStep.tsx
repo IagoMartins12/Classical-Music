@@ -1,10 +1,11 @@
-// components/auth/onboarding/CompletionStep.tsx
+// components/onboarding/CompletionStep.tsx
 'use client';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React from 'react';
 import { FiCheck, FiArrowRight } from 'react-icons/fi';
 import { GiGrandPiano, GiMusicalNotes } from 'react-icons/gi';
+import { useTranslation } from '@/app/hooks/useTranslation';
 import Button from '../../Common/Button';
 
 interface CompletionStepProps {
@@ -13,44 +14,45 @@ interface CompletionStepProps {
 
 const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
   const { data, isLoading } = useOnboardingModal();
+  const { t } = useTranslation({ sections: ['components/onboarding'] });
 
   const getWelcomeMessage = () => {
     switch (data.userType) {
       case 'MUSIC_STUDENT':
-        return 'Pronto para acelerar seus estudos musicais!';
+        return t('completion_step_student_message');
       case 'PROFESSIONAL':
-        return 'Bem-vindo à nossa comunidade de profissionais!';
+        return t('completion_step_professional_message');
       case 'TEACHER':
-        return 'Obrigado por educar a próxima geração de músicos!';
+        return t('completion_step_teacher_message');
       default:
-        return 'Sua jornada na música clássica começa agora!';
+        return t('completion_step_default_message');
     }
   };
 
   const getPersonalizedFeatures = () => {
     const features = [
-      'Acesso completo à enciclopédia de música clássica',
-      'Recomendações personalizadas baseadas no seu perfil',
-      'Sistema de favoritos e listas de reprodução',
+      t('completion_step_feature_encyclopedia'),
+      t('completion_step_feature_recommendations'),
+      t('completion_step_feature_favorites'),
     ];
 
     if (data.userType === 'MUSIC_STUDENT') {
       features.push(
-        'Ferramenta de acompanhamento de estudos',
-        'Anotações pessoais em partituras'
+        t('completion_step_feature_study_tracking'),
+        t('completion_step_feature_annotations')
       );
     }
 
     if (data.instruments && data.instruments.length > 0) {
       features.push(
-        `Repertório recomendado para ${data.instruments
+        `${t('completion_step_feature_repertoire')} ${data.instruments
           .map((i) => i.name)
           .join(', ')}`
       );
     }
 
     if (data.favoriteComposerId) {
-      features.push('Conteúdo especial do seu compositor favorito');
+      features.push(t('completion_step_feature_composer_content'));
     }
 
     return features;
@@ -67,7 +69,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
         </div>
 
         <h3 className="text-3xl font-bold text-theme-primary classical-title mb-4">
-          Perfil configurado! 🎉
+          {t('completion_step_title')}
         </h3>
 
         <p className="text-lg text-theme-secondary max-w-md mx-auto">
@@ -78,7 +80,7 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
       {/* Profile Summary */}
       <div className="classical-card-2 p-6 mb-8 max-w-2xl mx-auto text-left">
         <h4 className="font-semibold text-theme-primary mb-4 text-center">
-          Recursos disponíveis para você:
+          {t('completion_step_features_title')}
         </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -96,37 +98,37 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
       {/* Next Steps */}
       <div className="mb-8">
         <h4 className="font-semibold text-theme-primary mb-4">
-          Próximos passos recomendados:
+          {t('completion_step_next_steps')}
         </h4>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
           <div className="classical-card-2 p-4">
             <GiMusicalNotes className="w-8 h-8 text-accent-blue mx-auto mb-3" />
             <h5 className="font-medium text-theme-primary mb-2">
-              Explore o Catálogo
+              {t('completion_step_explore_title')}
             </h5>
             <p className="text-sm text-theme-secondary">
-              Descubra obras e compositores na nossa enciclopédia
+              {t('completion_step_explore_desc')}
             </p>
           </div>
 
           <div className="classical-card-2 p-4">
             <GiGrandPiano className="w-8 h-8 text-accent-purple mx-auto mb-3" />
             <h5 className="font-medium text-theme-primary mb-2">
-              Monte sua Lista
+              {t('completion_step_lists_title')}
             </h5>
             <p className="text-sm text-theme-secondary">
-              Adicione obras aos seus favoritos e lista de desejos
+              {t('completion_step_lists_desc')}
             </p>
           </div>
 
           <div className="classical-card-2 p-4">
             <FiArrowRight className="w-8 h-8 text-accent-green mx-auto mb-3" />
             <h5 className="font-medium text-theme-primary mb-2">
-              Comece a Estudar
+              {t('completion_step_study_title')}
             </h5>
             <p className="text-sm text-theme-secondary">
-              Use nossas ferramentas para acompanhar seu progresso
+              {t('completion_step_study_desc')}
             </p>
           </div>
         </div>
@@ -140,13 +142,14 @@ const CompletionStep: React.FC<CompletionStepProps> = ({ onComplete }) => {
         className="px-8"
         rightIcon={<FiArrowRight />}
       >
-        {isLoading ? 'Finalizando...' : 'Concluir perfil'}
+        {isLoading
+          ? t('completion_step_complete_loading')
+          : t('completion_step_complete_button')}
       </Button>
 
       <div className="mt-6">
         <p className="text-sm text-theme-tertiary">
-          Você pode alterar essas configurações a qualquer momento no seu
-          perfil.
+          {t('completion_step_footer')}
         </p>
       </div>
     </div>

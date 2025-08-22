@@ -1,4 +1,4 @@
-// components/auth/ForgotPasswordModal.tsx
+// components/authModals/ForgotPasswordModal.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -12,6 +12,7 @@ import {
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import Modal from '../../Modal';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface ForgotPasswordModalProps {
   isOpen: boolean;
@@ -33,6 +34,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   onClose,
   onBackToLogin,
 }) => {
+  const { t } = useTranslation({ sections: ['components/auth-modals'] });
   const [state, setState] = useState<ForgotPasswordState>({
     step: 'email',
     email: '',
@@ -53,14 +55,20 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     e.preventDefault();
 
     if (!state.email.trim()) {
-      setState((prev) => ({ ...prev, error: 'Email é obrigatório' }));
+      setState((prev) => ({
+        ...prev,
+        error: t('forgot_password_modal_email_required'),
+      }));
       return;
     }
 
     // Validar formato do email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(state.email)) {
-      setState((prev) => ({ ...prev, error: 'Email inválido' }));
+      setState((prev) => ({
+        ...prev,
+        error: t('forgot_password_modal_email_invalid'),
+      }));
       return;
     }
 
@@ -109,7 +117,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       console.error('Erro ao solicitar reset de senha:', error);
       setState((prev) => ({
         ...prev,
-        error: 'Erro de conexão. Tente novamente.',
+        error: t('forgot_password_modal_connection_error'),
         isLoading: false,
       }));
     }
@@ -141,10 +149,10 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          Esqueceu sua senha?
+          {t('forgot_password_modal_title')}
         </h2>
         <p className="text-theme-secondary">
-          Digite seu email e enviaremos um link para redefinir sua senha
+          {t('forgot_password_modal_subtitle')}
         </p>
       </div>
 
@@ -159,13 +167,13 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         )}
 
         <Input
-          label="Email"
+          label={t('forgot_password_modal_email_label')}
           type="email"
           name="email"
           value={state.email}
           onChange={handleInputChange}
           leftIcon={<FiMail className="w-4 h-4" />}
-          placeholder="seu@email.com"
+          placeholder={t('forgot_password_modal_email_placeholder')}
           disabled={state.isLoading}
           autoComplete="email"
           autoFocus
@@ -179,7 +187,9 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             isLoading={state.isLoading}
             className="w-full"
           >
-            {state.isLoading ? 'Enviando...' : 'Enviar Link de Reset'}
+            {state.isLoading
+              ? t('forgot_password_modal_submit_loading')
+              : t('forgot_password_modal_submit_button')}
           </Button>
 
           <Button
@@ -191,7 +201,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             onClick={handleBackToLogin}
             disabled={state.isLoading}
           >
-            Voltar ao Login
+            {t('forgot_password_modal_back_button')}
           </Button>
         </div>
       </form>
@@ -199,11 +209,10 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       <div className="mt-6 text-center">
         <div className="bg-theme-secondary rounded-lg p-4">
           <h4 className="text-sm font-medium text-theme-primary mb-2">
-            💡 Dica de Segurança
+            {t('forgot_password_modal_security_tip_title')}
           </h4>
           <p className="text-xs text-theme-tertiary">
-            O link de reset será válido por apenas 1 hora. Verifique também sua
-            caixa de spam.
+            {t('forgot_password_modal_security_tip_text')}
           </p>
         </div>
       </div>
@@ -219,11 +228,10 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          Email Enviado!
+          {t('forgot_password_success_title')}
         </h2>
         <p className="text-theme-secondary">
-          Se este email estiver cadastrado, você receberá um link para redefinir
-          sua senha
+          {t('forgot_password_success_subtitle')}
         </p>
       </div>
 
@@ -233,10 +241,11 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             <FiMail className="w-5 h-5 text-accent-green mr-3 mt-0.5 flex-shrink-0" />
             <div>
               <h4 className="font-medium text-accent-green mb-1">
-                Verifique seu email
+                {t('forgot_password_success_check_title')}
               </h4>
               <p className="text-sm text-accent-green opacity-80">
-                Enviamos um link de reset para <strong>{state.email}</strong>
+                {t('forgot_password_success_check_text')}{' '}
+                <strong>{state.email}</strong>
               </p>
             </div>
           </div>
@@ -244,20 +253,21 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
         <div className="bg-theme-secondary rounded-lg p-4 space-y-3">
           <h4 className="text-sm font-medium text-theme-primary flex items-center">
-            <FiClock className="w-4 h-4 mr-2" />O que fazer agora:
+            <FiClock className="w-4 h-4 mr-2" />
+            {t('forgot_password_success_steps_title')}
           </h4>
           <ul className="text-sm text-theme-tertiary space-y-2">
             <li className="flex items-start">
               <span className="text-brand-primary mr-2">1.</span>
-              Verifique sua caixa de entrada
+              {t('forgot_password_success_step_1')}
             </li>
             <li className="flex items-start">
               <span className="text-brand-primary mr-2">2.</span>
-              Clique no link &quot;Redefinir Senha&quoet;
+              {t('forgot_password_success_step_2')}
             </li>
             <li className="flex items-start">
               <span className="text-brand-primary mr-2">3.</span>
-              Crie uma nova senha segura
+              {t('forgot_password_success_step_3')}
             </li>
           </ul>
         </div>
@@ -268,7 +278,9 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               <div className="flex items-center">
                 <FiAlertCircle className="w-4 h-4 text-accent-amber mr-2" />
                 <span className="text-sm text-accent-amber">
-                  Restam {state.remainingAttempts} tentativa(s) nesta hora
+                  {t('forgot_password_success_attempts_warning')}{' '}
+                  {state.remainingAttempts}{' '}
+                  {t('forgot_password_success_attempts_text')}
                 </span>
               </div>
             </div>
@@ -282,14 +294,14 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             leftIcon={<FiArrowLeft />}
             onClick={handleBackToLogin}
           >
-            Voltar ao Login
+            {t('forgot_password_modal_back_button')}
           </Button>
 
           <button
             onClick={handleClose}
             className="w-full text-sm text-theme-tertiary hover:text-theme-primary transition-colors"
           >
-            Fechar
+            {t('forgot_password_success_close_button')}
           </button>
         </div>
       </div>
@@ -305,12 +317,14 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          {state.rateLimited ? 'Muitas Tentativas' : 'Ops! Algo deu errado'}
+          {state.rateLimited
+            ? t('forgot_password_error_title_rate_limit')
+            : t('forgot_password_error_title_general')}
         </h2>
         <p className="text-theme-secondary">
           {state.rateLimited
-            ? 'Você excedeu o limite de tentativas de reset'
-            : 'Não foi possível processar sua solicitação'}
+            ? t('forgot_password_error_subtitle_rate_limit')
+            : t('forgot_password_error_subtitle_general')}
         </p>
       </div>
 
@@ -320,7 +334,9 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             <FiAlertCircle className="w-5 h-5 text-accent-red mr-3 mt-0.5 flex-shrink-0" />
             <div>
               <h4 className="font-medium text-accent-red mb-1">
-                {state.rateLimited ? 'Limite Excedido' : 'Erro na Solicitação'}
+                {state.rateLimited
+                  ? t('forgot_password_error_rate_limit_title')
+                  : t('forgot_password_error_general_title')}
               </h4>
               <p className="text-sm text-accent-red opacity-80">
                 {state.error}
@@ -332,12 +348,12 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         {state.rateLimited && (
           <div className="bg-theme-secondary rounded-lg p-4">
             <h4 className="text-sm font-medium text-theme-primary mb-2">
-              ⏰ O que você pode fazer:
+              {t('forgot_password_error_what_to_do')}
             </h4>
             <ul className="text-sm text-theme-tertiary space-y-1">
-              <li>• Aguarde 1 hora antes de tentar novamente</li>
-              <li>• Verifique se digitou o email correto</li>
-              <li>• Entre em contato conosco se o problema persistir</li>
+              <li>{t('forgot_password_error_wait')}</li>
+              <li>{t('forgot_password_error_check_email')}</li>
+              <li>{t('forgot_password_error_contact')}</li>
             </ul>
           </div>
         )}
@@ -352,7 +368,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 setState((prev) => ({ ...prev, step: 'email', error: null }))
               }
             >
-              Tentar Novamente
+              {t('forgot_password_error_try_again_button')}
             </Button>
           )}
 
@@ -363,7 +379,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
             leftIcon={<FiArrowLeft />}
             onClick={handleBackToLogin}
           >
-            Voltar ao Login
+            {t('forgot_password_modal_back_button')}
           </Button>
         </div>
       </div>

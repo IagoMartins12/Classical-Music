@@ -1,9 +1,13 @@
-// components/auth/onboarding/InstrumentsStep.tsx
+// components/onboarding/InstrumentsStep.tsx
 'use client';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
 import React from 'react';
 import { FiPlus, FiX } from 'react-icons/fi';
+
+import { useTranslation } from '@/app/hooks/useTranslation';
+import { translateInstrument } from '@/app/utils/translations/instrumentsGenresTranslation';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import Select from '../../Common/Select';
 import Checkbox from '../../Common/Checkbox';
 
@@ -25,22 +29,30 @@ interface InstrumentsStepProps {
   instruments: Instrument[];
 }
 
-const EXPERIENCE_LEVELS = [
-  { value: 'BEGINNER', label: 'Iniciante' },
-  { value: 'INTERMEDIATE', label: 'Intermediário' },
-  { value: 'ADVANCED', label: 'Avançado' },
-];
-
 const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
   const { data, updateData } = useOnboardingModal();
+  const { t } = useTranslation({ sections: ['components/onboarding'] });
+  const { language } = useLanguageStore();
+
+  const EXPERIENCE_LEVELS = [
+    { value: 'BEGINNER', label: t('instruments_step_level_beginner') },
+    { value: 'INTERMEDIATE', label: t('instruments_step_level_intermediate') },
+    { value: 'ADVANCED', label: t('instruments_step_level_advanced') },
+  ];
 
   // Filter instruments
   const selectedInstruments = data.instruments || [];
 
+  // Traduzir instrumentos para exibição
+  const translatedInstruments = instruments.map((instrument) => ({
+    ...instrument,
+    displayName: translateInstrument(instrument.name, language),
+  }));
+
   const addInstrument = (instrument: Instrument) => {
     const newInstrument: SelectedInstrument = {
       id: instrument.id,
-      name: instrument.name,
+      name: instrument.name, // Salvar nome original em português
       level: 'BEGINNER',
       isPrimary: selectedInstruments.length === 0, // First instrument is primary
       isLearning: true,
@@ -97,21 +109,19 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
       {isNotMusicStudent ? (
         <div className="text-center mb-8">
           <h3 className="text-2xl font-bold text-theme-primary classical-title mb-3">
-            Instrumentos de interesse
+            {t('instruments_step_title_casual')}
           </h3>
           <p className="text-theme-secondary max-w-lg mx-auto">
-            Selecione os instrumentos que mais despertam seu interesse. Isso nos
-            ajuda a recomendar repertório relevante.
+            {t('instruments_step_subtitle_casual')}
           </p>
         </div>
       ) : (
         <div className="text-center mb-8">
           <h3 className="text-2xl font-bold text-theme-primary classical-title mb-3">
-            Quais instrumentos você toca?
+            {t('instruments_step_title_student')}
           </h3>
           <p className="text-theme-secondary max-w-lg mx-auto">
-            Adicione os instrumentos que você estuda ou tem interesse em
-            aprender.
+            {t('instruments_step_subtitle_student')}
           </p>
         </div>
       )}
@@ -120,7 +130,8 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
       {selectedInstruments.length > 0 && (
         <div className="mb-8">
           <h4 className="font-semibold text-theme-primary mb-4">
-            Seus instrumentos ({selectedInstruments.length})
+            {t('instruments_step_your_instruments')} (
+            {selectedInstruments.length})
           </h4>
 
           <div className="space-y-3">
@@ -133,9 +144,9 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                   <div className="flex items-center space-x-3 mb-2">
                     {isNotMusicStudent ? (
                       <span className=" py-1 text-end bg-brand-primary  text-theme-primary classical-subtitle rounded-full">
-                        Instrumento:{' '}
+                        {t('instruments_step_instrument_label')}{' '}
                         <span className="font-medium text-sm pl-2 text-theme-primary">
-                          {instrument.name}
+                          {translateInstrument(instrument.name, language)}
                         </span>
                       </span>
                     ) : (
@@ -143,18 +154,18 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                     )}
                     {instrument.isPrimary && !isNotMusicStudent ? (
                       <span className=" py-1 text-end bg-brand-primary  text-theme-primary classical-subtitle rounded-full">
-                        Instrumento principal:{' '}
+                        {t('instruments_step_main_instrument_label')}{' '}
                         <span className="font-medium text-sm pl-2 text-theme-primary">
-                          {instrument.name}
+                          {translateInstrument(instrument.name, language)}
                         </span>
                       </span>
                     ) : (
                       <>
                         {!isNotMusicStudent && (
                           <span className=" py-1 text-end bg-brand-primary  text-theme-primary classical-subtitle rounded-full">
-                            Instrumento:{' '}
+                            {t('instruments_step_instrument_label')}{' '}
                             <span className="font-medium text-sm pl-2 text-theme-primary">
-                              {instrument.name}
+                              {translateInstrument(instrument.name, language)}
                             </span>
                           </span>
                         )}
@@ -165,7 +176,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                   {!isNotMusicStudent && (
                     <div className="flex items-center space-x-4">
                       <div className="flex items-center justify-center gap-4">
-                        <span>Selecione seu nivel atual: </span>
+                        <span>{t('instruments_step_select_level')}</span>
                         <Select
                           value={instrument.level}
                           onChange={(e) =>
@@ -178,22 +189,8 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
                         />
                       </div>
 
-                      <label className="flex items-center space-x-2 text-sm">
-                        <input
-                          type="checkbox"
-                          checked={instrument.isPrimary}
-                          onChange={(e) =>
-                            updateInstrument(instrument.id, {
-                              isPrimary: e.target.checked,
-                            })
-                          }
-                          className="rounded"
-                        />
-                        <span>Principal</span>
-                      </label>
-
                       <Checkbox
-                        label="Principal"
+                        label={t('instruments_step_primary_label')}
                         type="checkbox"
                         checked={instrument.isPrimary}
                         onChange={(e) =>
@@ -219,19 +216,9 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
         </div>
       )}
 
-      {/* Search and Filter */}
-      {/* <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input
-          placeholder="Buscar instrumentos..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          leftIcon={<FiSearch className="w-4 h-4" />}
-        />
-      </div> */}
-
       {/* Available Instruments */}
       <div className="grid grid-cols-1 py-1 px-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto overflow-x-hidden classical-scrollbar">
-        {instruments.map((instrument) => (
+        {translatedInstruments.map((instrument) => (
           <button
             key={instrument.id}
             onClick={() => addInstrument(instrument)}
@@ -247,7 +234,7 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
           >
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-theme-primary">
-                {instrument.name}
+                {instrument.displayName}
               </span>
               {!isInstrumentSelected(instrument.id) && (
                 <FiPlus className="w-4 h-4 text-brand-primary" />
@@ -262,10 +249,10 @@ const InstrumentsStep: React.FC<InstrumentsStepProps> = ({ instruments }) => {
         ))}
       </div>
 
-      {instruments.length === 0 && (
+      {translatedInstruments.length === 0 && (
         <div className="text-center py-8">
           <p className="text-theme-secondary">
-            Nenhum instrumento encontrado com os filtros atuais.
+            {t('instruments_step_no_instruments')}
           </p>
         </div>
       )}

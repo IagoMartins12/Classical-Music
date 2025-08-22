@@ -219,6 +219,8 @@ async function searchComposers(searchTerm: string, limit: number) {
         id: true,
         name: true,
         fullName: true,
+        epochName: true,
+        portraitUrl: true,
         imslpId: true,
         _count: {
           select: {
@@ -278,6 +280,8 @@ async function searchComposers(searchTerm: string, limit: number) {
         name: true,
         fullName: true,
         imslpId: true,
+        portraitUrl: true,
+        epochName: true,
         _count: {
           select: {
             works: true,
@@ -304,9 +308,9 @@ async function searchComposers(searchTerm: string, limit: number) {
     fullName: composer.fullName || undefined,
     imslpId: composer.imslpId || undefined,
     worksCount: composer._count.works,
+    portraitUrl: composer.portraitUrl,
   }));
 }
-
 // Função auxiliar para buscar compositor por ID - MELHORADA
 async function getComposerById(composerId: string) {
   try {

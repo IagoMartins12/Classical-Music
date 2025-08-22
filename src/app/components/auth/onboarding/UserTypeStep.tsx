@@ -1,4 +1,4 @@
-// components/auth/onboarding/UserTypeStep.tsx
+// components/onboarding/UserTypeStep.tsx
 'use client';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
@@ -9,42 +9,42 @@ import {
   GiTeacher,
   GiMicrophone,
 } from 'react-icons/gi';
-
-const USER_TYPES = [
-  {
-    value: 'MUSIC_STUDENT',
-    label: 'Estudante de Música',
-    description:
-      'Estudo música formalmente (conservatório, universidade, aulas particulares)',
-    icon: GiGraduateCap,
-    color: 'bg-accent-blue',
-  },
-  {
-    value: 'CASUAL_USER',
-    label: 'Entusiasta',
-    description: 'Aprecio música clássica como hobby e quero aprender mais',
-    icon: GiMusicalScore,
-    color: 'bg-accent-green',
-  },
-  {
-    value: 'PROFESSIONAL',
-    label: 'Profissional',
-    description:
-      'Sou músico profissional, intérprete ou trabalho na área musical',
-    icon: GiMicrophone,
-    color: 'bg-accent-purple',
-  },
-  {
-    value: 'TEACHER',
-    label: 'Professor',
-    description: 'Ensino música ou uso este conteúdo para fins educacionais',
-    icon: GiTeacher,
-    color: 'bg-accent-amber',
-  },
-] as const;
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 const UserTypeStep: React.FC = () => {
   const { data, updateData } = useOnboardingModal();
+  const { t } = useTranslation({ sections: ['components/onboarding'] });
+
+  const USER_TYPES = [
+    {
+      value: 'MUSIC_STUDENT',
+      label: t('user_type_music_student'),
+      description: t('user_type_music_student_desc'),
+      icon: GiGraduateCap,
+      color: 'bg-accent-blue',
+    },
+    {
+      value: 'CASUAL_USER',
+      label: t('user_type_casual_user'),
+      description: t('user_type_casual_user_desc'),
+      icon: GiMusicalScore,
+      color: 'bg-accent-green',
+    },
+    {
+      value: 'PROFESSIONAL',
+      label: t('user_type_professional'),
+      description: t('user_type_professional_desc'),
+      icon: GiMicrophone,
+      color: 'bg-accent-purple',
+    },
+    {
+      value: 'TEACHER',
+      label: t('user_type_teacher'),
+      description: t('user_type_teacher_desc'),
+      icon: GiTeacher,
+      color: 'bg-accent-amber',
+    },
+  ] as const;
 
   const handleSelect = (userType: (typeof USER_TYPES)[number]['value']) => {
     updateData({ userType });
@@ -54,11 +54,10 @@ const UserTypeStep: React.FC = () => {
     <div className="py-6">
       <div className="text-center mb-8">
         <h3 className="text-2xl font-bold text-theme-primary classical-title mb-3">
-          Como você se identifica?
+          {t('user_type_step_title')}
         </h3>
         <p className="text-theme-secondary max-w-lg mx-auto">
-          Isso nos ajuda a personalizar sua experiência e mostrar conteúdo
-          relevante para você.
+          {t('user_type_step_subtitle')}
         </p>
       </div>
 
@@ -121,8 +120,7 @@ const UserTypeStep: React.FC = () => {
 
       <div className="mt-6 text-center">
         <p className="text-sm text-theme-tertiary">
-          Você pode alterar essa informação a qualquer momento nas configurações
-          do seu perfil.
+          {t('user_type_step_footer')}
         </p>
       </div>
     </div>

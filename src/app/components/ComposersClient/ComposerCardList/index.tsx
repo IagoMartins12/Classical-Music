@@ -10,11 +10,11 @@ import {
   FiChevronRight,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
-import { ComposerImslp } from '../../../main/composers/pageClient';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
+import { ComposerImslp } from '@/app/(main)/composers/pageClient';
 
 interface composerCardListProps {
   composer: ComposerImslp;

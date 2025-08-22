@@ -1,4 +1,4 @@
-// components/auth/TermsAcceptance.tsx
+// components/authModals/TermsAcceptance.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -9,6 +9,7 @@ import {
   FiFileText,
   FiAlertCircle,
 } from 'react-icons/fi';
+import { useTranslation } from '@/app/hooks/useTranslation';
 import Modal from '../../Modal';
 
 interface TermsAcceptanceProps {
@@ -30,6 +31,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
   error,
   disabled = false,
 }) => {
+  const { t } = useTranslation({ sections: ['components/auth-modals'] });
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
 
@@ -40,118 +42,90 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
   };
 
   const privacyContent: TermsContent = {
-    title: 'Política de Privacidade',
+    title: t('privacy_policy_title'),
     icon: <FiShield className="w-5 h-5 text-brand-primary" />,
     content: (
       <div className="space-y-6 text-sm text-theme-secondary leading-relaxed">
         <div className="rounded-lg p-4">
           <h4 className="font-semibold text-accent-blue mb-2 flex items-center">
             <FiShield className="w-4 h-4 mr-2" />
-            Resumo da Nossa Política
+            {t('privacy_policy_summary_title')}
           </h4>
           <p className="text-accent-blue/90">
-            Protegemos seus dados pessoais conforme a Lei Geral de Proteção de
-            Dados (LGPD). Coletamos apenas informações necessárias para oferecer
-            nossos serviços educacionais de música clássica.
+            {t('privacy_policy_summary_text')}
           </p>
         </div>
 
         <div>
           <h4 className="font-semibold text-theme-primary mb-3">
-            📝 Dados que Coletamos
+            {t('privacy_policy_data_collection_title')}
           </h4>
           <ul className="space-y-2 ml-4">
-            <li>
-              • <strong>Cadastro:</strong> Nome, email, preferências musicais
-            </li>
-            <li>
-              • <strong>Uso:</strong> Favoritos, anotações, progresso de estudos
-            </li>
-            <li>
-              • <strong>Técnicos:</strong> Cookies essenciais, dados de
-              navegação
-            </li>
+            <li>{t('privacy_policy_data_registration')}</li>
+            <li>{t('privacy_policy_data_usage')}</li>
+            <li>{t('privacy_policy_data_technical')}</li>
           </ul>
         </div>
 
         <div>
           <h4 className="font-semibold text-theme-primary mb-3">
-            🎯 Como Usamos
+            {t('privacy_policy_how_we_use_title')}
           </h4>
           <ul className="space-y-2 ml-4">
-            <li>• Personalizar sua experiência de aprendizado</li>
-            <li>• Manter segurança da plataforma</li>
-            <li>• Enviar atualizações importantes (opcional)</li>
-            <li>• Gerar estatísticas anônimas para melhorias</li>
+            <li>{t('privacy_policy_use_personalize')}</li>
+            <li>{t('privacy_policy_use_security')}</li>
+            <li>{t('privacy_policy_use_updates')}</li>
+            <li>{t('privacy_policy_use_statistics')}</li>
           </ul>
         </div>
 
         <div>
           <h4 className="font-semibold text-theme-primary mb-3">
-            🛡️ Seus Direitos LGPD
+            {t('privacy_policy_rights_title')}
           </h4>
           <div className="rounded-lg p-3">
             <ul className="space-y-1 text-accent-green">
-              <li>
-                ✓ <strong>Acesso:</strong> Ver seus dados
-              </li>
-              <li>
-                ✓ <strong>Correção:</strong> Corrigir informações
-              </li>
-              <li>
-                ✓ <strong>Exclusão:</strong> Deletar sua conta
-              </li>
-              <li>
-                ✓ <strong>Portabilidade:</strong> Exportar dados
-              </li>
-              <li>
-                ✓ <strong>Revogação:</strong> Retirar consentimento
-              </li>
+              <li>{t('privacy_policy_right_access')}</li>
+              <li>{t('privacy_policy_right_correction')}</li>
+              <li>{t('privacy_policy_right_deletion')}</li>
+              <li>{t('privacy_policy_right_portability')}</li>
+              <li>{t('privacy_policy_right_revocation')}</li>
             </ul>
           </div>
         </div>
 
         <div>
           <h4 className="font-semibold text-theme-primary mb-3">
-            🔒 Segurança
+            {t('privacy_policy_security_title')}
           </h4>
           <ul className="space-y-2 ml-4">
-            <li>• Criptografia SSL/TLS para proteção</li>
-            <li>• Senhas com hash seguro</li>
-            <li>• Backups regulares e seguros</li>
-            <li>• Monitoramento de segurança 24/7</li>
+            <li>{t('privacy_policy_security_encryption')}</li>
+            <li>{t('privacy_policy_security_passwords')}</li>
+            <li>{t('privacy_policy_security_backups')}</li>
+            <li>{t('privacy_policy_security_monitoring')}</li>
           </ul>
         </div>
 
         <div>
           <h4 className="font-semibold text-theme-primary mb-3">
-            ⏱️ Retenção de Dados
+            {t('privacy_policy_retention_title')}
           </h4>
           <ul className="space-y-2 ml-4">
-            <li>
-              • <strong>Dados de conta:</strong> Até exclusão da conta
-            </li>
-            <li>
-              • <strong>Dados de uso:</strong> Até exclusão da conta
-            </li>
-            <li>
-              • <strong>Cookies técnicos:</strong> 90 dias
-            </li>
-            <li>
-              • <strong>Anotações públicas:</strong> Podem ser mantidas
-              anonimizadas
-            </li>
+            <li>{t('privacy_policy_retention_account')}</li>
+            <li>{t('privacy_policy_retention_usage')}</li>
+            <li>{t('privacy_policy_retention_cookies')}</li>
+            <li>{t('privacy_policy_retention_annotations')}</li>
           </ul>
         </div>
 
         <div className="bg-accent-amber/10 border border-accent-amber/30 rounded-lg p-4">
           <h4 className="font-semibold text-accent-amber mb-2">
-            📧 Contato DPO
+            {t('privacy_policy_contact_title')}
           </h4>
           <p className="text-accent-amber/90">
-            Dúvidas sobre privacidade? Entre em contato:
+            {t('privacy_policy_contact_text')}
             <br />
-            <strong>privacidade@opusatlas.com</strong>
+            <strong>{t('privacy_policy_contact_email')}</strong>
           </p>
         </div>
       </div>
@@ -159,100 +133,98 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
   };
 
   const termsContent: TermsContent = {
-    title: 'Termos de Uso',
+    title: t('terms_of_use_title'),
     icon: <FiFileText className="w-5 h-5 text-brand-primary" />,
     content: (
       <div className="space-y-6 text-sm text-theme-secondary leading-relaxed">
         <div className="bg-theme-elevated rounded-lg p-4">
           <h4 className="font-semibold text-accent-purple mb-2 flex items-center">
             <FiFileText className="w-4 h-4 mr-2" />
-            Resumo dos Termos
+            {t('terms_of_use_summary_title')}
           </h4>
           <p className="text-accent-purple/90">
-            O Opus Atlas é uma plataforma educacional de música clássica. Ao
-            usar nosso serviço, você concorda em ser respeitoso com a comunidade
-            e usar o conteúdo responsavelmente.
+            {t('terms_of_use_summary_text')}
           </p>
         </div>
 
         <div>
           <h4 className="font-semibold text-theme-primary mb-3">
-            ✅ Uso Permitido
+            {t('terms_of_use_permitted_title')}
           </h4>
           <ul className="space-y-2 ml-4">
-            <li>• Explorar compositores, obras e partituras</li>
-            <li>• Fazer anotações pessoais e de estudo</li>
-            <li>• Participar respeitosamente da comunidade</li>
-            <li>• Usar ferramentas educacionais disponíveis</li>
+            <li>{t('terms_of_use_permitted_explore')}</li>
+            <li>{t('terms_of_use_permitted_notes')}</li>
+            <li>{t('terms_of_use_permitted_community')}</li>
+            <li>{t('terms_of_use_permitted_tools')}</li>
           </ul>
         </div>
 
         <div>
           <h4 className="font-semibold text-theme-primary mb-3">
-            ❌ Uso Proibido
+            {t('terms_of_use_prohibited_title')}
           </h4>
           <ul className="space-y-2 ml-4">
-            <li>• Atividades comerciais não autorizadas</li>
-            <li>• Spam ou conteúdo inadequado</li>
-            <li>• Violação de direitos autorais</li>
-            <li>• Comportamento ofensivo ou discriminatório</li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-semibold text-theme-primary mb-3">📚 Conteúdo</h4>
-          <ul className="space-y-2 ml-4">
-            <li>
-              • Partituras provêm principalmente do IMSLP (domínio público)
-            </li>
-            <li>• Você mantém direitos sobre suas anotações pessoais</li>
-            <li>• Uploads passam por moderação</li>
-            <li>• Sistema de pontuação recompensa qualidade</li>
+            <li>{t('terms_of_use_prohibited_commercial')}</li>
+            <li>{t('terms_of_use_prohibited_spam')}</li>
+            <li>{t('terms_of_use_prohibited_copyright')}</li>
+            <li>{t('terms_of_use_prohibited_offensive')}</li>
           </ul>
         </div>
 
         <div>
           <h4 className="font-semibold text-theme-primary mb-3">
-            ⭐ Sistema de Favoritos
+            {t('terms_of_use_content_title')}
           </h4>
           <ul className="space-y-2 ml-4">
-            <li>• Organize compositores, obras e partituras</li>
-            <li>• Anotações podem ser privadas ou públicas</li>
-            <li>• Anotações públicas devem ser educativas</li>
+            <li>{t('terms_of_use_content_scores')}</li>
+            <li>{t('terms_of_use_content_annotations')}</li>
+            <li>{t('terms_of_use_content_uploads')}</li>
+            <li>{t('terms_of_use_content_points')}</li>
           </ul>
         </div>
 
         <div>
           <h4 className="font-semibold text-theme-primary mb-3">
-            🛡️ Responsabilidades
+            {t('terms_of_use_favorites_title')}
+          </h4>
+          <ul className="space-y-2 ml-4">
+            <li>{t('terms_of_use_favorites_organize')}</li>
+            <li>{t('terms_of_use_favorites_privacy')}</li>
+            <li>{t('terms_of_use_favorites_educational')}</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="font-semibold text-theme-primary mb-3">
+            {t('terms_of_use_responsibilities_title')}
           </h4>
           <div className="rounded-lg p-3">
             <ul className="space-y-1 text-accent-amber">
-              <li>• Manter segurança da sua conta</li>
-              <li>• Ser respeitoso com outros usuários</li>
-              <li>• Não burlar sistemas de moderação</li>
-              <li>• Colaborar construtivamente</li>
+              <li>{t('terms_of_use_responsibility_security')}</li>
+              <li>{t('terms_of_use_responsibility_respect')}</li>
+              <li>{t('terms_of_use_responsibility_moderation')}</li>
+              <li>{t('terms_of_use_responsibility_collaboration')}</li>
             </ul>
           </div>
         </div>
 
         <div>
           <h4 className="font-semibold text-theme-primary mb-3">
-            ⚖️ Suspensão e Encerramento
+            {t('terms_of_use_suspension_title')}
           </h4>
           <ul className="space-y-2 ml-4">
-            <li>• Podemos suspender contas por violação dos termos</li>
-            <li>• Você pode encerrar sua conta a qualquer momento</li>
-            <li>• Anotações públicas podem permanecer na plataforma</li>
+            <li>{t('terms_of_use_suspension_violations')}</li>
+            <li>{t('terms_of_use_suspension_user_choice')}</li>
+            <li>{t('terms_of_use_suspension_annotations')}</li>
           </ul>
         </div>
 
         <div className="rounded-lg p-4">
-          <h4 className="font-semibold text-accent-red mb-2">⚠️ Limitações</h4>
+          <h4 className="font-semibold text-accent-red mb-2">
+            {t('terms_of_use_limitations_title')}
+          </h4>
           <p className="text-accent-red/90">
-            A plataforma é fornecida &quot;como está&quot;. Não garantimos
-            precisão absoluta de todas as informações musicais. Use por sua
-            conta e risco.
+            {t('terms_of_use_limitations_text')}
           </p>
         </div>
       </div>
@@ -280,8 +252,8 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           </div>
 
           <div className="flex-1 flex-nowrap min-w-0">
-            <p className="text-sm text-theme-secondary whitespace-nowrap">
-              Li e aceito os{' '}
+            <p className="text-sm text-theme-secondary ">
+              {t('terms_acceptance_text')}{' '}
               <button
                 type="button"
                 onClick={(e) => {
@@ -291,9 +263,9 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
                 className="text-brand-primary hover:text-brand-secondary font-medium underline inline-flex items-center"
                 disabled={disabled}
               >
-                Termos de Uso
+                {t('terms_acceptance_terms_link')}
               </button>{' '}
-              e a{' '}
+              {t('terms_acceptance_and')}{' '}
               <button
                 type="button"
                 onClick={(e) => {
@@ -303,7 +275,7 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
                 className="text-brand-primary hover:text-brand-secondary font-medium underline inline-flex items-center"
                 disabled={disabled}
               >
-                Política de Privacidade
+                {t('terms_acceptance_privacy_link')}
               </button>{' '}
             </p>
           </div>
@@ -330,10 +302,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           {privacyContent.icon}
           <div>
             <h3 className="text-lg font-semibold text-theme-primary">
-              Política de Privacidade - Opus Atlas
+              {t('privacy_policy_subtitle')}
             </h3>
             <p className="text-sm text-theme-tertiary">
-              Última atualização: Janeiro de 2025 • Conforme LGPD
+              {t('privacy_policy_last_update')}
             </p>
           </div>
         </div>
@@ -352,10 +324,10 @@ const TermsAcceptance: React.FC<TermsAcceptanceProps> = ({
           {termsContent.icon}
           <div>
             <h3 className="text-lg font-semibold text-theme-primary">
-              Termos de Uso - Opus Atlas
+              {t('terms_of_use_subtitle')}
             </h3>
             <p className="text-sm text-theme-tertiary">
-              Última atualização: Janeiro de 2025
+              {t('terms_of_use_last_update')}
             </p>
           </div>
         </div>

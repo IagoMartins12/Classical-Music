@@ -22,6 +22,7 @@ import {
   canProceedWithPhone,
   usePhoneValidation,
 } from '@/app/utils/phones_and_location/phoneValidation';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface OnboardingOptions {
   instruments: Array<{ id: string; name: string; category: string | null }>;
@@ -52,6 +53,7 @@ const OnboardingModal: React.FC = () => {
   } = useOnboardingModal();
   const { updateUserSession } = useSessionUpdate();
   const router = useRouter();
+  const { t } = useTranslation({ sections: ['components/onboarding'] });
 
   const [options, setOptions] = useState<OnboardingOptions | null>(null);
   const [isLoadingOptions, setIsLoadingOptions] = useState(false);
@@ -90,14 +92,14 @@ const OnboardingModal: React.FC = () => {
         }));
       } else {
         setValidationErrors((prev) => {
-          const { _phone, ...rest } = prev;
+          const { phone, ...rest } = prev;
           return rest;
         });
       }
     } else {
       // Telefone vazio é válido, remover erro
       setValidationErrors((prev) => {
-        const { _phone, ...rest } = prev;
+        const { phone, ...rest } = prev;
         return rest;
       });
     }
@@ -110,11 +112,11 @@ const OnboardingModal: React.FC = () => {
       if (result.success && result.data) {
         setOptions(result.data);
       } else {
-        toast.error('Erro ao carregar opções. Tente novamente.');
+        toast.error(t('onboarding_modal_error_loading'));
       }
     } catch (error) {
       console.error('Error loading onboarding options:', error);
-      toast.error('Erro ao carregar opções. Tente novamente.');
+      toast.error(t('onboarding_modal_error_loading'));
     } finally {
       setIsLoadingOptions(false);
     }
@@ -122,7 +124,7 @@ const OnboardingModal: React.FC = () => {
 
   const handleComplete = async () => {
     if (!user?.id) {
-      toast.error('Usuário não encontrado');
+      toast.error(t('onboarding_modal_user_not_found'));
       return;
     }
 
@@ -147,15 +149,13 @@ const OnboardingModal: React.FC = () => {
         if (sessionUpdated) {
           console.log('✅ Sessão atualizada com sucesso');
           complete();
-          toast.success('🎉 Onboarding finalizado com sucesso!');
+          toast.success(t('onboarding_modal_success'));
           router.refresh();
         } else {
           console.warn(
             '⚠️ Problema ao atualizar sessão, mas onboarding foi salvo'
           );
-          toast.success(
-            'Perfil salvo! Recarregue a página para ver as mudanças.'
-          );
+          toast.success(t('onboarding_modal_session_update_warning'));
           complete();
         }
       } else {
@@ -164,7 +164,7 @@ const OnboardingModal: React.FC = () => {
       }
     } catch (error) {
       console.error('❌ Erro inesperado ao completar onboarding:', error);
-      toast.error('Erro inesperado. Tente novamente.');
+      toast.error(t('onboarding_modal_unexpected_error'));
     } finally {
       setLoading(false);
     }
@@ -173,9 +173,7 @@ const OnboardingModal: React.FC = () => {
   const handleSkip = () => {
     console.log('⏭️ Pulando onboarding (salvando progresso)');
     close();
-    toast.success(
-      'Progresso salvo! Você pode continuar depois nas configurações.'
-    );
+    toast.success(t('onboarding_modal_progress_saved'));
   };
 
   const handleClose = () => {
@@ -184,15 +182,11 @@ const OnboardingModal: React.FC = () => {
   };
 
   const handleStartOver = () => {
-    if (
-      window.confirm(
-        'Tem certeza que deseja recomeçar? Todo o progresso será perdido.'
-      )
-    ) {
+    if (window.confirm(t('onboarding_modal_start_over_confirm'))) {
       console.log('🔄 Recomeçando onboarding do zero');
       resetData();
       setValidationErrors({});
-      toast.success('Progresso removido. Começando do início...');
+      toast.success(t('onboarding_modal_progress_removed'));
     }
   };
 
@@ -251,7 +245,9 @@ const OnboardingModal: React.FC = () => {
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
             <div className="animate-spin w-8 h-8 border-3 border-brand-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-            <p className="text-theme-secondary">Carregando opções...</p>
+            <p className="text-theme-secondary">
+              {t('onboarding_modal_loading_options')}
+            </p>
           </div>
         </div>
       );
@@ -260,9 +256,11 @@ const OnboardingModal: React.FC = () => {
     if (!options) {
       return (
         <div className="text-center py-20">
-          <p className="text-theme-secondary mb-4">Erro ao carregar opções.</p>
+          <p className="text-theme-secondary mb-4">
+            {t('onboarding_modal_error_loading')}
+          </p>
           <Button onClick={loadOptions} variant="outline">
-            Tentar Novamente
+            {t('onboarding_modal_try_again')}
           </Button>
         </div>
       );
@@ -294,19 +292,19 @@ const OnboardingModal: React.FC = () => {
   const getStepTitle = () => {
     switch (step) {
       case 1:
-        return 'Bem-vindo!';
+        return t('onboarding_modal_step_1_title');
       case 2:
-        return 'Conte-nos sobre você';
+        return t('onboarding_modal_step_2_title');
       case 3:
-        return 'Seus instrumentos';
+        return t('onboarding_modal_step_3_title');
       case 4:
-        return 'Suas preferências';
+        return t('onboarding_modal_step_4_title');
       case 5:
-        return 'Perfil pessoal';
+        return t('onboarding_modal_step_5_title');
       case 6:
-        return 'Quase pronto!';
+        return t('onboarding_modal_step_6_title');
       default:
-        return 'Configuração';
+        return t('onboarding_modal_default_title');
     }
   };
 
@@ -344,7 +342,9 @@ const OnboardingModal: React.FC = () => {
               {getStepTitle()}
             </h2>
           </div>
-          <span className="text-sm text-theme-tertiary">{step} de 6</span>
+          <span className="text-sm text-theme-tertiary">
+            {step} {t('onboarding_modal_step_of')} 6
+          </span>
         </div>
 
         <div className="w-full bg-theme-secondary rounded-full h-2">
@@ -361,7 +361,7 @@ const OnboardingModal: React.FC = () => {
           <FiPhone className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
             <h4 className="text-sm font-medium text-red-800">
-              Telefone inválido
+              {t('onboarding_modal_phone_invalid_title')}
             </h4>
             <p className="text-sm text-red-700 mt-1">
               {validationErrors.phone}
@@ -384,7 +384,7 @@ const OnboardingModal: React.FC = () => {
           <div className="flex space-x-3">
             {step > 1 && (
               <Button variant="ghost" onClick={prevStep} disabled={isLoading}>
-                Voltar
+                {t('onboarding_modal_back_button')}
               </Button>
             )}
 
@@ -392,9 +392,9 @@ const OnboardingModal: React.FC = () => {
               variant="outline"
               onClick={handleSkip}
               disabled={isLoading}
-              title="Salva o progresso e fecha o modal"
+              title={t('onboarding_modal_continue_later_tooltip')}
             >
-              Continuar depois
+              {t('onboarding_modal_continue_later')}
             </Button>
           </div>
 
@@ -410,7 +410,9 @@ const OnboardingModal: React.FC = () => {
                   : undefined
               }
             >
-              {step === 5 ? 'Finalizar Perfil' : 'Continuar'}
+              {step === 5
+                ? t('onboarding_modal_finalize_profile')
+                : t('onboarding_modal_continue_button')}
             </Button>
           </div>
         </div>
@@ -425,7 +427,7 @@ const OnboardingModal: React.FC = () => {
               className="text-xs text-theme-tertiary hover:text-accent-red transition-colors flex items-center space-x-1"
             >
               <FiAlertCircle className="w-3 h-3" />
-              <span>Recomeçar do zero</span>
+              <span>{t('onboarding_modal_start_over')}</span>
             </button>
           </div>
         </div>

@@ -1,4 +1,4 @@
-// components/auth/onboarding/ProfileStep.tsx - CORRIGIDO para salvar objetos completos
+// components/onboarding/ProfileStep.tsx - CORRIGIDO para salvar objetos completos
 'use client';
 
 import { useOnboardingModal } from '@/app/stores/authStore';
@@ -7,12 +7,15 @@ import toast from 'react-hot-toast';
 import { User } from 'next-auth';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
-import ProfileImageUpload from '../../ProfileImageUpload';
+
+import { useTranslation } from '@/app/hooks/useTranslation';
 import LocationSelector, { LocationData } from '../../Common/LocationSelector';
+import ProfileImageUpload from '../../ProfileImageUpload';
 import InternationalPhoneInput from '../../Common/InternationalPhoneInput';
 
 const ProfileStep: React.FC = () => {
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const { t } = useTranslation({ sections: ['components/onboarding'] });
 
   const { data, updateData } = useOnboardingModal();
   const { updateUser: globalUpdateUser, user } = useAuth();
@@ -50,12 +53,12 @@ const ProfileStep: React.FC = () => {
         const imageUpdate = { image: result.imageUrl };
         await syncUserData(imageUpdate);
         updateData({ image: result.imageUrl });
-        toast.success('Foto atualizada com sucesso!');
+        toast.success(t('profile_step_photo_updated'));
       } else {
-        toast.error(result.message || 'Erro ao fazer upload da imagem');
+        toast.error(result.message || t('profile_step_photo_error'));
       }
     } catch (error: any) {
-      toast.error('Erro ao fazer upload da imagem');
+      toast.error(t('profile_step_photo_error'));
       console.error('Upload error:', error);
     } finally {
       setIsUploadingImage(false);
@@ -149,12 +152,10 @@ const ProfileStep: React.FC = () => {
     <div className="py-6">
       <div className="text-center mb-8">
         <h3 className="text-2xl font-bold text-theme-primary classical-title mb-3">
-          Finalize seu perfil
+          {t('profile_step_title')}
         </h3>
         <p className="text-theme-secondary max-w-lg mx-auto">
-          Adicione uma foto, informações de contato e localização para completar
-          seu perfil. Todos os campos são opcionais e você pode configurar
-          depois.
+          {t('profile_step_subtitle')}
         </p>
       </div>
 
@@ -162,7 +163,7 @@ const ProfileStep: React.FC = () => {
         {/* Profile Picture */}
         <div className="text-center">
           <label className="block text-sm font-medium text-theme-secondary mb-4">
-            Foto do perfil (opcional)
+            {t('profile_step_photo_label')}
           </label>
 
           <ProfileImageUpload
@@ -176,26 +177,26 @@ const ProfileStep: React.FC = () => {
           />
 
           <p className="text-xs text-theme-tertiary mt-2">
-            Clique no ícone para adicionar uma foto
+            {t('profile_step_photo_hint')}
           </p>
         </div>
 
         {/* Bio */}
         <div>
           <label className="block text-sm font-medium text-theme-secondary mb-3">
-            Sobre você (opcional)
+            {t('profile_step_bio_label')}
           </label>
 
           <textarea
             value={data.bio || ''}
             onChange={(e) => updateData({ bio: e.target.value })}
-            placeholder="Conte um pouco sobre sua paixão pela música clássica..."
+            placeholder={t('profile_step_bio_placeholder')}
             className="input-classical-2 w-full h-24 resize-none"
             maxLength={500}
           />
 
           <p className="text-xs text-theme-tertiary mt-1">
-            {(data.bio || '').length}/500 caracteres
+            {(data.bio || '').length}/500 {t('profile_step_bio_chars')}
           </p>
         </div>
 
@@ -204,8 +205,8 @@ const ProfileStep: React.FC = () => {
           <InternationalPhoneInput
             value={data.phone || ''}
             onChange={handlePhoneChange}
-            label="Telefone (opcional)"
-            placeholder="Digite seu número"
+            label={t('profile_step_phone_label')}
+            placeholder={t('profile_step_phone_placeholder')}
             showLabel={true}
           />
         </div>
@@ -214,11 +215,10 @@ const ProfileStep: React.FC = () => {
         <div>
           <div className="mb-4">
             <h4 className="text-sm font-medium text-theme-secondary mb-2">
-              Localização (opcional)
+              {t('profile_step_location_label')}
             </h4>
             <p className="text-xs text-theme-tertiary mb-4">
-              Selecione seu país, estado e cidade. Essas informações são
-              privadas por padrão.
+              {t('profile_step_location_hint')}
             </p>
           </div>
 
@@ -235,19 +235,19 @@ const ProfileStep: React.FC = () => {
       <div className="mt-8 space-y-4">
         <div className="classical-card-2 p-4 max-w-lg mx-auto">
           <p className="text-sm text-theme-secondary">
-            💡 <strong>Dica:</strong> Um perfil completo ajuda outros usuários a
-            se conectarem com você e descobrirem interesses em comum!
+            {t('profile_step_tip_title')} <strong>Dica:</strong>{' '}
+            {t('profile_step_tip_text')}
           </p>
         </div>
 
         <div className="classical-card-2 p-4 max-w-lg mx-auto bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-20">
           <h4 className="text-sm font-medium text-brand-primary mb-2">
-            🔒 Privacidade
+            {t('profile_step_privacy_title')}
           </h4>
           <ul className="text-xs text-theme-secondary space-y-1">
-            <li>• Seus dados de contato são sempre privados</li>
-            <li>• A localização só é mostrada se você permitir</li>
-            <li>• Você pode alterar essas configurações a qualquer momento</li>
+            <li>{t('profile_step_privacy_contact')}</li>
+            <li>{t('profile_step_privacy_location')}</li>
+            <li>{t('profile_step_privacy_settings')}</li>
           </ul>
         </div>
       </div>

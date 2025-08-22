@@ -1,4 +1,4 @@
-// components/auth/LoginModal.tsx - VERSÃO COM TRATAMENTO DE ERROS MELHORADO
+// components/authModals/LoginModal.tsx - VERSÃO COM TRATAMENTO DE ERROS MELHORADO E TRADUÇÕES
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -13,6 +13,7 @@ import { useLoginModal } from '@/app/stores/authStore';
 import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
+import { useTranslation } from '@/app/hooks/useTranslation';
 import ForgotPasswordModal from '../ForgotPasswordModal';
 
 const LoginModal: React.FC = () => {
@@ -21,6 +22,7 @@ const LoginModal: React.FC = () => {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
   const router = useRouter();
+  const { t } = useTranslation({ sections: ['components/auth-modals'] });
 
   // Estado para erro específico de conflito de email
   const [emailConflictError, setEmailConflictError] = useState<string | null>(
@@ -55,42 +57,38 @@ const LoginModal: React.FC = () => {
 
       switch (error) {
         case 'Callback':
-          errorMessage =
-            'Este email já está cadastrado com senha. Use "Entrar com Email" ou redefina sua senha.';
+          errorMessage = t('login_modal_email_conflict_credentials');
           shouldShowConflictError = true;
           break;
         case 'OAuthCallback':
-          errorMessage = 'Erro na autenticação com Google. Tente novamente.';
+          errorMessage = t('login_modal_google_oauth_error');
           break;
         case 'OAuthSignin':
-          errorMessage =
-            'Erro ao iniciar login com Google. Verifique suas permissões.';
+          errorMessage = t('login_modal_google_signin_error');
           break;
         case 'OAuthCreateAccount':
-          errorMessage =
-            'Erro ao criar conta com Google. Este email pode já estar em uso.';
+          errorMessage = t('login_modal_email_conflict_google');
           shouldShowConflictError = true;
           break;
         case 'EmailCreateAccount':
-          errorMessage = 'Este email já está em uso por outra conta.';
+          errorMessage = t('register_modal_email_exists');
           shouldShowConflictError = true;
           break;
         case 'Signin':
-          errorMessage = 'Erro no login. Verifique suas credenciais.';
+          errorMessage = t('login_modal_credentials_error');
           break;
         case 'SessionRequired':
-          errorMessage = 'Sessão expirada. Faça login novamente.';
+          errorMessage = t('login_modal_session_expired');
           break;
         case 'AccessDenied':
-          errorMessage = 'Acesso negado. Verifique suas permissões.';
+          errorMessage = t('login_modal_google_access_denied');
           break;
         case 'Verification':
-          errorMessage = 'Erro na verificação. Tente fazer login novamente.';
+          errorMessage = t('login_modal_verification_error');
           break;
         default:
           // Usar error_description se disponível
-          errorMessage =
-            errorDescription || 'Erro de autenticação. Tente novamente.';
+          errorMessage = errorDescription || t('login_modal_google_error');
       }
 
       // Mostrar erro apropriado
@@ -131,13 +129,13 @@ const LoginModal: React.FC = () => {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email é obrigatório';
+      newErrors.email = t('login_modal_email_required');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email inválido';
+      newErrors.email = t('login_modal_email_invalid');
     }
 
     if (!formData.password.trim()) {
-      newErrors.password = 'Senha é obrigatória';
+      newErrors.password = t('login_modal_password_required');
     }
 
     setErrors(newErrors);
@@ -160,17 +158,17 @@ const LoginModal: React.FC = () => {
       });
 
       if (result?.error) {
-        setErrors({ general: 'Email ou senha incorretos' });
-        toast.error('Email ou senha incorretos');
+        setErrors({ general: t('login_modal_credentials_error') });
+        toast.error(t('login_modal_credentials_error'));
       } else {
-        toast.success('Login realizado com sucesso!');
+        toast.success(t('login_modal_success'));
         close();
         router.refresh();
       }
     } catch (error) {
       console.error('Login error:', error);
-      setErrors({ general: 'Erro interno. Tente novamente.' });
-      toast.error('Erro interno. Tente novamente.');
+      setErrors({ general: t('login_modal_internal_error') });
+      toast.error(t('login_modal_internal_error'));
     } finally {
       setIsLoading(false);
     }
@@ -196,41 +194,33 @@ const LoginModal: React.FC = () => {
         // Tratar erros específicos do Google
         switch (result.error) {
           case 'Callback':
-            setEmailConflictError(
-              'Este email já está cadastrado com senha. Use "Entrar com Email" ou redefina sua senha.'
-            );
-            toast.error('Este email já possui uma conta com senha');
+            setEmailConflictError(t('login_modal_email_conflict_credentials'));
+            toast.error(t('register_modal_email_exists'));
             break;
           case 'OAuthCallback':
-            toast.error('Erro na autenticação com Google. Tente novamente.');
+            toast.error(t('login_modal_google_oauth_error'));
             break;
           case 'OAuthSignin':
-            toast.error(
-              'Erro ao conectar com Google. Verifique suas permissões.'
-            );
+            toast.error(t('login_modal_google_signin_error'));
             break;
           case 'OAuthCreateAccount':
-            setEmailConflictError(
-              'Este email já está em uso. Tente fazer login com email e senha.'
-            );
-            toast.error('Este email já está em uso');
+            setEmailConflictError(t('login_modal_email_conflict_google'));
+            toast.error(t('register_modal_email_exists'));
             break;
           case 'EmailCreateAccount':
-            setEmailConflictError(
-              'Este email já está cadastrado. Use o login com email e senha.'
-            );
-            toast.error('Este email já está cadastrado');
+            setEmailConflictError(t('login_modal_email_conflict_google'));
+            toast.error(t('register_modal_email_exists'));
             break;
           case 'AccessDenied':
-            toast.error('Acesso negado pelo Google. Tente novamente.');
+            toast.error(t('login_modal_google_access_denied'));
             break;
           default:
-            toast.error('Erro ao fazer login com Google. Tente novamente.');
+            toast.error(t('login_modal_google_error'));
         }
       } else if (result?.url) {
         // Login bem-sucedido
         console.log('✅ Login Google bem-sucedido, redirecionando...');
-        toast.success('Login realizado com sucesso!');
+        toast.success(t('login_modal_success'));
         close();
 
         // Redirecionar ou recarregar
@@ -246,7 +236,7 @@ const LoginModal: React.FC = () => {
       }
     } catch (error) {
       console.error('❌ Erro no Google SignIn:', error);
-      toast.error('Erro ao fazer login com Google');
+      toast.error(t('login_modal_google_error'));
     } finally {
       setIsGoogleLoading(false);
     }
@@ -286,11 +276,9 @@ const LoginModal: React.FC = () => {
             </div>
           </div>
           <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-            Bem-vindo de volta!
+            {t('login_modal_title')}
           </h2>
-          <p className="text-theme-secondary">
-            Entre na sua conta para continuar sua jornada musical
-          </p>
+          <p className="text-theme-secondary">{t('login_modal_subtitle')}</p>
         </div>
 
         {/* Aviso de conflito de email */}
@@ -300,7 +288,7 @@ const LoginModal: React.FC = () => {
               <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
               <div>
                 <h4 className="font-medium text-accent-amber mb-1">
-                  Email já cadastrado
+                  {t('login_modal_email_conflict_title')}
                 </h4>
                 <p className="text-sm text-accent-amber opacity-90">
                   {emailConflictError}
@@ -317,7 +305,7 @@ const LoginModal: React.FC = () => {
                     }}
                     className="text-xs text-accent-amber hover:text-accent-amber opacity-80 hover:opacity-100 underline transition-opacity"
                   >
-                    Fazer login com email
+                    {t('login_modal_email_conflict_action_login')}
                   </button>
                   <span className="text-xs text-accent-amber opacity-50">
                     •
@@ -326,7 +314,7 @@ const LoginModal: React.FC = () => {
                     onClick={handleForgotPassword}
                     className="text-xs text-accent-amber hover:text-accent-amber opacity-80 hover:opacity-100 underline transition-opacity"
                   >
-                    Esqueci minha senha
+                    {t('login_modal_email_conflict_action_forgot')}
                   </button>
                 </div>
               </div>
@@ -345,13 +333,13 @@ const LoginModal: React.FC = () => {
 
           {/* Email */}
           <Input
-            label="Email"
+            label={t('login_modal_email_label')}
             type="email"
             name="email"
             value={formData.email}
             onChange={handleInputChange}
             leftIcon={<FiMail className="w-4 h-4" />}
-            placeholder="seu@email.com"
+            placeholder={t('login_modal_email_placeholder')}
             error={errors.email}
             disabled={isLoading || isGoogleLoading}
             autoComplete="email"
@@ -359,12 +347,12 @@ const LoginModal: React.FC = () => {
 
           {/* Password */}
           <Input
-            label="Senha"
+            label={t('login_modal_password_label')}
             name="password"
             value={formData.password}
             onChange={handleInputChange}
             leftIcon={<FiLock className="w-4 h-4" />}
-            placeholder="Digite sua senha"
+            placeholder={t('login_modal_password_placeholder')}
             isPassword
             error={errors.password}
             disabled={isLoading || isGoogleLoading}
@@ -379,7 +367,7 @@ const LoginModal: React.FC = () => {
               className="text-sm text-brand-primary hover:text-brand-secondary transition-colors"
               disabled={isLoading || isGoogleLoading}
             >
-              Esqueceu sua senha?
+              {t('login_modal_forgot_password')}
             </button>
           </div>
 
@@ -392,7 +380,7 @@ const LoginModal: React.FC = () => {
             className="w-full"
             disabled={isGoogleLoading}
           >
-            Entrar
+            {t('login_modal_submit_button')}
           </Button>
         </form>
 
@@ -403,7 +391,7 @@ const LoginModal: React.FC = () => {
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="px-4 bg-theme-elevated text-theme-tertiary">
-              ou continue com
+              {t('login_modal_divider_text')}
             </span>
           </div>
         </div>
@@ -418,19 +406,19 @@ const LoginModal: React.FC = () => {
           className="w-full"
           disabled={isLoading}
         >
-          Continuar com Google
+          {t('login_modal_google_button')}
         </Button>
 
         {/* Register Link */}
         <div className="mt-8 text-center">
           <p className="text-theme-secondary">
-            Ainda não tem uma conta?{' '}
+            {t('login_modal_register_text')}{' '}
             <button
               onClick={switchToRegister}
               className="text-brand-primary hover:text-brand-secondary font-medium transition-colors"
               disabled={isLoading || isGoogleLoading}
             >
-              Criar conta
+              {t('login_modal_register_link')}
             </button>
           </p>
         </div>
@@ -438,13 +426,13 @@ const LoginModal: React.FC = () => {
         {/* Terms */}
         <div className="mt-6 text-center">
           <p className="text-xs text-theme-tertiary">
-            Ao continuar, você concorda com nossos{' '}
+            {t('login_modal_terms_text')}{' '}
             <a href="/terms" className="text-brand-primary hover:underline">
-              Termos de Uso
+              {t('login_modal_terms_link')}
             </a>{' '}
-            e{' '}
+            {t('login_modal_terms_and')}{' '}
             <a href="/privacy" className="text-brand-primary hover:underline">
-              Política de Privacidade
+              {t('login_modal_privacy_link')}
             </a>
           </p>
         </div>

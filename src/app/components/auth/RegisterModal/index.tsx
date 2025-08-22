@@ -1,4 +1,4 @@
-// components/auth/RegisterModal.tsx - VERSÃO COM ACEITAÇÃO DE TERMOS LGPD
+// components/authModals/RegisterModal.tsx - VERSÃO COM ACEITAÇÃO DE TERMOS LGPD E TRADUÇÕES
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -23,6 +23,7 @@ import Modal from '../../Modal';
 import Button from '../../Common/Button';
 import Input from '../../Common/Inputs';
 import TermsAcceptance from '../TermsAcceptance';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface RegisterStep {
   step: 'form' | 'success' | 'confirmation-sent';
@@ -37,6 +38,7 @@ interface RegisterStep {
 const RegisterModal: React.FC = () => {
   const { isOpen, close, switchToLogin } = useRegisterModal();
   const { open: openOnboarding } = useOnboardingModal();
+  const { t } = useTranslation({ sections: ['components/auth-modals'] });
 
   const [registerStep, setRegisterStep] = useState<RegisterStep>({
     step: 'form',
@@ -134,7 +136,7 @@ const RegisterModal: React.FC = () => {
           },
         });
 
-        toast.success('Conta criada com Google! Bem-vindo à Opus Atlas!');
+        toast.success(t('register_modal_google_tip_registered'));
       } else {
         console.log('⏰ Timestamp muito antigo, limpando flags:', timeDiff);
 
@@ -172,36 +174,31 @@ const RegisterModal: React.FC = () => {
 
       switch (error) {
         case 'Callback':
-          errorMessage =
-            'Este email já está cadastrado com senha. Use "Fazer Login" para acessar sua conta.';
+          errorMessage = t('register_modal_email_conflict_credentials');
           shouldShowConflictError = true;
           break;
         case 'OAuthCallback':
-          errorMessage = 'Erro na autenticação com Google. Tente novamente.';
+          errorMessage = t('register_modal_google_oauth_error');
           break;
         case 'OAuthSignin':
-          errorMessage =
-            'Erro ao iniciar registro com Google. Verifique suas permissões.';
+          errorMessage = t('register_modal_google_signin_error');
           break;
         case 'OAuthCreateAccount':
-          errorMessage =
-            'Erro ao criar conta com Google. Este email pode já estar em uso.';
+          errorMessage = t('register_modal_email_conflict_google');
           shouldShowConflictError = true;
           break;
         case 'EmailCreateAccount':
-          errorMessage = 'Este email já está em uso por outra conta.';
+          errorMessage = t('register_modal_email_exists');
           shouldShowConflictError = true;
           break;
         case 'AccessDenied':
-          errorMessage =
-            'Acesso negado pelo Google. Verifique suas permissões.';
+          errorMessage = t('register_modal_google_access_denied');
           break;
         case 'Verification':
-          errorMessage = 'Erro na verificação com Google. Tente novamente.';
+          errorMessage = t('register_modal_google_verification_error');
           break;
         default:
-          errorMessage =
-            errorDescription || 'Erro no registro. Tente novamente.';
+          errorMessage = errorDescription || t('register_modal_google_error');
       }
 
       if (shouldShowConflictError) {
@@ -247,38 +244,36 @@ const RegisterModal: React.FC = () => {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData.username.trim()) {
-      newErrors.username = 'Nome de usuário é obrigatório';
+      newErrors.username = t('register_modal_username_required');
     } else if (formData.username.trim().length < 2) {
-      newErrors.username = 'Nome de usuário deve ter pelo menos 2 caracteres';
+      newErrors.username = t('register_modal_username_min_length');
     } else if (formData.username.includes(' ')) {
-      newErrors.username = 'Nome de usuário não pode conter espaços';
+      newErrors.username = t('register_modal_username_no_spaces');
     } else if (!/^[a-zA-Z0-9_-]+$/.test(formData.username)) {
-      newErrors.username =
-        'Nome de usuário só pode conter letras, números, _ e -';
+      newErrors.username = t('register_modal_username_invalid_chars');
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email é obrigatório';
+      newErrors.email = t('register_modal_email_required');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email inválido';
+      newErrors.email = t('register_modal_email_invalid');
     }
 
     if (!formData.password.trim()) {
-      newErrors.password = 'Senha é obrigatória';
+      newErrors.password = t('register_modal_password_required');
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Senha deve ter pelo menos 6 caracteres';
+      newErrors.password = t('register_modal_password_min_length');
     }
 
     if (!formData.confirmPassword.trim()) {
-      newErrors.confirmPassword = 'Confirmação de senha é obrigatória';
+      newErrors.confirmPassword = t('register_modal_confirm_password_required');
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Senhas não coincidem';
+      newErrors.confirmPassword = t('register_modal_passwords_no_match');
     }
 
     // 🆕 NOVO: Validação de termos obrigatória
     if (!termsAccepted) {
-      newErrors.terms =
-        'Você deve aceitar os Termos de Uso e a Política de Privacidade para continuar';
+      newErrors.terms = t('register_modal_terms_required');
     }
 
     setErrors(newErrors);
@@ -297,20 +292,16 @@ const RegisterModal: React.FC = () => {
 
       if (result?.error) {
         console.error('❌ Erro no login automático:', result.error);
-        toast.error(
-          'Conta criada, mas erro no login automático. Faça login manualmente.'
-        );
+        toast.error(t('register_modal_auto_login_error'));
         return false;
       } else {
         console.log('✅ Login automático realizado com sucesso!');
-        toast.success('Conta criada e login realizado com sucesso!');
+        toast.success(t('register_modal_auto_login_success'));
         return true;
       }
     } catch (error) {
       console.error('❌ Erro no login automático:', error);
-      toast.error(
-        'Conta criada, mas erro no login automático. Faça login manualmente.'
-      );
+      toast.error(t('register_modal_auto_login_error'));
       return false;
     }
   };
@@ -358,8 +349,8 @@ const RegisterModal: React.FC = () => {
       }
     } catch (error) {
       console.error('Registration error:', error);
-      setErrors({ general: 'Erro interno. Tente novamente.' });
-      toast.error('Erro interno. Tente novamente.');
+      setErrors({ general: t('register_modal_internal_error') });
+      toast.error(t('register_modal_internal_error'));
     } finally {
       setIsLoading(false);
     }
@@ -370,10 +361,9 @@ const RegisterModal: React.FC = () => {
     // 🆕 NOVA VALIDAÇÃO: Verificar termos antes do Google
     if (!termsAccepted) {
       setErrors({
-        terms:
-          'Você deve aceitar os Termos de Uso e a Política de Privacidade antes de continuar com o Google',
+        terms: t('register_modal_terms_google_required'),
       });
-      toast.error('Aceite os termos para continuar');
+      toast.error(t('register_modal_terms_accept_error'));
       return;
     }
 
@@ -406,35 +396,29 @@ const RegisterModal: React.FC = () => {
         switch (result.error) {
           case 'Callback':
             setEmailConflictError(
-              'Este email já está cadastrado com senha. Use "Fazer Login" para acessar sua conta.'
+              t('register_modal_email_conflict_credentials')
             );
-            toast.error('Este email já possui uma conta com senha');
+            toast.error(t('register_modal_email_exists'));
             break;
           case 'OAuthCallback':
-            toast.error('Erro na autenticação com Google. Tente novamente.');
+            toast.error(t('register_modal_google_oauth_error'));
             break;
           case 'OAuthSignin':
-            toast.error(
-              'Erro ao conectar com Google. Verifique suas permissões.'
-            );
+            toast.error(t('register_modal_google_signin_error'));
             break;
           case 'OAuthCreateAccount':
-            setEmailConflictError(
-              'Este email já está em uso. Tente fazer login com esse email.'
-            );
-            toast.error('Este email já está em uso');
+            setEmailConflictError(t('register_modal_email_conflict_google'));
+            toast.error(t('register_modal_email_exists'));
             break;
           case 'EmailCreateAccount':
-            setEmailConflictError(
-              'Este email já está cadastrado. Use o login com email e senha.'
-            );
-            toast.error('Este email já está cadastrado');
+            setEmailConflictError(t('register_modal_email_conflict_google'));
+            toast.error(t('register_modal_email_exists'));
             break;
           case 'AccessDenied':
-            toast.error('Acesso negado pelo Google. Tente novamente.');
+            toast.error(t('register_modal_google_access_denied'));
             break;
           default:
-            toast.error('Erro ao registrar com Google. Tente novamente.');
+            toast.error(t('register_modal_google_error'));
         }
       }
     } catch (error) {
@@ -444,7 +428,7 @@ const RegisterModal: React.FC = () => {
       sessionStorage.removeItem('google-register-pending');
       sessionStorage.removeItem('google-register-timestamp');
 
-      toast.error('Erro ao registrar com Google');
+      toast.error(t('register_modal_google_error'));
     } finally {
       setIsGoogleLoading(false);
     }
@@ -487,12 +471,12 @@ const RegisterModal: React.FC = () => {
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          🎉 Bem-vindo à Opus Atlas!
+          {t('register_success_title')}
         </h2>
         <p className="text-theme-secondary">
           {registerStep.userData?.registrationMethod === 'google'
-            ? 'Conta criada com Google'
-            : 'Conta criada com sucesso'}
+            ? t('register_success_subtitle_google')
+            : t('register_success_subtitle_credentials')}
         </p>
       </div>
 
@@ -505,11 +489,10 @@ const RegisterModal: React.FC = () => {
                 <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="font-medium text-accent-amber mb-1">
-                    Login manual necessário
+                    {t('register_success_login_manual_title')}
                   </h4>
                   <p className="text-sm text-accent-amber opacity-80">
-                    Houve um problema no login automático. Faça login
-                    manualmente para continuar.
+                    {t('register_success_login_manual_text')}
                   </p>
                 </div>
               </div>
@@ -522,22 +505,16 @@ const RegisterModal: React.FC = () => {
             <div className="flex items-start">
               <div>
                 <h4 className="font-medium text-accent-blue mb-1">
-                  ✅ Conta Google Verificada
+                  {t('register_success_google_verified_title')}
                 </h4>
                 <p className="text-sm text-accent-blue opacity-80 mb-2">
-                  Sua conta foi criada e verificada automaticamente com{' '}
+                  {t('register_success_google_verified_text')}{' '}
                   <strong>{registerStep.userData?.email}</strong>
                 </p>
                 <div className="text-xs text-accent-blue opacity-70 space-y-1">
-                  <p>
-                    • Conta já verificada - nenhuma confirmação adicional
-                    necessária
-                  </p>
-                  <p>
-                    • Você pode usar todos os recursos da plataforma
-                    imediatamente
-                  </p>
-                  <p>• Login rápido com Google nas próximas vezes</p>
+                  <p>{t('register_success_google_features')}</p>
+                  <p>{t('register_success_google_immediate')}</p>
+                  <p>{t('register_success_google_quick_login')}</p>
                 </div>
               </div>
             </div>
@@ -547,24 +524,21 @@ const RegisterModal: React.FC = () => {
             <div className="flex items-start">
               <div>
                 <h4 className="font-medium text-accent-blue mb-1">
-                  📧 Email de Confirmação Enviado
+                  {t('register_success_email_sent_title')}
                 </h4>
                 <p className="text-sm text-accent-blue opacity-80 mb-2">
-                  Enviamos um link de confirmação para{' '}
+                  {t('register_success_email_sent_text')}{' '}
                   <strong>{registerStep.userData?.email}</strong>
                 </p>
                 <div className="text-xs text-accent-blue opacity-70 space-y-1">
                   <p>
-                    • <strong>Para usar normalmente:</strong> Não é necessário
-                    confirmar agora
+                    • <strong>{t('register_success_email_normal_use')}</strong>
                   </p>
                   <p>
-                    • <strong>Para uploads:</strong> Confirme seu email para
-                    fazer uploads de arquivos
+                    • <strong>{t('register_success_email_uploads')}</strong>
                   </p>
                   <p>
-                    • <strong>Para alterar seu perfil:</strong> Confirme seu
-                    email para fazer alterações no seu perfil
+                    • <strong>{t('register_success_email_profile')}</strong>
                   </p>
                 </div>
               </div>
@@ -575,21 +549,21 @@ const RegisterModal: React.FC = () => {
         <div className="bg-theme-secondary rounded-lg p-4 space-y-3">
           <h4 className="text-sm font-medium text-theme-primary flex items-center">
             <FiCheckCircle className="w-4 h-4 mr-2" />
-            Próximos passos:
+            {t('register_success_next_steps')}
           </h4>
           <ul className="text-sm text-theme-tertiary space-y-2">
             <li className="flex items-start">
               <span className="text-brand-primary mr-2 font-medium">1.</span>
-              Complete seu perfil musical (recomendado)
+              {t('register_success_step_1')}
             </li>
             <li className="flex items-start">
               <span className="text-brand-primary mr-2 font-medium">2.</span>
-              Comece a explorar compositores e obras
+              {t('register_success_step_2')}
             </li>
             {registerStep.userData?.registrationMethod !== 'google' && (
               <li className="flex items-start">
                 <span className="text-brand-primary mr-2 font-medium">3.</span>
-                Confirme seu email quando puder (para uploads)
+                {t('register_success_step_3_credentials')}
               </li>
             )}
             <li className="flex items-start">
@@ -598,7 +572,9 @@ const RegisterModal: React.FC = () => {
                   ? '3.'
                   : '4.'}
               </span>
-              Aproveite sua jornada musical!
+              {registerStep.userData?.registrationMethod === 'google'
+                ? t('register_success_step_3_google')
+                : t('register_success_step_4_credentials')}
             </li>
           </ul>
         </div>
@@ -611,7 +587,7 @@ const RegisterModal: React.FC = () => {
               className="w-full"
               onClick={handleProceedToOnboarding}
             >
-              Completar Perfil Musical
+              {t('register_success_complete_profile_button')}
             </Button>
           ) : (
             <Button
@@ -620,7 +596,7 @@ const RegisterModal: React.FC = () => {
               className="w-full"
               onClick={handleBackToLogin}
             >
-              Ir para Login
+              {t('register_success_login_button')}
             </Button>
           )}
 
@@ -630,7 +606,9 @@ const RegisterModal: React.FC = () => {
             className="w-full"
             onClick={handleClose}
           >
-            {registerStep.userData?.isLoggedIn ? 'Explorar Agora' : 'Fechar'}
+            {registerStep.userData?.isLoggedIn
+              ? t('register_success_explore_button')
+              : t('register_success_close_button')}
           </Button>
         </div>
 
@@ -638,15 +616,13 @@ const RegisterModal: React.FC = () => {
         <div className="text-center pt-4 border-t border-theme-secondary">
           {registerStep.userData?.registrationMethod === 'google' ? (
             <p className="text-xs text-theme-tertiary">
-              🎵 <strong>Dica:</strong> Use &quot;Continuar com Google&quot;
-              para entrar rapidamente nas próximas vezes!
+              {t('register_success_google_tip')}
             </p>
           ) : (
             <p className="text-xs text-theme-tertiary">
-              💡 <strong>Dica:</strong> Você pode usar o site normalmente sem
-              confirmar o email.
-              <br />A confirmação é necessária apenas para fazer uploads de
-              partituras e compositores.
+              {t('register_success_email_tip')}
+              <br />
+              {t('register_success_email_tip_2')}
             </p>
           )}
         </div>
@@ -663,11 +639,9 @@ const RegisterModal: React.FC = () => {
           </div>
         </div>
         <h2 className="text-2xl font-bold text-theme-primary classical-title mb-2">
-          Junte-se à Opus Atlas
+          {t('register_modal_title')}
         </h2>
-        <p className="text-theme-secondary">
-          Crie sua conta e comece sua jornada na música clássica
-        </p>
+        <p className="text-theme-secondary">{t('register_modal_subtitle')}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -680,43 +654,43 @@ const RegisterModal: React.FC = () => {
         <div className="grid grid-cols-1 gap-4">
           <div>
             <Input
-              label="Nome de usuário"
+              label={t('register_modal_username_label')}
               type="text"
               name="username"
               value={formData.username}
               onChange={handleInputChange}
               leftIcon={<FiUser className="w-4 h-4" />}
-              placeholder="Seu nome de usuário"
+              placeholder={t('register_modal_username_placeholder')}
               error={errors.username}
               disabled={isLoading || isGoogleLoading}
               autoComplete="username"
             />
             <p className="text-xs text-theme-tertiary mt-1">
-              Apenas letras, números, _ e - (sem espaços)
+              {t('register_modal_username_hint')}
             </p>
           </div>
         </div>
 
         <Input
-          label="Email"
+          label={t('register_modal_email_label')}
           type="email"
           name="email"
           value={formData.email}
           onChange={handleInputChange}
           leftIcon={<FiMail className="w-4 h-4" />}
-          placeholder="seu@email.com"
+          placeholder={t('register_modal_email_placeholder')}
           error={errors.email || emailConflictError}
           disabled={isLoading || isGoogleLoading}
           autoComplete="email"
         />
 
         <Input
-          label="Senha"
+          label={t('register_modal_password_label')}
           name="password"
           value={formData.password}
           onChange={handleInputChange}
           leftIcon={<FiLock className="w-4 h-4" />}
-          placeholder="Crie uma senha segura"
+          placeholder={t('register_modal_password_placeholder')}
           isPassword
           error={errors.password}
           disabled={isLoading || isGoogleLoading}
@@ -724,12 +698,12 @@ const RegisterModal: React.FC = () => {
         />
 
         <Input
-          label="Confirmar Senha"
+          label={t('register_modal_confirm_password_label')}
           name="confirmPassword"
           value={formData.confirmPassword}
           onChange={handleInputChange}
           leftIcon={<FiLock className="w-4 h-4" />}
-          placeholder="Confirme sua senha"
+          placeholder={t('register_modal_confirm_password_placeholder')}
           isPassword
           error={errors.confirmPassword}
           disabled={isLoading || isGoogleLoading}
@@ -752,7 +726,7 @@ const RegisterModal: React.FC = () => {
           className="w-full"
           disabled={isGoogleLoading}
         >
-          Criar Conta
+          {t('register_modal_submit_button')}
         </Button>
       </form>
 
@@ -762,7 +736,7 @@ const RegisterModal: React.FC = () => {
         </div>
         <div className="relative flex justify-center text-sm">
           <span className="px-4 bg-theme-elevated text-theme-tertiary">
-            ou registre-se com
+            {t('register_modal_divider_text')}
           </span>
         </div>
       </div>
@@ -776,18 +750,18 @@ const RegisterModal: React.FC = () => {
         className="w-full"
         disabled={isLoading}
       >
-        Continuar com Google
+        {t('register_modal_google_button')}
       </Button>
 
       <div className="mt-8 text-center">
         <p className="text-theme-secondary">
-          Já tem uma conta?{' '}
+          {t('register_modal_login_text')}{' '}
           <button
             onClick={switchToLogin}
             className="text-brand-primary hover:text-brand-secondary font-medium transition-colors"
             disabled={isLoading || isGoogleLoading}
           >
-            Fazer login
+            {t('register_modal_login_link')}
           </button>
         </p>
       </div>
