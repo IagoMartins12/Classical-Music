@@ -1,7 +1,13 @@
-// app/works/pageServer.tsx - VERSÃO ULTRA OTIMIZADA
+// app/works/pageServer.tsx - VERSÃO ULTRA OTIMIZADA COM TRADUÇÕES
 import { unstable_cache } from 'next/cache';
 import { getWorks, getFilterOptions } from '@/app/requests/work-details';
 import WorksClient from '@/app/main/works/pageClient';
+import { getServerLanguage } from '@/app/utils/translations/serverTranslation';
+import {
+  translateInstruments,
+  translateGenres,
+} from '@/app/utils/translations/instrumentsGenresTranslation';
+import { translateEpochStatic } from '@/app/utils/translations/epochTranslationComposer';
 
 interface WorksServerProps {
   searchParams: {
@@ -17,16 +23,49 @@ interface WorksServerProps {
   };
 }
 
-// 🚀 CACHE SEPARADO PARA FILTROS - Permite updates independentes
-const getCachedFilters = unstable_cache(
-  async () => {
-    console.log('🔍 Cache miss - Buscando filtros');
-    return await getFilterOptions();
+// 🚀 CACHE SEPARADO PARA FILTROS COM TRADUÇÃO
+const getCachedFiltersTranslated = unstable_cache(
+  async (language: string) => {
+    console.log('🔍 Cache miss - Buscando filtros com tradução:', language);
+    const filterOptions = await getFilterOptions();
+
+    // Traduzir filtros baseado no idioma
+    const translatedInstruments = translateInstruments(
+      filterOptions.instruments,
+      language as any
+    ).map((instrument) => ({
+      id: instrument.id,
+      name: instrument.name, // Nome traduzido
+      originalName: instrument.originalName, // Nome original em português
+    }));
+
+    const translatedGenres = translateGenres(
+      filterOptions.workGenres,
+      language as any
+    ).map((genre) => ({
+      id: genre.id,
+      name: genre.name, // Nome traduzido
+      originalName: genre.originalName, // Nome original em português
+    }));
+
+    const translatedEpochs = filterOptions.epochs.map((epoch) => ({
+      id: epoch.id,
+      name: epoch.name, // Nome original
+      translatedName: translateEpochStatic(epoch.name, language as any),
+      originalName: epoch.name,
+    }));
+
+    return {
+      ...filterOptions,
+      instruments: translatedInstruments,
+      workGenres: translatedGenres,
+      epochs: translatedEpochs,
+    };
   },
-  ['filters-optimized'],
+  ['filters-optimized-translated'],
   {
     revalidate: 3600, // 1 hora - filtros mudam menos
-    tags: ['filters-optimized', 'filter-options'],
+    tags: ['filters-optimized-translated', 'filter-options'],
   }
 );
 
@@ -82,6 +121,9 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
   try {
     const page = parseInt(searchParams.page || '1');
 
+    // Detectar idioma no servidor
+    const language = await getServerLanguage();
+
     // 🚀 ESTRATÉGIA 1: Detectar tipo de query
     const hasFilters = hasComplexFilters(searchParams);
     const cacheKey = generateCacheKey(searchParams);
@@ -95,7 +137,7 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
       console.log('🚀 Modo rápido: sem filtros');
 
       worksPromise = getCachedWorksDefault(page);
-      filtersPromise = getCachedFilters(); // Carrega em paralelo mas não bloqueia
+      filtersPromise = getCachedFiltersTranslated(language); // Carrega em paralelo mas não bloqueia
     } else {
       // 🔍 COM FILTROS: Cache específico + otimizações
       console.log('🔍 Modo filtrado:', cacheKey);
@@ -117,7 +159,7 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
       };
 
       worksPromise = getCachedWorksFiltered(page, filters);
-      filtersPromise = getCachedFilters();
+      filtersPromise = getCachedFiltersTranslated(language);
     }
 
     // 🚀 ESTRATÉGIA 3: Execução paralela com timeout de proteção
@@ -153,6 +195,7 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
       worksCount: worksData.works.length,
       totalCount: worksData.totalCount,
       hasFilters: Object.keys(filterOptions).length > 0,
+      language: language,
     });
 
     return (
@@ -170,6 +213,7 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
     try {
       console.log('🔄 Tentando fallback...');
 
+      const language = await getServerLanguage();
       const fallbackWorks = await getCachedWorksDefault(1);
       const basicFilters = {
         instruments: [],
@@ -189,64 +233,8 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
       );
     } catch (fallbackError) {
       console.error('💥 Fallback também falhou:', fallbackError);
-
-      // 🚨 ÚLTIMO RECURSO: Componente de erro otimizado
-      return <WorksErrorComponent />;
     }
   }
-}
-
-// 🚀 COMPONENTE DE ERRO OTIMIZADO
-function WorksErrorComponent() {
-  return (
-    <div className="bg-gradient-primary flex items-center justify-center p-4 min-h-[60vh]">
-      <div className="classical-card p-8 text-center max-w-md w-full">
-        <div className="w-16 h-16 bg-accent-red/20 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg
-            className="w-8 h-8 text-accent-red"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        </div>
-
-        <h2 className="text-xl font-bold text-theme-primary mb-4 classical-title">
-          Serviço Temporariamente Indisponível
-        </h2>
-
-        <p className="text-theme-secondary mb-6">
-          Estamos enfrentando alta demanda. Tente novamente em alguns segundos.
-        </p>
-
-        <div className="space-y-3">
-          <button
-            onClick={() => window.location.reload()}
-            className="btn-classical-primary w-full"
-          >
-            Recarregar Página
-          </button>
-
-          <button
-            onClick={() => (window.location.href = '/')}
-            className="btn-classical-secondary w-full"
-          >
-            Voltar ao Início
-          </button>
-        </div>
-
-        <div className="mt-6 text-xs text-theme-tertiary">
-          Se o problema persistir, contate nosso suporte.
-        </div>
-      </div>
-    </div>
-  );
 }
 
 // 🚀 FUNÇÃO PARA INVALIDAÇÃO INTELIGENTE DO CACHE
@@ -264,6 +252,7 @@ export async function revalidateWorksCache(
       break;
     case 'filters':
       revalidateTag('filters-optimized');
+      revalidateTag('filters-optimized-translated');
       break;
     case 'all':
       revalidateTag('works-optimized');
@@ -271,6 +260,7 @@ export async function revalidateWorksCache(
       revalidateTag('works-filtered');
       revalidateTag('works-count');
       revalidateTag('filters-optimized');
+      revalidateTag('filters-optimized-translated');
       revalidateTag('works-metadata');
       break;
   }

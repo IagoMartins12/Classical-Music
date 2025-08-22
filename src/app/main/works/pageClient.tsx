@@ -1,4 +1,4 @@
-// app/works/pageClient.tsx - Com Performance Otimizada e Z-index Corrigido
+// app/works/pageClient.tsx - Com Performance Otimizada e Traduções
 'use client';
 
 import {
@@ -36,6 +36,8 @@ import {
   SequentialGrid,
 } from '../../components/animation/AnimatedComponents';
 import { useComposerName } from '@/app/hooks/useComposerName';
+import { useTranslation } from '@/app/hooks/useTranslation';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 import Select from '../../components/Common/Select';
 
 interface WorksClientProps {
@@ -109,29 +111,31 @@ const ResultsInfo = memo(
     endItem,
     totalCount,
     isPending,
+    t,
   }: {
     startItem: number;
     endItem: number;
     totalCount: number;
     isPending: boolean;
+    t: (key: string) => string;
   }) => (
     <div className="flex items-center justify-between text-sm">
       <div className="text-theme-secondary">
-        Mostrando{' '}
+        {t('client_jsx_span_showing_results')}{' '}
         <span className="font-medium text-theme-primary">
           {startItem}-{endItem}
         </span>{' '}
-        de{' '}
+        {t('client_jsx_span_of_results')}{' '}
         <span className="font-medium text-theme-primary">
           {totalCount.toLocaleString()}
         </span>{' '}
-        obras
+        {t('client_jsx_span_works_count')}
       </div>
 
       {isPending && (
         <div className="flex items-center text-brand-primary">
           <FiRefreshCw className="w-4 h-4 mr-1 animate-spin" />
-          Carregando...
+          {t('client_jsx_span_loading')}
         </div>
       )}
     </div>
@@ -147,11 +151,13 @@ const ActiveFilters = memo(
     filterOptions,
     onRemoveFilter,
     onClearAll,
+    t,
   }: {
     searchParams: any;
-    filterOptions: FilterOptions;
+    filterOptions: any;
     onRemoveFilter: (key: string) => void;
     onClearAll: () => void;
+    t: (key: string) => string;
   }) => {
     const hasActiveFilters = useMemo(
       () =>
@@ -174,13 +180,16 @@ const ActiveFilters = memo(
     return (
       <div className="flex items-center gap-3 mb-4 flex-wrap pt-4 border-t border-theme-secondary">
         <span className="text-sm font-medium text-theme-secondary">
-          Filtros ativos:
+          {t('client_jsx_span_active_filters')}
         </span>
 
         {searchParams.search && (
           <AnimatedItem hover="scale">
             <div className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm">
-              <span>Busca: &quot;{searchParams.search}&quot;</span>
+              <span>
+                {t('client_jsx_span_search_filter')} &quot;{searchParams.search}
+                &quot;
+              </span>
               <button
                 onClick={() => onRemoveFilter('search')}
                 className="hover:text-brand-secondary transition-colors"
@@ -195,7 +204,8 @@ const ActiveFilters = memo(
           <AnimatedItem hover="scale">
             <div className="flex items-center gap-2 px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
               <span>
-                Compositor: {composerName.composerName || 'Carregando...'}
+                {t('client_jsx_span_composer_filter')}{' '}
+                {composerName.composerName || 'Carregando...'}
               </span>
               <button
                 onClick={() => onRemoveFilter('composer')}
@@ -211,9 +221,12 @@ const ActiveFilters = memo(
           <AnimatedItem hover="scale">
             <div className="flex items-center gap-2 px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm">
               <span>
-                Instrumento:{' '}
+                {t('client_jsx_span_instrument_filter')}{' '}
                 {filterOptions.instruments.find(
-                  (i) => i.id === searchParams.instrument
+                  (i: any) =>
+                    (i.originalName &&
+                      i.originalName === searchParams.instrument) ||
+                    i.id === searchParams.instrument
                 )?.name || searchParams.instrument}
               </span>
               <button
@@ -230,9 +243,17 @@ const ActiveFilters = memo(
           <AnimatedItem hover="scale">
             <div className="flex items-center gap-2 px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm">
               <span>
-                Período:{' '}
-                {filterOptions.epochs.find((e) => e.id === searchParams.epoch)
-                  ?.name || searchParams.epoch}
+                {t('client_jsx_span_epoch_filter')}{' '}
+                {translateEpochWithHook(
+                  filterOptions.epochs.find(
+                    (e: any) => e.id === searchParams.epoch
+                  )?.originalName ||
+                    filterOptions.epochs.find(
+                      (e: any) => e.id === searchParams.epoch
+                    )?.name ||
+                    searchParams.epoch,
+                  t
+                )}
               </span>
               <button
                 onClick={() => onRemoveFilter('epoch')}
@@ -248,9 +269,12 @@ const ActiveFilters = memo(
           <AnimatedItem hover="scale">
             <div className="flex items-center gap-2 px-3 py-1 bg-accent-orange/10 border border-accent-orange/30 text-accent-orange rounded-full text-sm">
               <span>
-                Gênero:{' '}
+                {t('client_jsx_span_genre_filter')}{' '}
                 {filterOptions.workGenres.find(
-                  (g) => g.id === searchParams.workGenresArr
+                  (g: any) =>
+                    (g.originalName &&
+                      g.originalName === searchParams.workGenresArr) ||
+                    g.id === searchParams.workGenresArr
                 )?.name || searchParams.workGenresArr}
               </span>
               <button
@@ -268,7 +292,7 @@ const ActiveFilters = memo(
             onClick={onClearAll}
             className="text-sm text-accent-red hover:text-accent-red/80 underline font-medium"
           >
-            Limpar todos os filtros
+            {t('client_jsx_button_clear_all_filters')}
           </button>
         </AnimatedItem>
       </div>
@@ -286,6 +310,7 @@ const WorksClient = memo(
     searchParams,
     filterOptions,
   }: WorksClientProps) => {
+    const { t } = useTranslation({ sections: ['pages/works'] });
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
 
@@ -311,6 +336,7 @@ const WorksClient = memo(
     const goToWorkPage = (workId: string) => {
       router.push(`works/${workId}`);
     };
+
     // Memoizar cálculos pesados
     const { totalPages, startItem, endItem, hasActiveFilters } = useMemo(() => {
       const totalPages = Math.ceil(worksData.totalCount / 32);
@@ -370,7 +396,7 @@ const WorksClient = memo(
       [updateSearchParams]
     );
 
-    const debouncedSearch = useOptimizedSearch(performSearch, 800); // 800ms como no composers
+    const debouncedSearch = useOptimizedSearch(performSearch, 800);
 
     const handleSearchChange = useCallback(
       (value: string) => {
@@ -390,11 +416,20 @@ const WorksClient = memo(
     );
 
     const handleInstrumentFilter = useCallback(
-      (instrumentId: string) => {
-        setSelectedInstrument(instrumentId);
-        updateSearchParams({ instrument: instrumentId || undefined });
+      (instrumentValue: string) => {
+        setSelectedInstrument(instrumentValue);
+        // Sempre usar o nome original (português) para o filtro
+        const instrument = filterOptions.instruments.find(
+          (i) =>
+            i.name === instrumentValue ||
+            (i.originalName && i.originalName === instrumentValue) ||
+            i.id === instrumentValue
+        );
+        const originalName =
+          instrument?.originalName || instrument?.name || instrumentValue;
+        updateSearchParams({ instrument: originalName || undefined });
       },
-      [updateSearchParams]
+      [updateSearchParams, filterOptions.instruments]
     );
 
     const handleEpochFilter = useCallback(
@@ -406,11 +441,19 @@ const WorksClient = memo(
     );
 
     const handleGenreFilter = useCallback(
-      (genreId: string) => {
-        setSelectedGenre(genreId);
-        updateSearchParams({ workGenresArr: genreId || undefined });
+      (genreValue: string) => {
+        setSelectedGenre(genreValue);
+        // Sempre usar o nome original (português) para o filtro
+        const genre = filterOptions.workGenres.find(
+          (g) =>
+            g.name === genreValue ||
+            (g.originalName && g.originalName === genreValue) ||
+            g.id === genreValue
+        );
+        const originalName = genre?.originalName || genre?.name || genreValue;
+        updateSearchParams({ workGenresArr: originalName || undefined });
       },
-      [updateSearchParams]
+      [updateSearchParams, filterOptions.workGenres]
     );
 
     // Função para limpar filtros
@@ -472,18 +515,17 @@ const WorksClient = memo(
                 <FiMusic className="w-8 h-8 text-theme-tertiary" />
               </div>
               <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
-                Nenhuma obra encontrada
+                {t('client_jsx_h3_no_works_found')}
               </h3>
               <p className="text-theme-secondary mb-6">
-                Tente ajustar seus filtros ou termo de busca para encontrar
-                obras.
+                {t('client_jsx_p_adjust_filters')}
               </p>
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
                   className="btn-classical-primary"
                 >
-                  Limpar Filtros e Ver Todas
+                  {t('client_jsx_button_clear_and_view_all')}
                 </button>
               )}
             </div>
@@ -530,7 +572,7 @@ const WorksClient = memo(
           </div>
         </AnimatedCard>
       );
-    }, [worksData.works, viewMode, hasActiveFilters, clearFilters]);
+    }, [worksData.works, viewMode, hasActiveFilters, clearFilters, t]);
 
     return (
       <PageContainer showBackground={true}>
@@ -547,15 +589,15 @@ const WorksClient = memo(
               </div>
 
               <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-                Obras de Música Clássica
+                {t('client_jsx_h1_title')}
               </h1>
               <p className="text-xl text-theme-secondary max-w-3xl mx-auto classical-subtitle">
-                Explore nossa vasta coleção de obras-primas da música clássica
+                {t('client_jsx_p_subtitle')}
               </p>
             </div>
           </div>
 
-          {/* Search and Filters Section - 🔧 Z-INDEX CORRIGIDO */}
+          {/* Search and Filters Section */}
           <AnimatedCard
             hover="none"
             className={`classical-card p-6 transition-all duration-500 relative z-[200] ${
@@ -565,10 +607,10 @@ const WorksClient = memo(
             <div className="flex items-center mb-6">
               <div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title">
-                  Busca e Filtros
+                  {t('client_jsx_h3_filters_title')}
                 </h3>
                 <p className="text-theme-secondary text-sm">
-                  Encontre exatamente a obra que procura
+                  {t('client_jsx_p_filters_description')}
                 </p>
               </div>
             </div>
@@ -579,7 +621,7 @@ const WorksClient = memo(
                 <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                 <input
                   type="text"
-                  placeholder="Buscar por título, opus, compositor..."
+                  placeholder={t('client_jsx_input_search_placeholder')}
                   value={searchTerm}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   className={`input-classical pl-12 pr-12 w-full ${
@@ -609,7 +651,9 @@ const WorksClient = memo(
               >
                 <FiFilter className="w-4 h-4" />
                 <span>
-                  {showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}
+                  {showFilters
+                    ? t('client_jsx_button_hide_filters')
+                    : t('client_jsx_button_show_filters')}
                 </span>
                 <div
                   className={`transition-transform duration-300 ${
@@ -638,15 +682,15 @@ const WorksClient = memo(
               />
             </div>
 
-            {/* Expanded Filters - 🔧 Z-INDEX CORRIGIDO */}
+            {/* Expanded Filters */}
             {showFilters && (
               <AnimatedContainer speed="fast" delay={0}>
                 <div className="border-t border-theme-secondary pt-6 mb-4 relative z-[150]">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-                    {/* Composer Filter - 🔧 Z-INDEX MAIOR */}
+                    {/* Composer Filter */}
                     <div className="space-y-2 flex flex-col gap-1 relative z-[120]">
                       <label className="text-sm font-medium text-theme-secondary">
-                        Compositor
+                        {t('client_jsx_label_composer')}
                       </label>
                       <ComposerSearchInput
                         selectedComposer={selectedComposer}
@@ -659,16 +703,19 @@ const WorksClient = memo(
                     {/* Instrument Filter */}
                     <div className="space-y-2 flex flex-col gap-1 relative z-[110]">
                       <label className="text-sm font-medium text-theme-secondary">
-                        Instrumento
+                        {t('client_jsx_label_instrument')}
                       </label>
                       <div className="relative">
                         <FiMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                         <Select
                           options={[
-                            { label: 'Todos os instrumentos', value: '' }, // opção extra
+                            {
+                              label: t('client_jsx_option_all_instruments'),
+                              value: '',
+                            },
                             ...filterOptions.instruments.map((instrument) => ({
-                              label: instrument.name,
-                              value: instrument.id,
+                              label: instrument.name, // Nome traduzido para exibição
+                              value: instrument.originalName || instrument.name, // Nome original para filtro
                             })),
                           ]}
                           value={selectedInstrument}
@@ -684,15 +731,21 @@ const WorksClient = memo(
                     {/* Epoch Filter */}
                     <div className="space-y-2 flex flex-col gap-1 relative z-[105]">
                       <label className="text-sm font-medium text-theme-secondary">
-                        Período
+                        {t('client_jsx_label_epoch')}
                       </label>
                       <div className="relative">
                         <FiClock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                         <Select
                           options={[
-                            { label: 'Todos os períodos', value: '' }, // opção extra
+                            {
+                              label: t('client_jsx_option_all_epochs'),
+                              value: '',
+                            },
                             ...filterOptions.epochs.map((epoch) => ({
-                              label: epoch.name,
+                              label: translateEpochWithHook(
+                                epoch.originalName || epoch.name,
+                                t
+                              ),
                               value: epoch.id,
                             })),
                           ]}
@@ -704,10 +757,10 @@ const WorksClient = memo(
                       </div>
                     </div>
 
-                    {/* Genre Filter - 🔧 Z-INDEX MAIOR */}
+                    {/* Genre Filter */}
                     <div className="space-y-2 flex flex-col gap-1 relative z-[115]">
                       <label className="text-sm font-medium text-theme-secondary">
-                        Gênero
+                        {t('client_jsx_label_genre')}
                       </label>
                       <GenreSearchInput
                         selectedGenre={selectedGenre}
@@ -727,6 +780,7 @@ const WorksClient = memo(
               filterOptions={filterOptions}
               onRemoveFilter={removeFilter}
               onClearAll={clearFilters}
+              t={t}
             />
 
             {/* Results Info */}
@@ -735,10 +789,11 @@ const WorksClient = memo(
               endItem={endItem}
               totalCount={worksData.totalCount}
               isPending={isPending}
+              t={t}
             />
           </AnimatedCard>
 
-          {/* Results Section - 🔧 Z-INDEX MENOR PARA NÃO SOBREPOR DROPDOWNS */}
+          {/* Results Section */}
           <div className="relative mt-4 pt-4 z-[50]">
             {isPending ? <WorksSkeleton /> : worksGrid}
 
@@ -749,7 +804,7 @@ const WorksClient = memo(
                   <div className="classical-card p-8 text-center">
                     <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-theme-primary font-medium">
-                      Carregando obras...
+                      {t('client_jsx_p_loading_works')}
                     </p>
                   </div>
                 </div>

@@ -93,9 +93,9 @@ export interface WorksListResponse {
 }
 
 export interface FilterOptions {
-  instruments: { id: string; name: string }[];
-  epochs: { id: string; name: string }[];
-  workGenres: { id: string; name: string }[];
+  instruments: { id: string; name: string; originalName?: string }[];
+  epochs: { id: string; name: string; originalName?: string }[];
+  workGenres: { id: string; name: string; originalName?: string }[];
   popularComposers: {
     id: string;
     name: string;

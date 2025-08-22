@@ -1,4 +1,4 @@
-// app/works/WorkCardList.tsx - Premium version with theme system
+// app/works/WorkCardList.tsx - Premium version with translations
 'use client';
 
 import { WorkListItem } from '@/app/requests/work-details';
@@ -14,12 +14,15 @@ import {
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface workCardListProps {
   work: WorkListItem;
 }
 
 const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
+  const { t } = useTranslation({ sections: ['pages/works'] });
+
   const formatDuration = (duration: string | null) => {
     if (!duration) return null;
     if (duration.includes('min') || duration.includes(':')) return duration;
@@ -117,7 +120,9 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
             {work.tone && (
               <div className="flex items-center">
                 <GiMusicalNotes className="w-3 h-3 mr-1 text-brand-secondary" />
-                <span>Tom: {work.tone}</span>
+                <span>
+                  {t('cardlist_jsx_span_key_label')} {work.tone}
+                </span>
               </div>
             )}
           </div>
@@ -129,7 +134,9 @@ const WorkCardList: React.FC<workCardListProps> = ({ work }) => {
         {/* Action hint */}
         <div className="hidden md:flex items-center space-x-2 text-theme-tertiary text-xs">
           <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
-          <span className="font-medium">Explorar obra</span>
+          <span className="font-medium">
+            {t('cardlist_jsx_span_explore_work')}
+          </span>
         </div>
 
         {/* Arrow */}

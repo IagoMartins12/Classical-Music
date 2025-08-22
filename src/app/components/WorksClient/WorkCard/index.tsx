@@ -1,4 +1,4 @@
-// app/works/WorkCard.tsx - Premium version with theme system
+// app/works/WorkCard.tsx - Premium version with translations
 'use client';
 
 import { WorkListItem } from '@/app/requests/work-details';
@@ -14,6 +14,7 @@ import {
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../../FavoriteButton';
 import VerificationBadge from '../../Verification/VerificationBadge';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface workCardProps {
   work: WorkListItem;
@@ -21,6 +22,8 @@ interface workCardProps {
 }
 
 const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
+  const { t } = useTranslation({ sections: ['pages/works'] });
+
   const formatDuration = (duration: string | null) => {
     if (!duration) return null;
     // Se já está formatado, retorna como está
@@ -134,7 +137,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
               <div className="flex items-center">
                 <GiMusicalNotes className="w-4 h-4 text-brand-secondary mr-2 flex-shrink-0" />
                 <span className="text-sm text-theme-secondary">
-                  Tom: {work.tone}
+                  {t('card_jsx_span_key_label')} {work.tone}
                 </span>
               </div>
             )}
@@ -159,7 +162,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
               onClick={(e) => e.stopPropagation()}
             >
               <FiHeadphones className="w-4 h-4" />
-              <span>Explorar Obra</span>
+              <span>{t('card_jsx_button_explore_work')}</span>
               <svg
                 className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
                 fill="none"
@@ -179,7 +182,9 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
             <div className="flex items-center justify-between pt-3 border-t border-theme-secondary">
               <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
                 <div className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-pulse"></div>
-                <span className="font-medium">Detalhes completos</span>
+                <span className="font-medium">
+                  {t('card_jsx_span_full_details')}
+                </span>
               </div>
 
               <div className="flex items-center space-x-2">
@@ -191,7 +196,7 @@ const WorkCard: React.FC<workCardProps> = ({ work, goToWorkPage }) => {
                     // Quick preview functionality
                   }}
                   className="w-6 h-6 border border-theme-primary rounded-full flex items-center justify-center group-hover:border-brand-primary group-hover:bg-brand-primary/10 transition-all duration-300 hover:scale-110"
-                  title="Preview rápido"
+                  title={t('card_jsx_button_quick_preview')}
                 >
                   <svg
                     className="w-3 h-3 text-theme-primary group-hover:text-brand-primary transition-colors"

@@ -1,8 +1,9 @@
-// components/ComposerSearchInput.tsx - Versão Melhorada
+// components/ComposerSearchInput.tsx - Versão Melhorada com Traduções
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { FiSearch, FiUser, FiX, FiTrendingUp } from 'react-icons/fi';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface Composer {
   id: string;
@@ -24,6 +25,8 @@ export default function ComposerSearchInput({
   popularComposers = [],
   isDisabled = false,
 }: ComposerSearchInputProps) {
+  const { t } = useTranslation({ sections: ['pages/works'] });
+
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [composers, setComposers] = useState<Composer[]>(popularComposers);
@@ -271,7 +274,9 @@ export default function ComposerSearchInput({
         <input
           ref={inputRef}
           type="text"
-          placeholder={selectedComposerName || 'Buscar compositor...'}
+          placeholder={
+            selectedComposerName || t('composer_search_jsx_placeholder')
+          }
           value={searchTerm}
           onChange={handleInputChange}
           onFocus={handleInputFocus}
@@ -307,7 +312,7 @@ export default function ComposerSearchInput({
             <div className="flex items-center gap-2 px-4 py-3 bg-theme-secondary/10 border-b border-theme-secondary">
               <FiTrendingUp className="w-4 h-4 text-brand-primary" />
               <span className="text-sm font-medium text-theme-secondary">
-                Compositores Populares
+                {t('composer_search_jsx_popular_label')}
               </span>
             </div>
           )}
@@ -317,7 +322,9 @@ export default function ComposerSearchInput({
             <div className="flex items-center justify-center py-8">
               <div className="flex items-center space-x-2 text-theme-secondary">
                 <div className="w-4 h-4 border-2 border-brand-primary border-t-transparent rounded-full animate-spin"></div>
-                <span className="text-sm">Buscando compositores...</span>
+                <span className="text-sm">
+                  {t('composer_search_jsx_loading')}
+                </span>
               </div>
             </div>
           )}
@@ -355,8 +362,10 @@ export default function ComposerSearchInput({
                     {composer.worksCount && composer.worksCount > 0 && (
                       <div className="ml-3 flex-shrink-0">
                         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-theme-secondary/20 text-theme-secondary">
-                          {composer.worksCount} obra
-                          {composer.worksCount !== 1 ? 's' : ''}
+                          {composer.worksCount}{' '}
+                          {composer.worksCount === 1
+                            ? t('composer_search_jsx_work_singular')
+                            : t('composer_search_jsx_work_plural')}
                         </span>
                       </div>
                     )}
@@ -373,12 +382,14 @@ export default function ComposerSearchInput({
                 <FiUser className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                 <p className="text-sm text-theme-secondary">
                   {searchTerm
-                    ? `Nenhum compositor encontrado para "${searchTerm}"`
-                    : 'Nenhum compositor disponível'}
+                    ? `${t(
+                        'composer_search_jsx_no_results_for'
+                      )} "${searchTerm}"`
+                    : t('composer_search_jsx_no_composers')}
                 </p>
                 {searchTerm && (
                   <p className="text-xs text-theme-tertiary mt-1">
-                    Tente uma busca mais geral
+                    {t('composer_search_jsx_try_broader')}
                   </p>
                 )}
               </div>
