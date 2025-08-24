@@ -20,13 +20,13 @@ import {
 } from '../../components/animation/AnimatedComponents';
 import Select from '../../components/Common/Select';
 import UserAnnotationCard from '../../components/Annotations/UserAnnotationCard';
-import AnnotationsStatsWidget from '../../components/Annotations/AnnotationsStatsWidget';
 import CreateAnnotationModal from '../../components/Annotations/CreateAnnotationModal';
 import {
   useAnnotationsStore,
   AnnotationFilters,
 } from '@/app/stores/useAnnotationsStore';
 import Link from 'next/link';
+import AnnotationsStatsWidget from '@/app/components/StatsWidget/AnnotationsStatsWidget';
 
 type AnnotationCategory =
   | 'TECHNIQUE'
@@ -678,11 +678,7 @@ const AnnotationsPageClient = () => {
                 {/* Sidebar com estatísticas (1/3 da largura) */}
                 <div className="lg:col-span-1">
                   <div className="sticky top-6 space-y-6">
-                    <AnnotationsStatsWidget
-                      stats={widgetStats}
-                      topAnnotations={topAnnotations}
-                      mostAnnotatedWorks={mostAnnotatedWorks}
-                    />
+                    <AnnotationsStatsWidget />
                   </div>
                 </div>
               </div>

@@ -2141,3 +2141,4 @@ model SchoolActivity {
   
   @@map("school_activities")
 }
+

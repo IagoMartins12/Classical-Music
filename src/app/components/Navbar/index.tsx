@@ -32,10 +32,10 @@ import Image from 'next/image';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { useRouter } from 'next/navigation';
-import useIsMobile from '@/app/hooks/useIsMobile';
 import { FaGraduationCap } from 'react-icons/fa';
 import { LanguageDropdown, LanguageToggle } from '../LanguageToggle';
 import { useTranslation } from '@/app/hooks/useTranslation';
+import { useIsMobile } from '@/app/hooks/useMobile';
 
 interface NavItem {
   label: string;

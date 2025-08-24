@@ -3,9 +3,9 @@ import { useCallback, useEffect, useState } from 'react';
 import CarouselControls from '../CarouselControls';
 import CarouselContainer from '../CarouselContainer';
 import CarouselCard from '../CarouselCard';
-import useIsMobile from '@/app/hooks/useIsMobile';
 import { ModernCarouselProps } from '@/app/types/types';
 import useIsTablet from '@/app/hooks/useIsTablet';
+import { useIsMobile } from '@/app/hooks/useMobile';
 
 const Carousel: React.FC<ModernCarouselProps> = ({
   items,
