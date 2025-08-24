@@ -43,6 +43,7 @@ import {
 } from '@/app/utils/locationUtils';
 import { useStudentProfile } from '@/app/hooks/lessonsSystem/useStudentProfile';
 import { useToast } from '@/app/hooks/useToast';
+import Select from '@/app/components/Common/Select';
 
 interface StudentProfilePageClientProps {
   initialData: StudentProfileData | null;
@@ -65,6 +66,7 @@ const skillLevels = [
 ];
 
 const learningPaceOptions = [
+  { value: '', label: 'Selecione' },
   { value: 'slow', label: 'Devagar' },
   { value: 'medium', label: 'Moderado' },
   { value: 'fast', label: 'Rápido' },
@@ -732,17 +734,6 @@ export default function StudentProfilePageClient({
                           : 'N/A'}
                       </div>
                     </div>
-
-                    <div>
-                      <label className="text-sm text-theme-tertiary">
-                        Status
-                      </label>
-                      <div className="flex items-center space-x-2">
-                        <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-accent-green/10 text-accent-green">
-                          {profile?.status || 'Ativo'}
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
               )}
@@ -790,7 +781,8 @@ export default function StudentProfilePageClient({
                       <label className="block text-sm font-medium text-theme-primary mb-2">
                         Nível Atual
                       </label>
-                      <select
+                      <Select
+                        options={skillLevels}
                         value={studyForm.level}
                         onChange={(e) =>
                           setStudyForm((prev) => ({
@@ -800,13 +792,7 @@ export default function StudentProfilePageClient({
                         }
                         className="input-classical w-full"
                         disabled={saving}
-                      >
-                        {skillLevels.map((level) => (
-                          <option key={level.value} value={level.value}>
-                            {level.label}
-                          </option>
-                        ))}
-                      </select>
+                      />
                     </div>
 
                     <div>
@@ -835,7 +821,8 @@ export default function StudentProfilePageClient({
                     <label className="block text-sm font-medium text-theme-primary mb-2">
                       Ritmo de Aprendizado
                     </label>
-                    <select
+                    <Select
+                      options={learningPaceOptions}
                       value={studyForm.learningPace}
                       onChange={(e) =>
                         setStudyForm((prev) => ({
@@ -845,14 +832,7 @@ export default function StudentProfilePageClient({
                       }
                       className="input-classical w-full"
                       disabled={saving}
-                    >
-                      <option value="">Selecione...</option>
-                      {learningPaceOptions.map((pace) => (
-                        <option key={pace.value} value={pace.value}>
-                          {pace.label}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </div>
 
                   <div>
@@ -1582,48 +1562,6 @@ export default function StudentProfilePageClient({
                     </div>
                   </div>
                 )}
-
-              {/* Statistics */}
-              <div className="mt-8 pt-6 border-t border-theme-secondary">
-                <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center">
-                  <FiTrendingUp className="w-5 h-5 mr-2" />
-                  Estatísticas
-                </h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-accent-blue">
-                      {profile.totalLessonsAttended}
-                    </div>
-                    <div className="text-sm text-theme-tertiary">
-                      Aulas Assistidas
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-accent-green">
-                      {profile.completedAssignments}
-                    </div>
-                    <div className="text-sm text-theme-tertiary">
-                      Tarefas Concluídas
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-accent-orange">
-                      {profile.currentStreak}
-                    </div>
-                    <div className="text-sm text-theme-tertiary">
-                      Sequência Atual
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl font-bold text-accent-purple">
-                      {profile.longestStreak}
-                    </div>
-                    <div className="text-sm text-theme-tertiary">
-                      Melhor Sequência
-                    </div>
-                  </div>
-                </div>
-              </div>
 
               {/* Active Teachers */}
               {profile.teachers.length > 0 && (

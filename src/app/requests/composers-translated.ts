@@ -35,11 +35,6 @@ interface ComposerTranslated {
   isVerified: boolean;
 }
 
-interface EpochTranslated {
-  id: string;
-  name: string;
-}
-
 // Cache de épocas por 24 horas (dados raramente mudam) - COM TRADUÇÃO
 export const getEpochsCacheTranslated = unstable_cache(
   async (language: Language) => {

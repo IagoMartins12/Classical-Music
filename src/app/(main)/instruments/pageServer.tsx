@@ -10,6 +10,7 @@ import {
 } from '@/app/requests/instruments-history-translated';
 import { getServerLanguage } from '@/app/utils/translations/serverTranslation';
 import { InstrumentsPageClient } from './pageClient';
+export const dynamic = 'force-dynamic';
 
 // 🎼 CONFIGURAÇÃO DE COMPOSITORES DESTAQUE
 const composerPreferences: ComposerPreferences = {

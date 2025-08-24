@@ -7,6 +7,7 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import ListComposersCards from '../Cards/ListComposersCard';
 import { composerHomeProps } from '../../PopularComposers';
 import { useNavigate } from '@/app/hooks/useNavigate';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface listComposersProps {
   composers: composerHomeProps[];
@@ -16,6 +17,7 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
   const [activeComposerId, setActiveComposerId] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(12); // Começar com 12 para melhor grid
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation({ sections: ['pages/home'] });
 
   const { navigateToUrl } = useNavigate();
 
@@ -94,19 +96,21 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
               {isLoading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-theme-inverse border-t-transparent rounded-full animate-spin mr-2 inline-block"></div>
-                  Carregando...
+                  {t('loading')}
                 </>
               ) : (
                 <>
                   <FiChevronDown className="w-5 h-5 mr-2 inline" />
-                  Carregar Mais Compositores
+                  {t('loading_more_composers')}
                 </>
               )}
             </button>
 
             {/* Progress info */}
             <p className="text-theme-tertiary text-sm">
-              Mais {composers.length - visibleCount} compositores disponíveis
+              Mais {t('more')}
+              {composers.length - visibleCount} compositores disponíveis{' '}
+              {t('composers_avaliable')}
             </p>
           </div>
         ) : (
@@ -120,10 +124,11 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
               </div>
               <h4 className="text-lg font-bold text-theme-primary classical-title mb-2">
                 Todos os Compositores Exibidos!
+                {t('all_composers_show')}
               </h4>
               <p className="text-theme-secondary text-sm mb-4">
-                Você explorou todos os {composers.length} compositores desta
-                coleção.
+                {t('composers_explored')} {composers.length}{' '}
+                {t('collection_composers')}
               </p>
             </div>
 
@@ -133,7 +138,8 @@ const ListComposers: React.FC<listComposersProps> = ({ composers }) => {
               className="btn-classical-secondary text-lg px-8 py-4 hover:scale-105 active:scale-95"
             >
               <FiUsers className="w-5 h-5 mr-2 inline" />
-              Ver Todos os Compositores
+
+              {t('see_all_composers')}
             </button>
           </div>
         )}

@@ -2,23 +2,32 @@
 'use client';
 
 import React from 'react';
-import { FiBookOpen, FiStar, FiRefreshCw, FiFilter } from 'react-icons/fi';
+import { FiBookOpen, FiRefreshCw, FiFilter } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import SectionTitle from '../Utils/SectionTitle';
+
+import Select from '../Common/Select';
+import { useTranslation } from '@/app/hooks/useTranslation';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 import {
   categories,
   getFactsByCategory,
   getRandomFacts,
-  musicalFacts,
 } from '@/app/requests/utils';
-import Select from '../Common/Select';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 
 interface MusicalFact {
   id: string;
   type: string;
   icon: string;
-  title: string;
-  content: string;
+  title: {
+    pt: string;
+    en: string;
+  };
+  content: {
+    pt: string;
+    en: string;
+  };
   category: string;
 }
 
@@ -101,6 +110,7 @@ const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
 
   const style = getFactStyle(fact.category);
 
+  const { language } = useLanguageStore();
   // Animação escalonada baseada no índice
   const animationDelay = `${index * 100}ms`;
 
@@ -131,7 +141,7 @@ const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
               <h3
                 className={`text-lg font-bold classical-title group-hover:${style.accent} transition-colors duration-300`}
               >
-                {fact.title}
+                {fact.title[language]}
               </h3>
 
               {/* Category badge */}
@@ -146,7 +156,7 @@ const FactCard = ({ fact, index }: { fact: MusicalFact; index: number }) => {
             <p
               className={`text-theme-secondary leading-relaxed transition-all duration-300 `}
             >
-              {fact.content}
+              {fact.content[language]}
             </p>
           </div>
         </div>
@@ -174,6 +184,8 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
   const [loadedCount, setLoadedCount] = React.useState(initialCount);
   const [mounted, setMounted] = React.useState(false);
+  const { t } = useTranslation({ sections: ['pages/home'] });
+  const { language } = useLanguageStore();
 
   // Garantir que o componente está montado no cliente
   React.useEffect(() => {
@@ -189,14 +201,12 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
     } else {
       loadInitialFacts();
     }
-  }, [initialFacts, initialCount, mounted]);
+  }, [initialFacts, initialCount, mounted, language]);
 
   const loadInitialFacts = () => {
-    if (typeof getRandomFacts === 'function') {
-      const facts = getRandomFacts(initialCount);
-      setDisplayedFacts(facts);
-      setLoadedCount(initialCount);
-    }
+    const facts = getRandomFacts(initialCount);
+    setDisplayedFacts(facts);
+    setLoadedCount(initialCount);
   };
 
   const refreshFacts = async () => {
@@ -231,16 +241,18 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
     setIsLoading(false);
   };
 
-  const hasMoreFacts = () => {
+  // Atualizar fatos quando idioma muda
+  React.useEffect(() => {
+    if (!mounted) return;
+
     if (selectedCategory === 'all') {
-      return displayedFacts.length < musicalFacts.length;
+      const facts = getRandomFacts(loadedCount);
+      setDisplayedFacts(facts);
     } else {
-      const categoryFacts = musicalFacts.filter(
-        (fact) => fact.category === selectedCategory
-      );
-      return displayedFacts.length < categoryFacts.length;
+      const facts = getFactsByCategory(selectedCategory, loadedCount);
+      setDisplayedFacts(facts);
     }
-  };
+  }, [language, mounted, selectedCategory, loadedCount]);
 
   // Não renderizar até estar montado no cliente
   if (!mounted) {
@@ -271,8 +283,8 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
   return (
     <section className="section-wrap relative !mb-8">
       <SectionTitle
-        title="Curiosidades Musicais"
-        subtitle="Fatos fascinantes e histórias interessantes do mundo da música clássica"
+        title={t('musical_facts_title')}
+        subtitle={t('musical_facts_subtitle')}
         icon={<FiBookOpen className="w-6 h-6" />}
         accent="blue"
       />
@@ -283,14 +295,16 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-theme-secondary">
             <FiFilter className="w-4 h-4" />
-            <span className="text-sm font-medium">Filtrar por período:</span>
+            <span className="text-sm font-medium">
+              {t('musical_facts_filter_label')}
+            </span>
           </div>
           <Select
             options={[
-              { label: 'Todos os Períodos', value: 'all' }, // opção extra
-              ...categories.map((categories) => ({
-                label: categories,
-                value: categories,
+              { label: t('musical_facts_all_periods'), value: 'all' },
+              ...categories.map((category) => ({
+                label: translateEpochWithHook(category, t),
+                value: category,
               })),
             ]}
             value={selectedCategory}
@@ -309,7 +323,7 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
           <FiRefreshCw
             className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
           />
-          Embaralhar
+          {t('musical_facts_shuffle')}
         </button>
       </div>
 
@@ -334,30 +348,13 @@ const MusicalFacts: React.FC<MusicalFactsProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {displayedFacts.map((fact, index) => (
             <FactCard
-              key={`${fact.id}-${selectedCategory}`}
+              key={`${fact.id}-${selectedCategory}-${language}`}
               fact={fact}
               index={index}
             />
           ))}
         </div>
       )}
-
-      {/* End message */}
-      {!isLoading &&
-        !hasMoreFacts() &&
-        displayedFacts.length > initialCount && (
-          <div className="mt-8 text-center">
-            <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl text-green-400 text-sm font-medium backdrop-blur-sm">
-              <FiStar className="w-5 h-5" />
-              <span>
-                {selectedCategory === 'all'
-                  ? 'Você explorou todas as curiosidades! 🎉'
-                  : `Todas as curiosidades de ${selectedCategory} foram exibidas! 🎵`}
-              </span>
-              <FiStar className="w-5 h-5" />
-            </div>
-          </div>
-        )}
 
       {/* Floating fact bubbles decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

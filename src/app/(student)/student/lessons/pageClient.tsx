@@ -384,7 +384,7 @@ export default function StudentLessonsPageClient({
           {/* 🆕 ALERTA PARA AULAS QUE PRECISAM DE ATENÇÃO */}
           {statusInfo.needsAttention && (
             <div className="mb-4">
-              <div className="flex items-center text-sm text-accent-red">
+              <div className="flex items-center text-sm text-red-600">
                 <FiAlertTriangle className="w-4 h-4 mr-2" />
                 Status precisa ser atualizado
               </div>
@@ -663,12 +663,6 @@ export default function StudentLessonsPageClient({
                   <span>Filtros</span>
                 </button>
 
-                {/* 🆕 VIEW MODE TOGGLE */}
-                <ViewModeToggle
-                  viewMode={viewMode}
-                  onViewModeChange={setViewMode}
-                />
-
                 <button
                   onClick={handleRefresh}
                   disabled={loading.lessons}
@@ -681,6 +675,12 @@ export default function StudentLessonsPageClient({
                   />
                   <span>Atualizar</span>
                 </button>
+
+                {/* 🆕 VIEW MODE TOGGLE */}
+                <ViewModeToggle
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                />
               </div>
             </div>
 

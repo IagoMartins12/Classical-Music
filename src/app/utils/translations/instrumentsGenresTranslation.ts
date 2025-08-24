@@ -336,7 +336,7 @@ export function getOriginalGenreName(
 
   // Se não encontrou tradução exata, buscar por correspondência parcial
   const partialMatch = Object.entries(WORK_GENRE_TRANSLATIONS).find(
-    ([englishKey, portugueseValue]) =>
+    ([englishKey, _portugueseValue]) =>
       englishKey.toLowerCase().includes(lowerTranslatedName) ||
       lowerTranslatedName.includes(englishKey.toLowerCase())
   );

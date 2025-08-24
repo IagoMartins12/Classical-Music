@@ -1,6 +1,6 @@
 // app/uploads/pageServer.tsx - ATUALIZADO COM NOVOS FILTROS E LIMITAÇÃO
 
-import UploadsClient from '@/app/main/uploads/pageClient';
+import UploadsClient from '@/app/(main)/uploads/pageClient';
 import {
   getEpochsCache,
   getFilterData,

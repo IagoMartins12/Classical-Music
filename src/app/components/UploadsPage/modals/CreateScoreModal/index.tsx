@@ -1412,9 +1412,13 @@ const CreateScoreModal = ({
                         • Grupo 0: &quot;Partitura Completa&quot; (todos os 12
                         études)
                       </p>
-                      <p>
+                      <p className="">
                         • Grupo 1: &quot;Études Individuais&quot; (étude nº 1,
-                        2, 3...)
+                        2, 3...).
+                      </p>
+                      <p className="">
+                        • Você pode ir aumentando o indice para melhorar o
+                        agrupamento
                       </p>
                     </div>
                   </div>

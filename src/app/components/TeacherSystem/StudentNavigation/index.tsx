@@ -22,6 +22,7 @@ import {
   FiFile,
   FiBell,
   FiBook,
+  FiActivity,
 } from 'react-icons/fi';
 import { GiMusicalNotes } from 'react-icons/gi';
 import { toast } from 'react-hot-toast';
@@ -408,7 +409,6 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       <span>Meu Perfil</span>
                     </Link>
 
-                    {/* 🆕 LINK PARA NOTIFICAÇÕES */}
                     <Link
                       href="/student/notifications"
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-green hover:bg-interactive-hover rounded-lg transition-all"
@@ -420,12 +420,13 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                     </Link>
 
                     <Link
-                      href="/favorites"
+                      href="/student/history"
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-accent-green hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      <FiHeart className="w-4 h-4" />
-                      <span>Favoritos</span>
+                      <FiActivity className="w-4 h-4" />
+
+                      <span>Histórico</span>
                     </Link>
 
                     <Link
@@ -434,7 +435,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiBookOpen className="w-4 h-4" />
-                      <span>Meus Estudos</span>
+                      <span>Lista de Estudos</span>
                     </Link>
 
                     <Link

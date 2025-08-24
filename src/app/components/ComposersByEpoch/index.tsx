@@ -6,6 +6,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import SectionTitle from '../Utils/SectionTitle';
+import { useTranslation } from '@/app/hooks/useTranslation';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 
 interface Epoch {
   id: string;
@@ -18,6 +20,7 @@ interface ComposersByEpochProps {
 
 const EpochCard = ({ epoch }: { epoch: Epoch }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { t } = useTranslation({ sections: ['pages/home'] });
 
   // Definir imagens e estilos específicos para cada período
   const getEpochData = (epochName: string) => {
@@ -87,10 +90,9 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
       >
         {/* Imagem de fundo da época */}
         <div className="absolute inset-0">
-          {/* Imagem da época (comentado até você adicionar as imagens) */}
           <Image
             src={epochData.image}
-            alt={`Período ${epoch.name}`}
+            alt={`Período ${translateEpochWithHook(epoch.name, t)}`}
             fill
             className="object-cover opacity-60 group-hover:opacity-80 transition-opacity duration-500"
             sizes="160px"
@@ -121,7 +123,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
       {/* Informações da época - sempre visível */}
       <div className="mt-4 text-center">
         <h4 className="text-xl font-bold text-theme-primary classical-title mb-1">
-          {epoch.name}
+          {translateEpochWithHook(epoch.name, t)}
         </h4>
         <p className="text-sm text-theme-secondary mb-3">
           {epochData.description}
@@ -150,8 +152,12 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
                 <FiUsers className="w-4 h-4" />
               </div>
               <div className="text-left">
-                <div className="text-sm font-semibold">Compositores</div>
-                <div className="text-xs opacity-80">Explorar conteudo</div>
+                <div className="text-sm font-semibold">
+                  {t('composers_by_epoch_composers')}
+                </div>
+                <div className="text-xs opacity-80">
+                  {t('composers_by_epoch_composers_desc')}
+                </div>
               </div>
             </div>
             <svg
@@ -182,8 +188,12 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
               </div>
 
               <div className="text-left">
-                <div className="text-sm font-semibold">Obras Musicais</div>
-                <div className="text-xs opacity-70">Explorar repertório</div>
+                <div className="text-sm font-semibold">
+                  {t('composers_by_epoch_works')}
+                </div>
+                <div className="text-xs opacity-70">
+                  {t('composers_by_epoch_works_desc')}
+                </div>
               </div>
             </div>
             <svg
@@ -207,7 +217,7 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
       {!isExpanded && (
         <div className="mt-3 text-center">
           <span className="text-xs text-theme-tertiary font-medium opacity-60">
-            Clique para navegar
+            {t('composers_by_epoch_click_navigate')}
           </span>
         </div>
       )}
@@ -216,16 +226,19 @@ const EpochCard = ({ epoch }: { epoch: Epoch }) => {
 };
 
 const ComposersByEpoch: React.FC<ComposersByEpochProps> = ({ epochs }) => {
+  const { t } = useTranslation({ sections: ['pages/home'] });
+
   const epochCardMock = {
     id: '8',
     name: 'Todos',
   };
+
   return (
     <section className="section-wrap relative py-16 !mb-8">
       <SectionTitle
-        title="Explore por Período"
-        subtitle="Descubra a evolução da música através dos séculos"
-        linkText="Ver todos os períodos"
+        title={t('composers_by_epoch_title')}
+        subtitle={t('composers_by_epoch_subtitle')}
+        linkText={t('composers_by_epoch_link_text')}
         linkHref="/composers"
         icon={<FiClock className="w-6 h-6" />}
         accent="purple"
@@ -250,15 +263,6 @@ const ComposersByEpoch: React.FC<ComposersByEpochProps> = ({ epochs }) => {
           <EpochCard epoch={epochCardMock} />
         </div>
       </div>
-
-      {/* Informação adicional */}
-      {/* <div className="mt-16 text-center">
-        <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-purple-500/10 to-violet-500/10 border border-purple-500/20 rounded-2xl text-purple-400 text-sm font-medium backdrop-blur-sm">
-          <GiMusicalNotes className="w-5 h-5" />
-          <span>Cada período representa uma revolução na história musical</span>
-          <FiClock className="w-5 h-5 animate-pulse" />
-        </div>
-      </div> */}
 
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

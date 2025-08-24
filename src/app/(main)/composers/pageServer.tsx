@@ -1,5 +1,5 @@
 // app/main/composers/pageServer.tsx
-import ComposersClient from '@/app/main/composers/pageClient';
+import ComposersClient from '@/app/(main)/composers/pageClient';
 import {
   getComposersCountTranslated,
   getComposersWithPaginationTranslated,

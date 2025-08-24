@@ -6,7 +6,7 @@ import {
 } from '@/app/requests/work-page-details';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
-import WorkDetailsClient from '@/app/main/works/[workId]/pageClient';
+import WorkDetailsClient from '@/app/(main)/works/[workId]/pageClient';
 
 interface WorkDetailsServerProps {
   workId: string;

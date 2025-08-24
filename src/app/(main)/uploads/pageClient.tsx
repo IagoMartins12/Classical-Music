@@ -22,8 +22,6 @@ import {
   FiArrowRight,
 } from 'react-icons/fi';
 import { MdUpload } from 'react-icons/md';
-
-// Importar componentes de animação
 import {
   PageContainer,
   AnimatedContainer,
@@ -1035,16 +1033,6 @@ const UploadsClient = ({
               >
                 Histórico
               </Button>
-              {isAdmin && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  leftIcon={<FiSettings />}
-                  onClick={() => router.push('/uploads/moderation')}
-                >
-                  Moderação
-                </Button>
-              )}
             </div>
           </div>
         </AnimatedItem>

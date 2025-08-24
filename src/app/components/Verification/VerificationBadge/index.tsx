@@ -60,10 +60,7 @@ export default function VerificationBadge({
   }
 
   if (variant === 'text') {
-    const titleKey =
-      title === 'Compositor'
-        ? 'verification_badge_compositor'
-        : 'verification_badge_peca';
+
     const verifiedText =
       title === 'Compositor'
         ? t('verification_badge_compositor_verificado')

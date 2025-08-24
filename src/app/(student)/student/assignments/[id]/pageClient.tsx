@@ -384,10 +384,8 @@ export default function StudentAssignmentDetailsPageClient({
   const getStatusColor = (assignment: any) => {
     if (!assignment) return '';
 
-    if (assignment.isOverdue)
-      return 'bg-accent-red/10 border-accent-red/30 text-accent-red';
-    if (assignment.isCompleted)
-      return 'bg-accent-green/10 border-accent-green/30 text-accent-green';
+    if (assignment.isOverdue) return 'border-red-400 text-red-500';
+    if (assignment.isCompleted) return 'border-green-400 text-green-400';
     if (assignment.status === 'IN_PROGRESS')
       return 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue';
     return 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow';
@@ -565,7 +563,7 @@ export default function StudentAssignmentDetailsPageClient({
                             <span
                               className={`text-sm ${
                                 assignment.isOverdue
-                                  ? 'text-accent-red'
+                                  ? 'text-red-400 font-semibold'
                                   : assignment.daysUntilDue ?? 0 <= 1
                                   ? 'text-accent-yellow'
                                   : 'text-theme-tertiary'
@@ -602,9 +600,15 @@ export default function StudentAssignmentDetailsPageClient({
                     </label>
                     <div className="flex items-center space-x-4 mb-4">
                       <div className="flex-1">
-                        <div className="w-full bg-theme-secondary rounded-full h-3">
+                        <div className="w-full bg-theme-secondary rounded-full h-2">
                           <div
-                            className="progress-bar rounded-full transition-all duration-300"
+                            className={`h-2 rounded-full transition-all ${
+                              currentProgress >= 100
+                                ? 'bg-green-400'
+                                : currentProgress >= 50
+                                ? 'bg-blue-400'
+                                : 'bg-yellow-400'
+                            }`}
                             style={{ width: `${currentProgress}%` }}
                           />
                         </div>
@@ -1177,30 +1181,25 @@ export default function StudentAssignmentDetailsPageClient({
 
         {/* Complete Assignment Modal */}
         {showCompleteModal && (
-          <div className="fixed inset-0 bg-bg-overlay backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <AnimatedCard
-              hover="none"
-              className="classical-card w-full max-w-md"
-            >
+          <Modal
+            isOpen={showCompleteModal}
+            onClose={() => setShowCompleteModal(false)}
+            maxWidth="lg"
+          >
+            <AnimatedCard hover="none">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-bold text-theme-primary classical-title">
                     Concluir Tarefa
                   </h2>
-                  <button
-                    onClick={() => setShowCompleteModal(false)}
-                    className="text-theme-tertiary hover:text-theme-primary"
-                  >
-                    <FiX className="w-5 h-5" />
-                  </button>
                 </div>
 
-                <p className="text-theme-secondary mb-4">
+                <p className="text-theme-secondary mb-6">
                   Tem certeza que deseja marcar esta tarefa como concluída? Seu
                   professor receberá uma notificação.
                 </p>
 
-                <div className="flex items-center justify-end space-x-3">
+                <div className="flex items-center justify-between space-x-3">
                   <button
                     onClick={() => setShowCompleteModal(false)}
                     className="btn-classical-secondary"
@@ -1227,7 +1226,7 @@ export default function StudentAssignmentDetailsPageClient({
                 </div>
               </div>
             </AnimatedCard>
-          </div>
+          </Modal>
         )}
 
         {/* Progress Milestones Modal */}
@@ -1250,7 +1249,13 @@ export default function StudentAssignmentDetailsPageClient({
                     <div className="flex-1">
                       <div className="w-full bg-theme-secondary rounded-full h-3">
                         <div
-                          className="progress-bar h-3 rounded-full transition-all duration-300"
+                          className={`h-2 rounded-full transition-all ${
+                            currentProgress >= 100
+                              ? 'bg-green-400'
+                              : currentProgress >= 50
+                              ? 'bg-blue-400'
+                              : 'bg-yellow-400'
+                          }`}
                           style={{ width: `${currentProgress}%` }}
                         />
                       </div>
@@ -1264,7 +1269,7 @@ export default function StudentAssignmentDetailsPageClient({
                   </p>
                 </div>
 
-                <div className="space-y-3 max-h-80 overflow-y-auto">
+                <div className="space-y-3 overflow-y-auto">
                   {PROGRESS_MILESTONES.map((milestone) => {
                     const Icon = milestone.icon;
                     const isCompleted = progressMilestones[milestone.key];
@@ -1272,9 +1277,9 @@ export default function StudentAssignmentDetailsPageClient({
                     return (
                       <div
                         key={milestone.key}
-                        className={`flex items-center space-x-3 p-3 rounded-lg border transition-all cursor-pointer hover:bg-theme-elevated ${
+                        className={`flex items-center space-x-3 p-3 mx-2 rounded-lg transition-all cursor-pointer shadow-md ${
                           isCompleted
-                            ? 'bg-accent-green/5 border-accent-green/30'
+                            ? 'bg-accent-green/5 border-green-400 border'
                             : 'border-theme-secondary'
                         }`}
                         onClick={() => handleMilestoneToggle(milestone.key)}

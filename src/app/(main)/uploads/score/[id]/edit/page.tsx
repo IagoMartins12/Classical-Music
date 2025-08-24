@@ -1,5 +1,5 @@
 // app/uploads/score/[id]/page.tsx
-import EditScoreClient from '@/app/main/uploads/score/[id]/edit/pageClient';
+import EditScoreClient from '@/app/(main)/uploads/score/[id]/edit/pageClient';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { getServerSession } from 'next-auth';

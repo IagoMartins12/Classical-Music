@@ -1,4 +1,4 @@
-import EditWorkClient from '@/app/main/uploads/work/[id]/edit/pageClient';
+import EditWorkClient from '@/app/(main)/uploads/work/[id]/edit/pageClient';
 import { authOptions } from '@/app/libs/auth';
 import prisma from '@/app/libs/prismadb';
 import { getFormData } from '@/app/requests/upload';

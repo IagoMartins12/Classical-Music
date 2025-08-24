@@ -413,7 +413,7 @@ export default function StudentCalendarPageClient({
         </AnimatedItem>
 
         {/* Stats Cards */}
-        <AnimatedItem direction="up" springType="gentle">
+        {/* <AnimatedItem direction="up" springType="gentle">
           <SequentialGrid
             cols={5}
             gap={6}
@@ -492,7 +492,7 @@ export default function StudentCalendarPageClient({
               <div className="text-sm text-theme-tertiary">Hoje</div>
             </AnimatedCard>
           </SequentialGrid>
-        </AnimatedItem>
+        </AnimatedItem> */}
 
         {/* Calendar Controls */}
         <AnimatedItem direction="up" springType="gentle">
@@ -545,57 +545,44 @@ export default function StudentCalendarPageClient({
                 >
                   Hoje
                 </button>
+              </div>
 
+              {/* View Mode Toggle */}
+              <div className="flex bg-theme-secondary rounded-lg p-1">
                 <button
-                  onClick={handleRefreshCalendar}
-                  disabled={loading.refreshing}
-                  className="btn-classical-secondary text-sm flex items-center space-x-2 disabled:opacity-50"
+                  onClick={() => setViewMode('month')}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    viewMode === 'month'
+                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                      : 'text-theme-tertiary hover:text-theme-primary'
+                  }`}
                 >
-                  <FiRefreshCw
-                    className={`w-4 h-4 ${
-                      loading.refreshing ? 'animate-spin' : ''
-                    }`}
-                  />
-                  <span>Atualizar</span>
+                  Mês
+                </button>
+                <button
+                  onClick={() => setViewMode('week')}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    viewMode === 'week'
+                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                      : 'text-theme-tertiary hover:text-theme-primary'
+                  }`}
+                >
+                  Semana
+                </button>
+                <button
+                  onClick={() => setViewMode('day')}
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    viewMode === 'day'
+                      ? 'bg-theme-tertiary text-theme-primary shadow-md'
+                      : 'text-theme-tertiary hover:text-theme-primary'
+                  }`}
+                >
+                  Dia
                 </button>
               </div>
 
               {/* View Mode and Filters */}
               <div className="flex items-center space-x-4">
-                {/* View Mode Toggle */}
-                <div className="flex bg-theme-secondary rounded-lg p-1">
-                  <button
-                    onClick={() => setViewMode('month')}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                      viewMode === 'month'
-                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
-                    }`}
-                  >
-                    Mês
-                  </button>
-                  <button
-                    onClick={() => setViewMode('week')}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                      viewMode === 'week'
-                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
-                    }`}
-                  >
-                    Semana
-                  </button>
-                  <button
-                    onClick={() => setViewMode('day')}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                      viewMode === 'day'
-                        ? 'bg-theme-tertiary text-theme-primary shadow-md'
-                        : 'text-theme-tertiary hover:text-theme-primary'
-                    }`}
-                  >
-                    Dia
-                  </button>
-                </div>
-
                 {/* Teacher Filter */}
                 {calendarData && calendarData.teachers.length > 1 && (
                   <Select
@@ -626,13 +613,26 @@ export default function StudentCalendarPageClient({
                   }
                   className="input-classical-2 w-auto min-w-40"
                 />
+
+                <button
+                  onClick={handleRefreshCalendar}
+                  disabled={loading.refreshing}
+                  className="btn-classical-secondary text-sm flex items-center space-x-2 disabled:opacity-50"
+                >
+                  <FiRefreshCw
+                    className={`w-4 h-4 ${
+                      loading.refreshing ? 'animate-spin' : ''
+                    }`}
+                  />
+                  <span>Atualizar</span>
+                </button>
               </div>
             </div>
           </AnimatedCard>
         </AnimatedItem>
 
         {/* Calendar Content */}
-        <AnimatedItem direction="up" springType="gentle">
+        <AnimatedItem direction="up" springType="gentle" className="mt-4">
           <AnimatedCard hover="none" className="classical-card p-6">
             {viewMode === 'month' && (
               <MonthView
@@ -1224,7 +1224,7 @@ function StudentEventDetailsModal({
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
                   Seu Feedback
                 </label>
-                <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
+                <div className="bg-theme-tertiary rounded-md p-4">
                   <div className="text-theme-primary whitespace-pre-wrap">
                     {event.details.studentFeedback}
                   </div>

@@ -12,7 +12,7 @@ const HeroMainPage = () => {
       {/* Seção Principal - História da Música */}
       <Link
         href="/music-history"
-        className="relative w-full lg:w-8/12 rounded-2xl  !p-0 classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500 flex"
+        className="relative w-full lg:w-8/12 rounded-2xl  !p-0 classical-card overflow-hidden group transition-all duration-500 flex"
       >
         <div className="relative flex-1 h-96 md:h-80 lg:h-auto">
           <Image
@@ -20,7 +20,7 @@ const HeroMainPage = () => {
             src="/classical-period-2.jpg"
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 60vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-cover transition-transform duration-500"
             priority
             quality={90}
           />
@@ -59,7 +59,7 @@ const HeroMainPage = () => {
         {/* Card Instrumentação */}
         <Link
           href="/instruments"
-          className="relative rounded-2xl bg-white shadow-lg  !p-0 classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500"
+          className="relative rounded-2xl bg-white shadow-lg  !p-0 classical-card overflow-hidden group transition-all duration-500"
         >
           <div className="relative h-64">
             <Image
@@ -67,7 +67,7 @@ const HeroMainPage = () => {
               src="/instrument-2.jpg"
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-cover transition-transform duration-500"
               quality={85}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
@@ -106,7 +106,7 @@ const HeroMainPage = () => {
         {/* Card Sobre o Projeto */}
         <Link
           href="/about-us"
-          className="relative rounded-2xl bg-white shadow-lg !p-0 classical-card overflow-hidden group hover:scale-[1.02] transition-all duration-500"
+          className="relative rounded-2xl bg-white shadow-lg !p-0 classical-card overflow-hidden group transition-all duration-500"
         >
           <div className="relative h-64">
             <Image
@@ -114,7 +114,7 @@ const HeroMainPage = () => {
               src="/wallpaper.jpg"
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-cover transition-transform duration-500"
               quality={85}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />

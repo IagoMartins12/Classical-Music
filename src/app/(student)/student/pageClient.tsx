@@ -759,7 +759,9 @@ export default function StudentPageClient({
                     <h3 className="font-bold text-theme-primary">
                       Próximas Aulas
                     </h3>
-                    <p className="text-xs text-theme-tertiary">Esta semana</p>
+                    <p className="text-xs text-theme-tertiary">
+                      Suas próximas aulas
+                    </p>
                   </div>
                 </div>
 
@@ -804,7 +806,9 @@ export default function StudentPageClient({
                   </div>
                   <div>
                     <h3 className="font-bold text-theme-primary">
-                      Meus Professores
+                      {teachers.length === 1
+                        ? 'Meu Professor '
+                        : 'Meus Professores'}
                     </h3>
                     <p className="text-xs text-theme-tertiary">
                       {teachers.length} professor(es) vinculado(s)

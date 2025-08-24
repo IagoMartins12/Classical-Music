@@ -6,6 +6,7 @@ import { FiPlus } from 'react-icons/fi';
 import SectionTitle from '../Utils/SectionTitle';
 import RecentComposerCard from './RecentComposerCard';
 import RecentWorkCard, { RecentWorkProps } from './RecentWorkCard';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 export interface RecentComposerProps {
   name: string;
@@ -25,23 +26,24 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
   composers,
   works,
 }) => {
+  const { t } = useTranslation({ sections: ['pages/home'] });
+
   return (
     <section className="section-wrap relative !mb-8">
       <SectionTitle
-        title="Últimas Adições"
-        subtitle="Novos compositores recém-adicionados à nossa enciclopédia"
-        linkText="Ver todas as adições"
+        title={t('recent_additions_title')}
+        subtitle={t('recent_additions_subtitle')}
+        linkText={t('recent_additions_link_text')}
         linkHref="/composers?sort=recent"
         icon={<FiPlus className="w-6 h-6" />}
         accent="green"
       />
 
       {/* Grid responsivo */}
-
       <div className="mb-12">
         <div className="flex items-center gap-3 mb-6">
           <h3 className="text-xl font-bold text-theme-primary classical-title">
-            Ultimos compositores adicionados
+            {t('recent_additions_composers_section')}
           </h3>
           <div className="flex-1 h-px bg-gradient-to-r from-orange-500/20 to-transparent"></div>
         </div>
@@ -56,7 +58,7 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-6">
           <h3 className="text-xl font-bold text-theme-primary classical-title">
-            Ultimas obras adicionadas.
+            {t('recent_additions_works_section')}
           </h3>
           <div className="flex-1 h-px bg-gradient-to-r from-purple-500/20 to-transparent"></div>
         </div>
@@ -67,15 +69,6 @@ const RecentAdditions: React.FC<RecentAdditionsProps> = ({
           ))}
         </div>
       </div>
-
-      {/* Fresh content indicator */}
-      {/* <div className="mt-8 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-full text-green-400 text-sm font-medium backdrop-blur-sm">
-          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-          <span>Conteúdo sempre atualizado</span>
-          <FiPlus className="w-4 h-4" />
-        </div>
-      </div> */}
 
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

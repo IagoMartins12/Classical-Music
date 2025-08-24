@@ -394,7 +394,7 @@ export default function RecentActivity() {
                             leftIcon={<FiShield />}
                             onClick={(e) => {
                               e.stopPropagation();
-                              router.push('/uploads/moderation');
+                              router.push('/moderation');
                             }}
                             className="text-accent-amber hover:bg-accent-amber/10"
                           />

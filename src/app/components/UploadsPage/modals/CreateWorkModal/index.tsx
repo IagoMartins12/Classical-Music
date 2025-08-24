@@ -39,6 +39,7 @@ import { SiInstagram, SiSpotify, SiTiktok, SiYoutube } from 'react-icons/si';
 import { FaGraduationCap } from 'react-icons/fa';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
+import Checkbox from '@/app/components/Common/Checkbox';
 
 interface CreateWorkModalProps {
   isOpen: boolean;
@@ -901,7 +902,6 @@ const CreateWorkModal = ({
                           )
                         }
                         onClick={handleScrapeUrl}
-                        disabled={scrapingUrl || duplicateCheck.found}
                       >
                         {scrapingUrl ? 'Extraindo Dados...' : 'Extrair Dados'}
                       </Button>
@@ -1199,7 +1199,7 @@ const CreateWorkModal = ({
                   <span>Links Externos</span>
                 </h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
                   {/* ID IMSLP */}
                   <Input
                     label="Link IMSLP"
@@ -1209,7 +1209,20 @@ const CreateWorkModal = ({
                     }
                     placeholder="Symphony_No.40_(Mozart,_Wolfgang_Amadeus)"
                     leftIcon={<FiExternalLink />}
+                    disabled={scrapingResult}
+                    className={
+                      scrapingResult ? 'bg-gray-50 cursor-not-allowed' : ''
+                    }
                   />
+
+                  {scrapingResult && (
+                    <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
+                      <FiLock className="w-3 h-3" />
+                      <span>
+                        Campo bloqueado pois foi extraído via scraping do IMSLP
+                      </span>
+                    </div>
+                  )}
                 </div>
               </AnimatedCard>
 
@@ -1224,15 +1237,12 @@ const CreateWorkModal = ({
                   </div>
 
                   <label className="flex items-center space-x-2 cursor-pointer">
-                    <Input
+                    <Checkbox
+                      label="Adicionar mídia?"
                       type="checkbox"
                       checked={includeMedia}
                       onChange={(e) => setIncludeMedia(e.target.checked)}
-                      className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-brand-primary"
                     />
-                    <span className="text-sm text-theme-primary">
-                      Adicionar mídia?
-                    </span>
                   </label>
                 </div>
 
@@ -1338,7 +1348,8 @@ const CreateWorkModal = ({
                           </div>
 
                           <label className="flex items-center space-x-2 cursor-pointer">
-                            <Input
+                            <Checkbox
+                              label="Incluir video aula?"
                               type="checkbox"
                               checked={mediaData.hasVideoAula}
                               onChange={(e) =>
@@ -1347,11 +1358,7 @@ const CreateWorkModal = ({
                                   hasVideoAula: e.target.checked,
                                 }))
                               }
-                              className="w-4 h-4 text-purple-600 bg-theme-elevated border-theme-secondary rounded focus:ring-purple-500"
                             />
-                            <span className="text-sm text-theme-primary">
-                              Incluir video aula?
-                            </span>
                           </label>
                         </div>
 

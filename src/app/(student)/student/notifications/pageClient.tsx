@@ -40,7 +40,7 @@ type FilterType = 'all' | 'unread' | 'lessons' | 'assignments' | 'practice';
 type SortType = 'newest' | 'oldest' | 'priority';
 
 export const NotificatiosSelectFIlter = [
-  { value: 'newest', label: 'Mais Recenetes' },
+  { value: 'newest', label: 'Mais Recentes' },
   { value: 'oldest', label: 'Mais Antigas' },
   { value: 'priority', label: 'Por Prioridade' },
 ];
@@ -276,72 +276,6 @@ export default function StudentNotificationsPageClient({
             <p className="text-xl text-theme-secondary classical-subtitle">
               Acompanhe suas aulas, tarefas e progresso musical
             </p>
-          </div>
-        </AnimatedItem>
-
-        {/* Stats Cards */}
-        <AnimatedItem direction="up" springType="gentle">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiBell className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {unreadCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">Não Lidas</div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCalendar className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {notificationStats
-                  .filter((s) => s.type.includes('LESSON'))
-                  .reduce((acc, s) => acc + s._count.id, 0)}
-              </div>
-              <div className="text-sm text-theme-tertiary">Sobre Aulas</div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiFileText className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {notificationStats
-                  .filter((s) => s.type.includes('ASSIGNMENT'))
-                  .reduce((acc, s) => acc + s._count.id, 0)}
-              </div>
-              <div className="text-sm text-theme-tertiary">Sobre Tarefas</div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-green rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiMusic className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {notificationStats
-                  .filter(
-                    (s) =>
-                      s.type.includes('PRACTICE') || s.type.includes('FEEDBACK')
-                  )
-                  .reduce((acc, s) => acc + s._count.id, 0)}
-              </div>
-              <div className="text-sm text-theme-tertiary">Sobre Estudos</div>
-            </AnimatedCard>
           </div>
         </AnimatedItem>
 

@@ -35,7 +35,7 @@ const Button: React.FC<ButtonProps> = ({
     primary: 'btn-classical-primary',
     secondary: 'btn-classical-secondary',
     delete: `
-      bg-red-700 text-white font-bold
+      btn-classical-secondary !bg-red-700 text-white font-bold
       focus:ring-red-500 focus:ring-opacity-50
     `,
     outline: `

@@ -14,7 +14,6 @@ import { searchGenresAction } from '@/app/actions/genre-actions';
 import { useTranslation } from '@/app/hooks/useTranslation';
 import {
   translateGenre,
-  getOriginalGenreName,
   matchesGenreSearch,
 } from '@/app/utils/translations/instrumentsGenresTranslation';
 import { useLanguageStore } from '@/app/stores/useLanguageStore';

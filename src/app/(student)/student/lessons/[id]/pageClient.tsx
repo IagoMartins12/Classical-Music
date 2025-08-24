@@ -546,7 +546,7 @@ export default function StudentLessonDetailPageClient({
                       <h3 className="font-medium text-theme-primary mb-2">
                         Notas do Professor
                       </h3>
-                      <div className="bg-accent-blue/5 border border-accent-blue/20 rounded-lg p-4">
+                      <div className="bg-theme-elevated rounded-lg p-4">
                         <p className="text-theme-secondary whitespace-pre-wrap">
                           {lesson.publicNotes}
                         </p>
@@ -559,7 +559,7 @@ export default function StudentLessonDetailPageClient({
                       <h3 className="font-medium text-theme-primary mb-2">
                         Resumo da Aula
                       </h3>
-                      <div className="bg-accent-green/5 border border-accent-green/20 rounded-lg p-4">
+                      <div className="bg-theme-elevated rounded-lg p-4">
                         <p className="text-theme-secondary whitespace-pre-wrap">
                           {lesson.lessonSummary}
                         </p>
@@ -572,7 +572,7 @@ export default function StudentLessonDetailPageClient({
                       <h3 className="font-medium text-theme-primary mb-2">
                         Lição de Casa
                       </h3>
-                      <div className="bg-accent-purple/5 border border-accent-purple/20 rounded-lg p-4">
+                      <div className="bg-theme-elevated rounded-lg p-4">
                         <p className="text-theme-secondary whitespace-pre-wrap">
                           {lesson.homework}
                         </p>
@@ -631,7 +631,7 @@ export default function StudentLessonDetailPageClient({
                           </div>
                         </div>
                       ) : lesson.studentFeedback ? (
-                        <div className="bg-accent-yellow/5 border border-accent-yellow/20 rounded-lg p-4">
+                        <div className="bg-theme-elevated rounded-lg p-4 mt-4">
                           <p className="text-theme-secondary whitespace-pre-wrap">
                             {lesson.studentFeedback}
                           </p>
@@ -713,7 +713,7 @@ export default function StudentLessonDetailPageClient({
 
                 {/* Relationship Stats */}
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <span className="text-theme-tertiary">Total de Aulas:</span>
                     <span className="text-theme-primary font-medium">
                       {lesson.relationship.totalLessons}
@@ -724,9 +724,11 @@ export default function StudentLessonDetailPageClient({
                     <span className="text-theme-primary font-medium">
                       {lesson.relationship.completedLessons}
                     </span>
-                  </div>
+                  </div> */}
                   <div className="flex justify-between">
-                    <span className="text-theme-tertiary">Estudando há:</span>
+                    <span className="text-theme-tertiary">
+                      Ensinando na plataforma desde:
+                    </span>
                     <span className="text-theme-primary font-medium">
                       {lesson.relationship.relationshipDuration}
                     </span>

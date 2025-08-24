@@ -37,8 +37,8 @@ import { StudentAssignmentsData } from './pageServer';
 import Link from 'next/link';
 import { useStudentAssignments } from '@/app/hooks/lessonsSystem/useStudentAssignments';
 import Select from '@/app/components/Common/Select';
-import Input from '@/app/components/Common/Inputs';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
+import { useRouter } from 'next/navigation';
 
 interface StudentAssignmentsPageClientProps {
   initialData: StudentAssignmentsData | null;
@@ -97,21 +97,6 @@ export default function StudentAssignmentsPageClient({
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
 
-  // Modal state
-  const [selectedAssignment, setSelectedAssignment] = useState<
-    (typeof assignments)[0] | null
-  >(null);
-  const [showModal, setShowModal] = useState(false);
-  const [modalTab, setModalTab] = useState<'details' | 'progress' | 'submit'>(
-    'details'
-  );
-
-  // Form states for modal
-  const [progressValue, setProgressValue] = useState(0);
-  const [actualTime, setActualTime] = useState('');
-  const [studentNotes, setStudentNotes] = useState('');
-  const [studentRating, setStudentRating] = useState(0);
-
   // Initialize with server data
   useEffect(() => {
     if (initialData && initialData.assignments.length > 0) {
@@ -125,6 +110,7 @@ export default function StudentAssignmentsPageClient({
   const displayAssignments = initialData?.assignments || assignments;
   const displayStats = initialData?.stats || stats;
   const teachersOptions = initialData?.teachers || [];
+  const router = useRouter();
 
   // 🆕 CHECK IF ASSIGNMENT HAS WORK SCORES
   const hasWorkScores = useCallback((assignment: any) => {
@@ -261,7 +247,7 @@ export default function StudentAssignmentsPageClient({
 
     if (assignment.isOverdue) {
       return {
-        color: 'bg-accent-red/10 border-accent-red/30 text-accent-red',
+        color: 'border-red-400 text-red-400',
         label: 'Atrasada',
         icon: FiAlertTriangle,
       };
@@ -282,68 +268,9 @@ export default function StudentAssignmentsPageClient({
     };
   };
 
-  // Handle modal
-  const openModal = useCallback((assignment: (typeof assignments)[0]) => {
-    setSelectedAssignment(assignment);
-    setProgressValue(assignment.progress || 0);
-    setActualTime(
-      assignment.actualTime ? assignment.actualTime.toString() : ''
-    );
-    setStudentNotes(assignment.studentNotes || '');
-    setStudentRating(assignment.studentRating || 0);
-    setModalTab('details');
-    setShowModal(true);
-  }, []);
-
-  const closeModal = useCallback(() => {
-    setShowModal(false);
-    setSelectedAssignment(null);
-    setModalTab('details');
-  }, []);
-
-  // Handle complete assignment
-  const handleCompleteAssignment = useCallback(async () => {
-    if (!selectedAssignment) return;
-
-    const success = await completeAssignment(
-      selectedAssignment.id,
-      studentNotes,
-      studentRating || undefined
-    );
-
-    if (success) {
-      closeModal();
-    }
-  }, [
-    selectedAssignment,
-    studentNotes,
-    studentRating,
-    completeAssignment,
-    closeModal,
-  ]);
-
-  // Handle progress update
-  const handleProgressUpdate = useCallback(async () => {
-    if (!selectedAssignment) return;
-
-    const success = await updateProgress(
-      selectedAssignment.id,
-      progressValue,
-      actualTime ? parseInt(actualTime) : undefined
-    );
-
-    if (success) {
-      setSelectedAssignment((prev) =>
-        prev
-          ? {
-              ...prev,
-              progress: progressValue,
-              actualTime: actualTime ? parseInt(actualTime) : prev.actualTime,
-            }
-          : null
-      );
-    }
-  }, [selectedAssignment, progressValue, actualTime, updateProgress]);
+  const handleRouter = (id: string) => {
+    router.push(`/student/assignments/${id}`);
+  };
 
   // 🆕 RENDER ASSIGNMENT CARD COMPONENT
   const renderAssignmentCard = useCallback(
@@ -365,7 +292,7 @@ export default function StudentAssignmentsPageClient({
             assignment.isOverdue ? 'ring-2 ring-accent-red/30' : ''
           }`}
           delay={index * 0.1}
-          onClick={() => openModal(assignment)}
+          onClick={() => handleRouter(assignment.id)}
         >
           {/* Status and Priority */}
           <div className="flex items-center justify-between mb-4">
@@ -469,7 +396,7 @@ export default function StudentAssignmentsPageClient({
                     {assignment.progress}%
                   </span>
                 </div>
-                <div className="w-full bg-theme-secondary/20 rounded-full h-2">
+                <div className="w-full bg-theme-secondary rounded-full h-2">
                   <div
                     className={`h-2 rounded-full transition-all ${
                       assignment.progress >= 100
@@ -524,7 +451,7 @@ export default function StudentAssignmentsPageClient({
         </AnimatedCard>
       );
     },
-    [getAssignmentStatusInfo, hasWorkScores, formatDate, formatTime, openModal]
+    [getAssignmentStatusInfo, hasWorkScores, formatDate, formatTime]
   );
 
   // 🆕 RENDER ASSIGNMENT LIST ITEM COMPONENT
@@ -546,7 +473,7 @@ export default function StudentAssignmentsPageClient({
             assignment.isOverdue ? 'ring-2 ring-accent-red/30' : ''
           }`}
           delay={index * 0.1}
-          onClick={() => openModal(assignment)}
+          onClick={() => handleRouter(assignment.id)}
         >
           {/* Status and Priority */}
           <div className="flex items-center justify-between mb-4">
@@ -631,7 +558,7 @@ export default function StudentAssignmentsPageClient({
                     {assignment.progress}%
                   </span>
                 </div>
-                <div className="w-full bg-theme-secondary/20 rounded-full h-2">
+                <div className="w-full bg-theme-secondary rounded-full h-2">
                   <div
                     className={`h-2 rounded-full transition-all ${
                       assignment.progress >= 100
@@ -688,7 +615,7 @@ export default function StudentAssignmentsPageClient({
         </AnimatedCard>
       );
     },
-    [getAssignmentStatusInfo, hasWorkScores, formatDate, formatTime, openModal]
+    [getAssignmentStatusInfo, hasWorkScores, formatDate, formatTime]
   );
 
   // Error state para "no teachers"
@@ -879,12 +806,6 @@ export default function StudentAssignmentsPageClient({
                   <span>Filtros</span>
                 </button>
 
-                {/* 🆕 VIEW MODE TOGGLE */}
-                <ViewModeToggle
-                  viewMode={viewMode}
-                  onViewModeChange={setViewMode}
-                />
-
                 <button
                   onClick={refreshAssignments}
                   disabled={loading.assignments}
@@ -897,12 +818,17 @@ export default function StudentAssignmentsPageClient({
                   />
                   <span>Atualizar</span>
                 </button>
+                {/* 🆕 VIEW MODE TOGGLE */}
+                <ViewModeToggle
+                  viewMode={viewMode}
+                  onViewModeChange={setViewMode}
+                />
               </div>
             </div>
 
             {/* Filters */}
             {showFilters && (
-              <div className="mt-6 pt-6 border-t border-theme-secondary grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="mt-6 pt-6 border-t border-theme-secondary grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
                     Professor
@@ -1067,350 +993,6 @@ export default function StudentAssignmentsPageClient({
               </button>
             </div>
           </AnimatedItem>
-        )}
-
-        {/* Modal */}
-        {showModal && selectedAssignment && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="classical-card max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-              {/* Modal Header */}
-              <div className="flex items-center justify-between p-6 border-b border-theme-secondary">
-                <div>
-                  <h2 className="text-2xl font-bold text-theme-primary">
-                    {selectedAssignment.title}
-                  </h2>
-                  <p className="text-theme-secondary">
-                    {selectedAssignment.lesson.teacher.name} •{' '}
-                    {selectedAssignment.type}
-                    {/* Work Score Info in Modal */}
-                    {hasWorkScores(selectedAssignment) && (
-                      <span className="text-accent-purple">
-                        {' '}
-                        • {selectedAssignment.workScoreIds.length} partitura
-                        {selectedAssignment.workScoreIds.length !== 1
-                          ? 's'
-                          : ''}
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <button
-                  onClick={closeModal}
-                  className="w-10 h-10 rounded-lg bg-theme-secondary/20 flex items-center justify-center hover:bg-theme-secondary/40 transition-colors"
-                >
-                  <FiX className="w-5 h-5 text-theme-primary" />
-                </button>
-              </div>
-
-              {/* Modal Tabs */}
-              <div className="flex border-b border-theme-secondary">
-                {[
-                  { id: 'details', label: 'Detalhes', icon: FiEye },
-                  { id: 'progress', label: 'Progresso', icon: FiTrendingUp },
-                  { id: 'submit', label: 'Entrega', icon: FiUpload },
-                ].map(({ id, label, icon: Icon }) => (
-                  <button
-                    key={id}
-                    onClick={() => setModalTab(id as any)}
-                    className={`px-6 py-3 font-medium transition-all flex items-center space-x-2 ${
-                      modalTab === id
-                        ? 'bg-brand-primary/10 text-brand-primary border-b-2 border-brand-primary'
-                        : 'text-theme-secondary hover:text-theme-primary'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{label}</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Modal Content */}
-              <div className="flex-1 overflow-y-auto p-6">
-                {/* Details Tab */}
-                {modalTab === 'details' && (
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-lg font-bold text-theme-primary mb-2">
-                        Descrição
-                      </h3>
-                      <p className="text-theme-secondary">
-                        {selectedAssignment.description}
-                      </p>
-                    </div>
-
-                    {/* Work Scores Section */}
-                    {hasWorkScores(selectedAssignment) && (
-                      <div>
-                        <h3 className="text-lg font-bold text-theme-primary mb-2">
-                          Partituras Vinculadas
-                        </h3>
-                        <div className="bg-accent-purple/5 border border-accent-purple/20 rounded-lg p-4">
-                          <div className="flex items-center space-x-2 text-accent-purple">
-                            <FiMusic className="w-5 h-5" />
-                            <span className="font-medium">
-                              {selectedAssignment.workScoreIds.length} partitura
-                              {selectedAssignment.workScoreIds.length !== 1
-                                ? 's'
-                                : ''}{' '}
-                              disponível
-                              {selectedAssignment.workScoreIds.length !== 1
-                                ? 'is'
-                                : ''}{' '}
-                              para estudo
-                            </span>
-                          </div>
-                          <p className="text-sm text-theme-secondary mt-2">
-                            Acesse as partituras relacionadas a esta tarefa na
-                            seção de materiais.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {selectedAssignment.practiceGoals.length > 0 && (
-                      <div>
-                        <h3 className="text-lg font-bold text-theme-primary mb-2">
-                          Objetivos de Prática
-                        </h3>
-                        <ul className="list-disc pl-5 space-y-1">
-                          {selectedAssignment.practiceGoals.map((goal, idx) => (
-                            <li key={idx} className="text-theme-secondary">
-                              {goal}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {selectedAssignment.technicalGoals.length > 0 && (
-                      <div>
-                        <h3 className="text-lg font-bold text-theme-primary mb-2">
-                          Objetivos Técnicos
-                        </h3>
-                        <ul className="list-disc pl-5 space-y-1">
-                          {selectedAssignment.technicalGoals.map(
-                            (goal, idx) => (
-                              <li key={idx} className="text-theme-secondary">
-                                {goal}
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      </div>
-                    )}
-
-                    {selectedAssignment.exercises.length > 0 && (
-                      <div>
-                        <h3 className="text-lg font-bold text-theme-primary mb-2">
-                          Exercícios
-                        </h3>
-                        <ul className="list-disc pl-5 space-y-1">
-                          {selectedAssignment.exercises.map((exercise, idx) => (
-                            <li key={idx} className="text-theme-secondary">
-                              {exercise}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    <div className="grid grid-cols-2 gap-4 p-4 bg-theme-secondary/5 rounded-lg">
-                      <div>
-                        <span className="text-theme-tertiary">Status:</span>
-                        <div className="font-medium text-theme-primary">
-                          {getAssignmentStatusInfo(selectedAssignment).label}
-                        </div>
-                      </div>
-                      <div>
-                        <span className="text-theme-tertiary">Prioridade:</span>
-                        <div
-                          className={`font-medium ${
-                            priorityColors[
-                              selectedAssignment.priority as keyof typeof priorityColors
-                            ]
-                          }`}
-                        >
-                          {selectedAssignment.priority === 'high'
-                            ? 'Alta'
-                            : selectedAssignment.priority === 'medium'
-                            ? 'Média'
-                            : 'Baixa'}
-                        </div>
-                      </div>
-                      {selectedAssignment.dueDate && (
-                        <div>
-                          <span className="text-theme-tertiary">Prazo:</span>
-                          <div className="font-medium text-theme-primary">
-                            {formatDate(selectedAssignment.dueDate)}
-                          </div>
-                        </div>
-                      )}
-                      {selectedAssignment.estimatedTime && (
-                        <div>
-                          <span className="text-theme-tertiary">
-                            Tempo Estimado:
-                          </span>
-                          <div className="font-medium text-theme-primary">
-                            {formatTime(selectedAssignment.estimatedTime)}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {/* Progress Tab */}
-                {modalTab === 'progress' && (
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-lg font-bold text-theme-primary mb-4">
-                        Atualizar Progresso
-                      </h3>
-
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-theme-primary mb-2">
-                            Progresso ({progressValue}%)
-                          </label>
-                          <input
-                            type="range"
-                            min="0"
-                            max="100"
-                            value={progressValue}
-                            onChange={(e) =>
-                              setProgressValue(parseInt(e.target.value))
-                            }
-                            className="w-full h-2 bg-theme-secondary/20 rounded-lg appearance-none cursor-pointer"
-                          />
-                          <div className="flex justify-between text-xs text-theme-tertiary mt-1">
-                            <span>0%</span>
-                            <span>50%</span>
-                            <span>100%</span>
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-theme-primary mb-2">
-                            Tempo Gasto (minutos)
-                          </label>
-                          <Input
-                            type="number"
-                            value={actualTime}
-                            onChange={(e) => setActualTime(e.target.value)}
-                            className="input-classical w-full"
-                            placeholder="Ex: 30"
-                          />
-                        </div>
-
-                        <button
-                          onClick={handleProgressUpdate}
-                          disabled={loading.updateAssignment}
-                          className="btn-classical-primary flex items-center space-x-2"
-                        >
-                          {loading.updateAssignment ? (
-                            <FiRefreshCw className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <FiTrendingUp className="w-4 h-4" />
-                          )}
-                          <span>Atualizar Progresso</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Submit Tab */}
-                {modalTab === 'submit' && (
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-lg font-bold text-theme-primary mb-4">
-                        Entrega da Tarefa
-                      </h3>
-
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium text-theme-primary mb-2">
-                            Suas Anotações
-                          </label>
-                          <textarea
-                            value={studentNotes}
-                            onChange={(e) => setStudentNotes(e.target.value)}
-                            rows={4}
-                            className="input-classical w-full"
-                            placeholder="Conte como foi sua experiência com esta tarefa, dificuldades encontradas, etc."
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-theme-primary mb-2">
-                            Avaliação da Dificuldade (1-5 estrelas)
-                          </label>
-                          <div className="flex items-center space-x-1">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <button
-                                key={star}
-                                onClick={() => setStudentRating(star)}
-                                className={`text-2xl transition-colors ${
-                                  star <= studentRating
-                                    ? 'text-accent-yellow'
-                                    : 'text-theme-tertiary'
-                                } hover:text-accent-yellow`}
-                              >
-                                <FiStar
-                                  className={`w-6 h-6 ${
-                                    star <= studentRating ? 'fill-current' : ''
-                                  }`}
-                                />
-                              </button>
-                            ))}
-                            <span className="ml-2 text-sm text-theme-secondary">
-                              {studentRating === 0
-                                ? 'Não avaliado'
-                                : studentRating === 1
-                                ? 'Muito fácil'
-                                : studentRating === 2
-                                ? 'Fácil'
-                                : studentRating === 3
-                                ? 'Médio'
-                                : studentRating === 4
-                                ? 'Difícil'
-                                : 'Muito difícil'}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center space-x-3">
-                          {!selectedAssignment.isCompleted && (
-                            <button
-                              onClick={handleCompleteAssignment}
-                              disabled={loading.updateAssignment}
-                              className="btn-classical-primary flex items-center space-x-2"
-                            >
-                              {loading.updateAssignment ? (
-                                <FiRefreshCw className="w-4 h-4 animate-spin" />
-                              ) : (
-                                <FiCheck className="w-4 h-4" />
-                              )}
-                              <span>Marcar como Concluída</span>
-                            </button>
-                          )}
-
-                          {selectedAssignment.isCompleted && (
-                            <div className="flex items-center space-x-2 text-accent-green">
-                              <FiCheck className="w-5 h-5" />
-                              <span className="font-medium">
-                                Tarefa Concluída
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
         )}
       </AnimatedContainer>
     </PageContainer>

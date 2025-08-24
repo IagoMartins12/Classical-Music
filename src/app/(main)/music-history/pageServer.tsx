@@ -1,5 +1,5 @@
 // main/music-history/pageServer.tsx
-import { MusicHistoryPageClient } from '@/app/main/music-history/pageClient';
+import { MusicHistoryPageClient } from '@/app/(main)/music-history/pageClient';
 import {
   getComposersByEpochTranslated,
   getComposersTimelineTranslated,

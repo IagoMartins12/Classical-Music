@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
 import { redirect } from 'next/navigation';
-import ModerationClient from '@/app/main/uploads/moderation/pageClient';
+import ModerationClient from '@/app/(main)/moderation/pageClient';
 import { Suspense } from 'react';
 import LoadingAdminState from '@/app/components/Admin/Common/LoadingState';
 

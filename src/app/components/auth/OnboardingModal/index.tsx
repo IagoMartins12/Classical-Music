@@ -92,7 +92,7 @@ const OnboardingModal: React.FC = () => {
         }));
       } else {
         setValidationErrors((prev) => {
-          const { phone, ...rest } = prev;
+          const { _phone, ...rest } = prev;
           return rest;
         });
       }

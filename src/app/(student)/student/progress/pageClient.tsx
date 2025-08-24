@@ -339,7 +339,7 @@ export default function StudentProgressPageClient({
             <AnimatedCard hover="lift" className="classical-card p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-theme-primary">
-                  Assignments
+                  Tarefas
                 </h3>
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                   <FiTarget className="w-5 h-5 text-theme-primary" />
@@ -348,7 +348,7 @@ export default function StudentProgressPageClient({
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-theme-secondary">Completados</span>
+                  <span className="text-theme-secondary">Completadas</span>
                   <span className="font-bold text-theme-primary">
                     {progressData.stats.completedAssignments}/
                     {progressData.stats.totalAssignments}
@@ -357,7 +357,7 @@ export default function StudentProgressPageClient({
 
                 <div className="w-full bg-theme-secondary rounded-full h-2">
                   <div
-                    className="bg-gradient-to-r from-accent-blue to-accent-purple h-2 rounded-full transition-all duration-500"
+                    className="progress-bar h-2 rounded-full transition-all duration-500"
                     style={{
                       width: `${progressData.stats.assignmentCompletionRate}%`,
                     }}
@@ -397,7 +397,7 @@ export default function StudentProgressPageClient({
 
                 <div className="w-full bg-theme-secondary rounded-full h-2">
                   <div
-                    className="bg-gradient-to-r from-accent-green to-accent-blue h-2 rounded-full transition-all duration-500"
+                    className="progress-bar h-2 rounded-full transition-all duration-500"
                     style={{
                       width: `${progressData.stats.studyConsistency}%`,
                     }}
@@ -528,7 +528,7 @@ export default function StudentProgressPageClient({
             <AnimatedCard hover="lift" className="classical-card p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-theme-primary">
-                  Tipos de Assignment
+                  Tipos de Tarefas concluidas
                 </h3>
                 <FiTarget className="w-6 h-6 text-brand-primary" />
               </div>
@@ -730,7 +730,7 @@ export default function StudentProgressPageClient({
                 Progresso de Obras
               </h3>
               <Link
-                href="/student/works"
+                href="/learning"
                 className="text-brand-primary hover:text-brand-secondary transition-colors flex items-center space-x-1"
               >
                 <span>Ver todas</span>

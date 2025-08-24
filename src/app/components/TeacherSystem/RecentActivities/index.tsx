@@ -101,30 +101,30 @@ const RecentActivities = ({
       switch (action) {
         // Para professores
         case 'WELCOME_NEW_TEACHER':
-          return <FiAward className="w-4 h-4 text-purple-600" />; // Precisará importar FiAward
+          return <FiAward className="w-4 h-4" />; // Precisará importar FiAward
         case 'STUDENT_DECLINED_INVITE':
-          return <FiX className="w-4 h-4 text-red-600" />;
+          return <FiX className="w-4 h-4" />;
         case 'STUDENT_ADDED':
-          return <FiUserPlus className="w-4 h-4 text-green-600" />;
+          return <FiUserPlus className="w-4 h-4" />;
         case 'LESSON_CREATED':
-          return <FiPlus className="w-4 h-4 text-blue-600" />;
+          return <FiPlus className="w-4 h-4 " />;
         case 'LESSON_UPDATED':
-          return <FiEdit className="w-4 h-4 text-orange-600" />;
+          return <FiEdit className="w-4 h-4 " />;
         case 'LESSON_STATUS_CHANGED':
-          return <FiRotateCcw className="w-4 h-4 text-purple-600" />;
+          return <FiRotateCcw className="w-4 h-4" />;
         case 'ASSIGNMENT_CREATED':
-          return <FiFileText className="w-4 h-4 text-blue-600" />;
+          return <FiFileText className="w-4 h-4 " />;
         case 'ASSIGNMENT_UPDATED':
-          return <FiEdit className="w-4 h-4 text-orange-600" />;
+          return <FiEdit className="w-4 h-4 " />;
         case 'ASSIGNMENT_FEEDBACK_GIVEN':
-          return <FiStar className="w-4 h-4 text-yellow-600" />;
+          return <FiStar className="w-4 h-4 " />;
         case 'LESSON_NOTES_ADDED':
-          return <FiMessageSquare className="w-4 h-4 text-indigo-600" />;
+          return <FiMessageSquare className="w-4 h-4" />;
         case 'TEACHER_PROFILE_UPDATED':
         case 'USER_PROFILE_UPDATED':
-          return <FiUser className="w-4 h-4 text-gray-600" />;
+          return <FiUser className="w-4 h-4 text-theme-primary" />;
         default:
-          return <FiActivity className="w-4 h-4 text-gray-600" />;
+          return <FiActivity className="w-4 h-4 text-theme-primary" />;
       }
     }
 
@@ -133,29 +133,29 @@ const RecentActivities = ({
       switch (action) {
         case 'ASSIGNMENT_SUBMISSION':
           if (metadata?.submissionType === 'video') {
-            return <FiVideo className="w-4 h-4 text-purple-600" />;
+            return <FiVideo className="w-4 h-4" />;
           } else if (metadata?.submissionType === 'file') {
             return <FiFile className="w-4 h-4 text-blue-600" />;
           }
-          return <FiUpload className="w-4 h-4 text-green-600" />;
+          return <FiUpload className="w-4 h-4" />;
         case 'WELCOME_NEW_STUDENT':
-          return <FiStar className="w-4 h-4 text-yellow-600" />;
+          return <FiStar className="w-4 h-4 " />;
         case 'ASSIGNMENT_COMPLETED':
-          return <FiCheckCircle className="w-4 h-4 text-green-600" />;
+          return <FiCheckCircle className="w-4 h-4" />;
         case 'LESSON_FEEDBACK_GIVEN':
-          return <FiMessageSquare className="w-4 h-4 text-blue-600" />;
+          return <FiMessageSquare className="w-4 h-4 " />;
         case 'LESSON_RESCHEDULE_REQUESTED':
-          return <FiCalendar className="w-4 h-4 text-orange-600" />;
+          return <FiCalendar className="w-4 h-4 " />;
         case 'LESSON_ABSENCE_INFORMED':
-          return <FiX className="w-4 h-4 text-red-600" />;
+          return <FiX className="w-4 h-4" />;
         case 'STUDENT_PROFILE_UPDATED':
-          return <FiUser className="w-4 h-4 text-gray-600" />;
+          return <FiUser className="w-4 h-4 text-theme-primary" />;
         default:
-          return <FiActivity className="w-4 h-4 text-gray-600" />;
+          return <FiActivity className="w-4 h-4 text-theme-primary" />;
       }
     }
 
-    return <FiActivity className="w-4 h-4 text-gray-600" />;
+    return <FiActivity className="w-4 h-4 text-theme-primary" />;
   };
 
   // Função para obter rótulo amigável da ação

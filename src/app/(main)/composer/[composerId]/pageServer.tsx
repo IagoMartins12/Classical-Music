@@ -5,9 +5,9 @@ import {
   getComposerWorksWithFilters,
   getComposerFilterOptions,
 } from '@/app/requests/composer-details';
-import ComposerDetailsClient from '@/app/main/composer/[composerId]/pageClient';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/libs/auth';
+import ComposerDetailsClient from './pageClient';
 
 interface ComposerDetailsServerProps {
   composerId: string;

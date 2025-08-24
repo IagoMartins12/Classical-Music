@@ -35,6 +35,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Select from '@/app/components/Common/Select';
 import Link from 'next/link';
+import { useToast } from '@/app/hooks/useToast';
 
 interface Activity {
   id: string;
@@ -109,11 +110,12 @@ const StudentHistoryClient = ({
     { value: 'profile', label: 'Perfil' },
   ];
 
+  const toast = useToast();
   useEffect(() => {
     fetchActivities();
   }, [page, selectedAction, selectedEntityType, dateFrom, dateTo]);
 
-  const fetchActivities = async () => {
+  const fetchActivities = async (showToast = false) => {
     setLoading(true);
     setError(null);
 
@@ -141,7 +143,10 @@ const StudentHistoryClient = ({
         setTotalPages(data.pagination?.totalPages || 0);
         setTotalCount(data.pagination?.totalCount || 0);
         setStats(data.stats || {});
+        if (showToast) toast.success('Histórico atualizado!');
       } else {
+        if (showToast) toast.error('Erro ao atualizar histórico.');
+
         throw new Error(data.error || 'Erro desconhecido');
       }
     } catch (error) {
@@ -412,7 +417,9 @@ const StudentHistoryClient = ({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.recentActivity || 0}
                 </div>
-                <div className="text-sm text-theme-tertiary">Últimas 24h</div>
+                <div className="text-sm text-theme-tertiary">
+                  Nas últimas 24h
+                </div>
               </AnimatedCard>
             </SequentialGrid>
           </AnimatedItem>
@@ -511,7 +518,9 @@ const StudentHistoryClient = ({
                       Limpar
                     </button>
                     <button
-                      onClick={fetchActivities}
+                      onClick={() => {
+                        fetchActivities(true);
+                      }}
                       disabled={loading}
                       className="btn-classical-secondary flex items-center space-x-2"
                     >
@@ -538,7 +547,9 @@ const StudentHistoryClient = ({
                 </h3>
                 <p className="text-theme-secondary mb-4">{error}</p>
                 <button
-                  onClick={fetchActivities}
+                  onClick={() => {
+                    fetchActivities(true);
+                  }}
                   className="btn-classical-primary"
                 >
                   Tentar Novamente

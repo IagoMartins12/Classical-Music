@@ -70,43 +70,40 @@ export function TranslationLoadingModal({
   useEffect(() => {
     if (!isVisible || !hasStarted) return;
 
-    const interval = setInterval(
-      () => {
-        setProgress((prev) => {
-          if (prev >= 100) {
-            // ✅ Modal completou - fechar após delay
-            setTimeout(() => {
-              setIsVisible(false);
-              setHasStarted(false);
-              onComplete?.();
-            }, 500);
-            return 100;
-          }
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          // ✅ Modal completou - fechar após delay
+          setTimeout(() => {
+            setIsVisible(false);
+            setHasStarted(false);
+            onComplete?.();
+          }, 500);
+          return 100;
+        }
 
-          // ✅ Velocidade baseada no estado
-          let increment;
-          if (shouldAccelerate) {
-            // Se tradução já acabou, acelerar para finalizar
-            increment = 25; // Muito rápido
-          } else if (prev < 30) {
-            increment = 8; // Início moderado
-          } else if (prev < 70) {
-            increment = 6; // Meio mais lento
-          } else {
-            increment = 4; // Final mais devagar
-          }
+        // ✅ Velocidade baseada no estado
+        let increment;
+        if (shouldAccelerate) {
+          // Se tradução já acabou, acelerar para finalizar
+          increment = 25; // Muito rápido
+        } else if (prev < 30) {
+          increment = 8; // Início moderado
+        } else if (prev < 70) {
+          increment = 6; // Meio mais lento
+        } else {
+          increment = 4; // Final mais devagar
+        }
 
-          const newProgress = Math.min(prev + increment, 100);
+        const newProgress = Math.min(prev + increment, 100);
 
-          // Atualizar step baseado no progresso
-          const newStep = Math.floor((newProgress / 100) * (steps.length - 1));
-          setCurrentStep(newStep);
+        // Atualizar step baseado no progresso
+        const newStep = Math.floor((newProgress / 100) * (steps.length - 1));
+        setCurrentStep(newStep);
 
-          return newProgress;
-        });
-      },
-      shouldAccelerate ? 150 : 300
-    ); // Intervalo menor quando acelerando
+        return newProgress;
+      });
+    }, 300); // Intervalo menor quando acelerando
 
     return () => clearInterval(interval);
   }, [isVisible, hasStarted, shouldAccelerate, steps.length, onComplete]);
@@ -156,7 +153,7 @@ export function TranslationLoadingModal({
 
               {/* Ícone central */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center shadow-theme-glow group-hover:scale-110 transition-transform duration-500">
+                <div className="w-12 h-12  rounded-xl flex items-center justify-center shadow-theme-glow group-hover:scale-110 transition-transform duration-500">
                   <CurrentIcon className="w-6 h-6 text-theme-primary animate-pulse" />
                 </div>
               </div>

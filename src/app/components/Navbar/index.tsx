@@ -15,6 +15,7 @@ import {
   FiUpload,
   FiSettings,
   FiChevronDown,
+  FiShield,
 } from 'react-icons/fi';
 import { GiGrandPiano } from 'react-icons/gi';
 import { ThemeToggle } from '../ThemeToggle';
@@ -418,6 +419,16 @@ const Navbar: React.FC = () => {
                         >
                           <FaGraduationCap className="w-4 h-4" />
                           <span>{t('navbar_link_painel_aluno')}</span>
+                        </Link>
+                      )}
+                      {user.role === 2 && (
+                        <Link
+                          href="/moderation"
+                          className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <FiShield className="w-4 h-4" />
+                          <span>{t('navbar_link_moderation')}</span>
                         </Link>
                       )}
                       {user.role === 2 && (

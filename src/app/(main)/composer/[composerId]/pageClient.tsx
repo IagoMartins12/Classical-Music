@@ -1,4 +1,4 @@
-// app/composer/[composerId]/ComposerDetailsClient.tsx - Com sistema de animações
+// app/composer/[composerId]/ComposerDetailsClient.tsx - Com sistema de animações e traduções
 'use client';
 
 import { useState } from 'react';
@@ -23,7 +23,7 @@ import {
 import ComposerBiography from '../../../components/ComposerBiography';
 import ComposerWorks from '../../../components/ComposersClient/ComposerWorks';
 import FavoriteButton from '../../../components/FavoriteButton';
-import ShareButton from '../../../components/ShareButton'; // Novo componente
+import ShareButton from '../../../components/ShareButton';
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -36,6 +36,9 @@ import ReportButton from '../../../components/Report/ReportButton';
 import VerificationModal from '../../../components/Verification/VerificationModal';
 import VerificationButton from '../../../components/Verification/VerificationButton';
 import EditButton from '../../../components/Common/EditButton';
+import { useTranslation } from '@/app/hooks/useTranslation';
+import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
 
 interface ComposerDetailsClientProps {
   composer: ComposerDetails;
@@ -54,17 +57,50 @@ export default function ComposerDetailsClient({
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [isVerified, setIsVerified] = useState(composer.isVerified || false);
 
+  const { t } = useTranslation({ sections: ['pages/composerId'] });
+  const { language } = useLanguageWithRefresh();
+
   const handleVerificationChange = (verified: boolean) => {
     setIsVerified(verified);
-    // Atualizar no contexto global se necessário
   };
 
-  // 🆕 Hook para informações da bandeira
+  // Hook para informações da bandeira
   const nationalityDisplay = composer.nationality
-    ? getComposerNationalityDisplay(composer.nationality)
+    ? (() => {
+        const flagInfo = getComposerNationalityDisplay(composer.nationality);
+        // Se estiver em inglês, usar o nome original em inglês
+        const displayName =
+          language === 'en'
+            ? flagInfo.countryName
+                .replace('Estados Unidos', 'United States')
+                .replace('Alemanha', 'Germany')
+                .replace('França', 'France')
+                .replace('Reino Unido', 'United Kingdom')
+                .replace('Itália', 'Italy')
+                .replace('Áustria', 'Austria')
+                .replace('Rússia', 'Russia')
+                .replace('Brasil', 'Brazil')
+                .replace('Polônia', 'Poland')
+                .replace('Espanha', 'Spain')
+                .replace('Bélgica', 'Belgium')
+                .replace('Dinamarca', 'Denmark')
+                .replace('República Tcheca', 'Czech Republic')
+                .replace('Países Baixos', 'Netherlands')
+                .replace('Hungria', 'Hungary')
+                .replace('Suécia', 'Sweden')
+                .replace('Suíça', 'Switzerland')
+                .replace('Noruega', 'Norway')
+                .replace('Finlândia', 'Finland')
+            : flagInfo.countryName;
+
+        return {
+          ...flagInfo,
+          countryName: displayName,
+        };
+      })()
     : null;
 
-  // 🆕 Função para traduzir instrumentos para português
+  // Função para traduzir instrumentos para português
   const translateInstruments = (instrumentsString?: string) => {
     if (!instrumentsString) return '';
 
@@ -77,7 +113,7 @@ export default function ComposerDetailsClient({
       .join(', ');
   };
 
-  // 🆕 Função para formatar datas no formato brasileiro
+  // Função para formatar datas no formato brasileiro
   const formatDate = (dateString?: string) => {
     if (!dateString) return null;
 
@@ -196,7 +232,7 @@ export default function ComposerDetailsClient({
               href="/composers"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
-              Compositores
+              {t('breadcrumb_composers')}
             </Link>
             <svg
               className="w-4 h-4"
@@ -305,7 +341,7 @@ export default function ComposerDetailsClient({
                       <div className="flex items-start justify-between">
                         <div className="flex-1 flex-row ">
                           <p className="space-x-2 text-xl text-theme-secondary mt-3">
-                            Nomes alternativos:{' '}
+                            {t('alternative_names_label')}{' '}
                             <span className="text-sm font-medium text-theme-tertiary ">
                               {composer.alternativeNames}
                             </span>
@@ -326,7 +362,7 @@ export default function ComposerDetailsClient({
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
-                              Nascimento
+                              {t('birth_label')}
                             </p>
                             <p className="text-theme-primary font-semibold">
                               {formatDate(composer.birthDate)}
@@ -343,13 +379,13 @@ export default function ComposerDetailsClient({
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
-                              Falecimento
+                              {t('death_label')}
                             </p>
                             <p className="text-theme-primary font-semibold">
                               {formatDate(composer.deathDate)}
                               {lifeSpan && (
                                 <span className="text-theme-secondary ml-2 text-sm">
-                                  ({lifeSpan} anos)
+                                  ({lifeSpan} {t('years_suffix')})
                                 </span>
                               )}
                             </p>
@@ -363,12 +399,12 @@ export default function ComposerDetailsClient({
                             </div>
                             <div>
                               <p className="text-sm font-medium text-theme-tertiary">
-                                Idade
+                                {t('age_label')}
                               </p>
                               <p className="text-theme-primary font-semibold">
-                                {lifeSpan} anos
+                                {lifeSpan} {t('years_suffix')}
                                 <span className="text-accent-green ml-2 text-sm">
-                                  (vivo)
+                                  {t('alive_status')}
                                 </span>
                               </p>
                             </div>
@@ -383,10 +419,10 @@ export default function ComposerDetailsClient({
                         </div>
                         <div>
                           <p className="text-sm font-medium text-theme-tertiary">
-                            Época
+                            {t('epoch_label')}
                           </p>
                           <p className="text-brand-primary font-semibold">
-                            {composer.epochName}
+                            {translateEpochWithHook(composer.epochName, t)}
                           </p>
                         </div>
                       </div>
@@ -399,7 +435,7 @@ export default function ComposerDetailsClient({
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
-                              Papel Principal
+                              {t('primary_role_label')}
                             </p>
                             <p className="text-theme-primary font-semibold">
                               {composer.primaryRoleName}
@@ -415,7 +451,7 @@ export default function ComposerDetailsClient({
                           </div>
                           <div>
                             <p className="text-sm font-medium text-theme-tertiary">
-                              Nacionalidade
+                              {t('nationality_label')}
                             </p>
                             <p className="text-theme-primary font-semibold">
                               {nationalityDisplay.countryName}
@@ -431,19 +467,10 @@ export default function ComposerDetailsClient({
                           </div>
                           <div className="flex flex-col ">
                             <p className="text-sm font-medium text-theme-tertiary">
-                              Compôs para:
+                              {t('instruments_label')}
                             </p>
                             <p className="text-theme-primary font-semibold break-all">
                               {translateInstruments(composer.instruments)}.
-                              {/* {filterOptions.instruments
-                                .map(
-                                  (instrument, index) =>
-                                    index ===
-                                    filterOptions.instruments.length - 1
-                                      ? `${instrument.name}.` // Último item = ponto final
-                                      : `${instrument.name}, ` // Demais itens = vírgula + espaço
-                                )
-                                .join('')} */}
                             </p>
                           </div>
                         </div>
@@ -463,7 +490,7 @@ export default function ComposerDetailsClient({
                             className="btn-classical-primary flex items-center space-x-2 group/btn"
                           >
                             <FiExternalLink className="w-4 h-4" />
-                            <span>Wikipedia</span>
+                            <span>{t('wikipedia_link')}</span>
                             <svg
                               className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
                               fill="none"
@@ -488,7 +515,7 @@ export default function ComposerDetailsClient({
                             className="btn-classical-secondary flex items-center space-x-2 group/btn"
                           >
                             <FiBookOpen className="w-4 h-4" />
-                            <span>IMSLP</span>
+                            <span>{t('imslp_link')}</span>
                             <svg
                               className="w-4 h-4 transition-transform group-hover/btn:translate-x-1"
                               fill="none"
@@ -533,7 +560,7 @@ export default function ComposerDetailsClient({
                       <div className="w-64 h-80 bg-gradient-card border border-theme-primary rounded-2xl flex items-center justify-center shadow-theme-glow group-hover:scale-105 transition-all duration-500">
                         <div className="text-center text-theme-tertiary">
                           <FiUser className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                          <p className="text-sm">Sem imagem disponível</p>
+                          <p className="text-sm">{t('no_image_available')}</p>
                         </div>
                       </div>
                     )}
@@ -556,10 +583,10 @@ export default function ComposerDetailsClient({
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                      Papéis Secundários
+                      {t('secondary_roles_title')}
                     </h2>
                     <p className="text-theme-secondary classical-subtitle">
-                      Outras funções exercidas por {composer.fullName}
+                      {t('secondary_roles_subtitle')} {composer.fullName}
                     </p>
                   </div>
                 </div>
@@ -585,12 +612,11 @@ export default function ComposerDetailsClient({
                       <strong className="text-brand-primary">
                         {composer.name}
                       </strong>{' '}
-                      exerceu{' '}
+                      {t('versatility_text_part1')}{' '}
                       <strong className="text-accent-green">
-                        {secondaryRoles.length} funções diferentes
+                        {secondaryRoles.length} {t('versatility_text_part2')}
                       </strong>{' '}
-                      ao longo de sua carreira, demonstrando sua versatilidade
-                      no mundo musical.
+                      {t('versatility_text_part3')}
                     </p>
                   </div>
                 </AnimatedItem>
@@ -607,7 +633,7 @@ export default function ComposerDetailsClient({
                 </div>
                 <div className="flex-1">
                   <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                    Biografia
+                    {t('biography_title')}
                   </h2>
                 </div>
                 <div className="relative group">
@@ -616,7 +642,7 @@ export default function ComposerDetailsClient({
                   </div>
                   {/* Tooltip */}
                   <div className="absolute bottom-full right-0 mb-2 px-3 py-2 bg-theme-elevated border border-theme-primary text-theme-primary text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10 shadow-theme-medium">
-                    Biografia gerada automaticamente por IA
+                    {t('biography_ai_tooltip')}
                     <div className="absolute top-full right-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-theme-elevated"></div>
                   </div>
                 </div>
@@ -626,12 +652,13 @@ export default function ComposerDetailsClient({
             <AnimatedItem direction="up" springType="gentle">
               <ComposerBiography
                 composerId={composer.id}
+                composerName={composer.fullName || composer.name}
                 initialBio={composer.bio}
               />
             </AnimatedItem>
           </AnimatedCard>
 
-          {/* Obras do Compositor - NOVA VERSÃO COM TABS E PAGINAÇÃO */}
+          {/* Obras do Compositor */}
           <AnimatedCard hover="none" className="">
             <ComposerWorks
               composerId={composer.id}

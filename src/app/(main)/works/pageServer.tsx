@@ -1,7 +1,7 @@
 // app/works/pageServer.tsx - VERSÃO ULTRA OTIMIZADA COM TRADUÇÕES
 import { unstable_cache } from 'next/cache';
 import { getWorks, getFilterOptions } from '@/app/requests/work-details';
-import WorksClient from '@/app/main/works/pageClient';
+import WorksClient from '@/app/(main)/works/pageClient';
 import { getServerLanguage } from '@/app/utils/translations/serverTranslation';
 import {
   translateInstruments,
@@ -213,7 +213,6 @@ export default async function WorksServer({ searchParams }: WorksServerProps) {
     try {
       console.log('🔄 Tentando fallback...');
 
-      const language = await getServerLanguage();
       const fallbackWorks = await getCachedWorksDefault(1);
       const basicFilters = {
         instruments: [],

@@ -13,6 +13,9 @@ import {
 import { GiMusicalNotes } from 'react-icons/gi';
 import FavoriteButton from '../FavoriteButton';
 import VerificationBadge from '../Verification/VerificationBadge';
+import { useTranslation } from '@/app/hooks/useTranslation';
+import { translateEpochWithHook } from '@/app/utils/translations/epochTranslationComposer';
+import { useLanguageStore } from '@/app/stores/useLanguageStore';
 
 interface FeaturedComposerProps {
   composer: {
@@ -35,12 +38,18 @@ interface FeaturedComposerProps {
     curiosities: {
       id: string;
       icon: string;
-      text: string;
+      text: {
+        pt: string;
+        en: string;
+      };
     }[];
   };
 }
 
 const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
+  const { t } = useTranslation({ sections: ['pages/home'] });
+  const { language } = useLanguageStore();
+
   const formatDates = () => {
     if (!composer.birthDate && !composer.deathDate) return null;
 
@@ -49,7 +58,9 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
       : '?';
     const death = composer.deathDate
       ? new Date(composer.deathDate).getFullYear()
-      : 'presente';
+      : language === 'pt'
+      ? 'presente'
+      : 'present';
 
     return `${birth} - ${death}`;
   };
@@ -73,10 +84,10 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                Compositor em Destaque
+                {t('featured_composer_title')}
               </h2>
               <p className="text-theme-secondary">
-                Descobrindo a genialidade de hoje
+                {t('featured_composer_subtitle')}
               </p>
             </div>
           </div>
@@ -123,8 +134,6 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                     />
                   </div>
                 </div>
-
-                {/* Period badge */}
               </div>
 
               {/* Name and dates */}
@@ -150,7 +159,8 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                 <div className="">
                   <span className="inline-flex items-center px-4 py-2 classical-card-simple text-theme-primary rounded-2xl text-sm font-semibold shadow-theme-medium">
                     <FiCalendar className="w-4 h-4 mr-2 text-theme-primary" />
-                    {composer.epochName}
+                    {composer.epochName &&
+                      translateEpochWithHook(composer.epochName, t)}
                   </span>
                 </div>
               </div>
@@ -189,7 +199,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                 <div className="space-y-4">
                   <h4 className="text-xl font-bold text-theme-primary classical-title flex items-center gap-2">
                     <FiUser className="w-5 h-5 text-brand-primary" />
-                    Biografia
+                    {t('featured_composer_biography')}
                   </h4>
                   <p className="text-theme-secondary leading-relaxed text-lg">
                     {formatBio(composer.bio)}
@@ -202,7 +212,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                 <div className="space-y-4">
                   <h4 className="text-xl font-bold text-theme-primary classical-title flex items-center gap-2">
                     <FiStar className="w-5 h-5 text-brand-primary" />
-                    Curiosidades
+                    {t('featured_composer_curiosities')}
                   </h4>
                   <div className="flex flex-wrap gap-3">
                     {composer.curiosities.map((curiosity, index) => (
@@ -218,7 +228,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                         </div>
                         <div className="flex-1">
                           <p className="text-theme-secondary leading-relaxed group-hover/curiosity:text-theme-primary transition-colors duration-300">
-                            {curiosity.text}
+                            {curiosity.text[language]}
                           </p>
                         </div>
                       </div>
@@ -232,7 +242,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                 <div className="space-y-4">
                   <h4 className="text-xl font-bold text-theme-primary classical-title flex items-center gap-2">
                     <FiMusic className="w-5 h-5 text-brand-primary" />
-                    Obras
+                    {t('featured_composer_works')}
                   </h4>
                   <div className="grid gap-3">
                     {composer.works.map((work) => (
@@ -260,7 +270,7 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
                   href={`/composer/${composer.id}`}
                   className="inline-flex items-center px-8 py-4 bg-brand-gradient text-theme-primary font-semibold rounded-2xl hover:scale-105 hover:shadow-theme-glow transition-all duration-300 group/cta"
                 >
-                  Explorar Todas as Obras
+                  {t('featured_composer_explore_all')}
                   <svg
                     className="ml-2 w-5 h-5 transition-transform group-hover/cta:translate-x-1"
                     fill="none"
@@ -278,11 +288,11 @@ const FeaturedComposer: React.FC<FeaturedComposerProps> = ({ composer }) => {
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Floating decoration */}
-        <div className="absolute top-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity duration-500">
-          <GiMusicalNotes className="w-8 h-8 text-brand-primary" />
+          {/* Floating decoration */}
+          <div className="absolute top-4 right-4 w-16 h-16 bg-brand-gradient/10 rounded-3xl flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity duration-500">
+            <GiMusicalNotes className="w-8 h-8 text-brand-primary" />
+          </div>
         </div>
       </div>
     </div>

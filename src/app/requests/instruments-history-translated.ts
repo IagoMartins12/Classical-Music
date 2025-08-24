@@ -704,7 +704,7 @@ export const getInstrumentsWithWorksTranslated = unstable_cache(
           for (const [composerId, prefs] of Object.entries(
             worksPrefs.composerWorks
           )) {
-            let composerWorks: any[] = [];
+            const composerWorks: any[] = [];
 
             // Se há obras específicas definidas por ID
             if (prefs.specificWorkIds?.length) {
@@ -853,7 +853,7 @@ export const getInstrumentsWithWorksTranslated = unstable_cache(
         } else {
           // Modo padrão: busca as 20 melhores obras (por compositores com mais obras)
           const composerPrefs = composerPreferences[instrument.name];
-          let whereClause: any = {
+          const whereClause: any = {
             instrumentId: instrument.id,
           };
 

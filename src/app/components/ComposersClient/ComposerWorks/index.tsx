@@ -1,4 +1,4 @@
-// ComposerWorks.tsx - Com sistema de animações
+// ComposerWorks.tsx - Com sistema de animações e traduções
 'use client';
 
 import {
@@ -33,8 +33,6 @@ import {
 import { MdLibraryMusic } from 'react-icons/md';
 import FavoriteButton from '../../FavoriteButton';
 import ViewModeToggle from '../../ViewModeToggle';
-
-// Importar componentes de animação
 import {
   AnimatedContainer,
   AnimatedCard,
@@ -44,6 +42,17 @@ import {
 } from '../../animation/AnimatedComponents';
 import VerificationBadge from '../../Verification/VerificationBadge';
 import Select from '../../Common/Select';
+import { useTranslation } from '@/app/hooks/useTranslation';
+import { useLanguageWithRefresh } from '@/app/stores/useLanguageStore';
+import {
+  translateInstrument,
+  translateGenre,
+  getOriginalGenreName,
+} from '@/app/utils/translations/instrumentsGenresTranslation';
+import {
+  getOriginalCategoryName,
+  translateCategory,
+} from '@/app/utils/translations/categoryTranslation';
 
 interface ComposerWorksProps {
   composerId: string;
@@ -54,14 +63,14 @@ interface ComposerWorksProps {
   filterOptions: ComposerFilterOptions;
 }
 
-// Mapeamento dos tipos de trabalho para nomes amigáveis
+// Mapeamento dos tipos de trabalho para chaves de tradução
 const WORK_TYPE_LABELS: Record<string, string> = {
-  INDIVIDUAL_COMPOSITION: 'Obras Individuais', // Agrupa INDIVIDUAL e COMPOSITION
-  COMPLETE_WORK: 'Obras Completas',
-  ARRANGEMENT: 'Arranjos',
-  COLLECTION_WORKS: 'Coleções', // Agrupa COLLECTION e COLLECTED_WORKS
-  COLLABORATION: 'Colaborações',
-  COLLECTIONS_WITH: 'Coleções com',
+  INDIVIDUAL_COMPOSITION: 'work_type_individual_composition',
+  COMPLETE_WORK: 'work_type_complete_work',
+  ARRANGEMENT: 'work_type_arrangement',
+  COLLECTION_WORKS: 'work_type_collection_works',
+  COLLABORATION: 'work_type_collaboration',
+  COLLECTIONS_WITH: 'work_type_collections_with',
 };
 
 // Grupos de workTypes que devem ser tratados como um só
@@ -74,7 +83,7 @@ const WORK_TYPE_GROUPS: Record<string, string[]> = {
   COLLECTIONS_WITH: ['COLLECTIONS_WITH'],
 };
 
-// Ordem específica das tabs (INDIVIDUAL_COMPOSITION vem primeiro)
+// Ordem específica das tabs
 const TAB_ORDER = [
   'INDIVIDUAL_COMPOSITION',
   'COMPLETE_WORK',
@@ -141,6 +150,34 @@ export default function ComposerWorks({
   initialHasMore,
   filterOptions,
 }: ComposerWorksProps) {
+  const { t } = useTranslation({ sections: ['pages/composerId'] });
+  const { language } = useLanguageWithRefresh();
+
+  // Função para traduzir opções de filtros
+  const getTranslatedInstruments = () => {
+    return filterOptions.instruments.map((instrument) => ({
+      ...instrument,
+      displayName: translateInstrument(instrument.name, language),
+      originalName: instrument.name,
+    }));
+  };
+
+  const getTranslatedGenres = () => {
+    return filterOptions.workGenres.map((genre) => ({
+      value: genre,
+      displayName: translateGenre(genre, language),
+      originalName: genre,
+    }));
+  };
+
+  const getTranslatedCategories = () => {
+    return filterOptions.categories.map((category) => ({
+      value: category,
+      displayName: translateCategory(category, language),
+      originalName: category,
+    }));
+  };
+
   // Estados principais
   const [works, setWorks] = useState<ComposerWork[]>(initialWorks);
   const [totalCount, setTotalCount] = useState(initialTotalCount);
@@ -158,7 +195,7 @@ export default function ComposerWorks({
   const [selectedInstrument, setSelectedInstrument] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedWorkType, setSelectedWorkType] = useState<string>('all'); // Novo estado para workType
+  const [selectedWorkType, setSelectedWorkType] = useState<string>('all');
   const [showFilters, setShowFilters] = useState(false);
 
   // Buscar contagens reais dos workTypes
@@ -219,7 +256,7 @@ export default function ComposerWorks({
     [workTypeCounts]
   );
 
-  // Função para aplicar filtros
+  // Função para aplicar filtros (mantida igual, mas sem console.logs de debug)
   const applyFilters = useCallback(
     async (customFilters?: {
       instrumentId?: string;
@@ -230,11 +267,15 @@ export default function ComposerWorks({
     }) => {
       setLoading(true);
       try {
-        // Usar filtros customizados se fornecidos, senão usar os estados atuais
+        // Converter valores traduzidos para originais antes de enviar para API
         const filters = customFilters || {
           ...(selectedInstrument && { instrumentId: selectedInstrument }),
-          ...(selectedGenre && { workGenresArr: selectedGenre }),
-          ...(selectedCategory && { categoryNames: selectedCategory }),
+          ...(selectedGenre && {
+            workGenresArr: getOriginalGenreName(selectedGenre, language),
+          }),
+          ...(selectedCategory && {
+            categoryNames: getOriginalCategoryName(selectedCategory, language),
+          }),
           ...(searchTerm && { search: searchTerm }),
         };
 
@@ -242,8 +283,6 @@ export default function ComposerWorks({
         if (selectedWorkType !== 'all') {
           const workTypesToFilter = WORK_TYPE_GROUPS[selectedWorkType];
           if (workTypesToFilter && workTypesToFilter.length > 0) {
-            // Para múltiplos workTypes, enviamos como array ou fazemos múltiplas chamadas
-            // Por ora, vamos fazer chamadas separadas e unir os resultados
             const promises = workTypesToFilter.map((type) =>
               fetch('/api/composer-works', {
                 method: 'POST',
@@ -253,7 +292,7 @@ export default function ComposerWorks({
                 body: JSON.stringify({
                   composerId,
                   page: 1,
-                  limit: 1000, // Buscar todas para unir
+                  limit: 1000,
                   filters: {
                     ...filters,
                     workType: type,
@@ -263,8 +302,6 @@ export default function ComposerWorks({
             );
 
             const results = await Promise.all(promises);
-
-            // Unir todas as obras e remover duplicatas
             const allWorks: ComposerWork[] = [];
             const seenIds = new Set<string>();
             let totalCount = 0;
@@ -281,13 +318,13 @@ export default function ComposerWorks({
 
             setWorks(allWorks);
             setTotalCount(totalCount);
-            setHasMore(false); // Como buscamos todas, não há mais
+            setHasMore(false);
             setCurrentPage(1);
             return;
           }
         }
 
-        // Filtro normal para workTypes únicos ou sem filtro de workType
+        // Filtro normal
         const response = await fetch('/api/composer-works', {
           method: 'POST',
           headers: {
@@ -312,7 +349,6 @@ export default function ComposerWorks({
         setCurrentPage(1);
       } catch (error) {
         console.error('Erro ao aplicar filtros:', error);
-        // Em caso de erro, manter os dados atuais
       } finally {
         setLoading(false);
       }
@@ -327,7 +363,7 @@ export default function ComposerWorks({
     ]
   );
 
-  // Debounce APENAS para busca por texto
+  // Debounce para busca por texto
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       applyFilters();
@@ -347,8 +383,6 @@ export default function ComposerWorks({
 
     setLoadingMore(true);
     try {
-      // Para workTypes agrupados, não implementamos loadMore por simplicidade
-      // (já carregamos todas as obras na primeira busca)
       if (selectedWorkType !== 'all' && WORK_TYPE_GROUPS[selectedWorkType]) {
         setLoadingMore(false);
         return;
@@ -356,8 +390,12 @@ export default function ComposerWorks({
 
       const filters = {
         ...(selectedInstrument && { instrumentId: selectedInstrument }),
-        ...(selectedGenre && { workGenresArr: selectedGenre }),
-        ...(selectedCategory && { categoryNames: selectedCategory }),
+        ...(selectedGenre && {
+          workGenresArr: getOriginalGenreName(selectedGenre, language),
+        }),
+        ...(selectedCategory && {
+          categoryNames: getOriginalCategoryName(selectedCategory, language),
+        }),
         ...(searchTerm && { search: searchTerm }),
         ...(selectedWorkType !== 'all' && { workType: selectedWorkType }),
       };
@@ -415,23 +453,6 @@ export default function ComposerWorks({
     setCurrentPage(1);
   };
 
-  // Funções simplificadas para mudanças de filtros
-  const handleInstrumentChange = (value: string) => {
-    setSelectedInstrument(value);
-  };
-
-  const handleGenreChange = (value: string) => {
-    setSelectedGenre(value);
-  };
-
-  const handleCategoryChange = (value: string) => {
-    setSelectedCategory(value);
-  };
-
-  const handleWorkTypeChange = (workType: string) => {
-    setSelectedWorkType(workType);
-  };
-
   const hasActiveFilters =
     searchTerm ||
     selectedInstrument ||
@@ -449,7 +470,7 @@ export default function ComposerWorks({
             </div>
             <div>
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                Obras Catalogadas
+                {t('works_title')}
               </h2>
             </div>
           </div>
@@ -461,11 +482,10 @@ export default function ComposerWorks({
               <MdLibraryMusic className="w-8 h-8 text-theme-tertiary" />
             </div>
             <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-              Nenhuma obra catalogada
+              {t('no_works_cataloged_title')}
             </h3>
             <p className="text-theme-secondary">
-              Ainda não temos obras catalogadas para este compositor em nossa
-              base de dados.
+              {t('no_works_cataloged_text')}
             </p>
           </div>
         </AnimatedItem>
@@ -488,10 +508,11 @@ export default function ComposerWorks({
             </div>
             <div className="flex-1">
               <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                Obras Catalogadas
+                {t('works_title')}
               </h2>
               <p className="text-theme-secondary classical-subtitle">
-                {works.length} de {totalCount} obras de {composerName}
+                {works.length} {t('works_count_text')} {totalCount}{' '}
+                {t('works_by_composer')} {composerName}
               </p>
             </div>
           </div>
@@ -502,14 +523,14 @@ export default function ComposerWorks({
               <div className="flex items-center space-x-2 mb-3">
                 <FiLayers className="w-4 h-4 text-theme-primary" />
                 <span className="text-sm font-medium text-theme-primary">
-                  Filtrar por tipo de obra
+                  {t('filter_by_work_type')}
                 </span>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 {/* Tab "Todos" */}
                 <button
-                  onClick={() => handleWorkTypeChange('all')}
+                  onClick={() => setSelectedWorkType('all')}
                   className={`
                         px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 
                         ${
@@ -520,7 +541,7 @@ export default function ComposerWorks({
                       `}
                   disabled={loading}
                 >
-                  Todos ({initialTotalCount})
+                  {t('all_works')} ({initialTotalCount})
                 </button>
 
                 {/* Tabs dos workTypes disponíveis */}
@@ -533,7 +554,7 @@ export default function ComposerWorks({
                       springType="bouncy"
                     >
                       <button
-                        onClick={() => handleWorkTypeChange(groupKey)}
+                        onClick={() => setSelectedWorkType(groupKey)}
                         className={`
                             px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 
                             ${
@@ -544,7 +565,7 @@ export default function ComposerWorks({
                           `}
                         disabled={loading}
                       >
-                        {WORK_TYPE_LABELS[groupKey]} ({groupCount})
+                        {t(WORK_TYPE_LABELS[groupKey])} ({groupCount})
                       </button>
                     </AnimatedItem>
                   );
@@ -558,7 +579,7 @@ export default function ComposerWorks({
             <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
             <input
               type="text"
-              placeholder="Buscar por título, opus ou tonalidade..."
+              placeholder={t('search_placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={`input-classical w-full pl-12 pr-12 ${
@@ -587,7 +608,7 @@ export default function ComposerWorks({
               disabled={loading}
             >
               <FiFilter className="w-4 h-4" />
-              <span>{showFilters ? 'Ocultar Filtros' : 'Mostrar Filtros'}</span>
+              <span>{showFilters ? t('hide_filters') : t('show_filters')}</span>
               <div
                 className={`transition-transform duration-300 ${
                   showFilters ? 'rotate-180' : ''
@@ -622,20 +643,21 @@ export default function ComposerWorks({
                 {/* Filtro de instrumento */}
                 <div className="space-y-2 flex flex-col gap-1">
                   <label className="text-sm font-medium text-theme-secondary">
-                    Instrumento ({filterOptions.instruments.length})
+                    {t('instrument_filter_label')} (
+                    {filterOptions.instruments.length})
                   </label>
                   <div className="relative">
                     <FiMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                     <Select
                       options={[
-                        { label: 'Todos os instrumentos', value: '' },
-                        ...filterOptions.instruments.map((instrument) => ({
-                          label: instrument.name,
+                        { label: t('all_instruments'), value: '' },
+                        ...getTranslatedInstruments().map((instrument) => ({
+                          label: instrument.displayName,
                           value: instrument.id,
                         })),
                       ]}
                       value={selectedInstrument}
-                      onChange={(e) => handleInstrumentChange(e.target.value)}
+                      onChange={(e) => setSelectedInstrument(e.target.value)}
                       className="input-classical w-full appearance-none pl-11"
                       disabled={loading}
                     />
@@ -645,20 +667,21 @@ export default function ComposerWorks({
                 {/* Filtro de gênero */}
                 <div className="space-y-2 flex flex-col gap-1">
                   <label className="text-sm font-medium text-theme-secondary">
-                    Gênero ({filterOptions.workGenres.length})
+                    {t('genre_filter_label')} ({filterOptions.workGenres.length}
+                    )
                   </label>
                   <div className="relative">
                     <MdLibraryMusic className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                     <Select
                       options={[
-                        { label: 'Todos os gêneros', value: '' },
-                        ...filterOptions.workGenres.map((genre) => ({
-                          label: genre,
-                          value: genre,
+                        { label: t('all_genres'), value: '' },
+                        ...getTranslatedGenres().map((genre) => ({
+                          label: genre.displayName,
+                          value: genre.displayName, // Usar displayName como value para o select
                         })),
                       ]}
                       value={selectedGenre}
-                      onChange={(e) => handleGenreChange(e.target.value)}
+                      onChange={(e) => setSelectedGenre(e.target.value)}
                       className="input-classical capitalize w-full appearance-none pl-11"
                       disabled={loading}
                     />
@@ -668,20 +691,21 @@ export default function ComposerWorks({
                 {/* Filtro de categoria */}
                 <div className="space-y-2 flex flex-col gap-1">
                   <label className="text-sm font-medium text-theme-secondary">
-                    Categoria ({filterOptions.categories.length})
+                    {t('category_filter_label')} (
+                    {filterOptions.categories.length})
                   </label>
                   <div className="relative">
                     <FiBookOpen className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-theme-tertiary" />
                     <Select
                       options={[
-                        { label: 'Todos as categorias', value: '' },
-                        ...filterOptions.categories.map((category) => ({
-                          label: category,
-                          value: category,
+                        { label: t('all_categories'), value: '' },
+                        ...getTranslatedCategories().map((category) => ({
+                          label: category.displayName,
+                          value: category.displayName, // Usar displayName como value para o select
                         })),
                       ]}
                       value={selectedCategory}
-                      onChange={(e) => handleCategoryChange(e.target.value)}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
                       className="input-classical w-full appearance-none pl-11"
                       disabled={loading}
                     />
@@ -695,12 +719,14 @@ export default function ComposerWorks({
           {hasActiveFilters && (
             <div className="flex items-center gap-3 mt-4 flex-wrap">
               <span className="text-sm font-medium text-theme-secondary">
-                Filtros ativos:
+                {t('active_filters_label')}
               </span>
 
               {searchTerm && (
                 <div className="flex items-center gap-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/30 text-brand-primary rounded-full text-sm">
-                  <span>Busca: &quot;{searchTerm}&quot;</span>
+                  <span>
+                    {t('search_filter_prefix')} &quot;{searchTerm}&quot;
+                  </span>
                   <button
                     onClick={() => setSearchTerm('')}
                     className="hover:text-brand-secondary transition-colors"
@@ -714,8 +740,8 @@ export default function ComposerWorks({
               {selectedWorkType !== 'all' && (
                 <div className="flex items-center gap-2 px-3 py-1 bg-accent-blue/10 border border-accent-blue/30 text-accent-blue rounded-full text-sm">
                   <span>
-                    Tipo:{' '}
-                    {WORK_TYPE_LABELS[selectedWorkType] || selectedWorkType}
+                    {t('type_filter_prefix')}{' '}
+                    {t(WORK_TYPE_LABELS[selectedWorkType])}
                   </span>
                   <button
                     onClick={() => setSelectedWorkType('all')}
@@ -730,11 +756,11 @@ export default function ComposerWorks({
               {selectedInstrument && (
                 <div className="flex items-center gap-2 px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-sm">
                   <span>
-                    Instrumento:{' '}
+                    {t('instrument_filter_prefix')}{' '}
                     {
-                      filterOptions.instruments.find(
+                      getTranslatedInstruments().find(
                         (i) => i.id === selectedInstrument
-                      )?.name
+                      )?.displayName
                     }
                   </span>
                   <button
@@ -749,7 +775,9 @@ export default function ComposerWorks({
 
               {selectedGenre && (
                 <div className="flex items-center gap-2 px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
-                  <span>Gênero: {selectedGenre}</span>
+                  <span>
+                    {t('genre_filter_prefix')} {selectedGenre}
+                  </span>
                   <button
                     onClick={() => setSelectedGenre('')}
                     className="hover:text-accent-purple/80 transition-colors"
@@ -762,7 +790,9 @@ export default function ComposerWorks({
 
               {selectedCategory && (
                 <div className="flex items-center gap-2 px-3 py-1 bg-accent-orange/10 border border-accent-orange/30 text-accent-orange rounded-full text-sm">
-                  <span>Categoria: {selectedCategory}</span>
+                  <span>
+                    {t('category_filter_prefix')} {selectedCategory}
+                  </span>
                   <button
                     onClick={() => setSelectedCategory('')}
                     className="hover:text-accent-orange/80 transition-colors"
@@ -778,7 +808,7 @@ export default function ComposerWorks({
                 className="text-sm text-accent-red hover:text-accent-red/80 underline font-medium"
                 disabled={loading}
               >
-                Limpar todos os filtros
+                {t('clear_all_filters')}
               </button>
             </div>
           )}
@@ -798,7 +828,7 @@ export default function ComposerWorks({
                 />
               ))}
 
-              {/* Loading indicator sutil */}
+              {/* Loading indicator */}
               <AnimatedItem direction="scale" springType="gentle">
                 <div className="flex items-center justify-center py-4 opacity-70">
                   <div className="flex items-center space-x-2 text-sm text-theme-secondary">
@@ -811,7 +841,7 @@ export default function ComposerWorks({
                       className="w-2 h-2 bg-brand-primary rounded-full animate-bounce"
                       style={{ animationDelay: '0.2s' }}
                     ></div>
-                    <span className="ml-2">Carregando obras...</span>
+                    <span className="ml-2">{t('loading')}...</span>
                   </div>
                 </div>
               </AnimatedItem>
@@ -890,7 +920,7 @@ export default function ComposerWorks({
                               )}
                             </div>
 
-                            {/* Mostrar gêneros e categorias se existirem */}
+                            {/* Gêneros e categorias */}
                             {(work.workGenresArr?.length ||
                               work.categoryNames?.length) && (
                               <div className="flex flex-wrap gap-2 mt-3">
@@ -901,7 +931,7 @@ export default function ComposerWorks({
                                       key={genre}
                                       className="px-2 capitalize py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green text-xs rounded-full"
                                     >
-                                      {genre}
+                                      {translateGenre(genre, language)}
                                     </span>
                                   ))}
                                 {work.categoryNames
@@ -911,7 +941,7 @@ export default function ComposerWorks({
                                       key={category}
                                       className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-xs rounded-full"
                                     >
-                                      {category}
+                                      {translateCategory(category, language)}
                                     </span>
                                   ))}
                               </div>
@@ -919,7 +949,7 @@ export default function ComposerWorks({
                           </div>
 
                           <div
-                            className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300"
+                            className={`flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300`}
                             onClick={(e) => e.stopPropagation()}
                           >
                             <FavoriteButton
@@ -1003,7 +1033,7 @@ export default function ComposerWorks({
                                 )}
                               </div>
 
-                              {/* Mostrar gêneros e categorias se existirem */}
+                              {/* Gêneros e categorias */}
                               {(work.workGenresArr?.length ||
                                 work.categoryNames?.length) && (
                                 <div className="flex flex-wrap gap-2 mt-3">
@@ -1014,7 +1044,7 @@ export default function ComposerWorks({
                                         key={genre}
                                         className="px-2 capitalize py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green text-xs rounded-full"
                                       >
-                                        {genre}
+                                        {translateGenre(genre, language)}
                                       </span>
                                     ))}
                                   {work.categoryNames
@@ -1024,7 +1054,7 @@ export default function ComposerWorks({
                                         key={category}
                                         className="px-2 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple text-xs rounded-full"
                                       >
-                                        {category}
+                                        {translateCategory(category, language)}
                                       </span>
                                     ))}
                                 </div>
@@ -1067,10 +1097,10 @@ export default function ComposerWorks({
                     )}
                     <span>
                       {loadingMore
-                        ? 'Carregando...'
-                        : `Carregar Mais Obras (${
+                        ? t('loading')
+                        : `${t('load_more_works')} (${
                             totalCount - works.length
-                          } restantes)`}
+                          } ${t('remaining_works')})`}
                     </span>
                   </button>
                 </div>
@@ -1084,11 +1114,10 @@ export default function ComposerWorks({
                   <FiSearch className="w-8 h-8 text-theme-tertiary" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
-                  Nenhuma obra encontrada
+                  {t('no_works_found_title')}
                 </h3>
                 <p className="text-theme-secondary mb-6">
-                  Tente ajustar os filtros de busca para encontrar mais
-                  resultados.
+                  {t('no_works_found_text')}
                 </p>
                 {hasActiveFilters && (
                   <AnimatedItem hover="scale" springType="bouncy">
@@ -1097,7 +1126,7 @@ export default function ComposerWorks({
                       className="btn-classical-primary flex items-center space-x-2 mx-auto group"
                     >
                       <FiRefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" />
-                      <span>Limpar filtros</span>
+                      <span>{t('clear_filters')}</span>
                     </button>
                   </AnimatedItem>
                 )}

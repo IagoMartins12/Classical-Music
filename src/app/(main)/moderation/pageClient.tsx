@@ -31,10 +31,10 @@ import Button from '@/app/components/Common/Button';
 import ReportHistoryModal from '@/app/components/Report/ReportHistoryModal';
 import VerificationBadge from '@/app/components/Verification/VerificationBadge';
 import { REPORT_REASONS } from '@/app/utils/reportHelpers';
-import BulkReportActions from '../../../components/Report/BulkReportActions';
-import ReportPriorityBadge from '../../../components/Report/ReportPriorityBadge';
+import BulkReportActions from '../../components/Report/BulkReportActions';
+import ReportPriorityBadge from '../../components/Report/ReportPriorityBadge';
 import { useToast } from '@/app/hooks/useToast';
-import Input from '../../../components/Common/Inputs';
+import Input from '../../components/Common/Inputs';
 
 interface ModerationClientProps {
   page: number;
@@ -274,7 +274,7 @@ const ModerationClient = ({
                   onClick={() => {
                     const url = isAdmin
                       ? `/admin/moderation/moderate?status=${statusOption}`
-                      : `/uploads/moderation?status=${statusOption}`;
+                      : `/moderation?status=${statusOption}`;
                     router.push(url);
                   }}
                   className={`px-6 py-3 rounded-lg text-sm font-medium transition-all capitalize ${
@@ -327,7 +327,7 @@ const ModerationClient = ({
                     variant="ghost"
                     size="sm"
                     leftIcon={<FiEye />}
-                    onClick={() => router.push('/admin/reports')}
+                    onClick={() => router.push('/admin/report')}
                   >
                     Dashboard
                   </Button>
@@ -537,7 +537,7 @@ const ModerationClient = ({
                         ? `/admin/moderation/moderate?page=${
                             i + 1
                           }&status=${status}`
-                        : `/uploads/moderation?page=${i + 1}&status=${status}`;
+                        : `/moderation?page=${i + 1}&status=${status}`;
 
                       router.push(url);
                     }}
