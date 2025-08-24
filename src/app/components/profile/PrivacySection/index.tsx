@@ -9,6 +9,7 @@ import Button from '../../Common/Button';
 import { updatePrivacySettings } from '@/app/actions/profile';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface PrivacySectionProps {
   user: User;
@@ -21,6 +22,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
 }) => {
   const { updateUser: globalUpdateUser } = useAuth();
   const { updateUserSession } = useSessionUpdate();
+  const { t } = useTranslation({ sections: ['pages/profile'] });
   const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState({
     profilePublic: user.profilePublic || true,
@@ -112,10 +114,10 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold text-theme-primary">
-            Configurações de Privacidade
+            {t('privacy_title')}
           </h3>
           <p className="text-sm text-theme-secondary">
-            Controle quem pode ver suas informações
+            {t('privacy_description')}
           </p>
         </div>
 
@@ -126,7 +128,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
           isLoading={isLoading}
           leftIcon={<FiSave />}
         >
-          Salvar
+          {t('privacy_save')}
         </Button>
       </div>
 
@@ -143,10 +145,10 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               )}
               <div>
                 <h4 className="font-medium text-theme-primary">
-                  Perfil Público
+                  {t('privacy_public_profile')}
                 </h4>
                 <p className="text-sm text-theme-secondary">
-                  Permite que outros usuários vejam seu perfil básico
+                  {t('privacy_public_profile_description')}
                 </p>
               </div>
             </div>
@@ -165,10 +167,10 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               <FiMapPin className="w-5 h-5 text-brand-primary" />
               <div>
                 <h4 className="font-medium text-theme-primary">
-                  Mostrar Localização
+                  {t('privacy_show_location')}
                 </h4>
                 <p className="text-sm text-theme-secondary">
-                  Exibe sua cidade/país no perfil público
+                  {t('privacy_show_location_description')}
                 </p>
               </div>
             </div>
@@ -182,7 +184,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
 
           {!settings.profilePublic && (
             <p className="text-xs text-theme-tertiary mt-2 ml-8">
-              Disponível apenas com perfil público ativo
+              {t('privacy_public_only')}
             </p>
           )}
         </div>
@@ -194,10 +196,10 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               <FiEye className="w-5 h-5 text-brand-primary" />
               <div>
                 <h4 className="font-medium text-theme-primary">
-                  Mostrar Instrumentos
+                  {t('privacy_show_instruments')}
                 </h4>
                 <p className="text-sm text-theme-secondary">
-                  Exibe os instrumentos que você toca no perfil
+                  {t('privacy_show_instruments_description')}
                 </p>
               </div>
             </div>
@@ -211,7 +213,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
 
           {!settings.profilePublic && (
             <p className="text-xs text-theme-tertiary mt-2 ml-8">
-              Disponível apenas com perfil público ativo
+              {t('privacy_public_only')}
             </p>
           )}
         </div>
@@ -223,10 +225,10 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
               <FiEye className="w-5 h-5 text-brand-primary" />
               <div>
                 <h4 className="font-medium text-theme-primary">
-                  Mostrar Atividade
+                  {t('privacy_show_activity')}
                 </h4>
                 <p className="text-sm text-theme-secondary">
-                  Mostra suas obras favoritas e progresso de estudos
+                  {t('privacy_show_activity_description')}
                 </p>
               </div>
             </div>
@@ -240,7 +242,7 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
 
           {!settings.profilePublic && (
             <p className="text-xs text-theme-tertiary mt-2 ml-8">
-              Disponível apenas com perfil público ativo
+              {t('privacy_public_only')}
             </p>
           )}
         </div>
@@ -249,30 +251,32 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       {/* Privacy Summary */}
       <div className="classical-card-2 p-4 bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30">
         <h4 className="font-medium text-brand-primary mb-2">
-          📋 Resumo da Privacidade
+          {t('privacy_summary')}
         </h4>
         <div className="text-sm text-theme-secondary space-y-1">
           <p>
-            • <strong>Perfil:</strong>{' '}
-            {settings.profilePublic ? 'Público' : 'Privado'}
+            • <strong>{t('privacy_profile')}</strong>{' '}
+            {settings.profilePublic
+              ? t('privacy_public')
+              : t('privacy_private')}
           </p>
           <p>
-            • <strong>Localização:</strong>{' '}
+            • <strong>{t('privacy_location')}</strong>{' '}
             {settings.showLocation && settings.profilePublic
-              ? 'Visível'
-              : 'Oculta'}
+              ? t('privacy_visible')
+              : t('privacy_hidden')}
           </p>
           <p>
-            • <strong>Instrumentos:</strong>{' '}
+            • <strong>{t('privacy_instruments')}</strong>{' '}
             {settings.showInstruments && settings.profilePublic
-              ? 'Visíveis'
-              : 'Ocultos'}
+              ? t('privacy_visible')
+              : t('privacy_hidden')}
           </p>
           <p>
-            • <strong>Atividade:</strong>{' '}
+            • <strong>{t('privacy_activity')}</strong>{' '}
             {settings.showActivity && settings.profilePublic
-              ? 'Visível'
-              : 'Oculta'}
+              ? t('privacy_visible')
+              : t('privacy_hidden')}
           </p>
         </div>
       </div>
@@ -280,14 +284,14 @@ const PrivacySection: React.FC<PrivacySectionProps> = ({
       {/* Info Box */}
       <div className="classical-card-2 p-4 bg-theme-secondary bg-opacity-20">
         <h4 className="font-medium text-theme-primary mb-2">
-          🔒 Informações de Segurança
+          {t('privacy_security_info')}
         </h4>
         <ul className="text-sm text-theme-secondary space-y-1">
-          <li>• Seu email nunca é mostrado publicamente</li>
-          <li>• Apenas administradores podem ver informações privadas</li>
-          <li>• Você pode alterar essas configurações a qualquer momento</li>
-          <li>• Dados de estudo são sempre privados por padrão</li>
-          <li>• Configurações são salvas automaticamente no banco de dados</li>
+          <li>{t('privacy_email_never_shown')}</li>
+          <li>{t('privacy_admin_only')}</li>
+          <li>{t('privacy_can_change')}</li>
+          <li>{t('privacy_study_data_private')}</li>
+          <li>{t('privacy_auto_save')}</li>
         </ul>
       </div>
     </div>

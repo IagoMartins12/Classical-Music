@@ -1,4 +1,4 @@
-// app/components/uploads/ConfirmDeleteUploadModal.tsx
+// app/components/uploads/ConfirmDeleteUploadModal.tsx - TRADUZIDO
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatedCard } from '../animation/AnimatedComponents';
@@ -11,6 +11,7 @@ import {
   FiInfo,
   FiLoader,
 } from 'react-icons/fi';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface CascadeInfo {
   works?: { id: string; title: string; scoresCount: number }[];
@@ -35,17 +36,14 @@ interface ConfirmDeleteUploadModalProps {
 
 const TYPE_CONFIG = {
   composer: {
-    label: 'compositor',
     icon: FiUser,
     color: 'from-accent-purple to-accent-blue',
   },
   work: {
-    label: 'obra',
     icon: FiMusic,
     color: 'from-accent-blue to-accent-green',
   },
   score: {
-    label: 'partitura',
     icon: FiFileText,
     color: 'from-accent-green to-accent-amber',
   },
@@ -60,6 +58,7 @@ export default function ConfirmDeleteUploadModal({
   itemType,
   itemId,
 }: ConfirmDeleteUploadModalProps) {
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
   const [mounted, setMounted] = useState(false);
   const [cascadeInfo, setCascadeInfo] = useState<CascadeInfo | null>(null);
   const [loadingCascadeInfo, setLoadingCascadeInfo] = useState(false);
@@ -114,6 +113,23 @@ export default function ConfirmDeleteUploadModal({
       ((cascadeInfo.totalWorks ?? 0) > 0 || (cascadeInfo.totalScores ?? 0) > 0)
   );
 
+  // Helper functions para textos traduzidos
+  const getItemTypeLabel = () => {
+    return t(`item_type_${itemType}`);
+  };
+
+  const getItemTypeArticle = () => {
+    return t(`item_type_article_${itemType}`);
+  };
+
+  const getScoreText = (count: number) => {
+    return count === 1 ? t('item_score_singular') : t('item_score_plural');
+  };
+
+  const getWorkText = (count: number) => {
+    return count === 1 ? t('item_work_singular') : t('item_work_plural');
+  };
+
   const modalContent = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
       <div
@@ -137,19 +153,21 @@ export default function ConfirmDeleteUploadModal({
           </div>
           <div>
             <h3 className="text-lg font-bold text-theme-primary">
-              Confirmar Exclusão
+              {t('delete_modal_title')}
             </h3>
             <p className="text-sm text-theme-secondary">
-              Esta ação não pode ser desfeita
+              {t('delete_modal_subtitle')}
             </p>
           </div>
         </div>
 
         <div className="mb-6 space-y-4">
           <p className="text-theme-secondary">
-            Tem certeza que deseja deletar{' '}
-            {typeConfig.label === 'obra' ? 'a' : 'o'} {typeConfig.label}{' '}
-            <strong>&quot;{itemTitle}&quot;</strong>?
+            {t('delete_modal_confirm_text', {
+              article: getItemTypeArticle(),
+              type: getItemTypeLabel(),
+              title: itemTitle,
+            })}
           </p>
 
           {/* Loading cascade info */}
@@ -157,7 +175,7 @@ export default function ConfirmDeleteUploadModal({
             <div className="flex items-center space-x-2 p-3 bg-accent-blue/10 rounded-lg border border-accent-blue/20">
               <FiLoader className="w-4 h-4 text-accent-blue animate-spin" />
               <span className="text-sm text-accent-blue">
-                Verificando itens relacionados...
+                {t('delete_modal_checking_related')}
               </span>
             </div>
           ) : null}
@@ -169,10 +187,10 @@ export default function ConfirmDeleteUploadModal({
                 <FiInfo className="w-4 h-4 text-accent-amber mt-0.5 flex-shrink-0" />
                 <div>
                   <div className="text-sm font-medium text-accent-amber mb-1">
-                    ⚠️ Exclusão em Cascata
+                    {t('delete_modal_cascade_warning')}
                   </div>
                   <p className="text-xs text-theme-secondary mb-3">
-                    Os seguintes itens também serão excluídos automaticamente:
+                    {t('delete_modal_cascade_description')}
                   </p>
                 </div>
               </div>
@@ -184,7 +202,9 @@ export default function ConfirmDeleteUploadModal({
                 cascadeInfo.works.length > 0 ? (
                   <div>
                     <p className="font-medium text-theme-primary mb-2 flex items-center">
-                      🎼 {cascadeInfo.works.length} obra(s):
+                      {t('delete_modal_works_count', {
+                        count: cascadeInfo.works.length,
+                      })}
                     </p>
                     <div className="space-y-1  overflow-y-auto bg-theme-secondary/30 rounded p-2">
                       {cascadeInfo.works.slice(0, 4).map((work) => (
@@ -195,15 +215,17 @@ export default function ConfirmDeleteUploadModal({
                           <span>• {work.title}</span>
                           {work.scoresCount > 0 ? (
                             <span className="text-accent-amber">
-                              {work.scoresCount} partitura
-                              {work.scoresCount > 1 ? 's' : ''}
+                              {work.scoresCount}{' '}
+                              {getScoreText(work.scoresCount)}
                             </span>
                           ) : null}
                         </div>
                       ))}
                       {cascadeInfo.works.length > 4 ? (
                         <div className="text-xs text-theme-tertiary">
-                          ... e mais {cascadeInfo.works.length - 4} obra(s)
+                          {t('delete_modal_and_more_works', {
+                            count: cascadeInfo.works.length - 4,
+                          })}
                         </div>
                       ) : null}
                     </div>
@@ -216,7 +238,9 @@ export default function ConfirmDeleteUploadModal({
                 cascadeInfo.scores.length > 0 ? (
                   <div>
                     <p className="font-medium text-theme-primary mb-2 flex items-center">
-                      📄 {cascadeInfo.scores.length} partitura(s):
+                      {t('delete_modal_scores_count', {
+                        count: cascadeInfo.scores.length,
+                      })}
                     </p>
                     <div className="space-y-1 max-h-24 overflow-y-auto bg-theme-secondary/30 rounded p-2">
                       {cascadeInfo.scores.slice(0, 4).map((score) => (
@@ -229,8 +253,9 @@ export default function ConfirmDeleteUploadModal({
                       ))}
                       {cascadeInfo.scores.length > 4 ? (
                         <div className="text-xs text-theme-tertiary">
-                          ... e mais {cascadeInfo.scores.length - 4}{' '}
-                          partitura(s)
+                          {t('delete_modal_and_more_scores', {
+                            count: cascadeInfo.scores.length - 4,
+                          })}
                         </div>
                       ) : null}
                     </div>
@@ -242,7 +267,9 @@ export default function ConfirmDeleteUploadModal({
                 cascadeInfo.childWorks.length > 0 ? (
                   <div>
                     <p className="font-medium text-theme-primary mb-2">
-                      🎵 {cascadeInfo.childWorks.length} obra(s) filha(s):
+                      {t('delete_modal_child_works_count', {
+                        count: cascadeInfo.childWorks.length,
+                      })}
                     </p>
                     <div className="space-y-1 max-h-20 overflow-y-auto bg-theme-secondary/30 rounded p-2">
                       {cascadeInfo.childWorks.slice(0, 3).map((childWork) => (
@@ -253,8 +280,8 @@ export default function ConfirmDeleteUploadModal({
                           <span>• {childWork.title}</span>
                           {childWork.scoresCount > 0 ? (
                             <span className="text-accent-amber">
-                              {childWork.scoresCount} partitura
-                              {childWork.scoresCount > 1 ? 's' : ''}
+                              {childWork.scoresCount}{' '}
+                              {getScoreText(childWork.scoresCount)}
                             </span>
                           ) : null}
                         </div>
@@ -268,14 +295,14 @@ export default function ConfirmDeleteUploadModal({
                 cascadeInfo.totalScores >= 0 ? (
                   <div className="pt-2 border-t border-accent-amber/20">
                     <p className="text-xs font-medium text-accent-amber">
-                      📊 Total: {cascadeInfo.totalScores} partitura(s) serão
-                      removidas
-                      {cascadeInfo.totalWorks && cascadeInfo.totalWorks > 0 ? (
-                        <span>
-                          {' '}
-                          • {cascadeInfo.totalWorks} obra(s) serão removidas
-                        </span>
-                      ) : null}
+                      {cascadeInfo.totalWorks && cascadeInfo.totalWorks > 0
+                        ? t('delete_modal_total_summary_with_works', {
+                            scores: cascadeInfo.totalScores,
+                            works: cascadeInfo.totalWorks,
+                          })
+                        : t('delete_modal_total_summary', {
+                            scores: cascadeInfo.totalScores,
+                          })}
                     </p>
                   </div>
                 ) : null}
@@ -291,7 +318,7 @@ export default function ConfirmDeleteUploadModal({
               <div className="flex items-center space-x-2">
                 <FiInfo className="w-4 h-4 text-accent-green" />
                 <span className="text-sm text-accent-green">
-                  ✅ Nenhum item relacionado será afetado.
+                  {t('delete_modal_no_related_items')}
                 </span>
               </div>
             </div>
@@ -303,10 +330,11 @@ export default function ConfirmDeleteUploadModal({
               <div className="flex items-start space-x-2">
                 <FiAlertTriangle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
                 <div className="text-sm text-accent-red">
-                  <p className="font-medium">Atenção:</p>
+                  <p className="font-medium">
+                    {t('delete_modal_score_warning_title')}
+                  </p>
                   <p className="mt-1 text-xs">
-                    A partitura será removida permanentemente. A obra associada
-                    será mantida.
+                    {t('delete_modal_score_warning_text')}
                   </p>
                 </div>
               </div>
@@ -320,7 +348,7 @@ export default function ConfirmDeleteUploadModal({
             disabled={isLoading}
             className="px-4 py-2 rounded-lg border border-theme-secondary text-theme-secondary hover:bg-theme-secondary transition-colors disabled:opacity-50"
           >
-            Cancelar
+            {t('delete_modal_cancel')}
           </button>
           <button
             onClick={onConfirm}
@@ -330,17 +358,19 @@ export default function ConfirmDeleteUploadModal({
             {isLoading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                <span>Deletando...</span>
+                <span>{t('delete_modal_deleting')}</span>
               </>
             ) : (
               <>
                 <FiTrash2 className="w-4 h-4" />
                 <span>
-                  Deletar {typeConfig.label}
+                  {t('delete_modal_delete_button', {
+                    type: getItemTypeLabel(),
+                  })}
                   {hasCascadeItems ? (
                     <span className="text-xs opacity-75">
                       {' '}
-                      + itens relacionados
+                      {t('delete_modal_plus_related')}
                     </span>
                   ) : null}
                 </span>

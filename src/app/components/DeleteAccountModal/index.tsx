@@ -22,6 +22,7 @@ import Input from '../Common/Inputs';
 import { AnimatedCard } from '../animation/AnimatedComponents';
 import { BiBookContent, BiBookOpen } from 'react-icons/bi';
 import { CascadeInfo } from '@/app/hooks/useAccountManagement';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface DeleteAccountModalProps {
   isOpen: boolean;
@@ -46,6 +47,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   userName,
   userEmail,
 }) => {
+  const { t } = useTranslation({ sections: ['pages/profile'] });
   const [mounted, setMounted] = useState(false);
   const [confirmText, setConfirmText] = useState('');
   const [currentStep, setCurrentStep] = useState<
@@ -102,54 +104,54 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
   const dataItems = [
     {
       icon: FiUser,
-      label: 'Compositores',
+      label: t('delete_modal_composers'),
       count: cascadeInfo?.composersCount || 0,
       color: 'from-accent-purple to-accent-blue',
       samples: cascadeInfo?.sampleComposers,
     },
     {
       icon: FiMusic,
-      label: 'Obras',
+      label: t('delete_modal_works'),
       count: cascadeInfo?.worksCount || 0,
       color: 'from-accent-blue to-accent-green',
       samples: cascadeInfo?.sampleWorks,
     },
     {
       icon: FiFileText,
-      label: 'Partituras',
+      label: t('delete_modal_scores'),
       count: cascadeInfo?.scoresCount || 0,
       color: 'from-accent-green to-accent-amber',
     },
     {
       icon: FiEdit3,
-      label: 'Anotações',
+      label: t('delete_modal_annotations'),
       count: cascadeInfo?.annotationsCount || 0,
       color: 'from-accent-amber to-accent-red',
       samples: cascadeInfo?.sampleAnnotations,
     },
     {
       icon: FiHeart,
-      label: 'Favoritos',
+      label: t('delete_modal_favorites'),
       count: cascadeInfo?.favoritesCount || 0,
       color: 'from-accent-red to-accent-purple',
     },
 
     {
       icon: GiMusicalNotes,
-      label: 'Instrumentos',
+      label: t('delete_modal_instruments'),
       count: cascadeInfo?.instrumentsCount || 0,
       color: 'from-accent-blue to-accent-green',
     },
 
     {
       icon: BiBookOpen,
-      label: 'Peças aprendidas',
+      label: t('delete_modal_learned_works'),
       count: cascadeInfo?.learnedWorksCount || 0,
       color: 'from-accent-green to-accent-amber',
     },
     {
       icon: BiBookContent,
-      label: 'Peças que deseja aprender',
+      label: t('delete_modal_want_to_learn'),
       count: cascadeInfo?.wantToLearnCount || 0,
       color: 'from-accent-green to-accent-amber',
     },
@@ -174,10 +176,10 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             </div>
             <div>
               <h3 className="text-xl font-bold text-theme-primary">
-                Deletar Conta Permanentemente
+                {t('delete_modal_title')}
               </h3>
               <p className="text-sm text-theme-secondary">
-                Esta ação não pode ser desfeita
+                {t('delete_modal_subtitle')}
               </p>
             </div>
           </div>
@@ -201,44 +203,45 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   <FiAlertTriangle className="w-8 h-8 text-red-500" />
                 </div>
                 <h4 className="text-lg font-semibold text-theme-primary mb-2">
-                  Você tem certeza?
+                  {t('delete_modal_sure')}
                 </h4>
                 <p className="text-theme-secondary">
-                  Deletar sua conta removerá permanentemente todos os seus dados
-                  e não poderá ser desfeito.
+                  {t('delete_modal_warning')}
                 </p>
               </div>
 
               <div className="bg-accent-red/10 border border-red-400 rounded-lg p-4">
                 <h5 className="font-medium text-accent-red mb-2 flex items-center">
-                  <FiInfo className="w-4 h-4 mr-2" />O que acontecerá:
+                  <FiInfo className="w-4 h-4 mr-2" />
+                  {t('delete_modal_what_happens')}
                 </h5>
                 <ul className="text-sm text-accent-red opacity-90 space-y-1">
-                  <li>• Todos os seus dados serão removidos permanentemente</li>
-                  <li>
-                    • Seus uploads (compositores, obras, partituras) serão
-                    deletados
-                  </li>
-                  <li>• Suas anotações e favoritos serão perdidos</li>
-                  <li>• Seu histórico de estudos será apagado</li>
-                  <li>• Você receberá um email de despedida</li>
-                  <li>• Esta ação não pode ser revertida</li>
+                  <li>{t('delete_modal_data_removed')}</li>
+                  <li>{t('delete_modal_uploads_deleted')}</li>
+                  <li>{t('delete_modal_annotations_lost')}</li>
+                  <li>{t('delete_modal_history_erased')}</li>
+                  <li>{t('delete_modal_goodbye_email')}</li>
+                  <li>{t('delete_modal_irreversible')}</li>
                 </ul>
               </div>
 
               <div className="bg-theme-secondary rounded-lg p-4">
                 <h5 className="font-medium text-theme-primary mb-2">
-                  Informações da sua conta:
+                  {t('delete_modal_account_info')}
                 </h5>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-theme-secondary">Nome:</span>
+                    <span className="text-theme-secondary">
+                      {t('delete_modal_name')}
+                    </span>
                     <span className="text-theme-primary font-medium">
                       {userName}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-theme-secondary">Email:</span>
+                    <span className="text-theme-secondary">
+                      {t('delete_modal_email')}
+                    </span>
                     <span className="text-theme-primary font-mono">
                       {userEmail}
                     </span>
@@ -253,10 +256,10 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
             <div className="space-y-6">
               <div className="text-center">
                 <h4 className="text-lg font-semibold text-theme-primary mb-2">
-                  📊 Seus dados que serão removidos
+                  {t('delete_modal_data_summary')}
                 </h4>
                 <p className="text-theme-secondary">
-                  Aqui está um resumo de tudo que será deletado permanentemente:
+                  {t('delete_modal_data_description')}
                 </p>
               </div>
 
@@ -265,7 +268,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   <div className="text-center">
                     <FiLoader className="w-8 h-8 text-brand-primary animate-spin mx-auto mb-4" />
                     <p className="text-theme-secondary">
-                      Analisando seus dados...
+                      {t('delete_modal_analyzing')}
                     </p>
                   </div>
                 </div>
@@ -277,7 +280,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                       {cascadeInfo.totalItems}
                     </h5>
                     <p className="text-accent-amber text-sm">
-                      itens totais serão removidos
+                      {t('delete_modal_total_items')}
                     </p>
                   </div>
 
@@ -315,7 +318,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                     <div className="bg-theme-secondary rounded-lg p-4">
                       <h5 className="font-medium text-theme-primary mb-3 flex items-center">
                         <FiInfo className="w-4 h-4 mr-2" />
-                        Exemplos dos seus dados:
+                        {t('delete_modal_examples')}
                       </h5>
                       <div className="space-y-3 max-h-32 overflow-y-auto">
                         {cascadeInfo.sampleComposers
@@ -378,10 +381,11 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                     <div className="flex items-start space-x-2">
                       <FiMail className="w-4 h-4 text-accent-blue mt-0.5 flex-shrink-0" />
                       <div className="text-sm text-accent-blue">
-                        <p className="font-medium mb-1">Email de despedida</p>
+                        <p className="font-medium mb-1">
+                          {t('delete_modal_goodbye_email_info')}
+                        </p>
                         <p className="opacity-90">
-                          Você receberá um email com o resumo da sua jornada na
-                          plataforma e confirmação da exclusão.
+                          {t('delete_modal_goodbye_description')}
                         </p>
                       </div>
                     </div>
@@ -391,7 +395,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 <div className="text-center py-8">
                   <FiInfo className="w-8 h-8 text-theme-tertiary mx-auto mb-4" />
                   <p className="text-theme-secondary">
-                    Erro ao carregar informações. Tente novamente.
+                    {t('delete_modal_error_loading')}
                   </p>
                 </div>
               )}
@@ -406,39 +410,36 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                   <FiTrash2 className="w-8 h-8 text-accent-red" />
                 </div>
                 <h4 className="text-lg font-semibold text-theme-primary mb-2">
-                  ⚠️ Confirmação Final
+                  {t('delete_modal_final_confirmation')}
                 </h4>
                 <p className="text-theme-secondary">
-                  Esta é sua última chance de cancelar. Esta ação é
-                  irreversível.
+                  {t('delete_modal_last_chance')}
                 </p>
               </div>
 
               <div className="border border-red-400 rounded-lg p-4">
                 <h5 className="font-medium text-accent-red mb-2">
-                  ⚠️ ATENÇÃO: Esta ação é permanente!
+                  {t('delete_modal_permanent_warning')}
                 </h5>
                 <p className="text-sm text-accent-red opacity-90">
-                  Ao confirmar, todos os seus dados serão removidos
-                  imediatamente e não poderão ser recuperados.
+                  {t('delete_modal_immediate_removal')}
                 </p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-theme-secondary mb-2">
-                  Para confirmar, digite <strong>&quot;deletar&quot;</strong>{' '}
-                  abaixo:
+                  {t('delete_modal_type_delete')}
                 </label>
                 <Input
                   value={confirmText}
                   onChange={(e) => setConfirmText(e.target.value)}
-                  placeholder="deletar"
+                  placeholder={t('delete_modal_placeholder_delete')}
                   className="text-center font-mono"
                   autoFocus
                 />
                 {confirmText && !canProceed && (
                   <p className="text-xs text-accent-red mt-1">
-                    Digite exatamente &quot;deletar&quot; para continuar
+                    {t('delete_modal_type_exactly')}
                   </p>
                 )}
               </div>
@@ -446,8 +447,8 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               {cascadeInfo && (
                 <div className="text-center p-3 bg-theme-secondary rounded-lg">
                   <p className="text-sm text-theme-secondary">
-                    <strong>{cascadeInfo.totalItems}</strong> itens serão
-                    removidos permanentemente
+                    <strong>{cascadeInfo.totalItems}</strong>{' '}
+                    {t('delete_modal_items_removed')}
                   </p>
                 </div>
               )}
@@ -475,8 +476,9 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               ))}
             </div>
             <span className="text-xs text-theme-primary ml-2">
-              Passo {['warning', 'cascade', 'confirm'].indexOf(currentStep) + 1}{' '}
-              de 3
+              {t('delete_modal_step')}{' '}
+              {['warning', 'cascade', 'confirm'].indexOf(currentStep) + 1}{' '}
+              {t('delete_modal_of')} 3
             </span>
           </div>
 
@@ -489,7 +491,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 onClick={handlePrevStep}
                 disabled={isLoading}
               >
-                Voltar
+                {t('delete_modal_back')}
               </Button>
             )}
 
@@ -500,7 +502,7 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
               onClick={handleClose}
               disabled={isLoading}
             >
-              Cancelar
+              {t('delete_modal_cancel')}
             </Button>
 
             {/* Action button */}
@@ -514,7 +516,9 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 className="bg-accent-red hover:bg-red-600 border-accent-red"
                 leftIcon={<FiTrash2 />}
               >
-                {isLoading ? 'Deletando...' : 'Deletar Permanentemente'}
+                {isLoading
+                  ? t('delete_modal_deleting')
+                  : t('delete_modal_delete_permanently')}
               </Button>
             ) : (
               <Button
@@ -524,7 +528,9 @@ const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
                 disabled={isCascadeLoading}
                 className="bg-accent-red hover:bg-red-600 border-accent-red"
               >
-                {currentStep === 'warning' ? 'Continuar' : 'Próximo'}
+                {currentStep === 'warning'
+                  ? t('delete_modal_continue')
+                  : t('delete_modal_next')}
               </Button>
             )}
           </div>

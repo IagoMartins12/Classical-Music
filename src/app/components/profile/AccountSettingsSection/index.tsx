@@ -30,6 +30,7 @@ import {
 } from '@/app/utils/accountValidation';
 import DeleteAccountModal from '../../DeleteAccountModal';
 import EmailVerificationBanner2 from '../../EmailVerification/EmailVerificationBanner2';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface AccountSettingsSectionProps {
   user: User;
@@ -45,6 +46,7 @@ interface LoginMethodInfo {
 const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
   user,
 }) => {
+  const { t } = useTranslation({ sections: ['pages/profile'] });
   const {
     isEmailChanging,
     isUserTypeChanging,
@@ -273,22 +275,38 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       );
     }
 
+    const getLoginTypeLabel = () => {
+      if (loginMethod.hasSocialLogin && !loginMethod.hasPassword) {
+        return t('account_login_social');
+      } else if (loginMethod.hasSocialLogin && loginMethod.hasPassword) {
+        return t('account_login_hybrid');
+      } else {
+        return t('account_login_traditional');
+      }
+    };
+
+    const getLoginDescription = () => {
+      if (loginMethod.hasSocialLogin && !loginMethod.hasPassword) {
+        return t('account_created_via', {
+          provider: loginMethod.socialProviders.join(', '),
+        });
+      } else if (loginMethod.hasSocialLogin && loginMethod.hasPassword) {
+        return t('account_email_password_plus', {
+          providers: loginMethod.socialProviders.join(', '),
+        });
+      } else {
+        return t('account_traditional_auth');
+      }
+    };
+
     return (
       <div className="flex items-center space-x-4">
         <div className="flex-1">
           <p className="font-medium text-theme-primary">
-            {loginMethod.hasSocialLogin && !loginMethod.hasPassword
-              ? 'Login Social'
-              : loginMethod.hasSocialLogin && loginMethod.hasPassword
-              ? 'Login Híbrido'
-              : 'Login com Email e Senha'}
+            {getLoginTypeLabel()}
           </p>
           <p className="text-sm text-theme-secondary">
-            {loginMethod.hasSocialLogin && !loginMethod.hasPassword
-              ? `Conta criada via ${loginMethod.socialProviders.join(', ')}`
-              : loginMethod.hasSocialLogin && loginMethod.hasPassword
-              ? `Email/senha + ${loginMethod.socialProviders.join(', ')}`
-              : 'Autenticação tradicional com email e senha'}
+            {getLoginDescription()}
           </p>
         </div>
 
@@ -311,7 +329,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       {loginMethod.hasSocialLogin && (
         <div>
           <h3 className="text-lg font-semibold text-theme-primary mb-4">
-            Método de Autenticação
+            {t('account_auth_method')}
           </h3>
 
           <div className="classical-card-2 p-4">{renderLoginMethodInfo()}</div>
@@ -321,14 +339,14 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       {/* Email Section */}
       <div className="border-t border-theme-secondary pt-8">
         <h3 className="text-lg font-semibold text-theme-primary mb-4">
-          Informações de Login
+          {t('account_login_info')}
         </h3>
 
         <div className="space-y-4">
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm font-medium text-theme-secondary">
-                Email
+                {t('account_email')}
               </label>
               {!isChangingEmail && canChangeEmail && (
                 <Button
@@ -337,7 +355,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   onClick={() => setIsChangingEmail(true)}
                   leftIcon={<FiMail />}
                 >
-                  Alterar Email
+                  {t('account_change_email')}
                 </Button>
               )}
             </div>
@@ -354,7 +372,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   {user.emailVerified && (
                     <div className="flex items-center space-x-1 text-accent-green text-sm">
                       <FiCheck className="w-4 h-4" />
-                      <span>Verificado</span>
+                      <span>{t('account_verified')}</span>
                     </div>
                   )}
                 </div>
@@ -366,24 +384,13 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                       <FiShield className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
                       <div>
                         <h4 className="font-medium text-accent-blue mb-1">
-                          Login Social Protegido
+                          {t('account_social_protected')}
                         </h4>
                         <p className="text-sm text-accent-blue opacity-90">
-                          Como sua conta foi criada via{' '}
-                          {loginMethod.socialProviders.join(' e ')}, o email
-                          está protegido e não pode ser alterado diretamente.
-                          Entre em contato com o nosso suporte
+                          {t('account_social_protected_description', {
+                            providers: loginMethod.socialProviders.join(' e '),
+                          })}
                         </p>
-                        {/* <div className="mt-3">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setIsChangingPassword(true)}
-                            className="border-accent-blue text-accent-blue hover:bg-accent-blue hover:text-white"
-                          >
-                            Definir Senha
-                          </Button>
-                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -396,32 +403,21 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     <FiAlertTriangle className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
                     <div>
                       <h4 className="font-medium text-accent-amber mb-1">
-                        ⚠️ Importante sobre mudança de email
+                        {t('account_email_change_warning')}
                       </h4>
                       <ul className="text-sm text-accent-amber opacity-90 space-y-1">
-                        <li>• Você precisará verificar o novo email</li>
-                        <li>
-                          • Upload de arquivos será temporariamente desabilitado
-                        </li>
-                        <li>
-                          • Algumas funcionalidades ficarão limitadas até a
-                          verificação
-                        </li>
-                        <li>
-                          • Você receberá um email de confirmação no novo
-                          endereço
-                        </li>
-                        <li>
-                          • Sua sessão será atualizada automaticamente após a
-                          confirmação
-                        </li>
+                        <li>{t('account_email_verify_new')}</li>
+                        <li>{t('account_upload_disabled')}</li>
+                        <li>{t('account_limited_features')}</li>
+                        <li>{t('account_confirmation_email')}</li>
+                        <li>{t('account_session_update')}</li>
                       </ul>
                     </div>
                   </div>
                 </div>
 
                 <Input
-                  label="Novo Email *"
+                  label={t('account_new_email_required')}
                   type="email"
                   value={emailData.newEmail}
                   onChange={(e) =>
@@ -431,7 +427,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     }))
                   }
                   leftIcon={<FiMail className="w-4 h-4" />}
-                  placeholder="Digite seu novo email"
+                  placeholder={t('account_new_email_placeholder')}
                   error={
                     emailData.newEmail && !validateEmail(emailData.newEmail)
                       ? 'Email inválido'
@@ -440,7 +436,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 />
 
                 <Input
-                  label="Senha Atual *"
+                  label={t('account_current_password_required')}
                   type="password"
                   value={emailData.currentPassword}
                   onChange={(e) =>
@@ -450,7 +446,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                     }))
                   }
                   leftIcon={<FiLock className="w-4 h-4" />}
-                  placeholder="Digite sua senha atual para confirmar"
+                  placeholder={t('account_current_password_placeholder')}
                 />
 
                 <div className="flex space-x-3">
@@ -465,7 +461,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                       !validateEmail(emailData.newEmail)
                     }
                   >
-                    Solicitar Mudança
+                    {t('account_request_change')}
                   </Button>
                   <Button
                     variant="ghost"
@@ -478,7 +474,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                       });
                     }}
                   >
-                    Cancelar
+                    {t('personal_info_cancel')}
                   </Button>
                 </div>
               </div>
@@ -491,7 +487,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       <div className="border-t border-theme-secondary pt-8">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-theme-primary">
-            {loginMethod.hasPassword ? 'Alterar Senha' : 'Definir Senha'}
+            {loginMethod.hasPassword
+              ? t('account_change_password')
+              : t('account_define_password')}
           </h3>
 
           {!isChangingPassword && (
@@ -506,7 +504,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 !loginMethod.isLoading
               }
             >
-              {loginMethod.hasPassword ? 'Alterar Senha' : 'Definir Senha'}
+              {loginMethod.hasPassword
+                ? t('account_change_password')
+                : t('account_define_password')}
             </Button>
           )}
         </div>
@@ -521,18 +521,15 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 <FiShield className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="font-medium text-accent-blue mb-1">
-                    Conta Protegida por Login Social
+                    {t('account_social_only')}
                   </h4>
                   <p className="text-sm text-accent-blue opacity-90">
-                    Sua conta usa exclusivamente login via{' '}
-                    {loginMethod.socialProviders.join(' e ')}. Por questões de
-                    segurança, não é possível definir uma senha adicional. Isso
-                    mantém sua conta mais segura usando a autenticação do
-                    Google.
+                    {t('account_social_only_description', {
+                      providers: loginMethod.socialProviders.join(' e '),
+                    })}
                   </p>
                   <div className="mt-3 text-xs text-accent-blue opacity-80">
-                    💡 Você pode continuar fazendo login normalmente com sua
-                    conta Google.
+                    {t('account_continue_google')}
                   </div>
                 </div>
               </div>
@@ -549,11 +546,10 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 <FiInfo className="w-5 h-5 text-accent-amber mr-3 mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="font-medium text-accent-amber mb-1">
-                    Melhore a Segurança da sua Conta
+                    {t('account_improve_security')}
                   </h4>
                   <p className="text-sm text-accent-amber opacity-90">
-                    Defina uma senha para ter mais opções de acesso e poder
-                    alterar seu email quando necessário.
+                    {t('account_define_password_description')}
                   </p>
                 </div>
               </div>
@@ -565,7 +561,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             {/* Mostrar campo de senha atual apenas se o usuário já tem senha */}
             {loginMethod.hasPassword && (
               <Input
-                label="Senha Atual *"
+                label={t('account_current_password_required')}
                 type="password"
                 value={passwordData.currentPassword}
                 onChange={(e) =>
@@ -581,7 +577,11 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
             <div>
               <Input
-                label={loginMethod.hasPassword ? 'Nova Senha *' : 'Senha *'}
+                label={
+                  loginMethod.hasPassword
+                    ? t('account_new_password_required')
+                    : t('account_password_required')
+                }
                 type="password"
                 value={passwordData.newPassword}
                 onChange={(e) =>
@@ -593,8 +593,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 leftIcon={<FiLock className="w-4 h-4" />}
                 placeholder={
                   loginMethod.hasPassword
-                    ? 'Digite sua nova senha'
-                    : 'Digite sua senha'
+                    ? t('account_new_password_placeholder')
+                    : t('account_password_placeholder')
                 }
                 error={!isPasswordValid ? passwordValidation.error : undefined}
               />
@@ -604,7 +604,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 <div className="mt-2 space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-theme-secondary">
-                      Força da senha:
+                      {t('account_password_strength')}
                     </span>
                     <span
                       className={`text-xs font-medium ${
@@ -617,7 +617,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
 
                   {passwordValidation.suggestions.length > 0 && (
                     <div className="text-xs text-theme-tertiary">
-                      <p className="mb-1">Sugestões:</p>
+                      <p className="mb-1">
+                        {t('account_password_suggestions')}
+                      </p>
                       <ul className="list-disc list-inside space-y-0.5">
                         {passwordValidation.suggestions.map(
                           (suggestion, index) => (
@@ -634,8 +636,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             <Input
               label={
                 loginMethod.hasPassword
-                  ? 'Confirmar Nova Senha *'
-                  : 'Confirmar Senha *'
+                  ? t('account_confirm_new_password_required')
+                  : t('account_confirm_password_required')
               }
               type="password"
               value={passwordData.confirmPassword}
@@ -648,8 +650,8 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               leftIcon={<FiLock className="w-4 h-4" />}
               placeholder={
                 loginMethod.hasPassword
-                  ? 'Confirme sua nova senha'
-                  : 'Confirme sua senha'
+                  ? t('account_confirm_new_password_placeholder')
+                  : t('account_confirm_password_placeholder')
               }
               error={
                 passwordData.confirmPassword &&
@@ -673,7 +675,9 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   passwordData.newPassword !== passwordData.confirmPassword
                 }
               >
-                {loginMethod.hasPassword ? 'Alterar Senha' : 'Definir Senha'}
+                {loginMethod.hasPassword
+                  ? t('account_change_password')
+                  : t('account_define_password')}
               </Button>
               <Button
                 variant="ghost"
@@ -687,7 +691,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   });
                 }}
               >
-                Cancelar
+                {t('personal_info_cancel')}
               </Button>
             </div>
           </div>
@@ -698,7 +702,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       <div className="border-t border-theme-secondary pt-8">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-theme-primary">
-            Tipo de Conta
+            {t('account_type')}
           </h3>
 
           {!isChangingUserType && (
@@ -708,7 +712,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               onClick={() => setIsChangingUserType(true)}
               leftIcon={<FiUser />}
             >
-              Alterar Tipo
+              {t('account_change_type')}
             </Button>
           )}
         </div>
@@ -721,7 +725,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   {getUserTypeLabel(user.userType)}
                 </p>
                 <p className="text-sm text-theme-secondary">
-                  Define suas preferências e experiências na plataforma
+                  {t('account_type_description')}
                 </p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
@@ -736,7 +740,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 <FiInfo className="w-5 h-5 text-accent-blue mr-3 mt-0.5 flex-shrink-0" />
                 <div>
                   <h4 className="font-medium text-accent-blue mb-2">
-                    Escolha o tipo que melhor descreve você:
+                    {t('account_choose_type')}
                   </h4>
                   <div className="space-y-2 text-sm text-accent-blue opacity-90">
                     {USER_TYPE_OPTIONS.map((option) => (
@@ -750,7 +754,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
             </div>
 
             <Select
-              label="Novo Tipo de Conta"
+              label={t('account_new_account_type')}
               options={USER_TYPE_OPTIONS}
               value={newUserType}
               onChange={(e) => {
@@ -767,7 +771,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                 isLoading={isUserTypeChanging}
                 disabled={newUserType === user.userType}
               >
-                Alterar Tipo
+                {t('account_change_type')}
               </Button>
               <Button
                 variant="ghost"
@@ -777,7 +781,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
                   setNewUserType(user.userType || 'CASUAL_USER');
                 }}
               >
-                Cancelar
+                {t('personal_info_cancel')}
               </Button>
             </div>
           </div>
@@ -787,24 +791,26 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
       {/* Account Info */}
       <div className="border-t border-theme-secondary pt-8">
         <h3 className="text-lg font-semibold text-theme-primary mb-4">
-          Informações da Conta
+          {t('account_info')}
         </h3>
 
         <div className="grid grid-cols-1 gap-4">
           <div className="classical-card-2 p-4">
-            <h4 className="font-medium text-theme-primary mb-2">Status</h4>
+            <h4 className="font-medium text-theme-primary mb-2">
+              {t('account_status')}
+            </h4>
             <div className="flex items-center space-x-2 flex-wrap">
               <span className="inline-flex px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
-                Conta Ativa
+                {t('account_active')}
               </span>
               {user.emailVerified && (
                 <span className="inline-flex px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-                  Email Verificado
+                  {t('account_email_verified')}
                 </span>
               )}
               {loginMethod.hasSocialLogin && (
                 <span className="inline-flex px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">
-                  Login Social
+                  {t('account_social_login')}
                 </span>
               )}
             </div>
@@ -817,7 +823,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
         <div className="flex items-center space-x-3 mb-4">
           <FiAlertTriangle className="w-5 h-5 text-accent-red" />
           <h3 className="text-lg font-semibold text-accent-red">
-            Zona de Perigo
+            {t('account_danger_zone')}
           </h3>
         </div>
 
@@ -825,11 +831,10 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
           <div className="flex items-center gap-4 justify-between mb-4">
             <div>
               <h4 className="font-medium text-theme-primary mb-1">
-                Deletar Conta Permanentemente
+                {t('account_delete_permanent')}
               </h4>
               <p className="text-sm text-theme-secondary">
-                Esta ação não pode ser desfeita. Todos os seus dados serão
-                perdidos permanentemente e você receberá um email de despedida.
+                {t('account_delete_warning')}
               </p>
             </div>
 
@@ -840,7 +845,7 @@ const AccountSettingsSection: React.FC<AccountSettingsSectionProps> = ({
               leftIcon={<FiTrash2 />}
               className="truncate py-3 px-4"
             >
-              Deletar Conta
+              {t('account_delete_button')}
             </Button>
           </div>
         </div>

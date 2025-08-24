@@ -22,10 +22,11 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { User } from 'next-auth';
 import { useAuthStore } from '@/app/stores/authStore';
 import ProfileSkeleton from './loading';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface Tab {
   id: string;
-  label: string;
+  labelKey: string;
   icon: React.ReactNode;
   component: React.ComponentType<{
     user: User;
@@ -37,37 +38,38 @@ export default function ProfilePageClient() {
   const { user, isAuthenticated, updateUser } = useAuth(); // Usar o novo hook
   const { hasOnboardingProgress, openOnboardingModal } = useAuthStore();
   const [activeTab, setActiveTab] = useState('personal');
+  const { t } = useTranslation({ sections: ['pages/profile'] });
 
   // Memoized tabs configuration
   const tabs: Tab[] = useMemo(
     () => [
       {
         id: 'personal',
-        label: 'Informações Pessoais',
+        labelKey: 'personal_info_title',
         icon: <FiUser className="w-4 h-4" />,
         component: PersonalInfoSection,
       },
       {
         id: 'instruments',
-        label: 'Meus Instrumentos',
+        labelKey: 'instruments_title',
         icon: <FiMusic className="w-4 h-4" />,
         component: InstrumentsSection,
       },
       {
         id: 'preferences',
-        label: 'Preferências Musicais',
+        labelKey: 'preferences_title',
         icon: <FiHeart className="w-4 h-4" />,
         component: MusicalPreferencesSection,
       },
       {
         id: 'privacy',
-        label: 'Privacidade',
+        labelKey: 'privacy_title',
         icon: <FiShield className="w-4 h-4" />,
         component: PrivacySection,
       },
       {
         id: 'account',
-        label: 'Configurações da Conta',
+        labelKey: 'account_title',
         icon: <FiSettings className="w-4 h-4" />,
         component: AccountSettingsSection,
       },
@@ -127,16 +129,16 @@ export default function ProfilePageClient() {
           <div className="text-center py-12">
             <div className="classical-card-2 p-8 max-w-md mx-auto">
               <h2 className="text-xl font-semibold text-theme-primary mb-4">
-                Acesso Restrito
+                {t('profile_main_access_restricted')}
               </h2>
               <p className="text-theme-secondary mb-6">
-                Termine nosso onboarding para acessar esta pagina.
+                {t('profile_main_finish_onboarding')}
               </p>
               <button
                 onClick={openOnboardingModal}
                 className="btn-primary classical-card-simple px-3 py-2"
               >
-                Abrir onboarding.
+                {t('profile_main_open_onboarding')}
               </button>
             </div>
           </div>
@@ -163,7 +165,9 @@ export default function ProfilePageClient() {
                     `}
                     >
                       {tab.icon}
-                      <span className="font-medium text-sm">{tab.label}</span>
+                      <span className="font-medium text-sm">
+                        {t(tab.labelKey)}
+                      </span>
                     </button>
                   );
                 })}
@@ -177,7 +181,7 @@ export default function ProfilePageClient() {
                   className="flex items-center space-x-2 px-3 py-2 text-sm text-theme-secondary hover:text-theme-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FiChevronLeft className="w-4 h-4" />
-                  <span>Anterior</span>
+                  <span>{t('profile_main_previous')}</span>
                 </button>
 
                 <button
@@ -185,7 +189,7 @@ export default function ProfilePageClient() {
                   disabled={currentTabIndex === tabs.length - 1}
                   className="flex items-center space-x-2 px-3 py-2 text-sm text-theme-secondary hover:text-theme-primary disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <span>Próximo</span>
+                  <span>{t('profile_main_next')}</span>
                   <FiChevronRight className="w-4 h-4" />
                 </button>
               </div>
@@ -200,7 +204,7 @@ export default function ProfilePageClient() {
                 <div className="flex items-center space-x-3">
                   {activeTabData?.icon}
                   <h2 className="text-xl font-semibold text-theme-primary">
-                    {activeTabData?.label}
+                    {activeTabData && t(activeTabData.labelKey)}
                   </h2>
                 </div>
               </div>

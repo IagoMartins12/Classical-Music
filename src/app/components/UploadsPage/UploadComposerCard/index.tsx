@@ -1,4 +1,4 @@
-// app/components/uploads/UploadComposerCard.tsx - ATUALIZADO COM BULK INSERT
+// app/components/uploads/UploadComposerCard.tsx - TRADUZIDO
 'use client';
 
 import { useState } from 'react';
@@ -16,12 +16,13 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import { UserUpload } from '@/app/requests/upload';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import VerificationBadge from '../../Verification/VerificationBadge';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface UploadComposerCardProps {
   item: UserUpload;
   onEdit: () => void;
   onDelete: () => void;
-  onBulkInsertWorks?: () => void; // 🆕 Nova prop para bulk insert
+  onBulkInsertWorks?: () => void;
   isAdmin: boolean;
   viewMode: 'cards' | 'list';
   isDeleting?: boolean;
@@ -31,10 +32,11 @@ const UploadComposerCard = ({
   item,
   onEdit,
   onDelete,
-  onBulkInsertWorks, // 🆕 Nova prop
+  onBulkInsertWorks,
   viewMode,
   isDeleting = false,
 }: UploadComposerCardProps) => {
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -49,15 +51,25 @@ const UploadComposerCard = ({
   };
 
   const formatDates = () => {
-    // Assuming dates are in item data - adjust based on your schema
     if (!item.createdAt) return null;
     return new Date(item.createdAt).getFullYear();
   };
 
   const hasExternalLinks = item.imslpId;
-
-  // Assumindo que a imagem está em item.portraitUrl ou similar
   const portraitUrl = (item as any).portraitUrl;
+
+  const getDataQualityText = (quality: string) => {
+    switch (quality) {
+      case 'high':
+        return t('data_quality_high');
+      case 'medium':
+        return t('data_quality_medium');
+      case 'low':
+        return t('data_quality_low');
+      default:
+        return quality;
+    }
+  };
 
   if (viewMode === 'list') {
     return (
@@ -136,17 +148,17 @@ const UploadComposerCard = ({
                   </span>
                 )}
 
-                {/* 🆕 Badge para compositor com obras importáveis */}
+                {/* Badge para compositor com obras importáveis */}
                 {item.isIMSLP && (
                   <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
                     <FiMusic className="w-3 h-3" />
-                    <span>Obras</span>
+                    <span>{t('card_works_badge')}</span>
                   </span>
                 )}
 
                 {item.verificationStatus === 'verified' && (
                   <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full">
-                    Verificado
+                    {t('card_verified_badge')}
                   </span>
                 )}
               </div>
@@ -169,12 +181,12 @@ const UploadComposerCard = ({
             )}
 
             <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              {/* 🆕 Botão de Bulk Insert de Obras */}
+              {/* Botão de Bulk Insert de Obras */}
               {item.isIMSLP && onBulkInsertWorks && (
                 <button
                   onClick={onBulkInsertWorks}
                   className="w-8 h-8 rounded-lg bg-theme-secondary hover:bg-accent-green/10 text-theme-tertiary hover:text-accent-green transition-colors flex items-center justify-center"
-                  title="Importar todas as obras do IMSLP"
+                  title={t('card_import_all_works')}
                 >
                   <FiMusic className="w-4 h-4" />
                 </button>
@@ -250,12 +262,12 @@ const UploadComposerCard = ({
 
           {/* Floating action buttons */}
           <div className="absolute top-4 right-4 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-            {/* 🆕 Botão de Bulk Insert de Obras */}
+            {/* Botão de Bulk Insert de Obras */}
             {item.isIMSLP && onBulkInsertWorks && (
               <button
                 onClick={onBulkInsertWorks}
                 className="w-8 h-8 rounded-lg bg-theme-elevated hover:bg-accent-green/10 text-theme-tertiary hover:text-accent-green transition-colors flex items-center justify-center shadow-theme-medium"
-                title="Importar todas as obras do IMSLP"
+                title={t('card_import_all_works')}
               >
                 <FiMusic className="w-4 h-4" />
               </button>
@@ -308,17 +320,17 @@ const UploadComposerCard = ({
                 </span>
               )}
 
-              {/* 🆕 Badge para compositor com obras importáveis */}
+              {/* Badge para compositor com obras importáveis */}
               {item.isIMSLP && (
                 <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
                   <FiMusic className="w-3 h-3" />
-                  <span>Obras</span>
+                  <span>{t('card_works_badge')}</span>
                 </span>
               )}
 
               {item.verificationStatus === 'verified' && (
                 <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full">
-                  Verificado
+                  {t('card_verified_badge')}
                 </span>
               )}
 
@@ -332,11 +344,7 @@ const UploadComposerCard = ({
                       : 'text-accent-red bg-accent-red/10'
                   }`}
                 >
-                  {item.dataQuality === 'high'
-                    ? 'Alta qualidade'
-                    : item.dataQuality === 'medium'
-                    ? 'Qualidade média'
-                    : 'Baixa qualidade'}
+                  {getDataQualityText(item.dataQuality)}
                 </span>
               )}
             </div>
@@ -372,7 +380,7 @@ const UploadComposerCard = ({
               <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
                 <FiCalendar className="w-3 h-3" />
                 <span>
-                  Adicionado em{' '}
+                  {t('card_added_on')}{' '}
                   {new Date(item.createdAt).toLocaleDateString('pt-BR')}
                 </span>
               </div>
@@ -394,7 +402,7 @@ const UploadComposerCard = ({
         onConfirm={handleDeleteConfirm}
         isLoading={isDeleting}
         itemTitle={item.title}
-        itemId={item.id} // ✅ Adicionar esta linha
+        itemId={item.id}
         itemType="composer"
       />
     </div>

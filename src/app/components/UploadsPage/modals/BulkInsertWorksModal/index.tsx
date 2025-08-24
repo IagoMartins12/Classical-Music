@@ -1,4 +1,4 @@
-// app/components/uploads/modals/BulkInsertWorksModal.tsx - ATUALIZADO COM PROGRESSO INDIVIDUAL
+// app/components/uploads/modals/BulkInsertWorksModal.tsx - TRADUZIDO
 'use client';
 
 import { useState } from 'react';
@@ -25,6 +25,7 @@ import Modal from '@/app/components/Modal';
 import CreateWorkModal from '../CreateWorkModal';
 import { useToast } from '@/app/hooks/useToast';
 import { useProcessChanges } from '@/app/hooks/useFormChanges';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface DiscoveredWork {
   id: string;
@@ -48,16 +49,7 @@ interface ProcessResult {
   createdWorkId?: string;
 }
 
-// 🆕 NOVO: Interface para tracking de progresso individual
-interface WorkProgress {
-  tempId: string;
-  title: string;
-  status: 'waiting' | 'processing' | 'success' | 'error';
-  message?: string;
-  details?: any;
-}
-
-// 🆕 NOVO: Interface para tracking de progresso individual
+// Interface para tracking de progresso individual
 interface WorkProgress {
   tempId: string;
   title: string;
@@ -89,6 +81,7 @@ const BulkInsertWorksModal = ({
 }: BulkInsertWorksModalProps) => {
   const router = useRouter();
   const toast = useToast();
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
 
   // Estados principais
   const [currentStep, setCurrentStep] = useState<
@@ -97,7 +90,7 @@ const BulkInsertWorksModal = ({
   const [discoveredWorks, setDiscoveredWorks] = useState<DiscoveredWork[]>([]);
   const [processResults, setProcessResults] = useState<ProcessResult[]>([]);
 
-  // 🆕 NOVO: Estados para progresso individual
+  // Estados para progresso individual
   const [workProgress, setWorkProgress] = useState<WorkProgress[]>([]);
 
   // Estados de loading
@@ -185,7 +178,7 @@ const BulkInsertWorksModal = ({
     updateStats(updated);
   };
 
-  // 🆕 NOVO: Processar obras com progresso individual
+  // Processar obras com progresso individual
   const handleProcessWorks = async () => {
     const selectedWorks = discoveredWorks.filter(
       (w) => w.selected && !w.alreadyExists
@@ -199,17 +192,17 @@ const BulkInsertWorksModal = ({
     setCurrentStep('process');
     setProcessResults([]);
 
-    // 🆕 INICIALIZAR: Progresso individual para cada obra
+    // Inicializar progresso individual para cada obra
     const initialProgress: WorkProgress[] = selectedWorks.map((work) => ({
       tempId: work.id,
       title: work.title,
       status: 'waiting',
-      message: 'Aguardando processamento...',
+      message: t('bulk_processing_waiting'),
     }));
     setWorkProgress(initialProgress);
 
     try {
-      // 🆕 PROCESSAR: Uma obra por vez para mostrar progresso
+      // Processar uma obra por vez para mostrar progresso
       const results: ProcessResult[] = [];
 
       for (let i = 0; i < selectedWorks.length; i++) {
@@ -222,7 +215,7 @@ const BulkInsertWorksModal = ({
               ? {
                   ...p,
                   status: 'processing',
-                  message: 'Fazendo scraping dos dados...',
+                  message: t('bulk_processing_scraping'),
                 }
               : p
           )
@@ -248,7 +241,7 @@ const BulkInsertWorksModal = ({
               tempId: work.id,
               title: work.title,
               status: 'success',
-              message: 'Obra importada com sucesso',
+              message: t('bulk_processing_success'),
               createdWorkId: data.workId,
               details: data.details,
             };
@@ -261,7 +254,7 @@ const BulkInsertWorksModal = ({
                   ? {
                       ...p,
                       status: 'success',
-                      message: 'Importada com sucesso!',
+                      message: t('bulk_processing_success'),
                       details: data.details,
                     }
                   : p
@@ -286,7 +279,7 @@ const BulkInsertWorksModal = ({
                   ? {
                       ...p,
                       status: 'error',
-                      message: data.error || 'Erro no processamento',
+                      message: data.error || t('bulk_processing_error'),
                       details: data.details,
                     }
                   : p
@@ -300,7 +293,10 @@ const BulkInsertWorksModal = ({
             tempId: work.id,
             title: work.title,
             status: 'error',
-            message: error instanceof Error ? error.message : 'Erro de conexão',
+            message:
+              error instanceof Error
+                ? error.message
+                : t('bulk_processing_connection_error'),
           };
 
           results.push(result);
@@ -311,7 +307,7 @@ const BulkInsertWorksModal = ({
                 ? {
                     ...p,
                     status: 'error',
-                    message: 'Erro de conexão',
+                    message: t('bulk_processing_connection_error'),
                   }
                 : p
             )
@@ -330,7 +326,7 @@ const BulkInsertWorksModal = ({
       // Refresh da página
       router.refresh();
 
-      // 🆕 LOG: Histórico de importação em lote
+      // Log: Histórico de importação em lote
       try {
         await fetch('/api/uploads/history/bulk-import', {
           method: 'POST',
@@ -413,7 +409,7 @@ const BulkInsertWorksModal = ({
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-theme-primary classical-title">
-                    Importar Obras do IMSLP
+                    {t('bulk_modal_title')}
                   </h2>
                   <p className="text-theme-secondary text-sm">
                     {composer.fullName || composer.name}
@@ -457,26 +453,28 @@ const BulkInsertWorksModal = ({
                     </div>
 
                     <h3 className="text-lg font-bold text-theme-primary mb-4">
-                      Descobrir Obras
+                      {t('bulk_step_discover')}
                     </h3>
 
                     <p className="text-theme-secondary mb-6">
-                      Vamos buscar todas as obras de{' '}
-                      <strong>{composer.fullName}</strong> disponíveis no IMSLP.
-                      Este processo pode levar alguns segundos.
+                      {t('bulk_step_discover_description', {
+                        composer: composer.fullName,
+                      })}
                     </p>
 
                     <div className="space-y-3">
                       <div className="text-xs text-theme-tertiary p-3 bg-theme-secondary/10 rounded-lg">
                         <div className="flex items-center space-x-2 mb-1">
                           <FiInfo className="w-3 h-3" />
-                          <span className="font-medium">Como funciona:</span>
+                          <span className="font-medium">
+                            {t('bulk_step_discover_how_title')}
+                          </span>
                         </div>
                         <ul className="text-left space-y-1 ml-5">
-                          <li>• Acessamos a página IMSLP do compositor</li>
-                          <li>• Extraímos todas as obras listadas</li>
-                          <li>• Verificamos quais já existem no sistema</li>
-                          <li>• Permitimos selecionar quais importar</li>
+                          <li>• {t('bulk_step_discover_how_1')}</li>
+                          <li>• {t('bulk_step_discover_how_2')}</li>
+                          <li>• {t('bulk_step_discover_how_3')}</li>
+                          <li>• {t('bulk_step_discover_how_4')}</li>
                         </ul>
                       </div>
 
@@ -495,8 +493,8 @@ const BulkInsertWorksModal = ({
                         className="w-full"
                       >
                         {isDiscovering
-                          ? 'Descobrindo Obras...'
-                          : 'Descobrir Obras'}
+                          ? t('bulk_discovering')
+                          : t('bulk_discover_button')}
                       </Button>
                     </div>
                   </AnimatedCard>
@@ -513,20 +511,24 @@ const BulkInsertWorksModal = ({
                         <div className="text-2xl font-bold text-theme-primary">
                           {stats.total}
                         </div>
-                        <div className="text-xs text-theme-tertiary">Total</div>
+                        <div className="text-xs text-theme-tertiary">
+                          {t('bulk_stats_total')}
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-accent-green">
                           {stats.new}
                         </div>
-                        <div className="text-xs text-theme-tertiary">Novas</div>
+                        <div className="text-xs text-theme-tertiary">
+                          {t('bulk_stats_new')}
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-accent-amber">
                           {stats.existing}
                         </div>
                         <div className="text-xs text-theme-tertiary">
-                          Existentes
+                          {t('bulk_stats_existing')}
                         </div>
                       </div>
                       <div className="text-center">
@@ -534,7 +536,7 @@ const BulkInsertWorksModal = ({
                           {stats.selected}
                         </div>
                         <div className="text-xs text-theme-tertiary">
-                          Selecionadas
+                          {t('bulk_stats_selected')}
                         </div>
                       </div>
                     </div>
@@ -546,14 +548,14 @@ const BulkInsertWorksModal = ({
                           size="sm"
                           onClick={() => toggleSelectAll(true)}
                         >
-                          Selecionar Todas Novas
+                          {t('bulk_select_all_new')}
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => toggleSelectAll(false)}
                         >
-                          Desmarcar Todas
+                          {t('bulk_unselect_all')}
                         </Button>
                       </div>
 
@@ -563,8 +565,10 @@ const BulkInsertWorksModal = ({
                         onClick={handleProcessWorks}
                         disabled={stats.selected === 0}
                       >
-                        Importar {stats.selected} Obra
-                        {stats.selected !== 1 ? 's' : ''}
+                        {t('bulk_import_button', {
+                          count: stats.selected,
+                          plural: stats.selected !== 1 ? 's' : '',
+                        })}
                       </Button>
                     </div>
                   </div>
@@ -619,7 +623,7 @@ const BulkInsertWorksModal = ({
                               <div className="flex items-center space-x-2">
                                 {work.alreadyExists && (
                                   <span className="text-xs bg-accent-amber/20 text-accent-amber px-2 py-1 rounded-full">
-                                    Já existe
+                                    {t('bulk_work_exists')}
                                   </span>
                                 )}
 
@@ -635,7 +639,7 @@ const BulkInsertWorksModal = ({
                                 <button
                                   onClick={() => handleEditWork(work)}
                                   className="text-theme-tertiary hover:text-brand-primary"
-                                  title="Editar informações"
+                                  title={t('bulk_edit_work')}
                                 >
                                   <FiEdit3 className="w-4 h-4" />
                                 </button>
@@ -643,7 +647,7 @@ const BulkInsertWorksModal = ({
                                 <button
                                   onClick={() => removeWork(work.id)}
                                   className="text-theme-tertiary hover:text-accent-red"
-                                  title="Remover da lista"
+                                  title={t('bulk_remove_work')}
                                 >
                                   <FiTrash2 className="w-4 h-4" />
                                 </button>
@@ -657,15 +661,17 @@ const BulkInsertWorksModal = ({
                 </div>
               )}
 
-              {/* 🆕 NOVO: Step 3: Process - Com progresso individual */}
+              {/* Step 3: Process - Com progresso individual */}
               {currentStep === 'process' && (
                 <div className="p-6">
                   <div className="mb-6 text-center">
                     <h3 className="text-lg font-bold text-theme-primary mb-2">
-                      Importando Obras
+                      {t('bulk_processing_title')}
                     </h3>
                     <p className="text-theme-secondary mb-4">
-                      Processando {stats.selected} obras selecionadas...
+                      {t('bulk_processing_description', {
+                        count: stats.selected,
+                      })}
                     </p>
 
                     {/* Barra de progresso geral */}
@@ -685,12 +691,12 @@ const BulkInsertWorksModal = ({
                       />
                     </div>
                     <div className="text-xs text-theme-tertiary">
-                      {
-                        workProgress.filter(
+                      {t('bulk_processing_progress', {
+                        completed: workProgress.filter(
                           (w) => w.status === 'success' || w.status === 'error'
-                        ).length
-                      }{' '}
-                      de {workProgress.length} processadas
+                        ).length,
+                        total: workProgress.length,
+                      })}
                     </div>
                   </div>
 
@@ -753,7 +759,9 @@ const BulkInsertWorksModal = ({
                             {work.details?.finalTitle &&
                               work.details.finalTitle !== work.title && (
                                 <p className="text-xs text-theme-secondary">
-                                  Título final: {work.details.finalTitle}
+                                  {t('bulk_processing_final_title', {
+                                    title: work.details.finalTitle,
+                                  })}
                                 </p>
                               )}
                           </div>
@@ -778,7 +786,7 @@ const BulkInsertWorksModal = ({
                 <div className="p-6">
                   <div className="mb-6 text-center">
                     <h3 className="text-lg font-bold text-theme-primary mb-2">
-                      Importação Concluída
+                      {t('bulk_results_title')}
                     </h3>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -790,7 +798,7 @@ const BulkInsertWorksModal = ({
                           }
                         </div>
                         <div className="text-xs text-theme-tertiary">
-                          Sucesso
+                          {t('bulk_results_success')}
                         </div>
                       </div>
                       <div className="text-center">
@@ -800,7 +808,9 @@ const BulkInsertWorksModal = ({
                               .length
                           }
                         </div>
-                        <div className="text-xs text-theme-tertiary">Erros</div>
+                        <div className="text-xs text-theme-tertiary">
+                          {t('bulk_results_errors')}
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-accent-amber">
@@ -811,7 +821,7 @@ const BulkInsertWorksModal = ({
                           }
                         </div>
                         <div className="text-xs text-theme-tertiary">
-                          Duplicatas
+                          {t('bulk_results_duplicates')}
                         </div>
                       </div>
                       <div className="text-center">
@@ -822,7 +832,7 @@ const BulkInsertWorksModal = ({
                           }
                         </div>
                         <div className="text-xs text-theme-tertiary">
-                          Ignoradas
+                          {t('bulk_results_skipped')}
                         </div>
                       </div>
                     </div>
@@ -862,13 +872,15 @@ const BulkInsertWorksModal = ({
                             </h4>
                             <p className="text-xs text-theme-secondary">
                               {result.message.includes('__TURBOPACK')
-                                ? 'Erro ao processar obra'
+                                ? t('bulk_results_error_processing')
                                 : result.message}
                             </p>
                             {result.details?.finalTitle &&
                               result.details.finalTitle !== result.title && (
                                 <p className="text-xs text-brand-primary">
-                                  Título final: {result.details.finalTitle}
+                                  {t('bulk_processing_final_title', {
+                                    title: result.details.finalTitle,
+                                  })}
                                 </p>
                               )}
                           </div>
@@ -879,7 +891,7 @@ const BulkInsertWorksModal = ({
 
                   <div className="mt-6 text-center">
                     <Button variant="primary" onClick={handleClose}>
-                      Concluir
+                      {t('bulk_results_complete_button')}
                     </Button>
                   </div>
                 </div>

@@ -1,4 +1,4 @@
-// UploadsClient.tsx - CORRIGIDO - LOOP INFINITO RESOLVIDO
+// UploadsClient.tsx - TRADUZIDO
 'use client';
 
 import {
@@ -22,6 +22,8 @@ import {
   FiArrowRight,
 } from 'react-icons/fi';
 import { MdUpload } from 'react-icons/md';
+
+// Importar componentes de animação
 import {
   PageContainer,
   AnimatedContainer,
@@ -41,6 +43,7 @@ import CreateComposerModal from '../../components/UploadsPage/modals/CreateCompo
 import BulkInsertWorksModal from '../../components/UploadsPage/modals/BulkInsertWorksModal';
 
 import { useToast } from '@/app/hooks/useToast';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 import UploadComposerCard from '../../components/UploadsPage/UploadComposerCard';
 import UploadWorkCard from '../../components/UploadsPage/UploadWorkCard';
@@ -51,7 +54,6 @@ interface Epoch {
   name: string;
 }
 
-// 🆕 Interface para dados de filtro
 interface FilterComposer {
   id: string;
   name: string;
@@ -70,22 +72,22 @@ interface UploadsClientProps {
   works: any[];
   scores: any[];
   epochs: Epoch[];
-  filterComposers: FilterComposer[]; // 🆕 Dados para filtros
-  filterWorks: FilterWork[]; // 🆕 Dados para filtros
+  filterComposers: FilterComposer[];
+  filterWorks: FilterWork[];
   currentPage: number;
   totalPages: number;
   totalCount: number;
-  composerCount: number; // 🆕 Contadores específicos
-  workCount: number; // 🆕
-  scoreCount: number; // 🆕
-  hasMoreComposers: boolean; // 🆕 Indicadores "ver mais"
-  hasMoreWorks: boolean; // 🆕
-  hasMoreScores: boolean; // 🆕
+  composerCount: number;
+  workCount: number;
+  scoreCount: number;
+  hasMoreComposers: boolean;
+  hasMoreWorks: boolean;
+  hasMoreScores: boolean;
   searchTerm: string;
   selectedType: string;
   selectedEpoch: string;
-  selectedComposer: string; // 🆕 Estado do filtro
-  selectedWork: string; // 🆕 Estado do filtro
+  selectedComposer: string;
+  selectedWork: string;
   isAdmin: boolean;
   userId: string;
 }
@@ -95,28 +97,29 @@ type FilterTab = 'all' | 'composers' | 'works' | 'scores';
 const UploadsClient = ({
   uploads,
   epochs,
-  filterComposers, // 🆕
-  filterWorks, // 🆕
+  filterComposers,
+  filterWorks,
   currentPage,
   totalPages,
   totalCount,
-  composerCount, // 🆕
-  workCount, // 🆕
-  scoreCount, // 🆕
-  hasMoreComposers, // 🆕
-  hasMoreWorks, // 🆕
-  hasMoreScores, // 🆕
+  composerCount,
+  workCount,
+  scoreCount,
+  hasMoreComposers,
+  hasMoreWorks,
+  hasMoreScores,
   searchTerm: initialSearchTerm,
   selectedType: initialSelectedType,
   selectedEpoch: initialSelectedEpoch,
-  selectedComposer: initialSelectedComposer, // 🆕
-  selectedWork: initialSelectedWork, // 🆕
+  selectedComposer: initialSelectedComposer,
+  selectedWork: initialSelectedWork,
   isAdmin,
 }: UploadsClientProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
 
-  // 🆕 HOOKS PARA TOASTS E MODAIS
+  // Estados e hooks permanecem iguais
   const toast = useToast();
 
   const [isPending, startTransition] = useTransition();
@@ -133,8 +136,8 @@ const UploadsClient = ({
   const [selectedEpoch, setSelectedEpoch] = useState(initialSelectedEpoch);
   const [selectedComposer, setSelectedComposer] = useState(
     initialSelectedComposer
-  ); // 🆕
-  const [selectedWork, setSelectedWork] = useState(initialSelectedWork); // 🆕
+  );
+  const [selectedWork, setSelectedWork] = useState(initialSelectedWork);
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [showFilters, setShowFilters] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -143,15 +146,12 @@ const UploadsClient = ({
     'composer' | 'work' | 'score'
   >('composer');
 
-  // 🆕 Estados para bulk insert de obras
   const [showBulkInsertModal, setShowBulkInsertModal] = useState(false);
   const [bulkInsertComposer, setBulkInsertComposer] = useState<any>(null);
 
-  // 🆕 Estados para épocas dinâmicas
   const [availableEpochs, setAvailableEpochs] = useState(epochs);
   const [loadingEpochs, setLoadingEpochs] = useState(false);
 
-  // Estados para dados dinâmicos
   const [formData, setFormData] = useState<{
     epochs: any[];
     instruments: any[];
@@ -180,7 +180,7 @@ const UploadsClient = ({
     ) {
       loadFormData();
     }
-  }, [showCreateModal, , showBulkInsertModal]);
+  }, [showCreateModal, showBulkInsertModal]);
 
   const loadFormData = async () => {
     setLoadingFormData(true);
@@ -204,7 +204,6 @@ const UploadsClient = ({
     }
   };
 
-  // 🆕 Função para carregar épocas disponíveis por tipo
   const loadAvailableEpochs = async (type: string) => {
     setLoadingEpochs(true);
     try {
@@ -226,21 +225,20 @@ const UploadsClient = ({
       }
     } catch (error) {
       console.error('Erro ao carregar épocas disponíveis:', error);
-      // Em caso de erro, manter épocas atuais
     } finally {
       setLoadingEpochs(false);
     }
   };
 
-  // Função para atualizar URL - 🆕 ATUALIZADA COM NOVOS FILTROS
+  // Função para atualizar URL
   const updateUrl = useCallback(
     (params: {
       page?: number;
       search?: string;
       type?: string;
       epoch?: string;
-      composer?: string; // 🆕
-      work?: string; // 🆕
+      composer?: string;
+      work?: string;
     }) => {
       const newParams = new URLSearchParams(searchParams.toString());
 
@@ -276,7 +274,6 @@ const UploadsClient = ({
         }
       }
 
-      // 🆕 Novos filtros
       if (params.composer !== undefined) {
         if (params.composer === '') {
           newParams.delete('composer');
@@ -379,19 +376,16 @@ const UploadsClient = ({
           ? 'score'
           : 'all';
 
-      // 🆕 Carregar épocas disponíveis para o novo tipo
       loadAvailableEpochs(tab);
 
-      // 🆕 Limpar filtros específicos quando mudar de aba (SEM SCROLL)
       updateUrl({
         type: typeParam,
         page: 1,
         composer: '',
         work: '',
-        epoch: tab === 'composers' ? selectedEpoch : '', // Manter época só para compositores
+        epoch: tab === 'composers' ? selectedEpoch : '',
       });
 
-      // Resetar estados locais
       if (tab !== 'composers') setSelectedEpoch('');
       setSelectedComposer('');
       setSelectedWork('');
@@ -402,17 +396,14 @@ const UploadsClient = ({
   const handleEpochChange = useCallback(
     (value: string) => {
       setSelectedEpoch(value);
-      // 🆕 REMOVER SCROLL - manter posição atual
       updateUrl({ epoch: value, page: 1 });
     },
     [updateUrl]
   );
 
-  // 🆕 Handlers para novos filtros (SEM SCROLL)
   const handleComposerChange = useCallback(
     (value: string) => {
       setSelectedComposer(value);
-      // 🆕 REMOVER SCROLL - manter posição atual
       updateUrl({ composer: value, page: 1 });
     },
     [updateUrl]
@@ -421,7 +412,6 @@ const UploadsClient = ({
   const handleWorkChange = useCallback(
     (value: string) => {
       setSelectedWork(value);
-      // 🆕 REMOVER SCROLL - manter posição atual
       updateUrl({ work: value, page: 1 });
     },
     [updateUrl]
@@ -430,13 +420,12 @@ const UploadsClient = ({
   const handlePageChange = useCallback(
     (page: number) => {
       updateUrl({ page });
-      // 🆕 MANTER SCROLL APENAS NO CHANGE DE PÁGINA
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     [updateUrl]
   );
 
-  // Clear filters - 🆕 ATUALIZADO
+  // Clear filters
   const clearFilters = useCallback(() => {
     setSearchTerm('');
     setSelectedType('all');
@@ -453,7 +442,7 @@ const UploadsClient = ({
     });
   }, [updateUrl]);
 
-  // Check active filters - 🆕 ATUALIZADO
+  // Check active filters
   const hasActiveFilters = useMemo(() => {
     return (
       searchTerm ||
@@ -464,7 +453,7 @@ const UploadsClient = ({
     );
   }, [searchTerm, selectedType, selectedEpoch, selectedComposer, selectedWork]);
 
-  // Statistics - 🆕 USAR CONTADORES CORRETOS
+  // Statistics
   const stats = useMemo(() => {
     const imslpCount = uploads.filter((item) => item.isIMSLP).length;
     const customCount = uploads.filter((item) => !item.isIMSLP).length;
@@ -489,30 +478,19 @@ const UploadsClient = ({
     router.push(`/uploads/${item.type}/${item.id}/edit`);
   };
 
-  // 🆕 Handler para "Ver mais"
   const handleSeeMore = (type: 'composers' | 'works' | 'scores') => {
     handleTabChange(type);
   };
 
-  // Handler para bulk insert de obras
   const handleBulkInsertWorks = (composer: UserUpload) => {
     setBulkInsertComposer(composer);
     setShowBulkInsertModal(true);
   };
 
-  // FUNÇÃO DE DELETE ATUALIZADA COM MODAL DE CONFIRMAÇÃO
   const handleDelete = async (item: UserUpload) => {
-    // const itemType =
-    //   item.type === 'composer'
-    //     ? 'compositor'
-    //     : item.type === 'work'
-    //     ? 'obra'
-    //     : 'partitura';
-
     await performDelete(item);
   };
 
-  // FUNÇÃO SEPARADA PARA EXECUTAR O DELETE
   const performDelete = async (item: UserUpload) => {
     setDeletingItemId(item.id);
 
@@ -578,18 +556,20 @@ const UploadsClient = ({
     }
   };
 
-  // 🆕 Função para renderizar filtros específicos por aba
+  // Função para renderizar filtros específicos por aba
   const renderTabSpecificFilters = () => {
     if (selectedType === 'composers') {
       return (
         <div>
           <label className="block text-xs font-medium text-theme-tertiary mb-2">
-            Época{' '}
-            {loadingEpochs && <span className="text-xs">(carregando...)</span>}
+            {t('filter_epoch')}{' '}
+            {loadingEpochs && (
+              <span className="text-xs">{t('filter_loading_epochs')}</span>
+            )}
           </label>
           <Select
             options={[
-              { value: '', label: 'Todas as épocas' },
+              { value: '', label: t('filter_all_epochs') },
               ...availableEpochs.map((epoch) => ({
                 value: epoch.id,
                 label: epoch.name,
@@ -609,11 +589,11 @@ const UploadsClient = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-theme-tertiary mb-2">
-              Compositor
+              {t('filter_composer')}
             </label>
             <Select
               options={[
-                { value: '', label: 'Todos os compositores' },
+                { value: '', label: t('filter_all_composers') },
                 ...memoizedLocalComposers.map((composer) => ({
                   value: composer.id,
                   label: composer.fullName,
@@ -627,14 +607,14 @@ const UploadsClient = ({
           </div>
           <div>
             <label className="block text-xs font-medium text-theme-tertiary mb-2">
-              Época{' '}
+              {t('filter_epoch')}{' '}
               {loadingEpochs && (
-                <span className="text-xs">(carregando...)</span>
+                <span className="text-xs">{t('filter_loading_epochs')}</span>
               )}
             </label>
             <Select
               options={[
-                { value: '', label: 'Todas as épocas' },
+                { value: '', label: t('filter_all_epochs') },
                 ...availableEpochs.map((epoch) => ({
                   value: epoch.id,
                   label: epoch.name,
@@ -655,11 +635,11 @@ const UploadsClient = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-medium text-theme-tertiary mb-2">
-              Obra
+              {t('filter_work')}
             </label>
             <Select
               options={[
-                { value: '', label: 'Todas as obras' },
+                { value: '', label: t('filter_all_works') },
                 ...filterWorks.map((work) => ({
                   value: work.id,
                   label: `${work.title} - ${work.composerName}`,
@@ -672,14 +652,14 @@ const UploadsClient = ({
           </div>
           <div>
             <label className="block text-xs font-medium text-theme-tertiary mb-2">
-              Época{' '}
+              {t('filter_epoch')}{' '}
               {loadingEpochs && (
-                <span className="text-xs">(carregando...)</span>
+                <span className="text-xs">{t('filter_loading_epochs')}</span>
               )}
             </label>
             <Select
               options={[
-                { value: '', label: 'Todas as épocas' },
+                { value: '', label: t('filter_all_epochs') },
                 ...availableEpochs.map((epoch) => ({
                   value: epoch.id,
                   label: epoch.name,
@@ -699,12 +679,14 @@ const UploadsClient = ({
     return (
       <div>
         <label className="block text-xs font-medium text-theme-tertiary mb-2">
-          Época{' '}
-          {loadingEpochs && <span className="text-xs">(carregando...)</span>}
+          {t('filter_epoch')}{' '}
+          {loadingEpochs && (
+            <span className="text-xs">{t('filter_loading_epochs')}</span>
+          )}
         </label>
         <Select
           options={[
-            { value: '', label: 'Todas as épocas' },
+            { value: '', label: t('filter_all_epochs') },
             ...availableEpochs.map((epoch) => ({
               value: epoch.id,
               label: epoch.name,
@@ -731,90 +713,13 @@ const UploadsClient = ({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Meus Uploads
+              {t('page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Gerencie seus compositores, obras e partituras adicionadas
+              {t('page_subtitle')}
             </p>
           </div>
         </AnimatedItem>
-
-        {/* Quick Stats Cards */}
-        {/* <AnimatedItem direction="up" springType="gentle">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-            <AnimatedCard className="classical-card p-4 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center">
-                  <FiDatabase className="w-5 h-5 text-theme-primary" />
-                </div>
-              </div>
-              <div className="text-2xl font-bold text-theme-primary">
-                {stats.totalCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">Total</div>
-            </AnimatedCard>
-
-            <AnimatedCard className="classical-card p-4 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-blue rounded-xl flex items-center justify-center">
-                  <FiUser className="w-5 h-5 text-theme-primary" />
-                </div>
-              </div>
-              <div className="text-2xl font-bold text-theme-primary">
-                {stats.composerCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">Compositores</div>
-            </AnimatedCard>
-
-            <AnimatedCard className="classical-card p-4 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-green rounded-xl flex items-center justify-center">
-                  <FiMusic className="w-5 h-5 text-theme-primary" />
-                </div>
-              </div>
-              <div className="text-2xl font-bold text-theme-primary">
-                {stats.workCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">Obras</div>
-            </AnimatedCard>
-
-            <AnimatedCard className="classical-card p-4 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-amber rounded-xl flex items-center justify-center">
-                  <FiFileText className="w-5 h-5 text-theme-primary" />
-                </div>
-              </div>
-              <div className="text-2xl font-bold text-theme-primary">
-                {stats.scoreCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">Partituras</div>
-            </AnimatedCard>
-
-            <AnimatedCard className="classical-card p-4 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-amber to-accent-red rounded-xl flex items-center justify-center">
-                  <FiFile className="w-5 h-5 text-theme-primary" />
-                </div>
-              </div>
-              <div className="text-2xl font-bold text-theme-primary">
-                {stats.imslpCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">IMSLP</div>
-            </AnimatedCard>
-
-            <AnimatedCard className="classical-card p-4 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-red to-brand-primary rounded-xl flex items-center justify-center">
-                  <FiUpload className="w-5 h-5 text-theme-primary" />
-                </div>
-              </div>
-              <div className="text-2xl font-bold text-theme-primary">
-                {stats.customCount}
-              </div>
-              <div className="text-sm text-theme-tertiary">Customizados</div>
-            </AnimatedCard>
-          </div>
-        </AnimatedItem> */}
 
         {/* Controls */}
         <AnimatedItem direction="up" springType="gentle">
@@ -828,7 +733,7 @@ const UploadsClient = ({
                   leftIcon={<FiPlus />}
                   onClick={() => handleCreateNew('composer')}
                 >
-                  Novo Compositor
+                  {t('actions_new_composer')}
                 </Button>
                 <Button
                   variant="secondary"
@@ -836,7 +741,7 @@ const UploadsClient = ({
                   leftIcon={<FiPlus />}
                   onClick={() => handleCreateNew('work')}
                 >
-                  Nova Obra
+                  {t('actions_new_work')}
                 </Button>
                 <Button
                   variant="secondary"
@@ -844,7 +749,7 @@ const UploadsClient = ({
                   leftIcon={<FiPlus />}
                   onClick={() => handleCreateNew('score')}
                 >
-                  Nova Partitura
+                  {t('actions_new_score')}
                 </Button>
               </div>
 
@@ -855,7 +760,7 @@ const UploadsClient = ({
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <input
                     type="text"
-                    placeholder="Buscar uploads..."
+                    placeholder={t('search_placeholder')}
                     value={searchTerm}
                     onChange={(e) => handleSearchChange(e.target.value)}
                     className="input-classical w-full sm:w-80"
@@ -876,7 +781,7 @@ const UploadsClient = ({
                   >
                     <FiFilter className="w-4 h-4" />
                     <span className="text-sm">
-                      Filtros
+                      {t('filters_button')}
                       {hasActiveFilters && (
                         <span className="ml-1 px-1.5 py-0.5 bg-accent-blue text-white text-xs rounded-full">
                           {
@@ -911,7 +816,7 @@ const UploadsClient = ({
                     : 'text-theme-tertiary hover:text-theme-primary'
                 }`}
               >
-                Todos ({stats.totalCount})
+                {t('tabs_all')} ({stats.totalCount})
               </button>
               <button
                 onClick={() => handleTabChange('composers')}
@@ -921,7 +826,7 @@ const UploadsClient = ({
                     : 'text-theme-tertiary hover:text-theme-primary'
                 }`}
               >
-                Compositores ({stats.composerCount})
+                {t('tabs_composers')} ({stats.composerCount})
               </button>
               <button
                 onClick={() => handleTabChange('works')}
@@ -931,7 +836,7 @@ const UploadsClient = ({
                     : 'text-theme-tertiary hover:text-theme-primary'
                 }`}
               >
-                Obras ({stats.workCount})
+                {t('tabs_works')} ({stats.workCount})
               </button>
               <button
                 onClick={() => handleTabChange('scores')}
@@ -941,11 +846,11 @@ const UploadsClient = ({
                     : 'text-theme-tertiary hover:text-theme-primary'
                 }`}
               >
-                Partituras ({stats.scoreCount})
+                {t('tabs_scores')} ({stats.scoreCount})
               </button>
             </div>
 
-            {/* Expanded Filters - 🆕 FILTROS ESPECÍFICOS POR ABA */}
+            {/* Expanded Filters */}
             {showFilters && (
               <AnimatedItem direction="scale" springType="gentle">
                 <div className="bg-theme-secondary rounded-xl p-4 border border-theme-primary mt-4">
@@ -953,16 +858,13 @@ const UploadsClient = ({
                     <h3 className="text-sm font-semibold text-theme-primary flex items-center space-x-2">
                       <FiFilter className="w-4 h-4" />
                       <span>
-                        Filtros{' '}
-                        {selectedType !== 'all'
-                          ? `- ${
-                              selectedType === 'composers'
-                                ? 'Compositores'
-                                : selectedType === 'works'
-                                ? 'Obras'
-                                : 'Partituras'
-                            }`
-                          : 'Gerais'}
+                        {selectedType === 'all'
+                          ? t('filters_general')
+                          : selectedType === 'composers'
+                          ? t('filters_composers')
+                          : selectedType === 'works'
+                          ? t('filters_works')
+                          : t('filters_scores')}
                       </span>
                     </h3>
                     <div className="flex items-center space-x-2">
@@ -971,7 +873,7 @@ const UploadsClient = ({
                           onClick={clearFilters}
                           className="text-xs text-theme-tertiary hover:text-accent-red transition-colors px-2 py-1 rounded border border-theme-tertiary hover:border-accent-red"
                         >
-                          Limpar tudo
+                          {t('filters_clear_all')}
                         </button>
                       )}
                       <button
@@ -983,7 +885,6 @@ const UploadsClient = ({
                     </div>
                   </div>
 
-                  {/* 🆕 Renderizar filtros específicos por aba */}
                   {renderTabSpecificFilters()}
                 </div>
               </AnimatedItem>
@@ -1000,16 +901,16 @@ const UploadsClient = ({
                   {uploads.length}
                 </span>{' '}
                 {selectedType === 'all'
-                  ? 'itens'
+                  ? t('results_items')
                   : selectedType === 'composers'
-                  ? 'compositores'
+                  ? t('results_composers')
                   : selectedType === 'works'
-                  ? 'obras'
-                  : 'partituras'}
+                  ? t('results_works')
+                  : t('results_scores')}
                 {searchTerm && (
                   <span className="text-brand-primary">
                     {' '}
-                    para &quot;
+                    {t('results_search_for')} &quot;
                     <span className="font-medium">{searchTerm}</span>&quot;
                   </span>
                 )}
@@ -1018,7 +919,7 @@ const UploadsClient = ({
               {isPending && (
                 <div className="flex items-center text-brand-primary text-sm">
                   <LoadingSpinner size="sm" />
-                  <span className="ml-2">Carregando...</span>
+                  <span className="ml-2">{t('results_loading')}</span>
                 </div>
               )}
             </div>
@@ -1031,7 +932,7 @@ const UploadsClient = ({
                 leftIcon={<FiSettings />}
                 onClick={() => router.push('/uploads/history')}
               >
-                Histórico
+                {t('action_history')}
               </Button>
             </div>
           </div>
@@ -1055,20 +956,25 @@ const UploadsClient = ({
                       </div>
                       <div>
                         <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                          Compositores
+                          {t('tabs_composers')}
                         </h2>
                         <p className="text-theme-tertiary">
                           {selectedType === 'all'
                             ? `${Math.min(
                                 filteredData.composers.length,
                                 16
-                              )} de ${stats.composerCount} compositores`
-                            : `${filteredData.composers.length} de ${stats.composerCount} compositores`}
+                              )} ${t('results_of')} ${stats.composerCount} ${t(
+                                'results_composers'
+                              )}`
+                            : `${filteredData.composers.length} ${t(
+                                'results_of'
+                              )} ${stats.composerCount} ${t(
+                                'results_composers'
+                              )}`}
                         </p>
                       </div>
                     </div>
 
-                    {/* 🆕 Botão "Ver mais" para aba "all" */}
                     {selectedType === 'all' && hasMoreComposers && (
                       <Button
                         variant="ghost"
@@ -1076,7 +982,7 @@ const UploadsClient = ({
                         rightIcon={<FiArrowRight />}
                         onClick={() => handleSeeMore('composers')}
                       >
-                        Ver mais compositores
+                        {t('action_see_more_composers')}
                       </Button>
                     )}
                   </div>
@@ -1137,19 +1043,19 @@ const UploadsClient = ({
                         <FiUser className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
-                        Nenhum compositor encontrado
+                        {t('empty_composers_title')}
                       </h3>
                       <p className="text-theme-secondary mb-6">
                         {hasActiveFilters
-                          ? 'Tente ajustar seus filtros para encontrar compositores.'
-                          : 'Você ainda não adicionou nenhum compositor.'}
+                          ? t('empty_composers_subtitle_filter')
+                          : t('empty_composers_subtitle_none')}
                       </p>
                       <Button
                         variant="primary"
                         leftIcon={<FiPlus />}
                         onClick={() => handleCreateNew('composer')}
                       >
-                        Novo Compositor
+                        {t('actions_new_composer')}
                       </Button>
                     </div>
                   </AnimatedItem>
@@ -1174,19 +1080,20 @@ const UploadsClient = ({
                       </div>
                       <div>
                         <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                          Obras
+                          {t('tabs_works')}
                         </h2>
                         <p className="text-theme-tertiary">
                           {selectedType === 'all'
-                            ? `${Math.min(filteredData.works.length, 16)} de ${
-                                stats.workCount
-                              } obras`
-                            : `${filteredData.works.length} de ${stats.workCount} obras`}
+                            ? `${Math.min(filteredData.works.length, 16)} ${t(
+                                'results_of'
+                              )} ${stats.workCount} ${t('results_works')}`
+                            : `${filteredData.works.length} ${t(
+                                'results_of'
+                              )} ${stats.workCount} ${t('results_works')}`}
                         </p>
                       </div>
                     </div>
 
-                    {/* 🆕 Botão "Ver mais" para aba "all" */}
                     {selectedType === 'all' && hasMoreWorks && (
                       <Button
                         variant="ghost"
@@ -1194,7 +1101,7 @@ const UploadsClient = ({
                         rightIcon={<FiArrowRight />}
                         onClick={() => handleSeeMore('works')}
                       >
-                        Ver mais obras
+                        {t('action_see_more_works')}
                       </Button>
                     )}
                   </div>
@@ -1252,19 +1159,19 @@ const UploadsClient = ({
                         <FiMusic className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
-                        Nenhuma obra encontrada
+                        {t('empty_works_title')}
                       </h3>
                       <p className="text-theme-secondary mb-6">
                         {hasActiveFilters
-                          ? 'Tente ajustar seus filtros para encontrar obras.'
-                          : 'Você ainda não adicionou nenhuma obra.'}
+                          ? t('empty_works_subtitle_filter')
+                          : t('empty_works_subtitle_none')}
                       </p>
                       <Button
                         variant="primary"
                         leftIcon={<FiPlus />}
                         onClick={() => handleCreateNew('work')}
                       >
-                        Nova Obra
+                        {t('actions_new_work')}
                       </Button>
                     </div>
                   </AnimatedItem>
@@ -1289,19 +1196,20 @@ const UploadsClient = ({
                       </div>
                       <div>
                         <h2 className="text-2xl font-bold text-theme-primary classical-title">
-                          Partituras
+                          {t('tabs_scores')}
                         </h2>
                         <p className="text-theme-tertiary">
                           {selectedType === 'all'
-                            ? `${Math.min(filteredData.scores.length, 16)} de ${
-                                stats.scoreCount
-                              } partituras`
-                            : `${filteredData.scores.length} de ${stats.scoreCount} partituras`}
+                            ? `${Math.min(filteredData.scores.length, 16)} ${t(
+                                'results_of'
+                              )} ${stats.scoreCount} ${t('results_scores')}`
+                            : `${filteredData.scores.length} ${t(
+                                'results_of'
+                              )} ${stats.scoreCount} ${t('results_scores')}`}
                         </p>
                       </div>
                     </div>
 
-                    {/* 🆕 Botão "Ver mais" para aba "all" */}
                     {selectedType === 'all' && hasMoreScores && (
                       <Button
                         variant="ghost"
@@ -1309,7 +1217,7 @@ const UploadsClient = ({
                         rightIcon={<FiArrowRight />}
                         onClick={() => handleSeeMore('scores')}
                       >
-                        Ver mais partituras
+                        {t('action_see_more_scores')}
                       </Button>
                     )}
                   </div>
@@ -1367,19 +1275,19 @@ const UploadsClient = ({
                         <FiFileText className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
-                        Nenhuma partitura encontrada
+                        {t('empty_scores_title')}
                       </h3>
                       <p className="text-theme-secondary mb-6">
                         {hasActiveFilters
-                          ? 'Tente ajustar seus filtros para encontrar partituras.'
-                          : 'Você ainda não adicionou nenhuma partitura.'}
+                          ? t('empty_scores_subtitle_filter')
+                          : t('empty_scores_subtitle_none')}
                       </p>
                       <Button
                         variant="primary"
                         leftIcon={<FiPlus />}
                         onClick={() => handleCreateNew('score')}
                       >
-                        Nova Partitura
+                        {t('actions_new_score')}
                       </Button>
                     </div>
                   </AnimatedItem>
@@ -1406,16 +1314,16 @@ const UploadsClient = ({
                     <FiSearch className="w-8 h-8 text-theme-tertiary" />
                   </div>
                   <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
-                    Nenhum resultado encontrado
+                    {t('empty_no_results_title')}
                   </h3>
                   <p className="text-theme-secondary mb-6">
-                    Tente ajustar seus filtros para encontrar uploads.
+                    {t('empty_no_results_subtitle')}
                   </p>
                   <button
                     onClick={clearFilters}
                     className="btn-classical-primary"
                   >
-                    Limpar Filtros
+                    {t('filters_clear_all')}
                   </button>
                 </div>
               </AnimatedItem>
@@ -1429,11 +1337,10 @@ const UploadsClient = ({
                   <FiUpload className="w-8 h-8 text-theme-tertiary" />
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary mb-2 classical-title">
-                  Nenhum upload encontrado
+                  {t('empty_no_uploads_title')}
                 </h3>
                 <p className="text-theme-secondary mb-6">
-                  Você ainda não fez nenhum upload. Comece adicionando
-                  compositores, obras ou partituras.
+                  {t('empty_no_uploads_subtitle')}
                 </p>
                 <div className="flex justify-center space-x-2">
                   <Button
@@ -1441,14 +1348,14 @@ const UploadsClient = ({
                     leftIcon={<FiPlus />}
                     onClick={() => handleCreateNew('composer')}
                   >
-                    Novo Compositor
+                    {t('actions_new_composer')}
                   </Button>
                   <Button
                     variant="secondary"
                     leftIcon={<FiPlus />}
                     onClick={() => handleCreateNew('work')}
                   >
-                    Nova Obra
+                    {t('actions_new_work')}
                   </Button>
                 </div>
               </div>
@@ -1464,14 +1371,14 @@ const UploadsClient = ({
               <div className="classical-card p-8 text-center">
                 <LoadingSpinner size="lg" />
                 <p className="text-theme-primary font-medium mt-4">
-                  Carregando uploads...
+                  {t('loading_uploads')}
                 </p>
               </div>
             </AnimatedItem>
           )}
         </div>
 
-        {/* Pagination - 🆕 APENAS PARA ABAS ESPECÍFICAS */}
+        {/* Pagination */}
         {totalPages > 1 && selectedType !== 'all' && (
           <AnimatedItem direction="up" className="mt-8">
             <PaginationControls
@@ -1539,7 +1446,7 @@ const UploadsClient = ({
           <div className="classical-card p-8 text-center">
             <LoadingSpinner size="lg" />
             <p className="text-theme-primary font-medium mt-4">
-              Carregando dados do formulário...
+              {t('loading_form_data')}
             </p>
           </div>
         </div>

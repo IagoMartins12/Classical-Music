@@ -1,4 +1,4 @@
-// app/components/uploads/UploadScoreCard.tsx
+// app/components/uploads/UploadScoreCard.tsx - TRADUZIDO
 'use client';
 
 import { useState } from 'react';
@@ -17,6 +17,7 @@ import {
 } from 'react-icons/fi';
 import { UserUpload } from '@/app/requests/upload';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface UploadScoreCardProps {
   item: UserUpload;
@@ -34,6 +35,7 @@ const UploadScoreCard = ({
   viewMode,
   isDeleting = false,
 }: UploadScoreCardProps) => {
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleDeleteClick = () => {
@@ -43,6 +45,19 @@ const UploadScoreCard = ({
   const handleDeleteConfirm = () => {
     onDelete();
     setShowDeleteModal(false);
+  };
+
+  const getDataQualityLabel = (quality: string) => {
+    switch (quality) {
+      case 'high':
+        return t('data_quality_label_high');
+      case 'medium':
+        return t('data_quality_label_medium');
+      case 'low':
+        return t('data_quality_label_low');
+      default:
+        return quality;
+    }
   };
 
   if (viewMode === 'list') {
@@ -79,7 +94,7 @@ const UploadScoreCard = ({
                   {!item.workId && (
                     <span className="inline-flex items-center text-sm text-theme-tertiary">
                       <FiMusic className="w-3 h-3 mr-1" />
-                      Obra não vinculada
+                      {t('card_work_not_linked')}
                     </span>
                   )}
 
@@ -123,7 +138,7 @@ const UploadScoreCard = ({
                   {item.verificationStatus === 'verified' && (
                     <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
                       <FiShield className="w-3 h-3" />
-                      <span>Verificado</span>
+                      <span>{t('card_verified_badge')}</span>
                     </span>
                   )}
                 </div>
@@ -231,7 +246,7 @@ const UploadScoreCard = ({
                 <div className="flex items-center justify-center">
                   <FiMusic className="w-4 h-4 text-theme-tertiary mr-2" />
                   <span className="text-sm text-theme-tertiary">
-                    Obra não vinculada
+                    {t('card_work_not_linked')}
                   </span>
                 </div>
               )}
@@ -283,12 +298,7 @@ const UploadScoreCard = ({
                   }`}
                 >
                   <FiStar className="w-2.5 h-2.5 mr-1" />
-                  Qualidade{' '}
-                  {item.dataQuality === 'high'
-                    ? 'Alta'
-                    : item.dataQuality === 'medium'
-                    ? 'Média'
-                    : 'Baixa'}
+                  {getDataQualityLabel(item.dataQuality)}
                 </span>
               </div>
             )}
@@ -306,7 +316,7 @@ const UploadScoreCard = ({
             {item.verificationStatus === 'verified' && (
               <span className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
                 <FiShield className="w-2.5 h-2.5 mr-1" />
-                Verificado
+                {t('card_verified_badge')}
               </span>
             )}
           </div>
@@ -318,7 +328,7 @@ const UploadScoreCard = ({
               <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
                 <FiCalendar className="w-3 h-3" />
                 <span>
-                  Adicionado em{' '}
+                  {t('card_added_on')}{' '}
                   {new Date(item.createdAt).toLocaleDateString('pt-BR')}
                 </span>
               </div>
@@ -332,10 +342,10 @@ const UploadScoreCard = ({
                     rel="noopener noreferrer"
                     className="text-brand-primary hover:text-accent-blue text-sm font-medium transition-colors flex items-center space-x-1"
                     onClick={(e) => e.stopPropagation()}
-                    title="Download da partitura"
+                    title={t('card_download_score')}
                   >
                     <FiDownload className="w-3 h-3" />
-                    <span>Download</span>
+                    <span>{t('card_download')}</span>
                   </a>
                 )}
 
@@ -372,7 +382,7 @@ const UploadScoreCard = ({
         isLoading={isDeleting}
         itemTitle={item.title}
         itemType="score"
-        itemId={item.id} // ✅ Adicionar esta linha
+        itemId={item.id}
       />
     </div>
   );

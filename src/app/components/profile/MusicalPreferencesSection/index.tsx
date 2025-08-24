@@ -12,6 +12,7 @@ import Select from '../../Common/Select';
 import { getEpochs, getFamousComposers } from '@/app/actions/auth';
 import { useAuth } from '@/app/hooks/useAuth';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface MusicalPreferencesSectionProps {
   user: User;
@@ -24,6 +25,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 }) => {
   const { updateUser: globalUpdateUser } = useAuth();
   const { updateUserSession } = useSessionUpdate();
+  const { t } = useTranslation({ sections: ['pages/profile'] });
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -41,20 +43,20 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
   });
 
   const EXPERIENCE_LEVELS = [
-    { value: '', label: 'Selecione...' },
-    { value: 'BEGINNER', label: 'Iniciante' },
-    { value: 'INTERMEDIATE', label: 'Intermediário' },
-    { value: 'ADVANCED', label: 'Avançado' },
+    { value: '', label: t('preferences_select_experience') },
+    { value: 'BEGINNER', label: t('instruments_level_beginner') },
+    { value: 'INTERMEDIATE', label: t('instruments_level_intermediate') },
+    { value: 'ADVANCED', label: t('instruments_level_advanced') },
   ];
 
   const PRACTICE_TIME_OPTIONS = [
-    { value: '0', label: 'Não pratico regularmente' },
-    { value: '60', label: '1 hora por semana' },
-    { value: '120', label: '2 horas por semana' },
-    { value: '300', label: '5 horas por semana' },
-    { value: '600', label: '10 horas por semana' },
-    { value: '900', label: '15 horas por semana' },
-    { value: '1200', label: '20+ horas por semana' },
+    { value: '0', label: t('preferences_no_practice') },
+    { value: '60', label: t('preferences_1_hour') },
+    { value: '120', label: t('preferences_2_hours') },
+    { value: '300', label: t('preferences_5_hours') },
+    { value: '600', label: t('preferences_10_hours') },
+    { value: '900', label: t('preferences_15_hours') },
+    { value: '1200', label: t('preferences_20_plus_hours') },
   ];
 
   useEffect(() => {
@@ -177,15 +179,15 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
   };
 
   const getComposerName = (id: string) => {
-    if (!id) return 'Não selecionado';
+    if (!id) return t('preferences_not_selected');
     const composer = composers.find((c) => c.id === id);
-    return composer ? composer.fullName : 'Compositor não encontrado';
+    return composer ? composer.fullName : t('preferences_composer_not_found');
   };
 
   const getEpochName = (id: string) => {
-    if (!id) return 'Não selecionado';
+    if (!id) return t('preferences_not_selected');
     const epoch = epochs.find((e) => e.id === id);
-    return epoch ? epoch.name : 'Período não encontrado';
+    return epoch ? epoch.name : t('preferences_period_not_found');
   };
 
   // Loading inicial
@@ -195,10 +197,10 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-theme-primary">
-              Preferências Musicais
+              {t('preferences_title')}
             </h3>
             <p className="text-sm text-theme-secondary">
-              Carregando suas preferências...
+              {t('preferences_loading')}
             </p>
           </div>
         </div>
@@ -221,10 +223,10 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold text-theme-primary">
-            Preferências Musicais
+            {t('preferences_title')}
           </h3>
           <p className="text-sm text-theme-secondary">
-            Suas preferências e experiência musical
+            {t('preferences_description')}
           </p>
         </div>
 
@@ -235,7 +237,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
             onClick={() => setIsEditing(true)}
             leftIcon={<FiEdit3 />}
           >
-            Editar
+            {t('preferences_edit')}
           </Button>
         ) : (
           <div className="flex space-x-2">
@@ -246,7 +248,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
               leftIcon={<FiX />}
               disabled={isLoading}
             >
-              Cancelar
+              {t('preferences_cancel')}
             </Button>
             <Button
               variant="primary"
@@ -255,7 +257,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
               isLoading={isLoading}
               leftIcon={<FiSave />}
             >
-              Salvar
+              {t('preferences_save')}
             </Button>
           </div>
         )}
@@ -267,7 +269,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
           <div className="flex items-center space-x-2 mb-3">
             <FiClock className="w-4 h-4 text-brand-primary" />
             <label className="text-sm font-medium text-theme-secondary">
-              Nível de Experiência
+              {t('preferences_experience_level')}
             </label>
           </div>
 
@@ -284,7 +286,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
           <div className="flex items-center space-x-2 mb-3">
             <FiClock className="w-4 h-4 text-brand-primary" />
             <label className="text-sm font-medium text-theme-secondary">
-              Tempo de Prática Semanal
+              {t('preferences_practice_time')}
             </label>
           </div>
 
@@ -302,13 +304,15 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       <div className="pt-6 border-t border-theme-secondary">
         <div className="flex items-center space-x-2 mb-6">
           <FiHeart className="w-4 h-4 text-brand-primary" />
-          <h4 className="font-medium text-theme-primary">Favoritos</h4>
+          <h4 className="font-medium text-theme-primary">
+            {t('preferences_favorites')}
+          </h4>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-theme-secondary mb-2">
-              Compositor Favorito
+              {t('preferences_favorite_composer')}
             </label>
             {!isEditing ? (
               <div className="input-classical bg-theme-secondary bg-opacity-50">
@@ -320,7 +324,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
                 onChange={handleInputChange}
                 name="favoriteComposerId"
                 options={[
-                  { value: '', label: 'Selecione um compositor...' },
+                  { value: '', label: t('preferences_select_composer') },
                   ...composers.map((composer) => ({
                     value: composer.id,
                     label: composer.fullName,
@@ -333,7 +337,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
 
           <div>
             <label className="block text-sm font-medium text-theme-secondary mb-2">
-              Período Favorito
+              {t('preferences_favorite_period')}
             </label>
             {!isEditing ? (
               <div className="input-classical bg-theme-secondary bg-opacity-50">
@@ -345,7 +349,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
                 onChange={handleInputChange}
                 name="favoriteEpochId"
                 options={[
-                  { value: '', label: 'Selecione um período...' },
+                  { value: '', label: t('preferences_select_period') },
                   ...epochs.map((epoch) => ({
                     value: epoch.id,
                     label: epoch.name,
@@ -362,11 +366,11 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
       {formData.experienceLevel && formData.practiceTimePerWeek > 0 && (
         <div className="classical-card-2 p-4 bg-brand-primary bg-opacity-5 border border-brand-primary border-opacity-30">
           <h4 className="font-medium text-brand-primary mb-2">
-            📊 Resumo do seu Perfil Musical
+            {t('preferences_profile_summary')}
           </h4>
           <div className="text-sm text-theme-secondary space-y-1">
             <p>
-              • <strong>Nível:</strong>{' '}
+              • <strong>{t('preferences_level')}</strong>{' '}
               {
                 EXPERIENCE_LEVELS.find(
                   (l) => l.value === formData.experienceLevel
@@ -374,7 +378,7 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
               }
             </p>
             <p>
-              • <strong>Prática:</strong>{' '}
+              • <strong>{t('preferences_practice')}</strong>{' '}
               {
                 PRACTICE_TIME_OPTIONS.find(
                   (p) => p.value === formData.practiceTimePerWeek.toString()
@@ -383,13 +387,13 @@ const MusicalPreferencesSection: React.FC<MusicalPreferencesSectionProps> = ({
             </p>
             {formData.favoriteComposerId && (
               <p>
-                • <strong>Compositor favorito:</strong>{' '}
+                • <strong>{t('preferences_favorite_composer_summary')}</strong>{' '}
                 {getComposerName(formData.favoriteComposerId)}
               </p>
             )}
             {formData.favoriteEpochId && (
               <p>
-                • <strong>Período favorito:</strong>{' '}
+                • <strong>{t('preferences_favorite_period_summary')}</strong>{' '}
                 {getEpochName(formData.favoriteEpochId)}
               </p>
             )}

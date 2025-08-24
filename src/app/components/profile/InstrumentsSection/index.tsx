@@ -15,6 +15,7 @@ import {
   updateUserInstruments,
 } from '@/app/actions/profile';
 import { useSessionUpdate } from '@/app/hooks/useSessionUpdate';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface Instrument {
   id: string;
@@ -39,6 +40,7 @@ interface InstrumentsSectionProps {
 
 const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
   const { updateUserSession } = useSessionUpdate();
+  const { t } = useTranslation({ sections: ['pages/profile'] });
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
@@ -55,9 +57,9 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
   });
 
   const LEVELS = [
-    { value: 'BEGINNER', label: 'Iniciante' },
-    { value: 'INTERMEDIATE', label: 'Intermediário' },
-    { value: 'ADVANCED', label: 'Avançado' },
+    { value: 'BEGINNER', label: t('instruments_level_beginner') },
+    { value: 'INTERMEDIATE', label: t('instruments_level_intermediate') },
+    { value: 'ADVANCED', label: t('instruments_level_advanced') },
   ];
 
   // Carrega dados iniciais
@@ -256,10 +258,10 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-semibold text-theme-primary">
-              Meus Instrumentos
+              {t('instruments_title')}
             </h3>
             <p className="text-sm text-theme-secondary">
-              Carregando seus instrumentos...
+              {t('instruments_loading')}
             </p>
           </div>
         </div>
@@ -289,10 +291,10 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold text-theme-primary">
-            Meus Instrumentos
+            {t('instruments_title')}
           </h3>
           <p className="text-sm text-theme-secondary">
-            Instrumentos que você toca ou tem interesse.
+            {t('instruments_description')}
           </p>
         </div>
 
@@ -303,7 +305,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
             onClick={() => setIsEditing(true)}
             leftIcon={<FiEdit3 />}
           >
-            Editar
+            {t('instruments_edit')}
           </Button>
         ) : (
           <div className="flex space-x-2">
@@ -314,7 +316,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
               leftIcon={<FiX />}
               disabled={isLoading}
             >
-              Cancelar
+              {t('instruments_cancel')}
             </Button>
             <Button
               variant="primary"
@@ -323,7 +325,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
               isLoading={isLoading}
               leftIcon={<FiSave />}
             >
-              Salvar
+              {t('instruments_save')}
             </Button>
           </div>
         )}
@@ -334,9 +336,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
         {userInstruments.length === 0 ? (
           <div className="text-center py-8">
             <GiMusicalNotes className="w-12 h-12 text-theme-tertiary mx-auto mb-3" />
-            <p className="text-theme-secondary">
-              Nenhum instrumento adicionado ainda
-            </p>
+            <p className="text-theme-secondary">{t('instruments_none')}</p>
             {!isEditing && (
               <Button
                 variant="outline"
@@ -344,7 +344,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                 onClick={() => setIsEditing(true)}
                 className="mt-4"
               >
-                Adicionar Primeiro Instrumento
+                {t('instruments_add_first')}
               </Button>
             )}
           </div>
@@ -369,7 +369,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                       )}
                       {instrument.isPrimary && (
                         <div className="px-2 py-1 text-xs  classical-card text-theme-primary rounded-full">
-                          Principal
+                          {t('instruments_primary')}
                         </div>
                       )}
                     </div>
@@ -398,7 +398,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                             }
                             className="rounded"
                           />
-                          <span>Principal</span>
+                          <span>{t('instruments_primary')}</span>
                         </label>
 
                         <label className="flex items-center space-x-2 text-sm">
@@ -412,7 +412,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                             }
                             className="rounded"
                           />
-                          <span>Aprendendo</span>
+                          <span>{t('instruments_learning')}</span>
                         </label>
                       </div>
                     ) : (
@@ -423,7 +423,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                         }
                         {instrument.startedAt && (
                           <span className="ml-2 text-theme-tertiary">
-                            • Desde{' '}
+                            • {t('instruments_since')}{' '}
                             {new Date(instrument.startedAt).getFullYear()}
                           </span>
                         )}
@@ -459,13 +459,13 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
               disabled={filteredInstruments.length === 0}
             >
               {filteredInstruments.length === 0
-                ? 'Todos os instrumentos já foram adicionados'
-                : 'Adicionar Instrumento'}
+                ? t('instruments_add_all_added')
+                : t('instruments_add_instrument')}
             </Button>
           ) : (
             <div className="classical-card-2 p-4 space-y-4">
               <h4 className="font-medium text-theme-primary">
-                Adicionar Instrumento
+                {t('instruments_add_title')}
               </h4>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -479,7 +479,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                     }))
                   }
                   options={[
-                    { value: '', label: 'Selecione um instrumento...' },
+                    { value: '', label: t('instruments_select_instrument') },
                     ...filteredInstruments.map((inst) => ({
                       value: inst.id,
                       label: `${inst.name}${
@@ -490,7 +490,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                 />
 
                 <Select
-                  label="Nível"
+                  label={t('instruments_level')}
                   value={newInstrument.level}
                   onChange={(e) =>
                     setNewInstrument((prev) => ({
@@ -515,7 +515,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                     }
                     className="rounded"
                   />
-                  <span>Instrumento principal</span>
+                  <span>{t('instruments_primary_checkbox')}</span>
                 </label>
 
                 <label className="flex items-center space-x-2 text-sm">
@@ -530,7 +530,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                     }
                     className="rounded"
                   />
-                  <span>Estou aprendendo</span>
+                  <span>{t('instruments_learning_checkbox')}</span>
                 </label>
               </div>
 
@@ -541,14 +541,14 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
                   onClick={handleAddInstrument}
                   disabled={!newInstrument.instrumentId}
                 >
-                  Adicionar
+                  {t('instruments_add_button')}
                 </Button>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowAddForm(false)}
                 >
-                  Cancelar
+                  {t('instruments_cancel')}
                 </Button>
               </div>
             </div>
@@ -558,8 +558,7 @@ const InstrumentsSection: React.FC<InstrumentsSectionProps> = ({ user }) => {
           {isEditing && (
             <div className="mt-4 text-center">
               <p className="text-xs text-theme-tertiary">
-                💡 Dica: Marque um instrumento como &quot;Principal&quot; para
-                destacá-lo no seu perfil
+                {t('instruments_tip')}
               </p>
             </div>
           )}

@@ -1,4 +1,4 @@
-// app/components/uploads/UploadWorkCard.tsx
+// app/components/uploads/UploadWorkCard.tsx - TRADUZIDO
 'use client';
 
 import { useState } from 'react';
@@ -16,6 +16,7 @@ import { GiMusicalNotes } from 'react-icons/gi';
 import { UserUpload } from '@/app/requests/upload';
 import ConfirmDeleteUploadModal from '../../ConfirmDeleteUploadModal';
 import Link from 'next/link';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface UploadWorkCardProps {
   item: UserUpload;
@@ -33,6 +34,7 @@ const UploadWorkCard = ({
   viewMode,
   isDeleting = false,
 }: UploadWorkCardProps) => {
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleDeleteClick = (e: React.MouseEvent) => {
@@ -107,7 +109,7 @@ const UploadWorkCard = ({
                 {item.verificationStatus === 'verified' && (
                   <span className="text-xs font-medium text-accent-green px-2 py-1 bg-accent-green/10 rounded-full flex items-center space-x-1">
                     <FiShield className="w-3 h-3" />
-                    <span>Verificado</span>
+                    <span>{t('card_verified_badge')}</span>
                   </span>
                 )}
               </div>
@@ -254,7 +256,7 @@ const UploadWorkCard = ({
               {item.verificationStatus === 'verified' && (
                 <span className="inline-flex items-center px-2 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
                   <FiShield className="w-2.5 h-2.5 mr-1" />
-                  Verificado
+                  {t('card_verified_badge')}
                 </span>
               )}
             </div>
@@ -266,7 +268,7 @@ const UploadWorkCard = ({
                 <div className="flex items-center space-x-2 text-theme-tertiary text-xs">
                   <FiCalendar className="w-3 h-3" />
                   <span>
-                    Adicionado em{' '}
+                    {t('card_added_on')}{' '}
                     {new Date(item.createdAt).toLocaleDateString('pt-BR')}
                   </span>
                 </div>

@@ -1,4 +1,4 @@
-// CreateComposerModal.tsx - ATUALIZADO COM CAMPOS IMSLP E VIDEOURL
+// CreateComposerModal.tsx - TRADUZIDO
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
@@ -36,8 +36,8 @@ import {
   composerModalValidations,
 } from '@/app/utils/formUtils';
 
-// 🆕 IMPORTAR O HOOK DE TOAST
 import { useToast } from '@/app/hooks/useToast';
+import { useTranslation } from '@/app/hooks/useTranslation';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 import Checkbox from '@/app/components/Common/Checkbox';
 
@@ -77,7 +77,6 @@ type DataSource = 'none' | 'imslp' | 'wikipedia';
 const extractDateFromExtendedFormat = (dateString: string): string | null => {
   if (!dateString) return null;
 
-  // Meses em português
   const monthsMap: Record<string, string> = {
     janeiro: '01',
     fevereiro: '02',
@@ -103,7 +102,6 @@ const extractDateFromExtendedFormat = (dateString: string): string | null => {
     out: '10',
     nov: '11',
     dez: '12',
-    // Inglês
     january: '01',
     february: '02',
     march: '03',
@@ -118,11 +116,8 @@ const extractDateFromExtendedFormat = (dateString: string): string | null => {
     december: '12',
   };
 
-  // Padrões para extrair datas
   const patterns = [
-    // Português: "27 de janeiro de 1756"
     /(\d{1,2})\s+de\s+(\w+)\s+de\s+(\d{4})/i,
-    // Inglês: "27 January 1756" ou "January 27, 1756"
     /(\d{1,2})\s+(\w+)\s+(\d{4})/i,
     /(\w+)\s+(\d{1,2}),?\s+(\d{4})/i,
   ];
@@ -131,7 +126,6 @@ const extractDateFromExtendedFormat = (dateString: string): string | null => {
     const match = dateString.match(pattern);
     if (match) {
       if (pattern.source.includes('de\\s+')) {
-        // Português
         const day = match[1];
         const monthName = match[2].toLowerCase();
         const year = match[3];
@@ -140,15 +134,12 @@ const extractDateFromExtendedFormat = (dateString: string): string | null => {
           return `${year}-${month}-${day.padStart(2, '0')}`;
         }
       } else {
-        // Inglês
         let day, monthName, year;
         if (/^\d/.test(match[1])) {
-          // Formato: "27 January 1756"
           day = match[1];
           monthName = match[2].toLowerCase();
           year = match[3];
         } else {
-          // Formato: "January 27, 1756"
           monthName = match[1].toLowerCase();
           day = match[2];
           year = match[3];
@@ -164,28 +155,23 @@ const extractDateFromExtendedFormat = (dateString: string): string | null => {
   return null;
 };
 
-// Função para formatar data para input HTML5 (YYYY-MM-DD)
 const formatDateForInput = (dateString: string | null): string => {
   if (!dateString) return '';
 
-  // Se já está em formato ISO, retornar como está
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
     return dateString;
   }
 
-  // Se está em formato dd/mm/yyyy
   if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
     const [day, month, year] = dateString.split('/');
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   }
 
-  // Tentar extrair data de formato extenso
   const dateFromText = extractDateFromExtendedFormat(dateString);
   if (dateFromText) {
     return dateFromText;
   }
 
-  // Se só tem ano, usar 1 de janeiro
   const yearMatch = dateString.match(/(\d{4})/);
   if (yearMatch) {
     return `${yearMatch[1]}-01-01`;
@@ -202,7 +188,7 @@ const CreateComposerModal = ({
   editingComposer,
 }: CreateComposerModalProps) => {
   const router = useRouter();
-  // 🆕 HOOK DE TOAST
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
   const toast = useToast();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -213,13 +199,11 @@ const CreateComposerModal = ({
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [isEditingExternalSource, setIsEditingExternalSource] = useState(false);
 
-  // ESTADO COM TIPAGEM CORRIGIDA
   const [duplicateCheck, setDuplicateCheck] = useState<DuplicateCheckState>({
     loading: false,
     found: false,
   });
 
-  // 🆕 REFS PARA SCROLL AUTOMÁTICO
   const fieldRefs = {
     name: useRef<HTMLInputElement>(null),
     fullName: useRef<HTMLInputElement>(null),
@@ -230,7 +214,6 @@ const CreateComposerModal = ({
     nationality: useRef<HTMLDivElement>(null),
   };
 
-  // 🆕 FORM STATE ATUALIZADO COM NOVOS CAMPOS
   const [formData, setFormData] = useState({
     name: '',
     fullName: '',
@@ -242,9 +225,9 @@ const CreateComposerModal = ({
     epochName: '',
     bio: '',
     imslpId: '',
-    permLinkImslp: '', // 🆕 NOVO CAMPO
+    permLinkImslp: '',
     wikipediaLink: '',
-    videoUrl: '', // 🆕 NOVO CAMPO
+    videoUrl: '',
     nationality: '',
     instruments: '',
     imslpCategories: '',
@@ -255,7 +238,6 @@ const CreateComposerModal = ({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // 🆕 CONFIGURAR VALIDAÇÃO DE FORMULÁRIO
   const requiredFields = ['name', 'fullName', 'epochId', 'primaryRoleId'];
   const customValidations = composerModalValidations;
 
@@ -282,9 +264,9 @@ const CreateComposerModal = ({
       epochName: editingComposer.epochName || '',
       bio: editingComposer.bio || '',
       imslpId: editingComposer.imslpId || '',
-      permLinkImslp: editingComposer.permLinkImslp || '', // 🆕
+      permLinkImslp: editingComposer.permLinkImslp || '',
       wikipediaLink: editingComposer.wikipediaLink || '',
-      videoUrl: editingComposer.videoUrl || '', // 🆕
+      videoUrl: editingComposer.videoUrl || '',
       nationality: editingComposer.nationality || '',
       instruments: editingComposer.instruments || '',
       imslpCategories: editingComposer.imslpCategories || '',
@@ -302,10 +284,15 @@ const CreateComposerModal = ({
     customValidations
   );
 
+  const dataSourceOptions = [
+    { value: 'none', label: t('modal_composer_scraping_source_none') },
+    { value: 'imslp', label: 'IMSLP' },
+    { value: 'wikipedia', label: 'Wikipedia' },
+  ];
+
   // Populate form when editing
   useEffect(() => {
     if (editingComposer) {
-      // Determinar fonte de dados baseado nos campos existentes
       let detectedSource: DataSource = 'none';
       let detectedUrl = '';
 
@@ -335,9 +322,9 @@ const CreateComposerModal = ({
         epochName: editingComposer.epochName || '',
         bio: editingComposer.bio || '',
         imslpId: editingComposer.imslpId || '',
-        permLinkImslp: editingComposer.permLinkImslp || '', // 🆕
+        permLinkImslp: editingComposer.permLinkImslp || '',
         wikipediaLink: editingComposer.wikipediaLink || '',
-        videoUrl: editingComposer.videoUrl || '', // 🆕
+        videoUrl: editingComposer.videoUrl || '',
         nationality: editingComposer.nationality || '',
         instruments: editingComposer.instruments || '',
         imslpCategories: editingComposer.imslpCategories || '',
@@ -350,17 +337,14 @@ const CreateComposerModal = ({
     }
   }, [editingComposer]);
 
-  const hasChanges = useSmartFormChanges(
-    formData,
-    originalData, // Se null = modo criação, se preenchido = modo edição
-    ['primaryRoleId', 'dataSource']
-  );
+  const hasChanges = useSmartFormChanges(formData, originalData, [
+    'primaryRoleId',
+    'dataSource',
+  ]);
 
-  // Função para formatar data para salvar (dd/mm/yyyy)
   const formatDateForSave = (dateString: string): string => {
     if (!dateString) return '';
 
-    // Se está em formato YYYY-MM-DD (do input date)
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
       const [year, month, day] = dateString.split('-');
       return `${day}/${month}/${year}`;
@@ -369,28 +353,20 @@ const CreateComposerModal = ({
     return dateString;
   };
 
-  // Função para limpar nome
   const cleanName = (name: string): string => {
     return name.replace(/[(),]/g, '').replace(/_/g, ' ').replace(/\s+/g, ' ');
   };
 
-  // Verificar duplicatas por link MELHORADO
   const checkDuplicateByLink = async (
     url: string,
     source: DataSource,
-    composerFullName?: string // Parâmetro opcional
+    composerFullName?: string
   ) => {
     if (!url.trim()) return;
 
     setDuplicateCheck({ loading: true, found: false });
 
     try {
-      console.log('🔍 Verificando duplicatas para:', {
-        url,
-        source,
-        fullName: composerFullName || formData.fullName || '',
-      });
-
       const response = await fetch('/api/uploads/composer/check-duplicate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -405,8 +381,6 @@ const CreateComposerModal = ({
       const data = await response.json();
 
       if (data.found) {
-        console.log('❌ Duplicata encontrada:', data);
-
         setDuplicateCheck({
           loading: false,
           found: true,
@@ -416,7 +390,6 @@ const CreateComposerModal = ({
         });
         return true;
       } else {
-        console.log('✅ Nenhuma duplicata encontrada');
         setDuplicateCheck({ loading: false, found: false });
         return false;
       }
@@ -431,7 +404,6 @@ const CreateComposerModal = ({
     field: string,
     value: string | boolean | string[]
   ) => {
-    // Limpar nomes automaticamente
     if (dataSource !== 'none' && (field === 'name' || field === 'fullName')) {
       value = cleanName(value as string);
     }
@@ -442,7 +414,6 @@ const CreateComposerModal = ({
     }
   };
 
-  // Função para lidar com mudança de nacionalidade
   const handleNationalityChange = (nationality: string) => {
     setFormData((prev) => ({ ...prev, nationality }));
     if (errors.nationality) {
@@ -481,14 +452,12 @@ const CreateComposerModal = ({
           ...prev,
           portraitUrl: result.imageUrl,
         }));
-        // 🆕 SUBSTITUIR alert POR toast
         toast.success('Sucesso', 'Imagem carregada com sucesso!');
       } else {
         throw new Error(result.message || 'Erro ao fazer upload');
       }
     } catch (error) {
       console.error('Erro no upload:', error);
-      // 🆕 SUBSTITUIR alert POR toast
       toast.error(
         'Erro no Upload',
         error instanceof Error
@@ -507,7 +476,6 @@ const CreateComposerModal = ({
     }));
   };
 
-  // 🆕 FUNÇÃO DE VALIDAÇÃO MELHORADA
   const handleValidation = () => {
     const { isValid, errors: validationErrors } = validateForm(formData);
     setErrors(validationErrors);
@@ -517,14 +485,11 @@ const CreateComposerModal = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // 🆕 USAR VALIDAÇÃO COM SCROLL
     if (!handleValidation()) {
       return;
     }
 
-    // Verificar duplicatas antes de salvar (apenas se não estiver editando fonte externa)
     if (!isEditingExternalSource) {
-      // 🆕 VERIFICAR DUPLICATA PARA PERMLINK IMSLP
       if (
         formData.permLinkImslp &&
         (await checkDuplicateByLink(formData.permLinkImslp, 'imslp'))
@@ -570,14 +535,11 @@ const CreateComposerModal = ({
 
       const dataToSend = {
         ...formData,
-        // Converter datas para formato dd/mm/yyyy para salvar no banco
         birthDate: formatDateForSave(formData.birthDate),
         deathDate: formatDateForSave(formData.deathDate),
         roles: formData.roles.join(', '),
         dataSource: formData.dataSource,
       };
-
-      console.log('data to send', dataToSend);
 
       const response = await fetch(url, {
         method,
@@ -592,7 +554,6 @@ const CreateComposerModal = ({
       if (response.ok) {
         router.refresh();
         onClose();
-        // 🆕 SUBSTITUIR alert POR toast
         toast.success(
           editingComposer ? 'Compositor Atualizado' : 'Compositor Criado',
           data.message || 'Compositor salvo com sucesso!'
@@ -602,7 +563,6 @@ const CreateComposerModal = ({
       }
     } catch (error) {
       console.error('Erro ao salvar compositor:', error);
-      // 🆕 SUBSTITUIR alert POR toast
       toast.error(
         'Erro ao Salvar',
         error instanceof Error ? error.message : 'Erro ao salvar compositor'
@@ -614,13 +574,11 @@ const CreateComposerModal = ({
 
   const handleScrapeUrl = async () => {
     if (!urlToScrape.trim()) {
-      // 🆕 SUBSTITUIR alert POR toast
       toast.warning('URL Necessária', 'Digite uma URL para fazer scraping');
       return;
     }
 
     if (dataSource === 'none') {
-      // 🆕 SUBSTITUIR alert POR toast
       toast.warning(
         'Tipo de Fonte',
         'Selecione o tipo de fonte (IMSLP ou Wikipedia)'
@@ -628,17 +586,15 @@ const CreateComposerModal = ({
       return;
     }
 
-    // Verificar duplicatas antes de fazer scraping
     const isDuplicate = await checkDuplicateByLink(urlToScrape, dataSource);
     if (isDuplicate) {
       const reasonText =
         duplicateCheck.reason === 'nome'
-          ? 'nome'
+          ? t('modal_composer_scraping_duplicate_reason_name')
           : duplicateCheck.reason === 'link do IMSLP'
-          ? 'link do IMSLP'
-          : 'link da Wikipedia';
+          ? t('modal_composer_scraping_duplicate_reason_imslp')
+          : t('modal_composer_scraping_duplicate_reason_wikipedia');
 
-      // 🆕 SUBSTITUIR alert POR toast
       toast.error(
         'Compositor Já Existe',
         `Já existe um compositor com esse ${reasonText}: ${duplicateCheck.composer?.fullName}`
@@ -666,7 +622,6 @@ const CreateComposerModal = ({
       if (response.ok) {
         setScrapingResult(data);
         fillFromScrapingResult(data.data);
-        // 🆕 TOAST DE SUCESSO
         toast.success(
           'Dados Extraídos',
           `Informações extraídas com ${data.data.dataCompleteness}% de completude`
@@ -676,7 +631,6 @@ const CreateComposerModal = ({
       }
     } catch (error) {
       console.error('Erro ao fazer scraping:', error);
-      // 🆕 SUBSTITUIR alert POR toast
       toast.error(
         'Erro no Scraping',
         error instanceof Error ? error.message : 'Erro ao fazer scraping'
@@ -687,48 +641,30 @@ const CreateComposerModal = ({
   };
 
   const fillFromScrapingResult = (data: any) => {
-    console.log('SCRAPING RESULT', data);
     setFormData((prev) => ({
       ...prev,
       name: cleanName(data.name || prev.name),
       fullName: cleanName(data.fullName || prev.fullName),
       alternativeNames: data.alternativeNames || prev.alternativeNames,
-      // As datas já vêm em formato YYYY-MM-DD do scraper melhorado
       birthDate: data.birthDate || prev.birthDate,
       deathDate: data.deathDate || prev.deathDate,
       portraitUrl: data.portraitUrl || prev.portraitUrl,
       bio: data.bio || prev.bio,
       imslpId: data.imslpId || prev.imslpId,
-      permLinkImslp: data.permLinkImslp || prev.permLinkImslp, // 🆕
+      permLinkImslp: data.permLinkImslp || prev.permLinkImslp,
       wikipediaLink: data.wikipediaLink || prev.wikipediaLink,
-      videoUrl: data.videoUrl || prev.videoUrl, // 🆕
+      videoUrl: data.videoUrl || prev.videoUrl,
       nationality: data.nationality || prev.nationality,
       instruments: data.instruments || prev.instruments,
       imslpCategories: data.imslpCategories || prev.imslpCategories,
       dataSource: dataSource,
-
-      // Determinar época automaticamente baseada no ano de nascimento
       epochId: determineEpochId(data.epochName, epochs) || prev.epochId,
       epochName: data.epochName || prev.epochName,
       primaryRoleId:
         determinePrimaryRoleId(data.primaryRole, roles) || prev.primaryRoleId,
     }));
-
-    // Log das melhorias aplicadas
-    console.log('📊 Dados extraídos com melhorias:');
-    console.log(`   - Nome: ${data.name} | Nome completo: ${data.fullName}`);
-    console.log(`   - Nacionalidade: ${data.nationality || 'Não encontrada'}`);
-    console.log(`   - Data nascimento: ${data.birthDate || 'Não encontrada'}`);
-    console.log(`   - Data morte: ${data.deathDate || 'Não encontrada'}`);
-    console.log(
-      `   - Época determinada: ${data.epochName || 'Não determinada'}`
-    );
-    console.log(
-      `   - Qualidade da página: ${data.pageQuality} (${data.dataCompleteness}%)`
-    );
   };
 
-  // Função auxiliar para determinar ID da época baseada no nome
   const determineEpochId = (
     epochName: string | undefined,
     epochs: Array<{ id: string; name: string }>
@@ -739,15 +675,12 @@ const CreateComposerModal = ({
       (e) => e.name.toLowerCase() === epochName.toLowerCase()
     );
     if (epoch) {
-      console.log(`🎼 Época encontrada: ${epochName} (ID: ${epoch.id})`);
       return epoch.id;
     }
 
-    console.log(`⚠️ Época não encontrada: ${epochName}`);
     return null;
   };
 
-  // Função auxiliar para determinar ID do papel baseado no nome
   const determinePrimaryRoleId = (
     roleName: string | undefined,
     roles: Array<{ id: string; name: string }>
@@ -758,29 +691,20 @@ const CreateComposerModal = ({
       (r) => r.name.toLowerCase() === roleName.toLowerCase()
     );
     if (role) {
-      console.log(`👨‍🎼 Papel encontrado: ${roleName} (ID: ${role.id})`);
       return role.id;
     }
 
-    // Padrão para Compositor se não encontrar
     const composerRole = roles.find(
       (r) => r.name.toLowerCase() === 'compositor'
     );
     if (composerRole) {
-      console.log(
-        `👨‍🎼 Usando papel padrão: Compositor (ID: ${composerRole.id})`
-      );
       return composerRole.id;
     }
 
-    console.log(`⚠️ Papel não encontrado: ${roleName}`);
     return null;
   };
 
-  // 🆕 FUNÇÃO PARA VERIFICAR SE CAMPO DEVE SER BLOQUEADO
   const isFieldLocked = (field: 'wikipediaLink' | 'permLinkImslp'): boolean => {
-    // if (!isEditingExternalSource) return false;
-
     if (field === 'wikipediaLink' && dataSource === 'wikipedia') return true;
     if (field === 'permLinkImslp' && dataSource === 'imslp') return true;
 
@@ -800,9 +724,9 @@ const CreateComposerModal = ({
       }}
       maxWidth="4xl"
       showCloseButton={true}
-      confirmOnClose={true} // Ativa confirmação
-      hasChanges={hasChanges} // Detecta mudanças
-      isProcessing={isSubmitting} // Detecta processo
+      confirmOnClose={true}
+      hasChanges={hasChanges}
+      isProcessing={isSubmitting}
       processName="criação do compositor"
     >
       <AnimatedItem direction="scale" springType="bouncy" className="w-full">
@@ -815,12 +739,14 @@ const CreateComposerModal = ({
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary classical-title">
-                  {editingComposer ? 'Editar Compositor' : 'Novo Compositor'}
+                  {editingComposer
+                    ? t('modal_composer_title_edit')
+                    : t('modal_composer_title_create')}
                 </h2>
                 <p className="text-theme-secondary text-sm">
                   {editingComposer
-                    ? 'Atualize as informações do compositor'
-                    : 'Adicione um novo compositor à enciclopédia'}
+                    ? t('modal_composer_subtitle_edit')
+                    : t('modal_composer_subtitle_create')}
                 </p>
               </div>
             </div>
@@ -835,32 +761,24 @@ const CreateComposerModal = ({
                   <div className="flex items-center space-x-2">
                     <FiDatabase className="w-4 h-4 text-theme-tertiary" />
                     <span className="text-sm font-medium text-theme-primary">
-                      Extrair Dados de Fonte Externa
+                      {t('modal_composer_scraping_title')}
                     </span>
                     {isEditingExternalSource && (
                       <div className="flex items-center space-x-1 text-xs text-theme-primary font-bold">
                         <FiLock className="w-3 h-3" />
-                        <span>Fonte detectada automaticamente</span>
+                        <span>{t('modal_composer_scraping_detected')}</span>
                       </div>
                     )}
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  {/* Seleção de Fonte */}
                   <div>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Tipo de Fonte
+                      {t('modal_composer_scraping_source_type')}
                     </label>
                     <Select
-                      options={[
-                        {
-                          value: 'none',
-                          label: 'Nenhuma (inserir manualmente)',
-                        },
-                        { value: 'imslp', label: 'IMSLP' },
-                        { value: 'wikipedia', label: 'Wikipedia' },
-                      ]}
+                      options={dataSourceOptions}
                       value={dataSource}
                       onChange={(e) =>
                         setDataSource(e.target.value as DataSource)
@@ -870,13 +788,14 @@ const CreateComposerModal = ({
                     />
                   </div>
 
-                  {/* URL Input */}
                   {dataSource !== 'none' && (
                     <div>
                       <Input
-                        label={`URL do ${
-                          dataSource === 'imslp' ? 'IMSLP' : 'Wikipedia'
-                        }`}
+                        label={
+                          dataSource === 'imslp'
+                            ? t('modal_composer_scraping_url_imslp')
+                            : t('modal_composer_scraping_url_wikipedia')
+                        }
                         value={urlToScrape}
                         onChange={(e) => setUrlToScrape(e.target.value)}
                         placeholder={
@@ -888,13 +807,12 @@ const CreateComposerModal = ({
                         disabled={isEditingExternalSource}
                       />
 
-                      {/* Verificação de Duplicata MELHORADA */}
                       {duplicateCheck.loading && (
                         <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
                           <div className="flex items-center space-x-2">
                             <FiLoader className="w-4 h-4 animate-spin text-theme-primary font-bold" />
                             <span className="text-sm text-blue-800">
-                              Verificando duplicatas...
+                              {t('modal_composer_scraping_checking_duplicates')}
                             </span>
                           </div>
                         </div>
@@ -905,41 +823,76 @@ const CreateComposerModal = ({
                           <div className="flex items-center space-x-2 mb-2">
                             <FiAlertCircle className="w-4 h-4 text-red-600" />
                             <span className="text-sm font-medium text-red-800">
-                              Compositor já existe!
+                              {t('modal_composer_scraping_duplicate_found')}
                             </span>
                           </div>
                           <div className="text-sm text-red-700">
                             <p className="mb-1">
-                              <strong>Motivo:</strong>{' '}
-                              {duplicateCheck.reason === 'nome'
-                                ? 'Nome idêntico'
-                                : duplicateCheck.reason === 'link do IMSLP'
-                                ? 'Link do IMSLP'
-                                : 'Link da Wikipedia'}
+                              <strong>
+                                {t('modal_composer_scraping_duplicate_reason', {
+                                  reason:
+                                    duplicateCheck.reason === 'nome'
+                                      ? t(
+                                          'modal_composer_scraping_duplicate_reason_name'
+                                        )
+                                      : duplicateCheck.reason ===
+                                        'link do IMSLP'
+                                      ? t(
+                                          'modal_composer_scraping_duplicate_reason_imslp'
+                                        )
+                                      : t(
+                                          'modal_composer_scraping_duplicate_reason_wikipedia'
+                                        ),
+                                })}
+                              </strong>
                             </p>
                             <p className="mb-1">
-                              <strong>Compositor:</strong>{' '}
-                              {duplicateCheck.composer?.fullName}
+                              {duplicateCheck.composer?.fullName} && (
+                              <strong>
+                                {t(
+                                  'modal_composer_scraping_duplicate_composer',
+                                  {
+                                    composer: `${duplicateCheck.composer?.fullName}`,
+                                  }
+                                )}
+                              </strong>
+                              )
                             </p>
                             {duplicateCheck.composer?.nationality && (
                               <p className="mb-1">
-                                <strong>Nacionalidade:</strong>{' '}
-                                {duplicateCheck.composer.nationality}
+                                <strong>
+                                  {t(
+                                    'modal_composer_scraping_duplicate_nationality',
+                                    {
+                                      nationality:
+                                        duplicateCheck.composer.nationality,
+                                    }
+                                  )}
+                                </strong>
                               </p>
                             )}
                             {(duplicateCheck.composer?.birthDate ||
                               duplicateCheck.composer?.deathDate) && (
                               <p>
-                                <strong>Período:</strong>{' '}
-                                {duplicateCheck.composer.birthDate || '?'} -{' '}
-                                {duplicateCheck.composer.deathDate || '?'}
+                                <strong>
+                                  {t(
+                                    'modal_composer_scraping_duplicate_period',
+                                    {
+                                      birthDate:
+                                        duplicateCheck.composer.birthDate ||
+                                        '?',
+                                      deathDate:
+                                        duplicateCheck.composer.deathDate ||
+                                        '?',
+                                    }
+                                  )}
+                                </strong>
                               </p>
                             )}
                           </div>
                         </div>
                       )}
 
-                      {/* Botão de Scraping */}
                       {!isEditingExternalSource && (
                         <div className="mt-3">
                           <Button
@@ -957,40 +910,42 @@ const CreateComposerModal = ({
                             disabled={scrapingUrl || duplicateCheck.found}
                           >
                             {scrapingUrl
-                              ? 'Extraindo Dados...'
-                              : 'Extrair Dados'}
+                              ? t('modal_composer_scraping_extracting')
+                              : t('modal_composer_scraping_extract_button')}
                           </Button>
                         </div>
                       )}
 
-                      {/* Resultado do Scraping */}
                       {scrapingResult && (
                         <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                           <div className="flex items-center space-x-2 mb-2">
                             <FiCheck className="w-4 h-4 text-green-600" />
                             <span className="text-sm font-medium text-green-800">
-                              Dados extraídos com sucesso!
+                              {t('modal_composer_scraping_success')}
                             </span>
                           </div>
                           <div className="text-xs text-green-700">
-                            Fonte: {scrapingResult.source} | Qualidade:{' '}
-                            {scrapingResult.data.pageQuality} | Completude:{' '}
-                            {scrapingResult.data.dataCompleteness}%
+                            {t('modal_composer_scraping_quality', {
+                              source: scrapingResult.source,
+                              quality: scrapingResult.data.pageQuality,
+                              completeness:
+                                scrapingResult.data.dataCompleteness,
+                            })}
                           </div>
                         </div>
                       )}
 
-                      {/* Aviso para fontes externas sendo editadas */}
                       {isEditingExternalSource && (
                         <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                           <div className="flex items-center space-x-2">
                             <FiInfo className="w-4 h-4 text-blue-600" />
                             <span className="text-sm text-blue-800">
-                              Este compositor foi originalmente criado a partir
-                              de uma fonte externa (
-                              {dataSource === 'imslp' ? 'IMSLP' : 'Wikipedia'}).
-                              Você pode editar os dados diretamente nos campos
-                              abaixo.
+                              {t('modal_composer_scraping_external_edit', {
+                                source:
+                                  dataSource === 'imslp'
+                                    ? 'IMSLP'
+                                    : 'Wikipedia',
+                              })}
                             </span>
                           </div>
                         </div>
@@ -1004,12 +959,12 @@ const CreateComposerModal = ({
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiInfo className="w-5 h-5" />
-                  <span>Informações Básicas</span>
+                  <span>{t('modal_composer_basic_title')}</span>
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
-                    label="Nome *"
+                    label={`${t('modal_composer_basic_name')} *`}
                     ref={fieldRefs.name}
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
@@ -1018,7 +973,7 @@ const CreateComposerModal = ({
                   />
 
                   <Input
-                    label="Nome Completo *"
+                    label={`${t('modal_composer_basic_full_name')} *`}
                     ref={fieldRefs.fullName}
                     value={formData.fullName}
                     onChange={(e) =>
@@ -1028,40 +983,43 @@ const CreateComposerModal = ({
                     placeholder="Wolfgang Amadeus Mozart"
                   />
                   <Input
-                    label="Nomes Alternativos"
+                    label={t('modal_composer_basic_alt_names')}
                     value={formData.alternativeNames}
                     onChange={(e) =>
                       handleInputChange('alternativeNames', e.target.value)
                     }
-                    placeholder="Separados por vírgula"
+                    placeholder={t(
+                      'modal_composer_basic_alt_names_placeholder'
+                    )}
                   />
 
-                  {/* COMPONENTE DE NACIONALIDADE CORRIGIDO */}
                   <div ref={fieldRefs.nationality}>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Nacionalidade
+                      {t('modal_composer_basic_nationality')}
                     </label>
                     <NationalitySelect
                       value={formData.nationality}
                       onChange={handleNationalityChange}
                       error={errors.nationality}
-                      placeholder="Selecione a nacionalidade..."
+                      placeholder={t(
+                        'modal_composer_basic_nationality_placeholder'
+                      )}
                     />
                   </div>
                 </div>
               </AnimatedCard>
 
-              {/* Dates - MELHORADO COM INPUTS DE DATA */}
+              {/* Dates */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiCalendar className="w-5 h-5" />
-                  <span>Datas</span>
+                  <span>{t('modal_composer_dates_title')}</span>
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Data de Nascimento
+                      {t('modal_composer_dates_birth')}
                     </label>
                     <Input
                       ref={fieldRefs.birthDate}
@@ -1078,7 +1036,7 @@ const CreateComposerModal = ({
 
                   <div>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Data de Morte
+                      {t('modal_composer_dates_death')}
                     </label>
                     <Input
                       ref={fieldRefs.deathDate}
@@ -1093,7 +1051,7 @@ const CreateComposerModal = ({
                     />
 
                     <p className="text-xs text-theme-tertiary mt-1">
-                      Deixe vazio se ainda vivo
+                      {t('modal_composer_dates_death_note')}
                     </p>
                   </div>
                 </div>
@@ -1103,7 +1061,7 @@ const CreateComposerModal = ({
               <AnimatedCard className="classical-card-simple p-6" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-6 flex items-center space-x-2">
                   <FiImage className="w-5 h-5" />
-                  <span>Imagem do Compositor</span>
+                  <span>{t('modal_composer_image_title')}</span>
                 </h3>
 
                 <div className="flex justify-center">
@@ -1129,18 +1087,23 @@ const CreateComposerModal = ({
               <AnimatedCard className="classical-card-simple p-4 " hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiTag className="w-5 h-5" />
-                  <span>Classificação</span>
+                  <span>{t('modal_composer_classification_title')}</span>
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 space-y-4 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Época *
+                      {t('modal_composer_classification_epoch')} *
                     </label>
                     <Select
                       ref={fieldRefs.epochId}
                       options={[
-                        { value: '', label: 'Selecione uma época' },
+                        {
+                          value: '',
+                          label: t(
+                            'modal_composer_classification_epoch_placeholder'
+                          ),
+                        },
                         ...epochs.map((epoch) => ({
                           value: epoch.id,
                           label: epoch.name,
@@ -1150,7 +1113,12 @@ const CreateComposerModal = ({
                       onChange={(e) => {
                         const selectedValue = e.target.value;
                         const selectedOption = [
-                          { value: '', label: 'Selecione uma época' },
+                          {
+                            value: '',
+                            label: t(
+                              'modal_composer_classification_epoch_placeholder'
+                            ),
+                          },
                           ...epochs.map((epoch) => ({
                             value: epoch.id,
                             label: epoch.name,
@@ -1171,12 +1139,17 @@ const CreateComposerModal = ({
 
                   <div>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Papel Principal *
+                      {t('modal_composer_classification_primary_role')} *
                     </label>
                     <Select
                       ref={fieldRefs.primaryRoleId}
                       options={[
-                        { value: '', label: 'Selecione um papel' },
+                        {
+                          value: '',
+                          label: t(
+                            'modal_composer_classification_primary_role_placeholder'
+                          ),
+                        },
                         ...roles.map((role) => ({
                           value: role.id,
                           label: role.name,
@@ -1193,7 +1166,7 @@ const CreateComposerModal = ({
 
                   <div className="md:col-span-2 space-x-4">
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Papéis Secundários
+                      {t('modal_composer_classification_secondary_roles')}
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-3  gap-2">
                       {roles.map((role) => (
@@ -1226,16 +1199,17 @@ const CreateComposerModal = ({
 
                   <div className="col-span-2">
                     <Input
-                      label="Instrumentos que compôs:"
+                      label={t('modal_composer_classification_instruments')}
                       value={formData.instruments}
                       onChange={(e) =>
                         handleInputChange('instruments', e.target.value)
                       }
-                      placeholder="Piano, Violino, Orquestra"
+                      placeholder={t(
+                        'modal_composer_classification_instruments_placeholder'
+                      )}
                     />
 
                     <Input
-                      // label="Categorias IMSLP"
                       value={formData.imslpCategories}
                       onChange={(e) =>
                         handleInputChange('imslpCategories', e.target.value)
@@ -1247,18 +1221,18 @@ const CreateComposerModal = ({
                 </div>
               </AnimatedCard>
 
-              {/* 🆕 EXTERNAL LINKS - SEÇÃO ATUALIZADA */}
+              {/* External Links */}
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiGlobe className="w-5 h-5" />
-                  <span>Links Externos</span>
+                  <span>{t('modal_composer_external_title')}</span>
                 </h3>
 
                 <div className="grid grid-cols-1 gap-4">
                   {/* Wikipedia Link */}
                   <div className="relative">
                     <Input
-                      label="Link da Wikipedia"
+                      label={t('modal_composer_external_wikipedia')}
                       value={formData.wikipediaLink}
                       onChange={(e) =>
                         handleInputChange('wikipediaLink', e.target.value)
@@ -1276,17 +1250,18 @@ const CreateComposerModal = ({
                       <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
                         <FiLock className="w-3 h-3" />
                         <span>
-                          Campo bloqueado pois foi extraído via scraping do
-                          Wikipedia
+                          {t('modal_composer_external_field_locked', {
+                            source: 'Wikipedia',
+                          })}
                         </span>
                       </div>
                     )}
                   </div>
 
-                  {/* 🆕 IMSLP Link */}
+                  {/* IMSLP Link */}
                   <div className="relative">
                     <Input
-                      label="Link do IMSLP"
+                      label={t('modal_composer_external_imslp')}
                       value={formData.permLinkImslp}
                       onChange={(e) =>
                         handleInputChange('permLinkImslp', e.target.value)
@@ -1304,17 +1279,18 @@ const CreateComposerModal = ({
                       <div className="mt-1 flex items-center space-x-1 text-xs text-theme-primary font-bold">
                         <FiLock className="w-3 h-3" />
                         <span>
-                          Campo bloqueado pois foi extraído via scraping do
-                          IMSLP
+                          {t('modal_composer_external_field_locked', {
+                            source: 'IMSLP',
+                          })}
                         </span>
                       </div>
                     )}
                   </div>
 
-                  {/* 🆕 Video URL */}
+                  {/* Video URL */}
                   <div>
                     <Input
-                      label="URL do Vídeo (opcional)"
+                      label={t('modal_composer_external_video')}
                       value={formData.videoUrl}
                       onChange={(e) =>
                         handleInputChange('videoUrl', e.target.value)
@@ -1323,8 +1299,7 @@ const CreateComposerModal = ({
                       leftIcon={<FiPlay />}
                     />
                     <p className="text-xs text-theme-tertiary mt-1">
-                      Link para vídeo documentário, biografia ou apresentação
-                      sobre o compositor
+                      {t('modal_composer_external_video_description')}
                     </p>
                   </div>
                 </div>
@@ -1334,20 +1309,20 @@ const CreateComposerModal = ({
               <AnimatedCard className="classical-card-simple p-4" hover="none">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiUser className="w-5 h-5" />
-                  <span>Biografia</span>
+                  <span>{t('modal_composer_bio_title')}</span>
                 </h3>
 
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Biografia
+                      {t('modal_composer_bio_title')}
                     </label>
                     <textarea
                       value={formData.bio}
                       onChange={(e) => handleInputChange('bio', e.target.value)}
                       rows={7}
                       className="input-classical-2 w-full resize-none"
-                      placeholder="Breve biografia do compositor..."
+                      placeholder={t('modal_composer_bio_placeholder')}
                     />
                   </div>
                 </div>
@@ -1361,7 +1336,7 @@ const CreateComposerModal = ({
                   onClick={onClose}
                   disabled={isSubmitting}
                 >
-                  Cancelar
+                  {t('form_cancel')}
                 </Button>
 
                 <Button
@@ -1377,10 +1352,10 @@ const CreateComposerModal = ({
                   disabled={isSubmitting}
                 >
                   {isSubmitting
-                    ? 'Salvando...'
+                    ? t('form_saving')
                     : editingComposer
-                    ? 'Atualizar Compositor'
-                    : 'Criar Compositor'}
+                    ? t('form_update') + ' Compositor'
+                    : t('form_create') + ' Compositor'}
                 </Button>
               </div>
             </form>

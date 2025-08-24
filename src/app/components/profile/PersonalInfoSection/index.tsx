@@ -32,6 +32,7 @@ import {
   canProceedWithPhone,
   usePhoneValidation,
 } from '@/app/utils/phones_and_location/phoneValidation';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface PersonalInfoSectionProps {
   user: User;
@@ -44,6 +45,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 }) => {
   const { updateUser: globalUpdateUser } = useAuth();
   const { updateUserSession } = useSessionUpdate();
+  const { t } = useTranslation({ sections: ['pages/profile'] });
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -111,21 +113,23 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 
     // Validação de nome
     if (!formData.firstName.trim()) {
-      newErrors.firstName = 'Nome é obrigatório';
+      newErrors.firstName = t('personal_info_first_name_required');
     }
 
     // Validação de bio
     if (formData.bio.length > 500) {
-      newErrors.bio = 'Bio não pode ter mais de 500 caracteres';
+      newErrors.bio = `Bio não pode ter mais de 500 ${t(
+        'personal_info_bio_characters'
+      )}`;
     }
 
     // 🆕 VALIDAÇÃO DE TELEFONE
-
     if (formData.phone && formData.phone.trim() !== '') {
       const phoneValidationResult = validatePhoneNumber(formData.phone);
 
       if (!phoneValidationResult.isValid && !phoneValidationResult.isEmpty) {
-        newErrors.phone = phoneValidationResult.error || 'Telefone inválido';
+        newErrors.phone =
+          phoneValidationResult.error || t('personal_info_phone_invalid');
         console.log('❌ Telefone inválido:', newErrors.phone);
       } else {
         console.log('✅ Telefone válido ou vazio');
@@ -157,7 +161,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 
       // Se houver erro de telefone, mostrar toast específico
       if (errors.phone) {
-        toast.error(`Telefone inválido: ${errors.phone}`);
+        toast.error(`${t('personal_info_phone_invalid')}: ${errors.phone}`);
       }
 
       return;
@@ -272,10 +276,10 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold text-theme-primary">
-            Informações Básicas
+            {t('personal_info_title')}
           </h3>
           <p className="text-sm text-theme-secondary">
-            Suas informações pessoais e de contato
+            {t('personal_info_description')}
           </p>
         </div>
 
@@ -286,7 +290,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
             onClick={() => setIsEditing(true)}
             leftIcon={<FiEdit3 />}
           >
-            Editar
+            {t('personal_info_edit')}
           </Button>
         ) : (
           <div className="flex space-x-2">
@@ -297,7 +301,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               leftIcon={<FiX />}
               disabled={isLoading}
             >
-              Cancelar
+              {t('personal_info_cancel')}
             </Button>
             <Button
               variant="primary"
@@ -305,14 +309,14 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
               onClick={handleSave}
               isLoading={isLoading}
               leftIcon={<FiSave />}
-              disabled={!canProceedWithPhone(formData.phone)} // 🆕 Desabilitar se telefone inválido
+              disabled={!canProceedWithPhone(formData.phone)}
               title={
                 errors.phone
                   ? `Não é possível salvar: ${errors.phone}`
                   : undefined
               }
             >
-              Salvar
+              {t('personal_info_save')}
             </Button>
           </div>
         )}
@@ -331,14 +335,16 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
         />
 
         <div>
-          <h4 className="font-medium text-theme-primary">Foto do Perfil</h4>
+          <h4 className="font-medium text-theme-primary">
+            {t('personal_info_profile_photo')}
+          </h4>
           <p className="text-sm text-theme-secondary mb-2">
-            JPG, PNG ou GIF. Máximo 5MB.
+            {t('personal_info_photo_description')}
           </p>
           <p className="text-xs text-theme-tertiary">
             {user.image
-              ? 'Clique no ícone para alterar sua foto'
-              : 'Clique no ícone para adicionar uma foto'}
+              ? t('personal_info_photo_instruction_change')
+              : t('personal_info_photo_instruction_add')}
           </p>
         </div>
       </div>
@@ -346,23 +352,23 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       {/* Basic Info Form */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Input
-          label="Nome *"
+          label={t('personal_info_first_name_required')}
           name="firstName"
           value={formData.firstName}
           onChange={handleInputChange}
           disabled={!isEditing}
-          placeholder="Seu nome"
+          placeholder={t('personal_info_first_name_placeholder')}
           error={errors.firstName}
           leftIcon={<FiUser className="w-4 h-4" />}
         />
 
         <Input
-          label="Sobrenome"
+          label={t('personal_info_last_name')}
           name="lastName"
           value={formData.lastName}
           onChange={handleInputChange}
           disabled={!isEditing}
-          placeholder="Seu sobrenome"
+          placeholder={t('personal_info_last_name_placeholder')}
           leftIcon={<FiUser className="w-4 h-4" />}
           error={errors.lastName}
         />
@@ -371,7 +377,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       {/* Bio */}
       <div>
         <label className="block text-sm font-medium text-theme-secondary mb-2">
-          Sobre você
+          {t('personal_info_about')}
         </label>
         <div className="relative">
           <textarea
@@ -379,7 +385,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
             value={formData.bio}
             onChange={handleInputChange}
             disabled={!isEditing}
-            placeholder="Conte um pouco sobre sua paixão pela música clássica..."
+            placeholder={t('personal_info_bio_placeholder')}
             className={`input-classical !px-8 w-full h-24 resize-none ${
               !isEditing
                 ? 'bg-theme-secondary bg-opacity-50 cursor-not-allowed'
@@ -389,7 +395,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           />
         </div>
         <p className="text-xs text-theme-tertiary mt-1">
-          {formData.bio.length}/500 caracteres
+          {formData.bio.length}/500 {t('personal_info_bio_characters')}
         </p>
         {errors.bio && (
           <p className="text-xs text-accent-red mt-1">{errors.bio}</p>
@@ -402,10 +408,10 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
           value={formData.phone}
           onChange={handlePhoneChange}
           disabled={!isEditing}
-          label="Telefone"
-          placeholder="Digite seu número"
+          label={t('personal_info_phone')}
+          placeholder={t('personal_info_phone_placeholder')}
           showLabel={true}
-          error={errors.phone} // Passar erro específico do telefone
+          error={errors.phone}
         />
 
         {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE (se editando e houver erro) */}
@@ -414,7 +420,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
             <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
             <div>
               <h4 className="text-sm font-medium text-red-800">
-                Telefone inválido
+                {t('personal_info_phone_invalid')}
               </h4>
               <p className="text-sm text-red-700 mt-1">
                 {phoneValidation.error}
@@ -433,7 +439,9 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
       <div>
         <div className="flex items-center space-x-2 mb-4">
           <FiMapPin className="w-4 h-4 text-brand-primary" />
-          <h4 className="font-medium text-theme-primary">Localização</h4>
+          <h4 className="font-medium text-theme-primary">
+            {t('personal_info_location')}
+          </h4>
         </div>
 
         <LocationSelector
@@ -446,7 +454,7 @@ const PersonalInfoSection: React.FC<PersonalInfoSectionProps> = ({
 
         {!isEditing && !user.city && !user.state && !user.country && (
           <p className="text-sm text-theme-tertiary mt-2 italic">
-            Nenhuma localização definida
+            {t('personal_info_location_not_set')}
           </p>
         )}
       </div>

@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import { FiX, FiRefreshCw } from 'react-icons/fi';
 import { toast } from 'react-hot-toast';
 import Button from '../../Common/Button';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface EmailVerificationBannerProps {
   onDismiss?: () => void;
@@ -21,6 +22,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   customType,
 }) => {
   const { data: session } = useSession();
+  const { t } = useTranslation({ sections: ['pages/profile'] });
   const [isResending, setIsResending] = useState(false);
   const [isDismissed, setIsDismissed] = useState(false);
 
@@ -78,12 +80,10 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
   if (!customMessage) {
     if (!isEmailVerified) {
       bannerType = 'warning';
-      message =
-        'Verifique seu email para acessar todas as funcionalidades, incluindo uploads de arquivos.';
+      message = t('email_banner_verify_message');
     } else {
       bannerType = 'success';
-      message =
-        'Email verificado com sucesso! Todas as funcionalidades estão disponíveis.';
+      message = t('email_banner_verified_message');
     }
   }
 
@@ -107,6 +107,14 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
       break;
   }
 
+  const getBannerTitle = () => {
+    if (bannerType === 'warning') return t('email_banner_verification_pending');
+    if (bannerType === 'success') return t('email_banner_email_verified');
+    if (bannerType === 'info') return t('email_banner_info');
+    if (customType && !customMessage) return t('email_banner_notification');
+    return '';
+  };
+
   return (
     <div
       className={`${bgColor} bg-theme-elevated ${borderColor} rounded-lg p-4 mb-6`}
@@ -115,10 +123,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
         <div className="flex items-start space-x-3 flex-1">
           <div className="flex-1">
             <div className={`font-medium ${textColor} mb-1`}>
-              {bannerType === 'warning' && '⚠️ Verificação de Email Pendente'}
-              {bannerType === 'success' && '✅ Email Verificado'}
-              {bannerType === 'info' && 'ℹ️ Informação'}
-              {customType && !customMessage && 'Notificação'}
+              {getBannerTitle()}
             </div>
             <p className={`text-sm ${textColor} opacity-90 mb-3`}>{message}</p>
 
@@ -132,7 +137,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
                   leftIcon={<FiRefreshCw />}
                   className={`border-accent-amber text-accent-amber hover:bg-accent-amber hover:text-black`}
                 >
-                  Reenviar Verificação
+                  {t('email_banner_resend')}
                 </Button>
               </div>
             )}
@@ -145,7 +150,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
                   onClick={handleDismiss}
                   className={`${textColor} hover:bg-accent-green/20`}
                 >
-                  Entendi
+                  {t('email_banner_understood')}
                 </Button>
               </div>
             )}
@@ -165,7 +170,7 @@ const EmailVerificationBanner2: React.FC<EmailVerificationBannerProps> = ({
         <div className="mt-4 pt-3 border-t border-accent-amber/20">
           <div className="flex items-center text-xs">
             <span className={`${textColor} opacity-75`}>
-              Email: <strong>{user.email}</strong>
+              {t('email_banner_email')} <strong>{user.email}</strong>
             </span>
           </div>
         </div>

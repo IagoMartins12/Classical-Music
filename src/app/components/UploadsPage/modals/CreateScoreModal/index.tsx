@@ -1,4 +1,4 @@
-// app/components/UploadsPage/modals/CreateScoreModal/index.tsx - COM FILTRO DE COMPOSITOR E AGRUPAMENTO INTELIGENTE
+// app/components/UploadsPage/modals/CreateScoreModal/index.tsx - TRADUZIDO
 'use client';
 
 import { useState, useEffect, useRef, useMemo } from 'react';
@@ -43,6 +43,7 @@ import {
   generateAndUploadTempThumbnail,
 } from '@/app/utils/pdfUtils';
 import { useToast } from '@/app/hooks/useToast';
+import { useTranslation } from '@/app/hooks/useTranslation';
 import GroupingSuggestions from '../../GroupingSuggestions';
 import { useSmartFormChanges } from '@/app/hooks/useFormChanges';
 
@@ -52,7 +53,7 @@ interface CreateScoreModalProps {
   works: Array<{
     id: string;
     title: string;
-    composer: { id?: string; name: string; fullName: string }; // 🔧 ADICIONADO id opcional
+    composer: { id?: string; name: string; fullName: string };
   }>;
   editingScore?: any;
 }
@@ -70,25 +71,6 @@ interface Composer {
   worksCount?: number;
 }
 
-const scoreTypeOptions = [
-  { value: 'SCORES', label: 'Partituras' },
-  { value: 'PARTS', label: 'Partes' },
-  { value: 'ARRANGEMENTS', label: 'Arranjos' },
-  { value: 'LIBRETTOS', label: 'Libretos' },
-  { value: 'OTHERS', label: 'Outros' },
-  { value: 'SOURCES', label: 'Fontes' },
-];
-
-const fileFormatOptions = [
-  { value: 'PDF', label: 'PDF' },
-  { value: 'MIDI', label: 'MIDI' },
-  { value: 'MusicXML', label: 'MusicXML' },
-  { value: 'SVG', label: 'SVG' },
-  { value: 'PNG', label: 'PNG' },
-  { value: 'JPG', label: 'JPG' },
-  { value: 'Other', label: 'Outro' },
-];
-
 type UploadMode = 'url' | 'file' | null;
 
 const CreateScoreModal = ({
@@ -98,23 +80,22 @@ const CreateScoreModal = ({
   editingScore,
 }: CreateScoreModalProps) => {
   const router = useRouter();
+  const { t } = useTranslation({ sections: ['pages/uploads'] });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
   const [validatingPDF, setValidatingPDF] = useState(false);
 
-  // 🆕 Estados para filtro de compositor
   const [composerFilter, setComposerFilter] = useState('');
   const [userWorks, setUserWorks] = useState<UserWork[]>([]);
   const [loadingUserWorks, setLoadingUserWorks] = useState(false);
   const [popularComposers, setPopularComposers] = useState<Composer[]>([]);
 
-  // Estados específicos para thumbnails
   const [generatingThumbnail, setGeneratingThumbnail] = useState(false);
   const [thumbnailGenerated, setThumbnailGenerated] = useState(false);
   const [thumbnailError, setThumbnailError] = useState<string | null>(null);
   const [isLargePDF, setIsLargePDF] = useState(false);
 
-  // REFS PARA SCROLL DE VALIDAÇÃO
   const fieldRefs = {
     workId: useRef<HTMLDivElement>(null),
     title: useRef<HTMLInputElement>(null),
@@ -123,10 +104,8 @@ const CreateScoreModal = ({
     composerFilter: useRef<HTMLDivElement>(null),
   };
 
-  // Estados para modo de upload
   const [uploadMode, setUploadMode] = useState<UploadMode>('file');
 
-  // Form state - 🔧 CORRIGIDO O TIPO DO tempThumbnailPath
   const [formData, setFormData] = useState({
     workId: '',
     title: '',
@@ -146,8 +125,7 @@ const CreateScoreModal = ({
     ratingsCount: '',
     downloadCount: '',
     isCustom: true,
-    // 🔧 CORRIGIDO: Definir tipos corretos para evitar erro TypeScript
-    tempThumbnailPath: '', // sempre string, não string | null
+    tempThumbnailPath: '',
     tempPdfPath: '',
   });
 
@@ -159,33 +137,47 @@ const CreateScoreModal = ({
     error?: string;
   }>({ isValidating: false, isValid: false });
 
-  // Estados para upload e thumbnail
   const [generatedThumbnail, setGeneratedThumbnail] = useState<string | null>(
     null
   );
 
-  // ESTADO PARA DADOS DA OBRA (quando editando)
   const [workData, setWorkData] = useState<{
     id: string;
     title: string;
     composer: { name: string; fullName: string };
   } | null>(null);
 
-  // 🆕 CARREGAR COMPOSITORES POPULARES AO ABRIR O MODAL
+  const scoreTypeOptions = [
+    { value: 'SCORES', label: t('score_types_SCORES') },
+    { value: 'PARTS', label: t('score_types_PARTS') },
+    { value: 'ARRANGEMENTS', label: t('score_types_ARRANGEMENTS') },
+    { value: 'LIBRETTOS', label: t('score_types_LIBRETTOS') },
+    { value: 'OTHERS', label: t('score_types_OTHERS') },
+    { value: 'SOURCES', label: t('score_types_SOURCES') },
+  ];
+
+  const fileFormatOptions = [
+    { value: 'PDF', label: t('file_formats_PDF') },
+    { value: 'MIDI', label: t('file_formats_MIDI') },
+    { value: 'MusicXML', label: t('file_formats_MusicXML') },
+    { value: 'SVG', label: t('file_formats_SVG') },
+    { value: 'PNG', label: t('file_formats_PNG') },
+    { value: 'JPG', label: t('file_formats_JPG') },
+    { value: 'Other', label: t('file_formats_Other') },
+  ];
+
   useEffect(() => {
     if (isOpen && popularComposers.length === 0) {
       loadPopularComposers();
     }
   }, [isOpen]);
 
-  // 🆕 CARREGAR OBRAS DO USUÁRIO
   useEffect(() => {
     if (isOpen) {
       loadUserWorks();
     }
   }, [isOpen]);
 
-  // 🆕 Função para carregar compositores populares
   const loadPopularComposers = async () => {
     try {
       const response = await fetch('/api/composers', {
@@ -203,7 +195,6 @@ const CreateScoreModal = ({
     }
   };
 
-  // 🆕 Função para carregar obras do usuário
   const loadUserWorks = async () => {
     setLoadingUserWorks(true);
     try {
@@ -230,13 +221,12 @@ const CreateScoreModal = ({
     }
   };
 
-  // VALIDAÇÕES CUSTOMIZADAS CORRIGIDAS
   const requiredFields = ['workId', 'title', 'downloadUrl'];
   const customValidations = {
     ...scoreModalValidations,
     uploadMode: () => {
       if (!editingScore && !uploadMode) {
-        return 'Escolha entre URL ou upload de arquivo';
+        return t('modal_score_upload_mode_error');
       }
       return null;
     },
@@ -284,7 +274,6 @@ const CreateScoreModal = ({
       ratingsCount: editingScore.ratingsCount?.toString() || '',
       downloadCount: editingScore.downloadCount?.toString() || '',
       isCustom: editingScore.isCustom || true,
-
       tempThumbnailPath: '',
       tempPdfPath: '',
     };
@@ -293,41 +282,18 @@ const CreateScoreModal = ({
   // Populate form when editing
   useEffect(() => {
     if (editingScore && works.length > 0) {
-      console.log('🔧 Inicializando modal de edição:', {
-        editingScore: editingScore.title,
-        workId: editingScore.workId,
-        worksAvailable: works.length,
-      });
-
-      // BUSCAR DADOS DA OBRA
       const work = works.find((w) => w.id === editingScore.workId);
 
       if (work) {
-        console.log('✅ Obra encontrada:', {
-          workTitle: work.title,
-          composerId: work.composer.id,
-          composerName: work.composer.name,
-        });
-
         setWorkData(work);
 
-        // 🔧 SETAR COMPOSITOR AUTOMATICAMENTE QUANDO EDITANDO
         if (work.composer.id) {
           setComposerFilter(work.composer.id);
-          console.log(
-            '✅ Compositor setado automaticamente:',
-            work.composer.name
-          );
         } else {
-          console.log('⚠️ Compositor sem ID, buscando por nome...');
-          // Se não tiver ID, buscar por nome
           findComposerIdByName(work.composer.fullName || work.composer.name);
         }
-      } else {
-        console.error('❌ Obra não encontrada:', editingScore.workId);
       }
 
-      // 🔧 SETAR DADOS DO FORMULÁRIO
       setFormData({
         workId: editingScore.workId || '',
         title: editingScore.title || '',
@@ -347,12 +313,10 @@ const CreateScoreModal = ({
         ratingsCount: editingScore.ratingsCount?.toString() || '',
         downloadCount: editingScore.downloadCount?.toString() || '',
         isCustom: editingScore.isCustom || true,
-
         tempThumbnailPath: '',
         tempPdfPath: '',
       });
 
-      // Determinar modo de upload baseado na URL
       if (editingScore.downloadUrl) {
         if (editingScore.downloadUrl.startsWith('/uploads/')) {
           setUploadMode('file');
@@ -360,14 +324,6 @@ const CreateScoreModal = ({
           setUploadMode('url');
         }
       }
-
-      console.log('✅ Modal de edição inicializado:', {
-        workId: editingScore.workId,
-        composerFilter: work?.composer.id || 'não encontrado',
-        title: editingScore.title,
-      });
-    } else if (editingScore && works.length === 0) {
-      console.log('⏳ Aguardando obras serem carregadas...');
     }
   }, [editingScore, works]);
 
@@ -378,33 +334,19 @@ const CreateScoreModal = ({
     }
   };
 
-  // 🆕 FUNÇÃO PARA SELEÇÃO DE OBRA COM AUTO-SELEÇÃO DE COMPOSITOR
   const handleWorkSelect = (workId: string) => {
     setFormData((prev) => ({ ...prev, workId }));
 
-    // 🆕 AUTO-SELEÇÃO DO COMPOSITOR
     if (workId) {
-      // Primeiro procurar nas obras do usuário
       const userWork = userWorks.find((w) => w.id === workId);
       if (userWork) {
         setComposerFilter(userWork.composer.id);
-        console.log(
-          '🎯 Compositor auto-selecionado (usuário):',
-          userWork.composer.name
-        );
       } else {
-        // Procurar nas obras gerais
         const generalWork = works.find((w) => w.id === workId);
         if (generalWork && generalWork.composer) {
-          // 🔧 VERIFICAR SE TEM ID ANTES DE USAR
           if (generalWork.composer.id) {
             setComposerFilter(generalWork.composer.id);
-            console.log(
-              '🎯 Compositor auto-selecionado (ID):',
-              generalWork.composer.name
-            );
           } else {
-            // Se não tiver ID, buscar pela API usando o nome
             findComposerIdByName(
               generalWork.composer.fullName || generalWork.composer.name
             );
@@ -412,7 +354,6 @@ const CreateScoreModal = ({
         }
       }
     } else {
-      // Se limpar a obra, limpar também o filtro de compositor
       setComposerFilter('');
     }
 
@@ -421,7 +362,6 @@ const CreateScoreModal = ({
     }
   };
 
-  // 🆕 Função para encontrar ID do compositor pelo nome
   const findComposerIdByName = async (composerName: string) => {
     try {
       const response = await fetch('/api/composers', {
@@ -434,10 +374,6 @@ const CreateScoreModal = ({
         const composers = await response.json();
         if (composers.length > 0) {
           setComposerFilter(composers[0].id);
-          console.log(
-            '🎯 Compositor auto-selecionado (API):',
-            composers[0].name
-          );
         }
       }
     } catch (error) {
@@ -445,20 +381,14 @@ const CreateScoreModal = ({
     }
   };
 
-  // 🆕 FUNÇÃO PARA FILTRO DE COMPOSITOR
   const handleComposerFilterChange = (composerId: string) => {
     setComposerFilter(composerId);
-    // Limpar obra selecionada se mudar o filtro manualmente
     if (formData.workId && !editingScore) {
       setFormData((prev) => ({ ...prev, workId: '' }));
     }
   };
 
-  // 🆕 FUNÇÃO PARA AGRUPAMENTO INTELIGENTE
   const handleGroupSelect = (groupIndex: number, groupTitle: string) => {
-    console.log(
-      `🎯 [MODAL] Grupo selecionado: ${groupTitle} (índice: ${groupIndex})`
-    );
     setFormData((prev) => ({
       ...prev,
       groupIndex: groupIndex.toString(),
@@ -466,7 +396,6 @@ const CreateScoreModal = ({
     }));
   };
 
-  // Função para resetar modo de upload
   const resetUploadMode = () => {
     setUploadMode(null);
     setSelectedFile(null);
@@ -485,20 +414,17 @@ const CreateScoreModal = ({
     }));
   };
 
-  // Função para selecionar modo de upload
   const selectUploadMode = (mode: UploadMode) => {
     if (uploadMode && uploadMode !== mode) {
       resetUploadMode();
     }
     setUploadMode(mode);
 
-    // Limpar erro de uploadMode quando selecionado
     if (errors.uploadMode) {
       setErrors((prev) => ({ ...prev, uploadMode: '' }));
     }
   };
 
-  // Validar PDF quando URL for inserida
   const handleUrlChange = async (url: string) => {
     handleInputChange('downloadUrl', url);
 
@@ -527,7 +453,6 @@ const CreateScoreModal = ({
           });
         }
       } catch (error) {
-        console.log('error', error);
         setPdfValidation({
           isValidating: false,
           isValid: false,
@@ -543,7 +468,6 @@ const CreateScoreModal = ({
 
   const toast = useToast();
 
-  // 🔧 FUNÇÃO DE UPLOAD CORRIGIDA - Erro TypeScript resolvido
   const handleFileUpload = async (file: File) => {
     setUploadingFile(true);
     setThumbnailError(null);
@@ -557,22 +481,18 @@ const CreateScoreModal = ({
         return;
       }
 
-      // Verificar se é PDF grande
-      const isLarge = file.size > 10 * 1024 * 1024; // 10MB
+      const isLarge = file.size > 10 * 1024 * 1024;
       setIsLargePDF(isLarge);
 
       if (isLarge) {
         toast.info('📄 PDF grande detectado - processo pode ser mais lento');
       }
 
-      console.log('📤 Iniciando upload do arquivo principal (temporário)...');
-
-      // Upload do PDF principal para pasta temporária
       const tempId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
       uploadFormData.append('type', 'score-temp');
-      uploadFormData.append('userId', '64f5b3a7e123456789abcdef'); // TODO: Pegar do session
+      uploadFormData.append('userId', '64f5b3a7e123456789abcdef');
       uploadFormData.append('tempId', tempId);
 
       const response = await fetch('/api/upload', {
@@ -585,9 +505,7 @@ const CreateScoreModal = ({
       }
 
       const data = await response.json();
-      console.log('✅ Arquivo principal enviado (temporário):', data.url);
 
-      // Gerar thumbnail provisória
       let thumbnailUrl: string | null = null;
       let tempThumbnailPath: string | null | undefined = null;
 
@@ -595,12 +513,9 @@ const CreateScoreModal = ({
         setGeneratingThumbnail(true);
 
         try {
-          console.log('🖼️ Iniciando geração de thumbnail provisória...');
-
-          // Gerar thumbnail usando nova função
           const thumbnailResult = await generateAndUploadTempThumbnail(
             file,
-            '64f5b3a7e123456789abcdef' // TODO: Pegar do session
+            '64f5b3a7e123456789abcdef'
           );
 
           if (thumbnailResult.success && thumbnailResult.thumbnailUrl) {
@@ -608,29 +523,20 @@ const CreateScoreModal = ({
             tempThumbnailPath = thumbnailResult.tempThumbnailPath;
             setGeneratedThumbnail(thumbnailUrl);
             setThumbnailGenerated(true);
-            console.log('✅ Thumbnail provisória gerada:', thumbnailUrl);
 
-            toast.success('Preview da partitura gerado com sucesso!');
+            toast.success(t('modal_score_file_preview_success'));
           } else {
-            console.warn(
-              '⚠️ Não foi possível gerar thumbnail:',
-              thumbnailResult.error
-            );
             setThumbnailError(thumbnailResult.error || 'Erro desconhecido');
-
             toast.info('⚠️ Preview não disponível - usando placeholder');
           }
         } catch (error) {
-          console.warn('⚠️ Erro ao gerar thumbnail:', error);
           setThumbnailError('Erro ao gerar preview');
-
           toast.error('⚠️ Erro ao gerar preview da partitura');
         } finally {
           setGeneratingThumbnail(false);
         }
       }
 
-      // 🔧 CORRIGIDO: Garantir que tempThumbnailPath seja sempre string
       setFormData((prev) => ({
         ...prev,
         downloadUrl: data.url,
@@ -640,27 +546,16 @@ const CreateScoreModal = ({
           prev.title || validation.title || file.name.replace(/\.[^/.]+$/, ''),
         fileFormat: getFileExtension(file.name).toUpperCase(),
         thumbnailUrl: thumbnailUrl || prev.thumbnailUrl,
-        // 🔧 CORRIGIDO: Usar || '' para garantir que seja sempre string
-        tempPdfPath: data.url, // URL do PDF temporário
-        tempThumbnailPath: tempThumbnailPath || '', // 🔧 CORRIGIDO: Garantir string
+        tempPdfPath: data.url,
+        tempThumbnailPath: tempThumbnailPath || '',
       }));
 
       setSelectedFile(file);
       setPdfValidation({ isValidating: false, isValid: true });
 
-      // LIMPAR ERRO DE DOWNLOAD URL QUANDO ARQUIVO FOR CARREGADO
       if (errors.downloadUrl) {
         setErrors((prev) => ({ ...prev, downloadUrl: '' }));
       }
-
-      console.log('✅ Upload temporário completo:', {
-        mainFile: data.url,
-        thumbnail: thumbnailUrl,
-        tempPdfPath: data.url,
-        tempThumbnailPath: tempThumbnailPath || '',
-        fileSize: validation.fileSize,
-        pageCount: validation.pageCount,
-      });
     } catch (error) {
       console.error('❌ Erro no upload:', error);
       toast.error('Erro ao fazer upload do arquivo');
@@ -674,7 +569,6 @@ const CreateScoreModal = ({
     }
   };
 
-  // VALIDAÇÃO MELHORADA COM SCROLL
   const handleValidation = () => {
     const { isValid, errors: validationErrors } = validateForm(formData);
     setErrors(validationErrors);
@@ -684,7 +578,6 @@ const CreateScoreModal = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // USAR VALIDAÇÃO CUSTOMIZADA (SEM required DO HTML)
     if (!handleValidation()) {
       return;
     }
@@ -692,16 +585,6 @@ const CreateScoreModal = ({
     setIsSubmitting(true);
 
     try {
-      console.log('📝 Dados do formulário antes do submit:', {
-        downloadUrl: formData.downloadUrl,
-        thumbnailUrl: formData.thumbnailUrl,
-        tempPdfPath: formData.tempPdfPath,
-        tempThumbnailPath: formData.tempThumbnailPath,
-        hasTemporaryFiles: !!(
-          formData.tempPdfPath || formData.tempThumbnailPath
-        ),
-      });
-
       const submitData = {
         ...formData,
         groupIndex: formData.groupIndex ? parseInt(formData.groupIndex) : 0,
@@ -722,14 +605,6 @@ const CreateScoreModal = ({
         tempThumbnailPath: formData.tempThumbnailPath,
       };
 
-      console.log('🚀 Enviando dados para API:', {
-        hasTemporaryFiles: submitData.hasTemporaryFiles,
-        tempPdfPath: submitData.tempPdfPath,
-        tempThumbnailPath: submitData.tempThumbnailPath,
-        downloadUrl: submitData.downloadUrl,
-        thumbnailUrl: submitData.thumbnailUrl,
-      });
-
       const url = editingScore
         ? `/api/uploads/score/${editingScore.id}`
         : '/api/uploads/score';
@@ -747,7 +622,6 @@ const CreateScoreModal = ({
       const data = await response.json();
 
       if (response.ok) {
-        console.log('✅ Resposta da API:', data);
         router.refresh();
         onClose();
         toast.success(data.message || 'Partitura salva com sucesso!');
@@ -768,14 +642,14 @@ const CreateScoreModal = ({
     return filename.split('.').pop() || '';
   };
 
-  // 🆕 Determinar se deve desabilitar o filtro de compositor
   const shouldDisableComposerFilter = !!formData.workId && !editingScore;
 
-  const hasChanges = useSmartFormChanges(
-    formData,
-    originalData, // Se null = modo criação, se preenchido = modo edição
-    ['fileFormat', 'isCustom', 'type', 'groupIndex']
-  );
+  const hasChanges = useSmartFormChanges(formData, originalData, [
+    'fileFormat',
+    'isCustom',
+    'type',
+    'groupIndex',
+  ]);
 
   if (!isOpen) return null;
 
@@ -790,9 +664,9 @@ const CreateScoreModal = ({
       }}
       maxWidth="4xl"
       showCloseButton={true}
-      confirmOnClose={true} // Ativa confirmação
-      hasChanges={hasChanges} // Detecta mudanças
-      isProcessing={isSubmitting} // Detecta processo
+      confirmOnClose={true}
+      hasChanges={hasChanges}
+      isProcessing={isSubmitting}
       processName="criação de partitura"
     >
       <AnimatedItem direction="scale" springType="bouncy" className="w-full">
@@ -806,30 +680,30 @@ const CreateScoreModal = ({
               <div>
                 <h2 className="text-xl font-bold text-theme-primary classical-title">
                   {editingScore
-                    ? 'Editar Partitura'
-                    : 'Nova Partitura Personalizada'}
+                    ? t('modal_score_title_edit')
+                    : t('modal_score_title_create')}
                 </h2>
                 <p className="text-theme-secondary text-sm">
                   {editingScore
-                    ? 'Atualize as informações da partitura'
-                    : 'Adicione uma nova partitura personalizada à obra'}
+                    ? t('modal_score_subtitle_edit')
+                    : t('modal_score_subtitle_create')}
                 </p>
               </div>
             </div>
             <div className="px-3 py-1 bg-accent-purple/20 text-accent-purple rounded-full text-xs font-medium">
-              PERSONALIZADA
+              {t('modal_score_badge_custom')}
             </div>
           </div>
 
           {/* Content */}
           <div className="p-6">
             <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-              {/* Upload Mode Selection - Apenas para criação nova */}
+              {/* Upload Mode Selection */}
               {!editingScore && (
                 <AnimatedCard className="classical-card-2 p-4">
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                     <FiUpload className="w-5 h-5" />
-                    <span>Modo de Upload</span>
+                    <span>{t('modal_score_upload_mode_title')}</span>
                   </h3>
 
                   <div className="space-y-4" ref={fieldRefs.uploadMode}>
@@ -855,9 +729,11 @@ const CreateScoreModal = ({
                             <FiLink className="w-4 h-4" />
                           </div>
                           <div className="text-left">
-                            <h4 className="font-medium">URL do Arquivo</h4>
+                            <h4 className="font-medium">
+                              {t('modal_score_upload_url')}
+                            </h4>
                             <p className="text-xs opacity-75">
-                              Link direto para o arquivo
+                              {t('modal_score_upload_url_description')}
                             </p>
                           </div>
                         </div>
@@ -884,16 +760,17 @@ const CreateScoreModal = ({
                             <FiUpload className="w-4 h-4" />
                           </div>
                           <div className="text-left">
-                            <h4 className="font-medium">Upload de Arquivo</h4>
+                            <h4 className="font-medium">
+                              {t('modal_score_upload_file')}
+                            </h4>
                             <p className="text-xs opacity-75">
-                              Enviar arquivo do computador
+                              {t('modal_score_upload_file_description')}
                             </p>
                           </div>
                         </div>
                       </button>
                     </div>
 
-                    {/* ERRO DE MODO DE UPLOAD */}
                     {errors.uploadMode && (
                       <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                         <div className="flex items-center space-x-2">
@@ -913,7 +790,7 @@ const CreateScoreModal = ({
                 <AnimatedCard className="classical-card-2 p-4">
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                     <FiUpload className="w-5 h-5" />
-                    <span>Upload de Arquivo</span>
+                    <span>{t('modal_score_file_upload_title')}</span>
                   </h3>
 
                   <div className="space-y-4">
@@ -944,7 +821,7 @@ const CreateScoreModal = ({
                         <div className="flex items-center justify-center space-x-2">
                           <FiLoader className="w-6 h-6 animate-spin text-brand-primary" />
                           <span className="text-theme-secondary">
-                            Fazendo upload...
+                            {t('modal_score_file_uploading')}
                           </span>
                         </div>
                       ) : selectedFile ? (
@@ -959,15 +836,14 @@ const CreateScoreModal = ({
                             </span>
                           </div>
 
-                          {/* Status da geração de thumbnail */}
                           {generatingThumbnail && (
                             <div className="mt-4 text-center">
                               <div className="flex items-center justify-center space-x-2 text-sm text-brand-primary">
                                 <FiLoader className="w-4 h-4 animate-spin" />
                                 <span>
                                   {isLargePDF
-                                    ? 'Gerando preview (PDF grande - pode levar alguns segundos)...'
-                                    : 'Gerando preview da partitura...'}
+                                    ? t('modal_score_file_preview_large')
+                                    : t('modal_score_file_preview_generating')}
                                 </span>
                               </div>
                               {isLargePDF && (
@@ -979,7 +855,6 @@ const CreateScoreModal = ({
                             </div>
                           )}
 
-                          {/* Thumbnail gerada com sucesso */}
                           {generatedThumbnail && thumbnailGenerated && (
                             <div className="mt-4 text-center">
                               <div className="w-24 h-32 mx-auto rounded border border-theme-primary/30 overflow-hidden shadow-theme-small">
@@ -994,12 +869,13 @@ const CreateScoreModal = ({
                             </div>
                           )}
 
-                          {/* Erro na geração de thumbnail */}
                           {thumbnailError && !generatingThumbnail && (
                             <div className="mt-4 text-center">
                               <div className="flex items-center justify-center space-x-2 text-sm text-amber-600 mb-2">
                                 <FiAlertCircle className="w-4 h-4" />
-                                <span>Preview não disponível</span>
+                                <span>
+                                  {t('modal_score_file_preview_unavailable')}
+                                </span>
                               </div>
                               <div className="text-xs text-theme-tertiary">
                                 {thumbnailError}
@@ -1011,20 +887,18 @@ const CreateScoreModal = ({
                         <div>
                           <FiUpload className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                           <p className="text-theme-secondary">
-                            Clique aqui ou arraste um arquivo para fazer upload
+                            {t('modal_score_file_drop_text')}
                           </p>
                           <p className="text-theme-tertiary text-sm mt-2">
-                            Formatos suportados: PDF, MIDI, MusicXML, SVG, PNG,
-                            JPG
+                            {t('modal_score_file_formats')}
                           </p>
                           <p className="text-theme-tertiary text-xs mt-1">
-                            🖼️ Para PDFs, será gerado um preview automaticamente
+                            🖼️ {t('modal_score_file_pdf_preview')}
                           </p>
                         </div>
                       )}
                     </div>
 
-                    {/* ERRO DE UPLOAD DE ARQUIVO */}
                     {errors.downloadUrl && uploadMode === 'file' && (
                       <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                         <div className="flex items-center space-x-2">
@@ -1046,7 +920,7 @@ const CreateScoreModal = ({
                         className="flex items-center space-x-2 mx-auto text-sm text-theme-tertiary hover:text-accent-red transition-colors"
                       >
                         <FiX className="w-4 h-4" />
-                        <span>Remover arquivo</span>
+                        <span>{t('modal_score_file_remove')}</span>
                       </button>
                     )}
                   </div>
@@ -1058,7 +932,7 @@ const CreateScoreModal = ({
                 <AnimatedCard className="classical-card-2 p-4">
                   <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                     <FiLink className="w-5 h-5" />
-                    <span>URL do Arquivo</span>
+                    <span>{t('modal_score_url_title')}</span>
                   </h3>
 
                   <Input
@@ -1071,18 +945,17 @@ const CreateScoreModal = ({
                     leftIcon={<FiLink />}
                   />
 
-                  {/* Validação de PDF */}
                   {validatingPDF && (
                     <div className="mt-2 flex items-center space-x-2 text-sm text-brand-primary">
                       <FiLoader className="w-4 h-4 animate-spin" />
-                      <span>Validando PDF...</span>
+                      <span>{t('modal_score_url_validating')}</span>
                     </div>
                   )}
 
                   {pdfValidation.isValid && (
                     <div className="mt-2 flex items-center space-x-2 text-sm text-accent-green">
                       <FiCheck className="w-4 h-4" />
-                      <span>PDF válido e acessível</span>
+                      <span>{t('modal_score_url_valid')}</span>
                     </div>
                   )}
 
@@ -1099,23 +972,22 @@ const CreateScoreModal = ({
                 </AnimatedCard>
               )}
 
-              {/* 🆕 SEÇÃO DE SELEÇÃO DE OBRA COM FILTRO DE COMPOSITOR */}
+              {/* Work Selection */}
               <AnimatedCard className="classical-card-2 p-4 relative z-50">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiInfo className="w-5 h-5" />
-                  <span>Seleção de Obra</span>
+                  <span>{t('modal_score_work_selection_title')}</span>
                 </h3>
 
                 <div className="space-y-4">
-                  {/* 🆕 Filtro de Compositor */}
                   <div ref={fieldRefs.composerFilter}>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
                       <div className="flex items-center space-x-2">
                         <FiFilter className="w-4 h-4" />
-                        <span>Filtrar por Compositor</span>
+                        <span>{t('modal_score_work_filter_composer')}</span>
                         {shouldDisableComposerFilter && (
                           <span className="text-xs text-accent-blue">
-                            (Selecionado automaticamente)
+                            {t('modal_score_work_filter_auto_selected')}
                           </span>
                         )}
                       </div>
@@ -1130,23 +1002,20 @@ const CreateScoreModal = ({
 
                     {shouldDisableComposerFilter && (
                       <p className="text-xs text-theme-tertiary mt-2">
-                        💡 O compositor foi selecionado automaticamente baseado
-                        na obra escolhida. Limpe a obra para alterar o
-                        compositor.
+                        💡 {t('modal_score_work_filter_tip')}
                       </p>
                     )}
 
                     {editingScore && (
                       <p className="text-xs text-theme-tertiary mt-2">
-                        💡 Compositor não pode ser alterado durante a edição.
+                        💡 {t('modal_score_work_edit_tip')}
                       </p>
                     )}
                   </div>
 
-                  {/* Seleção de Obra */}
                   <div ref={fieldRefs.workId}>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Obra *
+                      {t('modal_score_work_label')} *
                     </label>
 
                     {editingScore && workData ? (
@@ -1180,7 +1049,6 @@ const CreateScoreModal = ({
                           title: work.title,
                           composer: work.composer,
                         }))}
-                        // 🆕 PROPS PARA FUNCIONALIDADES NOVAS
                         filterByComposer={composerFilter}
                         userSuggestions={userWorks}
                         loadingUserSuggestions={loadingUserWorks}
@@ -1189,30 +1057,27 @@ const CreateScoreModal = ({
                     )}
                     {editingScore && workData && (
                       <p className="text-xs text-theme-tertiary mt-2">
-                        A obra não pode ser alterada durante a edição.
+                        {t('modal_score_work_edit_locked')}
                       </p>
                     )}
                   </div>
 
-                  {/* Informações sobre sugestões */}
                   {!editingScore && !loadingUserWorks && (
                     <div className="bg-theme-secondary/10 rounded-lg p-3">
                       <div className="flex items-start space-x-2">
                         <FiInfo className="w-4 h-4 text-theme-tertiary mt-0.5" />
                         <div className="text-xs text-theme-tertiary">
                           <p className="font-medium mb-1">
-                            💡 Sugestões Inteligentes:
+                            💡 {t('modal_score_work_suggestions_title')}
                           </p>
                           {userWorks.length > 0 ? (
                             <p>
-                              Mostrando suas obras primeiro ({userWorks.length}{' '}
-                              encontradas), seguidas por obras populares.
+                              {t('modal_score_work_suggestions_with_works', {
+                                count: userWorks.length,
+                              })}
                             </p>
                           ) : (
-                            <p>
-                              Como você ainda não tem obras cadastradas,
-                              mostramos obras populares de compositores famosos.
-                            </p>
+                            <p>{t('modal_score_work_suggestions_no_works')}</p>
                           )}
                         </div>
                       </div>
@@ -1225,12 +1090,12 @@ const CreateScoreModal = ({
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiInfo className="w-5 h-5" />
-                  <span>Informações Básicas</span>
+                  <span>{t('modal_score_basic_info_title')}</span>
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
-                    label="Título *"
+                    label={`${t('modal_score_basic_title')} *`}
                     ref={fieldRefs.title}
                     value={formData.title}
                     onChange={(e) => handleInputChange('title', e.target.value)}
@@ -1240,7 +1105,7 @@ const CreateScoreModal = ({
 
                   <div>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Tipo
+                      {t('modal_score_basic_type')}
                     </label>
                     <Select
                       options={scoreTypeOptions}
@@ -1253,7 +1118,7 @@ const CreateScoreModal = ({
 
                   <div>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Formato
+                      {t('modal_score_basic_format')}
                     </label>
                     <Select
                       options={fileFormatOptions}
@@ -1265,7 +1130,7 @@ const CreateScoreModal = ({
                   </div>
 
                   <Input
-                    label="Tamanho do Arquivo"
+                    label={t('modal_score_basic_file_size')}
                     value={formData.fileSize}
                     onChange={(e) =>
                       handleInputChange('fileSize', e.target.value)
@@ -1275,7 +1140,7 @@ const CreateScoreModal = ({
                   />
 
                   <Input
-                    label="Número de Páginas"
+                    label={t('modal_score_basic_pages')}
                     value={formData.pageCount}
                     onChange={(e) =>
                       handleInputChange('pageCount', e.target.value)
@@ -1290,12 +1155,12 @@ const CreateScoreModal = ({
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiFileText className="w-5 h-5" />
-                  <span>Informações de Publicação</span>
+                  <span>{t('modal_score_publication_title')}</span>
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
-                    label="Editor"
+                    label={t('modal_score_publication_editor')}
                     value={formData.editor}
                     onChange={(e) =>
                       handleInputChange('editor', e.target.value)
@@ -1304,7 +1169,7 @@ const CreateScoreModal = ({
                   />
 
                   <Input
-                    label="Editora"
+                    label={t('modal_score_publication_publisher')}
                     value={formData.publisher}
                     onChange={(e) =>
                       handleInputChange('publisher', e.target.value)
@@ -1313,7 +1178,7 @@ const CreateScoreModal = ({
                   />
 
                   <Input
-                    label="Copyright"
+                    label={t('modal_score_publication_copyright')}
                     value={formData.copyright}
                     onChange={(e) =>
                       handleInputChange('copyright', e.target.value)
@@ -1323,7 +1188,7 @@ const CreateScoreModal = ({
 
                   {!generatedThumbnail && (
                     <Input
-                      label="URL da Miniatura"
+                      label={t('modal_score_publication_thumbnail')}
                       value={formData.thumbnailUrl}
                       onChange={(e) =>
                         handleInputChange('thumbnailUrl', e.target.value)
@@ -1335,20 +1200,21 @@ const CreateScoreModal = ({
                 </div>
               </AnimatedCard>
 
-              {/* 🆕 AGRUPAMENTO INTELIGENTE */}
+              {/* Score Grouping */}
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiTag className="w-5 h-5" />
-                  <span>Agrupamento de Partituras</span>
+                  <span>{t('modal_score_grouping_title')}</span>
                 </h3>
 
                 <div className="space-y-6">
-                  {/* 🆕 Sugestões de Agrupamento Inteligente */}
                   {formData.workId && (
                     <div>
                       <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
                         <FiTarget className="w-4 h-4 text-accent-green" />
-                        <span>Sugestões de Agrupamento</span>
+                        <span>
+                          {t('modal_score_grouping_suggestions_title')}
+                        </span>
                       </h4>
 
                       <GroupingSuggestions
@@ -1361,16 +1227,15 @@ const CreateScoreModal = ({
                     </div>
                   )}
 
-                  {/* Manual Group Configuration */}
                   <div>
                     <h4 className="text-sm font-semibold text-theme-primary mb-3 flex items-center space-x-2">
                       <FiSettings className="w-4 h-4 text-theme-tertiary" />
-                      <span>Configuração Manual</span>
+                      <span>{t('modal_score_grouping_manual_title')}</span>
                     </h4>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <Input
-                        label="Índice do Grupo"
+                        label={t('modal_score_grouping_index')}
                         value={formData.groupIndex}
                         onChange={(e) =>
                           handleInputChange('groupIndex', e.target.value)
@@ -1381,7 +1246,7 @@ const CreateScoreModal = ({
                       />
 
                       <Input
-                        label="Título do Grupo"
+                        label={t('modal_score_grouping_title_field')}
                         value={formData.groupTitle}
                         onChange={(e) =>
                           handleInputChange('groupTitle', e.target.value)
@@ -1391,34 +1256,27 @@ const CreateScoreModal = ({
                     </div>
                   </div>
 
-                  {/* Info Helper */}
                   <div className="p-4 bg-theme-secondary/10 rounded-lg">
                     <h4 className="font-medium text-theme-primary mb-2 flex items-center space-x-2">
                       <FiInfo className="w-4 h-4" />
-                      <span>Como funciona o agrupamento?</span>
+                      <span>{t('modal_score_grouping_how_title')}</span>
                     </h4>
                     <p className="text-sm text-theme-secondary">
-                      Partituras do mesmo grupo são exibidas juntas, seguindo o
-                      padrão IMSLP. Use o <strong>Índice do Grupo</strong> para
-                      organizar a ordem (0, 1, 2...) e o{' '}
-                      <strong>Título do Grupo</strong> para dar nome ao
-                      conjunto.
+                      {t('modal_score_grouping_how_description')}
                     </p>
                     <div className="mt-3 text-xs text-theme-tertiary">
                       <p>
-                        💡 <strong>Exemplo:</strong> Études de Chopin Op.10
+                        💡{' '}
+                        <strong>
+                          {t('modal_score_grouping_example_title')}
+                        </strong>
                       </p>
-                      <p>
-                        • Grupo 0: &quot;Partitura Completa&quot; (todos os 12
-                        études)
+                      <p>• {t('modal_score_grouping_example_group0')}</p>
+                      <p className="">
+                        • {t('modal_score_grouping_example_group1')}.
                       </p>
                       <p className="">
-                        • Grupo 1: &quot;Études Individuais&quot; (étude nº 1,
-                        2, 3...).
-                      </p>
-                      <p className="">
-                        • Você pode ir aumentando o indice para melhorar o
-                        agrupamento
+                        • {t('modal_score_grouping_example_tip')}
                       </p>
                     </div>
                   </div>
@@ -1429,13 +1287,13 @@ const CreateScoreModal = ({
               <AnimatedCard className="classical-card-2 p-4">
                 <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                   <FiInfo className="w-5 h-5" />
-                  <span>Notas e Informações Adicionais</span>
+                  <span>{t('modal_score_notes_title')}</span>
                 </h3>
 
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                      Notas
+                      {t('modal_score_notes_label')}
                     </label>
                     <textarea
                       value={formData.notes}
@@ -1444,7 +1302,7 @@ const CreateScoreModal = ({
                       }
                       rows={3}
                       className="input-classical-2 w-full resize-none"
-                      placeholder="Notas sobre a partitura, origem, qualidade, etc..."
+                      placeholder={t('modal_score_notes_placeholder')}
                     />
                   </div>
                 </div>
@@ -1458,7 +1316,7 @@ const CreateScoreModal = ({
                   onClick={onClose}
                   disabled={isSubmitting}
                 >
-                  Cancelar
+                  {t('form_cancel')}
                 </Button>
 
                 <Button
@@ -1474,10 +1332,10 @@ const CreateScoreModal = ({
                   disabled={isSubmitting || (!editingScore && !uploadMode)}
                 >
                   {isSubmitting
-                    ? 'Salvando...'
+                    ? t('form_saving')
                     : editingScore
-                    ? 'Atualizar Partitura'
-                    : 'Criar Partitura'}
+                    ? t('form_update') + ' Partitura'
+                    : t('form_create') + ' Partitura'}
                 </Button>
               </div>
             </form>
