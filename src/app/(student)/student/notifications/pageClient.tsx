@@ -27,23 +27,17 @@ import {
 import { NotificationData } from '@/app/types/notification';
 import { useToast } from '@/app/hooks/useToast';
 import Select from '@/app/components/Common/Select';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface StudentNotificationsPageClientProps {
   initialNotifications: NotificationData[];
   unreadCount: number;
   notificationStats: Array<{ type: string; _count: { id: number } }>;
-
   errorMessage?: string;
 }
 
 type FilterType = 'all' | 'unread' | 'lessons' | 'assignments' | 'practice';
 type SortType = 'newest' | 'oldest' | 'priority';
-
-export const NotificatiosSelectFIlter = [
-  { value: 'newest', label: 'Mais Recentes' },
-  { value: 'oldest', label: 'Mais Antigas' },
-  { value: 'priority', label: 'Por Prioridade' },
-];
 
 export default function StudentNotificationsPageClient({
   initialNotifications,
@@ -51,6 +45,8 @@ export default function StudentNotificationsPageClient({
   notificationStats,
   errorMessage,
 }: StudentNotificationsPageClientProps) {
+  const { t } = useTranslation({ sections: ['student/notifications'] });
+
   const [notifications, setNotifications] =
     useState<NotificationData[]>(initialNotifications);
   const [unreadCount, setUnreadCount] = useState(initialUnreadCount);
@@ -62,7 +58,11 @@ export default function StudentNotificationsPageClient({
 
   const toast = useToast();
 
-  console.log('notifications', notifications);
+  const NotificationsSelectFilter = [
+    { value: 'newest', label: t('sort_newest') },
+    { value: 'oldest', label: t('sort_oldest') },
+    { value: 'priority', label: t('sort_priority') },
+  ];
 
   const filteredNotifications = notifications
     .filter((notification) => {
@@ -117,13 +117,13 @@ export default function StudentNotificationsPageClient({
             )
           );
           setUnreadCount((prev) => Math.max(0, prev - 1));
-          toast.success('Notificação marcada como lida');
+          toast.success(t('notification_marked_read'));
         }
       } catch {
-        toast.error('Erro ao marcar notificação como lida');
+        toast.error(t('error_mark_read'));
       }
     },
-    [toast]
+    [toast, t]
   );
 
   const markAllAsRead = useCallback(async () => {
@@ -142,14 +142,14 @@ export default function StudentNotificationsPageClient({
           }))
         );
         setUnreadCount(0);
-        toast.success('Todas as notificações marcadas como lidas');
+        toast.success(t('all_notifications_marked_read'));
       }
     } catch {
-      toast.error('Erro ao marcar todas como lidas');
+      toast.error(t('error_mark_all_read'));
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [toast, t]);
 
   const loadMoreNotifications = useCallback(async () => {
     if (loading || !hasMore) return;
@@ -172,11 +172,11 @@ export default function StudentNotificationsPageClient({
         }
       }
     } catch {
-      toast.error('Erro ao carregar mais notificações');
+      toast.error(t('error_load_more'));
     } finally {
       setLoading(false);
     }
-  }, [loading, hasMore, page, toast]);
+  }, [loading, hasMore, page, toast, t]);
 
   const formatTime = (date: Date | string) => {
     const now = new Date();
@@ -186,12 +186,12 @@ export default function StudentNotificationsPageClient({
 
     if (diffInHours < 1) {
       const diffInMinutes = Math.floor(diffInHours * 60);
-      return `${diffInMinutes} min atrás`;
+      return t('time_minutes_ago', { minutes: diffInMinutes });
     } else if (diffInHours < 24) {
-      return `${Math.floor(diffInHours)}h atrás`;
+      return t('time_hours_ago', { hours: Math.floor(diffInHours) });
     } else {
       const diffInDays = Math.floor(diffInHours / 24);
-      return `${diffInDays}d atrás`;
+      return t('time_days_ago', { days: diffInDays });
     }
   };
 
@@ -237,6 +237,24 @@ export default function StudentNotificationsPageClient({
     }
   };
 
+  const getPriorityLabel = (priority: string) => {
+    const priorityMap: { [key: string]: string } = {
+      HIGH: t('priority_urgent'),
+      CRITICAL: t('priority_critical'),
+      MEDIUM: t('priority_important'),
+      LOW: t('priority_informative'),
+    };
+    return priorityMap[priority] || priority;
+  };
+
+  const getTypeLabel = (type: string) => {
+    if (type.includes('LESSON')) return t('type_lesson');
+    if (type.includes('ASSIGNMENT')) return t('type_assignment');
+    if (type.includes('PRACTICE')) return t('type_study');
+    if (type.includes('FEEDBACK')) return t('type_feedback');
+    return t('type_general');
+  };
+
   if (errorMessage) {
     return (
       <PageContainer showBackground={true}>
@@ -244,14 +262,14 @@ export default function StudentNotificationsPageClient({
           <div className="classical-card p-8 text-center max-w-md">
             <FiAlertTriangle className="w-16 h-16 text-accent-red mx-auto mb-4" />
             <h1 className="text-xl font-bold text-theme-primary mb-2">
-              Erro ao Carregar
+              {t('error_loading')}
             </h1>
             <p className="text-theme-secondary mb-4">{errorMessage}</p>
             <button
               onClick={() => window.location.reload()}
               className="btn-classical-primary"
             >
-              Tentar Novamente
+              {t('error_try_again')}
             </button>
           </div>
         </div>
@@ -271,10 +289,10 @@ export default function StudentNotificationsPageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Suas Notificações
+              {t('title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Acompanhe suas aulas, tarefas e progresso musical
+              {t('subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -306,14 +324,14 @@ export default function StudentNotificationsPageClient({
                     {getFilterIcon(filterType)}
                     <span className="capitalize">
                       {filterType === 'all'
-                        ? 'Todas'
+                        ? t('filter_all')
                         : filterType === 'unread'
-                        ? 'Não Lidas'
+                        ? t('filter_unread')
                         : filterType === 'lessons'
-                        ? 'Aulas'
+                        ? t('filter_lessons')
                         : filterType === 'assignments'
-                        ? 'Tarefas'
-                        : 'Estudos'}
+                        ? t('filter_assignments')
+                        : t('filter_studies')}
                     </span>
                   </button>
                 ))}
@@ -322,7 +340,7 @@ export default function StudentNotificationsPageClient({
               {/* Actions */}
               <div className="flex items-center space-x-3">
                 <Select
-                  options={NotificatiosSelectFIlter}
+                  options={NotificationsSelectFilter}
                   value={sort}
                   onChange={(e) => setSort(e.target.value as SortType)}
                 />
@@ -333,7 +351,7 @@ export default function StudentNotificationsPageClient({
                     className="btn-classical-secondary flex items-center space-x-2"
                   >
                     <FiCheckCircle className="w-4 h-4" />
-                    <span>Marcar Todas</span>
+                    <span>{t('mark_all')}</span>
                   </button>
                 )}
               </div>
@@ -400,26 +418,12 @@ export default function StudentNotificationsPageClient({
                                       : 'bg-accent-green/10 text-accent-green'
                                   }`}
                                 >
-                                  {notification.priority === 'HIGH'
-                                    ? 'Urgente'
-                                    : notification.priority === 'CRITICAL'
-                                    ? 'Crítica'
-                                    : notification.priority === 'MEDIUM'
-                                    ? 'Importante'
-                                    : 'Informativa'}
+                                  {getPriorityLabel(notification.priority)}
                                 </span>
 
                                 {/* Type Badge */}
                                 <span className="px-2 py-1 rounded-full text-xs bg-theme-elevated border border-theme-secondary">
-                                  {notification.type.includes('LESSON')
-                                    ? '📅 Aula'
-                                    : notification.type.includes('ASSIGNMENT')
-                                    ? '📝 Tarefa'
-                                    : notification.type.includes('PRACTICE')
-                                    ? '🎵 Estudo'
-                                    : notification.type.includes('FEEDBACK')
-                                    ? '💬 Feedback'
-                                    : '📢 Geral'}
+                                  {getTypeLabel(notification.type)}
                                 </span>
                               </div>
                             </div>
@@ -433,7 +437,7 @@ export default function StudentNotificationsPageClient({
                                   className="btn-classical-primary text-sm flex items-center space-x-1"
                                 >
                                   <span>
-                                    {notification.actionText || 'Ver'}
+                                    {notification.actionText || t('view')}
                                   </span>
                                   <FiExternalLink className="w-3 h-3" />
                                 </Link>
@@ -443,7 +447,7 @@ export default function StudentNotificationsPageClient({
                                 <button
                                   onClick={() => markAsRead(notification.id)}
                                   className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
-                                  title="Marcar como lida"
+                                  title={t('mark_read')}
                                 >
                                   <FiCheck className="w-4 h-4 text-theme-tertiary hover:text-accent-green" />
                                 </button>
@@ -467,7 +471,7 @@ export default function StudentNotificationsPageClient({
                       <FiRefreshCw
                         className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                       />
-                      <span>{loading ? 'Carregando...' : 'Carregar Mais'}</span>
+                      <span>{loading ? t('loading') : t('load_more')}</span>
                     </button>
                   </div>
                 )}
@@ -477,13 +481,11 @@ export default function StudentNotificationsPageClient({
                 <FiBell className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
                   {filter === 'all'
-                    ? 'Nenhuma notificação'
-                    : 'Nenhuma notificação encontrada'}
+                    ? t('no_notifications')
+                    : t('no_notifications_found')}
                 </h3>
                 <p className="text-theme-secondary mb-6">
-                  {filter === 'all'
-                    ? 'Você está em dia! Não há notificações pendentes.'
-                    : 'Tente ajustar os filtros para ver outras notificações.'}
+                  {filter === 'all' ? t('up_to_date') : t('adjust_filters')}
                 </p>
 
                 {filter !== 'all' && (
@@ -491,7 +493,7 @@ export default function StudentNotificationsPageClient({
                     onClick={() => setFilter('all')}
                     className="btn-classical-primary"
                   >
-                    Ver Todas as Notificações
+                    {t('view_all_notifications')}
                   </button>
                 )}
 
@@ -501,7 +503,7 @@ export default function StudentNotificationsPageClient({
                     className="btn-classical-primary inline-flex items-center space-x-2"
                   >
                     <FiBookOpen className="w-4 h-4" />
-                    <span>Explorar Estudos</span>
+                    <span>{t('explore_studies')}</span>
                   </Link>
                 )}
               </div>

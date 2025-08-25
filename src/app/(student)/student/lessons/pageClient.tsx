@@ -31,6 +31,7 @@ import Link from 'next/link';
 import { useStudentLessons } from '@/app/hooks/lessonsSystem/useStudentLessons';
 import Select from '@/app/components/Common/Select';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface StudentLessonsPageClientProps {
   initialData: StudentLessonsData | null;
@@ -50,6 +51,8 @@ export default function StudentLessonsPageClient({
   initialData,
   errorMessage,
 }: StudentLessonsPageClientProps) {
+  const { t } = useTranslation({ sections: ['student/lessons'] });
+
   // Initialize hook with server data
   const { lessons, loading, error, fetchLessons, refreshLessons, clearError } =
     useStudentLessons();
@@ -242,31 +245,31 @@ export default function StudentLessonsPageClient({
       case 'COMPLETED':
         return {
           color: 'border-green-400 text-green-400',
-          label: 'Concluída',
+          label: t('status_completed'),
           icon: FiCheck,
         };
       case 'CANCELLED':
         return {
           color: 'border-red-400 text-red-400',
-          label: 'Cancelada',
+          label: t('status_cancelled'),
           icon: FiX,
         };
       case 'NO_SHOW':
         return {
           color: 'border-yellow-300 text-yellow-300',
-          label: 'Faltou',
+          label: t('status_no_show'),
           icon: FiX,
         };
       case 'RESCHEDULED':
         return {
           color: 'border-purple-300 text-purple-300',
-          label: 'Reagendada',
+          label: t('status_rescheduled'),
           icon: FiClock,
         };
       default:
         return {
           color: 'border-blue-300 text-blue-300',
-          label: 'Agendada',
+          label: t('status_scheduled'),
           icon: FiCalendar,
         };
     }
@@ -306,7 +309,7 @@ export default function StudentLessonsPageClient({
             </span>
             {isToday && (
               <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-xs font-medium">
-                Hoje
+                {t('today')}
               </span>
             )}
           </div>
@@ -324,7 +327,7 @@ export default function StudentLessonsPageClient({
 
             <div className="flex items-center text-sm text-theme-secondary">
               <FiClock className="w-4 h-4 mr-2" />
-              {lesson.duration} minutos
+              {lesson.duration} {t('minutes')}
             </div>
 
             <div className="flex items-center text-sm text-theme-secondary">
@@ -343,7 +346,9 @@ export default function StudentLessonsPageClient({
           {/* Objectives Preview */}
           {lesson.objectives.length > 0 && (
             <div className="mb-4">
-              <div className="text-xs text-theme-tertiary mb-1">Objetivos:</div>
+              <div className="text-xs text-theme-tertiary mb-1">
+                {t('objectives')}:
+              </div>
               <div className="flex flex-wrap gap-1">
                 {lesson.objectives
                   .slice(0, 2)
@@ -370,12 +375,12 @@ export default function StudentLessonsPageClient({
               {lesson.studentFeedback ? (
                 <div className="flex items-center text-sm text-accent-green">
                   <FiMessageSquare className="w-4 h-4 mr-2" />
-                  Feedback enviado
+                  {t('feedback_sent')}
                 </div>
               ) : (
                 <div className="flex items-center text-sm text-accent-yellow">
                   <FiMessageSquare className="w-4 h-4 mr-2" />
-                  Pendente feedback
+                  {t('feedback_pending')}
                 </div>
               )}
             </div>
@@ -386,7 +391,7 @@ export default function StudentLessonsPageClient({
             <div className="mb-4">
               <div className="flex items-center text-sm text-red-600">
                 <FiAlertTriangle className="w-4 h-4 mr-2" />
-                Status precisa ser atualizado
+                {t('status_needs_update')}
               </div>
             </div>
           )}
@@ -397,12 +402,12 @@ export default function StudentLessonsPageClient({
             className="btn-classical-primary w-full text-center flex items-center justify-center space-x-2"
           >
             <FiEye className="w-4 h-4" />
-            <span>Ver Detalhes</span>
+            <span>{t('see_details')}</span>
           </Link>
         </AnimatedCard>
       );
     },
-    [getLessonStatusInfo, getLessonStatusInfoDisplay, formatDateTime]
+    [getLessonStatusInfo, getLessonStatusInfoDisplay, formatDateTime, t]
   );
 
   // 🆕 RENDER LESSON LIST ITEM COMPONENT
@@ -441,7 +446,7 @@ export default function StudentLessonsPageClient({
                 )}
                 {isToday && (
                   <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-xs font-medium">
-                    Hoje
+                    {t('today')}
                   </span>
                 )}
               </div>
@@ -461,7 +466,9 @@ export default function StudentLessonsPageClient({
                   <span>{lesson.duration}min</span>
                   {lesson.location && <span>{lesson.location}</span>}
                   {statusInfo.needsAttention && (
-                    <span className="text-accent-red">Status pendente</span>
+                    <span className="text-accent-red">
+                      {t('status_pending')}
+                    </span>
                   )}
                 </div>
               </div>
@@ -487,7 +494,7 @@ export default function StudentLessonsPageClient({
         </AnimatedCard>
       );
     },
-    [getLessonStatusInfo, getLessonStatusInfoDisplay, formatDateTime]
+    [getLessonStatusInfo, getLessonStatusInfoDisplay, formatDateTime, t]
   );
 
   // Error state para "no teachers"
@@ -500,14 +507,13 @@ export default function StudentLessonsPageClient({
               <FiUser className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Nenhum Professor Vinculado
+              {t('no_teachers_title')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
-              Você ainda não tem professores vinculados à sua conta. Entre em
-              contato com um professor para começar suas aulas.
+              {t('no_teachers_description')}
             </p>
             <Link href="/student" className="btn-classical-primary">
-              Voltar ao Dashboard
+              {t('back_to_dashboard')}
             </Link>
           </div>
         </div>
@@ -525,7 +531,7 @@ export default function StudentLessonsPageClient({
               <FiCalendar className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Aulas
+              {t('error_loading_lessons')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error || errorMessage}
@@ -539,16 +545,14 @@ export default function StudentLessonsPageClient({
                 <FiRefreshCw
                   className={`w-4 h-4 ${loading.lessons ? 'animate-spin' : ''}`}
                 />
-                <span>
-                  {loading.lessons ? 'Carregando...' : 'Tentar Novamente'}
-                </span>
+                <span>{loading.lessons ? t('loading') : t('try_again')}</span>
               </button>
               {error && (
                 <button
                   onClick={clearError}
                   className="btn-classical-secondary w-full"
                 >
-                  Limpar Erro
+                  {t('clear_error')}
                 </button>
               )}
             </div>
@@ -570,10 +574,10 @@ export default function StudentLessonsPageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Minhas Aulas
+              {t('my_lessons_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Acompanhe seu progresso e acesse os materiais de estudo
+              {t('my_lessons_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -591,7 +595,7 @@ export default function StudentLessonsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.total}
               </div>
-              <div className="text-sm text-theme-tertiary">Total</div>
+              <div className="text-sm text-theme-tertiary">{t('total')}</div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -604,7 +608,9 @@ export default function StudentLessonsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.scheduled}
               </div>
-              <div className="text-sm text-theme-tertiary">Agendadas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('scheduled')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -617,7 +623,9 @@ export default function StudentLessonsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.completed}
               </div>
-              <div className="text-sm text-theme-tertiary">Concluídas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('completed')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -630,7 +638,9 @@ export default function StudentLessonsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.cancelled}
               </div>
-              <div className="text-sm text-theme-tertiary">Canceladas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('cancelled')}
+              </div>
             </AnimatedCard>
           </div>
         </AnimatedItem>
@@ -644,7 +654,7 @@ export default function StudentLessonsPageClient({
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                 <input
                   type="text"
-                  placeholder="Buscar aulas..."
+                  placeholder={t('search_lessons')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="input-classical pl-10 w-full"
@@ -660,7 +670,7 @@ export default function StudentLessonsPageClient({
                   }`}
                 >
                   <FiFilter className="w-4 h-4" />
-                  <span>Filtros</span>
+                  <span>{t('filters')}</span>
                 </button>
 
                 <button
@@ -673,7 +683,7 @@ export default function StudentLessonsPageClient({
                       loading.lessons ? 'animate-spin' : ''
                     }`}
                   />
-                  <span>Atualizar</span>
+                  <span>{t('refresh')}</span>
                 </button>
 
                 {/* 🆕 VIEW MODE TOGGLE */}
@@ -689,13 +699,13 @@ export default function StudentLessonsPageClient({
               <div className="mt-6 pt-6 border-t border-theme-secondary grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    Professor
+                    {t('teacher')}
                   </label>
                   <Select
                     value={selectedTeacher}
                     onChange={(e) => setSelectedTeacher(e.target.value)}
                     options={[
-                      { value: 'all', label: 'Todos os professores' },
+                      { value: 'all', label: t('all_teachers') },
                       ...teachersOptions.map((teacher) => ({
                         value: teacher.teacherId,
                         label: teacher.teacherName,
@@ -707,7 +717,7 @@ export default function StudentLessonsPageClient({
 
                 <div>
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    Status
+                    {t('status')}
                   </label>
                   <Select
                     value={statusFilter}
@@ -715,10 +725,10 @@ export default function StudentLessonsPageClient({
                       setStatusFilter(e.target.value as LessonFilter)
                     }
                     options={[
-                      { value: 'all', label: 'Todos os status' },
-                      { value: 'scheduled', label: 'Agendadas' },
-                      { value: 'completed', label: 'Concluídas' },
-                      { value: 'cancelled', label: 'Canceladas' },
+                      { value: 'all', label: t('all_status') },
+                      { value: 'scheduled', label: t('scheduled') },
+                      { value: 'completed', label: t('completed') },
+                      { value: 'cancelled', label: t('cancelled') },
                     ]}
                     className="input-classical w-full"
                   />
@@ -726,7 +736,7 @@ export default function StudentLessonsPageClient({
 
                 <div>
                   <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                    Período
+                    {t('period')}
                   </label>
                   <Select
                     value={timeFilter}
@@ -734,12 +744,12 @@ export default function StudentLessonsPageClient({
                       setTimeFilter(e.target.value as TimeFilter)
                     }
                     options={[
-                      { value: 'all', label: 'Todos os períodos' },
-                      { value: 'today', label: 'Hoje' },
-                      { value: 'upcoming', label: 'Próximas' },
-                      { value: 'past', label: 'Passadas' },
-                      { value: 'this_week', label: 'Esta semana' },
-                      { value: 'this_month', label: 'Este mês' },
+                      { value: 'all', label: t('all_periods') },
+                      { value: 'today', label: t('today') },
+                      { value: 'upcoming', label: t('upcoming') },
+                      { value: 'past', label: t('past') },
+                      { value: 'this_week', label: t('this_week') },
+                      { value: 'this_month', label: t('this_month') },
                     ]}
                     className="input-classical w-full"
                   />
@@ -754,8 +764,10 @@ export default function StudentLessonsPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-6">
               <p className="text-theme-secondary text-sm">
-                Mostrando {filteredLessons.length} de {displayLessons.length}{' '}
-                aulas
+                {t('showing_results', {
+                  filtered: filteredLessons.length,
+                  total: displayLessons.length,
+                })}
                 {searchTerm && ` para "${searchTerm}"`}
               </p>
             </div>
@@ -769,13 +781,13 @@ export default function StudentLessonsPageClient({
               <FiBookOpen className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
               <h3 className="text-lg font-bold text-theme-primary mb-2">
                 {filteredLessons.length === 0 && displayLessons.length > 0
-                  ? 'Nenhuma aula encontrada'
-                  : 'Nenhuma aula agendada'}
+                  ? t('no_lessons_found')
+                  : t('no_lessons_scheduled')}
               </h3>
               <p className="text-theme-tertiary">
                 {filteredLessons.length === 0 && displayLessons.length > 0
-                  ? 'Tente ajustar os filtros para ver mais resultados.'
-                  : 'Suas aulas aparecerão aqui quando forem agendadas pelo professor.'}
+                  ? t('try_adjust_filters')
+                  : t('lessons_will_appear')}
               </p>
             </div>
           ) : (
@@ -804,7 +816,7 @@ export default function StudentLessonsPageClient({
                 className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50"
               >
                 <FiChevronLeft className="w-4 h-4" />
-                <span>Anterior</span>
+                <span>{t('previous')}</span>
               </button>
 
               <div className="flex items-center space-x-2">
@@ -844,7 +856,7 @@ export default function StudentLessonsPageClient({
                 disabled={currentPage === totalPages}
                 className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50"
               >
-                <span>Próxima</span>
+                <span>{t('next')}</span>
                 <FiChevronRight className="w-4 h-4" />
               </button>
             </div>

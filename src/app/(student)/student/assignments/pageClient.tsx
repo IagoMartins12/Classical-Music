@@ -39,6 +39,7 @@ import { useStudentAssignments } from '@/app/hooks/lessonsSystem/useStudentAssig
 import Select from '@/app/components/Common/Select';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface StudentAssignmentsPageClientProps {
   initialData: StudentAssignmentsData | null;
@@ -72,6 +73,8 @@ export default function StudentAssignmentsPageClient({
   initialData,
   errorMessage,
 }: StudentAssignmentsPageClientProps) {
+  const { t } = useTranslation({ sections: ['student/assignments'] });
+
   // Initialize hook with server data
   const {
     assignments,
@@ -240,7 +243,7 @@ export default function StudentAssignmentsPageClient({
     if (assignment.isCompleted) {
       return {
         color: 'bg-accent-green/10 border-accent-green/30 text-accent-green',
-        label: 'Concluída',
+        label: t('student_assignments_status_completed'),
         icon: FiCheck,
       };
     }
@@ -248,7 +251,7 @@ export default function StudentAssignmentsPageClient({
     if (assignment.isOverdue) {
       return {
         color: 'border-red-400 text-red-400',
-        label: 'Atrasada',
+        label: t('student_assignments_status_overdue'),
         icon: FiAlertTriangle,
       };
     }
@@ -256,14 +259,14 @@ export default function StudentAssignmentsPageClient({
     if (assignment.status === 'IN_PROGRESS') {
       return {
         color: 'bg-accent-blue/10 border-accent-blue/30 text-accent-blue',
-        label: 'Em Progresso',
+        label: t('student_assignments_status_in_progress'),
         icon: FiTrendingUp,
       };
     }
 
     return {
       color: 'bg-accent-yellow/10 border-accent-yellow/30 text-accent-yellow',
-      label: 'Pendente',
+      label: t('student_assignments_status_pending'),
       icon: FiClock,
     };
   };
@@ -283,6 +286,13 @@ export default function StudentAssignmentsPageClient({
         priorityColors[assignment.priority as keyof typeof priorityColors] ||
         'text-theme-secondary';
       const hasScores = hasWorkScores(assignment);
+
+      const priorityLabel =
+        assignment.priority === 'high'
+          ? t('student_assignments_priority_high')
+          : assignment.priority === 'medium'
+          ? t('student_assignments_priority_medium')
+          : t('student_assignments_priority_low');
 
       return (
         <AnimatedCard
@@ -305,11 +315,7 @@ export default function StudentAssignmentsPageClient({
             <div className="flex items-center space-x-2">
               <TypeIcon className={`w-4 h-4 ${priorityColor}`} />
               <span className={`text-xs font-medium ${priorityColor}`}>
-                {assignment.priority === 'high'
-                  ? 'Alta'
-                  : assignment.priority === 'medium'
-                  ? 'Média'
-                  : 'Baixa'}
+                {priorityLabel}
               </span>
               {/* 🆕 WORK SCORE INDICATOR */}
               {hasScores && (
@@ -342,7 +348,8 @@ export default function StudentAssignmentsPageClient({
             {assignment.dueDate && (
               <div className="flex items-center text-sm text-theme-secondary">
                 <FiCalendar className="w-4 h-4 mr-2" />
-                Prazo: {formatDate(assignment.dueDate)}
+                {t('student_assignments_due_date')}{' '}
+                {formatDate(assignment.dueDate)}
                 {assignment.daysUntilDue !== null && (
                   <span
                     className={`ml-1 font-medium ${
@@ -356,12 +363,14 @@ export default function StudentAssignmentsPageClient({
                   >
                     (
                     {assignment.daysUntilDue && assignment.daysUntilDue < 0
-                      ? `${Math.abs(
-                          assignment.daysUntilDue && assignment.daysUntilDue
-                        )} dias atrás`
+                      ? t('student_assignments_days_ago', {
+                          days: Math.abs(assignment.daysUntilDue),
+                        })
                       : assignment.daysUntilDue === 0
-                      ? 'hoje'
-                      : `${assignment.daysUntilDue} dias`}
+                      ? t('student_assignments_today')
+                      : t('student_assignments_days_left', {
+                          days: `${assignment.daysUntilDue}`,
+                        })}
                     )
                   </span>
                 )}
@@ -371,7 +380,8 @@ export default function StudentAssignmentsPageClient({
             {assignment.estimatedTime && (
               <div className="flex items-center text-sm text-theme-secondary">
                 <FiClock className="w-4 h-4 mr-2" />
-                {formatTime(assignment.estimatedTime)} estimado
+                {formatTime(assignment.estimatedTime)}{' '}
+                {t('student_assignments_estimated_time')}
               </div>
             )}
 
@@ -379,9 +389,10 @@ export default function StudentAssignmentsPageClient({
             {hasScores && (
               <div className="flex items-center text-sm text-accent-purple">
                 <FiMusic className="w-4 h-4 mr-2" />
-                {assignment.workScoreIds.length} partitura
-                {assignment.workScoreIds.length !== 1 ? 's' : ''} vinculada
-                {assignment.workScoreIds.length !== 1 ? 's' : ''}
+                {t('student_assignments_scores_linked', {
+                  count: assignment.workScoreIds.length,
+                  plural: assignment.workScoreIds.length !== 1 ? 's' : '',
+                })}
               </div>
             )}
           </div>
@@ -391,7 +402,9 @@ export default function StudentAssignmentsPageClient({
             assignment.progress !== undefined && (
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-theme-tertiary">Progresso</span>
+                  <span className="text-xs text-theme-tertiary">
+                    {t('student_assignments_progress_label')}
+                  </span>
                   <span className="text-xs text-theme-primary">
                     {assignment.progress}%
                   </span>
@@ -416,7 +429,9 @@ export default function StudentAssignmentsPageClient({
           {/* Goals Preview */}
           {assignment.practiceGoals.length > 0 && (
             <div className="mb-4">
-              <div className="text-xs text-theme-tertiary mb-1">Objetivos:</div>
+              <div className="text-xs text-theme-tertiary mb-1">
+                {t('student_assignments_objectives')}
+              </div>
               <div className="flex flex-wrap gap-1">
                 {assignment.practiceGoals.slice(0, 2).map((goal, idx) => (
                   <span
@@ -438,20 +453,21 @@ export default function StudentAssignmentsPageClient({
           {/* Action Indicator */}
           <div className="flex items-center justify-between">
             <div className="text-sm text-theme-tertiary">
-              Criado em {formatDate(assignment.createdAt)}
+              {t('student_assignments_created_at')}{' '}
+              {formatDate(assignment.createdAt)}
             </div>
             <Link
               className="text-sm text-brand-primary flex gap-2"
               href={`assignments/${assignment.id}`}
             >
               <FiEye className="w-4 h-4 text-brand-primary" />
-              <span>Ver detalhes</span>
+              <span>{t('student_assignments_view_details')}</span>
             </Link>
           </div>
         </AnimatedCard>
       );
     },
-    [getAssignmentStatusInfo, hasWorkScores, formatDate, formatTime]
+    [getAssignmentStatusInfo, hasWorkScores, formatDate, formatTime, t]
   );
 
   // 🆕 RENDER ASSIGNMENT LIST ITEM COMPONENT
@@ -464,6 +480,13 @@ export default function StudentAssignmentsPageClient({
       const priorityColor =
         priorityColors[assignment.priority as keyof typeof priorityColors] ||
         'text-theme-secondary';
+
+      const priorityLabel =
+        assignment.priority === 'high'
+          ? t('student_assignments_priority_high')
+          : assignment.priority === 'medium'
+          ? t('student_assignments_priority_medium')
+          : t('student_assignments_priority_low');
 
       return (
         <AnimatedCard
@@ -486,11 +509,7 @@ export default function StudentAssignmentsPageClient({
             <div className="flex items-center space-x-2">
               <TypeIcon className={`w-4 h-4 ${priorityColor}`} />
               <span className={`text-xs font-medium ${priorityColor}`}>
-                {assignment.priority === 'high'
-                  ? 'Alta'
-                  : assignment.priority === 'medium'
-                  ? 'Média'
-                  : 'Baixa'}
+                {priorityLabel}
               </span>
             </div>
           </div>
@@ -514,7 +533,8 @@ export default function StudentAssignmentsPageClient({
             {assignment.dueDate && (
               <div className="flex items-center text-sm text-theme-secondary">
                 <FiCalendar className="w-4 h-4 mr-2" />
-                Prazo: {formatDate(assignment.dueDate)}
+                {t('student_assignments_due_date')}{' '}
+                {formatDate(assignment.dueDate)}
                 {assignment.daysUntilDue !== null && (
                   <span
                     className={`ml-1 font-medium ${
@@ -528,12 +548,14 @@ export default function StudentAssignmentsPageClient({
                   >
                     (
                     {assignment.daysUntilDue && assignment.daysUntilDue < 0
-                      ? `${Math.abs(
-                          assignment.daysUntilDue && assignment.daysUntilDue
-                        )} dias atrás`
+                      ? t('student_assignments_days_ago', {
+                          days: Math.abs(assignment.daysUntilDue),
+                        })
                       : assignment.daysUntilDue === 0
-                      ? 'hoje'
-                      : `${assignment.daysUntilDue} dias`}
+                      ? t('student_assignments_today')
+                      : t('student_assignments_days_left', {
+                          days: assignment.daysUntilDue,
+                        })}
                     )
                   </span>
                 )}
@@ -543,7 +565,8 @@ export default function StudentAssignmentsPageClient({
             {assignment.estimatedTime && (
               <div className="flex items-center text-sm text-theme-secondary">
                 <FiClock className="w-4 h-4 mr-2" />
-                {formatTime(assignment.estimatedTime)} estimado
+                {formatTime(assignment.estimatedTime)}{' '}
+                {t('student_assignments_estimated_time')}
               </div>
             )}
           </div>
@@ -553,7 +576,9 @@ export default function StudentAssignmentsPageClient({
             assignment.progress !== undefined && (
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-theme-tertiary">Progresso</span>
+                  <span className="text-xs text-theme-tertiary">
+                    {t('student_assignments_progress_label')}
+                  </span>
                   <span className="text-xs text-theme-primary">
                     {assignment.progress}%
                   </span>
@@ -578,7 +603,9 @@ export default function StudentAssignmentsPageClient({
           {/* Goals Preview */}
           {assignment.practiceGoals.length > 0 && (
             <div className="mb-4">
-              <div className="text-xs text-theme-tertiary mb-1">Objetivos:</div>
+              <div className="text-xs text-theme-tertiary mb-1">
+                {t('student_assignments_objectives')}
+              </div>
               <div className="flex flex-wrap gap-1">
                 {assignment.practiceGoals
                   .slice(0, 2)
@@ -602,20 +629,21 @@ export default function StudentAssignmentsPageClient({
           {/* Action Indicator */}
           <div className="flex items-center justify-between">
             <div className="text-sm text-theme-tertiary">
-              Criado em {formatDate(assignment.createdAt)}
+              {t('student_assignments_created_at')}{' '}
+              {formatDate(assignment.createdAt)}
             </div>
             <Link
               className="text-sm text-brand-primary flex gap-2"
               href={`assignments/${assignment.id}`}
             >
               <FiEye className="w-4 h-4 text-brand-primary" />
-              <span>Ver detalhes</span>
+              <span>{t('student_assignments_view_details')}</span>
             </Link>
           </div>
         </AnimatedCard>
       );
     },
-    [getAssignmentStatusInfo, hasWorkScores, formatDate, formatTime]
+    [getAssignmentStatusInfo, hasWorkScores, formatDate, formatTime, t]
   );
 
   // Error state para "no teachers"
@@ -628,14 +656,13 @@ export default function StudentAssignmentsPageClient({
               <FiUser className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Nenhum Professor Vinculado
+              {t('student_assignments_no_teacher_title')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
-              Você ainda não tem professores vinculados à sua conta. Entre em
-              contato com um professor para receber suas primeiras tarefas.
+              {t('student_assignments_no_teacher_description')}
             </p>
             <Link href="/student" className="btn-classical-primary">
-              Voltar ao Dashboard
+              {t('student_assignments_no_teacher_back')}
             </Link>
           </div>
         </div>
@@ -653,7 +680,7 @@ export default function StudentAssignmentsPageClient({
               <FiClipboard className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Tarefas
+              {t('student_assignments_error_title')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error || errorMessage}
@@ -670,7 +697,9 @@ export default function StudentAssignmentsPageClient({
                   }`}
                 />
                 <span>
-                  {loading.assignments ? 'Carregando...' : 'Tentar Novamente'}
+                  {loading.assignments
+                    ? t('student_assignments_error_try_again') + '...'
+                    : t('student_assignments_error_try_again')}
                 </span>
               </button>
               {error && (
@@ -678,7 +707,7 @@ export default function StudentAssignmentsPageClient({
                   onClick={clearError}
                   className="btn-classical-secondary w-full"
                 >
-                  Limpar Erro
+                  {t('student_assignments_error_clear')}
                 </button>
               )}
             </div>
@@ -700,10 +729,10 @@ export default function StudentAssignmentsPageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Minhas Tarefas
+              {t('student_assignments_header_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Acompanhe suas tarefas musicais e marque seu progresso
+              {t('student_assignments_header_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -721,7 +750,9 @@ export default function StudentAssignmentsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {displayStats.total}
               </div>
-              <div className="text-sm text-theme-tertiary">Total</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('student_assignments_stats_total')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -734,7 +765,9 @@ export default function StudentAssignmentsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {displayStats.pending}
               </div>
-              <div className="text-sm text-theme-tertiary">Pendentes</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('student_assignments_stats_pending')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -747,7 +780,9 @@ export default function StudentAssignmentsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {displayStats.inProgress}
               </div>
-              <div className="text-sm text-theme-tertiary">Em Progresso</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('student_assignments_stats_in_progress')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -760,7 +795,9 @@ export default function StudentAssignmentsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {displayStats.completed}
               </div>
-              <div className="text-sm text-theme-tertiary">Concluídas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('student_assignments_stats_completed')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -773,7 +810,9 @@ export default function StudentAssignmentsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {displayStats.overdue}
               </div>
-              <div className="text-sm text-theme-tertiary">Atrasadas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('student_assignments_stats_overdue')}
+              </div>
             </AnimatedCard>
           </div>
         </AnimatedItem>
@@ -787,7 +826,7 @@ export default function StudentAssignmentsPageClient({
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-theme-tertiary" />
                 <input
                   type="text"
-                  placeholder="Buscar tarefas..."
+                  placeholder={t('student_assignments_search_placeholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="input-classical pl-10 w-full"
@@ -803,7 +842,7 @@ export default function StudentAssignmentsPageClient({
                   }`}
                 >
                   <FiFilter className="w-4 h-4" />
-                  <span>Filtros</span>
+                  <span>{t('student_assignments_filters')}</span>
                 </button>
 
                 <button
@@ -816,7 +855,7 @@ export default function StudentAssignmentsPageClient({
                       loading.assignments ? 'animate-spin' : ''
                     }`}
                   />
-                  <span>Atualizar</span>
+                  <span>{t('student_assignments_refresh')}</span>
                 </button>
                 {/* 🆕 VIEW MODE TOGGLE */}
                 <ViewModeToggle
@@ -837,7 +876,10 @@ export default function StudentAssignmentsPageClient({
                     value={selectedTeacher}
                     onChange={(e) => setSelectedTeacher(e.target.value)}
                     options={[
-                      { value: 'all', label: 'Todos os professores' },
+                      {
+                        value: 'all',
+                        label: t('student_assignments_filter_all_teachers'),
+                      },
                       ...teachersOptions.map((teacher) => ({
                         value: teacher.teacherId,
                         label: teacher.teacherName,
@@ -857,11 +899,26 @@ export default function StudentAssignmentsPageClient({
                       setStatusFilter(e.target.value as AssignmentFilter)
                     }
                     options={[
-                      { value: 'all', label: 'Todos os status' },
-                      { value: 'pending', label: 'Pendentes' },
-                      { value: 'in_progress', label: 'Em Progresso' },
-                      { value: 'completed', label: 'Concluídas' },
-                      { value: 'overdue', label: 'Atrasadas' },
+                      {
+                        value: 'all',
+                        label: t('student_assignments_filter_all_status'),
+                      },
+                      {
+                        value: 'pending',
+                        label: t('student_assignments_filter_pending'),
+                      },
+                      {
+                        value: 'in_progress',
+                        label: t('student_assignments_filter_in_progress'),
+                      },
+                      {
+                        value: 'completed',
+                        label: t('student_assignments_filter_completed'),
+                      },
+                      {
+                        value: 'overdue',
+                        label: t('student_assignments_filter_overdue'),
+                      },
                     ]}
                     className="input-classical w-full"
                   />
@@ -877,11 +934,26 @@ export default function StudentAssignmentsPageClient({
                       setTimeFilter(e.target.value as TimeFilter)
                     }
                     options={[
-                      { value: 'all', label: 'Todos os períodos' },
-                      { value: 'today', label: 'Para hoje' },
-                      { value: 'this_week', label: 'Esta semana' },
-                      { value: 'overdue', label: 'Atrasadas' },
-                      { value: 'upcoming', label: 'Futuras' },
+                      {
+                        value: 'all',
+                        label: t('student_assignments_filter_all_periods'),
+                      },
+                      {
+                        value: 'today',
+                        label: t('student_assignments_filter_today'),
+                      },
+                      {
+                        value: 'this_week',
+                        label: t('student_assignments_filter_this_week'),
+                      },
+                      {
+                        value: 'overdue',
+                        label: t('student_assignments_filter_overdue'),
+                      },
+                      {
+                        value: 'upcoming',
+                        label: t('student_assignments_filter_upcoming'),
+                      },
                     ]}
                     className="input-classical w-full"
                   />
@@ -896,9 +968,14 @@ export default function StudentAssignmentsPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <div className="mb-6">
               <p className="text-theme-secondary text-sm">
-                Mostrando {filteredAssignments.length} de{' '}
-                {displayAssignments.length} tarefas
-                {searchTerm && ` para "${searchTerm}"`}
+                {t('student_assignments_results_showing', {
+                  filtered: filteredAssignments.length,
+                  total: displayAssignments.length,
+                })}
+                {searchTerm &&
+                  ` ${t('student_assignments_results_for_search', {
+                    searchTerm,
+                  })}`}
               </p>
             </div>
           </AnimatedItem>
@@ -912,14 +989,14 @@ export default function StudentAssignmentsPageClient({
               <h3 className="text-lg font-bold text-theme-primary mb-2">
                 {filteredAssignments.length === 0 &&
                 displayAssignments.length > 0
-                  ? 'Nenhuma tarefa encontrada'
-                  : 'Nenhuma tarefa disponível'}
+                  ? t('student_assignments_empty_filtered')
+                  : t('student_assignments_empty_all')}
               </h3>
               <p className="text-theme-tertiary">
                 {filteredAssignments.length === 0 &&
                 displayAssignments.length > 0
-                  ? 'Tente ajustar os filtros para ver mais resultados.'
-                  : 'Suas tarefas aparecerão aqui quando forem criadas pelos professores.'}
+                  ? t('student_assignments_empty_filtered_desc')
+                  : t('student_assignments_empty_all_desc')}
               </p>
             </div>
           ) : (
@@ -948,7 +1025,7 @@ export default function StudentAssignmentsPageClient({
                 className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50"
               >
                 <FiChevronLeft className="w-4 h-4" />
-                <span>Anterior</span>
+                <span>{t('student_assignments_pagination_previous')}</span>
               </button>
 
               <div className="flex items-center space-x-2">
@@ -988,7 +1065,7 @@ export default function StudentAssignmentsPageClient({
                 disabled={currentPage === totalPages}
                 className="btn-classical-secondary flex items-center space-x-2 disabled:opacity-50"
               >
-                <span>Próxima</span>
+                <span>{t('student_assignments_pagination_next')}</span>
                 <FiChevronRight className="w-4 h-4" />
               </button>
             </div>

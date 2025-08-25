@@ -31,6 +31,7 @@ import {
 import { StudentDashboardData } from './pageServer';
 import { useStudentDashboard } from '@/app/hooks/lessonsSystem/useStudentDashboard';
 import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface StudentProfile {
   id: string;
@@ -53,6 +54,8 @@ export default function StudentPageClient({
   teachersInfo = [],
   errorMessage,
 }: StudentPageClientProps) {
+  const { t } = useTranslation({ sections: ['student/home'] });
+
   // Initialize hook with server data
   const {
     // State do hook
@@ -155,32 +158,28 @@ export default function StudentPageClient({
               <FiUserCheck className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-2xl font-bold text-theme-primary classical-title mb-4">
-              Você ainda não tem um professor
+              {t('student_home_no_teacher_title')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
-              Para acessar sua área do aluno, você precisa ser vinculado a pelo
-              menos um professor da plataforma. Entre em contato com seu
-              professor para que ele adicione você como aluno.
+              {t('student_home_no_teacher_description')}
             </p>
             <div className="space-y-4">
               <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
                 <h3 className="font-semibold text-theme-primary mb-2">
-                  Como funciona?
+                  {t('student_home_no_teacher_how_it_works')}
                 </h3>
                 <div className="text-sm text-theme-secondary space-y-2">
-                  <p>
-                    1. Seu professor fará uma busca pelo seu email na plataforma
-                  </p>
-                  <p>2. Ele adicionará você como aluno dele</p>
-                  <p>3. Você receberá acesso completo à área do aluno</p>
+                  <p>1. {t('student_home_no_teacher_step_1')}</p>
+                  <p>2. {t('student_home_no_teacher_step_2')}</p>
+                  <p>3. {t('student_home_no_teacher_step_3')}</p>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link href="/contact" className="btn-classical-primary">
-                  Falar com um Professor
+                  {t('student_home_no_teacher_contact_teacher')}
                 </Link>
                 <Link href="/" className="btn-classical-secondary">
-                  Voltar à Página Inicial
+                  {t('student_home_no_teacher_back_home')}
                 </Link>
               </div>
             </div>
@@ -205,7 +204,7 @@ export default function StudentPageClient({
               <FiXCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Dashboard
+              {t('student_home_error_title')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error || errorMessage}
@@ -222,7 +221,9 @@ export default function StudentPageClient({
                   }`}
                 />
                 <span>
-                  {loading.refreshing ? 'Carregando...' : 'Tentar Novamente'}
+                  {loading.refreshing
+                    ? t('student_home_error_try_again') + '...'
+                    : t('student_home_error_try_again')}
                 </span>
               </button>
               {error && (
@@ -230,7 +231,7 @@ export default function StudentPageClient({
                   onClick={clearError}
                   className="btn-classical-secondary w-full"
                 >
-                  Limpar Erro
+                  {t('student_home_error_clear')}
                 </button>
               )}
             </div>
@@ -252,11 +253,10 @@ export default function StudentPageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Meu Painel de Estudos
+              {t('student_home_header_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Bem-vindo de volta, {studentProfile.name}! Continue seu progresso
-              musical
+              {t('student_home_header_subtitle', { name: studentProfile.name })}
             </p>
           </div>
         </AnimatedItem>
@@ -279,9 +279,11 @@ export default function StudentPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.totalLessons}
               </div>
-              <div className="text-sm text-theme-tertiary">Total de Aulas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('student_home_stats_total_lessons')}
+              </div>
               <div className="text-xs text-accent-green mt-1">
-                {stats.completedLessons} concluídas
+                {stats.completedLessons} {t('student_home_stats_completed')}
               </div>
             </AnimatedCard>
 
@@ -295,9 +297,11 @@ export default function StudentPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.upcomingLessons}
               </div>
-              <div className="text-sm text-theme-tertiary">Próximas Aulas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('student_home_stats_upcoming_lessons')}
+              </div>
               <div className="text-xs text-accent-blue mt-1">
-                {todayLessons.length} hoje
+                {todayLessons.length} {t('student_home_stats_today')}
               </div>
             </AnimatedCard>
 
@@ -311,9 +315,11 @@ export default function StudentPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {formatDuration(stats.totalStudyTime).split(' ')[0]}
               </div>
-              <div className="text-sm text-theme-tertiary">Horas de Estudo</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('student_home_stats_study_hours')}
+              </div>
               <div className="text-xs text-accent-green mt-1">
-                {stats.averageAttendance}% presença
+                {stats.averageAttendance}% {t('student_home_stats_attendance')}
               </div>
             </AnimatedCard>
 
@@ -327,9 +333,11 @@ export default function StudentPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.currentStreak}
               </div>
-              <div className="text-sm text-theme-tertiary">Sequência Atual</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('student_home_stats_current_streak')}
+              </div>
               <div className="text-xs text-theme-tertiary mt-1">
-                Recorde: {stats.longestStreak}
+                {t('student_home_stats_record')} {stats.longestStreak}
               </div>
             </AnimatedCard>
           </SequentialGrid>
@@ -349,10 +357,10 @@ export default function StudentPageClient({
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-theme-primary classical-title">
-                        Ações Rápidas
+                        {t('student_home_quick_actions_title')}
                       </h2>
                       <p className="text-theme-tertiary text-sm">
-                        Acesse rapidamente suas atividades
+                        {t('student_home_quick_actions_subtitle')}
                       </p>
                     </div>
                   </div>
@@ -380,10 +388,10 @@ export default function StudentPageClient({
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Ver Calendário
+                          {t('student_home_quick_actions_calendar')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Suas aulas e cronograma
+                          {t('student_home_quick_actions_calendar_desc')}
                         </div>
                       </div>
                     </div>
@@ -399,10 +407,10 @@ export default function StudentPageClient({
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Meu Progresso
+                          {t('student_home_quick_actions_progress')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Estatísticas detalhadas
+                          {t('student_home_quick_actions_progress_desc')}
                         </div>
                       </div>
                     </div>
@@ -418,10 +426,10 @@ export default function StudentPageClient({
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Explorar Obras
+                          {t('student_home_quick_actions_explore')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Adicionar aos estudos
+                          {t('student_home_quick_actions_explore_desc')}
                         </div>
                       </div>
                     </div>
@@ -440,10 +448,12 @@ export default function StudentPageClient({
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-theme-primary classical-title">
-                        Aulas Recentes
+                        {t('student_home_recent_lessons_title')}
                       </h2>
                       <p className="text-theme-tertiary text-sm">
-                        {recentLessons.length} aulas concluídas recentemente
+                        {t('student_home_recent_lessons_subtitle', {
+                          count: recentLessons.length,
+                        })}
                       </p>
                     </div>
                   </div>
@@ -451,7 +461,7 @@ export default function StudentPageClient({
                     href="/student/calendar"
                     className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
                   >
-                    <span>Ver todas</span>
+                    <span>{t('student_home_recent_lessons_see_all')}</span>
                     <FiChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -474,7 +484,10 @@ export default function StudentPageClient({
                               {lesson.title}
                             </h3>
                             <div className="flex items-center space-x-4 text-sm text-theme-tertiary mt-1">
-                              <span>Prof. {lesson.teacher.name}</span>
+                              <span>
+                                {t('student_home_recent_lessons_professor')}{' '}
+                                {lesson.teacher.name}
+                              </span>
                               <span>•</span>
                               <span>
                                 {formatDate(lesson.scheduledAt)} •{' '}
@@ -487,7 +500,9 @@ export default function StudentPageClient({
 
                           <div className="flex items-center space-x-2">
                             <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
-                              Concluída
+                              {t(
+                                'student_home_recent_lessons_status_completed'
+                              )}
                             </span>
                             <Link
                               href={`/student/lessons/${lesson.id}`}
@@ -505,7 +520,9 @@ export default function StudentPageClient({
                             {lesson.skillsWorked.length > 0 && (
                               <div>
                                 <div className="text-xs font-medium text-theme-tertiary mb-1">
-                                  Habilidades Trabalhadas:
+                                  {t(
+                                    'student_home_recent_lessons_skills_worked'
+                                  )}
                                 </div>
                                 <div className="flex flex-wrap gap-1">
                                   {lesson.skillsWorked
@@ -530,7 +547,9 @@ export default function StudentPageClient({
                             {lesson.improvements.length > 0 && (
                               <div>
                                 <div className="text-xs font-medium text-theme-tertiary mb-1">
-                                  Melhorias:
+                                  {t(
+                                    'student_home_recent_lessons_improvements'
+                                  )}
                                 </div>
                                 <div className="flex flex-wrap gap-1">
                                   {lesson.improvements
@@ -558,7 +577,7 @@ export default function StudentPageClient({
                         {lesson.homework && (
                           <div className="mt-3 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
                             <div className="text-xs text-theme-tertiary mb-1">
-                              Tarefa de Casa:
+                              {t('student_home_recent_lessons_homework')}
                             </div>
                             <div className="text-sm text-theme-primary line-clamp-2">
                               {lesson.homework}
@@ -573,7 +592,7 @@ export default function StudentPageClient({
                     <div className="text-center py-8">
                       <FiClock className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                       <p className="text-theme-tertiary">
-                        Nenhuma aula recente ainda
+                        {t('student_home_recent_lessons_empty')}
                       </p>
                     </div>
                   )}
@@ -591,10 +610,10 @@ export default function StudentPageClient({
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-theme-primary classical-title">
-                        Meus Estudos
+                        {t('student_home_studies_title')}
                       </h2>
                       <p className="text-theme-tertiary text-sm">
-                        Suas obras em estudo e já aprendidas
+                        {t('student_home_studies_subtitle')}
                       </p>
                     </div>
                   </div>
@@ -602,7 +621,7 @@ export default function StudentPageClient({
                     href="/student/progress"
                     className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
                   >
-                    <span>Ver progresso</span>
+                    <span>{t('student_home_studies_see_progress')}</span>
                     <FiChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -613,7 +632,9 @@ export default function StudentPageClient({
                     <h3 className="font-semibold text-theme-primary mb-3 flex items-center space-x-2">
                       <FiBookOpen className="w-4 h-4 text-accent-blue" />
                       <span>
-                        Estudando Agora ({studyProgress.currentWorks.length})
+                        {t('student_home_studies_current_works', {
+                          count: studyProgress.currentWorks.length,
+                        })}
                       </span>
                     </h3>
                     <div className="space-y-2">
@@ -635,7 +656,7 @@ export default function StudentPageClient({
                       ))}
                       {studyProgress.currentWorks.length === 0 && (
                         <p className="text-sm text-theme-tertiary py-4">
-                          Nenhuma obra em estudo no momento
+                          {t('student_home_studies_current_empty')}
                         </p>
                       )}
                     </div>
@@ -646,7 +667,9 @@ export default function StudentPageClient({
                     <h3 className="font-semibold text-theme-primary mb-3 flex items-center space-x-2">
                       <FiCheckCircle className="w-4 h-4 text-accent-green" />
                       <span>
-                        Já Aprendi ({studyProgress.learnedWorks.length})
+                        {t('student_home_studies_learned_works', {
+                          count: studyProgress.learnedWorks.length,
+                        })}
                       </span>
                     </h3>
                     <div className="space-y-2">
@@ -674,7 +697,7 @@ export default function StudentPageClient({
                       ))}
                       {studyProgress.learnedWorks.length === 0 && (
                         <p className="text-sm text-theme-tertiary py-4">
-                          Nenhuma obra concluída ainda
+                          {t('student_home_studies_learned_empty')}
                         </p>
                       )}
                     </div>
@@ -694,9 +717,13 @@ export default function StudentPageClient({
                     <FiCalendar className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-theme-primary">Hoje</h3>
+                    <h3 className="font-bold text-theme-primary">
+                      {t('student_home_today_title')}
+                    </h3>
                     <p className="text-xs text-theme-tertiary">
-                      {todayLessons.length} aulas agendadas
+                      {t('student_home_today_subtitle', {
+                        count: todayLessons.length,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -711,7 +738,8 @@ export default function StudentPageClient({
                             {formatTime(lesson.scheduledAt)}
                           </div>
                           <div className="text-xs text-theme-tertiary">
-                            Prof. {lesson.teacher.name}
+                            {t('student_home_recent_lessons_professor')}{' '}
+                            {lesson.teacher.name}
                           </div>
                           <div className="text-xs text-accent-blue">
                             {lesson.duration}min
@@ -731,7 +759,7 @@ export default function StudentPageClient({
                     <div className="text-center py-6">
                       <FiCalendar className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                       <p className="text-sm text-theme-tertiary">
-                        Nenhuma aula hoje
+                        {t('student_home_today_empty')}
                       </p>
                     </div>
                   )}
@@ -742,7 +770,7 @@ export default function StudentPageClient({
                     href="/student/calendar"
                     className="mt-4 block text-center text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
                   >
-                    Ver agenda completa
+                    {t('student_home_today_see_full')}
                   </Link>
                 )}
               </AnimatedCard>
@@ -757,10 +785,10 @@ export default function StudentPageClient({
                   </div>
                   <div>
                     <h3 className="font-bold text-theme-primary">
-                      Próximas Aulas
+                      {t('student_home_upcoming_title')}
                     </h3>
                     <p className="text-xs text-theme-tertiary">
-                      Suas próximas aulas
+                      {t('student_home_upcoming_subtitle')}
                     </p>
                   </div>
                 </div>
@@ -773,7 +801,8 @@ export default function StudentPageClient({
                     >
                       <div>
                         <div className="text-sm font-medium text-theme-primary">
-                          Prof. {lesson.teacher.name}
+                          {t('student_home_recent_lessons_professor')}{' '}
+                          {lesson.teacher.name}
                         </div>
                         <div className="text-xs text-theme-tertiary">
                           {formatDate(lesson.scheduledAt)} •{' '}
@@ -789,7 +818,7 @@ export default function StudentPageClient({
                   {upcomingLessons.length === 0 && (
                     <div className="text-center py-4">
                       <p className="text-sm text-theme-tertiary">
-                        Nenhuma aula agendada
+                        {t('student_home_upcoming_empty')}
                       </p>
                     </div>
                   )}
@@ -807,11 +836,13 @@ export default function StudentPageClient({
                   <div>
                     <h3 className="font-bold text-theme-primary">
                       {teachers.length === 1
-                        ? 'Meu Professor '
-                        : 'Meus Professores'}
+                        ? t('student_home_teachers_title_singular')
+                        : t('student_home_teachers_title_plural')}
                     </h3>
                     <p className="text-xs text-theme-tertiary">
-                      {teachers.length} professor(es) vinculado(s)
+                      {t('student_home_teachers_subtitle', {
+                        count: teachers.length,
+                      })}
                     </p>
                   </div>
                 </div>
@@ -848,11 +879,13 @@ export default function StudentPageClient({
                             {teacher.teacherName}
                           </div>
                           <div className="text-xs text-theme-tertiary">
-                            {teacher.totalLessonsWithTeacher} aulas realizadas
+                            {teacher.totalLessonsWithTeacher}{' '}
+                            {t('student_home_teachers_lessons_count')}
                           </div>
                           {teacher.nextLessonAt && (
                             <div className="text-xs text-accent-blue">
-                              Próxima: {formatDate(teacher.nextLessonAt)}
+                              {t('student_home_teachers_next_lesson')}{' '}
+                              {formatDate(teacher.nextLessonAt)}
                             </div>
                           )}
                         </div>
@@ -863,7 +896,7 @@ export default function StudentPageClient({
                   {teachers.length === 0 && (
                     <div className="text-center py-4">
                       <p className="text-sm text-theme-tertiary">
-                        Nenhum professor vinculado
+                        {t('student_home_teachers_empty')}
                       </p>
                     </div>
                   )}

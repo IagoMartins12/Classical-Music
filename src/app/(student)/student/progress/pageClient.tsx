@@ -54,6 +54,7 @@ import Select from '@/app/components/Common/Select';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaFire } from 'react-icons/fa';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface StudentProgressPageClientProps {
   initialData: StudentProgressResponse | null;
@@ -64,6 +65,8 @@ export default function StudentProgressPageClient({
   initialData,
   errorMessage,
 }: StudentProgressPageClientProps) {
+  const { t } = useTranslation({ sections: ['student/progress'] });
+
   const {
     progressData,
     loading,
@@ -118,7 +121,7 @@ export default function StudentProgressPageClient({
               <FiAlertCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Progresso
+              {t('error_loading_progress')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error || errorMessage}
@@ -135,7 +138,7 @@ export default function StudentProgressPageClient({
                   }`}
                 />
                 <span>
-                  {loading.refreshing ? 'Carregando...' : 'Tentar Novamente'}
+                  {loading.refreshing ? t('loading') : t('try_again')}
                 </span>
               </button>
               {error && (
@@ -143,7 +146,7 @@ export default function StudentProgressPageClient({
                   onClick={clearError}
                   className="btn-classical-secondary w-full"
                 >
-                  Limpar Erro
+                  {t('clear_error')}
                 </button>
               )}
             </div>
@@ -159,7 +162,7 @@ export default function StudentProgressPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center">
             <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
-            <p className="text-theme-secondary">Carregando progresso...</p>
+            <p className="text-theme-secondary">{t('loading_progress')}</p>
           </div>
         </div>
       </PageContainer>
@@ -178,10 +181,10 @@ export default function StudentProgressPageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Meu Progresso Musical
+              {t('title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Acompanhe sua jornada de aprendizado e evolução
+              {t('subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -245,10 +248,11 @@ export default function StudentProgressPageClient({
                     {progressData.stats.completedLessons}
                   </div>
                   <div className="text-sm text-theme-tertiary">
-                    Aulas Completadas
+                    {t('completed_lessons')}
                   </div>
                   <div className="text-xs text-accent-blue mt-1">
-                    {progressData.stats.attendanceRate?.toFixed(1)}% presença
+                    {progressData.stats.attendanceRate?.toFixed(1)}%{' '}
+                    {t('attendance_rate')}
                   </div>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
@@ -265,15 +269,15 @@ export default function StudentProgressPageClient({
                     {progressData.stats.totalStudyHours}
                   </div>
                   <div className="text-sm text-theme-tertiary">
-                    Tempo de Estudo
+                    {t('study_time')}
                   </div>
                   <div className="text-xs text-accent-green mt-1">
-                    Média:{' '}
+                    {t('average_per_lesson')}:{' '}
                     {(
                       progressData.stats.totalStudyHours /
                       Math.max(1, progressData.stats.completedLessons)
                     ).toFixed(1)}
-                    h/aula
+                    {t('per_lesson')}
                   </div>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
@@ -290,10 +294,10 @@ export default function StudentProgressPageClient({
                     {progressData.stats.learnedWorks}
                   </div>
                   <div className="text-sm text-theme-tertiary">
-                    Obras Aprendidas
+                    {t('learned_works')}
                   </div>
                   <div className="text-xs text-accent-purple mt-1">
-                    {progressData.stats.wantToLearnWorks} na lista
+                    {progressData.stats.wantToLearnWorks} {t('in_list')}
                   </div>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
@@ -313,10 +317,10 @@ export default function StudentProgressPageClient({
                     </span>
                   </div>
                   <div className="text-sm text-theme-tertiary">
-                    Dias Consecutivos
+                    {t('consecutive_days')}
                   </div>
                   <div className="text-xs text-accent-orange mt-1">
-                    Recorde: {progressData.stats.longestStreak}
+                    {t('record')}: {progressData.stats.longestStreak}
                   </div>
                 </div>
                 <div className="w-12 h-12 bg-gradient-to-br from-accent-orange to-accent-red rounded-xl flex items-center justify-center">
@@ -339,7 +343,7 @@ export default function StudentProgressPageClient({
             <AnimatedCard hover="lift" className="classical-card p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-theme-primary">
-                  Tarefas
+                  {t('assignments')}
                 </h3>
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center">
                   <FiTarget className="w-5 h-5 text-theme-primary" />
@@ -348,7 +352,7 @@ export default function StudentProgressPageClient({
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-theme-secondary">Completadas</span>
+                  <span className="text-theme-secondary">{t('completed')}</span>
                   <span className="font-bold text-theme-primary">
                     {progressData.stats.completedAssignments}/
                     {progressData.stats.totalAssignments}
@@ -380,7 +384,7 @@ export default function StudentProgressPageClient({
             <AnimatedCard hover="lift" className="classical-card p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-theme-primary">
-                  Consistência
+                  {t('consistency')}
                 </h3>
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center">
                   <FiCalendar className="w-5 h-5 text-theme-primary" />
@@ -389,7 +393,9 @@ export default function StudentProgressPageClient({
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-theme-secondary">Semanas ativas</span>
+                  <span className="text-theme-secondary">
+                    {t('active_weeks')}
+                  </span>
                   <span className="font-bold text-theme-primary">
                     {Math.round(progressData.stats.studyConsistency)}%
                   </span>
@@ -411,12 +417,12 @@ export default function StudentProgressPageClient({
                     )}`}
                   >
                     {progressData.stats.studyConsistency >= 80
-                      ? 'Excelente!'
+                      ? t('excellent')
                       : progressData.stats.studyConsistency >= 60
-                      ? 'Muito bom!'
+                      ? t('very_good')
                       : progressData.stats.studyConsistency >= 40
-                      ? 'Pode melhorar'
-                      : 'Precisa de foco'}
+                      ? t('can_improve')
+                      : t('needs_focus')}
                   </span>
                 </div>
               </div>
@@ -426,7 +432,7 @@ export default function StudentProgressPageClient({
             <AnimatedCard hover="lift" className="classical-card p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-theme-primary">
-                  Anotações
+                  {t('annotations')}
                 </h3>
                 <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-pink rounded-xl flex items-center justify-center">
                   <FiBookOpen className="w-5 h-5 text-theme-primary" />
@@ -435,14 +441,14 @@ export default function StudentProgressPageClient({
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-theme-secondary">Total</span>
+                  <span className="text-theme-secondary">{t('total')}</span>
                   <span className="font-bold text-theme-primary">
                     {progressData.stats.totalAnnotations}
                   </span>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-theme-secondary">Úteis</span>
+                  <span className="text-theme-secondary">{t('useful')}</span>
                   <span className="font-bold text-accent-green">
                     {progressData.stats.helpfulAnnotations}
                   </span>
@@ -456,7 +462,7 @@ export default function StudentProgressPageClient({
                           progressData.stats.totalAnnotations) *
                         100
                       ).toFixed(1)}
-                      % úteis
+                      % {t('useful_percentage')}
                     </span>
                   </div>
                 )}
@@ -472,7 +478,7 @@ export default function StudentProgressPageClient({
             <AnimatedCard hover="lift" className="classical-card p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-theme-primary">
-                  Evolução Mensal
+                  {t('monthly_evolution')}
                 </h3>
                 <FiBarChart2 className="w-6 h-6 text-brand-primary" />
               </div>
@@ -495,7 +501,7 @@ export default function StudentProgressPageClient({
                       stroke={CHART_COLORS.primary}
                       strokeWidth={3}
                       dot={{ fill: CHART_COLORS.primary, strokeWidth: 2, r: 4 }}
-                      name="Aulas Completadas"
+                      name={t('completed_lesson_chart')}
                     />
                     <Line
                       type="monotone"
@@ -507,7 +513,7 @@ export default function StudentProgressPageClient({
                         strokeWidth: 2,
                         r: 4,
                       }}
-                      name="Horas de Estudo"
+                      name={t('study_hours_chart')}
                     />
                     <Line
                       type="monotone"
@@ -515,7 +521,7 @@ export default function StudentProgressPageClient({
                       stroke={CHART_COLORS.success}
                       strokeWidth={3}
                       dot={{ fill: CHART_COLORS.success, strokeWidth: 2, r: 4 }}
-                      name="Obras Aprendidas"
+                      name={t('learned_works_chart')}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -528,7 +534,7 @@ export default function StudentProgressPageClient({
             <AnimatedCard hover="lift" className="classical-card p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-theme-primary">
-                  Tipos de Tarefas concluidas
+                  {t('assignment_types')}
                 </h3>
                 <FiTarget className="w-6 h-6 text-brand-primary" />
               </div>
@@ -584,7 +590,7 @@ export default function StudentProgressPageClient({
               <AnimatedCard hover="lift" className="classical-card p-6 mb-8">
                 <div className="flex items-center justify-between mb-6">
                   <h3 className="text-xl font-bold text-theme-primary">
-                    Progresso por Professor
+                    {t('progress_by_teacher')}
                   </h3>
                   <FiUsers className="w-6 h-6 text-brand-primary" />
                 </div>
@@ -626,13 +632,17 @@ export default function StudentProgressPageClient({
 
                         <div className="space-y-2">
                           <div className="flex justify-between text-sm">
-                            <span className="text-theme-secondary">Aulas</span>
+                            <span className="text-theme-secondary">
+                              {t('lessons')}
+                            </span>
                             <span className="text-theme-primary font-medium">
                               {teacher.completedLessons}
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span className="text-theme-secondary">Horas</span>
+                            <span className="text-theme-secondary">
+                              {t('hours')}
+                            </span>
                             <span className="text-theme-primary font-medium">
                               {teacher.studyHours}h
                             </span>
@@ -640,7 +650,7 @@ export default function StudentProgressPageClient({
                           {teacher.avgRating > 0 && (
                             <div className="flex justify-between text-sm">
                               <span className="text-theme-secondary">
-                                Avaliação
+                                {t('rating')}
                               </span>
                               <div className="flex items-center space-x-1">
                                 <span className="text-accent-yellow font-medium">
@@ -685,7 +695,7 @@ export default function StudentProgressPageClient({
             <AnimatedCard hover="lift" className="classical-card p-6 mb-8">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-theme-primary">
-                  Conquistas
+                  {t('achievements')}
                 </h3>
                 <FiAward className="w-6 h-6 text-brand-primary" />
               </div>
@@ -711,7 +721,7 @@ export default function StudentProgressPageClient({
                         {achievement.description}
                       </p>
                       <div className="text-xs text-accent-green mt-2">
-                        Conquistado em{' '}
+                        {t('achieved_on')}{' '}
                         {achievement.earnedAt.toLocaleDateString('pt-BR')}
                       </div>
                     </div>
@@ -727,13 +737,13 @@ export default function StudentProgressPageClient({
           <AnimatedCard hover="lift" className="classical-card p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-theme-primary">
-                Progresso de Obras
+                {t('works_progress')}
               </h3>
               <Link
                 href="/learning"
                 className="text-brand-primary hover:text-brand-secondary transition-colors flex items-center space-x-1"
               >
-                <span>Ver todas</span>
+                <span>{t('view_all')}</span>
                 <svg
                   className="w-4 h-4"
                   fill="none"
@@ -755,7 +765,7 @@ export default function StudentProgressPageClient({
               <div>
                 <h4 className="font-bold text-theme-primary mb-4 flex items-center">
                   <FiCheckCircle className="w-5 h-5 mr-2 text-accent-green" />
-                  Obras Aprendidas ({progressData.stats.learnedWorks})
+                  {t('already_learned')} ({progressData.stats.learnedWorks})
                 </h4>
 
                 <div className="space-y-3 max-h-64 overflow-y-auto">
@@ -795,7 +805,7 @@ export default function StudentProgressPageClient({
                           </div>
                           {work.learnedDate && (
                             <div className="text-xs text-accent-green mt-2">
-                              Aprendida em{' '}
+                              {t('learned_on')}{' '}
                               {work.learnedDate.toLocaleDateString('pt-BR')}
                             </div>
                           )}
@@ -809,7 +819,7 @@ export default function StudentProgressPageClient({
               <div>
                 <h4 className="font-bold text-theme-primary mb-4 flex items-center">
                   <FiHeart className="w-5 h-5 mr-2 text-accent-blue" />
-                  Quero Aprender ({progressData.stats.wantToLearnWorks})
+                  {t('want_to_learn')} ({progressData.stats.wantToLearnWorks})
                 </h4>
 
                 <div className="space-y-3 max-h-64 overflow-y-auto">
@@ -840,7 +850,7 @@ export default function StudentProgressPageClient({
                             </div>
                           </div>
                           <div className="text-xs text-theme-secondary mt-2">
-                            Adicionada em{' '}
+                            {t('added_on')}{' '}
                             {work.addedDate.toLocaleDateString('pt-BR')}
                           </div>
                         </div>

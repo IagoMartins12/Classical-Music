@@ -36,6 +36,7 @@ import {
 import Select from '@/app/components/Common/Select';
 import Link from 'next/link';
 import { useToast } from '@/app/hooks/useToast';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface Activity {
   id: string;
@@ -67,6 +68,7 @@ interface StudentHistoryClientProps {
 const StudentHistoryClient = ({
   initialFilters,
 }: StudentHistoryClientProps) => {
+  const { t } = useTranslation({ sections: ['student/history'] });
   const router = useRouter();
 
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -91,23 +93,38 @@ const StudentHistoryClient = ({
 
   // Opções de filtro específicas para aluno
   const actionOptions = [
-    { value: 'all', label: 'Todas as ações' },
-    { value: 'ASSIGNMENT_SUBMISSION', label: 'Submissões enviadas' },
-    { value: 'ASSIGNMENT_COMPLETED', label: 'Tarefas concluídas' },
-    { value: 'LESSON_FEEDBACK_GIVEN', label: 'Feedbacks dados' },
+    { value: 'all', label: t('student_history_action_all') },
+    {
+      value: 'ASSIGNMENT_SUBMISSION',
+      label: t('student_history_action_submission'),
+    },
+    {
+      value: 'ASSIGNMENT_COMPLETED',
+      label: t('student_history_action_completed'),
+    },
+    {
+      value: 'LESSON_FEEDBACK_GIVEN',
+      label: t('student_history_action_feedback'),
+    },
     {
       value: 'LESSON_RESCHEDULE_REQUESTED',
-      label: 'Reagendamentos solicitados',
+      label: t('student_history_action_reschedule'),
     },
-    { value: 'LESSON_ABSENCE_INFORMED', label: 'Ausências informadas' },
-    { value: 'STUDENT_PROFILE_UPDATED', label: 'Perfil atualizado' },
+    {
+      value: 'LESSON_ABSENCE_INFORMED',
+      label: t('student_history_action_absence'),
+    },
+    {
+      value: 'STUDENT_PROFILE_UPDATED',
+      label: t('student_history_action_profile'),
+    },
   ];
 
   const entityTypeOptions = [
-    { value: 'all', label: 'Todos os tipos' },
-    { value: 'assignment', label: 'Tarefas' },
-    { value: 'lesson', label: 'Aulas' },
-    { value: 'profile', label: 'Perfil' },
+    { value: 'all', label: t('student_history_type_all') },
+    { value: 'assignment', label: t('student_history_type_assignment') },
+    { value: 'lesson', label: t('student_history_type_lesson') },
+    { value: 'profile', label: t('student_history_type_profile') },
   ];
 
   const toast = useToast();
@@ -252,12 +269,12 @@ const StudentHistoryClient = ({
 
   const getActionLabel = (action: string) => {
     const labels: Record<string, string> = {
-      ASSIGNMENT_SUBMISSION: 'Submissão Enviada',
-      ASSIGNMENT_COMPLETED: 'Tarefa Concluída',
-      LESSON_FEEDBACK_GIVEN: 'Feedback Dado',
-      LESSON_RESCHEDULE_REQUESTED: 'Reagendamento Solicitado',
-      LESSON_ABSENCE_INFORMED: 'Ausência Informada',
-      STUDENT_PROFILE_UPDATED: 'Perfil Atualizado',
+      ASSIGNMENT_SUBMISSION: t('student_history_label_submission'),
+      ASSIGNMENT_COMPLETED: t('student_history_label_completed'),
+      LESSON_FEEDBACK_GIVEN: t('student_history_label_feedback'),
+      LESSON_RESCHEDULE_REQUESTED: t('student_history_label_reschedule'),
+      LESSON_ABSENCE_INFORMED: t('student_history_label_absence'),
+      STUDENT_PROFILE_UPDATED: t('student_history_label_profile'),
     };
 
     return labels[action] || action;
@@ -295,7 +312,7 @@ const StudentHistoryClient = ({
       <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
         <h5 className="text-sm font-medium text-blue-700 mb-2 flex items-center">
           <FiEdit className="w-4 h-4 mr-1" />
-          Alterações:
+          {t('student_history_changes_title')}
         </h5>
         <div className="space-y-2">
           {changesList.slice(0, 3).map(([key, change]: [string, any]) => (
@@ -303,11 +320,15 @@ const StudentHistoryClient = ({
               <div className="font-medium text-blue-700 mb-1">{key}:</div>
               <div className="pl-2 border-l-2 border-blue-300">
                 <div className="text-red-600 flex items-center">
-                  <span className="w-8 text-xs">De:</span>
+                  <span className="w-8 text-xs">
+                    {t('student_history_changes_from')}
+                  </span>
                   <span>{String(change.from)}</span>
                 </div>
                 <div className="text-green-600 flex items-center">
-                  <span className="w-8 text-xs">Para:</span>
+                  <span className="w-8 text-xs">
+                    {t('student_history_changes_to')}
+                  </span>
                   <span>{String(change.to)}</span>
                 </div>
               </div>
@@ -315,7 +336,9 @@ const StudentHistoryClient = ({
           ))}
           {changesList.length > 3 && (
             <div className="text-xs text-blue-600">
-              +{changesList.length - 3} alterações adicionais
+              {t('student_history_changes_additional', {
+                count: changesList.length - 3,
+              })}
             </div>
           )}
         </div>
@@ -345,10 +368,10 @@ const StudentHistoryClient = ({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Meu Histórico de Atividades
+              {t('student_history_header_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Acompanhe todas as suas ações e progresso como aluno
+              {t('student_history_header_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -373,7 +396,7 @@ const StudentHistoryClient = ({
                   {stats.totalActivities || 0}
                 </div>
                 <div className="text-sm text-theme-tertiary">
-                  Total de Atividades
+                  {t('student_history_stats_total')}
                 </div>
               </AnimatedCard>
 
@@ -388,7 +411,7 @@ const StudentHistoryClient = ({
                   {stats.breakdown?.byAction?.ASSIGNMENT_SUBMISSION || 0}
                 </div>
                 <div className="text-sm text-theme-tertiary">
-                  Submissões Enviadas
+                  {t('student_history_stats_submissions')}
                 </div>
               </AnimatedCard>
 
@@ -403,7 +426,7 @@ const StudentHistoryClient = ({
                   {stats.breakdown?.byAction?.ASSIGNMENT_COMPLETED || 0}
                 </div>
                 <div className="text-sm text-theme-tertiary">
-                  Tarefas Concluídas
+                  {t('student_history_stats_completed')}
                 </div>
               </AnimatedCard>
 
@@ -418,7 +441,7 @@ const StudentHistoryClient = ({
                   {stats.recentActivity || 0}
                 </div>
                 <div className="text-sm text-theme-tertiary">
-                  Nas últimas 24h
+                  {t('student_history_stats_recent')}
                 </div>
               </AnimatedCard>
             </SequentialGrid>
@@ -432,10 +455,10 @@ const StudentHistoryClient = ({
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-theme-primary">
-                    Filtros
+                    {t('student_history_filters_title')}
                   </h3>
                   <p className="text-sm text-theme-tertiary">
-                    {totalCount} atividades encontradas
+                    {t('student_history_filters_found', { count: totalCount })}
                   </p>
                 </div>
                 <button
@@ -443,7 +466,7 @@ const StudentHistoryClient = ({
                   className="flex items-center space-x-2 px-4 py-2 bg-theme-secondary hover:bg-theme-tertiary text-theme-primary rounded-lg transition-colors"
                 >
                   <FiFilter className="w-4 h-4" />
-                  <span>Filtros</span>
+                  <span>{t('student_history_filters_title')}</span>
                   {showFilters ? (
                     <FiChevronUp className="w-4 h-4" />
                   ) : (
@@ -457,7 +480,7 @@ const StudentHistoryClient = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-theme-secondary">
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Ação
+                        {t('student_history_filters_action')}
                       </label>
                       <Select
                         options={actionOptions}
@@ -469,7 +492,7 @@ const StudentHistoryClient = ({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Tipo
+                        {t('student_history_filters_type')}
                       </label>
                       <Select
                         options={entityTypeOptions}
@@ -481,7 +504,7 @@ const StudentHistoryClient = ({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Data Inicial
+                        {t('student_history_filters_date_from')}
                       </label>
                       <input
                         type="date"
@@ -493,7 +516,7 @@ const StudentHistoryClient = ({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Data Final
+                        {t('student_history_filters_date_to')}
                       </label>
                       <input
                         type="date"
@@ -509,13 +532,13 @@ const StudentHistoryClient = ({
                       onClick={updateFilters}
                       className="btn-classical-primary"
                     >
-                      Aplicar Filtros
+                      {t('student_history_filters_apply')}
                     </button>
                     <button
                       onClick={clearFilters}
                       className="btn-classical-secondary"
                     >
-                      Limpar
+                      {t('student_history_filters_clear')}
                     </button>
                     <button
                       onClick={() => {
@@ -527,7 +550,7 @@ const StudentHistoryClient = ({
                       <FiRefreshCw
                         className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                       />
-                      <span>Atualizar</span>
+                      <span>{t('student_history_refresh')}</span>
                     </button>
                   </div>
                 </AnimatedItem>
@@ -543,7 +566,7 @@ const StudentHistoryClient = ({
               <div className="classical-card p-12 text-center">
                 <FiActivity className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
-                  Erro ao carregar atividades
+                  {t('student_history_error_title')}
                 </h3>
                 <p className="text-theme-secondary mb-4">{error}</p>
                 <button
@@ -552,21 +575,20 @@ const StudentHistoryClient = ({
                   }}
                   className="btn-classical-primary"
                 >
-                  Tentar Novamente
+                  {t('student_history_error_try_again')}
                 </button>
               </div>
             ) : activities.length === 0 ? (
               <div className="classical-card p-12 text-center">
                 <FiActivity className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
-                  Nenhuma atividade encontrada
+                  {t('student_history_empty_title')}
                 </h3>
                 <p className="text-theme-secondary">
-                  Não há atividades registradas com os filtros aplicados.
+                  {t('student_history_empty_description')}
                 </p>
                 <p className="text-sm text-theme-tertiary mt-2">
-                  Suas ações como aluno aparecerão aqui: submissões, feedbacks,
-                  etc.
+                  {t('student_history_empty_hint')}
                 </p>
               </div>
             ) : (
@@ -651,7 +673,9 @@ const StudentHistoryClient = ({
 
                             {activity.entityDisplayName && (
                               <div className="text-sm text-theme-tertiary">
-                                <span className="font-medium">Item:</span>{' '}
+                                <span className="font-medium">
+                                  {t('student_history_item_label')}
+                                </span>{' '}
                                 {activity.entityDisplayName}
                               </div>
                             )}
@@ -669,16 +693,16 @@ const StudentHistoryClient = ({
                                   <span className="px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium border border-blue-200">
                                     {activity.metadata.submissionType ===
                                     'video'
-                                      ? '📹 Vídeo'
+                                      ? t('student_history_metadata_video')
                                       : activity.metadata.submissionType ===
                                         'file'
-                                      ? '📄 Arquivo'
-                                      : '📝 Texto'}
+                                      ? t('student_history_metadata_file')
+                                      : t('student_history_metadata_text')}
                                   </span>
                                 )}
                                 {activity.metadata.hasMessage && (
                                   <span className="px-2 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium border border-green-200">
-                                    💬 Com mensagem
+                                    {t('student_history_metadata_with_message')}
                                   </span>
                                 )}
                               </div>

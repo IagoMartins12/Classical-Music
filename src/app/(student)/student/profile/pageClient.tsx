@@ -44,6 +44,7 @@ import {
 import { useStudentProfile } from '@/app/hooks/lessonsSystem/useStudentProfile';
 import { useToast } from '@/app/hooks/useToast';
 import Select from '@/app/components/Common/Select';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface StudentProfilePageClientProps {
   initialData: StudentProfileData | null;
@@ -58,31 +59,6 @@ type EditingSection =
   | 'privacy'
   | 'communication'
   | null;
-
-const skillLevels = [
-  { value: 'BEGINNER', label: 'Iniciante' },
-  { value: 'INTERMEDIATE', label: 'Intermediário' },
-  { value: 'ADVANCED', label: 'Avançado' },
-];
-
-const learningPaceOptions = [
-  { value: '', label: 'Selecione' },
-  { value: 'slow', label: 'Devagar' },
-  { value: 'medium', label: 'Moderado' },
-  { value: 'fast', label: 'Rápido' },
-];
-
-const profileVisibilityOptions = [
-  { value: 'public', label: 'Público' },
-  { value: 'teacher_only', label: 'Apenas Professores' },
-  { value: 'private', label: 'Privado' },
-];
-
-const contactPreferences = [
-  { value: 'whatsapp', label: 'WhatsApp' },
-  { value: 'email', label: 'Email' },
-  { value: 'both', label: 'Ambos' },
-];
 
 const musicalGenres = [
   'Clássico',
@@ -109,6 +85,8 @@ export default function StudentProfilePageClient({
   userProfile,
   errorMessage,
 }: StudentProfilePageClientProps) {
+  const { t } = useTranslation({ sections: ['student/profile'] });
+
   const {
     profile,
     studyData,
@@ -121,12 +99,37 @@ export default function StudentProfilePageClient({
     clearError,
   } = useStudentProfile(initialData);
 
+  const skillLevels = [
+    { value: 'BEGINNER', label: t('beginner') },
+    { value: 'INTERMEDIATE', label: t('intermediate') },
+    { value: 'ADVANCED', label: t('advanced') },
+  ];
+
+  const learningPaceOptions = [
+    { value: '', label: t('pace_select') },
+    { value: 'slow', label: t('pace_slow') },
+    { value: 'medium', label: t('pace_medium') },
+    { value: 'fast', label: t('pace_fast') },
+  ];
+
+  const profileVisibilityOptions = [
+    { value: 'public', label: t('visibility_public') },
+    { value: 'teacher_only', label: t('visibility_teacher_only') },
+    { value: 'private', label: t('visibility_private') },
+  ];
+
+  const contactPreferences = [
+    { value: 'whatsapp', label: t('contact_whatsapp') },
+    { value: 'email', label: t('contact_email') },
+    { value: 'both', label: t('contact_both') },
+  ];
+
   // Local state
   const [editingSection, setEditingSection] = useState<EditingSection>(null);
   const [saving, setSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
-  // 🔧 FORMS PARA CADA SEÇÃO
+  // Forms para cada seção
   const [personalForm, setPersonalForm] = useState(() => ({
     firstName: userProfile.name.split(' ')[0] || '',
     lastName: userProfile.name.split(' ').slice(1).join(' ') || '',
@@ -162,7 +165,7 @@ export default function StudentProfilePageClient({
     reminderPreferences: profile?.reminderPreferences || {},
   }));
 
-  // 🆕 VALIDAÇÃO DE TELEFONE EM TEMPO REAL
+  // Validação de telefone em tempo real
   const phoneValidation = usePhoneValidation(personalForm.phone);
   const [phoneError, setPhoneError] = useState<string>('');
 
@@ -174,7 +177,8 @@ export default function StudentProfilePageClient({
   }, [initialData, setInitialData]);
 
   const toast = useToast();
-  // 🔄 SINCRONIZAR FORMS QUANDO PROFILE MUDAR
+
+  // Sincronizar forms quando profile mudar
   useEffect(() => {
     if (profile) {
       setPersonalForm((prev) => ({
@@ -225,7 +229,7 @@ export default function StudentProfilePageClient({
     setTimeout(() => clearError(), 8000);
   };
 
-  // 🔧 HANDLERS PARA TELEFONE E LOCALIZAÇÃO
+  // Handlers para telefone e localização
   const handlePhoneChange = (phone: string) => {
     setPersonalForm((prev) => ({ ...prev, phone }));
     setPhoneError('');
@@ -235,20 +239,20 @@ export default function StudentProfilePageClient({
     setPersonalForm((prev) => ({ ...prev, location }));
   };
 
-  // 🔧 VALIDAÇÃO
+  // Validação
   const validatePersonalForm = () => {
     const errors: string[] = [];
 
     if (!personalForm.firstName.trim()) {
-      errors.push('Nome é obrigatório');
+      errors.push(t('first_name_required'));
     }
 
     // Validação de telefone
     if (personalForm.phone && personalForm.phone.trim() !== '') {
       const phoneValidationResult = validatePhoneNumber(personalForm.phone);
       if (!phoneValidationResult.isValid && !phoneValidationResult.isEmpty) {
-        errors.push(phoneValidationResult.error || 'Telefone inválido');
-        setPhoneError(phoneValidationResult.error || 'Telefone inválido');
+        errors.push(phoneValidationResult.error || t('phone_invalid'));
+        setPhoneError(phoneValidationResult.error || t('phone_invalid'));
       }
     }
 
@@ -260,7 +264,7 @@ export default function StudentProfilePageClient({
     return true;
   };
 
-  // 🔧 FUNÇÃO SALVAR DADOS PESSOAIS CORRIGIDA - SEM INVALIDAÇÃO MANUAL
+  // Função salvar dados pessoais
   const savePersonalData = useCallback(async () => {
     if (!validatePersonalForm()) {
       return;
@@ -286,18 +290,17 @@ export default function StudentProfilePageClient({
 
       if (success) {
         setEditingSection(null);
-        showSuccess('Dados pessoais salvos com sucesso!');
-        // ✅ CACHE É INVALIDADO AUTOMATICAMENTE NO SERVIDOR
+        showSuccess(t('personal_data_saved'));
       }
     } catch (error) {
       console.error('❌ Erro ao salvar dados pessoais:', error);
-      showError('Erro ao salvar dados pessoais');
+      showError(t('error_saving_personal'));
     } finally {
       setSaving(false);
     }
-  }, [personalForm, updateProfile]);
+  }, [personalForm, updateProfile, t]);
 
-  // 🔧 FUNÇÃO SALVAR DADOS DE ESTUDO CORRIGIDA - SEM INVALIDAÇÃO MANUAL
+  // Função salvar dados de estudo
   const saveStudyData = useCallback(async () => {
     setSaving(true);
 
@@ -308,18 +311,17 @@ export default function StudentProfilePageClient({
 
       if (success) {
         setEditingSection(null);
-        showSuccess('Configurações de estudo salvas com sucesso!');
-        // ✅ CACHE É INVALIDADO AUTOMATICAMENTE NO SERVIDOR
+        showSuccess(t('study_settings_saved'));
       }
     } catch (error) {
       console.error('❌ Erro ao salvar dados de estudo:', error);
-      showError('Erro ao salvar dados de estudo');
+      showError(t('error_saving_study'));
     } finally {
       setSaving(false);
     }
-  }, [studyForm, updateProfile]);
+  }, [studyForm, updateProfile, t]);
 
-  // 🔧 FUNÇÃO SALVAR PREFERÊNCIAS CORRIGIDA - SEM INVALIDAÇÃO MANUAL
+  // Função salvar preferências
   const savePreferencesData = useCallback(async () => {
     setSaving(true);
 
@@ -330,18 +332,17 @@ export default function StudentProfilePageClient({
 
       if (success) {
         setEditingSection(null);
-        showSuccess('Preferências musicais salvas com sucesso!');
-        // ✅ CACHE É INVALIDADO AUTOMATICAMENTE NO SERVIDOR
+        showSuccess(t('musical_preferences_saved'));
       }
     } catch (error) {
       console.error('❌ Erro ao salvar preferências:', error);
-      showError('Erro ao salvar preferências');
+      showError(t('error_saving_preferences'));
     } finally {
       setSaving(false);
     }
-  }, [preferencesForm, updateProfile]);
+  }, [preferencesForm, updateProfile, t]);
 
-  // 🔧 FUNÇÃO SALVAR PRIVACIDADE CORRIGIDA - SEM INVALIDAÇÃO MANUAL
+  // Função salvar privacidade
   const savePrivacyData = useCallback(async () => {
     setSaving(true);
 
@@ -352,18 +353,17 @@ export default function StudentProfilePageClient({
 
       if (success) {
         setEditingSection(null);
-        showSuccess('Configurações de privacidade salvas com sucesso!');
-        // ✅ CACHE É INVALIDADO AUTOMATICAMENTE NO SERVIDOR
+        showSuccess(t('privacy_settings_saved'));
       }
     } catch (error) {
       console.error('❌ Erro ao salvar privacidade:', error);
-      showError('Erro ao salvar privacidade');
+      showError(t('error_saving_privacy'));
     } finally {
       setSaving(false);
     }
-  }, [privacyForm, updateProfile]);
+  }, [privacyForm, updateProfile, t]);
 
-  // 🔧 FUNÇÃO SALVAR COMUNICAÇÃO CORRIGIDA - SEM INVALIDAÇÃO MANUAL
+  // Função salvar comunicação
   const saveCommunicationData = useCallback(async () => {
     setSaving(true);
 
@@ -374,16 +374,15 @@ export default function StudentProfilePageClient({
 
       if (success) {
         setEditingSection(null);
-        showSuccess('Configurações de comunicação salvas com sucesso!');
-        // ✅ CACHE É INVALIDADO AUTOMATICAMENTE NO SERVIDOR
+        showSuccess(t('communication_settings_saved'));
       }
     } catch (error) {
       console.error('❌ Erro ao salvar comunicação:', error);
-      showError('Erro ao salvar comunicação');
+      showError(t('error_saving_communication'));
     } finally {
       setSaving(false);
     }
-  }, [communicationForm, updateProfile]);
+  }, [communicationForm, updateProfile, t]);
 
   // Handle array fields (like preferredGenres)
   const handleGenreToggle = useCallback((genre: string) => {
@@ -410,13 +409,13 @@ export default function StudentProfilePageClient({
               <FiAlertCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Perfil
+              {t('error_loading_profile')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {errorMessage}
             </p>
             <button onClick={refreshProfile} className="btn-classical-primary">
-              Tentar Novamente
+              {t('try_again')}
             </button>
           </div>
         </div>
@@ -430,7 +429,7 @@ export default function StudentProfilePageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center">
             <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
-            <p className="text-theme-secondary">Carregando perfil...</p>
+            <p className="text-theme-secondary">{t('loading_profile')}</p>
           </div>
         </div>
       </PageContainer>
@@ -464,10 +463,10 @@ export default function StudentProfilePageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Meu Perfil de Aluno
+              {t('title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Configure suas preferências de estudo e comunicação
+              {t('subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -518,7 +517,7 @@ export default function StudentProfilePageClient({
 
         {/* Profile Sections */}
         <div className="space-y-8">
-          {/* 🔧 1. INFORMAÇÕES PESSOAIS */}
+          {/* 1. INFORMAÇÕES PESSOAIS */}
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -528,10 +527,10 @@ export default function StudentProfilePageClient({
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Informações Pessoais
+                      {t('personal_info')}
                     </h2>
                     <p className="text-theme-tertiary text-sm">
-                      Seus dados básicos e informações de contato
+                      {t('personal_info_subtitle')}
                     </p>
                   </div>
                 </div>
@@ -547,7 +546,7 @@ export default function StudentProfilePageClient({
                 >
                   <FiEdit3 className="w-4 h-4" />
                   <span>
-                    {editingSection === 'personal' ? 'Cancelar' : 'Editar'}
+                    {editingSection === 'personal' ? t('cancel') : t('edit')}
                   </span>
                 </button>
               </div>
@@ -557,7 +556,7 @@ export default function StudentProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Nome *
+                        {t('first_name')} *
                       </label>
                       <input
                         type="text"
@@ -576,7 +575,7 @@ export default function StudentProfilePageClient({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Sobrenome
+                        {t('last_name')}
                       </label>
                       <input
                         type="text"
@@ -598,13 +597,13 @@ export default function StudentProfilePageClient({
                       value={personalForm.phone}
                       onChange={handlePhoneChange}
                       disabled={saving}
-                      label="Telefone/WhatsApp"
+                      label={t('phone_whatsapp')}
                       placeholder="Digite seu número"
                       showLabel={true}
                       error={phoneError}
                     />
 
-                    {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE */}
+                    {/* Aviso de validação de telefone */}
                     {phoneError &&
                       phoneValidation.showError &&
                       phoneValidation.error && (
@@ -612,7 +611,7 @@ export default function StudentProfilePageClient({
                           <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                           <div>
                             <h4 className="text-sm font-medium text-red-800">
-                              Telefone inválido
+                              {t('invalid_phone_title')}
                             </h4>
                             <p className="text-sm text-red-700 mt-1">
                               {phoneValidation.error}
@@ -627,12 +626,12 @@ export default function StudentProfilePageClient({
                       )}
                   </div>
 
-                  {/* 🆕 LOCALIZAÇÃO */}
+                  {/* Localização */}
                   <div>
                     <div className="flex items-center space-x-2 mb-4">
                       <FiMapPin className="w-4 h-4 text-brand-primary" />
                       <h4 className="font-medium text-theme-primary">
-                        Localização
+                        {t('location')}
                       </h4>
                     </div>
 
@@ -651,7 +650,7 @@ export default function StudentProfilePageClient({
                       disabled={saving}
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </button>
                     <button
                       onClick={savePersonalData}
@@ -670,7 +669,7 @@ export default function StudentProfilePageClient({
                       ) : (
                         <FiSave className="w-4 h-4" />
                       )}
-                      <span>Salvar</span>
+                      <span>{t('save')}</span>
                     </button>
                   </div>
                 </div>
@@ -688,7 +687,7 @@ export default function StudentProfilePageClient({
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Email
+                        {t('email')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
                         <FiMail className="w-4 h-4" />
@@ -698,11 +697,11 @@ export default function StudentProfilePageClient({
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Telefone
+                        {t('phone')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
                         <FiPhone className="w-4 h-4" />
-                        <span>{profile?.user.phone || 'Não informado'}</span>
+                        <span>{profile?.user.phone || t('not_informed')}</span>
                       </div>
                     </div>
                   </div>
@@ -710,21 +709,21 @@ export default function StudentProfilePageClient({
                   <div className="space-y-4">
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Localização
+                        {t('location')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
                         <FiMapPin className="w-4 h-4" />
                         <span>
                           {profile?.user.city && profile?.user.state
                             ? `${profile.user.city}, ${profile.user.state}`
-                            : profile?.user.country || 'Não informado'}
+                            : profile?.user.country || t('not_informed')}
                         </span>
                       </div>
                     </div>
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Aluno desde
+                        {t('student_since')}
                       </label>
                       <div className="text-theme-primary font-medium">
                         {profile?.enrollmentDate
@@ -740,7 +739,7 @@ export default function StudentProfilePageClient({
             </div>
           </AnimatedCard>
 
-          {/* 🔧 2. CONFIGURAÇÕES DE ESTUDO */}
+          {/* 2. CONFIGURAÇÕES DE ESTUDO */}
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -750,10 +749,10 @@ export default function StudentProfilePageClient({
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Configurações de Estudo
+                      {t('study_settings')}
                     </h2>
                     <p className="text-theme-tertiary text-sm">
-                      Seus objetivos e preferências de aprendizado
+                      {t('study_settings_subtitle')}
                     </p>
                   </div>
                 </div>
@@ -769,7 +768,7 @@ export default function StudentProfilePageClient({
                 >
                   <FiEdit3 className="w-4 h-4" />
                   <span>
-                    {editingSection === 'study' ? 'Cancelar' : 'Editar'}
+                    {editingSection === 'study' ? t('cancel') : t('edit')}
                   </span>
                 </button>
               </div>
@@ -779,7 +778,7 @@ export default function StudentProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Nível Atual
+                        {t('current_level')}
                       </label>
                       <Select
                         options={skillLevels}
@@ -797,7 +796,7 @@ export default function StudentProfilePageClient({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Tempo de Prática Semanal (minutos)
+                        {t('weekly_practice_time')}
                       </label>
                       <input
                         type="number"
@@ -812,14 +811,14 @@ export default function StudentProfilePageClient({
                         max={2400}
                         className="input-classical w-full"
                         disabled={saving}
-                        placeholder="Ex: 300 (5 horas)"
+                        placeholder={t('practice_time_placeholder')}
                       />
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Ritmo de Aprendizado
+                      {t('learning_pace')}
                     </label>
                     <Select
                       options={learningPaceOptions}
@@ -837,7 +836,7 @@ export default function StudentProfilePageClient({
 
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Objetivos Musicais
+                      {t('musical_goals')}
                     </label>
                     <textarea
                       value={studyForm.musicalGoals}
@@ -849,14 +848,14 @@ export default function StudentProfilePageClient({
                       }
                       rows={3}
                       className="input-classical w-full"
-                      placeholder="Descreva seus objetivos musicais..."
+                      placeholder={t('musical_goals_placeholder')}
                       disabled={saving}
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Background Musical
+                      {t('musical_background')}
                     </label>
                     <textarea
                       value={studyForm.musicalBackground}
@@ -868,14 +867,14 @@ export default function StudentProfilePageClient({
                       }
                       rows={3}
                       className="input-classical w-full"
-                      placeholder="Conte sobre sua experiência musical anterior..."
+                      placeholder={t('musical_background_placeholder')}
                       disabled={saving}
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Necessidades Especiais
+                      {t('special_needs')}
                     </label>
                     <textarea
                       value={studyForm.specialNeeds}
@@ -887,7 +886,7 @@ export default function StudentProfilePageClient({
                       }
                       rows={2}
                       className="input-classical w-full"
-                      placeholder="Alguma necessidade especial de aprendizado..."
+                      placeholder={t('special_needs_placeholder')}
                       disabled={saving}
                     />
                   </div>
@@ -898,7 +897,7 @@ export default function StudentProfilePageClient({
                       disabled={saving}
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </button>
                     <button
                       onClick={saveStudyData}
@@ -910,7 +909,7 @@ export default function StudentProfilePageClient({
                       ) : (
                         <FiSave className="w-4 h-4" />
                       )}
-                      <span>Salvar</span>
+                      <span>{t('save')}</span>
                     </button>
                   </div>
                 </div>
@@ -919,22 +918,22 @@ export default function StudentProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Nível Atual
+                        {t('current_level')}
                       </label>
                       <div className="text-theme-primary font-medium">
                         {skillLevels.find((l) => l.value === profile?.level)
-                          ?.label || 'Não definido'}
+                          ?.label || t('not_defined')}
                       </div>
                     </div>
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Tempo de Prática Semanal
+                        {t('weekly_practice_time')}
                       </label>
                       <div className="text-theme-primary font-medium">
                         {profile?.practiceTime
                           ? `${profile.practiceTime} minutos`
-                          : 'Não definido'}
+                          : t('not_defined')}
                       </div>
                     </div>
                   </div>
@@ -942,7 +941,7 @@ export default function StudentProfilePageClient({
                   {profile?.learningPace && (
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Ritmo de Aprendizado
+                        {t('learning_pace')}
                       </label>
                       <div className="text-theme-primary font-medium">
                         {learningPaceOptions.find(
@@ -955,7 +954,7 @@ export default function StudentProfilePageClient({
                   {profile?.musicalGoals && (
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Objetivos Musicais
+                        {t('musical_goals')}
                       </label>
                       <div className="text-theme-primary mt-2 whitespace-pre-wrap">
                         {profile.musicalGoals}
@@ -966,7 +965,7 @@ export default function StudentProfilePageClient({
                   {profile?.musicalBackground && (
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Background Musical
+                        {t('musical_background')}
                       </label>
                       <div className="text-theme-primary mt-2 whitespace-pre-wrap">
                         {profile.musicalBackground}
@@ -977,7 +976,7 @@ export default function StudentProfilePageClient({
                   {profile?.specialNeeds && (
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Necessidades Especiais
+                        {t('special_needs')}
                       </label>
                       <div className="text-theme-primary mt-2 whitespace-pre-wrap">
                         {profile.specialNeeds}
@@ -989,16 +988,16 @@ export default function StudentProfilePageClient({
                     <div className="text-center py-8">
                       <FiBookOpen className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                       <h3 className="text-lg font-bold text-theme-primary mb-2">
-                        Complete suas configurações de estudo
+                        {t('complete_study_settings')}
                       </h3>
                       <p className="text-theme-tertiary mb-4">
-                        Adicione seus objetivos e background musical
+                        {t('add_goals_background')}
                       </p>
                       <button
                         onClick={() => setEditingSection('study')}
                         className="btn-classical-primary"
                       >
-                        Configurar Agora
+                        {t('configure_now')}
                       </button>
                     </div>
                   )}
@@ -1007,7 +1006,7 @@ export default function StudentProfilePageClient({
             </div>
           </AnimatedCard>
 
-          {/* 🔧 3. PREFERÊNCIAS MUSICAIS */}
+          {/* 3. PREFERÊNCIAS MUSICAIS */}
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -1017,10 +1016,10 @@ export default function StudentProfilePageClient({
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Preferências Musicais
+                      {t('musical_preferences')}
                     </h2>
                     <p className="text-theme-tertiary text-sm">
-                      Seus gêneros musicais favoritos
+                      {t('musical_preferences_subtitle')}
                     </p>
                   </div>
                 </div>
@@ -1036,7 +1035,7 @@ export default function StudentProfilePageClient({
                 >
                   <FiEdit3 className="w-4 h-4" />
                   <span>
-                    {editingSection === 'preferences' ? 'Cancelar' : 'Editar'}
+                    {editingSection === 'preferences' ? t('cancel') : t('edit')}
                   </span>
                 </button>
               </div>
@@ -1045,7 +1044,7 @@ export default function StudentProfilePageClient({
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-4">
-                      Gêneros Musicais Preferidos
+                      {t('preferred_genres')}
                     </label>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                       {musicalGenres.map((genre) => {
@@ -1075,7 +1074,7 @@ export default function StudentProfilePageClient({
                       disabled={saving}
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </button>
                     <button
                       onClick={savePreferencesData}
@@ -1087,7 +1086,7 @@ export default function StudentProfilePageClient({
                       ) : (
                         <FiSave className="w-4 h-4" />
                       )}
-                      <span>Salvar</span>
+                      <span>{t('save')}</span>
                     </button>
                   </div>
                 </div>
@@ -1109,16 +1108,16 @@ export default function StudentProfilePageClient({
                     <div className="text-center py-8">
                       <FiHeart className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                       <h3 className="text-lg font-bold text-theme-primary mb-2">
-                        Adicione seus gêneros favoritos
+                        {t('add_favorite_genres')}
                       </h3>
                       <p className="text-theme-tertiary mb-4">
-                        Selecione os gêneros musicais que mais gosta
+                        {t('select_favorite_genres')}
                       </p>
                       <button
                         onClick={() => setEditingSection('preferences')}
                         className="btn-classical-primary"
                       >
-                        Escolher Gêneros
+                        {t('choose_genres')}
                       </button>
                     </div>
                   )}
@@ -1127,7 +1126,7 @@ export default function StudentProfilePageClient({
             </div>
           </AnimatedCard>
 
-          {/* 🔧 4. CONFIGURAÇÕES DE PRIVACIDADE */}
+          {/* 4. CONFIGURAÇÕES DE PRIVACIDADE */}
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -1137,10 +1136,10 @@ export default function StudentProfilePageClient({
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Configurações de Privacidade
+                      {t('privacy_settings')}
                     </h2>
                     <p className="text-theme-tertiary text-sm">
-                      Controle a visibilidade do seu progresso
+                      {t('privacy_settings_subtitle')}
                     </p>
                   </div>
                 </div>
@@ -1156,7 +1155,7 @@ export default function StudentProfilePageClient({
                 >
                   <FiEdit3 className="w-4 h-4" />
                   <span>
-                    {editingSection === 'privacy' ? 'Cancelar' : 'Editar'}
+                    {editingSection === 'privacy' ? t('cancel') : t('edit')}
                   </span>
                 </button>
               </div>
@@ -1165,7 +1164,7 @@ export default function StudentProfilePageClient({
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Visibilidade do Perfil
+                      {t('profile_visibility')}
                     </label>
                     <select
                       value={privacyForm.profileVisibility}
@@ -1190,10 +1189,10 @@ export default function StudentProfilePageClient({
                     <div className="flex items-center justify-between p-4 bg-theme-secondary/5 rounded-lg">
                       <div>
                         <div className="font-medium text-theme-primary">
-                          Permitir Progresso Público
+                          {t('allow_public_progress')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Permite que outros vejam seu progresso de aprendizado
+                          {t('allow_public_progress_description')}
                         </div>
                       </div>
                       <button
@@ -1223,11 +1222,10 @@ export default function StudentProfilePageClient({
                     <div className="flex items-center justify-between p-4 bg-theme-secondary/5 rounded-lg">
                       <div>
                         <div className="font-medium text-theme-primary">
-                          Compartilhar Progresso com Professores
+                          {t('share_progress_teachers')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Permite que seus professores vejam seu progresso
-                          detalhado
+                          {t('share_progress_teachers_description')}
                         </div>
                       </div>
                       <button
@@ -1261,7 +1259,7 @@ export default function StudentProfilePageClient({
                       disabled={saving}
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </button>
                     <button
                       onClick={savePrivacyData}
@@ -1273,7 +1271,7 @@ export default function StudentProfilePageClient({
                       ) : (
                         <FiSave className="w-4 h-4" />
                       )}
-                      <span>Salvar</span>
+                      <span>{t('save')}</span>
                     </button>
                   </div>
                 </div>
@@ -1281,19 +1279,19 @@ export default function StudentProfilePageClient({
                 <div className="space-y-4">
                   <div>
                     <label className="text-sm text-theme-tertiary">
-                      Visibilidade do Perfil
+                      {t('profile_visibility')}
                     </label>
                     <div className="text-theme-primary font-medium">
                       {profileVisibilityOptions.find(
                         (option) => option.value === profile?.profileVisibility
-                      )?.label || 'Não definido'}
+                      )?.label || t('not_defined')}
                     </div>
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between p-3 bg-theme-secondary/5 rounded-lg">
                       <span className="text-theme-primary">
-                        Progresso Público
+                        {t('public_progress')}
                       </span>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -1303,14 +1301,14 @@ export default function StudentProfilePageClient({
                         }`}
                       >
                         {profile?.allowPublicProgress
-                          ? 'Ativado'
-                          : 'Desativado'}
+                          ? t('activated')
+                          : t('deactivated')}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between p-3 bg-theme-secondary/5 rounded-lg">
                       <span className="text-theme-primary">
-                        Compartilhar com Professores
+                        {t('share_with_teachers')}
                       </span>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -1319,7 +1317,9 @@ export default function StudentProfilePageClient({
                             : 'bg-theme-secondary text-theme-tertiary'
                         }`}
                       >
-                        {profile?.allowProgressShare ? 'Ativado' : 'Desativado'}
+                        {profile?.allowProgressShare
+                          ? t('activated')
+                          : t('deactivated')}
                       </span>
                     </div>
                   </div>
@@ -1328,7 +1328,7 @@ export default function StudentProfilePageClient({
             </div>
           </AnimatedCard>
 
-          {/* 🔧 5. CONFIGURAÇÕES DE COMUNICAÇÃO */}
+          {/* 5. CONFIGURAÇÕES DE COMUNICAÇÃO */}
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -1338,10 +1338,10 @@ export default function StudentProfilePageClient({
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Configurações de Comunicação
+                      {t('communication_settings')}
                     </h2>
                     <p className="text-theme-tertiary text-sm">
-                      Como você prefere ser contatado
+                      {t('communication_settings_subtitle')}
                     </p>
                   </div>
                 </div>
@@ -1359,7 +1359,9 @@ export default function StudentProfilePageClient({
                 >
                   <FiEdit3 className="w-4 h-4" />
                   <span>
-                    {editingSection === 'communication' ? 'Cancelar' : 'Editar'}
+                    {editingSection === 'communication'
+                      ? t('cancel')
+                      : t('edit')}
                   </span>
                 </button>
               </div>
@@ -1368,7 +1370,7 @@ export default function StudentProfilePageClient({
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Forma de Contato Preferida
+                      {t('preferred_contact')}
                     </label>
                     <select
                       value={communicationForm.preferredContact}
@@ -1395,7 +1397,7 @@ export default function StudentProfilePageClient({
                       disabled={saving}
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </button>
                     <button
                       onClick={saveCommunicationData}
@@ -1407,26 +1409,26 @@ export default function StudentProfilePageClient({
                       ) : (
                         <FiSave className="w-4 h-4" />
                       )}
-                      <span>Salvar</span>
+                      <span>{t('save')}</span>
                     </button>
                   </div>
                 </div>
               ) : (
                 <div>
                   <label className="text-sm text-theme-tertiary">
-                    Forma de Contato Preferida
+                    {t('preferred_contact')}
                   </label>
                   <div className="text-theme-primary font-medium">
                     {contactPreferences.find(
                       (pref) => pref.value === profile?.preferredContact
-                    )?.label || 'Não definido'}
+                    )?.label || t('not_defined')}
                   </div>
                 </div>
               )}
             </div>
           </AnimatedCard>
 
-          {/* 🔧 6. MEU REPERTÓRIO (READ-ONLY) */}
+          {/* 6. MEU REPERTÓRIO (READ-ONLY) */}
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -1436,10 +1438,10 @@ export default function StudentProfilePageClient({
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Meu Repertório
+                      {t('my_repertoire')}
                     </h2>
                     <p className="text-theme-tertiary text-sm">
-                      Suas obras favoritas e progresso de estudo
+                      {t('my_repertoire_subtitle')}
                     </p>
                   </div>
                 </div>
@@ -1454,7 +1456,7 @@ export default function StudentProfilePageClient({
                       loading.refreshStudyData ? 'animate-spin' : ''
                     }`}
                   />
-                  <span>Atualizar</span>
+                  <span>{t('refresh')}</span>
                 </button>
               </div>
 
@@ -1464,7 +1466,7 @@ export default function StudentProfilePageClient({
                   <div>
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center">
                       <FiTarget className="w-5 h-5 mr-2" />
-                      Quero Aprender ({studyData.wantToLearn.length})
+                      {t('want_to_learn')} ({studyData.wantToLearn.length})
                     </h3>
                     <div className="space-y-2">
                       {studyData.wantToLearn.slice(0, 5).map((work) => (
@@ -1488,7 +1490,8 @@ export default function StudentProfilePageClient({
                       {studyData.wantToLearn.length > 5 && (
                         <div className="text-center">
                           <span className="text-sm text-theme-tertiary">
-                            +{studyData.wantToLearn.length - 5} mais obras
+                            +{studyData.wantToLearn.length - 5}{' '}
+                            {t('more_works')}
                           </span>
                         </div>
                       )}
@@ -1499,7 +1502,7 @@ export default function StudentProfilePageClient({
                   <div>
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center">
                       <FiCheck className="w-5 h-5 mr-2" />
-                      Já Aprendi ({studyData.learned.length})
+                      {t('already_learned')} ({studyData.learned.length})
                     </h3>
                     <div className="space-y-2">
                       {studyData.learned.slice(0, 5).map((work) => (
@@ -1515,11 +1518,11 @@ export default function StudentProfilePageClient({
                           </div>
                           <div className="flex items-center justify-between mt-1">
                             <div className="text-xs text-accent-green">
-                              Domínio: {work.mastery}/5
+                              {t('mastery')}: {work.mastery}/5
                             </div>
                             {work.wouldRecommend && (
                               <div className="text-xs text-accent-blue">
-                                ⭐ Recomenda
+                                ⭐ {t('recommends')}
                               </div>
                             )}
                           </div>
@@ -1528,7 +1531,7 @@ export default function StudentProfilePageClient({
                       {studyData.learned.length > 5 && (
                         <div className="text-center">
                           <span className="text-sm text-theme-tertiary">
-                            +{studyData.learned.length - 5} mais obras
+                            +{studyData.learned.length - 5} {t('more_works')}
                           </span>
                         </div>
                       )}
@@ -1543,7 +1546,7 @@ export default function StudentProfilePageClient({
                   <div className="mt-8 pt-6 border-t border-theme-secondary">
                     <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center">
                       <FiEdit3 className="w-5 h-5 mr-2" />
-                      Anotações Recentes
+                      {t('recent_annotations')}
                     </h3>
                     <div className="space-y-2">
                       {studyData.recentAnnotations.map((annotation) => (
@@ -1567,7 +1570,7 @@ export default function StudentProfilePageClient({
               {profile.teachers.length > 0 && (
                 <div className="mt-8 pt-6 border-t border-theme-secondary">
                   <h3 className="text-lg font-bold text-theme-primary mb-4">
-                    Meus Professores
+                    {t('my_teachers')}
                   </h3>
                   <div className="space-y-3">
                     {profile.teachers
@@ -1597,7 +1600,7 @@ export default function StudentProfilePageClient({
                               {teacher.teacherName}
                             </div>
                             <div className="text-xs text-theme-tertiary">
-                              {teacher.totalLessons} aulas •{' '}
+                              {teacher.totalLessons} {t('lessons')} •{' '}
                               {teacher.lessonDuration}min
                             </div>
                           </div>

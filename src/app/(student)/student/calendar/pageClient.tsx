@@ -32,6 +32,7 @@ import Image from 'next/image';
 import Select from '@/app/components/Common/Select';
 import { useStudentCalendar } from '@/app/hooks/lessonsSystem/useStudentCalendar';
 import Modal from '@/app/components/Modal';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface StudentCalendarPageClientProps {
   initialData: StudentCalendarData | null;
@@ -62,6 +63,8 @@ export default function StudentCalendarPageClient({
   initialData,
   errorMessage,
 }: StudentCalendarPageClientProps) {
+  const { t } = useTranslation({ sections: ['student/calendar'] });
+
   // Initialize hook with server data
   const {
     // State do hook
@@ -318,11 +321,10 @@ export default function StudentCalendarPageClient({
               <FiUserCheck className="w-10 h-10 text-theme-primary" />
             </div>
             <h1 className="text-2xl font-bold text-theme-primary classical-title mb-4">
-              Você ainda não tem um professor
+              {t('student_calendar_no_teacher_title')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
-              Para acessar seu calendário de aulas, você precisa ser vinculado a
-              pelo menos um professor da plataforma.
+              {t('student_calendar_no_teacher_description')}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link
@@ -330,10 +332,10 @@ export default function StudentCalendarPageClient({
                 className="btn-classical-primary flex items-center space-x-2"
               >
                 <FiHome className="w-4 h-4" />
-                <span>Voltar ao Dashboard</span>
+                <span>{t('student_calendar_no_teacher_back')}</span>
               </Link>
               <Link href="/contact" className="btn-classical-secondary">
-                Falar com um Professor
+                {t('student_calendar_no_teacher_contact')}
               </Link>
             </div>
           </div>
@@ -357,7 +359,7 @@ export default function StudentCalendarPageClient({
               <FiCalendar className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Calendário
+              {t('student_calendar_error_title')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error || errorMessage}
@@ -374,7 +376,9 @@ export default function StudentCalendarPageClient({
                   }`}
                 />
                 <span>
-                  {loading.refreshing ? 'Carregando...' : 'Tentar Novamente'}
+                  {loading.refreshing
+                    ? t('student_calendar_error_try_again') + '...'
+                    : t('student_calendar_error_try_again')}
                 </span>
               </button>
               {error && (
@@ -382,7 +386,7 @@ export default function StudentCalendarPageClient({
                   onClick={clearError}
                   className="btn-classical-secondary w-full"
                 >
-                  Limpar Erro
+                  {t('student_calendar_error_clear')}
                 </button>
               )}
             </div>
@@ -404,95 +408,13 @@ export default function StudentCalendarPageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Meu Calendário de Aulas
+              {t('student_calendar_header_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Acompanhe suas aulas e organize seu tempo de estudo
+              {t('student_calendar_header_subtitle')}
             </p>
           </div>
         </AnimatedItem>
-
-        {/* Stats Cards */}
-        {/* <AnimatedItem direction="up" springType="gentle">
-          <SequentialGrid
-            cols={5}
-            gap={6}
-            delayBetweenItems={0.1}
-            className="mb-8"
-          >
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-brand-primary to-brand-secondary rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCalendar className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {viewStats.total}
-              </div>
-              <div className="text-sm text-theme-tertiary">
-                Total no{' '}
-                {viewMode === 'month'
-                  ? 'Mês'
-                  : viewMode === 'week'
-                  ? 'Semana'
-                  : 'Dia'}
-              </div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-blue to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiClock className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {viewStats.scheduled}
-              </div>
-              <div className="text-sm text-theme-tertiary">Agendadas</div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-green to-accent-blue rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiCheck className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {viewStats.completed}
-              </div>
-              <div className="text-sm text-theme-tertiary">Concluídas</div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-red to-accent-purple rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiX className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {viewStats.cancelled}
-              </div>
-              <div className="text-sm text-theme-tertiary">Canceladas</div>
-            </AnimatedCard>
-
-            <AnimatedCard
-              hover="scale"
-              className="classical-card p-6 text-center"
-            >
-              <div className="w-12 h-12 bg-gradient-to-br from-accent-yellow to-accent-orange rounded-xl flex items-center justify-center mx-auto mb-3">
-                <FiAlertCircle className="w-6 h-6 text-theme-primary" />
-              </div>
-              <div className="text-2xl font-bold text-theme-primary mb-1">
-                {viewStats.today}
-              </div>
-              <div className="text-sm text-theme-tertiary">Hoje</div>
-            </AnimatedCard>
-          </SequentialGrid>
-        </AnimatedItem> */}
 
         {/* Calendar Controls */}
         <AnimatedItem direction="up" springType="gentle">
@@ -520,7 +442,9 @@ export default function StudentCalendarPageClient({
                           MONTHS[currentDate.getMonth()]
                         } ${currentDate.getFullYear()}`}
                       {viewMode === 'week' &&
-                        `Semana de ${formatDate(getWeekDays()[0])}`}
+                        `${t('student_calendar_week_of')} ${formatDate(
+                          getWeekDays()[0]
+                        )}`}
                       {viewMode === 'day' && formatDate(currentDate)}
                     </div>
                   </div>
@@ -543,7 +467,7 @@ export default function StudentCalendarPageClient({
                   disabled={loading.refreshing}
                   className="btn-classical-secondary text-sm disabled:opacity-50"
                 >
-                  Hoje
+                  {t('student_calendar_today')}
                 </button>
               </div>
 
@@ -557,7 +481,7 @@ export default function StudentCalendarPageClient({
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
-                  Mês
+                  {t('student_calendar_view_month')}
                 </button>
                 <button
                   onClick={() => setViewMode('week')}
@@ -567,7 +491,7 @@ export default function StudentCalendarPageClient({
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
-                  Semana
+                  {t('student_calendar_view_week')}
                 </button>
                 <button
                   onClick={() => setViewMode('day')}
@@ -577,7 +501,7 @@ export default function StudentCalendarPageClient({
                       : 'text-theme-tertiary hover:text-theme-primary'
                   }`}
                 >
-                  Dia
+                  {t('student_calendar_view_day')}
                 </button>
               </div>
 
@@ -587,7 +511,10 @@ export default function StudentCalendarPageClient({
                 {calendarData && calendarData.teachers.length > 1 && (
                   <Select
                     options={[
-                      { value: 'all', label: 'Todos os Professores' },
+                      {
+                        value: 'all',
+                        label: t('student_calendar_filter_all_teachers'),
+                      },
                       ...calendarData.teachers.map((teacher) => ({
                         value: teacher.id,
                         label: `Prof. ${teacher.name}`,
@@ -602,10 +529,22 @@ export default function StudentCalendarPageClient({
                 {/* Status Filter */}
                 <Select
                   options={[
-                    { value: 'all', label: 'Todos Status' },
-                    { value: 'scheduled', label: 'Agendadas' },
-                    { value: 'completed', label: 'Concluídas' },
-                    { value: 'cancelled', label: 'Canceladas' },
+                    {
+                      value: 'all',
+                      label: t('student_calendar_filter_all_status'),
+                    },
+                    {
+                      value: 'scheduled',
+                      label: t('student_calendar_filter_scheduled'),
+                    },
+                    {
+                      value: 'completed',
+                      label: t('student_calendar_filter_completed'),
+                    },
+                    {
+                      value: 'cancelled',
+                      label: t('student_calendar_filter_cancelled'),
+                    },
                   ]}
                   value={eventFilter}
                   onChange={(e) =>
@@ -624,7 +563,7 @@ export default function StudentCalendarPageClient({
                       loading.refreshing ? 'animate-spin' : ''
                     }`}
                   />
-                  <span>Atualizar</span>
+                  <span>{t('student_calendar_refresh')}</span>
                 </button>
               </div>
             </div>
@@ -645,6 +584,7 @@ export default function StudentCalendarPageClient({
                 }}
                 formatTime={formatTime}
                 getEventStatusColor={getEventStatusColor}
+                moreEventsText={t('student_calendar_more_events')}
               />
             )}
 
@@ -673,6 +613,8 @@ export default function StudentCalendarPageClient({
                 formatTime={formatTime}
                 formatEventTime={formatEventTime}
                 getEventStatusColor={getEventStatusColor}
+                noLessonsTitle={t('student_calendar_no_lessons_today')}
+                noLessonsDesc={t('student_calendar_no_lessons_today_desc')}
               />
             )}
           </AnimatedCard>
@@ -694,6 +636,7 @@ export default function StudentCalendarPageClient({
           formatTime={formatTime}
           formatDate={formatDate}
           getEventStatusColor={getEventStatusColor}
+          t={t}
         />
       )}
 
@@ -709,6 +652,7 @@ export default function StudentCalendarPageClient({
             setFeedbackText('');
           }}
           loading={loading.addingFeedback}
+          t={t}
         />
       )}
     </PageContainer>
@@ -723,6 +667,7 @@ interface MonthViewProps {
   onEventClick: (event: any) => void;
   formatTime: (date: Date | string) => string;
   getEventStatusColor: (status: string) => string;
+  moreEventsText: string;
 }
 
 function MonthView({
@@ -732,6 +677,7 @@ function MonthView({
   onEventClick,
   formatTime,
   getEventStatusColor,
+  moreEventsText,
 }: MonthViewProps) {
   const today = new Date();
   const currentMonth = currentDate.getMonth();
@@ -797,7 +743,10 @@ function MonthView({
 
                 {events.length > 2 && (
                   <div className="text-xs text-theme-tertiary">
-                    +{events.length - 2} mais
+                    {moreEventsText.replace(
+                      '{count}',
+                      String(events.length - 2)
+                    )}
                   </div>
                 )}
               </div>
@@ -903,6 +852,8 @@ interface DayViewProps {
   formatTime: (date: Date | string) => string;
   formatEventTime: (start: Date | string, end: Date | string) => string;
   getEventStatusColor: (status: string) => string;
+  noLessonsTitle: string;
+  noLessonsDesc: string;
 }
 
 function DayView({
@@ -911,6 +862,8 @@ function DayView({
   onEventClick,
   formatEventTime,
   getEventStatusColor,
+  noLessonsTitle,
+  noLessonsDesc,
 }: DayViewProps) {
   const sortedEvents = [...events].sort(
     (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
@@ -934,11 +887,9 @@ function DayView({
           <div className="text-center py-12">
             <FiCalendar className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
             <h3 className="text-lg font-bold text-theme-primary mb-2">
-              Nenhuma aula agendada
+              {noLessonsTitle}
             </h3>
-            <p className="text-theme-tertiary">
-              Você não tem aulas marcadas para este dia.
-            </p>
+            <p className="text-theme-tertiary">{noLessonsDesc}</p>
           </div>
         ) : (
           sortedEvents.map((event) => (
@@ -1018,6 +969,7 @@ interface StudentEventDetailsModalProps {
   formatTime: (date: Date | string) => string;
   formatDate: (date: Date | string) => string;
   getEventStatusColor: (status: string) => string;
+  t: (key: string, options?: any) => string;
 }
 
 function StudentEventDetailsModal({
@@ -1027,7 +979,25 @@ function StudentEventDetailsModal({
   formatTime,
   formatDate,
   getEventStatusColor,
+  t,
 }: StudentEventDetailsModalProps) {
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'SCHEDULED':
+        return t('student_calendar_status_scheduled');
+      case 'COMPLETED':
+        return t('student_calendar_status_completed');
+      case 'CANCELLED':
+        return t('student_calendar_status_cancelled');
+      case 'NO_SHOW':
+        return t('student_calendar_status_no_show');
+      case 'RESCHEDULED':
+        return t('student_calendar_status_rescheduled');
+      default:
+        return status;
+    }
+  };
+
   return (
     <Modal isOpen onClose={onClose} maxWidth="4xl">
       <AnimatedCard hover="none">
@@ -1043,17 +1013,7 @@ function StudentEventDetailsModal({
                     event.status
                   )}`}
                 >
-                  {event.status === 'SCHEDULED'
-                    ? 'Agendada'
-                    : event.status === 'COMPLETED'
-                    ? 'Concluída'
-                    : event.status === 'CANCELLED'
-                    ? 'Cancelada'
-                    : event.status === 'NO_SHOW'
-                    ? 'Faltou'
-                    : event.status === 'RESCHEDULED'
-                    ? 'Reagendada'
-                    : event.status}
+                  {getStatusText(event.status)}
                 </span>
               </div>
             </div>
@@ -1064,7 +1024,7 @@ function StudentEventDetailsModal({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Data e Hora
+                  {t('student_calendar_modal_date_time')}
                 </label>
                 <div className="text-theme-primary">
                   <div>{formatDate(event.start)}</div>
@@ -1077,7 +1037,7 @@ function StudentEventDetailsModal({
               {event.teacher && (
                 <div>
                   <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                    Professor
+                    {t('student_calendar_modal_teacher')}
                   </label>
                   <div className="flex items-center space-x-3">
                     {event.teacher.image ? (
@@ -1109,7 +1069,7 @@ function StudentEventDetailsModal({
             {event.location && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Local
+                  {t('student_calendar_modal_location')}
                 </label>
                 <div className="text-theme-primary">{event.location}</div>
               </div>
@@ -1119,7 +1079,7 @@ function StudentEventDetailsModal({
             {event.objectives && event.objectives.length > 0 && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Objetivos da Aula
+                  {t('student_calendar_modal_objectives')}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {event.objectives.map((objective: any, index: number) => (
@@ -1138,7 +1098,7 @@ function StudentEventDetailsModal({
             {event.publicNotes && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Anotações do Professor
+                  {t('student_calendar_modal_teacher_notes')}
                 </label>
                 <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
                   <div className="text-theme-primary whitespace-pre-wrap">
@@ -1152,7 +1112,7 @@ function StudentEventDetailsModal({
             {event.homework && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Tarefa de Casa
+                  {t('student_calendar_modal_homework')}
                 </label>
                 <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
                   <div className="text-theme-primary">{event.homework}</div>
@@ -1164,7 +1124,7 @@ function StudentEventDetailsModal({
             {event.status === 'COMPLETED' && event.details?.lessonSummary && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Resumo da Aula
+                  {t('student_calendar_modal_lesson_summary')}
                 </label>
                 <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
                   <div className="text-theme-primary">
@@ -1179,7 +1139,7 @@ function StudentEventDetailsModal({
               event.details.skillsWorked.length > 0 && (
                 <div>
                   <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                    Habilidades Trabalhadas
+                    {t('student_calendar_modal_skills_worked')}
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {event.details.skillsWorked.map(
@@ -1201,7 +1161,7 @@ function StudentEventDetailsModal({
               event.details.improvements.length > 0 && (
                 <div>
                   <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                    Melhorias Observadas
+                    {t('student_calendar_modal_improvements')}
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {event.details.improvements.map(
@@ -1222,7 +1182,7 @@ function StudentEventDetailsModal({
             {event.details?.studentFeedback && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Seu Feedback
+                  {t('student_calendar_modal_student_feedback')}
                 </label>
                 <div className="bg-theme-tertiary rounded-md p-4">
                   <div className="text-theme-primary whitespace-pre-wrap">
@@ -1239,7 +1199,7 @@ function StudentEventDetailsModal({
                 className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
               >
                 <FiEye className="w-4 h-4" />
-                <span>Ver Detalhes Completos</span>
+                <span>{t('student_calendar_modal_view_details')}</span>
               </Link>
 
               <div className="flex items-center space-x-3">
@@ -1249,7 +1209,7 @@ function StudentEventDetailsModal({
                     className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
                   >
                     <FiMessageSquare className="w-4 h-4" />
-                    <span>Adicionar Feedback</span>
+                    <span>{t('student_calendar_modal_add_feedback')}</span>
                   </button>
                 )}
               </div>
@@ -1269,6 +1229,7 @@ interface FeedbackModalProps {
   onSubmit: () => void;
   onClose: () => void;
   loading: boolean;
+  t: (key: string, options?: any) => string;
 }
 
 function FeedbackModal({
@@ -1278,6 +1239,7 @@ function FeedbackModal({
   onSubmit,
   onClose,
   loading,
+  t,
 }: FeedbackModalProps) {
   return (
     <div className="fixed inset-0 bg-bg-overlay backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -1286,9 +1248,11 @@ function FeedbackModal({
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-xl font-bold text-theme-primary classical-title">
-                Adicionar Feedback
+                {t('student_calendar_feedback_modal_title')}
               </h2>
-              <p className="text-theme-tertiary text-sm">Aula: {event.title}</p>
+              <p className="text-theme-tertiary text-sm">
+                {t('student_calendar_feedback_modal_lesson')} {event.title}
+              </p>
             </div>
             <button
               onClick={onClose}
@@ -1301,17 +1265,20 @@ function FeedbackModal({
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                Como foi a aula? Compartilhe sua experiência:
+                {t('student_calendar_feedback_modal_question')}
               </label>
               <textarea
                 value={feedbackText}
                 onChange={(e) => setFeedbackText(e.target.value)}
-                placeholder="Descreva como foi a aula, o que aprendeu, dificuldades encontradas, etc..."
+                placeholder={t('student_calendar_feedback_modal_placeholder')}
                 className="input-classical-2 w-full h-32 resize-none"
                 maxLength={500}
               />
               <div className="text-xs text-theme-tertiary mt-1">
-                {feedbackText.length}/500 caracteres
+                {t('student_calendar_feedback_modal_characters', {
+                  current: feedbackText.length,
+                  max: 500,
+                })}
               </div>
             </div>
 
@@ -1324,12 +1291,12 @@ function FeedbackModal({
                 {loading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-theme-primary/30 border-t-theme-primary rounded-full animate-spin"></div>
-                    <span>Enviando...</span>
+                    <span>{t('student_calendar_feedback_modal_sending')}</span>
                   </>
                 ) : (
                   <>
                     <FiMessageSquare className="w-4 h-4" />
-                    <span>Enviar Feedback</span>
+                    <span>{t('student_calendar_feedback_modal_send')}</span>
                   </>
                 )}
               </button>
@@ -1338,7 +1305,7 @@ function FeedbackModal({
                 disabled={loading}
                 className="btn-classical-secondary"
               >
-                Cancelar
+                {t('student_calendar_feedback_modal_cancel')}
               </button>
             </div>
           </div>
