@@ -26,13 +26,12 @@ import {
 import { NotificationData } from '@/app/types/notification';
 import { useToast } from '@/app/hooks/useToast';
 import Select from '@/app/components/Common/Select';
-import { NotificatiosSelectFIlter } from '@/app/(student)/student/notifications/pageClient';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface TeacherNotificationsPageClientProps {
   initialNotifications: NotificationData[];
   unreadCount: number;
   notificationStats: Array<{ type: string; _count: { id: number } }>;
-
   errorMessage?: string;
 }
 
@@ -45,6 +44,8 @@ export default function TeacherNotificationsPageClient({
   notificationStats,
   errorMessage,
 }: TeacherNotificationsPageClientProps) {
+  const { t } = useTranslation({ sections: ['teacher/notifications'] });
+
   const [notifications, setNotifications] =
     useState<NotificationData[]>(initialNotifications);
   const [unreadCount, setUnreadCount] = useState(initialUnreadCount);
@@ -55,6 +56,12 @@ export default function TeacherNotificationsPageClient({
   const [hasMore, setHasMore] = useState(true);
 
   const toast = useToast();
+
+  const NotificationsSelectFilter = [
+    { value: 'newest', label: t('sort_newest') },
+    { value: 'oldest', label: t('sort_oldest') },
+    { value: 'priority', label: t('sort_priority') },
+  ];
 
   const filteredNotifications = notifications
     .filter((notification) => {
@@ -175,12 +182,12 @@ export default function TeacherNotificationsPageClient({
 
     if (diffInHours < 1) {
       const diffInMinutes = Math.floor(diffInHours * 60);
-      return `${diffInMinutes} min atrás`;
+      return `${diffInMinutes} ${t('min_ago')}`;
     } else if (diffInHours < 24) {
-      return `${Math.floor(diffInHours)}h atrás`;
+      return `${Math.floor(diffInHours)}${t('hours_ago')}`;
     } else {
       const diffInDays = Math.floor(diffInHours / 24);
-      return `${diffInDays}d atrás`;
+      return `${diffInDays}${t('days_ago')}`;
     }
   };
 
@@ -225,6 +232,19 @@ export default function TeacherNotificationsPageClient({
     }
   };
 
+  const getPriorityLabel = (priority: string) => {
+    switch (priority) {
+      case 'HIGH':
+        return t('priority_urgent');
+      case 'CRITICAL':
+        return t('priority_critical');
+      case 'MEDIUM':
+        return t('priority_important');
+      default:
+        return t('priority_informative');
+    }
+  };
+
   if (errorMessage) {
     return (
       <PageContainer showBackground={true}>
@@ -232,14 +252,14 @@ export default function TeacherNotificationsPageClient({
           <div className="classical-card p-8 text-center max-w-md">
             <FiAlertTriangle className="w-16 h-16 text-accent-red mx-auto mb-4" />
             <h1 className="text-xl font-bold text-theme-primary mb-2">
-              Erro ao Carregar
+              {t('error_loading')}
             </h1>
             <p className="text-theme-secondary mb-4">{errorMessage}</p>
             <button
               onClick={() => window.location.reload()}
               className="btn-classical-primary"
             >
-              Tentar Novamente
+              {t('try_again')}
             </button>
           </div>
         </div>
@@ -259,10 +279,10 @@ export default function TeacherNotificationsPageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Central de Notificações
+              {t('page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Acompanhe atualizações sobre suas aulas, tarefas e alunos
+              {t('page_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -280,7 +300,9 @@ export default function TeacherNotificationsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {unreadCount}
               </div>
-              <div className="text-sm text-theme-tertiary">Não Lidas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_unread')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -295,7 +317,9 @@ export default function TeacherNotificationsPageClient({
                   .filter((s) => s.type.includes('LESSON'))
                   .reduce((acc, s) => acc + s._count.id, 0)}
               </div>
-              <div className="text-sm text-theme-tertiary">Sobre Aulas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_about_lessons')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -310,7 +334,9 @@ export default function TeacherNotificationsPageClient({
                   .filter((s) => s.type.includes('ASSIGNMENT'))
                   .reduce((acc, s) => acc + s._count.id, 0)}
               </div>
-              <div className="text-sm text-theme-tertiary">Sobre Tarefas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_about_assignments')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -325,7 +351,9 @@ export default function TeacherNotificationsPageClient({
                   .filter((s) => s.type.includes('STUDENT'))
                   .reduce((acc, s) => acc + s._count.id, 0)}
               </div>
-              <div className="text-sm text-theme-tertiary">Sobre Alunos</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_about_students')}
+              </div>
             </AnimatedCard>
           </div>
         </AnimatedItem>
@@ -357,14 +385,14 @@ export default function TeacherNotificationsPageClient({
                     {getFilterIcon(filterType)}
                     <span className="capitalize">
                       {filterType === 'all'
-                        ? 'Todas'
+                        ? t('filter_all')
                         : filterType === 'unread'
-                        ? 'Não Lidas'
+                        ? t('filter_unread')
                         : filterType === 'lessons'
-                        ? 'Aulas'
+                        ? t('filter_lessons')
                         : filterType === 'assignments'
-                        ? 'Tarefas'
-                        : 'Alunos'}
+                        ? t('filter_assignments')
+                        : t('filter_students')}
                     </span>
                   </button>
                 ))}
@@ -373,7 +401,7 @@ export default function TeacherNotificationsPageClient({
               {/* Actions */}
               <div className="flex items-center space-x-3">
                 <Select
-                  options={NotificatiosSelectFIlter}
+                  options={NotificationsSelectFilter}
                   value={sort}
                   onChange={(e) => setSort(e.target.value as SortType)}
                 />
@@ -385,7 +413,7 @@ export default function TeacherNotificationsPageClient({
                     className="btn-classical-secondary flex items-center space-x-2"
                   >
                     <FiCheckCircle className="w-4 h-4" />
-                    <span>Marcar Todas</span>
+                    <span>{t('mark_all')}</span>
                   </button>
                 )}
               </div>
@@ -396,7 +424,35 @@ export default function TeacherNotificationsPageClient({
         {/* Notifications List */}
         <AnimatedItem direction="up" springType="gentle">
           <div className="space-y-4">
-            {filteredNotifications.length > 0 ? (
+            {loading && notifications.length === 0 ? (
+              <div className="text-center py-12">
+                <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
+                <p className="text-theme-secondary">{t('loading')}</p>
+              </div>
+            ) : filteredNotifications.length === 0 ? (
+              <div className="classical-card p-12 text-center">
+                <FiBell className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
+                <h3 className="text-xl font-bold text-theme-primary mb-2">
+                  {filter === 'all'
+                    ? t('no_notifications')
+                    : t('no_notifications_found')}
+                </h3>
+                <p className="text-theme-secondary mb-6">
+                  {filter === 'all'
+                    ? t('no_notifications_description')
+                    : t('filter_description')}
+                </p>
+
+                {filter !== 'all' && (
+                  <button
+                    onClick={() => setFilter('all')}
+                    className="btn-classical-primary"
+                  >
+                    {t('view_all_notifications')}
+                  </button>
+                )}
+              </div>
+            ) : (
               <>
                 {filteredNotifications.map((notification) => (
                   <AnimatedCard
@@ -452,13 +508,7 @@ export default function TeacherNotificationsPageClient({
                                       : 'bg-accent-blue/10 text-accent-blue'
                                   }`}
                                 >
-                                  {notification.priority === 'HIGH'
-                                    ? 'Urgente'
-                                    : notification.priority === 'CRITICAL'
-                                    ? 'Crítica'
-                                    : notification.priority === 'MEDIUM'
-                                    ? 'Importante'
-                                    : 'Informativa'}
+                                  {getPriorityLabel(notification.priority)}
                                 </span>
                               </div>
                             </div>
@@ -472,7 +522,7 @@ export default function TeacherNotificationsPageClient({
                                   className="btn-classical-primary text-sm flex items-center space-x-1"
                                 >
                                   <span>
-                                    {notification.actionText || 'Ver'}
+                                    {notification.actionText || t('view')}
                                   </span>
                                   <FiExternalLink className="w-3 h-3" />
                                 </Link>
@@ -482,7 +532,7 @@ export default function TeacherNotificationsPageClient({
                                 <button
                                   onClick={() => markAsRead(notification.id)}
                                   className="p-2 rounded-lg hover:bg-interactive-hover transition-colors"
-                                  title="Marcar como lida"
+                                  title={t('mark_as_read')}
                                 >
                                   <FiCheck className="w-4 h-4 text-theme-tertiary hover:text-accent-green" />
                                 </button>
@@ -506,34 +556,11 @@ export default function TeacherNotificationsPageClient({
                       <FiRefreshCw
                         className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                       />
-                      <span>{loading ? 'Carregando...' : 'Carregar Mais'}</span>
+                      <span>{loading ? t('loading') : t('load_more')}</span>
                     </button>
                   </div>
                 )}
               </>
-            ) : (
-              <div className="classical-card p-12 text-center">
-                <FiBell className="w-16 h-16 text-theme-tertiary mx-auto mb-4 opacity-50" />
-                <h3 className="text-xl font-bold text-theme-primary mb-2">
-                  {filter === 'all'
-                    ? 'Nenhuma notificação'
-                    : 'Nenhuma notificação encontrada'}
-                </h3>
-                <p className="text-theme-secondary mb-6">
-                  {filter === 'all'
-                    ? 'Você está em dia! Não há notificações pendentes.'
-                    : 'Tente ajustar os filtros para ver outras notificações.'}
-                </p>
-
-                {filter !== 'all' && (
-                  <button
-                    onClick={() => setFilter('all')}
-                    className="btn-classical-primary"
-                  >
-                    Ver Todas as Notificações
-                  </button>
-                )}
-              </div>
             )}
           </div>
         </AnimatedItem>

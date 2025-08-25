@@ -1552,7 +1552,7 @@ export default function StudentProfilePageClient({
                       {studyData.recentAnnotations.map((annotation) => (
                         <div
                           key={annotation.id}
-                          className="p-3 bg-theme-secondary/10 rounded-lg border"
+                          className="p-3 bg-theme-secondary/10 rounded-lg bg-theme-elevated"
                         >
                           <div className="font-medium text-theme-primary text-sm">
                             {annotation.title}

@@ -1,7 +1,7 @@
 // app/teacher/profile/pageClient.tsx - Client Component CORRIGIDO
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   FiUser,
   FiSave,
@@ -27,7 +27,7 @@ import {
   AnimatedItem,
   PageContainer,
 } from '../../../components/animation/AnimatedComponents';
-import { TeacherProfileData, TeacherProfile } from './pageServer'; // ✅ Importar enum
+import { TeacherProfileData, TeacherProfile } from './pageServer';
 import LocationSelector, {
   LocationData,
 } from '../../../components/Common/LocationSelector';
@@ -42,6 +42,7 @@ import {
   convertLocationDataToDatabase,
 } from '@/app/utils/locationUtils';
 import { TeacherStatus } from '@prisma/client';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface TeacherProfilePageClientProps {
   initialData: TeacherProfileData | null;
@@ -93,21 +94,14 @@ const COMMON_SPECIALTIES = [
   'Improvisação',
 ];
 
-const AGE_GROUPS = [
-  'Crianças (4-12 anos)',
-  'Adolescentes (13-17 anos)',
-  'Adultos (18-60 anos)',
-  'Terceira Idade (60+ anos)',
-];
-
-const SKILL_LEVELS = ['Iniciante', 'Intermediário', 'Avançado', 'Profissional'];
-
 export default function TeacherProfilePageClient({
   initialData,
   teacherProfile,
   isNew = false,
   errorMessage,
 }: TeacherProfilePageClientProps) {
+  const { t } = useTranslation({ sections: ['teacher/profile'] });
+
   // States
   const [data, setData] = useState(initialData);
   const [editingSection, setEditingSection] = useState<EditingSection>(
@@ -117,7 +111,7 @@ export default function TeacherProfilePageClient({
   const [error, setError] = useState(errorMessage);
   const [successMessage, setSuccessMessage] = useState('');
 
-  // 🔧 INICIALIZAÇÃO CORRETA DOS FORMS COM DADOS COMPLETOS
+  // Inicialização correta dos forms com dados completos
   const [personalForm, setPersonalForm] = useState(() => ({
     firstName: teacherProfile.name.split(' ')[0] || '',
     lastName: teacherProfile.name.split(' ').slice(1).join(' ') || '',
@@ -156,11 +150,26 @@ export default function TeacherProfilePageClient({
     highlightedWorks: data?.highlightedWorks || [],
   }));
 
-  // 🆕 VALIDAÇÃO DE TELEFONE EM TEMPO REAL
+  // Validação de telefone em tempo real
   const phoneValidation = usePhoneValidation(personalForm.phone);
   const [phoneError, setPhoneError] = useState<string>('');
 
-  // 🔄 SINCRONIZAR FORMS QUANDO DATA MUDAR
+  // Age groups options traduzidas
+  const AGE_GROUPS = [
+    { value: 'Crianças (4-12 anos)', label: t('age_children') },
+    { value: 'Adolescentes (13-17 anos)', label: t('age_teens') },
+    { value: 'Adultos (18-60 anos)', label: t('age_adults') },
+    { value: 'Terceira Idade (60+ anos)', label: t('age_seniors') },
+  ];
+
+  const SKILL_LEVELS = [
+    { value: 'Iniciante', label: t('level_beginner') },
+    { value: 'Intermediário', label: t('level_intermediate') },
+    { value: 'Avançado', label: t('level_advanced') },
+    { value: 'Profissional', label: t('level_professional') },
+  ];
+
+  // Sincronizar forms quando data mudar
   useEffect(() => {
     if (data) {
       setPersonalForm((prev) => ({
@@ -212,7 +221,7 @@ export default function TeacherProfilePageClient({
     setTimeout(() => setError(''), 8000);
   };
 
-  // 🔧 HANDLERS PARA TELEFONE E LOCALIZAÇÃO
+  // Handlers para telefone e localização
   const handlePhoneChange = (phone: string) => {
     setPersonalForm((prev) => ({ ...prev, phone }));
     setPhoneError('');
@@ -222,7 +231,7 @@ export default function TeacherProfilePageClient({
     setPersonalForm((prev) => ({ ...prev, location }));
   };
 
-  // 🔧 VALIDAÇÃO MELHORADA
+  // Validação melhorada
   const validatePersonalForm = () => {
     const errors: string[] = [];
 
@@ -247,7 +256,7 @@ export default function TeacherProfilePageClient({
     return true;
   };
 
-  // 🔧 FUNÇÃO SALVAR DADOS PESSOAIS CORRIGIDA SEM RELOAD FORÇADO
+  // Função salvar dados pessoais corrigida sem reload forçado
   const savePersonalData = useCallback(async () => {
     if (!validatePersonalForm()) {
       return;
@@ -288,12 +297,12 @@ export default function TeacherProfilePageClient({
       const result = await response.json();
 
       if (result.success) {
-        // ✅ ATUALIZAR ESTADO IMEDIATAMENTE SEM RELOAD
+        // Atualizar estado imediatamente sem reload
         setData(result.profile);
         setEditingSection(null);
-        showSuccess('Dados pessoais salvos com sucesso!');
+        showSuccess(t('data_saved_success'));
 
-        // ✅ ATUALIZAR FORMS COM OS NOVOS DADOS
+        // Atualizar forms com os novos dados
         setPersonalForm((prev) => ({
           ...prev,
           phone: result.profile.user.phone || '',
@@ -312,9 +321,9 @@ export default function TeacherProfilePageClient({
     } finally {
       setSaving(false);
     }
-  }, [personalForm]);
+  }, [personalForm, t]);
 
-  // 🔧 FUNÇÃO SALVAR DADOS PROFISSIONAIS CORRIGIDA SEM RELOAD
+  // Função salvar dados profissionais corrigida sem reload
   const saveProfessionalData = useCallback(async () => {
     setSaving(true);
     setError('');
@@ -340,12 +349,12 @@ export default function TeacherProfilePageClient({
       const result = await response.json();
 
       if (result.success) {
-        // ✅ ATUALIZAR ESTADO IMEDIATAMENTE
+        // Atualizar estado imediatamente
         setData(result.profile);
         setEditingSection(null);
-        showSuccess('Dados profissionais salvos com sucesso!');
+        showSuccess(t('professional_data_saved'));
 
-        // ✅ SINCRONIZAR FORM COM DADOS ATUALIZADOS
+        // Sincronizar form com dados atualizados
         setProfessionalForm({
           bio: result.profile.bio || '',
           experience: result.profile.experience || '',
@@ -365,9 +374,9 @@ export default function TeacherProfilePageClient({
     } finally {
       setSaving(false);
     }
-  }, [professionalForm]);
+  }, [professionalForm, t]);
 
-  // 🔧 FUNÇÃO SALVAR DADOS DE ENSINO CORRIGIDA SEM RELOAD
+  // Função salvar dados de ensino corrigida sem reload
   const saveTeachingData = useCallback(async () => {
     setSaving(true);
     setError('');
@@ -391,12 +400,12 @@ export default function TeacherProfilePageClient({
       const result = await response.json();
 
       if (result.success) {
-        // ✅ ATUALIZAR ESTADO IMEDIATAMENTE
+        // Atualizar estado imediatamente
         setData(result.profile);
         setEditingSection(null);
-        showSuccess('Configurações de ensino salvas com sucesso!');
+        showSuccess(t('teaching_settings_saved'));
 
-        // ✅ SINCRONIZAR FORM COM DADOS ATUALIZADOS
+        // Sincronizar form com dados atualizados
         setTeachingForm({
           instruments: result.profile.instruments || [],
           specialties: result.profile.specialties || [],
@@ -418,9 +427,9 @@ export default function TeacherProfilePageClient({
     } finally {
       setSaving(false);
     }
-  }, [teachingForm]);
+  }, [teachingForm, t]);
 
-  // 🔧 FUNÇÃO SALVAR PERFIL PÚBLICO CORRIGIDA SEM RELOAD
+  // Função salvar perfil público corrigida sem reload
   const savePublicData = useCallback(async () => {
     setSaving(true);
     setError('');
@@ -444,12 +453,12 @@ export default function TeacherProfilePageClient({
       const result = await response.json();
 
       if (result.success) {
-        // ✅ ATUALIZAR ESTADO IMEDIATAMENTE
+        // Atualizar estado imediatamente
         setData(result.profile);
         setEditingSection(null);
-        showSuccess('Perfil público atualizado com sucesso!');
+        showSuccess(t('public_profile_updated'));
 
-        // ✅ SINCRONIZAR FORM COM DADOS ATUALIZADOS
+        // Sincronizar form com dados atualizados
         setPublicForm({
           isPublicProfile: result.profile.isPublicProfile || false,
           publicBio: result.profile.publicBio || '',
@@ -464,7 +473,7 @@ export default function TeacherProfilePageClient({
     } finally {
       setSaving(false);
     }
-  }, [publicForm]);
+  }, [publicForm, t]);
 
   // Array helpers
   const addToArray = (
@@ -489,15 +498,15 @@ export default function TeacherProfilePageClient({
     }));
   };
 
-  // ✅ HELPER PARA EXIBIR STATUS DO PROFESSOR
+  // Helper para exibir status do professor
   const getStatusDisplay = (status: TeacherStatus) => {
     switch (status) {
       case TeacherStatus.ACTIVE:
-        return { label: 'Ativo', color: 'accent-green' };
+        return { label: t('status_active'), color: 'accent-green' };
       case TeacherStatus.PENDING:
-        return { label: 'Pendente', color: 'accent-yellow' };
+        return { label: t('status_pending'), color: 'accent-yellow' };
       case TeacherStatus.INACTIVE:
-        return { label: 'Inativo', color: 'accent-red' };
+        return { label: t('status_inactive'), color: 'accent-red' };
       default:
         return { label: status || 'Desconhecido', color: 'theme-tertiary' };
     }
@@ -513,7 +522,7 @@ export default function TeacherProfilePageClient({
               <FiUser className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Perfil
+              {t('error_loading_profile')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error}
@@ -523,7 +532,7 @@ export default function TeacherProfilePageClient({
               className="btn-classical-primary flex mx-auto items-center space-x-2"
             >
               <FiRefreshCw className="w-4 h-4" />
-              <span>Recarregar Página</span>
+              <span>{t('reload_page')}</span>
             </button>
           </div>
         </div>
@@ -543,10 +552,10 @@ export default function TeacherProfilePageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Meu Perfil de Professor
+              {t('page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Configure seu perfil profissional e destaque suas especialidades
+              {t('page_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -597,7 +606,7 @@ export default function TeacherProfilePageClient({
 
         {/* Profile Sections */}
         <div className="space-y-8">
-          {/* 🔧 Personal Information - SEÇÃO CORRIGIDA */}
+          {/* Personal Information - Seção corrigida */}
           <AnimatedCard hover="lift" className="classical-card">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
@@ -607,10 +616,10 @@ export default function TeacherProfilePageClient({
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Informações Pessoais
+                      {t('personal_information')}
                     </h2>
                     <p className="text-theme-tertiary text-sm">
-                      Seus dados básicos e informações de contato
+                      {t('personal_description')}
                     </p>
                   </div>
                 </div>
@@ -626,7 +635,7 @@ export default function TeacherProfilePageClient({
                 >
                   <FiEdit3 className="w-4 h-4" />
                   <span>
-                    {editingSection === 'personal' ? 'Cancelar' : 'Editar'}
+                    {editingSection === 'personal' ? t('cancel') : t('edit')}
                   </span>
                 </button>
               </div>
@@ -636,7 +645,7 @@ export default function TeacherProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Nome *
+                        {t('first_name')} *
                       </label>
                       <input
                         type="text"
@@ -655,7 +664,7 @@ export default function TeacherProfilePageClient({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Sobrenome
+                        {t('last_name')}
                       </label>
                       <input
                         type="text"
@@ -677,13 +686,13 @@ export default function TeacherProfilePageClient({
                       value={personalForm.phone}
                       onChange={handlePhoneChange}
                       disabled={saving}
-                      label="Telefone/WhatsApp"
-                      placeholder="Digite seu número"
+                      label={t('phone_whatsapp')}
+                      placeholder={t('phone_placeholder')}
                       showLabel={true}
                       error={phoneError}
                     />
 
-                    {/* 🆕 AVISO DE VALIDAÇÃO DE TELEFONE */}
+                    {/* Aviso de validação de telefone */}
                     {phoneError &&
                       phoneValidation.showError &&
                       phoneValidation.error && (
@@ -691,7 +700,7 @@ export default function TeacherProfilePageClient({
                           <FiAlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                           <div>
                             <h4 className="text-sm font-medium text-red-800">
-                              Telefone inválido
+                              {t('phone_invalid')}
                             </h4>
                             <p className="text-sm text-red-700 mt-1">
                               {phoneValidation.error}
@@ -706,12 +715,12 @@ export default function TeacherProfilePageClient({
                       )}
                   </div>
 
-                  {/* 🆕 LOCALIZAÇÃO */}
+                  {/* Localização */}
                   <div>
                     <div className="flex items-center space-x-2 mb-4">
                       <FiMapPin className="w-4 h-4 text-brand-primary" />
                       <h4 className="font-medium text-theme-primary">
-                        Localização
+                        {t('location')}
                       </h4>
                     </div>
 
@@ -730,7 +739,7 @@ export default function TeacherProfilePageClient({
                       disabled={saving}
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </button>
                     <button
                       onClick={savePersonalData}
@@ -749,7 +758,7 @@ export default function TeacherProfilePageClient({
                       ) : (
                         <FiSave className="w-4 h-4" />
                       )}
-                      <span>Salvar</span>
+                      <span>{t('save')}</span>
                     </button>
                   </div>
                 </div>
@@ -758,7 +767,7 @@ export default function TeacherProfilePageClient({
                   <div className="space-y-4">
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Nome
+                        {t('name_label')}
                       </label>
                       <div className="text-theme-primary font-medium">
                         {data?.user.firstName} {data?.user.lastName}
@@ -767,7 +776,7 @@ export default function TeacherProfilePageClient({
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Email
+                        {t('email_label')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
                         <FiMail className="w-4 h-4" />
@@ -777,11 +786,11 @@ export default function TeacherProfilePageClient({
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Telefone
+                        {t('phone_label')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
                         <FiPhone className="w-4 h-4" />
-                        <span>{data?.user.phone || 'Não informado'}</span>
+                        <span>{data?.user.phone || t('not_informed')}</span>
                       </div>
                     </div>
                   </div>
@@ -789,21 +798,21 @@ export default function TeacherProfilePageClient({
                   <div className="space-y-4">
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Localização
+                        {t('location_label')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2">
                         <FiMapPin className="w-4 h-4" />
                         <span>
                           {data?.user.city && data?.user.state
                             ? `${data.user.city}, ${data.user.state}`
-                            : data?.user.country || 'Não informado'}
+                            : data?.user.country || t('not_informed')}
                         </span>
                       </div>
                     </div>
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Membro desde
+                        {t('member_since')}
                       </label>
                       <div className="text-theme-primary font-medium">
                         {data?.createdAt
@@ -814,7 +823,7 @@ export default function TeacherProfilePageClient({
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Status
+                        {t('status')}
                       </label>
                       <div className="flex items-center space-x-2">
                         {data?.status && (
@@ -836,7 +845,7 @@ export default function TeacherProfilePageClient({
                         {data?.isVerified && (
                           <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent-green/10 text-accent-green">
                             <FiCheck className="w-3 h-3 mr-1" />
-                            Verificado
+                            {t('verified')}
                           </div>
                         )}
                       </div>
@@ -846,8 +855,6 @@ export default function TeacherProfilePageClient({
               )}
             </div>
           </AnimatedCard>
-
-          {/* O resto das seções - Professional, Teaching e Public */}
 
           {/* Professional Information */}
           <AnimatedCard hover="lift" className="classical-card">
@@ -859,10 +866,10 @@ export default function TeacherProfilePageClient({
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Informações Profissionais
+                      {t('professional_information')}
                     </h2>
                     <p className="text-theme-tertiary text-sm">
-                      Sua experiência, formação e conquistas
+                      {t('professional_description')}
                     </p>
                   </div>
                 </div>
@@ -878,7 +885,9 @@ export default function TeacherProfilePageClient({
                 >
                   <FiEdit3 className="w-4 h-4" />
                   <span>
-                    {editingSection === 'professional' ? 'Cancelar' : 'Editar'}
+                    {editingSection === 'professional'
+                      ? t('cancel')
+                      : t('edit')}
                   </span>
                 </button>
               </div>
@@ -887,7 +896,7 @@ export default function TeacherProfilePageClient({
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Biografia
+                      {t('biography')}
                     </label>
                     <textarea
                       value={professionalForm.bio}
@@ -899,7 +908,7 @@ export default function TeacherProfilePageClient({
                       }
                       rows={4}
                       className="input-classical w-full"
-                      placeholder="Conte um pouco sobre você, sua paixão pela música e sua trajetória..."
+                      placeholder={t('biography_placeholder')}
                       disabled={saving}
                     />
                   </div>
@@ -907,7 +916,7 @@ export default function TeacherProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Experiência
+                        {t('experience')}
                       </label>
                       <textarea
                         value={professionalForm.experience}
@@ -919,14 +928,14 @@ export default function TeacherProfilePageClient({
                         }
                         rows={3}
                         className="input-classical w-full"
-                        placeholder="Ex: 10 anos ensinando piano, participação em orquestras..."
+                        placeholder={t('experience_placeholder')}
                         disabled={saving}
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Formação
+                        {t('education')}
                       </label>
                       <textarea
                         value={professionalForm.education}
@@ -938,7 +947,7 @@ export default function TeacherProfilePageClient({
                         }
                         rows={3}
                         className="input-classical w-full"
-                        placeholder="Ex: Bacharelado em Música pela USP, Mestrado em Performance..."
+                        placeholder={t('education_placeholder')}
                         disabled={saving}
                       />
                     </div>
@@ -946,7 +955,7 @@ export default function TeacherProfilePageClient({
 
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Conquistas e Prêmios
+                      {t('achievements')}
                     </label>
                     <textarea
                       value={professionalForm.achievements}
@@ -958,7 +967,7 @@ export default function TeacherProfilePageClient({
                       }
                       rows={3}
                       className="input-classical w-full"
-                      placeholder="Ex: 1º lugar no Concurso Nacional de Piano 2020..."
+                      placeholder={t('achievements_placeholder')}
                       disabled={saving}
                     />
                   </div>
@@ -966,7 +975,7 @@ export default function TeacherProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Website
+                        {t('website')}
                       </label>
                       <input
                         type="url"
@@ -978,7 +987,7 @@ export default function TeacherProfilePageClient({
                           }))
                         }
                         className="input-classical w-full"
-                        placeholder="https://seusite.com"
+                        placeholder={t('website_placeholder')}
                         disabled={saving}
                       />
                     </div>
@@ -990,7 +999,7 @@ export default function TeacherProfilePageClient({
                       disabled={saving}
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </button>
                     <button
                       onClick={saveProfessionalData}
@@ -1002,7 +1011,7 @@ export default function TeacherProfilePageClient({
                       ) : (
                         <FiSave className="w-4 h-4" />
                       )}
-                      <span>Salvar</span>
+                      <span>{t('save')}</span>
                     </button>
                   </div>
                 </div>
@@ -1011,7 +1020,7 @@ export default function TeacherProfilePageClient({
                   {data?.bio && (
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Biografia
+                        {t('biography')}
                       </label>
                       <div className="text-theme-primary mt-2 whitespace-pre-wrap">
                         {data.bio}
@@ -1023,7 +1032,7 @@ export default function TeacherProfilePageClient({
                     {data?.experience && (
                       <div>
                         <label className="text-sm text-theme-tertiary">
-                          Experiência
+                          {t('experience')}
                         </label>
                         <div className="text-theme-primary mt-2 whitespace-pre-wrap">
                           {data.experience}
@@ -1034,7 +1043,7 @@ export default function TeacherProfilePageClient({
                     {data?.education && (
                       <div>
                         <label className="text-sm text-theme-tertiary">
-                          Formação
+                          {t('education')}
                         </label>
                         <div className="text-theme-primary mt-2 whitespace-pre-wrap">
                           {data.education}
@@ -1046,7 +1055,7 @@ export default function TeacherProfilePageClient({
                   {data?.achievements && (
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Conquistas
+                        {t('achievements')}
                       </label>
                       <div className="text-theme-primary mt-2 whitespace-pre-wrap">
                         {data.achievements}
@@ -1057,7 +1066,7 @@ export default function TeacherProfilePageClient({
                   {data?.website && (
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Website
+                        {t('website')}
                       </label>
                       <div className="text-theme-primary mt-2">
                         <a
@@ -1081,17 +1090,16 @@ export default function TeacherProfilePageClient({
                       <div className="text-center py-8">
                         <FiAward className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                         <h3 className="text-lg font-bold text-theme-primary mb-2">
-                          Complete seu perfil profissional
+                          {t('complete_professional_profile')}
                         </h3>
                         <p className="text-theme-tertiary mb-4">
-                          Adicione suas informações profissionais para atrair
-                          mais alunos
+                          {t('complete_profile_description')}
                         </p>
                         <button
                           onClick={() => setEditingSection('professional')}
                           className="btn-classical-primary"
                         >
-                          Começar Agora
+                          {t('start_now')}
                         </button>
                       </div>
                     )}
@@ -1110,10 +1118,10 @@ export default function TeacherProfilePageClient({
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Configurações de Ensino
+                      {t('teaching_configuration')}
                     </h2>
                     <p className="text-theme-tertiary text-sm">
-                      Seus instrumentos, especialidades e métodos de ensino
+                      {t('teaching_description')}
                     </p>
                   </div>
                 </div>
@@ -1129,7 +1137,7 @@ export default function TeacherProfilePageClient({
                 >
                   <FiEdit3 className="w-4 h-4" />
                   <span>
-                    {editingSection === 'teaching' ? 'Cancelar' : 'Editar'}
+                    {editingSection === 'teaching' ? t('cancel') : t('edit')}
                   </span>
                 </button>
               </div>
@@ -1138,7 +1146,7 @@ export default function TeacherProfilePageClient({
                 <div className="space-y-6">
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-3">
-                      Instrumentos que Ensina
+                      {t('instruments_teach')}
                     </label>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {teachingForm.instruments.map((instrument) => (
@@ -1183,7 +1191,7 @@ export default function TeacherProfilePageClient({
 
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-3">
-                      Especialidades Musicais
+                      {t('musical_specialties')}
                     </label>
                     <div className="flex flex-wrap gap-2 mb-4">
                       {teachingForm.specialties.map((specialty) => (
@@ -1228,7 +1236,7 @@ export default function TeacherProfilePageClient({
 
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Metodologia de Ensino
+                      {t('teaching_methodology')}
                     </label>
                     <textarea
                       value={teachingForm.teachingMethod}
@@ -1240,7 +1248,7 @@ export default function TeacherProfilePageClient({
                       }
                       rows={3}
                       className="input-classical w-full"
-                      placeholder="Descreva sua abordagem e metodologia de ensino..."
+                      placeholder={t('methodology_placeholder')}
                       disabled={saving}
                     />
                   </div>
@@ -1248,31 +1256,31 @@ export default function TeacherProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-3">
-                        Faixas Etárias
+                        {t('age_groups')}
                       </label>
                       <div className="space-y-2">
                         {AGE_GROUPS.map((ageGroup) => (
                           <label
-                            key={ageGroup}
+                            key={ageGroup.value}
                             className="flex items-center space-x-3"
                           >
                             <input
                               type="checkbox"
                               checked={teachingForm.ageGroups.includes(
-                                ageGroup
+                                ageGroup.value
                               )}
                               onChange={(e) => {
                                 if (e.target.checked) {
-                                  addToArray('ageGroups', ageGroup, AGE_GROUPS);
+                                  addToArray('ageGroups', ageGroup.value, []);
                                 } else {
-                                  removeFromArray('ageGroups', ageGroup);
+                                  removeFromArray('ageGroups', ageGroup.value);
                                 }
                               }}
                               disabled={saving}
                               className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-brand-primary disabled:opacity-50"
                             />
                             <span className="text-theme-primary text-sm">
-                              {ageGroup}
+                              {ageGroup.label}
                             </span>
                           </label>
                         ))}
@@ -1281,35 +1289,38 @@ export default function TeacherProfilePageClient({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-3">
-                        Níveis de Habilidade
+                        {t('skill_levels')}
                       </label>
                       <div className="space-y-2">
                         {SKILL_LEVELS.map((skillLevel) => (
                           <label
-                            key={skillLevel}
+                            key={skillLevel.value}
                             className="flex items-center space-x-3"
                           >
                             <input
                               type="checkbox"
                               checked={teachingForm.skillLevels.includes(
-                                skillLevel
+                                skillLevel.value
                               )}
                               onChange={(e) => {
                                 if (e.target.checked) {
                                   addToArray(
                                     'skillLevels',
-                                    skillLevel,
-                                    SKILL_LEVELS
+                                    skillLevel.value,
+                                    []
                                   );
                                 } else {
-                                  removeFromArray('skillLevels', skillLevel);
+                                  removeFromArray(
+                                    'skillLevels',
+                                    skillLevel.value
+                                  );
                                 }
                               }}
                               disabled={saving}
                               className="w-4 h-4 text-brand-primary border-theme-secondary rounded focus:ring-brand-primary disabled:opacity-50"
                             />
                             <span className="text-theme-primary text-sm">
-                              {skillLevel}
+                              {skillLevel.label}
                             </span>
                           </label>
                         ))}
@@ -1320,7 +1331,7 @@ export default function TeacherProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Duração Padrão da Aula (min)
+                        {t('default_lesson_duration')}
                       </label>
                       <select
                         value={teachingForm.defaultLessonDuration}
@@ -1333,17 +1344,17 @@ export default function TeacherProfilePageClient({
                         className="input-classical w-full"
                         disabled={saving}
                       >
-                        <option value={30}>30 minutos</option>
-                        <option value={45}>45 minutos</option>
-                        <option value={60}>60 minutos</option>
-                        <option value={90}>90 minutos</option>
-                        <option value={120}>120 minutos</option>
+                        <option value={30}>30 {t('minutes')}</option>
+                        <option value={45}>45 {t('minutes')}</option>
+                        <option value={60}>60 {t('minutes')}</option>
+                        <option value={90}>90 {t('minutes')}</option>
+                        <option value={120}>120 {t('minutes')}</option>
                       </select>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Máximo de Alunos por Semana
+                        {t('max_students_per_week')}
                       </label>
                       <input
                         type="number"
@@ -1363,7 +1374,7 @@ export default function TeacherProfilePageClient({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Fuso Horário
+                        {t('timezone')}
                       </label>
                       <select
                         value={teachingForm.timezone}
@@ -1377,12 +1388,14 @@ export default function TeacherProfilePageClient({
                         disabled={saving}
                       >
                         <option value="America/Sao_Paulo">
-                          São Paulo (UTC-3)
+                          {t('timezone_sao_paulo')}
                         </option>
                         <option value="America/Rio_Branco">
-                          Rio Branco (UTC-5)
+                          {t('timezone_rio_branco')}
                         </option>
-                        <option value="America/Manaus">Manaus (UTC-4)</option>
+                        <option value="America/Manaus">
+                          {t('timezone_manaus')}
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -1393,7 +1406,7 @@ export default function TeacherProfilePageClient({
                       disabled={saving}
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </button>
                     <button
                       onClick={saveTeachingData}
@@ -1405,7 +1418,7 @@ export default function TeacherProfilePageClient({
                       ) : (
                         <FiSave className="w-4 h-4" />
                       )}
-                      <span>Salvar</span>
+                      <span>{t('save')}</span>
                     </button>
                   </div>
                 </div>
@@ -1414,7 +1427,7 @@ export default function TeacherProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Instrumentos
+                        {t('instruments')}
                       </label>
                       <div className="mt-2">
                         {data?.instruments && data.instruments.length > 0 ? (
@@ -1430,7 +1443,7 @@ export default function TeacherProfilePageClient({
                           </div>
                         ) : (
                           <div className="text-theme-tertiary">
-                            Nenhum instrumento adicionado
+                            {t('no_instruments')}
                           </div>
                         )}
                       </div>
@@ -1438,7 +1451,7 @@ export default function TeacherProfilePageClient({
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Especialidades
+                        {t('specialties')}
                       </label>
                       <div className="mt-2">
                         {data?.specialties && data.specialties.length > 0 ? (
@@ -1454,7 +1467,7 @@ export default function TeacherProfilePageClient({
                           </div>
                         ) : (
                           <div className="text-theme-tertiary">
-                            Nenhuma especialidade adicionada
+                            {t('no_specialties')}
                           </div>
                         )}
                       </div>
@@ -1464,7 +1477,7 @@ export default function TeacherProfilePageClient({
                   {data?.teachingMethod && (
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Metodologia
+                        {t('methodology')}
                       </label>
                       <div className="text-theme-primary mt-2 whitespace-pre-wrap">
                         {data.teachingMethod}
@@ -1475,7 +1488,7 @@ export default function TeacherProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Faixas Etárias
+                        {t('age_groups')}
                       </label>
                       <div className="mt-2">
                         {data?.ageGroups && data.ageGroups.length > 0 ? (
@@ -1491,7 +1504,7 @@ export default function TeacherProfilePageClient({
                           </div>
                         ) : (
                           <div className="text-theme-tertiary">
-                            Nenhuma faixa etária selecionada
+                            {t('no_age_groups')}
                           </div>
                         )}
                       </div>
@@ -1499,7 +1512,7 @@ export default function TeacherProfilePageClient({
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Níveis de Habilidade
+                        {t('skill_levels')}
                       </label>
                       <div className="mt-2">
                         {data?.skillLevels && data.skillLevels.length > 0 ? (
@@ -1515,7 +1528,7 @@ export default function TeacherProfilePageClient({
                           </div>
                         ) : (
                           <div className="text-theme-tertiary">
-                            Nenhum nível selecionado
+                            {t('no_skill_levels')}
                           </div>
                         )}
                       </div>
@@ -1525,35 +1538,39 @@ export default function TeacherProfilePageClient({
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Duração Padrão
+                        {t('default_duration')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2 mt-1">
                         <FiClock className="w-4 h-4" />
-                        <span>{data?.defaultLessonDuration} minutos</span>
+                        <span>
+                          {data?.defaultLessonDuration} {t('minutes')}
+                        </span>
                       </div>
                     </div>
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Capacidade Semanal
+                        {t('weekly_capacity')}
                       </label>
                       <div className="text-theme-primary font-medium flex items-center space-x-2 mt-1">
                         <FiUsers className="w-4 h-4" />
-                        <span>{data?.maxStudentsPerWeek} alunos</span>
+                        <span>
+                          {data?.maxStudentsPerWeek} {t('students')}
+                        </span>
                       </div>
                     </div>
 
                     <div>
                       <label className="text-sm text-theme-tertiary">
-                        Fuso Horário
+                        {t('timezone')}
                       </label>
                       <div className="text-theme-primary font-medium mt-1">
                         {data?.timezone === 'America/Sao_Paulo'
-                          ? 'São Paulo (UTC-3)'
+                          ? t('timezone_sao_paulo')
                           : data?.timezone === 'America/Rio_Branco'
-                          ? 'Rio Branco (UTC-5)'
+                          ? t('timezone_rio_branco')
                           : data?.timezone === 'America/Manaus'
-                          ? 'Manaus (UTC-4)'
+                          ? t('timezone_manaus')
                           : data?.timezone}
                       </div>
                     </div>
@@ -1564,17 +1581,16 @@ export default function TeacherProfilePageClient({
                       <div className="text-center py-8">
                         <FiMusic className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                         <h3 className="text-lg font-bold text-theme-primary mb-2">
-                          Configure suas especialidades
+                          {t('configure_specialties')}
                         </h3>
                         <p className="text-theme-tertiary mb-4">
-                          Adicione os instrumentos e especialidades que você
-                          ensina
+                          {t('configure_description')}
                         </p>
                         <button
                           onClick={() => setEditingSection('teaching')}
                           className="btn-classical-primary"
                         >
-                          Configurar Agora
+                          {t('configure_now')}
                         </button>
                       </div>
                     )}
@@ -1593,11 +1609,10 @@ export default function TeacherProfilePageClient({
                   </div>
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Perfil Público
+                      {t('public_profile')}
                     </h2>
                     <p className="text-theme-tertiary text-sm">
-                      Configure sua visibilidade na página &quot;Conheça Nossos
-                      Professores&quot;
+                      {t('public_profile_description')}
                     </p>
                   </div>
                 </div>
@@ -1613,7 +1628,7 @@ export default function TeacherProfilePageClient({
                 >
                   <FiEdit3 className="w-4 h-4" />
                   <span>
-                    {editingSection === 'public' ? 'Cancelar' : 'Editar'}
+                    {editingSection === 'public' ? t('cancel') : t('edit')}
                   </span>
                 </button>
               </div>
@@ -1637,12 +1652,12 @@ export default function TeacherProfilePageClient({
                       </div>
                       <div>
                         <div className="font-medium text-theme-primary">
-                          Perfil Público
+                          {t('public_profile')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
                           {publicForm.isPublicProfile
-                            ? 'Seu perfil será exibido publicamente'
-                            : 'Seu perfil ficará privado'}
+                            ? t('profile_public_visible')
+                            : t('profile_private')}
                         </div>
                       </div>
                     </div>
@@ -1666,7 +1681,7 @@ export default function TeacherProfilePageClient({
                   {publicForm.isPublicProfile && (
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Biografia Pública
+                        {t('public_biography')}
                       </label>
                       <textarea
                         value={publicForm.publicBio}
@@ -1678,11 +1693,11 @@ export default function TeacherProfilePageClient({
                         }
                         rows={4}
                         className="input-classical w-full"
-                        placeholder="Escreva uma biografia específica para o perfil público, destacando seus diferenciais como professor..."
+                        placeholder={t('public_bio_placeholder')}
                         disabled={saving}
                       />
                       <div className="text-xs text-theme-tertiary mt-1">
-                        Se deixar em branco, será usada sua biografia principal
+                        {t('public_bio_note')}
                       </div>
                     </div>
                   )}
@@ -1693,7 +1708,7 @@ export default function TeacherProfilePageClient({
                       disabled={saving}
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </button>
                     <button
                       onClick={savePublicData}
@@ -1705,7 +1720,7 @@ export default function TeacherProfilePageClient({
                       ) : (
                         <FiSave className="w-4 h-4" />
                       )}
-                      <span>Salvar</span>
+                      <span>{t('save')}</span>
                     </button>
                   </div>
                 </div>
@@ -1728,12 +1743,12 @@ export default function TeacherProfilePageClient({
                       </div>
                       <div>
                         <div className="font-medium text-theme-primary">
-                          Status do Perfil
+                          {t('profile_status')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
                           {data?.isPublicProfile
-                            ? 'Perfil público e visível'
-                            : 'Perfil privado'}
+                            ? t('profile_public_visible')
+                            : t('profile_private')}
                         </div>
                       </div>
                     </div>
@@ -1744,7 +1759,7 @@ export default function TeacherProfilePageClient({
                           : 'bg-theme-secondary text-theme-tertiary'
                       }`}
                     >
-                      {data?.isPublicProfile ? 'Público' : 'Privado'}
+                      {data?.isPublicProfile ? t('public') : t('private')}
                     </div>
                   </div>
 
@@ -1753,7 +1768,7 @@ export default function TeacherProfilePageClient({
                       {data.publicBio && (
                         <div>
                           <label className="text-sm text-theme-tertiary">
-                            Biografia Pública
+                            {t('public_biography')}
                           </label>
                           <div className="text-theme-primary mt-2 whitespace-pre-wrap">
                             {data.publicBio}
@@ -1765,12 +1780,11 @@ export default function TeacherProfilePageClient({
                         <div className="flex items-center space-x-3 mb-2">
                           <FiGlobe className="w-5 h-5 text-brand-primary" />
                           <div className="font-medium text-theme-primary">
-                            Seu perfil está público!
+                            {t('profile_is_public')}
                           </div>
                         </div>
                         <div className="text-sm text-theme-secondary mb-3">
-                          Os alunos podem encontrar você na página &quot;Conheça
-                          Nossos Professores&quot;
+                          {t('profile_public_description')}
                         </div>
                         <a
                           href={`/teachers/${teacherProfile.id}`}
@@ -1778,7 +1792,7 @@ export default function TeacherProfilePageClient({
                           rel="noopener noreferrer"
                           className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
                         >
-                          Ver meu perfil público →
+                          {t('view_public_profile')}
                         </a>
                       </div>
                     </>
@@ -1788,17 +1802,16 @@ export default function TeacherProfilePageClient({
                     <div className="text-center py-8">
                       <FiEyeOff className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                       <h3 className="text-lg font-bold text-theme-primary mb-2">
-                        Perfil Privado
+                        {t('profile_private_title')}
                       </h3>
                       <p className="text-theme-tertiary mb-4">
-                        Ative seu perfil público para aparecer na listagem de
-                        professores e atrair novos alunos
+                        {t('activate_public_profile')}
                       </p>
                       <button
                         onClick={() => setEditingSection('public')}
                         className="btn-classical-primary"
                       >
-                        Tornar Público
+                        {t('make_public')}
                       </button>
                     </div>
                   )}

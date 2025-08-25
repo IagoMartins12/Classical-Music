@@ -43,18 +43,19 @@ import { StudentDetailData } from './pageServer';
 import { translateNivel } from '@/app/utils';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface TeacherStudentDetailPageClientProps {
   studentData: StudentDetailData;
 }
 
-// 🆕 MODAL PARA EDITAR RELAÇÃO
 interface EditRelationshipModalProps {
   isOpen: boolean;
   onClose: () => void;
   relationship: StudentDetailData['relationship'];
   onSave: (updates: RelationshipUpdates) => Promise<boolean>;
   loading: boolean;
+  t: (key: string, params?: Record<string, any>) => string;
 }
 
 interface RelationshipUpdates {
@@ -66,16 +67,6 @@ interface RelationshipUpdates {
   currentFocus: string[];
   teacherNotes?: string;
 }
-
-const DAYS_OF_WEEK = [
-  { value: 'monday', label: 'Segunda-feira' },
-  { value: 'tuesday', label: 'Terça-feira' },
-  { value: 'wednesday', label: 'Quarta-feira' },
-  { value: 'thursday', label: 'Quinta-feira' },
-  { value: 'friday', label: 'Sexta-feira' },
-  { value: 'saturday', label: 'Sábado' },
-  { value: 'sunday', label: 'Domingo' },
-];
 
 const TIME_SLOTS = [
   { value: '07:00', label: '07:00' },
@@ -92,18 +83,7 @@ const TIME_SLOTS = [
   { value: '20:00', label: '20:00' },
 ];
 
-const COMMON_FOCUS_AREAS = [
-  'Técnica básica',
-  'Leitura de partituras',
-  'Teoria musical',
-  'Repertório clássico',
-  'Improvisação',
-  'Digitação',
-  'Dinâmica',
-  'Fraseado',
-  'Ritmo',
-  'Harmonia',
-];
+// Common focus areas will be translated dynamically
 
 function EditRelationshipModal({
   isOpen,
@@ -111,6 +91,7 @@ function EditRelationshipModal({
   relationship,
   onSave,
   loading,
+  t,
 }: EditRelationshipModalProps) {
   const [formData, setFormData] = useState<RelationshipUpdates>({
     maxLessonsPerWeek: relationship.maxLessonsPerWeek,
@@ -121,6 +102,31 @@ function EditRelationshipModal({
     currentFocus: relationship.currentFocus || [],
     teacherNotes: relationship.teacherNotes || '',
   });
+
+  // Translated days of week
+  const DAYS_OF_WEEK = [
+    { value: 'monday', label: t('days_monday') },
+    { value: 'tuesday', label: t('days_tuesday') },
+    { value: 'wednesday', label: t('days_wednesday') },
+    { value: 'thursday', label: t('days_thursday') },
+    { value: 'friday', label: t('days_friday') },
+    { value: 'saturday', label: t('days_saturday') },
+    { value: 'sunday', label: t('days_sunday') },
+  ];
+
+  // Translated focus areas
+  const COMMON_FOCUS_AREAS = [
+    t('focus_basic_technique'),
+    t('focus_sheet_reading'),
+    t('focus_music_theory'),
+    t('focus_classical_repertoire'),
+    t('focus_improvisation'),
+    t('focus_fingering'),
+    t('focus_dynamics'),
+    t('focus_phrasing'),
+    t('focus_rhythm'),
+    t('focus_harmony'),
+  ];
 
   // Reset form when relationship changes
   useEffect(() => {
@@ -177,10 +183,10 @@ function EditRelationshipModal({
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-xl font-bold text-theme-primary classical-title">
-              Editar Configurações da Relação
+              {t('edit_relationship_modal_title')}
             </h2>
             <p className="text-theme-tertiary">
-              Ajuste a frequência, duração e preferências das aulas
+              {t('edit_relationship_modal_subtitle')}
             </p>
           </div>
         </div>
@@ -191,21 +197,21 @@ function EditRelationshipModal({
             <AnimatedCard className="classical-card p-4">
               <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
                 <FiCalendar className="w-5 h-5 text-brand-primary" />
-                Configurações de Aulas
+                {t('lesson_settings')}
               </h3>
 
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Aulas por Semana
+                      {t('lessons_per_week')}
                     </label>
                     <Select
                       options={[
-                        { value: '1', label: '1 aula' },
-                        { value: '2', label: '2 aulas' },
-                        { value: '3', label: '3 aulas' },
-                        { value: '4', label: '4 aulas' },
+                        { value: '1', label: t('lesson_option_1') },
+                        { value: '2', label: t('lesson_option_2') },
+                        { value: '3', label: t('lesson_option_3') },
+                        { value: '4', label: t('lesson_option_4') },
                       ]}
                       value={formData.maxLessonsPerWeek.toString()}
                       onChange={(e) =>
@@ -220,15 +226,15 @@ function EditRelationshipModal({
 
                   <div>
                     <label className="block text-sm font-medium text-theme-primary mb-2">
-                      Duração (minutos)
+                      {t('duration_minutes')}
                     </label>
                     <Select
                       options={[
-                        { value: '30', label: '30 min' },
-                        { value: '45', label: '45 min' },
-                        { value: '60', label: '60 min' },
-                        { value: '90', label: '90 min' },
-                        { value: '120', label: '120 min' },
+                        { value: '30', label: t('duration_30') },
+                        { value: '45', label: t('duration_45') },
+                        { value: '60', label: t('duration_60') },
+                        { value: '90', label: t('duration_90') },
+                        { value: '120', label: t('duration_120') },
                       ]}
                       value={formData.lessonDuration.toString()}
                       onChange={(e) =>
@@ -245,7 +251,7 @@ function EditRelationshipModal({
                 {/* Dias Preferidos */}
                 <div>
                   <label className="block text-sm font-medium text-theme-primary mb-2">
-                    Dias Preferidos
+                    {t('preferred_days')}
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {DAYS_OF_WEEK.map((day) => (
@@ -274,7 +280,7 @@ function EditRelationshipModal({
                 {/* Horários Preferidos */}
                 <div>
                   <label className="block text-sm font-medium text-theme-primary mb-2">
-                    Horários Preferidos
+                    {t('preferred_times')}
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {TIME_SLOTS.map((time) => (
@@ -308,14 +314,14 @@ function EditRelationshipModal({
             <AnimatedCard className="classical-card p-4">
               <h3 className="text-lg font-bold text-theme-primary mb-4 flex items-center gap-2">
                 <FiBookOpen className="w-5 h-5 text-brand-primary" />
-                Plano de Estudos
+                {t('study_plan')}
               </h3>
 
               <div className="space-y-4">
                 {/* Áreas de Foco */}
                 <div>
                   <label className="block text-sm font-medium text-theme-primary mb-2">
-                    Áreas de Foco
+                    {t('focus_areas')}
                   </label>
 
                   {/* Botões Rápidos */}
@@ -341,7 +347,7 @@ function EditRelationshipModal({
                   {formData.currentFocus.length > 0 && (
                     <div className="space-y-2">
                       <p className="text-sm text-theme-secondary">
-                        Áreas selecionadas:
+                        {t('selected_areas')}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {formData.currentFocus.map((focus) => (
@@ -371,7 +377,7 @@ function EditRelationshipModal({
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-theme-primary mb-2">
-                Plano de Aprendizado Detalhado
+                {t('detailed_learning_plan')}
               </label>
               <textarea
                 value={formData.learningPlan}
@@ -383,13 +389,13 @@ function EditRelationshipModal({
                 }
                 rows={4}
                 className="input-classical w-full"
-                placeholder="Descreva o plano detalhado de aprendizado, metodologia a ser seguida, progressão esperada..."
+                placeholder={t('detailed_learning_plan_placeholder')}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-theme-primary mb-2">
-                Notas do Professor (privadas)
+                {t('teacher_notes_private')}
               </label>
               <textarea
                 value={formData.teacherNotes}
@@ -401,7 +407,7 @@ function EditRelationshipModal({
                 }
                 rows={3}
                 className="input-classical w-full"
-                placeholder="Observações pessoais sobre o aluno..."
+                placeholder={t('teacher_notes_private_placeholder')}
               />
             </div>
           </div>
@@ -414,7 +420,7 @@ function EditRelationshipModal({
               className="btn-classical-secondary"
               disabled={loading}
             >
-              Cancelar
+              {t('btn_cancel')}
             </button>
 
             <button
@@ -425,12 +431,12 @@ function EditRelationshipModal({
               {loading ? (
                 <>
                   <FiRefreshCw className="w-4 h-4 animate-spin" />
-                  <span>Salvando...</span>
+                  <span>{t('btn_saving')}</span>
                 </>
               ) : (
                 <>
                   <FiSave className="w-4 h-4" />
-                  <span>Salvar Alterações</span>
+                  <span>{t('btn_save_changes')}</span>
                 </>
               )}
             </button>
@@ -444,6 +450,8 @@ function EditRelationshipModal({
 export default function TeacherStudentDetailPageClient({
   studentData,
 }: TeacherStudentDetailPageClientProps) {
+  const { t } = useTranslation({ sections: ['teacher/students/[studentId]'] });
+
   // Initialize hook with server data
   const {
     // State do hook
@@ -456,12 +464,10 @@ export default function TeacherStudentDetailPageClient({
     setInitialData,
     updateTeacherNotes,
     toggleStudentStatus,
-    updateRelationship, // 🆕 NOVO método
-
+    updateRelationship,
     clearError,
   } = useTeacherStudentDetail(studentData);
 
-  // 🆕 NOVOS ESTADOS
   const [editingNotes, setEditingNotes] = useState(false);
   const [showEditRelationship, setShowEditRelationship] = useState(false);
   const [teacherNotes, setTeacherNotes] = useState(
@@ -499,9 +505,9 @@ export default function TeacherStudentDetailPageClient({
   };
 
   const getStatusText = () => {
-    if (isActive) return 'Ativo';
-    if (isPaused) return 'Pausado';
-    return 'Inativo';
+    if (isActive) return t('status_active');
+    if (isPaused) return t('status_paused');
+    return t('status_inactive');
   };
 
   // Update teacher notes using hook
@@ -523,7 +529,6 @@ export default function TeacherStudentDetailPageClient({
     }
   }, [toggleStudentStatus]);
 
-  // 🆕 NOVO: Atualizar relação professor-aluno
   const handleUpdateRelationship = useCallback(
     async (updates: RelationshipUpdates) => {
       const success = await updateRelationship(updates);
@@ -572,14 +577,14 @@ export default function TeacherStudentDetailPageClient({
               href="/teacher"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
-              Dashboard
+              {t('breadcrumb_dashboard')}
             </Link>
             <FiChevronRight className="w-4 h-4" />
             <Link
               href="/teacher/students"
               className="hover:text-brand-primary transition-colors duration-300 font-medium"
             >
-              Alunos
+              {t('breadcrumb_students')}
             </Link>
             <FiChevronRight className="w-4 h-4" />
             <span className="text-theme-primary font-medium">
@@ -603,7 +608,7 @@ export default function TeacherStudentDetailPageClient({
                   {student.name}
                 </h1>
                 <p className="text-theme-secondary">
-                  Aluno desde {formatDate(relationship.startDate)}
+                  {t('student_since')} {formatDate(relationship.startDate)}
                 </p>
               </div>
             </div>
@@ -632,10 +637,10 @@ export default function TeacherStudentDetailPageClient({
                 )}
                 <span>
                   {loading.toggleStatus
-                    ? 'Aguarde...'
+                    ? t('btn_wait')
                     : isPaused
-                    ? 'Reativar'
-                    : 'Pausar'}
+                    ? t('btn_reactivate')
+                    : t('btn_pause')}
                 </span>
               </button>
               <Link
@@ -643,7 +648,7 @@ export default function TeacherStudentDetailPageClient({
                 className="btn-classical-primary flex items-center space-x-2"
               >
                 <FiPlus className="w-4 h-4" />
-                <span>Nova Aula</span>
+                <span>{t('btn_new_lesson')}</span>
               </Link>
             </div>
           </div>
@@ -734,7 +739,7 @@ export default function TeacherStudentDetailPageClient({
                   <div className="space-y-4">
                     <div>
                       <label className="text-sm font-medium text-theme-tertiary">
-                        Nível Musical
+                        {t('musical_level')}
                       </label>
                       <p className="text-theme-primary font-semibold">
                         {translateNivel(studentProfile.level)}
@@ -743,7 +748,7 @@ export default function TeacherStudentDetailPageClient({
                     {studentProfile.mainInstrument && (
                       <div>
                         <label className="text-sm font-medium text-theme-tertiary">
-                          Instrumento Principal
+                          {t('main_instrument')}
                         </label>
                         <p className="text-theme-primary font-semibold">
                           {studentProfile.mainInstrument}
@@ -753,7 +758,7 @@ export default function TeacherStudentDetailPageClient({
                     {student.experienceLevel && (
                       <div>
                         <label className="text-sm font-medium text-theme-tertiary">
-                          Experiência
+                          {t('experience')}
                         </label>
                         <p className="text-theme-primary font-semibold">
                           {translateNivel(student.experienceLevel)}
@@ -765,26 +770,27 @@ export default function TeacherStudentDetailPageClient({
                   <div className="space-y-4">
                     <div>
                       <label className="text-sm font-medium text-theme-tertiary">
-                        Frequência de Aulas
+                        {t('lesson_frequency')}
                       </label>
                       <p className="text-theme-primary font-semibold">
-                        {relationship.maxLessonsPerWeek}x por semana •{' '}
-                        {relationship.lessonDuration}min
+                        {relationship.maxLessonsPerWeek}
+                        {t('times_per_week')} • {relationship.lessonDuration}min
                       </p>
                     </div>
                     {studentProfile.practiceTime && (
                       <div>
                         <label className="text-sm font-medium text-theme-tertiary">
-                          Tempo de Prática
+                          {t('practice_time')}
                         </label>
                         <p className="text-theme-primary font-semibold">
-                          {studentProfile.practiceTime}min/dia
+                          {studentProfile.practiceTime}
+                          {t('min_per_day')}
                         </p>
                       </div>
                     )}
                     <div>
                       <label className="text-sm font-medium text-theme-tertiary">
-                        Membro desde
+                        {t('member_since')}
                       </label>
                       <p className="text-theme-primary font-semibold">
                         {formatDate(student.createdAt)}
@@ -799,7 +805,7 @@ export default function TeacherStudentDetailPageClient({
                   studentProfile.musicalGoals.length > 0 && (
                     <div className="mt-6 pt-6 border-t border-theme-secondary">
                       <label className="text-sm font-medium text-theme-tertiary block mb-3">
-                        Objetivos Musicais
+                        {t('musical_goals')}
                       </label>
                       <div className="text-theme-primary">
                         {studentProfile.musicalGoals}
@@ -812,7 +818,7 @@ export default function TeacherStudentDetailPageClient({
                   relationship.currentFocus.length > 0 && (
                     <div className="mt-4">
                       <label className="text-sm font-medium text-theme-tertiary block mb-3">
-                        Foco Atual
+                        {t('current_focus')}
                       </label>
                       <div className="flex flex-wrap gap-2">
                         {relationship.currentFocus.map((focus, index) => (
@@ -829,7 +835,7 @@ export default function TeacherStudentDetailPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* 🆕 NOVA SEÇÃO: Configurações da Relação */}
+            {/* Relationship Settings */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-6">
@@ -839,10 +845,10 @@ export default function TeacherStudentDetailPageClient({
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-theme-primary classical-title">
-                        Configurações da Relação
+                        {t('relationship_settings')}
                       </h3>
                       <p className="text-theme-tertiary text-sm">
-                        Frequência, duração e preferências das aulas
+                        {t('relationship_settings_subtitle')}
                       </p>
                     </div>
                   </div>
@@ -852,7 +858,7 @@ export default function TeacherStudentDetailPageClient({
                     className="btn-classical-secondary flex items-center space-x-2"
                   >
                     <FiEdit3 className="w-4 h-4" />
-                    <span>Editar</span>
+                    <span>{t('btn_edit')}</span>
                   </button>
                 </div>
 
@@ -862,23 +868,27 @@ export default function TeacherStudentDetailPageClient({
                       <div className="flex items-center space-x-3 mb-3">
                         <FiCalendar className="w-5 h-5 text-brand-primary" />
                         <h4 className="font-semibold text-theme-primary">
-                          Frequência das Aulas
+                          {t('lesson_frequency_title')}
                         </h4>
                       </div>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-theme-tertiary">
-                            Por semana:
+                            {t('per_week')}
                           </span>
                           <span className="text-theme-primary font-medium">
-                            {relationship.maxLessonsPerWeek} aula
-                            {relationship.maxLessonsPerWeek !== 1 ? 's' : ''}
+                            {relationship.maxLessonsPerWeek}{' '}
+                            {relationship.maxLessonsPerWeek !== 1
+                              ? t('lesson_plural')
+                              : t('lesson_singular')}
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-theme-tertiary">Duração:</span>
+                          <span className="text-theme-tertiary">
+                            {t('duration')}
+                          </span>
                           <span className="text-theme-primary font-medium">
-                            {relationship.lessonDuration} minutos
+                            {relationship.lessonDuration} {t('minutes')}
                           </span>
                         </div>
                       </div>
@@ -890,14 +900,12 @@ export default function TeacherStudentDetailPageClient({
                           <div className="flex items-center space-x-3 mb-3">
                             <FiCalendar className="w-5 h-5 text-accent-green" />
                             <h4 className="font-semibold text-theme-primary">
-                              Dias Preferidos
+                              {t('preferred_days')}
                             </h4>
                           </div>
                           <div className="flex flex-wrap gap-2">
                             {relationship.preferredDays.map((day) => {
-                              const dayLabel =
-                                DAYS_OF_WEEK.find((d) => d.value === day)
-                                  ?.label || day;
+                              const dayLabel = t(`days_${day}`) || day;
                               return (
                                 <span
                                   key={day}
@@ -919,7 +927,7 @@ export default function TeacherStudentDetailPageClient({
                           <div className="flex items-center space-x-3 mb-3">
                             <FiClock className="w-5 h-5 text-accent-blue" />
                             <h4 className="font-semibold text-theme-primary">
-                              Horários Preferidos
+                              {t('preferred_times')}
                             </h4>
                           </div>
                           <div className="flex flex-wrap gap-2">
@@ -940,7 +948,7 @@ export default function TeacherStudentDetailPageClient({
                         <div className="flex items-center space-x-3 mb-3">
                           <FiBookOpen className="w-5 h-5 text-accent-purple" />
                           <h4 className="font-semibold text-theme-primary">
-                            Plano de Aprendizado
+                            {t('learning_plan')}
                           </h4>
                         </div>
                         <p className="text-sm text-theme-secondary line-clamp-3">
@@ -953,7 +961,7 @@ export default function TeacherStudentDetailPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* Progress Stats - continua igual... */}
+            {/* Progress Stats */}
             <AnimatedItem direction="up" springType="gentle">
               <SequentialGrid cols={4} gap={6} delayBetweenItems={0.1}>
                 <AnimatedCard
@@ -967,7 +975,7 @@ export default function TeacherStudentDetailPageClient({
                     {stats.totalLessons}
                   </div>
                   <div className="text-sm text-theme-tertiary">
-                    Total de Aulas
+                    {t('total_lessons')}
                   </div>
                 </AnimatedCard>
 
@@ -982,7 +990,7 @@ export default function TeacherStudentDetailPageClient({
                     {stats.completionRate}%
                   </div>
                   <div className="text-sm text-theme-tertiary">
-                    Taxa de Conclusão
+                    {t('completion_rate')}
                   </div>
                 </AnimatedCard>
 
@@ -997,7 +1005,7 @@ export default function TeacherStudentDetailPageClient({
                     {formatDuration(stats.totalStudyTime).split(' ')[0]}
                   </div>
                   <div className="text-sm text-theme-tertiary">
-                    Horas de Estudo
+                    {t('study_hours')}
                   </div>
                 </AnimatedCard>
 
@@ -1011,8 +1019,9 @@ export default function TeacherStudentDetailPageClient({
                   <div className="text-2xl font-bold text-theme-primary mb-1">
                     {stats.streakDays}
                   </div>
-                  <div className="text-sm text-theme-tertiary"></div>Dias de
-                  Streak
+                  <div className="text-sm text-theme-tertiary">
+                    {t('streak_days')}
+                  </div>
                 </AnimatedCard>
               </SequentialGrid>
             </AnimatedItem>
@@ -1027,10 +1036,12 @@ export default function TeacherStudentDetailPageClient({
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-theme-primary classical-title">
-                        Aulas Recentes
+                        {t('recent_lessons')}
                       </h3>
                       <p className="text-theme-tertiary text-sm">
-                        Últimas {recentLessons.length} aulas realizadas
+                        {t('recent_lessons_subtitle', {
+                          count: recentLessons.length,
+                        })}
                       </p>
                     </div>
                   </div>
@@ -1038,7 +1049,7 @@ export default function TeacherStudentDetailPageClient({
                     href={`/teacher/lessons?studentId=${student.id}`}
                     className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
                   >
-                    <span>Ver todas</span>
+                    <span>{t('see_all')}</span>
                     <FiChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -1062,9 +1073,9 @@ export default function TeacherStudentDetailPageClient({
                               }`}
                             >
                               {lesson.status === 'COMPLETED'
-                                ? 'Concluída'
+                                ? t('lesson_completed')
                                 : lesson.status === 'CANCELLED'
-                                ? 'Cancelada'
+                                ? t('lesson_cancelled')
                                 : lesson.status}
                             </span>
                           </div>
@@ -1098,7 +1109,7 @@ export default function TeacherStudentDetailPageClient({
                           {lesson.homework && (
                             <div className="mt-2 p-2 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded border border-theme-primary/20">
                               <div className="text-xs text-theme-tertiary mb-1">
-                                Tarefa:
+                                {t('homework_label')}
                               </div>
                               <div className="text-sm text-theme-primary line-clamp-2">
                                 {lesson.homework}
@@ -1121,7 +1132,7 @@ export default function TeacherStudentDetailPageClient({
                     <div className="text-center py-8">
                       <FiClock className="w-12 h-12 text-theme-tertiary mx-auto mb-4" />
                       <p className="text-theme-tertiary">
-                        Nenhuma aula realizada ainda
+                        {t('no_lessons_completed')}
                       </p>
                     </div>
                   )}
@@ -1139,10 +1150,10 @@ export default function TeacherStudentDetailPageClient({
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-theme-primary classical-title">
-                        Anotações do Professor
+                        {t('teacher_notes')}
                       </h3>
                       <p className="text-theme-tertiary text-sm">
-                        Suas observações sobre o aluno
+                        {t('teacher_notes_subtitle')}
                       </p>
                     </div>
                   </div>
@@ -1165,7 +1176,7 @@ export default function TeacherStudentDetailPageClient({
                     <textarea
                       value={teacherNotes}
                       onChange={(e) => setTeacherNotes(e.target.value)}
-                      placeholder="Adicione suas observações sobre o aluno, progresso, dificuldades, pontos fortes..."
+                      placeholder={t('teacher_notes_placeholder')}
                       className="input-classical-2 w-full h-32 resize-none"
                       disabled={loading.updateNotes}
                     />
@@ -1179,7 +1190,9 @@ export default function TeacherStudentDetailPageClient({
                           <FiRefreshCw className="w-4 h-4 animate-spin" />
                         )}
                         <span>
-                          {loading.updateNotes ? 'Salvando...' : 'Salvar'}
+                          {loading.updateNotes
+                            ? t('btn_saving')
+                            : t('btn_save')}
                         </span>
                       </button>
                       <button
@@ -1190,7 +1203,7 @@ export default function TeacherStudentDetailPageClient({
                         disabled={loading.updateNotes}
                         className="btn-classical-secondary text-sm"
                       >
-                        Cancelar
+                        {t('btn_cancel')}
                       </button>
                     </div>
                   </div>
@@ -1202,8 +1215,7 @@ export default function TeacherStudentDetailPageClient({
                       </p>
                     ) : (
                       <p className="text-theme-tertiary italic">
-                        Nenhuma anotação ainda. Clique no ícone de edição para
-                        adicionar suas observações.
+                        {t('no_notes_yet')}
                       </p>
                     )}
                   </div>
@@ -1223,10 +1235,10 @@ export default function TeacherStudentDetailPageClient({
                   </div>
                   <div>
                     <h3 className="font-bold text-theme-primary">
-                      Próximas Aulas
+                      {t('upcoming_lessons')}
                     </h3>
                     <p className="text-xs text-theme-tertiary">
-                      {upcomingLessons.length} agendadas
+                      {upcomingLessons.length} {t('lessons_scheduled')}
                     </p>
                   </div>
                 </div>
@@ -1262,7 +1274,7 @@ export default function TeacherStudentDetailPageClient({
                     <div className="text-center py-6">
                       <FiCalendar className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                       <p className="text-sm text-theme-tertiary">
-                        Nenhuma aula agendada
+                        {t('no_lessons_scheduled')}
                       </p>
                     </div>
                   )}
@@ -1273,7 +1285,7 @@ export default function TeacherStudentDetailPageClient({
                     href={`/teacher/lessons?studentId=${student.id}`}
                     className="mt-4 block text-center text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
                   >
-                    Ver todas as aulas
+                    {t('see_all_lessons')}
                   </Link>
                 )}
               </AnimatedCard>
@@ -1288,11 +1300,11 @@ export default function TeacherStudentDetailPageClient({
                   </div>
                   <div>
                     <h3 className="font-bold text-theme-primary">
-                      Tarefas Ativas
+                      {t('active_assignments')}
                     </h3>
                     <p className="text-xs text-theme-tertiary">
                       {assignments.filter((a) => !a.isCompleted).length}{' '}
-                      pendentes
+                      {t('assignments_pending')}
                     </p>
                   </div>
                 </div>
@@ -1322,16 +1334,16 @@ export default function TeacherStudentDetailPageClient({
                             }`}
                           >
                             {assignment.priority === 'high'
-                              ? 'Alta'
+                              ? t('priority_high')
                               : assignment.priority === 'medium'
-                              ? 'Média'
-                              : 'Baixa'}
+                              ? t('priority_medium')
+                              : t('priority_low')}
                           </span>
                         </div>
 
                         {assignment.dueDate && (
                           <div className="text-xs text-theme-tertiary mb-2">
-                            Prazo: {formatDate(assignment.dueDate)}
+                            {t('due_date')} {formatDate(assignment.dueDate)}
                           </div>
                         )}
 
@@ -1348,7 +1360,7 @@ export default function TeacherStudentDetailPageClient({
                     <div className="text-center py-4">
                       <FiCheckCircle className="w-8 h-8 text-accent-green mx-auto mb-2" />
                       <p className="text-sm text-theme-tertiary">
-                        Todas as tarefas concluídas!
+                        {t('all_assignments_completed')}
                       </p>
                     </div>
                   )}
@@ -1365,7 +1377,7 @@ export default function TeacherStudentDetailPageClient({
                   </div>
                   <div>
                     <h3 className="font-bold text-theme-primary">
-                      Ações Rápidas
+                      {t('quick_actions')}
                     </h3>
                   </div>
                 </div>
@@ -1381,10 +1393,10 @@ export default function TeacherStudentDetailPageClient({
                       </div>
                       <div>
                         <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Agendar Aula
+                          {t('schedule_lesson')}
                         </div>
                         <div className="text-xs text-theme-tertiary">
-                          Nova aula para este aluno
+                          {t('schedule_lesson_subtitle')}
                         </div>
                       </div>
                     </div>
@@ -1400,10 +1412,10 @@ export default function TeacherStudentDetailPageClient({
                       </div>
                       <div>
                         <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Criar Tarefa
+                          {t('create_assignment')}
                         </div>
                         <div className="text-xs text-theme-tertiary">
-                          Atribuir nova tarefa
+                          {t('create_assignment_subtitle')}
                         </div>
                       </div>
                     </div>
@@ -1419,10 +1431,10 @@ export default function TeacherStudentDetailPageClient({
                       </div>
                       <div>
                         <div className="font-medium text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Relatório Detalhado
+                          {t('detailed_report')}
                         </div>
                         <div className="text-xs text-theme-tertiary">
-                          Progresso completo
+                          {t('detailed_report_subtitle')}
                         </div>
                       </div>
                     </div>
@@ -1442,7 +1454,7 @@ export default function TeacherStudentDetailPageClient({
                   className={`w-4 h-4 ${loading.refresh ? 'animate-spin' : ''}`}
                 />
                 <span>
-                  {loading.refresh ? 'Atualizando...' : 'Atualizar Dados'}
+                  {loading.refresh ? t('updating') : t('btn_refresh_data')}
                 </span>
               </button>
             </AnimatedItem>
@@ -1450,13 +1462,13 @@ export default function TeacherStudentDetailPageClient({
         </div>
       </AnimatedContainer>
 
-      {/* 🆕 MODAL PARA EDITAR RELAÇÃO */}
       <EditRelationshipModal
         isOpen={showEditRelationship}
         onClose={() => setShowEditRelationship(false)}
         relationship={relationship}
         onSave={handleUpdateRelationship}
-        loading={loading.updateNotes} // Reusing loading state
+        loading={loading.updateNotes}
+        t={t}
       />
     </PageContainer>
   );

@@ -39,6 +39,7 @@ import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 import { translateNivel } from '@/app/utils';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface CreateLessonPageClientProps {
   initialData: CreateLessonData;
@@ -58,7 +59,7 @@ type LessonType =
   | 'PRACTICE'
   | 'MASTERCLASS';
 
-// 🆕 TIPOS PARA CONFLITOS
+// Tipos para conflitos
 interface LessonConflict {
   id: string;
   title: string;
@@ -88,22 +89,6 @@ interface ConflictCheckResult {
   weeklyLimitWarning: WeeklyLimitWarning | null;
   warnings: string[];
 }
-
-const recurrenceOptions = [
-  { value: 'NONE', label: 'Sem recorrência' },
-  { value: 'WEEKLY', label: 'Toda semana' },
-  { value: 'BIWEEKLY', label: 'A cada 2 semanas' },
-  { value: 'TWICE_WEEKLY', label: '2x por semana' },
-  { value: 'MONTHLY', label: 'Mensal' },
-];
-
-const lessonTypeOptions = [
-  { value: 'INDIVIDUAL', label: 'Individual' },
-  { value: 'GROUP', label: 'Grupo' },
-  { value: 'THEORY', label: 'Teoria' },
-  { value: 'PRACTICE', label: 'Prática' },
-  { value: 'MASTERCLASS', label: 'Masterclass' },
-];
 
 // Função para calcular data máxima (3 meses)
 const getMaxRecurrenceDate = (startDate: string): string => {
@@ -141,7 +126,7 @@ const calculateLessonCount = (
   }
 };
 
-// 🆕 MODAL DE CONFLITOS
+// Modal de conflitos
 interface ConflictModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -149,6 +134,7 @@ interface ConflictModalProps {
   onConfirm: () => void;
   onCancel: () => void;
   loading: boolean;
+  t: (key: string) => string;
 }
 
 function ConflictModal({
@@ -158,6 +144,7 @@ function ConflictModal({
   onConfirm,
   onCancel,
   loading,
+  t,
 }: ConflictModalProps) {
   const formatDateTime = (date: Date) => {
     return new Date(date).toLocaleString('pt-BR', {
@@ -196,13 +183,13 @@ function ConflictModal({
           <div>
             <h2 className="text-xl font-bold text-theme-primary">
               {conflicts.hasTimeConflicts
-                ? 'Conflitos de Horário Detectados'
-                : 'Aviso: Limite Semanal'}
+                ? t('conflicts_detected')
+                : t('weekly_limit_warning')}
             </h2>
             <p className="text-theme-secondary">
               {conflicts.hasTimeConflicts
-                ? 'Existem aulas em horários conflitantes'
-                : 'O aluno já atingiu o limite de aulas da semana'}
+                ? t('conflicts_description')
+                : t('weekly_limit_description')}
             </p>
           </div>
         </div>
@@ -214,7 +201,7 @@ function ConflictModal({
               <h3 className="text-lg font-semibold text-theme-primary mb-4 flex items-center space-x-2">
                 <FiAlertCircle className="w-5 h-5" />
                 <span>
-                  Conflitos de Horário ({conflicts.timeConflicts.length})
+                  {t('time_conflicts')} ({conflicts.timeConflicts.length})
                 </span>
               </h3>
 
@@ -234,7 +221,7 @@ function ConflictModal({
                           {conflict.duration}min
                         </p>
                         <p className="text-sm text-theme-secondary">
-                          Aluno: {conflict.studentName}
+                          {t('student')}: {conflict.studentName}
                         </p>
                       </div>
                       <FiAlertCircle className="w-5 h-5 text-accent-red" />
@@ -248,12 +235,10 @@ function ConflictModal({
                   <FiInfo className="w-5 h-5 text-accent-red mt-0.5" />
                   <div className="text-sm">
                     <p className="font-medium text-accent-red mb-1">
-                      ⚠️ Não é possível criar esta aula
+                      ⚠️ {t('cannot_create_lesson')}
                     </p>
                     <p className="text-theme-secondary">
-                      Existe conflito de horário com outras aulas já agendadas.
-                      Ajuste o horário ou cancele uma das aulas conflitantes
-                      antes de prosseguir.
+                      {t('conflict_description')}
                     </p>
                   </div>
                 </div>
@@ -266,7 +251,7 @@ function ConflictModal({
             <div>
               <h3 className="text-lg font-semibold text-accent-yellow mb-4 flex items-center space-x-2">
                 <FiAlertTriangle className="w-5 h-5" />
-                <span>Limite Semanal Atingido</span>
+                <span>{t('weekly_limit_exceeded')}</span>
               </h3>
 
               <div className="bg-theme-tertiary rounded-lg p-4">
@@ -283,7 +268,7 @@ function ConflictModal({
 
                   <div className="text-sm text-theme-secondary">
                     <p>
-                      <strong>Semana:</strong>{' '}
+                      <strong>{t('week')}</strong>{' '}
                       {formatDate(conflicts.weeklyLimitWarning.weekStart)} a{' '}
                       {formatDate(conflicts.weeklyLimitWarning.weekEnd)}
                     </p>
@@ -292,7 +277,7 @@ function ConflictModal({
                   {conflicts.weeklyLimitWarning.upcomingLessons.length > 0 && (
                     <div>
                       <p className="text-sm font-medium text-theme-primary mb-2">
-                        Aulas já agendadas esta semana:
+                        {t('scheduled_lessons')}
                       </p>
                       <div className="space-y-1">
                         {conflicts.weeklyLimitWarning.upcomingLessons.map(
@@ -317,13 +302,12 @@ function ConflictModal({
                   <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
                   <div className="text-sm">
                     <p className="font-medium text-accent-blue mb-1">
-                      ℹ️ Você pode prosseguir se necessário
+                      ℹ️ {t('can_proceed')}
                     </p>
                     <p className="text-theme-secondary">
-                      Você configurou um limite de{' '}
-                      {conflicts.weeklyLimitWarning.maxLessonsPerWeek} aula(s)
-                      por semana, mas você pode criar uma aula extra se houver
-                      necessidade pedagógica.
+                      {t('limit_info')}{' '}
+                      {conflicts.weeklyLimitWarning.maxLessonsPerWeek}{' '}
+                      {t('lesson_per_week')}
                     </p>
                   </div>
                 </div>
@@ -335,7 +319,7 @@ function ConflictModal({
           {conflicts.warnings.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold text-accent-blue mb-3">
-                Avisos Adicionais
+                {t('additional_warnings')}
               </h3>
               <div className="space-y-2">
                 {conflicts.warnings.map((warning, index) => (
@@ -359,7 +343,7 @@ function ConflictModal({
             className="btn-classical-secondary"
             disabled={loading}
           >
-            {conflicts.hasTimeConflicts ? 'Ajustar Horário' : 'Cancelar'}
+            {conflicts.hasTimeConflicts ? t('adjust_schedule') : t('cancel')}
           </button>
 
           {!conflicts.hasTimeConflicts && (
@@ -373,7 +357,7 @@ function ConflictModal({
               ) : (
                 <FiCheckCircle className="w-4 h-4" />
               )}
-              <span>{loading ? 'Criando...' : 'Criar Mesmo Assim'}</span>
+              <span>{loading ? t('creating') : t('create_anyway')}</span>
             </button>
           )}
         </div>
@@ -388,8 +372,9 @@ export default function CreateLessonPageClient({
 }: CreateLessonPageClientProps) {
   const router = useRouter();
   const { createLesson, loading, error, clearError } = useTeacherLessons();
+  const { t } = useTranslation({ sections: ['teacher/lessonsCreate'] });
 
-  // 🆕 REFS PARA VALIDAÇÃO E SCROLL
+  // Refs para validação e scroll
   const fieldRefs = {
     studentUserId: useRef<HTMLSelectElement>(null),
     title: useRef<HTMLInputElement>(null),
@@ -398,7 +383,7 @@ export default function CreateLessonPageClient({
     recurrenceEnd: useRef<HTMLInputElement>(null),
   };
 
-  // 🆕 ESTADO PARA ERROS DE VALIDAÇÃO
+  // Estado para erros de validação
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
@@ -424,12 +409,12 @@ export default function CreateLessonPageClient({
     recurrenceEnd: '',
   });
 
-  // 🆕 ESTADOS PARA PEÇAS MUSICAIS
+  // Estados para peças musicais
   const [selectedWorks, setSelectedWorks] = useState<LessonWork[]>([]);
   const [worksIds, setWorksIds] = useState<string[]>([]);
   const [workScoreIds, setWorkScoreIds] = useState<string[]>([]);
 
-  // 🆕 ESTADOS PARA CONFLITOS
+  // Estados para conflitos
   const [conflicts, setConflicts] = useState<ConflictCheckResult | null>(null);
   const [showConflictModal, setShowConflictModal] = useState(false);
   const [checkingConflicts, setCheckingConflicts] = useState(false);
@@ -440,7 +425,24 @@ export default function CreateLessonPageClient({
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [pendingSubmission, setPendingSubmission] = useState(false);
 
-  // 🆕 FUNÇÃO PARA SCROLL AUTOMÁTICO PARA O PRIMEIRO ERRO
+  // Options traduzidas
+  const recurrenceOptions = [
+    { value: 'NONE', label: t('recurrence_none') },
+    { value: 'WEEKLY', label: t('recurrence_weekly') },
+    { value: 'BIWEEKLY', label: t('recurrence_biweekly') },
+    { value: 'TWICE_WEEKLY', label: t('recurrence_twice_weekly') },
+    { value: 'MONTHLY', label: t('recurrence_monthly') },
+  ];
+
+  const lessonTypeOptions = [
+    { value: 'INDIVIDUAL', label: t('type_individual') },
+    { value: 'GROUP', label: t('type_group') },
+    { value: 'THEORY', label: t('type_theory') },
+    { value: 'PRACTICE', label: t('type_practice') },
+    { value: 'MASTERCLASS', label: t('type_masterclass') },
+  ];
+
+  // Função para scroll automático para o primeiro erro
   const scrollToFirstError = useCallback((errorFields: string[]) => {
     if (errorFields.length > 0) {
       const firstErrorField = errorFields[0] as keyof typeof fieldRefs;
@@ -459,7 +461,7 @@ export default function CreateLessonPageClient({
     }
   }, []);
 
-  // 🆕 FUNÇÃO DE VALIDAÇÃO COMPLETA
+  // Função de validação completa
   const validateForm = useCallback((): boolean => {
     const newErrors: Record<string, string> = {};
 
@@ -477,7 +479,7 @@ export default function CreateLessonPageClient({
       newErrors.title = 'Título deve ter no máximo 100 caracteres';
     }
 
-    // 🆕 VALIDAÇÃO DA DATA E HORA MELHORADA
+    // Validação da data e hora melhorada
     if (!formData.scheduledAt.trim()) {
       newErrors.scheduledAt = 'Data e hora da aula são obrigatórias';
     } else {
@@ -565,7 +567,7 @@ export default function CreateLessonPageClient({
       }));
     }
 
-    // 🆕 LIMPAR ERRO DE ALUNO QUANDO SELECIONAR UM
+    // Limpar erro de aluno quando selecionar um
     if (formData.studentUserId && validationErrors.studentUserId) {
       setValidationErrors((prev) => {
         const newErrors = { ...prev };
@@ -595,7 +597,7 @@ export default function CreateLessonPageClient({
     }
   }, [formData.scheduledAt, formData.recurrenceType, formData.isRecurring]);
 
-  // 🆕 FUNÇÃO PARA VERIFICAR CONFLITOS
+  // Função para verificar conflitos
   const checkForConflicts = useCallback(async () => {
     if (!formData.studentUserId || !formData.scheduledAt || !selectedStudent) {
       return;
@@ -651,7 +653,7 @@ export default function CreateLessonPageClient({
     return () => clearTimeout(timeoutId);
   }, [checkForConflicts]);
 
-  // 🆕 HANDLER PARA MUDANÇAS NAS PEÇAS MUSICAIS
+  // Handler para mudanças nas peças musicais
   const handleWorksChange = useCallback((works: LessonWork[]) => {
     console.log('🎵 Peças musicais atualizadas:', works);
     setSelectedWorks(works);
@@ -673,7 +675,7 @@ export default function CreateLessonPageClient({
         [field]: value,
       }));
 
-      // 🆕 LIMPAR ERRO DO CAMPO QUANDO USUÁRIO DIGITAR
+      // Limpar erro do campo quando usuário digitar
       if (validationErrors[field]) {
         setValidationErrors((prev) => {
           const newErrors = { ...prev };
@@ -685,7 +687,7 @@ export default function CreateLessonPageClient({
     [validationErrors]
   );
 
-  // 🆕 FUNÇÃO PARA OBTER DATA/HORA MÍNIMA
+  // Função para obter data/hora mínima
   const getMinDateTime = (): string => {
     const now = new Date();
     // Adiciona 30 minutos para dar uma margem mínima
@@ -700,7 +702,8 @@ export default function CreateLessonPageClient({
 
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
-  // 🆕 FUNÇÃO PARA VALIDAÇÃO EM TEMPO REAL
+
+  // Função para validação em tempo real
   const handleDateTimeChange = useCallback(
     (value: string) => {
       updateFormData('scheduledAt', value);
@@ -731,6 +734,7 @@ export default function CreateLessonPageClient({
     },
     [updateFormData]
   );
+
   useEffect(() => {
     // Atualizar o datetime mínimo a cada minuto
     const interval = setInterval(() => {
@@ -795,18 +799,18 @@ export default function CreateLessonPageClient({
       )
     : 1;
 
-  // 🆕 SUBMIT HANDLER ATUALIZADO COM VALIDAÇÃO
+  // Submit handler atualizado com validação
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       clearError();
 
-      // 🆕 VALIDAR FORMULÁRIO ANTES DE PROSSEGUIR
+      // Validar formulário antes de prosseguir
       if (!validateForm()) {
         return;
       }
 
-      // 🆕 VERIFICAR CONFLITOS ANTES DE PROSSEGUIR
+      // Verificar conflitos antes de prosseguir
       if (conflicts?.hasTimeConflicts) {
         setShowConflictModal(true);
         return;
@@ -823,7 +827,7 @@ export default function CreateLessonPageClient({
     [formData, conflicts, clearError, validateForm]
   );
 
-  // 🆕 FUNÇÃO PARA SUBMETER A AULA
+  // Função para submeter a aula
   const submitLesson = useCallback(
     async (forceCreate = false) => {
       // Clean up array fields
@@ -876,13 +880,13 @@ export default function CreateLessonPageClient({
               <FiAlertCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Dados
+              {t('error_loading_data')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {errorMessage}
             </p>
             <Link href="/teacher/lessons" className="btn-classical-primary">
-              Voltar às Aulas
+              {t('back_to_lessons')}
             </Link>
           </div>
         </div>
@@ -905,10 +909,10 @@ export default function CreateLessonPageClient({
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gradient-brand classical-title">
-                  Criar Nova Aula
+                  {t('page_title')}
                 </h1>
                 <p className="text-theme-secondary classical-subtitle">
-                  Agende uma nova aula e configure todos os detalhes
+                  {t('page_subtitle')}
                 </p>
               </div>
             </div>
@@ -924,17 +928,17 @@ export default function CreateLessonPageClient({
                   {/* Student Selection */}
                   <div className="space-y-4">
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Informações Básicas
+                      {t('basic_information')}
                     </h2>
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Aluno *
+                        {t('student_label')} *
                       </label>
                       <Select
                         ref={fieldRefs.studentUserId}
                         options={[
-                          { value: '', label: 'Selecione um aluno...' },
+                          { value: '', label: t('select_student') },
                           ...initialData.students.map((student) => ({
                             value: student.id,
                             label: `${student.name} (${student.level})`,
@@ -977,12 +981,13 @@ export default function CreateLessonPageClient({
                               {selectedStudent.name}
                             </div>
                             <div className="text-sm text-theme-tertiary">
-                              Nível: {translateNivel(selectedStudent.level)} •
-                              Duração padrão:{' '}
+                              {t('level')}{' '}
+                              {translateNivel(selectedStudent.level)} • Duração
+                              padrão:{' '}
                               {selectedStudent.relationship.lessonDuration}min •
                               Max:{' '}
-                              {selectedStudent.relationship.maxLessonsPerWeek}
-                              /semana
+                              {selectedStudent.relationship.maxLessonsPerWeek}/
+                              {t('per_week')}
                             </div>
                           </div>
                         </div>
@@ -992,7 +997,7 @@ export default function CreateLessonPageClient({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Título da Aula *
+                          {t('lesson_title')} *
                         </label>
                         <Input
                           ref={fieldRefs.title}
@@ -1004,7 +1009,7 @@ export default function CreateLessonPageClient({
                           className={`input-classical w-full ${
                             validationErrors.title ? '!border-red-400' : ''
                           }`}
-                          placeholder="Ex: Aula de Piano - Chopin"
+                          placeholder={t('lesson_title_placeholder')}
                           required
                           error={validationErrors.title}
                         />
@@ -1012,7 +1017,7 @@ export default function CreateLessonPageClient({
 
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Tipo de Aula
+                          {t('lesson_type')}
                         </label>
                         <Select
                           options={lessonTypeOptions}
@@ -1027,7 +1032,7 @@ export default function CreateLessonPageClient({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Descrição
+                        {t('description')}
                       </label>
                       <textarea
                         value={formData.description}
@@ -1036,7 +1041,7 @@ export default function CreateLessonPageClient({
                         }
                         rows={3}
                         className="input-classical w-full"
-                        placeholder="Descreva o conteúdo e objetivos da aula..."
+                        placeholder={t('description_placeholder')}
                       />
                     </div>
                   </div>
@@ -1044,22 +1049,22 @@ export default function CreateLessonPageClient({
                   {/* Schedule com INDICADOR DE CONFLITOS */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-bold text-theme-primary classical-title">
-                      Agendamento
+                      {t('scheduling')}
                     </h3>
 
-                    {/* 🆕 INDICADOR DE VERIFICAÇÃO DE CONFLITOS */}
+                    {/* Indicador de verificação de conflitos */}
                     {checkingConflicts && (
                       <div className=" rounded-lg p-3">
                         <div className="flex items-center space-x-3">
                           <FiRefreshCw className="w-4 h-4 animate-spin text-accent-blue" />
                           <span className="text-sm text-accent-blue">
-                            Verificando conflitos de horário...
+                            {t('checking_conflicts')}
                           </span>
                         </div>
                       </div>
                     )}
 
-                    {/* 🆕 WARNINGS DE CONFLITOS */}
+                    {/* Warnings de conflitos */}
                     {conflicts && !checkingConflicts && (
                       <div className="space-y-3">
                         {conflicts.hasTimeConflicts && (
@@ -1068,11 +1073,11 @@ export default function CreateLessonPageClient({
                               <FiXCircle className="w-4 h-4 text-accent-red" />
                               <div className="text-sm">
                                 <p className="font-medium text-accent-red">
-                                  Conflito de horário detectado!
+                                  {t('time_conflict_detected')}
                                 </p>
                                 <p className="text-theme-secondary">
-                                  {conflicts.timeConflicts.length} aula(s) em
-                                  horário conflitante
+                                  {conflicts.timeConflicts.length}{' '}
+                                  {t('conflicting_lessons')}
                                 </p>
                               </div>
                             </div>
@@ -1086,16 +1091,16 @@ export default function CreateLessonPageClient({
                                 <FiAlertTriangle className="w-4 h-4 text-accent-yellow" />
                                 <div className="text-sm">
                                   <p className="font-medium text-accent-yellow">
-                                    Limite semanal atingido
+                                    {t('weekly_limit_reached')}
                                   </p>
                                   <p className="text-theme-secondary">
                                     {conflicts.weeklyLimitWarning?.studentName}{' '}
-                                    já tem{' '}
+                                    {t('already_has_lessons')}{' '}
                                     {
                                       conflicts.weeklyLimitWarning
                                         ?.currentLessons
                                     }{' '}
-                                    aula(s) esta semana
+                                    {t('lessons_this_week')}
                                   </p>
                                 </div>
                               </div>
@@ -1108,7 +1113,7 @@ export default function CreateLessonPageClient({
                               <div className="flex items-center space-x-3">
                                 <FiCheckCircle className="w-4 h-4 text-green-400" />
                                 <span className="text-sm text-green-300">
-                                  Nenhum conflito detectado - pode prosseguir!
+                                  {t('no_conflicts_detected')}
                                 </span>
                               </div>
                             </div>
@@ -1119,14 +1124,14 @@ export default function CreateLessonPageClient({
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Data e Hora *
+                          {t('date_time')} *
                         </label>
                         <Input
                           ref={fieldRefs.scheduledAt}
                           type="datetime-local"
                           value={formData.scheduledAt}
                           onChange={(e) => handleDateTimeChange(e.target.value)}
-                          min={getMinDateTime()} // ⭐ IMPEDE SELEÇÃO NO HTML
+                          min={getMinDateTime()}
                           className={`input-classical w-full ${
                             validationErrors.scheduledAt
                               ? '!border-red-400'
@@ -1141,14 +1146,13 @@ export default function CreateLessonPageClient({
                           </p>
                         )}
                         <p className="text-xs text-theme-tertiary mt-1 flex items-center space-x-1">
-                          Aulas devem ser agendadas com pelo menos 15 minutos de
-                          antecedência
+                          {t('min_advance_notice')}
                         </p>
                       </div>
 
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Duração (min) *
+                          {t('duration_minutes')} *
                         </label>
                         <Input
                           ref={fieldRefs.duration}
@@ -1173,7 +1177,7 @@ export default function CreateLessonPageClient({
 
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Local
+                          {t('location')}
                         </label>
                         <Input
                           type="text"
@@ -1182,7 +1186,7 @@ export default function CreateLessonPageClient({
                             updateFormData('location', e.target.value)
                           }
                           className="input-classical w-full"
-                          placeholder="Ex: Online, Estúdio A"
+                          placeholder={t('location_placeholder')}
                         />
                       </div>
                     </div>
@@ -1204,7 +1208,7 @@ export default function CreateLessonPageClient({
                           className="text-theme-primary font-medium flex items-center space-x-2"
                         >
                           <FiRepeat className="w-4 h-4" />
-                          <span>Aula recorrente</span>
+                          <span>{t('recurring_lesson')}</span>
                         </label>
                       </div>
 
@@ -1214,19 +1218,16 @@ export default function CreateLessonPageClient({
                             <FiInfo className="w-5 h-5 text-brand-primary" />
                             <div className="text-sm text-theme-secondary">
                               <p className="font-medium">
-                                Sistema de Recorrência Inteligente
+                                {t('intelligent_recurrence_system')}
                               </p>
-                              <p>
-                                Criamos aulas por até 3 meses. Após esse
-                                período, você pode renovar facilmente!
-                              </p>
+                              <p>{t('recurrence_description')}</p>
                             </div>
                           </div>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                               <label className="block text-sm font-medium text-theme-primary mb-2">
-                                Frequência *
+                                {t('frequency')} *
                               </label>
                               <Select
                                 options={recurrenceOptions}
@@ -1244,7 +1245,7 @@ export default function CreateLessonPageClient({
 
                             <div>
                               <label className="block text-sm font-medium text-theme-primary mb-2">
-                                Até quando *
+                                {t('until_when')} *
                               </label>
                               <Input
                                 ref={fieldRefs.recurrenceEnd}
@@ -1279,10 +1280,10 @@ export default function CreateLessonPageClient({
                                 </p>
                               )}
                               <p className="text-xs text-theme-tertiary mt-1">
-                                Máximo:{' '}
+                                {t('maximum_date')}{' '}
                                 {formData.scheduledAt
                                   ? getMaxRecurrenceDate(formData.scheduledAt)
-                                  : 'Selecione uma data'}
+                                  : t('select_date')}
                               </p>
                             </div>
                           </div>
@@ -1296,18 +1297,20 @@ export default function CreateLessonPageClient({
                                   <FiCalendar className="w-5 h-5 text-brand-primary" />
                                   <div>
                                     <p className="font-medium text-theme-primary">
-                                      Será criado:{' '}
+                                      {t('lessons_will_be_created')}{' '}
                                       <span className="text-brand-primary">
-                                        {lessonCount} aula
-                                        {lessonCount !== 1 ? 's' : ''}
+                                        {lessonCount}{' '}
+                                        {lessonCount !== 1
+                                          ? t('lessons')
+                                          : t('lesson')}
                                       </span>
                                     </p>
                                     <p className="text-sm text-theme-tertiary">
-                                      De{' '}
+                                      {t('from')}{' '}
                                       {new Date(
                                         formData.scheduledAt
                                       ).toLocaleDateString('pt-BR')}{' '}
-                                      até{' '}
+                                      {t('until')}{' '}
                                       {new Date(
                                         formData.recurrenceEnd
                                       ).toLocaleDateString('pt-BR')}
@@ -1323,12 +1326,10 @@ export default function CreateLessonPageClient({
                               <FiCheckCircle className="w-5 h-5 text-accent-green mt-0.5" />
                               <div className="text-sm">
                                 <p className="font-medium text-accent-green mb-1">
-                                  Renovação Simplificada
+                                  {t('simplified_renewal')}
                                 </p>
                                 <p className="text-theme-secondary">
-                                  Ao final do período, você receberá uma
-                                  notificação para renovar com apenas 1 clique!
-                                  Nada de remarcar aula por aula.
+                                  {t('renewal_description')}
                                 </p>
                               </div>
                             </div>
@@ -1338,15 +1339,15 @@ export default function CreateLessonPageClient({
                     </div>
                   </div>
 
-                  {/* 🆕 SEÇÃO DE PEÇAS MUSICAIS */}
+                  {/* Seção de peças musicais */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
                         <FiMusic className="w-5 h-5" />
-                        <span>Peças Musicais</span>
+                        <span>{t('musical_works')}</span>
                       </h3>
                       <div className="text-sm text-theme-secondary">
-                        {selectedWorks.length}/4 peças
+                        {selectedWorks.length}/4 {t('selected_works')}
                       </div>
                     </div>
 
@@ -1362,7 +1363,7 @@ export default function CreateLessonPageClient({
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-theme-primary classical-title">
-                        Objetivos da Aula
+                        {t('lesson_objectives')}
                       </h3>
                       <button
                         type="button"
@@ -1370,7 +1371,7 @@ export default function CreateLessonPageClient({
                         className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
                       >
                         <FiPlus className="w-3 h-3" />
-                        <span>Adicionar</span>
+                        <span>{t('add')}</span>
                       </button>
                     </div>
 
@@ -1391,7 +1392,7 @@ export default function CreateLessonPageClient({
                               )
                             }
                             className="input-classical flex-1"
-                            placeholder="Ex: Trabalhar digitação da mão direita"
+                            placeholder={t('objectives_placeholder')}
                             widhtFull
                           />
                           {formData.objectives.length > 1 && (
@@ -1417,7 +1418,7 @@ export default function CreateLessonPageClient({
                       onClick={() => setShowAdvanced(!showAdvanced)}
                       className="flex items-center space-x-2 text-brand-primary hover:text-brand-secondary"
                     >
-                      <span>Opções Avançadas</span>
+                      <span>{t('advanced_options')}</span>
                       <div
                         className={`transform transition-transform ${
                           showAdvanced ? 'rotate-180' : ''
@@ -1445,7 +1446,7 @@ export default function CreateLessonPageClient({
                         <div>
                           <div className="flex items-center justify-between mb-2">
                             <label className="text-sm font-medium text-theme-primary">
-                              Tópicos a Abordar
+                              {t('topics_to_cover')}
                             </label>
                             <button
                               type="button"
@@ -1453,7 +1454,7 @@ export default function CreateLessonPageClient({
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
                               <FiPlus className="w-3 h-3" />
-                              <span>Adicionar</span>
+                              <span>{t('add')}</span>
                             </button>
                           </div>
                           <div className="space-y-2">
@@ -1473,7 +1474,7 @@ export default function CreateLessonPageClient({
                                     )
                                   }
                                   className="input-classical flex-1"
-                                  placeholder="Ex: Escala de Dó maior"
+                                  placeholder={t('topics_placeholder')}
                                   widhtFull
                                 />
                                 {formData.topics.length > 1 && (
@@ -1495,7 +1496,7 @@ export default function CreateLessonPageClient({
                         {/* Homework */}
                         <div>
                           <label className="block text-sm font-medium text-theme-primary mb-2">
-                            Lição de Casa
+                            {t('homework')}
                           </label>
                           <textarea
                             value={formData.homework}
@@ -1504,7 +1505,7 @@ export default function CreateLessonPageClient({
                             }
                             rows={3}
                             className="input-classical w-full"
-                            placeholder="Descreva as tarefas para casa..."
+                            placeholder={t('homework_placeholder')}
                           />
                         </div>
 
@@ -1512,7 +1513,7 @@ export default function CreateLessonPageClient({
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <label className="block text-sm font-medium text-theme-primary mb-2">
-                              Notas do Professor (privadas)
+                              {t('teacher_notes')}
                             </label>
                             <textarea
                               value={formData.teacherNotes}
@@ -1521,13 +1522,13 @@ export default function CreateLessonPageClient({
                               }
                               rows={3}
                               className="input-classical w-full"
-                              placeholder="Notas pessoais sobre a aula..."
+                              placeholder={t('teacher_notes_placeholder')}
                             />
                           </div>
 
                           <div>
                             <label className="block text-sm font-medium text-theme-primary mb-2">
-                              Notas Públicas (aluno vê)
+                              {t('public_notes')}
                             </label>
                             <textarea
                               value={formData.publicNotes}
@@ -1536,7 +1537,7 @@ export default function CreateLessonPageClient({
                               }
                               rows={3}
                               className="input-classical w-full"
-                              placeholder="Informações para o aluno..."
+                              placeholder={t('public_notes_placeholder')}
                             />
                           </div>
                         </div>
@@ -1551,7 +1552,7 @@ export default function CreateLessonPageClient({
                         <FiAlertCircle className="w-5 h-5 text-accent-red" />
                         <div>
                           <p className="text-accent-red font-medium">
-                            Erro ao criar aula
+                            {t('error_creating_lesson')}
                           </p>
                           <p className="text-accent-red/80 text-sm">{error}</p>
                         </div>
@@ -1572,7 +1573,7 @@ export default function CreateLessonPageClient({
                       href="/teacher/lessons"
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </Link>
                     <button
                       type="submit"
@@ -1593,15 +1594,15 @@ export default function CreateLessonPageClient({
                       <span>
                         {loading.createLesson || pendingSubmission
                           ? formData.isRecurring
-                            ? 'Criando Série...'
-                            : 'Criando Aula...'
+                            ? t('creating_series')
+                            : t('creating_lesson')
                           : checkingConflicts
-                          ? 'Verificando...'
+                          ? t('checking')
                           : formData.isRecurring
-                          ? `Criar ${lessonCount} Aula${
-                              lessonCount !== 1 ? 's' : ''
+                          ? `${t('create_lessons')} ${lessonCount} ${
+                              lessonCount !== 1 ? t('lessons') : t('lesson')
                             }`
-                          : 'Criar Aula'}
+                          : t('create_lesson')}
                       </span>
                     </button>
                   </div>
@@ -1617,7 +1618,7 @@ export default function CreateLessonPageClient({
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                    Informações do Aluno
+                    {t('student_information')}
                   </h3>
 
                   <div className="space-y-4">
@@ -1642,7 +1643,7 @@ export default function CreateLessonPageClient({
                           {selectedStudent.name}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Nível: {translateNivel(selectedStudent.level)}
+                          {t('level')} {translateNivel(selectedStudent.level)}
                         </div>
                       </div>
                     </div>
@@ -1650,7 +1651,7 @@ export default function CreateLessonPageClient({
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">
-                          Duração padrão:
+                          {t('default_duration')}
                         </span>
                         <span className="text-theme-primary">
                           {selectedStudent.relationship.lessonDuration} min
@@ -1658,11 +1659,11 @@ export default function CreateLessonPageClient({
                       </div>
                       <div className="flex justify-between">
                         <span className="text-theme-tertiary">
-                          Limite semanal:
+                          {t('weekly_limit')}
                         </span>
                         <span className="text-theme-primary">
                           {selectedStudent.relationship.maxLessonsPerWeek}
-                          /semana
+                          {t('per_week')}
                         </span>
                       </div>
                       {selectedStudent.relationship.preferredDays &&
@@ -1670,7 +1671,7 @@ export default function CreateLessonPageClient({
                           0 && (
                           <div className="flex justify-between">
                             <span className="text-theme-tertiary">
-                              Dias preferidos:
+                              {t('preferred_days')}
                             </span>
                             <span className="text-theme-primary">
                               {selectedStudent.relationship.preferredDays.join(
@@ -1685,13 +1686,13 @@ export default function CreateLessonPageClient({
               </AnimatedItem>
             )}
 
-            {/* 🆕 RESUMO DAS PEÇAS SELECIONADAS */}
+            {/* Resumo das peças selecionadas */}
             {selectedWorks.length > 0 && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6 ">
                   <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                     <FiMusic className="w-5 h-5" />
-                    <span>Peças Selecionadas</span>
+                    <span>{t('selected_works_title')}</span>
                   </h3>
 
                   <div className="space-y-3">
@@ -1712,7 +1713,7 @@ export default function CreateLessonPageClient({
                           </p>
                           {work.scoreId && (
                             <p className="text-xs text-accent-green">
-                              ✓ Com partitura
+                              ✓ {t('with_score')}
                             </p>
                           )}
                         </div>
@@ -1725,11 +1726,11 @@ export default function CreateLessonPageClient({
                     <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
                       <div className="text-xs text-theme-secondary">
                         <div className="flex justify-between">
-                          <span>Total de peças:</span>
+                          <span>{t('total_works')}</span>
                           <span className="font-medium">{worksIds.length}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Com partituras:</span>
+                          <span>{t('with_scores')}</span>
                           <span className="font-medium">
                             {workScoreIds.length}
                           </span>
@@ -1745,34 +1746,32 @@ export default function CreateLessonPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                  Dicas
+                  {t('tips')}
                 </h3>
                 <div className="space-y-3 text-sm text-theme-secondary">
                   <div className="flex items-start space-x-2">
                     <FiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>Defina objetivos claros para cada aula</p>
+                    <p>{t('tip_clear_objectives')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiMusic className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>Vincule peças musicais para organizar o repertório</p>
+                    <p>{t('tip_link_musical_works')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiRepeat className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>Use aulas recorrentes para economizar tempo</p>
+                    <p>{t('tip_use_recurring')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiClock className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>Respeite os limites de aulas por semana do aluno</p>
+                    <p>{t('tip_respect_limits')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiCalendar className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>
-                      Recorrência funciona por 3 meses - renovação é automática!
-                    </p>
+                    <p>{t('tip_recurrence_works')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiAlertCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
-                    <p>Preencha todos os campos obrigatórios marcados com *</p>
+                    <p>{t('tip_required_fields')}</p>
                   </div>
                 </div>
               </AnimatedCard>
@@ -1781,7 +1780,7 @@ export default function CreateLessonPageClient({
         </div>
       </AnimatedContainer>
 
-      {/* 🆕 MODAL DE CONFLITOS */}
+      {/* Modal de conflitos */}
       {conflicts && (
         <ConflictModal
           isOpen={showConflictModal}
@@ -1790,6 +1789,7 @@ export default function CreateLessonPageClient({
           onConfirm={handleConflictConfirmation}
           onCancel={handleConflictCancel}
           loading={pendingSubmission}
+          t={t}
         />
       )}
     </PageContainer>

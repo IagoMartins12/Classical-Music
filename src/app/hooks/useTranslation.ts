@@ -1,5 +1,5 @@
 'use client';
-// hooks/useTranslation.ts - VERSÃO SEM SEÇÕES PADRÃO
+// hooks/useTranslation.ts - VERSÃO CORRIGIDA PARA INTERPOLAÇÃO
 import {
   useLanguageWithRefresh,
   Language,
@@ -38,7 +38,6 @@ interface UseTranslationResult {
 export function useTranslation(
   options: UseTranslationOptions = {}
 ): UseTranslationResult {
-  // ✅ REMOVIDO: Seções padrão - agora só carrega se explicitamente definido
   const { sections, defaultSection } = options;
 
   const { language, setLanguage, toggleLanguage } = useLanguageWithRefresh();
@@ -118,7 +117,7 @@ export function useTranslation(
     [loadSection]
   );
 
-  // ✅ MODIFICADO: Só carregar seções se foram definidas
+  // Só carregar seções se foram definidas
   useEffect(() => {
     const loadInitialSections = async () => {
       // Só executar se sections foi definido e não está vazio
@@ -163,7 +162,7 @@ export function useTranslation(
     [language]
   );
 
-  // ✅ MODIFICADO: Função principal de tradução sem seção padrão
+  // Função principal de tradução sem seção padrão
   const t = useCallback(
     (key: string, params?: Record<string, string | number>): string => {
       // Detectar namespace (ex: "works:work_title")
@@ -172,7 +171,7 @@ export function useTranslation(
         return tSection(section, actualKey, params);
       }
 
-      // ✅ NOVO: Se há seção padrão definida, tentar nela primeiro
+      // Se há seção padrão definida, tentar nela primeiro
       if (defaultSection) {
         const translation = tSection(defaultSection, key, params);
         if (translation !== formatKeyAsFallback(key)) {
@@ -180,7 +179,7 @@ export function useTranslation(
         }
       }
 
-      // ✅ NOVO: Se não há seção padrão ou não encontrou, tentar em todas as seções carregadas
+      // Se não há seção padrão ou não encontrou, tentar em todas as seções carregadas
       if (loadedSections.length > 0) {
         for (const section of loadedSections) {
           if (section !== defaultSection) {
@@ -190,10 +189,6 @@ export function useTranslation(
             }
           }
         }
-      }
-
-      // ✅ NOVO: Se não há seções carregadas, retornar chave formatada
-      if (loadedSections.length === 0) {
       }
 
       return formatKeyAsFallback(key);
@@ -241,14 +236,15 @@ export function useMultiSectionTranslation(sections: string[]) {
   return useTranslation({ sections, defaultSection: sections[0] });
 }
 
-// Funções utilitárias
+// ✅ FUNÇÃO CORRIGIDA: Mudança da regex de {{}} para {}
 function interpolateParams(
   text: string,
   params?: Record<string, string | number>
 ): string {
   if (!params) return text;
 
-  return text.replace(/\{\{(\w+)\}\}/g, (match, key) => {
+  // ✅ CORREÇÃO: Usar chaves simples {} ao invés de duplas {{}}
+  return text.replace(/\{(\w+)\}/g, (match, key) => {
     const value = params[key];
     return value !== undefined ? String(value) : match;
   });
@@ -260,69 +256,3 @@ function formatKeyAsFallback(key: string): string {
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(' ');
 }
-
-// ===================================================================
-// EXEMPLOS DE USO CORRETOS (SEM SEÇÕES PADRÃO)
-// ===================================================================
-
-// ✅ CORRETO: Definindo seção explicitamente
-// function Navbar() {
-//   const { t } = useTranslation({ sections: ['components/navbar'] });
-
-//   return (
-//     <nav>
-//       <span>{t('navbar_link_opus_atlas')}</span>
-//       <button>{t('navbar_button_entrar')}</button>
-//     </nav>
-//   );
-// }
-
-// // ✅ CORRETO: Usando hook especializado
-// function WorkDetailsPage() {
-//   const { t } = useSectionTranslation('pages/works');
-
-//   return (
-//     <div>
-//       <h1>{t('work_title')}</h1>
-//       <p>{t('work_description')}</p>
-//     </div>
-//   );
-// }
-
-// // ✅ CORRETO: Múltiplas seções
-// function ComplexComponent() {
-//   const { t, tSection } = useMultiSectionTranslation([
-//     'components/navbar',
-//     'pages/works',
-//     'features/player',
-//   ]);
-
-//   return (
-//     <div>
-//       <h1>{tSection('pages/works', 'work_title')}</h1>
-//       <button>{t('save_button')}</button> {/* Busca em todas as seções */}
-//     </div>
-//   );
-// }
-
-// // ❌ INCORRETO: Sem definir seções (não traduzirá nada)
-// function BrokenComponent() {
-//   const { t } = useTranslation(); // ⚠️ Nenhuma seção definida!
-
-//   return (
-//     <div>
-//       <span>{t('some_text')}</span> {/* Retornará "Some Text" */}
-//     </div>
-//   );
-// }
-
-// // ✅ CORRETO: Hook vazio para components que não precisam de tradução
-// function SimpleComponent() {
-//   const { t } = useTranslation(); // OK se não usar t()
-
-//   return (
-//     <div>
-//       <span>Texto estático sem tradução</span>
-//     </div>
-//   );
-// }

@@ -21,8 +21,8 @@ import Select from '@/app/components/Common/Select';
 import { useTeacherStudents } from '@/app/hooks/lessonsSystem/useTeacherStudents';
 import { TeacherStudentsServerData } from './pageServer';
 import StudentCard from '@/app/components/TeacherSystem/StudentCard';
-// 🆕 IMPORTAR O MODAL AVANÇADO
 import AddStudentModal from '@/app/components/TeacherSystem/AddStudentModal';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface TeacherStudentsPageClientProps {
   initialData: TeacherStudentsServerData;
@@ -37,7 +37,6 @@ type SortOption =
   | 'nextLesson'
   | 'completionRate';
 
-// 🆕 INTERFACE PARA O PLANO DE ESTUDOS (mesmo do modal avançado)
 interface StudyPlanData {
   maxLessonsPerWeek: number;
   lessonDuration: number;
@@ -56,6 +55,8 @@ export default function TeacherStudentsPageClient({
   initialData,
   errorMessage,
 }: TeacherStudentsPageClientProps) {
+  const { t } = useTranslation({ sections: ['teacher/students'] });
+
   // Initialize hook with server data
   const {
     // State do hook
@@ -89,7 +90,7 @@ export default function TeacherStudentsPageClient({
     }
   }, [initialData, setInitialData]);
 
-  // Handle search input change (debounced) - 🔄 ATUALIZADO para funcionar com o modal avançado
+  // Handle search input change (debounced)
   const handleSearchChange = useCallback(
     (value: string) => {
       setSearchQuery(value);
@@ -209,7 +210,6 @@ export default function TeacherStudentsPageClient({
     };
   }, [filteredAndSortedStudents]);
 
-  // 🆕 FUNÇÃO ATUALIZADA PARA FUNCIONAR COM PLANO DE ESTUDOS
   const handleAddStudentWithPlan = useCallback(
     async (studentUserId: string, studyPlan?: StudyPlanData) => {
       console.log('🎯 [STUDENTS-PAGE] Adicionando aluno com plano:', {
@@ -226,7 +226,6 @@ export default function TeacherStudentsPageClient({
           : null,
       });
 
-      // 🔥 PREPARAR DADOS DO PLANO DE ESTUDOS OU USAR VALORES PADRÃO
       const studyPlanData = studyPlan
         ? {
             maxLessonsPerWeek: studyPlan.maxLessonsPerWeek,
@@ -243,8 +242,6 @@ export default function TeacherStudentsPageClient({
           }
         : undefined;
 
-      // ⚠️ IMPORTANTE: O hook addStudent precisa ser atualizado para aceitar studyPlanData
-      // Por enquanto, vou usar só o studentUserId - você precisará atualizar o hook
       const success = await addStudent(studentUserId, studyPlanData);
 
       if (success) {
@@ -277,7 +274,6 @@ export default function TeacherStudentsPageClient({
     });
   };
 
-  // 🆕 FUNÇÃO PARA FECHAR O MODAL
   const handleCloseModal = () => {
     setShowAddStudent(false);
     setSearchQuery('');
@@ -294,7 +290,7 @@ export default function TeacherStudentsPageClient({
               <FiXCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Alunos
+              {t('error_title')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error || errorMessage}
@@ -311,7 +307,7 @@ export default function TeacherStudentsPageClient({
                   }`}
                 />
                 <span>
-                  {loading.students ? 'Carregando...' : 'Tentar Novamente'}
+                  {loading.students ? t('loading_text') : t('try_again')}
                 </span>
               </button>
               {error && (
@@ -319,7 +315,7 @@ export default function TeacherStudentsPageClient({
                   onClick={clearError}
                   className="btn-classical-secondary w-full"
                 >
-                  Limpar Erro
+                  {t('clear_error')}
                 </button>
               )}
             </div>
@@ -341,10 +337,10 @@ export default function TeacherStudentsPageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Meus Alunos
+              {t('page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Gerencie seus alunos e acompanhe o progresso musical de cada um
+              {t('page_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -365,7 +361,7 @@ export default function TeacherStudentsPageClient({
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Todos ({summary.total})
+                    {t('tabs_all')} ({summary.total})
                   </button>
                   <button
                     onClick={() => setActiveTab('active')}
@@ -375,7 +371,7 @@ export default function TeacherStudentsPageClient({
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Ativos ({filteredStats.active})
+                    {t('tabs_active')} ({filteredStats.active})
                   </button>
                   <button
                     onClick={() => setActiveTab('inactive')}
@@ -385,7 +381,7 @@ export default function TeacherStudentsPageClient({
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Inativos ({filteredStats.inactive})
+                    {t('tabs_inactive')} ({filteredStats.inactive})
                   </button>
                   <button
                     onClick={() => setActiveTab('paused')}
@@ -395,7 +391,7 @@ export default function TeacherStudentsPageClient({
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Pausados ({filteredStats.paused})
+                    {t('tabs_paused')} ({filteredStats.paused})
                   </button>
                 </div>
 
@@ -406,7 +402,7 @@ export default function TeacherStudentsPageClient({
                     className="btn-classical-primary flex items-center space-x-2"
                   >
                     <FiUserPlus className="w-4 h-4" />
-                    <span>Adicionar Aluno</span>
+                    <span>{t('add_student_button')}</span>
                   </button>
 
                   <button
@@ -430,7 +426,7 @@ export default function TeacherStudentsPageClient({
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-4 h-4" />
                   <Input
                     type="text"
-                    placeholder="Buscar alunos por nome, email ou instrumento..."
+                    placeholder={t('search_placeholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="input-classical w-full"
@@ -440,11 +436,14 @@ export default function TeacherStudentsPageClient({
                 {/* Sort Select */}
                 <Select
                   options={[
-                    { value: 'name', label: 'Ordenar por Nome' },
-                    { value: 'startDate', label: 'Data de Início' },
-                    { value: 'totalLessons', label: 'Total de Aulas' },
-                    { value: 'nextLesson', label: 'Próxima Aula' },
-                    { value: 'completionRate', label: 'Taxa de Conclusão' },
+                    { value: 'name', label: t('sort_name') },
+                    { value: 'startDate', label: t('sort_start_date') },
+                    { value: 'totalLessons', label: t('sort_total_lessons') },
+                    { value: 'nextLesson', label: t('sort_next_lesson') },
+                    {
+                      value: 'completionRate',
+                      label: t('sort_completion_rate'),
+                    },
                   ]}
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as SortOption)}
@@ -465,7 +464,7 @@ export default function TeacherStudentsPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
               <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
-              <p className="text-theme-secondary">Carregando alunos...</p>
+              <p className="text-theme-secondary">{t('loading_students')}</p>
             </div>
           </AnimatedItem>
         )}
@@ -480,13 +479,13 @@ export default function TeacherStudentsPageClient({
                 </div>
                 <h3 className="text-xl font-bold text-theme-primary classical-title mb-2">
                   {searchQuery || activeTab !== 'all'
-                    ? 'Nenhum aluno encontrado'
-                    : 'Você ainda não tem alunos'}
+                    ? t('no_students_found')
+                    : t('no_students_yet')}
                 </h3>
                 <p className="text-theme-secondary max-w-md mx-auto mb-6">
                   {searchQuery || activeTab !== 'all'
-                    ? 'Tente ajustar os filtros ou termos de busca.'
-                    : 'Comece adicionando seus primeiros alunos para começar a usar a plataforma.'}
+                    ? t('no_students_found_description')
+                    : t('no_students_yet_description')}
                 </p>
                 {!searchQuery && activeTab === 'all' && (
                   <button
@@ -494,7 +493,7 @@ export default function TeacherStudentsPageClient({
                     className="btn-classical-primary flex items-center space-x-2 mx-auto"
                   >
                     <FiUserPlus className="w-4 h-4" />
-                    <span>Adicionar Primeiro Aluno</span>
+                    <span>{t('add_first_student')}</span>
                   </button>
                 )}
               </div>
@@ -521,6 +520,21 @@ export default function TeacherStudentsPageClient({
                       onToggleStatus={handleToggleStudentStatus}
                       formatDate={formatDate}
                       formatTime={formatTime}
+                      translations={{
+                        studentSince: t('student_since'),
+                        totalLessons: t('total_lessons'),
+                        completionRate: t('completion_rate'),
+                        nextLesson: t('next_lesson'),
+                        atTime: t('at_time'),
+                        statusActive: t('status_active'),
+                        statusInactive: t('status_inactive'),
+                        statusPaused: t('status_paused'),
+                        reactivate: t('reactivate'),
+                        pause: t('pause'),
+                        viewDetails: t('view_details'),
+                        studentLevel: t('student_level_label'),
+                        studentInstrument: t('student_instrument_label'),
+                      }}
                     />
                   </AnimatedItem>
                 ))}
@@ -530,9 +544,8 @@ export default function TeacherStudentsPageClient({
         )}
       </AnimatedContainer>
 
-      {/* 🆕 MODAL AVANÇADO COM PLANO DE ESTUDOS */}
       <AddStudentModal
-        addStudent={handleAddStudentWithPlan} // 🔥 Função que agora recebe studyPlan
+        addStudent={handleAddStudentWithPlan}
         handleSearchChange={handleSearchChange}
         isOpen={showAddStudent}
         loading={loading.addStudent}

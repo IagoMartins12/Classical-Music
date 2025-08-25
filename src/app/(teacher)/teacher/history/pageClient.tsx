@@ -34,6 +34,7 @@ import {
 } from '@/app/components/animation/AnimatedComponents';
 import Select from '@/app/components/Common/Select';
 import Link from 'next/link';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface Activity {
   id: string;
@@ -66,6 +67,7 @@ const TeacherHistoryClient = ({
   initialFilters,
 }: TeacherHistoryClientProps) => {
   const router = useRouter();
+  const { t } = useTranslation({ sections: ['teacher/history'] });
 
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,26 +91,41 @@ const TeacherHistoryClient = ({
 
   // Opções de filtro específicas para professor
   const actionOptions = [
-    { value: 'all', label: 'Todas as ações' },
-    { value: 'STUDENT_ADDED', label: 'Alunos adicionados' },
-    { value: 'LESSON_CREATED', label: 'Aulas criadas' },
-    { value: 'LESSON_UPDATED', label: 'Aulas editadas' },
-    { value: 'LESSON_STATUS_CHANGED', label: 'Status de aula alterado' },
-    { value: 'ASSIGNMENT_CREATED', label: 'Tarefas criadas' },
-    { value: 'ASSIGNMENT_UPDATED', label: 'Tarefas editadas' },
-    { value: 'ASSIGNMENT_FEEDBACK_GIVEN', label: 'Feedbacks dados' },
-    { value: 'LESSON_NOTES_ADDED', label: 'Anotações adicionadas' },
-    { value: 'TEACHER_PROFILE_UPDATED', label: 'Perfil atualizado' },
-    { value: 'USER_PROFILE_UPDATED', label: 'Dados pessoais atualizados' },
+    { value: 'all', label: t('filter_all_actions') },
+    { value: 'STUDENT_ADDED', label: t('filter_students_added') },
+    { value: 'LESSON_CREATED', label: t('filter_lessons_created') },
+    { value: 'LESSON_UPDATED', label: t('filter_lessons_updated') },
+    {
+      value: 'LESSON_STATUS_CHANGED',
+      label: t('filter_lesson_status_changed'),
+    },
+    { value: 'ASSIGNMENT_CREATED', label: t('filter_assignments_created') },
+    { value: 'ASSIGNMENT_UPDATED', label: t('filter_assignments_updated') },
+    {
+      value: 'ASSIGNMENT_FEEDBACK_GIVEN',
+      label: t('filter_assignment_feedback_given'),
+    },
+    { value: 'LESSON_NOTES_ADDED', label: t('filter_lesson_notes_added') },
+    {
+      value: 'TEACHER_PROFILE_UPDATED',
+      label: t('filter_teacher_profile_updated'),
+    },
+    { value: 'USER_PROFILE_UPDATED', label: t('filter_user_profile_updated') },
   ];
 
   const entityTypeOptions = [
-    { value: 'all', label: 'Todos os tipos' },
-    { value: 'student', label: 'Alunos' },
-    { value: 'lesson', label: 'Aulas' },
-    { value: 'assignment', label: 'Tarefas' },
-    { value: 'profile', label: 'Perfil' },
-    { value: 'user', label: 'Dados pessoais' },
+    { value: 'all', label: t('filter_all_types') },
+    { value: 'student', label: t('filter_students') },
+    { value: 'lesson', label: t('filter_lessons') },
+    { value: 'assignment', label: t('filter_assignments') },
+    { value: 'profile', label: t('filter_profile') },
+    { value: 'user', label: t('filter_user') },
+  ];
+
+  const NotificatiosSelectFIlter = [
+    { value: 'newest', label: t('sort_newest') },
+    { value: 'oldest', label: t('sort_oldest') },
+    { value: 'priority', label: t('sort_priority') },
   ];
 
   useEffect(() => {
@@ -133,7 +150,7 @@ const TeacherHistoryClient = ({
       const response = await fetch(`/api/school-activities?${params}`);
 
       if (!response.ok) {
-        throw new Error('Erro ao carregar atividades');
+        throw new Error(t('error_loading_activities'));
       }
 
       const data = await response.json();
@@ -144,11 +161,13 @@ const TeacherHistoryClient = ({
         setTotalCount(data.pagination?.totalCount || 0);
         setStats(data.stats || {});
       } else {
-        throw new Error(data.error || 'Erro desconhecido');
+        throw new Error(data.error || t('error_loading_activities'));
       }
     } catch (error) {
       console.error('Erro ao buscar atividades:', error);
-      setError(error instanceof Error ? error.message : 'Erro desconhecido');
+      setError(
+        error instanceof Error ? error.message : t('error_loading_activities')
+      );
     } finally {
       setLoading(false);
     }
@@ -259,16 +278,16 @@ const TeacherHistoryClient = ({
 
   const getActionLabel = (action: string) => {
     const labels: Record<string, string> = {
-      STUDENT_ADDED: 'Aluno Adicionado',
-      LESSON_CREATED: 'Aula Criada',
-      LESSON_UPDATED: 'Aula Editada',
-      LESSON_STATUS_CHANGED: 'Status Alterado',
-      ASSIGNMENT_CREATED: 'Tarefa Criada',
-      ASSIGNMENT_UPDATED: 'Tarefa Editada',
-      ASSIGNMENT_FEEDBACK_GIVEN: 'Feedback Dado',
-      LESSON_NOTES_ADDED: 'Anotações Adicionadas',
-      TEACHER_PROFILE_UPDATED: 'Perfil Atualizado',
-      USER_PROFILE_UPDATED: 'Dados Atualizados',
+      STUDENT_ADDED: t('action_student_added'),
+      LESSON_CREATED: t('action_lesson_created'),
+      LESSON_UPDATED: t('action_lesson_updated'),
+      LESSON_STATUS_CHANGED: t('action_lesson_status_changed'),
+      ASSIGNMENT_CREATED: t('action_assignment_created'),
+      ASSIGNMENT_UPDATED: t('action_assignment_updated'),
+      ASSIGNMENT_FEEDBACK_GIVEN: t('action_assignment_feedback_given'),
+      LESSON_NOTES_ADDED: t('action_lesson_notes_added'),
+      TEACHER_PROFILE_UPDATED: t('action_teacher_profile_updated'),
+      USER_PROFILE_UPDATED: t('action_user_profile_updated'),
     };
 
     return labels[action] || action;
@@ -308,7 +327,7 @@ const TeacherHistoryClient = ({
       <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
         <h5 className="text-sm font-medium text-blue-700 mb-2 flex items-center">
           <FiEdit className="w-4 h-4 mr-1" />
-          Alterações:
+          {t('changes_label')}
         </h5>
         <div className="space-y-2">
           {changesList.slice(0, 3).map(([key, change]: [string, any]) => (
@@ -316,11 +335,11 @@ const TeacherHistoryClient = ({
               <div className="font-medium text-blue-700 mb-1">{key}:</div>
               <div className="pl-2 border-l-2 border-blue-300">
                 <div className="text-red-600 flex items-center">
-                  <span className="w-8 text-xs">De:</span>
+                  <span className="w-8 text-xs">{t('from_label')}</span>
                   <span>{String(change.from)}</span>
                 </div>
                 <div className="text-green-600 flex items-center">
-                  <span className="w-8 text-xs">Para:</span>
+                  <span className="w-8 text-xs">{t('to_label')}</span>
                   <span>{String(change.to)}</span>
                 </div>
               </div>
@@ -328,7 +347,7 @@ const TeacherHistoryClient = ({
           ))}
           {changesList.length > 3 && (
             <div className="text-xs text-blue-600">
-              +{changesList.length - 3} alterações adicionais
+              +{changesList.length - 3} {t('additional_changes')}
             </div>
           )}
         </div>
@@ -358,10 +377,10 @@ const TeacherHistoryClient = ({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Histórico de Atividades
+              {t('page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Acompanhe todas as suas ações como professor na plataforma
+              {t('page_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -386,7 +405,7 @@ const TeacherHistoryClient = ({
                   {stats.totalActivities || 0}
                 </div>
                 <div className="text-sm text-theme-tertiary">
-                  Total de Atividades
+                  {t('stats_total_activities')}
                 </div>
               </AnimatedCard>
 
@@ -400,7 +419,9 @@ const TeacherHistoryClient = ({
                 <div className="text-2xl font-bold text-theme-primary mb-1">
                   {stats.recentActivity || 0}
                 </div>
-                <div className="text-sm text-theme-tertiary">Últimas 24h</div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('stats_last_24h')}
+                </div>
               </AnimatedCard>
 
               <AnimatedCard
@@ -414,7 +435,9 @@ const TeacherHistoryClient = ({
                   {(stats.breakdown?.byAction?.LESSON_CREATED || 0) +
                     (stats.breakdown?.byAction?.ASSIGNMENT_CREATED || 0)}
                 </div>
-                <div className="text-sm text-theme-tertiary">Itens Criados</div>
+                <div className="text-sm text-theme-tertiary">
+                  {t('stats_items_created')}
+                </div>
               </AnimatedCard>
 
               <AnimatedCard
@@ -429,7 +452,7 @@ const TeacherHistoryClient = ({
                     (stats.breakdown?.byAction?.ASSIGNMENT_UPDATED || 0)}
                 </div>
                 <div className="text-sm text-theme-tertiary">
-                  Itens Editados
+                  {t('stats_items_edited')}
                 </div>
               </AnimatedCard>
             </SequentialGrid>
@@ -443,10 +466,10 @@ const TeacherHistoryClient = ({
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-lg font-semibold text-theme-primary">
-                    Filtros
+                    {t('filters_title')}
                   </h3>
                   <p className="text-sm text-theme-tertiary">
-                    {totalCount} atividades encontradas
+                    {totalCount} {t('activities_found')}
                   </p>
                 </div>
                 <button
@@ -454,7 +477,7 @@ const TeacherHistoryClient = ({
                   className="flex items-center space-x-2 px-4 py-2 bg-theme-secondary hover:bg-theme-tertiary text-theme-primary rounded-lg transition-colors"
                 >
                   <FiFilter className="w-4 h-4" />
-                  <span>Filtros</span>
+                  <span>{t('filters_title')}</span>
                   {showFilters ? (
                     <FiChevronUp className="w-4 h-4" />
                   ) : (
@@ -492,7 +515,7 @@ const TeacherHistoryClient = ({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Data Inicial
+                        {t('date_from')}
                       </label>
                       <input
                         type="date"
@@ -504,7 +527,7 @@ const TeacherHistoryClient = ({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Data Final
+                        {t('date_to')}
                       </label>
                       <input
                         type="date"
@@ -520,13 +543,13 @@ const TeacherHistoryClient = ({
                       onClick={updateFilters}
                       className="btn-classical-primary"
                     >
-                      Aplicar Filtros
+                      {t('apply_filters')}
                     </button>
                     <button
                       onClick={clearFilters}
                       className="btn-classical-secondary"
                     >
-                      Limpar
+                      {t('clear_filters')}
                     </button>
                     <button
                       onClick={fetchActivities}
@@ -536,7 +559,7 @@ const TeacherHistoryClient = ({
                       <FiRefreshCw
                         className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`}
                       />
-                      <span>Atualizar</span>
+                      <span>{t('refresh')}</span>
                     </button>
                   </div>
                 </AnimatedItem>
@@ -552,24 +575,24 @@ const TeacherHistoryClient = ({
               <div className="classical-card p-12 text-center">
                 <FiActivity className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
-                  Erro ao carregar atividades
+                  {t('error_loading_activities')}
                 </h3>
                 <p className="text-theme-secondary mb-4">{error}</p>
                 <button
                   onClick={fetchActivities}
                   className="btn-classical-primary"
                 >
-                  Tentar Novamente
+                  {t('try_again')}
                 </button>
               </div>
             ) : activities.length === 0 ? (
               <div className="classical-card p-12 text-center">
                 <FiActivity className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-xl font-bold text-theme-primary mb-2">
-                  Nenhuma atividade encontrada
+                  {t('no_activities_found')}
                 </h3>
                 <p className="text-theme-secondary">
-                  Não há atividades registradas com os filtros aplicados.
+                  {t('no_activities_description')}
                 </p>
               </div>
             ) : (

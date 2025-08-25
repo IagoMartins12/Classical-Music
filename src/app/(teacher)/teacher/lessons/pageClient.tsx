@@ -37,6 +37,7 @@ import Select from '@/app/components/Common/Select';
 import ViewModeToggle, { ViewMode } from '@/app/components/ViewModeToggle';
 import { useTeacherLessons } from '@/app/hooks/lessonsSystem/useTeacherLessons';
 import { translateNivel } from '@/app/utils';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface TeacherLessonsPageClientProps {
   initialData: TeacherLessonsData;
@@ -50,6 +51,8 @@ export default function TeacherLessonsPageClient({
   initialData,
   errorMessage,
 }: TeacherLessonsPageClientProps) {
+  const { t } = useTranslation({ sections: ['teacher/lessons'] });
+
   // Initialize hook with server data
   const {
     lessons,
@@ -66,7 +69,7 @@ export default function TeacherLessonsPageClient({
     clearError,
   } = useTeacherLessons(initialData);
 
-  // 🆕 VIEW MODE STATE
+  // View mode state
   const [viewMode, setViewMode] = useState<ViewMode>('cards');
 
   // Filtros
@@ -87,30 +90,30 @@ export default function TeacherLessonsPageClient({
 
   // Filter options
   const statusOptions = [
-    { value: 'all', label: 'Todas' },
-    { value: 'SCHEDULED', label: 'Agendadas' },
-    { value: 'COMPLETED', label: 'Concluídas' },
-    { value: 'CANCELLED', label: 'Canceladas' },
-    { value: 'NO_SHOW', label: 'Faltas' },
+    { value: 'all', label: t('filter_status_all') },
+    { value: 'SCHEDULED', label: t('filter_status_scheduled') },
+    { value: 'COMPLETED', label: t('filter_status_completed') },
+    { value: 'CANCELLED', label: t('filter_status_cancelled') },
+    { value: 'NO_SHOW', label: t('filter_status_no_show') },
   ];
 
   const timeOptions = [
-    { value: 'all', label: 'Todo período' },
-    { value: 'today', label: 'Hoje' },
-    { value: 'week', label: 'Esta semana' },
-    { value: 'month', label: 'Este mês' },
-    { value: 'past', label: 'Passadas' },
+    { value: 'all', label: t('filter_time_all') },
+    { value: 'today', label: t('filter_time_today') },
+    { value: 'week', label: t('filter_time_week') },
+    { value: 'month', label: t('filter_time_month') },
+    { value: 'past', label: t('filter_time_past') },
   ];
 
   const studentOptions = [
-    { value: 'all', label: 'Todos os alunos' },
+    { value: 'all', label: t('filter_student_all') },
     ...initialData.students.map((student) => ({
       value: student.id,
       label: student.name,
     })),
   ];
 
-  // 🔄 MUDANÇA: Filter lessons com ordenação cronológica melhorada
+  // Filter lessons com ordenação cronológica melhorada
   const filteredLessons = useMemo(() => {
     let filtered = [...lessons];
     const now = new Date();
@@ -167,7 +170,7 @@ export default function TeacherLessonsPageClient({
       );
     }
 
-    // 🆕 ORDENAÇÃO CRONOLÓGICA: Mais próximas primeiro, mas separando passadas das futuras
+    // Ordenação cronológica: Mais próximas primeiro, mas separando passadas das futuras
     const now_timestamp = now.getTime();
 
     return filtered.sort((a, b) => {
@@ -191,7 +194,7 @@ export default function TeacherLessonsPageClient({
     });
   }, [lessons, statusFilter, timeFilter, selectedStudent, searchQuery]);
 
-  // 🆕 FUNÇÃO PARA VERIFICAR SE AULA PASSOU E PRECISA DE ATENÇÃO
+  // Função para verificar se aula passou e precisa de atenção
   const getLessonStatusInfo = useCallback((lesson: any) => {
     const now = new Date();
     const lessonTime = new Date(lesson.scheduledAt);
@@ -330,13 +333,13 @@ export default function TeacherLessonsPageClient({
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'Concluída';
+        return t('status_completed');
       case 'CANCELLED':
-        return 'Cancelada';
+        return t('status_cancelled');
       case 'NO_SHOW':
-        return 'Faltou';
+        return t('status_no_show');
       case 'SCHEDULED':
-        return 'Agendada';
+        return t('status_scheduled');
       default:
         return status;
     }
@@ -365,7 +368,7 @@ export default function TeacherLessonsPageClient({
     };
   }, [handleRefresh]);
 
-  // 🆕 RENDER LESSON CARD COMPONENT
+  // Render lesson card component
   const renderLessonCard = useCallback(
     (lesson: LessonData, index: number) => {
       const statusInfo = getLessonStatusInfo(lesson);
@@ -379,7 +382,7 @@ export default function TeacherLessonsPageClient({
           }`}
           delay={index * 0.05}
         >
-          {/* 🆕 INDICATIVO DE ATENÇÃO NECESSÁRIA */}
+          {/* Indicativo de atenção necessária */}
           {statusInfo.needsAttention && (
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
               <FiAlertTriangle className="w-3 h-3 text-white" />
@@ -417,7 +420,7 @@ export default function TeacherLessonsPageClient({
                       {/* Quick Actions Menu com z-index máximo */}
                       {showQuickActions === lesson.id && (
                         <>
-                          {/* 🆕 BACKDROP PARA FECHAR AO CLICAR FORA */}
+                          {/* BACKDROP PARA FECHAR AO CLICAR FORA */}
                           <div
                             className="fixed inset-0 z-[9998]"
                             onClick={() => setShowQuickActions(null)}
@@ -430,7 +433,7 @@ export default function TeacherLessonsPageClient({
                               className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-theme-primary"
                             >
                               <FiEye className="w-4 h-4" />
-                              <span>Ver Detalhes</span>
+                              <span>{t('view_details')}</span>
                             </Link>
 
                             {lesson.status === 'SCHEDULED' && (
@@ -442,7 +445,7 @@ export default function TeacherLessonsPageClient({
                                   className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-green w-full text-left"
                                 >
                                   <FiUserCheck className="w-4 h-4" />
-                                  <span>Marcar Presença</span>
+                                  <span>{t('mark_attendance')}</span>
                                 </button>
 
                                 <button
@@ -452,7 +455,7 @@ export default function TeacherLessonsPageClient({
                                   className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-yellow w-full text-left"
                                 >
                                   <FiX className="w-4 h-4" />
-                                  <span>Marcar Falta</span>
+                                  <span>{t('mark_absence')}</span>
                                 </button>
 
                                 <Link
@@ -460,7 +463,7 @@ export default function TeacherLessonsPageClient({
                                   className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-theme-primary"
                                 >
                                   <FiEdit3 className="w-4 h-4" />
-                                  <span>Editar</span>
+                                  <span>{t('edit')}</span>
                                 </Link>
 
                                 <button
@@ -468,7 +471,7 @@ export default function TeacherLessonsPageClient({
                                   className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-red w-full text-left"
                                 >
                                   <FiX className="w-4 h-4" />
-                                  <span>Cancelar</span>
+                                  <span>{t('cancel')}</span>
                                 </button>
                               </>
                             )}
@@ -485,7 +488,10 @@ export default function TeacherLessonsPageClient({
                   </div>
                   <div className="flex items-center space-x-1">
                     <FiClock className="w-4 h-4" />
-                    <span>{lesson.duration}min</span>
+                    <span>
+                      {lesson.duration}
+                      {t('min_abbreviation')}
+                    </span>
                   </div>
                   {lesson.location && (
                     <div className="flex items-center space-x-1">
@@ -518,7 +524,7 @@ export default function TeacherLessonsPageClient({
                     {lesson.student.name}
                   </div>
                   <div className="text-sm text-theme-tertiary">
-                    Nível: {translateNivel(lesson.student.level)}
+                    {t('level_label')} {translateNivel(lesson.student.level)}
                   </div>
                 </div>
               </div>
@@ -553,7 +559,7 @@ export default function TeacherLessonsPageClient({
                     lesson.topics.length > 2) && (
                     <span className="text-xs text-theme-tertiary">
                       +{lesson.objectives.length + lesson.topics.length - 5}{' '}
-                      mais
+                      {t('more')}
                     </span>
                   )}
                 </div>
@@ -585,29 +591,29 @@ export default function TeacherLessonsPageClient({
                   {lesson.homework && (
                     <div className="flex items-center space-x-1 text-accent-yellow">
                       <FiBookOpen className="w-4 h-4" />
-                      <span>Com homework</span>
+                      <span>{t('with_homework')}</span>
                     </div>
                   )}
 
                   {lesson.studentFeedback && (
                     <div className="flex items-center space-x-1 text-accent-blue">
                       <FiMessageSquare className="w-4 h-4" />
-                      <span>Com feedback</span>
+                      <span>{t('with_feedback')}</span>
                     </div>
                   )}
                 </div>
 
                 <div className="text-xs text-theme-tertiary">
-                  {lesson.isRecurring && '🔄 Recorrente • '}
-                  Criada em {formatDate(lesson.createdAt)}
+                  {lesson.isRecurring && `🔄 ${t('recurring')} • `}
+                  {t('created_on')} {formatDate(lesson.createdAt)}
                 </div>
               </div>
-              {/* 🆕 ALERTA PARA AULAS QUE PRECISAM DE ATENÇÃO */}
+              {/* Alerta para aulas que precisam de atenção */}
               {statusInfo.needsAttention && (
                 <div className="flex items-center justify-center space-x-1 mt-3 text-accent-red">
                   <FiAlertTriangle className="w-4 h-4 text-red-600" />
                   <span className="strong text-red-600">
-                    Precisa atualizar status
+                    {t('needs_status_update')}
                   </span>
                 </div>
               )}
@@ -625,13 +631,13 @@ export default function TeacherLessonsPageClient({
       showQuickActions,
       handleQuickAttendance,
       handleQuickCancel,
+      t,
     ]
   );
 
-  // 🆕 RENDER LESSON LIST ITEM COMPONENT
+  // Render lesson list item component
   const renderLessonListItem = useCallback(
     (lesson: any) => {
-
       return (
         <AnimatedCard
           key={lesson.id}
@@ -652,7 +658,10 @@ export default function TeacherLessonsPageClient({
                     </div>
                     <div className="flex items-center space-x-1">
                       <FiClock className="w-4 h-4" />
-                      <span>{lesson.duration}min</span>
+                      <span>
+                        {lesson.duration}
+                        {t('min_abbreviation')}
+                      </span>
                     </div>
                     {lesson.location && (
                       <div className="flex items-center space-x-1">
@@ -697,7 +706,7 @@ export default function TeacherLessonsPageClient({
                             className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-theme-primary"
                           >
                             <FiEye className="w-4 h-4" />
-                            <span>Ver Detalhes</span>
+                            <span>{t('view_details')}</span>
                           </Link>
 
                           {lesson.status === 'SCHEDULED' && (
@@ -709,7 +718,7 @@ export default function TeacherLessonsPageClient({
                                 className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-green w-full text-left"
                               >
                                 <FiUserCheck className="w-4 h-4" />
-                                <span>Marcar Presença</span>
+                                <span>{t('mark_attendance')}</span>
                               </button>
 
                               <button
@@ -719,7 +728,7 @@ export default function TeacherLessonsPageClient({
                                 className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-yellow w-full text-left"
                               >
                                 <FiX className="w-4 h-4" />
-                                <span>Marcar Falta</span>
+                                <span>{t('mark_absence')}</span>
                               </button>
 
                               <Link
@@ -727,7 +736,7 @@ export default function TeacherLessonsPageClient({
                                 className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-theme-primary"
                               >
                                 <FiEdit3 className="w-4 h-4" />
-                                <span>Editar</span>
+                                <span>{t('edit')}</span>
                               </Link>
 
                               <button
@@ -735,7 +744,7 @@ export default function TeacherLessonsPageClient({
                                 className="flex items-center space-x-3 px-4 py-2 hover:bg-interactive-hover transition-colors text-accent-red w-full text-left"
                               >
                                 <FiX className="w-4 h-4" />
-                                <span>Cancelar</span>
+                                <span>{t('cancel')}</span>
                               </button>
                             </>
                           )}
@@ -768,7 +777,7 @@ export default function TeacherLessonsPageClient({
                     {lesson.student.name}
                   </div>
                   <div className="text-sm text-theme-tertiary">
-                    Nível: {translateNivel(lesson.student.level)}
+                    {t('level_label')} {translateNivel(lesson.student.level)}
                   </div>
                 </div>
               </div>
@@ -807,7 +816,7 @@ export default function TeacherLessonsPageClient({
                     lesson.topics.length > 2) && (
                     <span className="text-xs text-theme-tertiary">
                       +{lesson.objectives.length + lesson.topics.length - 5}{' '}
-                      mais
+                      {t('more')}
                     </span>
                   )}
                 </div>
@@ -839,21 +848,21 @@ export default function TeacherLessonsPageClient({
                   {lesson.homework && (
                     <div className="flex items-center space-x-1 text-accent-yellow">
                       <FiBookOpen className="w-4 h-4" />
-                      <span>Com homework</span>
+                      <span>{t('with_homework')}</span>
                     </div>
                   )}
 
                   {lesson.studentFeedback && (
                     <div className="flex items-center space-x-1 text-accent-blue">
                       <FiMessageSquare className="w-4 h-4" />
-                      <span>Com feedback</span>
+                      <span>{t('with_feedback')}</span>
                     </div>
                   )}
                 </div>
 
                 <div className="text-xs text-theme-tertiary">
-                  {lesson.isRecurring && '🔄 Recorrente • '}
-                  Criada em {formatDate(lesson.createdAt)}
+                  {lesson.isRecurring && `🔄 ${t('recurring')} • `}
+                  {t('created_on')} {formatDate(lesson.createdAt)}
                 </div>
               </div>
             </div>
@@ -869,6 +878,7 @@ export default function TeacherLessonsPageClient({
       showQuickActions,
       handleQuickAttendance,
       handleQuickCancel,
+      t,
     ]
   );
 
@@ -882,7 +892,7 @@ export default function TeacherLessonsPageClient({
               <FiBookOpen className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Aulas
+              {t('error_loading_lessons')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error || errorMessage}
@@ -896,16 +906,14 @@ export default function TeacherLessonsPageClient({
                 <FiRefreshCw
                   className={`w-4 h-4 ${loading.lessons ? 'animate-spin' : ''}`}
                 />
-                <span>
-                  {loading.lessons ? 'Carregando...' : 'Tentar Novamente'}
-                </span>
+                <span>{loading.lessons ? t('updating') : t('try_again')}</span>
               </button>
               {error && (
                 <button
                   onClick={clearError}
                   className="btn-classical-secondary w-full"
                 >
-                  Limpar Erro
+                  {t('clear_error')}
                 </button>
               )}
             </div>
@@ -927,10 +935,10 @@ export default function TeacherLessonsPageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Gerenciar Aulas
+              {t('page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Visualize, edite e acompanhe o progresso de todas as suas aulas
+              {t('page_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -948,7 +956,9 @@ export default function TeacherLessonsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.total}
               </div>
-              <div className="text-sm text-theme-tertiary">Total</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_total')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -961,7 +971,9 @@ export default function TeacherLessonsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.scheduled}
               </div>
-              <div className="text-sm text-theme-tertiary">Agendadas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_scheduled')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -974,7 +986,9 @@ export default function TeacherLessonsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.completed}
               </div>
-              <div className="text-sm text-theme-tertiary">Concluídas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_completed')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -987,7 +1001,9 @@ export default function TeacherLessonsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.today}
               </div>
-              <div className="text-sm text-theme-tertiary">Hoje</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_today')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -1000,7 +1016,9 @@ export default function TeacherLessonsPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.cancelled}
               </div>
-              <div className="text-sm text-theme-tertiary">Canceladas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_cancelled')}
+              </div>
             </AnimatedCard>
           </div>
         </AnimatedItem>
@@ -1015,7 +1033,7 @@ export default function TeacherLessonsPageClient({
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
                   <input
                     type="text"
-                    placeholder="Buscar aulas, alunos..."
+                    placeholder={t('search_placeholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="input-classical-2 !pl-10"
@@ -1034,7 +1052,7 @@ export default function TeacherLessonsPageClient({
                   }`}
                 >
                   <FiFilter className="w-4 h-4" />
-                  <span>Filtros</span>
+                  <span>{t('filters')}</span>
                 </button>
 
                 <button
@@ -1047,7 +1065,7 @@ export default function TeacherLessonsPageClient({
                       loading.lessons ? 'animate-spin' : ''
                     }`}
                   />
-                  <span>Atualizar</span>
+                  <span>{t('refresh')}</span>
                 </button>
 
                 <Link
@@ -1055,9 +1073,9 @@ export default function TeacherLessonsPageClient({
                   className="btn-classical-primary flex items-center space-x-2"
                 >
                   <FiPlus className="w-4 h-4" />
-                  <span>Nova Aula</span>
+                  <span>{t('new_lesson')}</span>
                 </Link>
-                {/* 🆕 VIEW MODE TOGGLE */}
+                {/* VIEW MODE TOGGLE */}
                 <ViewModeToggle
                   viewMode={viewMode}
                   onViewModeChange={setViewMode}
@@ -1104,31 +1122,31 @@ export default function TeacherLessonsPageClient({
             {loading.lessons && lessons.length === 0 ? (
               <div className="text-center py-12">
                 <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
-                <p className="text-theme-secondary">Carregando aulas...</p>
+                <p className="text-theme-secondary">{t('loading_lessons')}</p>
               </div>
             ) : filteredLessons.length === 0 ? (
               <div className="text-center py-12">
                 <FiBookOpen className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
                 <h3 className="text-lg font-bold text-theme-primary mb-2">
-                  Nenhuma aula encontrada
+                  {t('no_lessons_found')}
                 </h3>
                 <p className="text-theme-tertiary mb-6">
                   {searchQuery ||
                   statusFilter !== 'all' ||
                   selectedStudent !== 'all'
-                    ? 'Tente ajustar os filtros de busca.'
-                    : 'Você ainda não tem aulas cadastradas.'}
+                    ? t('no_lessons_description')
+                    : t('no_lessons_yet')}
                 </p>
                 <Link
                   href="/teacher/lessons/create"
                   className="btn-classical-primary"
                 >
-                  Criar Primeira Aula
+                  {t('create_first_lesson')}
                 </Link>
               </div>
             ) : (
               <>
-                {/* 🆕 CONDITIONAL RENDERING BASED ON VIEW MODE */}
+                {/* CONDITIONAL RENDERING BASED ON VIEW MODE */}
                 {viewMode === 'cards' ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredLessons.map(renderLessonCard)}
@@ -1155,7 +1173,7 @@ export default function TeacherLessonsPageClient({
                     <FiPlus className="w-4 h-4" />
                   )}
                   <span>
-                    {loading.lessons ? 'Carregando...' : 'Carregar Mais'}
+                    {loading.lessons ? t('updating') : t('load_more')}
                   </span>
                 </button>
               </div>

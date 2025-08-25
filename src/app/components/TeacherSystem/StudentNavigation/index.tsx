@@ -1,4 +1,4 @@
-// app/(student)/components/StudentNavigation.tsx - ATUALIZADO COM NOTIFICAÇÕES
+// app/(student)/components/StudentNavigation.tsx - ATUALIZADO COM TRADUÇÕES
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -32,6 +32,8 @@ import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { ThemeToggle } from '../../ThemeToggle';
 import NotificationBell from '../../Notification/NotificationBell';
+import { LanguageDropdown, LanguageToggle } from '../../LanguageToggle';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface StudentNavigationProps {
   user: any;
@@ -59,6 +61,8 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
+  const { t } = useTranslation({ sections: ['components/studentNav'] });
+
   const { logout: authLogout } = useAuthStore();
   const { logout } = useAuth();
   const { reset } = useLearningStore();
@@ -70,39 +74,37 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
   const navigationItems: NavItem[] = [
     {
-      label: 'Dashboard',
+      label: t('menu_dashboard'),
       href: '/student',
       icon: FiHome,
       active: pathname === '/student',
     },
     {
-      label: 'Minhas Aulas',
+      label: t('menu_my_lessons'),
       icon: FiBook,
       href: '/student/lessons',
-
       active: pathname.startsWith('/student/lessons'),
     },
     {
-      label: 'Calendário',
+      label: t('menu_calendar'),
       href: '/student/calendar',
       icon: FiCalendar,
       active: pathname.startsWith('/student/calendar'),
     },
     {
-      label: 'Meu Progresso',
+      label: t('menu_my_progress'),
       icon: FiTrendingUp,
       active: pathname.startsWith('/student/progress'),
       href: '/student/progress',
     },
     {
-      label: 'Tarefas',
+      label: t('menu_assignments'),
       href: '/student/assignments',
       icon: FiBookOpen,
       active: pathname.startsWith('/student/assignments'),
     },
-
     {
-      label: 'Perfil',
+      label: t('menu_profile'),
       href: '/student/profile',
       icon: FiUser,
       active: pathname === '/student/profile',
@@ -119,7 +121,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
     if (user.email) {
       return user.email.split('@')[0];
     }
-    return 'Estudante';
+    return t('profile_role_student');
   };
 
   const getUserInitials = () => {
@@ -142,12 +144,12 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
       reset();
       authLogout();
       await signOut({ redirect: false });
-      toast.success('Logout realizado com sucesso!');
+      toast.success(t('logout_success'));
       setIsProfileOpen(false);
       router.push('/');
     } catch (error) {
       console.error('Logout error:', error);
-      toast.error('Erro ao fazer logout');
+      toast.error(t('logout_error'));
     }
   };
 
@@ -222,10 +224,10 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                 </div>
                 <div className="hidden sm:block">
                   <span className="text-xl font-bold text-gradient-brand classical-title">
-                    Opus Atlas
+                    {t('brand_name')}
                   </span>
                   <div className="text-xs text-theme-tertiary font-medium">
-                    Área do Estudante
+                    {t('student_area')}
                   </div>
                 </div>
               </Link>
@@ -329,16 +331,15 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
 
             {/* Right Section */}
             <div className="flex items-center space-x-3">
-              {/* 🆕 NOTIFICATION BELL */}
+              <LanguageToggle variant="compact" className="hidden sm:block" />
+
+              {/* Theme Toggle */}
+              <ThemeToggle variant="navbar" className="hidden sm:block" />
               <NotificationBell
                 userRole="student"
                 userId={user.id}
                 className="hidden sm:block"
               />
-
-              {/* Theme Toggle */}
-              <ThemeToggle variant="navbar" className="hidden sm:block" />
-
               {/* Profile Menu */}
               <div className="relative" ref={profileRef}>
                 <button
@@ -365,7 +366,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                     </p>
                     {!user.onboardingCompleted && (
                       <p className="text-xs text-accent-amber">
-                        Complete seu perfil
+                        {t('profile_complete_prompt')}
                       </p>
                     )}
                   </div>
@@ -386,7 +387,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       </p>
                       <div className="flex items-center mt-1">
                         <span className="px-2 py-1 bg-accent-green/10 text-accent-green text-xs rounded-full">
-                          Estudante
+                          {t('profile_role_student')}
                         </span>
                       </div>
                       {!user.onboardingCompleted && (
@@ -394,7 +395,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                           onClick={open}
                           className="mt-2 w-full text-left px-2 py-1 bg-accent-amber/10 text-accent-amber text-xs rounded-lg hover:bg-accent-amber/20 transition-colors"
                         >
-                          Clique para completar seu perfil
+                          {t('profile_complete_action')}
                         </button>
                       )}
                     </div>
@@ -406,7 +407,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiUser className="w-4 h-4" />
-                      <span>Meu Perfil</span>
+                      <span>{t('profile_menu_my_profile')}</span>
                     </Link>
 
                     <Link
@@ -415,8 +416,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiBell className="w-4 h-4" />
-
-                      <span>Notificações</span>
+                      <span>{t('profile_menu_notifications')}</span>
                     </Link>
 
                     <Link
@@ -425,8 +425,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiActivity className="w-4 h-4" />
-
-                      <span>Histórico</span>
+                      <span>{t('profile_menu_history')}</span>
                     </Link>
 
                     <Link
@@ -435,7 +434,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiBookOpen className="w-4 h-4" />
-                      <span>Lista de Estudos</span>
+                      <span>{t('profile_menu_study_list')}</span>
                     </Link>
 
                     <Link
@@ -444,7 +443,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiFile className="w-4 h-4" />
-                      <span>Anotações</span>
+                      <span>{t('profile_menu_annotations')}</span>
                     </Link>
 
                     <Link
@@ -453,7 +452,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiHome className="w-4 h-4" />
-                      <span>Voltar ao Site</span>
+                      <span>{t('profile_menu_back_to_site')}</span>
                     </Link>
 
                     <hr className="my-2 border-theme-secondary" />
@@ -463,7 +462,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-accent-red hover:bg-accent-red/10 rounded-lg transition-all"
                     >
                       <FiLogOut className="w-4 h-4" />
-                      <span>Sair</span>
+                      <span>{t('profile_menu_logout')}</span>
                     </button>
                   </div>
                 )}
@@ -491,10 +490,10 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                   <GiMusicalNotes className="w-8 h-8 mr-3 text-accent-green" />
                   <div>
                     <span className="text-lg font-bold text-gradient-brand">
-                      Opus Atlas
+                      {t('brand_name')}
                     </span>
                     <div className="text-xs text-theme-tertiary">
-                      Área do Estudante
+                      {t('student_area')}
                     </div>
                   </div>
                 </div>
@@ -506,7 +505,7 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                 </button>
               </div>
 
-              {/* 🆕 NOTIFICATION BELL MOBILE */}
+              {/* Notification Bell Mobile */}
               <div className="mb-6 pb-4 border-b border-theme-secondary">
                 <NotificationBell
                   userRole="student"
@@ -602,8 +601,10 @@ export default function StudentNavigation({ user }: StudentNavigationProps) {
                   onClick={closeSidebar}
                 >
                   <FiMusic className="w-4 h-4" />
-                  <span>Explorar Repertório</span>
+                  <span>{t('mobile_explore_repertoire')}</span>
                 </Link>
+
+                <LanguageDropdown className="hidden sm:block" />
 
                 <ThemeToggle
                   variant="navbar"

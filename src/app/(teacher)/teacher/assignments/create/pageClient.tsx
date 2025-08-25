@@ -1,4 +1,4 @@
-// app/teacher/assignments/create/pageClient.tsx - ATUALIZADO COM VALIDAÇÃO E SCROLL
+// app/teacher/assignments/create/pageClient.tsx - ATUALIZADO COM VALIDAÇÃO, SCROLL E TRADUÇÕES
 
 'use client';
 
@@ -37,6 +37,7 @@ import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 import { translateNivel } from '@/app/utils';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface CreateAssignmentPageClientProps {
   initialData: CreateAssignmentData;
@@ -52,10 +53,21 @@ const typeIcons = {
   reading: FiMusic,
 };
 
+const ASSIGNMENT_TYPES = {
+  practice: 'assignment_type_practice',
+  theory: 'assignment_type_theory',
+  listening: 'assignment_type_listening',
+  composition: 'assignment_type_composition',
+  performance: 'assignment_type_performance',
+  reading: 'assignment_type_reading',
+};
+
 export default function CreateAssignmentPageClient({
   initialData,
   errorMessage,
 }: CreateAssignmentPageClientProps) {
+  const { t } = useTranslation({ sections: ['teacher/assignmentsCreate'] });
+
   const router = useRouter();
   const { createAssignment, loading, error, clearError } =
     useTeacherAssignments();
@@ -126,25 +138,25 @@ export default function CreateAssignmentPageClient({
 
     // Validação do aluno
     if (!formData.studentUserId.trim()) {
-      newErrors.studentUserId = 'Selecione um aluno para a tarefa';
+      newErrors.studentUserId = t('validation_select_student');
     }
 
     // Validação do título
     if (!formData.title.trim()) {
-      newErrors.title = 'Título da tarefa é obrigatório';
+      newErrors.title = t('validation_title_required');
     } else if (formData.title.trim().length < 3) {
-      newErrors.title = 'Título deve ter pelo menos 3 caracteres';
+      newErrors.title = t('validation_title_min_length');
     } else if (formData.title.trim().length > 100) {
-      newErrors.title = 'Título deve ter no máximo 100 caracteres';
+      newErrors.title = t('validation_title_max_length');
     }
 
     // Validação da descrição
     if (!formData.description.trim()) {
-      newErrors.description = 'Descrição detalhada é obrigatória';
+      newErrors.description = t('validation_description_required');
     } else if (formData.description.trim().length < 10) {
-      newErrors.description = 'Descrição deve ter pelo menos 10 caracteres';
+      newErrors.description = t('validation_description_min_length');
     } else if (formData.description.trim().length > 1000) {
-      newErrors.description = 'Descrição deve ter no máximo 1000 caracteres';
+      newErrors.description = t('validation_description_max_length');
     }
 
     // Validação do prazo (se preenchido)
@@ -154,17 +166,17 @@ export default function CreateAssignmentPageClient({
       today.setHours(0, 0, 0, 0); // Começar do início do dia
 
       if (isNaN(dueDate.getTime())) {
-        newErrors.dueDate = 'Data de prazo inválida';
+        newErrors.dueDate = t('validation_invalid_due_date');
       } else if (dueDate < today) {
-        newErrors.dueDate = 'Prazo deve ser hoje ou uma data futura';
+        newErrors.dueDate = t('validation_due_date_past');
       }
     }
 
     // Validação do tempo estimado
     if (!formData.estimatedTime || formData.estimatedTime < 5) {
-      newErrors.estimatedTime = 'Tempo estimado mínimo é de 5 minutos';
+      newErrors.estimatedTime = t('validation_time_min');
     } else if (formData.estimatedTime > 300) {
-      newErrors.estimatedTime = 'Tempo estimado máximo é de 300 minutos';
+      newErrors.estimatedTime = t('validation_time_max');
     }
 
     setValidationErrors(newErrors);
@@ -179,7 +191,7 @@ export default function CreateAssignmentPageClient({
     }
 
     return true;
-  }, [formData, scrollToFirstError]);
+  }, [formData, scrollToFirstError, t]);
 
   // Update selected student and lesson when form changes
   useEffect(() => {
@@ -373,13 +385,13 @@ export default function CreateAssignmentPageClient({
               <FiAlertCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Dados
+              {t('error_loading_data')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {errorMessage}
             </p>
             <Link href="/teacher/assignments" className="btn-classical-primary">
-              Voltar às Tarefas
+              {t('back_to_assignments')}
             </Link>
           </div>
         </div>
@@ -402,10 +414,10 @@ export default function CreateAssignmentPageClient({
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gradient-brand classical-title">
-                  Criar Nova Tarefa
+                  {t('page_title')}
                 </h1>
                 <p className="text-theme-secondary classical-subtitle">
-                  Crie uma tarefa personalizada para seus alunos
+                  {t('page_subtitle')}
                 </p>
               </div>
             </div>
@@ -421,17 +433,17 @@ export default function CreateAssignmentPageClient({
                   {/* Basic Info */}
                   <div className="space-y-4">
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Informações Básicas
+                      {t('basic_info')}
                     </h2>
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Aluno *
+                        {t('student_required')}
                       </label>
                       <Select
                         ref={fieldRefs.studentUserId}
                         options={[
-                          { value: '', label: 'Selecione um aluno...' },
+                          { value: '', label: t('select_student') },
                           ...initialData.students.map((student) => ({
                             value: student.id,
                             label: `${student.name} (${student.level})`,
@@ -459,11 +471,11 @@ export default function CreateAssignmentPageClient({
                     {selectedStudent && filteredLessons.length > 0 && (
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Aula Relacionada
+                          {t('related_lesson')}
                         </label>
                         <Select
                           options={[
-                            { value: '', label: 'Nenhuma aula específica' },
+                            { value: '', label: t('no_specific_lesson') },
                             ...filteredLessons.map((lesson) => ({
                               value: lesson.id,
                               label: `${lesson.title} - ${new Date(
@@ -483,7 +495,7 @@ export default function CreateAssignmentPageClient({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Tipo de Tarefa
+                          {t('assignment_type')}
                         </label>
                         <Select
                           options={initialData.assignmentTypes.map((type) => ({
@@ -508,7 +520,7 @@ export default function CreateAssignmentPageClient({
 
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Prioridade
+                          {t('priority')}
                         </label>
                         <Select
                           options={initialData.priorityLevels.map(
@@ -528,7 +540,7 @@ export default function CreateAssignmentPageClient({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Título da Tarefa *
+                        {t('assignment_title_required')}
                       </label>
                       <Input
                         ref={fieldRefs.title}
@@ -540,7 +552,7 @@ export default function CreateAssignmentPageClient({
                         className={`input-classical w-full ${
                           validationErrors.title ? '!border-red-400' : ''
                         }`}
-                        placeholder="Ex: Prática - Escalas de Dó maior"
+                        placeholder={t('title_placeholder')}
                         required
                       />
                       {validationErrors.title && (
@@ -549,13 +561,16 @@ export default function CreateAssignmentPageClient({
                         </p>
                       )}
                       <p className="text-xs text-theme-tertiary mt-1">
-                        {formData.title.length}/100 caracteres
+                        {t('character_count', {
+                          current: formData.title.length,
+                          max: 100,
+                        })}
                       </p>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Descrição Detalhada *
+                        {t('description_required')}
                       </label>
                       <textarea
                         ref={fieldRefs.description}
@@ -567,7 +582,7 @@ export default function CreateAssignmentPageClient({
                         className={`input-classical w-full ${
                           validationErrors.description ? '!border-red-400' : ''
                         }`}
-                        placeholder="Descreva detalhadamente o que o aluno deve fazer, como deve praticar, quais técnicas focar..."
+                        placeholder={t('description_placeholder')}
                         maxLength={1000}
                         required
                       />
@@ -577,7 +592,10 @@ export default function CreateAssignmentPageClient({
                         </p>
                       )}
                       <p className="text-xs text-theme-tertiary mt-1">
-                        {formData.description.length}/1000 caracteres
+                        {t('character_count', {
+                          current: formData.description.length,
+                          max: 1000,
+                        })}
                       </p>
                     </div>
                   </div>
@@ -585,13 +603,13 @@ export default function CreateAssignmentPageClient({
                   {/* Timing */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-bold text-theme-primary classical-title">
-                      Prazo e Tempo
+                      {t('deadline_and_time')}
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Prazo de Entrega
+                          {t('due_date')}
                         </label>
                         <Input
                           ref={fieldRefs.dueDate}
@@ -614,7 +632,7 @@ export default function CreateAssignmentPageClient({
 
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Tempo Estimado (minutos) *
+                          {t('estimated_time_required')}
                         </label>
                         <Input
                           ref={fieldRefs.estimatedTime}
@@ -648,7 +666,7 @@ export default function CreateAssignmentPageClient({
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-theme-primary classical-title">
-                        Objetivos de Prática
+                        {t('practice_goals')}
                       </h3>
                       <button
                         type="button"
@@ -656,7 +674,7 @@ export default function CreateAssignmentPageClient({
                         className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
                       >
                         <FiPlus className="w-3 h-3" />
-                        <span>Adicionar</span>
+                        <span>{t('add')}</span>
                       </button>
                     </div>
 
@@ -677,7 +695,7 @@ export default function CreateAssignmentPageClient({
                               )
                             }
                             className="input-classical flex-1 w-6/12"
-                            placeholder="Ex: Tocar em andamento 120 BPM com metrônomo"
+                            placeholder={t('practice_goal_placeholder')}
                           />
                           {formData.practiceGoals.length > 1 && (
                             <button
@@ -700,10 +718,10 @@ export default function CreateAssignmentPageClient({
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
                         <FiMusic className="w-5 h-5" />
-                        <span>Peças Musicais</span>
+                        <span>{t('musical_pieces')}</span>
                       </h3>
                       <div className="text-sm text-theme-secondary">
-                        {selectedWorks.length}/4 peças
+                        {t('pieces_count', { count: selectedWorks.length })}
                       </div>
                     </div>
 
@@ -722,7 +740,7 @@ export default function CreateAssignmentPageClient({
                       onClick={() => setShowAdvanced(!showAdvanced)}
                       className="flex items-center space-x-2 text-brand-primary hover:text-brand-secondary"
                     >
-                      <span>Opções Avançadas</span>
+                      <span>{t('advanced_options')}</span>
                       <div
                         className={`transform transition-transform ${
                           showAdvanced ? 'rotate-180' : ''
@@ -750,7 +768,7 @@ export default function CreateAssignmentPageClient({
                         <div>
                           <div className="flex items-center justify-between mb-2">
                             <label className="text-sm font-medium text-theme-primary">
-                              Objetivos Técnicos
+                              {t('technical_goals')}
                             </label>
                             <button
                               type="button"
@@ -758,7 +776,7 @@ export default function CreateAssignmentPageClient({
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
                               <FiPlus className="w-3 h-3" />
-                              <span>Adicionar</span>
+                              <span>{t('add')}</span>
                             </button>
                           </div>
                           <div className="space-y-2">
@@ -778,7 +796,7 @@ export default function CreateAssignmentPageClient({
                                     )
                                   }
                                   className="input-classical flex-1"
-                                  placeholder="Ex: Melhorar articulação nos staccatos"
+                                  placeholder={t('technical_goal_placeholder')}
                                   widhtFull
                                 />
                                 {formData.technicalGoals.length > 1 && (
@@ -801,7 +819,7 @@ export default function CreateAssignmentPageClient({
                         <div>
                           <div className="flex items-center justify-between mb-2">
                             <label className="text-sm font-medium text-theme-primary">
-                              Objetivos Musicais
+                              {t('musical_goals')}
                             </label>
                             <button
                               type="button"
@@ -809,7 +827,7 @@ export default function CreateAssignmentPageClient({
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
                               <FiPlus className="w-3 h-3" />
-                              <span>Adicionar</span>
+                              <span>{t('add')}</span>
                             </button>
                           </div>
                           <div className="space-y-2">
@@ -829,7 +847,7 @@ export default function CreateAssignmentPageClient({
                                     )
                                   }
                                   className="input-classical flex-1"
-                                  placeholder="Ex: Expressar melhor o caráter melancólico"
+                                  placeholder={t('musical_goal_placeholder')}
                                   widhtFull
                                 />
                                 {formData.musicalGoals.length > 1 && (
@@ -852,7 +870,7 @@ export default function CreateAssignmentPageClient({
                         <div>
                           <div className="flex items-center justify-between mb-2">
                             <label className="text-sm font-medium text-theme-primary">
-                              Exercícios Específicos
+                              {t('specific_exercises')}
                             </label>
                             <button
                               type="button"
@@ -860,7 +878,7 @@ export default function CreateAssignmentPageClient({
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
                               <FiPlus className="w-3 h-3" />
-                              <span>Adicionar</span>
+                              <span>{t('add')}</span>
                             </button>
                           </div>
                           <div className="space-y-2">
@@ -880,7 +898,7 @@ export default function CreateAssignmentPageClient({
                                     )
                                   }
                                   className="input-classical flex-1"
-                                  placeholder="Ex: Hanon nº 1, Czerny op. 599 nº 5"
+                                  placeholder={t('exercise_placeholder')}
                                   widhtFull
                                 />
                                 {formData.exercises.length > 1 && (
@@ -909,7 +927,7 @@ export default function CreateAssignmentPageClient({
                         <FiAlertCircle className="w-5 h-5 text-accent-red" />
                         <div>
                           <p className="text-accent-red font-medium">
-                            Erro ao criar tarefa
+                            {t('error_creating')}
                           </p>
                           <p className="text-accent-red/80 text-sm">{error}</p>
                         </div>
@@ -930,7 +948,7 @@ export default function CreateAssignmentPageClient({
                       href="/teacher/assignments"
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </Link>
                     <button
                       type="submit"
@@ -944,8 +962,8 @@ export default function CreateAssignmentPageClient({
                       )}
                       <span>
                         {loading.createAssignment
-                          ? 'Criando Tarefa...'
-                          : 'Criar Tarefa'}
+                          ? t('creating_task')
+                          : t('create_task')}
                       </span>
                     </button>
                   </div>
@@ -961,7 +979,7 @@ export default function CreateAssignmentPageClient({
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                    Aluno Selecionado
+                    {t('selected_student')}
                   </h3>
 
                   <div className="space-y-4">
@@ -986,7 +1004,7 @@ export default function CreateAssignmentPageClient({
                           {selectedStudent.name}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Nível: {translateNivel(selectedStudent.level)}
+                          {t('level')} {translateNivel(selectedStudent.level)}
                         </div>
                       </div>
                     </div>
@@ -994,7 +1012,7 @@ export default function CreateAssignmentPageClient({
                     {filteredLessons.length > 0 && (
                       <div>
                         <p className="text-sm text-theme-tertiary mb-2">
-                          Aulas recentes:
+                          {t('recent_lessons')}
                         </p>
                         <div className="space-y-2">
                           {filteredLessons.slice(0, 3).map((lesson) => (
@@ -1006,7 +1024,7 @@ export default function CreateAssignmentPageClient({
                                 {lesson.title}
                               </div>
                               <div className="text-theme-tertiary">
-                                <strong>Data: </strong>
+                                <strong>{t('date')} </strong>
                                 {new Date(
                                   lesson.scheduledAt
                                 ).toLocaleDateString('pt-BR')}
@@ -1027,7 +1045,7 @@ export default function CreateAssignmentPageClient({
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                     <FiMusic className="w-5 h-5" />
-                    <span>Peças Selecionadas</span>
+                    <span>{t('selected_pieces')}</span>
                   </h3>
 
                   <div className="space-y-3">
@@ -1044,11 +1062,11 @@ export default function CreateAssignmentPageClient({
                             {work.workTitle}
                           </p>
                           <p className="text-xs text-theme-tertiary truncate">
-                            {work.composerName}
+                            {t('composer')}: {work.composerName}
                           </p>
                           {work.scoreId && (
                             <p className="text-xs text-accent-green">
-                              ✓ Com partitura
+                              {t('piece_with_score')}
                             </p>
                           )}
                         </div>
@@ -1061,11 +1079,11 @@ export default function CreateAssignmentPageClient({
                     <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
                       <div className="text-xs text-theme-secondary">
                         <div className="flex justify-between">
-                          <span>Total de peças:</span>
+                          <span>{t('total_pieces')}</span>
                           <span className="font-medium">{worksIds.length}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Com partituras:</span>
+                          <span>{t('with_scores')}</span>
                           <span className="font-medium">
                             {workScoreIds.length}
                           </span>
@@ -1081,7 +1099,7 @@ export default function CreateAssignmentPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                  Tipo de Tarefa
+                  {t('assignment_type_info')}
                 </h3>
 
                 <div className="space-y-3">
@@ -1132,28 +1150,28 @@ export default function CreateAssignmentPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                  Dicas
+                  {t('tips')}
                 </h3>
                 <div className="space-y-3 text-sm text-theme-secondary">
                   <div className="flex items-start space-x-2">
                     <FiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>Seja específico nos objetivos para melhor resultado</p>
+                    <p>{t('be_specific_goals')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiMusic className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>Vincule peças musicais para organizar o repertório</p>
+                    <p>{t('link_musical_pieces')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiClock className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>Defina tempo realista baseado no nível do aluno</p>
+                    <p>{t('realistic_time')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiCalendar className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>Prazos claros ajudam na organização</p>
+                    <p>{t('clear_deadlines')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiAlertCircle className="w-4 h-4 text-accent-red mt-0.5 flex-shrink-0" />
-                    <p>Preencha todos os campos obrigatórios marcados com *</p>
+                    <p>{t('fill_required_fields')}</p>
                   </div>
                 </div>
               </AnimatedCard>

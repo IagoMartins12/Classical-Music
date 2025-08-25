@@ -1,4 +1,4 @@
-// app/teacher/assignments/[id]/pageClient.tsx - ATUALIZADO COM VISUALIZAÇÃO DE VÍDEO
+// app/teacher/assignments/[id]/pageClient.tsx - ATUALIZADO COM TRADUÇÕES
 
 'use client';
 
@@ -34,6 +34,7 @@ import Link from 'next/link';
 import { useAssignmentDetails } from '@/app/hooks/lessonsSystem/useAssignmentDetails';
 import MusicalPiecesSection from '@/app/components/TeacherSystem/MusicalPiecesSection';
 import Modal from '@/app/components/Modal';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface AssignmentDetailsPageClientProps {
   initialData: AssignmentDetailsData | null;
@@ -41,12 +42,12 @@ interface AssignmentDetailsPageClientProps {
 }
 
 const ASSIGNMENT_TYPES = {
-  practice: 'Prática',
-  theory: 'Teoria',
-  listening: 'Escuta',
-  composition: 'Composição',
-  performance: 'Performance',
-  reading: 'Leitura',
+  practice: 'assignment_type_practice',
+  theory: 'assignment_type_theory',
+  listening: 'assignment_type_listening',
+  composition: 'assignment_type_composition',
+  performance: 'assignment_type_performance',
+  reading: 'assignment_type_reading',
 };
 
 const PRIORITY_COLORS = {
@@ -56,9 +57,9 @@ const PRIORITY_COLORS = {
 };
 
 const PRIORITY_LABELS = {
-  low: 'Baixa',
-  medium: 'Média',
-  high: 'Alta',
+  low: 'priority_low',
+  medium: 'priority_medium',
+  high: 'priority_high',
 };
 
 interface VideoSubmission {
@@ -74,6 +75,8 @@ export default function AssignmentDetailsPageClient({
   initialData,
   errorMessage,
 }: AssignmentDetailsPageClientProps) {
+  const { t } = useTranslation({ sections: ['teacher/assignmentsId'] });
+
   const router = useRouter();
   const {
     updateAssignmentFeedback,
@@ -127,8 +130,7 @@ export default function AssignmentDetailsPageClient({
     if (!initialData?.assignment?.id) return;
 
     const success = await approveAssignment(initialData.assignment.id, {
-      teacherFeedback:
-        feedbackData.teacherFeedback || 'Aprovada pelo professor',
+      teacherFeedback: feedbackData.teacherFeedback || t('approved_by_teacher'),
       teacherRating: feedbackData.teacherRating || 5,
     });
 
@@ -136,7 +138,7 @@ export default function AssignmentDetailsPageClient({
       setShowApproveModal(false);
       router.push('/teacher/assignments');
     }
-  }, [initialData, feedbackData, approveAssignment, router]);
+  }, [initialData, feedbackData, approveAssignment, router, t]);
 
   // 🆕 Format file size
   const formatFileSize = useCallback((bytes: number): string => {
@@ -182,10 +184,10 @@ export default function AssignmentDetailsPageClient({
   const getStatusText = (assignment: any) => {
     if (!assignment) return '';
 
-    if (assignment.isOverdue) return 'Atrasada';
-    if (assignment.isCompleted) return 'Concluída';
-    if (assignment.status === 'IN_PROGRESS') return 'Em Andamento';
-    return 'Pendente';
+    if (assignment.isOverdue) return t('status_overdue');
+    if (assignment.isCompleted) return t('status_completed');
+    if (assignment.status === 'IN_PROGRESS') return t('status_in_progress');
+    return t('status_pending');
   };
 
   // Render error state
@@ -198,14 +200,13 @@ export default function AssignmentDetailsPageClient({
               <FiAlertCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Tarefa
+              {t('error_loading')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
-              {errorMessage ||
-                'Tarefa não encontrada ou sem permissão de acesso'}
+              {errorMessage || t('error_not_found')}
             </p>
             <Link href="/teacher/assignments" className="btn-classical-primary">
-              Voltar às Tarefas
+              {t('back_to_assignments')}
             </Link>
           </div>
         </div>
@@ -254,7 +255,7 @@ export default function AssignmentDetailsPageClient({
               {videoSubmission && (
                 <span className="px-3 py-2 rounded-full text-sm font-medium border bg-accent-purple/10 border-accent-purple/30 text-accent-purple flex items-center space-x-1">
                   <FiVideo className="w-3 h-3" />
-                  <span>Com vídeo</span>
+                  <span>{t('has_video')}</span>
                 </span>
               )}
 
@@ -264,7 +265,7 @@ export default function AssignmentDetailsPageClient({
                   className="btn-classical-primary flex items-center space-x-2"
                 >
                   <FiCheck className="w-4 h-4" />
-                  <span>Aprovar Tarefa</span>
+                  <span>{t('approve_assignment')}</span>
                 </button>
               )}
             </div>
@@ -278,7 +279,7 @@ export default function AssignmentDetailsPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <h2 className="text-xl font-bold text-theme-primary classical-title mb-6">
-                  Detalhes da Tarefa
+                  {t('assignment_details')}
                 </h2>
 
                 <div className="space-y-6">
@@ -286,18 +287,20 @@ export default function AssignmentDetailsPageClient({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                        Tipo
+                        {t('assignment_type')}
                       </label>
                       <div className="text-theme-primary">
-                        {ASSIGNMENT_TYPES[
-                          assignment.type as keyof typeof ASSIGNMENT_TYPES
-                        ] || assignment.type}
+                        {t(
+                          ASSIGNMENT_TYPES[
+                            assignment.type as keyof typeof ASSIGNMENT_TYPES
+                          ]
+                        ) || assignment.type}
                       </div>
                     </div>
 
                     <div>
                       <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                        Prioridade
+                        {t('priority')}
                       </label>
                       <span
                         className={`px-3 py-1 rounded-full text-sm font-medium border ${
@@ -306,18 +309,18 @@ export default function AssignmentDetailsPageClient({
                           ]
                         }`}
                       >
-                        {
+                        {t(
                           PRIORITY_LABELS[
                             assignment.priority as keyof typeof PRIORITY_LABELS
                           ]
-                        }
+                        )}
                       </span>
                     </div>
 
                     {assignment.dueDate && (
                       <div>
                         <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                          Prazo
+                          {t('due_date')}
                         </label>
                         <div className="flex items-center space-x-2 text-theme-primary">
                           <FiCalendar className="w-4 h-4" />
@@ -333,12 +336,16 @@ export default function AssignmentDetailsPageClient({
                               }`}
                             >
                               {assignment.isOverdue
-                                ? `${Math.abs(
-                                    assignment.daysUntilDue ?? 0
-                                  )} dias atrasada`
+                                ? t('days_overdue', {
+                                    days: Math.abs(
+                                      assignment.daysUntilDue ?? 0
+                                    ),
+                                  })
                                 : assignment.daysUntilDue === 0
-                                ? 'Vence hoje'
-                                : `${assignment.daysUntilDue} dias restantes`}
+                                ? t('due_today')
+                                : t('days_until_due', {
+                                    days: `${assignment.daysUntilDue}`,
+                                  })}
                             </span>
                           )}
                         </div>
@@ -348,11 +355,13 @@ export default function AssignmentDetailsPageClient({
                     {assignment.estimatedTime && (
                       <div>
                         <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                          Tempo Estimado
+                          {t('estimated_time')}
                         </label>
                         <div className="flex items-center space-x-2 text-theme-primary">
                           <FiClock className="w-4 h-4" />
-                          <span>{assignment.estimatedTime} minutos</span>
+                          <span>
+                            {assignment.estimatedTime} {t('minutes')}
+                          </span>
                           {assignment.actualTime && (
                             <span className="text-sm text-theme-tertiary">
                               (Real: {assignment.actualTime} min)
@@ -366,7 +375,7 @@ export default function AssignmentDetailsPageClient({
                   {/* Description */}
                   <div>
                     <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                      Descrição
+                      {t('description')}
                     </label>
                     <div className="text-theme-primary whitespace-pre-wrap">
                       {assignment.description}
@@ -377,7 +386,7 @@ export default function AssignmentDetailsPageClient({
                   {assignment.practiceGoals.length > 0 && (
                     <div>
                       <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                        Objetivos de Prática
+                        {t('practice_goals')}
                       </label>
                       <div className="space-y-2">
                         {assignment.practiceGoals.map((goal, index) => (
@@ -396,7 +405,7 @@ export default function AssignmentDetailsPageClient({
                   {assignment.technicalGoals.length > 0 && (
                     <div>
                       <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                        Objetivos Técnicos
+                        {t('technical_goals')}
                       </label>
                       <div className="space-y-2">
                         {assignment.technicalGoals.map((goal, index) => (
@@ -415,7 +424,7 @@ export default function AssignmentDetailsPageClient({
                   {assignment.exercises.length > 0 && (
                     <div>
                       <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                        Exercícios
+                        {t('exercises')}
                       </label>
                       <div className="space-y-2">
                         {assignment.exercises.map((exercise, index) => (
@@ -436,7 +445,7 @@ export default function AssignmentDetailsPageClient({
                     assignment.progress !== undefined && (
                       <div>
                         <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                          Progresso
+                          {t('progress')}
                         </label>
                         <div className="flex items-center space-x-4">
                           <div className="flex-1">
@@ -461,8 +470,8 @@ export default function AssignmentDetailsPageClient({
             {assignment.workScores && assignment.workScores.length > 0 && (
               <MusicalPiecesSection
                 workScores={assignment.workScores}
-                title="Peças Musicais da Tarefa"
-                emptyMessage="Nenhuma peça musical vinculada a esta tarefa."
+                title={t('musical_pieces')}
+                emptyMessage={t('no_pieces_linked')}
               />
             )}
 
@@ -471,7 +480,7 @@ export default function AssignmentDetailsPageClient({
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary classical-title mb-4">
-                    Vídeo da Performance
+                    {t('performance_video')}
                   </h3>
 
                   <div className="space-y-4">
@@ -490,8 +499,11 @@ export default function AssignmentDetailsPageClient({
                                 {formatFileSize(videoSubmission.fileSize)}
                               </span>
                               <span>
-                                Enviado em{' '}
-                                {formatDateTime(videoSubmission.uploadedAt)}
+                                {t('uploaded_at', {
+                                  date: formatDateTime(
+                                    videoSubmission.uploadedAt
+                                  ),
+                                })}
                               </span>
                             </div>
                           </div>
@@ -502,7 +514,7 @@ export default function AssignmentDetailsPageClient({
                             className="btn-classical-primary flex items-center space-x-2"
                           >
                             <FiPlay className="w-4 h-4" />
-                            <span>Assistir</span>
+                            <span>{t('watch')}</span>
                           </button>
                           <a
                             href={videoSubmission.filePath}
@@ -510,7 +522,7 @@ export default function AssignmentDetailsPageClient({
                             className="btn-classical-secondary flex items-center space-x-2"
                           >
                             <FiDownload className="w-4 h-4" />
-                            <span>Download</span>
+                            <span>{t('download')}</span>
                           </a>
                         </div>
                       </div>
@@ -525,7 +537,7 @@ export default function AssignmentDetailsPageClient({
                         style={{ maxHeight: '400px' }}
                         poster="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzIxMjEyOSIvPjx0ZXh0IHg9IjIwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTYiIGZpbGw9IiM5OTk5OWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5DbGlxdWUgcGFyYSByZXByb2R1emlyPC90ZXh0Pjwvc3ZnPg=="
                       >
-                        Seu navegador não suporta a reprodução de vídeo.
+                        {t('browser_no_support')}
                       </video>
                     </div>
                   </div>
@@ -538,12 +550,14 @@ export default function AssignmentDetailsPageClient({
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h3 className="text-xl font-bold text-theme-primary classical-title mb-4">
-                    Submissão do Aluno
+                    {t('student_submission')}
                   </h3>
 
                   {assignment.submissionDate && (
                     <div className="mb-4 text-sm text-theme-tertiary">
-                      Enviado em {formatDateTime(assignment.submissionDate)}
+                      {t('submitted_on', {
+                        date: formatDateTime(assignment.submissionDate),
+                      })}
                     </div>
                   )}
 
@@ -551,7 +565,7 @@ export default function AssignmentDetailsPageClient({
                   {assignment.studentNotes && (
                     <div className="mb-6">
                       <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                        Comentários do Aluno
+                        {t('student_comments')}
                       </label>
                       <div className="p-4 bg-theme-secondary/10 rounded-lg bg-theme-elevated">
                         <div className="text-theme-primary whitespace-pre-wrap">
@@ -565,7 +579,7 @@ export default function AssignmentDetailsPageClient({
                   {assignment.studentRating && (
                     <div className="mb-6">
                       <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                        Avaliação do Aluno (Dificuldade)
+                        {t('student_rating')}
                       </label>
                       <div className="flex items-center space-x-2">
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -589,7 +603,7 @@ export default function AssignmentDetailsPageClient({
                   {assignment.submissions?.progressMilestones && (
                     <div className="mb-6">
                       <label className="text-sm font-medium text-theme-tertiary block mb-3">
-                        Conquistas Marcadas pelo Aluno
+                        {t('student_achievements')}
                       </label>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {Object.entries(
@@ -598,13 +612,13 @@ export default function AssignmentDetailsPageClient({
                           .filter(([_, completed]) => completed)
                           .map(([key, _]) => {
                             const milestoneLabels: Record<string, string> = {
-                              learnedLeftHand: 'Aprendeu a mão esquerda',
-                              learnedRightHand: 'Aprendeu a mão direita',
-                              playedWithMetronome: 'Tocou com metrônomo',
-                              memorized: 'Memorizou a peça',
-                              playedAtTempo: 'Tocou no andamento original',
-                              masteredDynamics: 'Dominou dinâmicas',
-                              performedForOthers: 'Apresentou para outros',
+                              learnedLeftHand: t('learned_left_hand'),
+                              learnedRightHand: t('learned_right_hand'),
+                              playedWithMetronome: t('played_with_metronome'),
+                              memorized: t('memorized'),
+                              playedAtTempo: t('played_at_tempo'),
+                              masteredDynamics: t('mastered_dynamics'),
+                              performedForOthers: t('performed_for_others'),
                             };
 
                             return (
@@ -631,7 +645,7 @@ export default function AssignmentDetailsPageClient({
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-bold text-theme-primary classical-title">
-                    Seu Feedback
+                    {t('teacher_feedback')}
                   </h3>
                   {!isEditingFeedback && initialData.canGiveFeedback && (
                     <button
@@ -639,7 +653,7 @@ export default function AssignmentDetailsPageClient({
                       className="btn-classical-secondary flex items-center space-x-2"
                     >
                       <FiEdit3 className="w-4 h-4" />
-                      <span>Editar</span>
+                      <span>{t('edit')}</span>
                     </button>
                   )}
                 </div>
@@ -648,7 +662,7 @@ export default function AssignmentDetailsPageClient({
                   {/* Teacher Feedback Text */}
                   <div>
                     <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                      Comentários
+                      {t('comments')}
                     </label>
                     {isEditingFeedback ? (
                       <textarea
@@ -669,8 +683,7 @@ export default function AssignmentDetailsPageClient({
                         }`}
                       >
                         <div className="text-theme-primary whitespace-pre-wrap">
-                          {feedbackData.teacherFeedback ||
-                            'Nenhum feedback fornecido ainda'}
+                          {feedbackData.teacherFeedback || t('no_feedback_yet')}
                         </div>
                       </div>
                     )}
@@ -679,7 +692,7 @@ export default function AssignmentDetailsPageClient({
                   {/* Teacher Rating */}
                   <div>
                     <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                      Sua Avaliação
+                      {t('your_rating')}
                     </label>
                     <div className="flex items-center space-x-2">
                       {[1, 2, 3, 4, 5].map((star) => (
@@ -721,7 +734,7 @@ export default function AssignmentDetailsPageClient({
                         className="btn-classical-secondary"
                         disabled={loading.updateFeedback}
                       >
-                        Cancelar
+                        {t('cancel')}
                       </button>
                       <button
                         onClick={handleSaveFeedback}
@@ -735,8 +748,8 @@ export default function AssignmentDetailsPageClient({
                         )}
                         <span>
                           {loading.updateFeedback
-                            ? 'Salvando...'
-                            : 'Salvar Feedback'}
+                            ? t('saving')
+                            : t('save_feedback')}
                         </span>
                       </button>
                     </div>
@@ -752,7 +765,7 @@ export default function AssignmentDetailsPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                  Aluno
+                  {t('student')}
                 </h3>
 
                 <div className="flex items-center space-x-3 mb-4">
@@ -779,7 +792,7 @@ export default function AssignmentDetailsPageClient({
                       href={`/teacher/students/${assignment.student.id}`}
                       className="text-sm text-brand-primary hover:text-brand-secondary"
                     >
-                      Ver perfil do aluno
+                      {t('view_student_profile')}
                     </Link>
                   </div>
                 </div>
@@ -790,11 +803,13 @@ export default function AssignmentDetailsPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                  Informações
+                  {t('information')}
                 </h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-theme-tertiary">Criada em:</span>
+                    <span className="text-theme-tertiary">
+                      {t('created_on')}
+                    </span>
                     <span className="text-theme-primary">
                       {formatDate(assignment.createdAt)}
                     </span>
@@ -802,7 +817,9 @@ export default function AssignmentDetailsPageClient({
 
                   {assignment.completedAt && (
                     <div className="flex justify-between">
-                      <span className="text-theme-tertiary">Concluída em:</span>
+                      <span className="text-theme-tertiary">
+                        {t('completed_on')}
+                      </span>
                       <span className="text-theme-primary">
                         {formatDate(assignment.completedAt)}
                       </span>
@@ -813,7 +830,7 @@ export default function AssignmentDetailsPageClient({
                   {videoSubmission && (
                     <div className="flex justify-between">
                       <span className="text-theme-tertiary">
-                        Vídeo enviado:
+                        {t('video_uploaded')}
                       </span>
                       <span className="text-accent-purple">
                         {formatDate(videoSubmission.uploadedAt)}
@@ -824,7 +841,7 @@ export default function AssignmentDetailsPageClient({
                   {assignment.lesson && (
                     <div>
                       <span className="text-theme-tertiary">
-                        Aula relacionada:
+                        {t('related_lesson')}
                       </span>
                       <Link
                         href={`/teacher/lessons/${assignment.lesson.id}`}
@@ -842,7 +859,7 @@ export default function AssignmentDetailsPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                  Ações
+                  {t('actions')}
                 </h3>
                 <div className="space-y-2">
                   <Link
@@ -850,7 +867,7 @@ export default function AssignmentDetailsPageClient({
                     className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
                   >
                     <FiEdit3 className="w-4 h-4" />
-                    <span>Editar Tarefa</span>
+                    <span>{t('edit_assignment')}</span>
                   </Link>
 
                   {/* 🆕 Botão de visualizar vídeo */}
@@ -860,7 +877,7 @@ export default function AssignmentDetailsPageClient({
                       className="w-full btn-classical-secondary flex items-center justify-center space-x-2 bg-accent-purple/10 border-accent-purple/30 text-accent-purple hover:bg-accent-purple/20"
                     >
                       <FiVideo className="w-4 h-4" />
-                      <span>Assistir Vídeo</span>
+                      <span>{t('watch_video')}</span>
                     </button>
                   )}
 
@@ -870,7 +887,7 @@ export default function AssignmentDetailsPageClient({
                       className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
                     >
                       <FiBookOpen className="w-4 h-4" />
-                      <span>Ver Aula</span>
+                      <span>{t('view_lesson')}</span>
                     </Link>
                   )}
 
@@ -879,7 +896,7 @@ export default function AssignmentDetailsPageClient({
                     className="w-full btn-classical-secondary flex items-center justify-center space-x-2"
                   >
                     <FiUser className="w-4 h-4" />
-                    <span>Perfil do Aluno</span>
+                    <span>{t('student_profile')}</span>
                   </Link>
                 </div>
               </AnimatedCard>
@@ -916,7 +933,7 @@ export default function AssignmentDetailsPageClient({
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-xl font-bold text-theme-primary classical-title">
-                    Aprovar Tarefa
+                    {t('approve_assignment')}
                   </h2>
                   <button
                     onClick={() => setShowApproveModal(false)}
@@ -927,8 +944,7 @@ export default function AssignmentDetailsPageClient({
                 </div>
 
                 <p className="text-theme-secondary mb-4">
-                  Tem certeza que deseja aprovar esta tarefa? O aluno receberá
-                  uma notificação.
+                  {t('confirm_approval_message')}
                 </p>
 
                 <div className="flex items-center justify-end space-x-3">
@@ -937,7 +953,7 @@ export default function AssignmentDetailsPageClient({
                     className="btn-classical-secondary"
                     disabled={loading.approve}
                   >
-                    Cancelar
+                    {t('cancel')}
                   </button>
                   <button
                     onClick={handleApproveAssignment}
@@ -950,7 +966,9 @@ export default function AssignmentDetailsPageClient({
                       <FiCheck className="w-4 h-4" />
                     )}
                     <span>
-                      {loading.approve ? 'Aprovando...' : 'Aprovar Tarefa'}
+                      {loading.approve
+                        ? t('approving')
+                        : t('approve_assignment')}
                     </span>
                   </button>
                 </div>
@@ -971,7 +989,7 @@ export default function AssignmentDetailsPageClient({
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Vídeo da Performance
+                      {t('video_modal_title')}
                     </h2>
                     <p className="text-theme-secondary text-sm">
                       {videoSubmission.originalName} •{' '}
@@ -986,7 +1004,7 @@ export default function AssignmentDetailsPageClient({
                       className="btn-classical-secondary flex items-center space-x-2"
                     >
                       <FiDownload className="w-4 h-4" />
-                      <span>Download</span>
+                      <span>{t('download')}</span>
                     </a>
                     <button
                       onClick={() => setShowVideoModal(false)}
@@ -1005,7 +1023,7 @@ export default function AssignmentDetailsPageClient({
                     className="w-full"
                     style={{ maxHeight: '80vh' }}
                   >
-                    Seu navegador não suporta a reprodução de vídeo.
+                    {t('browser_no_support')}
                   </video>
                 </div>
               </div>

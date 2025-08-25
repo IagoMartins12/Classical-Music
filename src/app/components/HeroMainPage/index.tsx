@@ -34,7 +34,7 @@ const HeroMainPage = () => {
             <p className="text-gray-200 text-base lg:text-lg mb-4 leading-relaxed line-clamp-3 md:line-clamp-none">
               {t('heroMainPage_banner_1')}
             </p>
-            <div className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white font-semibold hover:bg-white/30 transition-all duration-300 group/btn">
+            <div className="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full text-white font-semibold transition-all duration-300 group/btn">
               {t('heroMainPage_link_explorar_história_completa')}
               <svg
                 className="ml-2 w-4 h-4 transition-transform group-hover/btn:translate-x-1"
@@ -83,7 +83,7 @@ const HeroMainPage = () => {
               <p className="text-gray-200 text-sm mb-3 leading-snug">
                 {t('heroMainPage_link_musica_1')}
               </p>
-              <div className="inline-flex items-center text-sm font-semibold text-white hover:text-purple-200 transition-colors group/div">
+              <div className="inline-flex items-center text-sm font-semibold text-white  transition-colors group/div">
                 {t('heroMainPage_link_descobrir_mais')}
                 <svg
                   className="ml-1 w-3 h-3 transition-transform group-hover/link:translate-x-1"
@@ -130,7 +130,7 @@ const HeroMainPage = () => {
               <p className="text-gray-200 text-sm mb-3 leading-snug">
                 {t('heroMainPage_banner_3')}
               </p>
-              <div className="inline-flex items-center text-sm font-semibold text-white hover:text-green-200 transition-colors group/link">
+              <div className="inline-flex items-center text-sm font-semibold text-white  transition-colors group/link">
                 {t('heroMainPage_link_conheça_nossa_história')}
                 <svg
                   className="ml-1 w-3 h-3 transition-transform group-hover/link:translate-x-1"

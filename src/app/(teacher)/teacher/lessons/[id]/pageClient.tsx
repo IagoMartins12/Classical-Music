@@ -44,6 +44,7 @@ import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
 import { translateNivel } from '@/app/utils';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface TeacherLessonDetailsPageClientProps {
   lessonData: LessonDetailsData | null;
@@ -57,23 +58,6 @@ type LessonType =
   | 'PRACTICE'
   | 'MASTERCLASS';
 
-const lessonTypeOptions = [
-  { value: 'INDIVIDUAL', label: 'Individual' },
-  { value: 'GROUP', label: 'Grupo' },
-  { value: 'THEORY', label: 'Teoria' },
-  { value: 'PRACTICE', label: 'Prática' },
-  { value: 'MASTERCLASS', label: 'Masterclass' },
-];
-
-const statusOptions = [
-  { value: 'SCHEDULED', label: 'Agendada' },
-  { value: 'COMPLETED', label: 'Concluída' },
-  { value: 'CANCELLED', label: 'Cancelada' },
-  { value: 'NO_SHOW', label: 'Falta do aluno' },
-  { value: 'RESCHEDULED', label: 'Reagendada' },
-];
-
-// 🆕 TIPOS PARA OS MODAIS DE CONFIRMAÇÃO
 type QuickActionType = 'present' | 'absent' | 'complete' | 'cancel';
 
 // Função helper para formato correto de datetime
@@ -90,6 +74,7 @@ export default function TeacherLessonDetailsPageClient({
   errorMessage,
 }: TeacherLessonDetailsPageClientProps) {
   const router = useRouter();
+  const { t } = useTranslation({ sections: ['teacher/lessonsId'] });
 
   // Initialize hook
   const {
@@ -113,7 +98,7 @@ export default function TeacherLessonDetailsPageClient({
     setEditMode,
   } = useLessonDetails(lessonData);
 
-  // 🆕 NOVOS ESTADOS PARA EDIÇÃO COMPLETA
+  // Estados para edição completa
   const [editingBasicInfo, setEditingBasicInfo] = useState({
     title: '',
     description: '',
@@ -134,28 +119,45 @@ export default function TeacherLessonDetailsPageClient({
     homework: '',
   });
 
-  // 🆕 ESTADO PARA PEÇAS MUSICAIS - AGORA INICIALIZADO DIRETAMENTE
+  // Estado para peças musicais
   const [editingWorks, setEditingWorks] = useState<LessonWork[]>([]);
   const [worksIds, setWorksIds] = useState<string[]>([]);
   const [workScoreIds, setWorkScoreIds] = useState<string[]>([]);
 
-  // 🆕 ESTADOS PARA ADICIONAR NOVOS ITEMS
+  // Estados para adicionar novos items
   const [newObjective, setNewObjective] = useState('');
   const [newTopic, setNewTopic] = useState('');
   const [newTechnique, setNewTechnique] = useState('');
 
-  // 🆕 ESTADOS PARA MODAL DE DELETE/APAGAR
+  // Estados para modal de delete/apagar
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteReason, setDeleteReason] = useState('');
   const [deleteRecurringSeries, setDeleteRecurringSeries] = useState(false);
   const [deleteFutureOnly, setDeleteFutureOnly] = useState(false);
 
-  // 🆕 ESTADOS PARA MODAL DE QUICK ACTIONS
+  // Estados para modal de quick actions
   const [showQuickActionModal, setShowQuickActionModal] = useState(false);
   const [quickActionType, setQuickActionType] =
     useState<QuickActionType>('present');
   const [quickActionReason, setQuickActionReason] = useState('');
   const [loadingQuickAction, setLoadingQuickAction] = useState(false);
+
+  // Traduzir opções de select
+  const lessonTypeOptions = [
+    { value: 'INDIVIDUAL', label: t('lesson_type_individual') },
+    { value: 'GROUP', label: t('lesson_type_group') },
+    { value: 'THEORY', label: t('lesson_type_theory') },
+    { value: 'PRACTICE', label: t('lesson_type_practice') },
+    { value: 'MASTERCLASS', label: t('lesson_type_masterclass') },
+  ];
+
+  const statusOptions = [
+    { value: 'SCHEDULED', label: t('status_scheduled') },
+    { value: 'COMPLETED', label: t('status_completed') },
+    { value: 'CANCELLED', label: t('status_cancelled') },
+    { value: 'NO_SHOW', label: t('status_no_show') },
+    { value: 'RESCHEDULED', label: t('status_rescheduled') },
+  ];
 
   // Initialize lesson data
   useEffect(() => {
@@ -164,7 +166,7 @@ export default function TeacherLessonDetailsPageClient({
     }
   }, [lessonData, setLesson]);
 
-  // 🆕 INICIALIZAR PEÇAS MUSICAIS DIRETAMENTE DOS DADOS DO SERVIDOR
+  // Inicializar peças musicais diretamente dos dados do servidor
   useEffect(() => {
     if (lesson && lesson.musicalPieces) {
       console.log(
@@ -244,7 +246,7 @@ export default function TeacherLessonDetailsPageClient({
     }
   }, [lesson, isEditing.notes]);
 
-  // 🆕 INICIALIZAR EDIÇÃO DE TÓPICOS E TÉCNICAS
+  // Inicializar edição de tópicos e técnicas
   useEffect(() => {
     if (lesson) {
       setEditingTopics([...lesson.topics]);
@@ -252,7 +254,7 @@ export default function TeacherLessonDetailsPageClient({
     }
   }, [lesson]);
 
-  // 🆕 HANDLER PARA MUDANÇAS NAS PEÇAS MUSICAIS (melhorado)
+  // Handler para mudanças nas peças musicais
   const handleWorksChange = useCallback((works: LessonWork[]) => {
     console.log('🎵 [LESSON-DETAILS] Peças musicais atualizadas:', works);
     setEditingWorks(works);
@@ -274,7 +276,7 @@ export default function TeacherLessonDetailsPageClient({
     });
   }, []);
 
-  // 🆕 INDICADOR VISUAL DE MUDANÇAS NÃO SALVAS
+  // Indicador visual de mudanças não salvas
   const hasUnsavedChanges = useMemo(() => {
     if (!lesson) return false;
 
@@ -289,7 +291,7 @@ export default function TeacherLessonDetailsPageClient({
     );
   }, [lesson, worksIds, workScoreIds]);
 
-  // 🆕 FUNÇÃO MELHORADA PARA SALVAR PEÇAS MUSICAIS COM FEEDBACK
+  // Função melhorada para salvar peças musicais
   const handleSaveWorks = useCallback(async () => {
     if (!lesson?.id) {
       console.error('❌ [LESSON-DETAILS] ID da aula não encontrado');
@@ -440,7 +442,7 @@ export default function TeacherLessonDetailsPageClient({
 
     const success = await updateBasicInfo({
       ...editingBasicInfo,
-      scheduledAt: scheduledDate.toISOString(), // Enviar como ISO string completo
+      scheduledAt: scheduledDate.toISOString(),
     });
 
     if (success) {
@@ -456,7 +458,7 @@ export default function TeacherLessonDetailsPageClient({
     }
   }, [editingObjectives, updateObjectives, setEditMode]);
 
-  // 🆕 HANDLER PARA SALVAR TÓPICOS E TÉCNICAS
+  // Handler para salvar tópicos e técnicas
   const handleSaveTopicsAndTechniques = useCallback(async () => {
     const cleanTopics = editingTopics.filter((topic) => topic.trim());
     const cleanTechniques = editingTechniques.filter((tech) => tech.trim());
@@ -514,7 +516,7 @@ export default function TeacherLessonDetailsPageClient({
     setEditMode,
   ]);
 
-  // 🆕 HANDLERS PARA QUICK ACTIONS COM MODAL
+  // Handlers para quick actions com modal
   const handleQuickAction = useCallback((actionType: QuickActionType) => {
     setQuickActionType(actionType);
     setQuickActionReason('');
@@ -539,12 +541,10 @@ export default function TeacherLessonDetailsPageClient({
           break;
 
         case 'absent':
-          // 🆕 MARCAÇÃO DE FALTA ATUALIZADA - muda status para NO_SHOW
           success = await markAttendance({
             studentPresent: false,
           });
 
-          // 🆕 TAMBÉM ATUALIZAR O STATUS DA LESSON PARA NO_SHOW
           if (success) {
             const statusSuccess = await updateBasicInfo({
               status: 'NO_SHOW',
@@ -558,13 +558,13 @@ export default function TeacherLessonDetailsPageClient({
 
         case 'complete':
           const summary =
-            lesson?.lessonSummary || 'Aula concluída com sucesso.';
+            lesson?.lessonSummary || t('lesson_completed_successfully');
           success = await completeLesson(summary);
           break;
 
         case 'cancel':
           success = await cancelLesson(
-            quickActionReason || 'Cancelada pelo professor'
+            quickActionReason || t('cancelled_by_teacher')
           );
           break;
       }
@@ -573,7 +573,6 @@ export default function TeacherLessonDetailsPageClient({
         setShowQuickActionModal(false);
         await refreshLesson();
 
-        // 🆕 MENSAGEM ESPECÍFICA PARA FALTA
         if (quickActionType === 'absent') {
           console.log(
             '🔔 Aluno marcado como falta - notificação será enviada automaticamente'
@@ -590,13 +589,14 @@ export default function TeacherLessonDetailsPageClient({
     quickActionReason,
     lesson,
     markAttendance,
-    updateBasicInfo, // 🆕 Adicionado para atualizar status
+    updateBasicInfo,
     completeLesson,
     cancelLesson,
     refreshLesson,
+    t,
   ]);
 
-  // 🆕 HANDLER PARA DELETE/APAGAR REAL DA AULA
+  // Handler para delete/apagar real da aula
   const handleDeleteLesson = useCallback(async () => {
     if (!lesson?.id) return;
 
@@ -611,12 +611,10 @@ export default function TeacherLessonDetailsPageClient({
         console.log('✅ Aula(s) apagada(s) com sucesso!');
         setShowDeleteModal(false);
 
-        // 🔄 REDIRECIONAR PARA LISTA DE AULAS
         router.push('/teacher/lessons');
       }
     } catch (error) {
       console.error('❌ Erro ao apagar aula:', error);
-      // O erro já é tratado pelo hook
     }
   }, [
     lesson?.id,
@@ -667,23 +665,23 @@ export default function TeacherLessonDetailsPageClient({
   const getStatusLabel = (status: string) => {
     switch (status) {
       case 'COMPLETED':
-        return 'Concluída';
+        return t('status_completed');
       case 'CANCELLED':
-        return 'Cancelada';
+        return t('status_cancelled');
       case 'NO_SHOW':
-        return 'Faltou';
+        return t('status_no_show');
       case 'SCHEDULED':
-        return 'Agendada';
+        return t('status_scheduled');
       default:
         return status;
     }
   };
 
-  // 🆕 VERIFICAR SE PODE EDITAR (AULAS CANCELADAS NÃO PODEM SER EDITADAS)
+  // Verificar se pode editar
   const canEditLesson =
     lesson?.status !== 'CANCELLED' && lesson?.permissions.canEdit;
 
-  // 🆕 COMPONENTE DO BOTÃO DE SALVAR ATUALIZADO
+  // Componente do botão de salvar atualizado
   const SaveWorksButton = () => (
     <button
       onClick={handleSaveWorks}
@@ -703,10 +701,10 @@ export default function TeacherLessonDetailsPageClient({
       )}
       <span>
         {loading.update
-          ? 'Salvando...'
+          ? t('save_pieces_saving')
           : hasUnsavedChanges
-          ? 'Salvar Alterações'
-          : 'Peças Salvas'}
+          ? t('save_pieces_changes')
+          : t('save_pieces_saved')}
       </span>
     </button>
   );
@@ -721,7 +719,7 @@ export default function TeacherLessonDetailsPageClient({
               <FiBookOpen className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Aula
+              {t('error_loading_title')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error || errorMessage}
@@ -735,15 +733,13 @@ export default function TeacherLessonDetailsPageClient({
                 <FiRefreshCw
                   className={`w-4 h-4 ${loading.update ? 'animate-spin' : ''}`}
                 />
-                <span>
-                  {loading.update ? 'Carregando...' : 'Tentar Novamente'}
-                </span>
+                <span>{loading.update ? t('loading') : t('try_again')}</span>
               </button>
               <Link
                 href="/teacher/lessons"
                 className="btn-classical-secondary w-full text-center block"
               >
-                Voltar às Aulas
+                {t('back_to_lessons')}
               </Link>
             </div>
           </div>
@@ -759,7 +755,7 @@ export default function TeacherLessonDetailsPageClient({
           <div className="classical-card p-8 text-center">
             <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
             <p className="text-theme-secondary">
-              Carregando detalhes da aula...
+              {t('loading_lesson_details')}
             </p>
           </div>
         </div>
@@ -767,7 +763,7 @@ export default function TeacherLessonDetailsPageClient({
     );
   }
 
-  const canDelete = lesson.permissions.canCancel; // Pode sempre apagar se tiver permissão
+  const canDelete = lesson.permissions.canCancel;
 
   return (
     <PageContainer showBackground={true}>
@@ -784,10 +780,10 @@ export default function TeacherLessonDetailsPageClient({
               </Link>
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-theme-primary classical-title">
-                  Detalhes da Aula
+                  {t('page_title')}
                 </h1>
                 <p className="text-theme-secondary classical-subtitle">
-                  Gerencie todos os aspectos da aula com seu aluno
+                  {t('page_subtitle')}
                 </p>
               </div>
             </div>
@@ -801,14 +797,13 @@ export default function TeacherLessonDetailsPageClient({
                 {getStatusLabel(lesson.status)}
               </span>
 
-              {/* 🆕 BOTÃO DE APAGAR */}
               {canDelete && (
                 <button
                   onClick={() => setShowDeleteModal(true)}
                   className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10 flex items-center space-x-2"
                 >
                   <FiTrash2 className="w-4 h-4" />
-                  <span>Apagar</span>
+                  <span>{t('btn_delete')}</span>
                 </button>
               )}
 
@@ -820,7 +815,7 @@ export default function TeacherLessonDetailsPageClient({
                 <FiRefreshCw
                   className={`w-4 h-4 ${loading.update ? 'animate-spin' : ''}`}
                 />
-                <span>Atualizar</span>
+                <span>{t('btn_refresh')}</span>
               </button>
             </div>
           </div>
@@ -830,13 +825,13 @@ export default function TeacherLessonDetailsPageClient({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Main Info */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Basic Info - MELHORADO COM VERIFICAÇÃO DE CANCELAMENTO */}
+            {/* Basic Info */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
                     <FiCalendar className="w-5 h-5" />
-                    <span>Informações Básicas</span>
+                    <span>{t('basic_info_title')}</span>
                   </h2>
                   {canEditLesson && !isEditing.basicInfo ? (
                     <button
@@ -844,7 +839,7 @@ export default function TeacherLessonDetailsPageClient({
                       className="btn-classical-secondary flex items-center space-x-1 text-sm"
                     >
                       <FiEdit3 className="w-3 h-3" />
-                      <span>Editar</span>
+                      <span>{t('btn_edit')}</span>
                     </button>
                   ) : canEditLesson && isEditing.basicInfo ? (
                     <div className="flex items-center space-x-2">
@@ -854,14 +849,14 @@ export default function TeacherLessonDetailsPageClient({
                         className="btn-classical-primary flex items-center space-x-1 text-sm"
                       >
                         <FiSave className="w-3 h-3" />
-                        <span>Salvar</span>
+                        <span>{t('btn_save')}</span>
                       </button>
                       <button
                         onClick={() => setEditMode('basicInfo', false)}
                         className="btn-classical-secondary flex items-center space-x-1 text-sm"
                       >
                         <FiX className="w-3 h-3" />
-                        <span>Cancelar</span>
+                        <span>{t('btn_cancel')}</span>
                       </button>
                     </div>
                   ) : null}
@@ -872,7 +867,7 @@ export default function TeacherLessonDetailsPageClient({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          Título *
+                          {t('form_title_required')}
                         </label>
                         <Input
                           type="text"
@@ -886,7 +881,7 @@ export default function TeacherLessonDetailsPageClient({
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          Status
+                          {t('form_status_label')}
                         </label>
                         <Select
                           options={statusOptions}
@@ -902,7 +897,7 @@ export default function TeacherLessonDetailsPageClient({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          Tipo de Aula
+                          {t('form_type_label')}
                         </label>
                         <Select
                           options={lessonTypeOptions}
@@ -915,7 +910,7 @@ export default function TeacherLessonDetailsPageClient({
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          Local
+                          {t('form_location_label')}
                         </label>
                         <Input
                           type="text"
@@ -924,7 +919,7 @@ export default function TeacherLessonDetailsPageClient({
                             updateFormData('location', e.target.value)
                           }
                           className="input-classical-2 w-full"
-                          placeholder="Ex: Online, Estúdio A"
+                          placeholder={t('form_location_placeholder')}
                         />
                       </div>
                     </div>
@@ -932,7 +927,7 @@ export default function TeacherLessonDetailsPageClient({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          Data e Hora *
+                          {t('form_datetime_required')}
                         </label>
                         <Input
                           type="datetime-local"
@@ -946,7 +941,7 @@ export default function TeacherLessonDetailsPageClient({
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                          Duração (min)
+                          {t('form_duration_label')}
                         </label>
                         <Input
                           type="number"
@@ -966,7 +961,7 @@ export default function TeacherLessonDetailsPageClient({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Descrição
+                        {t('form_description_label')}
                       </label>
                       <textarea
                         value={editingBasicInfo.description}
@@ -974,7 +969,7 @@ export default function TeacherLessonDetailsPageClient({
                           updateFormData('description', e.target.value)
                         }
                         className="input-classical-2 w-full h-20"
-                        placeholder="Descrição da aula..."
+                        placeholder={t('form_description_placeholder')}
                       />
                     </div>
                   </div>
@@ -1012,26 +1007,30 @@ export default function TeacherLessonDetailsPageClient({
                       <div className="bg-theme-elevated rounded-lg p-4">
                         <div className="flex items-center space-x-2 text-accent-blue mb-2">
                           <FiRepeat className="w-4 h-4" />
-                          <span className="font-medium">Aula Recorrente</span>
+                          <span className="font-medium">
+                            {t('recurring_lesson_title')}
+                          </span>
                         </div>
                         <p className="text-sm text-theme-secondary">
-                          Esta aula faz parte de uma série recorrente.
+                          {t('recurring_lesson_description')}
                           {lesson.parentLessonId
-                            ? ' Esta é uma aula filha da série.'
-                            : ' Esta é a aula pai da série.'}
+                            ? t('recurring_child_description')
+                            : t('recurring_parent_description')}
                         </p>
                       </div>
                     )}
 
-                    {/* Aviso se aula foi cancelada */}
+                    {/* Warning if lesson was cancelled */}
                     {lesson.status === 'CANCELLED' && (
                       <div className="bg-accent-red/10 border border-accent-red/30 rounded-lg p-4">
                         <div className="flex items-center space-x-2 text-accent-red mb-2">
                           <FiAlertTriangle className="w-4 h-4" />
-                          <span className="font-medium">Aula Cancelada</span>
+                          <span className="font-medium">
+                            {t('cancelled_lesson_title')}
+                          </span>
                         </div>
                         <p className="text-sm text-theme-secondary">
-                          Esta aula foi cancelada e não pode mais ser editada.
+                          {t('cancelled_lesson_description')}
                         </p>
                       </div>
                     )}
@@ -1040,19 +1039,18 @@ export default function TeacherLessonDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* 🆕 SEÇÃO DE PEÇAS MUSICAIS ATUALIZADA */}
+            {/* Musical Pieces Section */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
                     <FiMusic className="w-5 h-5" />
-                    <span>Peças Musicais</span>
+                    <span>{t('musical_pieces_title')}</span>
                   </h2>
                   {canEditLesson && worksIds.length > 0 && <SaveWorksButton />}
                 </div>
 
                 {canEditLesson ? (
-                  // Modo de edição
                   <WorkSelectionSection
                     selectedWorks={editingWorks}
                     onWorksChange={handleWorksChange}
@@ -1060,10 +1058,9 @@ export default function TeacherLessonDetailsPageClient({
                     disabled={loading.update}
                   />
                 ) : editingWorks.length > 0 ? (
-                  // Modo de visualização (quando não pode editar)
                   <div className="space-y-3">
                     <h4 className="text-sm font-medium text-theme-primary">
-                      Peças vinculadas à aula ({editingWorks.length})
+                      {t('pieces_linked_count', { count: editingWorks.length })}
                     </h4>
                     <div className="space-y-2">
                       {editingWorks.map((work, index) => (
@@ -1105,24 +1102,23 @@ export default function TeacherLessonDetailsPageClient({
                     </div>
                   </div>
                 ) : (
-                  // Estado vazio
                   <div className="text-center py-8">
                     <FiMusic className="w-12 h-12 text-theme-tertiary mx-auto mb-4 opacity-50" />
                     <p className="text-theme-secondary">
-                      Nenhuma peça musical vinculada a esta aula
+                      {t('no_pieces_linked')}
                     </p>
                   </div>
                 )}
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* Objectives - MANTIDO COM VERIFICAÇÃO DE CANCELAMENTO */}
+            {/* Objectives */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
                     <FiTarget className="w-5 h-5" />
-                    <span>Objetivos da Aula</span>
+                    <span>{t('objectives_title')}</span>
                   </h2>
                   {canEditLesson && !isEditing.objectives ? (
                     <button
@@ -1130,7 +1126,7 @@ export default function TeacherLessonDetailsPageClient({
                       className="btn-classical-secondary flex items-center space-x-1 text-sm"
                     >
                       <FiEdit3 className="w-3 h-3" />
-                      <span>Editar</span>
+                      <span>{t('btn_edit')}</span>
                     </button>
                   ) : canEditLesson && isEditing.objectives ? (
                     <div className="flex items-center space-x-2">
@@ -1140,14 +1136,14 @@ export default function TeacherLessonDetailsPageClient({
                         className="btn-classical-primary flex items-center space-x-1 text-sm"
                       >
                         <FiSave className="w-3 h-3" />
-                        <span>Salvar</span>
+                        <span>{t('btn_save')}</span>
                       </button>
                       <button
                         onClick={() => setEditMode('objectives', false)}
                         className="btn-classical-secondary flex items-center space-x-1 text-sm"
                       >
                         <FiX className="w-3 h-3" />
-                        <span>Cancelar</span>
+                        <span>{t('btn_cancel')}</span>
                       </button>
                     </div>
                   ) : null}
@@ -1183,7 +1179,7 @@ export default function TeacherLessonDetailsPageClient({
                         type="text"
                         value={newObjective}
                         onChange={(e) => setNewObjective(e.target.value)}
-                        placeholder="Novo objetivo..."
+                        placeholder={t('new_objective_placeholder')}
                         className="input-classical-2 flex-1"
                         onKeyPress={(e) => {
                           if (e.key === 'Enter' && newObjective.trim()) {
@@ -1224,7 +1220,7 @@ export default function TeacherLessonDetailsPageClient({
                       ))
                     ) : (
                       <p className="text-theme-tertiary italic">
-                        Nenhum objetivo definido ainda.
+                        {t('no_objectives_defined')}
                       </p>
                     )}
                   </div>
@@ -1232,13 +1228,13 @@ export default function TeacherLessonDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* Topics & Techniques - MANTIDO COM VERIFICAÇÃO DE CANCELAMENTO */}
+            {/* Topics & Techniques */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
                     <FiBookOpen className="w-5 h-5" />
-                    <span>Tópicos e Técnicas</span>
+                    <span>{t('topics_techniques_title')}</span>
                   </h2>
                   {canEditLesson && (
                     <button
@@ -1247,7 +1243,7 @@ export default function TeacherLessonDetailsPageClient({
                       className="btn-classical-secondary flex items-center space-x-1 text-sm"
                     >
                       <FiSave className="w-3 h-3" />
-                      <span>Salvar Alterações</span>
+                      <span>{t('save_pieces_changes')}</span>
                     </button>
                   )}
                 </div>
@@ -1256,7 +1252,7 @@ export default function TeacherLessonDetailsPageClient({
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-medium text-theme-primary">
-                        Tópicos Abordados
+                        {t('topics_covered')}
                       </h3>
                       {canEditLesson && (
                         <button
@@ -1264,7 +1260,7 @@ export default function TeacherLessonDetailsPageClient({
                           className="text-brand-primary text-sm flex items-center space-x-1"
                         >
                           <FiPlus className="w-3 h-3" />
-                          <span>Adicionar</span>
+                          <span>{t('btn_add')}</span>
                         </button>
                       )}
                     </div>
@@ -1287,7 +1283,7 @@ export default function TeacherLessonDetailsPageClient({
                                 )
                               }
                               className="input-classical-2 flex-1"
-                              placeholder="Ex: Escala de Dó maior"
+                              placeholder={t('topic_example_placeholder')}
                             />
                             {editingTopics.length > 1 && (
                               <button
@@ -1307,7 +1303,7 @@ export default function TeacherLessonDetailsPageClient({
                             type="text"
                             value={newTopic}
                             onChange={(e) => setNewTopic(e.target.value)}
-                            placeholder="Novo tópico..."
+                            placeholder={t('new_topic_placeholder')}
                             className="input-classical-2 flex-1"
                             onKeyPress={(e) => {
                               if (e.key === 'Enter' && newTopic.trim()) {
@@ -1348,7 +1344,7 @@ export default function TeacherLessonDetailsPageClient({
                           ))
                         ) : (
                           <span className="text-theme-tertiary italic text-sm">
-                            Nenhum tópico registrado
+                            {t('no_topics_recorded')}
                           </span>
                         )}
                       </div>
@@ -1358,7 +1354,7 @@ export default function TeacherLessonDetailsPageClient({
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-medium text-theme-primary">
-                        Técnicas Trabalhadas
+                        {t('techniques_practiced')}
                       </h3>
                       {canEditLesson && (
                         <button
@@ -1366,7 +1362,7 @@ export default function TeacherLessonDetailsPageClient({
                           className="text-brand-primary text-sm flex items-center space-x-1"
                         >
                           <FiPlus className="w-3 h-3" />
-                          <span>Adicionar</span>
+                          <span>{t('btn_add')}</span>
                         </button>
                       )}
                     </div>
@@ -1389,7 +1385,7 @@ export default function TeacherLessonDetailsPageClient({
                                 )
                               }
                               className="input-classical-2 flex-1"
-                              placeholder="Ex: Staccato"
+                              placeholder={t('technique_example_placeholder')}
                             />
                             {editingTechniques.length > 1 && (
                               <button
@@ -1409,7 +1405,7 @@ export default function TeacherLessonDetailsPageClient({
                             type="text"
                             value={newTechnique}
                             onChange={(e) => setNewTechnique(e.target.value)}
-                            placeholder="Nova técnica..."
+                            placeholder={t('new_technique_placeholder')}
                             className="input-classical-2 flex-1"
                             onKeyPress={(e) => {
                               if (e.key === 'Enter' && newTechnique.trim()) {
@@ -1450,7 +1446,7 @@ export default function TeacherLessonDetailsPageClient({
                           ))
                         ) : (
                           <span className="text-theme-tertiary italic text-sm">
-                            Nenhuma técnica registrada
+                            {t('no_techniques_recorded')}
                           </span>
                         )}
                       </div>
@@ -1460,13 +1456,13 @@ export default function TeacherLessonDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* Notes Section - MANTIDO COM VERIFICAÇÃO DE CANCELAMENTO */}
+            {/* Notes Section */}
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-bold text-theme-primary flex items-center space-x-2">
                     <FiMessageSquare className="w-5 h-5" />
-                    <span>Notas e Observações</span>
+                    <span>{t('notes_observations_title')}</span>
                   </h2>
                   {canEditLesson && !isEditing.notes ? (
                     <button
@@ -1474,7 +1470,7 @@ export default function TeacherLessonDetailsPageClient({
                       className="btn-classical-secondary flex items-center space-x-1 text-sm"
                     >
                       <FiEdit3 className="w-3 h-3" />
-                      <span>Editar</span>
+                      <span>{t('btn_edit')}</span>
                     </button>
                   ) : canEditLesson && isEditing.notes ? (
                     <div className="flex items-center space-x-2">
@@ -1484,14 +1480,14 @@ export default function TeacherLessonDetailsPageClient({
                         className="btn-classical-primary flex items-center space-x-1 text-sm"
                       >
                         <FiSave className="w-3 h-3" />
-                        <span>Salvar</span>
+                        <span>{t('btn_save')}</span>
                       </button>
                       <button
                         onClick={() => setEditMode('notes', false)}
                         className="btn-classical-secondary flex items-center space-x-1 text-sm"
                       >
                         <FiX className="w-3 h-3" />
-                        <span>Cancelar</span>
+                        <span>{t('btn_cancel')}</span>
                       </button>
                     </div>
                   ) : null}
@@ -1501,7 +1497,7 @@ export default function TeacherLessonDetailsPageClient({
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Notas Privadas (só você vê)
+                        {t('teacher_notes_label')}
                       </label>
                       <textarea
                         value={editingNotes.teacher}
@@ -1512,13 +1508,13 @@ export default function TeacherLessonDetailsPageClient({
                           }))
                         }
                         className="input-classical-2 w-full h-24"
-                        placeholder="Suas anotações pessoais sobre a aula..."
+                        placeholder={t('teacher_notes_placeholder')}
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Notas Públicas (aluno pode ver)
+                        {t('public_notes_label')}
                       </label>
                       <textarea
                         value={editingNotes.public}
@@ -1529,13 +1525,13 @@ export default function TeacherLessonDetailsPageClient({
                           }))
                         }
                         className="input-classical-2 w-full h-24"
-                        placeholder="Anotações que o aluno pode visualizar..."
+                        placeholder={t('public_notes_placeholder')}
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Resumo da Aula
+                        {t('lesson_summary_label')}
                       </label>
                       <textarea
                         value={editingNotes.summary}
@@ -1546,13 +1542,13 @@ export default function TeacherLessonDetailsPageClient({
                           }))
                         }
                         className="input-classical-2 w-full h-20"
-                        placeholder="Resumo do que foi trabalhado na aula..."
+                        placeholder={t('lesson_summary_placeholder')}
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-theme-tertiary mb-2">
-                        Lição de Casa
+                        {t('homework_label')}
                       </label>
                       <textarea
                         value={editingNotes.homework}
@@ -1563,7 +1559,7 @@ export default function TeacherLessonDetailsPageClient({
                           }))
                         }
                         className="input-classical-2 w-full h-20"
-                        placeholder="Tarefas e exercícios para praticar..."
+                        placeholder={t('homework_placeholder')}
                       />
                     </div>
                   </div>
@@ -1572,7 +1568,7 @@ export default function TeacherLessonDetailsPageClient({
                     {lesson.teacherNotes && (
                       <div>
                         <h3 className="font-medium text-theme-primary mb-2">
-                          Suas Notas Privadas
+                          {t('private_notes_section')}
                         </h3>
                         <div className="bg-accent-yellow/5 border border-accent-yellow/20 rounded-lg p-4">
                           <p className="text-theme-secondary whitespace-pre-wrap">
@@ -1585,7 +1581,7 @@ export default function TeacherLessonDetailsPageClient({
                     {lesson.publicNotes && (
                       <div>
                         <h3 className="font-medium text-theme-primary mb-2">
-                          Notas para o Aluno
+                          {t('public_notes_section')}
                         </h3>
                         <div className="bg-accent-blue/5 border border-accent-blue/20 rounded-lg p-4">
                           <p className="text-theme-secondary whitespace-pre-wrap">
@@ -1598,7 +1594,7 @@ export default function TeacherLessonDetailsPageClient({
                     {lesson.lessonSummary && (
                       <div>
                         <h3 className="font-medium text-theme-primary mb-2">
-                          Resumo da Aula
+                          {t('lesson_summary_section')}
                         </h3>
                         <div className="bg-accent-green/5 border border-accent-green/20 rounded-lg p-4">
                           <p className="text-theme-secondary whitespace-pre-wrap">
@@ -1611,7 +1607,7 @@ export default function TeacherLessonDetailsPageClient({
                     {lesson.homework && (
                       <div>
                         <h3 className="font-medium text-theme-primary mb-2">
-                          Lição de Casa
+                          {t('homework_section')}
                         </h3>
                         <div className="bg-accent-purple/5 border border-accent-purple/20 rounded-lg p-4">
                           <p className="text-theme-secondary whitespace-pre-wrap">
@@ -1626,7 +1622,7 @@ export default function TeacherLessonDetailsPageClient({
                       !lesson.lessonSummary &&
                       !lesson.homework && (
                         <p className="text-theme-tertiary italic">
-                          Nenhuma nota registrada ainda.
+                          {t('no_notes_recorded')}
                         </p>
                       )}
                   </div>
@@ -1641,7 +1637,7 @@ export default function TeacherLessonDetailsPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <h2 className="text-lg font-bold text-theme-primary mb-4">
-                  Aluno
+                  {t('student_info_title')}
                 </h2>
 
                 <div className="flex items-center space-x-4 mb-6">
@@ -1665,7 +1661,7 @@ export default function TeacherLessonDetailsPageClient({
                       {lesson.student.name}
                     </h3>
                     <p className="text-theme-secondary">
-                      Nível: {translateNivel(lesson.student.level)}
+                      {t('level_label')} {translateNivel(lesson.student.level)}
                     </p>
                     <p className="text-sm text-theme-tertiary">
                       {lesson.student.email}
@@ -1676,19 +1672,25 @@ export default function TeacherLessonDetailsPageClient({
                 {/* Relationship Stats */}
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-theme-tertiary">Total de Aulas:</span>
+                    <span className="text-theme-tertiary">
+                      {t('total_lessons_label')}
+                    </span>
                     <span className="text-theme-primary font-medium">
                       {lesson.relationship.totalLessons}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-theme-tertiary">Concluídas:</span>
+                    <span className="text-theme-tertiary">
+                      {t('completed_lessons_label')}
+                    </span>
                     <span className="text-theme-primary font-medium">
                       {lesson.relationship.completedLessons}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-theme-tertiary">Duração:</span>
+                    <span className="text-theme-tertiary">
+                      {t('duration_label')}
+                    </span>
                     <span className="text-theme-primary font-medium">
                       {lesson.relationship.relationshipDuration}
                     </span>
@@ -1697,13 +1699,13 @@ export default function TeacherLessonDetailsPageClient({
               </AnimatedCard>
             </AnimatedItem>
 
-            {/* 🆕 RESUMO DAS PEÇAS SELECIONADAS ATUALIZADO */}
+            {/* Resumo das peças selecionadas */}
             {editingWorks.length > 0 && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                     <FiMusic className="w-5 h-5" />
-                    <span>Peças Vinculadas</span>
+                    <span>{t('linked_pieces_title')}</span>
                   </h3>
 
                   <div className="space-y-3">
@@ -1724,7 +1726,7 @@ export default function TeacherLessonDetailsPageClient({
                           </p>
                           {work.scoreId && (
                             <p className="text-xs text-accent-green">
-                              ✓ Com partitura
+                              {t('with_score')}
                             </p>
                           )}
                         </div>
@@ -1737,11 +1739,11 @@ export default function TeacherLessonDetailsPageClient({
                     <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
                       <div className="text-xs text-theme-secondary">
                         <div className="flex justify-between">
-                          <span>Total de peças:</span>
+                          <span>{t('total_pieces')}</span>
                           <span className="font-medium">{worksIds.length}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Com partituras:</span>
+                          <span>{t('with_scores')}</span>
                           <span className="font-medium">
                             {workScoreIds.length}
                           </span>
@@ -1753,12 +1755,12 @@ export default function TeacherLessonDetailsPageClient({
               </AnimatedItem>
             )}
 
-            {/* 🆕 Quick Actions COM MODAL DE CONFIRMAÇÃO */}
+            {/* Quick Actions com modal de confirmação */}
             {lesson.status === 'SCHEDULED' && (
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h2 className="text-lg font-bold text-theme-primary mb-4">
-                    Ações Rápidas
+                    {t('quick_actions_title')}
                   </h2>
 
                   <div className="space-y-3">
@@ -1768,7 +1770,7 @@ export default function TeacherLessonDetailsPageClient({
                       className="btn-classical-primary w-full flex items-center justify-center space-x-2"
                     >
                       <FiUserCheck className="w-4 h-4" />
-                      <span>Marcar Presença</span>
+                      <span>{t('mark_present')}</span>
                     </button>
 
                     <button
@@ -1777,7 +1779,7 @@ export default function TeacherLessonDetailsPageClient({
                       className="w-full px-4 py-2 bg-accent-yellow/10 border border-accent-yellow/30 text-accent-yellow rounded-lg hover:bg-accent-yellow/20 transition-colors flex items-center justify-center space-x-2"
                     >
                       <FiUserX className="w-4 h-4" />
-                      <span>Marcar Falta</span>
+                      <span>{t('mark_absent')}</span>
                     </button>
 
                     <button
@@ -1786,7 +1788,7 @@ export default function TeacherLessonDetailsPageClient({
                       className="w-full px-4 py-2 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-lg hover:bg-accent-green/20 transition-colors flex items-center justify-center space-x-2"
                     >
                       <FiCheck className="w-4 h-4" />
-                      <span>Concluir Aula</span>
+                      <span>{t('complete_lesson')}</span>
                     </button>
 
                     <button
@@ -1795,7 +1797,7 @@ export default function TeacherLessonDetailsPageClient({
                       className="w-full px-4 py-2 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-lg hover:bg-accent-red/20 transition-colors flex items-center justify-center space-x-2"
                     >
                       <FiX className="w-4 h-4" />
-                      <span>Cancelar Aula</span>
+                      <span>{t('cancel_lesson')}</span>
                     </button>
                   </div>
                 </AnimatedCard>
@@ -1807,7 +1809,7 @@ export default function TeacherLessonDetailsPageClient({
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h2 className="text-lg font-bold text-theme-primary mb-4">
-                    Status de Presença
+                    {t('attendance_status_title')}
                   </h2>
 
                   <div
@@ -1830,30 +1832,30 @@ export default function TeacherLessonDetailsPageClient({
                             : 'text-accent-red'
                         }`}
                       >
-                        {lesson.studentPresent ? 'Presente' : 'Faltou'}
+                        {lesson.studentPresent ? t('present') : t('absent')}
                       </span>
                     </div>
 
                     {lesson.punctuality && (
                       <p className="text-sm text-theme-secondary">
-                        Pontualidade:{' '}
+                        {t('punctuality_label')}{' '}
                         {lesson.punctuality === 'on_time'
-                          ? 'No horário'
+                          ? t('punctuality_on_time')
                           : lesson.punctuality === 'late'
-                          ? 'Atrasou'
-                          : 'Adiantou'}
+                          ? t('punctuality_late')
+                          : t('punctuality_early')}
                       </p>
                     )}
 
                     {lesson.engagement && (
                       <p className="text-sm text-theme-secondary">
-                        Engajamento: {lesson.engagement}/5
+                        {t('engagement_label')} {lesson.engagement}/5
                       </p>
                     )}
 
                     {lesson.preparation && (
                       <p className="text-sm text-theme-secondary">
-                        Preparação: {lesson.preparation}/5
+                        {t('preparation_label')} {lesson.preparation}/5
                       </p>
                     )}
                   </div>
@@ -1866,7 +1868,7 @@ export default function TeacherLessonDetailsPageClient({
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h2 className="text-lg font-bold text-theme-primary mb-4">
-                    Feedback do Aluno
+                    {t('student_feedback_title')}
                   </h2>
                   <div className="bg-accent-blue/5 border border-accent-blue/20 rounded-lg p-4">
                     <p className="text-theme-secondary whitespace-pre-wrap">
@@ -1881,24 +1883,24 @@ export default function TeacherLessonDetailsPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                  Dicas
+                  {t('tips_title')}
                 </h3>
                 <div className="space-y-3 text-sm text-theme-secondary">
                   <div className="flex items-start space-x-2">
                     <FiTarget className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>Defina objetivos claros para cada aula</p>
+                    <p>{t('tip_define_objectives')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiMusic className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>Vincule peças musicais para organizar o repertório</p>
+                    <p>{t('tip_link_pieces')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiSave className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>Salve as alterações das peças antes de sair da página</p>
+                    <p>{t('tip_save_changes')}</p>
                   </div>
                   <div className="flex items-start space-x-2">
                     <FiCheck className="w-4 h-4 text-brand-primary mt-0.5 flex-shrink-0" />
-                    <p>As partituras vinculadas aparecem nos relatórios</p>
+                    <p>{t('tip_scores_reports')}</p>
                   </div>
                 </div>
               </AnimatedCard>
@@ -1907,7 +1909,7 @@ export default function TeacherLessonDetailsPageClient({
         </div>
       </AnimatedContainer>
 
-      {/* 🆕 MODAL DE CONFIRMAÇÃO PARA QUICK ACTIONS */}
+      {/* Modal de confirmação para quick actions */}
       {showQuickActionModal && (
         <Modal
           isOpen
@@ -1942,13 +1944,14 @@ export default function TeacherLessonDetailsPageClient({
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
-                  Confirmar Ação
+                  {t('confirm_action_title')}
                 </h2>
                 <p className="text-theme-secondary">
-                  {quickActionType === 'present' && 'Marcar presença do aluno'}
-                  {quickActionType === 'absent' && 'Marcar falta do aluno'}
-                  {quickActionType === 'complete' && 'Concluir esta aula'}
-                  {quickActionType === 'cancel' && 'Cancelar esta aula'}
+                  {quickActionType === 'present' && t('confirm_mark_present')}
+                  {quickActionType === 'absent' && t('confirm_mark_absent')}
+                  {quickActionType === 'complete' &&
+                    t('confirm_complete_lesson')}
+                  {quickActionType === 'cancel' && t('confirm_cancel_lesson')}
                 </p>
               </div>
             </div>
@@ -1956,14 +1959,14 @@ export default function TeacherLessonDetailsPageClient({
             {quickActionType === 'cancel' && (
               <div className="mb-6">
                 <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Motivo (opcional)
+                  {t('reason_optional')}
                 </label>
                 <textarea
                   value={quickActionReason}
                   onChange={(e) => setQuickActionReason(e.target.value)}
                   rows={3}
                   className="input-classical-2 w-full"
-                  placeholder="Ex: Indisponibilidade do professor..."
+                  placeholder={t('cancel_reason_placeholder')}
                 />
               </div>
             )}
@@ -1973,17 +1976,17 @@ export default function TeacherLessonDetailsPageClient({
                 <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium text-accent-blue mb-1">
-                    Confirmação
+                    {t('confirmation_title')}
                   </p>
                   <p className="text-theme-secondary">
                     {quickActionType === 'present' &&
-                      'O aluno será marcado como presente e a aula será iniciada automaticamente.'}
+                      t('present_confirmation_text')}
                     {quickActionType === 'absent' &&
-                      'O aluno será marcado como ausente e a aula ficará como "Falta do aluno".'}
+                      t('absent_confirmation_text')}
                     {quickActionType === 'complete' &&
-                      'A aula será marcada como concluída e o status será atualizado.'}
+                      t('complete_confirmation_text')}
                     {quickActionType === 'cancel' &&
-                      'A aula será cancelada e o aluno será notificado.'}
+                      t('cancel_confirmation_text')}
                   </p>
                 </div>
               </div>
@@ -1995,7 +1998,7 @@ export default function TeacherLessonDetailsPageClient({
                 className="btn-classical-secondary"
                 disabled={loadingQuickAction}
               >
-                Cancelar
+                {t('btn_cancel')}
               </button>
               <button
                 onClick={executeQuickAction}
@@ -2025,7 +2028,7 @@ export default function TeacherLessonDetailsPageClient({
                   </>
                 )}
                 <span>
-                  {loadingQuickAction ? 'Processando...' : 'Confirmar'}
+                  {loadingQuickAction ? t('btn_processing') : t('btn_confirm')}
                 </span>
               </button>
             </div>
@@ -2033,7 +2036,7 @@ export default function TeacherLessonDetailsPageClient({
         </Modal>
       )}
 
-      {/* 🆕 MODAL DE APAGAR/DELETE REAL */}
+      {/* Modal de apagar/delete real */}
       {showDeleteModal && (
         <Modal isOpen onClose={() => setShowDeleteModal(false)} maxWidth="2xl">
           <div className="p-6">
@@ -2043,11 +2046,10 @@ export default function TeacherLessonDetailsPageClient({
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
-                  Apagar Aula
+                  {t('delete_lesson_title')}
                 </h2>
                 <p className="text-theme-secondary">
-                  Esta ação irá <strong>apagar permanentemente</strong> a aula
-                  do banco de dados
+                  {t('delete_lesson_subtitle')}
                 </p>
               </div>
             </div>
@@ -2055,14 +2057,14 @@ export default function TeacherLessonDetailsPageClient({
             <div className="space-y-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-theme-primary mb-2">
-                  Motivo (opcional)
+                  {t('reason_optional')}
                 </label>
                 <textarea
                   value={deleteReason}
                   onChange={(e) => setDeleteReason(e.target.value)}
                   rows={3}
                   className="input-classical-2 w-full"
-                  placeholder="Ex: Aula criada por engano..."
+                  placeholder={t('delete_reason_placeholder')}
                 />
               </div>
 
@@ -2079,7 +2081,7 @@ export default function TeacherLessonDetailsPageClient({
                       className="w-4 h-4 text-brand-primary bg-theme-elevated border-theme-secondary rounded focus:ring-brand-primary"
                     />
                     <label htmlFor="deleteAll" className="text-theme-primary">
-                      Apagar toda a série de aulas recorrentes
+                      {t('delete_all_recurring')}
                     </label>
                   </div>
 
@@ -2096,7 +2098,7 @@ export default function TeacherLessonDetailsPageClient({
                         htmlFor="futureOnly"
                         className="text-theme-secondary text-sm"
                       >
-                        Apagar apenas as aulas futuras (manter histórico)
+                        {t('delete_future_only')}
                       </label>
                     </div>
                   )}
@@ -2109,20 +2111,18 @@ export default function TeacherLessonDetailsPageClient({
                 <FiAlertTriangle className="w-5 h-5 text-accent-red mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium text-accent-red mb-1">
-                    ⚠️ Ação Irreversível
+                    {t('irreversible_action_title')}
                   </p>
                   <p className="text-theme-secondary">
                     {deleteRecurringSeries
-                      ? `Esta ação irá APAGAR PERMANENTEMENTE ${
-                          deleteFutureOnly
-                            ? 'todas as aulas futuras'
-                            : 'toda a série'
-                        } da recorrência do banco de dados.`
-                      : 'Esta ação irá APAGAR PERMANENTEMENTE esta aula do banco de dados.'}{' '}
-                    Não será possível recuperar os dados após a exclusão.
+                      ? deleteFutureOnly
+                        ? t('delete_recurring_future_warning')
+                        : t('delete_recurring_all_warning')
+                      : t('delete_single_warning')}
+                    {t('delete_recover_warning')}
                     {lesson.isRecurring &&
                       !deleteRecurringSeries &&
-                      ' A próxima aula da série se tornará a nova aula pai.'}
+                      t('delete_next_parent_warning')}
                   </p>
                 </div>
               </div>
@@ -2134,7 +2134,7 @@ export default function TeacherLessonDetailsPageClient({
                 className="btn-classical-secondary"
                 disabled={loading.delete}
               >
-                Manter Aula
+                {t('btn_keep_lesson')}
               </button>
               <button
                 onClick={handleDeleteLesson}
@@ -2147,7 +2147,9 @@ export default function TeacherLessonDetailsPageClient({
                   <FiTrash2 className="w-4 h-4" />
                 )}
                 <span>
-                  {loading.delete ? 'Apagando...' : 'Apagar Permanentemente'}
+                  {loading.delete
+                    ? t('btn_deleting')
+                    : t('btn_delete_permanently')}
                 </span>
               </button>
             </div>

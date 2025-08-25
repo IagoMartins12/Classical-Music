@@ -1,43 +1,98 @@
+// app/components/TeacherSystem/StudentCard.tsx - Updated with Translations
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
+  FiUser,
   FiCalendar,
   FiClock,
   FiEye,
-  FiMail,
-  FiMapPin,
-  FiMusic,
   FiPause,
   FiPlay,
-  FiPlus,
-  FiTarget,
-  FiUsers,
+  FiRefreshCw,
+  FiBarChart2,
+  FiCheckCircle,
 } from 'react-icons/fi';
-import { TfiBlackboard } from 'react-icons/tfi';
+import { translateNivel } from '@/app/utils';
+import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { ViewMode } from '../../ViewModeToggle';
 import { TeacherStudentsServerData } from '@/app/(teacher)/teacher/students/pageServer';
-import { translateNivel } from '@/app/utils';
+
+interface StudentRelationship {
+  relationshipId: string;
+  student: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string | null;
+    phone?: string | null;
+    city?: string | null;
+    state?: string | null;
+    mainInstrument?: string | null;
+    experienceLevel?: string | null;
+    createdAt: Date | string;
+  };
+  relationship: {
+    isActive: boolean;
+    pausedAt?: Date | string | null;
+    startDate: Date | string;
+    maxLessonsPerWeek: number;
+    lessonDuration: number;
+  };
+  stats: {
+    totalLessons: number;
+    completionRate: number;
+  };
+  nextLesson?: {
+    id: string;
+    title: string;
+    scheduledAt: Date | string;
+    duration: number;
+  } | null;
+}
+
+interface StudentCardTranslations {
+  studentSince: string;
+  totalLessons: string;
+  completionRate: string;
+  nextLesson: string;
+  atTime: string;
+  statusActive: string;
+  statusInactive: string;
+  statusPaused: string;
+  reactivate: string;
+  pause: string;
+  viewDetails: string;
+  studentLevel: string;
+  studentInstrument: string;
+}
 
 interface StudentCardProps {
   studentRelationship: TeacherStudentsServerData['students'][0];
   viewMode: ViewMode;
-  onToggleStatus: (relationshipId: string, isPaused: boolean) => void;
+  onToggleStatus: (relationshipId: string, isPaused: boolean) => Promise<void>;
   formatDate: (date: Date | string) => string;
   formatTime: (date: Date | string) => string;
+  translations: StudentCardTranslations;
 }
 
-function StudentCard({
+export default function StudentCard({
   studentRelationship,
   viewMode,
   onToggleStatus,
   formatDate,
   formatTime,
+  translations,
 }: StudentCardProps) {
+  const [isToggling, setIsToggling] = useState(false);
+
   const { student, relationship, stats, nextLesson } = studentRelationship;
 
+  // Status helpers
   const isActive = relationship.isActive && !relationship.pausedAt;
   const isPaused = relationship.isActive && !!relationship.pausedAt;
-  const isInactive = !relationship.isActive;
 
   const getStatusColor = () => {
     if (isActive) return 'accent-green';
@@ -46,28 +101,156 @@ function StudentCard({
   };
 
   const getStatusText = () => {
-    if (isActive) return 'Ativo';
-    if (isPaused) return 'Pausado';
-    return 'Inativo';
+    if (isActive) return translations.statusActive;
+    if (isPaused) return translations.statusPaused;
+    return translations.statusInactive;
   };
 
-  return (
-    <div
-      className={`classical-card p-6 group ${
-        viewMode === 'list' ? 'flex items-center space-x-6' : ''
-      }`}
-    >
-      <div
-        className={`${
-          viewMode === 'list' ? 'flex items-center space-x-4 flex-1' : ''
-        }`}
-      >
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-4">
+  const handleToggleStatus = async () => {
+    setIsToggling(true);
+    try {
+      await onToggleStatus(studentRelationship.relationshipId, isPaused);
+    } catch (error) {
+      console.error('Error toggling student status:', error);
+    } finally {
+      setIsToggling(false);
+    }
+  };
+
+  if (viewMode === 'list') {
+    return (
+      <AnimatedCard hover="lift" className="classical-card p-4">
+        <div className="flex items-center gap-4">
           {/* Avatar */}
+          <div className="relative w-12 h-12 flex-shrink-0">
+            {student.image ? (
+              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-brand-primary/20">
+                <Image
+                  src={student.image}
+                  alt={student.name}
+                  fill
+                  sizes="48px"
+                  className="object-cover"
+                />
+              </div>
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20">
+                <FiUser className="w-6 h-6 text-theme-primary" />
+              </div>
+            )}
+          </div>
+
+          {/* Info */}
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-theme-primary truncate">
+              {student.name}
+            </h3>
+            <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
+              {student.experienceLevel && (
+                <span>
+                  {translations.studentLevel}{' '}
+                  {translateNivel(student.experienceLevel)}
+                </span>
+              )}
+              {student.mainInstrument && (
+                <span>
+                  {translations.studentInstrument} {student.mainInstrument}
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-theme-secondary">
+              {translations.studentSince} {formatDate(relationship.startDate)}
+            </p>
+          </div>
+
+          {/* Stats */}
+          <div className="flex items-center space-x-6 text-center">
+            <div>
+              <div className="text-lg font-bold text-brand-primary">
+                {stats.totalLessons}
+              </div>
+              <div className="text-xs text-theme-tertiary">
+                {translations.totalLessons}
+              </div>
+            </div>
+            <div>
+              <div className="text-lg font-bold text-accent-green">
+                {stats.completionRate}%
+              </div>
+              <div className="text-xs text-theme-tertiary">
+                {translations.completionRate}
+              </div>
+            </div>
+          </div>
+
+          {/* Next Lesson */}
+          <div className="w-32 text-center">
+            {nextLesson ? (
+              <div>
+                <div className="text-sm font-medium text-theme-primary">
+                  {translations.nextLesson}
+                </div>
+                <div className="text-xs text-theme-tertiary">
+                  {formatDate(nextLesson.scheduledAt)} {translations.atTime}{' '}
+                  {formatTime(nextLesson.scheduledAt)}
+                </div>
+              </div>
+            ) : (
+              <div className="text-xs text-theme-tertiary">-</div>
+            )}
+          </div>
+
+          {/* Status & Actions */}
+          <div className="flex items-center space-x-3">
+            <span
+              className={`px-3 py-1 border rounded-full text-xs font-medium bg-${getStatusColor()}/10 border-${getStatusColor()}/30 text-${getStatusColor()}`}
+            >
+              {getStatusText()}
+            </span>
+
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handleToggleStatus}
+                disabled={isToggling}
+                className={`w-8 h-8 rounded-lg border transition-all flex items-center justify-center ${
+                  isPaused
+                    ? 'border-accent-green/30 hover:bg-accent-green/10 hover:border-accent-green text-accent-green'
+                    : 'border-accent-yellow/30 hover:bg-accent-yellow/10 hover:border-accent-yellow text-accent-yellow'
+                }`}
+                title={isPaused ? translations.reactivate : translations.pause}
+              >
+                {isToggling ? (
+                  <FiRefreshCw className="w-4 h-4 animate-spin" />
+                ) : isPaused ? (
+                  <FiPlay className="w-4 h-4" />
+                ) : (
+                  <FiPause className="w-4 h-4" />
+                )}
+              </button>
+
+              <Link
+                href={`/teacher/students/${student.id}`}
+                className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group"
+                title={translations.viewDetails}
+              >
+                <FiEye className="w-4 h-4 text-theme-tertiary group-hover:text-brand-primary transition-colors" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </AnimatedCard>
+    );
+  }
+
+  // Card view
+  return (
+    <AnimatedCard hover="lift" className="classical-card p-6">
+      <div className="flex items-start justify-between mb-4">
+        {/* Avatar & Basic Info */}
+        <div className="flex items-center space-x-4">
           <div className="relative w-16 h-16">
             {student.image ? (
-              <div className="relative w-full h-full rounded-full overflow-hidden border-3 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all">
+              <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-brand-primary/20">
                 <Image
                   src={student.image}
                   alt={student.name}
@@ -77,193 +260,117 @@ function StudentCard({
                 />
               </div>
             ) : (
-              <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-3 border-brand-primary/20 group-hover:border-brand-primary/50 transition-all">
-                <FiUsers className="w-8 h-8 text-theme-primary" />
+              <div className="w-full h-full bg-gradient-to-br from-brand-primary to-brand-secondary rounded-full flex items-center justify-center border-2 border-brand-primary/20">
+                <FiUser className="w-8 h-8 text-theme-primary" />
               </div>
             )}
           </div>
 
-          {/* Basic Info */}
           <div className="flex-1">
-            <h3 className="font-bold text-theme-primary group-hover:text-brand-primary transition-colors text-lg">
+            <h3 className="text-lg font-bold text-theme-primary mb-1">
               {student.name}
             </h3>
-            <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
-              <FiMail className="w-3 h-3" />
-              <span>{student.email}</span>
-            </div>
-            {student.location && (
-              <div className="flex items-center space-x-2 text-sm text-theme-tertiary">
-                <FiMapPin className="w-3 h-3" />
-                <span>{student.location}</span>
-              </div>
-            )}
-          </div>
-
-          {/* Status Badge */}
-          <div className="flex flex-col items-end space-y-2">
-            <span
-              className={`px-3 py-1 border rounded-full text-xs font-medium bg-${getStatusColor()}/10 border-${getStatusColor()}/30 text-${getStatusColor()}`}
-            >
-              {getStatusText()}
-            </span>
-            <div className="flex items-center space-x-1">
-              <Link
-                href={`/teacher/students/${student.id}`}
-                className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-brand-primary transition-all flex items-center justify-center group/btn"
-              >
-                <FiEye className="w-4 h-4 text-theme-tertiary group-hover/btn:text-brand-primary transition-colors" />
-              </Link>
-              {isActive && (
-                <button
-                  onClick={() =>
-                    onToggleStatus(studentRelationship.relationshipId, false)
-                  }
-                  className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-accent-yellow transition-all flex items-center justify-center group/btn"
-                  title="Pausar aluno"
-                >
-                  <FiPause className="w-4 h-4 text-theme-tertiary group-hover/btn:text-accent-yellow transition-colors" />
-                </button>
+            <div className="space-y-1 text-sm text-theme-secondary">
+              {student.experienceLevel && (
+                <p>
+                  {translations.studentLevel}{' '}
+                  {translateNivel(student.experienceLevel)}
+                </p>
               )}
-              {isPaused && (
-                <button
-                  onClick={() =>
-                    onToggleStatus(studentRelationship.relationshipId, true)
-                  }
-                  className="w-8 h-8 rounded-lg bg-theme-elevated border border-theme-secondary hover:border-accent-green transition-all flex items-center justify-center group/btn"
-                  title="Reativar aluno"
-                >
-                  <FiPlay className="w-4 h-4 text-theme-tertiary group-hover/btn:text-accent-green transition-colors" />
-                </button>
+              {student.mainInstrument && (
+                <p>
+                  {translations.studentInstrument} {student.mainInstrument}
+                </p>
               )}
+              <p>
+                {translations.studentSince} {formatDate(relationship.startDate)}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Student Details */}
-        <div className="space-y-3 mb-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2 text-sm">
-              <FiTarget className="w-4 h-4 text-accent-blue" />
-              <span className="text-theme-secondary">Nível:</span>
-              <span className="text-theme-primary font-medium">
-                {translateNivel(student.level)}
-              </span>
-            </div>
-            {student.mainInstrument && (
-              <div className="flex items-center space-x-2 text-sm">
-                <FiMusic className="w-4 h-4 text-accent-purple" />
-                <span className="text-theme-primary font-medium">
-                  {student.mainInstrument}
-                </span>
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center space-x-2">
-              <FiCalendar className="w-4 h-4 text-accent-green" />
-              <span className="text-theme-secondary">Início:</span>
-              <span className="text-theme-primary">
-                {formatDate(relationship.startDate)}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center space-x-2">
-              <TfiBlackboard className="w-4 h-4 text-accent-green" />
-              <span className="text-theme-secondary">Perfil:</span>
-              <span className="text-theme-primary">
-                {relationship.maxLessonsPerWeek}x por semana •{' '}
-                {relationship.lessonDuration}min{' '}
-              </span>
-            </div>
-            <div className="text-xs text-theme-tertiary"></div>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-4">
-          <div className="text-center">
-            <div className="text-lg font-bold text-brand-primary">
-              {stats.totalLessons}
-            </div>
-            <div className="text-xs text-theme-tertiary">Total</div>
-          </div>
-          <div className="text-center">
-            <div className="text-lg font-bold text-accent-green">
-              {stats.completedLessons}
-            </div>
-            <div className="text-xs text-theme-tertiary">Concluídas</div>
-          </div>
-          <div className="text-center">
-            <div className="text-lg font-bold text-accent-blue">
-              {stats.completionRate}%
-            </div>
-            <div className="text-xs text-theme-tertiary">Taxa</div>
-          </div>
-        </div>
-
-        {/* Next Lesson */}
-        {nextLesson && isActive && (
-          <div className="p-3 bg-theme-elevated rounded-lg ">
-            <div className="flex gap-4 items-center justify-between">
-              <div>
-                <div className="text-sm font-medium text-theme-primary">
-                  Próxima aula
-                </div>
-                <div className="text-xs text-theme-tertiary">
-                  {formatDate(nextLesson.scheduledAt)} às{' '}
-                  {formatTime(nextLesson.scheduledAt)}
-                </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <FiClock className="w-4 h-4 text-brand-primary" />
-                <span className="text-xs text-brand-primary font-medium">
-                  {nextLesson.duration}min
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Pause/Inactive Reason */}
-        {(isPaused || isInactive) && relationship.pauseReason && (
-          <div className="p-3 bg-gradient-to-r from-accent-red/5 to-accent-red/10 rounded-lg border border-accent-red/20">
-            <div className="text-sm text-accent-red">
-              <strong>Motivo:</strong> {relationship.pauseReason}
-            </div>
-          </div>
-        )}
-
-        {/* Actions */}
-        <div
-          className={`flex items-center gap-4 justify-between pt-4 ${
-            viewMode === 'list' ? 'gap-4' : 'border-t border-theme-secondary '
-          }`}
+        {/* Status Badge */}
+        <span
+          className={`px-3 py-1 border rounded-full text-xs font-medium bg-${getStatusColor()}/10 border-${getStatusColor()}/30 text-${getStatusColor()}`}
         >
-          <Link
-            href={`/teacher/students/${student.id}`}
-            className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
-          >
-            <span>Ver Detalhes</span>
-            <FiEye className="w-3 h-3" />
-          </Link>
+          {getStatusText()}
+        </span>
+      </div>
 
-          <div className="flex items-center space-x-2">
-            <Link
-              href={`/teacher/lessons/create?studentId=${student.id}`}
-              className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
-            >
-              <FiPlus className="w-3 h-3" />
-              <span>Nova Aula</span>
-            </Link>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="text-center p-3 bg-theme-elevated rounded-lg">
+          <div className="text-xl font-bold text-brand-primary mb-1">
+            {stats.totalLessons}
+          </div>
+          <div className="text-sm text-theme-tertiary">
+            {translations.totalLessons}
+          </div>
+        </div>
+
+        <div className="text-center p-3 bg-theme-elevated rounded-lg">
+          <div className="text-xl font-bold text-accent-green mb-1">
+            {stats.completionRate}%
+          </div>
+          <div className="text-sm text-theme-tertiary">
+            {translations.completionRate}
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Next Lesson */}
+      {nextLesson && (
+        <div className="mb-4 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm font-medium text-theme-primary mb-1">
+                {translations.nextLesson}
+              </div>
+              <div className="text-xs text-theme-tertiary">
+                {formatDate(nextLesson.scheduledAt)} {translations.atTime}{' '}
+                {formatTime(nextLesson.scheduledAt)}
+              </div>
+            </div>
+            <FiCalendar className="w-4 h-4 text-brand-primary" />
+          </div>
+        </div>
+      )}
+
+      {/* Action Buttons */}
+      <div className="flex items-center space-x-3">
+        <button
+          onClick={handleToggleStatus}
+          disabled={isToggling}
+          className={`flex-1 btn-classical-secondary text-sm flex items-center justify-center space-x-2 ${
+            isPaused
+              ? 'hover:bg-accent-green/10 hover:border-accent-green/30 hover:text-accent-green'
+              : 'hover:bg-accent-yellow/10 hover:border-accent-yellow/30 hover:text-accent-yellow'
+          }`}
+        >
+          {isToggling ? (
+            <FiRefreshCw className="w-4 h-4 animate-spin" />
+          ) : isPaused ? (
+            <FiPlay className="w-4 h-4" />
+          ) : (
+            <FiPause className="w-4 h-4" />
+          )}
+          <span>
+            {isToggling
+              ? '...'
+              : isPaused
+              ? translations.reactivate
+              : translations.pause}
+          </span>
+        </button>
+
+        <Link
+          href={`/teacher/students/${student.id}`}
+          className="flex-1 btn-classical-primary text-sm flex items-center justify-center space-x-2"
+        >
+          <FiEye className="w-4 h-4" />
+          <span>{translations.viewDetails}</span>
+        </Link>
+      </div>
+    </AnimatedCard>
   );
 }
-
-export default StudentCard;

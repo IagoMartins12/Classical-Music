@@ -1,4 +1,4 @@
-// app/teacher/calendar/pageClient.tsx - Client Component para Calendário do Professor com Indicativos - COMPLETO
+// app/teacher/calendar/pageClient.tsx - Client Component para Calendário do Professor com Indicativos - COMPLETO COM TRADUÇÕES
 
 'use client';
 
@@ -35,6 +35,7 @@ import Image from 'next/image';
 import { useTeacherCalendar } from '@/app/hooks/useTeacherCalendar';
 import Select from '@/app/components/Common/Select';
 import Modal from '@/app/components/Modal';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface TeacherCalendarPageClientProps {
   initialData: TeacherCalendarData;
@@ -70,6 +71,8 @@ export default function TeacherCalendarPageClient({
   initialData,
   errorMessage,
 }: TeacherCalendarPageClientProps) {
+  const { t } = useTranslation({ sections: ['teacher/calendar'] });
+
   // Initialize hook with server data
   const {
     // State do hook
@@ -185,6 +188,15 @@ export default function TeacherCalendarPageClient({
     await refreshCalendar(startDate, endDate, viewMode);
   }, [currentDate, viewMode, refreshCalendar]);
 
+  // Define filter and sort options with translations
+  const stateOptions = [
+    { value: 'all', label: t('all_status') },
+    { value: 'scheduled', label: t('filter_scheduled') },
+    { value: 'completed', label: t('filter_completed') },
+    { value: 'cancelled', label: t('filter_cancelled') },
+    { value: 'needs_attention', label: t('filter_need_attention') },
+  ];
+
   // Filter events using hook data
   const filteredEvents = useMemo(() => {
     let filtered = [...events];
@@ -219,19 +231,11 @@ export default function TeacherCalendarPageClient({
 
   // Opções do select com filtro para "Precisam Atenção"
   const SelectedStudentsOptions = [
-    { value: 'all', label: 'Todos os alunos' },
+    { value: 'all', label: t('all_students') },
     ...initialData.students.map((student) => ({
       label: student.name,
       value: student.id,
     })),
-  ];
-
-  const stateOptions = [
-    { value: 'all', label: 'Todos' },
-    { value: 'scheduled', label: 'Agendadas' },
-    { value: 'completed', label: 'Concluídas' },
-    { value: 'cancelled', label: 'Canceladas' },
-    { value: 'needs_attention', label: 'Precisam Atenção' },
   ];
 
   // Get calendar days for month view
@@ -293,7 +297,7 @@ export default function TeacherCalendarPageClient({
   // Handler para cancelar aula rapidamente
   const handleQuickCancelLesson = useCallback(
     async (lessonId: string) => {
-      if (confirm('Tem certeza que deseja cancelar esta aula?')) {
+      if (confirm(t('confirm_cancel_lesson'))) {
         try {
           const response = await fetch(`/api/lessons?id=${lessonId}`, {
             method: 'DELETE',
@@ -306,15 +310,15 @@ export default function TeacherCalendarPageClient({
             await handleRefreshCalendar();
             setShowDayEventsModal(false);
           } else {
-            alert('Erro ao cancelar aula');
+            alert(t('error_cancel_lesson'));
           }
         } catch (error) {
           console.error('Erro ao cancelar aula:', error);
-          alert('Erro ao cancelar aula');
+          alert(t('error_cancel_lesson'));
         }
       }
     },
-    [handleRefreshCalendar]
+    [handleRefreshCalendar, t]
   );
 
   // Format functions
@@ -362,10 +366,10 @@ export default function TeacherCalendarPageClient({
   const handleRequestStatusUpdate = useCallback(
     (lessonId: string, newStatus: string) => {
       const statusLabels: Record<string, string> = {
-        COMPLETED: 'Concluída',
-        NO_SHOW: 'Faltou',
-        CANCELLED: 'Cancelada',
-        SCHEDULED: 'Agendada',
+        COMPLETED: t('event_status_completed'),
+        NO_SHOW: t('event_status_no_show'),
+        CANCELLED: t('event_status_cancelled'),
+        SCHEDULED: t('event_status_scheduled'),
       };
 
       setPendingStatusUpdate({
@@ -375,7 +379,7 @@ export default function TeacherCalendarPageClient({
       });
       setShowStatusUpdateModal(true);
     },
-    []
+    [t]
   );
 
   // 🆕 FUNÇÃO PARA EXECUTAR A ATUALIZAÇÃO DO STATUS
@@ -490,7 +494,7 @@ export default function TeacherCalendarPageClient({
               <FiCalendar className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Calendário
+              {t('error_loading_calendar')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
               {error || errorMessage}
@@ -507,7 +511,7 @@ export default function TeacherCalendarPageClient({
                   }`}
                 />
                 <span>
-                  {loading.calendar ? 'Carregando...' : 'Tentar Novamente'}
+                  {loading.calendar ? t('loading_calendar') : t('try_again')}
                 </span>
               </button>
               {error && (
@@ -515,7 +519,7 @@ export default function TeacherCalendarPageClient({
                   onClick={clearError}
                   className="btn-classical-secondary w-full"
                 >
-                  Limpar Erro
+                  {t('clear_error')}
                 </button>
               )}
             </div>
@@ -537,10 +541,10 @@ export default function TeacherCalendarPageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Calendário de Aulas
+              {t('page_title')}
             </h1>
             <p className="text-xl text-theme-secondary classical-subtitle">
-              Gerencie sua agenda e visualize suas aulas de forma organizada
+              {t('page_subtitle')}
             </p>
           </div>
         </AnimatedItem>
@@ -559,12 +563,11 @@ export default function TeacherCalendarPageClient({
                 {viewStats.total}
               </div>
               <div className="text-sm text-theme-tertiary">
-                Total no{' '}
                 {viewMode === 'month'
-                  ? 'Mês'
+                  ? t('stats_total_month')
                   : viewMode === 'week'
-                  ? 'Semana'
-                  : 'Dia'}
+                  ? t('stats_total_week')
+                  : t('stats_total_day')}
               </div>
             </AnimatedCard>
 
@@ -578,7 +581,9 @@ export default function TeacherCalendarPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {viewStats.scheduled}
               </div>
-              <div className="text-sm text-theme-tertiary">Agendadas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_scheduled')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -591,7 +596,9 @@ export default function TeacherCalendarPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {viewStats.completed}
               </div>
-              <div className="text-sm text-theme-tertiary">Concluídas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_completed')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -604,7 +611,9 @@ export default function TeacherCalendarPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {viewStats.cancelled}
               </div>
-              <div className="text-sm text-theme-tertiary">Canceladas</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_cancelled')}
+              </div>
             </AnimatedCard>
 
             <AnimatedCard
@@ -617,7 +626,9 @@ export default function TeacherCalendarPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {viewStats.today}
               </div>
-              <div className="text-sm text-theme-tertiary">Hoje</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_today')}
+              </div>
             </AnimatedCard>
 
             {/* Card para aulas que precisam de atenção */}
@@ -634,7 +645,7 @@ export default function TeacherCalendarPageClient({
                 {viewStats.needsAttention}
               </div>
               <div className="text-sm text-theme-tertiary">
-                Precisam Atenção
+                {t('stats_need_attention')}
               </div>
             </AnimatedCard>
           </div>
@@ -651,15 +662,14 @@ export default function TeacherCalendarPageClient({
                 <FiAlertTriangle className="w-5 h-5 text-accent-red" />
                 <div>
                   <h4 className="font-semibold text-accent-red">
-                    {viewStats.needsAttention} aula
-                    {viewStats.needsAttention !== 1 ? 's' : ''} precisam de
-                    atenção
+                    {t('attention_alert_title', {
+                      count: viewStats.needsAttention,
+                      plural: viewStats.needsAttention !== 1 ? 's' : '',
+                      pluralVerb: viewStats.needsAttention !== 1 ? 'm' : '',
+                    })}
                   </h4>
                   <p className="text-sm text-theme-secondary">
-                    Há aulas que já passaram da data agendada mas ainda estão
-                    marcadas como &quot;Agendadas&quot;. Atualize o status para
-                    &quot;Concluída&quot;, &quot;Cancelada&quot; ou
-                    &quot;Faltou&quot;.
+                    {t('attention_alert_message')}
                   </p>
                 </div>
               </div>
@@ -667,7 +677,7 @@ export default function TeacherCalendarPageClient({
                 onClick={() => setEventFilter('needs_attention')}
                 className="btn-classical-secondary text-sm whitespace-nowrap"
               >
-                Ver Todas
+                {t('view_all')}
               </button>
             </AnimatedCard>
           </AnimatedItem>
@@ -699,7 +709,7 @@ export default function TeacherCalendarPageClient({
                           MONTHS[currentDate.getMonth()]
                         } ${currentDate.getFullYear()}`}
                       {viewMode === 'week' &&
-                        `Semana de ${formatDate(getWeekDays()[0])}`}
+                        t('week_of', { date: formatDate(getWeekDays()[0]) })}
                       {viewMode === 'day' && formatDate(currentDate)}
                     </div>
                   </div>
@@ -722,7 +732,7 @@ export default function TeacherCalendarPageClient({
                   disabled={loading.calendar}
                   className="btn-classical-secondary text-sm disabled:opacity-50"
                 >
-                  Hoje
+                  {t('today')}
                 </button>
 
                 <button
@@ -735,7 +745,7 @@ export default function TeacherCalendarPageClient({
                       loading.calendar ? 'animate-spin' : ''
                     }`}
                   />
-                  <span>Atualizar</span>
+                  <span>{t('update')}</span>
                 </button>
               </div>
 
@@ -751,7 +761,7 @@ export default function TeacherCalendarPageClient({
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Mês
+                    {t('month')}
                   </button>
                   <button
                     onClick={() => setViewMode('week')}
@@ -761,7 +771,7 @@ export default function TeacherCalendarPageClient({
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Semana
+                    {t('week')}
                   </button>
                   <button
                     onClick={() => setViewMode('day')}
@@ -771,7 +781,7 @@ export default function TeacherCalendarPageClient({
                         : 'text-theme-tertiary hover:text-theme-primary'
                     }`}
                   >
-                    Dia
+                    {t('day')}
                   </button>
                 </div>
 
@@ -799,7 +809,7 @@ export default function TeacherCalendarPageClient({
                   className="btn-classical-primary flex items-center space-x-2"
                 >
                   <FiPlus className="w-4 h-4" />
-                  <span>Nova Aula</span>
+                  <span>{t('new_lesson')}</span>
                 </Link>
               </div>
             </div>
@@ -811,7 +821,7 @@ export default function TeacherCalendarPageClient({
           <AnimatedItem direction="up" springType="gentle">
             <div className="text-center py-8">
               <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
-              <p className="text-theme-secondary">Carregando calendário...</p>
+              <p className="text-theme-secondary">{t('loading_calendar')}</p>
             </div>
           </AnimatedItem>
         )}
@@ -833,6 +843,7 @@ export default function TeacherCalendarPageClient({
                   onShowDayEvents={handleShowDayEvents}
                   formatTime={formatTime}
                   getEventStatusColor={getEventStatusColor}
+                  t={t}
                 />
               )}
 
@@ -848,6 +859,7 @@ export default function TeacherCalendarPageClient({
                   formatTime={formatTime}
                   formatEventTime={formatEventTime}
                   getEventStatusColor={getEventStatusColor}
+                  t={t}
                 />
               )}
 
@@ -863,6 +875,7 @@ export default function TeacherCalendarPageClient({
                   formatTime={formatTime}
                   formatEventTime={formatEventTime}
                   getEventStatusColor={getEventStatusColor}
+                  t={t}
                 />
               )}
             </AnimatedCard>
@@ -882,11 +895,10 @@ export default function TeacherCalendarPageClient({
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold text-accent-red mb-2">
-                    Conflitos de Horário Detectados
+                    {t('conflicts_detected')}
                   </h3>
                   <p className="text-theme-secondary text-sm mb-4">
-                    Foram encontrados {conflicts.length} conflito(s) em sua
-                    agenda.
+                    {t('conflicts_message', { count: conflicts.length })}
                   </p>
 
                   <div className="space-y-2">
@@ -896,7 +908,9 @@ export default function TeacherCalendarPageClient({
                           {formatDate(conflict.date)}
                         </div>
                         <div className="text-xs text-theme-tertiary">
-                          {conflict.conflicts.length} aulas conflitantes
+                          {t('conflicting_lessons', {
+                            count: conflict.conflicts.length,
+                          })}
                         </div>
                       </div>
                     ))}
@@ -904,7 +918,7 @@ export default function TeacherCalendarPageClient({
 
                   {conflicts.length > 3 && (
                     <p className="text-xs text-theme-tertiary mt-2">
-                      E mais {conflicts.length - 3} conflito(s)...
+                      {t('more_conflicts', { remaining: conflicts.length - 3 })}
                     </p>
                   )}
                 </div>
@@ -943,11 +957,12 @@ export default function TeacherCalendarPageClient({
               </div>
               <div>
                 <h2 className="text-xl font-bold text-theme-primary">
-                  Confirmar Atualização
+                  {t('confirm_status_update')}
                 </h2>
                 <p className="text-theme-secondary">
-                  Alterar status da aula para &quot;{pendingStatusUpdate.statusLabel}
-                  &quot;
+                  {t('change_status_to', {
+                    status: pendingStatusUpdate.statusLabel,
+                  })}
                 </p>
               </div>
             </div>
@@ -957,15 +972,15 @@ export default function TeacherCalendarPageClient({
                 <FiInfo className="w-5 h-5 text-accent-blue mt-0.5" />
                 <div className="text-sm">
                   <p className="font-medium text-accent-blue mb-1">
-                    Confirmação de Status
+                    {t('status_confirmation')}
                   </p>
                   <p className="text-theme-secondary">
                     {pendingStatusUpdate.newStatus === 'COMPLETED' &&
-                      'A aula será marcada como concluída e o horário de término será registrado.'}
+                      t('status_completed_message')}
                     {pendingStatusUpdate.newStatus === 'NO_SHOW' &&
-                      'A aula será marcada como "Falta do Aluno" e permanecerá no histórico.'}
+                      t('status_no_show_message')}
                     {pendingStatusUpdate.newStatus === 'CANCELLED' &&
-                      'A aula será marcada como cancelada e o horário de cancelamento será registrado.'}
+                      t('status_cancelled_message')}
                   </p>
                 </div>
               </div>
@@ -977,7 +992,7 @@ export default function TeacherCalendarPageClient({
                 className="btn-classical-secondary"
                 disabled={updatingStatus}
               >
-                Cancelar
+                {t('cancel')}
               </button>
               <button
                 onClick={executeStatusUpdate}
@@ -1007,8 +1022,12 @@ export default function TeacherCalendarPageClient({
                 )}
                 <span className="truncate">
                   {updatingStatus
-                    ? 'Atualizando...'
-                    : `Confirmar ${pendingStatusUpdate.statusLabel}`}
+                    ? t('updating')
+                    : pendingStatusUpdate.newStatus === 'COMPLETED'
+                    ? t('confirm_completed')
+                    : pendingStatusUpdate.newStatus === 'NO_SHOW'
+                    ? t('confirm_no_show')
+                    : t('confirm_cancelled')}
                 </span>
               </button>
             </div>
@@ -1029,6 +1048,7 @@ export default function TeacherCalendarPageClient({
           formatTime={formatTime}
           formatDate={formatDate}
           getEventStatusColor={getEventStatusColor}
+          t={t}
         />
       )}
 
@@ -1053,6 +1073,7 @@ export default function TeacherCalendarPageClient({
           formatTime={formatTime}
           formatEventTime={formatEventTime}
           getEventStatusColor={getEventStatusColor}
+          t={t}
         />
       )}
     </PageContainer>
@@ -1069,6 +1090,7 @@ interface MonthViewProps {
   onShowDayEvents: (date: Date, events: CalendarEvent[]) => void;
   formatTime: (date: Date | string) => string;
   getEventStatusColor: (status: string, needsAttention?: boolean) => string;
+  t: (key: string, params?: any) => string;
 }
 
 function MonthView({
@@ -1080,6 +1102,7 @@ function MonthView({
   onShowDayEvents,
   formatTime,
   getEventStatusColor,
+  t,
 }: MonthViewProps) {
   const today = new Date();
   const currentMonth = currentDate.getMonth();
@@ -1164,8 +1187,10 @@ function MonthView({
                     className="w-full text-left p-1 rounded text-xs font-medium bg-theme-elevated hover:bg-brand-primary/10 text-theme-tertiary hover:text-brand-primary transition-all border border-dashed border-theme-secondary hover:border-brand-primary/30"
                   >
                     <div className="truncate">
-                      +{events.length - 3} aula
-                      {events.length - 3 !== 1 ? 's' : ''}
+                      {t('more_lessons', {
+                        count: events.length - 3,
+                        plural: events.length - 3 !== 1 ? 's' : '',
+                      })}
                     </div>
                   </button>
                 )}
@@ -1187,6 +1212,7 @@ interface WeekViewProps {
   formatTime: (date: Date | string) => string;
   formatEventTime: (start: Date | string, end: Date | string) => string;
   getEventStatusColor: (status: string, needsAttention?: boolean) => string;
+  t: (key: string, params?: any) => string;
 }
 
 function WeekView({
@@ -1196,6 +1222,7 @@ function WeekView({
   onEventClick,
   formatEventTime,
   getEventStatusColor,
+  t,
 }: WeekViewProps) {
   const today = new Date();
 
@@ -1290,6 +1317,7 @@ interface DayViewProps {
   formatTime: (date: Date | string) => string;
   formatEventTime: (start: Date | string, end: Date | string) => string;
   getEventStatusColor: (status: string, needsAttention?: boolean) => string;
+  t: (key: string, params?: any) => string;
 }
 
 function DayView({
@@ -1299,6 +1327,7 @@ function DayView({
   onEventClick,
   formatEventTime,
   getEventStatusColor,
+  t,
 }: DayViewProps) {
   const sortedEvents = [...events].sort(
     (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
@@ -1322,11 +1351,9 @@ function DayView({
           <div className="text-center py-12">
             <FiCalendar className="w-16 h-16 text-theme-tertiary mx-auto mb-4" />
             <h3 className="text-lg font-bold text-theme-primary mb-2">
-              Nenhuma aula agendada
+              {t('no_lessons_scheduled')}
             </h3>
-            <p className="text-theme-tertiary">
-              Você não tem aulas marcadas para este dia.
-            </p>
+            <p className="text-theme-tertiary">{t('no_lessons_day_message')}</p>
           </div>
         ) : (
           sortedEvents.map((event) => {
@@ -1373,8 +1400,10 @@ function DayView({
                         <div className="flex items-center space-x-2 text-accent-red">
                           <FiAlertTriangle className="w-4 h-4" />
                           <span className="font-medium">
-                            Aula passou há {statusInfo.hoursOverdue}h - Status
-                            precisa ser atualizado
+                            {t('overdue_hours', {
+                              hours: statusInfo.hoursOverdue,
+                            })}{' '}
+                            - Status precisa ser atualizado
                           </span>
                         </div>
                       )}
@@ -1426,6 +1455,7 @@ interface EventDetailsModalProps {
   formatTime: (date: Date | string) => string;
   formatDate: (date: Date | string) => string;
   getEventStatusColor: (status: string, needsAttention?: boolean) => string;
+  t: (key: string, params?: any) => string;
 }
 
 function EventDetailsModal({
@@ -1436,6 +1466,7 @@ function EventDetailsModal({
   formatTime,
   formatDate,
   getEventStatusColor,
+  t,
 }: EventDetailsModalProps) {
   const statusInfo = getEventStatusInfo(event);
 
@@ -1456,26 +1487,26 @@ function EventDetailsModal({
                   )}`}
                 >
                   {event.status === 'SCHEDULED'
-                    ? 'Agendada'
+                    ? t('event_status_scheduled')
                     : event.status === 'COMPLETED'
-                    ? 'Concluída'
+                    ? t('event_status_completed')
                     : event.status === 'CANCELLED'
-                    ? 'Cancelada'
+                    ? t('event_status_cancelled')
                     : event.status === 'NO_SHOW'
-                    ? 'Faltou'
+                    ? t('event_status_no_show')
                     : event.status === 'RESCHEDULED'
-                    ? 'Reagendada'
+                    ? t('event_status_rescheduled')
                     : event.status}
                 </span>
                 {event.details?.isRecurring && (
                   <span className="px-3 py-1 bg-accent-purple/10 border border-accent-purple/30 text-accent-purple rounded-full text-sm">
-                    Recorrente
+                    {t('recurring')}
                   </span>
                 )}
                 {statusInfo.needsAttention && (
                   <span className="px-3 py-1 bg-accent-red/10 border border-accent-red/30 text-accent-red rounded-full text-sm flex items-center space-x-1">
                     <FiAlertTriangle className="w-3 h-3" />
-                    <span>Precisa Atenção</span>
+                    <span>{t('needs_attention')}</span>
                   </span>
                 )}
               </div>
@@ -1489,15 +1520,16 @@ function EventDetailsModal({
                 <FiAlertTriangle className="w-12 h-12 text-accent-red" />
                 <div>
                   <h4 className="font-bold text-accent-red text-lg mb-2">
-                    Esta aula precisa de atenção
+                    {t('lesson_needs_attention')}
                   </h4>
                   <p className="text-sm text-theme-secondary mb-1">
-                    A aula terminou há {statusInfo.hoursOverdue} hora
-                    {statusInfo.hoursOverdue !== 1 ? 's' : ''} mas ainda está
-                    marcada como &quot;Agendada&quot;.
+                    {t('lesson_overdue_message', {
+                      hours: statusInfo.hoursOverdue,
+                      plural: statusInfo.hoursOverdue !== 1 ? 's' : '',
+                    })}
                   </p>
                   <p className="text-sm text-theme-secondary">
-                    Atualize o status para refletir o que realmente aconteceu.
+                    {t('update_status_message')}
                   </p>
                 </div>
 
@@ -1508,21 +1540,21 @@ function EventDetailsModal({
                     className="btn-classical-primary bg-accent-green border-accent-green hover:bg-accent-green/90 text-white flex items-center space-x-2 px-4 py-2"
                   >
                     <FiCheck className="w-4 h-4" />
-                    <span>Marcar como Concluída</span>
+                    <span>{t('mark_completed')}</span>
                   </button>
                   <button
                     onClick={() => onUpdateStatus(event.id, 'NO_SHOW')}
                     className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 flex items-center space-x-2 px-4 py-2"
                   >
                     <FiUser className="w-4 h-4" />
-                    <span>Aluno Faltou</span>
+                    <span>{t('student_absent')}</span>
                   </button>
                   <button
                     onClick={() => onUpdateStatus(event.id, 'CANCELLED')}
                     className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 flex items-center space-x-2 px-4 py-2"
                   >
                     <FiX className="w-4 h-4" />
-                    <span>Foi Cancelada</span>
+                    <span>{t('was_cancelled')}</span>
                   </button>
                 </div>
               </div>
@@ -1534,7 +1566,7 @@ function EventDetailsModal({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Data e Hora
+                  {t('date_and_time')}
                 </label>
                 <div className="text-theme-primary">
                   <div>{formatDate(event.start)}</div>
@@ -1547,7 +1579,7 @@ function EventDetailsModal({
               {event.student && (
                 <div>
                   <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                    Aluno
+                    {t('student')}
                   </label>
                   <div className="flex items-center space-x-3">
                     {event.student.image ? (
@@ -1570,7 +1602,7 @@ function EventDetailsModal({
                         {event.student.name}
                       </div>
                       <div className="text-sm text-theme-tertiary">
-                        Nível: {event.student.level}
+                        {t('level')} {event.student.level}
                       </div>
                     </div>
                   </div>
@@ -1582,7 +1614,7 @@ function EventDetailsModal({
             {event.location && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Local
+                  {t('location')}
                 </label>
                 <div className="text-theme-primary">{event.location}</div>
               </div>
@@ -1592,7 +1624,7 @@ function EventDetailsModal({
             {event.description && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Descrição
+                  {t('description')}
                 </label>
                 <div className="text-theme-primary">{event.description}</div>
               </div>
@@ -1602,7 +1634,7 @@ function EventDetailsModal({
             {event.objectives && event.objectives.length > 0 && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Objetivos
+                  {t('objectives')}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {event.objectives.map((objective, index) => (
@@ -1621,7 +1653,7 @@ function EventDetailsModal({
             {event.details?.topics && event.details.topics.length > 0 && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Tópicos
+                  {t('topics')}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {event.details.topics.map((topic, index) => (
@@ -1640,7 +1672,7 @@ function EventDetailsModal({
             {event.details?.homework && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Tarefa de Casa
+                  {t('homework')}
                 </label>
                 <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
                   <div className="text-theme-primary">
@@ -1654,7 +1686,7 @@ function EventDetailsModal({
             {event.details?.teacherNotes && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-2">
-                  Anotações do Professor
+                  {t('teacher_notes')}
                 </label>
                 <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
                   <div className="text-theme-primary whitespace-pre-wrap">
@@ -1668,7 +1700,7 @@ function EventDetailsModal({
             {event.status === 'SCHEDULED' && !statusInfo.needsAttention && (
               <div>
                 <label className="text-sm font-medium text-theme-tertiary block mb-3">
-                  Ações Rápidas
+                  {t('quick_actions')}
                 </label>
                 <div className="flex flex-wrap gap-3">
                   <button
@@ -1676,21 +1708,21 @@ function EventDetailsModal({
                     className="btn-classical-secondary bg-accent-green/10 border-accent-green text-accent-green hover:bg-accent-green/20 flex items-center space-x-2 text-sm"
                   >
                     <FiCheck className="w-4 h-4" />
-                    <span>Concluir Aula</span>
+                    <span>{t('complete_lesson')}</span>
                   </button>
                   <button
                     onClick={() => onUpdateStatus(event.id, 'NO_SHOW')}
                     className="btn-classical-secondary bg-accent-yellow/10 border-accent-yellow text-accent-yellow hover:bg-accent-yellow/20 flex items-center space-x-2 text-sm"
                   >
                     <FiUser className="w-4 h-4" />
-                    <span>Marcar Falta</span>
+                    <span>{t('mark_absent')}</span>
                   </button>
                   <button
                     onClick={() => onUpdateStatus(event.id, 'CANCELLED')}
                     className="btn-classical-secondary bg-accent-red/10 border-accent-red text-accent-red hover:bg-accent-red/20 flex items-center space-x-2 text-sm"
                   >
                     <FiX className="w-4 h-4" />
-                    <span>Cancelar</span>
+                    <span>{t('cancel_lesson')}</span>
                   </button>
                 </div>
               </div>
@@ -1703,7 +1735,7 @@ function EventDetailsModal({
                 className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
               >
                 <FiEye className="w-4 h-4" />
-                <span>Ver Detalhes Completos</span>
+                <span>{t('view_full_details')}</span>
               </Link>
 
               <div className="flex items-center space-x-3">
@@ -1720,7 +1752,7 @@ function EventDetailsModal({
                     <span>
                       {statusInfo.needsAttention
                         ? 'Atualizar Status'
-                        : 'Editar'}
+                        : t('edit')}
                     </span>
                   </Link>
                 )}
@@ -1745,6 +1777,7 @@ interface DayEventsModalProps {
   formatTime: (date: Date | string) => string;
   formatEventTime: (start: Date | string, end: Date | string) => string;
   getEventStatusColor: (status: string, needsAttention?: boolean) => string;
+  t: (key: string, params?: any) => string;
 }
 
 function DayEventsModal({
@@ -1757,6 +1790,7 @@ function DayEventsModal({
   onUpdateStatus,
   formatEventTime,
   getEventStatusColor,
+  t,
 }: DayEventsModalProps) {
   const sortedEvents = [...events].sort(
     (a, b) => new Date(a.start).getTime() - new Date(b.start).getTime()
@@ -1773,7 +1807,7 @@ function DayEventsModal({
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-xl font-bold text-theme-primary classical-title">
-                Aulas do Dia
+                {t('lessons_of_day')}
               </h2>
               <p className="text-theme-secondary">
                 {date.toLocaleDateString('pt-BR', {
@@ -1782,11 +1816,18 @@ function DayEventsModal({
                   month: 'long',
                   day: 'numeric',
                 })}{' '}
-                • {events.length} aula{events.length !== 1 ? 's' : ''}
+                •{' '}
+                {t('lessons_count', {
+                  count: events.length,
+                  plural: events.length !== 1 ? 's' : '',
+                })}
                 {eventsNeedingAttention.length > 0 && (
                   <span className="text-accent-red">
                     {' '}
-                    • {eventsNeedingAttention.length} precisam de atenção
+                    •{' '}
+                    {t('need_attention_count', {
+                      count: eventsNeedingAttention.length,
+                    })}
                   </span>
                 )}
               </p>
@@ -1806,13 +1847,15 @@ function DayEventsModal({
                 <FiAlertTriangle className="w-5 h-5 text-accent-red" />
                 <div>
                   <h4 className="font-semibold text-accent-red">
-                    {eventsNeedingAttention.length} aula
-                    {eventsNeedingAttention.length !== 1 ? 's' : ''} precisam de
-                    atenção
+                    {t('attention_general_alert', {
+                      count: eventsNeedingAttention.length,
+                      plural: eventsNeedingAttention.length !== 1 ? 's' : '',
+                      pluralVerb:
+                        eventsNeedingAttention.length !== 1 ? 'm' : '',
+                    })}
                   </h4>
                   <p className="text-sm text-theme-secondary">
-                    Há aulas que já passaram da data agendada mas ainda estão
-                    marcadas como &quot;Agendadas&quot;.
+                    {t('lessons_overdue_message')}
                   </p>
                 </div>
               </div>
@@ -1842,17 +1885,17 @@ function DayEventsModal({
                           )}`}
                         >
                           {event.status === 'SCHEDULED'
-                            ? 'Agendada'
+                            ? t('event_status_scheduled')
                             : event.status === 'COMPLETED'
-                            ? 'Concluída'
+                            ? t('event_status_completed')
                             : event.status === 'CANCELLED'
-                            ? 'Cancelada'
+                            ? t('event_status_cancelled')
                             : event.status}
                         </span>
                         {statusInfo.needsAttention && (
                           <span className="px-2 py-1 bg-accent-red/20 text-accent-red rounded-full text-xs flex items-center space-x-1">
                             <FiAlertTriangle className="w-3 h-3" />
-                            <span>Atenção</span>
+                            <span>{t('needs_attention')}</span>
                           </span>
                         )}
                       </div>
@@ -1884,7 +1927,9 @@ function DayEventsModal({
                             <div className="flex items-center space-x-2 text-accent-red">
                               <FiAlertTriangle className="w-4 h-4" />
                               <span className="font-medium text-xs">
-                                Passou há {statusInfo.hoursOverdue}h
+                                {t('overdue_hours', {
+                                  hours: statusInfo.hoursOverdue,
+                                })}
                               </span>
                             </div>
                           )}
@@ -1893,7 +1938,7 @@ function DayEventsModal({
                         {event.objectives && event.objectives.length > 0 && (
                           <div>
                             <label className="text-xs font-medium text-theme-tertiary block mb-1">
-                              Objetivos
+                              {t('objectives')}
                             </label>
                             <div className="flex flex-wrap gap-1">
                               {event.objectives
@@ -1923,7 +1968,7 @@ function DayEventsModal({
                           className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
                         >
                           <FiEye className="w-4 h-4" />
-                          <span>Ver Detalhes</span>
+                          <span>{t('view_details')}</span>
                         </button>
 
                         {event.status === 'SCHEDULED' && (
@@ -1933,7 +1978,7 @@ function DayEventsModal({
                               className="text-accent-blue hover:text-accent-purple text-sm font-medium transition-colors flex items-center space-x-1"
                             >
                               <FiEdit3 className="w-4 h-4" />
-                              <span>Editar</span>
+                              <span>{t('edit')}</span>
                               <FiExternalLink className="w-3 h-3" />
                             </Link>
 
@@ -1946,7 +1991,7 @@ function DayEventsModal({
                                   className="text-accent-green hover:text-accent-green/80 text-sm font-medium transition-colors flex items-center space-x-1"
                                 >
                                   <FiCheck className="w-4 h-4" />
-                                  <span>Concluída</span>
+                                  <span>{t('event_status_completed')}</span>
                                 </button>
 
                                 <button
@@ -1956,7 +2001,7 @@ function DayEventsModal({
                                   className="text-accent-yellow hover:text-accent-yellow/80 text-sm font-medium transition-colors flex items-center space-x-1"
                                 >
                                   <FiUser className="w-4 h-4" />
-                                  <span>Faltou</span>
+                                  <span>{t('event_status_no_show')}</span>
                                 </button>
                               </>
                             )}
@@ -1966,7 +2011,7 @@ function DayEventsModal({
                               className="text-accent-red hover:text-accent-red/80 text-sm font-medium transition-colors flex items-center space-x-1"
                             >
                               <FiTrash2 className="w-4 h-4" />
-                              <span>Cancelar</span>
+                              <span>{t('cancel_lesson')}</span>
                             </button>
                           </>
                         )}
@@ -1984,7 +2029,7 @@ function DayEventsModal({
               className="btn-classical-primary flex items-center space-x-2"
             >
               <FiPlus className="w-4 h-4" />
-              <span>Nova Aula</span>
+              <span>{t('new_lesson')}</span>
             </Link>
           </div>
         </div>

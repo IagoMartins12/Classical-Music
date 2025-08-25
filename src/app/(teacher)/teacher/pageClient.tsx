@@ -40,6 +40,7 @@ import { useTeacherData } from '@/app/hooks/lessonsSystem/useTeacherData';
 import RefreshIndicator from '@/app/components/Common/RefreshIndicator';
 import { translateNivel } from '@/app/utils';
 import RecentActivities from '@/app/components/TeacherSystem/RecentActivities';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface TeacherProfile {
   id: string;
@@ -107,6 +108,8 @@ export default function TeacherPageClient({
       calendar: initialCalendarData,
     },
   });
+
+  const { t } = useTranslation({ sections: ['teacher/home'] });
 
   // Estados para UI e busca
   const [searchQuery, setSearchQuery] = useState('');
@@ -404,12 +407,11 @@ export default function TeacherPageClient({
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-gradient-brand classical-title mb-4">
-              Dashboard do Professor
+              {t('dashboard_title')}
             </h1>
             <div className="flex items-center justify-center space-x-4">
               <p className="text-xl text-theme-secondary classical-subtitle">
-                Bem-vindo de volta, {teacherProfile.name}! Gerencie seus alunos
-                e aulas
+                {t('welcome_message', { name: teacherProfile.name })}
               </p>
 
               {/* ===== INDICADOR DE ATUALIZAÇÃO MELHORADO ===== */}
@@ -443,9 +445,11 @@ export default function TeacherPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.totalStudents}
               </div>
-              <div className="text-sm text-theme-tertiary">Total de Alunos</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_total_students')}
+              </div>
               <div className="text-xs text-accent-green mt-1">
-                {stats.activeStudents} ativos
+                {stats.activeStudents} {t('stats_active')}
               </div>
             </AnimatedCard>
 
@@ -460,10 +464,10 @@ export default function TeacherPageClient({
                 {stats.lessonsThisWeek}
               </div>
               <div className="text-sm text-theme-tertiary">
-                Aulas Esta Semana
+                {t('stats_lessons_this_week')}
               </div>
               <div className="text-xs text-accent-blue mt-1">
-                {todayLessons.length} hoje
+                {todayLessons.length} {t('stats_today')}
               </div>
             </AnimatedCard>
 
@@ -478,10 +482,10 @@ export default function TeacherPageClient({
                 {stats.completionRate}%
               </div>
               <div className="text-sm text-theme-tertiary">
-                Taxa de Conclusão
+                {t('stats_completion_rate')}
               </div>
               <div className="text-xs text-accent-green mt-1">
-                +5% vs mês anterior
+                {t('stats_vs_last_month')}
               </div>
             </AnimatedCard>
 
@@ -495,9 +499,11 @@ export default function TeacherPageClient({
               <div className="text-2xl font-bold text-theme-primary mb-1">
                 {stats.avgLessonsPerWeek}
               </div>
-              <div className="text-sm text-theme-tertiary">Aulas/Semana</div>
+              <div className="text-sm text-theme-tertiary">
+                {t('stats_lessons_per_week')}
+              </div>
               <div className="text-xs text-theme-tertiary mt-1">
-                Média semanal
+                {t('stats_weekly_average')}
               </div>
             </AnimatedCard>
           </SequentialGrid>
@@ -517,10 +523,10 @@ export default function TeacherPageClient({
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-theme-primary classical-title">
-                        Ações Rápidas
+                        {t('quick_actions_title')}
                       </h2>
                       <p className="text-theme-tertiary text-sm">
-                        Gerencie suas atividades principais
+                        {t('quick_actions_subtitle')}
                       </p>
                     </div>
                   </div>
@@ -537,10 +543,10 @@ export default function TeacherPageClient({
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Adicionar Aluno
+                          {t('add_student_title')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Buscar e vincular novo aluno
+                          {t('add_student_description')}
                         </div>
                       </div>
                     </div>
@@ -556,10 +562,10 @@ export default function TeacherPageClient({
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Criar Aula
+                          {t('create_lesson_title')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Agendar nova aula
+                          {t('create_lesson_description')}
                         </div>
                       </div>
                     </div>
@@ -575,10 +581,10 @@ export default function TeacherPageClient({
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Ver Calendário
+                          {t('view_calendar_title')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Visualizar agenda completa
+                          {t('view_calendar_description')}
                         </div>
                       </div>
                     </div>
@@ -594,10 +600,10 @@ export default function TeacherPageClient({
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Gerenciar Tarefas
+                          {t('manage_assignments_title')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Criar e acompanhar tarefas
+                          {t('manage_assignments_description')}
                         </div>
                       </div>
                     </div>
@@ -613,10 +619,10 @@ export default function TeacherPageClient({
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Ver Perfil
+                          {t('view_profile_title')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Gerenciar dados do perfil
+                          {t('view_profile_description')}
                         </div>
                       </div>
                     </div>
@@ -632,10 +638,10 @@ export default function TeacherPageClient({
                       </div>
                       <div>
                         <div className="font-semibold text-theme-primary group-hover:text-brand-primary transition-colors">
-                          Reviews
+                          {t('reviews_title')}
                         </div>
                         <div className="text-sm text-theme-tertiary">
-                          Visualizar avaliações
+                          {t('reviews_description')}
                         </div>
                       </div>
                     </div>
@@ -654,10 +660,10 @@ export default function TeacherPageClient({
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-theme-primary classical-title">
-                        Seus Alunos
+                        {t('your_students_title')}
                       </h2>
                       <p className="text-theme-tertiary text-sm">
-                        {activeStudents.length} alunos ativos
+                        {activeStudents.length} {t('active_students')}
                       </p>
                     </div>
                   </div>
@@ -665,7 +671,7 @@ export default function TeacherPageClient({
                     href="/teacher/students"
                     className="text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors flex items-center space-x-1"
                   >
-                    <span>Ver todos</span>
+                    <span>{t('see_all')}</span>
                     <FiChevronRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -709,7 +715,7 @@ export default function TeacherPageClient({
                             </h3>
                             <div className="flex items-center space-x-4 text-sm text-theme-tertiary">
                               <span>
-                                Nível:{' '}
+                                {t('level_label')}{' '}
                                 {translateNivel(studentRel.student.level)}
                               </span>
                               {studentRel.student.mainInstrument && (
@@ -746,7 +752,7 @@ export default function TeacherPageClient({
                           {/* Status Badge */}
                           <div className="flex items-center space-x-2">
                             <span className="px-3 py-1 bg-accent-green/10 border border-accent-green/30 text-accent-green rounded-full text-xs font-medium">
-                              Ativo
+                              {t('status_active')}
                             </span>
                             <Link
                               href={`/teacher/students/${studentRel.student.id}`}
@@ -764,7 +770,7 @@ export default function TeacherPageClient({
                               {studentRel.stats.totalLessons}
                             </div>
                             <div className="text-xs text-theme-tertiary">
-                              Total de Aulas
+                              {t('total_lessons')}
                             </div>
                           </div>
                           <div className="text-center">
@@ -772,7 +778,7 @@ export default function TeacherPageClient({
                               {studentRel.stats.completionRate}%
                             </div>
                             <div className="text-xs text-theme-tertiary">
-                              Taxa de Conclusão
+                              {t('completion_rate')}
                             </div>
                           </div>
                         </div>
@@ -783,13 +789,13 @@ export default function TeacherPageClient({
                             <div className="flex items-center justify-between">
                               <div>
                                 <div className="text-sm font-medium text-theme-primary">
-                                  Próxima aula
+                                  {t('next_lesson')}
                                 </div>
                                 <div className="text-xs text-theme-tertiary">
                                   {formatDate(
                                     studentRel.nextLesson.scheduledAt
                                   )}{' '}
-                                  às{' '}
+                                  {t('at_time')}{' '}
                                   {formatTime(
                                     studentRel.nextLesson.scheduledAt
                                   )}
@@ -809,18 +815,17 @@ export default function TeacherPageClient({
                         <FiUsers className="w-8 h-8 text-theme-tertiary" />
                       </div>
                       <h3 className="text-lg font-bold text-theme-primary classical-title mb-2">
-                        Nenhum aluno ainda
+                        {t('no_students_yet')}
                       </h3>
                       <p className="text-theme-secondary max-w-sm mx-auto mb-4">
-                        Comece adicionando seus primeiros alunos para começar a
-                        usar a plataforma.
+                        {t('no_students_description')}
                       </p>
                       <button
                         onClick={() => setShowAddStudent(true)}
                         className="btn-classical-primary flex items-center space-x-2 mx-auto"
                       >
                         <FiUserPlus className="w-4 h-4" />
-                        <span>Adicionar Primeiro Aluno</span>
+                        <span>{t('add_first_student')}</span>
                       </button>
                     </div>
                   )}
@@ -839,9 +844,11 @@ export default function TeacherPageClient({
                     <FiCalendar className="w-4 h-4 text-theme-primary" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-theme-primary">Hoje</h3>
+                    <h3 className="font-bold text-theme-primary">
+                      {t('today_title')}
+                    </h3>
                     <p className="text-xs text-theme-tertiary">
-                      {todayLessons.length} aulas agendadas
+                      {todayLessons.length} {t('lessons_scheduled')}
                     </p>
                   </div>
                 </div>
@@ -876,7 +883,7 @@ export default function TeacherPageClient({
                     <div className="text-center py-6">
                       <FiCalendar className="w-8 h-8 text-theme-tertiary mx-auto mb-2" />
                       <p className="text-sm text-theme-tertiary">
-                        Nenhuma aula hoje
+                        {t('no_lessons_today')}
                       </p>
                     </div>
                   )}
@@ -887,7 +894,7 @@ export default function TeacherPageClient({
                     href="/teacher/calendar"
                     className="mt-4 block text-center text-brand-primary hover:text-brand-secondary text-sm font-medium transition-colors"
                   >
-                    Ver agenda completa
+                    {t('view_full_schedule')}
                   </Link>
                 )}
               </AnimatedCard>
@@ -902,9 +909,11 @@ export default function TeacherPageClient({
                   </div>
                   <div>
                     <h3 className="font-bold text-theme-primary">
-                      Próximas Aulas
+                      {t('upcoming_lessons')}
                     </h3>
-                    <p className="text-xs text-theme-tertiary">Esta semana</p>
+                    <p className="text-xs text-theme-tertiary">
+                      {t('this_week')}
+                    </p>
                   </div>
                 </div>
 
@@ -932,7 +941,7 @@ export default function TeacherPageClient({
                   {upcomingLessons.length === 0 && (
                     <div className="text-center py-4">
                       <p className="text-sm text-theme-tertiary">
-                        Nenhuma aula agendada
+                        {t('no_lessons_scheduled')}
                       </p>
                     </div>
                   )}

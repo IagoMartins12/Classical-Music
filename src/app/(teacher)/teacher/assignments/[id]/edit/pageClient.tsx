@@ -1,4 +1,4 @@
-// app/teacher/assignments/[id]/edit/pageClient.tsx - Client Component para Editar Tarefa
+// app/teacher/assignments/[id]/edit/pageClient.tsx - Client Component para Editar Tarefa COM TRADUÇÕES
 
 'use client';
 
@@ -31,16 +31,28 @@ import { useEditAssignment } from '@/app/hooks/lessonsSystem/useEditAssignment';
 import WorkSelectionSection, {
   LessonWork,
 } from '@/app/components/TeacherSystem/WorkSelectionSection';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface EditAssignmentPageClientProps {
   initialData: EditAssignmentData | null;
   errorMessage?: string;
 }
 
+const ASSIGNMENT_TYPES = {
+  practice: 'assignment_type_practice',
+  theory: 'assignment_type_theory',
+  listening: 'assignment_type_listening',
+  composition: 'assignment_type_composition',
+  performance: 'assignment_type_performance',
+  reading: 'assignment_type_reading',
+};
+
 export default function EditAssignmentPageClient({
   initialData,
   errorMessage,
 }: EditAssignmentPageClientProps) {
+  const { t } = useTranslation({ sections: ['teacher/assignmentsEdit'] });
+
   const router = useRouter();
   const { updateAssignment, deleteAssignment, loading, error, clearError } =
     useEditAssignment();
@@ -304,14 +316,13 @@ export default function EditAssignmentPageClient({
               <FiAlertCircle className="w-8 h-8 text-theme-primary" />
             </div>
             <h1 className="text-xl font-bold text-theme-primary classical-title mb-4">
-              Erro ao Carregar Tarefa
+              {t('error_loading')}
             </h1>
             <p className="text-theme-secondary classical-subtitle mb-6">
-              {errorMessage ||
-                'Tarefa não encontrada ou sem permissão para editar'}
+              {errorMessage || t('error_not_found')}
             </p>
             <Link href="/teacher/assignments" className="btn-classical-primary">
-              Voltar às Tarefas
+              {t('back_to_assignments')}
             </Link>
           </div>
         </div>
@@ -325,7 +336,7 @@ export default function EditAssignmentPageClient({
         <div className="flex items-center justify-center min-h-screen">
           <div className="classical-card p-8 text-center">
             <FiRefreshCw className="w-8 h-8 animate-spin text-brand-primary mx-auto mb-4" />
-            <p className="text-theme-secondary">Carregando tarefa...</p>
+            <p className="text-theme-secondary">{t('loading_assignment')}</p>
           </div>
         </div>
       </PageContainer>
@@ -349,7 +360,7 @@ export default function EditAssignmentPageClient({
               </Link>
               <div>
                 <h1 className="text-3xl font-bold text-gradient-brand classical-title">
-                  Editar Tarefa
+                  {t('page_title')}
                 </h1>
                 <p className="text-theme-secondary classical-subtitle">
                   {assignment.title}
@@ -364,7 +375,7 @@ export default function EditAssignmentPageClient({
               className="btn-classical-secondary text-accent-red border-accent-red/30 hover:bg-accent-red/10 flex items-center space-x-2"
             >
               <FiTrash2 className="w-4 h-4" />
-              <span>Deletar</span>
+              <span>{t('delete')}</span>
             </button>
           </div>
         </AnimatedItem>
@@ -378,13 +389,13 @@ export default function EditAssignmentPageClient({
                   {/* Basic Info */}
                   <div className="space-y-4">
                     <h2 className="text-xl font-bold text-theme-primary classical-title">
-                      Informações Básicas
+                      {t('basic_info')}
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Tipo de Tarefa
+                          {t('assignment_type')}
                         </label>
                         <Select
                           options={initialData.assignmentTypes.map((type) => ({
@@ -408,7 +419,7 @@ export default function EditAssignmentPageClient({
 
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Prioridade
+                          {t('priority')}
                         </label>
                         <Select
                           options={initialData.priorityLevels.map(
@@ -428,7 +439,7 @@ export default function EditAssignmentPageClient({
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Título da Tarefa *
+                        {t('assignment_title_required')}
                       </label>
                       <Input
                         type="text"
@@ -437,14 +448,14 @@ export default function EditAssignmentPageClient({
                           updateFormData('title', e.target.value)
                         }
                         className="input-classical w-full"
-                        placeholder="Ex: Prática - Escalas de Dó maior"
+                        placeholder={t('title_placeholder')}
                         required
                       />
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-theme-primary mb-2">
-                        Descrição Detalhada *
+                        {t('description_required')}
                       </label>
                       <textarea
                         value={formData.description}
@@ -453,7 +464,7 @@ export default function EditAssignmentPageClient({
                         }
                         rows={4}
                         className="input-classical w-full"
-                        placeholder="Descreva detalhadamente o que o aluno deve fazer, como deve praticar, quais técnicas focar..."
+                        placeholder={t('description_placeholder')}
                         required
                       />
                     </div>
@@ -462,13 +473,13 @@ export default function EditAssignmentPageClient({
                   {/* Timing */}
                   <div className="space-y-4">
                     <h3 className="text-lg font-bold text-theme-primary classical-title">
-                      Prazo e Tempo
+                      {t('deadline_and_time')}
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Prazo de Entrega
+                          {t('due_date')}
                         </label>
                         <Input
                           type="date"
@@ -483,7 +494,7 @@ export default function EditAssignmentPageClient({
 
                       <div>
                         <label className="block text-sm font-medium text-theme-primary mb-2">
-                          Tempo Estimado (minutos)
+                          {t('estimated_time')}
                         </label>
                         <Input
                           type="number"
@@ -507,7 +518,7 @@ export default function EditAssignmentPageClient({
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-theme-primary classical-title">
-                        Objetivos de Prática
+                        {t('practice_goals')}
                       </h3>
                       <button
                         type="button"
@@ -515,7 +526,7 @@ export default function EditAssignmentPageClient({
                         className="text-brand-primary hover:text-brand-secondary text-sm flex items-center space-x-1"
                       >
                         <FiPlus className="w-3 h-3" />
-                        <span>Adicionar</span>
+                        <span>{t('add')}</span>
                       </button>
                     </div>
 
@@ -536,7 +547,7 @@ export default function EditAssignmentPageClient({
                               )
                             }
                             className="input-classical flex-1"
-                            placeholder="Ex: Tocar em andamento 120 BPM com metrônomo"
+                            placeholder={t('practice_goal_placeholder')}
                           />
                           {formData.practiceGoals.length > 1 && (
                             <button
@@ -559,10 +570,10 @@ export default function EditAssignmentPageClient({
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold text-theme-primary classical-title flex items-center space-x-2">
                         <FiMusic className="w-5 h-5" />
-                        <span>Peças Musicais</span>
+                        <span>{t('musical_pieces')}</span>
                       </h3>
                       <div className="text-sm text-theme-secondary">
-                        {selectedWorks.length}/4 peças
+                        {t('pieces_count', { count: selectedWorks.length })}
                       </div>
                     </div>
 
@@ -581,7 +592,7 @@ export default function EditAssignmentPageClient({
                       onClick={() => setShowAdvanced(!showAdvanced)}
                       className="flex items-center space-x-2 text-brand-primary hover:text-brand-secondary"
                     >
-                      <span>Opções Avançadas</span>
+                      <span>{t('advanced_options')}</span>
                       <div
                         className={`transform transition-transform ${
                           showAdvanced ? 'rotate-180' : ''
@@ -609,7 +620,7 @@ export default function EditAssignmentPageClient({
                         <div>
                           <div className="flex items-center justify-between mb-2">
                             <label className="text-sm font-medium text-theme-primary">
-                              Objetivos Técnicos
+                              {t('technical_goals')}
                             </label>
                             <button
                               type="button"
@@ -617,7 +628,7 @@ export default function EditAssignmentPageClient({
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
                               <FiPlus className="w-3 h-3" />
-                              <span>Adicionar</span>
+                              <span>{t('add')}</span>
                             </button>
                           </div>
                           <div className="space-y-2">
@@ -637,7 +648,7 @@ export default function EditAssignmentPageClient({
                                     )
                                   }
                                   className="input-classical flex-1"
-                                  placeholder="Ex: Melhorar articulação nos staccatos"
+                                  placeholder={t('technical_goal_placeholder')}
                                   widhtFull
                                 />
                                 {formData.technicalGoals.length > 1 && (
@@ -660,7 +671,7 @@ export default function EditAssignmentPageClient({
                         <div>
                           <div className="flex items-center justify-between mb-2">
                             <label className="text-sm font-medium text-theme-primary">
-                              Objetivos Musicais
+                              {t('musical_goals')}
                             </label>
                             <button
                               type="button"
@@ -668,7 +679,7 @@ export default function EditAssignmentPageClient({
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
                               <FiPlus className="w-3 h-3" />
-                              <span>Adicionar</span>
+                              <span>{t('add')}</span>
                             </button>
                           </div>
                           <div className="space-y-2">
@@ -688,7 +699,7 @@ export default function EditAssignmentPageClient({
                                     )
                                   }
                                   className="input-classical flex-1"
-                                  placeholder="Ex: Expressar melhor o caráter melancólico"
+                                  placeholder={t('musical_goal_placeholder')}
                                   widhtFull
                                 />
                                 {formData.musicalGoals.length > 1 && (
@@ -711,7 +722,7 @@ export default function EditAssignmentPageClient({
                         <div>
                           <div className="flex items-center justify-between mb-2">
                             <label className="text-sm font-medium text-theme-primary">
-                              Exercícios Específicos
+                              {t('specific_exercises')}
                             </label>
                             <button
                               type="button"
@@ -719,7 +730,7 @@ export default function EditAssignmentPageClient({
                               className="text-brand-primary text-sm flex items-center space-x-1"
                             >
                               <FiPlus className="w-3 h-3" />
-                              <span>Adicionar</span>
+                              <span>{t('add')}</span>
                             </button>
                           </div>
                           <div className="space-y-2">
@@ -739,7 +750,7 @@ export default function EditAssignmentPageClient({
                                     )
                                   }
                                   className="input-classical flex-1"
-                                  placeholder="Ex: Hanon nº 1, Czerny op. 599 nº 5"
+                                  placeholder={t('exercise_placeholder')}
                                   widhtFull
                                 />
                                 {formData.exercises.length > 1 && (
@@ -768,7 +779,7 @@ export default function EditAssignmentPageClient({
                         <FiAlertCircle className="w-5 h-5 text-accent-red" />
                         <div>
                           <p className="text-accent-red font-medium">
-                            Erro ao atualizar tarefa
+                            {t('error_updating')}
                           </p>
                           <p className="text-accent-red/80 text-sm">{error}</p>
                         </div>
@@ -789,7 +800,7 @@ export default function EditAssignmentPageClient({
                       href="/teacher/assignments"
                       className="btn-classical-secondary"
                     >
-                      Cancelar
+                      {t('cancel')}
                     </Link>
                     <button
                       type="submit"
@@ -807,8 +818,8 @@ export default function EditAssignmentPageClient({
                       )}
                       <span>
                         {loading.updateAssignment
-                          ? 'Atualizando...'
-                          : 'Salvar Alterações'}
+                          ? t('updating')
+                          : t('save_changes')}
                       </span>
                     </button>
                   </div>
@@ -823,7 +834,7 @@ export default function EditAssignmentPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                  Informações da Tarefa
+                  {t('assignment_info')}
                 </h3>
 
                 <div className="space-y-4">
@@ -847,14 +858,18 @@ export default function EditAssignmentPageClient({
                       <div className="font-medium text-theme-primary">
                         {assignment.student.name}
                       </div>
-                      <div className="text-sm text-theme-tertiary">Aluno</div>
+                      <div className="text-sm text-theme-tertiary">
+                        {t('student')}
+                      </div>
                     </div>
                   </div>
 
                   <div className="pt-4 border-t border-theme-secondary/20">
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-theme-tertiary">Status:</span>
+                        <span className="text-theme-tertiary">
+                          {t('status')}
+                        </span>
                         <span
                           className={`font-medium ${
                             assignment.isCompleted
@@ -865,23 +880,27 @@ export default function EditAssignmentPageClient({
                           }`}
                         >
                           {assignment.isCompleted
-                            ? 'Concluída'
+                            ? t('completed')
                             : assignment.status === 'OVERDUE'
-                            ? 'Atrasada'
+                            ? t('overdue')
                             : assignment.status === 'IN_PROGRESS'
-                            ? 'Em Progresso'
-                            : 'Pendente'}
+                            ? t('in_progress')
+                            : t('pending')}
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-theme-tertiary">Criado em:</span>
+                        <span className="text-theme-tertiary">
+                          {t('created_on')}
+                        </span>
                         <span className="text-theme-primary">
                           {assignment.createdAt.toLocaleDateString('pt-BR')}
                         </span>
                       </div>
                       {assignment.dueDate && (
                         <div className="flex justify-between">
-                          <span className="text-theme-tertiary">Prazo:</span>
+                          <span className="text-theme-tertiary">
+                            {t('due_date_label')}
+                          </span>
                           <span className="text-theme-primary">
                             {new Date(assignment.dueDate).toLocaleDateString(
                               'pt-BR'
@@ -901,7 +920,7 @@ export default function EditAssignmentPageClient({
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h3 className="text-lg font-bold text-theme-primary classical-title mb-4 flex items-center space-x-2">
                     <FiMusic className="w-5 h-5" />
-                    <span>Peças Selecionadas</span>
+                    <span>{t('selected_pieces')}</span>
                   </h3>
 
                   <div className="space-y-3">
@@ -918,11 +937,11 @@ export default function EditAssignmentPageClient({
                             {work.workTitle}
                           </p>
                           <p className="text-xs text-theme-tertiary truncate">
-                            {work.composerName}
+                            {t('composer')}: {work.composerName}
                           </p>
                           {work.scoreId && (
                             <p className="text-xs text-accent-green">
-                              ✓ Com partitura
+                              {t('piece_with_score')}
                             </p>
                           )}
                         </div>
@@ -935,11 +954,11 @@ export default function EditAssignmentPageClient({
                     <div className="mt-3 p-3 bg-brand-primary/5 border border-brand-primary/20 rounded-lg">
                       <div className="text-xs text-theme-secondary">
                         <div className="flex justify-between">
-                          <span>Total de peças:</span>
+                          <span>{t('total_pieces')}</span>
                           <span className="font-medium">{worksIds.length}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Com partituras:</span>
+                          <span>{t('with_scores')}</span>
                           <span className="font-medium">
                             {workScoreIds.length}
                           </span>
@@ -955,7 +974,7 @@ export default function EditAssignmentPageClient({
             <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="none" className="classical-card p-6">
                 <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                  Aula Relacionada
+                  {t('related_lesson')}
                 </h3>
 
                 <div className="space-y-2">
@@ -977,7 +996,7 @@ export default function EditAssignmentPageClient({
               <AnimatedItem direction="up" springType="gentle">
                 <AnimatedCard hover="none" className="classical-card p-6">
                   <h3 className="text-lg font-bold text-theme-primary classical-title mb-4">
-                    Partituras Vinculadas (Legado)
+                    {t('linked_scores_legacy')}
                   </h3>
 
                   <div className="space-y-2">
@@ -1013,11 +1032,12 @@ export default function EditAssignmentPageClient({
                   <FiTrash2 className="w-8 h-8 text-theme-primary" />
                 </div>
                 <h2 className="text-xl font-bold text-theme-primary mb-4">
-                  Confirmar Exclusão
+                  {t('confirm_deletion')}
                 </h2>
                 <p className="text-theme-secondary mb-6">
-                  Tem certeza que deseja deletar a tarefa &quot;
-                  {assignment.title}&quot;? Esta ação não pode ser desfeita.
+                  {t('delete_confirmation_message', {
+                    title: assignment.title,
+                  })}
                 </p>
                 <div className="flex space-x-3">
                   <button
@@ -1025,7 +1045,7 @@ export default function EditAssignmentPageClient({
                     className="btn-classical-secondary flex-1"
                     disabled={loading.deleteAssignment}
                   >
-                    Cancelar
+                    {t('cancel')}
                   </button>
                   <button
                     onClick={handleDelete}
@@ -1038,7 +1058,7 @@ export default function EditAssignmentPageClient({
                       <FiTrash2 className="w-4 h-4" />
                     )}
                     <span>
-                      {loading.deleteAssignment ? 'Deletando...' : 'Deletar'}
+                      {loading.deleteAssignment ? t('deleting') : t('delete')}
                     </span>
                   </button>
                 </div>

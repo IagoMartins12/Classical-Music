@@ -1,4 +1,4 @@
-// app/(teacher)/components/TeacherNavigation.tsx - ATUALIZADO COM NOTIFICAÇÕES
+// app/(teacher)/components/TeacherNavigation.tsx - ATUALIZADO COM TRADUÇÕES
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -30,6 +30,8 @@ import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
 import { useLearningStore } from '@/app/stores/useLearningStore';
 import { ThemeToggle } from '../../ThemeToggle';
 import NotificationBell from '../../Notification/NotificationBell';
+import { LanguageDropdown, LanguageToggle } from '../../LanguageToggle';
+import { useTranslation } from '@/app/hooks/useTranslation';
 
 interface TeacherNavigationProps {
   user: any;
@@ -57,6 +59,8 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
   const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
+  const { t } = useTranslation({ sections: ['components/teacherNav'] });
+
   const { logout: authLogout } = useAuthStore();
   const { logout } = useAuth();
   const { reset } = useLearningStore();
@@ -68,65 +72,65 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
   const navigationItems: NavItem[] = [
     {
-      label: 'Dashboard',
+      label: t('menu_dashboard'),
       href: '/teacher',
       icon: FiHome,
       active: pathname === '/teacher',
     },
     {
-      label: 'Alunos',
+      label: t('menu_students'),
       icon: FiUsers,
       active: pathname.startsWith('/teacher/students'),
       href: '/teacher/students',
     },
     {
-      label: 'Aulas',
+      label: t('menu_lessons'),
       icon: FiCalendar,
       active: pathname.startsWith('/teacher/lessons'),
       href: '/teacher/lessons',
       submenu: [
         {
-          label: 'Todas as Aulas',
+          label: t('submenu_all_lessons'),
           href: '/teacher/lessons',
-          description: 'Gerenciar aulas e cronograma',
+          description: t('submenu_lessons_description'),
           icon: FiCalendar,
         },
         {
-          label: 'Criar Aula',
+          label: t('submenu_create_lesson'),
           href: '/teacher/lessons/create',
-          description: 'Agendar nova aula',
+          description: t('submenu_create_lesson_description'),
           icon: FiPlus,
         },
       ],
     },
     {
-      label: 'Calendário',
+      label: t('menu_calendar'),
       icon: FiCalendar,
       active: pathname.startsWith('/teacher/calendar'),
       href: '/teacher/calendar',
     },
     {
-      label: 'Tarefas',
+      label: t('menu_assignments'),
       href: '/teacher/assignments',
       icon: FiBookOpen,
       active: pathname.startsWith('/teacher/assignments'),
       submenu: [
         {
-          label: 'Todas as Tarefas',
+          label: t('submenu_all_assignments'),
           href: '/teacher/assignments',
-          description: 'Gerenciar tarefas dos alunos',
+          description: t('submenu_assignments_description'),
           icon: FiBookOpen,
         },
         {
-          label: 'Criar Tarefa',
+          label: t('submenu_create_assignment'),
           href: '/teacher/assignments/create',
-          description: 'Nova tarefa para alunos',
+          description: t('submenu_create_assignment_description'),
           icon: FiPlus,
         },
       ],
     },
     {
-      label: 'Perfil',
+      label: t('menu_profile'),
       href: '/teacher/profile',
       icon: FiUser,
       active: pathname === '/teacher/profile',
@@ -143,7 +147,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
     if (user.email) {
       return user.email.split('@')[0];
     }
-    return 'Professor';
+    return t('profile_role_teacher');
   };
 
   const getUserInitials = () => {
@@ -166,12 +170,12 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
       reset();
       authLogout();
       await signOut({ redirect: false });
-      toast.success('Logout realizado com sucesso!');
+      toast.success(t('logout_success'));
       setIsProfileOpen(false);
       router.push('/');
     } catch (error) {
       console.error('Logout error:', error);
-      toast.error('Erro ao fazer logout');
+      toast.error(t('logout_error'));
     }
   };
 
@@ -246,10 +250,10 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                 </div>
                 <div className="hidden sm:block">
                   <span className="text-xl font-bold text-gradient-brand classical-title">
-                    Opus Atlas
+                    {t('brand_name')}
                   </span>
                   <div className="text-xs text-theme-tertiary font-medium">
-                    Área do Professor
+                    {t('teacher_area')}
                   </div>
                 </div>
               </Link>
@@ -354,15 +358,15 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
 
             {/* Right Section */}
             <div className="flex items-center space-x-3">
-              {/* 🆕 NOTIFICATION BELL */}
+              <LanguageToggle variant="compact" className="hidden sm:block" />
+
+              {/* Theme Toggle */}
+              <ThemeToggle variant="navbar" className="hidden sm:block" />
               <NotificationBell
                 userRole="teacher"
                 userId={user.id}
                 className="hidden sm:block"
               />
-
-              {/* Theme Toggle */}
-              <ThemeToggle variant="navbar" className="hidden sm:block" />
 
               {/* Profile Menu */}
               <div className="relative" ref={profileRef}>
@@ -390,7 +394,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                     </p>
                     {!user.onboardingCompleted && (
                       <p className="text-xs text-accent-amber">
-                        Complete seu perfil
+                        {t('profile_complete_prompt')}
                       </p>
                     )}
                   </div>
@@ -411,7 +415,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       </p>
                       <div className="flex items-center mt-1">
                         <span className="px-2 py-1 bg-brand-primary/10 text-brand-primary text-xs rounded-full">
-                          Professor
+                          {t('profile_role_teacher')}
                         </span>
                       </div>
                       {!user.onboardingCompleted && (
@@ -419,7 +423,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                           onClick={open}
                           className="mt-2 w-full text-left px-2 py-1 bg-accent-amber/10 text-accent-amber text-xs rounded-lg hover:bg-accent-amber/20 transition-colors"
                         >
-                          Clique para completar seu perfil
+                          {t('profile_complete_action')}
                         </button>
                       )}
                     </div>
@@ -431,17 +435,16 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiUser className="w-4 h-4" />
-                      <span>Meu Perfil</span>
+                      <span>{t('profile_menu_my_profile')}</span>
                     </Link>
 
-                    {/* 🆕 LINK PARA NOTIFICAÇÕES */}
                     <Link
                       href="/teacher/notifications"
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-theme-secondary hover:text-brand-primary hover:bg-interactive-hover rounded-lg transition-all"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiBell className="w-4 h-4" />
-                      <span>Notificações</span>
+                      <span>{t('profile_menu_notifications')}</span>
                     </Link>
 
                     <Link
@@ -450,7 +453,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <GoBook className="w-4 h-4" />
-                      <span>Ver peças </span>
+                      <span>{t('profile_menu_view_pieces')}</span>
                     </Link>
 
                     <Link
@@ -459,7 +462,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <FiHome className="w-4 h-4" />
-                      <span>Voltar ao Site</span>
+                      <span>{t('profile_menu_back_to_site')}</span>
                     </Link>
 
                     <hr className="my-2 border-theme-secondary" />
@@ -469,7 +472,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       className="flex items-center space-x-2 w-full px-3 py-2 text-sm text-accent-red hover:bg-accent-red/10 rounded-lg transition-all"
                     >
                       <FiLogOut className="w-4 h-4" />
-                      <span>Sair</span>
+                      <span>{t('profile_menu_logout')}</span>
                     </button>
                   </div>
                 )}
@@ -497,10 +500,10 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                   <GiGrandPiano className="w-8 h-8 mr-3 text-brand-primary" />
                   <div>
                     <span className="text-lg font-bold text-gradient-brand">
-                      Opus Atlas
+                      {t('brand_name')}
                     </span>
                     <div className="text-xs text-theme-tertiary">
-                      Área do Professor
+                      {t('teacher_area')}
                     </div>
                   </div>
                 </div>
@@ -512,7 +515,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                 </button>
               </div>
 
-              {/* 🆕 NOTIFICATION BELL MOBILE */}
+              {/* Notification Bell Mobile */}
               <div className="mb-6 pb-4 border-b border-theme-secondary">
                 <NotificationBell
                   userRole="teacher"
@@ -600,7 +603,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                 ))}
               </nav>
 
-              {/* Theme Toggle Mobile */}
+              <LanguageDropdown className="hidden sm:block" />
               <div className="mt-8 pt-6 border-t border-theme-secondary">
                 <ThemeToggle
                   variant="navbar"
