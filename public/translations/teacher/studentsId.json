@@ -45,6 +45,8 @@
     "see_all": "Ver todas",
     "lesson_completed": "Concluída",
     "lesson_cancelled": "Cancelada",
+    "lesson_scheduled": "Agendada",
+
     "homework_label": "Tarefa:",
     "teacher_notes": "Anotações do Professor",
     "teacher_notes_subtitle": "Suas observações sobre o aluno",
@@ -159,6 +161,8 @@
     "see_all": "See all",
     "lesson_completed": "Completed",
     "lesson_cancelled": "Cancelled",
+    "lesson_scheduled": "Scheduled",
+
     "homework_label": "Homework:",
     "teacher_notes": "Teacher Notes",
     "teacher_notes_subtitle": "Your observations about the student",

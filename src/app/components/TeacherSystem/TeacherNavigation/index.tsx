@@ -453,7 +453,7 @@ export default function TeacherNavigation({ user }: TeacherNavigationProps) {
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <GoBook className="w-4 h-4" />
-                      <span>{t('profile_menu_view_pieces')}</span>
+                      <span>{t('profile_menu_see_history')}</span>
                     </Link>
 
                     <Link

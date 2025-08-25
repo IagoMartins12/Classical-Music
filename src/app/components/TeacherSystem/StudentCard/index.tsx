@@ -128,7 +128,7 @@ export default function StudentCard({
           </div>
 
           {/* Stats */}
-          <div className="flex items-center space-x-6 text-center">
+          {/* <div className="flex items-center space-x-6 text-center">
             <div>
               <div className="text-lg font-bold text-brand-primary">
                 {stats.totalLessons}
@@ -145,7 +145,7 @@ export default function StudentCard({
                 {translations.completionRate}
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* Next Lesson */}
           <div className="w-32 text-center">
@@ -262,7 +262,7 @@ export default function StudentCard({
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      {/* <div className="grid grid-cols-2 gap-4 mb-4">
         <div className="text-center p-3 bg-theme-elevated rounded-lg">
           <div className="text-xl font-bold text-brand-primary mb-1">
             {stats.totalLessons}
@@ -280,11 +280,11 @@ export default function StudentCard({
             {translations.completionRate}
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Next Lesson */}
       {nextLesson && (
-        <div className="mb-4 p-3 bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20">
+        <div className="mb-4 p-3 bg-theme-elevated to-interactive-hover rounded-lg">
           <div className="flex items-center justify-between">
             <div>
               <div className="text-sm font-medium text-theme-primary mb-1">

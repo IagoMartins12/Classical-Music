@@ -428,7 +428,7 @@ export default function TeacherPageClient({
         </AnimatedItem>
 
         {/* Stats Cards */}
-        <AnimatedItem direction="up" springType="gentle">
+        {/* <AnimatedItem direction="up" springType="gentle">
           <SequentialGrid
             cols={4}
             gap={6}
@@ -479,7 +479,7 @@ export default function TeacherPageClient({
                 <FiTrendingUp className="w-6 h-6 text-theme-primary" />
               </div>
               <div className="text-2xl font-bold text-theme-primary mb-1">
-                {stats.completionRate}%
+                {stats.completionRate.toFixed(2)}%
               </div>
               <div className="text-sm text-theme-tertiary">
                 {t('stats_completion_rate')}
@@ -507,14 +507,14 @@ export default function TeacherPageClient({
               </div>
             </AnimatedCard>
           </SequentialGrid>
-        </AnimatedItem>
+        </AnimatedItem> */}
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - 2/3 */}
           <div className="lg:col-span-2 space-y-8">
             {/* Quick Actions */}
-            <AnimatedItem direction="up" springType="gentle">
+            {/* <AnimatedItem direction="up" springType="gentle">
               <AnimatedCard hover="lift" className="classical-card p-6">
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center space-x-3">
@@ -648,7 +648,7 @@ export default function TeacherPageClient({
                   </Link>
                 </div>
               </AnimatedCard>
-            </AnimatedItem>
+            </AnimatedItem> */}
 
             {/* Students Section */}
             <AnimatedItem direction="up" springType="gentle">
@@ -726,7 +726,7 @@ export default function TeacherPageClient({
                             </div>
                           </div>
 
-                          <div className="mt-2">
+                          {/* <div className="mt-2">
                             <StudentInviteStatusBadge
                               status={studentRel.relationship.inviteStatus}
                               acceptedAt={
@@ -747,7 +747,7 @@ export default function TeacherPageClient({
                               )}
                               compact={true}
                             />
-                          </div>
+                          </div> */}
 
                           {/* Status Badge */}
                           <div className="flex items-center space-x-2">
@@ -764,7 +764,7 @@ export default function TeacherPageClient({
                         </div>
 
                         {/* Stats */}
-                        <div className="mt-4 pt-4 border-t border-theme-secondary grid grid-cols-2 gap-4">
+                        {/* <div className="mt-4 pt-4 border-t border-theme-secondary grid grid-cols-2 gap-4">
                           <div className="text-center">
                             <div className="text-lg font-bold text-brand-primary">
                               {studentRel.stats.totalLessons}
@@ -775,13 +775,13 @@ export default function TeacherPageClient({
                           </div>
                           <div className="text-center">
                             <div className="text-lg font-bold text-accent-green">
-                              {studentRel.stats.completionRate}%
+                              {studentRel.stats.completionRate.toFixed(2)}%
                             </div>
                             <div className="text-xs text-theme-tertiary">
                               {t('completion_rate')}
                             </div>
                           </div>
-                        </div>
+                        </div> */}
 
                         {/* Next Lesson */}
                         {studentRel.nextLesson && (

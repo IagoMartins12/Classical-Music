@@ -141,13 +141,62 @@ const CreateWorkModal = ({
   ];
 
   const tonalityOptions = [
-    { value: '', label: t('tonalities_not_specified') },
-    // As tonalidades serão mantidas como estão no código original
-    // pois podem usar utils de tradução específicas
+    { value: '', label: 'Selecione uma tonalidade' },
+
+    // Tonalidades Maiores
     { value: 'Do maior', label: 'Dó maior' },
     { value: 'Do# maior', label: 'Dó# maior' },
     { value: 'Reb maior', label: 'Réb maior' },
-    // ... (mantendo todas as tonalidades como no original)
+    { value: 'Re maior', label: 'Ré maior' },
+    { value: 'Re# maior', label: 'Ré# maior' },
+    { value: 'Mib maior', label: 'Mib maior' },
+    { value: 'Mi maior', label: 'Mi maior' },
+    { value: 'Fa maior', label: 'Fá maior' },
+    { value: 'Fa# maior', label: 'Fá# maior' },
+    { value: 'Solb maior', label: 'Solb maior' },
+    { value: 'Sol maior', label: 'Sol maior' },
+    { value: 'Sol# maior', label: 'Sol# maior' },
+    { value: 'Lab maior', label: 'Láb maior' },
+    { value: 'La maior', label: 'Lá maior' },
+    { value: 'La# maior', label: 'Lá# maior' },
+    { value: 'Sib maior', label: 'Sib maior' },
+    { value: 'Si maior', label: 'Si maior' },
+
+    // Tonalidades Menores
+    { value: 'Do menor', label: 'Dó menor' },
+    { value: 'Do# menor', label: 'Dó# menor' },
+    { value: 'Reb menor', label: 'Réb menor' },
+    { value: 'Re menor', label: 'Ré menor' },
+    { value: 'Re# menor', label: 'Ré# menor' },
+    { value: 'Mib menor', label: 'Mib menor' },
+    { value: 'Mi menor', label: 'Mi menor' },
+    { value: 'Fa menor', label: 'Fá menor' },
+    { value: 'Fa# menor', label: 'Fá# menor' },
+    { value: 'Solb menor', label: 'Solb menor' },
+    { value: 'Sol menor', label: 'Sol menor' },
+    { value: 'Sol# menor', label: 'Sol# menor' },
+    { value: 'Lab menor', label: 'Láb menor' },
+    { value: 'La menor', label: 'Lá menor' },
+    { value: 'La# menor', label: 'Lá# menor' },
+    { value: 'Sib menor', label: 'Sib menor' },
+    { value: 'Si menor', label: 'Si menor' },
+
+    // Modos
+    { value: 'Dorico', label: 'Dórico' },
+    { value: 'Frigio', label: 'Frígio' },
+    { value: 'Lidio', label: 'Lídio' },
+    { value: 'Mixolidio', label: 'Mixolídio' },
+    { value: 'Eolio', label: 'Eólio' },
+    { value: 'Locrio', label: 'Lócrio' },
+
+    // Outras categorias
+    { value: 'Atonal', label: 'Atonal' },
+    { value: 'Politonal', label: 'Politonal' },
+    { value: 'Modal', label: 'Modal' },
+    { value: 'Cromática', label: 'Cromática' },
+    { value: 'Dodecafônica', label: 'Dodecafônica' },
+    { value: 'Pentatônica', label: 'Pentatônica' },
+    { value: 'Não especificada', label: 'Não especificada' },
   ];
 
   const fieldRefs = {

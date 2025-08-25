@@ -450,7 +450,7 @@ function EditRelationshipModal({
 export default function TeacherStudentDetailPageClient({
   studentData,
 }: TeacherStudentDetailPageClientProps) {
-  const { t } = useTranslation({ sections: ['teacher/students/[studentId]'] });
+  const { t } = useTranslation({ sections: ['teacher/studentsId'] });
 
   // Initialize hook with server data
   const {
@@ -1076,6 +1076,8 @@ export default function TeacherStudentDetailPageClient({
                                 ? t('lesson_completed')
                                 : lesson.status === 'CANCELLED'
                                 ? t('lesson_cancelled')
+                                : lesson.status === 'SCHEDULED'
+                                ? t('lesson_scheduled')
                                 : lesson.status}
                             </span>
                           </div>
@@ -1208,7 +1210,7 @@ export default function TeacherStudentDetailPageClient({
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-gradient-to-r from-theme-elevated to-interactive-hover rounded-lg border border-theme-primary/20 p-4">
+                  <div className="bg-theme-elevated border-theme-primary/20 p-4">
                     {teacherNotes ? (
                       <p className="text-theme-primary whitespace-pre-wrap">
                         {teacherNotes}

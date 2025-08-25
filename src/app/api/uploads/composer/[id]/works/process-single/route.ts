@@ -19,6 +19,7 @@ import {
   VALID_WORKGENRES,
   WORK_GENRE_TRANSLATIONS,
 } from '../../../../../../../../scripts/imslp-works-scraper-util';
+import { revalidateTag } from 'next/cache';
 
 interface WorkToProcess {
   id: string;
@@ -232,6 +233,10 @@ export async function POST(
       isIMSLP: true,
       dataSource: 'bulk_import_imslp',
     });
+
+    revalidateTag('user-uploads');
+    revalidateTag('filter-data');
+    revalidateTag('all-uploads');
 
     console.log(`✅ Obra criada com sucesso: ${createdWork.title}`);
 

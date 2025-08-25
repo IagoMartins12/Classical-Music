@@ -10,7 +10,6 @@ import {
   FiCheck,
   FiX,
   FiAlertCircle,
-  FiEdit3,
   FiExternalLink,
   FiInfo,
   FiLoader,

@@ -377,15 +377,15 @@ export default function TeacherLessonsPageClient({
         <AnimatedCard
           key={lesson.id}
           hover="lift"
-          className={`classical-card p-6 relative ${
-            statusInfo.needsAttention ? 'ring-2 ring-accent-red/30' : ''
+          className={`classical-card p-6   relative ${
+            statusInfo.needsAttention ? ' border !border-red-400 0' : ''
           }`}
           delay={index * 0.05}
         >
           {/* Indicativo de atenção necessária */}
           {statusInfo.needsAttention && (
             <div className="absolute -top-2 -right-2 w-6 h-6 bg-accent-red rounded-full flex items-center justify-center">
-              <FiAlertTriangle className="w-3 h-3 text-white" />
+              <FiAlertTriangle className="w-6 h-6 text-red-600" />
             </div>
           )}
 
@@ -1028,7 +1028,7 @@ export default function TeacherLessonsPageClient({
           <AnimatedCard hover="none" className="classical-card p-6 mb-8">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               {/* Search */}
-              <div className="flex-1 max-w-md">
+              <div className="flex-1 ">
                 <div className="relative">
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-tertiary w-5 h-5" />
                   <input
@@ -1036,7 +1036,7 @@ export default function TeacherLessonsPageClient({
                     placeholder={t('search_placeholder')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="input-classical-2 !pl-10"
+                    className="input-classical w-full !pl-10"
                   />
                 </div>
               </div>
