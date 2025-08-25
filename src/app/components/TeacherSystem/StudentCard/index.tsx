@@ -7,51 +7,15 @@ import Link from 'next/link';
 import {
   FiUser,
   FiCalendar,
-  FiClock,
   FiEye,
   FiPause,
   FiPlay,
   FiRefreshCw,
-  FiBarChart2,
-  FiCheckCircle,
 } from 'react-icons/fi';
 import { translateNivel } from '@/app/utils';
 import { AnimatedCard } from '../../animation/AnimatedComponents';
 import { ViewMode } from '../../ViewModeToggle';
 import { TeacherStudentsServerData } from '@/app/(teacher)/teacher/students/pageServer';
-
-interface StudentRelationship {
-  relationshipId: string;
-  student: {
-    id: string;
-    name: string;
-    email: string;
-    image?: string | null;
-    phone?: string | null;
-    city?: string | null;
-    state?: string | null;
-    mainInstrument?: string | null;
-    experienceLevel?: string | null;
-    createdAt: Date | string;
-  };
-  relationship: {
-    isActive: boolean;
-    pausedAt?: Date | string | null;
-    startDate: Date | string;
-    maxLessonsPerWeek: number;
-    lessonDuration: number;
-  };
-  stats: {
-    totalLessons: number;
-    completionRate: number;
-  };
-  nextLesson?: {
-    id: string;
-    title: string;
-    scheduledAt: Date | string;
-    duration: number;
-  } | null;
-}
 
 interface StudentCardTranslations {
   studentSince: string;

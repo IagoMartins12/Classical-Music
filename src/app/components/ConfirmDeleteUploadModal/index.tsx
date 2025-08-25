@@ -126,9 +126,9 @@ export default function ConfirmDeleteUploadModal({
     return count === 1 ? t('item_score_singular') : t('item_score_plural');
   };
 
-  const getWorkText = (count: number) => {
-    return count === 1 ? t('item_work_singular') : t('item_work_plural');
-  };
+  // const getWorkText = (count: number) => {
+  //   return count === 1 ? t('item_work_singular') : t('item_work_plural');
+  // };
 
   const modalContent = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">

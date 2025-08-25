@@ -53,14 +53,14 @@ const typeIcons = {
   reading: FiMusic,
 };
 
-const ASSIGNMENT_TYPES = {
-  practice: 'assignment_type_practice',
-  theory: 'assignment_type_theory',
-  listening: 'assignment_type_listening',
-  composition: 'assignment_type_composition',
-  performance: 'assignment_type_performance',
-  reading: 'assignment_type_reading',
-};
+// const ASSIGNMENT_TYPES = {
+//   practice: 'assignment_type_practice',
+//   theory: 'assignment_type_theory',
+//   listening: 'assignment_type_listening',
+//   composition: 'assignment_type_composition',
+//   performance: 'assignment_type_performance',
+//   reading: 'assignment_type_reading',
+// };
 
 export default function CreateAssignmentPageClient({
   initialData,

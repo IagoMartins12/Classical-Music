@@ -1,7 +1,7 @@
 // app/teacher/profile/pageClient.tsx - Client Component CORRIGIDO
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   FiUser,
   FiSave,

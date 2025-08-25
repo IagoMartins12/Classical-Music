@@ -21,8 +21,8 @@ import {
 import { PiTarget } from 'react-icons/pi';
 import Link from 'next/link';
 import { useLearningStore } from '@/app/stores/useLearningStore';
-import { BadgeGrid, createLearningBadges } from '../badges/BadgeSystem';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
+import { BadgeGrid, createLearningBadges } from '../../badges/BadgeSystem';
 
 interface LearningStatsWidgetProps {
   className?: string;
@@ -466,7 +466,7 @@ export default function LearningStatsWidget({
                 </h4>
               </div>
               <div className="grid grid-cols-6 gap-2">
-                {stats.monthlyProgress.map((month, index) => {
+                {stats.monthlyProgress.map((month) => {
                   const maxCount = Math.max(
                     ...stats.monthlyProgress.map((m) => m.count)
                   );

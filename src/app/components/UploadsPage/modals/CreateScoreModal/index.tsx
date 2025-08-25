@@ -452,7 +452,7 @@ const CreateScoreModal = ({
             error: pdfInfo.error,
           });
         }
-      } catch (error) {
+      } catch {
         setPdfValidation({
           isValidating: false,
           isValid: false,
@@ -529,7 +529,7 @@ const CreateScoreModal = ({
             setThumbnailError(thumbnailResult.error || 'Erro desconhecido');
             toast.info('⚠️ Preview não disponível - usando placeholder');
           }
-        } catch (error) {
+        } catch  {
           setThumbnailError('Erro ao gerar preview');
           toast.error('⚠️ Erro ao gerar preview da partitura');
         } finally {
@@ -556,8 +556,7 @@ const CreateScoreModal = ({
       if (errors.downloadUrl) {
         setErrors((prev) => ({ ...prev, downloadUrl: '' }));
       }
-    } catch (error) {
-      console.error('❌ Erro no upload:', error);
+    } catch  {
       toast.error('Erro ao fazer upload do arquivo');
       setPdfValidation({
         isValidating: false,

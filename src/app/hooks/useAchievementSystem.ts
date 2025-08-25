@@ -25,7 +25,7 @@ export const useAchievementSystem = () => {
   const { favoriteComposers, favoriteWorks, favoriteScores } =
     useFavoritesStore();
   const { wantToLearn, learned } = useLearningStore();
-  const { userAnnotations, getUserAnnotations } = useAnnotationsStore();
+  const { getUserAnnotations } = useAnnotationsStore();
 
   // Refs para detectar mudanças
   const lastStatsRef = useRef<{

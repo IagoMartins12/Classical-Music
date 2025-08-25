@@ -19,7 +19,6 @@ import {
   FiPhone,
   FiMail,
   FiAlertCircle,
-  FiTrendingUp,
   FiTarget,
 } from 'react-icons/fi';
 import {

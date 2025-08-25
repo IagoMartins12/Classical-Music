@@ -1222,7 +1222,6 @@ function WeekView({
   onEventClick,
   formatEventTime,
   getEventStatusColor,
-  t,
 }: WeekViewProps) {
   const today = new Date();
 

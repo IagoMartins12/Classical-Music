@@ -39,6 +39,7 @@ export default function ComposerBiography({
   const { t } = useTranslation({ sections: ['pages/composerId'] });
   const { language } = useLanguageWithRefresh();
 
+  console.log('composerName', composerName);
   // Usar refs para controlar se já tentamos gerar e evitar loops
   const hasTriedGeneration = useRef(false);
   const lastComposerId = useRef(composerId);

@@ -18,7 +18,6 @@ import {
   FiChevronDown,
   FiChevronRight,
   FiMusic,
-  FiHeart,
   FiFile,
   FiBell,
   FiBook,

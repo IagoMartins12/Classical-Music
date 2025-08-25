@@ -2,6 +2,8 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { Badge } from '../components/badges/BadgeSystem';
+import { useAchievements } from '../components/achievement/AchievementToast';
+import { useEffect } from 'react';
 
 export interface UserAchievement {
   id: string;
@@ -22,7 +24,7 @@ export interface UserAchievement {
   // Metadados
   progress?: number;
   maxProgress?: number;
-  xpReward: number;
+  xpReward?: number;
 
   // Status
   isNew: boolean; // Se ainda não foi visualizada pelo usuário
@@ -139,7 +141,6 @@ export const useAchievementStore = create<AchievementStore>()(
         const newAchievement: UserAchievement = {
           id: `${userId}-${badgeId}-${Date.now()}`,
           userId,
-          badgeId,
           ...achievementData,
           unlockedAt: new Date().toISOString(),
           xpReward: calculateXPReward(achievementData.rarity),
@@ -164,7 +165,7 @@ export const useAchievementStore = create<AchievementStore>()(
           // Atualizar store local
           set((state) => ({
             userAchievements: [...state.userAchievements, savedAchievement],
-            totalXP: state.totalXP + newAchievement.xpReward,
+            totalXP: state.totalXP + (newAchievement.xpReward ?? 0),
           }));
 
           console.log(
@@ -264,7 +265,7 @@ export const useAchievementStore = create<AchievementStore>()(
         );
 
         let streak = 0;
-        let currentDate = new Date();
+        const currentDate = new Date();
         currentDate.setHours(23, 59, 59, 999); // Fim do dia atual
 
         for (const achievement of achievements) {
@@ -379,6 +380,7 @@ export const useAchievementIntegration = (userId?: string) => {
           rarity: badge.rarity,
           progress: badge.progress,
           maxProgress: badge.maxProgress,
+          badgeId: badge.id,
         });
 
         if (achievement) {

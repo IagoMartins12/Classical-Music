@@ -1,13 +1,12 @@
 // components/favorites/FavoritesStatsWidget.tsx
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 import {
   FiBarChart2,
   FiEye,
   FiEyeOff,
   FiTrendingUp,
-  FiClock,
   FiStar,
   FiMusic,
   FiUser,
@@ -20,12 +19,12 @@ import {
 import { GiMusicalNotes } from 'react-icons/gi';
 import Link from 'next/link';
 import { useFavoritesStore } from '@/app/stores/useFavoritesStore';
-import { BadgeGrid, createFavoritesBadges } from '../badges/BadgeSystem';
 import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
 import { useAchievementDetection } from '../../achievement/AchievementToast';
 import { useStatsModal } from '../StatsModal';
 import { useAdaptiveStats } from '@/app/hooks/useMobile';
 import { FaFire } from 'react-icons/fa';
+import { BadgeGrid, createFavoritesBadges } from '../../badges/BadgeSystem';
 
 interface FavoritesStatsWidgetProps {
   className?: string;
@@ -56,7 +55,7 @@ const useFavoritesStats = () => {
     )[0];
 
     // Distribuição por instrumento (baseado nas obras)
-    const instrumentDistribution: Record<string, number> = {};
+    // const instrumentDistribution: Record<string, number> = {};
     // Nota: Precisaríamos acessar o instrument da work, mas como não temos na interface,
     // vamos simular alguns dados para demonstração
 
@@ -160,7 +159,7 @@ export default function FavoritesStatsWidget({
   className = '',
 }: FavoritesStatsWidgetProps) {
   const stats = useFavoritesStats();
-  const { isVisible, toggleVisibility, isMobile, showInModal, showInline } =
+  const { isVisible, toggleVisibility, isMobile, showInline } =
     useAdaptiveStats('favorites');
   const { openModal, Modal } = useStatsModal('favorites');
   const { checkMultipleBadges } = useAchievementDetection();

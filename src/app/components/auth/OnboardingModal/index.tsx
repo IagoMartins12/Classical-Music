@@ -99,7 +99,7 @@ const OnboardingModal: React.FC = () => {
     } else {
       // Telefone vazio é válido, remover erro
       setValidationErrors((prev) => {
-        const { phone, ...rest } = prev;
+        const { _phone, ...rest } = prev;
         return rest;
       });
     }

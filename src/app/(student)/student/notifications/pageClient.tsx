@@ -47,6 +47,7 @@ export default function StudentNotificationsPageClient({
 }: StudentNotificationsPageClientProps) {
   const { t } = useTranslation({ sections: ['student/notifications'] });
 
+  console.log('notificationStats', notificationStats);
   const [notifications, setNotifications] =
     useState<NotificationData[]>(initialNotifications);
   const [unreadCount, setUnreadCount] = useState(initialUnreadCount);

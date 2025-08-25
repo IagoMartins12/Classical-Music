@@ -10,8 +10,6 @@ import {
   FiChevronRight,
   FiEye,
   FiX,
-  FiCheck,
-  FiAlertCircle,
   FiRefreshCw,
   FiMapPin,
   FiBookOpen,
@@ -24,7 +22,6 @@ import {
   AnimatedCard,
   AnimatedItem,
   PageContainer,
-  SequentialGrid,
 } from '../../../components/animation/AnimatedComponents';
 import { StudentCalendarData } from './pageServer';
 import Link from 'next/link';
@@ -276,40 +273,40 @@ export default function StudentCalendarPageClient({
   }, [selectedEvent, feedbackText, addFeedbackToLesson]);
 
   // Statistics for current view
-  const viewStats = useMemo(() => {
-    if (!calendarData)
-      return { total: 0, scheduled: 0, completed: 0, cancelled: 0, today: 0 };
+  // const viewStats = useMemo(() => {
+  //   if (!calendarData)
+  //     return { total: 0, scheduled: 0, completed: 0, cancelled: 0, today: 0 };
 
-    const now = new Date();
-    const eventsInView = filteredEvents.filter((event) => {
-      const eventDate = new Date(event.start);
+  //   const now = new Date();
+  //   const eventsInView = filteredEvents.filter((event) => {
+  //     const eventDate = new Date(event.start);
 
-      if (viewMode === 'month') {
-        return (
-          eventDate.getMonth() === currentDate.getMonth() &&
-          eventDate.getFullYear() === currentDate.getFullYear()
-        );
-      } else if (viewMode === 'week') {
-        const weekStart = new Date(currentDate);
-        weekStart.setDate(currentDate.getDate() - currentDate.getDay());
-        const weekEnd = new Date(weekStart);
-        weekEnd.setDate(weekStart.getDate() + 6);
-        return eventDate >= weekStart && eventDate <= weekEnd;
-      } else {
-        return eventDate.toDateString() === currentDate.toDateString();
-      }
-    });
+  //     if (viewMode === 'month') {
+  //       return (
+  //         eventDate.getMonth() === currentDate.getMonth() &&
+  //         eventDate.getFullYear() === currentDate.getFullYear()
+  //       );
+  //     } else if (viewMode === 'week') {
+  //       const weekStart = new Date(currentDate);
+  //       weekStart.setDate(currentDate.getDate() - currentDate.getDay());
+  //       const weekEnd = new Date(weekStart);
+  //       weekEnd.setDate(weekStart.getDate() + 6);
+  //       return eventDate >= weekStart && eventDate <= weekEnd;
+  //     } else {
+  //       return eventDate.toDateString() === currentDate.toDateString();
+  //     }
+  //   });
 
-    return {
-      total: eventsInView.length,
-      scheduled: eventsInView.filter((e) => e.status === 'SCHEDULED').length,
-      completed: eventsInView.filter((e) => e.status === 'COMPLETED').length,
-      cancelled: eventsInView.filter((e) => e.status === 'CANCELLED').length,
-      today: filteredEvents.filter(
-        (e) => new Date(e.start).toDateString() === now.toDateString()
-      ).length,
-    };
-  }, [filteredEvents, viewMode, currentDate, calendarData]);
+  //   return {
+  //     total: eventsInView.length,
+  //     scheduled: eventsInView.filter((e) => e.status === 'SCHEDULED').length,
+  //     completed: eventsInView.filter((e) => e.status === 'COMPLETED').length,
+  //     cancelled: eventsInView.filter((e) => e.status === 'CANCELLED').length,
+  //     today: filteredEvents.filter(
+  //       (e) => new Date(e.start).toDateString() === now.toDateString()
+  //     ).length,
+  //   };
+  // }, [filteredEvents, viewMode, currentDate, calendarData]);
 
   // Render estado sem professores
   if (error === 'no_teachers' || errorMessage === 'no_teachers') {

@@ -276,60 +276,60 @@ const AnnotationsPageClient = () => {
   }, [userAnnotations]);
 
   // Estatísticas para o widget
-  const widgetStats = useMemo(() => {
-    const categoryDistribution = CATEGORY_OPTIONS.slice(1)
-      .map((option) => {
-        const count = userAnnotations.filter(
-          (a) => a.category === option.value
-        ).length;
-        return {
-          category: option.value,
-          _count: { category: count },
-        };
-      })
-      .filter((item) => item._count.category > 0);
+  // const widgetStats = useMemo(() => {
+  //   const categoryDistribution = CATEGORY_OPTIONS.slice(1)
+  //     .map((option) => {
+  //       const count = userAnnotations.filter(
+  //         (a) => a.category === option.value
+  //       ).length;
+  //       return {
+  //         category: option.value,
+  //         _count: { category: count },
+  //       };
+  //     })
+  //     .filter((item) => item._count.category > 0);
 
-    return {
-      categoryDistribution,
-      difficultyDistribution: [],
-      scopeDistribution: [],
-      recentAnnotations: userAnnotations.filter((a) => {
-        const createdDate = new Date(a.createdAt);
-        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-        return createdDate >= thirtyDaysAgo;
-      }).length,
-    };
-  }, [userAnnotations]);
+  //   return {
+  //     categoryDistribution,
+  //     difficultyDistribution: [],
+  //     scopeDistribution: [],
+  //     recentAnnotations: userAnnotations.filter((a) => {
+  //       const createdDate = new Date(a.createdAt);
+  //       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  //       return createdDate >= thirtyDaysAgo;
+  //     }).length,
+  //   };
+  // }, [userAnnotations]);
 
-  // Top anotações para o widget
-  const topAnnotations = useMemo(() => {
-    return [...userAnnotations]
-      .sort((a, b) => b.helpfulCount - a.helpfulCount)
-      .slice(0, 5);
-  }, [userAnnotations]);
+  // // Top anotações para o widget
+  // const topAnnotations = useMemo(() => {
+  //   return [...userAnnotations]
+  //     .sort((a, b) => b.helpfulCount - a.helpfulCount)
+  //     .slice(0, 5);
+  // }, [userAnnotations]);
 
-  // Obras mais anotadas para o widget
-  const mostAnnotatedWorks = useMemo(() => {
-    const worksMap = new Map();
+  // // Obras mais anotadas para o widget
+  // const mostAnnotatedWorks = useMemo(() => {
+  //   const worksMap = new Map();
 
-    userAnnotations.forEach((annotation) => {
-      const workId = annotation.workId;
-      if (!worksMap.has(workId)) {
-        worksMap.set(workId, {
-          id: workId,
-          title: annotation.work?.title,
-          composer: annotation.work?.composer,
-          opOrCatalog: annotation.work?.opOrCatalog,
-          annotationsCount: 0,
-        });
-      }
-      worksMap.get(workId).annotationsCount++;
-    });
+  //   userAnnotations.forEach((annotation) => {
+  //     const workId = annotation.workId;
+  //     if (!worksMap.has(workId)) {
+  //       worksMap.set(workId, {
+  //         id: workId,
+  //         title: annotation.work?.title,
+  //         composer: annotation.work?.composer,
+  //         opOrCatalog: annotation.work?.opOrCatalog,
+  //         annotationsCount: 0,
+  //       });
+  //     }
+  //     worksMap.get(workId).annotationsCount++;
+  //   });
 
-    return Array.from(worksMap.values())
-      .sort((a, b) => b.annotationsCount - a.annotationsCount)
-      .slice(0, 5);
-  }, [userAnnotations]);
+  //   return Array.from(worksMap.values())
+  //     .sort((a, b) => b.annotationsCount - a.annotationsCount)
+  //     .slice(0, 5);
+  // }, [userAnnotations]);
 
   // Filters check
   const hasActiveFilters = useMemo(() => {

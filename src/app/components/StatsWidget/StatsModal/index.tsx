@@ -10,7 +10,7 @@ import {
   FiDownload,
   FiBarChart2,
 } from 'react-icons/fi';
-import { AnimatedCard, AnimatedItem } from '../../animation/AnimatedComponents';
+import { AnimatedCard } from '../../animation/AnimatedComponents';
 
 interface StatsModalProps {
   isOpen: boolean;

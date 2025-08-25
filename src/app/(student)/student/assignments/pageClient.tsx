@@ -12,7 +12,6 @@ import {
   FiEye,
   FiCheck,
   FiClock,
-  FiX,
   FiChevronLeft,
   FiChevronRight,
   FiTarget,
@@ -23,8 +22,6 @@ import {
   FiMic,
   FiCalendar,
   FiAlertTriangle,
-  FiStar,
-  FiUpload,
   FiTrendingUp,
 } from 'react-icons/fi';
 import {
@@ -83,8 +80,6 @@ export default function StudentAssignmentsPageClient({
     error,
     setInitialData,
     refreshAssignments,
-    completeAssignment,
-    updateProgress,
     clearError,
   } = useStudentAssignments();
 

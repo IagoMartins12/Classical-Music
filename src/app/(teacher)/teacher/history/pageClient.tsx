@@ -122,12 +122,6 @@ const TeacherHistoryClient = ({
     { value: 'user', label: t('filter_user') },
   ];
 
-  const NotificatiosSelectFIlter = [
-    { value: 'newest', label: t('sort_newest') },
-    { value: 'oldest', label: t('sort_oldest') },
-    { value: 'priority', label: t('sort_priority') },
-  ];
-
   useEffect(() => {
     fetchActivities();
   }, [page, selectedAction, selectedEntityType, dateFrom, dateTo]);
